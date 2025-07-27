@@ -1,14 +1,17 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-    darkMode: 'class',
+    plugins: [
+        require('tailwindcss-email-variants'),
+        require('@tailwindcss/typography'),
+      ],
+    darkMode: "class",
     content: [
-      "./resources/**/*.blade.php",
-      "./resources/**/*.js",
-      "./resources/**/*.vue",
+        "./resources/**/*.blade.php",
+        "./resources/**/*.js",
+        "./resources/**/*.vue",
     ],
     theme: {
-      extend: {},
+        extend: {},
     },
     plugins: [],
-  }
-  
+};
