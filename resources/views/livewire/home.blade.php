@@ -89,7 +89,7 @@
                         </p>
                         <div class="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
                             <a href="#"
-                                class="inline-flex items-center justify-center px-8 py-4 border border-transparent text-base font-bold rounded-full shadow-lg text-indigo-600 bg-white hover:bg-indigo-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition duration-300 ease-in-out transform hover:scale-105">
+                                class="inline-flex items-center justify-center px-8 py-4 border border-transparent border-white text-base font-bold rounded-full shadow-lg hover:text-white text-indigo-600 bg-white hover:bg-indigo-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition duration-300 ease-in-out transform hover:scale-105">
                                 Start Learning Free <i class="fas fa-arrow-right ml-3"></i>
                             </a>
                             <a href="#features"

@@ -2,142 +2,76 @@
 
 namespace App\Livewire\Dashboard;
 
-use App\Models\User;
 use Livewire\Component;
-use Livewire\WithPagination;
-use Illuminate\Validation\Rules;
-use Illuminate\Support\Facades\Hash;
 
 class SuperAdminDashboard extends Component
 {
-    use WithPagination;
+    // Current active tab/section for SPA navigation
+    public $activeSection = 'users';
+    
+    // Dashboard stats (cached for performance)
+    public $stats = [];
+    
+    // Listeners for global dashboard events
+    protected $listeners = [
+        'refreshStats' => 'loadStats',
+        'sectionChanged' => 'updateSection'
+    ];
 
-    public $showUserModal = false;
-    public $editMode = false;
-    public $userId;
-    public $name;
-    public $email;
-    public $role;
-    public $password;
-    public $password_confirmation;
-    public $search = '';
-
-    protected $queryString = ['search'];
-
-    // Add this method to get all available roles
-    public static function getRoles()
+    /**
+     * Mount the dashboard with initial data
+     */
+    public function mount()
     {
-        return [
-            User::ROLE_SUPER_ADMIN,
-            User::ROLE_ACADEMY_ADMIN,
-            User::ROLE_INSTRUCTOR,
-            User::ROLE_MENTOR,
-            User::ROLE_CONTENT_EDITOR,
-            User::ROLE_AFFILIATE_AMBASSADOR,
-            User::ROLE_STUDENT,
-        ];
+        $this->loadStats();
     }
 
+    /**
+     * Load dashboard statistics
+     */
+    public function loadStats()
+    {
+        // Cache stats for 5 minutes to improve performance
+        $this->stats = cache()->remember('super_admin_stats', 300, function () {
+            return [
+                'total_users' => \App\Models\User::count(),
+                'verified_users' => \App\Models\User::whereNotNull('email_verified_at')->count(),
+                'pending_users' => \App\Models\User::whereNull('email_verified_at')->count(),
+                'total_admins' => \App\Models\User::whereIn('role', [
+                    \App\Models\User::ROLE_SUPER_ADMIN,
+                    \App\Models\User::ROLE_ACADEMY_ADMIN
+                ])->count(),
+                // Add more stats as needed for your SPA sections
+                'last_updated' => now()->format('M d, Y h:i A')
+            ];
+        });
+    }
+
+    /**
+     * Update active section for SPA navigation
+     */
+    public function updateSection($section)
+    {
+        $this->activeSection = $section;
+    }
+
+    /**
+     * Clear stats cache when needed
+     */
+    public function refreshStats()
+    {
+        cache()->forget('super_admin_stats');
+        $this->loadStats();
+    }
+
+    /**
+     * Render the dashboard
+     */
     public function render()
     {
-        $users = User::when($this->search, function ($query) {
-            $query->where('name', 'like', '%'.$this->search.'%')
-                  ->orWhere('email', 'like', '%'.$this->search.'%');
-        })
-        ->allExcept(auth()->user())
-        ->latest()
-        ->paginate(10);
-
-        return view('livewire.dashboard.super-admin-dashboard', [
-            'users' => $users,
-            'roles' => [
-                User::ROLE_SUPER_ADMIN => 'Super Admin',
-                User::ROLE_ACADEMY_ADMIN => 'Academy Admin',
-                User::ROLE_INSTRUCTOR => 'Instructor',
-                User::ROLE_MENTOR => 'Mentor',
-                User::ROLE_CONTENT_EDITOR => 'Content Editor',
-                User::ROLE_AFFILIATE_AMBASSADOR => 'Affiliate Ambassador',
-                User::ROLE_STUDENT => 'Student',
-            ]
-        ])
-        ->layout('layouts.dashboard', ['title' => 'Student Dashboard']);
-    }
-
-    public function createUser()
-    {
-        $this->resetForm();
-        $this->editMode = false;
-        $this->showUserModal = true;
-    }
-
-    public function editUser(User $user)
-    {
-        $this->editMode = true;
-        $this->userId = $user->id;
-        $this->name = $user->name;
-        $this->email = $user->email;
-        $this->role = $user->role;
-        $this->showUserModal = true;
-    }
-
-    public function saveUser()
-    {
-        $rules = [
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users,email,'.$this->userId,
-            'role' => 'required|in:'.implode(',', self::getRoles()),
-        ];
-
-        if (!$this->editMode) {
-            $rules['password'] = ['required', 'confirmed', Rules\Password::defaults()];
-        }
-
-        $this->validate($rules);
-
-        $data = [
-            'name' => $this->name,
-            'email' => $this->email,
-            'role' => $this->role,
-        ];
-
-        if ($this->password) {
-            $data['password'] = Hash::make($this->password);
-        }
-
-        if ($this->editMode) {
-            $user = User::findOrFail($this->userId);
-            $user->update($data);
-            $this->dispatch('notify', 'User updated successfully!');
-        } else {
-            User::create($data);
-            $this->dispatch('notify', 'User created successfully!');
-        }
-
-        $this->resetForm();
-    }
-
-    public function deleteUser(User $user)
-    {
-        if (!$user->canBeDeleted()) {
-            $this->dispatch('notify', 'Cannot delete this user!', 'error');
-            return;
-        }
-
-        $user->delete();
-        $this->dispatch('notify', 'User deleted successfully!');
-    }
-
-    public function resetForm()
-    {
-        $this->reset([
-            'showUserModal',
-            'editMode',
-            'userId',
-            'name',
-            'email',
-            'role',
-            'password',
-            'password_confirmation'
-        ]);
+        return view('livewire.dashboard.super-admin-dashboard')
+                    ->layout('layouts.dashboard', [
+                        'title' => 'Super Admin Dashboard'
+                    ]);
     }
 }
