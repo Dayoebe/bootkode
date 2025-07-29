@@ -12,7 +12,7 @@
         <div class="flex justify-between items-center h-16">
             <!-- Logo -->
             <div class="flex-shrink-0 flex items-center">
-                <a href="#" class="flex items-center space-x-2 transform transition-transform hover:scale-105">
+                <a href="/" class="flex items-center space-x-2 transform transition-transform hover:scale-105">
                     <div class="flex flex-row gap-3 bg-gradient-to-r from-blue-50 to-purple-100 p-2 rounded-lg shadow-sm">
                         <svg class="h-8 w-6 text-black" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
@@ -163,30 +163,48 @@
             </div>
 
             <!-- Right Section - Auth Buttons & Search -->
-            <div class="hidden md:flex items-center space-x-4">
-                <div class="relative" x-data="{ searchOpen: false }">
-                    <button @click="searchOpen = !searchOpen" class="p-2 text-gray-600 hover:text-blue-400 rounded-full transition-colors">
-                        <i class="fas fa-search"></i>
-                    </button>
-                    <div x-show="searchOpen" class="absolute right-0 mt-2 w-72 bg-white rounded-lg shadow-xl z-50 p-2"
-                         x-transition:enter="transition ease-out duration-200"
-                         x-transition:enter-start="opacity-0 scale-95"
-                         x-transition:enter-end="opacity-100 scale-100"
-                         x-transition:leave="transition ease-in duration-150"
-                         x-transition:leave-start="opacity-100 scale-100"
-                         x-transition:leave-end="opacity-0 scale-95"
-                         @click.away="searchOpen = false">
-                        <input type="text" placeholder="Search courses..." class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent">
+            @auth
+            <!-- User dropdown -->
+            <div class="relative ml-4" x-data="{ open: false }" @click.away="open = false">
+                <button @click="open = !open" class="flex items-center space-x-2 focus:outline-none">
+                    <div class="h-8 w-8 rounded-full bg-gradient-to-r from-blue-400 to-purple-500 flex items-center justify-center text-white font-bold">
+                        {{ strtoupper(substr(auth()->user()->name, 0, 2)) }}
                     </div>
-                </div>
+                    <span class="hidden md:inline text-gray-700 font-medium">{{ auth()->user()->name }}</span>
+                    <i class="fas fa-chevron-down text-xs text-gray-500 transition-transform duration-200" :class="{ 'rotate-180': open }"></i>
+                </button>
                 
-                <a href="#" class="text-gray-600 hover:text-blue-400 font-medium hover:uppercase px-4 py-2 rounded-lg transition-colors duration-300 group">
-                    <i class="fas fa-sign-in-alt mr-2 transition-transform group-hover:translate-x-0.5"></i>Log in
-                </a>
-                <a href="#" class="bg-gradient-to-r from-blue-400 to-purple-400 text-black font-medium hover:uppercase px-5 py-2.5 rounded-lg shadow-md hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-300 flex items-center animate-pulse-custom">
-                    <i class="fas fa-user-plus mr-2"></i>Register
-                </a>
+                <div x-show="open" 
+                     x-transition:enter="transition ease-out duration-200"
+                     x-transition:enter-start="opacity-0 scale-95"
+                     x-transition:enter-end="opacity-100 scale-100"
+                     x-transition:leave="transition ease-in duration-75"
+                     x-transition:leave-start="opacity-100 scale-100"
+                     x-transition:leave-end="opacity-0 scale-95"
+                     class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50">
+                    <a href="{{ route(auth()->user()->getDashboardRouteName()) }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                        <i class="fas fa-tachometer-alt mr-2"></i> Dashboard
+                    </a>
+                    <a href="{{ route('profile.edit') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                        <i class="fas fa-user-cog mr-2"></i> Profile
+                    </a>
+                    <form method="POST" action="{{ route('logout') }}">
+                        @csrf
+                        <button type="submit" class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                            <i class="fas fa-sign-out-alt mr-2"></i> Logout
+                        </button>
+                    </form>
+                </div>
             </div>
+        @else
+            <!-- Guest buttons -->
+            <a href="{{ route('login') }}" class="border border-b-2 border-blue-600 text-gray-600 hover:text-blue-400 font-medium hover:uppercase px-4 py-2 rounded-lg transition-colors duration-300 group">
+                <i class="fas fa-sign-in-alt mr-2 transition-transform group-hover:translate-x-0.5"></i>Log in
+            </a>
+            <a href="{{ route('register') }}" class="bg-gradient-to-r from-blue-400 to-purple-400 text-black font-medium hover:uppercase px-5 py-2.5 rounded-lg shadow-md hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-300 flex items-center animate-pulse-custom">
+                <i class="fas fa-user-plus mr-2"></i>Register
+            </a>
+        @endauth
 
             <!-- Mobile menu button -->
             <div class="md:hidden flex items-center">
@@ -221,6 +239,13 @@
             </div>
             
             <div class="px-4 pt-2 pb-5 space-y-1">
+
+
+                <a href="/" class="flex border border-b-2 border-blue-600 items-center px-3 py-3 text-gray-700 rounded-lg hover:bg-blue-50">
+                    <i class="fas fa-code text-blue-400 mr-3"></i>
+                    <span class="font-medium hover:lowercase uppercase">BootKode Academy</span>
+                </a>
+
                 <!-- Mobile: Courses Dropdown -->
                 <div class="relative">
                     <button @click="dropdowns.courses = !dropdowns.courses" class="w-full flex justify-between items-center px-3 py-3 text-gray-700 rounded-lg hover:bg-blue-50">
@@ -339,14 +364,48 @@
                 </div>
                 
                 <!-- Mobile: Auth Buttons -->
-                <div class="pt-4 border-t border-gray-800 mt-4">
-                    <a href="#" class="block w-full text-center px-4 py-3 text-gray-700 font-medium hover:uppercase rounded-lg border border-gray-300 mb-3 hover:bg-gray-50 transition-colors">
-                        <i class="fas fa-sign-in-alt mr-2"></i>Log in
-                    </a>
-                    <a href="#" class="block w-full text-center bg-gradient-to-r from-blue-400 to-purple-300 text-black font-medium hover:uppercase px-4 py-3.5 rounded-lg shadow-md hover:shadow-lg transition-all">
-                        <i class="fas fa-user-plus mr-2"></i>Register
-                    </a>
+                @auth
+                <!-- User dropdown -->
+                <div class="relative ml-4" x-data="{ open: false }" @click.away="open = false">
+                    <button @click="open = !open" class="flex items-center space-x-2 focus:outline-none">
+                        <div class="h-8 w-8 rounded-full bg-gradient-to-r from-blue-400 to-purple-500 flex items-center justify-center text-white font-bold">
+                            {{ strtoupper(substr(auth()->user()->name, 0, 2)) }}
+                        </div>
+                        <span class=" md:inline text-gray-700 font-medium">{{ auth()->user()->name }}</span>
+                        <i class="fas fa-chevron-down text-xs text-gray-500 transition-transform duration-200" :class="{ 'rotate-180': open }"></i>
+                    </button>
+                    
+                    <div x-show="open" 
+                         x-transition:enter="transition ease-out duration-200"
+                         x-transition:enter-start="opacity-0 scale-95"
+                         x-transition:enter-end="opacity-100 scale-100"
+                         x-transition:leave="transition ease-in duration-75"
+                         x-transition:leave-start="opacity-100 scale-100"
+                         x-transition:leave-end="opacity-0 scale-95"
+                         class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50">
+                        <a href="{{ route(auth()->user()->getDashboardRouteName()) }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                            <i class="fas fa-tachometer-alt mr-2"></i> Dashboard
+                        </a>
+                        <a href="{{ route('profile.edit') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                            <i class="fas fa-user-cog mr-2"></i> Profile
+                        </a>
+                        <form method="POST" action="{{ route('logout') }}">
+                            @csrf
+                            <button type="submit" class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                <i class="fas fa-sign-out-alt mr-2"></i> Logout
+                            </button>
+                        </form>
+                    </div>
                 </div>
+            @else
+                <!-- Guest buttons -->
+                <a href="{{ route('login') }}" class="text-gray-600 hover:text-blue-400 font-medium hover:uppercase px-4 py-2 rounded-lg transition-colors duration-300 group">
+                    <i class="fas fa-sign-in-alt mr-2 transition-transform group-hover:translate-x-0.5"></i>Log in
+                </a>
+                <a href="{{ route('register') }}" class="bg-gradient-to-r from-blue-400 to-purple-400 text-black font-medium hover:uppercase px-5 py-2.5 rounded-lg shadow-md hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-300 flex items-center animate-pulse-custom">
+                    <i class="fas fa-user-plus mr-2"></i>Register
+                </a>
+            @endauth
             </div>
         </div>
     </div>
