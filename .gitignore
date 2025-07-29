@@ -1,24 +1,60 @@
-*.log
-.DS_Store
-.env
-.env.backup
-.env.production
-.phpactor.json
-.phpunit.result.cache
-/.fleet
-/.idea
-/.nova
-/.phpunit.cache
-/.vscode
-/.zed
-/auth.json
+# Laravel & PHP
+/vendor
 /node_modules
-/public/build
-/public/hot
 /public/storage
 /storage/*.key
-/storage/pail
-/vendor
+.env
+.env.*
+.phpunit.result.cache
 Homestead.json
 Homestead.yaml
+npm-debug.log
+yarn-error.log
+
+# Laravel IDE Helper
+/_ide_helper.php
+/_ide_helper_models.php
+
+# Laravel Telescope
+storage/telescope
+
+# Laravel Horizon
+storage/horizon
+
+# Laravel Vapor
+.vapor
+
+# Valet
+.valet
+
+# PhpStorm
+.idea
+
+# VSCode
+.vscode
+
+# OS generated files
+.DS_Store
 Thumbs.db
+
+# Log files
+/storage/logs/*.log
+
+# Cache
+bootstrap/cache/*.php
+
+# PHPUnit
+.phpunit.cache
+
+# Ignoring compiled assets if using Vite/Laravel Mix
+/public/js/*.js
+/public/js/*.map
+/public/css/*.css
+/public/css/*.map
+
+# Custom environment files
+.env.testing
+.env.backup
+
+# Local database (optional, if using SQLite)
+database/database.sqlite
