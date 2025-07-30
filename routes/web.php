@@ -6,7 +6,9 @@ use App\Livewire\Home;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\DashboardController;
 use App\Models\User;
-use App\Livewire\Component\ProfileManagement; 
+use App\Livewire\Component\CourseManagement\AllCourses;
+use App\Livewire\Component\CourseManagement\CreateCourse;
+use App\Livewire\Component\CourseManagement\CourseCategories;
 
 // Use specific Auth controllers directly in route definitions to avoid conflicts
 // use App\Http\Controllers\Auth\VerifyEmailController; // REMOVE THIS LINE
@@ -34,22 +36,26 @@ Route::post('/email/resend', [\App\Http\Controllers\Auth\EmailVerificationNotifi
     ->middleware(['auth', 'throttle:6,1'])
     ->name('verification.send');
 
-    // Group for authenticated user profiles
-    Route::middleware('auth')->group(function () {
-        // Existing profile routes (keep if needed for API)
-        Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-        Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-        Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-    
-        // New Livewire Profile routes
-        Route::get('/dashboard/profile/view', \App\Livewire\Component\Profile\ViewProfile::class)->name('profile.view');
-        Route::get('/dashboard/profile/edit', \App\Livewire\Component\Profile\EditProfile::class)->name('profile.edit');
-    });
+// Group for authenticated user profiles
+Route::middleware('auth')->group(function () {
+    // Existing profile routes (keep if needed for API)
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
+    // New Livewire Profile routes
+    Route::get('/dashboard/profile/view', \App\Livewire\Component\Profile\ViewProfile::class)->name('profile.view');
+    Route::get('/dashboard/profile/edit', \App\Livewire\Component\Profile\EditProfile::class)->name('profile.edit');
 
+});
 
+Route::middleware('auth')->group(function () {
+    // 'route' => route('course_management.all_courses')
+    Route::get('course_management.all_courses', AllCourses::class)->name('course_management.all_courses');
+    Route::get('/dashboard/courses/create', CreateCourse::class)->name('course_management.create_course'); 
+    Route::get('/dashboard/courses/categories', CourseCategories::class)->name('course_management.course_categories'); 
 
-    
+});
 
 Route::middleware(['auth', 'verified'])->group(function () {
     // Super Admin Dashboard
@@ -85,4 +91,4 @@ Route::middleware(['auth', 'verified'])->group(function () {
         ->name('dashboard');
 });
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';
