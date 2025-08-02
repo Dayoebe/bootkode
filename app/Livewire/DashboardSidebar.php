@@ -35,7 +35,16 @@ class DashboardSidebar extends Component
         } elseif (str_contains($currentRouteName, 'profile')) {
             $this->activeLink = 'profile_management';
         } elseif (str_contains($currentRouteName, 'course_management')) {
-            $this->activeLink = 'course_management.all_courses'; // Updated to match the specific page
+            $this->activeLink = 'all-course'; // Updated to match the specific page
+        } elseif (str_contains($currentRouteName, 'course-categories')) {
+            $this->activeLink = 'course_management.course_categories';
+        } elseif (str_contains($currentRouteName, 'course-builder')) {
+            $this->activeLink = 'course_management.course_builder';
+        } elseif (str_contains($currentRouteName, 'course-reviews')) {
+            $this->activeLink = 'course_management.course_reviews';
+        } elseif (str_contains($currentRouteName, 'course-approvals')) {
+
+            $this->activeLink = 'course_management.course_approvals';
         } else {
             $this->activeLink = 'dashboard';
         }
@@ -78,18 +87,12 @@ class DashboardSidebar extends Component
                 'roles' => [User::ROLE_INSTRUCTOR, User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN],
                 'link_id' => 'course_management',
                 'children' => [
-                    [
-                        'label' => 'All Courses',
-                        'icon' => 'fas fa-list',
-                        'route' => route('course_management.all_courses'),
-                        'roles' => [],
-                        'link_id' => 'course_management.all_courses' // Updated to be more specific
-                    ],
-                    ['label' => 'Create Course', 'icon' => 'fas fa-plus-circle', 'route' => route('course_management.create_course'), 'roles' => [User::ROLE_INSTRUCTOR, User::ROLE_ACADEMY_ADMIN], 'link_id' => 'course_management.create_course'], 
-                    ['label' => 'Course Builder', 'icon' => 'fas fa-puzzle-piece', 'route' => '#', 'roles' => [User::ROLE_INSTRUCTOR, User::ROLE_ACADEMY_ADMIN]],
-                    ['label' => 'Course Categories', 'icon' => 'fas fa-tags', 'route' => route('course_management.course_categories'), 'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN], 'link_id' => 'course_management.course_categories'], 
-                    ['label' => 'Course Reviews', 'icon' => 'fas fa-star', 'route' => '#', 'roles' => [User::ROLE_INSTRUCTOR, User::ROLE_ACADEMY_ADMIN]],
-                    ['label' => 'Course Approvals', 'icon' => 'fas fa-check-double', 'route' => '#', 'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN]],
+                    ['label' => 'Course Management', 'icon' => 'fas fa-laptop-code', 'route' => route('all-course'), 'roles' => [User::ROLE_INSTRUCTOR, User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN], 'link_id' => 'all-course'],
+                    ['label' => 'Create Course', 'icon' => 'fas fa-plus-circle', 'route' => route('course_management.create_course'), 'roles' => [User::ROLE_INSTRUCTOR, User::ROLE_ACADEMY_ADMIN], 'link_id' => 'course_management.create_course'],
+                    ['label' => 'Course Builder', 'icon' => 'fas fa-puzzle-piece', 'route' => route('all-course'), 'roles' => [User::ROLE_INSTRUCTOR, User::ROLE_ACADEMY_ADMIN], 'link_id' => 'all-course'],
+                    ['label' => 'Course Categories', 'icon' => 'fas fa-tags', 'route' => route('course-categories'), 'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN], 'link_id' => 'course-categories'],
+                    ['label' => 'Course Reviews', 'icon' => 'fas fa-star', 'route' => route('course-reviews'), 'roles' => [User::ROLE_INSTRUCTOR, User::ROLE_ACADEMY_ADMIN], 'link_id' => 'course-reviews'],
+                    ['label' => 'Course Approvals', 'icon' => 'fas fa-check-double', 'route' => route('course-approvals'), 'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN], 'link_id' => 'course-approvals'],
                 ]
             ],
 
@@ -335,7 +338,7 @@ class DashboardSidebar extends Component
                 'icon' => 'fas fa-money-bill-wave',
                 'route' => '#',
                 'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN],
-                'link_id' => 'financials',
+                'link_id' => 'financial',
                 'children' => [
                     ['label' => 'Revenue Dashboard', 'icon' => 'fas fa-chart-line', 'route' => '#', 'roles' => []],
                     ['label' => 'Payment Processing', 'icon' => 'fas fa-credit-card', 'route' => '#', 'roles' => []],
@@ -477,13 +480,13 @@ class DashboardSidebar extends Component
                 ]
             ],
 
-            // Financials (Super Admin, Academy Admin)
+            // Financial (Super Admin, Academy Admin)
             [
-                'label' => 'Financials',
+                'label' => 'Financial',
                 'icon' => 'fas fa-wallet',
                 'route' => '#',
                 'roles' => [User::ROLE_SUPER_ADMIN, User::ROLE_ACADEMY_ADMIN],
-                'link_id' => 'financials',
+                'link_id' => 'Financial',
                 'children' => [
                     ['label' => 'Revenue Reports', 'icon' => 'fas fa-chart-line', 'route' => '#', 'roles' => [User::ROLE_SUPER_ADMIN, User::ROLE_ACADEMY_ADMIN]],
                     ['label' => 'Payouts', 'icon' => 'fas fa-money-check-alt', 'route' => '#', 'roles' => [User::ROLE_SUPER_ADMIN]],

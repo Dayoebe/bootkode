@@ -25,7 +25,7 @@
                 class="absolute -right-3 top-1/2 -translate-y-1/2 bg-gradient-to-r from-gray-600 to-gray-700 text-white p-2 rounded-full shadow-lg z-10
                        hover:from-gray-500 hover:to-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 
                        transition-all duration-300 border border-gray-500">
-            <i class="fas text-xs transition-transform duration-300" :class="{ 'fa-chevron-left': sidebarOpen, 'fa-chevron-right': !sidebarOpen }"></i>
+            <i class="fas text-md transition-transform duration-300" :class="{ 'fa-chevron-left': sidebarOpen, 'fa-chevron-right': !sidebarOpen }"></i>
         </button>
     </div>
 
