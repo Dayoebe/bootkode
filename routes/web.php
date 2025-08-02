@@ -9,12 +9,10 @@ use App\Models\User;
 use App\Livewire\Component\CourseManagement\AllCourses;
 use App\Livewire\Component\CourseManagement\CreateCourse;
 use App\Livewire\Component\CourseManagement\CourseCategories;
-
-// Use specific Auth controllers directly in route definitions to avoid conflicts
-// use App\Http\Controllers\Auth\VerifyEmailController; // REMOVE THIS LINE
-// use App\Http\Controllers\Auth\EmailVerificationNotificationController; // REMOVE THIS LINE
-
-
+use App\Livewire\Component\CourseManagement\CourseBuilder;
+use App\Livewire\Component\CourseManagement\CourseReviews; 
+use App\Livewire\Component\CourseManagement\CourseApprovals;
+use App\Livewire\Component\CourseManagement\EditCourse;;
 
 // Public Home Page
 Route::get('/', Home::class)->name('home');
@@ -49,12 +47,15 @@ Route::middleware('auth')->group(function () {
 
 });
 
-Route::middleware('auth')->group(function () {
-    // 'route' => route('course_management.all_courses')
-    Route::get('course_management.all_courses', AllCourses::class)->name('course_management.all_courses');
-    Route::get('/dashboard/courses/create', CreateCourse::class)->name('course_management.create_course'); 
-    Route::get('/dashboard/courses/categories', CourseCategories::class)->name('course_management.course_categories'); 
 
+Route::middleware('auth')->group(function () {
+    Route::get('/course-management/all-courses', AllCourses::class)->name('all-course');
+    Route::get('/dashboard/courses/create', CreateCourse::class)->name('course_management.create_course'); 
+    Route::get('/edit/{course}', EditCourse::class)->name('edit-course');
+    Route::get('/course-categories', CourseCategories::class)       ->name('course-categories');
+    Route::get('/dashboard/courses/{course}/builder', CourseBuilder::class)->name('course-builder'); 
+    Route::get('/dashboard/courses/reviews', CourseReviews::class)->name('course-reviews');
+    Route::get('/dashboard/courses/approvals', CourseApprovals::class)->name('course-approvals');
 });
 
 Route::middleware(['auth', 'verified'])->group(function () {
