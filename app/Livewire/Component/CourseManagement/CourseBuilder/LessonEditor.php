@@ -23,11 +23,11 @@ class LessonEditor extends Component
     {
         $this->lessonId = $lessonId;
         $this->lesson = CourseLesson::findOrFail($lessonId);
-        
-        $content = is_string($this->lesson->content) 
-            ? json_decode($this->lesson->content, true) 
+
+        $content = is_string($this->lesson->content)
+            ? json_decode($this->lesson->content, true)
             : $this->lesson->content;
-            
+
         $this->content = $content['body'] ?? '';
         $this->contentBlocks = $content['blocks'] ?? [];
     }
@@ -43,12 +43,12 @@ class LessonEditor extends Component
         ];
 
         $this->lesson->update(['content' => $content]);
-        
+
         $this->isDirty = false;
         $this->autoSaveMessage = 'Content saved successfully!';
         $this->dispatch('notify', 'Lesson content saved successfully!', 'success');
         $this->dispatch('content-saved');
-        
+
         // Clear auto-save message after 3 seconds
         $this->clearAutoSaveMessage();
     }
@@ -66,7 +66,7 @@ class LessonEditor extends Component
             $this->lesson->update(['content' => $content]);
             $this->autoSaveMessage = 'Auto-saved at ' . now()->format('g:i A');
             $this->isDirty = false;
-            
+
             // Clear auto-save message after 3 seconds
             $this->clearAutoSaveMessage();
         }
@@ -195,18 +195,56 @@ class LessonEditor extends Component
     }
 
     public function previewLesson()
-    {
-        if ($this->isDirty) {
-            $this->autoSave();
+{
+    try {
+        // First, ensure we have a valid lesson ID
+        if (!$this->lessonId) {
+            $this->dispatch('notify',
+                message: "No lesson selected for preview.",
+                type: 'error'
+            );
+            return;
         }
 
-        $this->dispatch('open-preview-modal', [
-            'lesson' => $this->lesson->toArray(),
-            'content' => $this->content,
-            'blocks' => $this->contentBlocks
-        ]);
-    }
+        // Load the lesson with necessary relationships
+        $lesson = CourseLesson::with([
+            'section' => function($query) {
+                $query->with(['course']);
+            }
+        ])->findOrFail($this->lessonId);
 
+        // Verify the course structure
+        if (!$lesson->section || !$lesson->section->course) {
+            $this->dispatch('notify',
+                message: "This lesson isn't properly assigned to a course section.",
+                type: 'error'
+            );
+            return;
+        }
+
+        $course = $lesson->section->course;
+
+        if (!$course->is_published) {
+            $this->dispatch('notify',
+                message: "Please publish the course before previewing lessons.",
+                type: 'warning'
+            );
+            return;
+        }
+
+        // Redirect to course preview with lesson highlight
+        return redirect()->route('course.preview', [
+            'course' => $course,
+            'highlight' => $lesson->id
+        ]);
+
+    } catch (\Exception $e) {
+        $this->dispatch('notify',
+            message: "Failed to preview lesson: " . $e->getMessage(),
+            type: 'error'
+        );
+    }
+}
     public function formatFileSize($bytes)
     {
         $units = ['B', 'KB', 'MB', 'GB'];
@@ -219,7 +257,7 @@ class LessonEditor extends Component
 
     public function getNoteIcon($noteType)
     {
-        return match($noteType) {
+        return match ($noteType) {
             'tip' => 'lightbulb',
             'warning' => 'exclamation-triangle',
             'info' => 'info-circle',
