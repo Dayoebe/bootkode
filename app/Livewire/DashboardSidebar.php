@@ -43,8 +43,9 @@ class DashboardSidebar extends Component
         } elseif (str_contains($currentRouteName, 'course-reviews')) {
             $this->activeLink = 'course_management.course_reviews';
         } elseif (str_contains($currentRouteName, 'course-approvals')) {
-
             $this->activeLink = 'course_management.course_approvals';
+        } elseif (str_contains($currentRouteName, 'user-management')) {
+            $this->activeLink = 'user-management';
         } else {
             $this->activeLink = 'dashboard';
         }
@@ -96,7 +97,25 @@ class DashboardSidebar extends Component
                 ]
             ],
 
-
+   // User Management
+   [
+    'label' => 'User Management',
+    'icon' => 'fas fa-users-cog',
+    'route' => '#',
+    'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN],
+    'link_id' => 'user-management',
+    'children' => [
+        ['label' => 'All Users', 'icon' => 'fas fa-users', 'route' => route('user-management'), 'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN], 'link_id' => 'user-management'],
+        ['label' => 'User Groups', 'icon' => 'fas fa-object-group', 'route' => '#', 'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN]],
+        ['label' => 'Bulk Import', 'icon' => 'fas fa-file-import', 'route' => '#', 'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN]],
+        ['label' => 'Access Control', 'icon' => 'fas fa-user-shield', 'route' => '#', 'roles' => [User::ROLE_SUPER_ADMIN]],
+        ['label' => 'Activity Logs', 'icon' => 'fas fa-clipboard-list', 'route' => '#', 'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN]],
+        ['label' => 'User Management', 'icon' => 'fas fa-users-cog', 'route' => 'user-management', 'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN]],
+        ['label' => 'Mentor Management', 'icon' => 'fas fa-user-tie', 'route' => '#', 'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN]],
+        ['label' => 'Feedback System', 'icon' => 'fas fa-comments', 'route' => '#', 'roles' => []],
+        ['label' => 'Mentorship Network', 'icon' => 'fas fa-hands-helping', 'route' => '#', 'roles' => []],
+    ]
+],
             // Learning Management
             [
                 'label' => 'Learning Hub',
@@ -296,23 +315,6 @@ class DashboardSidebar extends Component
                     ['label' => 'Job Categories', 'icon' => 'fas fa-tags', 'route' => '#', 'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN]],
                     ['label' => 'Job Analytics', 'icon' => 'fas fa-chart-bar', 'route' => '#', 'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN]],
                     ['label' => 'Job Settings', 'icon' => 'fas fa-cog', 'route' => '#', 'roles' => [User::ROLE_SUPER_ADMIN]],
-                ]
-            ],
-
-
-            // User Management
-            [
-                'label' => 'User Management',
-                'icon' => 'fas fa-users-cog',
-                'route' => '#',
-                'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN],
-                'link_id' => 'user_management',
-                'children' => [
-                    ['label' => 'All Users', 'icon' => 'fas fa-users', 'route' => '#', 'roles' => []],
-                    ['label' => 'User Groups', 'icon' => 'fas fa-object-group', 'route' => '#', 'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN]],
-                    ['label' => 'Bulk Import', 'icon' => 'fas fa-file-import', 'route' => '#', 'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN]],
-                    ['label' => 'Access Control', 'icon' => 'fas fa-user-shield', 'route' => '#', 'roles' => [User::ROLE_SUPER_ADMIN]],
-                    ['label' => 'Activity Logs', 'icon' => 'fas fa-clipboard-list', 'route' => '#', 'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN]],
                 ]
             ],
 
