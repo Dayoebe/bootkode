@@ -17,33 +17,94 @@ class User extends Authenticatable implements MustVerifyEmail
      *
      * @var array<int, string>
      */
-    protected $fillable = [
-        'name',
-        'email',
-        'password',
-        'role', // This is crucial: 'role' must be fillable
-    ];
+    
 
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var array<int, string>
-     */
-    protected $hidden = [
-        'password',
-        'remember_token',
-    ];
 
-    /**
-     * The attributes that should be cast.
-     *
-     * @var array<string, string>
-     */
-    protected $casts = [
-        'email_verified_at' => 'datetime',
-        'password' => 'hashed',
-    ];
 
+    
+    
+        protected $fillable = [
+            'name',
+            'email',
+            'password',
+            'role',
+            'date_of_birth',
+            'phone_number',
+            'bio',
+            'profile_picture',
+            'address_street',
+            'address_city',
+            'address_state',
+            'address_country',
+            'address_postal_code',
+            'occupation',
+            'education_level',
+            'social_links',
+            'is_active',
+            'last_login_at',
+            'email_verified_at'
+        ];
+    
+        protected $hidden = [
+            'password',
+            'remember_token',
+        ];
+    
+        protected $casts = [
+            'email_verified_at' => 'datetime',
+            'password' => 'hashed',
+            'date_of_birth' => 'date',
+            'last_login_at' => 'datetime',
+            'social_links' => 'array',
+            'is_active' => 'boolean'
+        ];
+    
+       
+    
+        // Address Accessor
+        public function getFullAddressAttribute()
+        {
+            $parts = [
+                $this->address_street,
+                $this->address_city,
+                $this->address_state,
+                $this->address_country,
+                $this->address_postal_code
+            ];
+            
+            return implode(', ', array_filter($parts));
+        }
+    
+        // Age Calculation
+        public function getAgeAttribute()
+        {
+            return $this->date_of_birth?->age;
+        }
+    
+        // Social Links Helpers
+        public function setSocialLink($platform, $url)
+        {
+            $links = $this->social_links ?? [];
+            $links[$platform] = $url;
+            $this->social_links = $links;
+        }
+    
+        public function getSocialLink($platform)
+        {
+            return $this->social_links[$platform] ?? null;
+        }
+    
+        // Account Status Helpers
+        public function activateAccount()
+        {
+            $this->update(['is_active' => true]);
+        }
+    
+        public function deactivateAccount()
+        {
+            $this->update(['is_active' => false]);
+        }
+   
     // Define constants for roles for better maintainability and use in dropdowns
     public const ROLE_SUPER_ADMIN = 'super_admin';
     public const ROLE_ACADEMY_ADMIN = 'academy_admin';
