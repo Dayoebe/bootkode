@@ -26,6 +26,7 @@ return new class extends Migration
             $table->boolean('is_published')->default(false); // Whether the course is visible to students
             $table->string('status')->default('draft');
             $table->boolean('is_approved')->default(false); // For admin approval workflow
+            $table->boolean('has_offline_content')->default(false);
             $table->timestamps();
         });
     }
