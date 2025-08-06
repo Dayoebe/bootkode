@@ -10,3 +10,41 @@ import collapse from '@alpinejs/collapse';
 // Alpine.start();
 
 
+document.addEventListener('DOMContentLoaded', function() {
+    // Listen for bookmark events
+    Livewire.on('bookmarkUpdated', () => {
+        // You could update counters or other UI elements here
+        alert('Bookmark was updated');
+    });
+    
+    // For the login modal trigger
+    Livewire.on('show-login-modal', () => {
+        // Show your login modal
+        alert('Please login to save resources');
+        // Or trigger your auth modal component
+        // Livewire.emit('openModal', 'auth.login');
+    });
+});
+
+// Check online status
+function updateOnlineStatus() {
+    const statusElement = document.getElementById('connection-status');
+    if (navigator.onLine) {
+        if (statusElement) {
+            statusElement.innerHTML = '<i class="fas fa-wifi text-green-500"></i> Online';
+            statusElement.className = 'text-green-500';
+        }
+    } else {
+        if (statusElement) {
+            statusElement.innerHTML = '<i class="fas fa-wifi-slash text-red-500"></i> Offline';
+            statusElement.className = 'text-red-500';
+        }
+        
+        // Show offline content notification
+        Livewire.dispatch('offline-mode-activated');
+    }
+}
+
+window.addEventListener('online', updateOnlineStatus);
+window.addEventListener('offline', updateOnlineStatus);
+updateOnlineStatus();

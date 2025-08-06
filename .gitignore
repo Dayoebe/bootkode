@@ -5,6 +5,8 @@
 /storage/*.key
 .env
 .env.*
+.png
+
 .phpunit.result.cache
 Homestead.json
 Homestead.yaml

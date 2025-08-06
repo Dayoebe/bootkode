@@ -2,3 +2,24 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Bookmark button transitions */
+.bookmark-btn {
+    transition: all 0.2s ease;
+}
+
+.bookmark-btn:hover {
+    transform: scale(1.1);
+}
+
+/* Different sizes */
+.bookmark-sm {
+    font-size: 0.875rem;
+}
+
+.bookmark-md {
+    font-size: 1rem;
+}
+
+.bookmark-lg {
+    font-size: 1.25rem;
+}
