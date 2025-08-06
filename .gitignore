@@ -6,6 +6,7 @@
 .env
 .env.*
 .png
+.jpg
 
 .phpunit.result.cache
 Homestead.json
@@ -58,5 +59,3 @@ bootstrap/cache/*.php
 .env.testing
 .env.backup
 
-# Local database (optional, if using SQLite)
-database/database.sqlite
