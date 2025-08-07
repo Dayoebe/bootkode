@@ -10,9 +10,12 @@ use App\Livewire\Component\CourseManagement\AllCourses;
 use App\Livewire\Component\CourseManagement\CreateCourse;
 use App\Livewire\Component\CourseManagement\CourseCategories;
 use App\Livewire\Component\CourseManagement\CourseBuilder;
-use App\Livewire\Component\CourseManagement\CourseReviews; 
+use App\Livewire\Component\CourseManagement\CourseReviews;
 use App\Livewire\Component\CourseManagement\CourseApprovals;
-use App\Livewire\Component\CourseManagement\EditCourse;;
+use App\Livewire\Component\CourseManagement\EditCourse;
+use App\Livewire\Component\CourseManagement\CourseBuilder\CoursePreview;
+use App\Livewire\Component\UserManagement;
+
 
 // Public Home Page
 Route::get('/', Home::class)->name('home');
@@ -23,16 +26,6 @@ Route::get('/dashboard-redirect', DashboardController::class)
     ->middleware(['auth', 'verified']) // Ensure user is authenticated and email is verified
     ->name('dashboard.redirect');
 
-// Email Verification Routes
-// This route handles the actual email verification link click
-Route::get('/email/verify/{id}/{hash}', [\App\Http\Controllers\Auth\VerifyEmailController::class, '__invoke']) // Use full namespace here
-    ->middleware(['auth', 'signed']) // Ensure 'auth' and 'signed' middleware are present and correct
-    ->name('verification.verify');
-
-// This route handles resending the verification email
-Route::post('/email/resend', [\App\Http\Controllers\Auth\EmailVerificationNotificationController::class, 'store']) // Use full namespace here
-    ->middleware(['auth', 'throttle:6,1'])
-    ->name('verification.send');
 
 // Group for authenticated user profiles
 Route::middleware('auth')->group(function () {
@@ -48,16 +41,62 @@ Route::middleware('auth')->group(function () {
 });
 
 
-Route::middleware('auth')->group(function () {
-    Route::get('/course-management/all-courses', AllCourses::class)->name('all-course');
-    Route::get('/dashboard/courses/create', CreateCourse::class)->name('course_management.create_course'); 
-    Route::get('/edit/{course}', EditCourse::class)->name('edit-course');
-    Route::get('/course-categories', CourseCategories::class)       ->name('course-categories');
-    Route::get('/dashboard/courses/{course}/builder', CourseBuilder::class)->name('course-builder'); 
-    Route::get('/dashboard/courses/reviews', CourseReviews::class)->name('course-reviews');
-    Route::get('/dashboard/courses/approvals', CourseApprovals::class)->name('course-approvals');
+// Student Management Routes
+Route::middleware(['auth', 'verified'])->prefix('student')->group(function () {
+    // Dashboard Home
+    Route::get('/dashboard', \App\Livewire\Dashboard\StudentDashboard::class)->name('student.dashboard');
+    // Enrolled Courses
+    Route::get('/enrolled-courses', \App\Livewire\Component\StudentManagement\EnrolledCourses::class)
+        ->name('student.enrolled-courses');
+    // Course Catalog
+    Route::get('/course-catalog', \App\Livewire\Component\StudentManagement\CourseCatalog::class)
+        ->name('student.course-catalog');
+    // // Learning Analytics
+    Route::get('/learning-analytics', \App\Livewire\Component\StudentManagement\LearningAnalytics::class)
+        ->name('student.learning-analytics');
+
+    Route::get('/saved-resources', \App\Livewire\Component\StudentManagement\SavedResources::class)
+        ->name('student.saved-resources');
+    Route::get('/offline-content/{path}', function (Request $request, $path) {
+        // Verify the signed URL
+        if (!$request->hasValidSignature()) {
+            abort(401);
+        }
+
+        $user = $request->user();
+        $fullPath = config('app.offline_content_path') . "/user_{$user->id}/{$path}";
+
+        if (!Storage::exists($fullPath)) {
+            abort(404);
+        }
+
+        return Storage::response($fullPath);
+    })->name('offline.content');
+    Route::get('/offline-learning', \App\Livewire\Component\StudentManagement\OfflineLearning::class)
+    ->name('student.offline-learning');
+    // Assignments
+    // Route::get('/assignments', \App\Livewire\Component\StudentManagement\Assignments::class)
+    //     ->name('student.assignments');
 });
 
+
+//Courses  
+Route::middleware('auth')->group(function () {
+    Route::get('/course-management/all-courses', AllCourses::class)->name('all-course');
+    Route::get('/dashboard/courses/create', CreateCourse::class)->name('course_management.create_course');
+    Route::get('/edit/{course}', EditCourse::class)->name('edit-course');
+    Route::get('/course-categories', CourseCategories::class)->name('course-categories');
+    Route::get('/dashboard/courses/{course}/builder', CourseBuilder::class)->name('course-builder');
+    Route::get('/dashboard/courses/reviews', CourseReviews::class)->name('course-reviews');
+    Route::get('/dashboard/courses/approvals', CourseApprovals::class)->name('course-approvals');
+    Route::get('/courses/{course}/preview/{highlight?}', CoursePreview::class)->name('course.preview');
+});
+
+//User management
+Route::middleware('auth')->group(function () {
+    Route::get('/dashboard/user', UserManagement::class)->name('user-management');
+
+});
 Route::middleware(['auth', 'verified'])->group(function () {
     // Super Admin Dashboard
     Route::get('/super-admin/dashboard', \App\Livewire\Dashboard\SuperAdminDashboard::class)
