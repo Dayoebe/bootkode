@@ -37,6 +37,7 @@ return new class extends Migration {
             // Professional Information
             $table->string('occupation')->nullable();
             $table->string('education_level')->nullable();
+            $table->string('skills')->nullable();
             
             // Social Media Links (stored as JSON)
             $table->json('social_links')->nullable();
