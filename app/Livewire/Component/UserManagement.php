@@ -12,10 +12,10 @@ use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules;
 use Livewire\Component;
 use Livewire\WithPagination;
-use Livewire\Attributes\Layout;
 use Illuminate\Support\Facades\Auth;
+use Livewire\Attributes\Layout;
 
-#[Layout('layouts.dashboard', ['title' => 'User Management'])]
+#[Layout('layouts.dashboard', ['title' => 'User Dashboard', 'description' => 'Manage users, roles, and permissions', 'icon' => 'fas fa-users', 'active' => 'admin.user-management'])]
 
 class UserManagement extends Component
 {

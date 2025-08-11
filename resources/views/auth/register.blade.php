@@ -1,11 +1,11 @@
 <x-app-layout>
     <span
-        class="bg-gradient-to-br from-blue-50 via-purple-50 to-gray-50 min-h-screen flex items-center justify-center p-4">
+        class="bg-gradient-to-br from-blue-50 via-pink-50 to-gray-50 min-h-screen flex items-center justify-center p-4">
         <div class="w-full max-w-4xl">
             <div
                 class="relative bg-white/90 backdrop-blur-sm rounded-3xl shadow-2xl overflow-hidden animate__animated animate__fadeInUp">
                 <!-- Header -->
-                <div class="bg-gradient-to-r from-blue-600 to-purple-600 p-8 text-center relative">
+                <div class="bg-gradient-to-r from-blue-600 to-pink-600 p-8 text-center relative">
                     <div class="absolute top-0 left-0 w-full h-full opacity-20">
                         <i
                             class="fas fa-user-plus text-9xl absolute -top-4 -right-4 text-white animate__animated animate__fadeIn animate__delay-1s"></i>
@@ -255,7 +255,7 @@
                     <!-- Submit Button -->
                     <div class="md:col-span-2">
                         <button type="submit"
-                            class="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-bold py-4 px-6 rounded-xl hover:shadow-lg transform hover:scale-[1.01] transition-all duration-300">
+                            class="w-full bg-gradient-to-r from-blue-600 to-pink-600 hover:from-blue-700 hover:to-pink-700 text-white font-bold py-4 px-6 rounded-xl hover:shadow-lg transform hover:scale-[1.01] transition-all duration-300">
                             <span class="flex items-center justify-center">
                                 <i class="fas fa-user-plus mr-2"></i>
                                 Register Now

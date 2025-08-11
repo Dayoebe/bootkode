@@ -228,7 +228,7 @@
 
                         <div
                             class="bg-white rounded-xl shadow-lg p-8 flex flex-col items-center transform hover:scale-105 transition duration-300 animate-fade-in animate-delay-0.6s">
-                            <div class="bg-purple-100 text-purple-600 rounded-full p-4 mb-6">
+                            <div class="bg-pink-100 text-pink-600 rounded-full p-4 mb-6">
                                 <i class="fas fa-rocket text-3xl"></i>
                             </div>
                             <h3 class="text-xl font-semibold text-gray-900 mb-3">Learning is Only the Beginning</h3>
@@ -243,7 +243,7 @@
                         <div
                             class="bg-white p-6 rounded-xl shadow-lg border border-gray-100 hover:shadow-xl transition-shadow duration-300 animate-fade-in">
                             <div
-                                class="flex items-center justify-center h-12 w-12 rounded-md bg-purple-100 text-purple-600 mb-4">
+                                class="flex items-center justify-center h-12 w-12 rounded-md bg-pink-100 text-pink-600 mb-4">
                                 <i class="fas fa-qrcode text-xl"></i>
                             </div>
                             <h3 class="text-xl font-semibold text-gray-900 mb-2">Verified Credentials</h3>
@@ -255,7 +255,7 @@
                         <div
                             class="bg-white p-6 rounded-xl shadow-lg border border-gray-100 hover:shadow-xl transition-shadow duration-300 animate-fade-in animate-delay-0.2s">
                             <div
-                                class="flex items-center justify-center h-12 w-12 rounded-md bg-purple-100 text-purple-600 mb-4">
+                                class="flex items-center justify-center h-12 w-12 rounded-md bg-pink-100 text-pink-600 mb-4">
                                 <i class="fas fa-project-diagram text-xl"></i>
                             </div>
                             <h3 class="text-xl font-semibold text-gray-900 mb-2">Project-Based</h3>
@@ -332,7 +332,7 @@
         </section>
 
         <!-- AI-Powered Learning Section -->
-        <section class="py-16 sm:py-20 bg-purple-50">
+        <section class="py-16 sm:py-20 bg-pink-50">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
                 <h2
                     class="text-3xl sm:text-4xl font-extrabold text-gray-900 mb-12 animate__animated animate__fadeInUp">
@@ -345,7 +345,7 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-12">
                     <div
                         class="bg-white rounded-xl shadow-lg p-8 flex flex-col items-center transform hover:scale-105 transition duration-300 animate__animated animate__fadeInUp animate__delay-0.4s">
-                        <div class="bg-purple-100 text-purple-600 rounded-full p-4 mb-6">
+                        <div class="bg-pink-100 text-pink-600 rounded-full p-4 mb-6">
                             <i class="fas fa-robot text-3xl"></i>
                         </div>
                         <h3 class="text-xl font-semibold text-gray-900 mb-3">AI Code Assistant</h3>
@@ -354,7 +354,7 @@
                     </div>
                     <div
                         class="bg-white rounded-xl shadow-lg p-8 flex flex-col items-center transform hover:scale-105 transition duration-300 animate__animated animate__fadeInUp animate__delay-0.6s">
-                        <div class="bg-purple-100 text-purple-600 rounded-full p-4 mb-6">
+                        <div class="bg-pink-100 text-pink-600 rounded-full p-4 mb-6">
                             <i class="fas fa-chart-line text-3xl"></i>
                         </div>
                         <h3 class="text-xl font-semibold text-gray-900 mb-3">Personalized Recommendations</h3>
@@ -363,7 +363,7 @@
                     </div>
                     <div
                         class="bg-white rounded-xl shadow-lg p-8 flex flex-col items-center transform hover:scale-105 transition duration-300 animate__animated animate__fadeInUp animate__delay-0.8s">
-                        <div class="bg-purple-100 text-purple-600 rounded-full p-4 mb-6">
+                        <div class="bg-pink-100 text-pink-600 rounded-full p-4 mb-6">
                             <i class="fas fa-user-tie text-3xl"></i>
                         </div>
                         <h3 class="text-xl font-semibold text-gray-900 mb-3">Mock Interview Bot</h3>
@@ -488,10 +488,10 @@
                     <!-- Path Card 3: Mobile App Developer -->
                     <div
                         class="bg-white overflow-hidden shadow-lg rounded-xl transform transition-all duration-300 hover:scale-105 hover:shadow-2xl animate__animated animate__fadeInUp animate__delay-0.8s">
-                        <div class="px-4 py-5 sm:p-6 bg-gradient-to-r from-purple-500 to-purple-600 rounded-t-xl">
+                        <div class="px-4 py-5 sm:p-6 bg-gradient-to-r from-pink-500 to-pink-600 rounded-t-xl">
                             <div class="flex items-center">
-                                <div class="flex-shrink-0 bg-purple-100 rounded-full p-3 shadow-md">
-                                    <i class="fas fa-mobile-alt text-purple-600 text-2xl"></i>
+                                <div class="flex-shrink-0 bg-pink-100 rounded-full p-3 shadow-md">
+                                    <i class="fas fa-mobile-alt text-pink-600 text-2xl"></i>
                                 </div>
                                 <div class="ml-5 w-0 flex-1">
                                     <h3 class="text-lg font-medium text-white">Mobile App Developer</h3>
@@ -527,7 +527,7 @@
                             </ul>
                             <div class="mt-6">
                                 <a href="#"
-                                    class="w-full flex items-center justify-center px-4 py-3 border border-transparent text-base font-medium rounded-full text-purple-700 bg-purple-100 hover:bg-purple-200 transition-all duration-300 transform hover:scale-105">
+                                    class="w-full flex items-center justify-center px-4 py-3 border border-transparent text-base font-medium rounded-full text-pink-700 bg-pink-100 hover:bg-pink-200 transition-all duration-300 transform hover:scale-105">
                                     View Path <i class="fas fa-arrow-right ml-2"></i>
                                 </a>
                             </div>

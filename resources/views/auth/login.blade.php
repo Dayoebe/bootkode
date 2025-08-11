@@ -1,6 +1,6 @@
 <x-app-layout>
     <div
-        class="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-blue-50 via-purple-50 to-indigo-100">
+        class="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-blue-50 via-pink-50 to-indigo-100">
         <!-- Background Elements -->
         <div class="fixed inset-0 overflow-hidden pointer-events-none">
             <div class="absolute top-1/4 left-1/4 w-2 h-2 bg-white rounded-full opacity-60 animate-bounce delay-100">
@@ -10,7 +10,7 @@
             <div class="absolute bottom-1/4 left-1/2 w-2 h-2 bg-white rounded-full opacity-60 animate-bounce delay-500">
             </div>
             <div
-                class="absolute -top-40 -right-40 w-80 h-80 bg-purple-300 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-pulse">
+                class="absolute -top-40 -right-40 w-80 h-80 bg-pink-300 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-pulse">
             </div>
             <div
                 class="absolute -bottom-40 -left-40 w-80 h-80 bg-pink-300 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-pulse delay-1000">

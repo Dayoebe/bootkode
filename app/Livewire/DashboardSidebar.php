@@ -7,13 +7,7 @@ use App\Models\User;
 
 class DashboardSidebar extends Component
 {
-    // Public property to track the active link/section for highlighting
     public $activeLink = 'dashboard';
-
-    /**
-     * Mount the component.
-     * You might initialize activeLink based on the current URL here if needed.
-     */
     public function mount()
     {
         // Example: Set active link based on current route name
@@ -35,7 +29,7 @@ class DashboardSidebar extends Component
         } elseif (str_contains($currentRouteName, 'profile')) {
             $this->activeLink = 'profile_management';
         } elseif (str_contains($currentRouteName, 'course_management')) {
-            $this->activeLink = 'all-course'; // Updated to match the specific page
+            $this->activeLink = 'all-course';
         } elseif (str_contains($currentRouteName, 'course-categories')) {
             $this->activeLink = 'course_management.course_categories';
         } elseif (str_contains($currentRouteName, 'course-builder')) {
@@ -56,12 +50,8 @@ class DashboardSidebar extends Component
      */
     public function render()
     {
-        $user = auth()->user(); // Get the authenticated user
-
-        // Define the full menu structure
+        $user = auth()->user();
         $menuItems = [
-            // Dashboard Overview
-            // add view, edit profile and other relevant children
             [
                 'label' => 'Dashboard Overview',
                 'icon' => 'fas fa-tachometer-alt',
@@ -72,6 +62,11 @@ class DashboardSidebar extends Component
                     ['label' => 'View Profile', 'icon' => 'fas fa-user', 'route' => route('profile.view'), 'roles' => [], 'link_id' => 'profile_management'],
                     ['label' => 'Edit Profile', 'icon' => 'fas fa-user-edit', 'route' => route('profile.edit'), 'roles' => [], 'link_id' => 'profile_management'],
                     ['label' => 'Notifications', 'icon' => 'fas fa-bell', 'route' => '#', 'roles' => []],
+                    ['label' => 'View All Users', 'icon' => 'fas fa-users', 'route' => route('user-management'), 'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN], 'link_id' => 'user-management'],
+                    ['label' => 'Edit User', 'icon' => 'fas fa-user-edit', 'route' => '#', 'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN], 'link_id' => 'user.edit'],
+                    ['label' => 'Assign Role', 'icon' => 'fas fa-user-tag', 'route' => '#', 'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN], 'link_id' => 'user.assign-role'],
+                    ['label' => 'User Activity', 'icon' => 'fas fa-history', 'route' => '#', 'roles' => [User::ROLE_SUPER_ADMIN], 'link_id' => 'user.activity'],
+                    ['label' => 'User Management', 'icon' => 'fas fa-users-cog', 'route' => route('user-management'), 'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN], 'link_id' => 'user-management'],
                     ['label' => 'Settings', 'icon' => 'fas fa-cog', 'route' => '#', 'roles' => []],
                     ['label' => 'Help & Support', 'icon' => 'fas fa-question-circle', 'route' => '#', 'roles' => []],
                     ['label' => 'Feedback', 'icon' => 'fas fa-comment-dots', 'route' => '#', 'roles' => []],
@@ -97,25 +92,25 @@ class DashboardSidebar extends Component
                 ]
             ],
 
-   // User Management
-   [
-    'label' => 'User Management',
-    'icon' => 'fas fa-users-cog',
-    'route' => '#',
-    'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN],
-    'link_id' => 'user-management',
-    'children' => [
-        ['label' => 'All Users', 'icon' => 'fas fa-users', 'route' => route('user-management'), 'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN], 'link_id' => 'user-management'],
-        ['label' => 'User Groups', 'icon' => 'fas fa-object-group', 'route' => '#', 'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN]],
-        ['label' => 'Bulk Import', 'icon' => 'fas fa-file-import', 'route' => '#', 'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN]],
-        ['label' => 'Access Control', 'icon' => 'fas fa-user-shield', 'route' => '#', 'roles' => [User::ROLE_SUPER_ADMIN]],
-        ['label' => 'Activity Logs', 'icon' => 'fas fa-clipboard-list', 'route' => '#', 'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN]],
-        ['label' => 'User Management', 'icon' => 'fas fa-users-cog', 'route' => 'user-management', 'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN]],
-        ['label' => 'Mentor Management', 'icon' => 'fas fa-user-tie', 'route' => '#', 'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN]],
-        ['label' => 'Feedback System', 'icon' => 'fas fa-comments', 'route' => '#', 'roles' => []],
-        ['label' => 'Mentorship Network', 'icon' => 'fas fa-hands-helping', 'route' => '#', 'roles' => []],
-    ]
-],
+            // User Management
+            [
+                'label' => 'User Management',
+                'icon' => 'fas fa-users-cog',
+                'route' => '#',
+                'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN],
+                'link_id' => 'user-management',
+                'children' => [
+                    ['label' => 'All Users', 'icon' => 'fas fa-users', 'route' => route('user-management'), 'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN], 'link_id' => 'user-management'],
+                    ['label' => 'User Groups', 'icon' => 'fas fa-object-group', 'route' => '#', 'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN]],
+                    ['label' => 'Bulk Import', 'icon' => 'fas fa-file-import', 'route' => '#', 'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN]],
+                    ['label' => 'Access Control', 'icon' => 'fas fa-user-shield', 'route' => '#', 'roles' => [User::ROLE_SUPER_ADMIN]],
+                    ['label' => 'Activity Logs', 'icon' => 'fas fa-clipboard-list', 'route' => '#', 'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN]],
+                    ['label' => 'User Management', 'icon' => 'fas fa-users-cog', 'route' => 'user-management', 'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN]],
+                    ['label' => 'Mentor Management', 'icon' => 'fas fa-user-tie', 'route' => '#', 'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN]],
+                    ['label' => 'Feedback System', 'icon' => 'fas fa-comments', 'route' => '#', 'roles' => []],
+                    ['label' => 'Mentorship Network', 'icon' => 'fas fa-hands-helping', 'route' => '#', 'roles' => []],
+                ]
+            ],
             // Learning Management
             [
                 'label' => 'Learning Hub',
@@ -124,16 +119,47 @@ class DashboardSidebar extends Component
                 'roles' => [],
                 'link_id' => 'learning_hub',
                 'children' => [
-                    ['label' => 'My Learning Path', 'icon' => 'fas fa-road', 'route' => '#', 'roles' => [User::ROLE_STUDENT]],
-                    ['label' => 'Course Catalog', 'icon' => 'fas fa-book-open', 'route' => '#', 'roles' => []],
-                    ['label' => 'Learning Analytics', 'icon' => 'fas fa-chart-line', 'route' => '#', 'roles' => [User::ROLE_STUDENT, User::ROLE_INSTRUCTOR, User::ROLE_ACADEMY_ADMIN]],
-                    ['label' => 'Saved Resources', 'icon' => 'fas fa-bookmark', 'route' => '#', 'roles' => [User::ROLE_STUDENT]],
-                    ['label' => 'Offline Learning', 'icon' => 'fas fa-download', 'route' => '#', 'roles' => [User::ROLE_STUDENT]],
+                    [
+                        'label' => 'My Courses',
+                        'icon' => 'fas fa-book',
+                        'route' => route('student.enrolled-courses'),
+                        'roles' => [User::ROLE_STUDENT],
+                        // 'component' => 'enrolled-courses',
+                        'link_id' => 'student.enrolled-courses',
+                    ],
+                    [
+                        'label' => 'Course Catalog',
+                        'icon' => 'fas fa-book-open',
+                        'route' => route('student.course-catalog'),
+                        'roles' => [User::ROLE_STUDENT, User::ROLE_INSTRUCTOR, User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN],
+                    ],
+                    [
+                        'label' => 'Learning Analytics',
+                        'icon' => 'fas fa-chart-line',
+                        'route' => route('student.learning-analytics'),
+                        'roles' => [User::ROLE_STUDENT, User::ROLE_INSTRUCTOR, User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN],
+                        'component' => 'learning-analytics'
+                    ],
+
+                    [
+                        'label' => 'Saved Resources',
+                        'icon' => 'fas fa-bookmark',
+                        'route' => route('student.saved-resources'),
+                        'roles' => [User::ROLE_STUDENT],
+                        'link_id' => 'student.saved-resources'
+                    ],
+                    [
+                        'label' => 'Offline Learning',
+                        'icon' => 'fas fa-download',
+                        'route' => route('student.offline-learning'),
+                        'roles' => [User::ROLE_STUDENT],
+                        'link_id' => 'student.offline-learning',
+                    ]
                 ]
             ],
 
 
-            // Certification System
+                // Certification System
             [
                 'label' => 'Certification Center',
                 'icon' => 'fas fa-certificate',
@@ -141,14 +167,14 @@ class DashboardSidebar extends Component
                 'roles' => [],
                 'link_id' => 'certification',
                 'children' => [
-                    ['label' => 'My Certificates', 'icon' => 'fas fa-award', 'route' => '#', 'roles' => [User::ROLE_STUDENT]],
-                    ['label' => 'Request Certificate', 'icon' => 'fas fa-file-signature', 'route' => '#', 'roles' => [User::ROLE_STUDENT]],
-                    ['label' => 'Certificate Templates', 'icon' => 'fas fa-stamp', 'route' => '#', 'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN]],
-                    ['label' => 'Verify Certificates', 'icon' => 'fas fa-check-circle', 'route' => '#', 'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN]],
-                    ['label' => 'Bulk Certificate Issuance', 'icon' => 'fas fa-barcode', 'route' => '#', 'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN]],
+                    ['label' => 'My Certificates', 'icon' => 'fas fa-award', 'route' => route('certificates.index'), 'roles' => [User::ROLE_STUDENT], 'link_id' => 'certificates.index'],
+                    ['label' => 'Request Certificate', 'icon' => 'fas fa-file-signature', 'route' => route('certificates.request'), 'roles' => [User::ROLE_SUPER_ADMIN, User::ROLE_STUDENT], 'link_id' => 'certificates.request'],
+                    ['label' => 'Certificate Templates', 'icon' => 'fas fa-stamp', 'route' => route('certificates.templates'), 'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN], 'link_id' => 'certificates.templates'],
+                    ['label' => 'Verify Certificates', 'icon' => 'fas fa-check-circle', 'route' => route('certificates.public-verify'), 'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN], 'link_id' => 'certificates.public-verify'],
+                    // ['label' => 'Bulk Certificate Issuance', 'icon' => 'fas fa-barcode', 'route' => route('certificates.bulk'), 'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN], 'link_id' => 'certificates.bulk'],
+                    ['label' => 'Approve Certificates', 'icon' => 'fas fa-check-circle', 'route' => route('certificates.approvals'), 'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN], 'link_id' => 'certificates.approvals'],
                 ]
             ],
-
             // Mentorship Network
             [
                 'label' => 'Mentorship Network',
@@ -232,6 +258,27 @@ class DashboardSidebar extends Component
                 ]
             ],
 
+
+            // Job Portal
+            [
+                'label' => 'Job Portal',
+                'icon' => 'fas fa-briefcase',
+                'route' => '#',
+                'roles' => [],
+                'link_id' => 'job_portal',
+                'children' => [
+                    ['label' => 'Job Listings', 'icon' => 'fas fa-list', 'route' => '#', 'roles' => []],
+                    ['label' => 'Post a Job', 'icon' => 'fas fa-plus-square', 'route' => '#', 'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_CONTENT_EDITOR, User::ROLE_SUPER_ADMIN]],
+                    ['label' => 'Job Applications', 'icon' => 'fas fa-file-alt', 'route' => '#', 'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_CONTENT_EDITOR, User::ROLE_SUPER_ADMIN]],
+                    ['label' => 'Resume Database', 'icon' => 'fas fa-database', 'route' => '#', 'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_CONTENT_EDITOR, User::ROLE_SUPER_ADMIN]],
+                    ['label' => 'Employer Dashboard', 'icon' => 'fas fa-tachometer-alt', 'route' => '#', 'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN]],
+                    ['label' => 'Job Alerts', 'icon' => 'fas fa-bell', 'route' => '#', 'roles' => [User::ROLE_STUDENT]],
+                    ['label' => 'Job Categories', 'icon' => 'fas fa-tags', 'route' => '#', 'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN]],
+                    ['label' => 'Job Analytics', 'icon' => 'fas fa-chart-bar', 'route' => '#', 'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN]],
+                    ['label' => 'Job Settings', 'icon' => 'fas fa-cog', 'route' => '#', 'roles' => [User::ROLE_SUPER_ADMIN]],
+                ]
+            ],
+
             // Content Management
             [
                 'label' => 'Content Management',
@@ -296,25 +343,6 @@ class DashboardSidebar extends Component
                     ['label' => 'Library Management', 'icon' => 'fas fa-book', 'route' => '#', 'roles' => [User::ROLE_CONTENT_EDITOR, User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN]],
                     ['label' => 'Add New Library Item', 'icon' => 'fas fa-plus', 'route' => '#', 'roles' => [User::ROLE_CONTENT_EDITOR, User::ROLE_ACADEMY_ADMIN]],
                     ['label' => 'Library Settings', 'icon' => 'fas fa-cog', 'route' => '#', 'roles' => [User::ROLE_SUPER_ADMIN]],
-                ]
-            ],
-            // Job Portal
-            [
-                'label' => 'Job Portal',
-                'icon' => 'fas fa-briefcase',
-                'route' => '#',
-                'roles' => [],
-                'link_id' => 'job_portal',
-                'children' => [
-                    ['label' => 'Job Listings', 'icon' => 'fas fa-list', 'route' => '#', 'roles' => []],
-                    ['label' => 'Post a Job', 'icon' => 'fas fa-plus-square', 'route' => '#', 'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_CONTENT_EDITOR, User::ROLE_SUPER_ADMIN]],
-                    ['label' => 'Job Applications', 'icon' => 'fas fa-file-alt', 'route' => '#', 'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_CONTENT_EDITOR, User::ROLE_SUPER_ADMIN]],
-                    ['label' => 'Resume Database', 'icon' => 'fas fa-database', 'route' => '#', 'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_CONTENT_EDITOR, User::ROLE_SUPER_ADMIN]],
-                    ['label' => 'Employer Dashboard', 'icon' => 'fas fa-tachometer-alt', 'route' => '#', 'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN]],
-                    ['label' => 'Job Alerts', 'icon' => 'fas fa-bell', 'route' => '#', 'roles' => [User::ROLE_STUDENT]],
-                    ['label' => 'Job Categories', 'icon' => 'fas fa-tags', 'route' => '#', 'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN]],
-                    ['label' => 'Job Analytics', 'icon' => 'fas fa-chart-bar', 'route' => '#', 'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN]],
-                    ['label' => 'Job Settings', 'icon' => 'fas fa-cog', 'route' => '#', 'roles' => [User::ROLE_SUPER_ADMIN]],
                 ]
             ],
 
@@ -413,20 +441,6 @@ class DashboardSidebar extends Component
             ],
 
 
-
-            // Certifications (All authenticated, with specific actions for admins)
-            [
-                'label' => 'Certifications',
-                'icon' => 'fas fa-certificate',
-                'route' => '#',
-                'roles' => [],
-                'link_id' => 'certifications',
-                'children' => [
-                    ['label' => 'My Certificates', 'icon' => 'fas fa-award', 'route' => '#', 'roles' => [User::ROLE_STUDENT]],
-                    ['label' => 'Request Certificate', 'icon' => 'fas fa-file-signature', 'route' => '#', 'roles' => [User::ROLE_STUDENT]],
-                    ['label' => 'Approve Certificates', 'icon' => 'fas fa-check-circle', 'route' => '#', 'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN]],
-                ]
-            ],
 
 
             // Affiliate Program
