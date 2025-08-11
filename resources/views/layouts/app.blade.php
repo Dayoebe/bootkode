@@ -47,22 +47,72 @@
 
     {{-- Livewire Styles --}}
     @livewireStyles
-</head>
-<body class="font-inter antialiased text-gray-900 bg-gray-50 flex flex-col min-h-screen">
-    {{-- Header Section --}}
-    <x-header /> {{-- Using the Header component --}}
 
-    {{-- Main Content Area --}}
-    <main class="flex-grow py-8 px-4 sm:px-6 lg:px-8">
-        <div class="max-w-7xl mx-auto">
-            {{ $slot }}
+    {{-- Additional Mobile Optimizations --}}
+    <style>
+        /* Ensure smooth scrolling and prevent horizontal overflow */
+        html {
+            scroll-behavior: smooth;
+            overflow-x: hidden;
+        }
+        
+        /* Prevent content from being too narrow on very small screens */
+        body {
+            min-width: 320px;
+        }
+        
+        /* Better touch targets for mobile */
+        @media (max-width: 640px) {
+            button, a, input, select, textarea {
+                min-height: 44px;
+            }
+        }
+        
+     
+    </style>
+</head>
+<body class="font-inter antialiased text-gray-900 bg-gray-50 flex flex-col min-h-screen w-full overflow-x-hidden">
+    {{-- Header Section --}}
+    
+        <x-header /> {{-- Using the Header component --}}
+    
+
+    {{-- Main Content Area - Mobile-first responsive --}}
+    <main class="flex-grow w-full">
+        <div class="w-full px-4 py-6 sm:px-6 sm:py-8 md:px-8 lg:px-12 xl:px-16 2xl:px-20">
+            <div class="max-w-7xl mx-auto w-full">
+                {{ $slot }}
+            </div>
         </div>
     </main>
 
     {{-- Footer Section --}}
-    <x-footer /> {{-- Using the Footer component --}}
+    
+        <x-footer /> {{-- Using the Footer component --}}
+    
 
     {{-- Livewire Scripts --}}
     @livewireScripts
+
+    {{-- Mobile-specific JavaScript optimizations --}}
+    <script>
+        // Prevent zoom on input focus on iOS
+        document.addEventListener('DOMContentLoaded', function() {
+            if (/iPad|iPhone|iPod/.test(navigator.userAgent)) {
+                const viewportMeta = document.querySelector('meta[name="viewport"]');
+                viewportMeta.content = 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no';
+            }
+        });
+
+        // Add viewport height CSS custom property for mobile browsers
+        function setViewportHeight() {
+            let vh = window.innerHeight * 0.01;
+            document.documentElement.style.setProperty('--vh', `${vh}px`);
+        }
+        
+        setViewportHeight();
+        window.addEventListener('resize', setViewportHeight);
+        window.addEventListener('orientationchange', setViewportHeight);
+    </script>
 </body>
 </html>

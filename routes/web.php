@@ -2,9 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
-use App\Livewire\Home;
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\DashboardController;
 use App\Models\User;
 use App\Livewire\Component\CourseManagement\AllCourses;
 use App\Livewire\Component\CourseManagement\CreateCourse;
@@ -17,14 +15,44 @@ use App\Livewire\Component\CourseManagement\CourseBuilder\CoursePreview;
 use App\Livewire\Component\UserManagement;
 
 
-// Public Home Page
-Route::get('/', Home::class)->name('home');
+// Certification Routes
+Route::middleware(['auth', 'verified'])->prefix('certificates')->group(function () {
+    // Student routes
+    Route::get('/my-certificates', \App\Livewire\Certification\MyCertificates::class)->name('certificates.index');
+    Route::get('/request', \App\Livewire\Certification\CertificateRequest::class)->name('certificates.request');
+    Route::get('/templates', \App\Livewire\Certification\CertificateTemplates::class)->name('certificates.templates');
+    
+    // Admin routes
+    Route::middleware(['can:manage_certificates'])->group(function () {
+        // Route::get('/verify', \App\Livewire\Certification\VerifyCertificate::class)->name('certificates.verify');
+        // Route::get('/bulk-issue', \App\Livewire\Certification\BulkCertificateIssuance::class)->name('certificates.bulk');
+        Route::get('/approvals', \App\Livewire\Certification\CertificateApprovals::class)->name('certificates.approvals');
+    });
+    
+    // Public verification route (no auth needed)
+    // Route::get('/verify/{uuid}', \App\Livewire\Certification\PublicCertificateVerification::class)->name('certificates.public-verify');
+});
 
-// Route for post-login redirection based on role
-// This route will be the target for successful logins
-Route::get('/dashboard-redirect', DashboardController::class)
-    ->middleware(['auth', 'verified']) // Ensure user is authenticated and email is verified
-    ->name('dashboard.redirect');
+// Public verification route (no auth needed)
+// Public verification route (no auth needed)
+Route::get('/certificates/verify/{uuid?}', \App\Livewire\Certification\PublicCertificateVerification::class)
+    ->name('certificates.public-verify');
+
+
+
+
+    Route::get('/certificates/download/{certificate}', [\App\Http\Controllers\CertificateController::class, 'download'])
+    ->name('certificates.download')
+    ->middleware('auth');
+
+Route::middleware(['auth', 'verified'])->prefix('certificates')->group(function () {
+    // Route::get('/list', \App\Livewire\Component\Certification\CertificateList::class)->name('certificates.index');
+    Route::get('/request', \App\Livewire\Component\Certification\CertificateRequest::class)->name('certificates.request');
+    Route::get('/templates', \App\Livewire\Component\Certification\CertificateTemplates::class)->name('certificates.templates')->middleware('can:manage_templates');
+    Route::get('/{certificate:uuid}', \App\Livewire\Component\Certification\CertificateShow::class)->name('certificates.show');
+});
+
+
 
 
 // Group for authenticated user profiles
@@ -73,7 +101,7 @@ Route::middleware(['auth', 'verified'])->prefix('student')->group(function () {
         return Storage::response($fullPath);
     })->name('offline.content');
     Route::get('/offline-learning', \App\Livewire\Component\StudentManagement\OfflineLearning::class)
-    ->name('student.offline-learning');
+        ->name('student.offline-learning');
     // Assignments
     // Route::get('/assignments', \App\Livewire\Component\StudentManagement\Assignments::class)
     //     ->name('student.assignments');
@@ -97,38 +125,6 @@ Route::middleware('auth')->group(function () {
     Route::get('/dashboard/user', UserManagement::class)->name('user-management');
 
 });
-Route::middleware(['auth', 'verified'])->group(function () {
-    // Super Admin Dashboard
-    Route::get('/super-admin/dashboard', \App\Livewire\Dashboard\SuperAdminDashboard::class)
-        ->name('super_admin.dashboard');
 
-    // Academy Admin Dashboard
-    Route::get('/academy-admin/dashboard', \App\Livewire\Dashboard\AcademyAdminDashboard::class)
-        ->name('academy_admin.dashboard');
-
-    // Instructor Dashboard
-    Route::get('/instructor/dashboard', \App\Livewire\Dashboard\InstructorDashboard::class)
-        ->name('instructor.dashboard');
-
-    // Mentor Dashboard
-    Route::get('/mentor/dashboard', \App\Livewire\Dashboard\MentorDashboard::class)
-        ->name('mentor.dashboard');
-
-    // Content Editor Dashboard
-    Route::get('/content-editor/dashboard', \App\Livewire\Dashboard\ContentEditorDashboard::class)
-        ->name('content_editor.dashboard');
-
-    // Affiliate/Ambassador Dashboard
-    Route::get('/affiliate-ambassador/dashboard', \App\Livewire\Dashboard\AffiliateAmbassadorDashboard::class)
-        ->name('affiliate_ambassador.dashboard');
-
-    // Student Dashboard (Default dashboard for general users)
-    Route::get('/student/dashboard', \App\Livewire\Dashboard\StudentDashboard::class)
-        ->name('student.dashboard');
-
-    // Fallback dashboard
-    Route::get('/dashboard', [DashboardController::class, '__invoke'])
-        ->name('dashboard');
-});
 
 require __DIR__ . '/auth.php';

@@ -12,16 +12,14 @@
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=alef:400,700" rel="stylesheet" />
 
-    <link rel="stylesheet" type="text/css" href="https://unpkg.com/trix@2.0.8/dist/trix.css">
-    <script type="text/javascript" src="https://unpkg.com/trix@2.0.8/dist/trix.umd.min.js"></script>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    @livewireScripts
     <link rel="stylesheet" type="text/css" href="https://unpkg.com/trix@2.0.8/dist/trix.css">
     <script type="text/javascript" src="https://unpkg.com/trix@2.0.8/dist/trix.umd.min.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/livewire/sortable@v1.x.x/dist/livewire-sortable.js"></script>
 </head>
 
 <body class="font-sans antialiased bg-gray-50 h-full" style="font-family: 'Alef', sans-serif;">
+    <div id="global-notifications" class="fixed top-4 right-4 z-50 space-y-2"></div>
     <div class="flex flex-col min-h-screen">
         <!-- Header -->
         <header class="sticky top-0 z-30 bg-white border-b border-gray-200 px-6 py-4 shadow-sm">
@@ -35,10 +33,18 @@
                         <div class="relative" x-data="{ open: false }" @click.away="open = false">
                             <button @click="open = !open" class="flex items-center space-x-2 focus:outline-none">
                                 <span class="hidden md:inline text-gray-700 font-medium">{{ auth()->user()->name }}</span>
-                                <div
-                                    class="h-8 w-8 rounded-full bg-gradient-to-r from-blue-400 to-purple-500 flex items-center justify-center text-white font-bold">
-                                    {{ strtoupper(substr(auth()->user()->name, 0, 2)) }}
-                                </div>
+
+                                @if (auth()->user()->profile_picture)
+                                    <img src="{{ asset('storage/' . auth()->user()->profile_picture) }}"
+                                        class="h-8 w-8 rounded-full object-cover border border-gray-200 hover:border-blue-400 transition-colors"
+                                        alt="{{ auth()->user()->name }}">
+                                @else
+                                    <div
+                                        class="h-8 w-8 rounded-full bg-gradient-to-r from-blue-400 to-pink-500 flex items-center justify-center text-white font-bold">
+                                        {{ strtoupper(substr(auth()->user()->name, 0, 2)) }}
+                                    </div>
+                                @endif
+
                                 <i class="fas fa-chevron-down text-xs text-gray-500 transition-transform duration-200"
                                     :class="{ 'rotate-180': open }"></i>
                             </button>
@@ -78,7 +84,7 @@
                 :class="{ 'w-2/5': sidebarOpen, 'w-1/6': !sidebarOpen }">
                 <livewire:dashboard-sidebar />
             </aside>
-
+            
             <!-- Main Content Area - Horizontally scrollable -->
             <main class="flex-1 overflow-y-auto overflow-x-auto">
                 <div class="py-8 px-4 sm:px-6 lg:px-8 min-h-[calc(100vh-8rem)] min-w-max">
@@ -88,6 +94,17 @@
                 </div>
             </main>
         </div>
+
+
+
+
+        <div class="fixed bottom-4 right-4 bg-gray-300 px-3 py-2 rounded-lg shadow-lg border border-gray-700 flex items-center gap-2 text-sm"
+            id="connection-status">
+            <i class="fas fa-wifi text-green-500"></i>
+            <span class="text-green-500">Online</span>
+        </div>
+
+
 
         <!-- Footer -->
         <footer class="bg-gray-800 text-gray-300 py-4 border-t border-gray-700">
@@ -109,8 +126,63 @@
             </div>
         </footer>
     </div>
+    
+    <script>
+        document.addEventListener('livewire:initialized', () => {
+            Livewire.on('notify', (params) => {
+                // Handle both string and object notifications
+                const message = typeof params === 'string' ? params : params.message;
+                const type = typeof params === 'string' ? 'info' : (params.type || 'info');
 
-    @livewireScripts
+                showNotification(message, type);
+            });
+        });
+
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.className = `px-6 py-3 rounded-lg shadow-lg text-white transition-all duration-300 transform translate-x-full ${
+            type === 'success' ? 'bg-green-600' : 
+            type === 'error' ? 'bg-red-600' : 
+            type === 'warning' ? 'bg-yellow-600' : 
+            'bg-blue-600'
+        }`;
+
+            notification.innerHTML = `
+            <div class="flex items-center">
+                <i class="fas fa-${
+                    type === 'success' ? 'check' : 
+                    type === 'error' ? 'exclamation-triangle' : 
+                    type === 'warning' ? 'exclamation-circle' : 
+                    'info'
+                } mr-2"></i>
+                <span>${message}</span>
+                <button onclick="this.parentElement.parentElement.remove()" class="ml-4 text-white hover:text-gray-200">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+        `;
+
+            const container = document.getElementById('global-notifications');
+            container.appendChild(notification);
+
+            // Animate in
+            setTimeout(() => {
+                notification.classList.remove('translate-x-full');
+            }, 10);
+
+            // Auto remove after 5 seconds
+            setTimeout(() => {
+                if (notification.parentNode) {
+                    notification.classList.add('translate-x-full');
+                    setTimeout(() => {
+                        if (notification.parentNode) {
+                            notification.remove();
+                        }
+                    }, 300);
+                }
+            }, 5000);
+        }
+    </script>
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
     <script src="https://unpkg.com/trix@2.0.0/dist/trix.umd.min.js"></script>
     <link rel="stylesheet" type="text/css" href="https://unpkg.com/trix@2.0.0/dist/trix.css">

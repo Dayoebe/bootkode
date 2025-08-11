@@ -15,7 +15,7 @@
                       x-transition:enter="transition ease-out duration-300 delay-100" 
                       x-transition:enter-start="opacity-0 transform translate-x-2" 
                       x-transition:enter-end="opacity-100 transform translate-x-0">
-                    Boot<span class="bg-clip-text text-transparent bg-gradient-to-r from-purple-800 to-purple-500">Kode</span> Academy
+                    Boot<span class="bg-clip-text text-transparent bg-gradient-to-r from-pink-800 to-pink-500">Kode</span> Academy
                 </span>
             </div>
         </a>
@@ -37,7 +37,7 @@
          x-transition:enter-start="opacity-0 transform translate-y-2" 
          x-transition:enter-end="opacity-100 transform translate-y-0">
         <div class="flex items-center space-x-3 p-3 rounded-xl bg-gradient-to-r from-gray-700/50 to-gray-600/50 border border-gray-600/50">
-            <div class="flex-shrink-0 h-12 w-12 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 flex items-center justify-center text-white font-bold text-lg shadow-lg ring-2 ring-blue-400/30">
+            <div class="flex-shrink-0 h-12 w-12 rounded-full bg-gradient-to-r from-blue-500 to-pink-600 flex items-center justify-center text-white font-bold text-lg shadow-lg ring-2 ring-blue-400/30">
                 {{ strtoupper(substr($user->name, 0, 1)) }}
             </div>
             <div class="flex-1 min-w-0">
@@ -77,7 +77,7 @@
                         @foreach($item['children'] as $child)
                             <a href="{{ $child['route'] }}"
                                class="flex items-center px-4 py-2.5 text-gray-400 rounded-lg hover:bg-gray-700/50 hover:text-white transition-all duration-200 text-sm group border border-transparent hover:border-gray-600/30
-                               {{ $activeLink === ($child['link_id'] ?? '') ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white border-blue-500/50 shadow-lg' : '' }}">
+                               {{ $activeLink === ($child['link_id'] ?? '') ? 'bg-gradient-to-r from-blue-600 to-pink-600 text-white border-blue-500/50 shadow-lg' : '' }}">
                                 <i class="{{ $child['icon'] }} mr-3 text-sm group-hover:text-blue-300"></i>
                                 <span class="group-hover:translate-x-1 transition-transform duration-200">{{ $child['label'] }}</span>
                             </a>
@@ -88,7 +88,7 @@
                 <!-- Single Menu Item -->
                 <a href="{{ $item['route'] }}"
                    class="flex items-center px-4 py-3 text-gray-300 rounded-xl hover:bg-gradient-to-r hover:from-gray-700 hover:to-gray-600 hover:text-white transition-all duration-200 group border border-transparent hover:border-gray-600/50
-                   {{ $activeLink === ($item['link_id'] ?? '') ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white border-blue-500/50 shadow-lg' : '' }}"
+                   {{ $activeLink === ($item['link_id'] ?? '') ? 'bg-gradient-to-r from-blue-600 to-pink-600 text-white border-blue-500/50 shadow-lg' : '' }}"
                    :class="{ 'justify-center': !sidebarOpen, 'justify-start': sidebarOpen }">
                     <i class="{{ $item['icon'] }} mr-3 text-lg transition-colors duration-200 
                        {{ $activeLink === ($item['link_id'] ?? '') ? 'text-blue-200' : 'group-hover:text-blue-300' }}" 

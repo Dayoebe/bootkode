@@ -3,8 +3,16 @@
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Auth\PasswordController;
 use App\Http\Controllers\Auth\EmailVerificationController;
+use App\Http\Controllers\DashboardController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\SocialAuthController; 
+use App\Livewire\Home;
+
+// Public Home Page
+Route::get('/', Home::class)->name('home');
+Route::get('/dashboard-redirect', DashboardController::class)
+    ->middleware(['auth', 'verified']) 
+    ->name('dashboard.redirect');
 
 Route::middleware('guest')->group(function () {
 
@@ -77,4 +85,39 @@ Route::middleware('auth')->group(function () {
     // Logout route
     Route::post('logout', [AuthController::class, 'logout'])
         ->name('logout');
+});
+
+
+Route::middleware(['auth', 'verified'])->group(function () {
+    // Super Admin Dashboard
+    Route::get('/super-admin/dashboard', \App\Livewire\Dashboard\SuperAdminDashboard::class)
+        ->name('super_admin.dashboard');
+
+    // Academy Admin Dashboard
+    Route::get('/academy-admin/dashboard', \App\Livewire\Dashboard\AcademyAdminDashboard::class)
+        ->name('academy_admin.dashboard');
+
+    // Instructor Dashboard
+    Route::get('/instructor/dashboard', \App\Livewire\Dashboard\InstructorDashboard::class)
+        ->name('instructor.dashboard');
+
+    // Mentor Dashboard
+    Route::get('/mentor/dashboard', \App\Livewire\Dashboard\MentorDashboard::class)
+        ->name('mentor.dashboard');
+
+    // Content Editor Dashboard
+    Route::get('/content-editor/dashboard', \App\Livewire\Dashboard\ContentEditorDashboard::class)
+        ->name('content_editor.dashboard');
+
+    // Affiliate/Ambassador Dashboard
+    Route::get('/affiliate-ambassador/dashboard', \App\Livewire\Dashboard\AffiliateAmbassadorDashboard::class)
+        ->name('affiliate_ambassador.dashboard');
+
+    // Student Dashboard (Default dashboard for general users)
+    Route::get('/student/dashboard', \App\Livewire\Dashboard\StudentDashboard::class)
+        ->name('student.dashboard');
+
+    // Fallback dashboard
+    Route::get('/dashboard', [DashboardController::class, '__invoke'])
+        ->name('dashboard');
 });

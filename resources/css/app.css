@@ -23,3 +23,22 @@
 .bookmark-lg {
     font-size: 1.25rem;
 }
+
+
+
+/* Certificate Template Styles */
+.certificate-template-card {
+    transition: all 0.2s ease;
+}
+
+.certificate-template-card:hover {
+    transform: translateY(-2px);
+}
+
+#editorjs .ce-block__content {
+    max-width: 100%;
+}
+
+#editorjs .ce-toolbar__content {
+    max-width: 100%;
+}

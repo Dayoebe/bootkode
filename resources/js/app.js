@@ -48,3 +48,37 @@ function updateOnlineStatus() {
 window.addEventListener('online', updateOnlineStatus);
 window.addEventListener('offline', updateOnlineStatus);
 updateOnlineStatus();
+
+// import EditorJS from '@editorjs/editorjs';
+
+
+// const editor = new EditorJS();
+
+// Initialize EditorJS
+// import EditorJS from '@editorjs/editorjs';
+// import Header from '@editorjs/header';
+// import List from '@editorjs/list';
+// import ImageTool from '@editorjs/image';
+// import Delimiter from '@editorjs/delimiter';
+// import Table from '@editorjs/table';
+
+// window.EditorJS = EditorJS;
+// window.EditorJSHeader = Header;
+// window.EditorJSList = List;
+// window.EditorJSImage = ImageTool;
+// window.EditorJSDelimiter = Delimiter;
+// window.EditorJSTable = Table;
+
+
+// Handle certificate downloads from Livewire events
+document.addEventListener('DOMContentLoaded', function() {
+    Livewire.on('download-certificate', (data) => {
+        // This will trigger the download method in the MyCertificates component
+        window.location.href = `/certificates/download/${data.certificateId}`;
+    });
+});
+
+// QR Code Scanner
+import { Html5QrcodeScanner } from 'html5-qrcode';
+
+window.Html5QrcodeScanner = Html5QrcodeScanner;
