@@ -42,6 +42,13 @@ return [
         ],
     ],
 
+
+
+    'permission' => [
+        'register' => true, // Enable permission caching
+    ],
+
+
     /*
     |--------------------------------------------------------------------------
     | User Providers

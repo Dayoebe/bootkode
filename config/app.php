@@ -2,6 +2,8 @@
 
 return [
 
+    'offline_storage_limit_mb' => env('OFFLINE_STORAGE_LIMIT_MB', 500),
+    'offline_content_path' => env('OFFLINE_CONTENT_PATH', 'offline-content'),
     /*
     |--------------------------------------------------------------------------
     | Application Name
@@ -65,7 +67,7 @@ return [
     |
     */
 
-    'timezone' => 'UTC',
+    'timezone' => env('APP_TIMEZONE', 'WAT'),
 
     /*
     |--------------------------------------------------------------------------
