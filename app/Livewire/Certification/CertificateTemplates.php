@@ -9,7 +9,7 @@ use App\Models\CertificateTemplate;
 use Illuminate\Support\Facades\Storage;
 use Livewire\Attributes\Layout;
 
-#[Layout('layouts.dashboard', ['title' => 'List Certificate', 'description' => 'Manage all courses including creation, editing, and deletion', 'icon' => 'fas fa-book', 'active' => 'admin.all-courses'])]
+#[Layout('layouts.dashboard', ['title' => 'Certificate Templates', 'description' => 'Manage certificate templates', 'icon' => 'fas fa-stamp', 'active' => 'certificates.templates'])]
 
 class CertificateTemplates extends Component
 {
@@ -18,16 +18,17 @@ class CertificateTemplates extends Component
     public $showForm = false;
     public $isEditing = false;
     public $templateId = null;
+    public $previewTemplateId = null;
+    public $descriptionJson = '{}';
     
-    // Form fields
     public $name;
     public $description;
     public $backgroundImage;
     public $backgroundImagePreview;
     public $contentAreas = [
-        ['name' => 'recipient_name', 'x' => 100, 'y' => 200, 'width' => 300, 'height' => 50],
-        ['name' => 'course_title', 'x' => 100, 'y' => 260, 'width' => 300, 'height' => 50],
-        ['name' => 'issue_date', 'x' => 100, 'y' => 320, 'width' => 300, 'height' => 50],
+        ['name' => 'recipient_name', 'content' => '{}', 'x' => 100, 'y' => 200, 'width' => 300, 'height' => 50],
+        ['name' => 'course_title', 'content' => '{}', 'x' => 100, 'y' => 260, 'width' => 300, 'height' => 50],
+        ['name' => 'issue_date', 'content' => '{}', 'x' => 100, 'y' => 320, 'width' => 300, 'height' => 50],
     ];
     public $defaultFont = 'Arial';
     public $defaultFontSize = 14;
@@ -40,6 +41,7 @@ class CertificateTemplates extends Component
         'backgroundImage' => 'nullable|image|max:2048',
         'contentAreas' => 'required|array|min:1',
         'contentAreas.*.name' => 'required|string',
+        'contentAreas.*.content' => 'required|json',
         'contentAreas.*.x' => 'required|numeric|min:0',
         'contentAreas.*.y' => 'required|numeric|min:0',
         'contentAreas.*.width' => 'required|numeric|min:1',
@@ -50,30 +52,20 @@ class CertificateTemplates extends Component
         'isActive' => 'required|boolean',
     ];
 
+    public function mount()
+    {
+        if (!auth()->user()->hasPermissionTo('manage_certificate_templates')) {
+            abort(403, 'Unauthorized action.');
+        }
+    }
+
     public function render()
     {
         $templates = CertificateTemplate::paginate(10);
+
         return view('livewire.certification.certificate-templates', [
-            'templates' => $templates,
-            'fontOptions' => ['Arial', 'Times New Roman', 'Courier New', 'Helvetica', 'Verdana']
+            'templates' => $templates
         ]);
-    }
-
-    public function addContentArea()
-    {
-        $this->contentAreas[] = [
-            'name' => '',
-            'x' => 100,
-            'y' => 100,
-            'width' => 300,
-            'height' => 50
-        ];
-    }
-
-    public function removeContentArea($index)
-    {
-        unset($this->contentAreas[$index]);
-        $this->contentAreas = array_values($this->contentAreas);
     }
 
     public function createTemplate()
@@ -86,19 +78,47 @@ class CertificateTemplates extends Component
     public function editTemplate($id)
     {
         $template = CertificateTemplate::findOrFail($id);
-        
-        $this->templateId = $template->id;
+        $this->templateId = $id;
         $this->name = $template->name;
         $this->description = $template->description;
-        $this->backgroundImagePreview = $template->background_image_path;
-        $this->contentAreas = $template->content_areas;
+        $this->descriptionJson = $template->description ?? '{}';
+        $this->backgroundImagePreview = $template->background_image_path ? Storage::url($template->background_image_path) : null;
+        $this->contentAreas = array_map(function ($area) {
+            $area['content'] = $area['content'] ?? '{}';
+            return $area;
+        }, $template->content_areas ?? []);
         $this->defaultFont = $template->default_font;
         $this->defaultFontSize = $template->default_font_size;
         $this->defaultFontColor = $template->default_font_color;
         $this->isActive = $template->is_active;
-        
         $this->isEditing = true;
         $this->showForm = true;
+    }
+
+    public function previewTemplate($id)
+    {
+        $this->previewTemplateId = $id;
+    }
+
+    public function closePreview()
+    {
+        $this->previewTemplateId = null;
+    }
+
+    public function addContentArea()
+    {
+        $this->contentAreas[] = ['name' => '', 'content' => '{}', 'x' => 0, 'y' => 0, 'width' => 100, 'height' => 50];
+    }
+
+    public function removeContentArea($index)
+    {
+        unset($this->contentAreas[$index]);
+        $this->contentAreas = array_values($this->contentAreas);
+    }
+
+    public function updateContentArea($index, $json)
+    {
+        $this->contentAreas[$index]['content'] = $json;
     }
 
     public function saveTemplate()
@@ -107,7 +127,7 @@ class CertificateTemplates extends Component
 
         $data = [
             'name' => $this->name,
-            'description' => $this->description,
+            'description' => $this->descriptionJson,
             'content_areas' => $this->contentAreas,
             'default_font' => $this->defaultFont,
             'default_font_size' => $this->defaultFontSize,
@@ -137,7 +157,6 @@ class CertificateTemplates extends Component
     {
         $template = CertificateTemplate::findOrFail($id);
         
-        // Delete the background image if it exists
         if ($template->background_image_path) {
             Storage::disk('public')->delete($template->background_image_path);
         }
@@ -159,6 +178,7 @@ class CertificateTemplates extends Component
             'templateId',
             'name',
             'description',
+            'descriptionJson',
             'backgroundImage',
             'backgroundImagePreview',
             'contentAreas',
@@ -167,5 +187,10 @@ class CertificateTemplates extends Component
             'defaultFontColor',
             'isActive',
         ]);
+        $this->contentAreas = [
+            ['name' => 'recipient_name', 'content' => '{}', 'x' => 100, 'y' => 200, 'width' => 300, 'height' => 50],
+            ['name' => 'course_title', 'content' => '{}', 'x' => 100, 'y' => 260, 'width' => 300, 'height' => 50],
+            ['name' => 'issue_date', 'content' => '{}', 'x' => 100, 'y' => 320, 'width' => 300, 'height' => 50],
+        ];
     }
 }

@@ -51,24 +51,32 @@ updateOnlineStatus();
 
 // import EditorJS from '@editorjs/editorjs';
 
+import EditorJS from '@editorjs/editorjs';
+import Header from '@editorjs/header'; // Import tools
+import List from '@editorjs/list';
 
-// const editor = new EditorJS();
-
-// Initialize EditorJS
-// import EditorJS from '@editorjs/editorjs';
-// import Header from '@editorjs/header';
-// import List from '@editorjs/list';
-// import ImageTool from '@editorjs/image';
-// import Delimiter from '@editorjs/delimiter';
-// import Table from '@editorjs/table';
-
-// window.EditorJS = EditorJS;
-// window.EditorJSHeader = Header;
-// window.EditorJSList = List;
-// window.EditorJSImage = ImageTool;
-// window.EditorJSDelimiter = Delimiter;
-// window.EditorJSTable = Table;
-
+document.addEventListener('alpine:init', () => {
+    Alpine.data('editorJs', function (id, initialData, onSave) {
+        return {
+            editor: null,
+            init() {
+                this.editor = new EditorJS({
+                    holder: id,
+                    data: JSON.parse(initialData),
+                    tools: {
+                        header: Header,
+                        list: List,
+                        // Add more tools here, e.g., image: { class: ImageTool, config: { endpoints: { byFile: '/upload' } } } for image uploads (implement endpoint in Laravel)
+                    },
+                    onChange: async (api) => {
+                        const output = await api.saver.save();
+                        onSave(JSON.stringify(output));
+                    }
+                });
+            }
+        };
+    });
+});
 
 // Handle certificate downloads from Livewire events
 document.addEventListener('DOMContentLoaded', function() {

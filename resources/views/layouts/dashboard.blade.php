@@ -16,6 +16,10 @@
     <link rel="stylesheet" type="text/css" href="https://unpkg.com/trix@2.0.8/dist/trix.css">
     <script type="text/javascript" src="https://unpkg.com/trix@2.0.8/dist/trix.umd.min.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/livewire/sortable@v1.x.x/dist/livewire-sortable.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@editorjs/editorjs@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@editorjs/header@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@editorjs/list@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@editorjs/image@latest"></script>
 </head>
 
 <body class="font-sans antialiased bg-gray-50 h-full" style="font-family: 'Alef', sans-serif;">
@@ -84,7 +88,7 @@
                 :class="{ 'w-2/5': sidebarOpen, 'w-1/6': !sidebarOpen }">
                 <livewire:dashboard-sidebar />
             </aside>
-            
+
             <!-- Main Content Area - Horizontally scrollable -->
             <main class="flex-1 overflow-y-auto overflow-x-auto">
                 <div class="py-8 px-4 sm:px-6 lg:px-8 min-h-[calc(100vh-8rem)] min-w-max">
@@ -126,7 +130,7 @@
             </div>
         </footer>
     </div>
-    
+
     <script>
         document.addEventListener('livewire:initialized', () => {
             Livewire.on('notify', (params) => {
