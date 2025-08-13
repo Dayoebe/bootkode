@@ -6,12 +6,12 @@ use Livewire\Component;
 use Livewire\WithPagination;
 use App\Models\Course;
 use App\Models\CourseCategory;
-use Livewire\Attributes\Layout;
 use Livewire\Attributes\On;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Builder;
+use Livewire\Attributes\Layout;
 
-#[Layout('layouts.dashboard', ['title' => 'All Courses'])]
+#[Layout('layouts.dashboard', ['title' => 'All Courses', 'description' => 'Manage all courses including creation, editing, and deletion', 'icon' => 'fas fa-book', 'active' => 'admin.all-courses'])]
 class AllCourses extends Component
 {
     use WithPagination;
@@ -32,12 +32,12 @@ class AllCourses extends Component
         $user = Auth::user();
 
         return Course::query()
-            ->when($user->isInstructor(), function ($query) use ($user) {
+            ->when($user->hasRole('instructor'), function ($query) use ($user) {
                 $query->where('instructor_id', $user->id);
             })
             ->when($this->search, function ($query) {
                 $query->where('title', 'like', '%' . $this->search . '%')
-                      ->orWhere('description', 'like', '%' . $this->search . '%');
+                    ->orWhere('description', 'like', '%' . $this->search . '%');
             })
             ->when($this->categoryFilter, function ($query) {
                 $query->where('category_id', $this->categoryFilter);
@@ -57,7 +57,6 @@ class AllCourses extends Component
                 $query->where('difficulty_level', $this->difficultyFilter);
             });
     }
-
     /**
      * Toggles the 'selectAll' checkbox and selects all courses on the current page.
      */
@@ -65,9 +64,9 @@ class AllCourses extends Component
     {
         if ($value) {
             $this->selectedCourses = $this->getCoursesQuery()
-                                          ->pluck('id')
-                                          ->map(fn($id) => (string) $id)
-                                          ->toArray();
+                ->pluck('id')
+                ->map(fn($id) => (string) $id)
+                ->toArray();
         } else {
             $this->selectedCourses = [];
         }
@@ -134,11 +133,23 @@ class AllCourses extends Component
     /**
      * Redirects to the dedicated edit course page.
      */
+    public function publishCourse($courseId)
+    {
+        $course = Course::findOrFail($courseId);
+        $course->update(['is_published' => !$course->is_published]);
+        if ($course->is_published) {
+            // Notify enrolled users
+            foreach ($course->enrollments as $user) {
+                $user->notify(new \App\Notifications\CourseUpdateNotification($course));
+            }
+        }
+        $this->dispatch('notify', 'Course publish status updated successfully!', 'success');
+    }
     public function editCourse(Course $course)
     {
         return $this->redirect(route('edit-course', ['course' => $course->id]));
     }
-    
+
     /**
      * Delete a course.
      */
@@ -151,13 +162,38 @@ class AllCourses extends Component
     /**
      * Bulk publish the selected courses.
      */
+    // public function bulkPublish()
+    // {
+    //     $count = Course::whereIn('id', $this->selectedCourses)->update(['is_published' => true]);
+    //     $this->dispatch('notify', "{$count} courses have been published.", 'success');
+    //     $this->resetBulkActions();
+    // }
+
     public function bulkPublish()
+    {
+        $this->dispatchBrowserEvent('swal:confirm', [
+            'title' => 'Confirm Publish',
+            'text' => 'Are you sure you want to publish the selected courses?',
+            'type' => 'warning',
+            'onConfirmed' => 'confirmBulkPublish',
+        ]);
+
+    }
+    #[On('confirmBulkPublish')]
+    public function confirmBulkPublish()
     {
         $count = Course::whereIn('id', $this->selectedCourses)->update(['is_published' => true]);
         $this->dispatch('notify', "{$count} courses have been published.", 'success');
         $this->resetBulkActions();
+        $courses = Course::whereIn('id', $this->selectedCourses)->get();
+        foreach ($courses as $course) {
+            if ($course->is_published) {
+                foreach ($course->enrollments as $user) {
+                    $user->notify(new \App\Notifications\CourseUpdateNotification($course));
+                }
+            }
+        }
     }
-
     /**
      * Bulk approve the selected courses.
      */
@@ -167,7 +203,7 @@ class AllCourses extends Component
         $this->dispatch('notify', "{$count} courses have been approved.", 'success');
         $this->resetBulkActions();
     }
-    
+
     /**
      * Bulk delete the selected courses.
      */
@@ -193,9 +229,9 @@ class AllCourses extends Component
     public function render()
     {
         $courses = $this->getCoursesQuery()
-                        ->with(['instructor', 'category', 'sections'])
-                        ->orderBy('created_at', 'desc')
-                        ->paginate(10);
+            ->with(['instructor', 'category', 'sections'])
+            ->orderBy('created_at', 'desc')
+            ->paginate(10);
 
         return view('livewire.component.course-management.all-courses', [
             'courses' => $courses,

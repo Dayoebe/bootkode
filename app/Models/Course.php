@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Course extends Model
 {
@@ -21,6 +22,7 @@ class Course extends Model
         'estimated_duration_minutes',
         'price',
         'is_premium',
+        'has_offline_content',
         'is_published',
         'is_approved',
     ];
@@ -29,6 +31,7 @@ class Course extends Model
         'is_premium' => 'boolean',
         'is_published' => 'boolean',
         'is_approved' => 'boolean',
+        'has_offline_content' => 'boolean',
     ];
 
     /**
@@ -67,8 +70,11 @@ class Course extends Model
      * Get the assignments for the course.
      */
 
-
-
+// In app/Models/Course.php
+public function enrollments()
+{
+    return $this->belongsToMany(User::class, 'course_user')->withTimestamps();
+}
 public function sections()
 {
     return $this->hasMany(CourseSection::class)->orderBy('order');
@@ -79,6 +85,10 @@ public function sections()
         return $this->hasMany(Assignment::class);
     }
 
+    public function wishlistedBy()
+    {
+        return $this->belongsToMany(User::class, 'wishlists');
+    }
     /**
      * Automatically generate slug when saving.
      */
@@ -95,5 +105,42 @@ public function sections()
                 $course->slug = Str::slug($course->title);
             }
         });
+    }
+    protected $appends = ['offline_size_mb', 'offline_content_types'];
+
+public function getOfflineSizeMbAttribute()
+{
+    // Calculate total size of offline content (lessons, pdfs, etc.)
+    return $this->lessons()->sum('size_mb') + $this->pdfResources()->sum('size_mb');
+}
+
+public function getOfflineContentTypesAttribute()
+{
+    $types = [];
+    
+    if ($this->lessons()->exists()) $types[] = 'lesson';
+    if ($this->pdfResources()->exists()) $types[] = 'pdf';
+    if ($this->audioResources()->exists()) $types[] = 'audio';
+    
+    return $types;
+}
+
+public function certificates()
+{
+    return $this->hasMany(Certificate::class);
+}
+public function feedbacks()
+    {
+        return $this->hasMany(Feedback::class);
+    }
+
+    public function getAverageRatingAttribute()
+    {
+        return $this->feedbacks()->avg('rating') ?: 0;
+    }
+
+    public function getRatingCountAttribute()
+    {
+        return $this->feedbacks()->count();
     }
 }

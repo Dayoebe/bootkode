@@ -77,7 +77,7 @@
                         <i class="fas fa-upload mr-2"></i>Publish
                     </button>
                     <button wire:click="bulkApprove" wire:confirm="Are you sure you want to approve the selected courses?"
-                            class="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-xl text-sm font-semibold transition-colors duration-200">
+                            class="px-4 py-2 bg-pink-600 hover:bg-pink-700 text-white rounded-xl text-sm font-semibold transition-colors duration-200">
                         <i class="fas fa-check-circle mr-2"></i>Approve
                     </button>
                     <button wire:click="bulkDelete" wire:confirm="Are you sure you want to delete the selected courses and all their content?"
@@ -162,13 +162,13 @@
                                 @if (Auth::user()->isSuperAdmin() || Auth::user()->isAcademyAdmin())
                                     <button wire:click="toggleApproved({{ $course->id }})"
                                             class="px-3 py-1 rounded-full text-xs font-semibold
-                                            {{ $course->status === 'approved' ? 'bg-purple-600 text-white hover:bg-purple-700' : 'bg-gray-600 text-gray-300 hover:bg-gray-500' }}
+                                            {{ $course->status === 'approved' ? 'bg-pink-600 text-white hover:bg-pink-700' : 'bg-gray-600 text-gray-300 hover:bg-gray-500' }}
                                             transition-colors duration-200">
                                         {{ $course->status === 'approved' ? 'Approved' : 'Unapproved' }}
                                     </button>
                                 @else
                                     <span class="px-3 py-1 rounded-full text-xs font-semibold
-                                        {{ $course->status === 'approved' ? 'bg-purple-600/30 text-purple-300' : 'bg-yellow-600/30 text-yellow-300' }}">
+                                        {{ $course->status === 'approved' ? 'bg-pink-600/30 text-pink-300' : 'bg-yellow-600/30 text-yellow-300' }}">
                                         {{ ucfirst($course->status) }}
                                     </span>
                                 @endif
