@@ -17,6 +17,12 @@ return [
 
     'name' => env('APP_NAME', 'Laravel'),
 
+'notifications' => [
+    'database' => [
+        'connection' => env('DB_CONNECTION', 'mysql'),
+    ],
+],
+
     /*
     |--------------------------------------------------------------------------
     | Application Environment

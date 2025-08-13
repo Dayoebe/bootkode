@@ -37,9 +37,10 @@
     33 => 'Termwind\\Laravel\\TermwindServiceProvider',
     34 => 'SimpleSoftwareIO\\QrCode\\QrCodeServiceProvider',
     35 => 'SocialiteProviders\\Manager\\ServiceProvider',
-    36 => 'Spatie\\Permission\\PermissionServiceProvider',
-    37 => 'App\\Providers\\AppServiceProvider',
-    38 => 'App\\Providers\\OfflineContentServiceProvider',
+    36 => 'Spatie\\Activitylog\\ActivitylogServiceProvider',
+    37 => 'Spatie\\Permission\\PermissionServiceProvider',
+    38 => 'App\\Providers\\AppServiceProvider',
+    39 => 'App\\Providers\\OfflineContentServiceProvider',
   ),
   'eager' => 
   array (
@@ -61,9 +62,10 @@
     15 => 'NunoMaduro\\Collision\\Adapters\\Laravel\\CollisionServiceProvider',
     16 => 'Termwind\\Laravel\\TermwindServiceProvider',
     17 => 'SimpleSoftwareIO\\QrCode\\QrCodeServiceProvider',
-    18 => 'Spatie\\Permission\\PermissionServiceProvider',
-    19 => 'App\\Providers\\AppServiceProvider',
-    20 => 'App\\Providers\\OfflineContentServiceProvider',
+    18 => 'Spatie\\Activitylog\\ActivitylogServiceProvider',
+    19 => 'Spatie\\Permission\\PermissionServiceProvider',
+    20 => 'App\\Providers\\AppServiceProvider',
+    21 => 'App\\Providers\\OfflineContentServiceProvider',
   ),
   'deferred' => 
   array (

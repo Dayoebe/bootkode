@@ -7,188 +7,241 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
-
+use Spatie\Permission\Traits\HasRoles;
+use Spatie\Activitylog\Traits\LogsActivity;
+use Spatie\Activitylog\LogOptions;
 class User extends Authenticatable implements MustVerifyEmail
 {
-    use HasApiTokens, HasFactory, Notifiable;
+    use HasApiTokens, HasFactory, Notifiable, HasRoles, LogsActivity;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
-     */
-    
+    const ROLE_SUPER_ADMIN = 'super_admin';
+    const ROLE_ACADEMY_ADMIN = 'academy_admin';
+    const ROLE_INSTRUCTOR = 'instructor';
+    const ROLE_MENTOR = 'mentor';
+    const ROLE_CONTENT_EDITOR = 'content_editor';
+    const ROLE_AFFILIATE_AMBASSADOR = 'affiliate_ambassador';
+    const ROLE_STUDENT = 'student';
+
+    // Activity Logging Configuration
+    protected static $logOnlyDirty = true; // Only log changed attributes
+    protected static $submitEmptyLogs = false; // Don't log if no changes
+
+    protected $fillable = [
+        'name',
+        'email',
+        'password',
+        'role',
+        'date_of_birth',
+        'phone_number',
+        'bio',
+        'profile_picture',
+        'address_street',
+        'address_city',
+        'address_state',
+        'address_country',
+        'address_postal_code',
+        'occupation',
+        'skills',
+        'education_level',
+        'social_links',
+        'is_active',
+        'last_login_at',
+        'email_verified_at',
+        'provider',
+        'provider_id',
+        'receive_course_updates',
+        'receive_certificate_notifications',
+    ];
+
+    protected $hidden = [
+        'password',
+        'remember_token',
+    ];
+
+    protected $casts = [
+        'email_verified_at' => 'datetime',
+        'password' => 'hashed',
+        'date_of_birth' => 'date',
+        'last_login_at' => 'datetime',
+        'social_links' => 'array',
+        'is_active' => 'boolean',
+        'receive_course_updates' => 'boolean',
+        'receive_certificate_notifications' => 'boolean',
+    ];
+
+
+// Relationships
+public function courses()
+{
+    return $this->belongsToMany(Course::class, 'course_user')
+        ->withTimestamps()
+        ->withPivot(['last_accessed_at']);
+}
+
+public function completedLessons()
+{
+    return $this->belongsToMany(Lesson::class, 'lesson_user')
+        ->withTimestamps()
+        ->withPivot(['completed_at']);
+}
+
+public function wishlists()
+{
+    return $this->hasMany(Wishlist::class);
+}
+
+public function savedResources()
+{
+    return $this->hasMany(SavedResource::class);
+}
+
+public function downloadedContent()
+{
+    return $this->hasMany(DownloadableContent::class);
+}
+
+public function offlineNotes()
+{
+    return $this->hasMany(OfflineNote::class);
+}
+
+public function certificates()
+{
+    return $this->hasMany(Certificate::class);
+}
+
+public function hasCompletedCourse(Course $course): bool
+{
+    $totalLessons = $course->sections()->with('lessons')->get()->sum(function ($section) {
+        return $section->lessons->count();
+    });
+
+    $completedLessons = $this->completedLessons()
+        ->whereIn('lessons.id', $course->sections()->with('lessons')->get()->flatMap->lessons->pluck('id'))
+        ->count();
+
+    return $completedLessons >= $totalLessons;
+}
 
 
 
-    
-    
-        protected $fillable = [
-            'name',
-            'email',
-            'password',
-            'role',
-            'date_of_birth',
-            'phone_number',
-            'bio',
-            'profile_picture',
-            'address_street',
-            'address_city',
-            'address_state',
-            'address_country',
-            'address_postal_code',
-            'occupation',
-            'education_level',
-            'social_links',
-            'is_active',
-            'last_login_at',
-            'email_verified_at'
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    // Activity Logging Configuration (log all fillable attributes for "every activities" on model changes)
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->useLogName('user') // Correct method: useLogName() to set log name
+            ->logFillable() // Log all fillable attributes (enables logging "every" change)
+            ->logOnlyDirty() // Only log changed attributes
+            ->dontSubmitEmptyLogs(); // Skip if no changes
+    }
+
+    public function getDescriptionForEvent(string $eventName): string
+    {
+        return "User {$this->name} has been {$eventName} by " . (auth()->user()?->name ?? 'System');
+    }
+
+    // Custom method for manual logging of non-model activities (e.g., login, view)
+    public function logCustomActivity(string $description, array $properties = [])
+    {
+        activity()
+            ->causedBy(auth()->user() ?? $this) // Who caused it
+            ->performedOn($this) // On this user
+            ->withProperties($properties) // Extra data (e.g., IP, device)
+            ->log($description);
+    }
+
+    // Address Accessor
+    public function getFullAddressAttribute()
+    {
+        $parts = [
+            $this->address_street,
+            $this->address_city,
+            // ... (rest of your getFullAddressAttribute code, truncated in query)
         ];
-    
-        protected $hidden = [
-            'password',
-            'remember_token',
-        ];
-    
-        protected $casts = [
-            'email_verified_at' => 'datetime',
-            'password' => 'hashed',
-            'date_of_birth' => 'date',
-            'last_login_at' => 'datetime',
-            'social_links' => 'array',
-            'is_active' => 'boolean'
-        ];
-    
-       
-    
-        // Address Accessor
-        public function getFullAddressAttribute()
-        {
-            $parts = [
-                $this->address_street,
-                $this->address_city,
-                $this->address_state,
-                $this->address_country,
-                $this->address_postal_code
-            ];
-            
-            return implode(', ', array_filter($parts));
-        }
-    
-        // Age Calculation
-        public function getAgeAttribute()
-        {
-            return $this->date_of_birth?->age;
-        }
-    
-        // Social Links Helpers
-        public function setSocialLink($platform, $url)
-        {
-            $links = $this->social_links ?? [];
-            $links[$platform] = $url;
-            $this->social_links = $links;
-        }
-    
-        public function getSocialLink($platform)
-        {
-            return $this->social_links[$platform] ?? null;
-        }
-    
-        // Account Status Helpers
-        public function activateAccount()
-        {
-            $this->update(['is_active' => true]);
-        }
-    
-        public function deactivateAccount()
-        {
-            $this->update(['is_active' => false]);
-        }
-   
-    // Define constants for roles for better maintainability and use in dropdowns
-    public const ROLE_SUPER_ADMIN = 'super_admin';
-    public const ROLE_ACADEMY_ADMIN = 'academy_admin';
-    public const ROLE_INSTRUCTOR = 'instructor';
-    public const ROLE_MENTOR = 'mentor';
-    public const ROLE_CONTENT_EDITOR = 'content_editor';
-    public const ROLE_AFFILIATE_AMBASSADOR = 'affiliate_ambassador';
-    public const ROLE_STUDENT = 'student';
-
-    /**
-     * Check if the user has a specific role.
-     */
-    public function hasRole(string $role): bool
-    {
-        return $this->role === $role;
+        return implode(', ', array_filter($parts));
     }
 
-    /**
-     * Check if the user has any of the given roles.
-     */
-    public function hasRoleIn(array $roles): bool
+    // Check if user should receive email notification based on preferences
+    public function shouldReceiveEmailNotification(string $notificationType): bool
     {
-        return in_array($this->role, $roles);
+        return match ($notificationType) {
+            'course_update' => $this->receive_course_updates,
+            'certificate_update' => $this->receive_certificate_notifications,
+            'support_ticket' => true, // From previous
+            'feedback_response' => true, // Add this
+            'announcement' => true, // Add this
+            'system_status' => true, // Add this
+            default => true, // System notifications always sent
+        };
     }
 
-    /**
-     * Check if the user is a Super Admin.
-     */
-    public function isSuperAdmin(): bool
+    protected static $logAttributes = ['name', 'email', 'role'];
+    protected static $logName = 'user';
+
+
+
+    // Age Calculation
+    public function getAgeAttribute()
     {
-        return $this->role === self::ROLE_SUPER_ADMIN;
+        return $this->date_of_birth?->age;
     }
 
-    /**
-     * Check if the user is an Academy Admin.
-     */
-    public function isAcademyAdmin(): bool
+    // Social Links Helpers
+    public function setSocialLink($platform, $url)
     {
-        return $this->role === self::ROLE_ACADEMY_ADMIN;
+        $links = $this->social_links ?? [];
+        $links[$platform] = $url;
+        $this->social_links = $links;
     }
 
-    /**
-     * Check if the user is an Instructor.
-     */
-    public function isInstructor(): bool
+    public function getSocialLink($platform)
     {
-        return $this->role === self::ROLE_INSTRUCTOR;
+        return $this->social_links[$platform] ?? null;
     }
 
-    /**
-     * Check if the user is a Mentor.
-     */
-    public function isMentor(): bool
+    // Account Status Helpers
+    public function activateAccount()
     {
-        return $this->role === self::ROLE_MENTOR;
+        $this->update(['is_active' => true]);
     }
 
-    /**
-     * Check if the user is a Content Editor.
-     */
-    public function isContentEditor(): bool
+    public function deactivateAccount()
     {
-        return $this->role === self::ROLE_CONTENT_EDITOR;
+        $this->update(['is_active' => false]);
     }
 
-    /**
-     * Check if the user is an Affiliate/Ambassador.
-     */
-    public function isAffiliateAmbassador(): bool
-    {
-        return $this->role === self::ROLE_AFFILIATE_AMBASSADOR;
-    }
-
-    /**
-     * Check if the user is a Student.
-     */
-    public function isStudent(): bool
-    {
-        return $this->role === self::ROLE_STUDENT;
-    }
-
-    /**
-     * Get the dashboard route name based on the user's role.
-     */
     public function getDashboardRouteName(): string
     {
         return match ($this->role) {
@@ -202,36 +255,24 @@ class User extends Authenticatable implements MustVerifyEmail
         };
     }
 
-    /**
-     * Scope a query to filter users by role.
-     */
     public function scopeWithRole($query, $role)
     {
         return $query->where('role', $role);
     }
 
-    /**
-     * Get all users except the current one.
-     */
     public function scopeAllExcept($query, User $user)
     {
         return $query->where('id', '!=', $user->id);
     }
 
-    /**
-     * Check if user can be deleted.
-     */
     public function canBeDeleted(): bool
     {
-        // Prevent deleting the first super admin (assuming ID 1 is the initial super admin)
-        return !($this->isSuperAdmin() && $this->id === 1);
+        return !($this->hasRole(self::ROLE_SUPER_ADMIN) && $this->id === 1);
     }
 
-    /**
-     * Send email verification notification.
-     */
     public function sendEmailVerificationNotification()
     {
         $this->notify(new \App\Notifications\CustomVerifyEmail());
     }
+   
 }

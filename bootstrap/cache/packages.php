@@ -107,6 +107,13 @@
       0 => 'SocialiteProviders\\Manager\\ServiceProvider',
     ),
   ),
+  'spatie/laravel-activitylog' => 
+  array (
+    'providers' => 
+    array (
+      0 => 'Spatie\\Activitylog\\ActivitylogServiceProvider',
+    ),
+  ),
   'spatie/laravel-permission' => 
   array (
     'providers' => 
