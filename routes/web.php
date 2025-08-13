@@ -2,7 +2,6 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CertificateController;
-use App\Http\Controllers\ProfileController;
 use App\Livewire\Component\CourseManagement\AllCourses;
 use App\Livewire\Component\CourseManagement\CreateCourse;
 use App\Livewire\Component\CourseManagement\CourseCategories;
@@ -11,7 +10,8 @@ use App\Livewire\Component\CourseManagement\CourseReviews;
 use App\Livewire\Component\CourseManagement\CourseApprovals;
 use App\Livewire\Component\CourseManagement\EditCourse;
 use App\Livewire\Component\CourseManagement\CourseBuilder\CoursePreview;
-use App\Livewire\Component\UserManagement;
+
+Route::get('/dashboard', \App\Livewire\Component\DashboardOverview::class)->name('dashboard');
 
 Route::middleware(['auth', 'verified'])->prefix('certificates')->group(function () {
     Route::get('/my-certificates', \App\Livewire\Certification\MyCertificates::class)->name('certificates.index')->middleware('can:view_own_certificates');
@@ -28,15 +28,9 @@ Route::middleware(['auth', 'verified'])->prefix('certificates')->group(function 
 
 // Group for authenticated user profiles
 Route::middleware('auth')->group(function () {
-    // Existing profile routes (keep if needed for API)
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-
-    // New Livewire Profile routes
     Route::get('/dashboard/profile/view', \App\Livewire\Component\Profile\ViewProfile::class)->name('profile.view');
     Route::get('/dashboard/profile/edit', \App\Livewire\Component\Profile\EditProfile::class)->name('profile.edit');
-    
+
 });
 
 Route::get('/certificates/verify/{uuid?}', \App\Livewire\Certification\PublicCertificateVerification::class)
@@ -68,10 +62,24 @@ Route::middleware('auth')->group(function () {
     Route::get('/dashboard/courses/reviews', CourseReviews::class)->name('course-reviews');
     Route::get('/dashboard/courses/approvals', CourseApprovals::class)->name('course-approvals');
     Route::get('/courses/{course}/preview/{highlight?}', CoursePreview::class)->name('course.preview');
+    Route::get('/dashboard/courses/available', \App\Livewire\Component\AvailableCourses::class)->name('courses.available');
 });
 
 Route::middleware('auth')->group(function () {
-    Route::get('/dashboard/user', UserManagement::class)->name('user-management');
+    Route::get('/dashboard/user', \App\Livewire\Component\UserManagement::class)->name('user-management');
+    Route::get('/dashboard/user-activity', \App\Livewire\Component\UserActivity::class)->name('user.activity');
+    Route::get('/dashboard/settings', \App\Livewire\Component\Settings::class)->name('settings');
+    Route::get('/dashboard/notifications', \App\Livewire\Component\Notifications::class)->name('notifications');
+    Route::get('/dashboard/help-support', \App\Livewire\Component\HelpSupport::class)->name('help.support');
+    Route::get('/dashboard/support-tickets', \App\Livewire\Component\SupportTicketManagement::class)->name('support.tickets');
+    Route::get('/dashboard/faq-management', \App\Livewire\Component\FaqManagement::class)->name('faq.management');
+    Route::get('/dashboard/feedback', \App\Livewire\Component\Feedback::class)->name('feedback');
+    Route::get('/dashboard/feedback-management', \App\Livewire\Component\FeedbackManagement::class)->name('feedback.management');
+    Route::get('/dashboard/announcements', \App\Livewire\Component\Announcements::class)->name('announcements');
+    Route::get('/dashboard/announcement-management', \App\Livewire\Component\AnnouncementManagement::class)->name('announcement.management');
+    Route::get('/dashboard/system-status', \App\Livewire\Component\SystemStatus::class)->name('system-status');
+    Route::get('/dashboard/system-status-management', \App\Livewire\Component\SystemStatusManagement::class)->name('system-status.management');
+
 });
 
 require __DIR__ . '/auth.php';

@@ -28,6 +28,10 @@
             </div>
         </div>
 
+
+
+
+
         <!-- Users Table -->
         <div class="bg-white shadow overflow-hidden sm:rounded-lg">
             <div class="flex items-center justify-between px-4 py-3 border-b border-gray-200">
@@ -81,7 +85,7 @@
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <div class="flex items-center">
                                         <div
-                                            class="flex-shrink-0 h-10 w-10 rounded-full bg-gradient-to-r from-blue-500 to-purple-500 flex items-center justify-center text-white font-bold">
+                                            class="flex-shrink-0 h-10 w-10 rounded-full bg-gradient-to-r from-blue-500 to-pink-500 flex items-center justify-center text-white font-bold">
                                             {{ strtoupper(substr($user->name, 0, 1)) }}
                                         </div>
                                         <div class="ml-4">
@@ -93,12 +97,12 @@
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <span
                                         class="px-2.5 py-0.5 inline-flex text-xs leading-5 font-semibold rounded-full
-                                        @if ($user->isSuperAdmin()) bg-purple-100 text-purple-800
-                                        @elseif($user->isAcademyAdmin()) bg-blue-100 text-blue-800
-                                        @elseif($user->isInstructor()) bg-green-100 text-green-800
-                                        @elseif($user->isMentor()) bg-yellow-100 text-yellow-800
-                                        @elseif($user->isContentEditor()) bg-indigo-100 text-indigo-800
-                                        @elseif($user->isAffiliateAmbassador()) bg-pink-100 text-pink-800
+                                        @if ($user->hasRole('super_admin')) bg-pink-100 text-pink-800
+                                        @elseif ($user->hasRole('academy_admin')) bg-blue-100 text-blue-800
+                                        @elseif ($user->hasRole('instructor')) bg-green-100 text-green-800
+                                        @elseif ($user->hasRole('mentor')) bg-yellow-100 text-yellow-800
+                                        @elseif ($user->hasRole('content_editor')) bg-indigo-100 text-indigo-800
+                                        @elseif ($user->hasRole('affiliate_ambassador')) bg-pink-100 text-pink-800
                                         @else bg-gray-100 text-gray-800 @endif">
                                         {{ ucfirst(str_replace('_', ' ', $user->role)) }}
                                     </span>
@@ -191,211 +195,143 @@
         </div>
     </div>
 
-    <!-- User Modal -->
-    @if ($showUserModal)
-        <div class="fixed inset-0 z-50 overflow-y-auto" x-data="{ show: true }" x-show="show" x-transition.opacity
-            @keydown.escape.window="show = false; $wire.closeModalAndReset()">
+    <!-- User Modal (always render, control with Alpine/Livewire) -->
+    <div x-data="{ modalOpen: @entangle('showUserModal'), editMode: @entangle('editMode') }" x-show="modalOpen" x-cloak x-transition:enter="animate__animated animate__fadeIn"
+        x-transition:leave="animate__animated animate__fadeOut" class="fixed z-50 inset-0 overflow-y-auto"
+        aria-labelledby="modal-title" role="dialog" aria-modal="true" wire:ignore.self>
+        <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+            <!-- Background overlay -->
+            <div x-show="modalOpen" class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"
+                aria-hidden="true"></div>
 
-            <div class="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-                <!-- Background overlay -->
-                <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"
-                    @click="show = false; $wire.closeModalAndReset()"></div>
+            <!-- Centering trick -->
+            <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
 
-                <!-- Modal panel -->
-                <div class="inline-block align-bottom bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full sm:p-6 relative"
-                    @click.stop>
-
-                    <!-- Loading overlay for the modal content -->
-                    <div wire:loading.delay class="absolute inset-0 bg-white bg-opacity-75 flex items-center justify-center rounded-lg z-50">
-                        <div class="flex flex-col items-center">
-                            <i class="fas fa-spinner fa-spin text-blue-600 text-4xl mb-3"></i>
-                            <p class="text-blue-700 text-lg font-semibold">Processing...</p>
-                        </div>
-                    </div>
-
-                    <!-- Close button -->
-                    <div class="absolute top-0 right-0 pt-4 pr-4">
-                        <button type="button" wire:click="closeModalAndReset"
-                            class="bg-white rounded-md text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-                            <span class="sr-only">Close</span>
-                            <i class="fas fa-times h-6 w-6"></i>
+            <!-- Modal panel -->
+            <div
+                class="inline-block align-bottom bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full sm:p-6">
+                <div>
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-lg leading-6 font-medium text-gray-900">
+                            <i class="fas fa-user-{{ $editMode ? 'edit' : 'plus' }} mr-2 text-blue-600"></i>
+                            {{ $editMode ? 'Edit User' : 'Create New User' }}
+                        </h3>
+                        <button type="button" @click="modalOpen = false" wire:click="closeModalAndReset"
+                            class="text-gray-400 hover:text-gray-500">
+                            <i class="fas fa-times"></i>
                         </button>
                     </div>
 
-                    <div>
-                        <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-blue-100">
-                            @if ($editMode)
-                                <i class="fas fa-user-edit text-blue-600"></i>
-                            @else
-                                <i class="fas fa-user-plus text-blue-600"></i>
-                            @endif
-                        </div>
-                        <div class="mt-3 text-center sm:mt-5">
-                            <h3 class="text-lg leading-6 font-medium text-gray-900">
-                                {{ $editMode ? 'Edit User' : 'Create New User' }}
-                            </h3>
-                            <div class="mt-2">
-                                <p class="text-sm text-gray-500">
-                                    {{ $editMode ? 'Update the user information below.' : 'Fill in the information below to create a new user.' }}
-                                </p>
+                    @if ($errors->any())
+                        <div
+                            class="bg-red-50 border-l-4 border-red-400 p-4 mb-4 rounded animate__animated animate__shakeX">
+                            <div class="flex">
+                                <div class="flex-shrink-0">
+                                    <i class="fas fa-exclamation-circle text-red-400"></i>
+                                </div>
+                                <div class="ml-3">
+                                    <h3 class="text-sm font-medium text-red-800">Validation Errors</h3>
+                                    <div class="mt-2 text-sm text-red-700">
+                                        <ul class="list-disc pl-5 space-y-1">
+                                            @foreach ($errors->all() as $error)
+                                                <li>{{ $error }}</li>
+                                            @endforeach
+                                        </ul>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                    </div>
+                    @endif
 
-                    <form wire:submit.prevent="saveUser" class="mt-6 space-y-4">
-                        <div>
-                            <label for="name" class="block text-sm font-medium text-gray-700">
-                                <i class="fas fa-user mr-1 text-gray-500"></i> Full Name *
-                            </label>
-                            <input type="text" id="name" wire:model="name" required
-                                class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                                placeholder="Enter full name">
-                            @error('name')
-                                <p class="mt-1 text-sm text-red-600 flex items-center">
-                                    <i class="fas fa-exclamation-circle mr-1"></i>
-                                    {{ $message }}
-                                </p>
-                            @enderror
-                        </div>
-
-                        <div>
-                            <label for="email" class="block text-sm font-medium text-gray-700">
-                                <i class="fas fa-envelope mr-1 text-gray-500"></i> Email Address *
-                            </label>
-                            <input type="email" id="email" wire:model="email" required
-                                class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                                placeholder="Enter email address">
-                            @error('email')
-                                <p class="mt-1 text-sm text-red-600 flex items-center">
-                                    <i class="fas fa-exclamation-circle mr-1"></i>
-                                    {{ $message }}
-                                </p>
-                            @enderror
-                        </div>
-
-                        <div>
-                            <label for="role" class="block text-sm font-medium text-gray-700">
-                                <i class="fas fa-user-tag mr-1 text-gray-500"></i> Role *
-                            </label>
-                            <select id="role" wire:model="role" required
-                                class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md">
-                                <option value="">Select a role</option>
-                                @foreach ($roles as $value => $label)
-                                    <option value="{{ $value }}">{{ $label }}</option>
-                                @endforeach
-                            </select>
-                            @error('role')
-                                <p class="mt-1 text-sm text-red-600 flex items-center">
-                                    <i class="fas fa-exclamation-circle mr-1"></i>
-                                    {{ $message }}
-                                </p>
-                            @enderror
-                        </div>
-
-                        @if (!$editMode)
+                    <form wire:submit.prevent="saveUser">
+                        <div class="space-y-4">
+                            <!-- Name -->
                             <div>
-                                <label for="password" class="block text-sm font-medium text-gray-700">
-                                    <i class="fas fa-lock mr-1 text-gray-500"></i> Password *
-                                </label>
-                                <input type="password" id="password" wire:model="password" required
-                                    autocomplete="new-password"
-                                    class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                                    placeholder="Enter password">
+                                <label for="name" class="block text-sm font-medium text-gray-700">Name</label>
+                                <input wire:model="name" type="text" id="name"
+                                    class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                                @error('name')
+                                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                                @enderror
+                            </div>
+
+                            <!-- Email -->
+                            <div>
+                                <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
+                                <input wire:model="email" type="email" id="email"
+                                    class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                                @error('email')
+                                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                                @enderror
+                            </div>
+
+                            <!-- Role -->
+                            <div>
+                                <label for="role" class="block text-sm font-medium text-gray-700">Role</label>
+                                <select wire:model="role" id="role"
+                                    class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                                    @foreach ($roles as $key => $value)
+                                        <option value="{{ $key }}">{{ $value }}</option>
+                                    @endforeach
+                                </select>
+                                @error('role')
+                                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                                @enderror
+                            </div>
+
+                            <!-- Password (show on create or if editing and password set) -->
+                            <div x-show="!editMode || password">
+                                <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
+                                <input wire:model="password" type="password" id="password"
+                                    class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500">
                                 @error('password')
-                                    <p class="mt-1 text-sm text-red-600 flex items-center">
-                                        <i class="fas fa-exclamation-circle mr-1"></i>
-                                        {{ $message }}
-                                    </p>
+                                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                                 @enderror
                             </div>
 
-                            <div>
-                                <label for="password_confirmation" class="block text-sm font-medium text-gray-700">
-                                    <i class="fas fa-lock mr-1 text-gray-500"></i> Confirm Password *
-                                </label>
-                                <input type="password" id="password_confirmation" wire:model="password_confirmation"
-                                    required autocomplete="new-password"
-                                    class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                                    placeholder="Confirm password">
+                            <div x-show="!editMode || password">
+                                <label for="password_confirmation"
+                                    class="block text-sm font-medium text-gray-700">Confirm Password</label>
+                                <input wire:model="password_confirmation" type="password" id="password_confirmation"
+                                    class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500">
                                 @error('password_confirmation')
-                                    <p class="mt-1 text-sm text-red-600 flex items-center">
-                                        <i class="fas fa-exclamation-circle mr-1"></i>
-                                        {{ $message }}
-                                    </p>
+                                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                                 @enderror
                             </div>
-                        @else
-                            <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4">
-                                <div class="flex">
-                                    <div class="flex-shrink-0">
-                                        <i class="fas fa-exclamation-triangle text-yellow-400"></i>
-                                    </div>
-                                    <div class="ml-3">
-                                        <p class="text-sm text-yellow-700">
-                                            Leave password fields empty to keep the current password unchanged.
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
-                        @endif
 
-                        <!-- Email Verification Option -->
-                        <div class="bg-blue-50 border border-blue-200 rounded-md p-4">
-                            <div class="flex items-start">
-                                <div class="flex items-center h-5">
-                                    <input id="sendVerificationEmail" type="checkbox"
-                                        wire:model="sendVerificationEmail"
-                                        class="focus:ring-blue-500 h-4 w-4 text-blue-600 border-gray-300 rounded">
-                                </div>
-                                <div class="ml-3 text-sm">
-                                    <label for="sendVerificationEmail" class="font-medium text-blue-900">
-                                        <i class="fas fa-envelope mr-1"></i>
-                                        @if ($editMode)
-                                            Send email verification (only if email changed)
-                                        @else
-                                            Send email verification to new user
-                                        @endif
-                                    </label>
-                                    <p class="text-blue-700 mt-1">
-                                        @if ($editMode)
-                                            If the email address is changed, checking this will reset email verification
-                                            and send a new verification email.
-                                        @else
-                                            The user will receive an email to verify their email address. Uncheck to
-                                            mark as verified immediately.
-                                        @endif
-                                    </p>
-                                </div>
+                            <!-- Send Verification Email (only on create) -->
+                            <div x-show="!editMode">
+                                <label class="inline-flex items-center">
+                                    <input wire:model="sendVerificationEmail" type="checkbox"
+                                        class="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                                    <span class="ml-2 text-sm text-gray-600">Send verification email? <i
+                                            class="fas fa-envelope ml-1 text-blue-600"></i></span>
+                                </label>
+                            </div>
+
+                            <!-- Create Another Checkbox (only on create) -->
+                            <div x-show="!editMode">
+                                <label class="inline-flex items-center">
+                                    <input type="checkbox" wire:model="createAnother"
+                                        class="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                                    <span class="ml-2 text-sm text-gray-600">Create another user after this? <i
+                                            class="fas fa-plus-circle ml-1 text-blue-600"></i></span>
+                                </label>
                             </div>
                         </div>
-                        
-                        @if ($errors->any())
-                            <div class="bg-red-50 border-l-4 border-red-400 p-4 mb-4">
-                                <div class="flex">
-                                    <div class="flex-shrink-0">
-                                        <i class="fas fa-exclamation-circle text-red-400"></i>
-                                    </div>
-                                    <div class="ml-3">
-                                        @foreach ($errors->all() as $error)
-                                            <p class="text-sm text-red-700">{{ $error }}</p>
-                                        @endforeach
-                                    </div>
-                                </div>
-                            </div>
-                        @endif
 
                         <div class="mt-5 sm:mt-6 sm:grid sm:grid-cols-2 sm:gap-3 sm:grid-flow-row-dense">
-                            <!-- Progress bar - only show when loading -->
-                            @if($saveProgress > 0 && $saveProgress < 100)
+                            <!-- Progress bar -->
+                            @if ($saveProgress > 0 && $saveProgress < 100)
                                 <div class="col-span-2 mb-4">
                                     <div class="w-full bg-gray-200 rounded-full h-2.5">
-                                        <div class="bg-blue-600 h-2.5 rounded-full transition-all duration-300" 
-                                             style="width: {{ $saveProgress }}%"></div>
+                                        <div class="bg-blue-600 h-2.5 rounded-full transition-all duration-300"
+                                            style="width: {{ $saveProgress }}%"></div>
                                     </div>
                                     <p class="text-sm text-gray-600 mt-1">Saving... {{ $saveProgress }}%</p>
                                 </div>
                             @endif
-                            
+
                             <button type="submit" wire:loading.attr="disabled" wire:target="saveUser"
                                 class="w-full inline-flex justify-center items-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-600 text-base font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:col-start-2 sm:text-sm disabled:opacity-50 disabled:cursor-not-allowed">
                                 <span wire:loading.remove wire:target="saveUser">
@@ -407,8 +343,8 @@
                                     Processing...
                                 </span>
                             </button>
-                            
-                            <button type="button" wire:click="closeModalAndReset"
+
+                            <button type="button" @click="modalOpen = false" wire:click="closeModalAndReset"
                                 class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:mt-0 sm:col-start-1 sm:text-sm">
                                 <i class="fas fa-times mr-2"></i>
                                 Cancel
@@ -418,5 +354,6 @@
                 </div>
             </div>
         </div>
-    @endif
+    </div>
+
 </div>

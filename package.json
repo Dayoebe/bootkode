@@ -25,6 +25,8 @@
         "@alpinejs/collapse": "^3.14.9",
         "@alpinejs/persist": "^3.14.9",
         "@editorjs/editorjs": "^2.30.8",
+        "@editorjs/header": "^2.8.8",
+        "@editorjs/list": "^2.0.8",
         "alpinejs": "^3.14.9",
         "chart.js": "^4.5.0",
         "html5-qrcode": "^2.3.8",

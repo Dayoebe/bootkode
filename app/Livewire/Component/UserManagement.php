@@ -33,6 +33,8 @@ class UserManagement extends Component
     public $search = '';
     public $sendVerificationEmail = true;
     public $perPage = 15;
+
+    public $createAnother = false;
     public $saveProgress = 0; // Progress indicator for saving
 
     // Cache roles to avoid repeated calls
@@ -52,6 +54,29 @@ class UserManagement extends Component
         $this->roles = $this->getRolesForSelect();
     }
 
+    protected function rules()
+    {
+        $rules = [
+            'name' => ['required', 'string', 'max:255'],
+            'email' => [
+                'required',
+                'string',
+                'email',
+                'max:255',
+                'unique:users,email' . ($this->editMode ? ',' . $this->userId : ''),
+            ],
+            'role' => ['required', 'string', Rule::in(array_keys($this->getRolesForSelect()))], // Ensures valid role from your select options
+            'sendVerificationEmail' => ['boolean'],
+        ];
+
+        // Password rules: Required on create, optional on edit
+        if (!$this->editMode || $this->password) { // If creating or password is filled on edit
+            $rules['password'] = ['required', 'string', 'min:8', 'confirmed'];
+            $rules['password_confirmation'] = ['required_with:password', 'string', 'min:8'];
+        }
+
+        return $rules;
+    }
     public function render()
     {
         return view('livewire.component.user-management', [
@@ -67,7 +92,7 @@ class UserManagement extends Component
             ->when($this->search, function ($query) {
                 $query->where(function ($q) {
                     $q->where('name', 'like', '%' . $this->search . '%')
-                      ->orWhere('email', 'like', '%' . $this->search . '%');
+                        ->orWhere('email', 'like', '%' . $this->search . '%');
                 });
             })
             ->where('id', '!=', auth()->id())
@@ -99,62 +124,80 @@ class UserManagement extends Component
     {
         try {
             $user = User::findOrFail($userId);
-            
             $this->resetFormFields();
             $this->editMode = true;
             $this->userId = $user->id;
             $this->name = $user->name;
             $this->email = $user->email;
             $this->role = $user->role;
+            $this->password = ''; // Clear password for edit
+            $this->password_confirmation = '';
             // If editing, default to not sending verification email unless email is changed
-            $this->sendVerificationEmail = false; 
+            $this->sendVerificationEmail = false;
             $this->showUserModal = true;
         } catch (\Exception $e) {
             Log::error('Edit user error: ' . $e->getMessage());
             $this->dispatch('notify', 'Error loading user data', 'error');
         }
     }
-
     public function saveUser()
-    {
-        // Reset progress at the start of the save operation
-        $this->saveProgress = 0;
-        
-        try {
-            // Step 1: Validate data
-            $this->saveProgress = 25;
-            $this->validateUser();
-            
-            // Step 2: Prepare data and begin transaction
-            $this->saveProgress = 50;
-            DB::beginTransaction();
-    
-            $user = null; // Initialize user variable
-            if ($this->editMode) {
-                $user = $this->updateExistingUser($this->prepareUserData());
-            } else {
-                $user = $this->createNewUser($this->prepareUserData());
+{
+    try {
+        $this->validate();
+
+        // Progress simulation
+        for ($i = 20; $i <= 100; $i += 20) {
+            $this->saveProgress = $i;
+            usleep(200000);
+        }
+
+        if ($this->editMode) {
+            $user = User::findOrFail($this->userId);
+            $user->update([
+                'name' => $this->name,
+                'email' => $this->email,
+                'role' => $this->role,
+            ]);
+            activity()->causedBy(auth()->user())->performedOn($user)->log('Updated user');
+
+            if ($this->password) {
+                $user->update(['password' => Hash::make($this->password)]);
             }
             
-            // Step 3: Commit transaction
-            $this->saveProgress = 90;
-            DB::commit();
-            
-            // Step 4: Handle post-save actions and UI updates
-            $this->saveProgress = 100;
-            $this->handleSuccessfulSave($user); // Pass the user to the success handler
-            
-        } catch (\Illuminate\Validation\ValidationException $e) {
-            // Livewire handles validation errors, just reset progress
-            $this->saveProgress = 0;
-            throw $e; // Re-throw to display validation messages
-        } catch (\Exception $e) {
-            DB::rollBack();
-            $this->saveProgress = 0;
-            $this->handleSaveError($e);
-        }
-    }
+        } else {
+            $user = User::create([
+                'name' => $this->name,
+                'email' => $this->email,
+                'password' => Hash::make($this->password),
+                'role' => $this->role,
+            ]);
+            activity()->causedBy(auth()->user())->performedOn($user)->log('Created user');
 
+            if ($this->sendVerificationEmail) {
+                $user->sendEmailVerificationNotification();
+            } else {
+                $user->markEmailAsVerified();
+            }
+        }
+
+        $this->dispatch('notify', 'User ' . ($this->editMode ? 'updated' : 'created') . ' successfully!', 'success');
+        $this->dispatch('refreshUsers');
+
+        if ($this->createAnother && !$this->editMode) {
+            $this->resetFormFields(); // Reset fields but keep modal open
+        } else {
+            $this->closeModalAndReset();
+        }
+
+    } catch (\Illuminate\Validation\ValidationException $e) {
+        $this->saveProgress = 0;
+        throw $e; // Let Livewire handle validation errors
+    } catch (\Exception $e) {
+        $this->saveProgress = 0;
+        $this->dispatch('notify', 'Error: ' . $e->getMessage(), 'error');
+        Log::error('User save failed: ' . $e->getMessage());
+    }
+}
     protected function validateUser()
     {
         $rules = [
@@ -214,20 +257,20 @@ class UserManagement extends Component
     {
         $user = User::findOrFail($this->userId);
         // No need to store original email if we're checking wasChanged later
-        
+
         // Fill only the provided data, excluding password if it's empty
-        $user->fill(array_filter($userData, function($value, $key) {
+        $user->fill(array_filter($userData, function ($value, $key) {
             // Exclude password if it's empty during an update
             return !($key === 'password' && empty($value));
         }, ARRAY_FILTER_USE_BOTH));
-        
+
         // Handle email verification reset if email changed and option is enabled
         if ($user->isDirty('email') && $this->sendVerificationEmail) {
             $user->email_verified_at = null;
         }
-        
+
         $user->save();
-        
+
         // If email changed AND sendVerificationEmail is true, dispatch the notification
         // The User model's sendEmailVerificationNotification method will queue the CustomVerifyEmail
         if ($user->wasChanged('email') && $this->sendVerificationEmail) {
@@ -238,7 +281,7 @@ class UserManagement extends Component
                 // Log the warning but don't stop the save operation
             }
         }
-        
+
         return $user;
     }
 
@@ -248,7 +291,7 @@ class UserManagement extends Component
         if (!$this->sendVerificationEmail) {
             $userData['email_verified_at'] = now();
         }
-        
+
         $user = User::create($userData);
 
         // If sendVerificationEmail is true, dispatch the notification
@@ -264,21 +307,21 @@ class UserManagement extends Component
 
         // Dispatch the Registered event regardless of email verification status
         event(new Registered($user));
-        
+
         return $user;
     }
 
     protected function handleSuccessfulSave(?User $user) // Accept user as a parameter
     {
-        $message = $this->editMode 
-            ? 'User updated successfully!' 
-            : ($this->sendVerificationEmail 
+        $message = $this->editMode
+            ? 'User updated successfully!'
+            : ($this->sendVerificationEmail
                 ? 'User created and verification email dispatched!' // Clarify it's dispatched
                 : 'User created successfully!');
 
         $this->dispatch('notify', $message, 'success');
         $this->closeModalAndReset();
-        
+
         // Force refresh the component to show updated user list
         $this->resetPage();
     }
@@ -303,7 +346,7 @@ class UserManagement extends Component
     {
         try {
             $user = User::findOrFail($userId);
-            
+
             if ($user->hasVerifiedEmail()) {
                 $this->dispatch('notify', 'User email is already verified!', 'info');
                 return;
@@ -312,7 +355,7 @@ class UserManagement extends Component
             // Use the built-in notification method which queues the job
             $user->sendEmailVerificationNotification();
             $this->dispatch('notify', 'Verification email sent successfully!', 'success');
-            
+
         } catch (\Exception $e) {
             Log::error('Failed to resend verification email: ' . $e->getMessage());
             $this->dispatch('notify', 'Failed to send verification email!', 'error');
@@ -323,7 +366,7 @@ class UserManagement extends Component
     {
         try {
             $user = User::findOrFail($userId);
-            
+
             if ($user->hasVerifiedEmail()) {
                 $this->dispatch('notify', 'User email is already verified!', 'info');
                 return;
@@ -332,7 +375,7 @@ class UserManagement extends Component
             $user->markEmailAsVerified();
             $this->dispatch('notify', 'User email marked as verified!', 'success');
             // No need to dispatch refreshUsers here, Livewire's reactivity should handle it.
-            
+
         } catch (\Exception $e) {
             Log::error('Failed to mark email as verified: ' . $e->getMessage());
             $this->dispatch('notify', 'Failed to verify user email!', 'error');
@@ -343,7 +386,7 @@ class UserManagement extends Component
     {
         try {
             $user = User::findOrFail($userId);
-            
+
             if ($user->id === auth()->id()) {
                 $this->dispatch('notify', 'Cannot delete your own account!', 'error');
                 return;
@@ -351,7 +394,7 @@ class UserManagement extends Component
 
             $user->delete();
             $this->dispatch('notify', 'User deleted successfully!', 'success');
-            
+
         } catch (\Exception $e) {
             Log::error('User deletion error: ' . $e->getMessage());
             $this->dispatch('notify', 'Error deleting user: ' . $e->getMessage(), 'error');
@@ -371,7 +414,7 @@ class UserManagement extends Component
             'sendVerificationEmail',
             'saveProgress' // Reset progress when form fields are reset
         ]);
-        
+
         $this->resetErrorBag();
     }
 
@@ -380,7 +423,13 @@ class UserManagement extends Component
         $this->showUserModal = false;
         $this->resetFormFields();
     }
-
+    
+    // Add a new method for "Create Another" (called from notification or button)
+    public function createAnotherUser()
+    {
+        $this->createAnother = true;
+        $this->saveUser(); // Re-trigger save with flag
+    }
     public function updatedSearch()
     {
         $this->resetPage();

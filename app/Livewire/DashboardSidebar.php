@@ -55,23 +55,100 @@ class DashboardSidebar extends Component
             [
                 'label' => 'Dashboard Overview',
                 'icon' => 'fas fa-tachometer-alt',
-                'route' => '#',
+                'route' => '#',  // Or point to a main dashboard route
                 'roles' => [],
                 'link_id' => 'dashboard',
                 'children' => [
-                    ['label' => 'View Profile', 'icon' => 'fas fa-user', 'route' => route('profile.view'), 'roles' => [], 'link_id' => 'profile_management'],
-                    ['label' => 'Edit Profile', 'icon' => 'fas fa-user-edit', 'route' => route('profile.edit'), 'roles' => [], 'link_id' => 'profile_management'],
-                    ['label' => 'Notifications', 'icon' => 'fas fa-bell', 'route' => '#', 'roles' => []],
-                    ['label' => 'View All Users', 'icon' => 'fas fa-users', 'route' => route('user-management'), 'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN], 'link_id' => 'user-management'],
-                    ['label' => 'Edit User', 'icon' => 'fas fa-user-edit', 'route' => '#', 'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN], 'link_id' => 'user.edit'],
-                    ['label' => 'Assign Role', 'icon' => 'fas fa-user-tag', 'route' => '#', 'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN], 'link_id' => 'user.assign-role'],
-                    ['label' => 'User Activity', 'icon' => 'fas fa-history', 'route' => '#', 'roles' => [User::ROLE_SUPER_ADMIN], 'link_id' => 'user.activity'],
-                    ['label' => 'User Management', 'icon' => 'fas fa-users-cog', 'route' => route('user-management'), 'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN], 'link_id' => 'user-management'],
-                    ['label' => 'Settings', 'icon' => 'fas fa-cog', 'route' => '#', 'roles' => []],
-                    ['label' => 'Help & Support', 'icon' => 'fas fa-question-circle', 'route' => '#', 'roles' => []],
-                    ['label' => 'Feedback', 'icon' => 'fas fa-comment-dots', 'route' => '#', 'roles' => []],
-                    ['label' => 'Announcements', 'icon' => 'fas fa-bullhorn', 'route' => '#', 'roles' => []],
-                    ['label' => 'System Status', 'icon' => 'fas fa-server', 'route' => '#', 'roles' => []],
+                    ['label' => 'View Profile', 'icon' => 'fas fa-user', 'route' => route('profile.view'), 'roles' => []],
+                    ['label' => 'Edit Profile', 'icon' => 'fas fa-user-edit', 'route' => route('profile.edit'), 'roles' => []],
+                    [
+                        'label' => 'User Management',
+                        'icon' => 'fas fa-users-cog',
+                        'route' => route('user-management'),
+                        'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN],
+                        'children' => [
+                            ['label' => 'Edit User', 'icon' => 'fas fa-user-edit', 'route' => '#'],
+                            ['label' => 'Assign Role', 'icon' => 'fas fa-user-tag', 'route' => '#'],
+                            ['label' => 'User Activity', 'icon' => 'fas fa-history', 'route' => '#'],
+                        ]
+                    ],
+                    [
+                        'label' => 'User Activity',
+                        'icon' => 'fas fa-history',
+                        'route' => route('user.activity'),
+                        'roles' => [User::ROLE_SUPER_ADMIN],
+                        'link_id' => 'user.activity'
+                    ],
+                    [
+                        'label' => 'Settings',
+                        'icon' => 'fas fa-cog',
+                        'route' => route('settings'),
+                        'roles' => [], // All authenticated users
+                        'link_id' => 'settings'
+                    ],
+                    [
+                        'label' => 'Notifications',
+                        'icon' => 'fas fa-bell',
+                        'route' => route('notifications'),
+                        'roles' => [], // All authenticated users
+                        'link_id' => 'notifications'
+                    ],
+                    [
+                        'label' => 'Help & Support',
+                        'icon' => 'fas fa-question-circle',
+                        'route' => route('help.support'),
+                        'roles' => [], // All authenticated users
+                        'link_id' => 'help.support'
+                    ],
+                    ['label' => 'Support Tickets', 'icon' => 'fas fa-ticket-alt', 'route' => route('support.tickets'), 'roles' => [User::ROLE_SUPER_ADMIN, User::ROLE_ACADEMY_ADMIN]],
+                    ['label' => 'FAQ Management', 'icon' => 'fas fa-question', 'route' => route('faq.management'), 'roles' => [User::ROLE_SUPER_ADMIN, User::ROLE_ACADEMY_ADMIN]],
+                    [
+                        'label' => 'Feedback',
+                        'icon' => 'fas fa-comment-dots',
+                        'route' => route('feedback'),
+                        'roles' => [], // All authenticated users
+                        'link_id' => 'feedback'
+                    ],
+                    
+                    [
+                        'label' => 'Feedback Management',
+                        'icon' => 'fas fa-comment-dots',
+                        'route' => route('feedback.management'),
+                        'roles' => [User::ROLE_SUPER_ADMIN, User::ROLE_ACADEMY_ADMIN],
+                        'link_id' => 'feedback.management'
+                    ],
+                    [
+                        'label' => 'Announcements',
+                        'icon' => 'fas fa-bullhorn',
+                        'route' => route('announcements'),
+                        'roles' => [], // All authenticated users
+                        'link_id' => 'announcements'
+                    ],
+                    // Add under admin section
+                    [
+                        'label' => 'Announcement Management',
+                        'icon' => 'fas fa-bullhorn',
+                        'route' => route('announcement.management'),
+                        'roles' => [User::ROLE_SUPER_ADMIN, User::ROLE_ACADEMY_ADMIN],
+                        'link_id' => 'announcement.management'
+                    ],
+                    [
+                        'label' => 'System Status',
+                        'icon' => 'fas fa-server',
+                        'route' => route('system-status'),
+                        'roles' => [], // All authenticated users
+                        'link_id' => 'system-status'
+                    ],
+                    // Add under admin section
+                    [
+                        'label' => 'System Status Management',
+                        'icon' => 'fas fa-server',
+                        'route' => route('system-status.management'),
+                        'roles' => [User::ROLE_SUPER_ADMIN, User::ROLE_ACADEMY_ADMIN],
+                        'link_id' => 'system-status.management'
+                    ],
+
+
                 ],
             ],
 
@@ -89,8 +166,15 @@ class DashboardSidebar extends Component
                     ['label' => 'Course Categories', 'icon' => 'fas fa-tags', 'route' => route('course-categories'), 'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN], 'link_id' => 'course-categories'],
                     ['label' => 'Course Reviews', 'icon' => 'fas fa-star', 'route' => route('course-reviews'), 'roles' => [User::ROLE_INSTRUCTOR, User::ROLE_ACADEMY_ADMIN], 'link_id' => 'course-reviews'],
                     ['label' => 'Course Approvals', 'icon' => 'fas fa-check-double', 'route' => route('course-approvals'), 'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN], 'link_id' => 'course-approvals'],
+                    ['label' => 'Available Courses', 'icon' => 'fas fa-book-open', 'route' => route('courses.available'), 'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN, User::ROLE_STUDENT]],
                 ]
             ],
+
+            //CBT
+            // [
+
+            // ],
+
 
             // User Management
             [
@@ -159,20 +243,20 @@ class DashboardSidebar extends Component
             ],
 
 
-                // Certification System
+            // Certification System
             [
                 'label' => 'Certification Center',
                 'icon' => 'fas fa-certificate',
                 'route' => '#',
-                'roles' => [],
+                'permissions' => [], // Visible to all authenticated users
                 'link_id' => 'certification',
                 'children' => [
-                    ['label' => 'My Certificates', 'icon' => 'fas fa-award', 'route' => route('certificates.index'), 'roles' => [User::ROLE_STUDENT], 'link_id' => 'certificates.index'],
-                    ['label' => 'Request Certificate', 'icon' => 'fas fa-file-signature', 'route' => route('certificates.request'), 'roles' => [User::ROLE_SUPER_ADMIN, User::ROLE_STUDENT], 'link_id' => 'certificates.request'],
-                    ['label' => 'Certificate Templates', 'icon' => 'fas fa-stamp', 'route' => route('certificates.templates'), 'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN], 'link_id' => 'certificates.templates'],
-                    ['label' => 'Verify Certificates', 'icon' => 'fas fa-check-circle', 'route' => route('certificates.public-verify'), 'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN], 'link_id' => 'certificates.public-verify'],
-                    // ['label' => 'Bulk Certificate Issuance', 'icon' => 'fas fa-barcode', 'route' => route('certificates.bulk'), 'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN], 'link_id' => 'certificates.bulk'],
-                    ['label' => 'Approve Certificates', 'icon' => 'fas fa-check-circle', 'route' => route('certificates.approvals'), 'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN], 'link_id' => 'certificates.approvals'],
+                    ['label' => 'My Certificates', 'icon' => 'fas fa-award', 'route' => route('certificates.index'), 'permissions' => ['view_own_certificates'], 'link_id' => 'certificates.index'],
+                    ['label' => 'Request Certificate', 'icon' => 'fas fa-file-signature', 'route' => route('certificates.request'), 'permissions' => ['request_certificates'], 'link_id' => 'certificates.request'],
+                    ['label' => 'Certificate Templates', 'icon' => 'fas fa-stamp', 'route' => route('certificates.templates'), 'permissions' => ['manage_certificate_templates'], 'link_id' => 'certificates.templates'],
+                    ['label' => 'Verify Certificates', 'icon' => 'fas fa-check-circle', 'route' => '/certificates/verify', 'permissions' => [], 'link_id' => 'certificates.public-verify'],
+                    // ['label' => 'Bulk Certificate Issuance', 'icon' => 'fas fa-barcode', 'route' => route('certificates.bulk'), 'permissions' => ['manage_certificates'], 'link_id' => 'certificates.bulk'], // Uncomment when implemented
+                    ['label' => 'Approve Certificates', 'icon' => 'fas fa-check-circle', 'route' => route('certificates.approvals'), 'permissions' => ['manage_certificates'], 'link_id' => 'certificates.approvals'],
                 ]
             ],
             // Mentorship Network
@@ -598,29 +682,21 @@ class DashboardSidebar extends Component
         ];
 
 
-        // Filter menu items based on user role
         $filteredMenuItems = [];
         foreach ($menuItems as $item) {
-            // If Super Admin, show all items
-            if ($user && $user->isSuperAdmin()) {
+            if ($user && $user->hasRole('super_admin')) {
                 $filteredMenuItems[] = $item;
-            }
-            // If roles array is empty, it's visible to all authenticated users
-            elseif ($user && empty($item['roles'])) {
+            } elseif ($user && empty($item['permissions'])) {
                 $filteredMenuItems[] = $item;
-            }
-            // If user has one of the specified roles
-            elseif ($user && !empty($item['roles']) && $user->hasRoleIn($item['roles'])) {
-                // If it's a parent item with children, filter its children too
+            } elseif ($user && !empty($item['permissions']) && $user->hasAnyPermission($item['permissions'])) {
                 if (isset($item['children'])) {
                     $filteredChildren = [];
                     foreach ($item['children'] as $child) {
-                        if (empty($child['roles']) || ($user && $user->isSuperAdmin()) || ($user && $user->hasRoleIn($child['roles']))) {
+                        if (empty($child['permissions']) || ($user && $user->hasRole('super_admin')) || ($user && $user->hasAnyPermission($child['permissions']))) {
                             $filteredChildren[] = $child;
                         }
                     }
-                    // Only add parent if it has visible children or is directly visible
-                    if (!empty($filteredChildren) || empty($item['roles'])) {
+                    if (!empty($filteredChildren) || empty($item['permissions'])) {
                         $item['children'] = $filteredChildren;
                         $filteredMenuItems[] = $item;
                     }
@@ -632,7 +708,7 @@ class DashboardSidebar extends Component
 
         return view('livewire.dashboard-sidebar', [
             'menuItems' => $filteredMenuItems,
-            'user' => $user // Pass the user object to the view for displaying name/role
+            'user' => $user
         ]);
     }
 }
