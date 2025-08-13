@@ -82,6 +82,13 @@ Route::middleware('auth')->group(function () {
 
 });
 
+
+Route::middleware('auth')->group(function () {
+    Route::get('/cbt/exam/{examId}', \App\Livewire\Component\CBT\TakeCbtExam::class)->name('cbt.exam');
+    Route::get('/cbt/results', \App\Livewire\Component\CBT\ViewCbtResults::class)->name('cbt.results');
+    Route::get('/cbt/management', \App\Livewire\Component\CBT\CbtManagement::class)->name('cbt.management');
+});
+
 require __DIR__ . '/auth.php';
 
 
