@@ -110,7 +110,7 @@
                     <div>
                         <label class="block text-sm font-medium text-gray-300 mb-2">Upload Audio File</label>
                         <input type="file" wire:model="mediaFile" accept="audio/*"
-                            class="w-full text-sm text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-purple-600 file:text-white hover:file:bg-purple-700">
+                            class="w-full text-sm text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-pink-600 file:text-white hover:file:bg-pink-700">
                         @error('mediaFile')
                             <span class="text-red-400 text-sm">{{ $message }}</span>
                         @enderror
@@ -122,7 +122,7 @@
                     </div>
                     <div class="flex space-x-3">
                         <button wire:click="addAudio"
-                            class="flex-1 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors">
+                            class="flex-1 px-4 py-2 bg-pink-600 text-white rounded-lg hover:bg-pink-700 transition-colors">
                             <i class="fas fa-plus mr-1"></i> Add Audio
                         </button>
                         <button wire:click="closeModals"

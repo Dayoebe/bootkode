@@ -37,4 +37,15 @@ class Assignment extends Model
     {
         return $this->belongsTo(Course::class);
     }
+
+
+
+//     <div class="flex items-center justify-between mb-4">
+//     <h2 class="text-xl font-bold text-white">{{ $assignment->title }}</h2>
+//     <livewire:component.common.bookmark-button 
+//         resourceableType="App\Models\Assignment" 
+//         resourceableId="{{ $assignment->id }}"
+//         courseId="{{ $assignment->course->id }}"
+//     />
+// </div>
 }

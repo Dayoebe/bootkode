@@ -88,7 +88,7 @@
 
             <div class="flex items-center space-x-1">
                 <button wire:click="showImageModal"
-                    class="flex flex-col items-center space-y-1 px-3 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors">
+                    class="flex flex-col items-center space-y-1 px-3 py-2 bg-pink-600 text-white rounded-lg hover:bg-pink-700 transition-colors">
                     <i class="fas fa-image"></i>
                     <span class="text-xs">Image</span>
                 </button>
@@ -195,7 +195,7 @@
                             </div>
                         @elseif($block['type'] === 'audio')
                             <div class="flex items-center space-x-3 p-3 bg-gray-700 rounded-lg">
-                                <i class="fas fa-music text-2xl text-purple-400"></i>
+                                <i class="fas fa-music text-2xl text-pink-400"></i>
                                 <div class="flex-1">
                                     <p class="text-white font-medium">{{ $block['title'] }}</p>
                                     <p class="text-xs text-gray-400">{{ $this->formatFileSize($block['file_size']) }}</p>

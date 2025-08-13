@@ -45,7 +45,7 @@
         </button>
 
         <button wire:click="saveContent" wire:loading.attr="disabled"
-            class="px-4 sm:px-6 py-2.5 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-xl font-semibold hover:opacity-90 transition-all duration-300 shadow-lg">
+            class="px-4 sm:px-6 py-2.5 bg-gradient-to-r from-pink-600 to-blue-600 text-white rounded-xl font-semibold hover:opacity-90 transition-all duration-300 shadow-lg">
             <i class="fas fa-save mr-1"></i>
             <span class="hidden sm:inline">Save Changes</span>
             <span class="sm:hidden">Save</span>

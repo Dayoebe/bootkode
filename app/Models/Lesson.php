@@ -45,6 +45,16 @@ class Lesson extends Model
     {
         return $this->hasMany(Quiz::class);
     }
+
+//     <div class="flex items-center gap-4 mb-4">
+//     <h1 class="text-2xl font-bold text-white">{{ $lesson->title }}</h1>
+//     <livewire:component.common.bookmark-button 
+//         resourceableType="App\Models\Lesson" 
+//         resourceableId="{{ $lesson->id }}"
+//         courseId="{{ $lesson->course->id }}"
+//         showText="true"
+//     />
+// </div>
 }
 
     

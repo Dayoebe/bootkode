@@ -97,7 +97,7 @@
                     @endif
 
                     <button wire:click="addQuestion"
-                        class="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors">
+                        class="px-4 py-2 bg-pink-600 text-white rounded-lg hover:bg-pink-700 transition-colors">
                         <i class="fas fa-plus mr-1"></i> Add Question
                     </button>
                 </div>
@@ -115,7 +115,7 @@
                                         <i class="fas fa-grip-vertical text-gray-400 cursor-move mt-1"></i>
                                         <div class="flex-1">
                                             <div class="flex items-center space-x-2 mb-2">
-                                                <span class="px-2 py-1 bg-purple-600 text-white text-xs rounded">
+                                                <span class="px-2 py-1 bg-pink-600 text-white text-xs rounded">
                                                     {{ ucfirst(str_replace('_', ' ', $question->type)) }}
                                                 </span>
                                             </div>
@@ -178,7 +178,7 @@
                 <p>No quiz selected.</p>
                 <p class="text-sm mt-2">Create a new quiz to get started.</p>
                 <button wire:click="showQuizModal"
-                    class="mt-4 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors">
+                    class="mt-4 px-4 py-2 bg-pink-600 text-white rounded-lg hover:bg-pink-700 transition-colors">
                     <i class="fas fa-plus mr-1"></i> Create Quiz
                 </button>
             </div>
@@ -222,7 +222,7 @@
                         </div>
                         <div class="flex space-x-3">
                             <button wire:click="createQuiz({{ $lessonId ?? 'null' }})"
-                                class="flex-1 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors">
+                                class="flex-1 px-4 py-2 bg-pink-600 text-white rounded-lg hover:bg-pink-700 transition-colors">
                                 <i class="fas fa-plus mr-1"></i> Create Quiz
                             </button>
                             <button wire:click="closeModals"
