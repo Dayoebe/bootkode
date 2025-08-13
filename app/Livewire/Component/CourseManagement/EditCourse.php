@@ -8,7 +8,7 @@ use App\Models\CourseCategory;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Rule;
 
-#[Layout('layouts.dashboard', ['title' => 'Edit Course'])]
+#[Layout('layouts.dashboard', ['title' => 'Edit Course', 'description' => 'Edit course details including title, description, category, and difficulty level', 'icon' => 'fas fa-edit', 'active' => 'instructor.edit-course'])]
 class EditCourse extends Component
 {
     public ?Course $course = null;

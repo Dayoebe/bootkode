@@ -8,7 +8,7 @@ use App\Models\CourseReview;
 use Livewire\Attributes\Layout;
 use Illuminate\Support\Facades\Auth;
 
-#[Layout('layouts.dashboard', ['title' => 'Course Reviews'])]
+#[Layout('layouts.dashboard', ['title' => 'Course Reviews', 'description' => 'Manage course reviews including viewing and responding to student feedback', 'icon' => 'fas fa-star', 'active' => 'instructor.course-reviews'])]
 class CourseReviews extends Component
 {
     use WithPagination;

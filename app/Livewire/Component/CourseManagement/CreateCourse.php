@@ -5,13 +5,14 @@ namespace App\Livewire\Component\CourseManagement;
 use Livewire\Component;
 use Livewire\WithFileUploads; // Trait for file uploads
 use App\Models\Course;
+use App\Models\User;
 use App\Models\CourseCategory;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use Livewire\Attributes\Layout; // Import the Layout attribute
 use Livewire\Attributes\Rule;
 
-#[Layout('layouts.dashboard', ['title' => 'Create New Course'])] // Set the layout for this page component
+#[Layout('layouts.dashboard', ['title' => 'Create New Course', 'description' => 'Create and manage new courses, including setting details and uploading content', 'icon' => 'fas fa-plus-circle', 'active' => 'instructor.create-course'])] // Set the layout for this page component
 class CreateCourse extends Component
 {
     use WithFileUploads;
@@ -58,10 +59,11 @@ class CreateCourse extends Component
     public function mount($course = null)
     {
         $this->categories = CourseCategory::orderBy('name')->get();
+        $user = Auth::user();
 
         // If the user is an instructor, they might not be able to set is_approved directly
         // This logic can be refined with policies later.
-        if (Auth::user()->isInstructor()) {
+        if ($user->hasRole('instructor')) {
             $this->is_approved = false; // Instructors cannot self-approve
         }
         if ($course) {
@@ -186,6 +188,7 @@ class CreateCourse extends Component
     {
         return view('livewire.component.course-management.create-course', [
             'categories' => CourseCategory::all(),
+            'user'=> User::all(),
         ]);
     }
 }

@@ -11,7 +11,7 @@ use App\Models\CourseCategory;
 use Livewire\Attributes\Computed;
 use Livewire\WithFileUploads;
 
-#[Layout('layouts.dashboard', ['title' => 'Course Builder'])]
+#[Layout('layouts.dashboard', ['title' => 'Course Builder', 'description' => 'Build and manage your course content including sections, lessons, and quizzes', 'icon' => 'fas fa-cogs', 'active' => 'instructor.course-builder'])]
 class CourseBuilder extends Component
 {
     use WithFileUploads;

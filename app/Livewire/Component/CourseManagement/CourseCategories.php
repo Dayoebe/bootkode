@@ -8,7 +8,7 @@ use Livewire\WithPagination;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\On;
 
-#[Layout('layouts.dashboard', ['title' => 'Course Categories'])]
+#[Layout('layouts.dashboard', ['title' => 'Course Categories', 'description' => 'Manage course categories including creation, editing, and deletion', 'icon' => 'fas fa-tags', 'active' => 'admin.course-categories'])]
 
 class CourseCategories extends Component
 {

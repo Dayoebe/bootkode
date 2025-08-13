@@ -73,7 +73,7 @@
                                     </button>
                                     
                                     <button wire:click="$dispatch('show-image-modal')"
-                                        class="flex flex-col items-center space-y-2 px-4 py-3 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors">
+                                        class="flex flex-col items-center space-y-2 px-4 py-3 bg-pink-600 text-white rounded-lg hover:bg-pink-700 transition-colors">
                                         <i class="fas fa-image text-xl"></i>
                                         <span class="text-sm">Image</span>
                                     </button>

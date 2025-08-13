@@ -7,7 +7,7 @@ use Livewire\WithPagination;
 use App\Models\Course;
 use Livewire\Attributes\Layout;
 
-#[Layout('layouts.dashboard', ['title' => 'Course Approvals'])]
+#[Layout('layouts.dashboard', ['title' => 'Course Approvals', 'description' => 'Manage course approvals including approving and rejecting courses', 'icon' => 'fas fa-check-circle', 'active' => 'admin.course-approvals'])]
 class CourseApprovals extends Component
 {
     use WithPagination;

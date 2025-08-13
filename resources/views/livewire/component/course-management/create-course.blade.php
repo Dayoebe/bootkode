@@ -105,7 +105,7 @@
         @if (Auth::user()->isSuperAdmin() || Auth::user()->isAcademyAdmin())
             <div class="flex items-center space-x-4">
                 <input type="checkbox" id="is_approved" wire:model.defer="is_approved"
-                       class="h-5 w-5 text-purple-600 rounded border-gray-600 bg-gray-700 focus:ring-purple-500">
+                       class="h-5 w-5 text-pink-600 rounded border-gray-600 bg-gray-700 focus:ring-pink-500">
                 <label for="is_approved" class="text-sm font-medium text-gray-300">Approve Course</label>
             </div>
         @endif
@@ -113,7 +113,7 @@
         <!-- Submit Button -->
         <div class="flex justify-end pt-4 border-t border-gray-700 mt-6">
             <button type="submit"
-                    class="px-8 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl font-semibold hover:from-blue-700 hover:to-purple-700 transition-all duration-300 shadow-md flex items-center">
+                    class="px-8 py-3 bg-gradient-to-r from-blue-600 to-pink-600 text-white rounded-xl font-semibold hover:from-blue-700 hover:to-pink-700 transition-all duration-300 shadow-md flex items-center">
                 <i class="fas fa-plus-circle mr-2"></i> Create Course
             </button>
         </div>
