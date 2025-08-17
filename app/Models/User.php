@@ -22,10 +22,70 @@ class User extends Authenticatable implements MustVerifyEmail
     const ROLE_AFFILIATE_AMBASSADOR = 'affiliate_ambassador';
     const ROLE_STUDENT = 'student';
 
+    
+    public static function getRoles()
+{
+    return [
+        self::ROLE_SUPER_ADMIN,
+        self::ROLE_ACADEMY_ADMIN,
+        self::ROLE_INSTRUCTOR,
+        self::ROLE_MENTOR,
+        self::ROLE_CONTENT_EDITOR,
+        self::ROLE_AFFILIATE_AMBASSADOR,
+        self::ROLE_STUDENT,
+    ];
+}
+    
     // Activity Logging Configuration
+
+
     protected static $logOnlyDirty = true; // Only log changed attributes
     protected static $submitEmptyLogs = false; // Don't log if no changes
 
+    protected static function booted()
+    {
+        static::saved(function ($user) {
+            // Sync the role column with Spatie roles
+            if ($user->isDirty('role')) {
+                $user->syncRoles([$user->role]);
+            }
+        });
+    }
+    // Role checking methods
+    public function isSuperAdmin(): bool
+    {
+        return $this->hasRole(self::ROLE_SUPER_ADMIN);
+    }
+
+    public function isAcademyAdmin(): bool
+    {
+        return $this->hasRole(self::ROLE_ACADEMY_ADMIN);
+    }
+
+    public function isInstructor(): bool
+    {
+        return $this->hasRole(self::ROLE_INSTRUCTOR);
+    }
+
+    public function isMentor(): bool
+    {
+        return $this->hasRole(self::ROLE_MENTOR);
+    }
+
+    public function isContentEditor(): bool
+    {
+        return $this->hasRole(self::ROLE_CONTENT_EDITOR);
+    }
+
+    public function isAffiliateAmbassador(): bool
+    {
+        return $this->hasRole(self::ROLE_AFFILIATE_AMBASSADOR);
+    }
+
+    public function isStudent(): bool
+    {
+        return $this->hasRole(self::ROLE_STUDENT);
+    }
     protected $fillable = [
         'name',
         'email',
@@ -70,58 +130,62 @@ class User extends Authenticatable implements MustVerifyEmail
     ];
 
 
-// Relationships
-public function courses()
-{
-    return $this->belongsToMany(Course::class, 'course_user')
-        ->withTimestamps()
-        ->withPivot(['last_accessed_at']);
-}
+    // Relationships
+    public function courses()
+    {
+        return $this->belongsToMany(Course::class, 'course_user')
+            ->withTimestamps()
+            ->withPivot(['last_accessed_at']);
+    }
 
-public function completedLessons()
-{
-    return $this->belongsToMany(Lesson::class, 'lesson_user')
-        ->withTimestamps()
-        ->withPivot(['completed_at']);
-}
+    public function completedLessons()
+    {
+        return $this->belongsToMany(Lesson::class, 'lesson_user')
+            ->withTimestamps()
+            ->withPivot(['completed_at']);
+    }
 
-public function wishlists()
-{
-    return $this->hasMany(Wishlist::class);
-}
+    public function wishlists()
+    {
+        return $this->hasMany(Wishlist::class);
+    }
 
-public function savedResources()
-{
-    return $this->hasMany(SavedResource::class);
-}
+    public function enrollments()
+    {
+        return $this->hasMany(CourseEnrollment::class);
+    }
+    public function savedResources()
+    {
+        return $this->hasMany(SavedResource::class);
+    }
 
-public function downloadedContent()
-{
-    return $this->hasMany(DownloadableContent::class);
-}
+    public function downloadedContent()
+    {
+        return $this->hasMany(DownloadableContent::class);
+    }
 
-public function offlineNotes()
-{
-    return $this->hasMany(OfflineNote::class);
-}
+    public function offlineNotes()
+    {
+        return $this->hasMany(OfflineNote::class);
+    }
 
-public function certificates()
-{
-    return $this->hasMany(Certificate::class);
-}
+    public function certificates()
+    {
+        return $this->hasMany(Certificate::class);
+    }
 
-public function hasCompletedCourse(Course $course): bool
-{
-    $totalLessons = $course->sections()->with('lessons')->get()->sum(function ($section) {
-        return $section->lessons->count();
-    });
+    public function hasCompletedCourse(Course $course): bool
+    {
+        $totalLessons = $course->sections()->with('lessons')->get()->sum(function ($section) {
+            return $section->lessons->count();
+        });
 
-    $completedLessons = $this->completedLessons()
-        ->whereIn('lessons.id', $course->sections()->with('lessons')->get()->flatMap->lessons->pluck('id'))
-        ->count();
+        $completedLessons = $this->completedLessons()
+            ->whereIn('lessons.id', $course->sections()->with('lessons')->get()->flatMap->lessons->pluck('id'))
+            ->count();
 
-    return $completedLessons >= $totalLessons;
-}
+        return $completedLessons >= $totalLessons;
+    }
 
 
 
@@ -274,5 +338,5 @@ public function hasCompletedCourse(Course $course): bool
     {
         $this->notify(new \App\Notifications\CustomVerifyEmail());
     }
-   
+
 }

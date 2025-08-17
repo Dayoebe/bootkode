@@ -23,13 +23,17 @@ Route::middleware(['auth', 'verified'])->prefix('certificates')->group(function 
     });
 });
 
-
+Route::get('/projects/{slug}', [App\Http\Controllers\ProjectController::class, 'show'])->name('project.show');
 
 
 // Group for authenticated user profiles
 Route::middleware('auth')->group(function () {
     Route::get('/dashboard/profile/view', \App\Livewire\Component\Profile\ViewProfile::class)->name('profile.view');
     Route::get('/dashboard/profile/edit', \App\Livewire\Component\Profile\EditProfile::class)->name('profile.edit');
+    Route::get('/dashboard/all-users', \App\Livewire\Component\User\AllUser::class)->name('all-users');
+
+    
+
 
 });
 

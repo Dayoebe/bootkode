@@ -45,6 +45,9 @@ return new class extends Migration {
             // Account Status
             $table->boolean('is_active')->default(true);
             $table->timestamp('last_login_at')->nullable();
+            $table->decimal('offline_content_size_mb', 8, 2)->default(0); 
+            $table->boolean('receive_course_updates')->default(true);
+            $table->boolean('receive_certificate_notifications')->default(true);           
             
             // Indexes
             $table->index('is_active');

@@ -5,26 +5,18 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Course extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'instructor_id',
-        'category_id',
-        'title',
-        'slug',
-        'description',
-        'thumbnail',
-        'difficulty_level',
-        'estimated_duration_minutes',
-        'price',
-        'is_premium',
-        'has_offline_content',
-        'is_published',
-        'is_approved',
+        'instructor_id', 'category_id', 'title', 'slug', 'description', 'thumbnail',
+        'difficulty_level', 'estimated_duration_minutes', 'price', 'is_premium',
+        'has_offline_content', 'is_published', 'is_approved', 'target_audience',
+        'learning_outcomes', 'prerequisites', 'syllabus_overview', 'total_modules',
+        'total_projects', 'total_assessments', 'faqs', 'certificate_template',
+        'has_projects', 'has_assessments', 'completion_rate_threshold',
     ];
 
     protected $casts = [
@@ -32,115 +24,76 @@ class Course extends Model
         'is_published' => 'boolean',
         'is_approved' => 'boolean',
         'has_offline_content' => 'boolean',
+        'has_projects' => 'boolean',
+        'has_assessments' => 'boolean',
+        'learning_outcomes' => 'array',
+        'prerequisites' => 'array',
+        'faqs' => 'array',
     ];
 
-    /**
-     * Get the instructor that owns the course.
-     */
     public function instructor()
     {
         return $this->belongsTo(User::class, 'instructor_id');
     }
 
-    /**
-     * Get the category that the course belongs to.
-     */
     public function category()
     {
-        return $this->belongsTo(CourseCategory::class, 'category_id');
+        return $this->belongsTo(CourseCategory::class);
     }
-
-    /**
-     * Get the modules for the course.
-     */
-    public function modules()
+    public function enrollments()
     {
-        return $this->hasMany(Module::class)->orderBy('order');
+        return $this->hasMany(CourseEnrollment::class);
     }
 
-    /**
-     * Get the reviews for the course.
-     */
+    public function sections()
+    {
+        return $this->hasMany(Section::class);
+    }
+
+    public function allLessons()
+    {
+        return $this->hasManyThrough(Lesson::class, Section::class, 'course_id', 'section_id', 'id', 'id')
+            ->orderBy('sections.order')
+            ->orderBy('lessons.order');
+    }
+
+    public function assessments()
+    {
+        return $this->hasMany(Assessment::class);
+    }
+
     public function reviews()
     {
         return $this->hasMany(CourseReview::class);
     }
 
-    /**
-     * Get the assignments for the course.
-     */
-
-// In app/Models/Course.php
-public function enrollments()
-{
-    return $this->belongsToMany(User::class, 'course_user')->withTimestamps();
-}
-public function sections()
-{
-    return $this->hasMany(CourseSection::class)->orderBy('order');
-}
-
-    public function assignments()
-    {
-        return $this->hasMany(Assignment::class);
-    }
-
-    public function wishlistedBy()
-    {
-        return $this->belongsToMany(User::class, 'wishlists');
-    }
-    /**
-     * Automatically generate slug when saving.
-     */
     protected static function boot()
     {
         parent::boot();
-
         static::creating(function ($course) {
             $course->slug = Str::slug($course->title);
         });
-
         static::updating(function ($course) {
             if ($course->isDirty('title')) {
                 $course->slug = Str::slug($course->title);
             }
         });
-    }
-    protected $appends = ['offline_size_mb', 'offline_content_types'];
-
-public function getOfflineSizeMbAttribute()
-{
-    // Calculate total size of offline content (lessons, pdfs, etc.)
-    return $this->lessons()->sum('size_mb') + $this->pdfResources()->sum('size_mb');
-}
-
-public function getOfflineContentTypesAttribute()
-{
-    $types = [];
-    
-    if ($this->lessons()->exists()) $types[] = 'lesson';
-    if ($this->pdfResources()->exists()) $types[] = 'pdf';
-    if ($this->audioResources()->exists()) $types[] = 'audio';
-    
-    return $types;
-}
-
-public function certificates()
-{
-    return $this->hasMany(Certificate::class);
-}
-public function feedbacks()
-    {
-        return $this->hasMany(Feedback::class);
+        static::saving(function ($course) {
+            $course->total_modules = $course->sections()->count();
+            $course->total_projects = $course->assessments()->where('type', 'project')->count();
+            $course->total_assessments = $course->assessments()->count();
+            $course->has_projects = $course->total_projects > 0;
+            $course->has_assessments = $course->total_assessments > 0;
+        });
     }
 
-    public function getAverageRatingAttribute()
+    public function getFormattedLearningOutcomesAttribute()
     {
-        return $this->feedbacks()->avg('rating') ?: 0;
+        return collect($this->learning_outcomes)->map(fn($outcome) => "- $outcome")->join("\n");
     }
 
-    public function getRatingCountAttribute()
+    public function getTotalStorageAttribute()
     {
-        return $this->feedbacks()->count();
+        return $this->allLessons()->sum('size_mb');
     }
 }
