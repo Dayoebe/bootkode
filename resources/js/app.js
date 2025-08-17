@@ -49,34 +49,6 @@ window.addEventListener('online', updateOnlineStatus);
 window.addEventListener('offline', updateOnlineStatus);
 updateOnlineStatus();
 
-// import EditorJS from '@editorjs/editorjs';
-
-import EditorJS from '@editorjs/editorjs';
-import Header from '@editorjs/header'; // Import tools
-import List from '@editorjs/list';
-
-document.addEventListener('alpine:init', () => {
-    Alpine.data('editorJs', function (id, initialData, onSave) {
-        return {
-            editor: null,
-            init() {
-                this.editor = new EditorJS({
-                    holder: id,
-                    data: JSON.parse(initialData),
-                    tools: {
-                        header: Header,
-                        list: List,
-                        // Add more tools here, e.g., image: { class: ImageTool, config: { endpoints: { byFile: '/upload' } } } for image uploads (implement endpoint in Laravel)
-                    },
-                    onChange: async (api) => {
-                        const output = await api.saver.save();
-                        onSave(JSON.stringify(output));
-                    }
-                });
-            }
-        };
-    });
-});
 
 // Handle certificate downloads from Livewire events
 document.addEventListener('DOMContentLoaded', function() {
@@ -90,3 +62,9 @@ document.addEventListener('DOMContentLoaded', function() {
 import { Html5QrcodeScanner } from 'html5-qrcode';
 
 window.Html5QrcodeScanner = Html5QrcodeScanner;
+
+document.addEventListener('click', (e) => {
+    if (e.target.closest('nav button, nav a') && 'vibrate' in navigator) {
+        navigator.vibrate(10); // Short pulse
+    }
+});
