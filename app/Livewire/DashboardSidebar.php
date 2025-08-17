@@ -4,711 +4,193 @@ namespace App\Livewire;
 
 use Livewire\Component;
 use App\Models\User;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Log;
 
 class DashboardSidebar extends Component
 {
     public $activeLink = 'dashboard';
+    public $user;
+
     public function mount()
     {
-        // Example: Set active link based on current route name
-        $currentRouteName = request()->route()->getName();
-        if (str_contains($currentRouteName, 'super_admin')) {
-            $this->activeLink = 'super_admin_dashboard';
-        } elseif (str_contains($currentRouteName, 'academy_admin')) {
-            $this->activeLink = 'academy_admin_dashboard';
-        } elseif (str_contains($currentRouteName, 'instructor')) {
-            $this->activeLink = 'instructor_dashboard';
-        } elseif (str_contains($currentRouteName, 'mentor')) {
-            $this->activeLink = 'mentor_dashboard';
-        } elseif (str_contains($currentRouteName, 'content_editor')) {
-            $this->activeLink = 'content_editor_dashboard';
-        } elseif (str_contains($currentRouteName, 'affiliate_ambassador')) {
-            $this->activeLink = 'affiliate_ambassador_dashboard';
-        } elseif (str_contains($currentRouteName, 'student')) {
-            $this->activeLink = 'student_dashboard';
-        } elseif (str_contains($currentRouteName, 'profile')) {
-            $this->activeLink = 'profile_management';
-        } elseif (str_contains($currentRouteName, 'course_management')) {
-            $this->activeLink = 'all-course';
-        } elseif (str_contains($currentRouteName, 'course-categories')) {
-            $this->activeLink = 'course_management.course_categories';
-        } elseif (str_contains($currentRouteName, 'course-builder')) {
-            $this->activeLink = 'course_management.course_builder';
-        } elseif (str_contains($currentRouteName, 'course-reviews')) {
-            $this->activeLink = 'course_management.course_reviews';
-        } elseif (str_contains($currentRouteName, 'course-approvals')) {
-            $this->activeLink = 'course_management.course_approvals';
-        } elseif (str_contains($currentRouteName, 'user-management')) {
-            $this->activeLink = 'user-management';
-        } else {
-            $this->activeLink = 'dashboard';
+        // Cache the authenticated user
+        $this->user = Auth::user();
+
+        // Only attempt to get the route name in an HTTP context
+        if (!app()->runningInConsole()) {
+            $currentRouteName = request()->route()?->getName() ?? 'dashboard';
+            $routeMap = config('menu.route_map', [
+                'super_admin.dashboard' => 'super_admin_dashboard',
+                'academy_admin.dashboard' => 'academy_admin_dashboard',
+                'instructor.dashboard' => 'instructor_dashboard',
+                'mentor.dashboard' => 'mentor_dashboard',
+                'content_editor.dashboard' => 'content_editor_dashboard',
+                'affiliate_ambassador.dashboard' => 'affiliate_ambassador_dashboard',
+                'student.dashboard' => 'student_dashboard',
+                'profile.edit' => 'profile_management',
+                'course_management' => 'all-course',
+                'course-categories' => 'course_management.course_categories',
+                'course-builder' => 'course_management.course_builder',
+                'course-reviews' => 'course_management.course_reviews',
+                'course-approvals' => 'course_management.course_approvals',
+                'user-management' => 'user-management',
+                'user.activity' => 'user.activity',
+                'settings' => 'settings',
+                'notifications' => 'notifications',
+                'help.support' => 'help.support',
+                'support.tickets' => 'support.tickets',
+                'faq.management' => 'faq.management',
+                'feedback' => 'feedback',
+                'feedback.management' => 'feedback.management',
+                'announcements' => 'announcements',
+                'announcement.management' => 'announcement.management',
+                'system-status' => 'system-status',
+                'system-status.management' => 'system-status.management',
+                'courses.available' => 'courses.available',
+                'certificates.index' => 'certificates.index',
+                'certificates.request' => 'certificates.request',
+                'certificates.templates' => 'certificates.templates',
+                'certificates.approvals' => 'certificates.approvals',
+                'certificates.public-verify' => 'certificates.public-verify',
+                'certificates.bulk' => 'certificates.bulk',
+                'certificates.approval' => 'certificates.approval',
+                'certificates.download' => 'certificates.download',
+                'course.preview' => 'course.preview',
+                'edit-course' => 'edit-course',
+                'courses.enroll' => 'courses.enroll',
+                'courses.start' => 'courses.start',
+                'courses.show' => 'courses.show',
+                'courses.approvals' => 'courses.approvals',
+                'courses.reviews' => 'courses.reviews',
+                'courses.create' => 'courses.create',
+                'courses.categories' => 'courses.categories',
+                'courses.all' => 'courses.all',
+            ]);
+
+            $this->activeLink = $routeMap[$currentRouteName] ?? 'dashboard';
         }
-
     }
+
     /**
-     * Render the component view.
+     * Get filtered menu items based on user roles, cached for performance.
+     *
+     * @return array
      */
-    public function render()
+    public function getFilteredMenuItemsProperty()
     {
-        $user = auth()->user();
-        $menuItems = [
-            [
-                'label' => 'Dashboard Overview',
-                'icon' => 'fas fa-tachometer-alt',
-                'route' => '#',  // Or point to a main dashboard route
-                'roles' => [],
-                'link_id' => 'dashboard',
-                'children' => [
-                    ['label' => 'View Profile', 'icon' => 'fas fa-user', 'route' => route('profile.view'), 'roles' => []],
-                    ['label' => 'Edit Profile', 'icon' => 'fas fa-user-edit', 'route' => route('profile.edit'), 'roles' => []],
-                    [
-                        'label' => 'User Management',
-                        'icon' => 'fas fa-users-cog',
-                        'route' => route('user-management'),
-                        'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN],
-                        'children' => [
-                            ['label' => 'Edit User', 'icon' => 'fas fa-user-edit', 'route' => '#'],
-                            ['label' => 'Assign Role', 'icon' => 'fas fa-user-tag', 'route' => '#'],
-                            ['label' => 'User Activity', 'icon' => 'fas fa-history', 'route' => '#'],
-                        ]
-                    ],
-                    [
-                        'label' => 'User Activity',
-                        'icon' => 'fas fa-history',
-                        'route' => route('user.activity'),
-                        'roles' => [User::ROLE_SUPER_ADMIN],
-                        'link_id' => 'user.activity'
-                    ],
-                    [
-                        'label' => 'Settings',
-                        'icon' => 'fas fa-cog',
-                        'route' => route('settings'),
-                        'roles' => [], // All authenticated users
-                        'link_id' => 'settings'
-                    ],
-                    [
-                        'label' => 'Notifications',
-                        'icon' => 'fas fa-bell',
-                        'route' => route('notifications'),
-                        'roles' => [], // All authenticated users
-                        'link_id' => 'notifications'
-                    ],
-                    [
-                        'label' => 'Help & Support',
-                        'icon' => 'fas fa-question-circle',
-                        'route' => route('help.support'),
-                        'roles' => [], // All authenticated users
-                        'link_id' => 'help.support'
-                    ],
-                    ['label' => 'Support Tickets', 'icon' => 'fas fa-ticket-alt', 'route' => route('support.tickets'), 'roles' => [User::ROLE_SUPER_ADMIN, User::ROLE_ACADEMY_ADMIN]],
-                    ['label' => 'FAQ Management', 'icon' => 'fas fa-question', 'route' => route('faq.management'), 'roles' => [User::ROLE_SUPER_ADMIN, User::ROLE_ACADEMY_ADMIN]],
-                    [
-                        'label' => 'Feedback',
-                        'icon' => 'fas fa-comment-dots',
-                        'route' => route('feedback'),
-                        'roles' => [], // All authenticated users
-                        'link_id' => 'feedback'
-                    ],
-                    
-                    [
-                        'label' => 'Feedback Management',
-                        'icon' => 'fas fa-comment-dots',
-                        'route' => route('feedback.management'),
-                        'roles' => [User::ROLE_SUPER_ADMIN, User::ROLE_ACADEMY_ADMIN],
-                        'link_id' => 'feedback.management'
-                    ],
-                    [
-                        'label' => 'Announcements',
-                        'icon' => 'fas fa-bullhorn',
-                        'route' => route('announcements'),
-                        'roles' => [], // All authenticated users
-                        'link_id' => 'announcements'
-                    ],
-                    // Add under admin section
-                    [
-                        'label' => 'Announcement Management',
-                        'icon' => 'fas fa-bullhorn',
-                        'route' => route('announcement.management'),
-                        'roles' => [User::ROLE_SUPER_ADMIN, User::ROLE_ACADEMY_ADMIN],
-                        'link_id' => 'announcement.management'
-                    ],
-                    [
-                        'label' => 'System Status',
-                        'icon' => 'fas fa-server',
-                        'route' => route('system-status'),
-                        'roles' => [], // All authenticated users
-                        'link_id' => 'system-status'
-                    ],
-                    // Add under admin section
-                    [
-                        'label' => 'System Status Management',
-                        'icon' => 'fas fa-server',
-                        'route' => route('system-status.management'),
-                        'roles' => [User::ROLE_SUPER_ADMIN, User::ROLE_ACADEMY_ADMIN],
-                        'link_id' => 'system-status.management'
-                    ],
+        $user = $this->user;
 
+        return Cache::remember('filtered_menu_' . ($user ? $user->id : 'guest'), 3600, function () use ($user) {
+            $menuItems = config('menu.items', []);
+            $filteredMenuItems = [];
 
-                ],
-            ],
-
-            // Course Management
-            [
-                'label' => 'Course Management',
-                'icon' => 'fas fa-laptop-code',
-                'route' => '#',
-                'roles' => [User::ROLE_INSTRUCTOR, User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN],
-                'link_id' => 'course_management',
-                'children' => [
-                    ['label' => 'Course Management', 'icon' => 'fas fa-laptop-code', 'route' => route('all-course'), 'roles' => [User::ROLE_INSTRUCTOR, User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN], 'link_id' => 'all-course'],
-                    ['label' => 'Create Course', 'icon' => 'fas fa-plus-circle', 'route' => route('course_management.create_course'), 'roles' => [User::ROLE_INSTRUCTOR, User::ROLE_ACADEMY_ADMIN], 'link_id' => 'course_management.create_course'],
-                    ['label' => 'Course Builder', 'icon' => 'fas fa-puzzle-piece', 'route' => route('all-course'), 'roles' => [User::ROLE_INSTRUCTOR, User::ROLE_ACADEMY_ADMIN], 'link_id' => 'all-course'],
-                    ['label' => 'Course Categories', 'icon' => 'fas fa-tags', 'route' => route('course-categories'), 'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN], 'link_id' => 'course-categories'],
-                    ['label' => 'Course Reviews', 'icon' => 'fas fa-star', 'route' => route('course-reviews'), 'roles' => [User::ROLE_INSTRUCTOR, User::ROLE_ACADEMY_ADMIN], 'link_id' => 'course-reviews'],
-                    ['label' => 'Course Approvals', 'icon' => 'fas fa-check-double', 'route' => route('course-approvals'), 'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN], 'link_id' => 'course-approvals'],
-                    ['label' => 'Available Courses', 'icon' => 'fas fa-book-open', 'route' => route('courses.available'), 'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN, User::ROLE_STUDENT]],
-                ]
-            ],
-
-            //CBT
-            // [
-
-            // ],
-
-
-            // User Management
-            [
-                'label' => 'User Management',
-                'icon' => 'fas fa-users-cog',
-                'route' => '#',
-                'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN],
-                'link_id' => 'user-management',
-                'children' => [
-                    ['label' => 'All Users', 'icon' => 'fas fa-users', 'route' => route('user-management'), 'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN], 'link_id' => 'user-management'],
-                    ['label' => 'User Groups', 'icon' => 'fas fa-object-group', 'route' => '#', 'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN]],
-                    ['label' => 'Bulk Import', 'icon' => 'fas fa-file-import', 'route' => '#', 'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN]],
-                    ['label' => 'Access Control', 'icon' => 'fas fa-user-shield', 'route' => '#', 'roles' => [User::ROLE_SUPER_ADMIN]],
-                    ['label' => 'Activity Logs', 'icon' => 'fas fa-clipboard-list', 'route' => '#', 'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN]],
-                    ['label' => 'User Management', 'icon' => 'fas fa-users-cog', 'route' => 'user-management', 'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN]],
-                    ['label' => 'Mentor Management', 'icon' => 'fas fa-user-tie', 'route' => '#', 'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN]],
-                    ['label' => 'Feedback System', 'icon' => 'fas fa-comments', 'route' => '#', 'roles' => []],
-                    ['label' => 'Mentorship Network', 'icon' => 'fas fa-hands-helping', 'route' => '#', 'roles' => []],
-                ]
-            ],
-            // Learning Management
-            [
-                'label' => 'Learning Hub',
-                'icon' => 'fas fa-graduation-cap',
-                'route' => '#',
-                'roles' => [],
-                'link_id' => 'learning_hub',
-                'children' => [
-                    [
-                        'label' => 'My Courses',
-                        'icon' => 'fas fa-book',
-                        'route' => route('student.enrolled-courses'),
-                        'roles' => [User::ROLE_STUDENT],
-                        // 'component' => 'enrolled-courses',
-                        'link_id' => 'student.enrolled-courses',
-                    ],
-                    [
-                        'label' => 'Course Catalog',
-                        'icon' => 'fas fa-book-open',
-                        'route' => route('student.course-catalog'),
-                        'roles' => [User::ROLE_STUDENT, User::ROLE_INSTRUCTOR, User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN],
-                    ],
-                    [
-                        'label' => 'Learning Analytics',
-                        'icon' => 'fas fa-chart-line',
-                        'route' => route('student.learning-analytics'),
-                        'roles' => [User::ROLE_STUDENT, User::ROLE_INSTRUCTOR, User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN],
-                        'component' => 'learning-analytics'
-                    ],
-
-                    [
-                        'label' => 'Saved Resources',
-                        'icon' => 'fas fa-bookmark',
-                        'route' => route('student.saved-resources'),
-                        'roles' => [User::ROLE_STUDENT],
-                        'link_id' => 'student.saved-resources'
-                    ],
-                    [
-                        'label' => 'Offline Learning',
-                        'icon' => 'fas fa-download',
-                        'route' => route('student.offline-learning'),
-                        'roles' => [User::ROLE_STUDENT],
-                        'link_id' => 'student.offline-learning',
-                    ]
-                ]
-            ],
-
-
-            // Certification System
-            [
-                'label' => 'Certification Center',
-                'icon' => 'fas fa-certificate',
-                'route' => '#',
-                'permissions' => [], // Visible to all authenticated users
-                'link_id' => 'certification',
-                'children' => [
-                    ['label' => 'My Certificates', 'icon' => 'fas fa-award', 'route' => route('certificates.index'), 'permissions' => ['view_own_certificates'], 'link_id' => 'certificates.index'],
-                    ['label' => 'Request Certificate', 'icon' => 'fas fa-file-signature', 'route' => route('certificates.request'), 'permissions' => ['request_certificates'], 'link_id' => 'certificates.request'],
-                    ['label' => 'Certificate Templates', 'icon' => 'fas fa-stamp', 'route' => route('certificates.templates'), 'permissions' => ['manage_certificate_templates'], 'link_id' => 'certificates.templates'],
-                    ['label' => 'Verify Certificates', 'icon' => 'fas fa-check-circle', 'route' => '/certificates/verify', 'permissions' => [], 'link_id' => 'certificates.public-verify'],
-                    // ['label' => 'Bulk Certificate Issuance', 'icon' => 'fas fa-barcode', 'route' => route('certificates.bulk'), 'permissions' => ['manage_certificates'], 'link_id' => 'certificates.bulk'], // Uncomment when implemented
-                    ['label' => 'Approve Certificates', 'icon' => 'fas fa-check-circle', 'route' => route('certificates.approvals'), 'permissions' => ['manage_certificates'], 'link_id' => 'certificates.approvals'],
-                ]
-            ],
-            // Mentorship Network
-            [
-                'label' => 'Mentorship Network',
-                'icon' => 'fas fa-hands-helping',
-                'route' => '#',
-                'roles' => [],
-                'link_id' => 'mentorship',
-                'children' => [
-                    ['label' => 'Find a Mentor', 'icon' => 'fas fa-search', 'route' => '#', 'roles' => [User::ROLE_STUDENT]],
-                    ['label' => 'Mentor Dashboard', 'icon' => 'fas fa-chalkboard-teacher', 'route' => '#', 'roles' => [User::ROLE_MENTOR]],
-                    ['label' => 'Mentorship Requests', 'icon' => 'fas fa-bell', 'route' => '#', 'roles' => [User::ROLE_MENTOR, User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN]],
-                    ['label' => 'Code Review System', 'icon' => 'fas fa-code', 'route' => '#', 'roles' => [User::ROLE_MENTOR, User::ROLE_STUDENT]],
-                    ['label' => 'Session Scheduling', 'icon' => 'fas fa-calendar-check', 'route' => '#', 'roles' => [User::ROLE_MENTOR, User::ROLE_STUDENT]],
-                    ['label' => 'Mentor Resources', 'icon' => 'fas fa-tools', 'route' => '#', 'roles' => [User::ROLE_MENTOR]],
-                    ['label' => 'Mentor Management', 'icon' => 'fas fa-user-tie', 'route' => '#', 'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN]],
-                ]
-            ],
-
-            // Assessment & Quizzes
-            [
-                'label' => 'Assessment Center',
-                'icon' => 'fas fa-clipboard-check',
-                'route' => '#',
-                'roles' => [],
-                'link_id' => 'assessment_center',
-                'children' => [
-                    ['label' => 'My Quizzes', 'icon' => 'fas fa-list-alt', 'route' => '#', 'roles' => [User::ROLE_STUDENT]],
-                    ['label' => 'Create Quiz', 'icon' => 'fas fa-plus-square', 'route' => '#', 'roles' => [User::ROLE_INSTRUCTOR, User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN]],
-                    ['label' => 'Quiz Analytics', 'icon' => 'fas fa-chart-bar', 'route' => '#', 'roles' => [User::ROLE_INSTRUCTOR, User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN]],
-                    ['label' => 'Quiz Library', 'icon' => 'fas fa-book', 'route' => '#', 'roles' => [User::ROLE_INSTRUCTOR, User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN]],
-                    ['label' => 'Assessment Settings', 'icon' => 'fas fa-cog', 'route' => '#', 'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN]],
-                ],
-            ],
-
-
-            // Community
-            [
-                'label' => 'Community Center',
-                'icon' => 'fas fa-users',
-                'route' => '#',
-                'roles' => [],
-                'link_id' => 'community',
-                'children' => [
-                    ['label' => 'Discussion Forums', 'icon' => 'fas fa-comments', 'route' => '#', 'roles' => []],
-                    ['label' => 'Study Groups', 'icon' => 'fas fa-user-friends', 'route' => '#', 'roles' => []],
-                    ['label' => 'Code Challenges', 'icon' => 'fas fa-trophy', 'route' => '#', 'roles' => []],
-                    ['label' => 'Live Events', 'icon' => 'fas fa-video', 'route' => '#', 'roles' => []],
-                    ['label' => 'Community Moderation', 'icon' => 'fas fa-shield-alt', 'route' => '#', 'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN]],
-                    ['label' => 'Feedback System', 'icon' => 'fas fa-comments', 'route' => '#', 'roles' => [User::ROLE_STUDENT, User::ROLE_INSTRUCTOR]],
-                ]
-            ],
-
-            // AI Learning Tools
-            [
-                'label' => 'AI Learning Tools',
-                'icon' => 'fas fa-robot',
-                'route' => '#',
-                'roles' => [],
-                'link_id' => 'ai_tools',
-                'children' => [
-                    ['label' => 'Code Assistant', 'icon' => 'fas fa-code', 'route' => '#', 'roles' => []],
-                    ['label' => 'Interview Prep Bot', 'icon' => 'fas fa-comment-dots', 'route' => '#', 'roles' => []],
-                    ['label' => 'Learning Recommendations', 'icon' => 'fas fa-lightbulb', 'route' => '#', 'roles' => []],
-                    ['label' => 'AI Tool Settings', 'icon' => 'fas fa-cog', 'route' => '#', 'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN]],
-                ]
-            ],
-
-            // Career Services
-            [
-                'label' => 'Career Services',
-                'icon' => 'fas fa-briefcase',
-                'route' => '#',
-                'roles' => [],
-                'link_id' => 'career_services',
-                'children' => [
-                    ['label' => 'Job Board', 'icon' => 'fas fa-search-dollar', 'route' => '#', 'roles' => []],
-                    ['label' => 'Portfolio Builder', 'icon' => 'fas fa-id-card', 'route' => '#', 'roles' => [User::ROLE_STUDENT]],
-                    ['label' => 'Resume Generator', 'icon' => 'fas fa-file-alt', 'route' => '#', 'roles' => [User::ROLE_STUDENT]],
-                    ['label' => 'Mock Interviews', 'icon' => 'fas fa-comments', 'route' => '#', 'roles' => [User::ROLE_STUDENT]],
-                    ['label' => 'Employer Connections', 'icon' => 'fas fa-handshake', 'route' => '#', 'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN]],
-                ]
-            ],
-
-
-            // Job Portal
-            [
-                'label' => 'Job Portal',
-                'icon' => 'fas fa-briefcase',
-                'route' => '#',
-                'roles' => [],
-                'link_id' => 'job_portal',
-                'children' => [
-                    ['label' => 'Job Listings', 'icon' => 'fas fa-list', 'route' => '#', 'roles' => []],
-                    ['label' => 'Post a Job', 'icon' => 'fas fa-plus-square', 'route' => '#', 'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_CONTENT_EDITOR, User::ROLE_SUPER_ADMIN]],
-                    ['label' => 'Job Applications', 'icon' => 'fas fa-file-alt', 'route' => '#', 'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_CONTENT_EDITOR, User::ROLE_SUPER_ADMIN]],
-                    ['label' => 'Resume Database', 'icon' => 'fas fa-database', 'route' => '#', 'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_CONTENT_EDITOR, User::ROLE_SUPER_ADMIN]],
-                    ['label' => 'Employer Dashboard', 'icon' => 'fas fa-tachometer-alt', 'route' => '#', 'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN]],
-                    ['label' => 'Job Alerts', 'icon' => 'fas fa-bell', 'route' => '#', 'roles' => [User::ROLE_STUDENT]],
-                    ['label' => 'Job Categories', 'icon' => 'fas fa-tags', 'route' => '#', 'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN]],
-                    ['label' => 'Job Analytics', 'icon' => 'fas fa-chart-bar', 'route' => '#', 'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN]],
-                    ['label' => 'Job Settings', 'icon' => 'fas fa-cog', 'route' => '#', 'roles' => [User::ROLE_SUPER_ADMIN]],
-                ]
-            ],
-
-            // Content Management
-            [
-                'label' => 'Content Management',
-                'icon' => 'fas fa-edit',
-                'route' => '#',
-                'roles' => [User::ROLE_CONTENT_EDITOR, User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN],
-                'link_id' => 'content_management',
-                'children' => [
-                    ['label' => 'Learning Materials', 'icon' => 'fas fa-book', 'route' => '#', 'roles' => []],
-                    ['label' => 'Video Library', 'icon' => 'fas fa-video', 'route' => '#', 'roles' => []],
-                    ['label' => 'Documentation', 'icon' => 'fas fa-file-alt', 'route' => '#', 'roles' => []],
-                    ['label' => 'Localization', 'icon' => 'fas fa-language', 'route' => '#', 'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN]],
-                    ['label' => 'Content Moderation', 'icon' => 'fas fa-shield-alt', 'route' => '#', 'roles' => [User::ROLE_CONTENT_EDITOR, User::ROLE_ACADEMY_ADMIN]],
-                ]
-            ],
-
-            // Documentation Management
-            [
-                'label' => 'Doc. Management',
-                'icon' => 'fas fa-book',
-                'route' => '#',
-                'roles' => [User::ROLE_CONTENT_EDITOR, User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN],
-                'link_id' => 'documentation_management',
-                'children' => [
-                    ['label' => 'All Documents', 'icon' => 'fas fa-file-alt', 'route' => '#', 'roles' => []],
-                    ['label' => 'Create Document', 'icon' => 'fas fa-plus-circle', 'route' => '#', 'roles' => [User::ROLE_CONTENT_EDITOR, User::ROLE_ACADEMY_ADMIN]],
-                    ['label' => 'Document Categories', 'icon' => 'fas fa-tags', 'route' => '#', 'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN]],
-                    ['label' => 'Document Reviews', 'icon' => 'fas fa-star', 'route' => '#', 'roles' => [User::ROLE_CONTENT_EDITOR, User::ROLE_ACADEMY_ADMIN]],
-                    ['label' => 'Document Settings', 'icon' => 'fas fa-cog', 'route' => '#', 'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN]],
-                ]
-            ],
-            // blog
-            [
-                'label' => 'Blog Management',
-                'icon' => 'fas fa-blog',
-                'route' => '#',
-                'roles' => [User::ROLE_CONTENT_EDITOR, User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN],
-                'link_id' => 'blog_management',
-                'children' => [
-                    ['label' => 'All Posts', 'icon' => 'fas fa-newspaper', 'route' => '#', 'roles' => []],
-                    ['label' => 'Create Post', 'icon' => 'fas fa-plus-circle', 'route' => '#', 'roles' => [User::ROLE_CONTENT_EDITOR, User::ROLE_ACADEMY_ADMIN]],
-                    ['label' => 'Categories', 'icon' => 'fas fa-tags', 'route' => '#', 'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN]],
-                    ['label' => 'Manage Blog Posts', 'icon' => 'fas fa-newspaper', 'route' => '#', 'roles' => [User::ROLE_CONTENT_EDITOR, User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN]],
-                    ['label' => 'Comments Moderation', 'icon' => 'fas fa-comments', 'route' => '#', 'roles' => [User::ROLE_CONTENT_EDITOR, User::ROLE_ACADEMY_ADMIN]],
-                    ['label' => 'SEO Settings', 'icon' => 'fas fa-search', 'route' => '#', 'roles' => [User::ROLE_CONTENT_EDITOR, User::ROLE_SUPER_ADMIN]],
-                ],
-            ],
-            // Library Management
-            [
-                'label' => 'Library Management',
-                'icon' => 'fas fa-book',
-                'route' => '#',
-                'roles' => [User::ROLE_CONTENT_EDITOR, User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN],
-                'link_id' => 'library_management',
-                'children' => [
-                    ['label' => 'All Books', 'icon' => 'fas fa-book-open', 'route' => '#', 'roles' => []],
-                    ['label' => 'Add New Book', 'icon' => 'fas fa-plus', 'route' => '#', 'roles' => [User::ROLE_CONTENT_EDITOR, User::ROLE_ACADEMY_ADMIN]],
-                    ['label' => 'Manage Categories', 'icon' => 'fas fa-tags', 'route' => '#', 'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN]],
-                    ['label' => 'Library Settings', 'icon' => 'fas fa-cog', 'route' => '#', 'roles' => [User::ROLE_SUPER_ADMIN]],
-                    ['label' => 'Library Resources', 'icon' => 'fas fa-book-open', 'route' => '#', 'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN]],
-                    ['label' => 'Library Analytics', 'icon' => 'fas fa-chart-line', 'route' => '#', 'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN]],
-                    ['label' => 'Library Management', 'icon' => 'fas fa-book', 'route' => '#', 'roles' => [User::ROLE_CONTENT_EDITOR, User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN]],
-                    ['label' => 'Add New Library Item', 'icon' => 'fas fa-plus', 'route' => '#', 'roles' => [User::ROLE_CONTENT_EDITOR, User::ROLE_ACADEMY_ADMIN]],
-                    ['label' => 'Library Settings', 'icon' => 'fas fa-cog', 'route' => '#', 'roles' => [User::ROLE_SUPER_ADMIN]],
-                ]
-            ],
-
-            // Institution Management
-            [
-                'label' => 'Institution Portal',
-                'icon' => 'fas fa-university',
-                'route' => '#',
-                'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN],
-                'link_id' => 'institution',
-                'children' => [
-                    ['label' => 'Partner Schools', 'icon' => 'fas fa-school', 'route' => '#', 'roles' => []],
-                    ['label' => 'License Management', 'icon' => 'fas fa-key', 'route' => '#', 'roles' => []],
-                    ['label' => 'Bulk Enrollment', 'icon' => 'fas fa-user-plus', 'route' => '#', 'roles' => []],
-                    ['label' => 'Institution Analytics', 'icon' => 'fas fa-chart-pie', 'route' => '#', 'roles' => []],
-                    ['label' => 'White-label Settings', 'icon' => 'fas fa-paint-roller', 'route' => '#', 'roles' => [User::ROLE_SUPER_ADMIN]],
-                ]
-            ],
-
-            // Financial System
-            [
-                'label' => 'Financial Center',
-                'icon' => 'fas fa-money-bill-wave',
-                'route' => '#',
-                'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN],
-                'link_id' => 'financial',
-                'children' => [
-                    ['label' => 'Revenue Dashboard', 'icon' => 'fas fa-chart-line', 'route' => '#', 'roles' => []],
-                    ['label' => 'Payment Processing', 'icon' => 'fas fa-credit-card', 'route' => '#', 'roles' => []],
-                    ['label' => 'Subscription Plans', 'icon' => 'fas fa-receipt', 'route' => '#', 'roles' => []],
-                    ['label' => 'Scholarship Program', 'icon' => 'fas fa-graduation-cap', 'route' => '#', 'roles' => []],
-                    ['label' => 'Expense Tracking', 'icon' => 'fas fa-file-invoice-dollar', 'route' => '#', 'roles' => []],
-                    ['label' => 'Tax Configuration', 'icon' => 'fas fa-percentage', 'route' => '#', 'roles' => [User::ROLE_SUPER_ADMIN]],
-                ]
-            ],
-
-            // Gamification System
-            [
-                'label' => 'Gamification',
-                'icon' => 'fas fa-gamepad',
-                'route' => '#',
-                'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN],
-                'link_id' => 'gamification',
-                'children' => [
-                    ['label' => 'Badge System', 'icon' => 'fas fa-medal', 'route' => '#', 'roles' => []],
-                    ['label' => 'Leaderboards', 'icon' => 'fas fa-trophy', 'route' => '#', 'roles' => []],
-                    ['label' => 'Rewards Store', 'icon' => 'fas fa-gift', 'route' => '#', 'roles' => []],
-                    ['label' => 'Achievement Settings', 'icon' => 'fas fa-cog', 'route' => '#', 'roles' => []],
-                ]
-            ],
-
-            // Personal Tools
-            [
-                'label' => 'My Tools',
-                'icon' => 'fas fa-toolbox',
-                'route' => '#',
-                'roles' => [],
-                'link_id' => 'my_tools',
-                'children' => [
-                    ['label' => 'Profile Settings', 'icon' => 'fas fa-user-cog', 'route' => '#', 'roles' => []],
-                    ['label' => 'Notification Center', 'icon' => 'fas fa-bell', 'route' => '#', 'roles' => []],
-                    ['label' => 'Privacy Controls', 'icon' => 'fas fa-lock', 'route' => '#', 'roles' => []],
-                    ['label' => 'Download History', 'icon' => 'fas fa-download', 'route' => '#', 'roles' => []],
-                    ['label' => 'Support Center', 'icon' => 'fas fa-question-circle', 'route' => '#', 'roles' => []],
-                ]
-            ],
-
-            // User Management (Super Admin, Academy Admin)
-            [
-                'label' => 'User Management',
-                'icon' => 'fas fa-users',
-                'route' => '#',
-                'roles' => [User::ROLE_SUPER_ADMIN, User::ROLE_ACADEMY_ADMIN],
-                'link_id' => 'user_management',
-                'children' => [
-                    ['label' => 'All Users', 'icon' => 'fas fa-user-friends', 'route' => '#', 'roles' => [User::ROLE_SUPER_ADMIN, User::ROLE_ACADEMY_ADMIN]],
-                    ['label' => 'Roles & Permissions', 'icon' => 'fas fa-user-tag', 'route' => '#', 'roles' => [User::ROLE_SUPER_ADMIN]],
-                    ['label' => 'Pending Verifications', 'icon' => 'fas fa-user-clock', 'route' => '#', 'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN]],
-                ]
-            ],
-
-            // Courses (All authenticated, with specific actions for instructors/admins)
-            [
-                'label' => 'Courses',
-                'icon' => 'fas fa-book',
-                'route' => '#',
-                'roles' => [],
-                'link_id' => 'courses',
-                'children' => [
-                    ['label' => 'Browse All Courses', 'icon' => 'fas fa-list', 'route' => '#', 'roles' => []],
-                    ['label' => 'My Enrolled Courses', 'icon' => 'fas fa-book-reader', 'route' => '#', 'roles' => [User::ROLE_STUDENT]],
-                    ['label' => 'Create New Course', 'icon' => 'fas fa-plus-circle', 'route' => '#', 'roles' => [User::ROLE_INSTRUCTOR, User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN]],
-                    ['label' => 'Manage My Courses', 'icon' => 'fas fa-chalkboard-teacher', 'route' => '#', 'roles' => [User::ROLE_INSTRUCTOR]],
-                    ['label' => 'Course Approvals', 'icon' => 'fas fa-check-double', 'route' => '#', 'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN]],
-                ]
-            ],
-
-
-
-
-            // Affiliate Program
-            [
-                'label' => 'Affiliate Network',
-                'icon' => 'fas fa-share-alt',
-                'route' => '#',
-                'roles' => [User::ROLE_AFFILIATE_AMBASSADOR, User::ROLE_SUPER_ADMIN],
-                'link_id' => 'affiliate',
-                'children' => [
-                    ['label' => 'Referral Dashboard', 'icon' => 'fas fa-chart-bar', 'route' => '#', 'roles' => []],
-                    ['label' => 'Marketing Tools', 'icon' => 'fas fa-bullhorn', 'route' => '#', 'roles' => []],
-                    ['label' => 'Commission History', 'icon' => 'fas fa-money-bill-wave', 'route' => '#', 'roles' => [User::ROLE_AFFILIATE_AMBASSADOR, User::ROLE_SUPER_ADMIN]],
-                    ['label' => 'Commission Reports', 'icon' => 'fas fa-coins', 'route' => '#', 'roles' => []],
-                    ['label' => 'Performance Analytics', 'icon' => 'fas fa-chart-pie', 'route' => '#', 'roles' => []],
-                    ['label' => 'Affiliate Settings', 'icon' => 'fas fa-cog', 'route' => '#', 'roles' => [User::ROLE_SUPER_ADMIN]],
-                ]
-            ],
-
-            // System Administration (Super Admin)
-            [
-                'label' => 'System Administration',
-                'icon' => 'fas fa-cogs',
-                'route' => '#',
-                'roles' => [User::ROLE_SUPER_ADMIN],
-                'link_id' => 'system_admin',
-                'children' => [
-                    ['label' => 'Platform Settings', 'icon' => 'fas fa-cog', 'route' => '#', 'roles' => [User::ROLE_SUPER_ADMIN]],
-                    ['label' => 'API Management', 'icon' => 'fas fa-code-branch', 'route' => '#', 'roles' => [User::ROLE_SUPER_ADMIN]],
-                    ['label' => 'Database Management', 'icon' => 'fas fa-database', 'route' => '#', 'roles' => []],
-                    ['label' => 'Integrations', 'icon' => 'fas fa-puzzle-piece', 'route' => '#', 'roles' => [User::ROLE_SUPER_ADMIN]],
-                    ['label' => 'System Logs', 'icon' => 'fas fa-clipboard-list', 'route' => '#', 'roles' => [User::ROLE_SUPER_ADMIN]],
-                    ['label' => 'Server Monitoring', 'icon' => 'fas fa-heartbeat', 'route' => '#', 'roles' => []],
-                    ['label' => 'Announcements', 'icon' => 'fas fa-bullhorn', 'route' => '#', 'roles' => [User::ROLE_SUPER_ADMIN]],
-                    ['label' => 'Backup & Restore', 'icon' => 'fas fa-save', 'route' => '#', 'roles' => []],
-                    ['label' => 'Security Center', 'icon' => 'fas fa-shield-alt', 'route' => '#', 'roles' => []],
-                ]
-            ],
-
-            // Settings (All authenticated users)
-            [
-                'label' => 'Settings',
-                'icon' => 'fas fa-cog',
-                'route' => '#',
-                'roles' => [],
-                'link_id' => 'settings',
-                'children' => [
-                    ['label' => 'Profile Settings', 'icon' => 'fas fa-user-cog', 'route' => '#', 'roles' => []],
-                    ['label' => 'Notification Preferences', 'icon' => 'fas fa-bell', 'route' => '#', 'roles' => []],
-                    ['label' => 'Privacy Settings', 'icon' => 'fas fa-lock', 'route' => '#', 'roles' => []],
-                    ['label' => 'Account Management', 'icon' => 'fas fa-user-shield', 'route' => '#', 'roles' => []],
-                    ['label' => 'Language & Localization', 'icon' => 'fas fa-language', 'route' => '#', 'roles' => [User::ROLE_SUPER_ADMIN]],
-                ]
-            ],
-
-            // Financial (Super Admin, Academy Admin)
-            [
-                'label' => 'Financial',
-                'icon' => 'fas fa-wallet',
-                'route' => '#',
-                'roles' => [User::ROLE_SUPER_ADMIN, User::ROLE_ACADEMY_ADMIN],
-                'link_id' => 'Financial',
-                'children' => [
-                    ['label' => 'Revenue Reports', 'icon' => 'fas fa-chart-line', 'route' => '#', 'roles' => [User::ROLE_SUPER_ADMIN, User::ROLE_ACADEMY_ADMIN]],
-                    ['label' => 'Payouts', 'icon' => 'fas fa-money-check-alt', 'route' => '#', 'roles' => [User::ROLE_SUPER_ADMIN]],
-                    ['label' => 'Subscriptions', 'icon' => 'fas fa-credit-card', 'route' => '#', 'roles' => [User::ROLE_SUPER_ADMIN, User::ROLE_ACADEMY_ADMIN]],
-                ]
-            ],
-
-            // newsletter 
-            [
-                'label' => 'Newsletter',
-                'icon' => 'fas fa-envelope',
-                'route' => '#',
-                'roles' => [User::ROLE_CONTENT_EDITOR, User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN],
-                'link_id' => 'newsletter',
-                'children' => [
-                    ['label' => 'Manage Subscribers', 'icon' => 'fas fa-users', 'route' => '#', 'roles' => [User::ROLE_CONTENT_EDITOR, User::ROLE_ACADEMY_ADMIN]],
-                    ['label' => 'Create Campaign', 'icon' => 'fas fa-plus-circle', 'route' => '#', 'roles' => [User::ROLE_CONTENT_EDITOR, User::ROLE_ACADEMY_ADMIN]],
-                    ['label' => 'Campaign Analytics', 'icon' => 'fas fa-chart-bar', 'route' => '#', 'roles' => [User::ROLE_CONTENT_EDITOR, User::ROLE_ACADEMY_ADMIN]],
-                    ['label' => 'Newsletter Settings', 'icon' => 'fas fa-cog', 'route' => '#', 'roles' => [User::ROLE_SUPER_ADMIN]],
-                ]
-            ],
-
-            //contact us
-            [
-                'label' => 'Contact Us',
-                'icon' => 'fas fa-phone',
-                'route' => '#',
-                'roles' => [],
-                'link_id' => 'contact_us',
-                'children' => [
-                    ['label' => 'Support', 'icon' => 'fas fa-headset', 'route' => '#', 'roles' => []],
-                    ['label' => 'Feedback', 'icon' => 'fas fa-comment-dots', 'route' => '#', 'roles' => []],
-                    ['label' => 'Report Issue', 'icon' => 'fas fa-exclamation-triangle', 'route' => '#', 'roles' => []],
-                ]
-            ],
-
-            //search functionality
-            [
-                'label' => 'Search',
-                'icon' => 'fas fa-search',
-                'route' => '#',
-                'roles' => [],
-                'link_id' => 'search',
-                'children' => [
-                    ['label' => 'Global Search', 'icon' => 'fas fa-search', 'route' => '#', 'roles' => []],
-                    ['label' => 'Advanced Search', 'icon' => 'fas fa-filter', 'route' => '#', 'roles' => []],
-                    ['label' => 'Search Settings', 'icon' => 'fas fa-cog', 'route' => '#', 'roles' => [User::ROLE_SUPER_ADMIN]],
-                ]
-            ],
-            [
-                'label' => 'Web Pages',
-                'icon' => 'fas fa-file-alt',
-                'route' => '#',
-                'roles' => [User::ROLE_CONTENT_EDITOR, User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN],
-                'link_id' => 'web_pages',
-                'children' => [
-                    ['label' => 'All Pages', 'icon' => 'fas fa-list', 'route' => '#', 'roles' => []],
-                    ['label' => 'Create Page', 'icon' => 'fas fa-plus-circle', 'route' => '#', 'roles' => [User::ROLE_CONTENT_EDITOR, User::ROLE_ACADEMY_ADMIN]],
-                    ['label' => 'Page Templates', 'icon' => 'fas fa-file', 'route' => '#', 'roles' => [User::ROLE_CONTENT_EDITOR, User::ROLE_ACADEMY_ADMIN]],
-                    ['label' => 'Page Builder', 'icon' => 'fas fa-puzzle-piece', 'route' => '#', 'roles' => [User::ROLE_CONTENT_EDITOR, User::ROLE_ACADEMY_ADMIN]],
-                    ['label' => 'Page SEO', 'icon' => 'fas fa-search', 'route' => '#', 'roles' => [User::ROLE_CONTENT_EDITOR, User::ROLE_ACADEMY_ADMIN]],
-                    ['label' => 'Page Analytics', 'icon' => 'fas fa-chart-line', 'route' => '#', 'roles' => [User::ROLE_CONTENT_EDITOR, User::ROLE_ACADEMY_ADMIN]],
-                    ['label' => 'Page Settings', 'icon' => 'fas fa-cog', 'route' => '#', 'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN]],
-                    ['label' => 'Page Categories', 'icon' => 'fas fa-tags', 'route' => '#', 'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN]],
-                    ['label' => 'Page Reviews', 'icon' => 'fas fa-star', 'route' => '#', 'roles' => [User::ROLE_CONTENT_EDITOR, User::ROLE_ACADEMY_ADMIN]],
-                    ['label' => 'Page Footer', 'icon' => 'fas fa-ellipsis-h', 'route' => '#', 'roles' => [User::ROLE_CONTENT_EDITOR, User::ROLE_ACADEMY_ADMIN]],
-                    ['label' => 'Page Header', 'icon' => 'fas fa-ellipsis-v', 'route' => '#', 'roles' => [User::ROLE_CONTENT_EDITOR, User::ROLE_ACADEMY_ADMIN]],
-                    ['label' => 'Page Navigation', 'icon' => 'fas fa-bars', 'route' => '#', 'roles' => [User::ROLE_CONTENT_EDITOR, User::ROLE_ACADEMY_ADMIN]],
-                    ['label' => 'Page Sidebar', 'icon' => 'fas fa-bars', 'route' => '#', 'roles' => [User::ROLE_CONTENT_EDITOR, User::ROLE_ACADEMY_ADMIN]],
-                    ['label' => 'Page Widgets', 'icon' => 'fas fa-th-large', 'route' => '#', 'roles' => [User::ROLE_CONTENT_EDITOR, User::ROLE_ACADEMY_ADMIN]],
-                    ['label' => 'Page Media Library', 'icon' => 'fas fa-images', 'route' => '#', 'roles' => [User::ROLE_CONTENT_EDITOR, User::ROLE_ACADEMY_ADMIN]],
-                    ['label' => 'Page Content Blocks', 'icon' => 'fas fa-columns', 'route' => '#', 'roles' => [User::ROLE_CONTENT_EDITOR, User::ROLE_ACADEMY_ADMIN]],
-                    ['label' => 'Page Custom CSS', 'icon' => 'fas fa-paint-brush', 'route' => '#', 'roles' => [User::ROLE_CONTENT_EDITOR, User::ROLE_ACADEMY_ADMIN]],
-                    ['label' => 'Page Custom JS', 'icon' => 'fas fa-code', 'route' => '#', 'roles' => [User::ROLE_CONTENT_EDITOR, User::ROLE_ACADEMY_ADMIN]],
-                    ['label' => 'Page Custom Fonts', 'icon' => 'fas fa-font', 'route' => '#', 'roles' => [User::ROLE_CONTENT_EDITOR, User::ROLE_ACADEMY_ADMIN]],
-                    ['label' => 'Page Custom Colors', 'icon' => 'fas fa-palette', 'route' => '#', 'roles' => [User::ROLE_CONTENT_EDITOR, User::ROLE_ACADEMY_ADMIN]],
-                    ['label' => 'Page Custom Layouts', 'icon' => 'fas fa-th', 'route' => '#', 'roles' => [User::ROLE_CONTENT_EDITOR, User::ROLE_ACADEMY_ADMIN]],
-                    ['label' => 'Page Custom Scripts', 'icon' => 'fas fa-code', 'route' => '#', 'roles' => [User::ROLE_CONTENT_EDITOR, User::ROLE_ACADEMY_ADMIN]],
-                    ['label' => 'Page Custom Styles', 'icon' => 'fas fa-paint-brush', 'route' => '#', 'roles' => [User::ROLE_CONTENT_EDITOR, User::ROLE_ACADEMY_ADMIN]],
-                    ['label' => 'Page Custom HTML', 'icon' => 'fas fa-code', 'route' => '#', 'roles' => [User::ROLE_CONTENT_EDITOR, User::ROLE_ACADEMY_ADMIN]],
-                    ['label' => 'Page Custom Widgets', 'icon' => 'fas fa-th-large', 'route' => '#', 'roles' => [User::ROLE_CONTENT_EDITOR, User::ROLE_ACADEMY_ADMIN]],
-                    ['label' => 'Page Custom Shortcodes', 'icon' => 'fas fa-code', 'route' => '#', 'roles' => [User::ROLE_CONTENT_EDITOR, User::ROLE_ACADEMY_ADMIN]],
-                    ['label' => 'Page Custom Templates', 'icon' => 'fas fa-file-alt', 'route' => '#', 'roles' => [User::ROLE_CONTENT_EDITOR, User::ROLE_ACADEMY_ADMIN]],
-                    ['label' => 'Page Custom Blocks', 'icon' => 'fas fa-columns', 'route' => '#', 'roles' => [User::ROLE_CONTENT_EDITOR, User::ROLE_ACADEMY_ADMIN]],
-                    ['label' => 'Page Custom Elements', 'icon' => 'fas fa-cubes', 'route' => '#', 'roles' => [User::ROLE_CONTENT_EDITOR, User::ROLE_ACADEMY_ADMIN]],
-                    ['label' => 'Page Custom Features', 'icon' => 'fas fa-star', 'route' => '#', 'roles' => [User::ROLE_CONTENT_EDITOR, User::ROLE_ACADEMY_ADMIN]],
-                    ['label' => 'Page Custom Settings', 'icon' => 'fas fa-cog', 'route' => '#', 'roles' => [User::ROLE_CONTENT_EDITOR, User::ROLE_ACADEMY_ADMIN]],
-                    ['label' => 'Page Custom Blocks', 'icon' => 'fas fa-columns', 'route' => '#', 'roles' => [User::ROLE_CONTENT_EDITOR, User::ROLE_ACADEMY_ADMIN]],
-                    ['label' => 'Page Custom Shortcodes', 'icon' => 'fas fa-code', 'route' => '#', 'roles' => [User::ROLE_CONTENT_EDITOR, User::ROLE_ACADEMY_ADMIN]],
-                ]
-            ],
-
-        ];
-
-
-        $filteredMenuItems = [];
-        foreach ($menuItems as $item) {
-            if ($user && $user->hasRole('super_admin')) {
-                $filteredMenuItems[] = $item;
-            } elseif ($user && empty($item['permissions'])) {
-                $filteredMenuItems[] = $item;
-            } elseif ($user && !empty($item['permissions']) && $user->hasAnyPermission($item['permissions'])) {
-                if (isset($item['children'])) {
-                    $filteredChildren = [];
-                    foreach ($item['children'] as $child) {
-                        if (empty($child['permissions']) || ($user && $user->hasRole('super_admin')) || ($user && $user->hasAnyPermission($child['permissions']))) {
-                            $filteredChildren[] = $child;
+            foreach ($menuItems as $item) {
+                if ($user && $user->hasRole('super_admin')) {
+                    $filteredMenuItems[] = $item;
+                } elseif (empty($item['roles'])) {
+                    $filteredMenuItems[] = $item;
+                } elseif ($user && !empty($item['roles']) && $user->hasAnyRole($item['roles'])) {
+                    if (isset($item['children'])) {
+                        $filteredChildren = $this->filterMenuChildren($item['children'], $user);
+                        if (!empty($filteredChildren) || empty($item['roles'])) {
+                            $item['children'] = $filteredChildren;
+                            $filteredMenuItems[] = $item;
                         }
-                    }
-                    if (!empty($filteredChildren) || empty($item['permissions'])) {
-                        $item['children'] = $filteredChildren;
+                    } else {
                         $filteredMenuItems[] = $item;
                     }
-                } else {
-                    $filteredMenuItems[] = $item;
                 }
+            }
+
+            return $filteredMenuItems;
+        });
+    }
+
+    /**
+     * Filter menu children by user roles.
+     *
+     * @param array $children
+     * @param \App\Models\User|null $user
+     * @return array
+     */
+    private function filterMenuChildren($children, $user)
+    {
+        return array_filter($children, function ($child) use ($user) {
+            return empty($child['roles']) || ($user && $user->hasRole('super_admin')) || ($user && $user->hasAnyRole($child['roles']));
+        });
+    }
+
+    /**
+     * Generate mobile menu items from desktop menu items.
+     *
+     * @param array $menuItems
+     * @return array
+     */
+    private function generateMobileMenuItems($menuItems)
+    {
+        $mobileItems = [];
+        $maxMobileItems = config('menu.max_mobile_items', 5);
+
+        foreach (array_slice($menuItems, 0, $maxMobileItems) as $item) {
+            if (!isset($item['link_id'])) {
+                Log::warning("Missing link_id for menu item: {$item['label']}");
+            }
+
+            $mobileItem = [
+                'label' => $item['label'],
+                'icon' => $item['icon'],
+                'route_name' => $item['route_name'],
+                'link_id' => $item['link_id'] ?? Str::slug($item['label']),
+                'badge' => $item['badge'] ?? false,
+            ];
+
+            if (isset($item['children']) && !empty($item['children'])) {
+                $mobileItem['children'] = array_map(function ($child) {
+                    if (!isset($child['link_id'])) {
+                        Log::warning("Missing link_id for child menu item: {$child['label']}");
+                    }
+                    return array_merge($child, ['link_id' => $child['link_id'] ?? Str::slug($child['label'])]);
+                }, $item['children']);
+            }
+
+            $mobileItems[] = $mobileItem;
+        }
+
+        if (count($menuItems) > $maxMobileItems) {
+            $remainingItems = array_slice($menuItems, $maxMobileItems - 1);
+            if (!empty($remainingItems)) {
+                $mobileItems[$maxMobileItems - 1] = [
+                    'label' => 'More',
+                    'icon' => 'fas fa-ellipsis-h',
+                    'route_name' => '#',
+                    'link_id' => 'more',
+                    'badge' => false,
+                    'children' => array_map(function ($item) {
+                        if (!isset($item['link_id'])) {
+                            Log::warning("Missing link_id for more menu item: {$item['label']}");
+                        }
+                        return array_merge($item, ['link_id' => $item['link_id'] ?? Str::slug($item['label'])]);
+                    }, $remainingItems),
+                ];
             }
         }
 
+        return $mobileItems;
+    }
+
+    public function render()
+    {
+        $menuItems = $this->filteredMenuItems;
+        $mobileMenuItems = $this->generateMobileMenuItems($menuItems);
+
         return view('livewire.dashboard-sidebar', [
-            'menuItems' => $filteredMenuItems,
-            'user' => $user
+            'menuItems' => $menuItems,
+            'mobileMenuItems' => $mobileMenuItems,
+            'user' => $this->user,
+            'activeLink' => $this->activeLink,
         ]);
     }
 }
