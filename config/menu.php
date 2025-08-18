@@ -41,8 +41,8 @@ return [
                 ['label' => 'User Activity', 'icon' => 'fas fa-history', 'route_name' => 'user.activity', 'roles' => [User::ROLE_SUPER_ADMIN], 'link_id' => 'user.activity',],
                 ['label' => 'Edit User', 'icon' => 'fas fa-user-edit', 'route_name' => 'user-management', 'roles' => [User::ROLE_SUPER_ADMIN, User::ROLE_ACADEMY_ADMIN], 'link_id' => 'user.edit',],
                 ['label' => 'All Users', 'icon' => 'fas fa-user-friends', 'route_name' => 'all-users', 'roles' => [User::ROLE_SUPER_ADMIN, User::ROLE_ACADEMY_ADMIN], 'link_id' => 'all-users',],
-                ['label' => 'Roles & Permissions', 'icon' => 'fas fa-user-tag', 'route_name' => '#', 'roles' => [User::ROLE_SUPER_ADMIN]],
-                ['label' => 'Pending Verifications', 'icon' => 'fas fa-user-clock', 'route_name' => '#', 'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN]],
+                ['label' => 'Roles & Permissions', 'icon' => 'fas fa-user-tag', 'route_name' => 'roles-permissions', 'roles' => [User::ROLE_SUPER_ADMIN],'link_id' => 'roles-permissions',],
+                ['label' => 'Pending Verifications', 'icon' => 'fas fa-user-clock', 'route_name' => 'pending-verifications', 'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN], 'link_id' => 'pending-verifications',],
             ]
         ],
 

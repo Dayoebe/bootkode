@@ -1,178 +1,236 @@
-<div class="bg-gray-800 p-6 rounded-lg shadow-xl text-white max-w-7xl mx-auto my-8">
-    <h2 class="text-3xl font-extrabold text-white mb-6 border-b border-gray-700 pb-4">
-        All Courses
-    </h2>
-
-    <div class="mb-6 flex flex-col sm:flex-row sm:items-end sm:justify-between space-y-4 sm:space-y-0 sm:space-x-4">
-        <div class="w-full sm:w-1/3">
-            <label for="search" class="sr-only">Search Courses</label>
-            <div class="relative">
-                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <i class="fas fa-search text-gray-400"></i>
-                </div>
-                <input type="text" id="search" wire:model.live.debounce.300ms="search" placeholder="Search courses..."
-                       class="w-full pl-10 pr-4 py-2.5 bg-gray-700 border border-gray-600 rounded-xl focus:ring-blue-500 focus:border-blue-500 text-white placeholder-gray-400 shadow-sm">
-            </div>
+<div class="bg-gradient-to-br from-blue-900 to-teal-600 p-8 rounded-2xl shadow-2xl text-white animate__animated animate__fadeIn" x-data="{ tooltip: '' }">
+    <!-- Flash Messages -->
+    @if (session('success'))
+        <div class="mb-6 p-4 bg-green-800 text-green-200 rounded-xl animate__animated animate__fadeIn">
+            {{ session('success') }}
         </div>
-
-        <div class="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4 w-full sm:w-2/3 justify-end">
-            <div class="w-full sm:w-1/3">
-                <label for="categoryFilter" class="sr-only">Filter by Category</label>
-                <select id="categoryFilter" wire:model.live="categoryFilter"
-                        class="w-full px-4 py-2.5 bg-gray-700 border border-gray-600 rounded-xl focus:ring-blue-500 focus:border-blue-500 text-white shadow-sm">
-                    <option value="">All Categories</option>
-                    @forelse($categories as $category)
-                        <option value="{{ $category->id }}">{{ $category->name }}</option>
-                    @empty
-                        <option value="" disabled>No Categories Found</option>
-                    @endforelse
-                </select>
-            </div>
-
-            <div class="w-full sm:w-1/3">
-                <label for="statusFilter" class="sr-only">Filter by Status</label>
-                <select id="statusFilter" wire:model.live="statusFilter"
-                        class="w-full px-4 py-2.5 bg-gray-700 border border-gray-600 rounded-xl focus:ring-blue-500 focus:border-blue-500 text-white shadow-sm">
-                    <option value="">All Statuses</option>
-                    <option value="published">Published</option>
-                    <option value="unpublished">Unpublished</option>
-                    <option value="approved">Approved</option>
-                    <option value="unapproved">Unapproved</option>
-                </select>
-            </div>
-
-            <div class="w-full sm:w-1/3">
-                <label for="difficultyFilter" class="sr-only">Filter by Difficulty</label>
-                <select id="difficultyFilter" wire:model.live="difficultyFilter"
-                        class="w-full px-4 py-2.5 bg-gray-700 border border-gray-600 rounded-xl focus:ring-blue-500 focus:border-blue-500 text-white shadow-sm">
-                    <option value="">All Difficulties</option>
-                    <option value="beginner">Beginner</option>
-                    <option value="intermediate">Intermediate</option>
-                    <option value="advanced">Advanced</option>
-                </select>
-            </div>
+    @endif
+    @if (session('error'))
+        <div class="mb-6 p-4 bg-red-800 text-red-200 rounded-xl animate__animated animate__fadeIn">
+            {{ session('error') }}
         </div>
+    @endif
+
+    <!-- Loading Spinner -->
+    <div wire:loading class="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center z-50">
+        <i class="fas fa-spinner fa-spin text-teal-500 text-3xl" aria-label="Loading"></i>
     </div>
 
-    @if ($courses->isEmpty())
-        <div class="text-center py-10">
-            <p class="text-gray-400 text-lg">No courses found matching your criteria.</p>
+    <!-- Header -->
+    <h2 class="text-4xl font-bold text-indigo-100 mb-8 border-b-2 border-teal-500 pb-4 flex items-center">
+        <i class="fas fa-book mr-3 text-teal-300"></i> All Courses
+    </h2>
+
+    <!-- Empty State for Instructors -->
+    @if (Auth::user()->hasRole('instructor') && $courses->isEmpty())
+        <div class="text-center py-12 bg-indigo-800 rounded-xl shadow-lg animate__animated animate__fadeInUp">
+            <i class="fas fa-book-open text-5xl text-teal-300 mb-4"></i>
+            <h3 class="text-2xl font-semibold text-indigo-100 mb-4">No Courses Yet!</h3>
+            <p class="text-teal-300 mb-6 max-w-md mx-auto">
+                It looks like you haven't created any courses yet. Follow these steps to get started:
+            </p>
+            <ol class="list-decimal list-inside text-indigo-200 mb-6 max-w-md mx-auto text-left">
+                <li>Click the "Create New Course" button below.</li>
+                <li>Fill in the course details, such as title, description, and category.</li>
+                <li>Add sections, lessons, and assessments using the course builder.</li>
+                <li>Submit for approval to make it available to students!</li>
+            </ol>
+            <a href="{{ route('course_management.create_course') }}" 
+               class="bg-green-600 text-white px-6 py-3 rounded-xl hover:bg-green-700 transition duration-300 shadow-md flex items-center justify-center mx-auto animate__animated animate__pulse animate__infinite"
+               aria-label="Create a new course">
+                <i class="fas fa-plus mr-2"></i> Create Your First Course
+            </a>
         </div>
     @else
-        <div x-data="{ selectedCourses: @entangle('selectedCourses') }"
-             x-cloak
-             x-show="selectedCourses.length > 0"
-             x-transition:enter="transition ease-out duration-300"
-             x-transition:enter-start="opacity-0 translate-y-4"
-             x-transition:enter-end="opacity-100 translate-y-0"
-             x-transition:leave="transition ease-in duration-200"
-             x-transition:leave-start="opacity-100 translate-y-0"
-             x-transition:leave-end="opacity-0 translate-y-4"
-             class="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-2xl z-50 p-4">
-            <div class="bg-gray-700 border border-gray-600 rounded-2xl shadow-2xl p-4 flex justify-between items-center space-x-4">
-                <span class="text-gray-300 font-medium whitespace-nowrap">{{ count($selectedCourses) }} selected</span>
-                <div class="flex space-x-3">
-                    <button wire:click="bulkPublish" wire:confirm="Are you sure you want to publish the selected courses?"
-                            class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-sm font-semibold transition-colors duration-200">
-                        <i class="fas fa-upload mr-2"></i>Publish
-                    </button>
-                    <button wire:click="bulkApprove" wire:confirm="Are you sure you want to approve the selected courses?"
-                            class="px-4 py-2 bg-pink-600 hover:bg-pink-700 text-white rounded-xl text-sm font-semibold transition-colors duration-200">
-                        <i class="fas fa-check-circle mr-2"></i>Approve
-                    </button>
-                    <button wire:click="bulkDelete" wire:confirm="Are you sure you want to delete the selected courses and all their content?"
-                            class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-xl text-sm font-semibold transition-colors duration-200">
-                        <i class="fas fa-trash-alt mr-2"></i>Delete
-                    </button>
+        <!-- Filters -->
+        <div class="mb-8 flex flex-col lg:flex-row lg:items-end lg:justify-between space-y-6 lg:space-y-0 lg:space-x-6">
+            <div class="w-full lg:w-1/4">
+                <label for="search" class="sr-only">Search Courses</label>
+                <div class="relative">
+                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <i class="fas fa-search text-teal-300"></i>
+                    </div>
+                    <input type="text" id="search" wire:model.live.debounce.300ms="search" placeholder="Search courses..."
+                           class="w-full pl-10 pr-4 py-3 bg-indigo-800 border border-teal-600 rounded-xl focus:ring-teal-500 focus:border-teal-500 text-white placeholder-teal-300 shadow-md transition-all duration-300 hover:shadow-lg">
+                </div>
+            </div>
+
+            <div class="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4 w-full lg:w-3/4 justify-end">
+                <div class="w-full md:w-1/5">
+                    <label for="categoryFilter" class="sr-only">Filter by Category</label>
+                    <select id="categoryFilter" wire:model.live="categoryFilter"
+                            class="w-full px-4 py-3 bg-indigo-800 border border-teal-600 rounded-xl focus:ring-teal-500 focus:border-teal-500 text-white shadow-md transition-all duration-300 hover:shadow-lg">
+                        <option value="">All Categories</option>
+                        @forelse($categories as $category)
+                            <option value="{{ $category->id }}">{{ $category->name }}</option>
+                        @empty
+                            <option value="" disabled>No Categories Found</option>
+                        @endforelse
+                    </select>
+                </div>
+
+                <div class="w-full md:w-1/5">
+                    <label for="statusFilter" class="sr-only">Filter by Status</label>
+                    <select id="statusFilter" wire:model.live="statusFilter"
+                            class="w-full px-4 py-3 bg-indigo-800 border border-teal-600 rounded-xl focus:ring-teal-500 focus:border-teal-500 text-white shadow-md transition-all duration-300 hover:shadow-lg">
+                        <option value="">All Statuses</option>
+                        <option value="published">Published</option>
+                        <option value="unpublished">Unpublished</option>
+                        <option value="approved">Approved</option>
+                        <option value="unapproved">Unapproved</option>
+                    </select>
+                </div>
+
+                <div class="w-full md:w-1/5">
+                    <label for="difficultyFilter" class="sr-only">Filter by Difficulty</label>
+                    <select id="difficultyFilter" wire:model.live="difficultyFilter"
+                            class="w-full px-4 py-3 bg-indigo-800 border border-teal-600 rounded-xl focus:ring-teal-500 focus:border-teal-500 text-white shadow-md transition-all duration-300 hover:shadow-lg">
+                        <option value="">All Difficulties</option>
+                        <option value="beginner">Beginner</option>
+                        <option value="intermediate">Intermediate</option>
+                        <option value="advanced">Advanced</option>
+                    </select>
+                </div>
+
+                @can('view-courses', ['super_admin'])
+                    <div class="w-full md:w-1/5">
+                        <label for="instructorFilter" class="sr-only">Filter by Instructor</label>
+                        <select id="instructorFilter" wire:model.live="instructorFilter"
+                                class="w-full px-4 py-3 bg-indigo-800 border border-teal-600 rounded-xl focus:ring-teal-500 focus:border-teal-500 text-white shadow-md transition-all duration-300 hover:shadow-lg">
+                            <option value="">All Instructors</option>
+                            @foreach($instructors as $instructor)
+                                <option value="{{ $instructor->id }}">{{ $instructor->name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                @endcan
+
+                <div class="w-full md:w-1/5">
+                    <label for="perPage" class="sr-only">Items per page</label>
+                    <select id="perPage" wire:model.live="perPage"
+                            class="w-full px-4 py-3 bg-indigo-800 border border-teal-600 rounded-xl focus:ring-teal-500 focus:border-teal-500 text-white shadow-md transition-all duration-300 hover:shadow-lg">
+                        <option value="10">10 per page</option>
+                        <option value="20">20 per page</option>
+                        <option value="50">50 per page</option>
+                    </select>
                 </div>
             </div>
         </div>
 
-        <div class="overflow-x-auto rounded-lg shadow-md border border-gray-700">
-            <table class="min-w-full divide-y divide-gray-700">
-                <thead class="bg-gray-700">
-                    <tr>
-                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider w-1/12">
-                            <input type="checkbox" wire:model.live="selectAll" class="form-checkbox text-blue-600 bg-gray-800 border-gray-600 rounded focus:ring-blue-500">
-                        </th>
-                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider w-3/12">
-                            Title
-                        </th>
-                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider w-2/12">
-                            Instructor
-                        </th>
-                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider w-1/12">
-                            Category
-                        </th>
-                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider w-1/12">
-                            Sections
-                        </th>
-                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider w-1/12">
-                            Difficulty
-                        </th>
-                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider w-1/12">
-                            Published
-                        </th>
-                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider w-1/12">
-                            Approved
-                        </th>
-                        <th scope="col" class="relative px-6 py-3 w-2/12">
-                            <span class="sr-only">Actions</span>
-                        </th>
-                    </tr>
-                </thead>
-                <tbody class="bg-gray-800 divide-y divide-gray-700">
-                    @foreach ($courses as $course)
-                        <tr class="hover:bg-gray-700 transition-colors duration-150">
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <input type="checkbox" wire:model.live="selectedCourses" value="{{ $course->id }}" class="form-checkbox text-blue-600 bg-gray-800 border-gray-600 rounded focus:ring-blue-500">
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="text-sm font-medium text-white">{{ $course->title }}</div>
-                                <div class="text-xs text-gray-400">{{ Str::limit($course->description, 50) }}</div>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="text-sm text-gray-300">{{ $course->instructor->name ?? 'N/A' }}</div>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="text-sm text-gray-300">{{ $course->category->name ?? 'Uncategorized' }}</div>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
-                                    {{ $course->sections->pluck('title')->join(', ') }}
-                                </span>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full
-                                    {{ $course->difficulty_level === 'beginner' ? 'bg-green-100 text-green-800' : '' }}
-                                    {{ $course->difficulty_level === 'intermediate' ? 'bg-yellow-100 text-yellow-800' : '' }}
-                                    {{ $course->difficulty_level === 'advanced' ? 'bg-red-100 text-red-800' : '' }}">
-                                    {{ ucfirst($course->difficulty_level) }}
-                                </span>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <button wire:click="togglePublished({{ $course->id }})"
-                                        class="px-3 py-1 rounded-full text-xs font-semibold
-                                        {{ $course->is_published ? 'bg-blue-600 text-white hover:bg-blue-700' : 'bg-gray-600 text-gray-300 hover:bg-gray-500' }}
-                                        transition-colors duration-200">
-                                    {{ $course->is_published ? 'Published' : 'Unpublished' }}
-                                </button>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                @if (Auth::user()->isSuperAdmin() || Auth::user()->isAcademyAdmin())
-                                    <button wire:click="toggleApproved({{ $course->id }})"
-                                            class="px-3 py-1 rounded-full text-xs font-semibold
-                                            {{ $course->status === 'approved' ? 'bg-pink-600 text-white hover:bg-pink-700' : 'bg-gray-600 text-gray-300 hover:bg-gray-500' }}
-                                            transition-colors duration-200">
-                                        {{ $course->status === 'approved' ? 'Approved' : 'Unapproved' }}
-                                    </button>
-                                @else
-                                    <span class="px-3 py-1 rounded-full text-xs font-semibold
-                                        {{ $course->status === 'approved' ? 'bg-pink-600/30 text-pink-300' : 'bg-yellow-600/30 text-yellow-300' }}">
-                                        {{ ucfirst($course->status) }}
+        <!-- Bulk Actions -->
+        <div class="mb-6 flex space-x-4" x-data="{ selectedCourses: @entangle('selectedCourses') }">
+            @can('publish-courses')
+                <button wire:click="bulkPublish" class="bg-blue-600 text-white px-4 py-2 rounded-xl hover:bg-blue-700 transition duration-300 disabled:opacity-50 flex items-center" x-bind:disabled="!selectedCourses.length" aria-label="Publish selected courses">
+                    <i class="fas fa-globe mr-2"></i> Publish
+                </button>
+                <button wire:click="bulkUnpublish" class="bg-gray-600 text-white px-4 py-2 rounded-xl hover:bg-gray-700 transition duration-300 disabled:opacity-50 flex items-center" x-bind:disabled="!selectedCourses.length" aria-label="Unpublish selected courses">
+                    <i class="fas fa-eye-slash mr-2"></i> Unpublish
+                </button>
+            @endcan
+            @can('approve-courses')
+                <button wire:click="bulkApprove" class="bg-green-600 text-white px-4 py-2 rounded-xl hover:bg-green-700 transition duration-300 disabled:opacity-50 flex items-center" x-bind:disabled="!selectedCourses.length" aria-label="Approve selected courses">
+                    <i class="fas fa-check-circle mr-2"></i> Approve
+                </button>
+            @endcan
+            @can('delete-courses')
+                <button wire:click="bulkDelete" class="bg-red-600 text-white px-4 py-2 rounded-xl hover:bg-red-700 transition duration-300 disabled:opacity-50 flex items-center" x-bind:disabled="!selectedCourses.length" aria-label="Delete selected courses">
+                    <i class="fas fa-trash-alt mr-2"></i> Delete
+                </button>
+            @endcan
+            <button wire:click="exportSelected" class="bg-teal-600 text-white px-4 py-2 rounded-xl hover:bg-teal-700 transition duration-300 disabled:opacity-50 flex items-center" x-bind:disabled="!selectedCourses.length" aria-label="Export selected courses">
+                <i class="fas fa-download mr-2"></i> Export
+            </button>
+        </div>
+
+        <!-- Course Table -->
+        @if ($courses->isEmpty())
+            <div class="text-center py-12">
+                <p class="text-teal-300 text-xl animate__animated animate__pulse">No courses found matching your criteria.</p>
+            </div>
+        @else
+            <div class="overflow-x-auto rounded-xl shadow-lg border border-teal-700">
+                <table wire:poll.10s class="min-w-full divide-y divide-teal-700" aria-label="Courses Table">
+                    <thead class="bg-indigo-800">
+                        <tr>
+                            <th class="px-6 py-4 text-left text-xs font-medium text-teal-200 uppercase tracking-wider">
+                                <input type="checkbox" x-model="selectAll" aria-label="Select all courses">
+                            </th>
+                            <th wire:click="sortBy('title')" class="px-6 py-4 text-left text-xs font-medium text-teal-200 uppercase tracking-wider cursor-pointer" aria-sort="{{ $sortField === 'title' ? $sortDirection : 'none' }}">
+                                Title @if($sortField === 'title') <i class="fas fa-sort-{{ $sortDirection === 'asc' ? 'up' : 'down' }} text-teal-300"></i> @endif
+                            </th>
+                            <th wire:click="sortBy('instructor.name')" class="px-6 py-4 text-left text-xs font-medium text-teal-200 uppercase tracking-wider cursor-pointer hidden md:table-cell" aria-sort="{{ $sortField === 'instructor.name' ? $sortDirection : 'none' }}">
+                                Instructor @if($sortField === 'instructor.name') <i class="fas fa-sort-{{ $sortDirection === 'asc' ? 'up' : 'down' }} text-teal-300"></i> @endif
+                            </th>
+                            <th wire:click="sortBy('category.name')" class="px-6 py-4 text-left text-xs font-medium text-teal-200 uppercase tracking-wider cursor-pointer" aria-sort="{{ $sortField === 'category.name' ? $sortDirection : 'none' }}">
+                                Category @if($sortField === 'category.name') <i class="fas fa-sort-{{ $sortDirection === 'asc' ? 'up' : 'down' }} text-teal-300"></i> @endif
+                            </th>
+                            <th wire:click="sortBy('enrollments_count')" class="px-6 py-4 text-left text-xs font-medium text-teal-200 uppercase tracking-wider cursor-pointer" x-on:mouseover="tooltip = 'Number of enrolled students'" x-on:mouseout="tooltip = ''">
+                                Enrollments @if($sortField === 'enrollments_count') <i class="fas fa-sort-{{ $sortDirection === 'asc' ? 'up' : 'down' }} text-teal-300"></i> @endif
+                            </th>
+                            <th wire:click="sortBy('difficulty_level')" class="px-6 py-4 text-left text-xs font-medium text-teal-200 uppercase tracking-wider cursor-pointer" aria-sort="{{ $sortField === 'difficulty_level' ? $sortDirection : 'none' }}">
+                                Difficulty @if($sortField === 'difficulty_level') <i class="fas fa-sort-{{ $sortDirection === 'asc' ? 'up' : 'down' }} text-teal-300"></i> @endif
+                            </th>
+                            <th class="px-6 py-4 text-left text-xs font-medium text-teal-200 uppercase tracking-wider">Published</th>
+                            <th class="px-6 py-4 text-left text-xs font-medium text-teal-200 uppercase tracking-wider">Status</th>
+                            <th class="px-6 py-4 text-right text-xs font-medium text-teal-200 uppercase tracking-wider">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-indigo-950 divide-y divide-teal-800">
+                        @foreach($courses as $course)
+                            <tr class="hover:bg-indigo-900 transition duration-200 ease-in-out animate__animated animate__fadeIn">
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <input type="checkbox" wire:model="selectedCourses" value="{{ $course->id }}" aria-label="Select course {{ $course->title }}">
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-indigo-100">{{ $course->title }}</td>
+                                <td class="px-6 py-4 whitespace-nowrap hidden md:table-cell text-teal-300">{{ $course->instructor->name }}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-teal-300">{{ $course->category->name }}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-teal-300">{{ $course->enrollments->count() }}</td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="px-3 py-1 rounded-full text-xs font-semibold 
+                                        {{ $course->difficulty_level === 'beginner' ? 'bg-green-800 text-green-300' : '' }}
+                                        {{ $course->difficulty_level === 'intermediate' ? 'bg-yellow-800 text-yellow-300' : '' }}
+                                        {{ $course->difficulty_level === 'advanced' ? 'bg-red-800 text-red-300' : '' }}"
+                                        x-on:mouseover="tooltip = 'Difficulty: {{ ucfirst($course->difficulty_level) }}'" x-on:mouseout="tooltip = ''">
+                                        {{ ucfirst($course->difficulty_level) }}
                                     </span>
-                                @endif
-                            </td>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    @can('publish-courses')
+                                        <button wire:click="togglePublished({{ $course->id }})" 
+                                                class="px-3 py-1 rounded-full text-xs font-semibold transition duration-200
+                                                {{ $course->is_published ? 'bg-blue-800 text-blue-300 hover:bg-blue-700' : 'bg-gray-800 text-gray-300 hover:bg-gray-700' }}"
+                                                x-on:mouseover="tooltip = '{{ $course->is_published ? 'Unpublish' : 'Publish' }} course'" x-on:mouseout="tooltip = ''">
+                                            {{ $course->is_published ? 'Published' : 'Unpublished' }}
+                                        </button>
+                                    @else
+                                        <span class="px-3 py-1 rounded-full text-xs font-semibold
+                                            {{ $course->is_published ? 'bg-blue-800/50 text-blue-300' : 'bg-gray-800/50 text-gray-300' }}">
+                                            {{ $course->is_published ? 'Published' : 'Unpublished' }}
+                                        </span>
+                                    @endcan
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    @can('approve-courses')
+                                        @if (Auth::user()->hasRole('instructor') && $course->instructor_id === Auth::id())
+                                            <span class="px-3 py-1 rounded-full text-xs font-semibold
+                                                {{ $course->status === 'approved' ? 'bg-green-800/50 text-green-300' : 'bg-yellow-800/50 text-yellow-300' }}">
+                                                {{ ucfirst($course->status) }}
+                                            </span>
+                                        @else
+                                            <button wire:click="toggleApproved({{ $course->id }})"
+                                                    class="px-3 py-1 rounded-full text-xs font-semibold transition duration-200
+                                                    {{ $course->status === 'approved' ? 'bg-green-800 text-green-300 hover:bg-green-700' : 'bg-yellow-800 text-yellow-300 hover:bg-yellow-700' }}"
+                                                    x-on:mouseover="tooltip = '{{ $course->status === 'approved' ? 'Unapprove' : 'Approve' }} course'" x-on:mouseout="tooltip = ''">
+                                                {{ ucfirst($course->status) }}
+                                            </button>
+                                        @endif
+                                    @else
+                                        <span class="px-3 py-1 rounded-full text-xs font-semibold
+                                            {{ $course->status === 'approved' ? 'bg-green-800/50 text-green-300' : 'bg-yellow-800/50 text-yellow-300' }}">
+                                            {{ ucfirst($course->status) }}
+                                        </span>
+                                    @endcan
+                                </td>
                             <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                 <a href="{{ route('course-builder', $course) }}" class="text-blue-400 hover:text-blue-600 mr-3">
                                     <i class="fas fa-edit mr-1"></i> Build Course
@@ -187,14 +245,24 @@
                                     <i class="fas fa-trash-alt mr-1"></i> Delete
                                 </button>
                             </td>
-                        </tr>
-                    @endforeach
-                </tbody>
-            </table>
-        </div>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
 
-        <div class="mt-6">
-            {{ $courses->links('pagination::tailwind') }}
-        </div>
+            <!-- Pagination and Create Button -->
+            <div class="mt-8 flex justify-between items-center">
+                <a href="{{ route('course_management.create_course') }}" class="bg-green-600 text-white px-6 py-3 rounded-xl hover:bg-green-700 transition duration-300 shadow-md flex items-center animate__animated animate__pulse animate__infinite" aria-label="Create a new course">
+                    <i class="fas fa-plus mr-2"></i> Create New Course
+                </a>
+                <div>
+                    {{ $courses->links('pagination::tailwind') }}
+                </div>
+            </div>
+        @endif
+
+        <!-- Tooltip -->
+        <div x-show="tooltip" class="fixed bg-indigo-900 text-white text-sm px-3 py-1 rounded-lg shadow-lg" x-text="tooltip" style="z-index: 1000;"></div>
     @endif
 </div>
