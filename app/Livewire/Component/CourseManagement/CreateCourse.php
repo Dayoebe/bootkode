@@ -3,27 +3,26 @@
 namespace App\Livewire\Component\CourseManagement;
 
 use Livewire\Component;
-use Livewire\WithFileUploads; // Trait for file uploads
+use Livewire\WithFileUploads;
 use App\Models\Course;
-use App\Models\User;
 use App\Models\CourseCategory;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
-use Livewire\Attributes\Layout; // Import the Layout attribute
+use Livewire\Attributes\Layout;
 use Livewire\Attributes\Rule;
 
-#[Layout('layouts.dashboard', ['title' => 'Create New Course', 'description' => 'Create and manage new courses, including setting details and uploading content', 'icon' => 'fas fa-plus-circle', 'active' => 'instructor.create-course'])] // Set the layout for this page component
+#[Layout('layouts.dashboard', ['title' => 'Create New Course', 'description' => 'Create and manage new courses, including setting details and uploading content', 'icon' => 'fas fa-plus-circle', 'active' => 'instructor.create-course'])]
 class CreateCourse extends Component
 {
     use WithFileUploads;
 
-    // Course properties
     public $is_premium = false;
-    public $categories; // To populate the category dropdown
+    public $categories = []; // Populated in mount
 
     public ?Course $course = null;
 
-    #[Rule('required|string|min:3|max:255')]
+    #[Rule('required|string|min:3|max:255|unique:courses,title')]
     public $title = '';
 
     #[Rule('nullable|string|max:255')]
@@ -44,151 +43,113 @@ class CreateCourse extends Component
     #[Rule('boolean')]
     public $is_approved = false;
 
-    #[Rule('nullable|image|max:2048')] // 2MB max for thumbnail
+    #[Rule('nullable|image|mimes:jpeg,png,jpg|max:2048')] // Added MIME for security
     public $thumbnail;
 
     #[Rule('nullable|integer|min:1')]
     public $estimated_duration_minutes = null;
 
-    #[Rule('required|numeric|min:0')]
+    #[Rule('required|numeric|min:0|max:9999')]
     public $price = 0.00;
 
+    #[Rule('nullable|string|max:500')]
+    public $target_audience = '';
+
+    #[Rule('array|max:10')] // Limit for performance
+    #[Rule(['learning_outcomes.*' => 'string|max:500'])]
+    public array $learning_outcomes = [];
+
+    #[Rule('array|max:10')]
+    #[Rule(['prerequisites.*' => 'string|max:1000'])]
+    public array $prerequisites = [];
+
+    #[Rule('nullable|string|max:1000')]
+    public $syllabus_overview = '';
+
+    #[Rule('nullable|array|max:20')]
+    #[Rule(['faqs.*.question' => 'string|max:255'])]
+    #[Rule(['faqs.*.answer' => 'string|max:1000'])]
+    public array $faqs = [];
+
+    #[Rule('numeric|between:0,100')]
+    public $completion_rate_threshold = 80.00;
+
     /**
-     * Mount the component and load necessary data.
+     * Mount the component and load data.
      */
     public function mount($course = null)
     {
-        $this->categories = CourseCategory::orderBy('name')->get();
-        $user = Auth::user();
+        $this->categories = Cache::remember('course_categories_create', 3600, fn() => CourseCategory::orderBy('name')->get());
 
-        // If the user is an instructor, they might not be able to set is_approved directly
-        // This logic can be refined with policies later.
-        if ($user->hasRole('instructor')) {
-            $this->is_approved = false; // Instructors cannot self-approve
-        }
         if ($course) {
             $this->course = Course::findOrFail($course);
-            $this->title = $this->course->title;
-            $this->subtitle = $this->course->subtitle;
-            $this->description = $this->course->description;
-            $this->categoryId = $this->course->category_id;
-            $this->difficulty_level = $this->course->difficulty_level;
-            $this->is_published = $this->course->is_published;
+            // Fill form with course data...
+            $this->fill($this->course->only([
+                'title', 'subtitle', 'description', 'category_id', 'difficulty_level', 'is_published',
+                'target_audience', 'learning_outcomes', 'prerequisites', 'syllabus_overview', 'faqs',
+                'completion_rate_threshold', 'estimated_duration_minutes', 'price', 'is_premium'
+            ]));
+            $this->is_approved = $this->course->is_approved;
+        }
+
+        $user = Auth::user();
+        if (!$user->hasRole('super_admin') && !$user->hasRole('academy_admin')) {
+            $this->is_approved = false; // Non-admins can't approve
         }
     }
-    
-
 
     /**
-     * Validation rules for course creation.
+     * Save or update the course.
      */
-    protected function rules()
+    public function save()
     {
-        return [
-            'title' => 'required|string|max:255|unique:courses,title',
-            'description' => 'nullable|string',
-            'category_id' => 'nullable|exists:course_categories,id',
-            'thumbnail' => 'nullable|image|max:2048', // 2MB max
-            'difficulty_level' => 'required|in:beginner,intermediate,advanced',
-            'estimated_duration_minutes' => 'nullable|integer|min:1',
-            'price' => 'required_if:is_premium,true|numeric|min:0|nullable',
-            'is_premium' => 'boolean',
-            'is_published' => 'boolean',
-            'is_approved' => 'boolean',
-        ];
-    }
+        $this->authorize($this->course ? 'update' : 'create', Course::class); // Add policy check
 
-    /**
-     * Custom validation messages.
-     */
-    protected $messages = [
-        'title.unique' => 'A course with this title already exists.',
-        'price.required_if' => 'Price is required for premium courses.',
-    ];
-
-    /**
-     * Create a new course.
-     */
-    public function createCourse()
-    {
         $this->validate();
 
-        $thumbnailPath = null;
+        $data = $this->only([
+            'title', 'subtitle', 'description', 'category_id', 'difficulty_level', 'is_published',
+            'target_audience', 'learning_outcomes', 'prerequisites', 'syllabus_overview', 'faqs',
+            'completion_rate_threshold', 'estimated_duration_minutes', 'price', 'is_premium', 'is_approved'
+        ]);
+
+        $data['description'] = strip_tags($data['description']); // Sanitize for XSS
+
         if ($this->thumbnail) {
-            // Store the thumbnail in the 'public/thumbnails' directory
-            $thumbnailPath = $this->thumbnail->store('thumbnails', 'public');
+            $data['thumbnail'] = $this->thumbnail->store('thumbnails', 'public');
         }
 
-        Course::create([
-            'instructor_id' => Auth::id(), // Assign current user as instructor
-            'category_id' => $this->category_id,
-            'title' => $this->title,
-            'slug' => Str::slug($this->title), // Generate slug automatically
-            'description' => $this->description,
-            'thumbnail' => $thumbnailPath,
-            'difficulty_level' => $this->difficulty_level,
-            'estimated_duration_minutes' => $this->estimated_duration_minutes,
-            'price' => $this->is_premium ? ($this->price ?? 0.00) : 0.00, // Set price to 0 if not premium
-            'is_premium' => $this->is_premium,
-            'is_published' => $this->is_published,
-            'is_approved' => $this->is_approved, // Will be false for instructors, can be true for admins
-        ]);
+        try {
+            if ($this->course) {
+                $this->course->update($data);
+                $message = 'Course updated successfully!';
+            } else {
+                $data['instructor_id'] = Auth::id();
+                Course::create($data);
+                $message = 'Course created successfully!';
+            }
 
-        $this->dispatch('notify', 'Course created successfully!', 'success');
-
-        // Reset form fields after successful creation
-        $this->reset([
-            'title', 'description', 'category_id', 'thumbnail',
-            'difficulty_level', 'estimated_duration_minutes', 'price',
-            'is_premium', 'is_published', 'is_approved'
-        ]);
-
-        // Optionally redirect to the "All Courses" page
-        return redirect()->route('all-course');
-    }
-
-    public function saveCourse()
-    {
-        $this->validate();
-
-        if ($this->course) {
-            // Update an existing course
-            $this->course->update([
-                'title' => $this->title,
-                'subtitle' => $this->subtitle,
-                'description' => $this->description,
-                'category_id' => $this->categoryId,
-                'difficulty_level' => $this->difficulty_level,
-                'is_published' => $this->is_published,
-            ]);
-            $message = 'Course updated successfully!';
-        } else {
-            // Create a new course
-            Course::create([
-                'title' => $this->title,
-                'subtitle' => $this->subtitle,
-                'description' => $this->description,
-                'category_id' => $this->categoryId,
-                'difficulty_level' => $this->difficulty_level,
-                'instructor_id' => Auth::id(), // Assign the current user as the instructor
-                'is_published' => $this->is_published,
-            ]);
-            $message = 'Course created successfully!';
+            $this->dispatch('notify', ['message' => $message, 'type' => 'success']);
+            $this->redirect(route('all-course'), navigate: true);
+        } catch (\Exception $e) {
+            $this->dispatch('notify', ['message' => 'Error: ' . $e->getMessage(), 'type' => 'error']);
         }
-        
-        $this->dispatch('notify', $message, 'success');
-        $this->redirect(route('all-course'), navigate: true);
     }
-
 
     /**
-     * Render the component view.
+     * Stub for AI-generated suggestions (e.g., learning outcomes).
      */
+    public function suggestAiContent(string $field)
+    {
+        // Future: Integrate AI API (e.g., Grok/xAI) to generate content based on title/description
+        // For now, placeholder
+        $this->dispatch('notify', 'AI suggestion coming soon!', 'info');
+    }
+
     public function render()
     {
         return view('livewire.component.course-management.create-course', [
-            'categories' => CourseCategory::all(),
-            'user'=> User::all(),
+            'categories' => $this->categories,
         ]);
     }
 }
