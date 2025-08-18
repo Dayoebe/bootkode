@@ -26,16 +26,18 @@ Route::middleware(['auth', 'verified'])->prefix('certificates')->group(function 
 Route::get('/projects/{slug}', [App\Http\Controllers\ProjectController::class, 'show'])->name('project.show');
 
 
-// Group for authenticated user profiles
+
+// In the auth middleware group
 Route::middleware('auth')->group(function () {
     Route::get('/dashboard/profile/view', \App\Livewire\Component\Profile\ViewProfile::class)->name('profile.view');
     Route::get('/dashboard/profile/edit', \App\Livewire\Component\Profile\EditProfile::class)->name('profile.edit');
     Route::get('/dashboard/all-users', \App\Livewire\Component\User\AllUser::class)->name('all-users');
-
-    
-
-
+    Route::get('/dashboard/roles-permissions', \App\Livewire\Component\User\RolesPermissions::class)->name('roles-permissions');
+    Route::get('/dashboard/pending-verifications', \App\Livewire\Component\User\PendingVerifications::class)->name('pending-verifications');
 });
+
+
+
 
 Route::get('/certificates/verify/{uuid?}', \App\Livewire\Certification\PublicCertificateVerification::class)
     ->name('certificates.public-verify');
@@ -66,7 +68,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/dashboard/courses/reviews', CourseReviews::class)->name('course-reviews');
     Route::get('/dashboard/courses/approvals', CourseApprovals::class)->name('course-approvals');
     Route::get('/courses/{course}/preview/{highlight?}', CoursePreview::class)->name('course.preview');
-    Route::get('/dashboard/courses/available', \App\Livewire\Component\AvailableCourses::class)->name('courses.available');
+    Route::get('/dashboard/courses/available', \App\Livewire\Component\CourseManagement\AvailableCourses::class)->name('courses.available');
 });
 
 Route::middleware('auth')->group(function () {

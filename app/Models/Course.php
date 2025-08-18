@@ -11,12 +11,12 @@ class Course extends Model
     use HasFactory;
 
     protected $fillable = [
-        'instructor_id', 'category_id', 'title', 'slug', 'description', 'thumbnail',
+        'instructor_id', 'category_id', 'title', 'subtitle', 'slug', 'description', 'thumbnail',
         'difficulty_level', 'estimated_duration_minutes', 'price', 'is_premium',
         'has_offline_content', 'is_published', 'is_approved', 'target_audience',
         'learning_outcomes', 'prerequisites', 'syllabus_overview', 'total_modules',
         'total_projects', 'total_assessments', 'faqs', 'certificate_template',
-        'has_projects', 'has_assessments', 'completion_rate_threshold',
+        'has_projects', 'has_assessments', 'completion_rate_threshold', 'status',
     ];
 
     protected $casts = [
@@ -40,6 +40,7 @@ class Course extends Model
     {
         return $this->belongsTo(CourseCategory::class);
     }
+
     public function enrollments()
     {
         return $this->hasMany(CourseEnrollment::class);
@@ -52,7 +53,7 @@ class Course extends Model
 
     public function allLessons()
     {
-        return $this->hasManyThrough(Lesson::class, Section::class, 'course_id', 'section_id', 'id', 'id')
+        return $this->hasManyThrough(Lesson::class, Section::class)
             ->orderBy('sections.order')
             ->orderBy('lessons.order');
     }
@@ -67,11 +68,17 @@ class Course extends Model
         return $this->hasMany(CourseReview::class);
     }
 
+    public function rejections()
+    {
+        return $this->hasMany(CourseRejection::class);
+    }
+
     protected static function boot()
     {
         parent::boot();
         static::creating(function ($course) {
             $course->slug = Str::slug($course->title);
+            $course->status = $course->status ?? 'pending';
         });
         static::updating(function ($course) {
             if ($course->isDirty('title')) {
