@@ -3,11 +3,13 @@
 namespace App\Livewire\Component\CourseManagement\CourseBuilder;
 
 use App\Models\Course;
-use App\Models\CourseSection;
-use App\Models\CourseLesson;
+use App\Models\Section;
+use App\Models\Lesson;
+use App\Models\Assessment;
 use Illuminate\Support\Str;
 use Livewire\Attributes\On;
 use Livewire\Component;
+use Livewire\Attributes\Computed;
 
 class CourseOutline extends Component
 {
@@ -33,6 +35,16 @@ class CourseOutline extends Component
     public $newLessonDuration = 0;
     public $editingLessonId = null;
     public $editingLessonTitle = '';
+    
+    // Assessment management
+    public $isAddingAssessmentToSectionId = null;
+    public $newAssessmentTitle = '';
+    public $newAssessmentDescription = '';
+    public $newAssessmentType = 'project'; // Default to project
+    public $newAssessmentDurationMinutes = 0;
+    public $newAssessmentDeadline = null;
+    public $editingAssessmentId = null;
+    public $editingAssessmentTitle = '';
 
     protected $rules = [
         'newSectionTitle' => 'required|string|max:255',
@@ -43,314 +55,210 @@ class CourseOutline extends Component
         'editingSectionTitle' => 'required|string|max:255',
         'editingSectionDescription' => 'nullable|string|max:1000',
         'editingLessonTitle' => 'required|string|max:255',
+        'newAssessmentTitle' => 'required|string|max:255',
+        'newAssessmentDescription' => 'nullable|string|max:1000',
+        'newAssessmentType' => 'required|in:project,quiz,assignment',
+        'newAssessmentDurationMinutes' => 'nullable|integer|min:0|max:1440',
+        'newAssessmentDeadline' => 'nullable|date|after:now',
+        'editingAssessmentTitle' => 'required|string|max:255',
     ];
 
-    public function mount(Course $course, $activeLessonId = null)
+    #[Computed]
+    public function courseStats()
     {
-        $this->course = $course;
-        $this->activeLessonId = $activeLessonId;
+        return [
+            'total_sections' => $this->course->sections()->count(),
+            'total_lessons' => $this->course->allLessons()->count(),
+            'total_assessments' => $this->course->assessments()->count(),
+            'total_projects' => $this->course->assessments()->where('type', 'project')->count(),
+            'total_quizzes' => $this->course->assessments()->where('type', 'quiz')->count(),
+            'total_assignments' => $this->course->assessments()->where('type', 'assignment')->count(),
+            'total_enrollments' => $this->course->enrollments()->count(),
+            'total_duration' => $this->course->allLessons()->sum('duration_minutes'),
+            'total_storage' => $this->course->allLessons()->sum('size_mb'),
+            'completion_percentage' => $this->course->allLessons()->count() > 0 
+                ? round(($this->course->allLessons()->whereNotNull('content')->count() / $this->course->allLessons()->count()) * 100) 
+                : 0,
+        ];
     }
 
-    #[On('lesson-selected')]
-    public function updateActiveLessonId($lessonId)
+    #[Computed]
+    public function filteredSections()
     {
-        $this->activeLessonId = $lessonId;
+        $query = $this->course->sections()->with(['lessons', 'assessments']);
+
+        if ($this->searchTerm) {
+            $query->where(function ($q) {
+                $q->where('title', 'like', '%' . $this->searchTerm . '%')
+                  ->orWhere('description', 'like', '%' . $this->searchTerm . '%')
+                  ->orWhereHas('lessons', function ($q) {
+                      $q->where('title', 'like', '%' . $this->searchTerm . '%')
+                        ->orWhere('description', 'like', '%' . $this->searchTerm . '%');
+                  })
+                  ->orWhereHas('assessments', function ($q) {
+                      $q->where('title', 'like', '%' . $this->searchTerm . '%')
+                        ->orWhere('description', 'like', '%' . $this->searchTerm . '%');
+                  });
+            });
+        }
+
+        if ($this->filterType !== 'all') {
+            $query->whereHas('lessons', function ($q) {
+                $q->where('content_type', $this->filterType);
+            });
+        }
+
+        return $query->orderBy('order')->get();
     }
 
-    public function selectLesson($lessonId)
-    {
-        $this->dispatch('lesson-selected', $lessonId);
-    }
-
-    // Section Management
     public function showAddSectionForm()
     {
         $this->isAddingSection = true;
-        $this->reset(['newSectionTitle', 'newSectionDescription']);
-    }
-
-    public function cancelAddSection()
-    {
-        $this->isAddingSection = false;
-        $this->reset(['newSectionTitle', 'newSectionDescription']);
     }
 
     public function addSection()
     {
         $this->validate([
-            'newSectionTitle' => 'required|string|max:255',
-            'newSectionDescription' => 'nullable|string|max:1000'
+            'newSectionTitle' => $this->rules['newSectionTitle'],
+            'newSectionDescription' => $this->rules['newSectionDescription'],
         ]);
-        
-        $this->course->sections()->create([
+
+        $section = $this->course->sections()->create([
             'title' => $this->newSectionTitle,
             'description' => $this->newSectionDescription,
-            'order' => $this->course->sections()->count(),
+            'slug' => Str::slug($this->newSectionTitle),
+            'order' => $this->course->sections()->count() + 1,
         ]);
-    
-        $this->reset(['newSectionTitle', 'newSectionDescription', 'isAddingSection']);
-        $this->course->load('sections.lessons');
+
+        $this->dispatch('notify', type: 'success', message: 'Section added successfully!');
         $this->dispatch('course-updated');
-        $this->dispatch('notify', 'New section added successfully!', 'success');
+        $this->cancelAddSection();
     }
 
-    public function editSection($sectionId)
+    public function cancelAddSection()
     {
-        $section = CourseSection::find($sectionId);
-        $this->editingSectionId = $sectionId;
-        $this->editingSectionTitle = $section->title;
-        $this->editingSectionDescription = $section->description;
+        $this->isAddingSection = false;
+        $this->newSectionTitle = '';
+        $this->newSectionDescription = '';
     }
 
-    public function updateSection()
-    {
-        $this->validate([
-            'editingSectionTitle' => 'required|string|max:255',
-            'editingSectionDescription' => 'nullable|string|max:1000'
-        ]);
-        
-        $section = CourseSection::find($this->editingSectionId);
-        $section->update([
-            'title' => $this->editingSectionTitle,
-            'description' => $this->editingSectionDescription
-        ]);
-        
-        $this->reset(['editingSectionId', 'editingSectionTitle', 'editingSectionDescription']);
-        $this->course->load('sections.lessons');
-        $this->dispatch('course-updated');
-        $this->dispatch('notify', 'Section updated successfully!', 'success');
-    }
-
-    public function cancelEditSection()
-    {
-        $this->reset(['editingSectionId', 'editingSectionTitle', 'editingSectionDescription']);
-    }
-
-    public function deleteSection($sectionId)
-    {
-        $section = CourseSection::findOrFail($sectionId);
-
-        // Delete associated files and lessons
-        foreach ($section->lessons as $lesson) {
-            $this->deleteAssociatedFiles($lesson);
-        }
-
-        $section->lessons()->delete();
-        $section->delete();
-        
-        $this->course->load('sections.lessons');
-        $this->dispatch('course-updated');
-        $this->dispatch('notify', 'Section and all lessons deleted successfully!', 'success');
-    }
-
-    public function duplicateSection($sectionId)
-    {
-        $section = CourseSection::with('lessons')->findOrFail($sectionId);
-        
-        $duplicatedSection = $section->replicate();
-        $duplicatedSection->title = $section->title . ' (Copy)';
-        $duplicatedSection->order = $this->course->sections()->count();
-        $duplicatedSection->save();
-
-        // Duplicate all lessons in the section
-        foreach ($section->lessons as $lesson) {
-            $duplicatedLesson = $lesson->replicate();
-            $duplicatedLesson->course_section_id = $duplicatedSection->id;
-            $duplicatedLesson->save();
-        }
-
-        $this->course->load('sections.lessons');
-        $this->dispatch('course-updated');
-        $this->dispatch('notify', 'Section duplicated successfully!', 'success');
-    }
-
-    // Lesson Management
     public function showAddLessonForm($sectionId)
     {
-        $this->reset(['newLessonTitle', 'newLessonDescription', 'newLessonContentType', 'newLessonDuration']);
         $this->isAddingLessonToSectionId = $sectionId;
-    }
-
-    public function cancelAddLesson()
-    {
-        $this->reset(['isAddingLessonToSectionId', 'newLessonTitle', 'newLessonDescription', 'newLessonContentType', 'newLessonDuration']);
     }
 
     public function addLesson()
     {
         $this->validate([
-            'newLessonTitle' => 'required|string|max:255',
-            'newLessonDescription' => 'nullable|string|max:1000',
-            'newLessonDuration' => 'nullable|integer|min:0|max:1440'
+            'newLessonTitle' => $this->rules['newLessonTitle'],
+            'newLessonDescription' => $this->rules['newLessonDescription'],
+            'newLessonContentType' => $this->rules['newLessonContentType'],
+            'newLessonDuration' => $this->rules['newLessonDuration'],
         ]);
-        
-        $section = CourseSection::find($this->isAddingLessonToSectionId);
-        
-        $newLesson = $section->lessons()->create([
+
+        $section = Section::findOrFail($this->isAddingLessonToSectionId);
+        $section->lessons()->create([
             'title' => $this->newLessonTitle,
-            'slug' => Str::slug($this->newLessonTitle),
+            'description' => $this->newLessonDescription,
             'content_type' => $this->newLessonContentType,
-            'order' => $section->lessons()->count(),
             'duration_minutes' => $this->newLessonDuration,
-            'content' => json_encode(['body' => '', 'blocks' => []])
+            'slug' => Str::slug($this->newLessonTitle),
+            'order' => $section->lessons()->count() + 1,
         ]);
-    
-        $this->course->load('sections.lessons');
+
+        $this->dispatch('notify', type: 'success', message: 'Lesson added successfully!');
         $this->dispatch('course-updated');
-        $this->dispatch('notify', 'New lesson added successfully!', 'success');
-        $this->selectLesson($newLesson->id);
-        $this->reset(['isAddingLessonToSectionId', 'newLessonTitle', 'newLessonDescription', 'newLessonContentType', 'newLessonDuration']);
+        $this->cancelAddLesson();
     }
 
-    public function editLesson($lessonId)
+    public function cancelAddLesson()
     {
-        $lesson = CourseLesson::find($lessonId);
-        $this->editingLessonId = $lessonId;
-        $this->editingLessonTitle = $lesson->title;
+        $this->isAddingLessonToSectionId = null;
+        $this->newLessonTitle = '';
+        $this->newLessonDescription = '';
+        $this->newLessonContentType = 'text';
+        $this->newLessonDuration = 0;
     }
 
-    public function updateLesson()
+    public function showAddAssessmentForm($sectionId)
+    {
+        $this->isAddingAssessmentToSectionId = $sectionId;
+    }
+
+    public function addAssessment()
     {
         $this->validate([
-            'editingLessonTitle' => 'required|string|max:255'
+            'newAssessmentTitle' => $this->rules['newAssessmentTitle'],
+            'newAssessmentDescription' => $this->rules['newAssessmentDescription'],
+            'newAssessmentType' => $this->rules['newAssessmentType'],
+            'newAssessmentDurationMinutes' => $this->rules['newAssessmentDurationMinutes'],
+            'newAssessmentDeadline' => $this->rules['newAssessmentDeadline'],
         ]);
-        
-        $lesson = CourseLesson::find($this->editingLessonId);
-        $lesson->update([
-            'title' => $this->editingLessonTitle,
-            'slug' => Str::slug($this->editingLessonTitle),
+
+        $section = Section::findOrFail($this->isAddingAssessmentToSectionId);
+        $section->assessments()->create([
+            'course_id' => $this->course->id,
+            'title' => $this->newAssessmentTitle,
+            'description' => $this->newAssessmentDescription,
+            'type' => $this->newAssessmentType,
+            'estimated_duration_minutes' => $this->newAssessmentDurationMinutes,
+            'deadline' => $this->newAssessmentDeadline,
+            'slug' => Str::slug($this->newAssessmentTitle),
+            'order' => $section->assessments()->count() + 1,
         ]);
-        
-        $this->reset(['editingLessonId', 'editingLessonTitle']);
-        $this->course->load('sections.lessons');
+
+        $this->dispatch('notify', type: 'success', message: 'Assessment added successfully!');
         $this->dispatch('course-updated');
-        $this->dispatch('notify', 'Lesson updated successfully!', 'success');
+        $this->cancelAddAssessment();
     }
 
-    public function cancelEditLesson()
+    public function cancelAddAssessment()
     {
-        $this->reset(['editingLessonId', 'editingLessonTitle']);
+        $this->isAddingAssessmentToSectionId = null;
+        $this->newAssessmentTitle = '';
+        $this->newAssessmentDescription = '';
+        $this->newAssessmentType = 'project';
+        $this->newAssessmentDurationMinutes = 0;
+        $this->newAssessmentDeadline = null;
     }
 
-    public function deleteLesson($lessonId)
+    public function editAssessment($assessmentId)
     {
-        $lesson = CourseLesson::findOrFail($lessonId);
-        $this->deleteAssociatedFiles($lesson);
-        $lesson->delete();
-        
-        $this->course->load('sections.lessons');
+        $assessment = Assessment::findOrFail($assessmentId);
+        $this->editingAssessmentId = $assessmentId;
+        $this->editingAssessmentTitle = $assessment->title;
+    }
+
+    public function updateAssessment()
+    {
+        $this->validate(['editingAssessmentTitle' => $this->rules['editingAssessmentTitle']]);
+
+        $assessment = Assessment::findOrFail($this->editingAssessmentId);
+        $assessment->update([
+            'title' => $this->editingAssessmentTitle,
+            'slug' => Str::slug($this->editingAssessmentTitle),
+        ]);
+
+        $this->dispatch('notify', type: 'success', message: 'Assessment updated successfully!');
         $this->dispatch('course-updated');
-        $this->dispatch('notify', 'Lesson deleted successfully!', 'success');
+        $this->editingAssessmentId = null;
     }
 
-    public function duplicateLesson($lessonId)
+    public function deleteAssessment($assessmentId)
     {
-        $lesson = CourseLesson::findOrFail($lessonId);
-        
-        $duplicatedLesson = $lesson->replicate();
-        $duplicatedLesson->title = $lesson->title . ' (Copy)';
-        $duplicatedLesson->slug = Str::slug($duplicatedLesson->title);
-        $duplicatedLesson->order = $lesson->section->lessons()->count();
-        $duplicatedLesson->save();
+        $assessment = Assessment::findOrFail($assessmentId);
+        $assessment->delete();
 
-        $this->course->load('sections.lessons');
+        $this->dispatch('notify', type: 'success', message: 'Assessment deleted successfully!');
         $this->dispatch('course-updated');
-        $this->dispatch('notify', 'Lesson duplicated successfully!', 'success');
     }
 
-    // Bulk operations
-    public function toggleLessonSelection($lessonId)
+    public function reorderAssessments($sectionId, $orderedIds)
     {
-        if (in_array($lessonId, $this->selectedLessons)) {
-            $this->selectedLessons = array_diff($this->selectedLessons, [$lessonId]);
-        } else {
-            $this->selectedLessons[] = $lessonId;
+        foreach ($orderedIds as $order => $id) {
+            Assessment::where('id', $id)->update(['order' => $order + 1]);
         }
-    }
-
-    public function deselectAllLessons()
-    {
-        $this->selectedLessons = [];
-    }
-
-    public function bulkDeleteLessons()
-    {
-        foreach ($this->selectedLessons as $lessonId) {
-            $lesson = CourseLesson::find($lessonId);
-            if ($lesson) {
-                $this->deleteAssociatedFiles($lesson);
-                $lesson->delete();
-            }
-        }
-
-        $count = count($this->selectedLessons);
-        $this->selectedLessons = [];
-        $this->course->load('sections.lessons');
         $this->dispatch('course-updated');
-        $this->dispatch('notify', "{$count} lessons deleted successfully!", 'success');
-    }
-
-    private function deleteAssociatedFiles($lesson)
-    {
-        $content = is_string($lesson->content) ? json_decode($lesson->content, true) : $lesson->content;
-        
-        if (isset($content['blocks'])) {
-            foreach ($content['blocks'] as $block) {
-                if (isset($block['file_path'])) {
-                    \Storage::disk('public')->delete($block['file_path']);
-                }
-            }
-        }
-    }
-
-    public function getFilteredSectionsProperty()
-    {
-        $sections = $this->course->sections;
-
-        if (!empty($this->searchTerm)) {
-            $sections = $sections->filter(function($section) {
-                $titleMatch = stripos($section->title, $this->searchTerm) !== false;
-                $descriptionMatch = stripos($section->description, $this->searchTerm) !== false;
-                $lessonMatch = $section->lessons->some(function($lesson) {
-                    return stripos($lesson->title, $this->searchTerm) !== false;
-                });
-                
-                return $titleMatch || $descriptionMatch || $lessonMatch;
-            });
-        }
-
-        if ($this->filterType !== 'all') {
-            $sections = $sections->filter(function($section) {
-                return $section->lessons->some(function($lesson) {
-                    return $lesson->content_type === $this->filterType;
-                });
-            });
-        }
-
-        return $sections;
-    }
-
-    public function getCourseStatsProperty()
-    {
-        $totalLessons = $this->course->sections->sum(function($section) {
-            return $section->lessons->count();
-        });
-
-        $totalDuration = $this->course->sections->sum(function($section) {
-            return $section->lessons->sum('duration_minutes');
-        });
-
-        $publishedLessons = $this->course->sections->sum(function($section) {
-            return $section->lessons->where('content', '!=', null)->count();
-        });
-
-        return [
-            'total_sections' => $this->course->sections->count(),
-            'total_lessons' => $totalLessons,
-            'total_duration' => $totalDuration,
-            'published_lessons' => $publishedLessons,
-            'completion_percentage' => $totalLessons > 0 ? round(($publishedLessons / $totalLessons) * 100) : 0,
-        ];
     }
 
     public function render()
