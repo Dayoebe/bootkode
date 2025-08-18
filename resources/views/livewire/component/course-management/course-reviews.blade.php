@@ -1,4 +1,4 @@
-<div class="bg-gradient-to-br from-indigo-900 to-purple-700 p-8 rounded-2xl shadow-2xl text-white max-w-7xl mx-auto my-8 animate__animated animate__fadeIn" x-data="{ tooltip: '' }" wire:review-updated.window="$refresh">
+<div class="bg-gray-800 p-8 rounded-2xl shadow-2xl text-white animate__animated animate__fadeIn" x-data="{ tooltip: '' }" wire:review-updated.window="$refresh">
     @csrf
     <!-- Header -->
     <div class="flex items-center justify-between border-b border-indigo-600 pb-4 mb-6 animate__animated animate__fadeInDown">
