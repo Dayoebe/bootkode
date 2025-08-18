@@ -54,15 +54,18 @@ class Course extends Model
     public function allLessons()
     {
         return $this->hasManyThrough(Lesson::class, Section::class)
+            ->select('lessons.*') // Explicitly select all columns from lessons to avoid ambiguity
             ->orderBy('sections.order')
             ->orderBy('lessons.order');
     }
 
     public function assessments()
     {
-        return $this->hasMany(Assessment::class);
+        return $this->hasManyThrough(Assessment::class, Section::class)
+            ->select('assessments.*')
+            ->orderBy('sections.order')
+            ->orderBy('assessments.order');
     }
-
     public function reviews()
     {
         return $this->hasMany(CourseReview::class);

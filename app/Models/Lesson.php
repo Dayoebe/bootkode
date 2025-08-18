@@ -2,59 +2,38 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Str;
 
 class Lesson extends Model
 {
-    use HasFactory;
-
     protected $fillable = [
-        'module_id',
-        'title',
-        'description',
-        'type',
-        'content_url',
-        'text_content',
-        'duration_minutes',
-        'order',
-        'slug', // Make sure 'slug' is here
-        'course_section_id',
-        'content_type',
-        'content',
+        'section_id', 'title', 'slug', 'description', 'content', 'content_type',
+        'video_url', 'duration_minutes', 'order', 'text_content', 'size_mb'
     ];
 
+    protected $casts = ['content' => 'array'];
 
-    protected $casts = [
-        'content' => 'array',
-    ];
-    
-    /**
-     * Get the module that the lesson belongs to.
-     */
-    public function module()
+    public function section()
     {
-        return $this->belongsTo(Module::class);
+        return $this->belongsTo(Section::class);
     }
 
-    /**
-     * Get the quizzes for the lesson.
-     */
-    public function quizzes()
+    public function assessments()
     {
-        return $this->hasMany(Quiz::class);
+        return $this->hasMany(Assessment::class);
     }
 
-//     <div class="flex items-center gap-4 mb-4">
-//     <h1 class="text-2xl font-bold text-white">{{ $lesson->title }}</h1>
-//     <livewire:component.common.bookmark-button 
-//         resourceableType="App\Models\Lesson" 
-//         resourceableId="{{ $lesson->id }}"
-//         courseId="{{ $lesson->course->id }}"
-//         showText="true"
-//     />
-// </div>
+    protected static function boot()
+    {
+        parent::boot();
+        static::creating(function ($lesson) {
+            $lesson->slug = Str::slug($lesson->title);
+        });
+        static::updating(function ($lesson) {
+            if ($lesson->isDirty('title')) {
+                $lesson->slug = Str::slug($lesson->title);
+            }
+        });
+    }
 }
-
-    

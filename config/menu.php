@@ -61,10 +61,6 @@ return [
                 ['label' => 'Course Categories', 'icon' => 'fas fa-tags', 'route_name' => ('course-categories'), 'roles' => [User::ROLE_SUPER_ADMIN, User::ROLE_ACADEMY_ADMIN, User::ROLE_CONTENT_EDITOR], 'link_id' => 'course-categories',],
                 ['label' => 'Course Reviews', 'icon' => 'fas fa-star', 'route_name' => ('course-reviews'), 'roles' => [User::ROLE_SUPER_ADMIN, User::ROLE_ACADEMY_ADMIN, User::ROLE_INSTRUCTOR], 'link_id' => 'course-reviews',],
                 ['label' => 'Course Approvals', 'icon' => 'fas fa-check-circle', 'route_name' => ('course-approvals'), 'roles' => [User::ROLE_SUPER_ADMIN, User::ROLE_ACADEMY_ADMIN], 'link_id' => 'course-approvals',],
-                ['label' => 'Course Features', 'icon' => 'fas fa-star', 'route_name' => '#', 'roles' => [User::ROLE_CONTENT_EDITOR, User::ROLE_ACADEMY_ADMIN], 'link_id' => 'course-features',],
-                ['label' => 'Page Custom Settings', 'icon' => 'fas fa-cog', 'route_name' => '#', 'roles' => [User::ROLE_CONTENT_EDITOR, User::ROLE_ACADEMY_ADMIN], 'link_id' => 'page-custom-settings',],
-                ['label' => 'Page Custom Blocks', 'icon' => 'fas fa-columns', 'route_name' => '#', 'roles' => [User::ROLE_CONTENT_EDITOR, User::ROLE_ACADEMY_ADMIN], 'link_id' => 'page-custom-blocks',],
-                ['label' => 'Page Custom Shortcodes', 'icon' => 'fas fa-code', 'route_name' => '#', 'roles' => [User::ROLE_CONTENT_EDITOR, User::ROLE_ACADEMY_ADMIN], 'link_id' => 'page-custom-shortcodes',],
             ]
         ],
         [

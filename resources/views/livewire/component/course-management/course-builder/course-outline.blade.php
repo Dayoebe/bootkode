@@ -1,398 +1,557 @@
-<div class="bg-gray-800 rounded-xl border border-gray-700 shadow-xl sticky top-8">
-    <!-- Sidebar Header -->
-    <div class="p-6 border-b border-gray-700">
-        <div class="flex justify-between items-center mb-4">
-            <h2 class="text-xl font-bold text-white">Course Outline</h2>
-            <button wire:click="showAddSectionForm"
-                class="px-3 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm">
-                <i class="fas fa-plus mr-1"></i> Add Section
-            </button>
-        </div>
+<div class="bg-gray-900 rounded-xl shadow-2xl sticky top-8 p-6 animate__animated animate__fadeIn" 
+     role="navigation" 
+     aria-label="Course Roadmap">
+    
+    <!-- Loading State -->
+    <div wire:loading class="absolute inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center rounded-xl">
+        <i class="fas fa-spinner fa-spin text-2xl text-blue-500" aria-hidden="true"></i>
+        <span class="sr-only">Loading course roadmap...</span>
+    </div>
 
-        <!-- Course Stats -->
-        <div class="grid grid-cols-2 gap-4 text-sm">
-            <div class="bg-gray-700 p-3 rounded-lg text-center">
-                <div class="text-blue-400 font-bold text-lg">{{ $courseStats['total_sections'] }}</div>
-                <div class="text-gray-300">Sections</div>
-            </div>
-            <div class="bg-gray-700 p-3 rounded-lg text-center">
-                <div class="text-green-400 font-bold text-lg">{{ $courseStats['total_lessons'] }}</div>
-                <div class="text-gray-300">Lessons</div>
-            </div>
-        </div>
+    <!-- Toast Notification -->
+    <div x-data="{ show: false, message: '', type: '' }" 
+         x-show="show" 
+         @notify.window="show = true; message = $event.detail.message; type = $event.detail.type; setTimeout(() => show = false, 3000)"
+         :class="{ 'bg-green-600': type === 'success', 'bg-red-600': type === 'error', 'bg-blue-600': type === 'info' }"
+         class="fixed top-4 right-4 px-4 py-2 text-white rounded-lg shadow-lg animate__animated animate__fadeInDown max-w-sm z-50">
+        <span x-text="message"></span>
+        <button @click="show = false" class="ml-4 text-white hover:text-gray-200" aria-label="Close notification">
+            <i class="fas fa-times" aria-hidden="true"></i>
+        </button>
+    </div>
 
-        <!-- Progress Bar -->
-        <div class="mt-4">
-            <div class="flex justify-between text-sm text-gray-400 mb-1">
-                <span>Course Progress</span>
-                <span>{{ $courseStats['completion_percentage'] }}%</span>
-            </div>
-            <div class="w-full bg-gray-600 rounded-full h-2">
-                <div class="bg-gradient-to-r from-blue-500 to-green-500 h-2 rounded-full transition-all duration-300"
-                    style="width: {{ $courseStats['completion_percentage'] }}%"></div>
-            </div>
+    <!-- Header -->
+    <div class="flex justify-between items-center mb-6 border-b border-gray-700 pb-4">
+        <h2 class="text-2xl font-bold text-white">Course Roadmap</h2>
+        <button wire:click="showAddSectionForm" 
+                @click="console.log('Add Step button clicked')"
+                class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm"
+                aria-label="Add a new step">
+            <span wire:loading wire:target="showAddSectionForm" class="inline-block">
+                <i class="fas fa-spinner fa-spin mr-2" aria-hidden="true"></i>
+            </span>
+            <span wire:loading.remove wire:target="showAddSectionForm">
+                <i class="fas fa-plus mr-2" aria-hidden="true"></i> Add Step
+            </span>
+        </button>
+    </div>
+
+    <!-- Stats and Progress -->
+    <div class="grid grid-cols-2 gap-4 mb-6">
+        <div class="bg-gray-800 p-4 rounded-lg text-center animate__animated animate__fadeInUp">
+            <div class="text-blue-400 font-bold text-lg">{{ $courseStats['total_sections'] }}</div>
+            <div class="text-gray-300 text-sm">Steps</div>
+        </div>
+        <div class="bg-gray-800 p-4 rounded-lg text-center animate__animated animate__fadeInUp" style="animation-delay: 0.1s">
+            <div class="text-green-400 font-bold text-lg">{{ $courseStats['total_lessons'] }}</div>
+            <div class="text-gray-300 text-sm">Lessons</div>
+        </div>
+    </div>
+    <div class="mb-6">
+        <div class="flex justify-between text-sm text-gray-300 mb-2">
+            <span>Course Progress</span>
+            <span>{{ $courseStats['completion_percentage'] }}%</span>
+        </div>
+        <div class="w-full bg-gray-700 rounded-full h-3">
+            <div class="bg-gradient-to-r from-blue-500 to-green-500 h-3 rounded-full transition-all duration-300 animate__animated animate__pulse"
+                 style="width: {{ $courseStats['completion_percentage'] }}%"></div>
         </div>
     </div>
 
-    <!-- Search and Filter Bar -->
-    <div class="p-4 border-b border-gray-700">
-        <div class="space-y-3">
-            <div class="relative">
-                <input type="text" wire:model.live.debounce.300ms="searchTerm"
-                    placeholder="Search lessons and sections..."
-                    class="w-full pl-10 pr-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-                <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
-            </div>
+    <!-- Search and Filter -->
+    <div class="mb-6 space-y-3">
+        <div class="relative">
+            <input type="text" 
+                   wire:model.live.debounce.300ms="searchTerm"
+                   placeholder="Search steps or lessons..."
+                   class="w-full pl-10 pr-4 py-2 bg-gray-800 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                   aria-label="Search course content">
+            <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" aria-hidden="true"></i>
+        </div>
+        <select wire:model.live="filterType"
+                class="w-full px-3 py-2 bg-gray-800 border border-gray-600 rounded-lg text-white focus:ring-2 focus:ring-blue-500"
+                aria-label="Filter content type">
+            <option value="all">All Content Types</option>
+            <option value="text">Text Content</option>
+            <option value="video">Video Lessons</option>
+            <option value="file">Other Files</option>
+        </select>
+    </div>
 
-            <select wire:model.live="filterType"
-                class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white">
-                <option value="all">All Content Types</option>
-                <option value="text">Text Content</option>
-                <option value="video">Video Lessons</option>
-                <option value="file">File Resources</option>
-            </select>
-
-            @if (count($selectedLessons) > 0)
-                <div class="flex items-center justify-between p-2 bg-gray-700 rounded-lg">
-                    <span class="text-sm text-gray-400">{{ count($selectedLessons) }} selected</span>
-                    <div class="flex space-x-2">
-                        <button wire:click="bulkDeleteLessons"
-                            class="px-2 py-1 bg-red-600 text-white rounded text-xs hover:bg-red-700">
-                            <i class="fas fa-trash mr-1"></i> Delete
-                        </button>
-                        <button wire:click="deselectAllLessons"
-                            class="px-2 py-1 bg-gray-600 text-white rounded text-xs hover:bg-gray-700">
-                            Clear
-                        </button>
+    <!-- Roadmap -->
+    <div class="space-y-6 max-h-[calc(100vh-300px)] overflow-y-auto custom-scrollbar">
+        @forelse ($filteredSections as $index => $section)
+            <div class="relative pl-8">
+                <!-- Timeline Line -->
+                <div class="absolute left-4 top-0 bottom-0 w-1 bg-gray-600"></div>
+                <!-- Timeline Dot -->
+                <div class="absolute left-2.5 top-4 w-3 h-3 bg-blue-500 rounded-full"></div>
+                
+                <div class="bg-gray-800 rounded-lg shadow-md p-4 animate__animated animate__fadeIn"
+                     role="region"
+                     aria-labelledby="step-{{ $section->id }}-title">
+                    <div class="flex items-center justify-between mb-3">
+                        <div class="flex items-center space-x-3">
+                            @if ($section->is_locked)
+                                <i class="fas fa-lock text-yellow-400" aria-hidden="true" title="Locked"></i>
+                            @else
+                                <i class="fas fa-unlock text-green-400" aria-hidden="true" title="Unlocked"></i>
+                            @endif
+                            <h3 class="text-lg font-semibold text-white" id="step-{{ $section->id }}-title">
+                                Step {{ $index + 1 }}: {{ $section->title }}
+                            </h3>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <button wire:click="editSection({{ $section->id }})" 
+                                    class="text-gray-400 hover:text-blue-400"
+                                    aria-label="Edit step {{ $section->title }}">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button wire:click="deleteSection({{ $section->id }})" 
+                                    class="text-gray-400 hover:text-red-400"
+                                    aria-label="Delete step {{ $section->title }}">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
                     </div>
-                </div>
-            @endif
-        </div>
-    </div>
-
-    <!-- Sections List -->
-    <div class="p-4 max-h-96 overflow-y-auto">
-        <div id="sectionsList" class="space-y-2">
-            @forelse($filteredSections as $section)
-                <div class="section-item {{ $activeLessonId && $course->sections->flatMap->lessons->where('id', $activeLessonId)->first()?->section_id === $section->id ? 'bg-blue-600 bg-opacity-20 border-blue-500' : 'bg-gray-700 hover:bg-gray-600 border-gray-600' }} rounded-lg border cursor-pointer transition-all duration-200"
-                    data-section="{{ $section->id }}">
-                    <div class="p-4">
-                        <div class="flex items-center justify-between">
-                            <div class="flex items-center space-x-3 flex-1">
-                                <i class="fas fa-grip-vertical text-gray-400 cursor-move"></i>
-                                <div class="flex-1">
-                                    @if ($editingSectionId === $section->id)
-                                        <div class="space-y-2">
-                                            <input type="text" wire:model="editingSectionTitle"
-                                                class="w-full bg-gray-800 border border-gray-600 rounded px-2 py-1 text-sm text-white"
-                                                wire:keydown.enter="updateSection"
-                                                wire:keydown.escape="cancelEditSection">
-                                            <textarea wire:model="editingSectionDescription"
-                                                class="w-full bg-gray-800 border border-gray-600 rounded px-2 py-1 text-sm text-white resize-none" rows="2"
-                                                placeholder="Section description..."></textarea>
-                                            <div class="flex space-x-2">
-                                                <button wire:click="updateSection"
-                                                    class="text-green-400 hover:text-green-300 text-sm">
-                                                    <i class="fas fa-check"></i>
-                                                </button>
-                                                <button wire:click="cancelEditSection"
-                                                    class="text-red-400 hover:text-red-300 text-sm">
-                                                    <i class="fas fa-times"></i>
-                                                </button>
-                                            </div>
-                                        </div>
-                                    @else
-                                        <h3
-                                            class="font-semibold {{ $activeLessonId && $course->sections->flatMap->lessons->where('id', $activeLessonId)->first()?->section_id === $section->id ? 'text-blue-300' : 'text-white' }}">
-                                            {{ $section->title }}
-                                        </h3>
-                                        @if ($section->description)
-                                            <p
-                                                class="text-xs {{ $activeLessonId && $course->sections->flatMap->lessons->where('id', $activeLessonId)->first()?->section_id === $section->id ? 'text-blue-200' : 'text-gray-400' }} mt-1">
-                                                {{ Str::limit($section->description, 60) }}
-                                            </p>
-                                        @endif
-                                        <p
-                                            class="text-xs {{ $activeLessonId && $course->sections->flatMap->lessons->where('id', $activeLessonId)->first()?->section_id === $section->id ? 'text-blue-200' : 'text-gray-400' }} mt-1">
-                                            {{ $section->lessons->count() }} lessons •
-                                            {{ $section->lessons->sum('duration_minutes') }} min
-                                        </p>
+                    <div class="space-y-3">
+                        <!-- Lessons -->
+                        @foreach ($section->lessons as $lesson)
+                            <div class="flex items-center justify-between p-3 bg-gray-700 rounded-lg hover:bg-gray-600 transition-colors animate__animated animate__fadeIn">
+                                <div class="flex items-center space-x-3">
+                                    @if (Auth::user()->isInstructor())
+                                        <input type="checkbox" 
+                                               wire:model="selectedLessons" 
+                                               value="{{ $lesson->id }}"
+                                               class="rounded bg-gray-600 border-gray-500 text-blue-500"
+                                               aria-label="Select lesson {{ $lesson->title }}">
+                                    @endif
+                                    <i class="fas fa-{{ $lesson->content_type === 'video' ? 'video' : ($lesson->content_type === 'file' ? 'file' : 'file-text') }} text-blue-400" 
+                                       aria-hidden="true"></i>
+                                    <a wire:click="$set('activeLessonId', {{ $lesson->id }})" 
+                                       class="text-gray-200 hover:text-white cursor-pointer"
+                                       aria-label="View lesson {{ $lesson->title }}"
+                                       @if ($section->is_locked && !Auth::user()->isInstructor()) disabled @endif>
+                                        {{ $lesson->title }}
+                                    </a>
+                                </div>
+                                <div class="flex items-center space-x-2">
+                                    @if (UserProgress::where('user_id', Auth::id())->where('lesson_id', $lesson->id)->where('is_completed', true)->exists())
+                                        <i class="fas fa-check-circle text-green-400" aria-hidden="true" title="Completed"></i>
+                                    @endif
+                                    @if (Auth::user()->isInstructor())
+                                        <button wire:click="editLesson({{ $lesson->id }})" 
+                                                class="text-gray-400 hover:text-blue-400"
+                                                aria-label="Edit lesson {{ $lesson->title }}">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button wire:click="deleteLesson({{ $lesson->id }})" 
+                                                class="text-gray-400 hover:text-red-400"
+                                                aria-label="Delete lesson {{ $lesson->title }}">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
                                     @endif
                                 </div>
                             </div>
-                            <div class="flex items-center space-x-2">
-                                @if (
-                                    $activeLessonId &&
-                                        $course->sections->flatMap->lessons->where('id', $activeLessonId)->first()?->section_id === $section->id)
-                                    <div class="w-2 h-2 bg-blue-400 rounded-full animate-pulse"></div>
-                                @endif
-                                <div class="flex items-center space-x-1" x-data="{ open: false }">
-                                    <button @click="open = !open" class="text-gray-400 hover:text-gray-300 text-sm">
-                                        <i class="fas fa-ellipsis-v"></i>
-                                    </button>
-                                    <div x-show="open" @click.outside="open = false" x-transition
-                                        class="absolute right-0 mt-8 w-32 bg-gray-900 rounded-lg shadow-xl border border-gray-600 z-10">
-                                        <button wire:click="editSection({{ $section->id }})"
-                                            class="block w-full text-left px-3 py-2 text-sm text-gray-300 hover:bg-gray-800 rounded-t-lg">
-                                            <i class="fas fa-edit mr-2"></i> Edit
+                        @endforeach
+
+                        <!-- Assessments -->
+                        <div id="assessments-{{ $section->id }}" class="space-y-2 sortable">
+                            @foreach ($section->assessments as $assessment)
+                                <div class="flex items-center justify-between p-3 bg-gray-700 rounded-lg hover:bg-gray-600 transition-colors animate__animated animate__fadeIn"
+                                     data-assessment-id="{{ $assessment->id }}">
+                                    <div class="flex items-center space-x-3">
+                                        @if (Auth::user()->isInstructor())
+                                            <i class="fas fa-grip-vertical text-gray-500 cursor-move" aria-hidden="true"></i>
+                                        @endif
+                                        <i class="fas fa-{{ $assessment->type === 'quiz' ? 'question-circle' : ($assessment->type === 'project' ? 'folder' : 'file-alt') }} text-indigo-400" 
+                                           aria-hidden="true"></i>
+                                    <span class="text-gray-200">{{ $assessment->title }}</span>
+                                </div>
+                                <div class="flex items-center space-x-2">
+                                    @if (UserProgress::where('user_id', Auth::id())->where('assessment_id', $assessment->id)->where('is_completed', true)->exists())
+                                        <i class="fas fa-check-circle text-green-400" aria-hidden="true" title="Passed"></i>
+                                    @endif
+                                    @if (Auth::user()->isInstructor())
+                                        <button wire:click="editAssessment({{ $assessment->id }})" 
+                                                class="text-gray-400 hover:text-blue-400"
+                                                aria-label="Edit assessment {{ $assessment->title }}">
+                                            <i class="fas fa-edit"></i>
                                         </button>
-                                        <button wire:click="duplicateSection({{ $section->id }})"
-                                            class="block w-full text-left px-3 py-2 text-sm text-gray-300 hover:bg-gray-800">
-                                            <i class="fas fa-copy mr-2"></i> Duplicate
+                                        <button wire:click="deleteAssessment({{ $assessment->id }})" 
+                                                class="text-gray-400 hover:text-red-400"
+                                                aria-label="Delete assessment {{ $assessment->title }}">
+                                            <i class="fas fa-trash"></i>
                                         </button>
-                                        <button wire:click="deleteSection({{ $section->id }})"
-                                            class="block w-full text-left px-3 py-2 text-sm text-red-400 hover:bg-gray-800 rounded-b-lg">
-                                            <i class="fas fa-trash mr-2"></i> Delete
+                                    @else
+                                        <button wire:click="$emit('start-assessment', {{ $assessment->id }})"
+                                                class="px-3 py-1 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700"
+                                                aria-label="Start assessment {{ $assessment->title }}"
+                                                @if ($section->is_locked) disabled @endif>
+                                            <i class="fas fa-play mr-1" aria-hidden="true"></i> Start
                                         </button>
-                                    </div>
+                                    @endif
                                 </div>
                             </div>
-                        </div>
-
-                        <!-- Lessons for this section -->
-                        @if ($section->lessons->isNotEmpty())
-                            <div class="mt-3 ml-6 space-y-1" id="lessons-{{ $section->id }}">
-                                @foreach ($section->lessons as $lesson)
-                                    <div class="flex items-center justify-between p-2 rounded {{ $activeLessonId && $activeLessonId === $lesson->id ? 'bg-blue-500 bg-opacity-30' : 'hover:bg-gray-600' }} group"
-                                        wire:click="selectLesson({{ $lesson->id }})">
-                                        <div class="flex items-center space-x-2 flex-1">
-                                            <input type="checkbox"
-                                                wire:click.stop="toggleLessonSelection({{ $lesson->id }})"
-                                                {{ in_array($lesson->id, $selectedLessons) ? 'checked' : '' }}
-                                                class="rounded text-blue-500 bg-gray-700 border-gray-600 focus:ring-blue-500 focus:ring-offset-gray-800">
-                                            <i
-                                                class="fas fa-grip-vertical text-gray-500 text-xs cursor-move opacity-0 group-hover:opacity-100 transition-opacity"></i>
-                                            <i
-                                                class="fas fa-{{ $lesson->content_type === 'video' ? 'video' : ($lesson->content_type === 'file' ? 'file' : 'file-text') }} text-xs text-gray-400"></i>
-                                            <div class="flex-1">
-                                                @if ($editingLessonId === $lesson->id)
-                                                    <div class="space-y-1">
-                                                        <input type="text" wire:model="editingLessonTitle"
-                                                            class="w-full bg-gray-800 border border-gray-600 rounded px-2 py-1 text-xs text-white"
-                                                            wire:keydown.enter="updateLesson"
-                                                            wire:keydown.escape="cancelEditLesson">
-                                                        <div class="flex space-x-1">
-                                                            <button wire:click="updateLesson"
-                                                                class="text-green-400 hover:text-green-300 text-xs">
-                                                                <i class="fas fa-check"></i>
-                                                            </button>
-                                                            <button wire:click="cancelEditLesson"
-                                                                class="text-red-400 hover:text-red-300 text-xs">
-                                                                <i class="fas fa-times"></i>
-                                                            </button>
-                                                        </div>
-                                                    </div>
-                                                @else
-                                                    <span
-                                                        class="text-sm {{ $activeLessonId && $activeLessonId === $lesson->id ? 'text-white font-medium' : 'text-gray-300' }}">
-                                                        {{ $lesson->title }}
-                                                    </span>
-                                                    @if ($lesson->duration_minutes)
-                                                        <div class="text-xs text-gray-500">
-                                                            {{ $lesson->duration_minutes }} min</div>
-                                                    @endif
-                                                @endif
-                                            </div>
-                                        </div>
-                                        <div
-                                            class="flex items-center space-x-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                                            <button wire:click.stop="editLesson({{ $lesson->id }})"
-                                                class="text-blue-400 hover:text-blue-300 text-xs">
-                                                <i class="fas fa-edit"></i>
-                                            </button>
-                                            <button wire:click.stop="duplicateLesson({{ $lesson->id }})"
-                                                class="text-green-400 hover:text-green-300 text-xs">
-                                                <i class="fas fa-copy"></i>
-                                            </button>
-                                            <button wire:click.stop="deleteLesson({{ $lesson->id }})"
-                                                class="text-red-400 hover:text-red-300 text-xs">
-                                                <i class="fas fa-trash"></i>
-                                            </button>
-                                        </div>
-                                    </div>
-                                @endforeach
-                            </div>
-                        @endif
-
-                        <!-- Add lesson button -->
-                        @if ($isAddingLessonToSectionId === $section->id)
-                            <div class="mt-3 p-3 bg-gray-600 rounded-lg">
-                                <input type="text" wire:model="newLessonTitle" placeholder="Lesson title..."
-                                    class="w-full px-3 py-2 bg-gray-800 border border-gray-600 rounded-lg text-white placeholder-gray-400 mb-2"
-                                    wire:keydown.enter="addLesson">
-                                <textarea wire:model="newLessonDescription" placeholder="Lesson description (optional)..."
-                                    class="w-full px-3 py-2 bg-gray-800 border border-gray-600 rounded-lg text-white placeholder-gray-400 mb-2 resize-none"
-                                    rows="2"></textarea>
-                                <div class="grid grid-cols-2 gap-2 mb-2">
-                                    <select wire:model="newLessonContentType"
-                                        class="px-3 py-2 bg-gray-800 border border-gray-600 rounded-lg text-white">
-                                        <option value="text">Text Content</option>
-                                        <option value="video">Video</option>
-                                        <option value="file">File</option>
-                                    </select>
-                                    <input type="number" wire:model="newLessonDuration" placeholder="Duration (min)"
-                                        class="px-3 py-2 bg-gray-800 border border-gray-600 rounded-lg text-white placeholder-gray-400"
-                                        min="0" max="1440">
-                                </div>
-                                <div class="flex space-x-2">
-                                    <button wire:click="addLesson"
-                                        class="flex-1 px-3 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-sm">
-                                        <i class="fas fa-plus mr-1"></i> Add Lesson
-                                    </button>
-                                    <button wire:click="cancelAddLesson"
-                                        class="px-3 py-2 bg-gray-700 text-white rounded-lg hover:bg-gray-800 transition-colors text-sm">
-                                        Cancel
-                                    </button>
-                                </div>
-                            </div>
-                        @else
-                            <button wire:click="showAddLessonForm({{ $section->id }})"
-                                class="mt-3 w-full px-3 py-2 bg-gray-600 text-gray-300 rounded-lg hover:bg-gray-500 transition-colors text-sm">
-                                <i class="fas fa-plus mr-1"></i> Add Lesson
-                            </button>
-                        @endif
-
-                        <!-- Projects Section -->
-                        <details class="group mt-4">
-                            <summary
-                                class="flex items-center justify-between font-medium cursor-pointer py-2 px-3 hover:bg-gray-700 rounded-lg transition-colors bg-indigo-900/20">
-                                <span class="text-indigo-300"><i class="fas fa-project-diagram mr-2"></i>Projects
-                                    ({{ $section->projects->count() }})</span>
-                                <i class="fas fa-chevron-down group-open:rotate-180 transition-transform"></i>
-                            </summary>
-                            <div class="mt-2 space-y-2 px-3 pb-3">
-                                <div id="projects-{{ $section->id }}" class="space-y-2 sortable">
-                                    @foreach ($section->projects->sortBy('order') as $project)
-                                        <div wire:key="project-{{ $project->id }}" data-project-id="{{ $project->id }}"
-                                            class="flex items-center justify-between bg-gray-700 p-3 rounded-lg hover:bg-gray-600 transition-colors animate__animated animate__fadeInUp">
-                                            <div class="flex items-center space-x-3">
-                                                <i class="fas fa-grip-vertical text-gray-500 cursor-move"></i>
-                                                <div>
-                                                    @if ($editingProjectId === $project->id)
-                                                        <input type="text" wire:model="editingProjectTitle"
-                                                            wire:keydown.enter="updateProject"
-                                                            class="bg-gray-800 border border-gray-600 rounded px-2 py-1 text-white focus:ring-blue-500">
-                                                        <button wire:click="updateProject" class="ml-2 text-green-400"><i
-                                                                class="fas fa-check"></i></button>
-                                                        <button wire:click="$set('editingProjectId', null)"
-                                                            class="ml-2 text-red-400"><i class="fas fa-times"></i></button>
-                                                    @else
-                                                        <span class="font-medium text-indigo-300">{{ $project->title }}</span>
-                                                        <div class="text-xs text-gray-400">
-                                                            Type: {{ ucfirst($project->project_type) }} | Duration:
-                                                            {{ $project->estimated_duration_minutes }} min
-                                                            @if ($project->deadline)
-                                                                | Due: {{ $project->deadline->format('M d, Y') }}
-                                                            @endif
-                                                        </div>
-                                                    @endif
-                                                </div>
-                                            </div>
-                                            <div class="flex space-x-2">
-                                                <button wire:click="editProject({{ $project->id }})"
-                                                    class="text-yellow-400 hover:text-yellow-300"><i
-                                                        class="fas fa-edit"></i></button>
-                                                <button wire:click="deleteProject({{ $project->id }})"
-                                                    wire:confirm="Delete this project?"
-                                                    class="text-red-400 hover:text-red-300"><i
-                                                        class="fas fa-trash"></i></button>
-                                            </div>
-                                        </div>
-                                    @endforeach
-                                </div>
-
-                                @if ($isAddingProjectToSectionId === $section->id)
-                                    <div
-                                        class="mt-3 p-3 bg-gray-700 rounded-lg border border-gray-600 animate__animated animate__zoomIn">
-                                        <input type="text" wire:model="newProjectTitle" placeholder="Project title..."
-                                            class="w-full px-4 py-2 bg-gray-800 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-indigo-500 focus:border-transparent mb-2">
-                                        <textarea wire:model="newProjectDescription" placeholder="Description..."
-                                            class="w-full px-4 py-2 bg-gray-800 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-indigo-500 focus:border-transparent mb-2"
-                                            rows="2"></textarea>
-                                        <select wire:model="newProjectType"
-                                            class="w-full px-4 py-2 bg-gray-800 border border-gray-600 rounded-lg text-white mb-2">
-                                            <option value="individual">Individual</option>
-                                            <option value="group">Group</option>
-                                            <option value="capstone">Capstone</option>
-                                        </select>
-                                        <input type="number" wire:model="newProjectDurationMinutes"
-                                            placeholder="Duration (minutes)"
-                                            class="w-full px-4 py-2 bg-gray-800 border border-gray-600 rounded-lg text-white mb-2">
-                                        <input type="date" wire:model="newProjectDeadline"
-                                            class="w-full px-4 py-2 bg-gray-800 border border-gray-600 rounded-lg text-white mb-3">
-                                        <div class="flex space-x-2">
-                                            <button wire:click="addProject"
-                                                class="flex-1 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700">
-                                                <i class="fas fa-plus mr-1"></i> Add Project
-                                            </button>
-                                            <button wire:click="cancelAddProject"
-                                                class="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700">
-                                                Cancel
-                                            </button>
-                                        </div>
-                                    </div>
-                                @else
-                                    <button wire:click="showAddProjectForm({{ $section->id }})"
-                                        class="mt-3 w-full px-3 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors text-sm">
-                                        <i class="fas fa-plus mr-1"></i> Add Project
-                                    </button>
-                                @endif
-                            </div>
-                        </details>
+                        @endforeach
                     </div>
-                </div>
-            @empty
-                <div class="text-center text-gray-400 py-8">
-                    <i class="fas fa-book-open text-3xl mb-3"></i>
-                    <p>No sections found.</p>
-                    @if (empty($searchTerm))
-                        <p class="text-sm mt-2">Add your first section to get started.</p>
-                    @else
-                        <p class="text-sm mt-2">Try adjusting your search terms.</p>
+
+                    <!-- Add Lesson/Assessment Buttons -->
+                    @if (Auth::user()->isInstructor())
+                        <div class="flex space-x-2 mt-3">
+                            <button wire:click="showAddLessonForm({{ $section->id }})" 
+                                    class="flex-1 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
+                                    aria-label="Add lesson to step {{ $section->title }}">
+                                <i class="fas fa-plus mr-2" aria-hidden="true"></i> Add Lesson
+                            </button>
+                            <button wire:click="showAddAssessmentForm({{ $section->id }})" 
+                                    class="flex-1 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors"
+                                    aria-label="Add assessment to step {{ $section->title }}">
+                                <i class="fas fa-plus mr-2" aria-hidden="true"></i> Add Assessment
+                            </button>
+                        </div>
                     @endif
                 </div>
-            @endforelse
+            </div>
+        @empty
+            <div class="text-center text-gray-400 py-8 animate__animated animate__fadeIn">
+                <i class="fas fa-road text-3xl mb-3" aria-hidden="true"></i>
+                <p>No steps found.</p>
+                @if (empty($searchTerm))
+                    <p class="text-sm mt-2">Add your first step to get started.</p>
+                @else
+                    <p class="text-sm mt-2">Try adjusting your search terms.</p>
+                @endif
+            </div>
+        @endforelse
 
-            <!-- Add Section Form -->
-            @if ($isAddingSection)
-                <div class="mt-4 p-4 bg-gray-700 rounded-lg border border-gray-600">
-                    <input type="text" wire:model="newSectionTitle" placeholder="Section title..."
-                        class="w-full px-4 py-2 bg-gray-800 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent mb-3"
-                        wire:keydown.enter="addSection">
-                    <textarea wire:model="newSectionDescription" placeholder="Section description (optional)..."
-                        class="w-full px-4 py-2 bg-gray-800 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent mb-3 resize-none"
-                        rows="3"></textarea>
-                    <div class="flex space-x-2">
-                        <button wire:click="addSection"
-                            class="flex-1 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors">
-                            <i class="fas fa-plus mr-1"></i> Add Section
+        <!-- Pagination -->
+        @if ($filteredSections->hasPages())
+            <div class="mt-4">
+                {{ $filteredSections->links() }}
+            </div>
+        @endif
+    </div>
+
+    <!-- Section Modal -->
+    @if ($showSectionModal)
+        <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" 
+             role="dialog" 
+             aria-labelledby="section-modal-title"
+             wire:click.self="cancelAddSection"
+             x-data="{ debug: 'Section modal rendered' }"
+             x-init="console.log(debug)">
+            <div class="bg-gray-800 rounded-xl p-6 max-w-md w-full animate__animated animate__zoomIn"
+                 wire:loading.class="opacity-50 pointer-events-none"
+                 wire:target="addSection,updateSection">
+                <h3 id="section-modal-title" class="text-xl font-bold text-white mb-4">
+                    {{ $editingSectionId ? 'Edit Step' : 'Add Step' }}
+                </h3>
+                <div class="space-y-4">
+                    <div>
+                        <label for="section-title" class="block text-sm font-medium text-gray-300 mb-2">Step Title</label>
+                        <input type="text" 
+                               id="section-title"
+                               wire:model.live="{{ $editingSectionId ? 'editingSectionTitle' : 'newSectionTitle' }}"
+                               placeholder="Step title..."
+                               class="w-full px-4 py-2 bg-gray-800 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-500"
+                               wire:keydown.enter="{{ $editingSectionId ? 'updateSection' : 'addSection' }}"
+                               aria-required="true">
+                        @error($editingSectionId ? 'editingSectionTitle' : 'newSectionTitle')
+                            <span class="text-red-400 text-sm mt-1 block">{{ $message }}</span>
+                        @enderror
+                    </div>
+                    <div>
+                        <label for="section-description" class="block text-sm font-medium text-gray-300 mb-2">Description (Optional)</label>
+                        <textarea id="section-description"
+                                  wire:model.live="{{ $editingSectionId ? 'editingSectionDescription' : 'newSectionDescription' }}"
+                                  placeholder="Step description..."
+                                  class="w-full px-4 py-2 bg-gray-800 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-500 resize-none"
+                                  rows="3"></textarea>
+                        @error($editingSectionId ? 'editingSectionDescription' : 'newSectionDescription')
+                            <span class="text-red-400 text-sm mt-1 block">{{ $message }}</span>
+                        @enderror
+                    </div>
+                    <div class="flex space-x-3">
+                        <button wire:click="{{ $editingSectionId ? 'updateSection' : 'addSection' }}"
+                                class="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors relative"
+                                aria-label="{{ $editingSectionId ? 'Update step' : 'Add step' }}">
+                            <span wire:loading wire:target="{{ $editingSectionId ? 'updateSection' : 'addSection' }}" class="absolute inset-0 flex items-center justify-center">
+                                <i class="fas fa-spinner fa-spin" aria-hidden="true"></i>
+                            </span>
+                            <span wire:loading.remove wire:target="{{ $editingSectionId ? 'updateSection' : 'addSection' }}">
+                                <i class="fas fa-save mr-2" aria-hidden="true"></i> {{ $editingSectionId ? 'Update' : 'Add' }}
+                            </span>
                         </button>
                         <button wire:click="cancelAddSection"
-                            class="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors">
-                            Cancel
+                                class="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors"
+                                aria-label="Cancel">
+                            <i class="fas fa-times mr-2" aria-hidden="true"></i> Cancel
                         </button>
                     </div>
                 </div>
-            @endif
+            </div>
+        </div>
+    @endif
+
+    <!-- Lesson Modal -->
+    @if ($showLessonModal)
+        <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" 
+             role="dialog" 
+             aria-labelledby="lesson-modal-title"
+             wire:click.self="cancelAddLesson"
+             x-data="{ debug: 'Lesson modal rendered' }"
+             x-init="console.log(debug)">
+            <div class="bg-gray-800 rounded-xl p-6 max-w-md w-full animate__animated animate__zoomIn">
+                <h3 id="lesson-modal-title" class="text-xl font-bold text-white mb-4">
+                    {{ $editingLessonId ? 'Edit Lesson' : 'Add Lesson' }}
+                </h3>
+                <div class="space-y-4">
+                    <div>
+                        <label for="lesson-title" class="block text-sm font-medium text-gray-300 mb-2">Lesson Title</label>
+                        <input type="text" 
+                               id="lesson-title"
+                               wire:model.live="{{ $editingLessonId ? 'editingLessonTitle' : 'newLessonTitle' }}"
+                               placeholder="Lesson title..."
+                               class="w-full px-4 py-2 bg-gray-800 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-500"
+                               wire:keydown.enter="{{ $editingLessonId ? 'updateLesson' : 'addLesson' }}"
+                               aria-required="true">
+                        @error($editingLessonId ? 'editingLessonTitle' : 'newLessonTitle')
+                            <span class="text-red-400 text-sm mt-1 block">{{ $message }}</span>
+                        @enderror
+                    </div>
+                    <div>
+                        <label for="lesson-description" class="block text-sm font-medium text-gray-300 mb-2">Description (Optional)</label>
+                        <textarea id="lesson-description"
+                                  wire:model.live="newLessonDescription"
+                                  placeholder="Lesson description..."
+                                  class="w-full px-4 py-2 bg-gray-800 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-500 resize-none"
+                                  rows="3"></textarea>
+                        @error('newLessonDescription')
+                            <span class="text-red-400 text-sm mt-1 block">{{ $message }}</span>
+                        @enderror
+                    </div>
+                    <div>
+                        <label for="lesson-content-type" class="block text-sm font-medium text-gray-300 mb-2">Content Type</label>
+                        <select id="lesson-content-type"
+                                wire:model.live="newLessonContentType"
+                                class="w-full px-3 py-2 bg-gray-800 border border-gray-600 rounded-lg text-white focus:ring-2 focus:ring-blue-500">
+                            <option value="text">Text</option>
+                            <option value="video">Video</option>
+                            <option value="file">File</option>
+                        </select>
+                        @error('newLessonContentType')
+                            <span class="text-red-400 text-sm mt-1 block">{{ $message }}</span>
+                        @enderror
+                    </div>
+                    <div>
+                        <label for="lesson-duration" class="block text-sm font-medium text-gray-300 mb-2">Duration (Minutes)</label>
+                        <input type="number" 
+                               id="lesson-duration"
+                               wire:model.live="newLessonDuration"
+                               class="w-full px-4 py-2 bg-gray-800 border border-gray-600 rounded-lg text-white focus:ring-2 focus:ring-blue-500"
+                               min="0" max="1440">
+                        @error('newLessonDuration')
+                            <span class="text-red-400 text-sm mt-1 block">{{ $message }}</span>
+                        @enderror
+                    </div>
+                    <div class="flex space-x-3">
+                        <button wire:click="{{ $editingLessonId ? 'updateLesson' : 'addLesson' }}"
+                                class="flex-1 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors relative"
+                                aria-label="{{ $editingLessonId ? 'Update lesson' : 'Add lesson' }}">
+                            <span wire:loading wire:target="{{ $editingLessonId ? 'updateLesson' : 'addLesson' }}" class="absolute inset-0 flex items-center justify-center">
+                                <i class="fas fa-spinner fa-spin" aria-hidden="true"></i>
+                            </span>
+                            <span wire:loading.remove wire:target="{{ $editingLessonId ? 'updateLesson' : 'addLesson' }}">
+                                <i class="fas fa-save mr-2" aria-hidden="true"></i> {{ $editingLessonId ? 'Update' : 'Add' }}
+                            </span>
+                        </button>
+                        <button wire:click="cancelAddLesson"
+                                class="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors"
+                                aria-label="Cancel">
+                            <i class="fas fa-times mr-2" aria-hidden="true"></i> Cancel
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    @endif
+
+    <!-- Assessment Modal -->
+    @if ($showAssessmentModal)
+        <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" 
+             role="dialog" 
+             aria-labelledby="assessment-modal-title"
+             wire:click.self="cancelAddAssessment"
+             x-data="{ debug: 'Assessment modal rendered' }"
+             x-init="console.log(debug)">
+            <div class="bg-gray-800 rounded-xl p-6 max-w-md w-full animate__animated animate__zoomIn">
+                <h3 id="assessment-modal-title" class="text-xl font-bold text-white mb-4">
+                    {{ $editingAssessmentId ? 'Edit Assessment' : 'Add Assessment' }}
+                </h3>
+                <div class="space-y-4">
+                    <div>
+                        <label for="assessment-title" class="block text-sm font-medium text-gray-300 mb-2">Assessment Title</label>
+                        <input type="text" 
+                               id="assessment-title"
+                               wire:model.live="{{ $editingAssessmentId ? 'editingAssessmentTitle' : 'newAssessmentTitle' }}"
+                               placeholder="Assessment title..."
+                               class="w-full px-4 py-2 bg-gray-800 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-500"
+                               wire:keydown.enter="{{ $editingAssessmentId ? 'updateAssessment' : 'addAssessment' }}"
+                               aria-required="true">
+                        @error($editingAssessmentId ? 'editingAssessmentTitle' : 'newAssessmentTitle')
+                            <span class="text-red-400 text-sm mt-1 block">{{ $message }}</span>
+                        @enderror
+                    </div>
+                    <div>
+                        <label for="assessment-description" class="block text-sm font-medium text-gray-300 mb-2">Description (Optional)</label>
+                        <textarea id="assessment-description"
+                                  wire:model.live="newAssessmentDescription"
+                                  placeholder="Assessment description..."
+                                  class="w-full px-4 py-2 bg-gray-800 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-500 resize-none"
+                                  rows="3"></textarea>
+                        @error('newAssessmentDescription')
+                            <span class="text-red-400 text-sm mt-1 block">{{ $message }}</span>
+                        @enderror
+                    </div>
+                    <div>
+                        <label for="assessment-type" class="block text-sm font-medium text-gray-300 mb-2">Type</label>
+                        <select id="assessment-type"
+                                wire:model.live="newAssessmentType"
+                                class="w-full px-3 py-2 bg-gray-800 border border-gray-600 rounded-lg text-white focus:ring-2 focus:ring-blue-500">
+                            <option value="quiz">Quiz</option>
+                            <option value="project">Project</option>
+                            <option value="assignment">Assignment</option>
+                        </select>
+                        @error('newAssessmentType')
+                            <span class="text-red-400 text-sm mt-1 block">{{ $message }}</span>
+                        @enderror
+                    </div>
+                    <div>
+                        <label for="assessment-duration" class="block text-sm font-medium text-gray-300 mb-2">Duration (Minutes)</label>
+                        <input type="number" 
+                               id="assessment-duration"
+                               wire:model.live="newAssessmentDurationMinutes"
+                               class="w-full px-4 py-2 bg-gray-800 border border-gray-600 rounded-lg text-white focus:ring-2 focus:ring-blue-500"
+                               min="0" max="1440">
+                        @error('newAssessmentDurationMinutes')
+                            <span class="text-red-400 text-sm mt-1 block">{{ $message }}</span>
+                        @enderror
+                    </div>
+                    <div>
+                        <label for="assessment-deadline" class="block text-sm font-medium text-gray-300 mb-2">Deadline (Optional)</label>
+                        <input type="datetime-local" 
+                               id="assessment-deadline"
+                               wire:model.live="newAssessmentDeadline"
+                               class="w-full px-4 py-2 bg-gray-800 border border-gray-600 rounded-lg text-white focus:ring-2 focus:ring-blue-500">
+                        @error('newAssessmentDeadline')
+                            <span class="text-red-400 text-sm mt-1 block">{{ $message }}</span>
+                        @enderror
+                    </div>
+                    <div class="flex space-x-3">
+                        <button wire:click="{{ $editingAssessmentId ? 'updateAssessment' : 'addAssessment' }}"
+                                class="flex-1 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors relative"
+                                aria-label="{{ $editingAssessmentId ? 'Update assessment' : 'Add assessment' }}">
+                            <span wire:loading wire:target="{{ $editingAssessmentId ? 'updateAssessment' : 'addAssessment' }}" class="absolute inset-0 flex items-center justify-center">
+                                <i class="fas fa-spinner fa-spin" aria-hidden="true"></i>
+                            </span>
+                            <span wire:loading.remove wire:target="{{ $editingAssessmentId ? 'updateAssessment' : 'addAssessment' }}">
+                                <i class="fas fa-save mr-2" aria-hidden="true"></i> {{ $editingAssessmentId ? 'Update' : 'Add' }}
+                            </span>
+                        </button>
+                        <button wire:click="cancelAddAssessment"
+                                class="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors"
+                                aria-label="Cancel">
+                            <i class="fas fa-times mr-2" aria-hidden="true"></i> Cancel
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    @endif
+
+    <!-- Bulk Actions -->
+    @if (count($selectedLessons) > 0)
+        <div class="fixed bottom-4 left-4 bg-gray-800 rounded-lg p-3 shadow-lg animate__animated animate__slideInUp">
+            <div class="flex items-center space-x-3">
+                <span class="text-sm text-gray-300">{{ count($selectedLessons) }} selected</span>
+                <button wire:click="bulkDeleteLessons"
+                        class="px-3 py-1 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors text-sm"
+                        aria-label="Delete selected lessons">
+                    <i class="fas fa-trash mr-1" aria-hidden="true"></i> Delete
+                </button>
+            </div>
+        </div>
+    @endif
+
+    <!-- Confirmation Dialog -->
+    <div x-data="{ open: false, title: '', message: '', method: '', params: [] }"
+         x-show="open"
+         @confirm-delete.window="open = true; title = $event.detail.title; message = $event.detail.message; method = $event.detail.method; params = $event.detail.params"
+         class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+         role="dialog"
+         aria-labelledby="confirm-modal-title">
+        <div class="bg-gray-800 rounded-xl p-6 max-w-md w-full animate__animated animate__zoomIn">
+            <h3 id="confirm-modal-title" class="text-xl font-bold text-white mb-4" x-text="title"></h3>
+            <p class="text-gray-300 mb-6" x-text="message"></p>
+            <div class="flex space-x-3">
+                <button @click="$wire.call(method, ...params); open = false"
+                        class="flex-1 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
+                        aria-label="Confirm deletion">
+                    <i class="fas fa-check mr-2" aria-hidden="true"></i> Confirm
+                </button>
+                <button @click="open = false"
+                        class="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors"
+                        aria-label="Cancel deletion">
+                    <i class="fas fa-times mr-2" aria-hidden="true"></i> Cancel
+                </button>
+            </div>
         </div>
     </div>
-</div>
 
-<script>
-    // Add Sortable for projects per section
-    document.addEventListener('livewire:navigated', () => {
-        document.querySelectorAll('.sortable').forEach(container => {
-            new Sortable(container, {
-                handle: '.fa-grip-vertical',
-                animation: 150,
-                ghostClass: 'sortable-ghost',
-                onEnd: (evt) => {
-                    const sectionId = container.id.split('-')[1]; // e.g., projects-1
-                    const orderedIds = Array.from(container.children).map(el => el.dataset
-                        .projectId);
-                    @this.call('reorderProjects', sectionId, orderedIds);
-                }
+    <style>
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 8px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #1f2937;
+            border-radius: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #6b7280;
+            border-radius: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #9ca3af;
+        }
+        .sortable-ghost {
+            opacity: 0.4;
+            background: rgba(59, 130, 246, 0.1);
+        }
+    </style>
+
+    <script>
+        document.addEventListener('livewire:navigated', () => {
+            console.log('Livewire initialized for CourseOutline');
+            document.querySelectorAll('.sortable').forEach(container => {
+                new Sortable(container, {
+                    handle: '.fa-grip-vertical',
+                    animation: 150,
+                    ghostClass: 'sortable-ghost',
+                    onEnd: (evt) => {
+                        const sectionId = container.id.split('-')[1];
+                        const orderedIds = Array.from(container.children).map(el => el.dataset.assessmentId);
+                        @this.call('reorderAssessments', sectionId, orderedIds);
+                    }
+                });
             });
         });
-    });
-</script>
+
+        // Listen for log-to-console event
+        document.addEventListener('livewire:init', () => {
+            Livewire.on('log-to-console', (event) => {
+                console.log(event.message);
+            });
+        });
+    </script>
+</div>
