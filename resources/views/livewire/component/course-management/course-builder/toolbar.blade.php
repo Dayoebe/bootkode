@@ -1,91 +1,113 @@
-<div class="flex flex-col sm:flex-row sm:items-center sm:justify-between border-b border-gray-700 pb-6 mb-8">
-    <div class="flex items-center space-x-4 mb-4 sm:mb-0">
-        <a href="{{ route('all-course') }}"
-            class="px-4 py-2.5 bg-gray-700 text-gray-300 rounded-xl hover:bg-gray-600 transition-colors duration-200 font-semibold">
-            <i class="fas fa-arrow-left mr-2"></i> Back to Courses
-        </a>
-        <div>
-            <h1 class="text-2xl sm:text-3xl font-extrabold text-white">
-                Course Builder: <span class="text-blue-400">{{ $course->title }}</span>
-            </h1>
-            <div class="flex items-center space-x-4 mt-2 text-sm text-gray-400">
-                <span><i class="fas fa-user mr-1"></i> {{ $course->instructor->name }}</span>
-                <span><i class="fas fa-calendar mr-1"></i> Updated {{ $course->updated_at->diffForHumans() }}</span>
-            </div>
-        </div>
-    </div>
+<div class="bg-gray-900 p-4 sm:p-6 rounded-xl shadow-lg mb-6 animate__animated animate__fadeInDown" role="region"
+    aria-label="Course Management Toolbar">
+    <!-- Global Notifications -->
+    <div id="global-notifications" class="fixed top-4 right-4 z-50 space-y-2"></div>
 
-    <div class="flex items-center space-x-4">
-        <!-- Course Stats -->
-        <div class="hidden lg:flex items-center space-x-4 text-sm">
-            <div class="bg-gray-800 px-3 py-2 rounded-lg">
-                <span class="text-gray-400">Progress:</span>
-                <span class="text-green-400 font-semibold ml-1">{{ $courseStats['completion_percentage'] }}%</span>
-            </div>
-            <div class="bg-gray-800 px-3 py-2 rounded-lg">
-                <span class="text-gray-400">Duration:</span>
-                <span class="text-blue-400 font-semibold ml-1">{{ floor($courseStats['total_duration'] / 60) }}h
-                    {{ $courseStats['total_duration'] % 60 }}m</span>
-            </div>
-        </div>
-
-        <span class="text-gray-400 hidden sm:block">
-            Status: <span class="text-{{ $course->is_published ? 'green' : 'yellow' }}-400 font-semibold">
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <!-- Course Title and Status -->
+        <div class="flex items-center space-x-3">
+            <h2 class="text-xl sm:text-2xl font-bold text-white truncate max-w-[200px] sm:max-w-[300px]">
+                {{ $course->title ?? 'Untitled Course' }}
+            </h2>
+            <span
+                class="px-2 py-1 text-xs font-semibold rounded-full 
+                         {{ $course->is_published ? 'bg-green-600' : 'bg-red-600' }} text-white">
                 {{ $course->is_published ? 'Published' : 'Draft' }}
             </span>
-        </span>
+        </div>
 
-        <button wire:click="togglePublished" wire:loading.attr="disabled"
-            class="px-4 sm:px-6 py-2.5 bg-gradient-to-r {{ $course->is_published ? 'from-red-600 to-pink-600' : 'from-green-600 to-emerald-600' }} text-white rounded-xl font-semibold hover:opacity-90 transition-all duration-300 shadow-lg">
-            <i class="fas fa-{{ $course->is_published ? 'eye-slash' : 'eye' }} mr-1"></i>
-            {{ $course->is_published ? 'Unpublish' : 'Publish' }}
-            <span wire:loading wire:target="togglePublished" class="ml-2">
-                <i class="fas fa-spinner fa-spin"></i>
-            </span>
-        </button>
-
-        <button wire:click="saveContent" wire:loading.attr="disabled"
-            class="px-4 sm:px-6 py-2.5 bg-gradient-to-r from-pink-600 to-blue-600 text-white rounded-xl font-semibold hover:opacity-90 transition-all duration-300 shadow-lg">
-            <i class="fas fa-save mr-1"></i>
-            <span class="hidden sm:inline">Save Changes</span>
-            <span class="sm:hidden">Save</span>
-            <span wire:loading wire:target="saveContent" class="ml-2">
-                <i class="fas fa-spinner fa-spin"></i>
-            </span>
-        </button>
-
-        <!-- More Actions Dropdown -->
-        <div class="relative" x-data="{ open: false }">
-            <button @click="open = !open"
-                class="px-3 py-2.5 bg-gray-700 text-gray-300 rounded-xl hover:bg-gray-600 transition-colors">
-                <i class="fas fa-ellipsis-v"></i>
+        <!-- Actions -->
+        <div class="flex items-center space-x-3">
+            <button wire:click="togglePublished"
+                class="px-3 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center"
+                aria-label="{{ $course->is_published ? 'Unpublish course' : 'Publish course' }}"
+                x-on:keydown.enter.prevent="$dispatch('togglePublished')">
+                <i class="fas {{ $course->is_published ? 'fa-eye-slash' : 'fa-eye' }} mr-2"></i>
+                {{ $course->is_published ? 'Unpublish' : 'Publish' }}
             </button>
-            <div x-show="open" @click.outside="open = false" x-transition
-                class="absolute right-0 mt-2 w-48 bg-gray-800 rounded-lg shadow-xl border border-gray-700 z-50">
-                <button wire:click="previewCourse" wire:loading.attr="disabled"
-                class="block w-full text-left px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 rounded-t-lg">
-                <i class="fas fa-eye mr-2"></i> Preview Course
-                <span wire:loading wire:target="previewCourse" class="ml-2">
-                    <i class="fas fa-spinner fa-spin"></i>
-                </span>
+            <button wire:click="openSettings"
+                class="px-3 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors flex items-center"
+                aria-label="Open course settings" x-on:keydown.enter.prevent="$dispatch('openSettings')">
+                <i class="fas fa-cog mr-2"></i>
+                Settings
             </button>
-                <button wire:click="exportCourseOutline" wire:loading.attr="disabled"
-                    class="block w-full text-left px-4 py-2 text-sm text-gray-300 hover:bg-gray-700">
-                    <i class="fas fa-download mr-2"></i> Export Outline
-                    <span wire:loading wire:target="exportCourseOutline" class="ml-2">
-                        <i class="fas fa-spinner fa-spin"></i>
-                    </span>
-                </button>
-                <button wire:click="openCourseSettings" wire:loading.attr="disabled"
-                    class="block w-full text-left px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 rounded-b-lg">
-                    <i class="fas fa-cog mr-2"></i> Course Settings
-                    <span wire:loading wire:target="openCourseSettings" class="ml-2">
-                        <i class="fas fa-spinner fa-spin"></i>
-                    </span>
-                </button>
+        </div>
+    </div>
+
+    <!-- Stats -->
+    <div class="mt-4 grid grid-cols-2 gap-4 text-sm">
+        <div class="bg-gray-800 p-3 rounded-lg flex items-center space-x-2">
+            <i class="fas fa-folder-open text-blue-400"></i>
+            <div>
+                <span class="text-gray-300">Sections</span>
+                <span class="block text-lg font-bold text-white">{{ $sectionCount }}</span>
+            </div>
+        </div>
+        <div class="bg-gray-800 p-3 rounded-lg flex items-center space-x-2">
+            <i class="fas fa-book text-green-400"></i>
+            <div>
+                <span class="text-gray-300">Lessons</span>
+                <span class="block text-lg font-bold text-white">{{ $lessonCount }}</span>
             </div>
         </div>
     </div>
 
-    
+    @push('scripts')
+        <script>
+            document.addEventListener('livewire:navigated', () => {
+                Livewire.on('notify', ({
+                    message,
+                    type = 'info'
+                }) => {
+                    showNotification(message, type);
+                });
+
+                function showNotification(message, type) {
+                    const notification = document.createElement('div');
+                    notification.className = `px-6 py-3 rounded-lg shadow-lg text-white transition-all duration-300 transform translate-x-full animate__animated animate__fadeInRight
+                        ${type === 'success' ? 'bg-green-600' : 
+                          type === 'error' ? 'bg-red-600' : 
+                          type === 'warning' ? 'bg-yellow-600' : 
+                          'bg-blue-600'}`;
+                    notification.setAttribute('role', 'alert');
+                    notification.setAttribute('aria-live', 'assertive');
+
+                    notification.innerHTML = `
+                        <div class="flex items-center">
+                            <i class="fas fa-${
+                                type === 'success' ? 'check' : 
+                                type === 'error' ? 'exclamation-triangle' : 
+                                type === 'warning' ? 'exclamation-circle' : 
+                                'info'
+                            } mr-2"></i>
+                            <span>${message}</span>
+                            <button onclick="this.parentElement.parentElement.remove()" 
+                                    class="ml-4 text-white hover:text-gray-200" 
+                                    aria-label="Close notification">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                    `;
+
+                    const container = document.getElementById('global-notifications');
+                    if (container) {
+                        container.appendChild(notification);
+                        setTimeout(() => {
+                            notification.classList.remove('translate-x-full');
+                        }, 10);
+                        setTimeout(() => {
+                            if (notification.parentNode) {
+                                notification.classList.add('translate-x-full', 'animate__fadeOutRight');
+                                setTimeout(() => {
+                                    if (notification.parentNode) {
+                                        notification.remove();
+                                    }
+                                }, 300);
+                            }
+                        }, 5000);
+                    }
+                }
+            });
+        </script>
+    @endpush
 </div>

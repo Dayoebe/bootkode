@@ -3,192 +3,122 @@
 namespace App\Livewire\Component\CourseManagement\CourseBuilder;
 
 use App\Models\Course;
-use Livewire\Attributes\On;
+use App\Models\CourseCategory;
+use Illuminate\Support\Facades\Cache;
 use Livewire\Component;
-use Symfony\Component\HttpFoundation\StreamedResponse;
-use Illuminate\Support\Facades\Storage;
 
 class Toolbar extends Component
 {
     public Course $course;
-    public $courseStats = [];
+    public $sectionCount;
+    public $lessonCount;
+    public $modalState = [
+        'type' => null, // 'settings'
+        'isOpen' => false,
+        'data' => [
+            'title' => '',
+            'subtitle' => '',
+            'description' => '',
+            'category_id' => null,
+            'difficulty_level' => '',
+            'estimated_duration_minutes' => 0,
+        ],
+    ];
+    public $categories;
+    public $difficultyLevels = [
+        'beginner' => 'Beginner',
+        'intermediate' => 'Intermediate',
+        'advanced' => 'Advanced',
+    ];
+
+    protected $rules = [
+        'modalState.data.title' => 'required|string|max:255',
+        'modalState.data.subtitle' => 'nullable|string|max:255',
+        'modalState.data.description' => 'nullable|string|max:1000',
+        'modalState.data.category_id' => 'required|exists:course_categories,id',
+        'modalState.data.difficulty_level' => 'required|in:beginner,intermediate,advanced',
+        'modalState.data.estimated_duration_minutes' => 'required|integer|min:1',
+    ];
 
     public function mount(Course $course)
     {
         $this->course = $course;
-        $this->calculateStats();
-    }
-
-    #[On('course-updated')]
-    public function refreshCourse()
-    {
-        $this->course->refresh();
-        $this->calculateStats();
+        $this->sectionCount = $course->sections()->count();
+        $this->lessonCount = $course->sections()->withCount('lessons')->get()->sum('lessons_count');
+        $this->categories = Cache::remember('course_categories', 3600, fn() => CourseCategory::all());
     }
 
     public function togglePublished()
     {
         try {
-            $this->course->update([
-                'is_published' => !$this->course->is_published
-            ]);
-
-            $status = $this->course->is_published ? 'published' : 'unpublished';
-            $this->dispatch('notify', type: 'success', message: "Course {$status} successfully!");
-            $this->dispatch('course-updated');
+            $this->course->update(['is_published' => !$this->course->is_published]);
+            $this->notify("Course " . ($this->course->is_published ? 'published' : 'unpublished') . " successfully!", 'success');
+            $this->dispatch('course-updated')->to('component.course-management.course-builder');
         } catch (\Exception $e) {
-            $this->dispatch('notify', type: 'error', message: "Failed to update course status: " . $e->getMessage());
+            $this->notify('Failed to update course status: Unable to save changes', 'error');
         }
     }
 
-    public function saveContent()
+    public function openSettings()
     {
-        try {
-            // Dispatch an event that will be handled by parent components
-            $this->dispatch('save-content-requested');
-            $this->dispatch('notify', type: 'success', message: "Content saved successfully!");
-        } catch (\Exception $e) {
-            $this->dispatch('notify', type: 'error', message: "Failed to save content: " . $e->getMessage());
-        }
-    }
-
-
-    // public function exportCourseOutline()
-    // {
-    //     $outline = [
-    //         'course' => [
-    //             'title' => $this->course->title,
-    //             'description' => $this->course->description,
-    //             'created_at' => $this->course->created_at->toISOString(),
-    //             'sections' => []
-    //         ]
-    //     ];
-
-    //     foreach ($this->course->sections as $section) {
-    //         $sectionData = [
-    //             'title' => $section->title,
-    //             'description' => $section->description,
-    //             'order' => $section->order,
-    //             'lessons' => []
-    //         ];
-
-    //         foreach ($section->lessons as $lesson) {
-    //             $sectionData['lessons'][] = [
-    //                 'title' => $lesson->title,
-    //                 'content_type' => $lesson->content_type,
-    //                 'duration_minutes' => $lesson->duration_minutes,
-    //                 'order' => $lesson->order
-    //             ];
-    //         }
-
-    //         $outline['course']['sections'][] = $sectionData;
-    //     }
-
-    //     $filename = str_slug($this->course->title) . '-outline-' . now()->format('Y-m-d') . '.json';
-
-    //     return response()->json($outline)
-    //         ->header('Content-Disposition', 'attachment; filename="' . $filename . '"');
-    // }
-
-    private function calculateStats()
-    {
-        $totalLessons = $this->course->sections->sum(function ($section) {
-            return $section->lessons->count();
-        });
-
-        $totalDuration = $this->course->sections->sum(function ($section) {
-            return $section->lessons->sum('duration_minutes');
-        });
-
-        $publishedLessons = $this->course->sections->sum(function ($section) {
-            return $section->lessons->where('content', '!=', null)->count();
-        });
-
-        $this->courseStats = [
-            'total_sections' => $this->course->sections->count(),
-            'total_lessons' => $totalLessons,
-            'total_duration' => $totalDuration,
-            'published_lessons' => $publishedLessons,
-            'completion_percentage' => $totalLessons > 0 ? round(($publishedLessons / $totalLessons) * 100) : 0,
+        $this->modalState = [
+            'type' => 'settings',
+            'isOpen' => true,
+            'data' => [
+                'title' => $this->course->title ?? '',
+                'subtitle' => $this->course->subtitle ?? '',
+                'description' => $this->course->description ?? '',
+                'category_id' => $this->course->category_id ?? null,
+                'difficulty_level' => $this->course->difficulty_level ?? '',
+                'estimated_duration_minutes' => $this->course->estimated_duration_minutes ?? 0,
+            ],
         ];
     }
 
-  
-    public function previewCourse()
+    public function closeSettingsModal()
     {
-        try {
-            if (!$this->course->is_published) {
-                $this->dispatch('notify',
-                    message: "Please publish the course before previewing.",
-                    type: 'warning'
-                );
-                return;
-            }
-    
-            return redirect()->route('course.preview', $this->course);
-    
-        } catch (\Exception $e) {
-            $this->dispatch('notify',
-                message: "Failed to preview course: " . $e->getMessage(),
-                type: 'error'
-            );
-        }
-    }
-
-    public function exportCourseOutline()
-    {
-        $outline = [
-            'course' => [
-                'title' => $this->course->title,
-                'description' => $this->course->description,
-                'created_at' => $this->course->created_at->toISOString(),
-                'sections' => []
-            ]
+        $this->modalState = [
+            'type' => null,
+            'isOpen' => false,
+            'data' => [
+                'title' => '',
+                'subtitle' => '',
+                'description' => '',
+                'category_id' => null,
+                'difficulty_level' => '',
+                'estimated_duration_minutes' => 0,
+            ],
         ];
-
-            foreach ($this->course->sections as $section) {
-                $sectionData = [
-                    'title' => $section->title,
-                    'description' => $section->description,
-                    'order' => $section->order,
-                    'lessons' => []
-                ];
-
-                foreach ($section->lessons as $lesson) {
-                    $sectionData['lessons'][] = [
-                        'title' => $lesson->title,
-                        'content_type' => $lesson->content_type,
-                        'duration_minutes' => $lesson->duration_minutes,
-                        'order' => $lesson->order
-                    ];
-                }
-
-                $outline['course']['sections'][] = $sectionData;
-            }
-
-            $filename = "{$this->course->slug}-outline-" . now()->format('Y-m-d') . '.json';
-            $content = json_encode($outline, JSON_PRETTY_PRINT);
-
-            return response()->streamDownload(
-                function () use ($content) {
-                    echo $content;
-                },
-                $filename,
-                [
-                    'Content-Type' => 'application/json',
-                ]
-            );
-
-
-
-        }
-    
-
-    public function openCourseSettings()
-    {
-        // Dispatch an event that will be handled by the parent component
-        $this->dispatch('open-course-settings', courseId: $this->course->id);
     }
+
+    public function updateSettings()
+    {
+        $this->validate();
+
+        try {
+            $data = [
+                'title' => $this->modalState['data']['title'],
+                'subtitle' => $this->modalState['data']['subtitle'],
+                'description' => $this->modalState['data']['description'],
+                'category_id' => $this->modalState['data']['category_id'],
+                'difficulty_level' => $this->modalState['data']['difficulty_level'],
+                'estimated_duration_minutes' => (int) $this->modalState['data']['estimated_duration_minutes'],
+            ];
+
+            $this->course->update($data);
+            $this->notify('Course settings updated successfully!', 'success');
+            $this->dispatch('course-updated')->to('component.course-management.course-builder');
+            $this->closeSettingsModal();
+        } catch (\Exception $e) {
+            $this->notify('Failed to update course: Invalid input data', 'error');
+        }
+    }
+
+    public function notify($message, $type = 'success')
+    {
+        $this->dispatch('notify', message: $message, type: $type);
+    }
+
     public function render()
     {
         return view('livewire.component.course-management.course-builder.toolbar');
