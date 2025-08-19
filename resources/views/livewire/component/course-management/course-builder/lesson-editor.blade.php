@@ -1,280 +1,345 @@
-<div class="bg-gray-800 rounded-xl border border-gray-700 shadow-xl">
-    <!-- Editor Header -->
-    <div class="p-6 border-b border-gray-700">
-        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between">
-            <div class="mb-4 sm:mb-0">
-                <h2 class="text-2xl font-bold text-white mb-2">{{ $lesson->title }}</h2>
-                <div class="flex flex-wrap items-center space-x-4 text-sm text-gray-400">
-                    <span><i class="fas fa-list mr-1"></i> Section:
-                        {{ $lesson->section->title ?? 'Unknown' }}</span>
-                    <span><i class="fas fa-{{ $lesson->content_type === 'video' ? 'video' : ($lesson->content_type === 'file' ? 'file' : 'file-text') }} mr-1"></i>
-                        {{ ucfirst($lesson->content_type) }} Content</span>
-                    @if ($lesson->duration_minutes)
-                        <span><i class="fas fa-clock mr-1"></i>
-                            {{ $lesson->duration_minutes }} minutes</span>
-                    @endif
+<div class="space-y-6" x-data="{
+    activeTab: 'content',
+    showMediaDeleteConfirm: null,
+    previewUrl: null,
+    previewType: null,
+    isLoading: false
+}" x-init="$wire.on('lesson-changed', () => {
+    isLoading = true;
+    setTimeout(() => { isLoading = false }, 300);
+});" wire:key="lesson-editor-{{ $lessonId }}">
+
+    <!-- Loading Overlay -->
+    <div x-show="isLoading" x-transition.opacity
+        class="fixed inset-0 bg-gray-900/90 z-50 flex items-center justify-center">
+        <div class="flex flex-col items-center">
+            <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500 mb-3"></div>
+            <span class="text-white font-medium">Loading Lesson...</span>
+        </div>
+    </div>
+    <div x-show="!isLoading" x-transition>
+        <!-- Lesson Header -->
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+            <div>
+                <h2 class="text-2xl font-bold text-white">
+                    <i class="fas fa-book-open text-blue-400 mr-2"></i>
+                    Lesson Editor
+                </h2>
+                <p class="text-gray-400">
+                    Section: <span class="text-blue-300">{{ $lesson->section->title }}</span>
+                </p>
+            </div>
+            <button wire:click="saveLesson"
+                class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg flex items-center gap-2 transition-colors">
+                <i class="fas fa-save"></i> Save Lesson
+            </button>
+        </div>
+
+        <!-- Navigation Tabs -->
+        <div class="border-b border-gray-700">
+            <nav class="-mb-px flex space-x-8">
+                <button @click="activeTab = 'content'"
+                    :class="{ 'border-blue-500 text-blue-400': activeTab === 'content', 'border-transparent text-gray-400 hover:text-gray-300': activeTab !== 'content' }"
+                    class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm flex items-center gap-2">
+                    <i class="fas fa-align-left"></i> Content
+                </button>
+                <button @click="activeTab = 'media'"
+                    :class="{ 'border-blue-500 text-blue-400': activeTab === 'media', 'border-transparent text-gray-400 hover:text-gray-300': activeTab !== 'media' }"
+                    class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm flex items-center gap-2">
+                    <i class="fas fa-photo-video"></i> Media & Files
+                </button>
+                <button @click="activeTab = 'settings'"
+                    :class="{ 'border-blue-500 text-blue-400': activeTab === 'settings', 'border-transparent text-gray-400 hover:text-gray-300': activeTab !== 'settings' }"
+                    class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm flex items-center gap-2">
+                    <i class="fas fa-cog"></i> Settings
+                </button>
+            </nav>
+        </div>
+
+        <!-- Content Tab -->
+        <div x-show="activeTab === 'content'" class="space-y-6 animate__animated animate__fadeIn">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 my-3">
+                <div>
+                    <label class="block text-sm font-medium text-gray-300 mb-2">Lesson Title *</label>
+                    <input type="text" wire:model.live="title"
+                        class="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition">
+                    @error('title')
+                        <span class="text-red-400 text-sm mt-1">{{ $message }}</span>
+                    @enderror
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-300 mb-2">URL Slug *</label>
+                    <div class="flex gap-2">
+                        <input type="text" wire:model="slug"
+                            class="flex-1 px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                        <button wire:click="generateSlug"
+                            class="px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg"
+                            title="Generate from title">
+                            <i class="fas fa-sync-alt"></i>
+                        </button>
+                    </div>
+                    @error('slug')
+                        <span class="text-red-400 text-sm mt-1">{{ $message }}</span>
+                    @enderror
                 </div>
             </div>
-            <div class="flex items-center space-x-3">
-                <button wire:click="previewLesson" wire:loading.attr="disabled"
-                class="px-4 py-2 bg-gray-700 text-gray-300 rounded-lg hover:bg-gray-600 transition-colors">
-                <i class="fas fa-eye mr-1"></i> Preview
-                <span wire:loading wire:target="previewLesson" class="ml-2">
-                    <i class="fas fa-spinner fa-spin"></i>
-                </span>
-            </button>
-                <button wire:click="save"
-                    class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors font-semibold"
-                    :class="{ 'opacity-50': !$wire.isDirty }">
-                    <i class="fas fa-save mr-1"></i> Save Lesson
-                </button>
-            </div>
-        </div>
-    </div>
 
-    <!-- Auto-save indicator -->
-    @if ($autoSaveMessage)
-        <div class="px-6 py-2 bg-green-600 bg-opacity-20 border-b border-green-600 border-opacity-30">
-            <div class="flex items-center text-green-400 text-sm">
-                <i class="fas fa-check mr-2"></i>{{ $autoSaveMessage }}
-            </div>
-        </div>
-    @endif
-
-    <!-- Content Editor -->
-    <div class="p-6">
-        <!-- Rich Text Toolbar -->
-        <div class="mb-4 flex flex-wrap items-center gap-2 p-3 bg-gray-700 rounded-lg border border-gray-600">
-            <div class="flex items-center space-x-1 border-r border-gray-600 pr-3">
-                <button type="button" onclick="document.execCommand('bold', false, null)"
-                    class="p-2 text-gray-300 hover:text-white hover:bg-gray-600 rounded transition-colors"
-                    title="Bold">
-                    <i class="fas fa-bold"></i>
-                </button>
-                <button type="button" onclick="document.execCommand('italic', false, null)"
-                    class="p-2 text-gray-300 hover:text-white hover:bg-gray-600 rounded transition-colors"
-                    title="Italic">
-                    <i class="fas fa-italic"></i>
-                </button>
-                <button type="button" onclick="document.execCommand('underline', false, null)"
-                    class="p-2 text-gray-300 hover:text-white hover:bg-gray-600 rounded transition-colors"
-                    title="Underline">
-                    <i class="fas fa-underline"></i>
-                </button>
+            <!-- Description -->
+            <div>
+                <label class="block text-sm font-medium text-gray-300 mb-2">Description</label>
+                <textarea wire:model="description" rows="3"
+                    class="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"></textarea>
+                @error('description')
+                    <span class="text-red-400 text-sm mt-1">{{ $message }}</span>
+                @enderror
             </div>
 
-            <div class="flex items-center space-x-1 border-r border-gray-600 pr-3">
-                <button type="button" onclick="document.execCommand('formatBlock', false, 'h1')"
-                    class="p-2 text-gray-300 hover:text-white hover:bg-gray-600 rounded transition-colors"
-                    title="Heading 1">
-                    <i class="fas fa-heading"></i>
-                </button>
-                <button type="button" onclick="document.execCommand('insertUnorderedList', false, null)"
-                    class="p-2 text-gray-300 hover:text-white hover:bg-gray-600 rounded transition-colors"
-                    title="Bullet List">
-                    <i class="fas fa-list-ul"></i>
-                </button>
-                <button type="button" onclick="document.execCommand('insertOrderedList', false, null)"
-                    class="p-2 text-gray-300 hover:text-white hover:bg-gray-600 rounded transition-colors"
-                    title="Numbered List">
-                    <i class="fas fa-list-ol"></i>
-                </button>
-                <button type="button" onclick="document.execCommand('formatBlock', false, 'blockquote')"
-                    class="p-2 text-gray-300 hover:text-white hover:bg-gray-600 rounded transition-colors"
-                    title="Quote">
-                    <i class="fas fa-quote-left"></i>
-                </button>
+            <!-- Content Editor -->
+            <div>
+                <div class="flex justify-between items-center mb-2">
+                    <label class="block text-sm font-medium text-gray-300">Lesson Content</label>
+                    <div class="flex gap-2">
+                        <button @click="$refs.trixEditor.editor.insertHTML('<h2>Heading</h2>')"
+                            class="px-3 py-1 bg-gray-700 hover:bg-gray-600 rounded text-sm">
+                            <i class="fas fa-heading mr-1"></i> Heading
+                        </button>
+                        <button @click="$refs.trixEditor.editor.insertHTML('<p>Paragraph text...</p>')"
+                            class="px-3 py-1 bg-gray-700 hover:bg-gray-600 rounded text-sm">
+                            <i class="fas fa-paragraph mr-1"></i> Paragraph
+                        </button>
+                    </div>
+                </div>
+                <div class="border border-gray-700 rounded-lg overflow-hidden shadow-lg">
+                    <trix-editor wire:model="content" x-ref="trixEditor"
+                        class="trix-content bg-gray-800 text-white min-h-[300px] p-4"></trix-editor>
+                </div>
+                @error('content')
+                    <span class="text-red-400 text-sm mt-1">{{ $message }}</span>
+                @enderror
             </div>
 
-            <div class="flex items-center space-x-1">
-                <button wire:click="showImageModal"
-                    class="flex flex-col items-center space-y-1 px-3 py-2 bg-pink-600 text-white rounded-lg hover:bg-pink-700 transition-colors">
-                    <i class="fas fa-image"></i>
-                    <span class="text-xs">Image</span>
-                </button>
-                <button wire:click="showVideoModal"
-                    class="flex flex-col items-center space-y-1 px-3 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors">
-                    <i class="fas fa-video"></i>
-                    <span class="text-xs">Video</span>
-                </button>
-                <button wire:click="showAudioModal"
-                    class="flex flex-col items-center space-y-1 px-3 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition-colors">
-                    <i class="fas fa-music"></i>
-                    <span class="text-xs">Audio</span>
-                </button>
-                <button wire:click="showFileModal"
-                    class="flex flex-col items-center space-y-1 px-3 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors">
-                    <i class="fas fa-file-upload"></i>
-                    <span class="text-xs">File</span>
-                </button>
-                <button wire:click="addCodeBlock"
-                    class="flex flex-col items-center space-y-1 px-3 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors">
-                    <i class="fas fa-code"></i>
-                    <span class="text-xs">Code</span>
-                </button>
-                <button wire:click="addNoteBlock"
-                    class="flex flex-col items-center space-y-1 px-3 py-2 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 transition-colors">
-                    <i class="fas fa-lightbulb"></i>
-                    <span class="text-xs">Note</span>
-                </button>
-            </div>
         </div>
 
-        <!-- Content Editor Area -->
-        <div class="bg-gray-700 rounded-lg p-4 min-h-96">
-            <div wire:ignore>
-                <trix-editor
-                    class="trix-content bg-gray-800 text-white rounded-lg p-4 min-h-96"
-                    wire:model="content"
-                    wire:key="trix-editor-{{ $lessonId }}"></trix-editor>
+        <!-- Media Tab -->
+        <div x-show="activeTab === 'media'" class="space-y-6 my-2">
+            <!-- Video URL -->
+            <div>
+                <label class="block text-sm font-medium text-gray-300 mb-2">YouTube Video URL</label>
+                <div class="flex gap-2">
+                    <input type="url" wire:model="video_url" placeholder="https://www.youtube.com/watch?v=..."
+                        class="flex-1 px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                    @if ($video_url)
+                        <button @click="previewUrl = '{{ $video_url }}'; previewType = 'video'"
+                            class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg">
+                            Preview
+                        </button>
+                    @endif
+                </div>
+                @error('video_url')
+                    <span class="text-red-400 text-sm mt-1">{{ $message }}</span>
+                @enderror
             </div>
-            
-            <!-- Content Blocks -->
-            <div id="contentBlocks" class="mt-4 space-y-4">
-                @foreach($contentBlocks as $block)
-                    <div class="content-block bg-gray-800 rounded-lg p-4 border border-gray-600" 
-                         data-block-id="{{ $block['id'] }}">
-                        <div class="flex items-center justify-between mb-2">
-                            <div class="flex items-center space-x-2">
-                                <i class="fas fa-grip-vertical text-gray-400 cursor-move"></i>
-                                <span class="text-xs text-gray-400">
-                                    {{ ucfirst($block['type']) }} Block
-                                </span>
-                            </div>
-                            <button wire:click="removeContentBlock('{{ $block['id'] }}')"
-                                class="text-red-400 hover:text-red-300">
-                                <i class="fas fa-trash"></i>
+            <!-- Image Upload -->
+            <div class="bg-gray-800 rounded-lg p-4 border border-gray-700">
+                <h3 class="text-lg font-medium text-white mb-4 flex items-center gap-2">
+                    <i class="fas fa-image text-blue-400"></i> Featured Image
+                </h3>
+
+                @if ($lesson->image_path)
+                    <div class="flex items-center gap-4 mb-4">
+                        <img src="{{ Storage::url($lesson->image_path) }}" alt="Lesson image"
+                            class="w-32 h-32 object-cover rounded-lg border border-gray-700">
+                        <div class="space-y-2">
+                            <button @click="showMediaDeleteConfirm = 'image'"
+                                class="px-3 py-1 bg-red-600 hover:bg-red-700 text-white rounded text-sm">
+                                Remove Image
+                            </button>
+                            <button
+                                @click="previewUrl = '{{ Storage::url($lesson->image_path) }}'; previewType = 'image'"
+                                class="px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white rounded text-sm">
+                                Preview Image
                             </button>
                         </div>
-                        
-                        @if($block['type'] === 'image')
-                            <div class="flex flex-col items-center">
-                                <img src="{{ Storage::disk('public')->url($block['file_path']) }}" 
-                                     alt="{{ $block['caption'] ?? '' }}" 
-                                     class="max-w-full h-auto rounded-lg mb-2">
-                                @if(isset($block['caption']) && $block['caption'])
-                                    <p class="text-sm text-gray-300">{{ $block['caption'] }}</p>
-                                @endif
-                            </div>
-                        @elseif($block['type'] === 'video')
-                            @if(isset($block['video_url']))
-                                <div class="aspect-w-16 aspect-h-9">
-                                    <iframe src="{{ $block['video_url'] }}" 
-                                            class="w-full h-96 rounded-lg" 
-                                            frameborder="0" 
-                                            allowfullscreen></iframe>
-                                </div>
-                                @if(isset($block['title']))
-                                    <p class="text-sm text-gray-300 mt-2">{{ $block['title'] }}</p>
-                                @endif
-                            @else
-                                <video controls class="w-full rounded-lg">
-                                    <source src="{{ Storage::disk('public')->url($block['file_path']) }}" 
-                                            type="video/mp4">
-                                    Your browser does not support the video tag.
-                                </video>
-                                @if(isset($block['title']))
-                                    <p class="text-sm text-gray-300 mt-2">{{ $block['title'] }}</p>
-                                @endif
-                            @endif
-                        @elseif($block['type'] === 'file')
-                            <div class="flex items-center space-x-3 p-3 bg-gray-700 rounded-lg">
-                                <i class="fas fa-file text-2xl text-blue-400"></i>
-                                <div class="flex-1">
-                                    <p class="text-white font-medium">{{ $block['file_name'] }}</p>
-                                    <p class="text-xs text-gray-400">{{ $this->formatFileSize($block['file_size']) }}</p>
-                                    @if(isset($block['description']) && $block['description'])
-                                        <p class="text-sm text-gray-300 mt-1">{{ $block['description'] }}</p>
-                                    @endif
-                                </div>
-                                <a href="{{ Storage::disk('public')->url($block['file_path']) }}" 
-                                   download="{{ $block['file_name'] }}"
-                                   class="px-3 py-1 bg-blue-600 text-white rounded text-sm hover:bg-blue-700">
-                                    <i class="fas fa-download"></i>
-                                </a>
-                            </div>
-                        @elseif($block['type'] === 'audio')
-                            <div class="flex items-center space-x-3 p-3 bg-gray-700 rounded-lg">
-                                <i class="fas fa-music text-2xl text-pink-400"></i>
-                                <div class="flex-1">
-                                    <p class="text-white font-medium">{{ $block['title'] }}</p>
-                                    <p class="text-xs text-gray-400">{{ $this->formatFileSize($block['file_size']) }}</p>
-                                </div>
-                                <audio controls class="flex-1">
-                                    <source src="{{ Storage::disk('public')->url($block['file_path']) }}" 
-                                            type="audio/mpeg">
-                                    Your browser does not support the audio element.
-                                </audio>
-                            </div>
-                        @elseif($block['type'] === 'code')
-                            <div class="relative">
-                                <div class="flex justify-between items-center bg-gray-900 px-3 py-2 rounded-t-lg">
-                                    <span class="text-sm text-gray-300">{{ $block['title'] }}</span>
-                                    <button onclick="copyToClipboard('{{ $block['id'] }}')"
-                                        class="text-gray-400 hover:text-white text-sm">
-                                        <i class="fas fa-copy mr-1"></i> Copy
-                                    </button>
-                                </div>
-                                <textarea id="code-{{ $block['id'] }}" 
-                                          class="w-full bg-gray-900 text-green-400 font-mono text-sm p-3 rounded-b-lg border-t-0 border-gray-700"
-                                          rows="8" readonly>{{ $block['code'] }}</textarea>
-                            </div>
-                        @elseif($block['type'] === 'note')
-                            <div class="note-{{ $block['note_type'] }} p-4 rounded-lg">
-                                <div class="flex items-start space-x-3">
-                                    <i class="fas fa-{{ $this->getNoteIcon($block['note_type']) }} text-lg mt-1"></i>
-                                    <div>
-                                        <h4 class="font-bold text-white">{{ $block['title'] }}</h4>
-                                        <p class="text-gray-300 mt-1">{{ $block['content'] }}</p>
-                                    </div>
-                                </div>
-                            </div>
-                        @endif
                     </div>
-                @endforeach
+                @endif
+
+                <div class="flex items-center gap-2">
+                    <input type="file" wire:model="imageUpload" id="imageUpload" class="hidden">
+                    <label for="imageUpload"
+                        class="px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg cursor-pointer">
+                        Choose Image
+                    </label>
+                    @if ($imageUpload)
+                        <span class="text-gray-300">{{ $imageUpload->getClientOriginalName() }}</span>
+                        <button wire:click="uploadImage"
+                            class="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg">
+                            Upload
+                        </button>
+                    @endif
+                </div>
+                @error('imageUpload')
+                    <span class="text-red-400 text-sm mt-1">{{ $message }}</span>
+                @enderror
+            </div>
+
+            <!-- Audio Upload -->
+            <div class="bg-gray-800 rounded-lg p-4 border border-gray-700">
+                <h3 class="text-lg font-medium text-white mb-4 flex items-center gap-2">
+                    <i class="fas fa-music text-blue-400"></i> Audio File
+                </h3>
+
+                @if ($lesson->audio_path)
+                    <div class="flex items-center gap-4 mb-4">
+                        <audio controls class="w-full max-w-md">
+                            <source src="{{ Storage::url($lesson->audio_path) }}" type="audio/mpeg">
+                        </audio>
+                        <button @click="showMediaDeleteConfirm = 'audio'"
+                            class="px-3 py-1 bg-red-600 hover:bg-red-700 text-white rounded text-sm">
+                            Remove Audio
+                        </button>
+                    </div>
+                @endif
+
+                <div class="flex items-center gap-2">
+                    <input type="file" wire:model="audioUpload" id="audioUpload" class="hidden"
+                        accept="audio/*">
+                    <label for="audioUpload"
+                        class="px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg cursor-pointer">
+                        Choose Audio File
+                    </label>
+                    @if ($audioUpload)
+                        <span class="text-gray-300">{{ $audioUpload->getClientOriginalName() }}</span>
+                        <button wire:click="uploadAudio"
+                            class="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg">
+                            Upload
+                        </button>
+                    @endif
+                </div>
+                @error('audioUpload')
+                    <span class="text-red-400 text-sm mt-1">{{ $message }}</span>
+                @enderror
+            </div>
+        </div>
+
+        <!-- Settings Tab -->
+        <div x-show="activeTab === 'settings'" class="space-y-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <label class="block text-sm font-medium text-gray-300 mb-2">Duration (minutes)</label>
+                    <input type="number" wire:model="duration_minutes" min="1" max="600"
+                        class="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                    @error('duration_minutes')
+                        <span class="text-red-400 text-sm mt-1">{{ $message }}</span>
+                    @enderror
+                </div>
+
+                <div class="flex items-center">
+                    <input type="checkbox" wire:model="is_free" id="is_free"
+                        class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-700 rounded bg-gray-800">
+                    <label for="is_free" class="ml-2 block text-sm text-gray-300">
+                        Free Lesson (available without enrollment)
+                    </label>
+                </div>
+            </div>
+        </div>
+        <!-- Delete Confirmation Modal -->
+        <div x-show="showMediaDeleteConfirm" x-transition.opacity class="modal-overlay" style="display: none"
+            :style="showMediaDeleteConfirm ? 'display: flex' : ''" @keydown.escape="showMediaDeleteConfirm = null">
+            <div class="modal-container bg-gray-800 rounded-xl p-6 w-full max-w-md border border-gray-700">
+                <h3 class="text-lg font-bold text-white mb-4">Confirm Deletion</h3>
+                <p class="text-gray-300 mb-6">
+                    Are you sure you want to delete this <span x-text="showMediaDeleteConfirm"></span>?
+                </p>
+                <div class="flex justify-end space-x-3">
+                    <button @click="showMediaDeleteConfirm = null"
+                        class="px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg">
+                        Cancel
+                    </button>
+                    <button
+                        @click="$wire.call('delete' + showMediaDeleteConfirm.charAt(0).toUpperCase() + showMediaDeleteConfirm.slice(1)); showMediaDeleteConfirm = null"
+                        class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg">
+                        Delete
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Preview Modal -->
+        <div x-show="previewUrl" x-transition.opacity class="modal-overlay" style="display: none"
+            :style="previewUrl ? 'display: flex' : ''" @keydown.escape="previewUrl = null">
+            <div class="modal-container bg-gray-800 rounded-xl p-6 max-w-4xl w-full border border-gray-700">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-lg font-bold text-white">Preview</h3>
+                    <button @click="previewUrl = null" class="text-gray-400 hover:text-white p-1">
+                        <i class="fas fa-times text-xl"></i>
+                    </button>
+                </div>
+
+                <div class="max-h-[80vh] overflow-auto">
+                    <template x-if="previewType === 'video'">
+                        <div class="aspect-w-16 aspect-h-9">
+                            <iframe class="w-full h-[500px]"
+                                :src="'https://www.youtube.com/embed/' + previewUrl.split('v=')[1].split('&')[0]"
+                                frameborder="0" allowfullscreen></iframe>
+                        </div>
+                    </template>
+                    <template x-if="previewType === 'image'">
+                        <img :src="previewUrl" alt="Preview" class="max-w-full mx-auto rounded-lg">
+                    </template>
+                </div>
             </div>
         </div>
     </div>
-</div>
 
-<script>
-    // Auto-save functionality
-    let autoSaveTimeout;
-    document.addEventListener('trix-change', (e) => {
-        @this.set('content', e.target.value);
-        clearTimeout(autoSaveTimeout);
-        autoSaveTimeout = setTimeout(() => {
-            @this.call('autoSave');
-        }, 3000);
-    });
-
-    // Copy to clipboard function
-    function copyToClipboard(blockId) {
-        const codeElement = document.getElementById('code-' + blockId);
-        if (codeElement) {
-            navigator.clipboard.writeText(codeElement.value).then(() => {
-                @this.dispatch('notify', 'Code copied to clipboard!', 'success');
-            });
-        }
-    }
-
-    // Initialize sortable for content blocks
-    document.addEventListener('livewire:navigated', () => {
-        if (typeof Sortable !== 'undefined') {
-            const contentBlocksContainer = document.getElementById('contentBlocks');
-            if (contentBlocksContainer) {
-                new Sortable(contentBlocksContainer, {
-                    handle: '.fa-grip-vertical',
-                    animation: 150,
-                    ghostClass: 'sortable-ghost',
-                    onEnd: (evt) => {
-                        const orderedIds = Array.from(contentBlocksContainer.children).map(
-                            el => el.getAttribute('data-block-id')
-                        );
-                        @this.call('reorderContentBlocks', orderedIds);
-                    }
-                });
+    @push('styles')
+        <style>
+            .trix-content {
+                color: #f3f4f6;
+                font-size: 1rem;
+                line-height: 1.5;
             }
-        }
-    });
-</script>
+
+            .trix-content h1 {
+                font-size: 1.5rem;
+                font-weight: bold;
+                margin: 1rem 0;
+            }
+
+            .trix-content h2 {
+                font-size: 1.3rem;
+                font-weight: bold;
+                margin: 0.8rem 0;
+            }
+
+            .trix-content a {
+                color: #60a5fa;
+                text-decoration: underline;
+            }
+
+            .trix-content img {
+                max-width: 100%;
+                height: auto;
+            }
+
+            .trix-button-group--file-tools {
+                display: none !important;
+            }
+        </style>
+    @endpush
+
+    @push('scripts')
+        <script>
+            document.addEventListener('livewire:navigated', () => {
+                // Initialize Trix editor
+                const trixEditor = document.querySelector('trix-editor');
+                if (trixEditor) {
+                    trixEditor.editor.element.addEventListener('trix-change', (event) => {
+                        Livewire.dispatch('content-updated', {
+                            content: event.target.value
+                        });
+                    });
+                }
+            });
+        </script>
+    @endpush
+</div>
