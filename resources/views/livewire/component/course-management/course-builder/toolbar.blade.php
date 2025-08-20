@@ -25,12 +25,6 @@
                 <i class="fas {{ $course->is_published ? 'fa-eye-slash' : 'fa-eye' }} mr-2"></i>
                 {{ $course->is_published ? 'Unpublish' : 'Publish' }}
             </button>
-            <button wire:click="openSettings"
-                class="px-3 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors flex items-center"
-                aria-label="Open course settings" x-on:keydown.enter.prevent="$dispatch('openSettings')">
-                <i class="fas fa-cog mr-2"></i>
-                Settings
-            </button>
         </div>
     </div>
 
