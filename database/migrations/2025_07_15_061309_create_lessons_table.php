@@ -21,6 +21,9 @@ class CreateLessonsTable extends Migration
             $table->integer('order')->default(0);
             $table->text('text_content')->nullable();
             $table->decimal('size_mb', 10, 2)->nullable(); // For storage tracking
+            $table->string('image_path')->nullable();
+            $table->string('audio_path')->nullable();
+            $table->string('file_path')->nullable();
             $table->timestamps();
         });
     }

@@ -15,6 +15,7 @@ class CreateAssessmentsTable extends Migration
             $table->foreignId('lesson_id')->nullable()->constrained('lessons')->onDelete('set null');
             $table->string('title');
             $table->string('slug')->unique();
+            $table->unsignedInteger('order')->default(0);
             $table->text('description')->nullable();
             $table->enum('type', ['quiz', 'project', 'assignment'])->default('quiz');
             $table->integer('pass_percentage')->nullable();
