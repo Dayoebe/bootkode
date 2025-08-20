@@ -28,7 +28,12 @@ class CourseBuilder extends Component
         $this->activeContentType = 'lesson';
         $this->activeSectionId = Lesson::find($lessonId)->section_id;
     }
-
+    #[On('outline-updated')]
+    #[On('course-updated')]
+    public function refreshCourse()
+    {
+        $this->course->refresh();
+    }
     public function render()
     {
         return view('livewire.component.course-management.course-builder');

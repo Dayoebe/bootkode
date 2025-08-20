@@ -7,7 +7,6 @@ use App\Models\Section;
 use App\Models\Lesson;
 use Livewire\Component;
 use Illuminate\Support\Str;
-use Livewire\Attributes\On;
 
 class CourseOutline extends Component
 {
@@ -17,6 +16,8 @@ class CourseOutline extends Component
     public $newSectionTitle = '';
     public $editingSectionId = null;
     public $newSectionTitleEdit = '';
+    public $editingLessonId = null;
+    public $newLessonTitleEdit = '';
     public $expandedSections = [];
     public $newLessonTitles = [];
 
@@ -24,6 +25,7 @@ class CourseOutline extends Component
         'newSectionTitle' => 'required|string|max:255',
         'newSectionTitleEdit' => 'required|string|max:255',
         'newLessonTitles.*' => 'required|string|max:255',
+        'newLessonTitleEdit' => 'required|string|max:255',
     ];
 
     public function mount(Course $course)
@@ -37,16 +39,21 @@ class CourseOutline extends Component
         $this->validateOnly('newSectionTitle');
 
         try {
-            Section::create([
+            $section = Section::create([
                 'course_id' => $this->course->id,
                 'title' => $this->newSectionTitle,
-                'order' => $this->course->sections()->max('order') + 1 ?? 1,
             ]);
 
             $this->newSectionTitle = '';
+            $this->expandedSections[] = $section->id;
             $this->refreshCourse();
+
+            // Dispatch event to update toolbar counts
+            $this->dispatchOutlineUpdated();
+
             $this->notify('Section created successfully!', 'success');
         } catch (\Exception $e) {
+            \Log::error('Failed to create section: ' . $e->getMessage());
             $this->notify('Failed to create section: ' . $e->getMessage(), 'error');
         }
     }
@@ -66,11 +73,16 @@ class CourseOutline extends Component
             Section::findOrFail($this->editingSectionId)->update([
                 'title' => $this->newSectionTitleEdit
             ]);
-            
+
             $this->cancelEditSection();
             $this->refreshCourse();
+
+            // Dispatch event to update toolbar
+            $this->dispatchOutlineUpdated();
+
             $this->notify('Section updated successfully!', 'success');
         } catch (\Exception $e) {
+            \Log::error('Failed to update section: ' . $e->getMessage());
             $this->notify('Failed to update section: ' . $e->getMessage(), 'error');
         }
     }
@@ -84,10 +96,20 @@ class CourseOutline extends Component
     public function deleteSection($sectionId)
     {
         try {
-            Section::findOrFail($sectionId)->delete();
+            $section = Section::findOrFail($sectionId);
+
+            // Remove from expanded sections if it exists
+            $this->expandedSections = array_diff($this->expandedSections, [$sectionId]);
+
+            $section->delete();
             $this->refreshCourse();
+
+            // Dispatch event to update toolbar counts
+            $this->dispatchOutlineUpdated();
+
             $this->notify('Section deleted successfully!', 'success');
         } catch (\Exception $e) {
+            \Log::error('Failed to delete section: ' . $e->getMessage());
             $this->notify('Failed to delete section: ' . $e->getMessage(), 'error');
         }
     }
@@ -104,25 +126,66 @@ class CourseOutline extends Component
     public function createLesson($sectionId)
     {
         $this->validate([
-            'newLessonTitles.'.$sectionId => 'required|string|max:255'
+            'newLessonTitles.' . $sectionId => 'required|string|max:255'
         ]);
 
         try {
             $lesson = Lesson::create([
                 'section_id' => $sectionId,
                 'title' => $this->newLessonTitles[$sectionId],
-                'order' => Lesson::where('section_id', $sectionId)->max('order') + 1 ?? 1,
                 'slug' => Str::slug($this->newLessonTitles[$sectionId])
             ]);
 
             $this->newLessonTitles[$sectionId] = '';
             $this->refreshCourse();
+
+            // Dispatch event to update toolbar counts
+            $this->dispatchOutlineUpdated();
+
             $this->dispatch('lesson-selected', lessonId: $lesson->id)
                 ->to('component.course-management.course-builder');
+
             $this->notify('Lesson created successfully!', 'success');
         } catch (\Exception $e) {
+            \Log::error('Failed to create lesson: ' . $e->getMessage());
             $this->notify('Failed to create lesson: ' . $e->getMessage(), 'error');
         }
+    }
+
+    public function startEditLesson($lessonId)
+    {
+        $lesson = Lesson::findOrFail($lessonId);
+        $this->editingLessonId = $lessonId;
+        $this->newLessonTitleEdit = $lesson->title;
+    }
+
+    public function updateLesson()
+    {
+        $this->validateOnly('newLessonTitleEdit');
+
+        try {
+            Lesson::findOrFail($this->editingLessonId)->update([
+                'title' => $this->newLessonTitleEdit,
+                'slug' => Str::slug($this->newLessonTitleEdit)
+            ]);
+
+            $this->cancelEditLesson();
+            $this->refreshCourse();
+
+            // Dispatch event to update toolbar
+            $this->dispatchOutlineUpdated();
+
+            $this->notify('Lesson updated successfully!', 'success');
+        } catch (\Exception $e) {
+            \Log::error('Failed to update lesson: ' . $e->getMessage());
+            $this->notify('Failed to update lesson: ' . $e->getMessage(), 'error');
+        }
+    }
+
+    public function cancelEditLesson()
+    {
+        $this->editingLessonId = null;
+        $this->newLessonTitleEdit = '';
     }
 
     public function selectLesson($lessonId)
@@ -136,38 +199,27 @@ class CourseOutline extends Component
         try {
             Lesson::findOrFail($lessonId)->delete();
             $this->refreshCourse();
+
+            // Dispatch event to update toolbar counts
+            $this->dispatchOutlineUpdated();
+
             $this->notify('Lesson deleted successfully!', 'success');
         } catch (\Exception $e) {
+            \Log::error('Failed to delete lesson: ' . $e->getMessage());
             $this->notify('Failed to delete lesson: ' . $e->getMessage(), 'error');
-        }
-    }
-
-    #[On('reorder-sections')]
-    public function reorderSections($orderedIds)
-    {
-        try {
-            Section::setNewOrder($orderedIds);
-            $this->refreshCourse();
-        } catch (\Exception $e) {
-            $this->notify('Failed to reorder sections: ' . $e->getMessage(), 'error');
-        }
-    }
-
-    #[On('reorder-lessons')]
-    public function reorderLessons($sectionId, $orderedIds)
-    {
-        try {
-            Lesson::where('section_id', $sectionId)
-                ->setNewOrder($orderedIds);
-            $this->refreshCourse();
-        } catch (\Exception $e) {
-            $this->notify('Failed to reorder lessons: ' . $e->getMessage(), 'error');
         }
     }
 
     private function refreshCourse()
     {
         $this->course->refresh()->load('sections.lessons');
+    }
+
+    private function dispatchOutlineUpdated()
+    {
+        // Dispatch to toolbar component specifically
+        $this->dispatch('outline-updated')
+            ->to('component.course-management.course-builder.toolbar');
     }
 
     public function notify($message, $type = 'success')
@@ -179,8 +231,8 @@ class CourseOutline extends Component
     {
         return view('livewire.component.course-management.course-builder.course-outline', [
             'sections' => $this->course->sections()
-                ->with(['lessons' => fn($q) => $q->orderBy('order')])
-                ->orderBy('order')
+                ->with(['lessons' => fn($q) => $q->orderBy('created_at', 'desc')])
+                ->orderBy('created_at', 'desc')
                 ->get(),
         ]);
     }

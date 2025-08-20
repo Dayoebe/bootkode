@@ -1,5 +1,6 @@
 <div class="bg-gray-900 p-4 sm:p-6 rounded-xl shadow-lg mb-6 animate__animated animate__fadeInDown" role="region"
     aria-label="Course Management Toolbar">
+
     <!-- Global Notifications -->
     <div id="global-notifications" class="fixed top-4 right-4 z-50 space-y-2"></div>
 
@@ -10,8 +11,10 @@
                 {{ $course->title ?? 'Untitled Course' }}
             </h2>
             <span
-                class="px-2 py-1 text-xs font-semibold rounded-full 
-                         {{ $course->is_published ? 'bg-green-600' : 'bg-red-600' }} text-white">
+                class="px-2 py-1 text-xs font-semibold rounded-full transition-all duration-300
+                         {{ $course->is_published ? 'bg-green-600' : 'bg-red-600' }} text-white"
+                aria-live="polite"
+                wire:key="status-{{ $course->id }}-{{ $course->is_published ? 'published' : 'draft' }}">
                 {{ $course->is_published ? 'Published' : 'Draft' }}
             </span>
         </div>
@@ -19,25 +22,36 @@
         <!-- Actions -->
         <div class="flex items-center space-x-3">
             <button wire:click="togglePublished"
-                class="px-3 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center"
+                class="px-3 py-2 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-lg hover:from-blue-700 hover:to-blue-800 transition-all duration-300 flex items-center disabled:opacity-50 disabled:cursor-not-allowed"
                 aria-label="{{ $course->is_published ? 'Unpublish course' : 'Publish course' }}"
-                x-on:keydown.enter.prevent="$dispatch('togglePublished')">
-                <i class="fas {{ $course->is_published ? 'fa-eye-slash' : 'fa-eye' }} mr-2"></i>
-                {{ $course->is_published ? 'Unpublish' : 'Publish' }}
+                wire:loading.attr="disabled" wire:target="togglePublished"
+                wire:key="toggle-btn-{{ $course->id }}-{{ $course->is_published ? 1 : 0 }}">
+
+                <span wire:loading.remove wire:target="togglePublished">
+                    <i class="fas {{ $course->is_published ? 'fa-eye-slash' : 'fa-eye' }} mr-2"></i>
+                    {{ $course->is_published ? 'Unpublish' : 'Publish' }}
+                </span>
+
+                <span wire:loading wire:target="togglePublished" class="flex items-center">
+                    <i class="fas fa-spinner fa-spin mr-2"></i>
+                    Processing...
+                </span>
             </button>
         </div>
     </div>
 
-    <!-- Stats -->
+    <!-- Stats with wire:key for proper updates -->
     <div class="mt-4 grid grid-cols-2 gap-4 text-sm">
-        <div class="bg-gray-800 p-3 rounded-lg flex items-center space-x-2">
+        <div class="bg-gray-800 p-3 rounded-lg flex items-center space-x-2 animate__animated animate__fadeIn"
+            wire:key="sections-count-{{ $sectionCount }}" wire:transition>
             <i class="fas fa-folder-open text-blue-400"></i>
             <div>
                 <span class="text-gray-300">Sections</span>
                 <span class="block text-lg font-bold text-white">{{ $sectionCount }}</span>
             </div>
         </div>
-        <div class="bg-gray-800 p-3 rounded-lg flex items-center space-x-2">
+        <div class="bg-gray-800 p-3 rounded-lg flex items-center space-x-2 animate__animated animate__fadeIn"
+            wire:key="lessons-count-{{ $lessonCount }}" wire:transition>
             <i class="fas fa-book text-green-400"></i>
             <div>
                 <span class="text-gray-300">Lessons</span>
