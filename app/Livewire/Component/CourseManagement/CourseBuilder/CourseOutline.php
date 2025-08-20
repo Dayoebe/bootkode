@@ -7,10 +7,13 @@ use App\Models\Section;
 use App\Models\Lesson;
 use Livewire\Component;
 use Illuminate\Support\Str;
+use Livewire\Attributes\On;
 
 class CourseOutline extends Component
 {
     public Course $course;
+    public $activeLessonId = null;
+    public $activeSectionId = null;
     public $newSectionTitle = '';
     public $editingSectionId = null;
     public $newSectionTitleEdit = '';
