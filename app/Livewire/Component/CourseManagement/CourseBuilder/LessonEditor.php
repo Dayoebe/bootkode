@@ -14,11 +14,11 @@ class LessonEditor extends Component
 
     public $lessonId;
     public $lesson;
-    public $title;
-    public $slug;
-    public $description;
-    public $content;
-    public $video_url;
+    public $title = '';
+    public $slug = '';
+    public $description = '';
+    public $content = '';
+    public $video_url = '';
     public $duration_minutes;
     public $is_free = false;
     public $imageUpload;
@@ -44,21 +44,16 @@ class LessonEditor extends Component
         $this->loadLesson();
     }
 
-    #[On('lesson-changed')]
-    public function changeLesson($lessonId)
-    {
-        $this->lessonId = $lessonId;
-        $this->loadLesson();
-        $this->reset(['imageUpload', 'audioUpload', 'fileUpload']);
-    }
-
     protected function loadLesson()
     {
         $this->lesson = Lesson::with('section')->findOrFail($this->lessonId);
-        $this->fill($this->lesson->only([
-            'title', 'slug', 'description', 'content',
-            'video_url', 'duration_minutes', 'is_free'
-        ]));
+        $this->title = $this->lesson->title ?? '';
+        $this->slug = $this->lesson->slug ?? '';
+        $this->description = (string) ($this->lesson->description ?? '');
+        $this->content = (string) ($this->lesson->content ?? '');
+        $this->video_url = (string) ($this->lesson->video_url ?? '');
+        $this->duration_minutes = $this->lesson->duration_minutes;
+        $this->is_free = $this->lesson->is_free ?? false;
     }
 
     public function generateSlug()
@@ -83,8 +78,6 @@ class LessonEditor extends Component
 
         $this->dispatch('lesson-updated')->to('component.course-management.course-builder');
     }
-
-    // Add your media upload methods here...
 
     public function render()
     {
