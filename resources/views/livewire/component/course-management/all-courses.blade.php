@@ -1,4 +1,4 @@
-<div class="bg-gradient-to-br from-blue-900 to-teal-600 p-8 rounded-2xl shadow-2xl text-white animate__animated animate__fadeIn" x-data="{ tooltip: '' }">
+<div class="bg-gray-800 p-4 sm:p-6 lg:p-8 rounded-2xl animate__animated animate__fadeIn" x-data="{ tooltip: '' }">
     <!-- Flash Messages -->
     @if (session('success'))
         <div class="mb-6 p-4 bg-green-800 text-green-200 rounded-xl animate__animated animate__fadeIn">

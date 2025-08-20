@@ -1,4 +1,4 @@
-<div class="bg-gradient-to-br from-blue-900 to-teal-600 p-8 rounded-2xl shadow-2xl text-white animate__animated animate__fadeIn" x-data="{ tooltip: '' }">
+<div class="bg-gray-800 p-4 sm:p-6 lg:p-8 rounded-2xl animate__animated animate__fadeIn" x-data="{ tooltip: '' }">
     <div class="bg-gradient-to-r from-indigo-800 to-teal-700 p-6 rounded-2xl shadow-xl text-white mb-8 animate__animated animate__fadeIn">
         <h1 class="text-3xl font-bold text-white">
             <i class="fas fa-book-open mr-2 text-indigo-300" aria-hidden="true"></i> Available Courses
