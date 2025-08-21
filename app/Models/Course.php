@@ -22,14 +22,18 @@ class Course extends Model
         'estimated_duration_minutes',
         'price',
         'is_premium',
+        'is_free',
         'has_offline_content',
         'is_published',
         'is_approved',
+        'scheduled_publish_at',
+        'published_at',
         'target_audience',
         'learning_outcomes',
         'prerequisites',
         'syllabus_overview',
         'total_modules',
+        'total_lessons',
         'total_projects',
         'total_assessments',
         'faqs',
@@ -37,21 +41,37 @@ class Course extends Model
         'has_projects',
         'has_assessments',
         'completion_rate_threshold',
-        'status',
+        'images',
+        'documents',
+        'videos',
+        'external_links',
+        'views_count',
+        'likes_count',
+        'average_rating',
     ];
 
     protected $casts = [
         'is_premium' => 'boolean',
+        'is_free' => 'boolean',
         'is_published' => 'boolean',
         'is_approved' => 'boolean',
         'has_offline_content' => 'boolean',
         'has_projects' => 'boolean',
         'has_assessments' => 'boolean',
+        'scheduled_publish_at' => 'datetime',
+        'published_at' => 'datetime',
         'learning_outcomes' => 'array',
         'prerequisites' => 'array',
         'faqs' => 'array',
+        'images' => 'array',
+        'documents' => 'array',
+        'videos' => 'array',
+        'external_links' => 'array',
+        'price' => 'decimal:2',
+        'average_rating' => 'decimal:2',
     ];
 
+    // Relationships
     public function instructor()
     {
         return $this->belongsTo(User::class, 'instructor_id');
@@ -67,10 +87,10 @@ class Course extends Model
         return $this->hasMany(CourseEnrollment::class);
     }
 
-    public function sections()
-    {
-        return $this->hasMany(Section::class);
-    }
+    // public function sections()
+    // {
+    //     return $this->hasMany(Section::class);
+    // }
 
     public function allLessons()
     {
@@ -92,37 +112,34 @@ class Course extends Model
     {
         return $this->hasMany(CourseReview::class);
     }
-
+    public function sections()
+    {
+        return $this->hasMany(Section::class, 'course_id');
+    }
     public function rejections()
     {
         return $this->hasMany(CourseRejection::class);
     }
 
-    // Fixed: Define the accessor method properly
-    public function getTotalModulesAttribute()
-    {
-        return $this->sections()->count();
-    }
-
+    // Boot method
     protected static function boot()
     {
         parent::boot();
 
         static::creating(function ($course) {
-            $course->slug = Str::slug($course->title);
-            $course->status = $course->status ?? 'pending';
+            $course->slug = $course->generateUniqueSlug($course->title);
         });
-
+    
         static::updating(function ($course) {
             if ($course->isDirty('title')) {
-                $course->slug = Str::slug($course->title);
+                $course->slug = $course->generateUniqueSlug($course->title);
             }
         });
 
         static::saving(function ($course) {
-            // Only update these fields if we're not just updating is_published
             if (!$course->isDirty(['is_published']) || $course->isDirty(['title', 'description'])) {
                 $course->total_modules = $course->sections()->count();
+                $course->total_lessons = $course->allLessons()->count();
                 $course->total_projects = $course->assessments()->where('type', 'project')->count();
                 $course->total_assessments = $course->assessments()->count();
                 $course->has_projects = $course->total_projects > 0;
@@ -130,7 +147,83 @@ class Course extends Model
             }
         });
     }
+    public function generateUniqueSlug(string $title): string
+{
+    $slug = Str::slug($title);
+    $originalSlug = $slug;
+    $count = 1;
 
+    while (static::where('slug', $slug)->where('id', '!=', $this->id ?? 0)->exists()) {
+        $slug = $originalSlug . '-' . $count++;
+    }
+
+    return $slug;
+}
+
+    // Media helper methods (same as lessons)
+    public function getImagesArray()
+    {
+        return is_string($this->images) ? json_decode($this->images, true) : ($this->images ?? []);
+    }
+
+    public function getDocumentsArray()
+    {
+        return is_string($this->documents) ? json_decode($this->documents, true) : ($this->documents ?? []);
+    }
+
+    public function getVideosArray()
+    {
+        return is_string($this->videos) ? json_decode($this->videos, true) : ($this->videos ?? []);
+    }
+
+    public function getExternalLinksArray()
+    {
+        return is_string($this->external_links) ? json_decode($this->external_links, true) : ($this->external_links ?? []);
+    }
+
+    // Publishing methods
+    public function isPublished()
+    {
+        if ($this->scheduled_publish_at) {
+            return $this->scheduled_publish_at->isPast();
+        }
+        return !is_null($this->published_at) && $this->is_published;
+    }
+
+    public function isApproved()
+    {
+        return $this->is_approved;
+    }
+
+    // Scopes
+    public function scopePublished($query)
+    {
+        return $query->where('is_published', true)
+            ->where(function ($q) {
+                $q->whereNotNull('published_at')
+                    ->orWhere(function ($subq) {
+                        $subq->whereNotNull('scheduled_publish_at')
+                            ->where('scheduled_publish_at', '<=', now());
+                    });
+            });
+    }
+
+    public function scopeApproved($query)
+    {
+        return $query->where('is_approved', true);
+    }
+
+    public function scopeFree($query)
+    {
+        return $query->where('is_free', true);
+    }
+
+    public function scopePremium($query)
+    {
+        return $query->where('is_premium', true);
+    }
+
+    // Accessors
     public function getFormattedLearningOutcomesAttribute()
     {
         return collect($this->learning_outcomes)->map(fn($outcome) => "- $outcome")->join("\n");
@@ -140,4 +233,30 @@ class Course extends Model
     {
         return $this->allLessons()->sum('size_mb');
     }
+
+    public function getFormattedDurationAttribute()
+    {
+        if (!$this->estimated_duration_minutes) {
+            return 'Not specified';
+        }
+
+        $hours = floor($this->estimated_duration_minutes / 60);
+        $minutes = $this->estimated_duration_minutes % 60;
+
+        if ($hours > 0) {
+            return $hours . 'h ' . $minutes . 'm';
+        }
+
+        return $minutes . ' minutes';
+    }
+
+    public function getFormattedPriceAttribute()
+    {
+        if ($this->is_free) {
+            return 'Free';
+        }
+
+        return '$' . number_format($this->price, 2);
+    }
 }
+

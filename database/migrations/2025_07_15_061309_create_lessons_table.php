@@ -17,12 +17,12 @@ return new class extends Migration {
             $table->text('description')->nullable();
             $table->json('content')->nullable();
             $table->string('content_type')->default('text');
+            $table->text('text_content')->nullable();
 
             // Media and content
             $table->string('video_url')->nullable();
             $table->integer('duration_minutes')->nullable();
             $table->integer('order')->default(0);
-            $table->text('text_content')->nullable();
             $table->decimal('size_mb', 10, 2)->nullable();
 
             // Legacy single file paths (keeping for backward compatibility)
@@ -30,19 +30,14 @@ return new class extends Migration {
             $table->string('audio_path')->nullable();
             $table->string('file_path')->nullable();
 
-            // New multi-file JSON columns
+            // Multi-file JSON columns
             $table->json('images')->nullable();
             $table->json('documents')->nullable();
             $table->json('audios')->nullable();
-            $table->json('videos')->nullable(); // Missing column
+            $table->json('videos')->nullable();
             $table->json('external_links')->nullable();
 
-            // Pricing and access
-            $table->boolean('is_free')->default(false);
-            $table->boolean('is_premium')->default(false);
-            $table->decimal('price', 10, 2)->default(0);
-
-            // Publishing and scheduling
+            // Publishing and scheduling (lessons can be scheduled independently)
             $table->timestamp('scheduled_publish_at')->nullable();
             $table->timestamp('published_at')->nullable();
 
@@ -59,8 +54,6 @@ return new class extends Migration {
             // Indexes
             $table->index(['section_id', 'order']);
             $table->index('published_at');
-            $table->index('is_free');
-            $table->index('is_premium');
         });
 
         // Add FULLTEXT index for search
