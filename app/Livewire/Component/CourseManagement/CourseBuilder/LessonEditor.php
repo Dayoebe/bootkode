@@ -25,6 +25,8 @@ class LessonEditor extends Component
     public $is_premium = false;
     public $price = 0;
     public $scheduled_publish_at;
+    public $completion_time_type = 'reading';
+    public $difficulty_level = 'beginner';
 
     // File uploads
     public $imageUpload;
@@ -36,6 +38,7 @@ class LessonEditor extends Component
     public $images = [];
     public $documents = [];
     public $audios = [];
+    public $videos = [];
     public $external_links = [];
 
     // External links form data
@@ -53,6 +56,8 @@ class LessonEditor extends Component
         'is_premium' => 'boolean',
         'price' => 'nullable|numeric|min:0',
         'scheduled_publish_at' => 'nullable|date|after:now',
+        'completion_time_type' => 'in:reading,watching,practice,total',
+        'difficulty_level' => 'in:beginner,intermediate,advanced,expert',
         'imageUpload.*' => 'nullable|image|max:5120',
         'audioUpload' => 'nullable|mimes:mp3,wav,m4a,aac|max:51200',
         'documentUpload' => 'nullable|mimes:pdf,doc,docx,txt,epub,ppt,pptx|max:51200',
@@ -80,6 +85,8 @@ class LessonEditor extends Component
         $this->is_premium = $this->lesson->is_premium ?? false;
         $this->price = $this->lesson->price ?? 0;
         $this->scheduled_publish_at = $this->lesson->scheduled_publish_at;
+        $this->completion_time_type = $this->lesson->completion_time_type ?? 'reading';
+        $this->difficulty_level = $this->lesson->difficulty_level ?? 'beginner';
 
         // Load existing files
         $this->loadExistingFiles();
@@ -90,6 +97,7 @@ class LessonEditor extends Component
         $this->images = json_decode($this->lesson->images ?? '[]', true);
         $this->documents = json_decode($this->lesson->documents ?? '[]', true);
         $this->audios = json_decode($this->lesson->audios ?? '[]', true);
+        $this->videos = json_decode($this->lesson->videos ?? '[]', true);
         $this->external_links = json_decode($this->lesson->external_links ?? '[]', true);
     }
 
@@ -216,6 +224,7 @@ class LessonEditor extends Component
             'images' => json_encode($this->images),
             'documents' => json_encode($this->documents),
             'audios' => json_encode($this->audios),
+            'videos' => json_encode($this->videos ?? []),
             'external_links' => json_encode($this->external_links)
         ]);
     }
@@ -237,9 +246,12 @@ class LessonEditor extends Component
             'is_premium' => $this->is_premium,
             'price' => $this->price,
             'scheduled_publish_at' => $this->scheduled_publish_at,
+            'completion_time_type' => $this->completion_time_type,
+            'difficulty_level' => $this->difficulty_level,
             'images' => json_encode($this->images),
             'documents' => json_encode($this->documents),
             'audios' => json_encode($this->audios),
+            'videos' => json_encode($this->videos ?? []),
             'external_links' => json_encode($this->external_links)
         ]);
 

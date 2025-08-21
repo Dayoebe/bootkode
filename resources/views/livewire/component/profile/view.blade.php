@@ -533,76 +533,25 @@
                 <i class="fas fa-sticky-note text-green-400 mr-3"></i> My Notes
             </h2>
 
-            @if ($notes->count() > 0)
-                <div class="space-y-4">
-                    @foreach ($notes as $note)
-                        <div class="bg-gray-700/50 hover:bg-gray-700 rounded-lg p-4 transition-colors duration-200">
-                            <div class="flex justify-between items-start mb-2">
-                                <h4 class="text-white font-medium">
-                                    {{ $note->is_general_note ? 'General Note' : $note->course->title ?? 'Course Note' }}
-                                </h4>
-                                <span class="text-xs text-gray-400">{{ $note->updated_at->diffForHumans() }}</span>
-                            </div>
-                            <p class="text-gray-300 text-sm line-clamp-2">{{ Str::limit($note->content, 150) }}
-                            </p>
-                            @if (!$note->is_general_note)
-                                <div class="mt-2 flex items-center text-xs text-gray-400">
-                                    <i class="fas fa-book mr-1"></i>
-                                    <span>{{ $note->course->title }}</span>
-                                </div>
-                            @endif
-                        </div>
-                    @endforeach
-                </div>
-            @else
-                <div class="bg-gray-700/50 rounded-lg p-8 text-center">
-                    <i class="fas fa-sticky-note text-gray-500 text-4xl mb-3"></i>
-                    <h3 class="text-lg text-gray-300 font-medium">No notes yet</h3>
-                    <p class="text-gray-500 mt-1">Take notes while learning to reinforce your knowledge</p>
-                </div>
-            @endif
+            <div class="bg-gray-700/50 rounded-lg p-8 text-center">
+                <i class="fas fa-sticky-note text-gray-500 text-4xl mb-3"></i>
+                <h3 class="text-lg text-gray-300 font-medium">No notes yet</h3>
+                <p class="text-gray-500 mt-1">Take notes while learning to reinforce your knowledge</p>
+            </div>
+
         </div>
 
         <!-- Reviews Tab -->
-        {{-- <div x-show="activeTab === 'reviews'" class="p-6">
+        <div x-show="activeTab === 'reviews'" class="p-6">
             <h2 class="text-xl font-bold text-white flex items-center mb-6">
                 <i class="fas fa-star text-yellow-400 mr-3"></i> My Reviews
             </h2>
 
-            @if ($reviews->count() > 0)
-                <div class="space-y-6">
-                    @foreach ($reviews as $review)
-                        <div class="bg-gray-700/50 hover:bg-gray-700 rounded-xl p-5 transition-colors duration-200">
-                            <div class="flex items-start justify-between mb-3">
-                                <div>
-                                    <h4 class="text-white font-medium">{{ $review->course->title }}</h4>
-                                    <div class="flex items-center mt-1">
-                                        @for ($i = 1; $i <= 5; $i++)
-                                            <i
-                                                class="fas fa-star {{ $i <= $review->rating ? 'text-yellow-400' : 'text-gray-600' }}"></i>
-                                        @endfor
-                                    </div>
-                                </div>
-                                <span class="text-xs text-gray-400">{{ $review->created_at->format('M d, Y') }}</span>
-                            </div>
-                            @if ($review->comment)
-                                <p class="text-gray-300 text-sm">{{ $review->comment }}</p>
-                            @endif
-                        </div>
-                    @endforeach
-                </div>
-            @else
-                <div class="bg-gray-700/50 rounded-lg p-8 text-center">
-                    <i class="fas fa-star text-gray-500 text-4xl mb-3"></i>
-                    <h3 class="text-lg text-gray-300 font-medium">No reviews yet</h3>
-                    <p class="text-gray-500 mt-1">Share your thoughts on courses you've taken</p>
-                </div>
-            @endif
-        </div> --}}
-
-
-
-
-
+            <div class="bg-gray-700/50 rounded-lg p-8 text-center">
+                <i class="fas fa-star text-gray-500 text-4xl mb-3"></i>
+                <h3 class="text-lg text-gray-300 font-medium">No reviews yet</h3>
+                <p class="text-gray-500 mt-1">Share your thoughts on courses you've taken</p>
+            </div>
+        </div>
     </div>
 </div>

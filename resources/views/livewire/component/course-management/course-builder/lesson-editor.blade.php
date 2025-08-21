@@ -1,3 +1,6 @@
+<div>
+
+
 <div class="space-y-6 animate__animated animate__fadeIn" x-data="{
     activeTab: 'content',
     showMediaDeleteConfirm: null,
@@ -21,7 +24,7 @@
         </div>
         <button wire:click="saveLesson" wire:loading.attr="disabled"
             class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg flex items-center gap-2 transition-colors disabled:opacity-50">
-            <i class="fas fa-save"></i>
+            <i class="fas fa-save"></i> 
             <span wire:loading.remove>Save Lesson</span>
             <span wire:loading>Saving...</span>
         </button>
@@ -131,7 +134,7 @@
 
     <!-- Media & Files Tab -->
     <div x-show="activeTab === 'media'" class="space-y-6 my-2">
-
+        
         <!-- YouTube Video -->
         <div class="bg-gray-800 rounded-lg p-6 border border-gray-700">
             <h3 class="text-lg font-medium text-white mb-4 flex items-center gap-2">
@@ -159,16 +162,14 @@
             </h3>
 
             <!-- Existing Images -->
-            @if (count($images) > 0)
+            @if(count($images) > 0)
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
-                    @foreach ($images as $index => $image)
+                    @foreach($images as $index => $image)
                         <div class="relative group">
                             <img src="{{ Storage::url($image['path']) }}" alt="Lesson image"
                                 class="w-full h-32 object-cover rounded-lg border border-gray-600">
-                            <div
-                                class="absolute inset-0 bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 transition-opacity rounded-lg flex items-center justify-center gap-2">
-                                <button
-                                    @click="previewUrl = '{{ Storage::url($image['path']) }}'; previewType = 'image'"
+                            <div class="absolute inset-0 bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 transition-opacity rounded-lg flex items-center justify-center gap-2">
+                                <button @click="previewUrl = '{{ Storage::url($image['path']) }}'; previewType = 'image'"
                                     class="px-2 py-1 bg-blue-600 hover:bg-blue-700 text-white rounded text-xs">
                                     <i class="fas fa-eye"></i>
                                 </button>
@@ -209,17 +210,15 @@
             </h3>
 
             <!-- Existing Documents -->
-            @if (count($documents) > 0)
+            @if(count($documents) > 0)
                 <div class="space-y-2 mb-4">
-                    @foreach ($documents as $index => $doc)
+                    @foreach($documents as $index => $doc)
                         <div class="flex items-center justify-between bg-gray-700 p-3 rounded-lg">
                             <div class="flex items-center gap-3">
-                                <i
-                                    class="fas fa-file-{{ $doc['type'] === 'pdf' ? 'pdf' : 'alt' }} text-lg text-gray-400"></i>
+                                <i class="fas fa-file-{{ $doc['type'] === 'pdf' ? 'pdf' : 'alt' }} text-lg text-gray-400"></i>
                                 <div>
                                     <p class="text-white font-medium">{{ $doc['name'] }}</p>
-                                    <p class="text-gray-400 text-sm">{{ number_format($doc['size'] / 1024, 1) }} KB
-                                    </p>
+                                    <p class="text-gray-400 text-sm">{{ number_format($doc['size'] / 1024, 1) }} KB</p>
                                 </div>
                             </div>
                             <div class="flex gap-2">
@@ -239,7 +238,7 @@
 
             <!-- Upload New Document -->
             <div class="flex items-center gap-2">
-                <input type="file" wire:model="documentUpload" id="documentUpload" class="hidden"
+                <input type="file" wire:model="documentUpload" id="documentUpload" class="hidden" 
                     accept=".pdf,.doc,.docx,.txt,.epub,.ppt,.pptx">
                 <label for="documentUpload"
                     class="px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg cursor-pointer">
@@ -265,9 +264,9 @@
             </h3>
 
             <!-- Existing Audio Files -->
-            @if (count($audios) > 0)
+            @if(count($audios) > 0)
                 <div class="space-y-3 mb-4">
-                    @foreach ($audios as $index => $audio)
+                    @foreach($audios as $index => $audio)
                         <div class="bg-gray-700 p-4 rounded-lg">
                             <div class="flex items-center justify-between mb-2">
                                 <div class="flex items-center gap-3">
@@ -314,15 +313,14 @@
             </h3>
 
             <!-- Existing Links -->
-            @if (count($external_links) > 0)
+            @if(count($external_links) > 0)
                 <div class="space-y-2 mb-4">
-                    @foreach ($external_links as $index => $link)
+                    @foreach($external_links as $index => $link)
                         <div class="flex items-center justify-between bg-gray-700 p-3 rounded-lg">
                             <div class="flex items-center gap-3">
                                 <i class="fas fa-link text-purple-400"></i>
                                 <div>
-                                    <a href="{{ $link['url'] }}" target="_blank"
-                                        class="text-blue-400 hover:text-blue-300">
+                                    <a href="{{ $link['url'] }}" target="_blank" class="text-blue-400 hover:text-blue-300">
                                         {{ $link['title'] }}
                                     </a>
                                     <p class="text-gray-400 text-sm">{{ $link['url'] }}</p>
@@ -425,7 +423,7 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                     <label class="block text-sm font-medium text-gray-300 mb-2">Completion Time Estimate</label>
-                    <select wire:model="completion_time_type"
+                    <select wire:model="completion_time_type" 
                         class="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                         <option value="reading">Reading Time</option>
                         <option value="watching">Watching Time</option>
@@ -436,7 +434,7 @@
 
                 <div>
                     <label class="block text-sm font-medium text-gray-300 mb-2">Difficulty Level</label>
-                    <select wire:model="difficulty_level"
+                    <select wire:model="difficulty_level" 
                         class="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                         <option value="beginner">Beginner</option>
                         <option value="intermediate">Intermediate</option>
@@ -450,89 +448,40 @@
 
     <!-- Assessment Tab -->
     <div x-show="activeTab === 'assessment'" class="space-y-6">
-        <div class="bg-gray-800 rounded-lg p-6 border border-gray-700">
-            <div class="flex items-center justify-between mb-6">
-                <h3 class="text-lg font-medium text-white">Lesson Assessments</h3>
-                <button class="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg">
-                    <i class="fas fa-plus mr-2"></i> Add Assessment
-                </button>
-            </div>
-
-            <!-- Assessment Types Selection -->
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-                <div class="bg-gray-700 p-4 rounded-lg text-center cursor-pointer hover:bg-gray-600 transition-colors">
-                    <i class="fas fa-question-circle text-3xl text-blue-400 mb-2"></i>
-                    <h4 class="text-white font-medium">Quiz</h4>
-                    <p class="text-gray-400 text-sm">Multiple choice questions</p>
-                </div>
-
-                <div class="bg-gray-700 p-4 rounded-lg text-center cursor-pointer hover:bg-gray-600 transition-colors">
-                    <i class="fas fa-project-diagram text-3xl text-green-400 mb-2"></i>
-                    <h4 class="text-white font-medium">Project</h4>
-                    <p class="text-gray-400 text-sm">Hands-on project work</p>
-                </div>
-
-                <div class="bg-gray-700 p-4 rounded-lg text-center cursor-pointer hover:bg-gray-600 transition-colors">
-                    <i class="fas fa-clipboard-list text-3xl text-yellow-400 mb-2"></i>
-                    <h4 class="text-white font-medium">Assignment</h4>
-                    <p class="text-gray-400 text-sm">Written assignments</p>
-                </div>
-
-                <div class="bg-gray-700 p-4 rounded-lg text-center cursor-pointer hover:bg-gray-600 transition-colors">
-                    <i class="fas fa-comments text-3xl text-purple-400 mb-2"></i>
-                    <h4 class="text-white font-medium">Q&A</h4>
-                    <p class="text-gray-400 text-sm">Question and answer format</p>
-                </div>
-            </div>
-
-            <!-- Existing Assessments List -->
-            <div class="space-y-4">
-                <h4 class="text-white font-medium">Current Assessments</h4>
-                <div class="text-gray-400 text-center py-8">
-                    <i class="fas fa-clipboard text-4xl mb-4"></i>
-                    <p>No assessments created yet.</p>
-                    <p class="text-sm">Add an assessment to test student understanding.</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- Assessment Settings -->
+        @livewire('component.course-management.course-builder.assessment-manager', ['lessonId' => $lessonId])
         <div class="bg-gray-800 rounded-lg p-6 border border-gray-700">
             <h3 class="text-lg font-medium text-white mb-4">Assessment Settings</h3>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                     <label class="block text-sm font-medium text-gray-300 mb-2">Pass Percentage</label>
                     <input type="number" min="0" max="100" value="70"
-                        class="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:ring-2 focus:ring-purple-500 focus:border-transparent">
+                    class="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:ring-2 focus:ring-purple-500 focus:border-transparent">
                 </div>
-
+                
                 <div>
                     <label class="block text-sm font-medium text-gray-300 mb-2">Time Limit (minutes)</label>
                     <input type="number" min="1" placeholder="Optional"
-                        class="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:ring-2 focus:ring-purple-500 focus:border-transparent">
+                    class="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:ring-2 focus:ring-purple-500 focus:border-transparent">
                 </div>
             </div>
-
+            
             <div class="mt-4 space-y-3">
                 <div class="flex items-center">
-                    <input type="checkbox" id="mandatory_assessment"
-                        class="h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-700 rounded bg-gray-800">
+                    <input type="checkbox" id="mandatory_assessment" class="h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-700 rounded bg-gray-800">
                     <label for="mandatory_assessment" class="ml-2 block text-sm text-gray-300">
                         Mandatory for lesson completion
                     </label>
                 </div>
-
+                
                 <div class="flex items-center">
-                    <input type="checkbox" id="multiple_attempts"
-                        class="h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-700 rounded bg-gray-800">
+                    <input type="checkbox" id="multiple_attempts" class="h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-700 rounded bg-gray-800">
                     <label for="multiple_attempts" class="ml-2 block text-sm text-gray-300">
                         Allow multiple attempts
                     </label>
                 </div>
-
+                
                 <div class="flex items-center">
-                    <input type="checkbox" id="show_results"
-                        class="h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-700 rounded bg-gray-800">
+                    <input type="checkbox" id="show_results" class="h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-700 rounded bg-gray-800">
                     <label for="show_results" class="ml-2 block text-sm text-gray-300">
                         Show results immediately after submission
                     </label>
@@ -540,6 +489,7 @@
             </div>
         </div>
     </div>
+</div> 
 
     <!-- Preview Modal -->
     <div x-show="previewUrl" x-transition.opacity
@@ -569,7 +519,7 @@
     </div>
 
     <!-- Loading States -->
-    <div wire:loading.delay wire:target="uploadImage,uploadDocument,uploadAudio,saveLesson"
+    <div wire:loading.delay wire:target="uploadImage,uploadDocument,uploadAudio,saveLesson" 
         class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-40">
         <div class="bg-gray-800 rounded-lg p-6 flex items-center gap-4">
             <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-400"></div>
@@ -628,8 +578,7 @@
                 margin: 1rem 0;
             }
 
-            .trix-content ul,
-            .trix-content ol {
+            .trix-content ul, .trix-content ol {
                 margin: 1rem 0;
                 padding-left: 2rem;
                 color: #f3f4f6;
@@ -710,15 +659,8 @@
 
             /* Loading animation */
             @keyframes fadeIn {
-                from {
-                    opacity: 0;
-                    transform: translateY(10px);
-                }
-
-                to {
-                    opacity: 1;
-                    transform: translateY(0);
-                }
+                from { opacity: 0; transform: translateY(10px); }
+                to { opacity: 1; transform: translateY(0); }
             }
 
             .animate__fadeIn {
@@ -731,16 +673,15 @@
         <script>
             // Auto-save functionality
             let autoSaveTimeout;
-
+            
             document.addEventListener('livewire:init', () => {
                 Livewire.on('lesson-updated', () => {
                     // Show success notification
                     const notification = document.createElement('div');
-                    notification.className =
-                        'fixed top-4 right-4 bg-green-600 text-white p-4 rounded-lg shadow-lg z-50 animate__animated animate__fadeIn';
+                    notification.className = 'fixed top-4 right-4 bg-green-600 text-white p-4 rounded-lg shadow-lg z-50 animate__animated animate__fadeIn';
                     notification.innerHTML = '<i class="fas fa-check mr-2"></i>Lesson saved successfully!';
                     document.body.appendChild(notification);
-
+                    
                     setTimeout(() => {
                         notification.remove();
                     }, 3000);
