@@ -67,7 +67,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/dashboard/courses/{course}/builder', CourseBuilder::class)->name('course-builder');
     Route::get('/dashboard/courses/reviews', CourseReviews::class)->name('course-reviews');
     Route::get('/dashboard/courses/approvals', CourseApprovals::class)->name('course-approvals');
-    Route::get('/courses/{course}/preview/{highlight?}', CoursePreview::class)->name('course.preview');
+    // Route::get('/courses/{course}/preview/{highlight?}', CoursePreview::class)->name('course.preview');
     Route::get('/dashboard/courses/available', \App\Livewire\Component\CourseManagement\AvailableCourses::class)->name('courses.available');
 });
 

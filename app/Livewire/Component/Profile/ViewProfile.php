@@ -3,6 +3,8 @@
 namespace App\Livewire\Component\Profile;
 
 use Livewire\Component;
+use App\Models\Course;
+use App\Models\Lesson;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 use Livewire\Attributes\Layout;
@@ -33,14 +35,14 @@ class ViewProfile extends Component
             'completed_lessons' => $user->completedLessons()->count(),
             'wishlist_items' => $user->wishlists()->count(),
             'saved_resources' => $user->savedResources()->count(),
-            'offline_notes' => $user->offlineNotes()->count(),
+            // 'offline_notes' => $user->offlineNotes()->count(),
             'average_weekly_progress' => $this->calculateWeeklyAverage(),
             'offline_content_size_mb' => $user->offline_content_size_mb,
             // 'reviews' => $user->reviews()->count(), // Uncomment if reviews are implemented
             'downloaded_content' => $user->downloadedContent()->count(),
             'recent_activities' => $this->getRecentActivitiesProperty(),
             'wishlist' => $this->getWishlistProperty(),
-            'notes' => $this->getNotesProperty(),
+            // 'notes' => $this->getNotesProperty(),
             'activity_stats' => $this->getActivityStatsProperty(),
             'completed_assignments' => $user->completedLessons()->count(), 
         ];
@@ -71,7 +73,7 @@ class ViewProfile extends Component
     public function getRecentActivitiesProperty()
     {
         return $this->user->completedLessons()
-            ->with(['module.course']) // Load course through module
+            ->with(['lesson.course']) // Load course through module
             ->orderByDesc('lesson_user.completed_at')
             ->take(5)
             ->get()
@@ -120,24 +122,6 @@ class ViewProfile extends Component
             ->take(5)
             ->get();
     }
-    // In ViewProfile.php
-    public function getNotesProperty()
-    {
-        return $this->user->offlineNotes()
-            ->with('course')
-            ->latest()
-            ->take(5)
-            ->get();
-    }
-    // In ViewProfile.php
-    // public function getReviewsProperty()
-    // {
-    //     return $this->user->reviews()
-    //         ->with('course')
-    //         ->latest()
-    //         ->take(5)
-    //         ->get();
-    // }
     public function render()
     {
         return view('livewire.component.profile.view', [
@@ -146,7 +130,7 @@ class ViewProfile extends Component
             'learningProgress' => $this->learningProgress,
             'savedResources' => $this->savedResources,
             'wishlist' => $this->wishlist,
-            'notes' => $this->notes,
+            // 'notes' => $this->notes,
             // 'reviews' => $this->reviews,
         ])->layout('layouts.dashboard', [
                     'title' => 'View Profile'

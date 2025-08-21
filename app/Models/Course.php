@@ -11,12 +11,33 @@ class Course extends Model
     use HasFactory;
 
     protected $fillable = [
-        'instructor_id', 'category_id', 'title', 'subtitle', 'slug', 'description', 'thumbnail',
-        'difficulty_level', 'estimated_duration_minutes', 'price', 'is_premium',
-        'has_offline_content', 'is_published', 'is_approved', 'target_audience',
-        'learning_outcomes', 'prerequisites', 'syllabus_overview', 'total_modules',
-        'total_projects', 'total_assessments', 'faqs', 'certificate_template',
-        'has_projects', 'has_assessments', 'completion_rate_threshold', 'status',
+        'instructor_id',
+        'category_id',
+        'title',
+        'subtitle',
+        'slug',
+        'description',
+        'thumbnail',
+        'difficulty_level',
+        'estimated_duration_minutes',
+        'price',
+        'is_premium',
+        'has_offline_content',
+        'is_published',
+        'is_approved',
+        'target_audience',
+        'learning_outcomes',
+        'prerequisites',
+        'syllabus_overview',
+        'total_modules',
+        'total_projects',
+        'total_assessments',
+        'faqs',
+        'certificate_template',
+        'has_projects',
+        'has_assessments',
+        'completion_rate_threshold',
+        'status',
     ];
 
     protected $casts = [
@@ -54,7 +75,7 @@ class Course extends Model
     public function allLessons()
     {
         return $this->hasManyThrough(Lesson::class, Section::class)
-            ->select('lessons.*') // Explicitly select all columns from lessons to avoid ambiguity
+            ->select('lessons.*')
             ->orderBy('sections.order')
             ->orderBy('lessons.order');
     }
@@ -66,6 +87,7 @@ class Course extends Model
             ->orderBy('sections.order')
             ->orderBy('assessments.order');
     }
+
     public function reviews()
     {
         return $this->hasMany(CourseReview::class);
@@ -76,24 +98,36 @@ class Course extends Model
         return $this->hasMany(CourseRejection::class);
     }
 
+    // Fixed: Define the accessor method properly
+    public function getTotalModulesAttribute()
+    {
+        return $this->sections()->count();
+    }
+
     protected static function boot()
     {
         parent::boot();
+
         static::creating(function ($course) {
             $course->slug = Str::slug($course->title);
             $course->status = $course->status ?? 'pending';
         });
+
         static::updating(function ($course) {
             if ($course->isDirty('title')) {
                 $course->slug = Str::slug($course->title);
             }
         });
+
         static::saving(function ($course) {
-            $course->total_modules = $course->sections()->count();
-            $course->total_projects = $course->assessments()->where('type', 'project')->count();
-            $course->total_assessments = $course->assessments()->count();
-            $course->has_projects = $course->total_projects > 0;
-            $course->has_assessments = $course->total_assessments > 0;
+            // Only update these fields if we're not just updating is_published
+            if (!$course->isDirty(['is_published']) || $course->isDirty(['title', 'description'])) {
+                $course->total_modules = $course->sections()->count();
+                $course->total_projects = $course->assessments()->where('type', 'project')->count();
+                $course->total_assessments = $course->assessments()->count();
+                $course->has_projects = $course->total_projects > 0;
+                $course->has_assessments = $course->total_assessments > 0;
+            }
         });
     }
 
