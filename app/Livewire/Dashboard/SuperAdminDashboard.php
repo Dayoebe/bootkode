@@ -13,6 +13,15 @@ use Illuminate\Support\Facades\Auth;
 use Spatie\Activitylog\Models\Activity;
 use Livewire\Attributes\On;
 use Livewire\Attributes\Computed;
+use Livewire\Attributes\Layout;
+
+#[Layout('layouts.dashboard', [
+    'title' => 'Super Admin Dashboard',
+    'description' => 'Comprehensive control center for managing users, courses, and system operations',
+    'icon' => 'fas fa-user-shield',
+    'active' => 'super_admin_dashboard',
+])]
+
 
 class SuperAdminDashboard extends Component
 {
@@ -224,7 +233,7 @@ class SuperAdminDashboard extends Component
     {
         switch ($action) {
             case 'create_course':
-                return $this->redirect(route('courses.create'));
+                return $this->redirect(route('create_course'));
             case 'manage_users':
                 return $this->redirect(route('user-management'));
             case 'view_tickets':
@@ -232,9 +241,9 @@ class SuperAdminDashboard extends Component
             case 'manage_faqs':
                 return $this->redirect(route('faq.management'));
             case 'view_courses':
-                return $this->redirect(route('courses.all'));
+                return $this->redirect(route('all-course'));
             case 'manage_categories':
-                return $this->redirect(route('courses.categories'));
+                return $this->redirect(route('course-categories'));
             default:
                 $this->dispatch('notify', type: 'error', message: 'Invalid action.');
         }
@@ -247,12 +256,6 @@ class SuperAdminDashboard extends Component
 
     public function render()
     {
-        return view('livewire.dashboard.super-admin-dashboard')
-            ->layout('layouts.dashboard', [
-                'title' => 'Super Admin Dashboard',
-                'description' => 'Comprehensive control center for managing users, courses, and system operations',
-                'icon' => 'fas fa-user-shield',
-                'active' => 'super_admin_dashboard',
-            ]);
+        return view('livewire.dashboard.super-admin-dashboard');
     }
 }

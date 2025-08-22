@@ -122,43 +122,65 @@ class Course extends Model
     }
 
     // Boot method
+    
     protected static function boot()
     {
         parent::boot();
 
         static::creating(function ($course) {
-            $course->slug = $course->generateUniqueSlug($course->title);
+            if (empty($course->slug)) {
+                $course->slug = $course->generateUniqueSlug($course->title);
+            }
         });
-    
+
         static::updating(function ($course) {
             if ($course->isDirty('title')) {
                 $course->slug = $course->generateUniqueSlug($course->title);
             }
         });
 
-        static::saving(function ($course) {
-            if (!$course->isDirty(['is_published']) || $course->isDirty(['title', 'description'])) {
-                $course->total_modules = $course->sections()->count();
-                $course->total_lessons = $course->allLessons()->count();
-                $course->total_projects = $course->assessments()->where('type', 'project')->count();
-                $course->total_assessments = $course->assessments()->count();
-                $course->has_projects = $course->total_projects > 0;
-                $course->has_assessments = $course->total_assessments > 0;
+        // Only update relationship counts for existing courses with relationships
+        static::saved(function ($course) {
+            // Skip if this is a new course being created
+            if (!$course->wasRecentlyCreated) {
+                try {
+                    $course->total_modules = $course->sections()->count();
+                    $course->total_lessons = $course->allLessons()->count();
+                    $course->total_projects = $course->assessments()->where('type', 'project')->count();
+                    $course->total_assessments = $course->assessments()->count();
+                    $course->has_projects = $course->total_projects > 0;
+                    $course->has_assessments = $course->total_assessments > 0;
+
+                    // Use updateQuietly to avoid triggering events again
+                    $course->updateQuietly([
+                        'total_modules' => $course->total_modules,
+                        'total_lessons' => $course->total_lessons,
+                        'total_projects' => $course->total_projects,
+                        'total_assessments' => $course->total_assessments,
+                        'has_projects' => $course->has_projects,
+                        'has_assessments' => $course->has_assessments,
+                    ]);
+                } catch (\Exception $e) {
+                    \Log::error('Error updating course statistics', [
+                        'course_id' => $course->id,
+                        'error' => $e->getMessage()
+                    ]);
+                }
             }
         });
     }
     public function generateUniqueSlug(string $title): string
-{
-    $slug = Str::slug($title);
-    $originalSlug = $slug;
-    $count = 1;
+    {
+        $slug = Str::slug($title);
+        $originalSlug = $slug;
+        $count = 1;
 
-    while (static::where('slug', $slug)->where('id', '!=', $this->id ?? 0)->exists()) {
-        $slug = $originalSlug . '-' . $count++;
+        while (static::where('slug', $slug)->where('id', '!=', $this->id ?? 0)->exists()) {
+            $slug = $originalSlug . '-' . $count++;
+        }
+
+        return $slug;
     }
-
-    return $slug;
-}
 
     // Media helper methods (same as lessons)
     public function getImagesArray()

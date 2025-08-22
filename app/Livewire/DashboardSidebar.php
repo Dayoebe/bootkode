@@ -7,7 +7,6 @@ use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
-use Illuminate\Support\Facades\Log;
 
 class DashboardSidebar extends Component
 {
@@ -16,10 +15,8 @@ class DashboardSidebar extends Component
 
     public function mount()
     {
-        // Cache the authenticated user
         $this->user = Auth::user();
 
-        // Only attempt to get the route name in an HTTP context
         if (!app()->runningInConsole()) {
             $currentRouteName = request()->route()?->getName() ?? 'dashboard';
             $routeMap = config('menu.route_map', [
@@ -31,11 +28,11 @@ class DashboardSidebar extends Component
                 'affiliate_ambassador.dashboard' => 'affiliate_ambassador_dashboard',
                 'student.dashboard' => 'student_dashboard',
                 'profile.edit' => 'profile_management',
-                'course_management' => 'all-course',
-                'course-categories' => 'course_management.course_categories',
-                'course-builder' => 'course_management.course_builder',
-                'course-reviews' => 'course_management.course_reviews',
-                'course-approvals' => 'course_management.course_approvals',
+                'all-course' => 'all-course',
+                'course-categories' => 'course_categories',
+                'course-builder' => 'course_builder',
+                'course-reviews' => 'course_reviews',
+                'course-approvals' => 'course_approvals',
                 'user-management' => 'user-management',
                 'user.activity' => 'user.activity',
                 'settings' => 'settings',
@@ -135,10 +132,6 @@ class DashboardSidebar extends Component
         $maxMobileItems = config('menu.max_mobile_items', 5);
 
         foreach (array_slice($menuItems, 0, $maxMobileItems) as $item) {
-            if (!isset($item['link_id'])) {
-                Log::warning("Missing link_id for menu item: {$item['label']}");
-            }
-
             $mobileItem = [
                 'label' => $item['label'],
                 'icon' => $item['icon'],
@@ -149,9 +142,6 @@ class DashboardSidebar extends Component
 
             if (isset($item['children']) && !empty($item['children'])) {
                 $mobileItem['children'] = array_map(function ($child) {
-                    if (!isset($child['link_id'])) {
-                        Log::warning("Missing link_id for child menu item: {$child['label']}");
-                    }
                     return array_merge($child, ['link_id' => $child['link_id'] ?? Str::slug($child['label'])]);
                 }, $item['children']);
             }
@@ -169,9 +159,6 @@ class DashboardSidebar extends Component
                     'link_id' => 'more',
                     'badge' => false,
                     'children' => array_map(function ($item) {
-                        if (!isset($item['link_id'])) {
-                            Log::warning("Missing link_id for more menu item: {$item['label']}");
-                        }
                         return array_merge($item, ['link_id' => $item['link_id'] ?? Str::slug($item['label'])]);
                     }, $remainingItems),
                 ];
