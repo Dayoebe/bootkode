@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire\Component\CourseManagement;
+namespace App\Livewire\CourseManagement;
 
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -175,14 +175,14 @@ class AllCourses extends Component
     /**
      * Redirects to the edit course page.
      */
-    public function editCourse(Course $course)
+    public function CourseForm(Course $course)
     {
         if (! Gate::allows('edit-courses') || (Auth::user()->hasRole('instructor') && $course->instructor_id !== Auth::id())) {
             session()->flash('error', 'Unauthorized to edit this course.');
             return;
         }
 
-        return $this->redirect(route('edit-course', ['course' => $course->id]));
+        return $this->redirect(route('edit_course', ['course' => $course->id]));
     }
 
     /**
@@ -368,7 +368,7 @@ class AllCourses extends Component
             ->orderBy($this->sortField, $this->sortDirection)
             ->paginate($this->perPage);
 
-        return view('livewire.component.course-management.all-courses', [
+        return view('livewire.course-management.all-courses', [
             'courses' => $courses,
             'categories' => cache()->remember('course_categories', now()->addHours(24), fn () => CourseCategory::orderBy('name')->get()),
             'instructors' => cache()->remember('course_instructors', now()->addHours(24), fn () => User::whereHas('roles', fn ($q) => $q->where('name', 'instructor'))->orderBy('name')->get()),

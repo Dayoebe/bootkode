@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire\Component;
+namespace App\Livewire\SystemManagement;
 
 use App\Models\SystemStatus;
 use App\Notifications\SystemStatusUpdateNotification;
@@ -151,7 +151,7 @@ class SystemStatusManagement extends Component
             ->orderBy('started_at', 'desc')
             ->paginate(5);
 
-        return view('livewire.component.system-status-management', [
+        return view('livewire.system-management.system-status-management', [
             'incidents' => $incidents,
         ]);
     }
