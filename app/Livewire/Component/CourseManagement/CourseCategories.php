@@ -9,7 +9,6 @@ use Livewire\Attributes\Layout;
 use Livewire\Attributes\Rule;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
-use Illuminate\Support\Facades\Log;
 
 #[Layout('layouts.dashboard', ['title' => 'Course Categories', 'description' => 'Manage course categories including creation, editing, and deletion', 'icon' => 'fas fa-tags', 'active' => 'admin.course-categories'])]
 class CourseCategories extends Component
@@ -37,11 +36,11 @@ class CourseCategories extends Component
         $categories = Cache::remember('course_categories_paginated_' . md5($this->search . $currentPage), 600, function () {
             return CourseCategory::when($this->search, function ($query) {
                 return $query->where('name', 'like', '%' . $this->search . '%')
-                            ->orWhere('description', 'like', '%' . $this->search . '%');
+                    ->orWhere('description', 'like', '%' . $this->search . '%');
             })
-            ->withCount('courses')
-            ->orderBy('name')
-            ->paginate(10);
+                ->withCount('courses')
+                ->orderBy('name')
+                ->paginate(10);
         });
 
         return view('livewire.component.course-management.course-categories', [
@@ -108,12 +107,6 @@ class CourseCategories extends Component
         ]);
 
         try {
-            Log::info('Attempting to save category', [
-                'categoryId' => $this->categoryId,
-                'name' => $this->name,
-                'description' => $this->description,
-            ]);
-
             CourseCategory::updateOrCreate(
                 ['id' => $this->categoryId],
                 [
@@ -122,8 +115,6 @@ class CourseCategories extends Component
                     'slug' => Str::slug($this->name),
                 ]
             );
-
-            Log::info('Category saved successfully', ['categoryId' => $this->categoryId]);
 
             // Invalidate cache for all pages and search terms
             Cache::forget('course_categories_paginated_' . md5($this->search . $this->getPage()));
@@ -143,10 +134,6 @@ class CourseCategories extends Component
             $this->flashMessage($this->categoryId ? 'Category updated successfully.' : 'Category created successfully.');
             $this->closeModal();
         } catch (\Exception $e) {
-            Log::error('Failed to save category', [
-                'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString(),
-            ]);
             $this->flashMessage('Error saving category: ' . $e->getMessage(), 'error');
         }
     }

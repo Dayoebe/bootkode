@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
 
 class CourseCategory extends Model
@@ -23,18 +24,28 @@ class CourseCategory extends Model
     /**
      * Automatically generate slug when saving.
      */
-    protected static function boot()
-    {
-        parent::boot();
+   
+protected static function boot()
+{
+    parent::boot();
 
-        static::creating(function ($category) {
+    static::creating(function ($category) {
+        $category->slug = Str::slug($category->name);
+    });
+
+    static::updating(function ($category) {
+        if ($category->isDirty('name')) {
             $category->slug = Str::slug($category->name);
-        });
+        }
+    });
 
-        static::updating(function ($category) {
-            if ($category->isDirty('name')) {
-                $category->slug = Str::slug($category->name);
-            }
-        });
-    }
+    // Invalidate cache on changes
+    static::saved(function () {
+        Cache::forget('course_categories');
+    });
+
+    static::deleted(function () {
+        Cache::forget('course_categories');
+    });
+}
 }
