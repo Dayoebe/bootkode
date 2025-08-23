@@ -3,7 +3,7 @@
         Edit Course: {{ $title }}
     </h2>
 
-    <form wire:submit.prevent="updateCourse" class="space-y-6">
+    <form wire:submit.prevent="save" class="space-y-6">
         <div>
             <label for="title" class="block text-sm font-medium text-gray-300">Course Title</label>
             <input type="text" id="title" wire:model="title"
@@ -27,7 +27,7 @@
                     <option value="{{ $category->id }}">{{ $category->name }}</option>
                 @endforeach
             </select>
-            @error('categoryId') <span class="mt-2 text-sm text-red-400">{{ $message }}</span> @enderror
+            @error('category_id') <span class="mt-2 text-sm text-red-400">{{ $message }}</span> @enderror
         </div>
 
         <div>
@@ -37,6 +37,7 @@
                 <option value="beginner">Beginner</option>
                 <option value="intermediate">Intermediate</option>
                 <option value="advanced">Advanced</option>
+                <option value="expert">Expert</option>
             </select>
             @error('difficulty_level') <span class="mt-2 text-sm text-red-400">{{ $message }}</span> @enderror
         </div>

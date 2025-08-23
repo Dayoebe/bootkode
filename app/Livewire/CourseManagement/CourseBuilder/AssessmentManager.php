@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire\Component\CourseManagement\CourseBuilder;
+namespace App\Livewire\CourseManagement\CourseBuilder;
 
 use App\Models\Assessment;
 use App\Models\Lesson;
@@ -107,6 +107,6 @@ class AssessmentManager extends Component
 
     public function render()
     {
-        return view('livewire.component.course-management.course-builder.assessment-manager');
+        return view('livewire.course-management.course-builder.assessment-manager');
     }
 }

@@ -46,16 +46,13 @@
     </div>
 
     <!-- Lesson Content -->
-    <div class="lesson-content">
-
-
-        <!-- Main Text Content -->
+    <div class="lesson-content-wrapper">
+        <!-- Main Text Content with Trix Styling -->
         @if($lesson->content)
-            <div class="prose prose-invert max-w-none mb-6">
+            <div class="lesson-content-display mb-6">
                 {!! $lesson->content !!}
             </div>
         @endif
-
 
         <!-- Documents -->
         @if($lesson->hasDocuments() && count($lesson->getDocumentsArray()) > 0)
@@ -99,7 +96,6 @@
                 </div>
             </div>
         @endif
-
 
         <!-- Video Content -->
         @if($lesson->video_url)
@@ -286,6 +282,390 @@
     </div>
     
     <style>
+    /* Enhanced Lesson Content Display Styles - Matching Trix Editor */
+    .lesson-content-display {
+        color: #f3f4f6;
+        font-size: 1rem;
+        line-height: 1.7;
+        max-width: none;
+    }
+    
+    /* Headings */
+    .lesson-content-display h1 {
+        font-size: 1.875rem;
+        font-weight: 700;
+        margin: 1.5rem 0 1rem 0;
+        color: #ffffff;
+        line-height: 1.2;
+    }
+    
+    .lesson-content-display h2 {
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin: 1.25rem 0 0.75rem 0;
+        color: #ffffff;
+        line-height: 1.3;
+    }
+    
+    .lesson-content-display h3 {
+        font-size: 1.25rem;
+        font-weight: 600;
+        margin: 1rem 0 0.5rem 0;
+        color: #ffffff;
+        line-height: 1.4;
+    }
+    
+    .lesson-content-display h4 {
+        font-size: 1.125rem;
+        font-weight: 600;
+        margin: 0.875rem 0 0.5rem 0;
+        color: #ffffff;
+        line-height: 1.4;
+    }
+    
+    .lesson-content-display h5 {
+        font-size: 1rem;
+        font-weight: 600;
+        margin: 0.75rem 0 0.5rem 0;
+        color: #ffffff;
+        line-height: 1.4;
+    }
+    
+    .lesson-content-display h6 {
+        font-size: 0.875rem;
+        font-weight: 600;
+        margin: 0.75rem 0 0.5rem 0;
+        color: #ffffff;
+        line-height: 1.4;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+    
+    /* Paragraphs */
+    .lesson-content-display p {
+        margin: 0.875rem 0;
+        color: #f3f4f6;
+        line-height: 1.7;
+    }
+    
+    /* Links */
+    .lesson-content-display a {
+        color: #60a5fa;
+        text-decoration: underline;
+        transition: color 0.2s ease;
+    }
+    
+    .lesson-content-display a:hover {
+        color: #93c5fd;
+    }
+    
+    /* Text Formatting */
+    .lesson-content-display strong,
+    .lesson-content-display b {
+        font-weight: 700;
+        color: #ffffff;
+    }
+    
+    .lesson-content-display em,
+    .lesson-content-display i {
+        font-style: italic;
+        color: #e5e7eb;
+    }
+    
+    .lesson-content-display u {
+        text-decoration: underline;
+        text-decoration-color: #9ca3af;
+    }
+    
+    .lesson-content-display s,
+    .lesson-content-display strike,
+    .lesson-content-display del {
+        text-decoration: line-through;
+        color: #9ca3af;
+    }
+    
+    /* Lists */
+    .lesson-content-display ul {
+        list-style-type: disc;
+        margin: 1rem 0;
+        padding-left: 1.5rem;
+        color: #f3f4f6;
+    }
+    
+    .lesson-content-display ol {
+        list-style-type: decimal;
+        margin: 1rem 0;
+        padding-left: 1.5rem;
+        color: #f3f4f6;
+    }
+    
+    .lesson-content-display ul ul {
+        list-style-type: circle;
+        margin: 0.5rem 0;
+    }
+    
+    .lesson-content-display ul ul ul {
+        list-style-type: square;
+    }
+    
+    .lesson-content-display ol ol {
+        list-style-type: lower-alpha;
+        margin: 0.5rem 0;
+    }
+    
+    .lesson-content-display ol ol ol {
+        list-style-type: lower-roman;
+    }
+    
+    .lesson-content-display li {
+        margin: 0.5rem 0;
+        line-height: 1.6;
+        color: #f3f4f6;
+    }
+    
+    .lesson-content-display li p {
+        margin: 0.25rem 0;
+    }
+    
+    /* Blockquotes */
+    .lesson-content-display blockquote {
+        border-left: 4px solid #60a5fa;
+        padding-left: 1rem;
+        padding-right: 1rem;
+        padding-top: 0.75rem;
+        padding-bottom: 0.75rem;
+        margin: 1.5rem 0;
+        font-style: italic;
+        color: #d1d5db;
+        background-color: rgba(55, 65, 81, 0.5);
+        border-radius: 0.5rem;
+        position: relative;
+    }
+    
+    .lesson-content-display blockquote p {
+        margin: 0.5rem 0;
+        color: #d1d5db;
+    }
+    
+    .lesson-content-display blockquote::before {
+        content: '"';
+        font-size: 2rem;
+        color: #60a5fa;
+        position: absolute;
+        left: 0.5rem;
+        top: -0.25rem;
+        font-family: Georgia, serif;
+    }
+    
+    /* Code */
+    .lesson-content-display code {
+        background-color: #374151;
+        color: #fbbf24;
+        padding: 0.25rem 0.5rem;
+        border-radius: 0.375rem;
+        font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+        font-size: 0.875rem;
+        font-weight: 500;
+        border: 1px solid #4b5563;
+    }
+    
+    .lesson-content-display pre {
+        background-color: #1f2937;
+        color: #f3f4f6;
+        padding: 1.25rem;
+        border-radius: 0.5rem;
+        overflow-x: auto;
+        margin: 1.5rem 0;
+        border: 1px solid #4b5563;
+        font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+        font-size: 0.875rem;
+        line-height: 1.5;
+    }
+    
+    .lesson-content-display pre code {
+        background: none;
+        color: inherit;
+        padding: 0;
+        border: none;
+        font-size: inherit;
+        border-radius: 0;
+    }
+    
+    /* Images */
+    .lesson-content-display img {
+        max-width: 100%;
+        height: auto;
+        border-radius: 0.5rem;
+        margin: 1.5rem auto;
+        display: block;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+        border: 1px solid #4b5563;
+    }
+    
+    /* Horizontal Rule */
+    .lesson-content-display hr {
+        border: none;
+        border-top: 2px solid #4b5563;
+        margin: 2rem 0;
+        border-radius: 1px;
+    }
+    
+    /* Tables */
+    .lesson-content-display table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 1.5rem 0;
+        background-color: #374151;
+        border-radius: 0.5rem;
+        overflow: hidden;
+        border: 1px solid #4b5563;
+    }
+    
+    .lesson-content-display th,
+    .lesson-content-display td {
+        padding: 0.75rem 1rem;
+        text-align: left;
+        border-bottom: 1px solid #4b5563;
+        color: #f3f4f6;
+    }
+    
+    .lesson-content-display th {
+        background-color: #4b5563;
+        font-weight: 600;
+        color: #ffffff;
+    }
+    
+    .lesson-content-display tr:hover {
+        background-color: rgba(75, 85, 99, 0.5);
+    }
+    
+    /* Div styling */
+    .lesson-content-display div {
+        margin: 0.5rem 0;
+        color: #f3f4f6;
+    }
+    
+    .lesson-content-display div.highlight {
+        background-color: rgba(251, 191, 36, 0.2);
+        padding: 0.75rem;
+        border-radius: 0.375rem;
+        border-left: 4px solid #fbbf24;
+        margin: 1rem 0;
+    }
+    
+    /* Span styling */
+    .lesson-content-display span {
+        color: inherit;
+    }
+    
+    .lesson-content-display span.highlight {
+        background-color: rgba(251, 191, 36, 0.3);
+        padding: 0.125rem 0.25rem;
+        border-radius: 0.25rem;
+    }
+    
+    /* Special content blocks */
+    .lesson-content-display .note,
+    .lesson-content-display .info {
+        background-color: rgba(59, 130, 246, 0.1);
+        border-left: 4px solid #3b82f6;
+        padding: 1rem;
+        margin: 1.5rem 0;
+        border-radius: 0.5rem;
+    }
+    
+    .lesson-content-display .warning {
+        background-color: rgba(251, 191, 36, 0.1);
+        border-left: 4px solid #fbbf24;
+        padding: 1rem;
+        margin: 1.5rem 0;
+        border-radius: 0.5rem;
+    }
+    
+    .lesson-content-display .danger,
+    .lesson-content-display .error {
+        background-color: rgba(239, 68, 68, 0.1);
+        border-left: 4px solid #ef4444;
+        padding: 1rem;
+        margin: 1.5rem 0;
+        border-radius: 0.5rem;
+    }
+    
+    .lesson-content-display .success {
+        background-color: rgba(34, 197, 94, 0.1);
+        border-left: 4px solid #22c55e;
+        padding: 1rem;
+        margin: 1.5rem 0;
+        border-radius: 0.5rem;
+    }
+    
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+        .lesson-content-display {
+            font-size: 0.95rem;
+        }
+        
+        .lesson-content-display h1 {
+            font-size: 1.625rem;
+        }
+        
+        .lesson-content-display h2 {
+            font-size: 1.375rem;
+        }
+        
+        .lesson-content-display h3 {
+            font-size: 1.125rem;
+        }
+        
+        .lesson-content-display pre {
+            padding: 1rem;
+            font-size: 0.8rem;
+        }
+        
+        .lesson-content-display table {
+            font-size: 0.875rem;
+        }
+        
+        .lesson-content-display th,
+        .lesson-content-display td {
+            padding: 0.5rem 0.75rem;
+        }
+    }
+    
+    /* Print styles */
+    @media print {
+        .lesson-content-display {
+            color: #000;
+        }
+        
+        .lesson-content-display h1,
+        .lesson-content-display h2,
+        .lesson-content-display h3,
+        .lesson-content-display h4,
+        .lesson-content-display h5,
+        .lesson-content-display h6 {
+            color: #000;
+            page-break-after: avoid;
+        }
+        
+        .lesson-content-display blockquote {
+            border-left-color: #000;
+            background: #f5f5f5;
+        }
+        
+        .lesson-content-display code {
+            background: #f5f5f5;
+            color: #000;
+        }
+        
+        .lesson-content-display pre {
+            background: #f5f5f5;
+            color: #000;
+            border: 1px solid #ccc;
+        }
+    }
+    
+    /* Legacy wrapper styles for backwards compatibility */
     .lesson-content {
         line-height: 1.7;
     }
@@ -329,5 +709,5 @@
         overflow-x: auto;
         margin: 1rem 0;
     }
-</style>
+    </style>
 </div>

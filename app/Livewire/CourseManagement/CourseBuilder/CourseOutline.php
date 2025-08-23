@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire\Component\CourseManagement\CourseBuilder;
+namespace App\Livewire\CourseManagement\CourseBuilder;
 
 use App\Models\Course;
 use App\Models\Section;
@@ -143,7 +143,7 @@ class CourseOutline extends Component
             $this->dispatchOutlineUpdated();
 
             $this->dispatch('lesson-selected', lessonId: $lesson->id)
-                ->to('component.course-management.course-builder');
+                ->to('course-management.course-builder');
 
             $this->notify('Lesson created successfully!', 'success');
         } catch (\Exception $e) {
@@ -191,7 +191,7 @@ class CourseOutline extends Component
     public function selectLesson($lessonId)
     {
         $this->dispatch('lesson-selected', lessonId: $lessonId)
-            ->to('component.course-management.course-builder');
+            ->to('course-management.course-builder');
     }
 
     public function deleteLesson($lessonId)
@@ -219,7 +219,7 @@ class CourseOutline extends Component
     {
         // Dispatch to toolbar component specifically
         $this->dispatch('outline-updated')
-            ->to('component.course-management.course-builder.toolbar');
+            ->to('course-management.course-builder.toolbar');
     }
 
     public function notify($message, $type = 'success')
@@ -229,7 +229,7 @@ class CourseOutline extends Component
 
     public function render()
     {
-        return view('livewire.component.course-management.course-builder.course-outline', [
+        return view('livewire.course-management.course-builder.course-outline', [
             'sections' => $this->course->sections()
                 ->with(['lessons' => fn($q) => $q->orderBy('created_at', 'desc')])
                 ->orderBy('created_at', 'desc')

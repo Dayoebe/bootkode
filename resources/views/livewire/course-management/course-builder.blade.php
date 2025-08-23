@@ -1,7 +1,7 @@
 <div>
 <div class="bg-gray-800 p-4 sm:p-6 lg:p-8 rounded-2xl">
     <!-- Toolbar -->
-    <livewire:component.course-management.course-builder.toolbar 
+    <livewire:course-management.course-builder.toolbar 
         :course="$course" 
         wire:key="toolbar-{{ $course->id }}" />
 
@@ -9,7 +9,7 @@
     <div class="grid grid-cols-1 lg:grid-cols-4 gap-6 mt-6">
         <!-- Course Outline Sidebar -->
         <div class="lg:col-span-1">
-            <livewire:component.course-management.course-builder.course-outline
+            <livewire:course-management.course-builder.course-outline
                 :course="$course"
                 :activeSectionId="$activeSectionId"
                 :activeLessonId="$activeContentId"
@@ -20,7 +20,7 @@
         <div class="lg:col-span-3">
             <div class="animate__animated animate__fadeIn">
                 @if($activeContentType === 'lesson' && $activeContentId)
-                    <livewire:component.course-management.course-builder.lesson-editor
+                    <livewire:course-management.course-builder.lesson-editor
                         :lessonId="$activeContentId"
                         wire:key="lesson-editor-{{ $activeContentId }}" />
                 @else
