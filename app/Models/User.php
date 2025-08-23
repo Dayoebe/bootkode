@@ -22,20 +22,20 @@ class User extends Authenticatable implements MustVerifyEmail
     const ROLE_AFFILIATE_AMBASSADOR = 'affiliate_ambassador';
     const ROLE_STUDENT = 'student';
 
-    
+
     public static function getRoles()
-{
-    return [
-        self::ROLE_SUPER_ADMIN,
-        self::ROLE_ACADEMY_ADMIN,
-        self::ROLE_INSTRUCTOR,
-        self::ROLE_MENTOR,
-        self::ROLE_CONTENT_EDITOR,
-        self::ROLE_AFFILIATE_AMBASSADOR,
-        self::ROLE_STUDENT,
-    ];
-}
-    
+    {
+        return [
+            self::ROLE_SUPER_ADMIN,
+            self::ROLE_ACADEMY_ADMIN,
+            self::ROLE_INSTRUCTOR,
+            self::ROLE_MENTOR,
+            self::ROLE_CONTENT_EDITOR,
+            self::ROLE_AFFILIATE_AMBASSADOR,
+            self::ROLE_STUDENT,
+        ];
+    }
+
     // Activity Logging Configuration
 
 
@@ -168,12 +168,10 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->hasMany(OfflineNote::class);
     }
-
     public function certificates()
     {
         return $this->hasMany(Certificate::class);
     }
-
     public function hasCompletedCourse(Course $course): bool
     {
         $totalLessons = $course->sections()->with('lessons')->get()->sum(function ($section) {
@@ -186,40 +184,6 @@ class User extends Authenticatable implements MustVerifyEmail
 
         return $completedLessons >= $totalLessons;
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     // Activity Logging Configuration (log all fillable attributes for "every activities" on model changes)
     public function getActivitylogOptions(): LogOptions
