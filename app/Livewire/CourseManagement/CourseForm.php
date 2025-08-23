@@ -220,6 +220,11 @@ class CourseForm extends Component
         }
     }
 
+    public function updateCourse()
+    {
+        $this->save();
+    }
+
     public function updatedTitle($value)
     {
         if (!empty($value)) {
@@ -262,7 +267,7 @@ class CourseForm extends Component
     public function save()
     {
         \Log::info('CourseForm save method called', ['isEditMode' => $this->isEditMode]);
-    
+
         try {
             // Check if this is a scheduled submission
             if ($this->scheduled_publish_at && now()->lt($this->scheduled_publish_at)) {
@@ -273,17 +278,17 @@ class CourseForm extends Component
                 ]);
                 return;
             }
-    
+
             // Validate all data
             \Log::info('Validating course data');
             $this->validate();
             \Log::info('Course data validated successfully');
-    
+
             // Clean up array fields by removing empty entries
             $this->learning_outcomes = array_filter($this->learning_outcomes ?? [], fn($outcome) => !empty(trim($outcome)));
             $this->prerequisites = array_filter($this->prerequisites ?? [], fn($prereq) => !empty(trim($prereq)));
             $this->faqs = array_filter($this->faqs ?? [], fn($faq) => !empty(trim($faq['question'] ?? '')) && !empty(trim($faq['answer'] ?? '')));
-    
+
             // Prepare data array
             $data = $this->only([
                 'title',
@@ -305,9 +310,9 @@ class CourseForm extends Component
                 'price',
                 'scheduled_publish_at',
             ]);
-    
+
             \Log::debug('Prepared course data', $data);
-    
+
             // Only allow admins to approve courses
             $user = Auth::user();
             if ($user->hasRole('super_admin') || $user->hasRole('academy_admin')) {
@@ -317,12 +322,12 @@ class CourseForm extends Component
                 $data['is_approved'] = false; // Regular users cannot approve their own courses
                 \Log::info('Non-admin user, setting is_approved to false');
             }
-    
+
             // Sanitize description
             if (!empty($data['description'])) {
                 $data['description'] = strip_tags($data['description']);
             }
-    
+
             // Handle thumbnail upload
             if ($this->thumbnail) {
                 \Log::info('Processing thumbnail upload');
@@ -333,7 +338,7 @@ class CourseForm extends Component
                 $data['thumbnail'] = $this->course->thumbnail;
                 \Log::info('Preserving existing thumbnail', ['path' => $data['thumbnail']]);
             }
-    
+
             // Handle publishing dates
             $now = now();
             if (isset($data['scheduled_publish_at']) && $now->gt($data['scheduled_publish_at'])) {
@@ -343,13 +348,20 @@ class CourseForm extends Component
                 $data['published_at'] = $now;
                 \Log::info('Setting published_at to now', ['published_at' => $data['published_at']]);
             }
-    
+
             if ($this->isEditMode) {
                 $this->course->update($data);
                 $message = 'Course updated successfully!';
                 $type = 'success';
-                $redirectUrl = route('all-course');
-                \Log::info('Course updated successfully', ['course_id' => $this->course->id]);
+                
+                // Show success notification
+                $this->dispatch('notify', ['message' => $message, 'type' => $type]);
+                
+                // Dispatch the correct event name that matches the JavaScript listener
+                $this->dispatch('redirect-after-delay', [
+                    'url' => route('all-course'),
+                    'delay' => 1500 // 1.5 seconds delay to show the notification
+                ]);
             } else {
                 \Log::info('Creating new course');
                 $data['instructor_id'] = Auth::id();
@@ -362,24 +374,24 @@ class CourseForm extends Component
                 
                 \Log::info('Course created successfully', ['course_id' => $course->id]);
                 \Log::info('Redirect URL', ['url' => $redirectUrl]);
+                
+                // Show success notification
+                $this->dispatch('notify', ['message' => $message, 'type' => $type]);
+                
+                // Dispatch the correct event name that matches the JavaScript listener
+                $this->dispatch('redirect-after-delay', [
+                    'url' => $redirectUrl,
+                    'delay' => 1500 // 1.5 seconds delay to show the notification
+                ]);
             }
-    
-            // Show success notification
-            $this->dispatch('notify', ['message' => $message, 'type' => $type]);
-    
-            // Redirect after a short delay to show the notification
-            $this->dispatch('redirect-after-delay', [
-                'url' => $redirectUrl,
-                'delay' => 2000
-            ]);
-    
+
         } catch (\Illuminate\Validation\ValidationException $e) {
             \Log::error('Validation error in course form', ['errors' => $e->errors()]);
             $this->dispatch('notify', [
                 'message' => 'Please check the form for errors: ' . collect($e->errors())->flatten()->first(),
                 'type' => 'error'
             ]);
-    
+
             // Re-throw to show validation errors in the form
             throw $e;
         } catch (\Exception $e) {
@@ -395,6 +407,7 @@ class CourseForm extends Component
             ]);
         }
     }
+
     public function suggestAiContent(string $field)
     {
         // Placeholder for future AI integration

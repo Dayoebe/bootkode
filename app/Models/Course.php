@@ -87,11 +87,6 @@ class Course extends Model
         return $this->hasMany(CourseEnrollment::class);
     }
 
-    // public function sections()
-    // {
-    //     return $this->hasMany(Section::class);
-    // }
-
     public function allLessons()
     {
         return $this->hasManyThrough(Lesson::class, Section::class)
@@ -126,31 +121,32 @@ class Course extends Model
     protected static function boot()
     {
         parent::boot();
-
+    
         static::creating(function ($course) {
             if (empty($course->slug)) {
                 $course->slug = $course->generateUniqueSlug($course->title);
             }
         });
-
+    
         static::updating(function ($course) {
             if ($course->isDirty('title')) {
                 $course->slug = $course->generateUniqueSlug($course->title);
             }
         });
-
+    
         // Only update relationship counts for existing courses with relationships
         static::saved(function ($course) {
             // Skip if this is a new course being created
             if (!$course->wasRecentlyCreated) {
                 try {
+                    // Fix the ambiguous 'type' column by specifying the table
                     $course->total_modules = $course->sections()->count();
                     $course->total_lessons = $course->allLessons()->count();
-                    $course->total_projects = $course->assessments()->where('type', 'project')->count();
+                    $course->total_projects = $course->assessments()->where('assessments.type', 'project')->count(); // Fixed here
                     $course->total_assessments = $course->assessments()->count();
                     $course->has_projects = $course->total_projects > 0;
                     $course->has_assessments = $course->total_assessments > 0;
-
+    
                     // Use updateQuietly to avoid triggering events again
                     $course->updateQuietly([
                         'total_modules' => $course->total_modules,
@@ -165,6 +161,7 @@ class Course extends Model
                         'course_id' => $course->id,
                         'error' => $e->getMessage()
                     ]);
+                    // Don't rethrow the exception to prevent breaking the save operation
                 }
             }
         });
@@ -256,21 +253,21 @@ class Course extends Model
         return $this->allLessons()->sum('size_mb');
     }
 
-    public function getFormattedDurationAttribute()
-    {
-        if (!$this->estimated_duration_minutes) {
-            return 'Not specified';
-        }
+    // public function getFormattedDurationAttribute()
+    // {
+    //     if (!$this->estimated_duration_minutes) {
+    //         return 'Not specified';
+    //     }
 
-        $hours = floor($this->estimated_duration_minutes / 60);
-        $minutes = $this->estimated_duration_minutes % 60;
+    //     $hours = floor($this->estimated_duration_minutes / 60);
+    //     $minutes = $this->estimated_duration_minutes % 60;
 
-        if ($hours > 0) {
-            return $hours . 'h ' . $minutes . 'm';
-        }
+    //     if ($hours > 0) {
+    //         return $hours . 'h ' . $minutes . 'm';
+    //     }
 
-        return $minutes . ' minutes';
-    }
+    //     return $minutes . ' minutes';
+    // }
 
     public function getFormattedPriceAttribute()
     {
@@ -280,5 +277,20 @@ class Course extends Model
 
         return '$' . number_format($this->price, 2);
     }
+    public function getFormattedDurationAttribute()
+{
+    if (!$this->estimated_duration_minutes) {
+        return 'Self-paced';
+    }
+
+    $hours = floor($this->estimated_duration_minutes / 60);
+    $minutes = $this->estimated_duration_minutes % 60;
+
+    if ($hours > 0) {
+        return $hours . 'h ' . $minutes . 'm';
+    }
+
+    return $minutes . 'm';
+}
 }
 

@@ -53,7 +53,8 @@ return [
             'roles' => [],
             'link_id' => '',
             'children' => [
-                ['label' => 'All Courses', 'icon' => 'fas fa-list', 'route_name' => ('all-course'), 'roles' => [User::ROLE_SUPER_ADMIN, User::ROLE_ACADEMY_ADMIN, User::ROLE_INSTRUCTOR, User::ROLE_MENTOR, User::ROLE_CONTENT_EDITOR], 'link_id' => 'all-courses',],
+                ['label' => 'My Courses', 'icon' => 'fas fa-edit', 'route_name' => 'my-course', 'roles' => [User::ROLE_SUPER_ADMIN, User::ROLE_ACADEMY_ADMIN, User::ROLE_INSTRUCTOR, User::ROLE_MENTOR, User::ROLE_CONTENT_EDITOR], 'link_id' => 'my-courses',],
+                ['label' => 'All Courses', 'icon' => 'fas fa-list', 'route_name' => ('all-course'), 'roles' => [User::ROLE_SUPER_ADMIN], 'link_id' => 'all-courses',],
                 ['label' => 'Available Courses', 'icon' => 'fas fa-book-open', 'route_name' => ('courses.available'), 'roles' => [User::ROLE_STUDENT], 'link_id' => 'courses.available',],
                 ['label' => 'Create Course', 'icon' => 'fas fa-plus-circle', 'route_name' => ('create_course'), 'roles' => [User::ROLE_SUPER_ADMIN, User::ROLE_ACADEMY_ADMIN, User::ROLE_INSTRUCTOR], 'link_id' => 'create-course',],
                 ['label' => 'Edit Course', 'icon' => 'fas fa-edit', 'route_name' => '#', 'roles' => [User::ROLE_SUPER_ADMIN, User::ROLE_ACADEMY_ADMIN, User::ROLE_INSTRUCTOR], 'link_id' => 'edit-course',],
