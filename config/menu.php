@@ -114,17 +114,17 @@ return [
             'roles' => [],
             'link_id' => 'certification',
             'children' => [
-                ['label' => 'My Certificates', 'icon' => 'fas fa-award', 'route_name' => ('certificates.index'), 'roles' => [], 'link_id' => 'certificates.index',],
-                ['label' => 'Request Certificates', 'icon' => 'fas fa-file-alt', 'route_name' => ('certificates.request'), 'roles' => [], 'link_id' => 'certificates.request',],
-                ['label' => 'Certificate Templates', 'icon' => 'fas fa-file-invoice', 'route_name' => ('certificates.templates'), 'roles' => [User::ROLE_SUPER_ADMIN, User::ROLE_ACADEMY_ADMIN, User::ROLE_CONTENT_EDITOR], 'link_id' => 'certificates.templates',],
-                ['label' => 'Certificate Approvals', 'icon' => 'fas fa-check-double', 'route_name' => ('certificates.approvals'), 'roles' => [User::ROLE_SUPER_ADMIN, User::ROLE_ACADEMY_ADMIN], 'link_id' => 'certificates.approvals',],
+                ['label' => 'My Certificates', 'icon' => 'fas fa-award', 'route_name' => '#', 'roles' => [], 'link_id' => '#',],
+                ['label' => 'Request Certificates', 'icon' => 'fas fa-file-alt', 'route_name' => '#', 'roles' => [], 'link_id' => 'certificates.request',],
+                ['label' => 'Certificate Templates', 'icon' => 'fas fa-file-invoice', 'route_name' => '#', 'roles' => [User::ROLE_SUPER_ADMIN, User::ROLE_ACADEMY_ADMIN, User::ROLE_CONTENT_EDITOR], 'link_id' => 'certificates.templates',],
+                ['label' => 'Certificate Approvals', 'icon' => 'fas fa-check-double', 'route_name' => '#', 'roles' => [User::ROLE_SUPER_ADMIN, User::ROLE_ACADEMY_ADMIN], 'link_id' => 'certificates.approvals',],
                 ['label' => 'Bulk Issue Certificates', 'icon' => 'fas fa-file-alt', 'route_name' => '#', 'roles' => [User::ROLE_SUPER_ADMIN, User::ROLE_ACADEMY_ADMIN], 'link_id' => 'certificates.bulk',],
                 [
                     'label' => 'Verify Certificates',
                     'icon' => 'fas fa-check-circle',
-                    'route_name' => 'certificates.public-verify',  // Changed from '/certificates/verify' to the route name
+                    'route_name' => '#',  // Changed from '/certificates/verify' to the route name
                     'permissions' => [],
-                    'link_id' => 'certificates.public-verify'
+                    'link_id' => '#'
                 ]
             ]
         ],
@@ -357,8 +357,8 @@ return [
             'link_id' => 'cbt',
             'children' => [
                 ['label' => 'Take CBT Exam', 'icon' => 'fas fa-pencil-alt', 'route_name' => '#', 'roles' => [User::ROLE_STUDENT], 'link_id' => 'cbt.exam', 'has_submenu' => true, 'exams' => []],
-                ['label' => 'View CBT Results', 'icon' => 'fas fa-chart-bar', 'route_name' => ('cbt.results'), 'roles' => [User::ROLE_STUDENT], 'link_id' => 'cbt.results',],
-                ['label' => 'CBT Management', 'icon' => 'fas fa-cog', 'route_name' => ('cbt.management'), 'roles' => [User::ROLE_SUPER_ADMIN, User::ROLE_ACADEMY_ADMIN, User::ROLE_INSTRUCTOR], 'link_id' => 'cbt.management',],
+                ['label' => 'View CBT Results', 'icon' => 'fas fa-chart-bar', 'route_name' => '#', 'roles' => [User::ROLE_STUDENT], 'link_id' => 'cbt.results',],
+                ['label' => 'CBT Management', 'icon' => 'fas fa-cog', 'route_name' => '#', 'roles' => [User::ROLE_SUPER_ADMIN, User::ROLE_ACADEMY_ADMIN, User::ROLE_INSTRUCTOR], 'link_id' => 'cbt.management',],
             ]
         ],
         [
