@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire\Component\CourseManagement\CourseBuilder;
+namespace App\Livewire\CourseManagement\CourseBuilder;
 
 use App\Models\Course;
 use App\Models\CourseCategory;
@@ -75,7 +75,7 @@ class Toolbar extends Component
             $this->notify("Course {$statusText} successfully!", 'success');
 
             // Dispatch event to parent component
-            $this->dispatch('course-updated')->to('component.course-management.course-builder');
+            $this->dispatch('course-updated')->to('course-management.course-builder');
 
             Log::info("Course {$this->course->id} status changed to " . ($newStatus ? 'published' : 'unpublished'));
 
@@ -152,6 +152,6 @@ class Toolbar extends Component
 
     public function render()
     {
-        return view('livewire.component.course-management.course-builder.toolbar');
+        return view('livewire.course-management.course-builder.toolbar');
     }
 }

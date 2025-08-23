@@ -36,7 +36,6 @@ class Lesson extends Model
     ];
 
     protected $casts = [
-        'content' => 'array',
         'scheduled_publish_at' => 'datetime',
         'published_at' => 'datetime',
         'images' => 'array',
@@ -45,6 +44,9 @@ class Lesson extends Model
         'videos' => 'array',
         'external_links' => 'array',
     ];
+
+    // FIX: Remove any accessors/mutators for content to let it be stored as raw text
+    // Do NOT add getContentAttribute or setContentAttribute methods
 
     // Relationships
     public function section()
@@ -194,22 +196,6 @@ class Lesson extends Model
         return round($totalSize / (1024 * 1024), 2);
     }
 
-    public function getFormattedDurationAttribute()
-    {
-        if (!$this->duration_minutes) {
-            return 'Not specified';
-        }
-
-        $hours = floor($this->duration_minutes / 60);
-        $minutes = $this->duration_minutes % 60;
-
-        if ($hours > 0) {
-            return $hours . 'h ' . $minutes . 'm';
-        }
-
-        return $minutes . ' minutes';
-    }
-
     // Scopes
     public function scopePublished($query)
     {
@@ -264,5 +250,21 @@ class Lesson extends Model
         }
 
         return max($readingTime + $mediaTime, 1);
+    }
+
+    public function getFormattedDurationAttribute()
+    {
+        if (!$this->duration_minutes) {
+            return 'N/A';
+        }
+
+        $hours = floor($this->duration_minutes / 60);
+        $minutes = $this->duration_minutes % 60;
+
+        if ($hours > 0) {
+            return $hours . 'h ' . $minutes . 'm';
+        }
+
+        return $minutes . 'm';
     }
 }

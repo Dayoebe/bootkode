@@ -39,8 +39,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
 //Course Management
 Route::middleware('auth')->group(function () {
     Route::get('/course-management/all-courses', \App\Livewire\CourseManagement\AllCourses::class)->name('all-course');
+    Route::get('/course-management/my-courses', \App\Livewire\CourseManagement\UserCourses::class)->name('my-course');
     Route::get('/dashboard/courses/create', \App\Livewire\CourseManagement\CourseForm::class)->name('create_course');
     Route::get('/dashboard/courses/{courseId}/edit', \App\Livewire\CourseManagement\CourseForm::class)->name('edit_course');
+    Route::get('/course/{course:slug}', \App\Livewire\StudentManagement\CourseView::class)->name('course.view');
     Route::get('/course-categories', \App\Livewire\CourseManagement\CourseCategories::class)->name('course-categories');
     Route::get('/dashboard/courses/{course}/builder', \App\Livewire\CourseManagement\CourseBuilder::class)->name('course-builder');
     Route::get('/dashboard/courses/reviews', \App\Livewire\CourseManagement\CourseReviews::class)->name('course-reviews');
