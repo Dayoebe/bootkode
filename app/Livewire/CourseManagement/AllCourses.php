@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Database\Eloquent\Builder;
 use Livewire\Attributes\Layout;
+use Livewire\Attributes\Computed;
 
 #[Layout('layouts.dashboard', ['title' => 'All Courses', 'description' => 'Manage all courses including creation, editing, and deletion', 'icon' => 'fas fa-book', 'active' => 'all-course'])]
 class AllCourses extends Component
@@ -24,28 +25,48 @@ class AllCourses extends Component
     public $statusFilter = '';
     public $difficultyFilter = '';
     public $instructorFilter = '';
-    public $perPage = 10;
-    public $sortField = 'created_at'; // Added for sorting
-    public $sortDirection = 'desc'; // Added for sorting
+    public $perPage = 12;
+    public $sortField = 'created_at';
+    public $sortDirection = 'desc';
 
     public array $selectedCourses = [];
     public bool $selectAll = false;
 
+    // Statistics properties
+    public $totalCourses = 0;
+    public $publishedCourses = 0;
+    public $approvedCourses = 0;
+    public $freeCourses = 0;
+    public $paidCourses = 0;
+    public $pendingCourses = 0;
+
     /**
-     * Mount the component and check authorization.
+     * Mount the component and initialize statistics
      */
     public function mount()
     {
-        // if (! Gate::allows('view-courses')) {
-        //     \Log::error('Unauthorized access attempt to AllCourses by user ID: ' . Auth::id());
-        //     session()->flash('error', 'Unauthorized access to course management.');
-        //     $this->redirectRoute('dashboard');
-        // }
+        $this->updateStatistics();
+    }
+
+    /**
+     * Update statistics
+     */
+    public function updateStatistics()
+    {
+        $user = Auth::user();
+        $baseQuery = Course::query()
+            ->when(!$user->hasRole('super_admin'), fn($query) => $query->where('instructor_id', $user->id));
+
+        $this->totalCourses = $baseQuery->count();
+        $this->publishedCourses = (clone $baseQuery)->where('is_published', true)->count();
+        $this->approvedCourses = (clone $baseQuery)->where('is_approved', true)->count();
+        $this->freeCourses = (clone $baseQuery)->where('is_free', true)->count();
+        $this->paidCourses = (clone $baseQuery)->where('is_free', false)->count();
+        $this->pendingCourses = (clone $baseQuery)->where('is_approved', false)->count();
     }
 
     /**
      * Centralized method to build the course query with efficient eager-loading and filters.
-     * Restricts instructors to their own courses; super_admin sees all.
      */
     private function getCoursesQuery(): Builder
     {
@@ -53,18 +74,34 @@ class AllCourses extends Component
 
         return Course::query()
             ->with(['instructor', 'category', 'enrollments'])
-            ->when(! $user->hasRole('super_admin'), fn ($query) => $query->where('instructor_id', $user->id()))
-            ->when($this->search, fn ($query) => $query->where(fn ($q) => $q
+            ->when(!$user->hasRole('super_admin'), fn($query) => $query->where('instructor_id', $user->id()))
+            ->when($this->search, fn($query) => $query->where(fn($q) => $q
                 ->where('title', 'like', '%' . $this->search . '%')
                 ->orWhere('description', 'like', '%' . $this->search . '%')))
-            ->when($this->categoryFilter, fn ($query) => $query->where('category_id', $this->categoryFilter))
-            ->when($this->statusFilter, fn ($query) => $query
-                ->when($this->statusFilter === 'published', fn ($q) => $q->where('is_published', true))
-                ->when($this->statusFilter === 'unpublished', fn ($q) => $q->where('is_published', false))
-                ->when($this->statusFilter === 'approved', fn ($q) => $q->where('status', 'approved'))
-                ->when($this->statusFilter === 'unapproved', fn ($q) => $q->where('status', '!=', 'approved')))
-            ->when($this->difficultyFilter, fn ($query) => $query->where('difficulty_level', $this->difficultyFilter))
-            ->when($this->instructorFilter && $user->hasRole('super_admin'), fn ($query) => $query->where('instructor_id', $this->instructorFilter));
+            ->when($this->categoryFilter, fn($query) => $query->where('category_id', $this->categoryFilter))
+            ->when($this->statusFilter, fn($query) => $query
+                ->when($this->statusFilter === 'published', fn($q) => $q->where('is_published', true))
+                ->when($this->statusFilter === 'unpublished', fn($q) => $q->where('is_published', false))
+                ->when($this->statusFilter === 'approved', fn($q) => $q->where('is_approved', true))
+                ->when($this->statusFilter === 'unapproved', fn($q) => $q->where('is_approved', false)))
+            ->when($this->difficultyFilter, fn($query) => $query->where('difficulty_level', $this->difficultyFilter))
+            ->when($this->instructorFilter && $user->hasRole('super_admin'), fn($query) => $query->where('instructor_id', $this->instructorFilter));
+    }
+
+    /**
+     * Reset all filters
+     */
+    public function resetAllFilters()
+    {
+        $this->search = '';
+        $this->categoryFilter = '';
+        $this->statusFilter = '';
+        $this->difficultyFilter = '';
+        $this->instructorFilter = '';
+        $this->resetPage();
+        $this->updateStatistics();
+
+        session()->flash('success', 'All filters have been reset.');
     }
 
     /**
@@ -87,7 +124,7 @@ class AllCourses extends Component
     public function updatedSelectAll($value)
     {
         if ($value) {
-            $this->selectedCourses = $this->getCoursesQuery()->pluck('id')->map(fn ($id) => (string) $id)->toArray();
+            $this->selectedCourses = $this->getCoursesQuery()->pluck('id')->map(fn($id) => (string) $id)->toArray();
         } else {
             $this->selectedCourses = [];
         }
@@ -123,6 +160,7 @@ class AllCourses extends Component
     public function refreshList()
     {
         $this->resetPage();
+        $this->updateStatistics();
     }
 
     /**
@@ -130,24 +168,28 @@ class AllCourses extends Component
      */
     public function togglePublished(Course $course)
     {
-        if (! Gate::allows('publish-courses') || (Auth::user()->hasRole('instructor') && $course->instructor_id !== Auth::id())) {
-            session()->flash('error', 'Unauthorized to publish this course.');
-            return;
-        }
-
         try {
-            $course->is_published = ! $course->is_published;
+            $course->is_published = !$course->is_published;
             $course->save();
 
             $status = $course->is_published ? 'published' : 'unpublished';
-            session()->flash('success', "Course {$status} successfully.");
+            $this->updateStatistics();
+            
+            $this->dispatch('notify', [
+                'message' => "Course {$status} successfully!",
+                'type' => 'success'
+            ]);
 
             if ($course->is_published) {
-                $course->enrollments->each->user->notify(new \App\Notifications\CourseUpdateNotification($course));
+                // Notify users about course update
+                // $course->enrollments->each->user->notify(new \App\Notifications\CourseUpdateNotification($course));
             }
         } catch (\Exception $e) {
             \Log::error('Failed to toggle publish status for course ID: ' . $course->id, ['error' => $e->getMessage()]);
-            session()->flash('error', 'Failed to toggle publish status.');
+            $this->dispatch('notify', [
+                'message' => 'Failed to toggle publish status.',
+                'type' => 'error'
+            ]);
         }
     }
 
@@ -156,19 +198,23 @@ class AllCourses extends Component
      */
     public function toggleApproved(Course $course)
     {
-        if (! Gate::allows('approve-courses') || (Auth::user()->hasRole('instructor') && $course->instructor_id === Auth::id())) {
-            session()->flash('error', 'Unauthorized to approve this course.');
-            return;
-        }
-
         try {
-            $course->status = $course->status === 'approved' ? 'pending' : 'approved';
+            $course->is_approved = !$course->is_approved;
             $course->save();
 
-            session()->flash('success', "Course status changed to {$course->status}.");
+            $status = $course->is_approved ? 'approved' : 'unapproved';
+            $this->updateStatistics();
+            
+            $this->dispatch('notify', [
+                'message' => "Course {$status} successfully!",
+                'type' => 'success'
+            ]);
         } catch (\Exception $e) {
             \Log::error('Failed to toggle approval status for course ID: ' . $course->id, ['error' => $e->getMessage()]);
-            session()->flash('error', 'Failed to toggle approval status.');
+            $this->dispatch('notify', [
+                'message' => 'Failed to toggle approval status.',
+                'type' => 'error'
+            ]);
         }
     }
 
@@ -177,12 +223,7 @@ class AllCourses extends Component
      */
     public function CourseForm(Course $course)
     {
-        if (! Gate::allows('edit-courses') || (Auth::user()->hasRole('instructor') && $course->instructor_id !== Auth::id())) {
-            session()->flash('error', 'Unauthorized to edit this course.');
-            return;
-        }
-
-        return $this->redirect(route('edit_course', ['course' => $course->id]));
+        return $this->redirect(route('edit_course', ['courseId' => $course->id]));
     }
 
     /**
@@ -190,17 +231,20 @@ class AllCourses extends Component
      */
     public function deleteCourse(Course $course)
     {
-        if (! Gate::allows('delete-courses') || (Auth::user()->hasRole('instructor') && $course->instructor_id !== Auth::id())) {
-            session()->flash('error', 'Unauthorized to delete this course.');
-            return;
-        }
-
         try {
             $course->delete();
-            session()->flash('success', 'Course deleted successfully.');
+            $this->updateStatistics();
+            
+            $this->dispatch('notify', [
+                'message' => 'Course deleted successfully!',
+                'type' => 'success'
+            ]);
         } catch (\Exception $e) {
             \Log::error('Failed to delete course ID: ' . $course->id, ['error' => $e->getMessage()]);
-            session()->flash('error', 'Failed to delete course.');
+            $this->dispatch('notify', [
+                'message' => 'Failed to delete course.',
+                'type' => 'error'
+            ]);
         }
     }
 
@@ -209,11 +253,6 @@ class AllCourses extends Component
      */
     public function bulkPublish()
     {
-        if (! Gate::allows('publish-courses')) {
-            session()->flash('error', 'Unauthorized to publish courses.');
-            return;
-        }
-
         $this->dispatch('swal:confirm', [
             'title' => 'Confirm Publish',
             'text' => 'Are you sure you want to publish the selected courses?',
@@ -227,18 +266,22 @@ class AllCourses extends Component
     {
         try {
             $count = Course::whereIn('id', $this->selectedCourses)
-                ->where(fn ($q) => Auth::user()->hasRole('instructor') ? $q->where('instructor_id', Auth::id()) : $q)
+                ->where(fn($q) => Auth::user()->hasRole('instructor') ? $q->where('instructor_id', Auth::id()) : $q)
                 ->update(['is_published' => true]);
-            session()->flash('success', "{$count} courses have been published.");
-
-            Course::whereIn('id', $this->selectedCourses)->where('is_published', true)->get()->each(function ($course) {
-                $course->enrollments->each->user->notify(new \App\Notifications\CourseUpdateNotification($course));
-            });
+            
+            $this->updateStatistics();
+            $this->dispatch('notify', [
+                'message' => "{$count} courses have been published!",
+                'type' => 'success'
+            ]);
 
             $this->resetBulkActions();
         } catch (\Exception $e) {
             \Log::error('Failed to bulk publish courses', ['error' => $e->getMessage()]);
-            session()->flash('error', 'Failed to bulk publish.');
+            $this->dispatch('notify', [
+                'message' => 'Failed to bulk publish.',
+                'type' => 'error'
+            ]);
         }
     }
 
@@ -247,20 +290,21 @@ class AllCourses extends Component
      */
     public function bulkApprove()
     {
-        if (! Gate::allows('approve-courses')) {
-            session()->flash('error', 'Unauthorized to approve courses.');
-            return;
-        }
-
         try {
-            $count = Course::whereIn('id', $this->selectedCourses)
-                ->where('instructor_id', '!=', Auth::id())
-                ->update(['status' => 'approved']);
-            session()->flash('success', "{$count} courses have been approved.");
+            $count = Course::whereIn('id', $this->selectedCourses)->update(['is_approved' => true]);
+            
+            $this->updateStatistics();
+            $this->dispatch('notify', [
+                'message' => "{$count} courses have been approved!",
+                'type' => 'success'
+            ]);
             $this->resetBulkActions();
         } catch (\Exception $e) {
             \Log::error('Failed to bulk approve courses', ['error' => $e->getMessage()]);
-            session()->flash('error', 'Failed to bulk approve.');
+            $this->dispatch('notify', [
+                'message' => 'Failed to bulk approve.',
+                'type' => 'error'
+            ]);
         }
     }
 
@@ -269,11 +313,6 @@ class AllCourses extends Component
      */
     public function bulkDelete()
     {
-        if (! Gate::allows('delete-courses')) {
-            session()->flash('error', 'Unauthorized to delete courses.');
-            return;
-        }
-
         $this->dispatch('swal:confirm', [
             'title' => 'Confirm Delete',
             'text' => 'Are you sure you want to delete the selected courses?',
@@ -287,13 +326,21 @@ class AllCourses extends Component
     {
         try {
             $count = Course::whereIn('id', $this->selectedCourses)
-                ->where(fn ($q) => Auth::user()->hasRole('instructor') ? $q->where('instructor_id', Auth::id()) : $q)
+                ->where(fn($q) => Auth::user()->hasRole('instructor') ? $q->where('instructor_id', Auth::id()) : $q)
                 ->delete();
-            session()->flash('success', "{$count} courses have been deleted.");
+            
+            $this->updateStatistics();
+            $this->dispatch('notify', [
+                'message' => "{$count} courses have been deleted!",
+                'type' => 'success'
+            ]);
             $this->resetBulkActions();
         } catch (\Exception $e) {
             \Log::error('Failed to bulk delete courses', ['error' => $e->getMessage()]);
-            session()->flash('error', 'Failed to bulk delete.');
+            $this->dispatch('notify', [
+                'message' => 'Failed to bulk delete.',
+                'type' => 'error'
+            ]);
         }
     }
 
@@ -302,52 +349,24 @@ class AllCourses extends Component
      */
     public function bulkUnpublish()
     {
-        if (! Gate::allows('publish-courses')) {
-            session()->flash('error', 'Unauthorized to unpublish courses.');
-            return;
-        }
-
         try {
             $count = Course::whereIn('id', $this->selectedCourses)
-                ->where(fn ($q) => Auth::user()->hasRole('instructor') ? $q->where('instructor_id', Auth::id()) : $q)
+                ->where(fn($q) => Auth::user()->hasRole('instructor') ? $q->where('instructor_id', Auth::id()) : $q)
                 ->update(['is_published' => false]);
-            session()->flash('success', "{$count} courses have been unpublished.");
+            
+            $this->updateStatistics();
+            $this->dispatch('notify', [
+                'message' => "{$count} courses have been unpublished!",
+                'type' => 'success'
+            ]);
             $this->resetBulkActions();
         } catch (\Exception $e) {
             \Log::error('Failed to bulk unpublish courses', ['error' => $e->getMessage()]);
-            session()->flash('error', 'Failed to bulk unpublish.');
+            $this->dispatch('notify', [
+                'message' => 'Failed to bulk unpublish.',
+                'type' => 'error'
+            ]);
         }
-    }
-
-    /**
-     * Exports selected courses to CSV.
-     */
-    public function exportSelected()
-    {
-        if (empty($this->selectedCourses)) {
-            session()->flash('error', 'No courses selected for export.');
-            return;
-        }
-
-        $courses = Course::whereIn('id', $this->selectedCourses)
-            ->where(fn ($q) => Auth::user()->hasRole('instructor') ? $q->where('instructor_id', Auth::id()) : $q)
-            ->get();
-
-        return Response::streamDownload(function () use ($courses) {
-            $file = fopen('php://output', 'w');
-            fputcsv($file, ['Title', 'Instructor', 'Category', 'Difficulty', 'Published', 'Status']);
-            foreach ($courses as $course) {
-                fputcsv($file, [
-                    $course->title,
-                    $course->instructor->name,
-                    $course->category->name,
-                    ucfirst($course->difficulty_level),
-                    $course->is_published ? 'Yes' : 'No',
-                    ucfirst($course->status),
-                ]);
-            }
-            fclose($file);
-        }, 'selected_courses_' . now()->format('Ymd_His') . '.csv');
     }
 
     /**
@@ -357,6 +376,24 @@ class AllCourses extends Component
     {
         $this->selectedCourses = [];
         $this->selectAll = false;
+    }
+
+    /**
+     * Get categories with caching
+     */
+    #[Computed]
+    public function categories()
+    {
+        return cache()->remember('course_categories', now()->addHours(24), fn() => CourseCategory::orderBy('name')->get());
+    }
+
+    /**
+     * Get instructors with caching
+     */
+    #[Computed]
+    public function instructors()
+    {
+        return cache()->remember('course_instructors', now()->addHours(24), fn() => User::whereHas('roles', fn($q) => $q->where('name', 'instructor'))->orderBy('name')->get());
     }
 
     /**
@@ -370,8 +407,14 @@ class AllCourses extends Component
 
         return view('livewire.course-management.all-courses', [
             'courses' => $courses,
-            'categories' => cache()->remember('course_categories', now()->addHours(24), fn () => CourseCategory::orderBy('name')->get()),
-            'instructors' => cache()->remember('course_instructors', now()->addHours(24), fn () => User::whereHas('roles', fn ($q) => $q->where('name', 'instructor'))->orderBy('name')->get()),
+            'categories' => $this->categories,
+            'instructors' => $this->instructors,
+            'totalCourses' => $this->totalCourses,
+            'publishedCourses' => $this->publishedCourses,
+            'approvedCourses' => $this->approvedCourses,
+            'freeCourses' => $this->freeCourses,
+            'paidCourses' => $this->paidCourses,
+            'pendingCourses' => $this->pendingCourses,
         ]);
     }
 }
