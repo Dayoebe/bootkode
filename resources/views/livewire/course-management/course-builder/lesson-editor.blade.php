@@ -104,33 +104,29 @@
             <!-- Content Editor - FIXED VERSION -->
             <div>
                 <div class="flex justify-between items-center mb-2">
-                    <label class="block text-sm font-medium text-gray-300">Lesson Content</label>
+                    <label class="block text-md font-medium text-gray-300">Lesson Content</label>
                     <div class="flex gap-2">
-                        <button @click="$refs.trixEditor.editor.insertHTML('<h2>Heading</h2>')"
-                            class="px-3 py-1 bg-gray-700 hover:bg-gray-600 rounded text-sm">
-                            <i class="fas fa-heading mr-1"></i> Heading
-                        </button>
-                        <button @click="$refs.trixEditor.editor.insertHTML('<p>Paragraph text...</p>')"
-                            class="px-3 py-1 bg-gray-700 hover:bg-gray-600 rounded text-sm">
-                            <i class="fas fa-paragraph mr-1"></i> Paragraph
-                        </button>
-                        <button @click="$refs.trixEditor.editor.insertHTML('<ul><li>List item</li></ul>')"
-                            class="px-3 py-1 bg-gray-700 hover:bg-gray-600 rounded text-sm">
-                            <i class="fas fa-list-ul mr-1"></i> List
-                        </button>
+                        <!-- Existing buttons... -->
                     </div>
                 </div>
-                <div class="border border-gray-700 rounded-lg overflow-hidden shadow-lg">
-                    <!-- FIX: Use wire:model.live.debounce instead of wire:model -->
-                    <trix-editor wire:model.live.debounce.1000ms="content" x-ref="trixEditor"
+                <div wire:ignore.self class="border border-gray-700 rounded-lg overflow-hidden shadow-lg">
+                    <!-- FIX: Add wire:ignore.self -->
+                    <trix-editor wire:model.live.debounce.1500ms="content" x-ref="trixEditor" <!-- Increased debounce
+                        -->
                         placeholder="Start writing your lesson content here..."
                         class="trix-content bg-gray-800 text-white min-h-[400px] p-4"
-                        wire:key="trix-{{ $lessonId }}">
+                        wire:key="trix-{{ $lessonId }}"
+                        aria-label="Lesson Content Editor"> <!-- a11y improvement -->
                     </trix-editor>
                 </div>
                 @error('content')
                     <span class="text-red-400 text-sm mt-1">{{ $message }}</span>
                 @enderror
+                <div x-show="saving"
+                    class="text-sm text-blue-400 mt-2 flex items-center gap-1 animate__animated animate__fadeIn">
+                    <!-- UX: Saving indicator -->
+                    <i class="fas fa-spinner fa-spin"></i> Saving content...
+                </div>
             </div>
 
         </div>
@@ -549,173 +545,27 @@
             <span class="text-white">Processing...</span>
         </div>
     </div>
+    <link rel="stylesheet" href="{{ asset('css/trix.css') }}">
 
-    @push('styles')
-        <style>
-            .trix-content {
-                color: #f3f4f6 !important;
-                font-size: 1rem;
-                line-height: 1.6;
-                background-color: #1f2937 !important;
-            }
-
-            .trix-content h1 {
-                font-size: 1.8rem;
-                font-weight: bold;
-                margin: 1.5rem 0 1rem 0;
-                color: #f3f4f6;
-            }
-
-            .trix-content h2 {
-                font-size: 1.5rem;
-                font-weight: bold;
-                margin: 1.2rem 0 0.8rem 0;
-                color: #f3f4f6;
-            }
-
-            .trix-content h3 {
-                font-size: 1.3rem;
-                font-weight: bold;
-                margin: 1rem 0 0.6rem 0;
-                color: #f3f4f6;
-            }
-
-            .trix-content p {
-                margin: 0.8rem 0;
-                color: #f3f4f6;
-            }
-
-            .trix-content a {
-                color: #60a5fa;
-                text-decoration: underline;
-            }
-
-            .trix-content a:hover {
-                color: #93c5fd;
-            }
-
-            .trix-content img {
-                max-width: 100%;
-                height: auto;
-                border-radius: 0.5rem;
-                margin: 1rem 0;
-            }
-
-            .trix-content ul,
-            .trix-content ol {
-                margin: 1rem 0;
-                padding-left: 2rem;
-                color: #f3f4f6;
-            }
-
-            .trix-content li {
-                margin: 0.5rem 0;
-            }
-
-            .trix-content blockquote {
-                border-left: 4px solid #60a5fa;
-                padding-left: 1rem;
-                margin: 1rem 0;
-                font-style: italic;
-                color: #d1d5db;
-                background-color: #374151;
-                padding: 1rem;
-                border-radius: 0.5rem;
-            }
-
-            .trix-content strong {
-                font-weight: bold;
-                color: #f9fafb;
-            }
-
-            .trix-content em {
-                font-style: italic;
-                color: #e5e7eb;
-            }
-
-            .trix-content code {
-                background-color: #374151;
-                color: #f59e0b;
-                padding: 0.2rem 0.4rem;
-                border-radius: 0.25rem;
-                font-family: 'Courier New', monospace;
-                font-size: 0.9rem;
-            }
-
-            .trix-content pre {
-                background-color: #1f2937;
-                color: #f3f4f6;
-                padding: 1rem;
-                border-radius: 0.5rem;
-                overflow-x: auto;
-                margin: 1rem 0;
-                border: 1px solid #4b5563;
-            }
-
-            /* Hide file attachment tools from Trix */
-            .trix-button-group--file-tools {
-                display: none !important;
-            }
-
-            /* Style the toolbar */
-            trix-toolbar {
-                background-color: #374151 !important;
-                border-color: #4b5563 !important;
-            }
-
-            trix-toolbar .trix-button-group {
-                border-color: #4b5563 !important;
-            }
-
-            trix-toolbar .trix-button {
-                color: #d1d5db !important;
-                background-color: transparent !important;
-            }
-
-            trix-toolbar .trix-button:hover {
-                background-color: #4b5563 !important;
-            }
-
-            trix-toolbar .trix-button.trix-active {
-                background-color: #3b82f6 !important;
-                color: white !important;
-            }
-
-            /* Loading animation */
-            @keyframes fadeIn {
-                from {
-                    opacity: 0;
-                    transform: translateY(10px);
-                }
-
-                to {
-                    opacity: 1;
-                    transform: translateY(0);
-                }
-            }
-
-            .animate__fadeIn {
-                animation: fadeIn 0.3s ease-in-out;
-            }
-        </style>
-    @endpush
 
     @push('scripts')
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Prevent Trix from adding unwanted attributes
-            document.addEventListener('trix-before-initialize', function(event) {
-                event.target.toolbarElement.querySelector('[data-trix-action="attachFiles"]')?.remove();
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                // Prevent Trix from adding unwanted attributes
+                document.addEventListener('trix-before-initialize', function(event) {
+                    event.target.toolbarElement.querySelector('[data-trix-action="attachFiles"]')?.remove();
+                });
+
+                // Handle content updates properly
+                document.addEventListener('trix-change', function(event) {
+                    // Let Livewire handle the content update
+                    event.target.dispatchEvent(new Event('input', {
+                        bubbles: true
+                    }));
+                });
             });
-            
-            // Handle content updates properly
-            document.addEventListener('trix-change', function(event) {
-                // Let Livewire handle the content update
-                event.target.dispatchEvent(new Event('input', { bubbles: true }));
-            });
-        });
         </script>
-        
+
         <script>
             // Auto-save functionality
             let autoSaveTimeout;
