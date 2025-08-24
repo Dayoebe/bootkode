@@ -41,7 +41,7 @@ return [
                 ['label' => 'User Activity', 'icon' => 'fas fa-history', 'route_name' => 'user.activity', 'roles' => [User::ROLE_SUPER_ADMIN], 'link_id' => 'user.activity',],
                 ['label' => 'Edit User', 'icon' => 'fas fa-user-edit', 'route_name' => 'user-management', 'roles' => [User::ROLE_SUPER_ADMIN, User::ROLE_ACADEMY_ADMIN], 'link_id' => 'user.edit',],
                 ['label' => 'All Users', 'icon' => 'fas fa-user-friends', 'route_name' => 'all-users', 'roles' => [User::ROLE_SUPER_ADMIN, User::ROLE_ACADEMY_ADMIN], 'link_id' => 'all-users',],
-                ['label' => 'Roles & Permissions', 'icon' => 'fas fa-user-tag', 'route_name' => 'roles-permissions', 'roles' => [User::ROLE_SUPER_ADMIN],'link_id' => 'roles-permissions',],
+                ['label' => 'Roles & Permissions', 'icon' => 'fas fa-user-tag', 'route_name' => 'roles-permissions', 'roles' => [User::ROLE_SUPER_ADMIN], 'link_id' => 'roles-permissions',],
                 ['label' => 'Pending Verifications', 'icon' => 'fas fa-user-clock', 'route_name' => 'pending-verifications', 'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN], 'link_id' => 'pending-verifications',],
             ]
         ],
@@ -114,17 +114,81 @@ return [
             'roles' => [],
             'link_id' => 'certification',
             'children' => [
-                ['label' => 'My Certificates', 'icon' => 'fas fa-award', 'route_name' => '#', 'roles' => [], 'link_id' => '#',],
-                ['label' => 'Request Certificates', 'icon' => 'fas fa-file-alt', 'route_name' => '#', 'roles' => [], 'link_id' => 'certificates.request',],
-                ['label' => 'Certificate Templates', 'icon' => 'fas fa-file-invoice', 'route_name' => '#', 'roles' => [User::ROLE_SUPER_ADMIN, User::ROLE_ACADEMY_ADMIN, User::ROLE_CONTENT_EDITOR], 'link_id' => 'certificates.templates',],
-                ['label' => 'Certificate Approvals', 'icon' => 'fas fa-check-double', 'route_name' => '#', 'roles' => [User::ROLE_SUPER_ADMIN, User::ROLE_ACADEMY_ADMIN], 'link_id' => 'certificates.approvals',],
-                ['label' => 'Bulk Issue Certificates', 'icon' => 'fas fa-file-alt', 'route_name' => '#', 'roles' => [User::ROLE_SUPER_ADMIN, User::ROLE_ACADEMY_ADMIN], 'link_id' => 'certificates.bulk',],
+                // Public Certificate Routes
                 [
-                    'label' => 'Verify Certificates',
-                    'icon' => 'fas fa-check-circle',
-                    'route_name' => '#',  // Changed from '/certificates/verify' to the route name
-                    'permissions' => [],
-                    'link_id' => '#'
+                    'label' => 'Certificate Verification',
+                    'icon' => 'fas fa-search',
+                    'route_name' => 'certificate.verify',
+                    'roles' => [],
+                    'link_id' => 'certificate.verify'
+                ],
+
+                // Student Certificate Routes
+                [
+                    'label' => 'Request Certificate',
+                    'icon' => 'fas fa-file-alt',
+                    'route_name' => 'student.certificate.request',
+                    'roles' => [User::ROLE_STUDENT],
+                    'link_id' => 'student.certificate.request'
+                ],
+                [
+                    'label' => 'My Certificates',
+                    'icon' => 'fas fa-award',
+                    'route_name' => 'student.certificates.index',
+                    'roles' => [User::ROLE_STUDENT],
+                    'link_id' => 'student.certificates.index'
+                ],
+
+                // Admin/Instructor Certificate Management
+                [
+                    'label' => 'Certificate Management',
+                    'icon' => 'fas fa-cogs',
+                    'route_name' => 'admin.certificates.manage',
+                    'roles' => [User::ROLE_SUPER_ADMIN, User::ROLE_ACADEMY_ADMIN, User::ROLE_INSTRUCTOR],
+                    'link_id' => 'admin.certificates.manage'
+                ],
+
+                // Super Admin Only Routes
+                [
+                    'label' => 'Certificate Analytics',
+                    'icon' => 'fas fa-chart-bar',
+                    'route_name' => 'admin.certificates.analytics',
+                    'roles' => [User::ROLE_SUPER_ADMIN],
+                    'link_id' => 'admin.certificates.analytics'
+                ],
+                [
+                    'label' => 'Certificate Templates',
+                    'icon' => 'fas fa-file-invoice',
+                    'route_name' => 'admin.certificates.templates',
+                    'roles' => [User::ROLE_SUPER_ADMIN],
+                    'link_id' => 'admin.certificates.templates'
+                ],
+
+                // API Routes (for developers/integrators)
+                [
+                    'label' => 'API Documentation',
+                    'icon' => 'fas fa-code',
+                    'route_name' => '#',
+                    'roles' => [User::ROLE_SUPER_ADMIN, User::ROLE_ACADEMY_ADMIN],
+                    'link_id' => 'api.certificate.docs',
+                    'children' => [
+                        [
+                            'label' => 'Single Verification API',
+                            'icon' => 'fas fa-link',
+                            'route_name' => '#',
+                            'roles' => [User::ROLE_SUPER_ADMIN],
+                            'link_id' => 'api.certificate.verify',
+                            'description' => 'GET /api/certificate/verify/{verificationCode}'
+                        ],
+                        [
+                            'label' => 'Batch Verification API',
+                            'icon' => 'fas fa-layer-group',
+                            'route_name' => '#',
+                            'roles' => [User::ROLE_SUPER_ADMIN],
+                            'link_id' => 'api.certificate.batch.verify',
+                            'description' => 'POST /api/certificate/batch-verify'
+                        ]
+                    ]
                 ]
             ]
         ],

@@ -23,9 +23,9 @@ return new class extends Migration
             }
             
             // Add indexes if they don't exist
-            $table->unique(['course_id', 'user_id']);
-            $table->index(['user_id', 'progress']);
-            $table->index(['user_id', 'last_accessed_at']);
+            // $table->unique(['course_id', 'user_id']);
+            // $table->index(['user_id', 'progress']);
+            // $table->index(['user_id', 'last_accessed_at']);
         });
     }
 

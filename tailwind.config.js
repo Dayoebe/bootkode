@@ -1,17 +1,20 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-    plugins: [
-        require('tailwindcss-email-variants'),
-        require('@tailwindcss/typography'),
-      ],
-    darkMode: "class",
-    content: [
-        "./resources/**/*.blade.php",
-        "./resources/**/*.js",
-        "./resources/**/*.vue",
-    ],
-    theme: {
-        extend: {},
+  darkMode: "class",
+  content: [
+    "./resources/**/*.blade.php",
+    "./resources/**/*.js",
+    "./resources/**/*.vue",
+  ],
+  theme: {
+    extend: {
+      fontFamily: {
+        sans: ['Outfit', 'sans-serif'], // Outfit is now default font
+      },
     },
-    plugins: [],
+  },
+  plugins: [
+    require('tailwindcss-email-variants'),
+    require('@tailwindcss/typography'),
+  ],
 };

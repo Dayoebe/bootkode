@@ -17,6 +17,7 @@
         "league/oauth2-google": "^4.0",
         "livewire/livewire": "^3.6",
         "mews/purifier": "^3.4",
+        "mpdf/mpdf": "^8.2",
         "simplesoftwareio/simple-qrcode": "^4.2",
         "socialiteproviders/facebook": "^4.1",
         "socialiteproviders/google": "^4.1",
