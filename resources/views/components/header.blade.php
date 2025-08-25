@@ -12,9 +12,8 @@
             <!-- Logo -->
             <div class="flex-shrink-0 flex items-center">
                 <a href="/" class="flex items-center space-x-2 transform transition-transform hover:scale-105">
-                    <div
-                        class="flex flex-row gap-3 bg-gradient-to-r from-blue-50 to-pink-100 p-2 rounded-lg shadow-sm">
-                        <span class="text-2xl font-bold text-gray-900"> 
+                    <div class="flex flex-row gap-3 bg-gradient-to-r from-blue-50 to-pink-100 p-2 rounded-lg shadow-sm">
+                        <span class="text-2xl font-bold text-gray-900">
                             <i class="fas fa-code h-8 wx-6 text-blue-900"> </i>
                             Boot<span
                                 class="bg-clip-text text-transparent bg-gradient-to-r from-pink-800 to-pink-400">Kode</span></span>
@@ -175,20 +174,27 @@
                     <span
                         class="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-0 h-0.5 bg-blue-400 transition-all duration-300 group-hover:w-3/4"></span>
                 </a>
-                    <!-- Contact Link -->
-                    <a href="{{ route('contact') }}"
+                <!-- Contact Link -->
+                <a href="{{ route('contact') }}"
                     class="px-4 py-2 text-gray-700 hover:text-blue-400 font-medium hover:uppercase transition-all duration-300 relative nav-link group">
                     <span>Contact Us</span>
                     <span
                         class="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-0 h-0.5 bg-blue-400 transition-all duration-300 group-hover:w-3/4"></span>
                 </a>
-                         <!-- Statistics Link -->
-                         <a href="{{ route('statistics') }}"
-                         class="px-4 py-2 text-gray-700 hover:text-blue-400 font-medium hover:uppercase transition-all duration-300 relative nav-link group">
-                         <span>Statistics</span>
-                         <span
-                             class="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-0 h-0.5 bg-blue-400 transition-all duration-300 group-hover:w-3/4"></span>
-                     </a>
+                <!-- Statistics Link -->
+                <a href="{{ route('statistics') }}"
+                    class="px-4 py-2 text-gray-700 hover:text-blue-400 font-medium hover:uppercase transition-all duration-300 relative nav-link group">
+                    <span>Statistics</span>
+                    <span
+                        class="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-0 h-0.5 bg-blue-400 transition-all duration-300 group-hover:w-3/4"></span>
+                </a>
+                <!-- Guideline Link -->
+                <a href="{{ route('guideline') }}"
+                    class="px-4 py-2 text-gray-700 hover:text-blue-400 font-medium hover:uppercase transition-all duration-300 relative nav-link group">
+                    <span>Guideline</span>
+                    <span
+                        class="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-0 h-0.5 bg-blue-400 transition-all duration-300 group-hover:w-3/4"></span>
+                </a>
             </div>
 
             <!-- Right Section - Auth Buttons & Search -->
@@ -229,14 +235,17 @@
                 </div>
             @else
                 <!-- Guest buttons -->
-                <a href="{{ route('login') }}"
+                <div class="flex flex-row gap-4">
+
+                    <a href="{{ route('login') }}"
                     class="border border-b-2 border-blue-600 text-gray-600 hover:text-blue-400 font-medium hover:uppercase px-4 py-2 rounded-lg transition-colors duration-300 group">
                     <i class="fas fa-sign-in-alt mr-2 transition-transform group-hover:translate-x-0.5"></i>Log in
                 </a>
                 <a href="{{ route('register') }}"
-                    class="bg-gradient-to-r from-blue-400 to-pink-400 text-black font-medium hover:uppercase px-5 py-2.5 rounded-lg shadow-md hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-300 flex items-center animate-pulse-custom">
-                    <i class="fas fa-user-plus mr-2"></i>Register
-                </a>
+                class="bg-gradient-to-r from-blue-400 to-pink-400 text-black font-medium hover:uppercase px-5 py-2.5 rounded-lg shadow-md hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-300 flex items-center animate-pulse-custom">
+                <i class="fas fa-user-plus mr-2"></i>Register
+            </a>
+        </div>
             @endauth
 
             <!-- Mobile menu button -->
@@ -390,15 +399,29 @@
                 </a>
 
                 <!-- Mobile: About Link -->
-                <a href="{{ route('about') }}" class="flex items-center px-3 py-3 text-gray-700 rounded-lg hover:bg-blue-50">
+                <a href="{{ route('about') }}"
+                    class="flex items-center px-3 py-3 text-gray-700 rounded-lg hover:bg-blue-50">
                     <i class="fas fa-info-circle text-blue-400 mr-3"></i>
                     <span class="font-medium hover:uppercase">About Us</span>
                 </a>
 
-                  <!-- Mobile: Contact Link -->
-                  <a href="{{ route('contact') }}" class="flex items-center px-3 py-3 text-gray-700 rounded-lg hover:bg-blue-50">
+                <!-- Mobile: Contact Link -->
+                <a href="{{ route('contact') }}"
+                    class="flex items-center px-3 py-3 text-gray-700 rounded-lg hover:bg-blue-50">
                     <i class="fas fa-info-circle text-blue-400 mr-3"></i>
                     <span class="font-medium hover:uppercase">Contact Us</span>
+                </a>
+                <!-- Mobile: Guideline Link -->
+                <a href="{{ route('guideline') }}"
+                    class="flex items-center px-3 py-3 text-gray-700 rounded-lg hover:bg-blue-50">
+                    <i class="fas fa-info-circle text-blue-400 mr-3"></i>
+                    <span class="font-medium hover:uppercase">Guideline</span>
+                </a>
+                <!-- Mobile: Statistics Link -->
+                <a href="{{ route('statistics') }}"
+                    class="flex items-center px-3 py-3 text-gray-700 rounded-lg hover:bg-blue-50">
+                    <i class="fas fa-info-circle text-blue-400 mr-3"></i>
+                    <span class="font-medium hover:uppercase">Statistics</span>
                 </a>
                 <!-- Mobile: Search -->
                 <div class="px-3 py-3">

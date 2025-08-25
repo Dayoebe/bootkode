@@ -19,119 +19,98 @@ class DashboardSidebar extends Component
 
         if (!app()->runningInConsole()) {
             $currentRouteName = request()->route()?->getName() ?? 'dashboard';
-            $routeMap = config('menu.route_map', [
-                'super_admin.dashboard' => 'super_admin_dashboard',
-                'academy_admin.dashboard' => 'academy_admin_dashboard',
-                'instructor.dashboard' => 'instructor_dashboard',
-                'mentor.dashboard' => 'mentor_dashboard',
-                'content_editor.dashboard' => 'content_editor_dashboard',
-                'affiliate_ambassador.dashboard' => 'affiliate_ambassador_dashboard',
-                'student.dashboard' => 'student_dashboard',
-                'profile.edit' => 'profile_management',
-                'all-course' => 'all-course',
-                'course-categories' => 'course_categories',
-                'course-builder' => 'course_builder',
-                'course-reviews' => 'course_reviews',
-                'course-approvals' => 'course_approvals',
-                'user-management' => 'user-management',
-                'user.activity' => 'user.activity',
-                'settings' => 'settings',
-                'notifications' => 'notifications',
-                'help.support' => 'help.support',
-                'support.tickets' => 'support.tickets',
-                'faq.management' => 'faq.management',
-                'feedback' => 'feedback',
-                'feedback.management' => 'feedback.management',
-                'announcements' => 'announcements',
-                'announcement.management' => 'announcement.management',
-                'system-status' => 'system-status',
-                'system-status.management' => 'system-status.management',
-                'courses.available' => 'courses.available',
-                'certificates.index' => 'certificates.index',
-                'certificates.request' => 'certificates.request',
-                'certificates.templates' => 'certificates.templates',
-                'certificates.approvals' => 'certificates.approvals',
-                'certificates.public-verify' => 'certificates.public-verify',
-                'certificates.bulk' => 'certificates.bulk',
-                'certificates.approval' => 'certificates.approval',
-                'certificates.download' => 'certificates.download',
-                'course.preview' => 'course.preview',
-                'edit-course' => 'edit-course',
-                'courses.enroll' => 'courses.enroll',
-                'courses.start' => 'courses.start',
-                'courses.show' => 'courses.show',
-                'courses.approvals' => 'courses.approvals',
-                'courses.reviews' => 'courses.reviews',
-                'courses.create' => 'courses.create',
-                'courses.categories' => 'courses.categories',
-                'courses.all' => 'courses.all',
-            ]);
-
+            $routeMap = config('menu.route_map', []);
             $this->activeLink = $routeMap[$currentRouteName] ?? 'dashboard';
         }
     }
 
-    /**
-     * Get filtered menu items based on user roles, cached for performance.
-     *
-     * @return array
-     */
+    // A computed property to get the filtered menu items
     public function getFilteredMenuItemsProperty()
     {
         $user = $this->user;
+        $menuItems = config('menu.items', []);
 
-        return Cache::remember('filtered_menu_' . ($user ? $user->id : 'guest'), 3600, function () use ($user) {
-            $menuItems = config('menu.items', []);
-            $filteredMenuItems = [];
+        // Super Admin sees everything
+        if ($user && $user->hasRole(User::ROLE_SUPER_ADMIN)) {
+            return $menuItems;
+        }
 
-            foreach ($menuItems as $item) {
-                if ($user && $user->hasRole('super_admin')) {
-                    $filteredMenuItems[] = $item;
-                } elseif (empty($item['roles'])) {
-                    $filteredMenuItems[] = $item;
-                } elseif ($user && !empty($item['roles']) && $user->hasAnyRole($item['roles'])) {
-                    if (isset($item['children'])) {
-                        $filteredChildren = $this->filterMenuChildren($item['children'], $user);
-                        if (!empty($filteredChildren) || empty($item['roles'])) {
-                            $item['children'] = $filteredChildren;
-                            $filteredMenuItems[] = $item;
-                        }
-                    } else {
-                        $filteredMenuItems[] = $item;
-                    }
-                }
+        $filteredItems = [];
+        foreach ($menuItems as $item) {
+            $includeItem = false;
+
+            // Check if the user has any of the roles for the main item.
+            // An empty 'roles' array means it's for all users.
+            if (!isset($item['roles']) || empty($item['roles'])) {
+                $includeItem = true;
+            } elseif ($user && $user->hasAnyRole($item['roles'])) {
+                $includeItem = true;
             }
 
-            return $filteredMenuItems;
-        });
+            // If the main item is not included, we skip it completely.
+            if (!$includeItem) {
+                continue;
+            }
+
+            // Now, handle the children of the item.
+            if (isset($item['children']) && !empty($item['children'])) {
+                $item['children'] = $this->filterMenuChildren($item['children'], $user);
+                // If a parent item has no children after filtering, we can remove it
+                // unless it has a valid route itself.
+                if (empty($item['children']) && $item['route_name'] === '#') {
+                    continue;
+                }
+            }
+            
+            // Add the item to our list of filtered items
+            $filteredItems[] = $item;
+        }
+
+        return $filteredItems;
     }
 
     /**
-     * Filter menu children by user roles.
+     * Recursively filters menu children based on user roles.
      *
      * @param array $children
-     * @param \App\Models\User|null $user
+     * @param User $user
      * @return array
      */
-    private function filterMenuChildren($children, $user)
+    private function filterMenuChildren(array $children, $user): array
     {
-        return array_filter($children, function ($child) use ($user) {
-            return empty($child['roles']) || ($user && $user->hasRole('super_admin')) || ($user && $user->hasAnyRole($child['roles']));
-        });
+        $filteredChildren = [];
+        foreach ($children as $child) {
+            $includeChild = false;
+
+            // An empty 'roles' array means it's for all users.
+            if (!isset($child['roles']) || empty($child['roles'])) {
+                $includeChild = true;
+            } elseif ($user && $user->hasAnyRole($child['roles'])) {
+                $includeChild = true;
+            }
+
+            if ($includeChild) {
+                // Check for nested children
+                if (isset($child['children']) && !empty($child['children'])) {
+                    $child['children'] = $this->filterMenuChildren($child['children'], $user);
+                }
+                $filteredChildren[] = $child;
+            }
+        }
+        return $filteredChildren;
     }
 
-    /**
-     * Generate mobile menu items from desktop menu items.
-     *
-     * @param array $menuItems
-     * @return array
-     */
     private function generateMobileMenuItems($menuItems)
     {
+        $maxMobileItems = 5;
         $mobileItems = [];
-        $maxMobileItems = config('menu.max_mobile_items', 5);
+        $count = 0;
 
-        foreach (array_slice($menuItems, 0, $maxMobileItems) as $item) {
+        foreach ($menuItems as $item) {
+            if ($count >= $maxMobileItems - 1) {
+                break;
+            }
+
             $mobileItem = [
                 'label' => $item['label'],
                 'icon' => $item['icon'],
@@ -147,6 +126,7 @@ class DashboardSidebar extends Component
             }
 
             $mobileItems[] = $mobileItem;
+            $count++;
         }
 
         if (count($menuItems) > $maxMobileItems) {
