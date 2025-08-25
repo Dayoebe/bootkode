@@ -50,6 +50,7 @@ class Announcements extends Component
         return view('livewire.system-management.announcements', [
             'announcements' => $announcements,
             'courses' => Course::where('is_published', true)->where('is_approved', true)->get(),
+            
         ]);
     }
 }
