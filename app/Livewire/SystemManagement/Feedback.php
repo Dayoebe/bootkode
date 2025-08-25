@@ -3,7 +3,7 @@
 namespace App\Livewire\SystemManagement;
 
 use App\Models\Course;
-
+use App\Models\Feedback as FeedbackModel;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -41,18 +41,23 @@ class Feedback extends Component
             'course_id' => ['nullable', 'required_if:category,course', 'exists:courses,id'],
             'message' => ['required', 'string', 'max:2000'],
             'rating' => ['required', 'integer', 'min:1', 'max:5'],
-            'attachment' => ['nullable', 'file', 'mimes:jpg,png,pdf', 'max:2048'], // 2MB max
+            'attachment' => ['nullable', 'file', 'mimes:jpg,png,pdf', 'max:2048'],
         ];
     }
 
-    public function submitFeedback()
+    public function saveFeedback()
     {
+        if (!Auth::user()) {
+            $this->dispatch('notify', ['type' => 'error', 'message' => 'You must be logged in to submit feedback.']);
+            return;
+        }
+
         $this->validate();
 
         $data = [
             'user_id' => Auth::id(),
-            'course_id' => $this->category === 'course' ? $this->course_id : null,
             'category' => $this->category,
+            'course_id' => $this->course_id,
             'message' => $this->message,
             'rating' => $this->rating,
             'status' => 'open',
@@ -62,17 +67,17 @@ class Feedback extends Component
             $data['attachment'] = $this->attachment->store('feedback_attachments', 'public');
         }
 
-        $feedback = \App\Models\Feedback::create($data);
+        $feedback = FeedbackModel::create($data);
 
         Auth::user()->logCustomActivity('Submitted feedback: ' . $this->message, ['feedback_id' => $feedback->id]);
-        $this->dispatch('notify', 'Feedback submitted successfully!', 'success');
+        $this->dispatch('notify', ['type' => 'success', 'message' => 'Feedback submitted successfully!']);
         $this->reset(['category', 'course_id', 'message', 'rating', 'attachment']);
         $this->activeTab = 'my_feedback';
     }
 
     public function render()
     {
-        $feedbacks = \App\Models\Feedback::where('user_id', Auth::id())
+        $feedbacks = FeedbackModel::where('user_id', Auth::id())
             ->when($this->search, function ($query) {
                 $query->where('message', 'like', '%' . $this->search . '%')
                       ->orWhereHas('course', function ($q) {
