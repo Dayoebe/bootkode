@@ -54,18 +54,13 @@ class HelpSupport extends Component
         ];
 
         if ($this->attachment) {
-            $path = $this->attachment->store('ticket_attachments', 'public');
-            $data['attachment'] = $path;
+            $data['attachment'] = $this->attachment->store('support_ticket_attachments', 'public');
         }
 
         $ticket = SupportTicket::create($data);
 
-        Auth::user()->logCustomActivity('Submitted support ticket: ' . $this->subject, ['ticket_id' => $ticket->id]);
-        $this->dispatch('notify', 'Support ticket submitted successfully!', 'success');
-        $this->dispatchTo('notifications', 'notify', [
-            'message' => 'New support ticket submitted: ' . $this->subject,
-            'type' => 'success'
-        ]);
+        // Corrected dispatch method to use the Livewire 3 syntax
+        $this->dispatch('notify', 'New support ticket submitted: ' . $this->subject, 'success');
         $this->reset(['subject', 'description', 'attachment']);
         $this->activeTab = 'ticket_history';
     }
