@@ -233,15 +233,6 @@ return [
                 ['label' => 'Resume Generator', 'icon' => 'fas fa-file-alt', 'route_name' => '#', 'roles' => [User::ROLE_STUDENT]],
                 ['label' => 'Mock Interviews', 'icon' => 'fas fa-comments', 'route_name' => '#', 'roles' => [User::ROLE_STUDENT]],
                 ['label' => 'Employer Connections', 'icon' => 'fas fa-handshake', 'route_name' => '#', 'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN]],
-            ]
-        ],
-        [
-            'label' => 'Job Portal',
-            'icon' => 'fas fa-briefcase',
-            'route_name' => '#',
-            'roles' => [],
-            'link_id' => 'job_portal',
-            'children' => [
                 ['label' => 'Job Listings', 'icon' => 'fas fa-list', 'route_name' => '#', 'roles' => []],
                 ['label' => 'Post a Job', 'icon' => 'fas fa-plus-square', 'route_name' => '#', 'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_CONTENT_EDITOR, User::ROLE_SUPER_ADMIN]],
                 ['label' => 'Job Applications', 'icon' => 'fas fa-file-alt', 'route_name' => '#', 'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_CONTENT_EDITOR, User::ROLE_SUPER_ADMIN]],
@@ -253,6 +244,7 @@ return [
                 ['label' => 'Job Settings', 'icon' => 'fas fa-cog', 'route_name' => '#', 'roles' => [User::ROLE_SUPER_ADMIN]],
             ]
         ],
+     
         [
             'label' => 'Content Management',
             'icon' => 'fas fa-edit',

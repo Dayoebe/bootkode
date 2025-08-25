@@ -10,6 +10,7 @@ use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
 use Spatie\Activitylog\Traits\LogsActivity;
 use Spatie\Activitylog\LogOptions;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 class User extends Authenticatable implements MustVerifyEmail
 {
     use HasApiTokens, HasFactory, Notifiable, HasRoles, LogsActivity;
@@ -167,7 +168,11 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->hasMany(DownloadableContent::class);
     }
-
+    public function enrolledCourses(): BelongsToMany
+    {
+        return $this->belongsToMany(Course::class, 'course_enrollments', 'user_id', 'course_id')
+            ->withTimestamps();
+    }
     public function offlineNotes()
     {
         return $this->hasMany(OfflineNote::class);
