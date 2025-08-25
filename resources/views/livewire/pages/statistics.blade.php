@@ -23,7 +23,7 @@
         </div>
     </div>
 
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div class="px-4 sm:px-6 lg:px-8 py-8">
         
         <!-- Overview Cards -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
@@ -107,6 +107,51 @@
             </div>
         </div>
 
+
+            <!-- Charts and Metrics Section -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+                <!-- User Growth Chart -->
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 lg:col-span-2">
+                    <h3 class="text-xl font-bold text-slate-900 mb-4 flex items-center">
+                        <i class="fas fa-chart-line text-blue-500 mr-3"></i>
+                        User Growth (Last 12 Months)
+                    </h3>
+                    <canvas id="userGrowthChart" class="w-full h-80"></canvas>
+                </div>
+                
+                <!-- Geographic Breakdown Pie Chart -->
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                    <h3 class="text-xl font-bold text-slate-900 mb-4 flex items-center">
+                        <i class="fas fa-globe-africa text-green-500 mr-3"></i>
+                        Geographic Breakdown
+                    </h3>
+                    <canvas id="geographicChart" class="w-full h-80"></canvas>
+                </div>
+            </div>
+
+             <!-- Additional Analytics Section -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+            <!-- Course Completion Rates Chart -->
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                <h3 class="text-xl font-bold text-slate-900 mb-4 flex items-center">
+                    <i class="fas fa-percent text-purple-500 mr-3"></i>
+                    Course Completion Rates
+                </h3>
+                <canvas id="completionRatesChart" class="w-full h-80"></canvas>
+            </div>
+
+            <!-- Revenue Trend Chart -->
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                <h3 class="text-xl font-bold text-slate-900 mb-4 flex items-center">
+                    <i class="fas fa-dollar-sign text-orange-500 mr-3"></i>
+                    Revenue Trend (Last 6 Months)
+                </h3>
+                <canvas id="revenueTrendChart" class="w-full h-80"></canvas>
+            </div>
+        </div>
+
+
+        
         <!-- Charts Row 1 -->
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
             <!-- User Growth Chart -->
@@ -355,105 +400,133 @@
 
     </div>
 
-    <!-- Chart.js and Alpine.js for interactivity -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script>
-        document.addEventListener('livewire:load', function () {
-            // User Growth Chart
-            const userGrowthData = @json($userGrowthData);
-            const userGrowthCtx = document.getElementById('userGrowthChart').getContext('2d');
-            new Chart(userGrowthCtx, {
-                type: 'line',
-                data: {
-                    labels: userGrowthData.map(d => d.month),
-                    datasets: [{
-                        label: 'Cumulative Users',
-                        data: userGrowthData.map(d => d.cumulative),
-                        borderColor: '#2563eb',
-                        backgroundColor: 'rgba(59, 130, 246, 0.2)',
-                        fill: true,
-                        tension: 0.4
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    scales: {
-                        y: { beginAtZero: true },
-                        x: { grid: { display: false } }
-                    }
-                }
-            });
 
-            // Certificate Issuance Trend Chart
-            const certificateTrendData = @json($certificateStats['monthly_trend']);
-            const certificateCtx = document.getElementById('certificateChart').getContext('2d');
-            new Chart(certificateCtx, {
-                type: 'bar',
-                data: {
-                    labels: certificateTrendData.map(d => d.month),
-                    datasets: [{
-                        label: 'Certificates Issued',
-                        data: certificateTrendData.map(d => d.certificates),
-                        backgroundColor: '#a855f7',
-                        borderRadius: 5
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    scales: {
-                        y: { beginAtZero: true },
-                        x: { grid: { display: false } }
-                    }
-                }
-            });
+<!-- Add the Chart.js library -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-            // Revenue Trend Chart
-            const revenueTrendData = @json($revenueData['revenue_by_month']);
-            const revenueCtx = document.getElementById('revenueChart').getContext('2d');
-            new Chart(revenueCtx, {
-                type: 'line',
-                data: {
-                    labels: revenueTrendData.map(d => d.month),
-                    datasets: [{
-                        label: 'Monthly Revenue',
-                        data: revenueTrendData.map(d => d.amount),
-                        borderColor: '#10b981',
-                        backgroundColor: 'rgba(16, 185, 129, 0.2)',
-                        fill: true,
-                        tension: 0.4
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    scales: {
-                        y: { beginAtZero: true },
-                        x: { grid: { display: false } }
-                    }
+<script>
+    // Wait for the window to load before running the script
+    window.onload = function() {
+        // --- User Growth Chart ---
+        const userGrowthData = @json($userGrowthData);
+        const userGrowthCtx = document.getElementById('userGrowthChart').getContext('2d');
+        new Chart(userGrowthCtx, {
+            type: 'line',
+            data: {
+                labels: userGrowthData.map(d => d.month),
+                datasets: [{
+                    label: 'Cumulative Users',
+                    data: userGrowthData.map(d => d.cumulative),
+                    borderColor: '#3b82f6',
+                    backgroundColor: 'rgba(59, 130, 246, 0.2)',
+                    fill: true,
+                    tension: 0.4
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: { beginAtZero: true },
+                    x: { grid: { display: false } }
                 }
-            });
-
-            // Weekly User Pattern Chart
-            const weeklyPatternData = @json($timeBasedAnalytics['weekly_pattern']);
-            const weeklyPatternCtx = document.getElementById('weeklyPatternChart').getContext('2d');
-            new Chart(weeklyPatternCtx, {
-                type: 'bar',
-                data: {
-                    labels: weeklyPatternData.map(d => d.day),
-                    datasets: [{
-                        label: 'Active Users',
-                        data: weeklyPatternData.map(d => d.users),
-                        backgroundColor: '#f59e0b',
-                        borderRadius: 5
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    scales: {
-                        y: { beginAtZero: true },
-                        x: { grid: { display: false } }
-                    }
-                }
-            });
+            }
         });
-    </script>
+
+        // --- Geographic Breakdown Chart ---
+        const geographicData = @json($geographicData);
+        // Prepare data for the pie chart
+        const geoLabels = Object.keys(geographicData);
+        const geoUsers = Object.values(geographicData).map(d => d.users);
+        const geographicCtx = document.getElementById('geographicChart').getContext('2d');
+        new Chart(geographicCtx, {
+            type: 'pie',
+            data: {
+                labels: geoLabels,
+                datasets: [{
+                    label: 'Users by Country',
+                    data: geoUsers,
+                    backgroundColor: [
+                        '#3b82f6', '#10b981', '#a855f7', '#f59e0b', '#ef4444', '#64748b'
+                    ]
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                let label = context.label || '';
+                                if (label) {
+                                    label += ': ';
+                                }
+                                if (context.parsed !== null) {
+                                    label += context.parsed + ' users (' + geographicData[context.label].percentage + '%)';
+                                }
+                                return label;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        // --- Course Completion Rates Chart ---
+        const completionRatesData = @json($completionRates['overall_trend']);
+        const completionRatesCtx = document.getElementById('completionRatesChart').getContext('2d');
+        new Chart(completionRatesCtx, {
+            type: 'bar',
+            data: {
+                labels: completionRatesData.map(d => d.month),
+                datasets: [{
+                    label: 'Completion Rate',
+                    data: completionRatesData.map(d => d.rate),
+                    backgroundColor: '#a855f7',
+                    borderRadius: 5
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 100
+                    },
+                    x: {
+                        grid: { display: false }
+                    }
+                }
+            }
+        });
+        
+        // --- Revenue Trend Chart ---
+        const revenueTrendData = @json($revenueData['revenue_by_month']);
+        const revenueTrendCtx = document.getElementById('revenueTrendChart').getContext('2d');
+        new Chart(revenueTrendCtx, {
+            type: 'line',
+            data: {
+                labels: revenueTrendData.map(d => d.month),
+                datasets: [{
+                    label: 'Revenue',
+                    data: revenueTrendData.map(d => d.amount),
+                    borderColor: '#10b981',
+                    backgroundColor: 'rgba(16, 185, 129, 0.2)',
+                    fill: true,
+                    tension: 0.4
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: { beginAtZero: true },
+                    x: { grid: { display: false } }
+                }
+            }
+        });
+    }
+</script>
+
 </div>
