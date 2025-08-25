@@ -229,7 +229,7 @@
                         labels: @json($roles),
                         datasets: [{
                             label: 'Unverified Users by Role',
-                            data: @json($this->getRoleStats()->values()),
+                            data: @json($roleStats->values()),
                             backgroundColor: 'rgba(59, 130, 246, 0.5)',
                             borderColor: 'rgba(59, 130, 246, 1)',
                             borderWidth: 1

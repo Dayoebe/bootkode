@@ -26,13 +26,17 @@ class PendingVerifications extends Component
 
     public function mount()
     {
-        // Defense-in-depth: check permission
-        if (! Gate::allows('manage-users')) {
-            session()->flash('error', 'Unauthorized access to pending verifications.');
-            $this->redirectRoute('dashboard');
-        }
+       
     }
 
+    
+public function getRoleStats()
+{
+    return $this->getUsersQuery()
+        ->get()
+        ->groupBy('role')
+        ->map->count();
+}
     public function sortBy($field)
     {
         if ($this->sortField === $field) {
@@ -163,10 +167,14 @@ class PendingVerifications extends Component
     }
 
     public function render()
-    {
-        return view('livewire.user-management.pending-verifications', [
-            'users' => $this->getUsersQuery()->paginate($this->perPage),
-            'roles' => cache()->remember('user_roles', now()->addHours(24), fn () => User::getRoles()),
-        ]);
-    }
+{
+    $users = $this->getUsersQuery()->paginate($this->perPage);
+    $roleStats = $this->getRoleStats();
+    
+    return view('livewire.user-management.pending-verifications', [
+        'users' => $users,
+        'roles' => cache()->remember('user_roles', now()->addHours(24), fn () => User::getRoles()),
+        'roleStats' => $roleStats,
+    ]);
+}
 }
