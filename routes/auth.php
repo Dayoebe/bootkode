@@ -6,7 +6,7 @@ use App\Http\Controllers\Auth\EmailVerificationController;
 use App\Http\Controllers\DashboardController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\SocialAuthController; 
-use App\Livewire\Home;
+use App\Livewire\Pages\Home;
 
 // Public Home Page
 Route::get('/', Home::class)->name('home');

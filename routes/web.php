@@ -19,6 +19,16 @@ use App\Livewire\CertificateManagement\CertificateManagement;
 */
 
 // =============================================================================
+// PUBLIC PAGES (No Authentication Required)
+// =============================================================================
+
+// Public Certificate Verification Routes
+
+    Route::get('/About', \App\Livewire\Pages\AboutUs::class)->name('about');
+    Route::get('/Contact', \App\Livewire\Pages\ContactUs::class)->name('contact');
+    Route::get('/Statistics', \App\Livewire\Pages\Statistics::class)->name('statistics');
+
+// =============================================================================
 // PUBLIC ROUTES (No Authentication Required)
 // =============================================================================
 

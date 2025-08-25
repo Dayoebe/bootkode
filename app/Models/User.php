@@ -150,6 +150,10 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasMany(Wishlist::class);
     }
 
+    public function reviews()
+    {
+        return $this->hasMany(CourseReview::class, 'user_id');
+    }
     public function enrollments()
     {
         return $this->hasMany(CourseEnrollment::class);

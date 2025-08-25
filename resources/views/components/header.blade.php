@@ -7,7 +7,7 @@
         community: false
     }
 }">
-    <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <nav class=" px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between items-center h-16">
             <!-- Logo -->
             <div class="flex-shrink-0 flex items-center">
@@ -169,12 +169,26 @@
                 </a>
 
                 <!-- About Link -->
-                <a href="#"
+                <a href="{{ route('about') }}"
                     class="px-4 py-2 text-gray-700 hover:text-blue-400 font-medium hover:uppercase transition-all duration-300 relative nav-link group">
                     <span>About Us</span>
                     <span
                         class="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-0 h-0.5 bg-blue-400 transition-all duration-300 group-hover:w-3/4"></span>
                 </a>
+                    <!-- Contact Link -->
+                    <a href="{{ route('contact') }}"
+                    class="px-4 py-2 text-gray-700 hover:text-blue-400 font-medium hover:uppercase transition-all duration-300 relative nav-link group">
+                    <span>Contact Us</span>
+                    <span
+                        class="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-0 h-0.5 bg-blue-400 transition-all duration-300 group-hover:w-3/4"></span>
+                </a>
+                         <!-- Statistics Link -->
+                         <a href="{{ route('statistics') }}"
+                         class="px-4 py-2 text-gray-700 hover:text-blue-400 font-medium hover:uppercase transition-all duration-300 relative nav-link group">
+                         <span>Statistics</span>
+                         <span
+                             class="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-0 h-0.5 bg-blue-400 transition-all duration-300 group-hover:w-3/4"></span>
+                     </a>
             </div>
 
             <!-- Right Section - Auth Buttons & Search -->
@@ -376,11 +390,16 @@
                 </a>
 
                 <!-- Mobile: About Link -->
-                <a href="#" class="flex items-center px-3 py-3 text-gray-700 rounded-lg hover:bg-blue-50">
+                <a href="{{ route('about') }}" class="flex items-center px-3 py-3 text-gray-700 rounded-lg hover:bg-blue-50">
                     <i class="fas fa-info-circle text-blue-400 mr-3"></i>
                     <span class="font-medium hover:uppercase">About Us</span>
                 </a>
 
+                  <!-- Mobile: Contact Link -->
+                  <a href="{{ route('contact') }}" class="flex items-center px-3 py-3 text-gray-700 rounded-lg hover:bg-blue-50">
+                    <i class="fas fa-info-circle text-blue-400 mr-3"></i>
+                    <span class="font-medium hover:uppercase">Contact Us</span>
+                </a>
                 <!-- Mobile: Search -->
                 <div class="px-3 py-3">
                     <div class="relative">

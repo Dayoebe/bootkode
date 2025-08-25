@@ -40,11 +40,14 @@
             <div class="space-y-4">
                 <h3 class="text-lg font-semibold text-blue-400 uppercase tracking-wider">Explore</h3>
                 <ul class="space-y-3">
-                    <li><a href="#" class="text-gray-400 hover:text-white text-sm transition duration-300 flex items-center">
+                    <li><a href="{{ route('about') }}" class="text-gray-400 hover:text-white text-sm transition duration-300 flex items-center">
                         <i class="fas fa-chevron-right text-xs mr-2 text-blue-400"></i> About Us
                     </a></li>
-                    <li><a href="#" class="text-gray-400 hover:text-white text-sm transition duration-300 flex items-center">
-                        <i class="fas fa-chevron-right text-xs mr-2 text-blue-400"></i> Learning Paths
+                    <li><a href="{{ route('contact') }}" class="text-gray-400 hover:text-white text-sm transition duration-300 flex items-center">
+                        <i class="fas fa-chevron-right text-xs mr-2 text-blue-400"></i> Contact Us
+                    </a></li>
+                    <li><a href="{{ route('statistics') }}" class="text-gray-400 hover:text-white text-sm transition duration-300 flex items-center">
+                        <i class="fas fa-chevron-right text-xs mr-2 text-blue-400"></i> Statistics
                     </a></li>
                     <li><a href="#" class="text-gray-400 hover:text-white text-sm transition duration-300 flex items-center">
                         <i class="fas fa-chevron-right text-xs mr-2 text-blue-400"></i> Certification
