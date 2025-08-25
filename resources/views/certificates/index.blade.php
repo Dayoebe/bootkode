@@ -1,6 +1,3 @@
-<?php
-// resources/views/student/certificates/index.blade.php
-?>
 <x-app-layout>
 <div class="min-h-screen bg-gray-900 p-6">
     <div class="max-w-7xl mx-auto">

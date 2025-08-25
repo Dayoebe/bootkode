@@ -302,5 +302,25 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         $this->notify(new \App\Notifications\CustomVerifyEmail());
     }
+    // Role
+public function canManageCertificates(): bool
+{
+    return $this->isSuperAdmin() || $this->isAcademyAdmin() || $this->isInstructor();
+}
+
+public function canApproveAllCertificates(): bool
+{
+    return $this->isSuperAdmin() || $this->isAcademyAdmin();
+}
+
+public function canManageUsers(): bool
+{
+    return $this->isSuperAdmin() || $this->isAcademyAdmin();
+}
+
+public function canManageCourses(): bool
+{
+    return !$this->isStudent(); // Everyone except students
+}
 
 }

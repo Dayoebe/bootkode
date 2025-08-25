@@ -23,18 +23,18 @@ return [
         [
             'label' => 'Profile',
             'icon' => 'fas fa-user',
-            'route_name' => '#',
+            'route_name' => 'profile.view',
             'roles' => [],
-            'link_id' => 'profile',
+            'link_id' => 'profile.view',
             'children' => [
                 ['label' => 'View Profile', 'icon' => 'fas fa-user', 'route_name' => 'profile.view', 'roles' => [], 'link_id' => 'profile.view',],
-                ['label' => 'Edit Profile', 'icon' => 'fas fa-user-edit', 'route_name' => 'profile.edit', 'roles' => [], 'link_id' => 'profile.edit',],
+                // ['label' => 'Edit Profile', 'icon' => 'fas fa-user-edit', 'route_name' => 'profile.edit', 'roles' => [], 'link_id' => 'profile.edit',],
             ]
         ],
         [
             'label' => 'User Management',
             'icon' => 'fas fa-users-cog',
-            'route_name' => ('user-management'),
+            'route_name' => 'user-management',
             'roles' => [User::ROLE_SUPER_ADMIN, User::ROLE_ACADEMY_ADMIN],
             'link_id' => 'user_management',
             'children' => [
@@ -134,9 +134,9 @@ return [
                 [
                     'label' => 'My Certificates',
                     'icon' => 'fas fa-award',
-                    'route_name' => 'student.certificates.index',
+                    'route_name' => 'certificates.index',
                     'roles' => [User::ROLE_STUDENT],
-                    'link_id' => 'student.certificates.index'
+                    'link_id' => 'certificates.index'
                 ],
 
                 // Admin/Instructor Certificate Management
