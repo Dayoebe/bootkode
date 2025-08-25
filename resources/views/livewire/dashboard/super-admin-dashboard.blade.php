@@ -1,6 +1,6 @@
-<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8" x-data="{ notificationsOpen: false }">
+<div class="px-4 sm:px-6 lg:px-8 py-8" x-data="{ notificationsOpen: false }">
     <!-- Welcome Header -->
-    <div class="bg-gradient-to-r from-blue-800 to-purple-700 p-8 rounded-2xl shadow-xl border border-gray-700 flex flex-col md:flex-row items-center justify-between mb-8 animate__animated animate__fadeIn">
+    <div class="bg-blue-800 p-8 rounded-2xl shadow-xl border border-gray-700 flex flex-col md:flex-row items-center justify-between mb-8 animate__animated animate__fadeIn">
         <div class="text-white">
             <h1 class="text-3xl font-extrabold mb-2">
                 <i class="fas fa-user-shield mr-2"></i> Welcome Back, {{ auth()->user()->name }}!

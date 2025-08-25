@@ -27,6 +27,7 @@ use App\Livewire\CertificateManagement\CertificateManagement;
     Route::get('/About', \App\Livewire\Pages\AboutUs::class)->name('about');
     Route::get('/Contact', \App\Livewire\Pages\ContactUs::class)->name('contact');
     Route::get('/Statistics', \App\Livewire\Pages\Statistics::class)->name('statistics');
+    Route::get('/Guideline', \App\Livewire\Pages\Guideline::class)->name('guideline');
 
 // =============================================================================
 // PUBLIC ROUTES (No Authentication Required)
