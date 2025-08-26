@@ -18,13 +18,12 @@ class StudentAssessmentTaker extends Component
     public $answers = [];
     public $currentQuestionIndex = 0;
     public $isSubmitted = false;
-    public $showResults = false;
     public $results = [];
     public $timeRemaining = null;
     public $attemptStarted = false;
     public $userAttempt = null;
     
-    // Assessment states: 'list', 'taking', 'results', 'completed'
+    // Assessment states: 'list', 'taking', 'results'
     public $assessmentState = 'list';
 
     public function mount($lesson)
@@ -36,7 +35,9 @@ class StudentAssessmentTaker extends Component
     protected function loadAssessments()
     {
         $this->assessments = Assessment::where('lesson_id', $this->lesson->id)
-            ->with(['questions'])
+            ->with(['questions' => function($query) {
+                $query->orderBy('order');
+            }])
             ->orderBy('order')
             ->get();
     }
@@ -50,75 +51,59 @@ class StudentAssessmentTaker extends Component
         // Check if user has already completed this assessment
         $existingAttempt = $this->getUserLatestAttempt();
         
-        if ($existingAttempt && $this->currentAssessment->type === 'quiz') {
-            $this->userAttempt = $existingAttempt;
-            $this->loadExistingAnswers();
-            $this->showResults = true;
-            $this->assessmentState = 'results';
+        // If showing results instead of starting
+        if ($existingAttempt) {
+            $this->showAssessmentResults($existingAttempt);
             return;
         }
 
-        $this->questions = $this->currentAssessment->questions;
-        $this->initializeAnswers();
-        $this->currentQuestionIndex = 0;
-        $this->attemptStarted = true;
-        $this->isSubmitted = false;
-        $this->showResults = false;
-        $this->assessmentState = 'taking';
-        
-        // Set time limit if applicable
-        if ($this->currentAssessment->estimated_duration_minutes) {
-            $this->timeRemaining = $this->currentAssessment->estimated_duration_minutes * 60;
-        }
+        $this->initializeAssessment();
+    }
 
+    public function retakeAssessment($assessmentId = null)
+    {
+        if ($assessmentId) {
+            $this->currentAssessment = Assessment::with(['questions' => function($query) {
+                $query->orderBy('order');
+            }])->findOrFail($assessmentId);
+        }
+        
+        $this->initializeAssessment();
+    }
+
+    protected function initializeAssessment()
+    {
+        $this->questions = $this->currentAssessment->questions;
+        $this->currentQuestionIndex = 0;
+        $this->answers = [];
+        $this->isSubmitted = false;
+        $this->results = [];
+        $this->timeRemaining = $this->currentAssessment->time_limit ? $this->currentAssessment->time_limit * 60 : null;
+        $this->attemptStarted = true;
+        
+        $latestAttempt = $this->getUserLatestAttempt();
+        $this->userAttempt = $latestAttempt ? $latestAttempt->attempt_number + 1 : 1;
+        
+        $this->assessmentState = 'taking';
         $this->dispatch('assessment-started');
     }
 
-    protected function initializeAnswers()
+    protected function showAssessmentResults($latestAttempt)
     {
+        $this->userAttempt = $latestAttempt->attempt_number;
+        $this->calculateResults();
+        $this->assessmentState = 'results';
+    }
+
+    public function backToAssessmentList()
+    {
+        $this->assessmentState = 'list';
+        $this->currentAssessment = null;
+        $this->questions = [];
         $this->answers = [];
-        foreach ($this->questions as $question) {
-            $this->answers[$question->id] = null;
-        }
-    }
-
-    protected function getUserLatestAttempt()
-    {
-        if (!$this->currentAssessment) return null;
-
-        return StudentAnswer::where('user_id', Auth::id())
-            ->where('assessment_id', $this->currentAssessment->id)
-            ->orderBy('attempt_number', 'desc')
-            ->first();
-    }
-
-    protected function loadExistingAnswers()
-    {
-        $studentAnswers = StudentAnswer::where('user_id', Auth::id())
-            ->where('assessment_id', $this->currentAssessment->id)
-            ->where('attempt_number', $this->userAttempt->attempt_number)
-            ->with('question')
-            ->get();
-
-        $this->results = [
-            'total_questions' => $this->currentAssessment->questions->count(),
-            'correct_answers' => $studentAnswers->where('is_correct', true)->count(),
-            'total_points' => $studentAnswers->sum('points_earned'),
-            'max_points' => $this->currentAssessment->questions->sum('points'),
-            'percentage' => 0,
-            'passed' => false,
-            'answers' => $studentAnswers->keyBy('question_id')
-        ];
-
-        if ($this->results['max_points'] > 0) {
-            $this->results['percentage'] = round(($this->results['total_points'] / $this->results['max_points']) * 100, 1);
-            $this->results['passed'] = $this->results['percentage'] >= $this->currentAssessment->pass_percentage;
-        }
-    }
-
-    public function answerQuestion($questionId, $answer)
-    {
-        $this->answers[$questionId] = $answer;
+        $this->results = [];
+        $this->isSubmitted = false;
+        $this->attemptStarted = false;
     }
 
     public function nextQuestion()
@@ -142,112 +127,32 @@ class StudentAssessmentTaker extends Component
         }
     }
 
-    public function submitAssessment()
-    {
-        if (!$this->currentAssessment || $this->isSubmitted) {
-            return;
-        }
-
-        $attemptNumber = $this->getNextAttemptNumber();
-        $submittedAt = now();
-
-        // Save all answers
-        foreach ($this->questions as $question) {
-            $answer = $this->answers[$question->id] ?? null;
-            
-            $studentAnswer = StudentAnswer::create([
-                'user_id' => Auth::id(),
-                'assessment_id' => $this->currentAssessment->id,
-                'question_id' => $question->id,
-                'attempt_number' => $attemptNumber,
-                'answer' => is_array($answer) ? $answer : [$answer],
-                'submitted_at' => $submittedAt,
-                'time_spent' => $this->calculateTimeSpent()
-            ]);
-
-            // Auto-grade if possible
-            $studentAnswer->autoGrade();
-        }
-
-        $this->isSubmitted = true;
-        $this->userAttempt = StudentAnswer::where('user_id', Auth::id())
-            ->where('assessment_id', $this->currentAssessment->id)
-            ->where('attempt_number', $attemptNumber)
-            ->first();
-
-        $this->loadExistingAnswers();
-        $this->showResults = true;
-        $this->assessmentState = 'results';
-
-        $this->dispatch('notify', [
-            'message' => 'Assessment submitted successfully!',
-            'type' => 'success'
-        ]);
-
-        $this->dispatch('assessment-completed', [
-            'assessmentId' => $this->currentAssessment->id,
-            'passed' => $this->results['passed']
-        ]);
-    }
-
-    protected function getNextAttemptNumber()
-    {
-        $lastAttempt = StudentAnswer::where('user_id', Auth::id())
-            ->where('assessment_id', $this->currentAssessment->id)
-            ->max('attempt_number');
-
-        return ($lastAttempt ?? 0) + 1;
-    }
-
-    protected function calculateTimeSpent()
-    {
-        if ($this->currentAssessment->estimated_duration_minutes && $this->timeRemaining) {
-            return ($this->currentAssessment->estimated_duration_minutes * 60) - $this->timeRemaining;
-        }
-        return 0;
-    }
-
-    public function retakeAssessment()
-    {
-        // Reset state for retake
-        $this->initializeAnswers();
-        $this->currentQuestionIndex = 0;
-        $this->isSubmitted = false;
-        $this->showResults = false;
-        $this->assessmentState = 'taking';
-        $this->userAttempt = null;
-        
-        if ($this->currentAssessment->estimated_duration_minutes) {
-            $this->timeRemaining = $this->currentAssessment->estimated_duration_minutes * 60;
-        }
-    }
-
-    public function backToAssessmentList()
-    {
-        $this->currentAssessment = null;
-        $this->questions = [];
-        $this->answers = [];
-        $this->currentQuestionIndex = 0;
-        $this->isSubmitted = false;
-        $this->showResults = false;
-        $this->assessmentState = 'list';
-        $this->userAttempt = null;
-    }
-
     public function getCurrentQuestion()
     {
         return $this->questions[$this->currentQuestionIndex] ?? null;
     }
 
+    protected function getUserLatestAttempt()
+    {
+        return StudentAnswer::where('user_id', Auth::id())
+            ->where('assessment_id', $this->currentAssessment->id)
+            ->orderBy('attempt_number', 'desc')
+            ->first();
+    }
+
     public function getQuestionProgress()
     {
-        if (empty($this->questions)) return 0;
+        if ($this->questions->isEmpty()) {
+            return 0;
+        }
         return round((($this->currentQuestionIndex + 1) / count($this->questions)) * 100);
     }
 
     public function isQuestionAnswered($questionId)
     {
-        return isset($this->answers[$questionId]) && $this->answers[$questionId] !== null && $this->answers[$questionId] !== '';
+        return isset($this->answers[$questionId]) && 
+               $this->answers[$questionId] !== null && 
+               $this->answers[$questionId] !== '';
     }
 
     public function getAnsweredQuestionsCount()
@@ -278,6 +183,167 @@ class StudentAssessmentTaker extends Component
                 'message' => 'Time limit reached. Assessment submitted automatically.',
                 'type' => 'warning'
             ]);
+        }
+    }
+
+    public function submitAssessment()
+    {
+        if ($this->isSubmitted) {
+            return;
+        }
+
+        $this->isSubmitted = true;
+        $this->saveAnswers();
+        $this->calculateResults();
+        $this->assessmentState = 'results';
+
+        // Notify parent component about assessment completion
+        $this->dispatch('assessment-completed')->to('student-management.course-view.lesson-content-viewer');
+        
+        $score = $this->results['percentage'] ?? 0;
+        $passed = $this->results['passed'] ?? false;
+        
+        if ($passed) {
+            $this->dispatch('notify', [
+                'message' => "Assessment completed successfully! Your score: {$score}%",
+                'type' => 'success'
+            ]);
+        } else {
+            $this->dispatch('notify', [
+                'message' => "Assessment completed. Score: {$score}%. You can retake this assessment.",
+                'type' => 'warning'
+            ]);
+        }
+    }
+
+    protected function saveAnswers()
+    {
+        foreach ($this->questions as $question) {
+            $userAnswer = $this->answers[$question->id] ?? null;
+            
+            if ($userAnswer === null || $userAnswer === '') {
+                continue;
+            }
+
+            $isCorrect = $this->checkAnswer($question, $userAnswer);
+            $pointsEarned = $isCorrect ? $question->points : 0;
+
+            StudentAnswer::updateOrCreate(
+                [
+                    'user_id' => Auth::id(),
+                    'assessment_id' => $this->currentAssessment->id,
+                    'question_id' => $question->id,
+                    'attempt_number' => $this->userAttempt,
+                ],
+                [
+                    'answer' => is_array($userAnswer) ? json_encode($userAnswer) : $userAnswer,
+                    'is_correct' => $isCorrect,
+                    'points_earned' => $pointsEarned,
+                    'submitted_at' => now(),
+                ]
+            );
+        }
+    }
+
+    protected function checkAnswer($question, $userAnswer)
+    {
+        switch ($question->question_type) {
+            case 'multiple_choice':
+                if ($question->hasMultipleCorrectAnswers()) {
+                    // Handle multiple correct answers
+                    $correctAnswers = is_array($question->correct_answer) 
+                        ? $question->correct_answer 
+                        : json_decode($question->correct_answer, true);
+                    $userAnswers = is_array($userAnswer) ? $userAnswer : [$userAnswer];
+                    
+                    return empty(array_diff($correctAnswers, $userAnswers)) && 
+                           empty(array_diff($userAnswers, $correctAnswers));
+                } else {
+                    return $userAnswer == $question->correct_answer;
+                }
+                
+            case 'true_false':
+                return $userAnswer == $question->correct_answer;
+                
+            case 'short_answer':
+            case 'fill_blank':
+                return strtolower(trim($userAnswer)) === strtolower(trim($question->correct_answer));
+                
+            case 'essay':
+                // Essays need manual grading - return false for now
+                return false;
+                
+            default:
+                return false;
+        }
+    }
+
+    protected function calculateResults()
+    {
+        $studentAnswers = StudentAnswer::where('user_id', Auth::id())
+            ->where('assessment_id', $this->currentAssessment->id)
+            ->where('attempt_number', $this->userAttempt)
+            ->with('question')
+            ->get()
+            ->keyBy('question_id');
+
+        $totalPoints = 0;
+        $maxPoints = 0;
+        $correctAnswers = 0;
+        $totalQuestions = $this->questions->count();
+        $answersData = [];
+
+        foreach ($this->questions as $question) {
+            $maxPoints += $question->points;
+            $studentAnswer = $studentAnswers->get($question->id);
+            
+            if ($studentAnswer) {
+                $totalPoints += $studentAnswer->points_earned;
+                if ($studentAnswer->is_correct) {
+                    $correctAnswers++;
+                }
+                
+                // Format the answer for display
+                $formattedAnswer = $this->formatAnswerForDisplay($question, $studentAnswer->answer);
+                $studentAnswer->formatted_answer = $formattedAnswer;
+                $answersData[$question->id] = $studentAnswer;
+            }
+        }
+
+        $percentage = $maxPoints > 0 ? round(($totalPoints / $maxPoints) * 100, 1) : 0;
+        $passed = $percentage >= $this->currentAssessment->pass_percentage;
+
+        $this->results = [
+            'passed' => $passed,
+            'percentage' => $percentage,
+            'correct_answers' => $correctAnswers,
+            'total_questions' => $totalQuestions,
+            'total_points' => $totalPoints,
+            'max_points' => $maxPoints,
+            'answers' => $answersData,
+        ];
+    }
+
+    protected function formatAnswerForDisplay($question, $answer)
+    {
+        switch ($question->question_type) {
+            case 'multiple_choice':
+            case 'true_false':
+                $options = json_decode($question->options, true) ?? [];
+                if (is_array($answer)) {
+                    $formattedAnswers = [];
+                    foreach (json_decode($answer, true) as $index) {
+                        if (isset($options[$index])) {
+                            $formattedAnswers[] = chr(65 + $index) . '. ' . $options[$index];
+                        }
+                    }
+                    return implode(', ', $formattedAnswers);
+                } else {
+                    return isset($options[$answer]) ? chr(65 + $answer) . '. ' . $options[$answer] : $answer;
+                }
+                
+            default:
+                return $answer;
         }
     }
 

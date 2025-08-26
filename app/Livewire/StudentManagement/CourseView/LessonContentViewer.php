@@ -4,6 +4,8 @@ namespace App\Livewire\StudentManagement\CourseView;
 
 use Livewire\Component;
 use App\Models\Lesson;
+use App\Models\Assessment;
+use App\Models\StudentAnswer;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\On;
 
@@ -15,6 +17,8 @@ class LessonContentViewer extends Component
     public $isCompleted = false;
     public $completedLessons;
     public $unlockedSections;
+    public $hasAssessments = false;
+    public $allAssessmentsPassed = false;
 
     public function mount($lesson, $allLessons, $completedLessons = [], $unlockedSections = [])
     {
@@ -47,16 +51,79 @@ class LessonContentViewer extends Component
         }
         
         $this->isCompleted = in_array($this->lesson->id, $this->completedLessons);
+        
+        // Check for assessments
+        $this->checkAssessments();
+    }
+
+    protected function checkAssessments()
+    {
+        // Check if lesson has assessments
+        $assessments = Assessment::where('lesson_id', $this->lesson->id)->get();
+        $this->hasAssessments = $assessments->count() > 0;
+        
+        if ($this->hasAssessments) {
+            $this->allAssessmentsPassed = $this->checkAllAssessmentsPassed($assessments);
+        } else {
+            $this->allAssessmentsPassed = true; // If no assessments, consider passed
+        }
+    }
+
+    protected function checkAllAssessmentsPassed($assessments)
+    {
+        foreach ($assessments as $assessment) {
+            // Get the latest attempt for this assessment
+            $latestAttempt = StudentAnswer::where('user_id', Auth::id())
+                ->where('assessment_id', $assessment->id)
+                ->orderBy('attempt_number', 'desc')
+                ->first();
+
+            if (!$latestAttempt) {
+                return false; // No attempt made
+            }
+
+            // Calculate score for the latest attempt
+            $totalPoints = StudentAnswer::where('user_id', Auth::id())
+                ->where('assessment_id', $assessment->id)
+                ->where('attempt_number', $latestAttempt->attempt_number)
+                ->sum('points_earned');
+
+            $maxPoints = $assessment->questions->sum('points');
+            $percentage = $maxPoints > 0 ? round(($totalPoints / $maxPoints) * 100, 1) : 0;
+
+            // Check if passed
+            if ($percentage < $assessment->pass_percentage) {
+                return false;
+            }
+        }
+
+        return true; // All assessments passed
     }
 
     #[On('progress-updated')]
     public function refreshProgress()
     {
         $this->isCompleted = in_array($this->lesson->id, $this->completedLessons);
+        $this->checkAssessments(); // Re-check assessments
+    }
+
+    #[On('assessment-completed')]
+    public function handleAssessmentCompleted()
+    {
+        $this->checkAssessments(); // Re-check assessments when one is completed
     }
 
     public function markAsCompleted()
     {
+        // Check if assessments are required and passed
+        if ($this->hasAssessments && !$this->allAssessmentsPassed) {
+            $this->dispatch('notify', [
+                'message' => 'You must pass all assessments in this lesson before marking it as complete.',
+                'type' => 'warning'
+            ]);
+            return;
+        }
+
         if (!$this->isCompleted) {
             $this->dispatch('lesson-completed', lessonId: $this->lesson->id)
                 ->to('student-management.course-view');
@@ -97,6 +164,15 @@ class LessonContentViewer extends Component
 
     public function goToNextLesson()
     {
+        // Check if current lesson has assessments that need to be passed
+        if ($this->hasAssessments && !$this->allAssessmentsPassed) {
+            $this->dispatch('notify', [
+                'message' => 'You must pass all assessments in this lesson before proceeding to the next lesson.',
+                'type' => 'warning'
+            ]);
+            return;
+        }
+
         $nextLesson = $this->allLessons[$this->currentIndex + 1] ?? null;
         if ($nextLesson) {
             $lessonId = is_object($nextLesson) ? $nextLesson->id : $nextLesson['id'];
@@ -136,6 +212,15 @@ class LessonContentViewer extends Component
 
     public function completeCourse()
     {
+        // Check if current lesson has assessments that need to be passed
+        if ($this->hasAssessments && !$this->allAssessmentsPassed) {
+            $this->dispatch('notify', [
+                'message' => 'You must pass all assessments in this lesson before completing the course.',
+                'type' => 'warning'
+            ]);
+            return;
+        }
+
         // Mark current lesson as completed if not already
         if (!$this->isCompleted) {
             $this->markAsCompleted();
@@ -147,7 +232,7 @@ class LessonContentViewer extends Component
         ]);
 
         // You could redirect to a course completion page or certificate page
-        // return redirect()->route('course.completed', $this->lesson->section->course);
+        return redirect()->route('certificates.index', $this->lesson->section->course);
     }
 
     public function render()

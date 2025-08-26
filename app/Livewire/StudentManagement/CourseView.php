@@ -6,6 +6,8 @@ use Livewire\Component;
 use App\Models\Course;
 use App\Models\Section;
 use App\Models\Lesson;
+use App\Models\Assessment;
+use App\Models\StudentAnswer;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
@@ -151,6 +153,15 @@ class CourseView extends Component
     public function handleLessonCompleted($lessonId)
     {
         if (!in_array($lessonId, $this->completedLessons)) {
+            // Check if lesson has required assessments that need to be passed first
+            if (!$this->canCompleteLessonWithoutAssessments($lessonId)) {
+                $this->dispatch('notify', [
+                    'message' => 'You must pass all required assessments before marking this lesson as complete.',
+                    'type' => 'warning'
+                ]);
+                return;
+            }
+
             try {
                 Auth::user()->completedLessons()->attach($lessonId, ['completed_at' => now()]);
                 $this->completedLessons[] = $lessonId;
@@ -175,6 +186,42 @@ class CourseView extends Component
                 ]);
             }
         }
+    }
+
+    protected function canCompleteLessonWithoutAssessments($lessonId)
+    {
+        $assessments = Assessment::where('lesson_id', $lessonId)->get();
+        
+        if ($assessments->isEmpty()) {
+            return true; // No assessments, can complete
+        }
+
+        // Check if all assessments are passed
+        foreach ($assessments as $assessment) {
+            $latestAttempt = StudentAnswer::where('user_id', Auth::id())
+                ->where('assessment_id', $assessment->id)
+                ->orderBy('attempt_number', 'desc')
+                ->first();
+
+            if (!$latestAttempt) {
+                return false; // No attempt made
+            }
+
+            // Calculate score for the latest attempt
+            $totalPoints = StudentAnswer::where('user_id', Auth::id())
+                ->where('assessment_id', $assessment->id)
+                ->where('attempt_number', $latestAttempt->attempt_number)
+                ->sum('points_earned');
+
+            $maxPoints = $assessment->questions->sum('points');
+            $percentage = $maxPoints > 0 ? round(($totalPoints / $maxPoints) * 100, 1) : 0;
+
+            if ($percentage < $assessment->pass_percentage) {
+                return false; // Assessment not passed
+            }
+        }
+
+        return true; // All assessments passed
     }
 
     #[On('lesson-uncompleted')]
