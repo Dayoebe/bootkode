@@ -20,10 +20,14 @@ class LessonContentViewer extends Component
     public $hasAssessments = false;
     public $allAssessmentsPassed = false;
 
+    // Polling management
+    public $lastAssessmentCheck;
+    public $shouldPoll = false;
+
     public function mount($lesson, $allLessons, $completedLessons = [], $unlockedSections = [])
     {
         $this->lesson = $lesson;
-        
+
         // Ensure allLessons is a collection and handle both arrays and objects
         if (is_array($allLessons)) {
             $this->allLessons = collect($allLessons)->map(function ($lessonData) {
@@ -37,23 +41,24 @@ class LessonContentViewer extends Component
         } else {
             $this->allLessons = collect($allLessons);
         }
-        
+
         $this->completedLessons = $completedLessons ?? [];
         $this->unlockedSections = $unlockedSections ?? [];
-        
-        $this->currentIndex = $this->allLessons->search(function($l) {
+
+        $this->currentIndex = $this->allLessons->search(function ($l) {
             $lessonId = is_object($l) ? $l->id : $l['id'];
             return $lessonId == $this->lesson->id;
         });
-        
+
         if ($this->currentIndex === false) {
             $this->currentIndex = 0;
         }
-        
+
         $this->isCompleted = in_array($this->lesson->id, $this->completedLessons);
-        
+
         // Check for assessments
         $this->checkAssessments();
+        $this->lastAssessmentCheck = now();
     }
 
     protected function checkAssessments()
@@ -61,11 +66,14 @@ class LessonContentViewer extends Component
         // Check if lesson has assessments
         $assessments = Assessment::where('lesson_id', $this->lesson->id)->get();
         $this->hasAssessments = $assessments->count() > 0;
-        
+
         if ($this->hasAssessments) {
             $this->allAssessmentsPassed = $this->checkAllAssessmentsPassed($assessments);
+            // Enable polling only if assessments exist and are not all passed
+            $this->shouldPoll = !$this->allAssessmentsPassed;
         } else {
             $this->allAssessmentsPassed = true; // If no assessments, consider passed
+            $this->shouldPoll = false;
         }
     }
 
@@ -111,6 +119,43 @@ class LessonContentViewer extends Component
     public function handleAssessmentCompleted()
     {
         $this->checkAssessments(); // Re-check assessments when one is completed
+        $this->lastAssessmentCheck = now();
+
+        // If all assessments are now passed, we can stop polling
+        if ($this->allAssessmentsPassed) {
+            $this->shouldPoll = false;
+        }
+    }
+
+    // Efficient polling method - only polls when necessary
+    public function pollAssessmentStatus()
+    {
+        if (!$this->shouldPoll) {
+            return;
+        }
+
+        // Only check if it's been more than 10 seconds since last check
+        if ($this->lastAssessmentCheck && $this->lastAssessmentCheck->diffInSeconds(now()) < 10) {
+            return;
+        }
+
+        $previousState = $this->allAssessmentsPassed;
+        $this->checkAssessments();
+        $this->lastAssessmentCheck = now();
+
+        // If status changed, notify user and update parent
+        if ($previousState !== $this->allAssessmentsPassed && $this->allAssessmentsPassed) {
+            $this->dispatch('notify', [
+                'message' => 'All assessments completed! You can now proceed.',
+                'type' => 'success'
+            ]);
+
+            // Notify parent component
+            $this->dispatch('assessment-status-changed', [
+                'lessonId' => $this->lesson->id,
+                'allPassed' => true
+            ])->to('student-management.course-view');
+        }
     }
 
     public function markAsCompleted()
@@ -127,9 +172,9 @@ class LessonContentViewer extends Component
         if (!$this->isCompleted) {
             $this->dispatch('lesson-completed', lessonId: $this->lesson->id)
                 ->to('student-management.course-view');
-            
+
             $this->isCompleted = true;
-            
+
             $this->dispatch('notify', [
                 'message' => 'Lesson marked as completed!',
                 'type' => 'success'
@@ -142,9 +187,9 @@ class LessonContentViewer extends Component
         if ($this->isCompleted) {
             $this->dispatch('lesson-uncompleted', lessonId: $this->lesson->id)
                 ->to('student-management.course-view');
-            
+
             $this->isCompleted = false;
-            
+
             $this->dispatch('notify', [
                 'message' => 'Lesson marked as incomplete.',
                 'type' => 'info'
@@ -164,7 +209,7 @@ class LessonContentViewer extends Component
 
     public function goToNextLesson()
     {
-        // Check if current lesson has assessments that need to be passed
+        // First check if current lesson has assessments that need to be passed
         if ($this->hasAssessments && !$this->allAssessmentsPassed) {
             $this->dispatch('notify', [
                 'message' => 'You must pass all assessments in this lesson before proceeding to the next lesson.',
@@ -177,7 +222,7 @@ class LessonContentViewer extends Component
         if ($nextLesson) {
             $lessonId = is_object($nextLesson) ? $nextLesson->id : $nextLesson['id'];
             $sectionId = is_object($nextLesson) ? $nextLesson->section_id : $nextLesson['section_id'];
-            
+
             // Check if next lesson's section is unlocked
             if (in_array($sectionId, $this->unlockedSections)) {
                 $this->dispatch('lesson-selected', lessonId: $lessonId)
@@ -204,10 +249,17 @@ class LessonContentViewer extends Component
     public function isNextLessonUnlocked()
     {
         $nextLesson = $this->getNextLesson();
-        if (!$nextLesson) return false;
-        
+        if (!$nextLesson)
+            return false;
+
         $sectionId = is_object($nextLesson) ? $nextLesson->section_id : $nextLesson['section_id'];
         return in_array($sectionId, $this->unlockedSections);
+    }
+
+    public function canProceedToNext()
+    {
+        // Can proceed if no assessments OR all assessments are passed
+        return !$this->hasAssessments || $this->allAssessmentsPassed;
     }
 
     public function completeCourse()

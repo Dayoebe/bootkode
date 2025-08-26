@@ -188,41 +188,6 @@ class CourseView extends Component
         }
     }
 
-    protected function canCompleteLessonWithoutAssessments($lessonId)
-    {
-        $assessments = Assessment::where('lesson_id', $lessonId)->get();
-        
-        if ($assessments->isEmpty()) {
-            return true; // No assessments, can complete
-        }
-
-        // Check if all assessments are passed
-        foreach ($assessments as $assessment) {
-            $latestAttempt = StudentAnswer::where('user_id', Auth::id())
-                ->where('assessment_id', $assessment->id)
-                ->orderBy('attempt_number', 'desc')
-                ->first();
-
-            if (!$latestAttempt) {
-                return false; // No attempt made
-            }
-
-            // Calculate score for the latest attempt
-            $totalPoints = StudentAnswer::where('user_id', Auth::id())
-                ->where('assessment_id', $assessment->id)
-                ->where('attempt_number', $latestAttempt->attempt_number)
-                ->sum('points_earned');
-
-            $maxPoints = $assessment->questions->sum('points');
-            $percentage = $maxPoints > 0 ? round(($totalPoints / $maxPoints) * 100, 1) : 0;
-
-            if ($percentage < $assessment->pass_percentage) {
-                return false; // Assessment not passed
-            }
-        }
-
-        return true; // All assessments passed
-    }
 
     #[On('lesson-uncompleted')]
     public function handleLessonUncompleted($lessonId)
@@ -315,6 +280,112 @@ class CourseView extends Component
         return "Complete {$this->sectionCompletionThreshold}% of previous section to unlock";
     }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    #[On('assessment-status-changed')]
+    public function handleAssessmentStatusChanged($data)
+    {
+        $lessonId = $data['lessonId'];
+        $allPassed = $data['allPassed'];
+        
+        // If all assessments are now passed, we might need to update progress
+        if ($allPassed && $this->currentLesson && $this->currentLesson->id == $lessonId) {
+            $this->dispatch('notify', [
+                'message' => 'All assessments completed! You can now proceed to the next lesson.',
+                'type' => 'success'
+            ]);
+        }
+    }
+
+    #[On('assessment-cleared')]
+    public function handleAssessmentCleared()
+    {
+        // Refresh the current lesson data when assessments are cleared
+        $this->loadUserProgress();
+        $this->dispatch('progress-updated');
+    }
+
+    protected function canCompleteLessonWithoutAssessments($lessonId)
+    {
+        $assessments = Assessment::where('lesson_id', $lessonId)->get();
+        
+        if ($assessments->isEmpty()) {
+            return true; // No assessments, can complete
+        }
+
+        // Check if all assessments are passed
+        foreach ($assessments as $assessment) {
+            $latestAttempt = StudentAnswer::where('user_id', Auth::id())
+                ->where('assessment_id', $assessment->id)
+                ->orderBy('attempt_number', 'desc')
+                ->first();
+
+            if (!$latestAttempt) {
+                return false; // No attempt made
+            }
+
+            // Calculate score for the latest attempt
+            $totalPoints = StudentAnswer::where('user_id', Auth::id())
+                ->where('assessment_id', $assessment->id)
+                ->where('attempt_number', $latestAttempt->attempt_number)
+                ->sum('points_earned');
+
+            $maxPoints = $assessment->questions->sum('points');
+            $percentage = $maxPoints > 0 ? round(($totalPoints / $maxPoints) * 100, 1) : 0;
+
+            if ($percentage < $assessment->pass_percentage) {
+                return false; // Assessment not passed
+            }
+        }
+
+        return true; // All assessments passed
+    }
     public function render()
     {
         return view('livewire.student-management.course-view');

@@ -12,10 +12,6 @@ return new class extends Migration
             if (!Schema::hasColumn('assessments', 'max_score')) {
                 $table->integer('max_score')->default(100);
             }
-            
-            // Add indexes if they don't exist
-            // $table->index(['course_id', 'type']);
-            // $table->index(['lesson_id']);
         });
     }
 

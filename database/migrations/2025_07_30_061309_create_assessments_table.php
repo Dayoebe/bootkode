@@ -17,7 +17,7 @@ class CreateAssessmentsTable extends Migration
             $table->string('slug')->unique();
             $table->unsignedInteger('order')->default(0);
             $table->text('description')->nullable();
-            $table->enum('type', ['quiz', 'project', 'assignment'])->default('quiz');
+            $table->enum('type', ['quiz', 'project', 'assignment', 'qna'])->default('quiz');
             $table->integer('pass_percentage')->nullable();
             $table->integer('estimated_duration_minutes')->nullable();
             $table->datetime('deadline')->nullable();

@@ -1,6 +1,4 @@
 <div>
-
-
     <div class="bg-gray-800 rounded-xl p-6">
         <!-- Lesson Header -->
         <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
@@ -29,6 +27,22 @@
                             {{ $lesson->difficulty_level }}
                         </span>
                     @endif
+
+                    <!-- Assessment Status Indicator in Header -->
+                    @if ($hasAssessments)
+                        @if ($allAssessmentsPassed)
+                            <span class="flex items-center bg-green-600 px-2 py-1 rounded text-xs text-white">
+                                <i class="fas fa-check-circle mr-1"></i>
+                                Assessments Passed
+                            </span>
+                        @else
+                            <span
+                                class="flex items-center bg-red-600 px-2 py-1 rounded text-xs text-white animate-pulse">
+                                <i class="fas fa-exclamation-triangle mr-1"></i>
+                                Assessment Required
+                            </span>
+                        @endif
+                    @endif
                 </div>
             </div>
 
@@ -41,7 +55,9 @@
                     </button>
                 @else
                     <button wire:click="markAsCompleted"
-                        class="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg text-sm transition-colors flex items-center">
+                        class="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg text-sm transition-colors flex items-center
+                        {{ $hasAssessments && !$allAssessmentsPassed ? 'opacity-50 cursor-not-allowed' : '' }}"
+                        @if ($hasAssessments && !$allAssessmentsPassed) disabled @endif>
                         <i class="fas fa-check mr-2"></i> Mark Complete
                     </button>
                 @endif
@@ -54,6 +70,71 @@
             @if ($lesson->content)
                 <div class="lesson-content-display mb-6">
                     {!! $lesson->content !!}
+                </div>
+            @endif
+
+            <!-- ASSESSMENTS SECTION - PROMINENTLY DISPLAYED -->
+            @if ($hasAssessments)
+                <div class="mb-6">
+                    <!-- Assessment Header with Visual Indicator -->
+                    <div class="flex justify-between items-center cursor-pointer group bg-purple-900/30 border-2 border-purple-500 rounded-lg p-4 hover:bg-purple-900/50 transition-all duration-200"
+                        onclick="toggleSection('assessments')">
+                        <div class="flex items-center">
+                            <div class="w-10 h-10 bg-purple-600 rounded-full flex items-center justify-center mr-3">
+                                <i class="fas fa-clipboard-check text-white text-lg"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-lg font-semibold text-white">
+                                    Assessment Required
+                                    @if (!$allAssessmentsPassed)
+                                        <span
+                                            class="inline-flex items-center ml-2 px-2 py-1 rounded-full text-xs font-medium bg-red-600 text-white animate-pulse">
+                                            <i class="fas fa-exclamation-triangle mr-1"></i>
+                                            Required
+                                        </span>
+                                    @else
+                                        <span
+                                            class="inline-flex items-center ml-2 px-2 py-1 rounded-full text-xs font-medium bg-green-600 text-white">
+                                            <i class="fas fa-check mr-1"></i>
+                                            Completed
+                                        </span>
+                                    @endif
+                                </h3>
+                                <p class="text-purple-200 text-sm mt-1">
+                                    @php
+                                        $assessmentCount = \App\Models\Assessment::where(
+                                            'lesson_id',
+                                            $lesson->id,
+                                        )->count();
+                                    @endphp
+                                    {{ $assessmentCount }} assessment{{ $assessmentCount > 1 ? 's' : '' }} must be
+                                    completed to proceed
+                                </p>
+                            </div>
+                        </div>
+                        <div class="flex items-center">
+                            @if (!$allAssessmentsPassed)
+                                <div
+                                    class="w-8 h-8 bg-red-600 rounded-full flex items-center justify-center mr-3 animate-pulse">
+                                    <i class="fas fa-exclamation text-white text-sm"></i>
+                                </div>
+                            @else
+                                <div class="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center mr-3">
+                                    <i class="fas fa-check text-white text-sm"></i>
+                                </div>
+                            @endif
+                            <i class="fas fa-chevron-down text-purple-300 transform transition-transform group-hover:text-white"
+                                id="assessments-chevron"></i>
+                        </div>
+                    </div>
+
+                    <!-- Assessment Content - Show by default if not all passed -->
+                    <div class="mt-3 {{ $allAssessmentsPassed ? 'hidden' : '' }}" id="assessments-content">
+                        <div class="bg-purple-900/20 border border-purple-500 rounded-lg p-1">
+                            <livewire:student-management.course-view.student-assessment-taker :lesson="$lesson"
+                                wire:key="assessment-{{ $lesson->id }}" wire:poll.10s="pollAssessmentStatus" />
+                        </div>
+                    </div>
                 </div>
             @endif
 
@@ -298,13 +379,6 @@
                     </div>
                 </div>
             @endif
-
-            <!-- ASSESSMENTS SECTION - NEW -->
-            <livewire:student-management.course-view.student-assessment-taker :lesson="$lesson"
-                wire:key="assessment-{{ $lesson->id }}" />
-            <!-- END ASSESSMENTS SECTION -->
-
-            
         </div>
 
         <!-- Document Modal -->
@@ -339,7 +413,7 @@
             </div>
         </div>
 
-        <!-- Lesson Navigation -->
+        <!-- Lesson Navigation - Updated with assessment blocking -->
         <div class="flex justify-between items-center mt-8 pt-6 border-t border-gray-700">
             @if ($this->getPreviousLesson())
                 @php $prevLesson = $this->getPreviousLesson(); @endphp
@@ -357,7 +431,7 @@
 
             @if ($this->getNextLesson())
                 @php $nextLesson = $this->getNextLesson(); @endphp
-                @if ($this->isNextLessonUnlocked())
+                @if ($this->canProceedToNext() && $this->isNextLessonUnlocked())
                     <button wire:click="goToNextLesson"
                         class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg flex items-center transition-colors">
                         <span class="hidden sm:inline">Next:</span>
@@ -366,6 +440,12 @@
                         </span>
                         <i class="fas fa-arrow-right ml-2"></i>
                     </button>
+                @elseif (!$this->canProceedToNext())
+                    <div
+                        class="px-4 py-2 bg-red-600 text-white rounded-lg flex items-center cursor-not-allowed opacity-75">
+                        <i class="fas fa-clipboard-check mr-2"></i>
+                        <span class="text-sm">Complete assessments to continue</span>
+                    </div>
                 @else
                     <div class="px-4 py-2 bg-gray-600 text-gray-400 rounded-lg flex items-center cursor-not-allowed">
                         <i class="fas fa-lock mr-2"></i>
@@ -374,7 +454,9 @@
                 @endif
             @else
                 <button wire:click="completeCourse"
-                    class="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg flex items-center transition-colors">
+                    class="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg flex items-center transition-colors
+                    {{ !$this->canProceedToNext() ? 'opacity-50 cursor-not-allowed' : '' }}"
+                    @if (!$this->canProceedToNext()) disabled @endif>
                     <i class="fas fa-trophy mr-2"></i>
                     Complete Course
                 </button>
@@ -392,126 +474,168 @@
                     style="width: {{ round((($currentIndex + 1) / count($allLessons)) * 100) }}%"></div>
             </div>
         </div>
+    </div>
 
-        <script>
-            // Toggle section visibility
-            function toggleSection(sectionId) {
-                const content = document.getElementById(`${sectionId}-content`);
-                const chevron = document.getElementById(`${sectionId}-chevron`);
+    <!-- Efficient Polling Script -->
+    <script>
+        // Efficient polling for assessment status
+        let assessmentPollingActive = @json($shouldPoll);
+        let lastPollTime = 0;
+        const POLL_INTERVAL = 10000; // 10 seconds
 
-                content.classList.toggle('hidden');
-                chevron.classList.toggle('fa-chevron-down');
-                chevron.classList.toggle('fa-chevron-up');
+        // Only poll if assessments exist and are not all passed
+        if (assessmentPollingActive) {
+            setInterval(() => {
+                const now = Date.now();
+                if (now - lastPollTime >= POLL_INTERVAL) {
+                    @this.call('pollAssessmentStatus');
+                    lastPollTime = now;
+                }
+            }, POLL_INTERVAL);
+        }
+
+        // Toggle section visibility
+        function toggleSection(sectionId) {
+            const content = document.getElementById(`${sectionId}-content`);
+            const chevron = document.getElementById(`${sectionId}-chevron`);
+
+            content.classList.toggle('hidden');
+            chevron.classList.toggle('fa-chevron-down');
+            chevron.classList.toggle('fa-chevron-up');
+        }
+
+        // Document modal functions
+        function openDocumentModal(url, title) {
+            document.getElementById('document-modal-title').textContent = title;
+            document.getElementById('document-iframe').src = url;
+            document.getElementById('document-modal').classList.remove('hidden');
+        }
+
+        function closeDocumentModal() {
+            document.getElementById('document-modal').classList.add('hidden');
+            document.getElementById('document-iframe').src = '';
+        }
+
+        // Image modal functions
+        function openImageModal(url) {
+            document.getElementById('modal-image').src = url;
+            document.getElementById('image-modal').classList.remove('hidden');
+        }
+
+        function closeImageModal() {
+            document.getElementById('image-modal').classList.add('hidden');
+            document.getElementById('modal-image').src = '';
+        }
+
+        // Audio player functions
+        function initAudioPlayer(index) {
+            const audio = document.getElementById(`audio-${index}`);
+            const durationElement = document.getElementById(`duration-${index}`);
+
+            // Format and display duration
+            const minutes = Math.floor(audio.duration / 60);
+            const seconds = Math.floor(audio.duration % 60);
+            durationElement.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+        }
+
+        function togglePlayPause(index) {
+            const audio = document.getElementById(`audio-${index}`);
+            const playIcon = document.getElementById(`play-icon-${index}`);
+            const pauseIcon = document.getElementById(`pause-icon-${index}`);
+
+            if (audio.paused) {
+                audio.play();
+                playIcon.classList.add('hidden');
+                pauseIcon.classList.remove('hidden');
+            } else {
+                audio.pause();
+                playIcon.classList.remove('hidden');
+                pauseIcon.classList.add('hidden');
             }
+        }
 
-            // Document modal functions
-            function openDocumentModal(url, title) {
-                document.getElementById('document-modal-title').textContent = title;
-                document.getElementById('document-iframe').src = url;
-                document.getElementById('document-modal').classList.remove('hidden');
-            }
+        function updateProgress(index) {
+            const audio = document.getElementById(`audio-${index}`);
+            const progressBar = document.getElementById(`progress-bar-${index}`);
+            const currentTimeElement = document.getElementById(`current-time-${index}`);
 
-            function closeDocumentModal() {
-                document.getElementById('document-modal').classList.add('hidden');
-                document.getElementById('document-iframe').src = '';
-            }
+            // Update progress bar
+            const progress = (audio.currentTime / audio.duration) * 100;
+            progressBar.style.width = `${progress}%`;
 
-            // Image modal functions
-            function openImageModal(url) {
-                document.getElementById('modal-image').src = url;
-                document.getElementById('image-modal').classList.remove('hidden');
-            }
+            // Update current time display
+            const minutes = Math.floor(audio.currentTime / 60);
+            const seconds = Math.floor(audio.currentTime % 60);
+            currentTimeElement.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
 
-            function closeImageModal() {
-                document.getElementById('image-modal').classList.add('hidden');
-                document.getElementById('modal-image').src = '';
-            }
-
-            // Audio player functions
-            function initAudioPlayer(index) {
-                const audio = document.getElementById(`audio-${index}`);
-                const durationElement = document.getElementById(`duration-${index}`);
-
-                // Format and display duration
-                const minutes = Math.floor(audio.duration / 60);
-                const seconds = Math.floor(audio.duration % 60);
-                durationElement.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
-            }
-
-            function togglePlayPause(index) {
-                const audio = document.getElementById(`audio-${index}`);
+            // Check if audio ended
+            if (audio.ended) {
                 const playIcon = document.getElementById(`play-icon-${index}`);
                 const pauseIcon = document.getElementById(`pause-icon-${index}`);
 
-                if (audio.paused) {
-                    audio.play();
-                    playIcon.classList.add('hidden');
-                    pauseIcon.classList.remove('hidden');
-                } else {
-                    audio.pause();
-                    playIcon.classList.remove('hidden');
-                    pauseIcon.classList.add('hidden');
-                }
+                playIcon.classList.remove('hidden');
+                pauseIcon.classList.add('hidden');
             }
+        }
 
-            function updateProgress(index) {
-                const audio = document.getElementById(`audio-${index}`);
-                const progressBar = document.getElementById(`progress-bar-${index}`);
-                const currentTimeElement = document.getElementById(`current-time-${index}`);
+        // Close modals when clicking outside
+        document.getElementById('document-modal').addEventListener('click', function(e) {
+            if (e.target === this) closeDocumentModal();
+        });
 
-                // Update progress bar
-                const progress = (audio.currentTime / audio.duration) * 100;
-                progressBar.style.width = `${progress}%`;
+        document.getElementById('image-modal').addEventListener('click', function(e) {
+            if (e.target === this) closeImageModal();
+        });
 
-                // Update current time display
-                const minutes = Math.floor(audio.currentTime / 60);
-                const seconds = Math.floor(audio.currentTime % 60);
-                currentTimeElement.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
-
-                // Check if audio ended
-                if (audio.ended) {
-                    const playIcon = document.getElementById(`play-icon-${index}`);
-                    const pauseIcon = document.getElementById(`pause-icon-${index}`);
-
-                    playIcon.classList.remove('hidden');
-                    pauseIcon.classList.add('hidden');
-                }
-            }
-
-            // Close modals when clicking outside
-            document.getElementById('document-modal').addEventListener('click', function(e) {
-                if (e.target === this) closeDocumentModal();
+        // Listen for assessment completion events to update polling
+        document.addEventListener('livewire:init', () => {
+            @this.on('assessment-completed', () => {
+                // Disable polling when assessments are completed
+                assessmentPollingActive = false;
             });
+        });
+    </script>
 
-            document.getElementById('image-modal').addEventListener('click', function(e) {
-                if (e.target === this) closeImageModal();
-            });
-        </script>
+    <style>
+        .mini-player {
+            transition: all 0.3s ease;
+        }
 
-        <style>
-            .mini-player {
-                transition: all 0.3s ease;
+        .mini-player:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+
+        .play-pause-btn {
+            transition: all 0.2s ease;
+        }
+
+        .play-pause-btn:hover {
+            transform: scale(1.05);
+        }
+
+        #document-modal,
+        #image-modal {
+            transition: opacity 0.3s ease;
+        }
+
+        /* Assessment section animations */
+        .animate-pulse {
+            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: 1;
             }
 
-            .mini-player:hover {
-                transform: translateY(-2px);
-                box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            50% {
+                opacity: .5;
             }
+        }
+    </style>
 
-            .play-pause-btn {
-                transition: all 0.2s ease;
-            }
-
-            .play-pause-btn:hover {
-                transform: scale(1.05);
-            }
-
-            #document-modal,
-            #image-modal {
-                transition: opacity 0.3s ease;
-            }
-        </style>
-
-        <link rel="stylesheet" href="{{ asset('css/trix.css') }}">
-    </div>
+    <link rel="stylesheet" href="{{ asset('css/trix.css') }}">
 </div>

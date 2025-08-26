@@ -7,6 +7,7 @@ use App\Models\Assessment;
 use App\Models\Question;
 use App\Models\StudentAnswer;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Livewire\Attributes\On;
 
 class StudentAssessmentTaker extends Component
@@ -26,10 +27,15 @@ class StudentAssessmentTaker extends Component
     // Assessment states: 'list', 'taking', 'results'
     public $assessmentState = 'list';
 
+    // Performance optimization properties
+    private $assessmentStatusCache = [];
+    private $lastCacheCheck = null;
+
     public function mount($lesson)
     {
         $this->lesson = $lesson;
         $this->loadAssessments();
+        $this->cacheAssessmentStatus();
     }
 
     protected function loadAssessments()
@@ -42,6 +48,68 @@ class StudentAssessmentTaker extends Component
             ])
             ->orderBy('order')
             ->get();
+    }
+
+    /**
+     * Cache assessment status to reduce database queries
+     */
+    protected function cacheAssessmentStatus()
+    {
+        $cacheKey = "user_assessments_" . Auth::id() . "_lesson_" . $this->lesson->id;
+
+        // Cache for 30 seconds to balance performance and real-time updates
+        $this->assessmentStatusCache = Cache::remember($cacheKey, 30, function () {
+            $status = [];
+            foreach ($this->assessments as $assessment) {
+                $latestAttempt = StudentAnswer::where('user_id', Auth::id())
+                    ->where('assessment_id', $assessment->id)
+                    ->orderBy('attempt_number', 'desc')
+                    ->first();
+
+                $hasAttempted = $latestAttempt !== null;
+                $passed = false;
+                $percentage = 0;
+
+                if ($hasAttempted) {
+                    $totalPoints = StudentAnswer::where('user_id', Auth::id())
+                        ->where('assessment_id', $assessment->id)
+                        ->where('attempt_number', $latestAttempt->attempt_number)
+                        ->sum('points_earned');
+                    $maxPoints = $assessment->questions->sum('points');
+                    $percentage = $maxPoints > 0 ? round(($totalPoints / $maxPoints) * 100, 1) : 0;
+                    $passed = $percentage >= $assessment->pass_percentage;
+                }
+
+                $status[$assessment->id] = [
+                    'hasAttempted' => $hasAttempted,
+                    'passed' => $passed,
+                    'percentage' => $percentage,
+                    'latestAttempt' => $latestAttempt
+                ];
+            }
+            return $status;
+        });
+
+        $this->lastCacheCheck = now();
+    }
+
+    /**
+     * Get cached assessment status with periodic refresh
+     */
+    public function getAssessmentStatus($assessmentId)
+    {
+        // Refresh cache every 30 seconds
+        if (!$this->lastCacheCheck || $this->lastCacheCheck->diffInSeconds(now()) > 30) {
+            Cache::forget("user_assessments_" . Auth::id() . "_lesson_" . $this->lesson->id);
+            $this->cacheAssessmentStatus();
+        }
+
+        return $this->assessmentStatusCache[$assessmentId] ?? [
+            'hasAttempted' => false,
+            'passed' => false,
+            'percentage' => 0,
+            'latestAttempt' => null
+        ];
     }
 
     public function startAssessment($assessmentId)
@@ -110,6 +178,9 @@ class StudentAssessmentTaker extends Component
         $this->results = [];
         $this->isSubmitted = false;
         $this->attemptStarted = false;
+
+        // Refresh cache when returning to list
+        $this->cacheAssessmentStatus();
     }
 
     public function nextQuestion()
@@ -203,6 +274,10 @@ class StudentAssessmentTaker extends Component
         $this->calculateResults();
         $this->assessmentState = 'results';
 
+        // Clear cache after submission
+        Cache::forget("user_assessments_" . Auth::id() . "_lesson_" . $this->lesson->id);
+        $this->cacheAssessmentStatus();
+
         // Notify parent component about assessment completion
         $this->dispatch('assessment-completed')->to('student-management.course-view.lesson-content-viewer');
 
@@ -254,6 +329,10 @@ class StudentAssessmentTaker extends Component
         $this->attemptStarted = false;
         $this->userAttempt = null;
 
+        // Clear and refresh cache
+        Cache::forget("user_assessments_" . Auth::id() . "_lesson_" . $this->lesson->id);
+        $this->cacheAssessmentStatus();
+
         // Refresh assessments list to update status
         $this->loadAssessments();
 
@@ -261,6 +340,23 @@ class StudentAssessmentTaker extends Component
             'message' => "Previous attempts cleared successfully. ({$deletedCount} records deleted)",
             'type' => 'success'
         ]);
+
+        // Notify parent component that assessments were cleared
+        $this->dispatch('assessment-cleared')->to('student-management.course-view.lesson-content-viewer');
+    }
+
+    /**
+     * Check if all assessments in this lesson are passed
+     */
+    public function getAllAssessmentsPassed()
+    {
+        foreach ($this->assessments as $assessment) {
+            $status = $this->getAssessmentStatus($assessment->id);
+            if (!$status['passed']) {
+                return false;
+            }
+        }
+        return true;
     }
 
     /**
@@ -484,6 +580,7 @@ class StudentAssessmentTaker extends Component
             );
         }
     }
+
     public function render()
     {
         return view('livewire.student-management.course-view.student-assessment-taker');
