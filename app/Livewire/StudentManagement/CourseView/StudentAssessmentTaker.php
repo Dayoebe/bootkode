@@ -216,34 +216,6 @@ class StudentAssessmentTaker extends Component
         }
     }
 
-    protected function saveAnswers()
-    {
-        foreach ($this->questions as $question) {
-            $userAnswer = $this->answers[$question->id] ?? null;
-            
-            if ($userAnswer === null || $userAnswer === '') {
-                continue;
-            }
-
-            $isCorrect = $this->checkAnswer($question, $userAnswer);
-            $pointsEarned = $isCorrect ? $question->points : 0;
-
-            StudentAnswer::updateOrCreate(
-                [
-                    'user_id' => Auth::id(),
-                    'assessment_id' => $this->currentAssessment->id,
-                    'question_id' => $question->id,
-                    'attempt_number' => $this->userAttempt,
-                ],
-                [
-                    'answer' => is_array($userAnswer) ? json_encode($userAnswer) : $userAnswer,
-                    'is_correct' => $isCorrect,
-                    'points_earned' => $pointsEarned,
-                    'submitted_at' => now(),
-                ]
-            );
-        }
-    }
 
     protected function checkAnswer($question, $userAnswer)
     {
@@ -278,75 +250,380 @@ class StudentAssessmentTaker extends Component
         }
     }
 
-    protected function calculateResults()
-    {
-        $studentAnswers = StudentAnswer::where('user_id', Auth::id())
-            ->where('assessment_id', $this->currentAssessment->id)
-            ->where('attempt_number', $this->userAttempt)
-            ->with('question')
-            ->get()
-            ->keyBy('question_id');
 
-        $totalPoints = 0;
-        $maxPoints = 0;
-        $correctAnswers = 0;
-        $totalQuestions = count($this->questions);
-        $answersData = [];
+    
 
-        foreach ($this->questions as $question) {
-            $maxPoints += $question->points;
-            $studentAnswer = $studentAnswers->get($question->id);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// Add these methods to your StudentAssessmentTaker.php Livewire component
+
+/**
+ * Clear all previous attempts for the current assessment
+ */
+public function clearPreviousAttempts($assessmentId = null)
+{
+    if ($assessmentId) {
+        $this->currentAssessment = Assessment::findOrFail($assessmentId);
+    }
+
+    if (!$this->currentAssessment) {
+        $this->dispatch('notify', [
+            'message' => 'No assessment selected.',
+            'type' => 'error'
+        ]);
+        return;
+    }
+
+    // Delete all previous attempts for this user and assessment
+    $deletedCount = StudentAnswer::where('user_id', Auth::id())
+        ->where('assessment_id', $this->currentAssessment->id)
+        ->delete();
+
+    // Reset component state
+    $this->assessmentState = 'list';
+    $this->currentAssessment = null;
+    $this->questions = [];
+    $this->answers = [];
+    $this->results = [];
+    $this->isSubmitted = false;
+    $this->attemptStarted = false;
+    $this->userAttempt = null;
+
+    // Refresh assessments list to update status
+    $this->loadAssessments();
+
+    $this->dispatch('notify', [
+        'message' => "Previous attempts cleared successfully. ({$deletedCount} records deleted)",
+        'type' => 'success'
+    ]);
+}
+
+/**
+ * Fixed formatAnswerForDisplay method
+ */
+protected function formatAnswerForDisplay($question, $answer)
+{
+    switch ($question->question_type) {
+        case 'multiple_choice':
+            $options = json_decode($question->options, true) ?? [];
             
-            if ($studentAnswer) {
-                $totalPoints += $studentAnswer->points_earned;
-                if ($studentAnswer->is_correct) {
-                    $correctAnswers++;
-                }
-                
-                // Format the answer for display
-                $formattedAnswer = $this->formatAnswerForDisplay($question, $studentAnswer->answer);
-                $studentAnswer->formatted_answer = $formattedAnswer;
-                $answersData[$question->id] = $studentAnswer;
+            // Handle JSON string answers
+            if (is_string($answer) && $this->isJson($answer)) {
+                $answer = json_decode($answer, true);
             }
-        }
-
-        $percentage = $maxPoints > 0 ? round(($totalPoints / $maxPoints) * 100, 1) : 0;
-        $passed = $percentage >= $this->currentAssessment->pass_percentage;
-
-        $this->results = [
-            'passed' => $passed,
-            'percentage' => $percentage,
-            'correct_answers' => $correctAnswers,
-            'total_questions' => $totalQuestions,
-            'total_points' => $totalPoints,
-            'max_points' => $maxPoints,
-            'answers' => $answersData,
-        ];
-    }
-
-    protected function formatAnswerForDisplay($question, $answer)
-    {
-        switch ($question->question_type) {
-            case 'multiple_choice':
-            case 'true_false':
-                $options = json_decode($question->options, true) ?? [];
-                if (is_array($answer)) {
-                    $formattedAnswers = [];
-                    foreach (json_decode($answer, true) as $index) {
-                        if (isset($options[$index])) {
-                            $formattedAnswers[] = chr(65 + $index) . '. ' . $options[$index];
-                        }
+            
+            if (is_array($answer)) {
+                // Multiple selections
+                $formattedAnswers = [];
+                foreach ($answer as $index) {
+                    $index = (int) $index;
+                    if (isset($options[$index])) {
+                        $formattedAnswers[] = chr(65 + $index) . '. ' . $options[$index];
                     }
-                    return implode(', ', $formattedAnswers);
-                } else {
-                    return isset($options[$answer]) ? chr(65 + $answer) . '. ' . $options[$answer] : $answer;
                 }
-                
-            default:
-                return $answer;
+                return !empty($formattedAnswers) ? implode(', ', $formattedAnswers) : 'No answer selected';
+            } else {
+                // Single selection
+                $index = (int) $answer;
+                return isset($options[$index]) ? chr(65 + $index) . '. ' . $options[$index] : 'Invalid selection';
+            }
+
+        case 'true_false':
+            $options = json_decode($question->options, true) ?? ['True', 'False'];
+            $index = (int) $answer;
+            return isset($options[$index]) ? $options[$index] : 'Invalid selection';
+
+        case 'short_answer':
+        case 'fill_blank':
+        case 'essay':
+            return is_string($answer) ? $answer : (is_array($answer) ? implode(' ', $answer) : (string) $answer);
+
+        default:
+            return is_array($answer) ? json_encode($answer) : (string) $answer;
+    }
+}
+
+/**
+ * Helper method to check if string is valid JSON
+ */
+protected function isJson($string)
+{
+    if (!is_string($string)) {
+        return false;
+    }
+    json_decode($string);
+    return json_last_error() === JSON_ERROR_NONE;
+}
+
+/**
+ * Enhanced calculateResults method with better answer handling
+ */
+protected function calculateResults()
+{
+    $studentAnswers = StudentAnswer::where('user_id', Auth::id())
+        ->where('assessment_id', $this->currentAssessment->id)
+        ->where('attempt_number', $this->userAttempt)
+        ->with('question')
+        ->get()
+        ->keyBy('question_id');
+
+    $totalPoints = 0;
+    $maxPoints = 0;
+    $correctAnswers = 0;
+    $totalQuestions = count($this->questions);
+    $answersData = [];
+
+    foreach ($this->questions as $question) {
+        $maxPoints += $question->points;
+        $studentAnswer = $studentAnswers->get($question->id);
+
+        if ($studentAnswer) {
+            $totalPoints += $studentAnswer->points_earned;
+            if ($studentAnswer->is_correct) {
+                $correctAnswers++;
+            }
+
+            // Create a copy of the student answer for manipulation
+            $answerCopy = clone $studentAnswer;
+            
+            // Format the answer for display
+            $answerCopy->formatted_answer = $this->formatAnswerForDisplay($question, $studentAnswer->answer);
+            
+            // Add formatted correct answer
+            $question->formatted_correct_answer = $this->getFormattedCorrectAnswer($question);
+            
+            // Store the raw answer for option comparison
+            $answerCopy->raw_answer = $studentAnswer->answer;
+            
+            $answersData[$question->id] = $answerCopy;
+        } else {
+            // Handle unanswered questions
+            $dummyAnswer = new \stdClass();
+            $dummyAnswer->formatted_answer = 'Not answered';
+            $dummyAnswer->is_correct = false;
+            $dummyAnswer->points_earned = 0;
+            $dummyAnswer->raw_answer = null;
+            $question->formatted_correct_answer = $this->getFormattedCorrectAnswer($question);
+            $answersData[$question->id] = $dummyAnswer;
         }
     }
 
+    $percentage = $maxPoints > 0 ? round(($totalPoints / $maxPoints) * 100, 1) : 0;
+    $passed = $percentage >= $this->currentAssessment->pass_percentage;
+
+    $this->results = [
+        'passed' => $passed,
+        'percentage' => $percentage,
+        'correct_answers' => $correctAnswers,
+        'total_questions' => $totalQuestions,
+        'total_points' => $totalPoints,
+        'max_points' => $maxPoints,
+        'answers' => $answersData,
+    ];
+}
+
+/**
+ * Get formatted correct answer for display
+ */
+protected function getFormattedCorrectAnswer($question)
+{
+    $correctAnswers = json_decode($question->correct_answers, true) ?? [];
+    
+    if (empty($correctAnswers)) {
+        return 'No correct answer set';
+    }
+
+    switch ($question->question_type) {
+        case 'multiple_choice':
+            $options = json_decode($question->options, true) ?? [];
+            $formattedAnswers = [];
+            
+            foreach ($correctAnswers as $index) {
+                $index = (int) $index;
+                if (isset($options[$index])) {
+                    $formattedAnswers[] = chr(65 + $index) . '. ' . $options[$index];
+                }
+            }
+            
+            return !empty($formattedAnswers) ? implode(', ', $formattedAnswers) : 'Invalid correct answer';
+
+        case 'true_false':
+            $options = json_decode($question->options, true) ?? ['True', 'False'];
+            $index = (int) $correctAnswers[0];
+            return isset($options[$index]) ? $options[$index] : 'Invalid correct answer';
+
+        case 'short_answer':
+        case 'fill_blank':
+        case 'essay':
+            return is_array($correctAnswers) ? implode(', ', $correctAnswers) : (string) $correctAnswers;
+
+        default:
+            return is_array($correctAnswers) ? implode(', ', $correctAnswers) : (string) $correctAnswers;
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// Fixed saveAnswers method for StudentAssessmentTaker.php
+
+protected function saveAnswers()
+{
+    foreach ($this->questions as $question) {
+        $userAnswer = $this->answers[$question->id] ?? null;
+
+        if ($userAnswer === null || $userAnswer === '') {
+            continue;
+        }
+
+        // Store answer in consistent format for database
+        $answerToStore = $userAnswer;
+        
+        // For multiple choice, always store as array in the answer column
+        // The StudentAnswer model will cast it to JSON automatically
+        if ($question->question_type === 'multiple_choice') {
+            if (is_array($userAnswer)) {
+                // Multiple selections - store as array of integers
+                $answerToStore = array_map('intval', $userAnswer);
+            } else {
+                // Single selection - store as array with single integer
+                $answerToStore = [(int) $userAnswer];
+            }
+        } elseif ($question->question_type === 'true_false') {
+            // Store as single integer
+            $answerToStore = (int) $userAnswer;
+        }
+        // For text answers, keep as string
+
+        // Use the Question model's method to check correctness
+        $isCorrect = $question->isCorrectAnswer($userAnswer);
+        $pointsEarned = 0;
+
+        if ($isCorrect === true) {
+            $pointsEarned = $question->points;
+        } elseif ($isCorrect === false) {
+            $pointsEarned = 0;
+        } else {
+            // For partial credit (e.g., multiple correct answers)
+            $pointsEarned = $question->calculatePartialCredit($userAnswer);
+        }
+
+        StudentAnswer::updateOrCreate(
+            [
+                'user_id' => Auth::id(),
+                'assessment_id' => $this->currentAssessment->id,
+                'question_id' => $question->id,
+                'attempt_number' => $this->userAttempt,
+            ],
+            [
+                'answer' => $answerToStore,
+                'is_correct' => $isCorrect === true,
+                'points_earned' => $pointsEarned,
+                'submitted_at' => now(),
+            ]
+        );
+    }
+}
     public function render()
     {
         return view('livewire.student-management.course-view.student-assessment-taker');

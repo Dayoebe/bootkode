@@ -91,15 +91,6 @@ class Question extends Model
         });
     }
 
-    /**
-     * Check if question has multiple correct answers
-     */
-    public function hasMultipleCorrectAnswers()
-    {
-        return $this->question_type === 'multiple_choice' &&
-            is_array($this->correct_answers) &&
-            count($this->correct_answers) > 1;
-    }
 
     /**
      * Get formatted options for display
@@ -123,84 +114,7 @@ class Question extends Model
         return $formatted;
     }
 
-    /**
-     * Check if an answer is correct
-     */
-    public function isCorrectAnswer($answer)
-    {
-        if (!is_array($this->correct_answers) || empty($this->correct_answers)) {
-            return false;
-        }
-
-        switch ($this->question_type) {
-            case 'multiple_choice':
-                // Handle both single and multiple selections
-                if (is_array($answer)) {
-                    // Multiple selection - check if arrays match exactly
-                    sort($answer);
-                    $correctAnswers = $this->correct_answers;
-                    sort($correctAnswers);
-                    return $answer == $correctAnswers;
-                } else {
-                    // Single selection
-                    return in_array((int) $answer, $this->correct_answers);
-                }
-
-            case 'true_false':
-                return in_array((int) $answer, $this->correct_answers);
-
-            case 'short_answer':
-            case 'fill_blank':
-                // For text answers, do case-insensitive comparison with all correct answers
-                $answer = strtolower(trim($answer));
-                foreach ($this->correct_answers as $correctAnswer) {
-                    if (strtolower(trim($correctAnswer)) === $answer) {
-                        return true;
-                    }
-                    // Also check for partial matches (contains)
-                    if (strpos(strtolower(trim($correctAnswer)), $answer) !== false) {
-                        return true;
-                    }
-                }
-                return false;
-
-            case 'essay':
-                // Essays require manual grading
-                return null;
-
-            default:
-                return false;
-        }
-    }
-
-    /**
-     * Calculate partial credit for an answer
-     */
-    public function calculatePartialCredit($answer)
-    {
-        if ($this->isCorrectAnswer($answer) === true) {
-            return $this->points;
-        }
-
-        if ($this->question_type === 'multiple_choice' && $this->hasMultipleCorrectAnswers()) {
-            if (!is_array($answer)) {
-                $answer = [$answer];
-            }
-
-            $answer = array_map('intval', $answer);
-            $correctAnswers = array_map('intval', $this->correct_answers);
-
-            $correctCount = count(array_intersect($answer, $correctAnswers));
-            $totalCorrect = count($correctAnswers);
-            $incorrectCount = count(array_diff($answer, $correctAnswers));
-
-            // Award partial credit based on correct selections minus incorrect selections
-            $score = max(0, ($correctCount - $incorrectCount) / $totalCorrect);
-            return $this->points * $score;
-        }
-
-        return 0;
-    }
+ 
 
     /**
      * Get question statistics
@@ -255,4 +169,137 @@ class Question extends Model
     {
         return self::DIFFICULTY_LEVELS[$this->difficulty_level] ?? ucfirst($this->difficulty_level);
     }
+
+
+
+
+
+
+
+
+
+
+    
+    // Fixed hasMultipleCorrectAnswers method for Question.php
+    
+    /**
+     * Check if question has multiple correct answers
+     */
+    public function hasMultipleCorrectAnswers()
+    {
+        if ($this->question_type !== 'multiple_choice') {
+            return false;
+        }
+    
+        // Decode correct_answers from JSON if it's a string
+        $correctAnswers = is_string($this->correct_answers) 
+            ? json_decode($this->correct_answers, true) 
+            : $this->correct_answers;
+    
+        return is_array($correctAnswers) && count($correctAnswers) > 1;
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
+// Fixed isCorrectAnswer method for Question.php
+
+/**
+ * Check if an answer is correct
+ */
+public function isCorrectAnswer($answer)
+{
+    // Decode correct_answers from JSON if it's a string
+    $correctAnswers = is_string($this->correct_answers) 
+        ? json_decode($this->correct_answers, true) 
+        : $this->correct_answers;
+
+    if (!is_array($correctAnswers) || empty($correctAnswers)) {
+        return false;
+    }
+
+    switch ($this->question_type) {
+        case 'multiple_choice':
+            // Handle both single and multiple selections
+            if (is_array($answer)) {
+                // Multiple selection - check if arrays match exactly
+                $userAnswers = array_map('intval', $answer);
+                $correctAnswersInt = array_map('intval', $correctAnswers);
+                sort($userAnswers);
+                sort($correctAnswersInt);
+                return $userAnswers === $correctAnswersInt;
+            } else {
+                // Single selection
+                return in_array((int) $answer, array_map('intval', $correctAnswers));
+            }
+
+        case 'true_false':
+            return in_array((int) $answer, array_map('intval', $correctAnswers));
+
+        case 'short_answer':
+        case 'fill_blank':
+            // For text answers, compare with the stored correct answers
+            $answer = strtolower(trim($answer));
+            foreach ($correctAnswers as $correctAnswer) {
+                if (strtolower(trim($correctAnswer)) === $answer) {
+                    return true;
+                }
+            }
+            return false;
+
+        case 'essay':
+            // Essays require manual grading
+            return null;
+
+        default:
+            return false;
+    }
+}
+
+/**
+ * Fixed calculatePartialCredit method
+ */
+public function calculatePartialCredit($answer)
+{
+    if ($this->isCorrectAnswer($answer) === true) {
+        return $this->points;
+    }
+
+    if ($this->question_type === 'multiple_choice' && $this->hasMultipleCorrectAnswers()) {
+        if (!is_array($answer)) {
+            $answer = [$answer];
+        }
+
+        $answer = array_map('intval', $answer);
+        
+        // Decode correct answers properly
+        $correctAnswers = is_string($this->correct_answers) 
+            ? json_decode($this->correct_answers, true) 
+            : $this->correct_answers;
+        $correctAnswers = array_map('intval', $correctAnswers);
+
+        $correctCount = count(array_intersect($answer, $correctAnswers));
+        $totalCorrect = count($correctAnswers);
+        $incorrectCount = count(array_diff($answer, $correctAnswers));
+
+        // Award partial credit based on correct selections minus incorrect selections
+        $score = max(0, ($correctCount - $incorrectCount) / $totalCorrect);
+        return $this->points * $score;
+    }
+
+    return 0;
+}
 }

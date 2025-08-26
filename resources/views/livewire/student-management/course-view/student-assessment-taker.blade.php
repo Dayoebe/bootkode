@@ -36,7 +36,6 @@
                                     $passed = $percentage >= $assessment->pass_percentage;
                                 }
                             @endphp
-
                             <div
                                 class="bg-gray-800 rounded-lg p-6 border-l-4 {{ $passed ? 'border-green-500 bg-green-900/10' : ($hasAttempted ? 'border-yellow-500 bg-yellow-900/10' : 'border-purple-500') }}">
                                 <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
@@ -156,7 +155,8 @@
                                     </div>
 
                                     <!-- Action Buttons -->
-                                    <div class="flex flex-col gap-3 lg:w-48">
+                                    <!-- Updated Action Buttons with Clear Attempts -->
+                                    <div class="flex flex-col gap-3 lg:w-64">
                                         @if (!$hasAttempted)
                                             <button wire:click="startAssessment({{ $assessment->id }})"
                                                 class="px-6 py-3 bg-purple-600 hover:bg-purple-700 text-white rounded-lg font-medium transition-colors flex items-center justify-center gap-2">
@@ -176,11 +176,21 @@
                                                     Retake
                                                 </button>
                                             @endif
+
+                                            <!-- Clear Attempts Button -->
+                                            <button wire:click="clearPreviousAttempts({{ $assessment->id }})"
+                                                wire:confirm="Are you sure you want to clear all previous attempts? This action cannot be undone."
+                                                class="px-6 py-3 bg-red-600 hover:bg-red-700 text-white rounded-lg font-medium transition-colors flex items-center justify-center gap-2">
+                                                <i class="fas fa-trash"></i>
+                                                Clear Attempts
+                                            </button>
                                         @endif
                                     </div>
                                 </div>
                             </div>
                         @endforeach
+
+
                     </div>
 
                     <!-- Overall Assessment Status -->
@@ -447,111 +457,220 @@
                 </div>
 
                 <!-- Detailed Results -->
-                <div class="space-y-4 mb-8">
-                    <h3 class="text-xl font-semibold text-white mb-4">Question Review</h3>
-                    @foreach ($currentAssessment->questions as $index => $question)
-                        @php
-                            $studentAnswer = $results['answers'][$question->id] ?? null;
-                            $isCorrect = $studentAnswer && $studentAnswer->is_correct;
-                        @endphp
 
-                        <div
-                            class="bg-gray-700 rounded-lg p-6 border-l-4 {{ $isCorrect ? 'border-green-500' : 'border-red-500' }}">
-                            <div class="flex items-center justify-between mb-4">
-                                <h4 class="font-semibold text-white text-lg">Question {{ $index + 1 }}</h4>
-                                <div class="flex items-center gap-3">
-                                    <span class="text-sm text-gray-400 bg-gray-600 px-3 py-1 rounded-full">
-                                        {{ $studentAnswer ? $studentAnswer->points_earned : 0 }}/{{ $question->points }}
-                                        points
-                                    </span>
-                                    @if ($isCorrect)
-                                        <div
-                                            class="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center">
-                                            <i class="fas fa-check text-white"></i>
+                <!-- Updated Question Review section for the Blade template -->
+
+
+                <!-- Updated Detailed Results with Fixed Answer Display -->
+        <div class="space-y-4 mb-8">
+            <h3 class="text-xl font-semibold text-white mb-4">Question Review</h3>
+            @foreach ($currentAssessment->questions as $index => $question)
+                @php
+                    $studentAnswer = $results['answers'][$question->id] ?? null;
+                    $isCorrect = $studentAnswer && isset($studentAnswer->is_correct) ? $studentAnswer->is_correct : false;
+                    $wasAnswered = $studentAnswer && isset($studentAnswer->formatted_answer) && $studentAnswer->formatted_answer !== 'Not answered';
+                @endphp
+
+                <div class="bg-gray-700 rounded-lg p-6 border-l-4 {{ $isCorrect ? 'border-green-500' : ($wasAnswered ? 'border-red-500' : 'border-yellow-500') }}">
+                    <div class="flex items-center justify-between mb-4">
+                        <h4 class="font-semibold text-white text-lg">Question {{ $index + 1 }}</h4>
+                        <div class="flex items-center gap-3">
+                            <span class="text-sm text-gray-400 bg-gray-600 px-3 py-1 rounded-full">
+                                {{ $studentAnswer ? ($studentAnswer->points_earned ?? 0) : 0 }}/{{ $question->points }} points
+                            </span>
+                            @if ($isCorrect)
+                                <div class="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center">
+                                    <i class="fas fa-check text-white"></i>
+                                </div>
+                            @elseif ($wasAnswered)
+                                <div class="w-8 h-8 bg-red-500 rounded-full flex items-center justify-center">
+                                    <i class="fas fa-times text-white"></i>
+                                </div>
+                            @else
+                                <div class="w-8 h-8 bg-yellow-500 rounded-full flex items-center justify-center">
+                                    <i class="fas fa-minus text-white"></i>
+                                </div>
+                            @endif
+                        </div>
+                    </div>
+
+                    <p class="text-gray-200 mb-4 text-lg leading-relaxed">{!! nl2br(e($question->question_text)) !!}</p>
+
+                    <!-- Answer Options Display for Multiple Choice/True-False -->
+                    @if (in_array($question->question_type, ['multiple_choice', 'true_false']))
+                        @php
+                            $options = json_decode($question->options, true) ?? [];
+                            $correctAnswers = json_decode($question->correct_answers, true) ?? [];
+                            $userAnswers = [];
+                            
+                            if ($studentAnswer && isset($studentAnswer->raw_answer)) {
+                                $rawAnswer = $studentAnswer->raw_answer;
+                                
+                                // Handle JSON string answers
+                                if (is_string($rawAnswer) && json_decode($rawAnswer) !== null) {
+                                    $rawAnswer = json_decode($rawAnswer, true);
+                                }
+                                
+                                $userAnswers = is_array($rawAnswer) ? array_map('intval', $rawAnswer) : [(int) $rawAnswer];
+                            }
+                        @endphp
+                        
+                        <div class="bg-gray-800/50 rounded-lg p-4 mb-4">
+                            <div class="text-sm text-gray-400 mb-3">Answer choices:</div>
+                            <div class="space-y-2">
+                                @foreach ($options as $optionIndex => $option)
+                                    @php
+                                        $isCorrectOption = in_array($optionIndex, $correctAnswers);
+                                        $isUserChoice = in_array($optionIndex, $userAnswers);
+                                    @endphp
+                                    
+                                    <div class="flex items-center gap-3 p-3 rounded-lg transition-colors
+                                        {{ $isCorrectOption ? 'bg-green-900/30 border border-green-700' : '' }}
+                                        {{ $isUserChoice && !$isCorrectOption ? 'bg-red-900/30 border border-red-700' : '' }}
+                                        {{ !$isCorrectOption && !$isUserChoice ? 'bg-gray-700/50' : '' }}">
+                                        
+                                        <!-- Option Letter -->
+                                        <span class="w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold
+                                            {{ $isCorrectOption ? 'bg-green-600 text-white' : ($isUserChoice ? 'bg-red-600 text-white' : 'bg-gray-600 text-gray-300') }}">
+                                            {{ chr(65 + $optionIndex) }}
+                                        </span>
+                                        
+                                        <!-- Option Text -->
+                                        <span class="text-white flex-1 text-lg">{{ $option }}</span>
+                                        
+                                        <!-- Indicators -->
+                                        <div class="flex items-center gap-2">
+                                            @if ($isUserChoice)
+                                                <span class="text-xs px-2 py-1 rounded-full font-medium
+                                                    {{ $isCorrectOption ? 'bg-green-600 text-white' : 'bg-red-600 text-white' }}">
+                                                    <i class="fas fa-user mr-1"></i>Your choice
+                                                </span>
+                                            @endif
+                                            @if ($isCorrectOption)
+                                                <span class="text-xs px-2 py-1 bg-green-600 text-white rounded-full font-medium">
+                                                    <i class="fas fa-check mr-1"></i>Correct
+                                                </span>
+                                            @endif
                                         </div>
-                                    @else
-                                        <div class="w-8 h-8 bg-red-500 rounded-full flex items-center justify-center">
-                                            <i class="fas fa-times text-white"></i>
+                                    </div>
+                                @endforeach
+                            </div>
+                        </div>
+                    @else
+                        <!-- For text-based questions -->
+                        @if ($studentAnswer && isset($studentAnswer->formatted_answer))
+                            <div class="bg-gray-600 rounded-lg p-4 mb-4">
+                                <div class="flex items-start gap-3">
+                                    <div class="w-6 h-6 {{ $isCorrect ? 'bg-green-600' : ($wasAnswered ? 'bg-red-600' : 'bg-yellow-600') }} rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+                                        <i class="fas fa-user text-white text-xs"></i>
+                                    </div>
+                                    <div class="flex-1">
+                                        <span class="text-blue-300 font-medium text-sm">Your answer:</span>
+                                        <div class="text-white mt-1 text-lg">
+                                            @if ($studentAnswer->formatted_answer === 'Not answered')
+                                                <em class="text-yellow-300">{{ $studentAnswer->formatted_answer }}</em>
+                                            @else
+                                                {{ $studentAnswer->formatted_answer }}
+                                            @endif
                                         </div>
-                                    @endif
+                                    </div>
                                 </div>
                             </div>
 
-                            <p class="text-gray-200 mb-4 text-lg leading-relaxed">{!! nl2br(e($question->question_text)) !!}</p>
-
-                            @if ($studentAnswer)
-                                <div class="bg-gray-600 rounded-lg p-4 mb-4">
+                            <!-- Correct Answer for text questions -->
+                            @if (!$isCorrect && isset($question->formatted_correct_answer))
+                                <div class="bg-green-900/20 border border-green-700 rounded-lg p-4 mb-4">
                                     <div class="flex items-start gap-3">
-                                        <div
-                                            class="w-6 h-6 bg-blue-600 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
-                                            <i class="fas fa-user text-white text-xs"></i>
+                                        <div class="w-6 h-6 bg-green-600 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+                                            <i class="fas fa-check text-white text-xs"></i>
                                         </div>
                                         <div class="flex-1">
-                                            <span class="text-blue-300 font-medium text-sm">Your answer:</span>
-                                            <div class="text-white mt-1 text-lg">
-                                                {{ $studentAnswer->formatted_answer }}</div>
+                                            <span class="text-green-300 font-medium text-sm">Correct answer:</span>
+                                            <div class="text-green-200 mt-1 text-lg">
+                                                {{ $question->formatted_correct_answer }}
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-
-                                @if (!$isCorrect && $question->correct_answer)
-                                    <div class="bg-green-900/20 border border-green-700 rounded-lg p-4 mb-4">
-                                        <div class="flex items-start gap-3">
-                                            <div
-                                                class="w-6 h-6 bg-green-600 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
-                                                <i class="fas fa-check text-white text-xs"></i>
-                                            </div>
-                                            <div class="flex-1">
-                                                <span class="text-green-300 font-medium text-sm">Correct answer:</span>
-                                                <div class="text-green-200 mt-1 text-lg">
-                                                    {{ $question->formatted_correct_answer }}</div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                @endif
-
-                                @if ($question->explanation && !$isCorrect)
-                                    <div class="bg-blue-900/20 border border-blue-700 rounded-lg p-4">
-                                        <div class="flex items-start gap-3">
-                                            <div
-                                                class="w-6 h-6 bg-blue-600 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
-                                                <i class="fas fa-lightbulb text-white text-xs"></i>
-                                            </div>
-                                            <div class="flex-1">
-                                                <span class="text-blue-300 font-medium text-sm">Explanation:</span>
-                                                <p class="text-blue-200 mt-1 leading-relaxed">
-                                                    {{ $question->explanation }}</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                @endif
                             @endif
+                        @endif
+                    @endif
+
+                    <!-- Explanation -->
+                    @if ($question->explanation && (!$isCorrect || !$wasAnswered))
+                        <div class="bg-blue-900/20 border border-blue-700 rounded-lg p-4">
+                            <div class="flex items-start gap-3">
+                                <div class="w-6 h-6 bg-blue-600 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+                                    <i class="fas fa-lightbulb text-white text-xs"></i>
+                                </div>
+                                <div class="flex-1">
+                                    <span class="text-blue-300 font-medium text-sm">Explanation:</span>
+                                    <p class="text-blue-200 mt-1 leading-relaxed">
+                                        {{ $question->explanation }}
+                                    </p>
+                                </div>
+                            </div>
                         </div>
-                    @endforeach
-                </div>
-
-                <!-- Action Buttons -->
-                <div class="flex flex-col sm:flex-row gap-4 justify-center">
-                    <button wire:click="backToAssessmentList"
-                        class="px-8 py-4 bg-gray-600 hover:bg-gray-700 text-white rounded-lg font-semibold transition-colors text-lg">
-                        <i class="fas fa-arrow-left mr-2"></i>
-                        Back to Assessments
-                    </button>
-
-                    @if (!$results['passed'])
-                        <button wire:click="retakeAssessment"
-                            class="px-8 py-4 bg-yellow-600 hover:bg-yellow-700 text-white rounded-lg font-semibold transition-colors text-lg">
-                            <i class="fas fa-redo mr-2"></i>
-                            Retake Assessment
-                        </button>
-                    @else
-                        <button onclick="window.print()"
-                            class="px-8 py-4 bg-green-600 hover:bg-green-700 text-white rounded-lg font-semibold transition-colors text-lg">
-                            <i class="fas fa-print mr-2"></i>
-                            Print Results
-                        </button>
                     @endif
                 </div>
+            @endforeach
+        </div>
+
+        <!-- Action Buttons with Clear Attempts option -->
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+            <button wire:click="backToAssessmentList"
+                class="px-8 py-4 bg-gray-600 hover:bg-gray-700 text-white rounded-lg font-semibold transition-colors text-lg">
+                <i class="fas fa-arrow-left mr-2"></i>
+                Back to Assessments
+            </button>
+
+            @if (!$results['passed'])
+                <button wire:click="retakeAssessment"
+                    class="px-8 py-4 bg-yellow-600 hover:bg-yellow-700 text-white rounded-lg font-semibold transition-colors text-lg">
+                    <i class="fas fa-redo mr-2"></i>
+                    Retake Assessment
+                </button>
+            @endif
+
+            <button wire:click="clearPreviousAttempts"
+                wire:confirm="Are you sure you want to clear all attempts for this assessment? This action cannot be undone."
+                class="px-8 py-4 bg-red-600 hover:bg-red-700 text-white rounded-lg font-semibold transition-colors text-lg">
+                <i class="fas fa-trash mr-2"></i>
+                Clear All Attempts
+            </button>
+
+            @if ($results['passed'])
+                <button onclick="window.print()"
+                    class="px-8 py-4 bg-green-600 hover:bg-green-700 text-white rounded-lg font-semibold transition-colors text-lg">
+                    <i class="fas fa-print mr-2"></i>
+                    Print Results
+                </button>
+            @endif
+        </div>
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             </div>
         @endif
 
