@@ -70,7 +70,7 @@ class QuestionManager extends Component
         $this->options = ['', '', '', ''];
     }
 
-    protected function loadQuestions()
+    public function loadQuestions()
     {
         $this->questions = Question::where('assessment_id', $this->assessmentId)
             ->orderBy('order')

@@ -56,7 +56,7 @@ class AssessmentManager extends Component
         $this->loadAssessments();
     }
 
-    protected function loadAssessments()
+    public function loadAssessments()
     {
         $this->assessments = Assessment::where('lesson_id', $this->lessonId)
             ->with(['questions'])
