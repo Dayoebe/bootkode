@@ -10,7 +10,7 @@
 
         <!-- Logo/Header -->
         <div class="p-4 border-b dark:border-gray-700 animate__animated animate__fadeInDown">
-            <a href="{{ route('dashboard') }}" class="flex items-center space-x-2" aria-label="BootKode Home">
+            <a href="{{ route('home') }}" class="flex items-center space-x-2" aria-label="BootKode Home">
                 <i class="fas fa-code text-blue-500 text-2xl"></i>
                 <span class="text-xl font-bold text-gray-900 dark:text-white">BootKode</span>
             </a>
