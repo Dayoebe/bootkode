@@ -42,7 +42,10 @@ class Question extends Model
         'fill_blank' => 'Fill in the Blank',
         'matching' => 'Matching',
         'ordering' => 'Ordering',
-        'drag_drop' => 'Drag & Drop'
+        'drag_drop' => 'Drag & Drop',
+        'qna_topic' => 'Q&A Topic',
+        'project_criteria' => 'Project Criteria',
+        'assignment_question' => 'Assignment Question'
     ];
 
     // Difficulty levels

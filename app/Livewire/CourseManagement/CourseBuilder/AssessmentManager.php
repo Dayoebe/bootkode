@@ -84,7 +84,7 @@ class AssessmentManager extends Component
             'section_id' => $this->lesson->section_id,
             'course_id' => $this->lesson->section->course_id,
             'title' => $this->assessmentTitle,
-            'slug' => Str::slug($this->assessmentTitle), // Add this lin
+            'slug' => Str::slug($this->assessmentTitle),
             'description' => $this->assessmentDescription,
             'type' => $this->assessmentType,
             'pass_percentage' => $this->passPercentage,
@@ -123,6 +123,38 @@ class AssessmentManager extends Component
         if ($this->selectedAssessment) {
             $this->activeView = 'questions';
         }
+    }
+
+    // NEW: Method to determine if assessment type supports questions/criteria
+    public function canManageQuestions($assessmentType)
+    {
+        return in_array($assessmentType, ['quiz', 'project', 'assignment', 'qna']);
+    }
+
+    // NEW: Get the appropriate question manager component based on assessment type
+    public function getQuestionManagerType($assessmentType)
+    {
+        $managers = [
+            'quiz' => 'question-manager',
+            'project' => 'project-criteria-manager',
+            'assignment' => 'assignment-criteria-manager',
+            'qna' => 'qna-criteria-manager'
+        ];
+
+        return $managers[$assessmentType] ?? 'question-manager';
+    }
+
+    // NEW: Get the appropriate item type name for display
+    public function getAssessmentItemType($assessmentType)
+    {
+        $itemTypes = [
+            'quiz' => 'questions',
+            'project' => 'criteria',
+            'assignment' => 'questions',
+            'qna' => 'topics'
+        ];
+
+        return $itemTypes[$assessmentType] ?? 'items';
     }
 
     public function deleteAssessment($assessmentId)
@@ -203,8 +235,8 @@ class AssessmentManager extends Component
         $duplicatedAssessment->order = count($this->assessments) + 1;
         $duplicatedAssessment->save();
 
-        // Duplicate questions if it's a quiz
-        if ($originalAssessment->type === 'quiz') {
+        // Duplicate questions for any assessment type that has them
+        if ($this->canManageQuestions($originalAssessment->type)) {
             foreach ($originalAssessment->questions as $question) {
                 $duplicatedQuestion = $question->replicate();
                 $duplicatedQuestion->assessment_id = $duplicatedAssessment->id;

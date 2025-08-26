@@ -73,12 +73,21 @@
                                             Weight: {{ $assessment['weight'] ?? 1 }}x
                                         </span>
 
-                                        @if ($assessment['type'] === 'quiz')
-                                            <span class="flex items-center gap-1">
-                                                <i class="fas fa-list-ol"></i>
-                                                {{ count($assessment['questions'] ?? []) }} questions
-                                            </span>
-                                        @endif
+                                        <span class="flex items-center gap-1">
+                                            <i class="fas fa-list-ol"></i>
+                                            {{ count($assessment['questions'] ?? []) }} 
+                                            @if($assessment['type'] === 'quiz')
+                                                questions
+                                            @elseif($assessment['type'] === 'project')
+                                                criteria
+                                            @elseif($assessment['type'] === 'assignment')
+                                                questions
+                                            @elseif($assessment['type'] === 'qna')
+                                                topics
+                                            @else
+                                                items
+                                            @endif
+                                        </span>
                                     </div>
                                 </div>
 
@@ -94,13 +103,22 @@
 
                     <!-- Action Buttons -->
                     <div class="flex flex-col gap-2 ml-4">
-                        @if ($assessment['type'] === 'quiz')
-                            <button wire:click="manageQuestions({{ $assessment['id'] }})"
-                                    class="px-3 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg text-sm transition-colors flex items-center gap-2">
-                                <i class="fas fa-list"></i>
+                        <!-- Manage Questions/Criteria/Topics Button - Now available for all types -->
+                        <button wire:click="manageQuestions({{ $assessment['id'] }})"
+                                class="px-3 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg text-sm transition-colors flex items-center gap-2">
+                            <i class="fas fa-{{ $assessment['type'] === 'quiz' ? 'list' : ($assessment['type'] === 'project' ? 'tasks' : ($assessment['type'] === 'qna' ? 'comments' : 'edit')) }}"></i>
+                            @if($assessment['type'] === 'quiz')
                                 Questions
-                            </button>
-                        @endif
+                            @elseif($assessment['type'] === 'project')
+                                Criteria
+                            @elseif($assessment['type'] === 'assignment')
+                                Questions
+                            @elseif($assessment['type'] === 'qna')
+                                Topics
+                            @else
+                                Manage
+                            @endif
+                        </button>
 
                         <div class="flex gap-2">
                             <button wire:click="editAssessment({{ $assessment['id'] }})"
@@ -123,23 +141,22 @@
                     </div>
                 </div>
 
-                <!-- Progress Bar for Quiz Completion -->
-                @if ($assessment['type'] === 'quiz')
-                    @php
-                        $totalQuestions = count($assessment['questions'] ?? []);
-                        $progressPercent = $totalQuestions > 0 ? 100 : 0;
-                    @endphp
-                    <div class="mt-4 pt-3 border-t border-gray-600">
-                        <div class="flex items-center justify-between text-sm mb-1">
-                            <span class="text-gray-400">Quiz Setup Progress</span>
-                            <span class="text-gray-300">{{ $totalQuestions > 0 ? 'Ready' : 'Needs Questions' }}</span>
-                        </div>
-                        <div class="w-full bg-gray-600 rounded-full h-2">
-                            <div class="bg-{{ $totalQuestions > 0 ? 'green' : 'red' }}-500 h-2 rounded-full transition-all duration-300" 
-                                 style="width: {{ $progressPercent }}%"></div>
-                        </div>
+                <!-- Progress Bar for Assessment Completion -->
+                @php
+                    $totalItems = count($assessment['questions'] ?? []);
+                    $progressPercent = $totalItems > 0 ? 100 : 0;
+                    $statusText = $totalItems > 0 ? 'Ready' : 'Needs ' . ($assessment['type'] === 'quiz' ? 'Questions' : ($assessment['type'] === 'project' ? 'Criteria' : ($assessment['type'] === 'qna' ? 'Topics' : 'Items')));
+                @endphp
+                <div class="mt-4 pt-3 border-t border-gray-600">
+                    <div class="flex items-center justify-between text-sm mb-1">
+                        <span class="text-gray-400">{{ ucfirst($assessment['type']) }} Setup Progress</span>
+                        <span class="text-gray-300">{{ $statusText }}</span>
                     </div>
-                @endif
+                    <div class="w-full bg-gray-600 rounded-full h-2">
+                        <div class="bg-{{ $totalItems > 0 ? 'green' : 'red' }}-500 h-2 rounded-full transition-all duration-300" 
+                             style="width: {{ $progressPercent }}%"></div>
+                    </div>
+                </div>
             </div>
         @endforeach
     </div>
@@ -151,6 +168,8 @@
                 'total' => count($assessments),
                 'quizzes' => count(array_filter($assessments, fn($a) => $a['type'] === 'quiz')),
                 'projects' => count(array_filter($assessments, fn($a) => $a['type'] === 'project')),
+                'assignments' => count(array_filter($assessments, fn($a) => $a['type'] === 'assignment')),
+                'qna' => count(array_filter($assessments, fn($a) => $a['type'] === 'qna')),
                 'mandatory' => count(array_filter($assessments, fn($a) => $a['is_mandatory'])),
             ];
         @endphp
