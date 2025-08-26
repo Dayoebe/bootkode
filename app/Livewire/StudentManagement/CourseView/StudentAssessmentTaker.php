@@ -290,7 +290,7 @@ class StudentAssessmentTaker extends Component
         $totalPoints = 0;
         $maxPoints = 0;
         $correctAnswers = 0;
-        $totalQuestions = $this->questions->count();
+        $totalQuestions = count($this->questions);
         $answersData = [];
 
         foreach ($this->questions as $question) {
