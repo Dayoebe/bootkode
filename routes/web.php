@@ -29,6 +29,9 @@ use App\Livewire\CertificateManagement\CertificateManagement;
     Route::get('/Statistics', \App\Livewire\Pages\Statistics::class)->name('statistics');
     Route::get('/Guideline', \App\Livewire\Pages\Guideline::class)->name('guideline');
 
+    Route::get('/job', \App\Livewire\Career\JobSearch::class)->name('job');
+    Route::get('/portfolio',\App\Livewire\Career\PortfolioBuilder::class)->name('portfolio.show');
+
 // =============================================================================
 // PUBLIC ROUTES (No Authentication Required)
 // =============================================================================

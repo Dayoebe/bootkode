@@ -139,6 +139,10 @@ class User extends Authenticatable implements MustVerifyEmail
             ->withPivot(['last_accessed_at']);
     }
 
+    public function portfolios()
+{
+    return $this->hasMany(Portfolio::class);
+}
     public function completedLessons()
     {
         return $this->belongsToMany(Lesson::class, 'lesson_user')

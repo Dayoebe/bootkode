@@ -35,6 +35,11 @@ return [
         ],
     ],
 
+    'adzuna' => [
+        'base_url' => env('ADZUNA_BASE_URL'),
+        'app_id' => env('ADZUNA_APP_ID'),
+        'app_key' => env('ADZUNA_APP_KEY'),
+    ],
 
     'google' => [
     'client_id' => env('GOOGLE_CLIENT_ID'),

@@ -228,8 +228,8 @@ return [
             'roles' => [],
             'link_id' => 'career_services',
             'children' => [
-                ['label' => 'Job Board', 'icon' => 'fas fa-search-dollar', 'route_name' => '#', 'roles' => []],
-                ['label' => 'Portfolio Builder', 'icon' => 'fas fa-id-card', 'route_name' => '#', 'roles' => [User::ROLE_STUDENT]],
+                ['label' => 'Job Board', 'icon' => 'fas fa-search-dollar', 'route_name' => 'job', 'roles' => []],
+                ['label' => 'Portfolio Builder', 'icon' => 'fas fa-id-card', 'route_name' => 'portfolio.show', 'roles' => [User::ROLE_STUDENT]],
                 ['label' => 'Resume Generator', 'icon' => 'fas fa-file-alt', 'route_name' => '#', 'roles' => [User::ROLE_STUDENT]],
                 ['label' => 'Mock Interviews', 'icon' => 'fas fa-comments', 'route_name' => '#', 'roles' => [User::ROLE_STUDENT]],
                 ['label' => 'Employer Connections', 'icon' => 'fas fa-handshake', 'route_name' => '#', 'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN]],
