@@ -230,18 +230,11 @@ return [
             'children' => [
                 ['label' => 'Job Board', 'icon' => 'fas fa-search-dollar', 'route_name' => 'job', 'roles' => []],
                 ['label' => 'Portfolio Builder', 'icon' => 'fas fa-id-card', 'route_name' => 'portfolio.show', 'roles' => [User::ROLE_STUDENT]],
-                ['label' => 'Resume Generator', 'icon' => 'fas fa-file-alt', 'route_name' => '#', 'roles' => [User::ROLE_STUDENT]],
-                ['label' => 'Mock Interviews', 'icon' => 'fas fa-comments', 'route_name' => '#', 'roles' => [User::ROLE_STUDENT]],
-                ['label' => 'Employer Connections', 'icon' => 'fas fa-handshake', 'route_name' => '#', 'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN]],
+                ['label' => 'Resume Generator', 'icon' => 'fas fa-file-alt', 'route_name' => 'resume.builder', 'roles' => [User::ROLE_STUDENT]],
+                ['label' => 'Mock Interviews', 'icon' => 'fas fa-comments', 'route_name' => 'user.interview', 'roles' => [User::ROLE_STUDENT]],
+                ['label' => 'Manage Mock', 'icon' => 'fas fa-handshake', 'route_name' => 'user.interview', 'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_CONTENT_EDITOR, User::ROLE_SUPER_ADMIN]],
                 ['label' => 'Job Listings', 'icon' => 'fas fa-list', 'route_name' => '#', 'roles' => []],
-                ['label' => 'Post a Job', 'icon' => 'fas fa-plus-square', 'route_name' => '#', 'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_CONTENT_EDITOR, User::ROLE_SUPER_ADMIN]],
-                ['label' => 'Job Applications', 'icon' => 'fas fa-file-alt', 'route_name' => '#', 'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_CONTENT_EDITOR, User::ROLE_SUPER_ADMIN]],
-                ['label' => 'Resume Database', 'icon' => 'fas fa-database', 'route_name' => '#', 'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_CONTENT_EDITOR, User::ROLE_SUPER_ADMIN]],
-                ['label' => 'Employer Dashboard', 'icon' => 'fas fa-tachometer-alt', 'route_name' => '#', 'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN]],
-                ['label' => 'Job Alerts', 'icon' => 'fas fa-bell', 'route_name' => '#', 'roles' => [User::ROLE_STUDENT]],
-                ['label' => 'Job Categories', 'icon' => 'fas fa-tags', 'route_name' => '#', 'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN]],
-                ['label' => 'Job Analytics', 'icon' => 'fas fa-chart-bar', 'route_name' => '#', 'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN]],
-                ['label' => 'Job Settings', 'icon' => 'fas fa-cog', 'route_name' => '#', 'roles' => [User::ROLE_SUPER_ADMIN]],
+                ['label' => 'Manage Job Applications', 'icon' => 'fas fa-file-alt', 'route_name' => '#', 'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_CONTENT_EDITOR, User::ROLE_SUPER_ADMIN]],
             ]
         ],
      

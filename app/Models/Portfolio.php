@@ -71,15 +71,26 @@ class Portfolio extends Model
     }
 
     // Accessors
+  
     public function imageUrl(): Attribute
     {
         return Attribute::make(
-            get: fn() => $this->image_path
-            ? Storage::url($this->image_path)
-            : 'https://via.placeholder.com/800x600/f3f4f6/9ca3af?text=No+Image'
+            get: function () {
+                if (!$this->image_path) {
+                    return 'https://via.placeholder.com/800x600/f3f4f6/9ca3af?text=No+Image';
+                }
+                
+                // Check if the file actually exists
+                $fullPath = storage_path('app/public/' . $this->image_path);
+                if (!file_exists($fullPath)) {
+                    return 'https://via.placeholder.com/800x600/f3f4f6/9ca3af?text=Image+Not+Found';
+                }
+                
+                return Storage::url($this->image_path);
+            }
         );
     }
-
+    
     public function thumbnailUrl(): Attribute
     {
         return Attribute::make(
@@ -88,9 +99,11 @@ class Portfolio extends Model
                     return 'https://via.placeholder.com/300x300/f3f4f6/9ca3af?text=No+Image';
                 }
                 
-                // Check if thumbnail exists
+                // Check if thumbnail exists, otherwise use main image
                 $thumbnailPath = str_replace('/main/', '/thumbs/', $this->image_path);
-                if (Storage::disk('public')->exists($thumbnailPath)) {
+                $fullThumbPath = storage_path('app/public/' . $thumbnailPath);
+                
+                if (file_exists($fullThumbPath)) {
                     return Storage::url($thumbnailPath);
                 }
                 
@@ -99,6 +112,15 @@ class Portfolio extends Model
             }
         );
     }
+
+
+
+
+
+
+
+
+  
     public function formattedTechnologies(): Attribute
     {
         return Attribute::make(

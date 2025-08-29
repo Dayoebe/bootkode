@@ -11,6 +11,8 @@ use Spatie\Permission\Traits\HasRoles;
 use Spatie\Activitylog\Traits\LogsActivity;
 use Spatie\Activitylog\LogOptions;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use App\Models\ResumeItem;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 class User extends Authenticatable implements MustVerifyEmail
 {
     use HasApiTokens, HasFactory, Notifiable, HasRoles, LogsActivity;
@@ -138,7 +140,6 @@ class User extends Authenticatable implements MustVerifyEmail
             ->withTimestamps()
             ->withPivot(['last_accessed_at']);
     }
-
     public function portfolios()
 {
     return $this->hasMany(Portfolio::class);
@@ -153,6 +154,11 @@ class User extends Authenticatable implements MustVerifyEmail
     public function wishlists()
     {
         return $this->hasMany(Wishlist::class);
+    }
+
+    public function mockInterviews()
+    {
+        return $this->hasMany(MockInterview::class);
     }
 
     public function reviews()
@@ -334,6 +340,49 @@ public function canManageUsers(): bool
 public function canManageCourses(): bool
 {
     return !$this->isStudent(); // Everyone except students
+}
+
+
+public function resumeProfile()
+{
+    return $this->hasOne(ResumeProfile::class);
+}
+
+// Helper method to get or create resume profile
+public function getOrCreateResumeProfile()
+{
+    if (!$this->resumeProfile) {
+        return $this->resumeProfile()->create([
+            'full_name' => $this->name,
+            'email' => $this->email,
+            'phone' => $this->phone_number,
+            'location' => $this->getFullAddressAttribute(),
+            'professional_summary' => $this->bio,
+        ]);
+    }
+    
+    return $this->resumeProfile;
+}
+
+// Resume-related helper methods
+public function hasCompleteResume()
+{
+    $resume = $this->resumeProfile;
+    if (!$resume) return false;
+    
+    return $resume->canBeExported();
+}
+
+public function getResumeCompletionPercentage()
+{
+    $resume = $this->resumeProfile;
+    return $resume ? $resume->getCompletionPercentage() : 0;
+}
+
+public function getResumeQualityScore()
+{
+    $resume = $this->resumeProfile;
+    return $resume ? $resume->getQualityScore() : 0;
 }
 
 }

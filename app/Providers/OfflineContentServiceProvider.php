@@ -14,14 +14,14 @@ class OfflineContentServiceProvider extends ServiceProvider
         });
     }
 
-    public function boot()
-    {
-        Storage::disk('local')->buildTemporaryUrlsUsing(function ($path, $expiration, $options) {
-            return URL::temporarySignedRoute(
-                'offline.content',
-                $expiration,
-                array_merge($options, ['path' => $path])
-            );
-        });
-    }
+    // public function boot()
+    // {
+    //     Storage::disk('local')->buildTemporaryUrlsUsing(function ($path, $expiration, $options) {
+    //         return URL::temporarySignedRoute(
+    //             'offline.content',
+    //             $expiration,
+    //             array_merge($options, ['path' => $path])
+    //         );
+    //     });
+    // }
 }
