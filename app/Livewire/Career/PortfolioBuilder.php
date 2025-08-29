@@ -50,6 +50,9 @@ class PortfolioBuilder extends Component
     public $totalProjects = 0;
     public $completedProjects = 0;
     public $inProgressProjects = 0;
+    public $inPlanningProjects = 0;
+    public $inOnHoldProjects = 0;
+
     public $totalViews = 0;
 
     // Categories and technologies
@@ -162,19 +165,22 @@ class PortfolioBuilder extends Component
         $this->totalProjects = $user->portfolios()->count();
         $this->completedProjects = $user->portfolios()->where('status', 'completed')->count();
         $this->inProgressProjects = $user->portfolios()->where('status', 'in-progress')->count();
+        $this->inPlanningProjects = $user->portfolios()->where('status', 'planning')->count();
+        $this->inOnHoldProjects = $user->portfolios()->where('status', 'on-hold')->count();
+
+   
         $this->totalViews = $user->portfolios()->sum('views_count') ?? 0;
     }
-
 
     public function saveProject()
     {
         $this->validate();
-    
+
         try {
             // Convert empty date strings to null
             $startDate = !empty($this->start_date) ? $this->start_date : null;
             $endDate = !empty($this->end_date) ? $this->end_date : null;
-    
+
             $projectData = [
                 'title' => $this->title,
                 'description' => $this->description,
@@ -187,13 +193,13 @@ class PortfolioBuilder extends Component
                 'client_name' => $this->client_name,
                 'slug' => Str::slug($this->title . '-' . Str::random(6)),
             ];
-    
+
             // Handle main image upload with optimization
             if ($this->image) {
                 $imagePath = $this->optimizeAndStoreImage($this->image, 'portfolio/main');
                 $projectData['image_path'] = $imagePath;
             }
-    
+
             // Handle additional images
             $additionalImagePaths = [];
             if ($this->additional_images) {
@@ -203,41 +209,158 @@ class PortfolioBuilder extends Component
                 }
                 $projectData['additional_images'] = json_encode($additionalImagePaths);
             }
-    
+
             if ($this->editingProjectId) {
                 // Update existing project
                 $project = Portfolio::find($this->editingProjectId);
                 $oldImagePath = $project->image_path;
                 $oldAdditionalImages = json_decode($project->additional_images, true) ?? [];
-    
+
                 $project->update($projectData);
-    
+
                 // Delete old images if new ones are uploaded
                 if (isset($projectData['image_path']) && $oldImagePath) {
-                    Storage::disk('public')->delete($oldImagePath);
+                    $this->deleteImage($oldImagePath);
                 }
-    
+
                 if (isset($projectData['additional_images']) && $oldAdditionalImages) {
-                    foreach ($oldAdditionalImages as $oldImage) {
-                        Storage::disk('public')->delete($oldImage);
-                    }
+                    $this->deleteAdditionalImages($oldAdditionalImages);
                 }
-    
+
                 session()->flash('message', 'Project updated successfully! 🎉');
             } else {
                 // Create new project
                 Auth::user()->portfolios()->create($projectData);
                 session()->flash('message', 'Project created successfully! 🚀');
             }
-    
+
             $this->resetForm();
             $this->loadPortfolios();
-    
+
         } catch (\Exception $e) {
             session()->flash('error', 'Failed to save project: ' . $e->getMessage());
             \Log::error('Project save error: ' . $e->getMessage());
         }
     }
+
+    public function deleteProject($projectId)
+    {
+        $project = Portfolio::find($projectId);
+        if ($project && $project->user_id === Auth::id()) {
+            // Delete associated images
+            $this->deleteImage($project->image_path);
+            
+            if ($project->additional_images) {
+                $additionalImages = json_decode($project->additional_images, true);
+                $this->deleteAdditionalImages($additionalImages);
+            }
+
+            $project->delete();
+            $this->loadPortfolios();
+            session()->flash('message', 'Project deleted successfully.');
+        }
+    }
+
+    protected function optimizeAndStoreImage($image, $directory)
+{
+    $filename = Str::random(40) . '.' . $image->getClientOriginalExtension();
+    
+    // Store directly in the public directory
+    $path = $image->storeAs('public/' . $directory, $filename);
+    
+    // Remove the 'public/' prefix from the path to return
+    $relativePath = str_replace('public/', '', $path);
+    
+    // Check if Intervention Image is available
+    if (class_exists('Intervention\Image\Facades\Image')) {
+        try {
+            $fullPath = storage_path('app/public/' . $relativePath);
+            
+            // Create the thumbs directory if it doesn't exist
+            $thumbDir = storage_path('app/public/' . $directory . '/thumbs');
+            if (!file_exists($thumbDir)) {
+                mkdir($thumbDir, 0755, true);
+            }
+            
+            // Create thumbnail (300x300)
+            $thumbnail = Image::make($fullPath)->fit(300, 300);
+            $thumbnailPath = 'public/' . $directory . '/thumbs/' . $filename;
+            $thumbnail->save(storage_path('app/' . $thumbnailPath));
+
+            // Create medium size (800x600)
+            $medium = Image::make($fullPath)->resize(800, 600, function ($constraint) {
+                $constraint->aspectRatio();
+                $constraint->upsize();
+            });
+            $medium->save($fullPath, 85); // Compress to 85% quality
+
+        } catch (\Exception $e) {
+            \Log::error('Image optimization failed: ' . $e->getMessage());
+        }
+    }
+
+    return $relativePath;
+}
+    protected function deleteImage($path)
+    {
+        if ($path) {
+            // Delete main image
+            Storage::disk('public')->delete($path);
+            
+            // Delete thumbnail if it exists
+            if (class_exists('Intervention\Image\Facades\Image')) {
+                $thumbnailPath = str_replace('/main/', '/thumbs/', $path);
+                if (Storage::disk('public')->exists($thumbnailPath)) {
+                    Storage::disk('public')->delete($thumbnailPath);
+                }
+            }
+        }
+    }
+
+    protected function deleteAdditionalImages($images)
+    {
+        if ($images) {
+            foreach ($images as $imagePath) {
+                $this->deleteImage($imagePath);
+            }
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     
     public function editProject($projectId)
     {
@@ -277,39 +400,7 @@ class PortfolioBuilder extends Component
 
 
     
-    protected function optimizeAndStoreImage($image, $directory)
-    {
-        $filename = Str::random(40) . '.' . $image->getClientOriginalExtension();
-        $path = $directory . '/' . $filename;
-    
-        // Store original
-        $image->storeAs('public/' . $directory, $filename);
-    
-        // Check if Intervention Image is available
-        if (class_exists('Intervention\Image\Facades\Image')) {
-            try {
-                $fullPath = storage_path('app/public/' . $path);
-                
-                // Create thumbnail (300x300)
-                $thumbnail = \Intervention\Image\Facades\Image::make($fullPath)->fit(300, 300);
-                $thumbnailPath = $directory . '/thumbs/' . $filename;
-                $thumbnail->save(storage_path('app/public/' . $thumbnailPath));
-    
-                // Create medium size (800x600)
-                $medium = \Intervention\Image\Facades\Image::make($fullPath)->resize(800, 600, function ($constraint) {
-                    $constraint->aspectRatio();
-                    $constraint->upsize();
-                });
-                $medium->save($fullPath, 85); // Compress to 85% quality
-    
-            } catch (\Exception $e) {
-                // If image optimization fails, continue with original
-                \Log::error('Image optimization failed: ' . $e->getMessage());
-            }
-        }
-    
-        return $path;
-    }
+   
     private function createThumbnail($sourceImage, $originalWidth, $originalHeight, $mimeType, $directory, $filename)
     {
         $thumbnailSize = 300;
@@ -414,21 +505,6 @@ class PortfolioBuilder extends Component
 
 
 
-
-
-    public function deleteProject($projectId)
-    {
-        $project = Portfolio::find($projectId);
-        if ($project && $project->user_id === Auth::id()) {
-            // Delete associated images
-            ImageHandler::deleteImage($project->image_path);
-            ImageHandler::deleteAdditionalImages($project->additional_images);
-
-            $project->delete();
-            $this->loadPortfolios();
-            session()->flash('message', 'Project deleted successfully.');
-        }
-    }
 
 
 

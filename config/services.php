@@ -41,6 +41,13 @@ return [
         'app_key' => env('ADZUNA_APP_KEY'),
     ],
 
+
+    'openai' => [
+        'key'      => env('OPENAI_API_KEY'),
+        'org'      => env('OPENAI_ORG'),
+        'project'  => env('OPENAI_PROJECT'),
+        'base_url' => env('OPENAI_BASE_URL', 'https://api.openai.com'),
+    ],
     'google' => [
     'client_id' => env('GOOGLE_CLIENT_ID'),
     'client_secret' => env('GOOGLE_CLIENT_SECRET'),

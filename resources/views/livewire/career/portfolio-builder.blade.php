@@ -14,23 +14,38 @@
                         <div class="text-2xl font-bold">{{ $totalProjects }}</div>
                         <div class="text-sm opacity-90">Total Projects</div>
                     </div>
+                
                     <div class="bg-gradient-to-br from-green-500 to-green-600 rounded-xl p-4 text-white text-center">
                         <div class="text-2xl font-bold">{{ $completedProjects }}</div>
                         <div class="text-sm opacity-90">Completed</div>
                     </div>
+                
                     <div class="bg-gradient-to-br from-orange-500 to-orange-600 rounded-xl p-4 text-white text-center">
                         <div class="text-2xl font-bold">{{ $inProgressProjects }}</div>
                         <div class="text-sm opacity-90">In Progress</div>
                     </div>
+                
+                    <div class="bg-gradient-to-br from-red-500 to-red-600 rounded-xl p-4 text-white text-center">
+                        <div class="text-2xl font-bold">{{ $inOnHoldProjects }}</div>
+                        <div class="text-sm opacity-90">On Hold</div>
+                    </div>
+                
+                    <div class="bg-gradient-to-br from-yellow-500 to-yellow-600 rounded-xl p-4 text-white text-center">
+                        <div class="text-2xl font-bold">{{ $inPlanningProjects }}</div>
+                        <div class="text-sm opacity-90">Planning</div>
+                    </div>
+                
                     <div class="bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl p-4 text-white text-center">
                         <div class="text-2xl font-bold">{{ $totalViews }}</div>
                         <div class="text-sm opacity-90">Total Views</div>
                     </div>
                 </div>
+                
             </div>
         </div>
     </div>
 
+   
     <!-- Flash Messages -->
     @if (session('message'))
         <div class="container mx-auto px-6 pt-4">
