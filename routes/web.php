@@ -24,13 +24,19 @@ use App\Livewire\CertificateManagement\CertificateManagement;
 
 // Public Certificate Verification Routes
 
-    Route::get('/About', \App\Livewire\Pages\AboutUs::class)->name('about');
-    Route::get('/Contact', \App\Livewire\Pages\ContactUs::class)->name('contact');
-    Route::get('/Statistics', \App\Livewire\Pages\Statistics::class)->name('statistics');
-    Route::get('/Guideline', \App\Livewire\Pages\Guideline::class)->name('guideline');
+Route::get('/About', \App\Livewire\Pages\AboutUs::class)->name('about');
+Route::get('/Contact', \App\Livewire\Pages\ContactUs::class)->name('contact');
+Route::get('/Statistics', \App\Livewire\Pages\Statistics::class)->name('statistics');
+Route::get('/Guideline', \App\Livewire\Pages\Guideline::class)->name('guideline');
 
+
+
+Route::middleware('auth')->group(function () {
     Route::get('/job', \App\Livewire\Career\JobSearch::class)->name('job');
-    Route::get('/portfolio',\App\Livewire\Career\PortfolioBuilder::class)->name('portfolio.show');
+    Route::get('/portfolio', \App\Livewire\Career\PortfolioBuilder::class)->name('portfolio.show');
+    Route::get('/resume/builder', \App\Livewire\Career\ResumeBuilder::class)->name('resume.builder');
+    Route::get('/interview/user', \App\Livewire\Career\UserMockInterview::class)->name('user.interview');
+});
 
 // =============================================================================
 // PUBLIC ROUTES (No Authentication Required)
@@ -86,7 +92,7 @@ Route::middleware(['auth', 'verified'])->prefix('dashboard')->name('')->group(fu
     Route::get('/profile/edit', function () {
         return redirect()->route('profile.view', ['mode' => 'edit']);
     })->name('profile.edit');
-    
+
     // User Management - Admin Only
     Route::get('/all-users', \App\Livewire\UserManagement\AllUser::class)->name('all-users');
     Route::get('/roles-permissions', \App\Livewire\UserManagement\RolesPermissions::class)->name('roles-permissions');
@@ -243,16 +249,16 @@ Route::middleware(['auth', 'verified'])->prefix('dashboard')->name('')->group(fu
     Route::get('/notifications', \App\Livewire\SystemManagement\Notifications::class)->name('notifications');
     Route::get('/system-status', \App\Livewire\SystemManagement\SystemStatus::class)->name('system-status');
     Route::get('/system-status-management', \App\Livewire\SystemManagement\SystemStatusManagement::class)->name('system-status.management');
-    
+
     // Support System
     Route::get('/help-support', \App\Livewire\SystemManagement\HelpSupport::class)->name('help.support');
     Route::get('/support-tickets', \App\Livewire\SystemManagement\SupportTicketManagement::class)->name('support.tickets');
     Route::get('/faq-management', \App\Livewire\SystemManagement\FaqManagement::class)->name('faq.management');
-    
+
     // Feedback System
     Route::get('/feedback', \App\Livewire\SystemManagement\Feedback::class)->name('feedback');
     Route::get('/feedback-management', \App\Livewire\SystemManagement\FeedbackManagement::class)->name('feedback.management');
-    
+
     // Announcements
     Route::get('/announcements', \App\Livewire\SystemManagement\Announcements::class)->name('announcements');
     Route::get('/announcement-management', \App\Livewire\SystemManagement\AnnouncementManagement::class)->name('announcement.management');
@@ -264,7 +270,7 @@ Route::middleware(['auth', 'verified'])->prefix('dashboard')->name('')->group(fu
 
 Route::middleware(['auth', 'verified'])->group(function () {
     // Dashboard certificate redirect
-    Route::get('/dashboard/certificates', function() {
+    Route::get('/dashboard/certificates', function () {
         // Redirect based on user role
         if (auth()->user()->canManageCertificates()) {
             return redirect()->route('admin.certificates.manage');
