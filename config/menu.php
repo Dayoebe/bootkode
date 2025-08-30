@@ -195,17 +195,17 @@ return [
         [
             'label' => 'Mentorship Network',
             'icon' => 'fas fa-hands-helping',
-            'route_name' => '#',
+            'route_name' => 'mentorship.hub',
             'roles' => [],
             'link_id' => 'mentorship',
             'children' => [
-                ['label' => 'Find a Mentor', 'icon' => 'fas fa-search', 'route_name' => '#', 'roles' => [User::ROLE_STUDENT]],
-                ['label' => 'Mentor Dashboard', 'icon' => 'fas fa-chalkboard-teacher', 'route_name' => '#', 'roles' => [User::ROLE_MENTOR]],
-                ['label' => 'Mentorship Requests', 'icon' => 'fas fa-bell', 'route_name' => '#', 'roles' => [User::ROLE_MENTOR, User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN]],
-                ['label' => 'Code Review System', 'icon' => 'fas fa-code', 'route_name' => '#', 'roles' => [User::ROLE_MENTOR, User::ROLE_STUDENT]],
-                ['label' => 'Session Scheduling', 'icon' => 'fas fa-calendar-check', 'route_name' => '#', 'roles' => [User::ROLE_MENTOR, User::ROLE_STUDENT]],
-                ['label' => 'Mentor Resources', 'icon' => 'fas fa-tools', 'route_name' => '#', 'roles' => [User::ROLE_MENTOR]],
-                ['label' => 'Mentor Management', 'icon' => 'fas fa-user-tie', 'route_name' => '#', 'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN]],
+                ['label' => 'Find a Mentor', 'icon' => 'fas fa-search', 'route_name' => 'mentorship.hub', 'roles' => [User::ROLE_STUDENT]],
+                ['label' => 'Mentor Dashboard', 'icon' => 'fas fa-chalkboard-teacher', 'route_name' => 'mentorship.hub', 'roles' => [User::ROLE_MENTOR, User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN]],
+                ['label' => 'Mentorship Requests', 'icon' => 'fas fa-bell', 'route_name' => 'mentorship.actions', 'roles' => [User::ROLE_MENTOR, User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN]],
+                ['label' => 'Code Review System', 'icon' => 'fas fa-code', 'route_name' => 'mentorship.actions', 'roles' => [User::ROLE_MENTOR, User::ROLE_STUDENT]],
+                ['label' => 'Session Scheduling', 'icon' => 'fas fa-calendar-check', 'route_name' => 'mentorship.actions', 'roles' => [User::ROLE_MENTOR, User::ROLE_STUDENT]],
+                ['label' => 'Mentor Resources', 'icon' => 'fas fa-tools', 'route_name' => 'mentorship.hub', 'roles' => [User::ROLE_MENTOR]],
+                ['label' => 'Mentor Management', 'icon' => 'fas fa-user-tie', 'route_name' => 'mentorship.mentor-dashboard', 'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN]],
             ]
         ],
         [
@@ -228,16 +228,16 @@ return [
             'roles' => [],
             'link_id' => 'career_services',
             'children' => [
-                ['label' => 'Job Board', 'icon' => 'fas fa-search-dollar', 'route_name' => 'job', 'roles' => []],
+                ['label' => 'Job Board', 'icon' => 'fas fa-search-dollar', 'route_name' => 'search.job', 'roles' => []],
                 ['label' => 'Portfolio Builder', 'icon' => 'fas fa-id-card', 'route_name' => 'portfolio.show', 'roles' => [User::ROLE_STUDENT]],
                 ['label' => 'Resume Generator', 'icon' => 'fas fa-file-alt', 'route_name' => 'resume.builder', 'roles' => [User::ROLE_STUDENT]],
                 ['label' => 'Mock Interviews', 'icon' => 'fas fa-comments', 'route_name' => 'user.interview', 'roles' => [User::ROLE_STUDENT]],
-                ['label' => 'Manage Mock', 'icon' => 'fas fa-handshake', 'route_name' => 'user.interview', 'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_CONTENT_EDITOR, User::ROLE_SUPER_ADMIN]],
-                ['label' => 'Job Listings', 'icon' => 'fas fa-list', 'route_name' => '#', 'roles' => []],
-                ['label' => 'Manage Job Applications', 'icon' => 'fas fa-file-alt', 'route_name' => '#', 'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_CONTENT_EDITOR, User::ROLE_SUPER_ADMIN]],
+                ['label' => 'Manage Mock Interviews', 'icon' => 'fas fa-user-tie', 'route_name' => 'admin.interview', 'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_CONTENT_EDITOR, User::ROLE_SUPER_ADMIN]],
+                ['label' => 'Job Listings', 'icon' => 'fas fa-list', 'route_name' => 'user.job', 'roles' => []],
+                ['label' => 'Manage Job Applications', 'icon' => 'fas fa-file-alt', 'route_name' => 'admin.job', 'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_CONTENT_EDITOR, User::ROLE_SUPER_ADMIN]],
             ]
         ],
-     
+
         [
             'label' => 'Content Management',
             'icon' => 'fas fa-edit',
