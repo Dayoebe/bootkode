@@ -18,6 +18,13 @@ use App\Livewire\CertificateManagement\CertificateManagement;
 |
 */
 
+
+Route::middleware(['auth', 'verified'])->group(function () {
+    Route::get('/mentorship', \App\Livewire\Mentorship\MentorshipHub::class)->name('mentorship.hub');
+    Route::get('/mentorship/mentor-dashboard', \App\Livewire\Mentorship\MentorDashboard::class)->name('mentorship.mentor-dashboard');
+    Route::get('/mentorship/actions', \App\Livewire\Mentorship\MentorshipActions::class)->name('mentorship.actions');
+});
+
 // =============================================================================
 // PUBLIC PAGES (No Authentication Required)
 // =============================================================================
@@ -30,12 +37,14 @@ Route::get('/Statistics', \App\Livewire\Pages\Statistics::class)->name('statisti
 Route::get('/Guideline', \App\Livewire\Pages\Guideline::class)->name('guideline');
 
 
-
 Route::middleware('auth')->group(function () {
-    Route::get('/job', \App\Livewire\Career\JobSearch::class)->name('job');
+    Route::get('/search/job', \App\Livewire\Career\JobSearch::class)->name('search.job');
     Route::get('/portfolio', \App\Livewire\Career\PortfolioBuilder::class)->name('portfolio.show');
     Route::get('/resume/builder', \App\Livewire\Career\ResumeBuilder::class)->name('resume.builder');
     Route::get('/interview/user', \App\Livewire\Career\UserMockInterview::class)->name('user.interview');
+    Route::get('/admin/interview', \App\Livewire\Career\AdminMockInterview::class)->name('admin.interview');
+    Route::get('/job', \App\Livewire\Career\JobPortal::class)->name('user.job');
+    Route::get('/admin/job', \App\Livewire\Career\JobManagement::class)->name('admin.job');
 });
 
 // =============================================================================
