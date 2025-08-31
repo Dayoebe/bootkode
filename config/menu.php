@@ -65,6 +65,19 @@ return [
             ]
         ],
         [
+            'label' => 'CBT',
+            'icon' => 'fas fa-laptop-code',
+            'route_name' => '#',
+            'roles' => [],
+            'link_id' => 'cbt',
+            'children' => [
+                ['label' => 'Take CBT Exam', 'icon' => 'fas fa-pencil-alt', 'route_name' => 'cbt-center', 'roles' => [User::ROLE_STUDENT], 'link_id' => 'cbt.exam', 'has_submenu' => true, 'exams' => []],
+                ['label' => 'View CBT Exam', 'icon' => 'fas fa-chart-bar', 'route_name' => 'cbt-viewer', 'roles' => [User::ROLE_STUDENT], 'link_id' => 'cbt-viewer',],
+                ['label' => 'CBT Management', 'icon' => 'fas fa-cog', 'route_name' => 'cbt-management', 'roles' => [User::ROLE_SUPER_ADMIN, User::ROLE_ACADEMY_ADMIN, User::ROLE_INSTRUCTOR], 'link_id' => 'cbt.management',],
+                ['label' => 'CBT Builder', 'icon' => 'fas fa-tools', 'route_name' => 'cbt-builder', 'roles' => [User::ROLE_SUPER_ADMIN, User::ROLE_ACADEMY_ADMIN, User::ROLE_INSTRUCTOR], 'link_id' => 'cbt.builder',],
+            ]
+        ],
+        [
             'label' => 'Learning Hub',
             'icon' => 'fas fa-graduation-cap',
             'route_name' => '#',
@@ -77,20 +90,6 @@ return [
                 ['label' => 'Saved Resources', 'icon' => 'fas fa-bookmark', 'route_name' => ('student.saved-resources'), 'roles' => [User::ROLE_STUDENT], 'link_id' => 'student.saved-resources'],
                 ['label' => 'Offline Learning', 'icon' => 'fas fa-download', 'route_name' => ('student.offline-learning'), 'roles' => [User::ROLE_STUDENT], 'link_id' => 'student.offline-learning',]
             ]
-        ],
-        [
-            'label' => 'Assessment Center',
-            'icon' => 'fas fa-clipboard-check',
-            'route_name' => '#',
-            'roles' => [],
-            'link_id' => 'assessment_center',
-            'children' => [
-                ['label' => 'My Quizzes', 'icon' => 'fas fa-list-alt', 'route_name' => '#', 'roles' => [User::ROLE_STUDENT]],
-                ['label' => 'Create Quiz', 'icon' => 'fas fa-plus-square', 'route_name' => '#', 'roles' => [User::ROLE_INSTRUCTOR, User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN]],
-                ['label' => 'Quiz Analytics', 'icon' => 'fas fa-chart-bar', 'route_name' => '#', 'roles' => [User::ROLE_INSTRUCTOR, User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN]],
-                ['label' => 'Quiz Library', 'icon' => 'fas fa-book', 'route_name' => '#', 'roles' => [User::ROLE_INSTRUCTOR, User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN]],
-                ['label' => 'Assessment Settings', 'icon' => 'fas fa-cog', 'route_name' => '#', 'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN]],
-            ],
         ],
         [
             'label' => 'Community Center',
@@ -200,12 +199,12 @@ return [
             'link_id' => 'mentorship',
             'children' => [
                 ['label' => 'Find a Mentor', 'icon' => 'fas fa-search', 'route_name' => 'mentorship.hub', 'roles' => [User::ROLE_STUDENT]],
-                ['label' => 'Mentor Dashboard', 'icon' => 'fas fa-chalkboard-teacher', 'route_name' => 'mentorship.hub', 'roles' => [User::ROLE_MENTOR, User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN]],
-                ['label' => 'Mentorship Requests', 'icon' => 'fas fa-bell', 'route_name' => 'mentorship.actions', 'roles' => [User::ROLE_MENTOR, User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN]],
-                ['label' => 'Code Review System', 'icon' => 'fas fa-code', 'route_name' => 'mentorship.actions', 'roles' => [User::ROLE_MENTOR, User::ROLE_STUDENT]],
-                ['label' => 'Session Scheduling', 'icon' => 'fas fa-calendar-check', 'route_name' => 'mentorship.actions', 'roles' => [User::ROLE_MENTOR, User::ROLE_STUDENT]],
+                ['label' => 'Mentor Dashboard', 'icon' => 'fas fa-chalkboard-teacher', 'route_name' => 'mentorship.dashboard', 'roles' => [User::ROLE_MENTOR, User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN]],
+                ['label' => 'Mentorship Requests', 'icon' => 'fas fa-bell', 'route_name' => 'mentorship.hub', 'roles' => [User::ROLE_MENTOR, User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN]],
+                ['label' => 'Code Review System', 'icon' => 'fas fa-code', 'route_name' => 'mentorship.hub', 'roles' => [User::ROLE_MENTOR, User::ROLE_STUDENT]],
+                ['label' => 'Session Scheduling', 'icon' => 'fas fa-calendar-check', 'route_name' => 'mentorship.hub', 'roles' => [User::ROLE_MENTOR, User::ROLE_STUDENT]],
                 ['label' => 'Mentor Resources', 'icon' => 'fas fa-tools', 'route_name' => 'mentorship.hub', 'roles' => [User::ROLE_MENTOR]],
-                ['label' => 'Mentor Management', 'icon' => 'fas fa-user-tie', 'route_name' => 'mentorship.mentor-dashboard', 'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN]],
+                ['label' => 'Mentor Management', 'icon' => 'fas fa-user-tie', 'route_name' => 'mentorship.dashboard', 'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN]],
             ]
         ],
         [
@@ -396,18 +395,6 @@ return [
                 ['label' => 'Notification Preferences', 'icon' => 'fas fa-bell', 'route_name' => '#', 'roles' => []],
                 ['label' => 'Privacy Settings', 'icon' => 'fas fa-lock', 'route_name' => '#', 'roles' => []],
                 ['label' => 'Language & Localization', 'icon' => 'fas fa-language', 'route_name' => '#', 'roles' => [User::ROLE_SUPER_ADMIN]],
-            ]
-        ],
-        [
-            'label' => 'CBT',
-            'icon' => 'fas fa-laptop-code',
-            'route_name' => '#',
-            'roles' => [],
-            'link_id' => 'cbt',
-            'children' => [
-                ['label' => 'Take CBT Exam', 'icon' => 'fas fa-pencil-alt', 'route_name' => '#', 'roles' => [User::ROLE_STUDENT], 'link_id' => 'cbt.exam', 'has_submenu' => true, 'exams' => []],
-                ['label' => 'View CBT Results', 'icon' => 'fas fa-chart-bar', 'route_name' => '#', 'roles' => [User::ROLE_STUDENT], 'link_id' => 'cbt.results',],
-                ['label' => 'CBT Management', 'icon' => 'fas fa-cog', 'route_name' => '#', 'roles' => [User::ROLE_SUPER_ADMIN, User::ROLE_ACADEMY_ADMIN, User::ROLE_INSTRUCTOR], 'link_id' => 'cbt.management',],
             ]
         ],
         [

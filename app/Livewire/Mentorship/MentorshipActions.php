@@ -12,6 +12,9 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
 use Livewire\Attributes\On;
+use Livewire\Attributes\Layout;
+
+#[Layout('layouts.dashboard', ['title' => 'Mentor Dashboard', 'description' => 'Manage Your Mentorship Activities', 'icon' => 'fas fa-chalkboard-teacher', 'active' => 'mentor-dashboard'])]
 
 class MentorshipActions extends Component
 {

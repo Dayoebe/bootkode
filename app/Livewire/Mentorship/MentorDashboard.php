@@ -246,7 +246,7 @@ class MentorDashboard extends Component
         })
         ->where('status', MentorshipSession::STATUS_COMPLETED)
         ->where('is_billable', true)
-        ->where('completed_at', '>=', $thisMonth)
+        ->where('ended_at', '>=', $thisMonth) // Changed from completed_at to ended_at
         ->sum('session_cost');
 
         // Total earnings
@@ -565,7 +565,6 @@ class MentorDashboard extends Component
         }
     }
 
-    // Analytics and Reports
     public function getPerformanceMetrics()
     {
         $user = Auth::user();
@@ -582,14 +581,14 @@ class MentorDashboard extends Component
                 $q->where('mentor_id', $user->id);
             })
             ->where('status', MentorshipSession::STATUS_COMPLETED)
-            ->where('completed_at', '>=', $startDate)
+            ->where('ended_at', '>=', $startDate) // Changed from completed_at to ended_at
             ->count(),
 
             'average_session_rating' => MentorshipSession::whereHas('mentorship', function($q) use ($user) {
                 $q->where('mentor_id', $user->id);
             })
             ->where('status', MentorshipSession::STATUS_COMPLETED)
-            ->where('completed_at', '>=', $startDate)
+            ->where('ended_at', '>=', $startDate) // Changed from completed_at to ended_at
             ->whereNotNull('mentee_rating')
             ->avg('mentee_rating'),
 

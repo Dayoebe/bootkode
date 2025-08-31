@@ -18,10 +18,175 @@ use App\Livewire\CertificateManagement\CertificateManagement;
 |
 */
 
+//CBT
+route::middleware(['auth', 'verified'])->group(function () {
+    Route::get('/cbt-center', \App\Livewire\CBT\CbtCenter::class)->name('cbt-center');
+    Route::get('/cbt-viewer', \App\Livewire\CBT\CbtExamViewer::class)->name('cbt-viewer');
+    Route::get('/cbt-management', \App\Livewire\CBT\CbtManagement::class)->name('cbt-management');
+    Route::get('/cbt-builder', \App\Livewire\CBT\CbtExamBuilder::class)->name('cbt-builder');
+}); 
+
+
+
+
+use App\Livewire\Cbt\CbtExamSelection;
+use App\Livewire\Cbt\CbtExamViewer;
+
+// CBT Routes - Student Interface
+Route::middleware(['auth', 'verified'])->group(function () {
+    
+    // CBT Exam Selection (Student Dashboard)
+    // Route::get('/cbt/exams', CbtExamSelection::class)
+    //     ->name('cbt.exams');
+    
+    // CBT Exam Taking (Secure Environment)
+    Route::get('/cbt/exam/{exam}/take', CbtExamViewer::class)
+        ->name('cbt.exam.take')
+        ->middleware(['throttle:1,1']); // Limit to 1 request per minute to prevent rapid refreshing
+    
+    // Optional: CBT Results View
+    // Route::get('/cbt/results/{result}', function ($resultId) {
+    //     $result = \App\Models\CbtResult::with(['exam', 'answers.question'])
+    //         ->where('user_id', auth()->id())
+    //         ->findOrFail($resultId);
+            
+    //     return view('cbt.result-details', compact('result'));
+    // })->name('cbt.result.details');
+    
+    // Optional: CBT Certificate Download
+    Route::get('/cbt/certificate/{result}', function ($resultId) {
+        $result = \App\Models\CbtResult::with('exam')
+            ->where('user_id', auth()->id())
+            ->where('passed', true)
+            ->where('certificate_eligible', true)
+            ->findOrFail($resultId);
+            
+        // Generate and return certificate PDF
+        // You can implement certificate generation logic here
+        return response()->json(['message' => 'Certificate generation not implemented yet']);
+    })->name('cbt.certificate.download');
+});
+
+ // Closing the middleware group for CBT Management Routes
+ // CBT Management Routes (Admin/Instructor Interface)
+    
+    // CBT Management Dashboard
+    Route::get('/cbt', function () {
+        return redirect()->route('cbt-management');
+    });
+     
+    // CBT Exam Builder/Editor
+    Route::get('/cbt/exam/create', \App\Livewire\Cbt\CbtExamBuilder::class)
+        ->name('cbt.exam.create');
+        
+    Route::get('/cbt/exam/{exam}/edit', \App\Livewire\Cbt\CbtExamBuilder::class)
+        ->name('cbt.exam.edit');
+    
+    // CBT Analytics
+    Route::get('/cbt/analytics/{exam?}', function ($examId = null) {
+        // CBT Analytics component can be created later
+    //     return view('cbt.analytics', compact('examId'));
+    // })->name('cbt.analytics');
+    
+    // // CBT Question Bank
+    // Route::get('/cbt/questions', function () {
+    //     // Question management component
+    //     return view('cbt.questions');
+    // })->name('cbt.questions');
+    
+    // Bulk Import/Export
+    Route::post('/cbt/import', function () {
+        // Import functionality
+        return response()->json(['message' => 'Import functionality not implemented']);
+    })->name('cbt.import');
+    
+    Route::get('/cbt/export/{exam}', function ($examId) {
+        // Export functionality
+        return response()->json(['message' => 'Export functionality not implemented']);
+    })->name('cbt.export');
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/mentorship', \App\Livewire\Mentorship\MentorshipHub::class)->name('mentorship.hub');
-    Route::get('/mentorship/mentor-dashboard', \App\Livewire\Mentorship\MentorDashboard::class)->name('mentorship.mentor-dashboard');
+    Route::get('/mentorship.dashboard', \App\Livewire\Mentorship\MentorDashboard::class)->name('mentorship.dashboard');
     Route::get('/mentorship/actions', \App\Livewire\Mentorship\MentorshipActions::class)->name('mentorship.actions');
 });
 
