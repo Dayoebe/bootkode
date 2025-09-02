@@ -19,6 +19,37 @@ use App\Livewire\CertificateManagement\CertificateManagement;
 |
 */
 
+
+Route::middleware(['auth'])->prefix('community')->name('community.')->group(function () {
+    Route::get('/', App\Livewire\Community\CommunityCenter::class)->name('center');
+    Route::get('/forums', App\Livewire\Community\CommunityCenter::class)->name('forums');
+    Route::get('/study-groups', App\Livewire\Community\CommunityCenter::class)->name('study-groups');
+    Route::get('/code-challenges', App\Livewire\Community\CommunityCenter::class)->name('code-challenges');
+    Route::get('/live-events', App\Livewire\Community\CommunityCenter::class)->name('live-events');
+    Route::get('/feedback', App\Livewire\Community\CommunityCenter::class)->name('feedback');
+    
+    // Admin only routes
+    Route::middleware(['role:super_admin|academy_admin'])->group(function () {
+        Route::get('/moderation', App\Livewire\Community\CommunityCenter::class)->name('moderation');
+    });
+    
+    // Thread routes
+    // Route::get('/thread/{thread}', App\Livewire\Community\ThreadView::class)->name('thread.view');
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 Route::middleware(['auth', 'verified'])->group(function () {
     // Gamification routes
     Route::prefix('gamification')->name('gamification.')->group(function () {
