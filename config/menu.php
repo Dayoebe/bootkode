@@ -18,16 +18,17 @@ return [
                 ['label' => 'Content Editor Dashboard', 'icon' => 'fas fa-edit', 'route_name' => 'content_editor.dashboard', 'roles' => [User::ROLE_CONTENT_EDITOR], 'link_id' => 'content_editor_dashboard',],
                 ['label' => 'Affiliate Ambassador Dashboard', 'icon' => 'fas fa-handshake', 'route_name' => 'affiliate_ambassador.dashboard', 'roles' => [User::ROLE_AFFILIATE_AMBASSADOR], 'link_id' => 'affiliate_ambassador_dashboard',],
                 ['label' => 'Student Dashboard', 'icon' => 'fas fa-book-reader', 'route_name' => 'student.dashboard', 'roles' => [User::ROLE_STUDENT], 'link_id' => 'student_dashboard',],
-            ]
-        ],
-        [
-            'label' => 'Profile',
-            'icon' => 'fas fa-user',
-            'route_name' => 'profile.view',
-            'roles' => [],
-            'link_id' => 'profile.view',
-            'children' => [
-                ['label' => 'View Profile', 'icon' => 'fas fa-user', 'route_name' => 'profile.view', 'roles' => [], 'link_id' => 'profile.view',],
+                ]
+            ],
+            [
+                'label' => 'Profile',
+                'icon' => 'fas fa-user',
+                'route_name' => 'profile.view',
+                'roles' => [],
+                'link_id' => 'profile.view',
+                'children' => [
+                    ['label' => 'View Profile', 'icon' => 'fas fa-user', 'route_name' => 'profile.view', 'roles' => [], 'link_id' => 'profile.view',],
+                    ['label' => 'Learning Analytics', 'icon' => 'fas fa-chart-line', 'route_name' => 'learning.analytics', 'roles' => [], 'link_id' => 'learning_analytics_dashboard']
                 // ['label' => 'Edit Profile', 'icon' => 'fas fa-user-edit', 'route_name' => 'profile.edit', 'roles' => [], 'link_id' => 'profile.edit',],
             ]
         ],
@@ -71,12 +72,29 @@ return [
             'roles' => [],
             'link_id' => 'cbt',
             'children' => [
-                ['label' => 'Take CBT Exam', 'icon' => 'fas fa-pencil-alt', 'route_name' => 'cbt-center', 'roles' => [User::ROLE_STUDENT], 'link_id' => 'cbt.exam', 'has_submenu' => true, 'exams' => []],
-                ['label' => 'View CBT Exam', 'icon' => 'fas fa-chart-bar', 'route_name' => 'cbt-viewer', 'roles' => [User::ROLE_STUDENT], 'link_id' => 'cbt-viewer',],
-                ['label' => 'CBT Management', 'icon' => 'fas fa-cog', 'route_name' => 'cbt-management', 'roles' => [User::ROLE_SUPER_ADMIN, User::ROLE_ACADEMY_ADMIN, User::ROLE_INSTRUCTOR], 'link_id' => 'cbt.management',],
-                ['label' => 'CBT Builder', 'icon' => 'fas fa-tools', 'route_name' => 'cbt-builder', 'roles' => [User::ROLE_SUPER_ADMIN, User::ROLE_ACADEMY_ADMIN, User::ROLE_INSTRUCTOR], 'link_id' => 'cbt.builder',],
+                [
+                    'label' => 'Take CBT Exam', 
+                    'icon' => 'fas fa-pencil-alt', 
+                    'route_name' => 'cbt.exam', 
+                    'roles' => [User::ROLE_STUDENT], 
+                    'link_id' => 'cbt.exam'
+                ],
+                [
+                    'label' => 'View CBT Results', 
+                    'icon' => 'fas fa-chart-bar', 
+                    'route_name' => 'cbt.viewer', 
+                    'roles' => [User::ROLE_STUDENT], 
+                    'link_id' => 'cbt.viewer'
+                ],
+                [
+                    'label' => 'CBT Management', 
+                    'icon' => 'fas fa-cog', 
+                    'route_name' => 'cbt.management', 
+                    'roles' => [User::ROLE_SUPER_ADMIN, User::ROLE_ACADEMY_ADMIN, User::ROLE_INSTRUCTOR], 
+                    'link_id' => 'cbt.management'
+                ],
             ]
-        ],
+            ],
         [
             'label' => 'Learning Hub',
             'icon' => 'fas fa-graduation-cap',
@@ -327,6 +345,7 @@ return [
                 ['label' => 'Tax Configuration', 'icon' => 'fas fa-percentage', 'route_name' => '#', 'roles' => [User::ROLE_SUPER_ADMIN]],
             ]
         ],
+
         [
             'label' => 'Gamification',
             'icon' => 'fas fa-gamepad',
@@ -334,12 +353,19 @@ return [
             'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN],
             'link_id' => 'gamification',
             'children' => [
-                ['label' => 'Badge System', 'icon' => 'fas fa-medal', 'route_name' => '#', 'roles' => []],
-                ['label' => 'Leaderboards', 'icon' => 'fas fa-trophy', 'route_name' => '#', 'roles' => []],
-                ['label' => 'Rewards Store', 'icon' => 'fas fa-gift', 'route_name' => '#', 'roles' => []],
-                ['label' => 'Achievement Settings', 'icon' => 'fas fa-cog', 'route_name' => '#', 'roles' => []],
+                ['label' => 'Dashboard', 'icon' => 'fas fa-tachometer-alt', 'route_name' => 'gamification.dashboard', 'roles' => [], 'link_id' => 'gamification.dashboard'],
+                ['label' => 'Badge System', 'icon' => 'fas fa-medal', 'route_name' => 'gamification.badges', 'roles' => [], 'link_id' => 'gamification.badges'],
+                ['label' => 'Available Games', 'icon' => 'fas fa-gamepad', 'route_name' => 'gamification.games', 'roles' => [], 'link_id' => 'gamification.games'],
+                ['label' => 'Leaderboards', 'icon' => 'fas fa-trophy', 'route_name' => 'gamification.leaderboard', 'roles' => [], 'link_id' => 'gamification.leaderboard'],
+                ['label' => 'Rewards Store', 'icon' => 'fas fa-gift', 'route_name' => 'gamification.store', 'roles' => [], 'link_id' => 'gamification.store'],
+                // Play a specific game requires a gameId param; keep as a helper entry if you resolve the param when rendering:
+                // ['label' => 'Play Game', 'icon' => 'fas fa-play', 'route_name' => 'gamification.games.play', 'roles' => [], 'link_id' => 'gamification.games.play'],
+                ['label' => 'Achievement Settings', 'icon' => 'fas fa-cog', 'route_name' => '#', 'roles' => [], 'link_id' => 'gamification.settings'],
             ]
         ],
+
+
+
         [
             'label' => 'Affiliate Network',
             'icon' => 'fas fa-share-alt',

@@ -7,6 +7,7 @@ use App\Http\Controllers\CertificateVerificationController;
 use App\Livewire\CertificateManagement\CertificateRequest;
 use App\Livewire\CertificateManagement\CertificateManagement;
 
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -18,100 +19,47 @@ use App\Livewire\CertificateManagement\CertificateManagement;
 |
 */
 
-//CBT
-route::middleware(['auth', 'verified'])->group(function () {
-    Route::get('/cbt-center', \App\Livewire\CBT\CbtCenter::class)->name('cbt-center');
-    Route::get('/cbt-viewer', \App\Livewire\CBT\CbtExamViewer::class)->name('cbt-viewer');
-    Route::get('/cbt-management', \App\Livewire\CBT\CbtManagement::class)->name('cbt-management');
-    Route::get('/cbt-builder', \App\Livewire\CBT\CbtExamBuilder::class)->name('cbt-builder');
-}); 
-
-
-
-
-use App\Livewire\Cbt\CbtExamSelection;
-use App\Livewire\Cbt\CbtExamViewer;
-
-// CBT Routes - Student Interface
 Route::middleware(['auth', 'verified'])->group(function () {
-    
-    // CBT Exam Selection (Student Dashboard)
-    // Route::get('/cbt/exams', CbtExamSelection::class)
-    //     ->name('cbt.exams');
-    
-    // CBT Exam Taking (Secure Environment)
-    Route::get('/cbt/exam/{exam}/take', CbtExamViewer::class)
-        ->name('cbt.exam.take')
-        ->middleware(['throttle:1,1']); // Limit to 1 request per minute to prevent rapid refreshing
-    
-    // Optional: CBT Results View
-    // Route::get('/cbt/results/{result}', function ($resultId) {
-    //     $result = \App\Models\CbtResult::with(['exam', 'answers.question'])
-    //         ->where('user_id', auth()->id())
-    //         ->findOrFail($resultId);
-            
-    //     return view('cbt.result-details', compact('result'));
-    // })->name('cbt.result.details');
-    
-    // Optional: CBT Certificate Download
-    Route::get('/cbt/certificate/{result}', function ($resultId) {
-        $result = \App\Models\CbtResult::with('exam')
-            ->where('user_id', auth()->id())
-            ->where('passed', true)
-            ->where('certificate_eligible', true)
-            ->findOrFail($resultId);
-            
-        // Generate and return certificate PDF
-        // You can implement certificate generation logic here
-        return response()->json(['message' => 'Certificate generation not implemented yet']);
-    })->name('cbt.certificate.download');
-});
-
- // Closing the middleware group for CBT Management Routes
- // CBT Management Routes (Admin/Instructor Interface)
-    
-    // CBT Management Dashboard
-    Route::get('/cbt', function () {
-        return redirect()->route('cbt-management');
+    // Gamification routes
+    Route::prefix('gamification')->name('gamification.')->group(function () {
+        Route::get('/dashboard', [\App\Http\Controllers\GamificationController::class, 'dashboard'])->name('dashboard');
+        Route::get('/badges', [\App\Http\Controllers\GamificationController::class, 'badges'])->name('badges');
+        Route::get('/leaderboard', [\App\Http\Controllers\GamificationController::class, 'leaderboard'])->name('leaderboard');
+        Route::get('/store', [\App\Http\Controllers\GamificationController::class, 'store'])->name('store');
+        Route::get('/games', [\App\Http\Controllers\GamificationController::class, 'games'])->name('games');
+        Route::get('/games/{gameId}', [\App\Http\Controllers\GamificationController::class, 'playGame'])->name('games.play');
+        Route::post('/store/purchase/{itemId}', [\App\Http\Controllers\GamificationController::class, 'purchaseItem'])->name('store.purchase');
+        Route::post('/items/{purchaseId}/toggle-equip', [\App\Http\Controllers\GamificationController::class, 'toggleEquip'])->name('items.toggle-equip');
     });
-     
-    // CBT Exam Builder/Editor
-    Route::get('/cbt/exam/create', \App\Livewire\Cbt\CbtExamBuilder::class)
-        ->name('cbt.exam.create');
-        
-    Route::get('/cbt/exam/{exam}/edit', \App\Livewire\Cbt\CbtExamBuilder::class)
-        ->name('cbt.exam.edit');
-    
-    // CBT Analytics
-    Route::get('/cbt/analytics/{exam?}', function ($examId = null) {
-        // CBT Analytics component can be created later
-    //     return view('cbt.analytics', compact('examId'));
-    // })->name('cbt.analytics');
-    
-    // // CBT Question Bank
-    // Route::get('/cbt/questions', function () {
-    //     // Question management component
-    //     return view('cbt.questions');
-    // })->name('cbt.questions');
-    
-    // Bulk Import/Export
-    Route::post('/cbt/import', function () {
-        // Import functionality
-        return response()->json(['message' => 'Import functionality not implemented']);
-    })->name('cbt.import');
-    
-    Route::get('/cbt/export/{exam}', function ($examId) {
-        // Export functionality
-        return response()->json(['message' => 'Export functionality not implemented']);
-    })->name('cbt.export');
 });
 
 
+use App\Livewire\Cbt\CbtManagement;
+use App\Livewire\Cbt\CbtExam;
+use App\Livewire\Cbt\CbtViewer;
+
+// CBT Routes - Add to your existing route groups
+
+        Route::get('/cbt/management', CbtManagement::class)->name('cbt.management');
+        // Route::get('/cbt/exam/{assessment?}', CbtExam::class)->name('cbt.exam');
+        Route::get('/cbt/results', CbtViewer::class)->name('cbt.viewer');
 
 
 
 
-
+        Route::middleware(['auth', 'verified'])->group(function () {
+            // CBT Exam Routes
+            Route::get('/cbt/exams', App\Livewire\Cbt\CbtExamSelection::class)->name('cbt.exams');
+            Route::get('/cbt/exam/{assessment}/take', App\Livewire\Cbt\CbtExamInterface::class)->name('cbt.exam.take');
+            
+            // Legacy route for backward compatibility
+            Route::get('/cbt/exam/{assessmentId?}', App\Livewire\Cbt\CbtExam::class)->name('cbt.exam');
+            
+            // CBT Management (for instructors/admins)
+            Route::middleware(['role:instructor|academy_admin|super_admin'])->group(function () {
+                Route::get('/cbt/manage', App\Livewire\Cbt\CbtManagement::class)->name('cbt.manage');
+            });
+        });
 
 
 
@@ -266,7 +214,7 @@ Route::middleware(['auth', 'verified'])->prefix('dashboard')->name('')->group(fu
     Route::get('/profile/edit', function () {
         return redirect()->route('profile.view', ['mode' => 'edit']);
     })->name('profile.edit');
-
+    Route::get('/learning-analytics', \App\Livewire\Dashboard\LearningAnalyticsDashboard::class)->name('learning.analytics');
     // User Management - Admin Only
     Route::get('/all-users', \App\Livewire\UserManagement\AllUser::class)->name('all-users');
     Route::get('/roles-permissions', \App\Livewire\UserManagement\RolesPermissions::class)->name('roles-permissions');
