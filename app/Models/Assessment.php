@@ -74,12 +74,23 @@ class Assessment extends Model
     protected static function boot()
     {
         parent::boot();
-
+    
         static::creating(function ($assessment) {
-            $assessment->order = $assessment->order ?? $assessment->section->assessments()->count() + 1;
+            // Generate slug
             $assessment->slug = Str::slug($assessment->title);
+            
+            // Set order based on whether it has a section or not
+            if ($assessment->section_id) {
+                // For assessments within sections
+                $assessment->order = $assessment->order ?? $assessment->section->assessments()->count() + 1;
+            } else {
+                // For direct course assessments (like CBT assessments)
+                $assessment->order = $assessment->order ?? Assessment::where('course_id', $assessment->course_id)
+                    ->whereNull('section_id')
+                    ->count() + 1;
+            }
         });
-
+    
         static::updating(function ($assessment) {
             if ($assessment->isDirty('title')) {
                 $assessment->slug = Str::slug($assessment->title);

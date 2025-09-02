@@ -103,21 +103,28 @@ class Course extends Model
             ->orderBy('assessments.order');
     }
 
+    // Direct assessments relationship (for CBT assessments that might not have sections)
+    public function directAssessments()
+    {
+        return $this->hasMany(Assessment::class, 'course_id');
+    }
+
     public function reviews()
     {
         return $this->hasMany(CourseReview::class);
     }
+    
     public function sections()
     {
         return $this->hasMany(Section::class, 'course_id');
     }
+    
     public function rejections()
     {
         return $this->hasMany(CourseRejection::class);
     }
 
-    // Boot method
-    
+    // Boot method - FIXED
     protected static function boot()
     {
         parent::boot();
@@ -134,38 +141,47 @@ class Course extends Model
             }
         });
     
-        // Only update relationship counts for existing courses with relationships
+        // Fixed: Only update relationship counts for existing courses with proper error handling
         static::saved(function ($course) {
             // Skip if this is a new course being created
             if (!$course->wasRecentlyCreated) {
                 try {
-                    // Fix the ambiguous 'type' column by specifying the table
-                    $course->total_modules = $course->sections()->count();
-                    $course->total_lessons = $course->allLessons()->count();
-                    $course->total_projects = $course->assessments()->where('assessments.type', 'project')->count(); // Fixed here
-                    $course->total_assessments = $course->assessments()->count();
-                    $course->has_projects = $course->total_projects > 0;
-                    $course->has_assessments = $course->total_assessments > 0;
+                    // Use safer counting methods with null checks
+                    $sectionsCount = $course->sections()->count();
+                    $lessonsCount = $sectionsCount > 0 ? $course->allLessons()->count() : 0;
+                    
+                    // Use direct assessments for CBT or fallback to hasManyThrough
+                    $totalAssessments = $course->directAssessments()->count();
+                    if ($totalAssessments === 0 && $sectionsCount > 0) {
+                        $totalAssessments = $course->assessments()->count();
+                    }
+                    
+                    $projectsCount = $course->directAssessments()->where('type', 'project')->count();
+                    if ($projectsCount === 0 && $sectionsCount > 0) {
+                        $projectsCount = $course->assessments()->where('assessments.type', 'project')->count();
+                    }
     
                     // Use updateQuietly to avoid triggering events again
                     $course->updateQuietly([
-                        'total_modules' => $course->total_modules,
-                        'total_lessons' => $course->total_lessons,
-                        'total_projects' => $course->total_projects,
-                        'total_assessments' => $course->total_assessments,
-                        'has_projects' => $course->has_projects,
-                        'has_assessments' => $course->has_assessments,
+                        'total_modules' => $sectionsCount,
+                        'total_lessons' => $lessonsCount,
+                        'total_projects' => $projectsCount,
+                        'total_assessments' => $totalAssessments,
+                        'has_projects' => $projectsCount > 0,
+                        'has_assessments' => $totalAssessments > 0,
                     ]);
                 } catch (\Exception $e) {
                     \Log::error('Error updating course statistics', [
                         'course_id' => $course->id,
-                        'error' => $e->getMessage()
+                        'error' => $e->getMessage(),
+                        'trace' => $e->getTraceAsString()
                     ]);
                     // Don't rethrow the exception to prevent breaking the save operation
                 }
             }
         });
     }
+
     public function generateUniqueSlug(string $title): string
     {
         $slug = Str::slug($title);
@@ -253,22 +269,6 @@ class Course extends Model
         return $this->allLessons()->sum('size_mb');
     }
 
-    // public function getFormattedDurationAttribute()
-    // {
-    //     if (!$this->estimated_duration_minutes) {
-    //         return 'Not specified';
-    //     }
-
-    //     $hours = floor($this->estimated_duration_minutes / 60);
-    //     $minutes = $this->estimated_duration_minutes % 60;
-
-    //     if ($hours > 0) {
-    //         return $hours . 'h ' . $minutes . 'm';
-    //     }
-
-    //     return $minutes . ' minutes';
-    // }
-
     public function getFormattedPriceAttribute()
     {
         if ($this->is_free) {
@@ -277,20 +277,20 @@ class Course extends Model
 
         return '$' . number_format($this->price, 2);
     }
+    
     public function getFormattedDurationAttribute()
-{
-    if (!$this->estimated_duration_minutes) {
-        return 'Self-paced';
+    {
+        if (!$this->estimated_duration_minutes) {
+            return 'Self-paced';
+        }
+
+        $hours = floor($this->estimated_duration_minutes / 60);
+        $minutes = $this->estimated_duration_minutes % 60;
+
+        if ($hours > 0) {
+            return $hours . 'h ' . $minutes . 'm';
+        }
+
+        return $minutes . 'm';
     }
-
-    $hours = floor($this->estimated_duration_minutes / 60);
-    $minutes = $this->estimated_duration_minutes % 60;
-
-    if ($hours > 0) {
-        return $hours . 'h ' . $minutes . 'm';
-    }
-
-    return $minutes . 'm';
 }
-}
-
