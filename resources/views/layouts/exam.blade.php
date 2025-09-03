@@ -14,7 +14,6 @@
     <meta http-equiv="Expires" content="0">
 
     {{-- Security Headers --}}
-    <meta http-equiv="X-Frame-Options" content="DENY">
     <meta http-equiv="X-Content-Type-Options" content="nosniff">
     <meta name="referrer" content="no-referrer">
 
@@ -264,9 +263,9 @@
 
                     if (securityViolationCount >= 5) {
                         showSecurityWarning('Multiple security violations detected! Exam may be terminated.');
-                        // Emit event to Livewire component
-                        if (window.Livewire) {
-                            Livewire.emit('securityViolation', 'multiple_keyboard_attempts');
+                        // Dispatch event to Livewire component
+                        if (window.livewire) {
+                            window.livewire.find(document.querySelector('[wire\\:id]').getAttribute('wire:id')).call('handleSecurityViolation', 'multiple_keyboard_attempts');
                         }
                     }
                     return false;
@@ -327,8 +326,8 @@
                 if (focusLossTime > 1000) { // Only count if focus was lost for more than 1 second
                     showSecurityWarning('Window focus lost - Violation #' + focusLossCount);
 
-                    if (window.Livewire) {
-                        Livewire.emit('visibilityChanged', false);
+                    if (window.livewire) {
+                        window.livewire.find(document.querySelector('[wire\\:id]').getAttribute('wire:id')).call('handleVisibilityChange', false);
                     }
 
                     if (focusLossCount >= 3) {
@@ -347,8 +346,8 @@
 
                 if (document.hidden) {
                     showSecurityWarning('Tab switching detected - This activity is being monitored');
-                    if (window.Livewire) {
-                        Livewire.emit('visibilityChanged', false);
+                    if (window.livewire) {
+                        window.livewire.find(document.querySelector('[wire\\:id]').getAttribute('wire:id')).call('handleVisibilityChange', false);
                     }
                 }
             });
@@ -368,8 +367,8 @@
                         showSecurityWarning('Developer tools detected - This is a serious security violation!');
                         securityViolationCount += 3;
 
-                        if (window.Livewire) {
-                            Livewire.emit('securityViolation', 'developer_tools_detected');
+                        if (window.livewire) {
+                            window.livewire.find(document.querySelector('[wire\\:id]').getAttribute('wire:id')).call('handleSecurityViolation', 'developer_tools_detected');
                         }
                     }
                 } else {
@@ -388,8 +387,8 @@
             document.addEventListener('keydown', function (e) {
                 if ((e.metaKey || e.ctrlKey) && e.shiftKey && (e.key === '3' || e.key === '4')) {
                     showSecurityWarning('Screenshot attempt detected');
-                    if (window.Livewire) {
-                        Livewire.emit('securityViolation', 'screenshot_attempt');
+                    if (window.livewire) {
+                        window.livewire.find(document.querySelector('[wire\\:id]').getAttribute('wire:id')).call('handleSecurityViolation', 'screenshot_attempt');
                     }
                 }
             });
@@ -407,8 +406,8 @@
                 fullscreenExitCount++;
                 document.getElementById('fullscreenExitWarning').style.display = 'flex';
 
-                if (window.Livewire) {
-                    Livewire.emit('securityViolation', 'fullscreen_exit', fullscreenExitCount);
+                if (window.livewire) {
+                    window.livewire.find(document.querySelector('[wire\\:id]').getAttribute('wire:id')).call('handleSecurityViolation', 'fullscreen_exit', fullscreenExitCount);
                 }
 
                 setTimeout(() => {
@@ -509,8 +508,8 @@
 
         // Handle beforeunload
         window.addEventListener('beforeunload', function (e) {
-            if (examStarted && window.Livewire) {
-                Livewire.emit('beforeUnload');
+            if (examStarted && window.livewire) {
+                window.livewire.find(document.querySelector('[wire\\:id]').getAttribute('wire:id')).call('handleBeforeUnload');
                 e.preventDefault();
                 e.returnValue = 'Are you sure you want to leave? Your progress will be saved but leaving may affect your session.';
             }

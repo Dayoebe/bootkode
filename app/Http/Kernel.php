@@ -14,7 +14,10 @@ class Kernel extends HttpKernel
      * @var array<int, class-string|string>
      */
     protected $middleware = [
-
+        
+        'role' => \Spatie\Permission\Middlewares\RoleMiddleware::class,
+        'permission' => \Spatie\Permission\Middlewares\PermissionMiddleware::class,
+        'role_or_permission' => \Spatie\Permission\Middlewares\RoleOrPermissionMiddleware::class,
     ];
 
     /**
@@ -23,10 +26,11 @@ class Kernel extends HttpKernel
      * @var array<string, array<int, class-string|string>>
      */
     protected $middlewareGroups = [
-
+        
     ];
-
+    
     protected $routeMiddleware = [
         'gamification' => \App\Http\Middleware\UpdateGamificationActivity::class,
+        'role' => \App\Http\Middleware\CheckRole::class,
     ];
 }

@@ -14,7 +14,7 @@ use Illuminate\Support\Str;
 use Livewire\Attributes\Layout;
 use Carbon\Carbon;
 
-#[Layout('layouts.admin', ['title' => 'Mock Interviews Management', 'description' => 'Manage mock interviews, templates, and analytics', 'icon' => 'fas fa-microphone-alt', 'active' => 'admin.mock-interviews'])]
+#[Layout('layouts.dashboard', ['title' => 'Mock Interviews Management', 'description' => 'Manage mock interviews, templates, and analytics', 'icon' => 'fas fa-microphone-alt', 'active' => 'admin.mock-interviews'])]
 
 class AdminMockInterview extends Component
 {

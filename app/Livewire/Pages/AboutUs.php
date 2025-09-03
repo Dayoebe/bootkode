@@ -4,7 +4,6 @@ namespace App\Livewire\Pages;
 
 use Livewire\Component;
 use Illuminate\Support\Facades\Auth;
-use Livewire\Attributes\Layout;
 use App\Models\User;
 use App\Models\Course;
 use App\Models\Lesson;
@@ -14,6 +13,7 @@ use App\Models\Announcement;
 use App\Models\SystemStatus;
 use App\Models\CourseCategory;
 use Illuminate\Support\Facades\Cache;
+use Livewire\Attributes\Layout;
 
 #[Layout('layouts.app', [
     'title' => 'About Us - BootKode', 
