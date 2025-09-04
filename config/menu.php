@@ -211,15 +211,16 @@ return [
             'roles' => [User::ROLE_CONTENT_EDITOR, User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN],
             'link_id' => 'blog_management',
             'children' => [
-                ['label' => 'All Posts', 'icon' => 'fas fa-newspaper', 'route_name' => '#', 'roles' => []],
-                ['label' => 'Create Post', 'icon' => 'fas fa-plus-circle', 'route_name' => '#', 'roles' => [User::ROLE_CONTENT_EDITOR, User::ROLE_ACADEMY_ADMIN]],
-                ['label' => 'Categories', 'icon' => 'fas fa-tags', 'route_name' => '#', 'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN]],
-                ['label' => 'Manage Blog Posts', 'icon' => 'fas fa-newspaper', 'route_name' => '#', 'roles' => [User::ROLE_CONTENT_EDITOR, User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN]],
-                ['label' => 'Comments Moderation', 'icon' => 'fas fa-comments', 'route_name' => '#', 'roles' => [User::ROLE_CONTENT_EDITOR, User::ROLE_ACADEMY_ADMIN]],
-                ['label' => 'Blog Settings', 'icon' => 'fas fa-cog', 'route_name' => '#', 'roles' => [User::ROLE_SUPER_ADMIN]],
-                ['label' => 'SEO Settings', 'icon' => 'fas fa-search', 'route_name' => '#', 'roles' => [User::ROLE_CONTENT_EDITOR, User::ROLE_SUPER_ADMIN]],
-            ],
+                ['label' => 'All Posts', 'icon' => 'fas fa-newspaper', 'route_name' => 'admin.blog.posts.index', 'roles' => [User::ROLE_CONTENT_EDITOR, User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN], 'link_id' => 'blog_all_posts'],
+                ['label' => 'Create Post', 'icon' => 'fas fa-plus-circle', 'route_name' => 'admin.blog.posts.create', 'roles' => [User::ROLE_CONTENT_EDITOR, User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN], 'link_id' => 'blog_create_post'],
+                ['label' => 'Categories', 'icon' => 'fas fa-tags', 'route_name' => 'admin.blog.categories.index', 'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN], 'link_id' => 'blog_categories'],
+                ['label' => 'Comments', 'icon' => 'fas fa-comments', 'route_name' => 'admin.blog.comments.index', 'roles' => [User::ROLE_CONTENT_EDITOR, User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN], 'link_id' => 'blog_comments'],
+                ['label' => 'Settings', 'icon' => 'fas fa-cog', 'route_name' => 'admin.blog.settings', 'roles' => [User::ROLE_SUPER_ADMIN], 'link_id' => 'blog_settings'],
+                ['label' => 'SEO Settings', 'icon' => 'fas fa-search', 'route_name' => 'admin.blog.seo', 'roles' => [User::ROLE_CONTENT_EDITOR, User::ROLE_SUPER_ADMIN], 'link_id' => 'blog_seo'],
+                ['label' => 'Blog', 'icon' => 'fas fa-blog', 'route_name' => 'blog.index', 'roles' => [], 'link_id' => 'public_blog']
+            ]
         ],
+
         [
             'label' => 'Library Management',
             'icon' => 'fas fa-book',
