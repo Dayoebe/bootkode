@@ -11,8 +11,8 @@ use App\Models\JobSave;
 use App\Models\User;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
-use Livewire\Attributes\Layout;
 use Carbon\Carbon;
+use Livewire\Attributes\Layout;
 
 #[Layout('layouts.dashboard', [
     'title' => 'Job Portal',

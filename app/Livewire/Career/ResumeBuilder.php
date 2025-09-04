@@ -5,12 +5,12 @@ namespace App\Livewire\Career;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 use App\Models\ResumeProfile;
-use Livewire\Attributes\Layout;
 use Intervention\Image\Facades\Image;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Http;
+use Livewire\Attributes\Layout;
 
 #[Layout('layouts.dashboard', ['title' => 'Resume Builder', 'description' => 'Create your professional resume', 'icon' => 'fas fa-file-alt', 'active' => 'resume.builder'])]
 

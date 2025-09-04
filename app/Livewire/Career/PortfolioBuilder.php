@@ -8,8 +8,8 @@ use App\Models\Portfolio;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
-use Livewire\Attributes\Layout;
 use Intervention\Image\Facades\Image;
+use Livewire\Attributes\Layout;
 
 
 #[Layout('layouts.dashboard', ['title' => 'Portfolio Builder', 'description' => 'Create and showcase your professional portfolio', 'icon' => 'fas fa-palette', 'active' => 'portfolio.builder'])]

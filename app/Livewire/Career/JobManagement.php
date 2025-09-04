@@ -11,8 +11,8 @@ use App\Models\JobApplication;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
-use Livewire\Attributes\Layout;
 use Carbon\Carbon;
+use Livewire\Attributes\Layout;
 
 #[Layout('layouts.dashboard', [
     'title' => 'Job Management',
