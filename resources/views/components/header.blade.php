@@ -195,6 +195,13 @@
                     <span
                         class="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-0 h-0.5 bg-blue-400 transition-all duration-300 group-hover:w-3/4"></span>
                 </a>
+                <!-- Blog Link -->
+                <a href="{{ route('blog.index') }}"
+                    class="px-4 py-2 text-gray-700 hover:text-blue-400 font-medium hover:uppercase transition-all duration-300 relative nav-link group">
+                    <span>Blog</span>
+                    <span
+                        class="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-0 h-0.5 bg-blue-400 transition-all duration-300 group-hover:w-3/4"></span>
+                </a>
             </div>
 
             <!-- Right Section - Auth Buttons & Search -->
@@ -213,8 +220,8 @@
 
                     <div x-show="open" x-transition:enter="transition ease-out duration-200"
                         x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100"
-                        x-transition:leave="transition ease-in duration-75"
-                        x-transition:leave-start="opacity-100 scale-100" x-transition:leave-end="opacity-0 scale-95"
+                        x-transition:leave="transition ease-in duration-75" x-transition:leave-start="opacity-100 scale-100"
+                        x-transition:leave-end="opacity-0 scale-95"
                         class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50">
                         <a href="{{ route(auth()->user()->getDashboardRouteName()) }}"
                             class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
@@ -238,14 +245,14 @@
                 <div class="flex flex-row gap-4">
 
                     <a href="{{ route('login') }}"
-                    class="border border-b-2 border-blue-600 text-gray-600 hover:text-blue-400 font-medium hover:uppercase px-4 py-2 rounded-lg transition-colors duration-300 group">
-                    <i class="fas fa-sign-in-alt mr-2 transition-transform group-hover:translate-x-0.5"></i>Log in
-                </a>
-                <a href="{{ route('register') }}"
-                class="bg-gradient-to-r from-blue-400 to-pink-400 text-black font-medium hover:uppercase px-5 py-2.5 rounded-lg shadow-md hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-300 flex items-center animate-pulse-custom">
-                <i class="fas fa-user-plus mr-2"></i>Register
-            </a>
-        </div>
+                        class="border border-b-2 border-blue-600 text-gray-600 hover:text-blue-400 font-medium hover:uppercase px-4 py-2 rounded-lg transition-colors duration-300 group">
+                        <i class="fas fa-sign-in-alt mr-2 transition-transform group-hover:translate-x-0.5"></i>Log in
+                    </a>
+                    <a href="{{ route('register') }}"
+                        class="bg-gradient-to-r from-blue-400 to-pink-400 text-black font-medium hover:uppercase px-5 py-2.5 rounded-lg shadow-md hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-300 flex items-center animate-pulse-custom">
+                        <i class="fas fa-user-plus mr-2"></i>Register
+                    </a>
+                </div>
             @endauth
 
             <!-- Mobile menu button -->
@@ -401,28 +408,38 @@
                 <!-- Mobile: About Link -->
                 <a href="{{ route('about') }}"
                     class="flex items-center px-3 py-3 text-gray-700 rounded-lg hover:bg-blue-50">
-                    <i class="fas fa-info-circle text-blue-400 mr-3"></i>
+                    <i class="fas fa-address-card text-blue-400 mr-3"></i>
                     <span class="font-medium hover:uppercase">About Us</span>
                 </a>
 
                 <!-- Mobile: Contact Link -->
                 <a href="{{ route('contact') }}"
                     class="flex items-center px-3 py-3 text-gray-700 rounded-lg hover:bg-blue-50">
-                    <i class="fas fa-info-circle text-blue-400 mr-3"></i>
+                    <i class="fas fa-envelope text-blue-400 mr-3"></i>
                     <span class="font-medium hover:uppercase">Contact Us</span>
                 </a>
+
                 <!-- Mobile: Guideline Link -->
                 <a href="{{ route('guideline') }}"
                     class="flex items-center px-3 py-3 text-gray-700 rounded-lg hover:bg-blue-50">
-                    <i class="fas fa-info-circle text-blue-400 mr-3"></i>
+                    <i class="fas fa-book text-blue-400 mr-3"></i>
                     <span class="font-medium hover:uppercase">Guideline</span>
                 </a>
+
                 <!-- Mobile: Statistics Link -->
                 <a href="{{ route('statistics') }}"
                     class="flex items-center px-3 py-3 text-gray-700 rounded-lg hover:bg-blue-50">
-                    <i class="fas fa-info-circle text-blue-400 mr-3"></i>
+                    <i class="fas fa-chart-bar text-blue-400 mr-3"></i>
                     <span class="font-medium hover:uppercase">Statistics</span>
                 </a>
+
+                <!-- Mobile: Blog Link -->
+                <a href="{{ route('blog.index') }}"
+                    class="flex items-center px-3 py-3 text-gray-700 rounded-lg hover:bg-blue-50">
+                    <i class="fas fa-blog text-blue-400 mr-3"></i>
+                    <span class="font-medium hover:uppercase">Blog</span>
+                </a>
+
                 <!-- Mobile: Search -->
                 <div class="px-3 py-3">
                     <div class="relative">

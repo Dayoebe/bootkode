@@ -2,18 +2,21 @@
 
 namespace App\View\Components;
 
+use App\Models\BlogCategory;
 use Closure;
 use Illuminate\Contracts\View\View;
 use Illuminate\View\Component;
 
 class Footer extends Component
 {
+    public $topCategories;
+    
     /**
      * Create a new component instance.
      */
     public function __construct()
     {
-        //
+        $this->topCategories = BlogCategory::getTopCategories(5);
     }
 
     /**
@@ -21,6 +24,8 @@ class Footer extends Component
      */
     public function render(): View|Closure|string
     {
-        return view('components.footer');
+        return view('components.footer', [
+            'topCategories' => $this->topCategories
+        ]);
     }
 }

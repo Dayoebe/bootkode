@@ -20,6 +20,104 @@ use App\Livewire\Content\ContentDocumentationCenter;
 |
 */
 
+Route::prefix('blog')->name('blog.')->group(function () {
+    Route::get('/', \App\Livewire\Blog\PublicBlogIndex::class)->name('index');
+    Route::get('/category/{category:slug}', \App\Livewire\Blog\PublicBlogIndex::class)->name('category');
+    Route::get('/tag/{tag}', \App\Livewire\Blog\PublicBlogIndex::class)->name('tag');
+    Route::get('/search', \App\Livewire\Blog\PublicBlogIndex::class)->name('search');
+    Route::get('/{post:slug}', \App\Livewire\Blog\PublicBlogPost::class)->name('show');
+});
+
+// Admin Blog Routes (requires authentication and proper roles)
+Route::middleware(['auth', 'verified'])->prefix('admin/blog')->name('admin.blog.')->group(function () {
+
+    // Posts Management - Using permission middleware instead of role
+    Route::get('/posts', \App\Livewire\Blog\AdminBlogPosts::class)
+        ->middleware('can:manage_courses') // Everyone except students can manage blog posts
+        ->name('posts.index');
+
+    Route::get('/posts/create', \App\Livewire\Blog\AdminBlogPostForm::class)
+        ->middleware('can:manage_courses')
+        ->name('posts.create');
+
+        Route::get('/posts/{post:slug}/edit', \App\Livewire\Blog\AdminBlogPostForm::class)
+        ->middleware('can:manage_courses')
+        ->name('posts.edit');
+
+    // Categories Management - Academy Admin and Super Admin only
+    Route::get('/categories', \App\Livewire\Blog\AdminBlogCategories::class)
+        ->middleware('can:manage_users') // Only Academy Admin and Super Admin
+        ->name('categories.index');
+
+    // Comments Moderation
+    Route::get('/comments', \App\Livewire\Blog\AdminBlogComments::class)
+        ->middleware('can:manage_courses')
+        ->name('comments.index');
+
+    // Blog Settings - Super Admin only
+    Route::get('/settings', \App\Livewire\Blog\AdminBlogSettings::class)
+        ->middleware('can:manage-roles') // Only Super Admin
+        ->name('settings');
+
+    // SEO Settings
+    Route::get('/seo', \App\Livewire\Blog\AdminBlogSettings::class)
+        ->middleware('can:manage_courses') // Content editors and above
+        ->name('seo');
+});
+
+// API Routes for AJAX operations
+Route::middleware('api')->prefix('api/blog')->name('api.blog.')->group(function () {
+    Route::post('/posts/{post}/react', [\App\Http\Controllers\BlogController::class, 'toggleReaction'])->name('react');
+    Route::post('/posts/{post}/view', [\App\Http\Controllers\BlogController::class, 'incrementView'])->name('view');
+    Route::post('/comments/{comment}/react', [\App\Http\Controllers\BlogController::class, 'toggleCommentReaction'])->name('comment.react');
+    Route::post('/upload-image', [\App\Http\Controllers\BlogController::class, 'uploadImage'])->name('upload.image');
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

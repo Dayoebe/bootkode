@@ -1,12 +1,9 @@
 <div>
-    <aside 
-    class="bg-white dark:bg-gray-800 h-screen w-64 fixed left-0 top-0 overflow-y-auto transition-all duration-300 ease-in-out shadow-lg lg:translate-x-0 z-50 -translate-x-full" 
-    x-data="{ open: false, toggle() { this.open = !this.open } }"
-    :class="{ '-translate-x-full': !open, 'translate-x-0': open }"
-    @toggle-sidebar.window="toggle()" 
-    aria-label="Sidebar navigation" 
-    wire:ignore.self
->
+    <aside
+        class="bg-white dark:bg-gray-800 h-screen w-64 fixed left-0 top-0 overflow-y-auto transition-all duration-300 ease-in-out shadow-lg lg:translate-x-0 z-50 -translate-x-full"
+        x-data="{ open: false, toggle() { this.open = !this.open } }"
+        :class="{ '-translate-x-full': !open, 'translate-x-0': open }" @toggle-sidebar.window="toggle()"
+        aria-label="Sidebar navigation" wire:ignore.self>
 
         <!-- Logo/Header -->
         <div class="p-4 border-b dark:border-gray-700 animate__animated animate__fadeInDown">
@@ -29,8 +26,8 @@
         <!-- Menu Items (Desktop) -->
         <nav class="p-4 space-y-2" role="navigation">
             @foreach ($menuItems as $item)
-                <div x-data="{ expanded: '{{ $activeLink }}' === '{{ $item['link_id'] ?? str()->slug($item['label']) }}' }" class="animate__animated animate__fadeInLeft"
-                    x-bind:class="{ 'animate__delay-1s': true }">
+                <div x-data="{ expanded: '{{ $activeLink }}' === '{{ $item['link_id'] ?? str()->slug($item['label']) }}' }"
+                    class="animate__animated animate__fadeInLeft" x-bind:class="{ 'animate__delay-1s': true }">
                     <button @click="expanded = !expanded"
                         class="flex items-center justify-between w-full p-2 rounded-lg hover:bg-blue-100 dark:hover:bg-gray-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
                         aria-expanded="expanded"
@@ -82,11 +79,9 @@
         @endforeach
 
 
-        <button 
-    @click="$dispatch('toggle-sidebar')" 
-    class="p-2 bg-blue-600 text-white rounded-md shadow hover:bg-blue-700"
->
-    ☰ Menu
-</button>
+        <button @click="$dispatch('toggle-sidebar')"
+            class="p-2 bg-blue-600 text-white rounded-md shadow hover:bg-blue-700">
+            ☰ Menu
+        </button>
     </nav>
 </div>

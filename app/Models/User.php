@@ -142,9 +142,9 @@ class User extends Authenticatable implements MustVerifyEmail
             ->withPivot(['last_accessed_at']);
     }
     public function portfolios()
-{
-    return $this->hasMany(Portfolio::class);
-}
+    {
+        return $this->hasMany(Portfolio::class);
+    }
     public function completedLessons()
     {
         return $this->belongsToMany(Lesson::class, 'lesson_user')
@@ -155,6 +155,26 @@ class User extends Authenticatable implements MustVerifyEmail
     public function wishlists()
     {
         return $this->hasMany(Wishlist::class);
+    }
+
+    public function blogPosts()
+    {
+        return $this->hasMany(BlogPost::class, 'author_id');
+    }
+
+    public function blogComments()
+    {
+        return $this->hasMany(BlogComment::class);
+    }
+
+    public function blogReactions()
+    {
+        return $this->hasMany(BlogReaction::class);
+    }
+
+    public function blogBookmarks()
+    {
+        return $this->blogReactions()->where('type', 'bookmark');
     }
 
     public function mockInterviews()
@@ -323,616 +343,617 @@ class User extends Authenticatable implements MustVerifyEmail
         $this->notify(new \App\Notifications\CustomVerifyEmail());
     }
     // Role
-public function canManageCertificates(): bool
-{
-    return $this->isSuperAdmin() || $this->isAcademyAdmin() || $this->isInstructor();
-}
-
-public function canApproveAllCertificates(): bool
-{
-    return $this->isSuperAdmin() || $this->isAcademyAdmin();
-}
-
-public function canManageUsers(): bool
-{
-    return $this->isSuperAdmin() || $this->isAcademyAdmin();
-}
-
-public function canManageCourses(): bool
-{
-    return !$this->isStudent(); // Everyone except students
-}
-
-
-public function resumeProfile()
-{
-    return $this->hasOne(ResumeProfile::class);
-}
-
-// Helper method to get or create resume profile
-public function getOrCreateResumeProfile()
-{
-    if (!$this->resumeProfile) {
-        return $this->resumeProfile()->create([
-            'full_name' => $this->name,
-            'email' => $this->email,
-            'phone' => $this->phone_number,
-            'location' => $this->getFullAddressAttribute(),
-            'professional_summary' => $this->bio,
-        ]);
+    public function canManageCertificates(): bool
+    {
+        return $this->isSuperAdmin() || $this->isAcademyAdmin() || $this->isInstructor();
     }
-    
-    return $this->resumeProfile;
-}
 
-// Resume-related helper methods
-public function hasCompleteResume()
-{
-    $resume = $this->resumeProfile;
-    if (!$resume) return false;
-    
-    return $resume->canBeExported();
-}
-
-public function getResumeCompletionPercentage()
-{
-    $resume = $this->resumeProfile;
-    return $resume ? $resume->getCompletionPercentage() : 0;
-}
-
-public function getResumeQualityScore()
-{
-    $resume = $this->resumeProfile;
-    return $resume ? $resume->getQualityScore() : 0;
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/**
- * Gamification relationships and methods
- */
-public function gamificationData()
-{
-    return $this->hasOne(GamificationData::class);
-}
-
-public function badges()
-{
-    return $this->hasMany(UserBadge::class);
-}
-
-public function storePurchases()
-{
-    return $this->hasMany(UserStorePurchase::class);
-}
-
-public function gamificationTransactions()
-{
-    return $this->hasMany(GamificationTransaction::class);
-}
-
-public function getOrCreateGamificationData()
-{
-    if (!$this->gamificationData) {
-        $data = $this->gamificationData()->create([
-            'last_quest_reset' => now()->startOfDay(),
-        ]);
-        $data->generateDailyQuests();
-        return $data;
+    public function canApproveAllCertificates(): bool
+    {
+        return $this->isSuperAdmin() || $this->isAcademyAdmin();
     }
-    
-    return $this->gamificationData;
-}
 
-// Quick access methods for gamification stats
-public function getLevel()
-{
-    return $this->getOrCreateGamificationData()->level;
-}
+    public function canManageUsers(): bool
+    {
+        return $this->isSuperAdmin() || $this->isAcademyAdmin();
+    }
 
-public function getTotalPoints()
-{
-    return $this->getOrCreateGamificationData()->total_points;
-}
+    public function canManageCourses(): bool
+    {
+        return !$this->isStudent(); // Everyone except students
+    }
 
-public function getCoins()
-{
-    return $this->getOrCreateGamificationData()->coins;
-}
 
-public function getGems()
-{
-    return $this->getOrCreateGamificationData()->gems;
-}
+    public function resumeProfile()
+    {
+        return $this->hasOne(ResumeProfile::class);
+    }
 
-public function getCurrentStreak()
-{
-    return $this->getOrCreateGamificationData()->current_streak;
-}
+    // Helper method to get or create resume profile
+    public function getOrCreateResumeProfile()
+    {
+        if (!$this->resumeProfile) {
+            return $this->resumeProfile()->create([
+                'full_name' => $this->name,
+                'email' => $this->email,
+                'phone' => $this->phone_number,
+                'location' => $this->getFullAddressAttribute(),
+                'professional_summary' => $this->bio,
+            ]);
+        }
 
-public function getEnergy()
-{
-    $data = $this->getOrCreateGamificationData();
-    $data->updateEnergy();
-    return $data->energy;
-}
+        return $this->resumeProfile;
+    }
 
-// Achievement checking method
-public function checkAllAchievements()
-{
-    $badges = [];
-    $data = $this->getOrCreateGamificationData();
+    // Resume-related helper methods
+    public function hasCompleteResume()
+    {
+        $resume = $this->resumeProfile;
+        if (!$resume)
+            return false;
 
-    // Level achievements
-    $levelBadges = [
-        5 => [
-            'badge_type' => 'level',
-            'badge_name' => 'Rising Star',
-            'badge_description' => 'Reached level 5',
-            'badge_icon' => 'fas fa-star',
-            'badge_color' => '#F59E0B',
-            'rarity' => 'common',
-            'points_reward' => 50
-        ],
-        10 => [
-            'badge_type' => 'level',
-            'badge_name' => 'Dedicated Learner',
-            'badge_description' => 'Reached level 10',
-            'badge_icon' => 'fas fa-graduation-cap',
-            'badge_color' => '#3B82F6',
-            'rarity' => 'rare',
-            'points_reward' => 100
-        ],
-        25 => [
-            'badge_type' => 'level',
-            'badge_name' => 'Knowledge Seeker',
-            'badge_description' => 'Reached level 25',
-            'badge_icon' => 'fas fa-search',
-            'badge_color' => '#8B5CF6',
-            'rarity' => 'epic',
-            'points_reward' => 250
-        ],
-        50 => [
-            'badge_type' => 'level',
-            'badge_name' => 'Learning Legend',
-            'badge_description' => 'Reached level 50',
-            'badge_icon' => 'fas fa-crown',
-            'badge_color' => '#F59E0B',
-            'rarity' => 'legendary',
-            'points_reward' => 500
-        ],
-    ];
+        return $resume->canBeExported();
+    }
 
-    foreach ($levelBadges as $level => $badgeData) {
-        if ($data->level >= $level) {
-            $badge = UserBadge::awardBadge($this->id, "level_{$level}", $badgeData);
-            if ($badge->wasRecentlyCreated) {
-                $badges[] = $badge;
-                $data->addPoints($badgeData['points_reward'], 'achievement');
+    public function getResumeCompletionPercentage()
+    {
+        $resume = $this->resumeProfile;
+        return $resume ? $resume->getCompletionPercentage() : 0;
+    }
+
+    public function getResumeQualityScore()
+    {
+        $resume = $this->resumeProfile;
+        return $resume ? $resume->getQualityScore() : 0;
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    /**
+     * Gamification relationships and methods
+     */
+    public function gamificationData()
+    {
+        return $this->hasOne(GamificationData::class);
+    }
+
+    public function badges()
+    {
+        return $this->hasMany(UserBadge::class);
+    }
+
+    public function storePurchases()
+    {
+        return $this->hasMany(UserStorePurchase::class);
+    }
+
+    public function gamificationTransactions()
+    {
+        return $this->hasMany(GamificationTransaction::class);
+    }
+
+    public function getOrCreateGamificationData()
+    {
+        if (!$this->gamificationData) {
+            $data = $this->gamificationData()->create([
+                'last_quest_reset' => now()->startOfDay(),
+            ]);
+            $data->generateDailyQuests();
+            return $data;
+        }
+
+        return $this->gamificationData;
+    }
+
+    // Quick access methods for gamification stats
+    public function getLevel()
+    {
+        return $this->getOrCreateGamificationData()->level;
+    }
+
+    public function getTotalPoints()
+    {
+        return $this->getOrCreateGamificationData()->total_points;
+    }
+
+    public function getCoins()
+    {
+        return $this->getOrCreateGamificationData()->coins;
+    }
+
+    public function getGems()
+    {
+        return $this->getOrCreateGamificationData()->gems;
+    }
+
+    public function getCurrentStreak()
+    {
+        return $this->getOrCreateGamificationData()->current_streak;
+    }
+
+    public function getEnergy()
+    {
+        $data = $this->getOrCreateGamificationData();
+        $data->updateEnergy();
+        return $data->energy;
+    }
+
+    // Achievement checking method
+    public function checkAllAchievements()
+    {
+        $badges = [];
+        $data = $this->getOrCreateGamificationData();
+
+        // Level achievements
+        $levelBadges = [
+            5 => [
+                'badge_type' => 'level',
+                'badge_name' => 'Rising Star',
+                'badge_description' => 'Reached level 5',
+                'badge_icon' => 'fas fa-star',
+                'badge_color' => '#F59E0B',
+                'rarity' => 'common',
+                'points_reward' => 50
+            ],
+            10 => [
+                'badge_type' => 'level',
+                'badge_name' => 'Dedicated Learner',
+                'badge_description' => 'Reached level 10',
+                'badge_icon' => 'fas fa-graduation-cap',
+                'badge_color' => '#3B82F6',
+                'rarity' => 'rare',
+                'points_reward' => 100
+            ],
+            25 => [
+                'badge_type' => 'level',
+                'badge_name' => 'Knowledge Seeker',
+                'badge_description' => 'Reached level 25',
+                'badge_icon' => 'fas fa-search',
+                'badge_color' => '#8B5CF6',
+                'rarity' => 'epic',
+                'points_reward' => 250
+            ],
+            50 => [
+                'badge_type' => 'level',
+                'badge_name' => 'Learning Legend',
+                'badge_description' => 'Reached level 50',
+                'badge_icon' => 'fas fa-crown',
+                'badge_color' => '#F59E0B',
+                'rarity' => 'legendary',
+                'points_reward' => 500
+            ],
+        ];
+
+        foreach ($levelBadges as $level => $badgeData) {
+            if ($data->level >= $level) {
+                $badge = UserBadge::awardBadge($this->id, "level_{$level}", $badgeData);
+                if ($badge->wasRecentlyCreated) {
+                    $badges[] = $badge;
+                    $data->addPoints($badgeData['points_reward'], 'achievement');
+                }
             }
         }
-    }
 
-    // Streak achievements
-    $streakBadges = [
-        7 => [
-            'badge_type' => 'streak',
-            'badge_name' => 'Week Warrior',
-            'badge_description' => '7-day learning streak',
-            'badge_icon' => 'fas fa-fire',
-            'badge_color' => '#EF4444',
-            'rarity' => 'common',
-            'points_reward' => 75
-        ],
-        30 => [
-            'badge_type' => 'streak',
-            'badge_name' => 'Month Master',
-            'badge_description' => '30-day learning streak',
-            'badge_icon' => 'fas fa-calendar-check',
-            'badge_color' => '#F59E0B',
-            'rarity' => 'rare',
-            'points_reward' => 300
-        ],
-        100 => [
-            'badge_type' => 'streak',
-            'badge_name' => 'Century Scholar',
-            'badge_description' => '100-day learning streak',
-            'badge_icon' => 'fas fa-crown',
-            'badge_color' => '#8B5CF6',
-            'rarity' => 'legendary',
-            'points_reward' => 1000
-        ],
-    ];
+        // Streak achievements
+        $streakBadges = [
+            7 => [
+                'badge_type' => 'streak',
+                'badge_name' => 'Week Warrior',
+                'badge_description' => '7-day learning streak',
+                'badge_icon' => 'fas fa-fire',
+                'badge_color' => '#EF4444',
+                'rarity' => 'common',
+                'points_reward' => 75
+            ],
+            30 => [
+                'badge_type' => 'streak',
+                'badge_name' => 'Month Master',
+                'badge_description' => '30-day learning streak',
+                'badge_icon' => 'fas fa-calendar-check',
+                'badge_color' => '#F59E0B',
+                'rarity' => 'rare',
+                'points_reward' => 300
+            ],
+            100 => [
+                'badge_type' => 'streak',
+                'badge_name' => 'Century Scholar',
+                'badge_description' => '100-day learning streak',
+                'badge_icon' => 'fas fa-crown',
+                'badge_color' => '#8B5CF6',
+                'rarity' => 'legendary',
+                'points_reward' => 1000
+            ],
+        ];
 
-    foreach ($streakBadges as $days => $badgeData) {
-        if ($data->longest_streak >= $days) {
-            $badge = UserBadge::awardBadge($this->id, "streak_{$days}", $badgeData);
-            if ($badge->wasRecentlyCreated) {
-                $badges[] = $badge;
-                $data->addPoints($badgeData['points_reward'], 'achievement');
+        foreach ($streakBadges as $days => $badgeData) {
+            if ($data->longest_streak >= $days) {
+                $badge = UserBadge::awardBadge($this->id, "streak_{$days}", $badgeData);
+                if ($badge->wasRecentlyCreated) {
+                    $badges[] = $badge;
+                    $data->addPoints($badgeData['points_reward'], 'achievement');
+                }
             }
         }
-    }
 
-    // Course completion achievements
-    $completedCourses = $this->courses()->wherePivot('progress', 100)->count();
-    $courseBadges = [
-        1 => [
-            'badge_type' => 'completion',
-            'badge_name' => 'First Steps',
-            'badge_description' => 'Completed your first course',
-            'badge_icon' => 'fas fa-baby',
-            'badge_color' => '#10B981',
-            'rarity' => 'common',
-            'points_reward' => 100
-        ],
-        5 => [
-            'badge_type' => 'completion',
-            'badge_name' => 'Course Collector',
-            'badge_description' => 'Completed 5 courses',
-            'badge_icon' => 'fas fa-books',
-            'badge_color' => '#3B82F6',
-            'rarity' => 'rare',
-            'points_reward' => 500
-        ],
-        10 => [
-            'badge_type' => 'completion',
-            'badge_name' => 'Learning Expert',
-            'badge_description' => 'Completed 10 courses',
-            'badge_icon' => 'fas fa-user-graduate',
-            'badge_color' => '#8B5CF6',
-            'rarity' => 'epic',
-            'points_reward' => 1000
-        ],
-    ];
+        // Course completion achievements
+        $completedCourses = $this->courses()->wherePivot('progress', 100)->count();
+        $courseBadges = [
+            1 => [
+                'badge_type' => 'completion',
+                'badge_name' => 'First Steps',
+                'badge_description' => 'Completed your first course',
+                'badge_icon' => 'fas fa-baby',
+                'badge_color' => '#10B981',
+                'rarity' => 'common',
+                'points_reward' => 100
+            ],
+            5 => [
+                'badge_type' => 'completion',
+                'badge_name' => 'Course Collector',
+                'badge_description' => 'Completed 5 courses',
+                'badge_icon' => 'fas fa-books',
+                'badge_color' => '#3B82F6',
+                'rarity' => 'rare',
+                'points_reward' => 500
+            ],
+            10 => [
+                'badge_type' => 'completion',
+                'badge_name' => 'Learning Expert',
+                'badge_description' => 'Completed 10 courses',
+                'badge_icon' => 'fas fa-user-graduate',
+                'badge_color' => '#8B5CF6',
+                'rarity' => 'epic',
+                'points_reward' => 1000
+            ],
+        ];
 
-    foreach ($courseBadges as $count => $badgeData) {
-        if ($completedCourses >= $count) {
-            $badge = UserBadge::awardBadge($this->id, "courses_{$count}", $badgeData);
-            if ($badge->wasRecentlyCreated) {
-                $badges[] = $badge;
-                $data->addPoints($badgeData['points_reward'], 'achievement');
+        foreach ($courseBadges as $count => $badgeData) {
+            if ($completedCourses >= $count) {
+                $badge = UserBadge::awardBadge($this->id, "courses_{$count}", $badgeData);
+                if ($badge->wasRecentlyCreated) {
+                    $badges[] = $badge;
+                    $data->addPoints($badgeData['points_reward'], 'achievement');
+                }
             }
         }
-    }
 
-    // Quiz performance achievements
-    $averageScore = $this->getAverageQuizScore();
-    $quizBadges = [
-        80 => [
-            'badge_type' => 'performance',
-            'badge_name' => 'Quiz Master',
-            'badge_description' => '80%+ average quiz score',
-            'badge_icon' => 'fas fa-brain',
-            'badge_color' => '#3B82F6',
-            'rarity' => 'rare',
-            'points_reward' => 200
-        ],
-        90 => [
-            'badge_type' => 'performance',
-            'badge_name' => 'Quiz Champion',
-            'badge_description' => '90%+ average quiz score',
-            'badge_icon' => 'fas fa-trophy',
-            'badge_color' => '#F59E0B',
-            'rarity' => 'epic',
-            'points_reward' => 400
-        ],
-        95 => [
-            'badge_type' => 'performance',
-            'badge_name' => 'Quiz Legend',
-            'badge_description' => '95%+ average quiz score',
-            'badge_icon' => 'fas fa-crown',
-            'badge_color' => '#8B5CF6',
-            'rarity' => 'legendary',
-            'points_reward' => 800
-        ],
-    ];
+        // Quiz performance achievements
+        $averageScore = $this->getAverageQuizScore();
+        $quizBadges = [
+            80 => [
+                'badge_type' => 'performance',
+                'badge_name' => 'Quiz Master',
+                'badge_description' => '80%+ average quiz score',
+                'badge_icon' => 'fas fa-brain',
+                'badge_color' => '#3B82F6',
+                'rarity' => 'rare',
+                'points_reward' => 200
+            ],
+            90 => [
+                'badge_type' => 'performance',
+                'badge_name' => 'Quiz Champion',
+                'badge_description' => '90%+ average quiz score',
+                'badge_icon' => 'fas fa-trophy',
+                'badge_color' => '#F59E0B',
+                'rarity' => 'epic',
+                'points_reward' => 400
+            ],
+            95 => [
+                'badge_type' => 'performance',
+                'badge_name' => 'Quiz Legend',
+                'badge_description' => '95%+ average quiz score',
+                'badge_icon' => 'fas fa-crown',
+                'badge_color' => '#8B5CF6',
+                'rarity' => 'legendary',
+                'points_reward' => 800
+            ],
+        ];
 
-    foreach ($quizBadges as $score => $badgeData) {
-        if ($averageScore >= $score) {
-            $badge = UserBadge::awardBadge($this->id, "quiz_score_{$score}", $badgeData);
-            if ($badge->wasRecentlyCreated) {
-                $badges[] = $badge;
-                $data->addPoints($badgeData['points_reward'], 'achievement');
+        foreach ($quizBadges as $score => $badgeData) {
+            if ($averageScore >= $score) {
+                $badge = UserBadge::awardBadge($this->id, "quiz_score_{$score}", $badgeData);
+                if ($badge->wasRecentlyCreated) {
+                    $badges[] = $badge;
+                    $data->addPoints($badgeData['points_reward'], 'achievement');
+                }
             }
         }
+
+        return $badges;
     }
 
-    return $badges;
-}
-
-// Helper method to calculate average quiz score
-private function getAverageQuizScore()
-{
-    return \DB::table('student_answers')
-        ->join('assessments', 'student_answers.assessment_id', '=', 'assessments.id')
-        ->where('student_answers.user_id', $this->id)
-        ->whereNotNull('student_answers.submitted_at')
-        ->selectRaw('AVG((student_answers.points_earned / assessments.max_score) * 100) as avg_score')
-        ->value('avg_score') ?? 0;
-}
-
-// Method to handle activity completion with gamification rewards
-public function completeActivity($activityType, $activityData = [])
-{
-    $gamificationService = new \App\Services\GamificationService();
-    
-    switch ($activityType) {
-        case 'lesson':
-            return $gamificationService->handleLessonCompletion($this, $activityData['lesson'] ?? null);
-        case 'quiz':
-            return $gamificationService->handleQuizCompletion(
-                $this, 
-                $activityData['assessment'] ?? null,
-                $activityData['score'] ?? 0,
-                $activityData['passed'] ?? false
-            );
-        case 'daily_login':
-            return $gamificationService->handleDailyLogin($this);
-        case 'game':
-            return $gamificationService->handleGameCompletion(
-                $this,
-                $activityData['game_id'],
-                $activityData['score']
-            );
-        default:
-            return ['success' => false, 'message' => 'Unknown activity type'];
+    // Helper method to calculate average quiz score
+    private function getAverageQuizScore()
+    {
+        return \DB::table('student_answers')
+            ->join('assessments', 'student_answers.assessment_id', '=', 'assessments.id')
+            ->where('student_answers.user_id', $this->id)
+            ->whereNotNull('student_answers.submitted_at')
+            ->selectRaw('AVG((student_answers.points_earned / assessments.max_score) * 100) as avg_score')
+            ->value('avg_score') ?? 0;
     }
-}
 
-// Get user's gamification summary for dashboard
-public function getGamificationSummary()
-{
-    $data = $this->getOrCreateGamificationData();
-    $data->updateEnergy();
-    
-    return [
-        'level' => $data->level,
-        'total_points' => $data->total_points,
-        'coins' => $data->coins,
-        'gems' => $data->gems,
-        'energy' => $data->energy,
-        'current_streak' => $data->current_streak,
-        'longest_streak' => $data->longest_streak,
-        'progress_to_next_level' => $data->progress_percentage,
-        'badges_count' => $this->badges()->count(),
-        'rank' => $this->getGlobalRank(),
-        'recent_achievements' => $this->badges()->latest()->limit(3)->get(),
-        'active_quests' => $data->daily_quests ?? [],
-    ];
-}
+    // Method to handle activity completion with gamification rewards
+    public function completeActivity($activityType, $activityData = [])
+    {
+        $gamificationService = new \App\Services\GamificationService();
 
-// Get user's rank among all users
-private function getGlobalRank()
-{
-    return GamificationData::where('total_points', '>', $this->getTotalPoints())->count() + 1;
-}
-
-// Check if user can afford something
-public function canAfford($coins = 0, $gems = 0)
-{
-    $data = $this->getOrCreateGamificationData();
-    return $data->coins >= $coins && $data->gems >= $gems;
-}
-
-// Spend currency with validation
-public function spendCurrency($coins = 0, $gems = 0, $purpose = 'purchase')
-{
-    if (!$this->canAfford($coins, $gems)) {
-        return false;
-    }
-    
-    $data = $this->getOrCreateGamificationData();
-    
-    if ($coins > 0) {
-        $data->spendCoins($coins, $purpose);
-    }
-    
-    if ($gems > 0) {
-        $data->spendGems($gems, $purpose);
-    }
-    
-    return true;
-}
-
-// Get user's equipped items
-public function getEquippedItems()
-{
-    return $this->storePurchases()
-        ->where('is_equipped', true)
-        ->with('item')
-        ->get()
-        ->groupBy('item.item_type');
-}
-
-// Equip/unequip store items
-public function toggleEquipItem($purchaseId)
-{
-    $purchase = $this->storePurchases()->find($purchaseId);
-    if (!$purchase) {
-        return false;
-    }
-    
-    // Unequip other items of the same type (for avatars, themes, etc.)
-    if (in_array($purchase->item->item_type, ['avatar', 'theme'])) {
-        $this->storePurchases()
-            ->whereHas('item', function($q) use ($purchase) {
-                $q->where('item_type', $purchase->item->item_type);
-            })
-            ->update(['is_equipped' => false]);
-    }
-    
-    $purchase->update(['is_equipped' => !$purchase->is_equipped]);
-    return true;
-}
-
-// Get formatted energy status
-public function getEnergyStatus()
-{
-    $data = $this->getOrCreateGamificationData();
-    $data->updateEnergy();
-    
-    $timeToFullEnergy = (100 - $data->energy) * 5; // 5 minutes per energy point
-    $nextEnergyIn = 5 - ($data->energy_last_updated->diffInMinutes(now()) % 5);
-    
-    return [
-        'current' => $data->energy,
-        'max' => 100,
-        'percentage' => $data->energy,
-        'time_to_full' => $timeToFullEnergy,
-        'next_energy_in' => $nextEnergyIn,
-        'is_full' => $data->energy >= 100,
-    ];
-}
-
-// Get user's game statistics
-public function getGameStats()
-{
-    $data = $this->getOrCreateGamificationData();
-    $gameScores = $data->game_scores ?? [];
-    
-    $stats = [
-        'total_games_played' => 0,
-        'best_scores' => $gameScores,
-        'favorite_game' => null,
-        'total_game_time' => 0,
-    ];
-    
-    // Calculate stats from transactions
-    $gameTransactions = $this->gamificationTransactions()
-        ->where('source', 'like', 'game_%')
-        ->get();
-    
-    $stats['total_games_played'] = $gameTransactions->count();
-    
-    // Find favorite game (most played)
-    $gameCounts = $gameTransactions->groupBy('source')->map->count();
-    if ($gameCounts->isNotEmpty()) {
-        $favoriteGameSource = $gameCounts->keys()->sortByDesc(function($key) use ($gameCounts) {
-            return $gameCounts[$key];
-        })->first();
-        $stats['favorite_game'] = str_replace('game_', '', $favoriteGameSource);
-    }
-    
-    return $stats;
-}
-
-// Daily quest completion tracking
-public function updateQuestProgress($questType, $amount = 1)
-{
-    $data = $this->getOrCreateGamificationData();
-    return $data->updateQuestProgress($questType, $amount);
-}
-
-// Get achievement progress for specific categories
-public function getAchievementProgress()
-{
-    $data = $this->getOrCreateGamificationData();
-    
-    return [
-        'level_progress' => [
-            'current' => $data->level,
-            'next_milestone' => $this->getNextLevelMilestone($data->level),
-            'progress' => $data->progress_percentage,
-        ],
-        'streak_progress' => [
-            'current' => $data->current_streak,
-            'longest' => $data->longest_streak,
-            'next_milestone' => $this->getNextStreakMilestone($data->current_streak),
-        ],
-        'course_progress' => [
-            'completed' => $this->courses()->wherePivot('progress', 100)->count(),
-            'next_milestone' => $this->getNextCourseMilestone($this->courses()->wherePivot('progress', 100)->count()),
-        ],
-        'quiz_performance' => [
-            'average_score' => round($this->getAverageQuizScore(), 1),
-            'next_milestone' => $this->getNextScoreMilestone($this->getAverageQuizScore()),
-        ],
-    ];
-}
-
-private function getNextLevelMilestone($currentLevel)
-{
-    $milestones = [5, 10, 25, 50, 100];
-    foreach ($milestones as $milestone) {
-        if ($currentLevel < $milestone) {
-            return $milestone;
+        switch ($activityType) {
+            case 'lesson':
+                return $gamificationService->handleLessonCompletion($this, $activityData['lesson'] ?? null);
+            case 'quiz':
+                return $gamificationService->handleQuizCompletion(
+                    $this,
+                    $activityData['assessment'] ?? null,
+                    $activityData['score'] ?? 0,
+                    $activityData['passed'] ?? false
+                );
+            case 'daily_login':
+                return $gamificationService->handleDailyLogin($this);
+            case 'game':
+                return $gamificationService->handleGameCompletion(
+                    $this,
+                    $activityData['game_id'],
+                    $activityData['score']
+                );
+            default:
+                return ['success' => false, 'message' => 'Unknown activity type'];
         }
     }
-    return null;
-}
 
-private function getNextStreakMilestone($currentStreak)
-{
-    $milestones = [7, 30, 100, 365];
-    foreach ($milestones as $milestone) {
-        if ($currentStreak < $milestone) {
-            return $milestone;
-        }
-    }
-    return null;
-}
+    // Get user's gamification summary for dashboard
+    public function getGamificationSummary()
+    {
+        $data = $this->getOrCreateGamificationData();
+        $data->updateEnergy();
 
-private function getNextCourseMilestone($completedCourses)
-{
-    $milestones = [1, 5, 10, 25, 50];
-    foreach ($milestones as $milestone) {
-        if ($completedCourses < $milestone) {
-            return $milestone;
-        }
+        return [
+            'level' => $data->level,
+            'total_points' => $data->total_points,
+            'coins' => $data->coins,
+            'gems' => $data->gems,
+            'energy' => $data->energy,
+            'current_streak' => $data->current_streak,
+            'longest_streak' => $data->longest_streak,
+            'progress_to_next_level' => $data->progress_percentage,
+            'badges_count' => $this->badges()->count(),
+            'rank' => $this->getGlobalRank(),
+            'recent_achievements' => $this->badges()->latest()->limit(3)->get(),
+            'active_quests' => $data->daily_quests ?? [],
+        ];
     }
-    return null;
-}
 
-private function getNextScoreMilestone($averageScore)
-{
-    $milestones = [80, 90, 95, 98];
-    foreach ($milestones as $milestone) {
-        if ($averageScore < $milestone) {
-            return $milestone;
-        }
+    // Get user's rank among all users
+    private function getGlobalRank()
+    {
+        return GamificationData::where('total_points', '>', $this->getTotalPoints())->count() + 1;
     }
-    return null;
-}
+
+    // Check if user can afford something
+    public function canAfford($coins = 0, $gems = 0)
+    {
+        $data = $this->getOrCreateGamificationData();
+        return $data->coins >= $coins && $data->gems >= $gems;
+    }
+
+    // Spend currency with validation
+    public function spendCurrency($coins = 0, $gems = 0, $purpose = 'purchase')
+    {
+        if (!$this->canAfford($coins, $gems)) {
+            return false;
+        }
+
+        $data = $this->getOrCreateGamificationData();
+
+        if ($coins > 0) {
+            $data->spendCoins($coins, $purpose);
+        }
+
+        if ($gems > 0) {
+            $data->spendGems($gems, $purpose);
+        }
+
+        return true;
+    }
+
+    // Get user's equipped items
+    public function getEquippedItems()
+    {
+        return $this->storePurchases()
+            ->where('is_equipped', true)
+            ->with('item')
+            ->get()
+            ->groupBy('item.item_type');
+    }
+
+    // Equip/unequip store items
+    public function toggleEquipItem($purchaseId)
+    {
+        $purchase = $this->storePurchases()->find($purchaseId);
+        if (!$purchase) {
+            return false;
+        }
+
+        // Unequip other items of the same type (for avatars, themes, etc.)
+        if (in_array($purchase->item->item_type, ['avatar', 'theme'])) {
+            $this->storePurchases()
+                ->whereHas('item', function ($q) use ($purchase) {
+                    $q->where('item_type', $purchase->item->item_type);
+                })
+                ->update(['is_equipped' => false]);
+        }
+
+        $purchase->update(['is_equipped' => !$purchase->is_equipped]);
+        return true;
+    }
+
+    // Get formatted energy status
+    public function getEnergyStatus()
+    {
+        $data = $this->getOrCreateGamificationData();
+        $data->updateEnergy();
+
+        $timeToFullEnergy = (100 - $data->energy) * 5; // 5 minutes per energy point
+        $nextEnergyIn = 5 - ($data->energy_last_updated->diffInMinutes(now()) % 5);
+
+        return [
+            'current' => $data->energy,
+            'max' => 100,
+            'percentage' => $data->energy,
+            'time_to_full' => $timeToFullEnergy,
+            'next_energy_in' => $nextEnergyIn,
+            'is_full' => $data->energy >= 100,
+        ];
+    }
+
+    // Get user's game statistics
+    public function getGameStats()
+    {
+        $data = $this->getOrCreateGamificationData();
+        $gameScores = $data->game_scores ?? [];
+
+        $stats = [
+            'total_games_played' => 0,
+            'best_scores' => $gameScores,
+            'favorite_game' => null,
+            'total_game_time' => 0,
+        ];
+
+        // Calculate stats from transactions
+        $gameTransactions = $this->gamificationTransactions()
+            ->where('source', 'like', 'game_%')
+            ->get();
+
+        $stats['total_games_played'] = $gameTransactions->count();
+
+        // Find favorite game (most played)
+        $gameCounts = $gameTransactions->groupBy('source')->map->count();
+        if ($gameCounts->isNotEmpty()) {
+            $favoriteGameSource = $gameCounts->keys()->sortByDesc(function ($key) use ($gameCounts) {
+                return $gameCounts[$key];
+            })->first();
+            $stats['favorite_game'] = str_replace('game_', '', $favoriteGameSource);
+        }
+
+        return $stats;
+    }
+
+    // Daily quest completion tracking
+    public function updateQuestProgress($questType, $amount = 1)
+    {
+        $data = $this->getOrCreateGamificationData();
+        return $data->updateQuestProgress($questType, $amount);
+    }
+
+    // Get achievement progress for specific categories
+    public function getAchievementProgress()
+    {
+        $data = $this->getOrCreateGamificationData();
+
+        return [
+            'level_progress' => [
+                'current' => $data->level,
+                'next_milestone' => $this->getNextLevelMilestone($data->level),
+                'progress' => $data->progress_percentage,
+            ],
+            'streak_progress' => [
+                'current' => $data->current_streak,
+                'longest' => $data->longest_streak,
+                'next_milestone' => $this->getNextStreakMilestone($data->current_streak),
+            ],
+            'course_progress' => [
+                'completed' => $this->courses()->wherePivot('progress', 100)->count(),
+                'next_milestone' => $this->getNextCourseMilestone($this->courses()->wherePivot('progress', 100)->count()),
+            ],
+            'quiz_performance' => [
+                'average_score' => round($this->getAverageQuizScore(), 1),
+                'next_milestone' => $this->getNextScoreMilestone($this->getAverageQuizScore()),
+            ],
+        ];
+    }
+
+    private function getNextLevelMilestone($currentLevel)
+    {
+        $milestones = [5, 10, 25, 50, 100];
+        foreach ($milestones as $milestone) {
+            if ($currentLevel < $milestone) {
+                return $milestone;
+            }
+        }
+        return null;
+    }
+
+    private function getNextStreakMilestone($currentStreak)
+    {
+        $milestones = [7, 30, 100, 365];
+        foreach ($milestones as $milestone) {
+            if ($currentStreak < $milestone) {
+                return $milestone;
+            }
+        }
+        return null;
+    }
+
+    private function getNextCourseMilestone($completedCourses)
+    {
+        $milestones = [1, 5, 10, 25, 50];
+        foreach ($milestones as $milestone) {
+            if ($completedCourses < $milestone) {
+                return $milestone;
+            }
+        }
+        return null;
+    }
+
+    private function getNextScoreMilestone($averageScore)
+    {
+        $milestones = [80, 90, 95, 98];
+        foreach ($milestones as $milestone) {
+            if ($averageScore < $milestone) {
+                return $milestone;
+            }
+        }
+        return null;
+    }
 
 }
