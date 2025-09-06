@@ -1,349 +1,131 @@
-<div x-data="{ activeTab: 'student' }" class="p-4 md:p-8 bg-gray-50 dark:bg-gray-900 min-h-screen font-sans">
-    <div class="">
-        <!-- Header Section -->
-        <header class="text-center mb-12">
-            <h1
-                class="text-4xl md:text-5xl font-extrabold text-gray-900 dark:text-white mb-4 animate__animated animate__fadeInDown">
+<div class="p-4 md:p-8 bg-gray-50 dark:bg-gray-900 min-h-screen font-sans">
+    <!-- Header Section -->
+    <header class="text-center mb-16">
+        <div class="relative">
+            <h1 class="text-5xl md:text-6xl font-bold text-gray-900 dark:text-white mb-6 tracking-tight">
                 Welcome to BootKode
             </h1>
-            <p class="text-lg md:text-xl text-gray-600 dark:text-gray-300 animate__animated animate__fadeInUp">
-                Your pathway to digital skills, mentorship, and a thriving career.
+            <div class="w-24 h-1 bg-blue-600 mx-auto mb-6 rounded-full"></div>
+            <p class="text-xl md:text-2xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto leading-relaxed">
+                Your comprehensive pathway to digital excellence, professional mentorship, and a thriving tech career in
+                Africa's growing digital economy.
             </p>
-        </header>
-
-        <!-- Tab Navigation -->
-        <div class="flex flex-wrap justify-center mb-8 gap-3 animate__animated animate__fadeIn">
-            <button @click="activeTab = 'student'"
-                :class="{ 'bg-purple-600 text-white shadow-lg scale-105': activeTab === 'student', 'bg-gray-200 text-gray-700 hover:bg-purple-100': activeTab !== 'student' }"
-                class="flex items-center space-x-2 px-6 py-3 rounded-full font-semibold transition-all duration-300 transform dark:text-gray-900">
-                <i class="fas fa-user-graduate"></i>
-                <span>Students</span>
-            </button>
-            <button @click="activeTab = 'instructor'"
-                :class="{ 'bg-purple-600 text-white shadow-lg scale-105': activeTab === 'instructor', 'bg-gray-200 text-gray-700 hover:bg-purple-100': activeTab !== 'instructor' }"
-                class="flex items-center space-x-2 px-6 py-3 rounded-full font-semibold transition-all duration-300 transform dark:text-gray-900">
-                <i class="fas fa-chalkboard-teacher"></i>
-                <span>Instructors</span>
-            </button>
-            <button @click="activeTab = 'mentor'"
-                :class="{ 'bg-purple-600 text-white shadow-lg scale-105': activeTab === 'mentor', 'bg-gray-200 text-gray-700 hover:bg-purple-100': activeTab !== 'mentor' }"
-                class="flex items-center space-x-2 px-6 py-3 rounded-full font-semibold transition-all duration-300 transform dark:text-gray-900">
-                <i class="fas fa-handshake"></i>
-                <span>Mentors</span>
-            </button>
-            <button @click="activeTab = 'admin'"
-                :class="{ 'bg-purple-600 text-white shadow-lg scale-105': activeTab === 'admin', 'bg-gray-200 text-gray-700 hover:bg-purple-100': activeTab !== 'admin' }"
-                class="flex items-center space-x-2 px-6 py-3 rounded-full font-semibold transition-all duration-300 transform dark:text-gray-900">
-                <i class="fas fa-user-shield"></i>
-                <span>Admins</span>
-            </button>
-        </div>
-
-        <!-- Tab Content -->
-        <div
-            class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6 md:p-10 animate__animated animate__fadeInUp animate__delay-1s">
-            <!-- Student Content -->
-            <!-- Student Content -->
-            <div x-show="activeTab === 'student'" x-transition:enter.duration.500ms>
-                <div class="mb-8">
-                    <h2 class="text-3xl font-bold text-gray-900 dark:text-white flex items-center mb-2">
-                        <div
-                            class="w-12 h-12 bg-gradient-to-r from-purple-500 to-indigo-600 rounded-lg flex items-center justify-center mr-4">
-                            <i class="fas fa-user-graduate text-white text-xl"></i>
-                        </div>
-                        Student Journey: Code, Certify, Conquer
-                    </h2>
-                    <p class="text-gray-600 dark:text-gray-400">
-                        BootKode empowers you to learn digital skills and launch a career. Here's how you can get
-                        started:
-                    </p>
+            <div class="flex justify-center items-center mt-8 space-x-8 flex-wrap gap-4">
+                <div class="text-center">
+                    <div class="text-2xl font-bold text-blue-600">{{ number_format($stats['totalUsers']) }}+</div>
+                    <div class="text-sm text-gray-500">Active Users</div>
                 </div>
-
-                <div class="grid md:grid-cols-2 gap-8">
-                    <div
-                        class="bg-gradient-to-br from-purple-50 to-indigo-50 dark:from-gray-700 dark:to-gray-900 p-6 rounded-xl border border-purple-100 dark:border-gray-600">
-                        <div class="flex items-start mb-4">
-                            <div
-                                class="flex-shrink-0 w-10 h-10 flex items-center justify-center rounded-lg bg-purple-100 text-purple-600 dark:bg-purple-900 dark:text-purple-200 text-lg mr-4">
-                                <i class="fas fa-pen-nib"></i>
-                            </div>
-                            <h3 class="font-bold text-lg text-gray-900 dark:text-white">1. Register & Explore</h3>
-                        </div>
-                        <p class="text-gray-700 dark:text-gray-300">Sign up for free and browse our extensive library of
-                            courses and career roadmaps. Discover your passion, whether it's web development, mobile
-                            apps, or data science.</p>
-                    </div>
-
-                    <div
-                        class="bg-gradient-to-br from-purple-50 to-indigo-50 dark:from-gray-700 dark:to-gray-900 p-6 rounded-xl border border-purple-100 dark:border-gray-600">
-                        <div class="flex items-start mb-4">
-                            <div
-                                class="flex-shrink-0 w-10 h-10 flex items-center justify-center rounded-lg bg-purple-100 text-purple-600 dark:bg-purple-900 dark:text-purple-200 text-lg mr-4">
-                                <i class="fas fa-book-open"></i>
-                            </div>
-                            <h3 class="font-bold text-lg text-gray-900 dark:text-white">2. Learn & Build</h3>
-                        </div>
-                        <p class="text-gray-700 dark:text-gray-300">Engage with high-quality content including videos,
-                            PDFs, and hands-on projects. Complete quizzes and assignments, get your code reviewed, and
-                            build a portfolio.</p>
-                    </div>
-
-                    <div
-                        class="bg-gradient-to-br from-purple-50 to-indigo-50 dark:from-gray-700 dark:to-gray-900 p-6 rounded-xl border border-purple-100 dark:border-gray-600">
-                        <div class="flex items-start mb-4">
-                            <div
-                                class="flex-shrink-0 w-10 h-10 flex items-center justify-center rounded-lg bg-purple-100 text-purple-600 dark:bg-purple-900 dark:text-purple-200 text-lg mr-4">
-                                <i class="fas fa-certificate"></i>
-                            </div>
-                            <h3 class="font-bold text-lg text-gray-900 dark:text-white">3. Certify & Launch</h3>
-                        </div>
-                        <p class="text-gray-700 dark:text-gray-300">After completing a course and its projects, you can
-                            earn a verifiable professional certificate. Use this credential to showcase your skills to
-                            potential employers.</p>
-                    </div>
-
-                    <div
-                        class="bg-gradient-to-br from-purple-50 to-indigo-50 dark:from-gray-700 dark:to-gray-900 p-6 rounded-xl border border-purple-100 dark:border-gray-600">
-                        <div class="flex items-start mb-4">
-                            <div
-                                class="flex-shrink-0 w-10 h-10 flex items-center justify-center rounded-lg bg-purple-100 text-purple-600 dark:bg-purple-900 dark:text-purple-200 text-lg mr-4">
-                                <i class="fas fa-comments"></i>
-                            </div>
-                            <h3 class="font-bold text-lg text-gray-900 dark:text-white">4. Engage & Grow</h3>
-                        </div>
-                        <p class="text-gray-700 dark:text-gray-300">Join our mentorship program and peer community.
-                            Connect with experienced developers, get personalized feedback on your portfolio, and
-                            receive career advice.</p>
-                    </div>
+                <div class="text-center">
+                    <div class="text-2xl font-bold text-blue-600">{{ number_format($stats['totalCourses']) }}+</div>
+                    <div class="text-sm text-gray-500">Courses Available</div>
                 </div>
-
-                <div class="mt-10 pt-8 border-t border-gray-200 dark:border-gray-700">
-                    <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-4">Student Journey Map</h3>
-                    <div class="bg-gray-50 dark:bg-gray-700 rounded-2xl p-4">
-                        <div class="flex overflow-x-auto pb-4">
-                            <div class="flex-none w-64 bg-white dark:bg-gray-600 rounded-xl p-4 shadow mr-4">
-                                <div class="text-center mb-3">
-                                    <div
-                                        class="w-12 h-12 bg-purple-100 dark:bg-purple-800 rounded-full flex items-center justify-center mx-auto mb-2">
-                                        <i class="fas fa-user-plus text-purple-600 dark:text-purple-300"></i>
-                                    </div>
-                                    <h4 class="font-semibold">Sign Up</h4>
-                                </div>
-                                <p class="text-sm text-gray-600 dark:text-gray-300">Create your free account in seconds
-                                </p>
-                            </div>
-                            <div class="flex-none w-64 bg-white dark:bg-gray-600 rounded-xl p-4 shadow mr-4">
-                                <div class="text-center mb-3">
-                                    <div
-                                        class="w-12 h-12 bg-purple-100 dark:bg-purple-800 rounded-full flex items-center justify-center mx-auto mb-2">
-                                        <i class="fas fa-compass text-purple-600 dark:text-purple-300"></i>
-                                    </div>
-                                    <h4 class="font-semibold">Explore</h4>
-                                </div>
-                                <p class="text-sm text-gray-600 dark:text-gray-300">Browse courses and roadmaps</p>
-                            </div>
-                            <div class="flex-none w-64 bg-white dark:bg-gray-600 rounded-xl p-4 shadow mr-4">
-                                <div class="text-center mb-3">
-                                    <div
-                                        class="w-12 h-12 bg-purple-100 dark:bg-purple-800 rounded-full flex items-center justify-center mx-auto mb-2">
-                                        <i class="fas fa-play-circle text-purple-600 dark:text-purple-300"></i>
-                                    </div>
-                                    <h4 class="font-semibold">Learn</h4>
-                                </div>
-                                <p class="text-sm text-gray-600 dark:text-gray-300">Start your first course</p>
-                            </div>
-                            <div class="flex-none w-64 bg-white dark:bg-gray-600 rounded-xl p-4 shadow mr-4">
-                                <div class="text-center mb-3">
-                                    <div
-                                        class="w-12 h-12 bg-purple-100 dark:bg-purple-800 rounded-full flex items-center justify-center mx-auto mb-2">
-                                        <i class="fas fa-code text-purple-600 dark:text-purple-300"></i>
-                                    </div>
-                                    <h4 class="font-semibold">Practice</h4>
-                                </div>
-                                <p class="text-sm text-gray-600 dark:text-gray-300">Complete projects and exercises</p>
-                            </div>
-                            <div class="flex-none w-64 bg-white dark:bg-gray-600 rounded-xl p-4 shadow">
-                                <div class="text-center mb-3">
-                                    <div
-                                        class="w-12 h-12 bg-purple-100 dark:bg-purple-800 rounded-full flex items-center justify-center mx-auto mb-2">
-                                        <i class="fas fa-graduation-cap text-purple-600 dark:text-purple-300"></i>
-                                    </div>
-                                    <h4 class="font-semibold">Graduate</h4>
-                                </div>
-                                <p class="text-sm text-gray-600 dark:text-gray-300">Earn your certificate</p>
-                            </div>
-                        </div>
-                    </div>
+                <div class="text-center">
+                    <div class="text-2xl font-bold text-blue-600">{{ $stats['successRate'] }}%</div>
+                    <div class="text-sm text-gray-500">Success Rate</div>
                 </div>
-            </div>
-
-            <!-- Instructor Content -->
-            <div x-show="activeTab === 'instructor'" x-transition:enter.duration.500ms>
-                <div class="mb-6">
-                    <h2 class="text-3xl font-bold text-gray-900 dark:text-white flex items-center mb-2">
-                        <i class="fas fa-chalkboard-teacher text-purple-600 mr-3"></i> Instructor Guide: Educate &
-                        Empower
-                    </h2>
-                    <p class="text-gray-600 dark:text-gray-400">
-                        As an instructor, you are at the heart of our mission. Your expertise helps shape the next
-                        generation of African tech talent.
-                    </p>
-                </div>
-
-                <div class="space-y-6 text-gray-700 dark:text-gray-300">
-                    <div class="flex items-start">
-                        <div
-                            class="flex-shrink-0 w-8 h-8 flex items-center justify-center rounded-full bg-purple-100 text-purple-600 mt-1 mr-4">
-                            <i class="fas fa-upload"></i>
-                        </div>
-                        <div>
-                            <h3 class="font-bold text-lg text-gray-900 dark:text-white">1. Create & Publish Courses
-                            </h3>
-                            <p>Share your knowledge by creating comprehensive courses. Our platform supports various
-                                content types, including video, audio, and documents. You can structure your lessons,
-                                add quizzes, and design hands-on projects to ensure students gain practical skills.</p>
-                        </div>
-                    </div>
-
-                    <div class="flex items-start">
-                        <div
-                            class="flex-shrink-0 w-8 h-8 flex items-center justify-center rounded-full bg-purple-100 text-purple-600 mt-1 mr-4">
-                            <i class="fas fa-chart-line"></i>
-                        </div>
-                        <div>
-                            <h3 class="font-bold text-lg text-gray-900 dark:text-white">2. Manage Your Courses &
-                                Students</h3>
-                            <p>Use your dedicated dashboard to track student progress, review assignments, and manage
-                                your course materials. You can see enrollment numbers, completion rates, and feedback to
-                                refine your content and help your students succeed.</p>
-                        </div>
-                    </div>
-
-                    <div class="flex items-start">
-                        <div
-                            class="flex-shrink-0 w-8 h-8 flex items-center justify-center rounded-full bg-purple-100 text-purple-600 mt-1 mr-4">
-                            <i class="fas fa-star"></i>
-                        </div>
-                        <div>
-                            <h3 class="font-bold text-lg text-gray-900 dark:text-white">3. Review & Certify</h3>
-                            <p>Review student projects and approve certificate requests. Your approval ensures the
-                                quality of our certified graduates and strengthens the value of BootKode's credentials
-                                in the job market.</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Mentor Content -->
-            <div x-show="activeTab === 'mentor'" x-transition:enter.duration.500ms>
-                <div class="mb-6">
-                    <h2 class="text-3xl font-bold text-gray-900 dark:text-white flex items-center mb-2">
-                        <i class="fas fa-handshake text-purple-600 mr-3"></i> Mentor Guide: Support & Inspire
-                    </h2>
-                    <p class="text-gray-600 dark:text-gray-400">
-                        Mentors provide the crucial human connection that most online platforms lack. Your role is to
-                        guide, support, and inspire our learners.
-                    </p>
-                </div>
-
-                <div class="space-y-6 text-gray-700 dark:text-gray-300">
-                    <div class="flex items-start">
-                        <div
-                            class="flex-shrink-0 w-8 h-8 flex items-center justify-center rounded-full bg-purple-100 text-purple-600 mt-1 mr-4">
-                            <i class="fas fa-comments"></i>
-                        </div>
-                        <div>
-                            <h3 class="font-bold text-lg text-gray-900 dark:text-white">1. Provide Guidance</h3>
-                            <p>Engage with students through the mentorship system. You can offer live sessions, provide
-                                personal feedback on their projects, and answer their questions about career paths and
-                                industry trends.</p>
-                        </div>
-                    </div>
-
-                    <div class="flex items-start">
-                        <div
-                            class="flex-shrink-0 w-8 h-8 flex items-center justify-center rounded-full bg-purple-100 text-purple-600 mt-1 mr-4">
-                            <i class="fas fa-briefcase"></i>
-                        </div>
-                        <div>
-                            <h3 class="font-bold text-lg text-gray-900 dark:text-white">2. Review & Advise</h3>
-                            <p>Help students refine their portfolios and resumes. Your professional advice can be the
-                                difference between a good portfolio and a job-winning one. Guide them through the
-                                challenges of the job market and freelancing world.</p>
-                        </div>
-                    </div>
-
-                    <div class="flex items-start">
-                        <div
-                            class="flex-shrink-0 w-8 h-8 flex items-center justify-center rounded-full bg-purple-100 text-purple-600 mt-1 mr-4">
-                            <i class="fas fa-trophy"></i>
-                        </div>
-                        <div>
-                            <h3 class="font-bold text-lg text-gray-900 dark:text-white">3. Inspire the Next Generation
-                            </h3>
-                            <p>Share your experiences and successes to motivate learners. Your real-world insights are
-                                invaluable and will help shape the confidence and skills of our students, turning them
-                                into successful professionals.</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Admin Content -->
-            <div x-show="activeTab === 'admin'" x-transition:enter.duration.500ms>
-                <div class="mb-6">
-                    <h2 class="text-3xl font-bold text-gray-900 dark:text-white flex items-center mb-2">
-                        <i class="fas fa-user-shield text-purple-600 mr-3"></i> Admin Guide: Manage & Grow
-                    </h2>
-                    <p class="text-gray-600 dark:text-gray-400">
-                        As an admin, you ensure the smooth and effective operation of the entire BootKode ecosystem.
-                    </p>
-                </div>
-
-                <div class="space-y-6 text-gray-700 dark:text-gray-300">
-                    <div class="flex items-start">
-                        <div
-                            class="flex-shrink-0 w-8 h-8 flex items-center justify-center rounded-full bg-purple-100 text-purple-600 mt-1 mr-4">
-                            <i class="fas fa-users-cog"></i>
-                        </div>
-                        <div>
-                            <h3 class="font-bold text-lg text-gray-900 dark:text-white">1. User & Role Management</h3>
-                            <p>Oversee all user accounts, assign roles (Student, Instructor, Mentor, etc.), and ensure
-                                the platform's security and integrity. You have the power to manage permissions and
-                                access levels as needed.</p>
-                        </div>
-                    </div>
-
-                    <div class="flex items-start">
-                        <div
-                            class="flex-shrink-0 w-8 h-8 flex items-center justify-center rounded-full bg-purple-100 text-purple-600 mt-1 mr-4">
-                            <i class="fas fa-check-double"></i>
-                        </div>
-                        <div>
-                            <h3 class="font-bold text-lg text-gray-900 dark:text-white">2. Content & Course Approval
-                            </h3>
-                            <p>Review and approve new courses and lessons submitted by instructors. Your role is to
-                                maintain the quality and relevance of all content published on the platform, ensuring it
-                                aligns with BootKode's standards.</p>
-                        </div>
-                    </div>
-
-                    <div class="flex items-start">
-                        <div
-                            class="flex-shrink-0 w-8 h-8 flex items-center justify-center rounded-full bg-purple-100 text-purple-600 mt-1 mr-4">
-                            <i class="fas fa-certificate"></i>
-                        </div>
-                        <div>
-                            <h3 class="font-bold text-lg text-gray-900 dark:text-white">3. Certificate Management</h3>
-                            <p>Manage and approve certificate requests, ensuring that all completion requirements are
-                                met before a certificate is issued. This is a critical function for maintaining the
-                                value of our credentials.</p>
-                        </div>
-                    </div>
+                <div class="text-center">
+                    <div class="text-2xl font-bold text-blue-600">{{ number_format($stats['totalLessons']) }}+</div>
+                    <div class="text-sm text-gray-500">Total Lessons</div>
                 </div>
             </div>
         </div>
+    </header>
 
+    <!-- Tab Navigation -->
+    <div
+        class="flex flex-wrap justify-center mb-12 gap-3 bg-white dark:bg-gray-800 p-2 rounded-2xl shadow-lg max-w-4xl mx-auto">
+        <button wire:click="selectTab('student')"
+            class="flex items-center space-x-3 px-8 py-4 rounded-xl font-semibold transition-all duration-300 {{ $activeTab === 'student' ? 'bg-blue-600 text-white shadow-md' : 'text-gray-600 hover:text-blue-600 hover:bg-blue-50 dark:text-gray-300 dark:hover:bg-gray-700' }}">
+            <i class="fas fa-user-graduate text-lg"></i>
+            <span>Students</span>
+            <span
+                class="bg-blue-100 text-blue-600 px-2 py-1 rounded-full text-xs ml-2">{{ number_format($stats['totalStudents']) }}</span>
+        </button>
+        <button wire:click="selectTab('instructor')"
+            class="flex items-center space-x-3 px-8 py-4 rounded-xl font-semibold transition-all duration-300 {{ $activeTab === 'instructor' ? 'bg-blue-600 text-white shadow-md' : 'text-gray-600 hover:text-blue-600 hover:bg-blue-50 dark:text-gray-300 dark:hover:bg-gray-700' }}">
+            <i class="fas fa-chalkboard-teacher text-lg"></i>
+            <span>Instructors</span>
+            <span
+                class="bg-blue-100 text-blue-600 px-2 py-1 rounded-full text-xs ml-2">{{ number_format($stats['totalInstructors']) }}</span>
+        </button>
+        <button wire:click="selectTab('mentor')"
+            class="flex items-center space-x-3 px-8 py-4 rounded-xl font-semibold transition-all duration-300 {{ $activeTab === 'mentor' ? 'bg-blue-600 text-white shadow-md' : 'text-gray-600 hover:text-blue-600 hover:bg-blue-50 dark:text-gray-300 dark:hover:bg-gray-700' }}">
+            <i class="fas fa-handshake text-lg"></i>
+            <span>Mentors</span>
+            <span
+                class="bg-blue-100 text-blue-600 px-2 py-1 rounded-full text-xs ml-2">{{ number_format($stats['totalMentors']) }}</span>
+        </button>
+        <button wire:click="selectTab('admin')"
+            class="flex items-center space-x-3 px-8 py-4 rounded-xl font-semibold transition-all duration-300 {{ $activeTab === 'admin' ? 'bg-blue-600 text-white shadow-md' : 'text-gray-600 hover:text-blue-600 hover:bg-blue-50 dark:text-gray-300 dark:hover:bg-gray-700' }}">
+            <i class="fas fa-user-shield text-lg"></i>
+            <span>Admins</span>
+        </button>
+    </div>
+
+    <!-- Tab Content Container -->
+    <div class="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl p-8 md:p-12 max-w-7xl mx-auto">
+
+        <!-- Student Tab -->
+        @if($activeTab === 'student')
+            @include('livewire.pages.guidelines.student-tab', ['stats' => $stats])
+        @endif
+
+        <!-- Instructor Tab -->
+        @if($activeTab === 'instructor')
+            @include('livewire.pages.guidelines.instructor-tab', ['stats' => $stats])
+        @endif
+
+        <!-- Mentor Tab -->
+        @if($activeTab === 'mentor')
+            @include('livewire.pages.guidelines.mentor-tab', ['stats' => $stats])
+        @endif
+
+        <!-- Admin Tab -->
+        @if($activeTab === 'admin')
+            @include('livewire.pages.guidelines.admin-tab', ['stats' => $stats])
+        @endif
+
+    </div>
+
+    <!-- Call to Action Section -->
+    <div class="mt-16 bg-blue-600 rounded-3xl p-8 md:p-12 text-center text-white">
+        <h3 class="text-3xl md:text-4xl font-bold mb-4">Ready to Transform Your Future?</h3>
+        <p class="text-xl mb-8 text-blue-100 max-w-3xl mx-auto">
+            Join over {{ number_format($stats['totalUsers']) }} learners,
+            {{ number_format($stats['totalInstructors']) }} instructors, {{ number_format($stats['totalMentors']) }}
+            mentors,
+            and administrators who are building Africa's digital future through BootKode.
+        </p>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
+            <a href="{{ route('register') }}"
+                class="bg-white text-blue-600 px-8 py-4 rounded-xl font-semibold text-lg hover:bg-blue-50 transition-colors duration-300 shadow-lg inline-flex items-center">
+                <i class="fas fa-rocket mr-2"></i>
+                Get Started Today
+            </a>
+            <a href="#"
+                class="border-2 border-white text-white px-8 py-4 rounded-xl font-semibold text-lg hover:bg-white hover:text-blue-600 transition-colors duration-300 inline-flex items-center">
+                <i class="fas fa-calendar-alt mr-2"></i>
+                Schedule a Demo
+            </a>
+        </div>
+        <div class="mt-8 flex justify-center items-center space-x-8 text-blue-100 flex-wrap gap-4">
+            <div class="flex items-center">
+                <i class="fas fa-check mr-2"></i>
+                <span>Free to start</span>
+            </div>
+            <div class="flex items-center">
+                <i class="fas fa-check mr-2"></i>
+                <span>No setup fees</span>
+            </div>
+            <div class="flex items-center">
+                <i class="fas fa-check mr-2"></i>
+                <span>24/7 support</span>
+            </div>
+            <div class="flex items-center">
+                <i class="fas fa-check mr-2"></i>
+                <span>{{ $stats['successRate'] }}% success rate</span>
+            </div>
+        </div>
     </div>
 
     <style>
@@ -351,18 +133,60 @@
             font-family: 'Inter', sans-serif;
         }
 
+        .shadow-2xl {
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        }
+
         .shadow-lg {
             box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
         }
 
-        /* Animate.css custom duration */
-        .animate__animated {
-            animation-duration: 1.5s;
+        /* Custom animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
+        .animate-fade-in-up {
+            animation: fadeInUp 0.8s ease-out forwards;
+        }
+
+        /* Hover effects */
+        .hover-lift {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .hover-lift:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Dark mode improvements */
         .dark .bg-white {
-            background-color: #1a202c;
-            /* Equivalent to gray-800 */
+            background-color: #1f2937;
+        }
+
+        .dark .shadow-2xl {
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+
+        /* Responsive improvements */
+        @media (max-width: 768px) {
+            .roadmap-step {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .roadmap-line {
+                display: none;
+            }
         }
     </style>
 </div>
