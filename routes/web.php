@@ -19,7 +19,38 @@ use App\Livewire\Content\ContentDocumentationCenter;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
+// Institution Portal Routes
 
+    Route::prefix('institution')->name('institution.')->group(function () {
+        
+        // Main portal dashboard
+        Route::get('/portal', App\Livewire\Institution\InstitutionPortal::class)
+            ->name('portal');
+            
+        // Individual tab routes (optional - for direct access)
+        Route::get('/overview', App\Livewire\Institution\InstitutionPortal::class)
+            ->name('overview');
+            
+        Route::get('/partners', App\Livewire\Institution\InstitutionPortal::class)
+            ->name('partners');
+            
+        Route::get('/licenses', App\Livewire\Institution\InstitutionPortal::class)
+            ->name('licenses');
+            
+        Route::get('/bulk-enrollment', App\Livewire\Institution\InstitutionPortal::class)
+            ->name('bulk-enrollment');
+            
+        Route::get('/analytics', App\Livewire\Institution\InstitutionPortal::class)
+            ->name('analytics');
+            
+        Route::get('/whitelabel', App\Livewire\Institution\InstitutionPortal::class)
+            ->name('whitelabel');
+    });
+
+
+
+
+// Blog Routes
 Route::prefix('blog')->name('blog.')->group(function () {
     Route::get('/', \App\Livewire\Blog\PublicBlogIndex::class)->name('index');
     Route::get('/category/{category:slug}', \App\Livewire\Blog\PublicBlogIndex::class)->name('category');

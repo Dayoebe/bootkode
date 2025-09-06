@@ -222,35 +222,17 @@ return [
         ],
 
         [
-            'label' => 'Library Management',
-            'icon' => 'fas fa-book',
-            'route_name' => '#',
-            'roles' => [User::ROLE_CONTENT_EDITOR, User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN],
-            'link_id' => 'library_management',
-            'children' => [
-                ['label' => 'All Books', 'icon' => 'fas fa-book-open', 'route_name' => '#', 'roles' => []],
-                ['label' => 'Add New Book', 'icon' => 'fas fa-plus', 'route_name' => '#', 'roles' => [User::ROLE_CONTENT_EDITOR, User::ROLE_ACADEMY_ADMIN]],
-                ['label' => 'Manage Categories', 'icon' => 'fas fa-tags', 'route_name' => '#', 'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN]],
-                ['label' => 'Library Settings', 'icon' => 'fas fa-cog', 'route_name' => '#', 'roles' => [User::ROLE_SUPER_ADMIN]],
-                ['label' => 'Library Resources', 'icon' => 'fas fa-book-open', 'route_name' => '#', 'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN]],
-                ['label' => 'Library Analytics', 'icon' => 'fas fa-chart-line', 'route_name' => '#', 'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN]],
-                ['label' => 'Library Management', 'icon' => 'fas fa-book', 'route_name' => '#', 'roles' => [User::ROLE_CONTENT_EDITOR, User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN]],
-                ['label' => 'Add New Library Item', 'icon' => 'fas fa-plus', 'route_name' => '#', 'roles' => [User::ROLE_CONTENT_EDITOR, User::ROLE_ACADEMY_ADMIN]],
-                ['label' => 'Library Settings', 'icon' => 'fas fa-cog', 'route_name' => '#', 'roles' => [User::ROLE_SUPER_ADMIN]],
-            ]
-        ],
-        [
             'label' => 'Institution Portal',
             'icon' => 'fas fa-university',
-            'route_name' => '#',
+            'route_name' => 'institution.portal',
             'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN],
             'link_id' => 'institution',
             'children' => [
-                ['label' => 'Partner Schools', 'icon' => 'fas fa-school', 'route_name' => '#', 'roles' => []],
-                ['label' => 'License Management', 'icon' => 'fas fa-key', 'route_name' => '#', 'roles' => []],
-                ['label' => 'Bulk Enrollment', 'icon' => 'fas fa-user-plus', 'route_name' => '#', 'roles' => []],
-                ['label' => 'Institution Analytics', 'icon' => 'fas fa-chart-pie', 'route_name' => '#', 'roles' => []],
-                ['label' => 'White-label Settings', 'icon' => 'fas fa-paint-roller', 'route_name' => '#', 'roles' => [User::ROLE_SUPER_ADMIN]],
+                ['label' => 'Partner Schools', 'icon' => 'fas fa-school', 'route_name' => 'institution.partners', 'roles' => []],
+                ['label' => 'License Management', 'icon' => 'fas fa-key', 'route_name' => 'institution.licenses', 'roles' => []],
+                ['label' => 'Bulk Enrollment', 'icon' => 'fas fa-user-plus', 'route_name' => 'institution.bulk-enrollment', 'roles' => []],
+                ['label' => 'Institution Analytics', 'icon' => 'fas fa-chart-pie', 'route_name' => 'institution.analytics', 'roles' => []],
+                ['label' => 'White-label Settings', 'icon' => 'fas fa-paint-roller', 'route_name' => 'institution.whitelabel', 'roles' => [User::ROLE_SUPER_ADMIN]],
             ]
         ],
         [
@@ -270,6 +252,22 @@ return [
         ],
 
         [
+            'label' => 'Affiliate Network',
+            'icon' => 'fas fa-share-alt',
+            'route_name' => '#',
+            'roles' => [User::ROLE_AFFILIATE_AMBASSADOR, User::ROLE_SUPER_ADMIN],
+            'link_id' => 'affiliate',
+            'children' => [
+                ['label' => 'Referral Dashboard', 'icon' => 'fas fa-chart-bar', 'route_name' => '#', 'roles' => []],
+                ['label' => 'Marketing Tools', 'icon' => 'fas fa-bullhorn', 'route_name' => '#', 'roles' => []],
+                ['label' => 'Commission History', 'icon' => 'fas fa-money-bill-wave', 'route_name' => '#', 'roles' => [User::ROLE_AFFILIATE_AMBASSADOR, User::ROLE_SUPER_ADMIN]],
+                ['label' => 'Commission Reports', 'icon' => 'fas fa-coins', 'route_name' => '#', 'roles' => []],
+                ['label' => 'Performance Analytics', 'icon' => 'fas fa-chart-pie', 'route_name' => '#', 'roles' => []],
+                ['label' => 'Affiliate Settings', 'icon' => 'fas fa-cog', 'route_name' => '#', 'roles' => [User::ROLE_SUPER_ADMIN]],
+            ]
+        ],
+
+        [
             'label' => 'Gamification',
             'icon' => 'fas fa-gamepad',
             'route_name' => '#',
@@ -284,24 +282,6 @@ return [
                 // Play a specific game requires a gameId param; keep as a helper entry if you resolve the param when rendering:
                 // ['label' => 'Play Game', 'icon' => 'fas fa-play', 'route_name' => 'gamification.games.play', 'roles' => [], 'link_id' => 'gamification.games.play'],
                 ['label' => 'Achievement Settings', 'icon' => 'fas fa-cog', 'route_name' => '#', 'roles' => [], 'link_id' => 'gamification.settings'],
-            ]
-        ],
-
-
-
-        [
-            'label' => 'Affiliate Network',
-            'icon' => 'fas fa-share-alt',
-            'route_name' => '#',
-            'roles' => [User::ROLE_AFFILIATE_AMBASSADOR, User::ROLE_SUPER_ADMIN],
-            'link_id' => 'affiliate',
-            'children' => [
-                ['label' => 'Referral Dashboard', 'icon' => 'fas fa-chart-bar', 'route_name' => '#', 'roles' => []],
-                ['label' => 'Marketing Tools', 'icon' => 'fas fa-bullhorn', 'route_name' => '#', 'roles' => []],
-                ['label' => 'Commission History', 'icon' => 'fas fa-money-bill-wave', 'route_name' => '#', 'roles' => [User::ROLE_AFFILIATE_AMBASSADOR, User::ROLE_SUPER_ADMIN]],
-                ['label' => 'Commission Reports', 'icon' => 'fas fa-coins', 'route_name' => '#', 'roles' => []],
-                ['label' => 'Performance Analytics', 'icon' => 'fas fa-chart-pie', 'route_name' => '#', 'roles' => []],
-                ['label' => 'Affiliate Settings', 'icon' => 'fas fa-cog', 'route_name' => '#', 'roles' => [User::ROLE_SUPER_ADMIN]],
             ]
         ],
 
@@ -369,18 +349,6 @@ return [
                 ['label' => 'Announcements', 'icon' => 'fas fa-bullhorn', 'route_name' => '#', 'roles' => [User::ROLE_SUPER_ADMIN]],
                 ['label' => 'Backup & Restore', 'icon' => 'fas fa-save', 'route_name' => '#', 'roles' => []],
                 ['label' => 'Security Center', 'icon' => 'fas fa-shield-alt', 'route_name' => '#', 'roles' => []],
-            ]
-        ],
-        [
-            'label' => 'Financial',
-            'icon' => 'fas fa-wallet',
-            'route_name' => '#',
-            'roles' => [User::ROLE_SUPER_ADMIN, User::ROLE_ACADEMY_ADMIN],
-            'link_id' => 'Financial',
-            'children' => [
-                ['label' => 'Revenue Reports', 'icon' => 'fas fa-chart-line', 'route_name' => '#', 'roles' => [User::ROLE_SUPER_ADMIN, User::ROLE_ACADEMY_ADMIN]],
-                ['label' => 'Payouts', 'icon' => 'fas fa-money-check-alt', 'route_name' => '#', 'roles' => [User::ROLE_SUPER_ADMIN]],
-                ['label' => 'Subscriptions', 'icon' => 'fas fa-credit-card', 'route_name' => '#', 'roles' => [User::ROLE_SUPER_ADMIN, User::ROLE_ACADEMY_ADMIN]],
             ]
         ],
         [
