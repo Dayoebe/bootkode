@@ -8,7 +8,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Messages\DatabaseMessage;
 use Illuminate\Notifications\Notification;
-use \App\Notifications\Str;
+use Illuminate\Support\Str;
 
 class SystemStatusUpdateNotification extends Notification implements ShouldQueue
 {
