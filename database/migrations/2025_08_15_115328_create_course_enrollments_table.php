@@ -16,6 +16,7 @@ class CreateCourseEnrollmentsTable extends Migration
             $table->integer('progress_percentage')->default(0);
             $table->boolean('is_completed')->default(false);
             $table->timestamp('completed_at')->nullable();
+            $table->foreignId('bulk_batch_id')->nullable()->constrained('bulk_enrollment_batches');
             $table->timestamps();
         });
     }
