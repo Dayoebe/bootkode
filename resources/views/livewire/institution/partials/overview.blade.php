@@ -178,7 +178,8 @@
                             <div class="flex items-center space-x-3">
                                 <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
                                     @if($institution->logo)
-                                        <img src="{{ $institution->logo }}" alt="{{ $institution->name }}" class="w-8 h-8 rounded object-cover">
+                                    <img class="w-8 h-8 rounded object-cover" src="{{ Storage::url($institution->logo) }}" alt="{{ $institution->name }}">
+                                        
                                     @else
                                         <span class="text-white font-semibold text-sm">
                                             {{ substr($institution->name, 0, 2) }}
