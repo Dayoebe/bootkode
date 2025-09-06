@@ -21,7 +21,7 @@ class AdminBlogPostForm extends Component
     public $slug = '';
     public $excerpt = '';
     public $content = '';
-    public $category_id = '';
+    public $category_ids = []; // Changed to array for multiple categories
     public $status = 'draft';
     public $published_at = '';
     public $featured_image;
@@ -35,24 +35,28 @@ class AdminBlogPostForm extends Component
 
     // UI state
     public $showSeoSection = false;
-    public $showScheduling = false;
     public $newTag = '';
     public $newKeyword = '';
+    public $removeExistingImage = false;
 
-    protected $rules = [
-        'title' => 'required|min:5|max:255',
-        'slug' => 'required|min:5|max:255',
-        'excerpt' => 'nullable|max:500',
-        'content' => 'required|min:100',
-        'category_id' => 'nullable|exists:blog_categories,id',
-        'status' => 'required|in:draft,published,scheduled',
-        'published_at' => 'nullable|date|after_or_equal:now',
-        'featured_image' => 'nullable|image|max:2048',
-        'meta_title' => 'nullable|max:60',
-        'meta_description' => 'nullable|max:500',
-        'allow_comments' => 'boolean',
-        'is_featured' => 'boolean',
-    ];
+    protected function rules()
+    {
+        return [
+            'title' => 'required|min:5|max:255',
+            'slug' => 'required|min:5|max:255',
+            'excerpt' => 'nullable|max:500',
+            'content' => 'required|min:100',
+            'category_ids' => 'array',
+            'category_ids.*' => 'exists:blog_categories,id',
+            'status' => 'required|in:draft,published,scheduled',
+            'published_at' => 'nullable|date',
+            'featured_image' => 'nullable|image|max:2048',
+            'meta_title' => 'nullable|max:60',
+            'meta_description' => 'nullable|max:500',
+            'allow_comments' => 'boolean',
+            'is_featured' => 'boolean',
+        ];
+    }
 
     public function mount($post = null)
     {
@@ -62,27 +66,29 @@ class AdminBlogPostForm extends Component
             } else {
                 $this->post = BlogPost::findOrFail($post);
             }
-
+    
             $this->isEdit = true;
             $this->fill($this->post->toArray());
             
-            // FIXED: Properly set and maintain existing image
+            // FIXED: Ensure existing_image is always properly set
             $this->existing_image = $this->post->featured_image;
+            
+            // Handle categories (convert single category to array for backward compatibility)
+            if ($this->post->category_id) {
+                $this->category_ids = [$this->post->category_id];
+            }
             
             $this->meta_keywords = $this->post->meta_keywords ?? [];
             $this->tags = $this->post->tags ?? [];
             $this->published_at = $this->post->published_at?->format('Y-m-d\TH:i');
-        } else {
-            // Only set default published_at for new posts when status is published or scheduled
-            $this->published_at = '';
-        }
-    }
-
-    // ADDED: Method to ensure existing image persists across requests
-    public function hydrate()
-    {
-        if ($this->isEdit && $this->post && !$this->existing_image) {
-            $this->existing_image = $this->post->featured_image;
+            
+            // Set meta_title to title if empty
+            if (empty($this->meta_title)) {
+                $this->meta_title = $this->title;
+            }
+            
+            // FIXED: Reset featured_image to null to prevent conflict with existing_image
+            $this->featured_image = null;
         }
     }
 
@@ -91,17 +97,18 @@ class AdminBlogPostForm extends Component
         if (!$this->isEdit || empty($this->slug)) {
             $this->slug = Str::slug($this->title);
         }
+        
+        // Auto-populate meta_title with title if it's empty
+        if (empty($this->meta_title)) {
+            $this->meta_title = $this->title;
+        }
     }
 
-    // Updated method to handle status changes and set appropriate published_at
     public function updatedStatus()
     {
         if ($this->status === 'scheduled' && empty($this->published_at)) {
-            $this->published_at = now()->addDay()->format('Y-m-d\TH:i');
-        } elseif ($this->status === 'draft') {
-            // Keep the published_at if it exists, but don't require it
+            $this->published_at = now()->addHour()->format('Y-m-d\TH:i');
         }
-        // REMOVED: Auto-setting published_at for 'published' status to avoid showing time field
     }
 
     public function generateSlug()
@@ -137,12 +144,27 @@ class AdminBlogPostForm extends Component
         $this->meta_keywords = array_values($this->meta_keywords);
     }
 
+    public function toggleRemoveImage()
+    {
+        $this->removeExistingImage = !$this->removeExistingImage;
+        if ($this->removeExistingImage) {
+            $this->featured_image = null;
+        }
+    }
+
     public function save($action = 'save')
     {
         // Custom validation for scheduled posts
-        if ($this->status === 'scheduled' && empty($this->published_at)) {
-            $this->addError('published_at', 'Scheduled posts must have a publish date.');
-            return;
+        if ($this->status === 'scheduled') {
+            if (empty($this->published_at)) {
+                $this->addError('published_at', 'Scheduled posts must have a publish date and time.');
+                return;
+            }
+            
+            if (now()->greaterThan($this->published_at)) {
+                $this->addError('published_at', 'Scheduled publish time must be in the future.');
+                return;
+            }
         }
 
         $this->validate();
@@ -153,30 +175,32 @@ class AdminBlogPostForm extends Component
             'slug' => $this->slug,
             'excerpt' => $this->excerpt,
             'content' => $this->content,
-            'category_id' => $this->category_id ?: null,
-            'status' => $this->status,
+            'category_id' => !empty($this->category_ids) ? $this->category_ids[0] : null, // Use first category for backward compatibility
             'meta_title' => $this->meta_title,
             'meta_description' => $this->meta_description,
             'meta_keywords' => $this->meta_keywords,
-            'tags' => $this->tags,
+            'tags' => array_merge($this->tags, array_slice($this->category_ids, 1)), // Add additional categories as tags
             'allow_comments' => $this->allow_comments,
             'is_featured' => $this->is_featured,
+            'status' => $this->status,
         ];
 
         // Handle published_at based on status
         if ($this->status === 'published') {
-            // FIXED: Always set to current time for published posts (no user input)
             $data['published_at'] = now();
         } elseif ($this->status === 'scheduled') {
             $data['published_at'] = $this->published_at;
         } else {
-            // For draft status, keep existing published_at if editing, otherwise null
             $data['published_at'] = $this->isEdit ? $this->post->published_at : null;
         }
 
-        // FIXED: Improved image handling logic
-        if ($this->featured_image) {
-            // Delete old image if exists and we're uploading a new one
+        // FIXED: Handle image upload and removal properly
+        if ($this->removeExistingImage && $this->existing_image) {
+            Storage::disk('public')->delete($this->existing_image);
+            $data['featured_image'] = null;
+            $this->existing_image = '';
+        } elseif ($this->featured_image && is_object($this->featured_image)) {
+            // Only handle new uploads here
             if ($this->existing_image) {
                 Storage::disk('public')->delete($this->existing_image);
             }
@@ -184,12 +208,10 @@ class AdminBlogPostForm extends Component
             $filename = time() . '_' . Str::random(10) . '.' . $this->featured_image->getClientOriginalExtension();
             $path = $this->featured_image->storeAs('blog/images', $filename, 'public');
             $data['featured_image'] = $path;
-            
-            // Update existing_image to new path for consistency
             $this->existing_image = $path;
         } else {
-            // FIXED: Always preserve existing image if no new image uploaded
-            if ($this->isEdit && $this->existing_image) {
+            // FIXED: Keep existing image - don't include in update data if no changes
+            if ($this->isEdit && $this->existing_image && !$this->removeExistingImage) {
                 $data['featured_image'] = $this->existing_image;
             }
         }
@@ -203,6 +225,10 @@ class AdminBlogPostForm extends Component
             $this->existing_image = $this->post->featured_image;
             $message = 'Post created successfully!';
         }
+
+        // Reset upload states
+        $this->featured_image = null;
+        $this->removeExistingImage = false;
 
         session()->flash('message', $message);
 
@@ -222,7 +248,6 @@ class AdminBlogPostForm extends Component
     public function publish()
     {
         $this->status = 'published';
-        // No need to set published_at here - it's handled in save() method
         $this->save();
     }
 
