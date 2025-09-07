@@ -19,33 +19,71 @@ use App\Livewire\Content\ContentDocumentationCenter;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
+
+// User Wallet Routes
+Route::middleware(['auth'])->group(function () {
+    Route::get('/wallet', App\Livewire\Financial\WalletDashboard::class)->name('wallet.index');
+    Route::get('/withdrawals', App\Livewire\Financial\WithdrawalManager::class)->name('withdrawals.index');
+    Route::get('/instructor/earnings', App\Livewire\Financial\InstructorEarnings::class)->name('instructor.earnings');
+    Route::get('/transactions/history', App\Livewire\Financial\TransactionHistory::class)->name('transactions.history');
+    Route::get('/courses/{course}/checkout', App\Livewire\Financial\CourseCheckout::class)->name('course.checkout');
+    Route::get('/paystack/callback', [App\Http\Controllers\FinancialController::class, 'paystackCallback'])->name('paystack.callback');
+    Route::get('/api/banks', [App\Http\Controllers\FinancialController::class, 'getBanks'])->name('api.banks');
+    Route::post('/api/resolve-account', [App\Http\Controllers\FinancialController::class, 'resolveAccount'])->name('api.resolve-account');
+    Route::get('/admin/financial', App\Livewire\Financial\Admin\FinancialDashboard::class)->name('admin.financial.dashboard');
+    Route::get('/admin/payments/processing', App\Livewire\Financial\Admin\PaymentProcessing::class)->name('admin.payments.processing');
+    Route::get('/admin/revenue/reports', App\Livewire\Financial\Admin\RevenueReports::class)->name('admin.revenue.reports');
+    Route::get('/admin/financial/settings', App\Livewire\Financial\Admin\FinancialSettings::class)->name('admin.financial.settings');
+    Route::get('/admin/paystack/settings', App\Livewire\Financial\Admin\PaystackSettings::class)->name('admin.paystack.settings');
+    Route::get('/admin/payments', \App\Livewire\Financial\Admin\PaymentProcessing::class)->name('admin.payments');
+    Route::post('/webhook/paystack', [App\Http\Controllers\FinancialController::class, 'paystackWebhook'])->name('paystack.webhook');
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 // Institution Portal Routes
 
-    Route::prefix('institution')->name('institution.')->group(function () {
-        
-        // Main portal dashboard
-        Route::get('/portal', App\Livewire\Institution\InstitutionPortal::class)
-            ->name('portal');
-            
-        // Individual tab routes (optional - for direct access)
-        Route::get('/overview', App\Livewire\Institution\InstitutionPortal::class)
-            ->name('overview');
-            
-        Route::get('/partners', App\Livewire\Institution\InstitutionPortal::class)
-            ->name('partners');
-            
-        Route::get('/licenses', App\Livewire\Institution\InstitutionPortal::class)
-            ->name('licenses');
-            
-        Route::get('/bulk-enrollment', App\Livewire\Institution\InstitutionPortal::class)
-            ->name('bulk-enrollment');
-            
-        Route::get('/analytics', App\Livewire\Institution\InstitutionPortal::class)
-            ->name('analytics');
-            
-        Route::get('/whitelabel', App\Livewire\Institution\InstitutionPortal::class)
-            ->name('whitelabel');
-    });
+Route::prefix('institution')->name('institution.')->group(function () {
+
+    // Main portal dashboard
+    Route::get('/portal', App\Livewire\Institution\InstitutionPortal::class)
+        ->name('portal');
+
+    // Individual tab routes (optional - for direct access)
+    Route::get('/overview', App\Livewire\Institution\InstitutionPortal::class)
+        ->name('overview');
+
+    Route::get('/partners', App\Livewire\Institution\InstitutionPortal::class)
+        ->name('partners');
+
+    Route::get('/licenses', App\Livewire\Institution\InstitutionPortal::class)
+        ->name('licenses');
+
+    Route::get('/bulk-enrollment', App\Livewire\Institution\InstitutionPortal::class)
+        ->name('bulk-enrollment');
+
+    Route::get('/analytics', App\Livewire\Institution\InstitutionPortal::class)
+        ->name('analytics');
+
+    Route::get('/whitelabel', App\Livewire\Institution\InstitutionPortal::class)
+        ->name('whitelabel');
+});
 
 
 
@@ -71,7 +109,7 @@ Route::middleware(['auth', 'verified'])->prefix('admin/blog')->name('admin.blog.
         ->middleware('can:manage_courses')
         ->name('posts.create');
 
-        Route::get('/posts/{post:slug}/edit', \App\Livewire\Blog\AdminBlogPostForm::class)
+    Route::get('/posts/{post:slug}/edit', \App\Livewire\Blog\AdminBlogPostForm::class)
         ->middleware('can:manage_courses')
         ->name('posts.edit');
 
