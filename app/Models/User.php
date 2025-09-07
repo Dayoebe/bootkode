@@ -8,15 +8,15 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
-use App\Models\HasGamification;
 use Spatie\Activitylog\Traits\LogsActivity;
 use Spatie\Activitylog\LogOptions;
+use App\Traits\HasWallet; // Import the trait
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use App\Models\ResumeItem;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
+
 class User extends Authenticatable implements MustVerifyEmail
 {
-    use HasApiTokens, HasFactory, Notifiable, HasRoles, LogsActivity;
+    use HasApiTokens, HasFactory, Notifiable, HasRoles, LogsActivity, HasWallet; 
 
     const ROLE_SUPER_ADMIN = 'super_admin';
     const ROLE_ACADEMY_ADMIN = 'academy_admin';
@@ -115,6 +115,10 @@ class User extends Authenticatable implements MustVerifyEmail
         'provider_id',
         'receive_course_updates',
         'receive_certificate_notifications',
+        'bank_code',
+        'account_number',
+        'account_name',
+        'account_verified',
     ];
 
     protected $hidden = [
