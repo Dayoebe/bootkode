@@ -235,22 +235,106 @@ return [
                 ['label' => 'White-label Settings', 'icon' => 'fas fa-paint-roller', 'route_name' => 'institution.whitelabel', 'roles' => [User::ROLE_SUPER_ADMIN]],
             ]
         ],
-        [
+        // [
+        //     'label' => 'Financial Center',
+        //     'icon' => 'fas fa-money-bill-wave',
+        //     'route_name' => 'admin.financial.dashboard',
+        //     'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN],
+        //     'link_id' => 'financial',
+        //     'children' => [
+        //         ['label' => 'Revenue Dashboard', 'icon' => 'fas fa-chart-line', 'route_name' => 'admin.financial.dashboard', 'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN], 'link_id' => 'admin.financial.dashboard'],
+        //         ['label' => 'Wallet', 'icon' => 'fas fa-wallet', 'route_name' => 'wallet.index', 'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN, User::ROLE_STUDENT], 'link_id' => 'wallet.index'],
+        //         ['label' => 'Withdrawals', 'icon' => 'fas fa-hand-holding-usd', 'route_name' => 'withdrawals.index', 'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN, User::ROLE_STUDENT], 'link_id' => 'withdrawals.index'],
+        //     ]
+        // ],
+        $financialMenu = [
             'label' => 'Financial Center',
             'icon' => 'fas fa-money-bill-wave',
-            'route_name' => '#',
-            'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN],
+            'route_name' => '#', // Dynamic based on user role
+            'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN, User::ROLE_INSTRUCTOR, User::ROLE_STUDENT],
             'link_id' => 'financial',
             'children' => [
-                ['label' => 'Revenue Dashboard', 'icon' => 'fas fa-chart-line', 'route_name' => '#', 'roles' => []],
-                ['label' => 'Payment Processing', 'icon' => 'fas fa-credit-card', 'route_name' => '#', 'roles' => []],
-                ['label' => 'Subscription Plans', 'icon' => 'fas fa-receipt', 'route_name' => '#', 'roles' => []],
-                ['label' => 'Scholarship Program', 'icon' => 'fas fa-graduation-cap', 'route_name' => '#', 'roles' => []],
-                ['label' => 'Expense Tracking', 'icon' => 'fas fa-file-invoice-dollar', 'route_name' => '#', 'roles' => []],
-                ['label' => 'Tax Configuration', 'icon' => 'fas fa-percentage', 'route_name' => '#', 'roles' => [User::ROLE_SUPER_ADMIN]],
+                [
+                    'label' => 'My Wallet',
+                    'icon' => 'fas fa-wallet',
+                    'route_name' => 'wallet.index',
+                    'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN, User::ROLE_INSTRUCTOR, User::ROLE_STUDENT],
+                    'link_id' => 'wallet.index',
+                    'description' => 'Manage your wallet balance and fund your account'
+                ],
+                [
+                    'label' => 'Transaction History',
+                    'icon' => 'fas fa-history',
+                    'route_name' => 'transactions.history',
+                    'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN, User::ROLE_INSTRUCTOR, User::ROLE_STUDENT],
+                    'link_id' => 'transactions.history',
+                    'description' => 'View all your financial transactions'
+                ],
+                
+                // Instructor-Specific Features
+                [
+                    'label' => 'My Earnings',
+                    'icon' => 'fas fa-chart-line',
+                    'route_name' => 'instructor.earnings',
+                    'roles' => [User::ROLE_INSTRUCTOR, User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN],
+                    'link_id' => 'instructor.earnings',
+                    'description' => 'Track your course sales and earnings'
+                ],
+                [
+                    'label' => 'Withdrawals',
+                    'icon' => 'fas fa-hand-holding-usd',
+                    'route_name' => 'withdrawals.index',
+                    'roles' => [User::ROLE_INSTRUCTOR, User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN],
+                    'link_id' => 'withdrawals.index',
+                    'description' => 'Request and manage earnings withdrawals'
+                ],
+                
+                // Admin-Only Features
+                [
+                    'label' => 'Financial Dashboard',
+                    'icon' => 'fas fa-tachometer-alt',
+                    'route_name' => 'admin.financial.dashboard',
+                    'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN],
+                    'link_id' => 'admin.financial.dashboard',
+                    'description' => 'Platform financial overview and analytics'
+                ],
+                [
+                    'label' => 'Payment Processing',
+                    'icon' => 'fas fa-credit-card',
+                    'route_name' => 'admin.payments.processing',
+                    'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN],
+                    'link_id' => 'admin.payments.processing',
+                    'description' => 'Manage payments, refunds, and withdrawals'
+                ],
+                [
+                    'label' => 'Revenue Reports',
+                    'icon' => 'fas fa-chart-bar',
+                    'route_name' => 'admin.revenue.reports',
+                    'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN],
+                    'link_id' => 'admin.revenue.reports',
+                    'description' => 'Generate financial reports and analytics'
+                ],
+                [
+                    'label' => 'Financial Settings',
+                    'icon' => 'fas fa-cogs',
+                    'route_name' => 'admin.financial.settings',
+                    'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN],
+                    'link_id' => 'admin.financial.settings',
+                    'description' => 'Configure financial system settings'
+                ],
+                
+                // Super Admin Only
+                [
+                    'label' => 'Paystack Settings',
+                    'icon' => 'fas fa-university',
+                    'route_name' => 'admin.paystack.settings',
+                    'roles' => [User::ROLE_SUPER_ADMIN],
+                    'link_id' => 'admin.paystack.settings',
+                    'description' => 'Configure payment gateway settings'
+                ],
             ]
-        ],
-
+            ],
+        
         [
             'label' => 'Affiliate Network',
             'icon' => 'fas fa-share-alt',

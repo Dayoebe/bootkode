@@ -43,26 +43,31 @@ return [
 
 
     'openai' => [
-        'key'      => env('OPENAI_API_KEY'),
-        'org'      => env('OPENAI_ORG'),
-        'project'  => env('OPENAI_PROJECT'),
+        'key' => env('OPENAI_API_KEY'),
+        'org' => env('OPENAI_ORG'),
+        'project' => env('OPENAI_PROJECT'),
         'base_url' => env('OPENAI_BASE_URL', 'https://api.openai.com'),
     ],
     'google' => [
-    'client_id' => env('GOOGLE_CLIENT_ID'),
-    'client_secret' => env('GOOGLE_CLIENT_SECRET'),
-    'redirect' => env('GOOGLE_REDIRECT_URI'),
-],
+        'client_id' => env('GOOGLE_CLIENT_ID'),
+        'client_secret' => env('GOOGLE_CLIENT_SECRET'),
+        'redirect' => env('GOOGLE_REDIRECT_URI'),
+    ],
 
-'facebook' => [
-    'client_id' => env('FACEBOOK_CLIENT_ID'),
-    'client_secret' => env('FACEBOOK_CLIENT_SECRET'),
-    'redirect' => env('FACEBOOK_REDIRECT_URI'),
-],
+    'facebook' => [
+        'client_id' => env('FACEBOOK_CLIENT_ID'),
+        'client_secret' => env('FACEBOOK_CLIENT_SECRET'),
+        'redirect' => env('FACEBOOK_REDIRECT_URI'),
+    ],
 
-'twitter' => [
-    'client_id' => env('TWITTER_CLIENT_ID'),
-    'client_secret' => env('TWITTER_CLIENT_SECRET'),
-    'redirect' => env('TWITTER_REDIRECT_URI'),
-],
+    'twitter' => [
+        'client_id' => env('TWITTER_CLIENT_ID'),
+        'client_secret' => env('TWITTER_CLIENT_SECRET'),
+        'redirect' => env('TWITTER_REDIRECT_URI'),
+    ],
+    'paystack' => [
+        'public_key' => env('PAYSTACK_PUBLIC_KEY'),
+        'secret_key' => env('PAYSTACK_SECRET_KEY'),
+        'payment_url' => env('PAYSTACK_PAYMENT_URL', 'https://api.paystack.co'),
+    ],
 ];

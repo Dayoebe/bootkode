@@ -109,4 +109,10 @@ return [
         'table' => 'failed_jobs',
     ],
 
+    'webhook' => [
+        'driver' => 'database',
+        'table' => 'jobs',
+        'queue' => 'webhooks',
+        'retry_after' => 90,
+    ],
 ];
