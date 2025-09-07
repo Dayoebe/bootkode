@@ -5,10 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
+use App\Traits\HasRevenueSplit; // Import the trait
 
 class Course extends Model
 {
-    use HasFactory;
+    use HasFactory, HasRevenueSplit; // Use the trait
 
     protected $fillable = [
         'instructor_id',
@@ -48,11 +49,15 @@ class Course extends Model
         'views_count',
         'likes_count',
         'average_rating',
+        // Add these new fields from the migration
+        'is_paid',
+        'currency',
     ];
 
     protected $casts = [
         'is_premium' => 'boolean',
         'is_free' => 'boolean',
+        'is_paid' => 'boolean',
         'is_published' => 'boolean',
         'is_approved' => 'boolean',
         'has_offline_content' => 'boolean',
@@ -70,6 +75,8 @@ class Course extends Model
         'price' => 'decimal:2',
         'average_rating' => 'decimal:2',
     ];
+
+    // Remove the trait definition from here - it's now imported above
 
     // Relationships
     public function instructor()
@@ -103,7 +110,6 @@ class Course extends Model
             ->orderBy('assessments.order');
     }
 
-    // Direct assessments relationship (for CBT assessments that might not have sections)
     public function directAssessments()
     {
         return $this->hasMany(Assessment::class, 'course_id');
@@ -124,7 +130,7 @@ class Course extends Model
         return $this->hasMany(CourseRejection::class);
     }
 
-    // Boot method - FIXED
+    // Boot method
     protected static function boot()
     {
         parent::boot();
@@ -141,16 +147,12 @@ class Course extends Model
             }
         });
     
-        // Fixed: Only update relationship counts for existing courses with proper error handling
         static::saved(function ($course) {
-            // Skip if this is a new course being created
             if (!$course->wasRecentlyCreated) {
                 try {
-                    // Use safer counting methods with null checks
                     $sectionsCount = $course->sections()->count();
                     $lessonsCount = $sectionsCount > 0 ? $course->allLessons()->count() : 0;
                     
-                    // Use direct assessments for CBT or fallback to hasManyThrough
                     $totalAssessments = $course->directAssessments()->count();
                     if ($totalAssessments === 0 && $sectionsCount > 0) {
                         $totalAssessments = $course->assessments()->count();
@@ -161,7 +163,6 @@ class Course extends Model
                         $projectsCount = $course->assessments()->where('assessments.type', 'project')->count();
                     }
     
-                    // Use updateQuietly to avoid triggering events again
                     $course->updateQuietly([
                         'total_modules' => $sectionsCount,
                         'total_lessons' => $lessonsCount,
@@ -174,9 +175,7 @@ class Course extends Model
                     \Log::error('Error updating course statistics', [
                         'course_id' => $course->id,
                         'error' => $e->getMessage(),
-                        'trace' => $e->getTraceAsString()
                     ]);
-                    // Don't rethrow the exception to prevent breaking the save operation
                 }
             }
         });
@@ -195,7 +194,7 @@ class Course extends Model
         return $slug;
     }
 
-    // Media helper methods (same as lessons)
+    // Media helper methods
     public function getImagesArray()
     {
         return is_string($this->images) ? json_decode($this->images, true) : ($this->images ?? []);
@@ -258,6 +257,11 @@ class Course extends Model
         return $query->where('is_premium', true);
     }
 
+    public function scopePaid($query)
+    {
+        return $query->where('is_paid', true);
+    }
+
     // Accessors
     public function getFormattedLearningOutcomesAttribute()
     {
@@ -275,7 +279,7 @@ class Course extends Model
             return 'Free';
         }
 
-        return '$' . number_format($this->price, 2);
+        return '₦' . number_format($this->price, 2); // Changed to Naira symbol
     }
     
     public function getFormattedDurationAttribute()
