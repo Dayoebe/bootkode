@@ -10,13 +10,14 @@ use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
 use Spatie\Activitylog\Traits\LogsActivity;
 use Spatie\Activitylog\LogOptions;
-use App\Traits\HasWallet; // Import the trait
+use App\Traits\HasWallet;
+use App\Traits\HasAffiliate; // Add this import
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 class User extends Authenticatable implements MustVerifyEmail
 {
-    use HasApiTokens, HasFactory, Notifiable, HasRoles, LogsActivity, HasWallet; 
+    use HasApiTokens, HasFactory, Notifiable, HasRoles, LogsActivity, HasWallet, HasAffiliate;
 
     const ROLE_SUPER_ADMIN = 'super_admin';
     const ROLE_ACADEMY_ADMIN = 'academy_admin';
@@ -119,6 +120,8 @@ class User extends Authenticatable implements MustVerifyEmail
         'account_number',
         'account_name',
         'account_verified',
+        'referred_by',
+        'referral_source',
     ];
 
     protected $hidden = [
@@ -411,48 +414,97 @@ class User extends Authenticatable implements MustVerifyEmail
         return $resume ? $resume->getQualityScore() : 0;
     }
 
+    /**
+     * Check if user can become an affiliate
+     */
+    public function canBecomeAffiliate(): bool
+    {
+        return $this->hasRole([
+            self::ROLE_INSTRUCTOR,
+            self::ROLE_AFFILIATE_AMBASSADOR,
+            self::ROLE_SUPER_ADMIN
+        ]);
+    }
 
+    /**
+     * Apply to become an affiliate
+     */
+    public function applyForAffiliate(array $additionalData = []): ?\App\Models\Affiliate
+    {
+        if (!$this->canBecomeAffiliate() || $this->affiliate) {
+            return null;
+        }
 
+        // For instructors, auto-approve. For others, require admin approval
+        $isAutoApproved = $this->hasRole([self::ROLE_INSTRUCTOR, self::ROLE_SUPER_ADMIN]);
 
+        return \App\Models\Affiliate::create([
+            'user_id' => $this->id,
+            'commission_rate' => 30.00, // Default 30%
+            'status' => $isAutoApproved ? \App\Models\Affiliate::STATUS_ACTIVE : \App\Models\Affiliate::STATUS_INACTIVE,
+            'approved_at' => $isAutoApproved ? now() : null,
+            'approved_by' => $isAutoApproved ? $this->id : null,
+            'metadata' => array_merge([
+                'application_date' => now(),
+                'auto_approved' => $isAutoApproved,
+                'user_role' => $this->role
+            ], $additionalData)
+        ]);
+    }
 
+    /**
+     * Get affiliate commission wallet balance
+     */
+    public function getAffiliateBalance(): float
+    {
+        if (!$this->isAffiliate()) {
+            return 0;
+        }
 
+        $commissionTransactions = $this->getCommissionTransactions();
+        return $commissionTransactions->where('type', 'credit')->sum('amount') -
+            $commissionTransactions->where('type', 'debit')->sum('amount');
+    }
 
+    /**
+     * Get monthly affiliate performance
+     */
+    public function getMonthlyAffiliatePerformance(int $months = 12): array
+    {
+        if (!$this->isAffiliate()) {
+            return [];
+        }
 
+        $startDate = now()->subMonths($months);
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        return \App\Models\ReferralTransaction::whereHas('referral', function ($query) {
+            $query->where('affiliate_id', $this->affiliate->id);
+        })
+            ->where('status', \App\Models\ReferralTransaction::STATUS_PAID)
+            ->where('paid_at', '>=', $startDate)
+            ->selectRaw('
+                YEAR(paid_at) as year,
+                MONTH(paid_at) as month,
+                SUM(commission_amount) as total_commission,
+                COUNT(*) as total_sales,
+                COUNT(DISTINCT course_id) as unique_courses
+            ')
+            ->groupBy('year', 'month')
+            ->orderBy('year', 'desc')
+            ->orderBy('month', 'desc')
+            ->get()
+            ->map(function ($item) {
+                return [
+                    'period' => "{$item->year}-" . str_pad($item->month, 2, '0', STR_PAD_LEFT),
+                    'month_name' => date('F Y', mktime(0, 0, 0, $item->month, 1, $item->year)),
+                    'total_commission' => $item->total_commission,
+                    'total_sales' => $item->total_sales,
+                    'unique_courses' => $item->unique_courses,
+                    'formatted_commission' => '₦' . number_format($item->total_commission, 2)
+                ];
+            })
+            ->toArray();
+    }
     /**
      * Gamification relationships and methods
      */

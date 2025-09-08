@@ -30,6 +30,8 @@ class WalletTransaction extends Model
         'balance_after' => 'decimal:2',
         'metadata' => 'array'
     ];
+    // Update app/Models/WalletTransaction.php - Add this constant
+    const CATEGORY_REFERRAL_COMMISSION = 'referral_commission';
 
     const TYPE_CREDIT = 'credit';
     const TYPE_DEBIT = 'debit';
