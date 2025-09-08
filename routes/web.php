@@ -20,6 +20,65 @@ use App\Livewire\Content\ContentDocumentationCenter;
 |
 */
 
+//Affiliate Routes
+use App\Livewire\Affiliate;
+
+
+Route::middleware(['auth'])->group(function () {
+    // Affiliate routes
+    Route::get('/affiliate/dashboard', Affiliate\Dashboard::class)->name('affiliate.dashboard');
+    Route::get('/affiliate/tools', Affiliate\Tools::class)->name('affiliate.tools');
+    Route::get('/affiliate/commissions', Affiliate\CommissionHistory::class)->name('affiliate.commissions');
+    Route::get('/affiliate/reports', Affiliate\CommissionReports::class)->name('affiliate.reports');
+    Route::get('/affiliate/analytics', Affiliate\Analytics::class)->name('affiliate.analytics');
+    Route::get('/affiliate/settings', Affiliate\Settings::class)->name('affiliate.settings');
+
+    // API endpoint for referral code validation
+    Route::get('/api/validate-referral/{code}', function ($code) {
+        $service = app(\App\Services\AffiliateService::class);
+        return response()->json($service->validateReferralCode($code));
+    })->name('api.validate-referral');
+});
+
+// Public registration route with referral support
+Route::get('/register', function () {
+    $referralCode = request('ref');
+    $validation = null;
+
+    if ($referralCode) {
+        $service = app(\App\Services\AffiliateService::class);
+        $validation = $service->validateReferralCode($referralCode);
+    }
+
+    return view('auth.register', compact('referralCode', 'validation'));
+})->name('register');
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 // User Wallet Routes
 Route::middleware(['auth'])->group(function () {
     Route::get('/wallet', App\Livewire\Financial\WalletDashboard::class)->name('wallet.index');
