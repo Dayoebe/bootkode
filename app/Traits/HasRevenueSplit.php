@@ -1,12 +1,11 @@
 <?php
-
-// app/Traits/HasRevenueSplit.php
 namespace App\Traits;
 
 use App\Models\RevenueSplit;
 use App\Models\User;
 use App\Models\Wallet;
 use App\Models\WalletTransaction;
+use App\Events\CoursePurchased;
 
 trait HasRevenueSplit
 {
@@ -15,7 +14,6 @@ trait HasRevenueSplit
         return $this->hasOne(RevenueSplit::class);
     }
 
-    // Get or create revenue split for course
     public function getOrCreateRevenueSplit(): RevenueSplit
     {
         return $this->revenueSplit ?: $this->revenueSplit()->create([
@@ -26,7 +24,6 @@ trait HasRevenueSplit
         ]);
     }
 
-    // Process course purchase with revenue split
     public function processPurchase(User $student, Wallet $studentWallet): array
     {
         if (!$studentWallet->hasSufficientBalance($this->price)) {
@@ -37,7 +34,7 @@ trait HasRevenueSplit
         $splitAmounts = $revenueSplit->calculateSplit($this->price);
 
         // Debit student wallet
-        $studentWallet->debit(
+        $purchaseTransaction = $studentWallet->debit(
             $this->price,
             WalletTransaction::CATEGORY_COURSE_PURCHASE,
             "Course purchase: {$this->title}",
@@ -54,9 +51,8 @@ trait HasRevenueSplit
             ['student_id' => $student->id, 'split_percentage' => $revenueSplit->instructor_percentage]
         );
 
-        // Credit platform wallet (you can implement this if needed)
-        // $platformWallet = Wallet::getOrCreateWallet(1, Wallet::TYPE_PLATFORM);
-        // $platformWallet->credit(...);
+        // Fire purchase event for affiliate processing
+        event(new CoursePurchased($student, $this, $this->price, $purchaseTransaction));
 
         return $splitAmounts;
     }

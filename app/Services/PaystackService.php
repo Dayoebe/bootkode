@@ -170,7 +170,7 @@ class PaystackService
 
             // Credit user wallet
             $wallet = $paystackTransaction->transactionable;
-            $wallet->credit(
+            $fundingTransaction = $wallet->credit(
                 $verification['amount'],
                 'funding',
                 'Wallet funded via Paystack',
@@ -182,7 +182,8 @@ class PaystackService
                 'success' => true,
                 'message' => 'Wallet funded successfully',
                 'amount' => $verification['amount'],
-                'new_balance' => $wallet->fresh()->balance
+                'new_balance' => $wallet->fresh()->balance,
+                'transaction' => $fundingTransaction
             ];
 
         } catch (\Exception $e) {
@@ -193,7 +194,6 @@ class PaystackService
             ];
         }
     }
-
     /**
      * Create transfer recipient for withdrawals
      */
@@ -478,4 +478,5 @@ class PaystackService
             ];
         }
     }
+
 }
