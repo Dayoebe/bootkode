@@ -14,9 +14,17 @@ use Illuminate\Validation\Rules;
 use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
 use App\Notifications\CustomVerifyEmail;
+use App\Services\AffiliateService;
 
 class AuthController extends Controller
 {
+    protected $affiliateService;
+
+    public function __construct(AffiliateService $affiliateService)
+    {
+        $this->affiliateService = $affiliateService;
+    }
+
     // Login
     public function showLoginForm(): View
     {
@@ -26,15 +34,15 @@ class AuthController extends Controller
     public function login(LoginRequest $request): RedirectResponse
     {
         $request->authenticate();
-        
+
         $request->session()->regenerate();
-        
+
         // Check if email is verified
         if (!$request->user()->hasVerifiedEmail()) {
             Auth::logout();
             return redirect()->route('verification.notice');
         }
-        
+
         // Check if account is active
         if (!$request->user()->is_active) {
             Auth::logout();
@@ -42,10 +50,11 @@ class AuthController extends Controller
                 'email' => 'Your account is not active. Please contact support.',
             ]);
         }
-        
+
         // Redirect to the appropriate dashboard based on role
         return redirect()->intended(route($request->user()->getDashboardRouteName()));
     }
+
     public function logout(Request $request): RedirectResponse
     {
         Auth::guard('web')->logout();
@@ -57,7 +66,14 @@ class AuthController extends Controller
     // Registration
     public function showRegistrationForm(): View
     {
-        return view('auth.register');
+        $referralCode = request('ref');
+        $validation = null;
+
+        if ($referralCode) {
+            $validation = $this->affiliateService->validateReferralCode($referralCode);
+        }
+
+        return view('auth.register', compact('referralCode', 'validation'));
     }
 
     public function register(Request $request): RedirectResponse
@@ -81,8 +97,8 @@ class AuthController extends Controller
             'education_level' => ['nullable', 'string', 'max:255'],
             'terms' => ['required', 'accepted'],
         ]);
-    
-        $user = User::create([
+
+        $userData = [
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
@@ -95,21 +111,30 @@ class AuthController extends Controller
             'address_state' => $request->address_state,
             'address_country' => $request->address_country,
             'address_postal_code' => $request->address_postal_code,
-            'skills' => $request->skills, 
+            'skills' => $request->skills,
             'occupation' => $request->occupation,
             'education_level' => $request->education_level,
-            'is_active' => true, 
-        ]);
-    
+            'is_active' => true,
+        ];
+
+        // Handle referral registration
+        $referralCode = $request->input('referral_code');
+
+        try {
+            $user = $this->affiliateService->registerWithReferral($userData, $referralCode);
+        } catch (\Exception $e) {
+            // If referral registration fails, create user normally
+            $user = User::create($userData);
+        }
+
         if ($request->hasFile('profile_picture')) {
             $path = $request->file('profile_picture')->store('profile-pictures', 'public');
-            $user->profile_picture = $path; // Remove 'storage/' prefix since it's already in public disk
+            $user->profile_picture = $path;
             $user->save();
         }
 
         $user->notify(new CustomVerifyEmail());
-        // $user->sendEmailVerificationNotification();
-        
+
         return redirect()->route('verification.notice')->with([
             'message' => 'Please verify your email address. We sent you a verification link.',
             'email' => $user->email
@@ -144,10 +169,12 @@ class AuthController extends Controller
 
     public function confirmPassword(Request $request): RedirectResponse
     {
-        if (!Auth::guard('web')->validate([
-            'email' => $request->user()->email,
-            'password' => $request->password,
-        ])) {
+        if (
+            !Auth::guard('web')->validate([
+                'email' => $request->user()->email,
+                'password' => $request->password,
+            ])
+        ) {
             throw ValidationException::withMessages([
                 'password' => __('auth.password'),
             ]);
