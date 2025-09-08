@@ -335,21 +335,22 @@ return [
             ]
             ],
         
-        [
-            'label' => 'Affiliate Network',
-            'icon' => 'fas fa-share-alt',
-            'route_name' => '#',
-            'roles' => [User::ROLE_AFFILIATE_AMBASSADOR, User::ROLE_SUPER_ADMIN],
-            'link_id' => 'affiliate',
-            'children' => [
-                ['label' => 'Referral Dashboard', 'icon' => 'fas fa-chart-bar', 'route_name' => '#', 'roles' => []],
-                ['label' => 'Marketing Tools', 'icon' => 'fas fa-bullhorn', 'route_name' => '#', 'roles' => []],
-                ['label' => 'Commission History', 'icon' => 'fas fa-money-bill-wave', 'route_name' => '#', 'roles' => [User::ROLE_AFFILIATE_AMBASSADOR, User::ROLE_SUPER_ADMIN]],
-                ['label' => 'Commission Reports', 'icon' => 'fas fa-coins', 'route_name' => '#', 'roles' => []],
-                ['label' => 'Performance Analytics', 'icon' => 'fas fa-chart-pie', 'route_name' => '#', 'roles' => []],
-                ['label' => 'Affiliate Settings', 'icon' => 'fas fa-cog', 'route_name' => '#', 'roles' => [User::ROLE_SUPER_ADMIN]],
-            ]
-        ],
+            [
+                'label' => 'Affiliate Network',
+                'icon' => 'fas fa-share-alt',
+                'route_name' => 'affiliate.dashboard',
+                'roles' => [User::ROLE_AFFILIATE_AMBASSADOR, User::ROLE_SUPER_ADMIN],
+                'link_id' => 'affiliate',
+                'children' => [
+                    ['label' => 'Referral Dashboard', 'icon' => 'fas fa-chart-bar', 'route_name' => 'affiliate.dashboard', 'roles' => []],
+                    ['label' => 'Marketing Tools', 'icon' => 'fas fa-bullhorn', 'route_name' => 'affiliate.tools', 'roles' => []],
+                    ['label' => 'Commission History', 'icon' => 'fas fa-money-bill-wave', 'route_name' => 'affiliate.commissions', 'roles' => [User::ROLE_AFFILIATE_AMBASSADOR, User::ROLE_SUPER_ADMIN]],
+                    ['label' => 'Commission Reports', 'icon' => 'fas fa-coins', 'route_name' => 'affiliate.reports', 'roles' => []],
+                    ['label' => 'Performance Analytics', 'icon' => 'fas fa-chart-pie', 'route_name' => 'affiliate.analytics', 'roles' => []],
+                    ['label' => 'Affiliate Settings', 'icon' => 'fas fa-cog', 'route_name' => 'affiliate.settings', 'roles' => [User::ROLE_SUPER_ADMIN]],
+                ]
+            ],
+            
 
         [
             'label' => 'Gamification',
