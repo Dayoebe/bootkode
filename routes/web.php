@@ -20,6 +20,56 @@ use App\Livewire\Content\ContentDocumentationCenter;
 |
 */
 
+Route::middleware(['auth', 'verified'])->prefix('dashboard')->name('newsletter.')->group(function () {
+    // Newsletter management routes (requires proper role)
+    Route::get('/newsletter', App\Livewire\Newsletter\NewsletterCenter::class)->name('index');
+    Route::get('/newsletter/subscribers', App\Livewire\Newsletter\NewsletterCenter::class)->name('subscribers');
+    Route::get('/newsletter/campaigns', App\Livewire\Newsletter\NewsletterCenter::class)->name('campaigns');
+    Route::get('/newsletter/reports', App\Livewire\Newsletter\NewsletterCenter::class)->name('reports'); // Fixed name
+    Route::get('/newsletter/templates', App\Livewire\Newsletter\NewsletterCenter::class)->name('templates');
+    Route::get('/newsletter/analytics', App\Livewire\Newsletter\NewsletterCenter::class)->name('analytics');
+    Route::get('/newsletter/settings', App\Livewire\Newsletter\NewsletterCenter::class)->name('settings');
+});
+
+// Public newsletter routes (no auth required)
+Route::prefix('newsletter')->name('newsletter.')->group(function () {
+    // Subscription endpoints
+    Route::post('/subscribe', [App\Http\Controllers\NewsletterController::class, 'subscribe'])->name('subscribe');
+    // Tracking endpoints
+    Route::get('/track/open/{token}', [App\Http\Controllers\NewsletterController::class, 'trackOpen'])->name('track-open');
+    Route::get('/track/click/{token}', [App\Http\Controllers\NewsletterController::class, 'trackClick'])->name('track-click');
+    // Unsubscribe endpoints
+    Route::get('/unsubscribe/{token}', [App\Http\Controllers\NewsletterController::class, 'unsubscribe'])->name('unsubscribe');
+    Route::post('/resubscribe/{token}', [App\Http\Controllers\NewsletterController::class, 'resubscribe'])->name('resubscribe');
+    
+    // Add the preferences route
+    Route::get('/preferences/{token}', [App\Http\Controllers\NewsletterController::class, 'preferences'])->name('preferences');
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 //Affiliate Routes
 use App\Livewire\Affiliate;
 
