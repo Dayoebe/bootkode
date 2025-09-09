@@ -47,7 +47,9 @@ return new class extends Migration {
             $table->timestamp('last_login_at')->nullable();
             $table->decimal('offline_content_size_mb', 8, 2)->default(0); 
             $table->boolean('receive_course_updates')->default(true);
-            $table->boolean('receive_certificate_notifications')->default(true);           
+            $table->boolean('receive_certificate_notifications')->default(true);    
+            $table->foreignId('referred_by')->nullable()->after('account_verified')->constrained('users');
+            $table->string('referral_source', 50)->nullable()->after('referred_by'); // 'organic', 'affiliate', 'social', etc.       
             
             // Indexes
             $table->index('is_active');
