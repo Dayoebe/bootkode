@@ -439,16 +439,18 @@ return [
         [
             'label' => 'Newsletter',
             'icon' => 'fas fa-envelope',
-            'route_name' => '#',
+            'route_name' => 'newsletter.index',
             'roles' => [User::ROLE_CONTENT_EDITOR, User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN],
             'link_id' => 'newsletter',
             'children' => [
-                ['label' => 'Manage Subscribers', 'icon' => 'fas fa-users', 'route_name' => '#', 'roles' => [User::ROLE_CONTENT_EDITOR, User::ROLE_ACADEMY_ADMIN]],
-                ['label' => 'Create Campaign', 'icon' => 'fas fa-plus-circle', 'route_name' => '#', 'roles' => [User::ROLE_CONTENT_EDITOR, User::ROLE_ACADEMY_ADMIN]],
-                ['label' => 'Campaign Analytics', 'icon' => 'fas fa-chart-bar', 'route_name' => '#', 'roles' => [User::ROLE_CONTENT_EDITOR, User::ROLE_ACADEMY_ADMIN]],
-                ['label' => 'Newsletter Settings', 'icon' => 'fas fa-cog', 'route_name' => '#', 'roles' => [User::ROLE_SUPER_ADMIN]],
+                ['label' => 'Manage Subscribers', 'icon' => 'fas fa-users', 'route_name' => 'newsletter.subscribers', 'roles' => [User::ROLE_CONTENT_EDITOR, User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN]],
+                ['label' => 'Create Campaign', 'icon' => 'fas fa-plus-circle', 'route_name' => 'newsletter.campaigns', 'roles' => [User::ROLE_CONTENT_EDITOR, User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN]],
+                ['label' => 'Email Templates', 'icon' => 'fas fa-newspaper', 'route_name' => 'newsletter.templates', 'roles' => [User::ROLE_CONTENT_EDITOR, User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN]],
+                ['label' => 'Campaign Analytics', 'icon' => 'fas fa-chart-bar', 'route_name' => 'newsletter.analytics', 'roles' => [User::ROLE_CONTENT_EDITOR, User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN]],
+                ['label' => 'Newsletter Reports', 'icon' => 'fas fa-file-alt', 'route_name' => 'newsletter.reports', 'roles' => [User::ROLE_CONTENT_EDITOR, User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN]],
+                ['label' => 'Newsletter Settings', 'icon' => 'fas fa-cog', 'route_name' => 'newsletter.settings', 'roles' => [User::ROLE_SUPER_ADMIN]],
             ]
-        ],
+            ],
         [
             'label' => 'Page Management',
             'icon' => 'fas fa-bars',
