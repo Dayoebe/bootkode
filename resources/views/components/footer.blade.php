@@ -7,12 +7,14 @@
                     <div class="bg-blue-600 p-2 rounded-lg">
                         <i class="fas fa-code fa-lg text-white"></i>
                     </div>
-                    <span class="ml-3 text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-500">
+                    <span
+                        class="ml-3 text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-500">
                         BootKode
                     </span>
                 </div>
                 <p class="text-gray-300 text-sm max-w-sm">
-                    Empowering Africa's youth with digital skills, mentorship, and career opportunities through accessible tech education.
+                    Empowering Africa's youth with digital skills, mentorship, and career opportunities through
+                    accessible tech education.
                 </p>
                 <div class="flex space-x-5">
                     <a href="#" class="text-gray-400 hover:text-blue-400 transition-colors">
@@ -43,22 +45,28 @@
                     Explore
                 </h3>
                 <ul class="space-y-2 text-sm">
-                    <li><a href="{{ route('about') }}" class="text-gray-300 hover:text-white transition-colors">About Us</a></li>
-                    <li><a href="{{ route('contact') }}" class="text-gray-300 hover:text-white transition-colors">Contact Us</a></li>
-                    <li><a href="{{ route('statistics') }}" class="text-gray-300 hover:text-white transition-colors">Statistics</a></li>
-                    <li><a href="{{ route('guideline') }}" class="text-gray-300 hover:text-white transition-colors">Guideline</a></li>
+                    <li><a href="{{ route('about') }}" class="text-gray-300 hover:text-white transition-colors">About
+                            Us</a></li>
+                    <li><a href="{{ route('contact') }}"
+                            class="text-gray-300 hover:text-white transition-colors">Contact Us</a></li>
+                    <li><a href="{{ route('statistics') }}"
+                            class="text-gray-300 hover:text-white transition-colors">Statistics</a></li>
+                    <li><a href="{{ route('guideline') }}"
+                            class="text-gray-300 hover:text-white transition-colors">Guideline</a></li>
                 </ul>
             </div>
-            
+
             <div class="space-y-4">
                 <h3 class="text-lg font-bold text-white uppercase tracking-wide">
                     Blog
                 </h3>
                 <ul class="space-y-2 text-sm">
-                    <li><a href="{{ route('blog.index') }}" class="text-gray-300 hover:text-white transition-colors">home</a></li>
+                    <li><a href="{{ route('blog.index') }}"
+                            class="text-gray-300 hover:text-white transition-colors">home</a></li>
                     @forelse($topCategories as $category)
                         <li>
-                            <a href="{{ route('blog.category', $category) }}" class="text-gray-300 hover:text-white transition-colors flex items-center">
+                            <a href="{{ route('blog.category', $category) }}"
+                                class="text-gray-300 hover:text-white transition-colors flex items-center">
                                 <span>{{ $category->name }}</span>
                                 <span class="ml-2 text-xs bg-blue-600 text-white px-2 py-0.5 rounded-full">
                                     {{ $category->published_posts_count }}
@@ -77,12 +85,35 @@
                         Stay Updated
                     </h3>
                     <p class="text-gray-300 text-sm">Subscribe to our newsletter for the latest updates.</p>
-                    <form action="#" class="flex flex-col sm:flex-row gap-3">
-                        <input type="email" placeholder="Your email address" class="px-4 py-3 rounded-lg bg-gray-800 border border-gray-700 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent flex-grow text-sm" required>
-                        <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-medium px-6 py-3 rounded-lg transition-colors flex items-center justify-center text-sm">
+                    <form action="{{ route('newsletter.subscribe') }}" method="POST"
+                        class="flex flex-col sm:flex-row gap-3">
+                        @csrf
+                        <input type="email" name="email" placeholder="Your email address"
+                            class="px-4 py-3 rounded-lg bg-gray-800 border border-gray-700 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent flex-grow text-sm"
+                            required value="{{ old('email') }}">
+                        <button type="submit"
+                            class="bg-blue-600 hover:bg-blue-700 text-white font-medium px-6 py-3 rounded-lg transition-colors flex items-center justify-center text-sm">
                             <i class="fas fa-paper-plane mr-2"></i> Subscribe
                         </button>
                     </form>
+
+                    @if(session('success'))
+                        <div class="text-sm p-3 rounded-lg bg-green-100 text-green-800">
+                            {{ session('success') }}
+                        </div>
+                    @endif
+
+                    @if(session('error'))
+                        <div class="text-sm p-3 rounded-lg bg-red-100 text-red-800">
+                            {{ session('error') }}
+                        </div>
+                    @endif
+
+                    @if($errors->any())
+                        <div class="text-sm p-3 rounded-lg bg-red-100 text-red-800">
+                            {{ $errors->first() }}
+                        </div>
+                    @endif
                 </div>
             </div>
 
