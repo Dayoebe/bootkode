@@ -1,3 +1,4 @@
+{{-- UPDATED: newsletter-center.blade.php --}}
 <div class="w-full min-h-screen bg-gray-50 overflow-x-hidden">
     <div class="w-full mx-auto px-4 sm:px-6 lg:px-8">
         <!-- Header Section -->
@@ -31,11 +32,11 @@
                             <span class="hidden sm:inline">Import</span>
                         </button>
                         <button 
-                            wire:click="viewReports"
+                            wire:click="viewPerformance"
                             class="bg-purple-600 hover:bg-purple-700 text-white px-3 py-2 md:px-4 md:py-2 rounded-lg font-medium transition-all duration-200 text-sm md:text-base"
                         >
-                            <i class="fas fa-chart-pie mr-1 md:mr-2"></i>
-                            <span class="hidden sm:inline">Reports</span>
+                            <i class="fas fa-tachometer-alt mr-1 md:mr-2"></i>
+                            <span class="hidden sm:inline">Performance</span>
                         </button>
                     </div>
                 </div>
@@ -44,7 +45,7 @@
 
         <!-- Quick Stats Dashboard -->
         <div class="px-4 sm:px-6 lg:px-8 py-4">
-            <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-9 gap-3 md:gap-4 animate__animated animate__fadeInUp">
+            <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-3 md:gap-4 animate__animated animate__fadeInUp">
                 <div class="bg-white p-3 md:p-4 rounded-lg shadow-sm border border-gray-200 text-center">
                     <div class="text-lg md:text-2xl font-bold text-blue-600">{{ number_format($stats['total_subscribers']) }}</div>
                     <div class="text-xs md:text-sm text-gray-500">Subscribers</div>
@@ -73,10 +74,6 @@
                     <div class="text-lg md:text-2xl font-bold text-pink-600">{{ $stats['avg_click_rate'] }}%</div>
                     <div class="text-xs md:text-sm text-gray-500">Click Rate</div>
                 </div>
-                <div class="bg-white p-3 md:p-4 rounded-lg shadow-sm border border-gray-200 text-center">
-                    <div class="text-lg md:text-2xl font-bold text-amber-600">{{ number_format($stats['total_reports']) }}</div>
-                    <div class="text-xs md:text-sm text-gray-500">Reports</div>
-                </div>
                 <div class="bg-white p-3 md:p-4 rounded-lg shadow-sm border border-gray-200 text-center relative">
                     <div class="text-lg md:text-2xl font-bold text-emerald-600">{{ number_format($stats['recent_signups']) }}</div>
                     <div class="text-xs md:text-sm text-gray-500">Recent</div>
@@ -102,7 +99,7 @@
                             'templates' => ['label' => 'Templates', 'icon' => 'fas fa-newspaper', 'full_label' => 'Newsletter Templates'],
                             'analytics' => ['label' => 'Analytics', 'icon' => 'fas fa-chart-bar', 'full_label' => 'Campaign Analytics'],
                             'reports' => ['label' => 'Reports', 'icon' => 'fas fa-chart-pie', 'full_label' => 'Campaign Reports'],
-                            'performance' => ['label' => 'Performance', 'icon' => 'fas fa-tachometer-alt', 'full_label' => 'Performance Optimization'],
+                            'performance' => ['label' => 'Performance', 'icon' => 'fas fa-tachometer-alt', 'full_label' => 'Performance & Optimization'],
                         ];
                         
                         // Add settings tab only for super admin
@@ -147,10 +144,10 @@
                     @livewire('newsletter.partials.analytics')
                 @elseif($activeTab === 'reports')
                     @livewire('newsletter.partials.campaign-reports')
-                @elseif($activeTab === 'settings')
-                    @livewire('newsletter.partials.settings')
                 @elseif($activeTab === 'performance')
                     @livewire('newsletter.partials.performance-optimization')
+                @elseif($activeTab === 'settings')
+                    @livewire('newsletter.partials.settings')
                 @endif
             </div>
         </div>

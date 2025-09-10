@@ -447,22 +447,29 @@ return [
                 ['label' => 'Create Campaign', 'icon' => 'fas fa-plus-circle', 'route_name' => 'newsletter.campaigns', 'roles' => [User::ROLE_CONTENT_EDITOR, User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN]],
                 ['label' => 'Email Templates', 'icon' => 'fas fa-newspaper', 'route_name' => 'newsletter.templates', 'roles' => [User::ROLE_CONTENT_EDITOR, User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN]],
                 ['label' => 'Campaign Analytics', 'icon' => 'fas fa-chart-bar', 'route_name' => 'newsletter.analytics', 'roles' => [User::ROLE_CONTENT_EDITOR, User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN]],
-                ['label' => 'Newsletter Reports', 'icon' => 'fas fa-file-alt', 'route_name' => 'newsletter.reports', 'roles' => [User::ROLE_CONTENT_EDITOR, User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN]],
+                ['label' => 'Campaign Reports', 'icon' => 'fas fa-chart-pie', 'route_name' => 'newsletter.reports', 'roles' => [User::ROLE_CONTENT_EDITOR, User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN]],
+                ['label' => 'Performance Monitor', 'icon' => 'fas fa-tachometer-alt', 'route_name' => 'newsletter.performance', 'roles' => [User::ROLE_CONTENT_EDITOR, User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN]],
                 ['label' => 'Newsletter Settings', 'icon' => 'fas fa-cog', 'route_name' => 'newsletter.settings', 'roles' => [User::ROLE_SUPER_ADMIN]],
             ]
-            ],
-        [
-            'label' => 'Page Management',
-            'icon' => 'fas fa-bars',
-            'route_name' => '#',
-            'roles' => [User::ROLE_SUPER_ADMIN],
-            'link_id' => 'page_management',
-            'children' => [
-                ['label' => 'Page Custom Settings', 'icon' => 'fas fa-cog', 'route_name' => '#', 'roles' => [User::ROLE_CONTENT_EDITOR, User::ROLE_ACADEMY_ADMIN], 'link_id' => 'page-custom-settings',],
-                ['label' => 'Page Custom Blocks', 'icon' => 'fas fa-columns', 'route_name' => '#', 'roles' => [User::ROLE_CONTENT_EDITOR, User::ROLE_ACADEMY_ADMIN], 'link_id' => 'page-custom-blocks',],
-                ['label' => 'Page Custom Shortcodes', 'icon' => 'fas fa-code', 'route_name' => '#', 'roles' => [User::ROLE_CONTENT_EDITOR, User::ROLE_ACADEMY_ADMIN], 'link_id' => 'page-custom-shortcodes',],
-            ]
         ],
+        // [
+        //     'label' => 'Page Management',
+        //     'icon' => 'fas fa-bars',
+        //     'route_name' => '#',
+        //     'roles' => [User::ROLE_SUPER_ADMIN],
+        //     'link_id' => 'page_management',
+        //     'children' => [
+        //         ['label' => 'All Pages', 'icon' => 'fas fa-file-alt', 'route_name' => 'pages.index', 'roles' => [User::ROLE_CONTENT_EDITOR, User::ROLE_ACADEMY_ADMIN]],
+        //         ['label' => 'Create Page', 'icon' => 'fas fa-plus-circle', 'route_name' => 'pages.create', 'roles' => [User::ROLE_CONTENT_EDITOR, User::ROLE_ACADEMY_ADMIN]],
+        //         ['label' => 'Page Custom Settings', 'icon' => 'fas fa-cog', 'route_name' => '#', 'roles' => [User::ROLE_CONTENT_EDITOR, User::ROLE_ACADEMY_ADMIN]],
+        //         ['label' => 'Page Custom Blocks', 'icon' => 'fas fa-columns', 'route_name' => '#', 'roles' => [User::ROLE_CONTENT_EDITOR, User::ROLE_ACADEMY_ADMIN]],
+        //         ['label' => 'Page Custom Shortcodes', 'icon' => 'fas fa-code', 'route_name' => '#', 'roles' => [User::ROLE_CONTENT_EDITOR, User::ROLE_ACADEMY_ADMIN]],
+        //         ['label' => 'Media Manager', 'icon' => 'fas fa-photo-video', 'route_name' => 'media.index', 'roles' => [User::ROLE_CONTENT_EDITOR, User::ROLE_ACADEMY_ADMIN]],
+        //         ['label' => 'SEO Manager', 'icon' => 'fas fa-search', 'route_name' => 'seo.index', 'roles' => [User::ROLE_SUPER_ADMIN]],
+        //         ['label' => 'Redirects', 'icon' => 'fas fa-random', 'route_name' => 'redirects.index', 'roles' => [User::ROLE_SUPER_ADMIN]],
+        //     ]
+        // ],
+        
         [
             'label' => 'Search',
             'icon' => 'fas fa-search',
