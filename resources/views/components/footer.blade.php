@@ -109,9 +109,9 @@
                         </div>
                     @endif
 
-                    @if($errors->any())
+                    @if(session('errors') && session('errors')->any())
                         <div class="text-sm p-3 rounded-lg bg-red-100 text-red-800">
-                            {{ $errors->first() }}
+                            {{ session('errors')->first() }}
                         </div>
                     @endif
                 </div>

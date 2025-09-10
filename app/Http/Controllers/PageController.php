@@ -25,7 +25,7 @@ class PageController extends Controller
         $page->incrementViewCount();
         
         // Return the view with the page data
-        return view('pages.show', compact('page'));
+        return view('livewire.pages.partials.show', compact('page'));
     }
     public function trackView(Request $request, $slug)
     {

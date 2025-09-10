@@ -452,23 +452,59 @@ return [
                 ['label' => 'Newsletter Settings', 'icon' => 'fas fa-cog', 'route_name' => 'newsletter.settings', 'roles' => [User::ROLE_SUPER_ADMIN]],
             ]
         ],
-        // [
-        //     'label' => 'Page Management',
-        //     'icon' => 'fas fa-bars',
-        //     'route_name' => '#',
-        //     'roles' => [User::ROLE_SUPER_ADMIN],
-        //     'link_id' => 'page_management',
-        //     'children' => [
-        //         ['label' => 'All Pages', 'icon' => 'fas fa-file-alt', 'route_name' => 'pages.index', 'roles' => [User::ROLE_CONTENT_EDITOR, User::ROLE_ACADEMY_ADMIN]],
-        //         ['label' => 'Create Page', 'icon' => 'fas fa-plus-circle', 'route_name' => 'pages.create', 'roles' => [User::ROLE_CONTENT_EDITOR, User::ROLE_ACADEMY_ADMIN]],
-        //         ['label' => 'Page Custom Settings', 'icon' => 'fas fa-cog', 'route_name' => '#', 'roles' => [User::ROLE_CONTENT_EDITOR, User::ROLE_ACADEMY_ADMIN]],
-        //         ['label' => 'Page Custom Blocks', 'icon' => 'fas fa-columns', 'route_name' => '#', 'roles' => [User::ROLE_CONTENT_EDITOR, User::ROLE_ACADEMY_ADMIN]],
-        //         ['label' => 'Page Custom Shortcodes', 'icon' => 'fas fa-code', 'route_name' => '#', 'roles' => [User::ROLE_CONTENT_EDITOR, User::ROLE_ACADEMY_ADMIN]],
-        //         ['label' => 'Media Manager', 'icon' => 'fas fa-photo-video', 'route_name' => 'media.index', 'roles' => [User::ROLE_CONTENT_EDITOR, User::ROLE_ACADEMY_ADMIN]],
-        //         ['label' => 'SEO Manager', 'icon' => 'fas fa-search', 'route_name' => 'seo.index', 'roles' => [User::ROLE_SUPER_ADMIN]],
-        //         ['label' => 'Redirects', 'icon' => 'fas fa-random', 'route_name' => 'redirects.index', 'roles' => [User::ROLE_SUPER_ADMIN]],
-        //     ]
-        // ],
+
+        [
+            'label' => 'Page Management',
+            'icon' => 'fas fa-file-alt',
+            'route_name' => 'pages.index',
+            'roles' => [User::ROLE_SUPER_ADMIN, User::ROLE_CONTENT_EDITOR, User::ROLE_ACADEMY_ADMIN],
+            'link_id' => 'page_management',
+            'children' => [
+                [
+                    'label' => 'All Pages', 
+                    'icon' => 'fas fa-list', 
+                    'route_name' => 'pages.index', 
+                    'roles' => [User::ROLE_CONTENT_EDITOR, User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN]
+                ],
+                [
+                    'label' => 'Create Page', 
+                    'icon' => 'fas fa-plus-circle', 
+                    'route_name' => 'pages.create', 
+                    'roles' => [User::ROLE_CONTENT_EDITOR, User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN]
+                ],
+                [
+                    'label' => 'Page Analytics', 
+                    'icon' => 'fas fa-chart-line', 
+                    'route_name' => 'pages.analytics', 
+                    'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN]
+                ],
+                [
+                    'label' => 'Page Templates', 
+                    'icon' => 'fas fa-palette', 
+                    'route_name' => 'pages.templates', 
+                    'roles' => [User::ROLE_CONTENT_EDITOR, User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN]
+                ],
+                [
+                    'label' => 'Media Manager', 
+                    'icon' => 'fas fa-photo-video', 
+                    'route_name' => 'pages.media', 
+                    'roles' => [User::ROLE_CONTENT_EDITOR, User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN]
+                ],
+                [
+                    'label' => 'SEO Manager', 
+                    'icon' => 'fas fa-search', 
+                    'route_name' => 'pages.seo', 
+                    'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN]
+                ],
+                [
+                    'label' => 'Page Settings', 
+                    'icon' => 'fas fa-cog', 
+                    'route_name' => 'pages.settings', 
+                    'roles' => [User::ROLE_SUPER_ADMIN]
+                ],
+            ]
+        ],
+        
         
         [
             'label' => 'Search',
