@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CertificateVerificationController;
 use App\Livewire\CertificateManagement\CertificateRequest;
 use App\Livewire\CertificateManagement\CertificateManagement;
+use App\Http\Controllers\PageController;
 use App\Livewire\Content\ContentDocumentationCenter;
 
 
@@ -19,6 +20,48 @@ use App\Livewire\Content\ContentDocumentationCenter;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
+
+
+
+
+
+// Page management routes (protected)
+
+Route::prefix('admin/pages')->middleware(['auth', 'verified'])->group(function () {
+    // Main page manager with tab support
+    Route::get('/', \App\Livewire\Pages\PageManager::class)->name('pages.index');
+    Route::get('/create', \App\Livewire\Pages\PageManager::class)->defaults('activeTab', 'create-page')->name('pages.create');
+    Route::get('/analytics', \App\Livewire\Pages\PageManager::class)->defaults('activeTab', 'analytics')->name('pages.analytics');
+    Route::get('/templates', \App\Livewire\Pages\PageManager::class)->defaults('activeTab', 'templates')->name('pages.templates');
+    Route::get('/media', \App\Livewire\Pages\PageManager::class)->defaults('activeTab', 'media')->name('pages.media');
+    Route::get('/seo', \App\Livewire\Pages\PageManager::class)->defaults('activeTab', 'seo')->name('pages.seo');
+    Route::get('/settings', \App\Livewire\Pages\PageManager::class)->defaults('activeTab', 'settings')->name('pages.settings');
+    
+    // API endpoints
+    Route::post('/upload-media', [\App\Http\Controllers\MediaController::class, 'upload'])->name('pages.upload-media');
+    Route::delete('/media/{media}', [\App\Http\Controllers\MediaController::class, 'delete'])->name('pages.delete-media');
+    Route::post('/track-view/{slug}', [PageController::class, 'trackView'])->name('pages.track-view');
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 Route::middleware(['auth', 'verified'])->prefix('dashboard')->name('newsletter.')->group(function () {
     // Newsletter management routes (requires proper role)
@@ -167,27 +210,13 @@ Route::middleware(['auth'])->group(function () {
 Route::prefix('institution')->name('institution.')->group(function () {
 
     // Main portal dashboard
-    Route::get('/portal', App\Livewire\Institution\InstitutionPortal::class)
-        ->name('portal');
-
-    // Individual tab routes (optional - for direct access)
-    Route::get('/overview', App\Livewire\Institution\InstitutionPortal::class)
-        ->name('overview');
-
-    Route::get('/partners', App\Livewire\Institution\InstitutionPortal::class)
-        ->name('partners');
-
-    Route::get('/licenses', App\Livewire\Institution\InstitutionPortal::class)
-        ->name('licenses');
-
-    Route::get('/bulk-enrollment', App\Livewire\Institution\InstitutionPortal::class)
-        ->name('bulk-enrollment');
-
-    Route::get('/analytics', App\Livewire\Institution\InstitutionPortal::class)
-        ->name('analytics');
-
-    Route::get('/whitelabel', App\Livewire\Institution\InstitutionPortal::class)
-        ->name('whitelabel');
+    Route::get('/portal', App\Livewire\Institution\InstitutionPortal::class)->name('portal');
+    Route::get('/overview', App\Livewire\Institution\InstitutionPortal::class)->name('overview');
+    Route::get('/partners', App\Livewire\Institution\InstitutionPortal::class)->name('partners');
+    Route::get('/licenses', App\Livewire\Institution\InstitutionPortal::class)->name('licenses');
+    Route::get('/bulk-enrollment', App\Livewire\Institution\InstitutionPortal::class)->name('bulk-enrollment');
+    Route::get('/analytics', App\Livewire\Institution\InstitutionPortal::class)->name('analytics');
+    Route::get('/whitelabel', App\Livewire\Institution\InstitutionPortal::class)->name('whitelabel');
 });
 
 
@@ -204,39 +233,13 @@ Route::prefix('blog')->name('blog.')->group(function () {
 
 // Admin Blog Routes (requires authentication and proper roles)
 Route::middleware(['auth', 'verified'])->prefix('admin/blog')->name('admin.blog.')->group(function () {
-
-    // Posts Management - Using permission middleware instead of role
-    Route::get('/posts', \App\Livewire\Blog\AdminBlogPosts::class)
-        ->middleware('can:manage_courses') // Everyone except students can manage blog posts
-        ->name('posts.index');
-
-    Route::get('/posts/create', \App\Livewire\Blog\AdminBlogPostForm::class)
-        ->middleware('can:manage_courses')
-        ->name('posts.create');
-
-    Route::get('/posts/{post:slug}/edit', \App\Livewire\Blog\AdminBlogPostForm::class)
-        ->middleware('can:manage_courses')
-        ->name('posts.edit');
-
-    // Categories Management - Academy Admin and Super Admin only
-    Route::get('/categories', \App\Livewire\Blog\AdminBlogCategories::class)
-        ->middleware('can:manage_users') // Only Academy Admin and Super Admin
-        ->name('categories.index');
-
-    // Comments Moderation
-    Route::get('/comments', \App\Livewire\Blog\AdminBlogComments::class)
-        ->middleware('can:manage_courses')
-        ->name('comments.index');
-
-    // Blog Settings - Super Admin only
-    Route::get('/settings', \App\Livewire\Blog\AdminBlogSettings::class)
-        ->middleware('can:manage-roles') // Only Super Admin
-        ->name('settings');
-
-    // SEO Settings
-    Route::get('/seo', \App\Livewire\Blog\AdminBlogSettings::class)
-        ->middleware('can:manage_courses') // Content editors and above
-        ->name('seo');
+    Route::get('/posts', \App\Livewire\Blog\AdminBlogPosts::class)->name('posts.index');
+    Route::get('/posts/create', \App\Livewire\Blog\AdminBlogPostForm::class)->name('posts.create');
+    Route::get('/posts/{post:slug}/edit', \App\Livewire\Blog\AdminBlogPostForm::class)->name('posts.edit');
+    Route::get('/categories', \App\Livewire\Blog\AdminBlogCategories::class)->name('categories.index');
+    Route::get('/comments', \App\Livewire\Blog\AdminBlogComments::class)->name('comments.index');
+    Route::get('/settings', \App\Livewire\Blog\AdminBlogSettings::class)->name('settings');
+    Route::get('/seo', \App\Livewire\Blog\AdminBlogSettings::class)->name('seo');
 });
 
 // API Routes for AJAX operations
@@ -249,6 +252,13 @@ Route::middleware('api')->prefix('api/blog')->name('api.blog.')->group(function 
 
 
 
+// =============================================================================
+// PUBLIC PAGES (No Authentication Required) - MANUAL PAGES
+// =============================================================================
+Route::get('/About', \App\Livewire\ManualPages\AboutUs::class)->name('about');
+Route::get('/Contact', \App\Livewire\ManualPages\ContactUs::class)->name('contact');
+Route::get('/Statistics', \App\Livewire\ManualPages\Statistics::class)->name('statistics');
+Route::get('/Guideline', \App\Livewire\ManualPages\Guideline::class)->name('guideline');
 
 
 
@@ -364,14 +374,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/mentorship/actions', \App\Livewire\Mentorship\MentorshipActions::class)->name('mentorship.actions');
 });
 
-// =============================================================================
-// PUBLIC PAGES (No Authentication Required)
-// =============================================================================
-
-Route::get('/About', \App\Livewire\Pages\AboutUs::class)->name('about');
-Route::get('/Contact', \App\Livewire\Pages\ContactUs::class)->name('contact');
-Route::get('/Statistics', \App\Livewire\Pages\Statistics::class)->name('statistics');
-Route::get('/Guideline', \App\Livewire\Pages\Guideline::class)->name('guideline');
 
 Route::middleware('auth')->group(function () {
     Route::get('/search/job', \App\Livewire\Career\JobSearch::class)->name('search.job');
@@ -617,8 +619,17 @@ if (app()->environment(['local', 'staging'])) {
         })->name('test');
     });
 }
-
 // =============================================================================
 // AUTHENTICATION ROUTES
 // =============================================================================
 require __DIR__ . '/auth.php';
+
+
+
+
+// =============================================================================
+// CATCH-ALL ROUTE FOR PAGES (Must be absolutely last)
+// =============================================================================
+Route::get('/{slug}', [PageController::class, 'show'])
+    ->name('page.show')
+    ->where('slug', '[A-Za-z0-9\-_]+');
