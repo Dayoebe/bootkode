@@ -21,7 +21,8 @@ class PerformanceOptimization extends Component
     }
 
 
-    // In PerformanceOptimization.php, update the getListHealthProperty method
+   // ... existing code ...
+
 public function getListHealthProperty()
 {
     $totalSubscribers = NewsletterSubscriber::count();
