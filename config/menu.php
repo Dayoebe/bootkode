@@ -270,7 +270,7 @@ return [
                     'link_id' => 'transactions.history',
                     'description' => 'View all your financial transactions'
                 ],
-                
+
                 // Instructor-Specific Features
                 [
                     'label' => 'My Earnings',
@@ -288,7 +288,7 @@ return [
                     'link_id' => 'withdrawals.index',
                     'description' => 'Request and manage earnings withdrawals'
                 ],
-                
+
                 // Admin-Only Features
                 [
                     'label' => 'Financial Dashboard',
@@ -322,7 +322,7 @@ return [
                     'link_id' => 'admin.financial.settings',
                     'description' => 'Configure financial system settings'
                 ],
-                
+
                 // Super Admin Only
                 [
                     'label' => 'Paystack Settings',
@@ -333,24 +333,24 @@ return [
                     'description' => 'Configure payment gateway settings'
                 ],
             ]
-            ],
-        
-            [
-                'label' => 'Affiliate Network',
-                'icon' => 'fas fa-share-alt',
-                'route_name' => 'affiliate.dashboard',
-                'roles' => [User::ROLE_AFFILIATE_AMBASSADOR, User::ROLE_SUPER_ADMIN],
-                'link_id' => 'affiliate',
-                'children' => [
-                    ['label' => 'Referral Dashboard', 'icon' => 'fas fa-chart-bar', 'route_name' => 'affiliate.dashboard', 'roles' => []],
-                    ['label' => 'Marketing Tools', 'icon' => 'fas fa-bullhorn', 'route_name' => 'affiliate.tools', 'roles' => []],
-                    ['label' => 'Commission History', 'icon' => 'fas fa-money-bill-wave', 'route_name' => 'affiliate.commissions', 'roles' => [User::ROLE_AFFILIATE_AMBASSADOR, User::ROLE_SUPER_ADMIN]],
-                    ['label' => 'Commission Reports', 'icon' => 'fas fa-coins', 'route_name' => 'affiliate.reports', 'roles' => []],
-                    ['label' => 'Performance Analytics', 'icon' => 'fas fa-chart-pie', 'route_name' => 'affiliate.analytics', 'roles' => []],
-                    ['label' => 'Affiliate Settings', 'icon' => 'fas fa-cog', 'route_name' => 'affiliate.settings', 'roles' => [User::ROLE_SUPER_ADMIN]],
-                ]
-            ],
-            
+        ],
+
+        [
+            'label' => 'Affiliate Network',
+            'icon' => 'fas fa-share-alt',
+            'route_name' => 'affiliate.dashboard',
+            'roles' => [User::ROLE_AFFILIATE_AMBASSADOR, User::ROLE_SUPER_ADMIN],
+            'link_id' => 'affiliate',
+            'children' => [
+                ['label' => 'Referral Dashboard', 'icon' => 'fas fa-chart-bar', 'route_name' => 'affiliate.dashboard', 'roles' => []],
+                ['label' => 'Marketing Tools', 'icon' => 'fas fa-bullhorn', 'route_name' => 'affiliate.tools', 'roles' => []],
+                ['label' => 'Commission History', 'icon' => 'fas fa-money-bill-wave', 'route_name' => 'affiliate.commissions', 'roles' => [User::ROLE_AFFILIATE_AMBASSADOR, User::ROLE_SUPER_ADMIN]],
+                ['label' => 'Commission Reports', 'icon' => 'fas fa-coins', 'route_name' => 'affiliate.reports', 'roles' => []],
+                ['label' => 'Performance Analytics', 'icon' => 'fas fa-chart-pie', 'route_name' => 'affiliate.analytics', 'roles' => []],
+                ['label' => 'Affiliate Settings', 'icon' => 'fas fa-cog', 'route_name' => 'affiliate.settings', 'roles' => [User::ROLE_SUPER_ADMIN]],
+            ]
+        ],
+
 
         [
             'label' => 'Gamification',
@@ -461,63 +461,84 @@ return [
             'link_id' => 'page_management',
             'children' => [
                 [
-                    'label' => 'All Pages', 
-                    'icon' => 'fas fa-list', 
-                    'route_name' => 'pages.index', 
+                    'label' => 'All Pages',
+                    'icon' => 'fas fa-list',
+                    'route_name' => 'pages.index',
                     'roles' => [User::ROLE_CONTENT_EDITOR, User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN]
                 ],
                 [
-                    'label' => 'Create Page', 
-                    'icon' => 'fas fa-plus-circle', 
-                    'route_name' => 'pages.create', 
+                    'label' => 'Create Page',
+                    'icon' => 'fas fa-plus-circle',
+                    'route_name' => 'pages.create',
                     'roles' => [User::ROLE_CONTENT_EDITOR, User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN]
                 ],
                 [
-                    'label' => 'Page Analytics', 
-                    'icon' => 'fas fa-chart-line', 
-                    'route_name' => 'pages.analytics', 
+                    'label' => 'Page Analytics',
+                    'icon' => 'fas fa-chart-line',
+                    'route_name' => 'pages.analytics',
                     'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN]
                 ],
                 [
-                    'label' => 'Page Templates', 
-                    'icon' => 'fas fa-palette', 
-                    'route_name' => 'pages.templates', 
+                    'label' => 'Page Templates',
+                    'icon' => 'fas fa-palette',
+                    'route_name' => 'pages.templates',
                     'roles' => [User::ROLE_CONTENT_EDITOR, User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN]
                 ],
                 [
-                    'label' => 'Media Manager', 
-                    'icon' => 'fas fa-photo-video', 
-                    'route_name' => 'pages.media', 
+                    'label' => 'Media Manager',
+                    'icon' => 'fas fa-photo-video',
+                    'route_name' => 'pages.media',
                     'roles' => [User::ROLE_CONTENT_EDITOR, User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN]
                 ],
                 [
-                    'label' => 'SEO Manager', 
-                    'icon' => 'fas fa-search', 
-                    'route_name' => 'pages.seo', 
+                    'label' => 'SEO Manager',
+                    'icon' => 'fas fa-search',
+                    'route_name' => 'pages.seo',
                     'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN]
                 ],
                 [
-                    'label' => 'Page Settings', 
-                    'icon' => 'fas fa-cog', 
-                    'route_name' => 'pages.settings', 
+                    'label' => 'Page Settings',
+                    'icon' => 'fas fa-cog',
+                    'route_name' => 'pages.settings',
                     'roles' => [User::ROLE_SUPER_ADMIN]
                 ],
             ]
         ],
+
+        // [
+        //     'label' => 'Marketplace',
+        //     'icon' => 'fas fa-store',
+        //     'route_name' => '#',
+        //     'roles' => [], // visible to all by default
+        //     'link_id' => 'marketplace',
+        //     'children' => [
+        //         // General
+        //         ['label' => 'Browse Marketplace', 'icon' => 'fas fa-search', 'route_name' => 'marketplace.browse', 'roles' => [], 'link_id' => 'marketplace.browse'],
+        //         ['label' => 'Categories', 'icon' => 'fas fa-tags', 'route_name' => 'marketplace.categories', 'roles' => [], 'link_id' => 'marketplace.categories'],
+        //         ['label' => 'Product Details', 'icon' => 'fas fa-box-open', 'route_name' => 'marketplace.product.show', 'roles' => [], 'link_id' => 'marketplace.product.show'],
+        //         ['label' => 'Cart & Checkout', 'icon' => 'fas fa-credit-card', 'route_name' => 'marketplace.checkout', 'roles' => [], 'link_id' => 'marketplace.checkout'],
+        //         ['label' => 'My Purchases', 'icon' => 'fas fa-shopping-cart', 'route_name' => 'marketplace.purchases', 'roles' => [User::ROLE_STUDENT, User::ROLE_AFFILIATE_AMBASSADOR], 'link_id' => 'marketplace.purchases'],
         
+        //         // Vendor
+        //         ['label' => 'Sell a Product', 'icon' => 'fas fa-upload', 'route_name' => 'marketplace.seller.create', 'roles' => [User::ROLE_INSTRUCTOR, User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN], 'link_id' => 'marketplace.seller.create'],
+        //         ['label' => 'My Listings', 'icon' => 'fas fa-list-alt', 'route_name' => 'marketplace.seller.listings', 'roles' => [User::ROLE_INSTRUCTOR, User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN], 'link_id' => 'marketplace.seller.listings'],
+        //         ['label' => 'Saved Drafts', 'icon' => 'fas fa-save', 'route_name' => 'marketplace.seller.drafts', 'roles' => [User::ROLE_INSTRUCTOR, User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN], 'link_id' => 'marketplace.seller.drafts'],
+        //         ['label' => 'Vendor Dashboard', 'icon' => 'fas fa-store-alt', 'route_name' => 'marketplace.vendor.dashboard', 'roles' => [User::ROLE_INSTRUCTOR, User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN], 'link_id' => 'marketplace.vendor.dashboard'],
+        //         ['label' => 'Customer Orders', 'icon' => 'fas fa-box', 'route_name' => 'marketplace.vendor.orders', 'roles' => [User::ROLE_INSTRUCTOR, User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN], 'link_id' => 'marketplace.vendor.orders'],
+        //         ['label' => 'Withdrawals', 'icon' => 'fas fa-money-bill-wave', 'route_name' => 'marketplace.vendor.withdrawals', 'roles' => [User::ROLE_INSTRUCTOR, User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN], 'link_id' => 'marketplace.vendor.withdrawals'],
         
-        [
-            'label' => 'Search',
-            'icon' => 'fas fa-search',
-            'route_name' => '#',
-            'roles' => [],
-            'link_id' => 'search',
-            'children' => [
-                ['label' => 'Global Search', 'icon' => 'fas fa-search', 'route_name' => '#', 'roles' => []],
-                ['label' => 'Advanced Search', 'icon' => 'fas fa-filter', 'route_name' => '#', 'roles' => []],
-                ['label' => 'Search Settings', 'icon' => 'fas fa-cog', 'route_name' => '#', 'roles' => [User::ROLE_SUPER_ADMIN]],
-            ]
-        ],
+        //         // Admin
+        //         ['label' => 'Vendor Applications', 'icon' => 'fas fa-user-plus', 'route_name' => 'marketplace.vendor.applications', 'roles' => [User::ROLE_SUPER_ADMIN, User::ROLE_ACADEMY_ADMIN], 'link_id' => 'marketplace.vendor.applications'],
+        //         ['label' => 'All Orders', 'icon' => 'fas fa-boxes', 'route_name' => 'marketplace.orders', 'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN], 'link_id' => 'marketplace.orders'],
+        //         ['label' => 'Payments & Payouts', 'icon' => 'fas fa-wallet', 'route_name' => 'marketplace.payments', 'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN], 'link_id' => 'marketplace.payments'],
+        //         ['label' => 'Promotions & Discounts', 'icon' => 'fas fa-bullhorn', 'route_name' => 'marketplace.promotions', 'roles' => [User::ROLE_CONTENT_EDITOR, User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN], 'link_id' => 'marketplace.promotions'],
+        //         ['label' => 'Reviews & Ratings', 'icon' => 'fas fa-star', 'route_name' => 'marketplace.reviews', 'roles' => [], 'link_id' => 'marketplace.reviews'],
+        //         ['label' => 'Marketplace Analytics', 'icon' => 'fas fa-chart-line', 'route_name' => 'marketplace.analytics', 'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN], 'link_id' => 'marketplace.analytics'],
+        //         ['label' => 'Marketplace Settings', 'icon' => 'fas fa-cog', 'route_name' => 'marketplace.settings', 'roles' => [User::ROLE_SUPER_ADMIN, User::ROLE_ACADEMY_ADMIN], 'link_id' => 'marketplace.settings'],
+        //         ['label' => 'Integrations', 'icon' => 'fas fa-plug', 'route_name' => 'marketplace.integrations', 'roles' => [User::ROLE_SUPER_ADMIN, User::ROLE_ACADEMY_ADMIN], 'link_id' => 'marketplace.integrations'],
+        //     ]
+        // ]
+        
 
 
     ]
