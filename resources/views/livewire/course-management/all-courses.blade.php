@@ -256,7 +256,10 @@
                     <!-- Course Thumbnail -->
                     <div class="relative h-56 bg-blue-500 overflow-hidden">
                         @if($course->thumbnail)
-                            <img src="{{ $course->thumbnail }}" alt="{{ $course->title }}" 
+                                                 <img src="{{ asset('storage/' . ($course->thumbnail ?? 'images/default-course.png')) }}"
+                                alt="{{ $course->title }}"
+
+                            
                                  class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
                         @else
                             <div class="w-full h-full flex items-center justify-center bg-gradient-to-br from-blue-500 to-purple-600">

@@ -1,6 +1,4 @@
-
-<div
-    class="bg-gray-900 min-h-screen">
+<div class="bg-gray-900 min-h-screen">
 
     <div class="container p-4 lg:p-8" x-data="{
         showFilters: false,
@@ -12,8 +10,7 @@
             totalEnrolled: {{ $totalEnrolled }},
             totalCompleted: {{ $totalCompleted }}
         }
-    }"
-        @enrollment-updated.window="enrollmentStats.totalEnrolled = $event.detail.totalEnrolled; enrollmentStats.totalCompleted = $event.detail.totalCompleted"
+    }" @enrollment-updated.window="enrollmentStats.totalEnrolled = $event.detail.totalEnrolled; enrollmentStats.totalCompleted = $event.detail.totalCompleted"
         @confetti.window="confetti({particleCount: 100, spread: 70, origin: { y: 0.6 }})">
 
         <!-- Modern Header with Stats Dashboard -->
@@ -217,214 +214,212 @@
             class="mb-8">
 
             @forelse($courses as $course)
-                <div class="course-card-hover bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl rounded-3xl shadow-2xl overflow-hidden border border-white/30 dark:border-gray-700/30"
-                    :class="viewMode === 'list' ? 'flex' : ''" x-data="{
-                        isEnrolled: @js($this->isEnrolled($course->id)),
-                        isWishlisted: @js($this->isWishlisted($course->id)),
-                        progress: @js($this->getCourseProgress($course->id)),
-                        isEnrolling: false,
-                        isDropping: false
-                    }"
-                    style="animation-delay: {{ $loop->index * 0.1 }}s">
+                    <div class="course-card-hover bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl rounded-3xl shadow-2xl overflow-hidden border border-white/30 dark:border-gray-700/30"
+                        :class="viewMode === 'list' ? 'flex' : ''" x-data="{
+                                        isEnrolled: @js($this->isEnrolled($course->id)),
+                                        isWishlisted: @js($this->isWishlisted($course->id)),
+                                        progress: @js($this->getCourseProgress($course->id)),
+                                        isEnrolling: false,
+                                        isDropping: false
+                                    }" style="animation-delay: {{ $loop->index * 0.1 }}s">
 
-                    <!-- Course Image/Thumbnail -->
-                    <div class="relative" :class="viewMode === 'list' ? 'w-64 flex-shrink-0' : 'h-64'">
-                        @if ($course->thumbnail)
-                            <img src="{{ $course->thumbnail }}" alt="{{ $course->title }}"
-                                class="w-full h-full object-cover">
-                        @else
-                            <div
-                                class="w-full h-full flex items-center justify-center bg-gradient-to-br from-blue-500 via-purple-600 to-pink-500">
-                                <i class="fas fa-graduation-cap text-white text-6xl opacity-80"></i>
-                            </div>
-                        @endif
-
-                        <!-- Course Status Overlays -->
-                        <div class="absolute top-4 left-4 flex flex-col gap-2">
-                            @if ($course->is_free)
-                                <span
-                                    class="bg-emerald-500/90 backdrop-blur-sm text-white text-xs font-black px-3 py-1 rounded-full">
-                                    FREE
-                                </span>
+                        <!-- Course Image/Thumbnail -->
+                        <div class="relative" :class="viewMode === 'list' ? 'w-64 flex-shrink-0' : 'h-64'">
+                            @if ($course->thumbnail)
+                                <img src="{{ asset('storage/' . ($course->thumbnail ?? 'images/default-course.png')) }}"
+                                    alt="{{ $course->title }}" class="w-full h-full object-cover">
                             @else
-                                <span
-                                    class="bg-blue-500/90 backdrop-blur-sm text-white text-xs font-black px-3 py-1 rounded-full">
-                                    ${{ number_format($course->price, 2) }}
-                                </span>
+                                <div
+                                    class="w-full h-full flex items-center justify-center bg-gradient-to-br from-blue-500 via-purple-600 to-pink-500">
+                                    <i class="fas fa-graduation-cap text-white text-6xl opacity-80"></i>
+                                </div>
                             @endif
 
-                            @if ($course->certificate_template)
+                            <!-- Course Status Overlays -->
+                            <div class="absolute top-4 left-4 flex flex-col gap-2">
+                                @if ($course->is_free)
+                                    <span
+                                        class="bg-emerald-500/90 backdrop-blur-sm text-white text-xs font-black px-3 py-1 rounded-full">
+                                        FREE
+                                    </span>
+                                @else
+                                    <span
+                                        class="bg-blue-500/90 backdrop-blur-sm text-white text-xs font-black px-3 py-1 rounded-full">
+                                        ${{ number_format($course->price, 2) }}
+                                    </span>
+                                @endif
+
+                                @if ($course->certificate_template)
+                                    <span
+                                        class="bg-purple-500/90 backdrop-blur-sm text-white text-xs font-black px-3 py-1 rounded-full flex items-center">
+                                        <i class="fas fa-medal mr-1"></i> Certificate
+                                    </span>
+                                @endif
+                            </div>
+
+                            <!-- Wishlist Button -->
+                            <button @click="$wire.toggleWishlist({{ $course->id }}); isWishlisted = !isWishlisted"
+                                class="absolute top-4 right-4 p-3 rounded-full transition-all duration-300 transform hover:scale-110"
+                                :class="isWishlisted ? 'bg-red-500/90 text-white' : 'bg-white/90 text-gray-600 hover:text-red-500'"
+                                title="Toggle Wishlist">
+                                <i class="fas fa-heart text-lg"></i>
+                            </button>
+
+                            <!-- Progress Ring (for enrolled courses) -->
+                            <div x-show="isEnrolled && progress > 0" class="absolute bottom-4 right-4 w-16 h-16">
+                                <svg class="progress-ring w-16 h-16" viewBox="0 0 36 36">
+                                    <path class="text-gray-300" stroke="currentColor" stroke-width="3" fill="none"
+                                        d="m18,2.0845 a 15.9155,15.9155 0 0,1 0,31.831 a 15.9155,15.9155 0 0,1 0,-31.831" />
+                                    <path class="text-blue-500" stroke="currentColor" stroke-width="3" fill="none"
+                                        :stroke-dasharray="`${progress}, 100`"
+                                        d="m18,2.0845 a 15.9155,15.9155 0 0,1 0,31.831 a 15.9155,15.9155 0 0,1 0,-31.831" />
+                                </svg>
+                                <div class="absolute inset-0 flex items-center justify-center">
+                                    <span class="text-xs font-bold text-white bg-blue-500/90 rounded-full px-1"
+                                        x-text="`${progress}%`"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Course Content -->
+                        <div class="p-8 flex-1">
+                            <!-- Category & Duration -->
+                            <div class="flex items-center justify-between mb-4">
                                 <span
-                                    class="bg-purple-500/90 backdrop-blur-sm text-white text-xs font-black px-3 py-1 rounded-full flex items-center">
-                                    <i class="fas fa-medal mr-1"></i> Certificate
+                                    class="px-3 py-1 bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 text-sm font-bold rounded-full">
+                                    {{ $course->category->name ?? 'Uncategorized' }}
                                 </span>
-                            @endif
-                        </div>
-
-                        <!-- Wishlist Button -->
-                        <button @click="$wire.toggleWishlist({{ $course->id }}); isWishlisted = !isWishlisted"
-                            class="absolute top-4 right-4 p-3 rounded-full transition-all duration-300 transform hover:scale-110"
-                            :class="isWishlisted ? 'bg-red-500/90 text-white' : 'bg-white/90 text-gray-600 hover:text-red-500'"
-                            title="Toggle Wishlist">
-                            <i class="fas fa-heart text-lg"></i>
-                        </button>
-
-                        <!-- Progress Ring (for enrolled courses) -->
-                        <div x-show="isEnrolled && progress > 0" class="absolute bottom-4 right-4 w-16 h-16">
-                            <svg class="progress-ring w-16 h-16" viewBox="0 0 36 36">
-                                <path class="text-gray-300" stroke="currentColor" stroke-width="3" fill="none"
-                                    d="m18,2.0845 a 15.9155,15.9155 0 0,1 0,31.831 a 15.9155,15.9155 0 0,1 0,-31.831" />
-                                <path class="text-blue-500" stroke="currentColor" stroke-width="3" fill="none"
-                                    :stroke-dasharray="`${progress}, 100`"
-                                    d="m18,2.0845 a 15.9155,15.9155 0 0,1 0,31.831 a 15.9155,15.9155 0 0,1 0,-31.831" />
-                            </svg>
-                            <div class="absolute inset-0 flex items-center justify-center">
-                                <span class="text-xs font-bold text-white bg-blue-500/90 rounded-full px-1"
-                                    x-text="`${progress}%`"></span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Course Content -->
-                    <div class="p-8 flex-1">
-                        <!-- Category & Duration -->
-                        <div class="flex items-center justify-between mb-4">
-                            <span
-                                class="px-3 py-1 bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 text-sm font-bold rounded-full">
-                                {{ $course->category->name ?? 'Uncategorized' }}
-                            </span>
-                            <span class="text-gray-500 dark:text-gray-400 text-sm font-medium flex items-center">
-                                <i class="fas fa-clock mr-1"></i>
-                                {{ $course->formatted_duration }}
-                            </span>
-                        </div>
-
-                        <!-- Course Title -->
-                        <h3 class="text-2xl font-black text-gray-900 dark:text-white mb-4 line-clamp-2 hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-300 cursor-pointer"
-                            @click="selectedCourse = {{ $course->id }}; previewModal = true">
-                            {{ $course->title }}
-                        </h3>
-
-                        <!-- Description -->
-                        <p class="text-gray-600 dark:text-gray-300 mb-6 line-clamp-3"
-                            :class="viewMode === 'list' ? 'line-clamp-2' : 'line-clamp-3'">
-                            {{ Str::limit($course->description, 150) }}
-                        </p>
-
-                        <!-- Instructor & Rating -->
-                        <div class="flex items-center justify-between mb-6">
-                            <div class="flex items-center">
-                                <div
-                                    class="bg-gray-200 dark:bg-gray-700 rounded-full w-10 h-10 flex items-center justify-center mr-3">
-                                    <i class="fas fa-user-tie text-gray-600 dark:text-gray-400"></i>
-                                </div>
-                                <div>
-                                    <p class="text-sm font-bold text-gray-900 dark:text-white">
-                                        {{ $course->instructor->name }}</p>
-                                    <p class="text-xs text-gray-500 dark:text-gray-400">Instructor</p>
-                                </div>
-                            </div>
-
-                            <div class="flex items-center">
-                                <div class="flex items-center mr-2">
-                                    @for ($i = 1; $i <= 5; $i++)
-                                        <i
-                                            class="fas fa-star text-sm {{ ($course->average_rating ?? 0) >= $i ? 'text-yellow-400' : 'text-gray-300 dark:text-gray-600' }}"></i>
-                                    @endfor
-                                </div>
-                                <span class="text-sm font-bold text-gray-700 dark:text-gray-300">
-                                    {{ number_format($course->average_rating ?? 0, 1) }}
-                                </span>
-                                <span class="text-xs text-gray-500 dark:text-gray-400 ml-1">
-                                    ({{ $course->rating_count ?? 0 }})
+                                <span class="text-gray-500 dark:text-gray-400 text-sm font-medium flex items-center">
+                                    <i class="fas fa-clock mr-1"></i>
+                                    {{ $course->formatted_duration }}
                                 </span>
                             </div>
-                        </div>
 
-                        <!-- Course Stats -->
-                        <div class="grid grid-cols-2 gap-4 mb-6">
-                            <div class="text-center bg-gray-50 dark:bg-gray-700/50 rounded-xl py-3">
-                                <div class="text-2xl font-black text-blue-600 dark:text-blue-400">
-                                    {{ $course->total_enrollments }}</div>
-                                <div class="text-xs text-gray-500 dark:text-gray-400 font-semibold">Students</div>
-                            </div>
-                            <div class="text-center bg-gray-50 dark:bg-gray-700/50 rounded-xl py-3">
-                                <div
-                                    class="text-2xl font-black 
-                            {{ $course->difficulty_level === 'beginner'
-                                ? 'text-green-600 dark:text-green-400'
-                                : ($course->difficulty_level === 'intermediate'
-                                    ? 'text-yellow-600 dark:text-yellow-400'
-                                    : 'text-red-600 dark:text-red-400') }}">
-                                    {{ strtoupper(substr($course->difficulty_level, 0, 3)) }}
+                            <!-- Course Title -->
+                            <h3 class="text-2xl font-black text-gray-900 dark:text-white mb-4 line-clamp-2 hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-300 cursor-pointer"
+                                @click="selectedCourse = {{ $course->id }}; previewModal = true">
+                                {{ $course->title }}
+                            </h3>
+
+                            <!-- Description -->
+                            <p class="text-gray-600 dark:text-gray-300 mb-6 line-clamp-3"
+                                :class="viewMode === 'list' ? 'line-clamp-2' : 'line-clamp-3'">
+                                {{ Str::limit($course->description, 150) }}
+                            </p>
+
+                            <!-- Instructor & Rating -->
+                            <div class="flex items-center justify-between mb-6">
+                                <div class="flex items-center">
+                                    <div
+                                        class="bg-gray-200 dark:bg-gray-700 rounded-full w-10 h-10 flex items-center justify-center mr-3">
+                                        <i class="fas fa-user-tie text-gray-600 dark:text-gray-400"></i>
+                                    </div>
+                                    <div>
+                                        <p class="text-sm font-bold text-gray-900 dark:text-white">
+                                            {{ $course->instructor->name }}
+                                        </p>
+                                        <p class="text-xs text-gray-500 dark:text-gray-400">Instructor</p>
+                                    </div>
                                 </div>
-                                <div class="text-xs text-gray-500 dark:text-gray-400 font-semibold">Level</div>
-                            </div>
-                        </div>
 
-                        <!-- Action Buttons -->
-                        <div class="flex flex-col gap-3">
-                            <!-- Primary Action Button -->
-                            <template x-if="!isEnrolled">
-                                <button @click="$wire.enroll({{ $course->id }}); isEnrolling = true"
-                                    :disabled="isEnrolling || @js(in_array($course->id, $enrollingCourseIds))"
-                                    class="w-full group bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-black py-4 px-6 rounded-2xl transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none flex items-center justify-center shadow-xl">
-                                    <template x-if="!isEnrolling && !@js(in_array($course->id, $enrollingCourseIds))">
-                                        <span class="flex items-center">
+                                <div class="flex items-center">
+                                    <div class="flex items-center mr-2">
+                                        @for ($i = 1; $i <= 5; $i++)
                                             <i
-                                                class="fas fa-rocket mr-3 group-hover:rotate-12 transition-transform duration-300"></i>
-                                            Enroll Now
-                                        </span>
-                                    </template>
-                                    <template x-if="isEnrolling || @js(in_array($course->id, $enrollingCourseIds))">
-                                        <span class="flex items-center">
-                                            <i class="fas fa-spinner animate-spin mr-3"></i>
-                                            Enrolling...
-                                        </span>
-                                    </template>
-                                </button>
-                            </template>
+                                                class="fas fa-star text-sm {{ ($course->average_rating ?? 0) >= $i ? 'text-yellow-400' : 'text-gray-300 dark:text-gray-600' }}"></i>
+                                        @endfor
+                                    </div>
+                                    <span class="text-sm font-bold text-gray-700 dark:text-gray-300">
+                                        {{ number_format($course->average_rating ?? 0, 1) }}
+                                    </span>
+                                    <span class="text-xs text-gray-500 dark:text-gray-400 ml-1">
+                                        ({{ $course->rating_count ?? 0 }})
+                                    </span>
+                                </div>
+                            </div>
 
-                            <template x-if="isEnrolled">
-                                <div class="flex gap-3">
-                                    <a :href="`/courses/{{ $course->slug }}`"
-                                        class="flex-1 group bg-gradient-to-r from-emerald-600 to-blue-600 hover:from-emerald-700 hover:to-blue-700 text-white font-black py-4 px-6 rounded-2xl transition-all duration-300 transform hover:scale-105 flex items-center justify-center shadow-xl">
-                                        <i
-                                            class="fas fa-play mr-3 group-hover:scale-110 transition-transform duration-300"></i>
-                                        Continue Learning
-                                    </a>
-                                    <button @click="$wire.dropCourse({{ $course->id }}); isDropping = true"
-                                        :disabled="isDropping || @js(in_array($course->id, $droppingCourseIds))"
-                                        class="group bg-red-100 hover:bg-red-200 text-red-700 font-bold py-4 px-6 rounded-2xl transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none">
-                                        <template x-if="!isDropping && !@js(in_array($course->id, $droppingCourseIds))">
-                                            <i
-                                                class="fas fa-sign-out-alt group-hover:rotate-12 transition-transform duration-300"></i>
+                            <!-- Course Stats -->
+                            <div class="grid grid-cols-2 gap-4 mb-6">
+                                <div class="text-center bg-gray-50 dark:bg-gray-700/50 rounded-xl py-3">
+                                    <div class="text-2xl font-black text-blue-600 dark:text-blue-400">
+                                        {{ $course->total_enrollments }}
+                                    </div>
+                                    <div class="text-xs text-gray-500 dark:text-gray-400 font-semibold">Students</div>
+                                </div>
+                                <div class="text-center bg-gray-50 dark:bg-gray-700/50 rounded-xl py-3">
+                                    <div class="text-2xl font-black 
+                                            {{ $course->difficulty_level === 'beginner'
+                ? 'text-green-600 dark:text-green-400'
+                : ($course->difficulty_level === 'intermediate'
+                    ? 'text-yellow-600 dark:text-yellow-400'
+                    : 'text-red-600 dark:text-red-400') }}">
+                                        {{ strtoupper(substr($course->difficulty_level, 0, 3)) }}
+                                    </div>
+                                    <div class="text-xs text-gray-500 dark:text-gray-400 font-semibold">Level</div>
+                                </div>
+                            </div>
+
+                            <!-- Action Buttons -->
+                            <div class="flex flex-col gap-3">
+                                <!-- Primary Action Button -->
+                                <template x-if="!isEnrolled">
+                                    <button @click="$wire.enroll({{ $course->id }}); isEnrolling = true"
+                                        :disabled="isEnrolling || @js(in_array($course->id, $enrollingCourseIds))"
+                                        class="w-full group bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-black py-4 px-6 rounded-2xl transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none flex items-center justify-center shadow-xl">
+                                        <template x-if="!isEnrolling && !@js(in_array($course->id, $enrollingCourseIds))">
+                                            <span class="flex items-center">
+                                                <i
+                                                    class="fas fa-rocket mr-3 group-hover:rotate-12 transition-transform duration-300"></i>
+                                                Enroll Now
+                                            </span>
                                         </template>
-                                        <template x-if="isDropping || @js(in_array($course->id, $droppingCourseIds))">
-                                            <i class="fas fa-spinner animate-spin"></i>
+                                        <template x-if="isEnrolling || @js(in_array($course->id, $enrollingCourseIds))">
+                                            <span class="flex items-center">
+                                                <i class="fas fa-spinner animate-spin mr-3"></i>
+                                                Enrolling...
+                                            </span>
                                         </template>
                                     </button>
+                                </template>
+
+                                <template x-if="isEnrolled">
+                                    <div class="flex gap-3">
+                                        <a :href="`/courses/{{ $course->slug }}`"
+                                            class="flex-1 group bg-gradient-to-r from-emerald-600 to-blue-600 hover:from-emerald-700 hover:to-blue-700 text-white font-black py-4 px-6 rounded-2xl transition-all duration-300 transform hover:scale-105 flex items-center justify-center shadow-xl">
+                                            <i
+                                                class="fas fa-play mr-3 group-hover:scale-110 transition-transform duration-300"></i>
+                                            Continue Learning
+                                        </a>
+                                        <button @click="$wire.dropCourse({{ $course->id }}); isDropping = true"
+                                            :disabled="isDropping || @js(in_array($course->id, $droppingCourseIds))"
+                                            class="group bg-red-100 hover:bg-red-200 text-red-700 font-bold py-4 px-6 rounded-2xl transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none">
+                                            <template x-if="!isDropping && !@js(in_array($course->id, $droppingCourseIds))">
+                                                <i
+                                                    class="fas fa-sign-out-alt group-hover:rotate-12 transition-transform duration-300"></i>
+                                            </template>
+                                            <template x-if="isDropping || @js(in_array($course->id, $droppingCourseIds))">
+                                                <i class="fas fa-spinner animate-spin"></i>
+                                            </template>
+                                        </button>
+                                    </div>
+                                </template>
+
+                                <!-- Secondary Actions -->
+                                <div class="flex gap-3">
+                                    <button @click="selectedCourse = {{ $course->id }}; previewModal = true"
+                                        class="flex-1 group bg-white/80 hover:bg-white dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 font-bold py-3 px-4 rounded-xl transition-all duration-300 transform hover:scale-105 border border-gray-200 dark:border-gray-600 flex items-center justify-center">
+                                        <i class="fas fa-eye mr-2 group-hover:scale-110 transition-transform duration-300"></i>
+                                        Preview
+                                    </button>
+
+                                    <button
+                                        class="group bg-white/80 hover:bg-white dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 font-bold py-3 px-4 rounded-xl transition-all duration-300 transform hover:scale-105 border border-gray-200 dark:border-gray-600">
+                                        <i class="fas fa-share-alt group-hover:rotate-12 transition-transform duration-300"></i>
+                                    </button>
                                 </div>
-                            </template>
-
-                            <!-- Secondary Actions -->
-                            <div class="flex gap-3">
-                                <button @click="selectedCourse = {{ $course->id }}; previewModal = true"
-                                    class="flex-1 group bg-white/80 hover:bg-white dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 font-bold py-3 px-4 rounded-xl transition-all duration-300 transform hover:scale-105 border border-gray-200 dark:border-gray-600 flex items-center justify-center">
-                                    <i
-                                        class="fas fa-eye mr-2 group-hover:scale-110 transition-transform duration-300"></i>
-                                    Preview
-                                </button>
-
-                                <button
-                                    class="group bg-white/80 hover:bg-white dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 font-bold py-3 px-4 rounded-xl transition-all duration-300 transform hover:scale-105 border border-gray-200 dark:border-gray-600">
-                                    <i
-                                        class="fas fa-share-alt group-hover:rotate-12 transition-transform duration-300"></i>
-                                </button>
                             </div>
                         </div>
                     </div>
-                </div>
             @empty
                 <div
                     class="col-span-full text-center py-20 bg-white/70 dark:bg-gray-800/70 backdrop-blur-xl rounded-3xl shadow-xl border border-white/20 dark:border-gray-700/30">
@@ -458,16 +453,14 @@
             type: 'success',
             icon: 'fas fa-check-circle',
             action: null
-        }"
-            @notify.window="
+        }" @notify.window="
             show = true; 
             message = $event.detail.message; 
             type = $event.detail.type || 'success';
             icon = $event.detail.icon || 'fas fa-check-circle';
             action = $event.detail.action || null;
             setTimeout(() => show = false, action ? 8000 : 5000)
-         "
-            x-show="show" x-transition:enter="transform transition-all duration-300 ease-out"
+         " x-show="show" x-transition:enter="transform transition-all duration-300 ease-out"
             x-transition:enter-start="translate-x-full opacity-0" x-transition:enter-end="translate-x-0 opacity-100"
             x-transition:leave="transform transition-all duration-300 ease-in"
             x-transition:leave-start="translate-x-0 opacity-100" x-transition:leave-end="translate-x-full opacity-0"
@@ -480,8 +473,7 @@
                     'bg-gradient-to-r from-red-500 to-pink-500': type === 'error',
                     'bg-gradient-to-r from-blue-500 to-purple-500': type === 'info',
                     'bg-gradient-to-r from-yellow-500 to-orange-500': type === 'warning'
-                }"
-                    class="p-6">
+                }" class="p-6">
 
                     <div class="flex items-start">
                         <div class="flex-shrink-0">
@@ -522,37 +514,37 @@
 
 
     @push('scripts')
-    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.0/dist/confetti.browser.min.js"></script>
-@endpush
-@push('Styles')
-    <style>
-        [x-cloak] {
-            display: none !important;
-        }
+        <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.0/dist/confetti.browser.min.js"></script>
+    @endpush
+    @push('Styles')
+        <style>
+            [x-cloak] {
+                display: none !important;
+            }
 
-        .course-card-hover {
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
+            .course-card-hover {
+                transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            }
 
-        .course-card-hover:hover {
-            transform: translateY(-8px) scale(1.02);
-        }
+            .course-card-hover:hover {
+                transform: translateY(-8px) scale(1.02);
+            }
 
-        .progress-ring {
-            transform: rotate(-90deg);
-        }
+            .progress-ring {
+                transform: rotate(-90deg);
+            }
 
-        .glass-effect {
-            backdrop-filter: blur(16px);
-            background: rgba(255, 255, 255, 0.1);
-        }
+            .glass-effect {
+                backdrop-filter: blur(16px);
+                background: rgba(255, 255, 255, 0.1);
+            }
 
-        .gradient-text {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-    </style>
-@endpush
+            .gradient-text {
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+            }
+        </style>
+    @endpush
 
 </div>

@@ -40,7 +40,7 @@
                 <div
                     class="bg-gray-700 rounded-lg border border-gray-600 hover:border-blue-500 transition-colors overflow-hidden">
                     <div class="relative">
-                        <img src="{{ $course->thumbnail ?? asset('images/default-course.png') }}" alt="{{ $course->title }}"
+                        <img src="{{ asset('storage/' . ($course->thumbnail ?? 'images/default-course.png')) }}" alt="{{ $course->title }}"
                             class="w-full h-40 object-cover">
                         <span class="absolute top-2 left-2 bg-blue-600 text-white text-xs px-2 py-1 rounded">
                             {{ $course->category->name ?? 'Uncategorized' }}

@@ -64,8 +64,10 @@
         <div class="max-w-4xl mx-auto">
             @if($post->featured_image)
                 <div class="aspect-video mb-8 rounded-xl overflow-hidden">
+                    <a href="{{ route('blog.show', $post->slug) }}">
                     <img src="{{ Storage::url($post->featured_image) }}" alt="{{ $post->title }}"
                         class="w-full h-full object-cover">
+                    </a>
                 </div>
             @endif
         </div>
@@ -232,8 +234,10 @@
                         <article class="bg-white rounded-xl shadow-sm overflow-hidden hover:shadow-lg transition-shadow">
                             @if($relatedPost->featured_image)
                                 <div class="aspect-video overflow-hidden">
+                                    <a href="{{ route('blog.show', $post->slug) }}">
                                     <img src="{{ Storage::url($relatedPost->featured_image) }}" alt="{{ $relatedPost->title }}"
                                         class="w-full h-full object-cover hover:scale-105 transition-transform duration-300">
+                                    </a>
                                 </div>
                             @endif
                             <div class="p-4">

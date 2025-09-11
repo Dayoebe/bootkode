@@ -3,8 +3,7 @@
     totalSteps: @entangle('totalSteps'),
     showPreview: false,
     animateStep: true
-}"
-x-init="
+}" x-init="
 $watch('currentStep', () => {
     animateStep = false;
     setTimeout(() => animateStep = true, 50);
@@ -247,8 +246,8 @@ window.addEventListener('redirect-after-delay', (event) => {
                                 <input type="file" wire:model="thumbnail" class="hidden" id="thumbnail">
                                 <label for="thumbnail" class="cursor-pointer">
                                     @if ($thumbnail)
-                                        <img src="{{ $thumbnail->temporaryUrl() }}" alt="Preview"
-                                            class="w-full h-48 object-cover rounded-lg mb-4">
+                                        <img src="{{ asset('storage/' . ($thumbnail->temporaryUrl() ?? 'images/default-course.png')) }}"
+                                            alt="Preview" class="w-full h-48 object-cover rounded-lg mb-4">
                                     @else
                                         <div
                                             class="w-full h-48 bg-gray-700 rounded-lg mb-4 flex items-center justify-center">
@@ -308,8 +307,7 @@ window.addEventListener('redirect-after-delay', (event) => {
                     <div class="relative">
                         <input type="checkbox" wire:model.live="is_free" id="free_option" class="sr-only">
                         <label for="free_option"
-                            class="block p-6 rounded-xl cursor-pointer transition-all duration-200 border-2"
-                            :class="$wire.is_free ? 'border-green-500 bg-green-500/20' :
+                            class="block p-6 rounded-xl cursor-pointer transition-all duration-200 border-2" :class="$wire.is_free ? 'border-green-500 bg-green-500/20' :
                                 'border-gray-600 bg-gray-700/50 hover:border-green-400'">
                             <div class="text-center">
                                 <div class="w-16 h-16 mx-auto mb-4 rounded-full flex items-center justify-center"
@@ -326,8 +324,7 @@ window.addEventListener('redirect-after-delay', (event) => {
                     <div class="relative">
                         <input type="checkbox" wire:model.live="is_premium" id="premium_option" class="sr-only">
                         <label for="premium_option"
-                            class="block p-6 rounded-xl cursor-pointer transition-all duration-200 border-2"
-                            :class="$wire.is_premium ? 'border-purple-500 bg-purple-500/20' :
+                            class="block p-6 rounded-xl cursor-pointer transition-all duration-200 border-2" :class="$wire.is_premium ? 'border-purple-500 bg-purple-500/20' :
                                 'border-gray-600 bg-gray-700/50 hover:border-purple-400'">
                             <div class="text-center">
                                 <div class="w-16 h-16 mx-auto mb-4 rounded-full flex items-center justify-center"
@@ -343,8 +340,7 @@ window.addEventListener('redirect-after-delay', (event) => {
                     <!-- Regular Paid Course -->
                     <div class="relative">
                         <button type="button" wire:click="setPaidCourse"
-                            class="block w-full p-6 rounded-xl border-2 transition-all duration-200"
-                            :class="!$wire.is_free && !$wire.is_premium ? 'border-blue-500 bg-blue-500/20' :
+                            class="block w-full p-6 rounded-xl border-2 transition-all duration-200" :class="!$wire.is_free && !$wire.is_premium ? 'border-blue-500 bg-blue-500/20' :
                                 'border-gray-600 bg-gray-700/50 hover:border-blue-400'">
                             <div class="text-center">
                                 <div class="w-16 h-16 mx-auto mb-4 rounded-full flex items-center justify-center"
@@ -436,8 +432,7 @@ window.addEventListener('redirect-after-delay', (event) => {
                                                 placeholder="Students will be able to...">
                                         </div>
                                         @if (count($learning_outcomes) > 1)
-                                            <button type="button"
-                                                wire:click="removeLearningOutcome({{ $index }})"
+                                            <button type="button" wire:click="removeLearningOutcome({{ $index }})"
                                                 class="text-red-400 hover:text-red-300 p-2">
                                                 <i class="fas fa-trash"></i>
                                             </button>
@@ -466,8 +461,7 @@ window.addEventListener('redirect-after-delay', (event) => {
                                                 placeholder="What should students know beforehand?"></textarea>
                                         </div>
                                         @if (count($prerequisites) > 1)
-                                            <button type="button"
-                                                wire:click="removePrerequisite({{ $index }})"
+                                            <button type="button" wire:click="removePrerequisite({{ $index }})"
                                                 class="text-red-400 hover:text-red-300 p-2">
                                                 <i class="fas fa-trash"></i>
                                             </button>
@@ -537,11 +531,10 @@ window.addEventListener('redirect-after-delay', (event) => {
                                 Completion Threshold (%)
                             </label>
                             <div class="relative">
-                                <input type="number" wire:model="completion_rate_threshold" min="0"
-                                    max="100" step="0.01"
+                                <input type="number" wire:model="completion_rate_threshold" min="0" max="100"
+                                    step="0.01"
                                     class="w-full px-4 py-3 bg-gray-700/50 border border-gray-600 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-white placeholder-gray-400">
-                                <span
-                                    class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400">%</span>
+                                <span class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400">%</span>
                             </div>
                             <p class="text-xs text-gray-400 mt-1">Minimum completion rate for certificate eligibility
                             </p>
@@ -583,7 +576,8 @@ window.addEventListener('redirect-after-delay', (event) => {
                         </h3>
                         <div class="bg-gray-800 rounded-lg p-4">
                             @if ($thumbnail)
-                                <img src="{{ $thumbnail->temporaryUrl() }}" alt="Course thumbnail"
+                            
+                            <img src="{{ asset('storage/' . ($thumbnail->temporaryUrl() ?? 'images/default-course.png')) }}" alt="Course thumbnail"
                                     class="w-full h-32 object-cover rounded-lg mb-4">
                             @else
                                 <div class="w-full h-32 bg-gray-600 rounded-lg mb-4 flex items-center justify-center">
@@ -717,8 +711,7 @@ window.addEventListener('redirect-after-delay', (event) => {
         <div class="mt-6 flex justify-center md:hidden">
             <div class="flex space-x-2">
                 <template x-for="step in totalSteps" :key="step">
-                    <button type="button" @click="$wire.goToStep(step)"
-                        class="w-3 h-3 rounded-full transition-colors"
+                    <button type="button" @click="$wire.goToStep(step)" class="w-3 h-3 rounded-full transition-colors"
                         :class="step === currentStep ? 'bg-purple-500' : step < currentStep ? 'bg-purple-300' : 'bg-gray-600'">
                     </button>
                 </template>

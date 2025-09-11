@@ -2,9 +2,15 @@
 <div class="comment-item">
     <div class="flex space-x-4">
         <div class="flex-shrink-0">
-            <img src="{{ $comment->user ? $comment->user->profile_photo_url : asset('images/default-avatar.png') }}" 
+            @php
+                // Get the profile picture URL or use default
+                $profilePicture = $comment->user && $comment->user->profile_picture 
+                    ? asset('storage/' . $comment->user->profile_picture) 
+                    : asset('images/default-avatar.png');
+            @endphp
+            <img src="{{ $profilePicture }}" 
                  alt="{{ $comment->author_display_name }}"
-                 class="w-10 h-10 rounded-full">
+                 class="w-10 h-10 rounded-full object-cover">
         </div>
         
         <div class="flex-1">

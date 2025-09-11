@@ -138,7 +138,8 @@
                     <!-- Course Header with Image -->
                     <div class="relative h-40 bg-gradient-to-r from-blue-500 to-purple-600">
                         @if ($course->thumbnail)
-                            <img src="{{ $course->thumbnail }}" alt="{{ $course->title }}"
+                            <img src="{{ asset('storage/' . ($course->thumbnail ?? 'images/default-course.png')) }}"
+                                alt="{{ $course->title }}"
                                 class="w-full h-full object-cover">
                         @else
                             <div class="w-full h-full flex items-center justify-center">
@@ -158,6 +159,9 @@
                             <i class="fas fa-users mr-1"></i> {{ $course->enrollments_count }} students
                         </div>
                     </div>
+
+
+
 
                     <!-- Course Content -->
                     <div class="p-4">
