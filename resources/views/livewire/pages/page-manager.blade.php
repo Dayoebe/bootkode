@@ -57,6 +57,7 @@
                     'analytics' => ['label' => 'Analytics', 'icon' => 'fas fa-chart-line'],
                     'templates' => ['label' => 'Templates', 'icon' => 'fas fa-palette'],
                     'media' => ['label' => 'Media', 'icon' => 'fas fa-photo-video'],
+                    'seo' => ['label' => 'SEO Manager', 'icon' => 'fas fa-search'],
                     'settings' => ['label' => 'Settings', 'icon' => 'fas fa-cog'],
                 ] as $tab => $tabData)
                     <button
@@ -75,102 +76,40 @@
     </div>
 
     <!-- Main Content Area -->
-    <div class="px-4 sm:px-6 lg:px-8 py-4" wire:loading.class="opacity-50 pointer-events-none">
-        
-        @if($activeTab === 'all-pages' && !$showCreateForm && !$showEditForm)
-            @include('livewire.pages.partials.pages-list')
-        @elseif($activeTab === 'create-page' || $showCreateForm)
-            @include('livewire.pages.partials.create-page-form')
-        @elseif($showEditForm)
-            @include('livewire.pages.partials.edit-page-form')
-        @elseif($activeTab === 'analytics')
-            @include('livewire.pages.partials.analytics-dashboard')
-        @elseif($activeTab === 'templates')
-            @include('livewire.pages.partials.templates-manager')
-        @elseif($activeTab === 'media')
-            @include('livewire.pages.partials.media-manager')
-        @elseif($activeTab === 'settings')
-            @include('livewire.pages.partials.settings-panel')
-        @endif
-    </div>
-
-    <!-- SEO Analysis Modal -->
-    @if($showSeoAnalysis)
-        <div class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
-            <div class="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-screen overflow-y-auto">
-                <div class="p-6 border-b border-gray-200">
-                    <div class="flex items-center justify-between">
-                        <h3 class="text-lg font-medium text-gray-900">SEO Analysis</h3>
-                        <button wire:click="closeSeoAnalysis" class="text-gray-400 hover:text-gray-600">
-                            <i class="fas fa-times"></i>
-                        </button>
-                    </div>
-                </div>
+    <div class="px-4 sm:px-6 lg:px-8 py-4">
+        @switch($activeTab)
+            @case('all-pages')
+                <livewire:pages.partials.pages-list />
+                @break
                 
-                <div class="p-6">
-                    <!-- SEO Score -->
-                    <div class="mb-6">
-                        <div class="flex items-center justify-between mb-2">
-                            <span class="text-sm font-medium text-gray-700">SEO Score</span>
-                            <span class="text-lg font-bold {{ $seoAnalysisData['score'] >= 80 ? 'text-green-600' : ($seoAnalysisData['score'] >= 60 ? 'text-yellow-600' : 'text-red-600') }}">
-                                {{ $seoAnalysisData['score'] }}/100
-                            </span>
-                        </div>
-                        <div class="w-full bg-gray-200 rounded-full h-2">
-                            <div class="h-2 rounded-full transition-all duration-300 {{ $seoAnalysisData['score'] >= 80 ? 'bg-green-600' : ($seoAnalysisData['score'] >= 60 ? 'bg-yellow-600' : 'bg-red-600') }}" 
-                                 style="width: {{ $seoAnalysisData['score'] }}%"></div>
-                        </div>
-                    </div>
-
-                    <!-- Content Stats -->
-                    <div class="grid grid-cols-2 gap-4 mb-6">
-                        <div class="bg-gray-50 p-3 rounded-lg">
-                            <div class="text-sm text-gray-600">Word Count</div>
-                            <div class="text-lg font-semibold">{{ $seoAnalysisData['word_count'] ?? 0 }}</div>
-                        </div>
-                        <div class="bg-gray-50 p-3 rounded-lg">
-                            <div class="text-sm text-gray-600">Reading Time</div>
-                            <div class="text-lg font-semibold">{{ $seoAnalysisData['reading_time'] ?? 0 }} min</div>
-                        </div>
-                    </div>
-
-                    <!-- Issues -->
-                    @if(!empty($seoAnalysisData['issues']))
-                        <div class="mb-6">
-                            <h4 class="text-sm font-medium text-red-700 mb-2 flex items-center">
-                                <i class="fas fa-exclamation-triangle mr-2"></i>Issues
-                            </h4>
-                            <ul class="space-y-1">
-                                @foreach($seoAnalysisData['issues'] as $issue)
-                                    <li class="text-sm text-red-600 flex items-start">
-                                        <i class="fas fa-times text-red-500 mt-0.5 mr-2 text-xs"></i>
-                                        <span>{{ $issue }}</span>
-                                    </li>
-                                @endforeach
-                            </ul>
-                        </div>
-                    @endif
-
-                    <!-- Suggestions -->
-                    @if(!empty($seoAnalysisData['suggestions']))
-                        <div class="mb-6">
-                            <h4 class="text-sm font-medium text-yellow-700 mb-2 flex items-center">
-                                <i class="fas fa-lightbulb mr-2"></i>Suggestions
-                            </h4>
-                            <ul class="space-y-1">
-                                @foreach($seoAnalysisData['suggestions'] as $suggestion)
-                                    <li class="text-sm text-yellow-600 flex items-start">
-                                        <i class="fas fa-arrow-right text-yellow-500 mt-0.5 mr-2 text-xs"></i>
-                                        <span>{{ $suggestion }}</span>
-                                    </li>
-                                @endforeach
-                            </ul>
-                        </div>
-                    @endif
-                </div>
-            </div>
-        </div>
-    @endif
+            @case('create-page')
+                <livewire:pages.partials.create-page />
+                @break
+                
+            @case('analytics')
+                <livewire:pages.partials.analytics />
+                @break
+                
+            @case('templates')
+                <livewire:pages.partials.templates />
+                @break
+                
+            @case('media')
+                <livewire:pages.partials.media-manager />
+                @break
+                
+            @case('seo')
+                <livewire:pages.partials.seo-manager />
+                @break
+                
+            @case('settings')
+                <livewire:pages.partials.settings />
+                @break
+                
+            @default
+                <livewire:pages.partials.pages-list />
+        @endswitch
+    </div>
 
     <!-- Loading Overlay -->
     <div wire:loading class="fixed inset-0 bg-black bg-opacity-25 z-40 flex items-center justify-center">
@@ -212,15 +151,3 @@
         </template>
     </div>
 </div>
-
-@script
-<script>
-    // Initialize rich text editor when needed
-    Alpine.data('richTextEditor', () => ({
-        init() {
-            // Initialize your preferred rich text editor here
-            // This could be TinyMCE, CKEditor, Quill, etc.
-        }
-    }))
-</script>
-@endscript
