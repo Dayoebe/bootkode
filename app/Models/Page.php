@@ -268,7 +268,7 @@ class Page extends Model
         }
 
         $featuredImage = $this->featuredMedia()->first();
-        return $featuredImage ? asset($featuredImage->file_path) : null;
+        return $featuredImage ? asset('storage/' .$featuredImage->file_path) : null;
     }
 
     // Content Processing
