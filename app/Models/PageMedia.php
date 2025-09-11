@@ -122,22 +122,25 @@ class PageMedia extends Model
         return self::TYPE_OTHER;
     }
 
+    // public function getUrl(): string
+    // {
+    //     return $this->cdn_url ?: asset($this->file_path);
+    // }
+
     public function getUrl(): string
-    {
-        return $this->cdn_url ?: asset($this->file_path);
+{
+    return $this->cdn_url ?: asset('storage/' . $this->file_path);
+}
+public function getThumbnailUrl($size = 'medium'): ?string
+{
+    if ($this->media_type !== self::TYPE_IMAGE || !$this->thumbnails) {
+        return null;
     }
 
-    public function getThumbnailUrl($size = 'medium'): ?string
-    {
-        if ($this->media_type !== self::TYPE_IMAGE || !$this->thumbnails) {
-            return null;
-        }
-
-        return isset($this->thumbnails[$size]) 
-            ? asset($this->thumbnails[$size])
-            : $this->getUrl();
-    }
-
+    return isset($this->thumbnails[$size]) 
+        ? asset('storage/' . $this->thumbnails[$size])
+        : $this->getUrl();
+}
     public function getFormattedSize(): string
     {
         $bytes = $this->file_size;
