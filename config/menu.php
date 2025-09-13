@@ -20,6 +20,46 @@ return [
                 ['label' => 'Student Dashboard', 'icon' => 'fas fa-book-reader', 'route_name' => 'student.dashboard', 'roles' => [User::ROLE_STUDENT], 'link_id' => 'student_dashboard',],
             ]
         ],
+
+
+             [
+            'label' => 'Marketplace',
+            'icon' => 'fas fa-store',
+            'route_name' => '#',
+            'roles' => [], // visible to all by default
+            'link_id' => 'marketplace',
+            'children' => [
+                // General
+                ['label' => 'Browse Marketplace', 'icon' => 'fas fa-search', 'route_name' => 'marketplace.browse', 'roles' => [], 'link_id' => 'marketplace.browse'],
+                ['label' => 'Categories', 'icon' => 'fas fa-tags', 'route_name' => 'marketplace.categories', 'roles' => [], 'link_id' => 'marketplace.categories'],
+                ['label' => 'Product Details', 'icon' => 'fas fa-box-open', 'route_name' => 'marketplace.product.show', 'roles' => [], 'link_id' => 'marketplace.product.show'],
+                ['label' => 'Cart & Checkout', 'icon' => 'fas fa-credit-card', 'route_name' => 'marketplace.checkout', 'roles' => [], 'link_id' => 'marketplace.checkout'],
+                ['label' => 'My Purchases', 'icon' => 'fas fa-shopping-cart', 'route_name' => 'marketplace.purchases', 'roles' => [User::ROLE_STUDENT, User::ROLE_AFFILIATE_AMBASSADOR], 'link_id' => 'marketplace.purchases'],
+        
+                // Vendor
+                ['label' => 'Sell a Product', 'icon' => 'fas fa-upload', 'route_name' => 'marketplace.seller.create', 'roles' => [User::ROLE_INSTRUCTOR, User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN], 'link_id' => 'marketplace.seller.create'],
+                ['label' => 'My Listings', 'icon' => 'fas fa-list-alt', 'route_name' => 'marketplace.seller.listings', 'roles' => [User::ROLE_INSTRUCTOR, User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN], 'link_id' => 'marketplace.seller.listings'],
+                ['label' => 'Saved Drafts', 'icon' => 'fas fa-save', 'route_name' => 'marketplace.seller.drafts', 'roles' => [User::ROLE_INSTRUCTOR, User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN], 'link_id' => 'marketplace.seller.drafts'],
+                ['label' => 'Vendor Dashboard', 'icon' => 'fas fa-store-alt', 'route_name' => 'marketplace.vendor.dashboard', 'roles' => [User::ROLE_INSTRUCTOR, User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN], 'link_id' => 'marketplace.vendor.dashboard'],
+                ['label' => 'Customer Orders', 'icon' => 'fas fa-box', 'route_name' => 'marketplace.vendor.orders', 'roles' => [User::ROLE_INSTRUCTOR, User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN], 'link_id' => 'marketplace.vendor.orders'],
+                ['label' => 'Withdrawals', 'icon' => 'fas fa-money-bill-wave', 'route_name' => 'marketplace.vendor.withdrawals', 'roles' => [User::ROLE_INSTRUCTOR, User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN], 'link_id' => 'marketplace.vendor.withdrawals'],
+        
+                //Admin
+                ['label' => 'Vendor Applications', 'icon' => 'fas fa-user-plus', 'route_name' => 'marketplace.vendor.applications', 'roles' => [User::ROLE_SUPER_ADMIN, User::ROLE_ACADEMY_ADMIN], 'link_id' => 'marketplace.vendor.applications'],
+                ['label' => 'All Orders', 'icon' => 'fas fa-boxes', 'route_name' => 'marketplace.orders', 'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN], 'link_id' => 'marketplace.orders'],
+                ['label' => 'Payments & Payouts', 'icon' => 'fas fa-wallet', 'route_name' => 'marketplace.payments', 'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN], 'link_id' => 'marketplace.payments'],
+                ['label' => 'Promotions & Discounts', 'icon' => 'fas fa-bullhorn', 'route_name' => 'marketplace.promotions', 'roles' => [User::ROLE_CONTENT_EDITOR, User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN], 'link_id' => 'marketplace.promotions'],
+                ['label' => 'Reviews & Ratings', 'icon' => 'fas fa-star', 'route_name' => 'marketplace.reviews', 'roles' => [], 'link_id' => 'marketplace.reviews'],
+                ['label' => 'Marketplace Analytics', 'icon' => 'fas fa-chart-line', 'route_name' => 'marketplace.analytics', 'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN], 'link_id' => 'marketplace.analytics'],
+                ['label' => 'Marketplace Settings', 'icon' => 'fas fa-cog', 'route_name' => 'marketplace.settings', 'roles' => [User::ROLE_SUPER_ADMIN, User::ROLE_ACADEMY_ADMIN], 'link_id' => 'marketplace.settings'],
+            ]
+            ],
+        
+
+
+
+
+
         [
             'label' => 'Profile',
             'icon' => 'fas fa-user',
@@ -505,40 +545,7 @@ return [
             ]
         ],
 
-        // [
-        //     'label' => 'Marketplace',
-        //     'icon' => 'fas fa-store',
-        //     'route_name' => '#',
-        //     'roles' => [], // visible to all by default
-        //     'link_id' => 'marketplace',
-        //     'children' => [
-        //         // General
-        //         ['label' => 'Browse Marketplace', 'icon' => 'fas fa-search', 'route_name' => 'marketplace.browse', 'roles' => [], 'link_id' => 'marketplace.browse'],
-        //         ['label' => 'Categories', 'icon' => 'fas fa-tags', 'route_name' => 'marketplace.categories', 'roles' => [], 'link_id' => 'marketplace.categories'],
-        //         ['label' => 'Product Details', 'icon' => 'fas fa-box-open', 'route_name' => 'marketplace.product.show', 'roles' => [], 'link_id' => 'marketplace.product.show'],
-        //         ['label' => 'Cart & Checkout', 'icon' => 'fas fa-credit-card', 'route_name' => 'marketplace.checkout', 'roles' => [], 'link_id' => 'marketplace.checkout'],
-        //         ['label' => 'My Purchases', 'icon' => 'fas fa-shopping-cart', 'route_name' => 'marketplace.purchases', 'roles' => [User::ROLE_STUDENT, User::ROLE_AFFILIATE_AMBASSADOR], 'link_id' => 'marketplace.purchases'],
-        
-        //         // Vendor
-        //         ['label' => 'Sell a Product', 'icon' => 'fas fa-upload', 'route_name' => 'marketplace.seller.create', 'roles' => [User::ROLE_INSTRUCTOR, User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN], 'link_id' => 'marketplace.seller.create'],
-        //         ['label' => 'My Listings', 'icon' => 'fas fa-list-alt', 'route_name' => 'marketplace.seller.listings', 'roles' => [User::ROLE_INSTRUCTOR, User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN], 'link_id' => 'marketplace.seller.listings'],
-        //         ['label' => 'Saved Drafts', 'icon' => 'fas fa-save', 'route_name' => 'marketplace.seller.drafts', 'roles' => [User::ROLE_INSTRUCTOR, User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN], 'link_id' => 'marketplace.seller.drafts'],
-        //         ['label' => 'Vendor Dashboard', 'icon' => 'fas fa-store-alt', 'route_name' => 'marketplace.vendor.dashboard', 'roles' => [User::ROLE_INSTRUCTOR, User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN], 'link_id' => 'marketplace.vendor.dashboard'],
-        //         ['label' => 'Customer Orders', 'icon' => 'fas fa-box', 'route_name' => 'marketplace.vendor.orders', 'roles' => [User::ROLE_INSTRUCTOR, User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN], 'link_id' => 'marketplace.vendor.orders'],
-        //         ['label' => 'Withdrawals', 'icon' => 'fas fa-money-bill-wave', 'route_name' => 'marketplace.vendor.withdrawals', 'roles' => [User::ROLE_INSTRUCTOR, User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN], 'link_id' => 'marketplace.vendor.withdrawals'],
-        
-        //         // Admin
-        //         ['label' => 'Vendor Applications', 'icon' => 'fas fa-user-plus', 'route_name' => 'marketplace.vendor.applications', 'roles' => [User::ROLE_SUPER_ADMIN, User::ROLE_ACADEMY_ADMIN], 'link_id' => 'marketplace.vendor.applications'],
-        //         ['label' => 'All Orders', 'icon' => 'fas fa-boxes', 'route_name' => 'marketplace.orders', 'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN], 'link_id' => 'marketplace.orders'],
-        //         ['label' => 'Payments & Payouts', 'icon' => 'fas fa-wallet', 'route_name' => 'marketplace.payments', 'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN], 'link_id' => 'marketplace.payments'],
-        //         ['label' => 'Promotions & Discounts', 'icon' => 'fas fa-bullhorn', 'route_name' => 'marketplace.promotions', 'roles' => [User::ROLE_CONTENT_EDITOR, User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN], 'link_id' => 'marketplace.promotions'],
-        //         ['label' => 'Reviews & Ratings', 'icon' => 'fas fa-star', 'route_name' => 'marketplace.reviews', 'roles' => [], 'link_id' => 'marketplace.reviews'],
-        //         ['label' => 'Marketplace Analytics', 'icon' => 'fas fa-chart-line', 'route_name' => 'marketplace.analytics', 'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN], 'link_id' => 'marketplace.analytics'],
-        //         ['label' => 'Marketplace Settings', 'icon' => 'fas fa-cog', 'route_name' => 'marketplace.settings', 'roles' => [User::ROLE_SUPER_ADMIN, User::ROLE_ACADEMY_ADMIN], 'link_id' => 'marketplace.settings'],
-        //         ['label' => 'Integrations', 'icon' => 'fas fa-plug', 'route_name' => 'marketplace.integrations', 'roles' => [User::ROLE_SUPER_ADMIN, User::ROLE_ACADEMY_ADMIN], 'link_id' => 'marketplace.integrations'],
-        //     ]
-        // ]
-        
+   
 
 
     ]

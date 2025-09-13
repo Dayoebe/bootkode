@@ -7,6 +7,7 @@ use App\Http\Controllers\CertificateVerificationController;
 use App\Livewire\CertificateManagement\CertificateRequest;
 use App\Livewire\CertificateManagement\CertificateManagement;
 use App\Http\Controllers\PageController;
+use App\Livewire\Affiliate;
 use App\Livewire\Content\ContentDocumentationCenter;
 
 
@@ -23,6 +24,79 @@ use App\Livewire\Content\ContentDocumentationCenter;
 
 
 
+use App\Livewire\Marketplace\MarketplaceCenter;
+use App\Http\Controllers\MarketplaceController;
+
+Route::middleware(['auth', 'verified'])->group(function () {
+    // Main marketplace routes (accessible to all authenticated users)
+    Route::get('/marketplace', MarketplaceCenter::class)->name('marketplace.browse');
+    Route::get('/marketplace/categories', MarketplaceCenter::class)->name('marketplace.categories');
+    Route::get('/marketplace/product/{slug}', MarketplaceCenter::class)->name('marketplace.product.show');
+    Route::get('/marketplace/cart', MarketplaceCenter::class)->name('marketplace.checkout');
+    Route::get('/marketplace/reviews', MarketplaceCenter::class)->name('marketplace.reviews');
+    Route::get('/marketplace/my-purchases', MarketplaceCenter::class)->name('marketplace.purchases');
+    Route::post('/marketplace/cart/add/{item}', [MarketplaceController::class, 'addToCart'])->name('marketplace.cart.add');
+    Route::delete('/marketplace/cart/remove/{item}', [MarketplaceController::class, 'removeFromCart'])->name('marketplace.cart.remove');
+    Route::post('/marketplace/checkout', [MarketplaceController::class, 'checkout'])->name('marketplace.checkout.process');
+    // Vendor routes (Instructors, Academy Admin, Super Admin)
+
+    Route::get('/marketplace/sell', MarketplaceCenter::class)->name('marketplace.seller.create');
+    Route::get('/marketplace/my-listings', MarketplaceCenter::class)->name('marketplace.seller.listings');
+    Route::get('/marketplace/drafts', MarketplaceCenter::class)->name('marketplace.seller.drafts');
+    Route::get('/marketplace/vendor/dashboard', MarketplaceCenter::class)->name('marketplace.vendor.dashboard');
+    Route::get('/marketplace/vendor/orders', MarketplaceCenter::class)->name('marketplace.vendor.orders');
+    Route::get('/marketplace/vendor/withdrawals', MarketplaceCenter::class)->name('marketplace.vendor.withdrawals');
+
+    // Vendor API routes
+    Route::post('/marketplace/items', [MarketplaceController::class, 'store'])->name('marketplace.items.store');
+    Route::patch('/marketplace/items/{item}', [MarketplaceController::class, 'update'])->name('marketplace.items.update');
+    Route::delete('/marketplace/items/{item}', [MarketplaceController::class, 'destroy'])->name('marketplace.items.destroy');
+    Route::post('/marketplace/items/{item}/submit', [MarketplaceController::class, 'submitForReview'])->name('marketplace.items.submit');
+    Route::patch('/marketplace/orders/{order}/fulfill', [MarketplaceController::class, 'fulfillOrder'])->name('marketplace.orders.fulfill');
+
+    // Admin routes (Academy Admin, Super Admin)
+    Route::get('/marketplace/admin/vendors', MarketplaceCenter::class)->name('marketplace.vendor.applications');
+    Route::get('/marketplace/admin/orders', MarketplaceCenter::class)->name('marketplace.orders');
+    Route::get('/marketplace/admin/payments', MarketplaceCenter::class)->name('marketplace.payments');
+    Route::get('/marketplace/admin/analytics', MarketplaceCenter::class)->name('marketplace.analytics');
+    Route::get('/marketplace/admin/settings', MarketplaceCenter::class)->name('marketplace.settings');
+
+    // Admin API routes
+    Route::post('/marketplace/items/{item}/approve', [MarketplaceController::class, 'approve'])->name('marketplace.items.approve');
+    Route::post('/marketplace/items/{item}/reject', [MarketplaceController::class, 'reject'])->name('marketplace.items.reject');
+    Route::post('/marketplace/items/{item}/suspend', [MarketplaceController::class, 'suspend'])->name('marketplace.items.suspend');
+    Route::post('/marketplace/orders/{order}/refund', [MarketplaceController::class, 'refund'])->name('marketplace.orders.refund');
+    Route::post('/marketplace/vendors/{user}/approve', [MarketplaceController::class, 'approveVendor'])->name('marketplace.vendors.approve');
+
+    // Content Editor + Admin routes
+
+    Route::get('/marketplace/promotions', MarketplaceCenter::class)->name('marketplace.promotions');
+
+    // Common API routes (for authenticated users)
+    Route::post('/marketplace/items/{item}/view', [MarketplaceController::class, 'incrementViews'])->name('marketplace.items.view');
+});
+// Public routes (no auth required)
+Route::prefix('marketplace')->group(function () {
+    Route::get('/item/{slug}', [MarketplaceController::class, 'show'])->name('marketplace.item.public');
+    Route::get('/category/{category}', [MarketplaceController::class, 'category'])->name('marketplace.category.public');
+    Route::get('/vendor/{vendor}', [MarketplaceController::class, 'vendor'])->name('marketplace.vendor.public');
+});
+
+// Payment callback routes (public, no auth)
+Route::post('/marketplace/payment/callback', [MarketplaceController::class, 'paymentCallback'])->name('marketplace.payment.callback');
+Route::get('/marketplace/payment/success', [MarketplaceController::class, 'paymentSuccess'])->name('marketplace.payment.success');
+Route::get('/marketplace/payment/failed', [MarketplaceController::class, 'paymentFailed'])->name('marketplace.payment.failed');
+
+
+
+
+
+
+
+
+
+
+
 
 
 // Page management routes (protected)
@@ -36,7 +110,7 @@ Route::prefix('admin/pages')->middleware(['auth', 'verified'])->group(function (
     Route::get('/media', \App\Livewire\Pages\PageManager::class)->defaults('activeTab', 'media')->name('pages.media');
     Route::get('/seo', \App\Livewire\Pages\PageManager::class)->defaults('activeTab', 'seo')->name('pages.seo');
     Route::get('/settings', \App\Livewire\Pages\PageManager::class)->defaults('activeTab', 'settings')->name('pages.settings');
-    
+
     // API endpoints
     Route::post('/upload-media', [\App\Http\Controllers\MediaController::class, 'upload'])->name('pages.upload-media');
     Route::delete('/media/{media}', [\App\Http\Controllers\MediaController::class, 'delete'])->name('pages.delete-media');
@@ -110,9 +184,6 @@ Route::prefix('newsletter')->name('newsletter.')->group(function () {
 
 
 //Affiliate Routes
-use App\Livewire\Affiliate;
-
-
 Route::middleware(['auth'])->group(function () {
     // Affiliate routes
     Route::get('/affiliate/dashboard', Affiliate\Dashboard::class)->name('affiliate.dashboard');

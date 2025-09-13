@@ -57,7 +57,12 @@ return [
         ],
 
     ],
-
+    'marketplace' => [
+        'driver' => 'local',
+        'root' => storage_path('app/public/marketplace'),
+        'url' => env('APP_URL') . '/storage/marketplace',
+        'visibility' => 'public',
+    ],
     /*
     |--------------------------------------------------------------------------
     | Symbolic Links
