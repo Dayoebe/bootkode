@@ -122,6 +122,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'account_verified',
         'referred_by',
         'referral_source',
+        'marketplace_items',
     ];
 
     protected $hidden = [
@@ -139,9 +140,35 @@ class User extends Authenticatable implements MustVerifyEmail
         'receive_course_updates' => 'boolean',
         'receive_certificate_notifications' => 'boolean',
     ];
-
-
+    public function isVendor(): bool
+    {
+        return $this->marketplaceItems()->exists() || $this->canManageCourses();
+    }
+    public function getVendorOrderStats()
+    {
+        return [
+            'total_orders' => $this->vendorOrders()->count(),
+            'pending_orders' => $this->vendorOrders()->where('status', MarketplaceOrder::STATUS_PENDING)->count(),
+            'completed_orders' => $this->vendorOrders()->where('status', MarketplaceOrder::STATUS_COMPLETED)->count(),
+            'total_earnings' => $this->vendorOrders()->paid()->sum('vendor_earning'),
+        ];
+    }
     // Relationships
+
+    public function marketplaceItems()
+    {
+        return $this->hasMany(MarketplaceItem::class, 'vendor_id');
+    }
+
+    public function customerOrders()
+    {
+        return $this->hasMany(MarketplaceOrder::class, 'customer_id');
+    }
+
+    public function vendorOrders()
+    {
+        return $this->hasMany(MarketplaceOrder::class, 'vendor_id');
+    }
     public function courses()
     {
         return $this->belongsToMany(Course::class, 'course_user')

@@ -49,7 +49,8 @@ return new class extends Migration {
             $table->boolean('receive_course_updates')->default(true);
             $table->boolean('receive_certificate_notifications')->default(true);    
             $table->foreignId('referred_by')->nullable()->after('account_verified')->constrained('users');
-            $table->string('referral_source', 50)->nullable()->after('referred_by'); // 'organic', 'affiliate', 'social', etc.       
+            $table->string('referral_source', 50)->nullable()->after('referred_by'); // 'organic', 'affiliate', 'social', etc.    
+            $table->json('metadata')->nullable();   
             
             // Indexes
             $table->index('is_active');
