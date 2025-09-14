@@ -142,10 +142,9 @@ class MarketplaceItem extends Model
     {
         return $this->hasMany(MarketplaceOrder::class, 'item_id');
     }
-
     public function reviews()
     {
-        return $this->morphMany(Review::class, 'reviewable');
+        return $this->morphMany(ProductReview::class, 'reviewable');
     }
 
     // Helper Methods
