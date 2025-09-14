@@ -4,6 +4,7 @@
         courses: false,
         roadmaps: false,
         mentorship: false,
+        marketplace: false,
         community: false
     }
 }">
@@ -20,7 +21,6 @@
                     </div>
                 </a>
             </div>
-
 
             <div class="md:hidden px-3 py-3">
                 <div class="relative">
@@ -69,6 +69,49 @@
                                 <i class="fas fa-database text-blue-400 mr-3"></i>
                                 Data Science
                             </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Marketplace Dropdown -->
+                <div class="relative" x-data="{ open: false }" @mouseenter="open = true" @mouseleave="open = false">
+                    <button
+                        class="px-4 py-2 text-gray-700 hover:text-blue-400 font-medium hover:uppercase flex items-center space-x-1 transition-all duration-300 relative group">
+                        <span>Marketplace</span>
+                        <i class="fas fa-chevron-down text-xs transition-transform duration-300"
+                            :class="{ 'rotate-180': open }"></i>
+                        <span
+                            class="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-0 h-0.5 bg-blue-400 transition-all duration-300 group-hover:w-3/4"></span>
+                    </button>
+                    <div class="absolute left-0 w-56 mt-2 bg-white rounded-xl shadow-xl border border-gray-100 z-50 origin-top-left transition-all duration-300"
+                        x-show="open" x-transition:enter="transition ease-out duration-200"
+                        x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100"
+                        x-transition:leave="transition ease-in duration-150"
+                        x-transition:leave-start="opacity-100 scale-100" x-transition:leave-end="opacity-0 scale-95"
+                        style="display: none;" @click.away="open = false">
+                        <div class="py-1">
+                            <a href="{{ route('marketplace.browse') }}"
+                                class="block px-4 py-3 text-gray-700 hover:bg-blue-50 hover:text-blue-400 transition-colors duration-200 flex items-center rounded-lg mx-2 my-1">
+                                <i class="fas fa-store text-blue-400 mr-3"></i>
+                                Browse All Products
+                            </a>
+                            <a href="{{ route('marketplace.categories') }}"
+                                class="block px-4 py-3 text-gray-700 hover:bg-blue-50 hover:text-blue-400 transition-colors duration-200 flex items-center rounded-lg mx-2 my-1">
+                                <i class="fas fa-tags text-blue-400 mr-3"></i>
+                                Categories
+                            </a>
+                            @auth
+                                <a href="{{ route('marketplace.cart') }}"
+                                    class="block px-4 py-3 text-gray-700 hover:bg-blue-50 hover:text-blue-400 transition-colors duration-200 flex items-center rounded-lg mx-2 my-1">
+                                    <i class="fas fa-shopping-cart text-blue-400 mr-3"></i>
+                                    My Cart
+                                </a>
+                                <a href="{{ route('marketplace.purchases') }}"
+                                    class="block px-4 py-3 text-gray-700 hover:bg-blue-50 hover:text-blue-400 transition-colors duration-200 flex items-center rounded-lg mx-2 my-1">
+                                    <i class="fas fa-shopping-bag text-blue-400 mr-3"></i>
+                                    My Purchases
+                                </a>
+                            @endauth
                         </div>
                     </div>
                 </div>
@@ -284,8 +327,6 @@
             </div>
 
             <div class="px-4 pt-2 pb-5 space-y-1">
-
-
                 <a href="/"
                     class="flex border border-b-2 border-blue-600 items-center px-3 py-3 text-gray-700 rounded-lg hover:bg-blue-50">
                     <i class="fas fa-code text-blue-400 mr-3"></i>
@@ -324,6 +365,48 @@
                             <i class="fas fa-mobile-alt text-blue-400 mr-3 text-sm"></i>
                             Mobile Development
                         </a>
+                    </div>
+                </div>
+
+                <!-- Mobile: Marketplace Dropdown -->
+                <div class="relative">
+                    <button @click="dropdowns.marketplace = !dropdowns.marketplace"
+                        class="w-full flex justify-between items-center px-3 py-3 text-gray-700 rounded-lg hover:bg-blue-50">
+                        <div class="flex items-center">
+                            <i class="fas fa-store text-blue-400 mr-3"></i>
+                            <span class="font-medium hover:uppercase">Marketplace</span>
+                        </div>
+                        <i class="fas fa-chevron-down text-xs transition-transform duration-300"
+                            :class="{ 'rotate-180': dropdowns.marketplace }"></i>
+                    </button>
+                    <div class="mt-1 ml-8 space-y-1" x-show="dropdowns.marketplace" x-collapse
+                        x-transition:enter="transition ease-out duration-200"
+                        x-transition:enter-start="opacity-0 max-h-0" x-transition:enter-end="opacity-100 max-h-96"
+                        x-transition:leave="transition ease-in duration-150"
+                        x-transition:leave-start="opacity-100 max-h-96" x-transition:leave-end="opacity-0 max-h-0"
+                        style="display: none;">
+                        <a href="{{ route('marketplace.browse') }}"
+                            class="block px-3 py-2 text-gray-600 rounded-lg hover:bg-blue-50 hover:text-blue-400 transition-colors duration-200 flex items-center">
+                            <i class="fas fa-store text-blue-400 mr-3 text-sm"></i>
+                            Browse All Products
+                        </a>
+                        <a href="{{ route('marketplace.categories') }}"
+                            class="block px-3 py-2 text-gray-600 rounded-lg hover:bg-blue-50 hover:text-blue-400 transition-colors duration-200 flex items-center">
+                            <i class="fas fa-tags text-blue-400 mr-3 text-sm"></i>
+                            Categories
+                        </a>
+                        @auth
+                            <a href="{{ route('marketplace.cart') }}"
+                                class="block px-3 py-2 text-gray-600 rounded-lg hover:bg-blue-50 hover:text-blue-400 transition-colors duration-200 flex items-center">
+                                <i class="fas fa-shopping-cart text-blue-400 mr-3 text-sm"></i>
+                                My Cart
+                            </a>
+                            <a href="{{ route('marketplace.purchases') }}"
+                                class="block px-3 py-2 text-gray-600 rounded-lg hover:bg-blue-50 hover:text-blue-400 transition-colors duration-200 flex items-center">
+                                <i class="fas fa-shopping-bag text-blue-400 mr-3 text-sm"></i>
+                                My Purchases
+                            </a>
+                        @endauth
                     </div>
                 </div>
 

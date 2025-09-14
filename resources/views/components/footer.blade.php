@@ -38,7 +38,24 @@
                         <i class="fab fa-youtube fa-lg"></i>
                     </a>
                 </div>
+                
             </div>
+
+
+            {{-- <div>
+                <h4 class="text-white font-medium mb-4">Categories</h4>
+                <ul class="space-y-2 text-sm">
+                    @foreach($popularCategories->take(5) as $category)
+                        <li>
+                            <button wire:click="viewCategory({{ $category->id }})" 
+                                    class="hover:text-white transition-colors">
+                                {{ $category->name }}
+                            </button>
+                        </li>
+                    @endforeach
+                </ul>
+            </div> --}}
+
 
             <div class="space-y-4">
                 <h3 class="text-lg font-bold text-white uppercase tracking-wide">

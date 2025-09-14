@@ -23,71 +23,58 @@ use App\Livewire\Content\ContentDocumentationCenter;
 */
 
 
+// Clean Marketplace Routes - Remove duplicates and unnecessary APIs
 
-use App\Livewire\Marketplace\MarketplaceCenter;
-use App\Http\Controllers\MarketplaceController;
+// PUBLIC ROUTES (No auth required)
+Route::get('/marketplace', App\Livewire\Marketplace\PublicMarketplace::class)->name('marketplace.browse');
+Route::get('/marketplace/categories', App\Livewire\Marketplace\PublicMarketplace::class)->name('marketplace.categories');
+Route::get('/marketplace/product/{slug}', function($slug) {
+    return app(App\Livewire\Marketplace\PublicMarketplace::class, ['slug' => $slug, 'type' => 'product']);
+})->name('marketplace.product.show');
+Route::get('/marketplace/category/{slug}', function($slug) {
+    return app(App\Livewire\Marketplace\PublicMarketplace::class, ['slug' => $slug, 'type' => 'category']);
+})->name('marketplace.category.show');
+Route::get('/marketplace/instructor/{id}', function($id) {
+    return app(App\Livewire\Marketplace\PublicMarketplace::class, ['slug' => $id, 'type' => 'vendor']);
+})->name('marketplace.instructor.show');
 
+// AUTHENTICATED ROUTES - Dashboard Access
 Route::middleware(['auth', 'verified'])->group(function () {
-    // Main marketplace routes (accessible to all authenticated users)
-    Route::get('/marketplace', MarketplaceCenter::class)->name('marketplace.browse');
-    Route::get('/marketplace/categories', MarketplaceCenter::class)->name('marketplace.categories');
-    Route::get('/marketplace/product/{slug}', MarketplaceCenter::class)->name('marketplace.product.show');
-    Route::get('/marketplace/cart', MarketplaceCenter::class)->name('marketplace.checkout');
-    Route::get('/marketplace/reviews', MarketplaceCenter::class)->name('marketplace.reviews');
-    Route::get('/marketplace/my-purchases', MarketplaceCenter::class)->name('marketplace.purchases');
-    Route::post('/marketplace/cart/add/{item}', [MarketplaceController::class, 'addToCart'])->name('marketplace.cart.add');
-    Route::delete('/marketplace/cart/remove/{item}', [MarketplaceController::class, 'removeFromCart'])->name('marketplace.cart.remove');
-    Route::post('/marketplace/checkout', [MarketplaceController::class, 'checkout'])->name('marketplace.checkout.process');
-    // Vendor routes (Instructors, Academy Admin, Super Admin)
-
-    Route::get('/marketplace/sell', MarketplaceCenter::class)->name('marketplace.seller.create');
-    Route::get('/marketplace/my-listings', MarketplaceCenter::class)->name('marketplace.seller.listings');
-    Route::get('/marketplace/drafts', MarketplaceCenter::class)->name('marketplace.seller.drafts');
-    Route::get('/marketplace/vendor/dashboard', MarketplaceCenter::class)->name('marketplace.vendor.dashboard');
-    Route::get('/marketplace/vendor/orders', MarketplaceCenter::class)->name('marketplace.vendor.orders');
-    Route::get('/marketplace/vendor/withdrawals', MarketplaceCenter::class)->name('marketplace.vendor.withdrawals');
-
-    // Vendor API routes
-    Route::post('/marketplace/items', [MarketplaceController::class, 'store'])->name('marketplace.items.store');
-    Route::patch('/marketplace/items/{item}', [MarketplaceController::class, 'update'])->name('marketplace.items.update');
-    Route::delete('/marketplace/items/{item}', [MarketplaceController::class, 'destroy'])->name('marketplace.items.destroy');
-    Route::post('/marketplace/items/{item}/submit', [MarketplaceController::class, 'submitForReview'])->name('marketplace.items.submit');
-    Route::patch('/marketplace/orders/{order}/fulfill', [MarketplaceController::class, 'fulfillOrder'])->name('marketplace.orders.fulfill');
-
-    // Admin routes (Academy Admin, Super Admin)
-    Route::get('/marketplace/admin/vendors', MarketplaceCenter::class)->name('marketplace.vendor.applications');
-    Route::get('/marketplace/admin/orders', MarketplaceCenter::class)->name('marketplace.orders');
-    Route::get('/marketplace/admin/payments', MarketplaceCenter::class)->name('marketplace.payments');
-    Route::get('/marketplace/admin/analytics', MarketplaceCenter::class)->name('marketplace.analytics');
-    Route::get('/marketplace/admin/settings', MarketplaceCenter::class)->name('marketplace.settings');
-
-    // Admin API routes
-    Route::post('/marketplace/items/{item}/approve', [MarketplaceController::class, 'approve'])->name('marketplace.items.approve');
-    Route::post('/marketplace/items/{item}/reject', [MarketplaceController::class, 'reject'])->name('marketplace.items.reject');
-    Route::post('/marketplace/items/{item}/suspend', [MarketplaceController::class, 'suspend'])->name('marketplace.items.suspend');
-    Route::post('/marketplace/orders/{order}/refund', [MarketplaceController::class, 'refund'])->name('marketplace.orders.refund');
-    Route::post('/marketplace/vendors/{user}/approve', [MarketplaceController::class, 'approveVendor'])->name('marketplace.vendors.approve');
-
-    // Content Editor + Admin routes
-
-    Route::get('/marketplace/promotions', MarketplaceCenter::class)->name('marketplace.promotions');
-
-    // Common API routes (for authenticated users)
-    Route::post('/marketplace/items/{item}/view', [MarketplaceController::class, 'incrementViews'])->name('marketplace.items.view');
-});
-// Public routes (no auth required)
-Route::prefix('marketplace')->group(function () {
-    Route::get('/item/{slug}', [MarketplaceController::class, 'show'])->name('marketplace.item.public');
-    Route::get('/category/{category}', [MarketplaceController::class, 'category'])->name('marketplace.category.public');
-    Route::get('/vendor/{vendor}', [MarketplaceController::class, 'vendor'])->name('marketplace.vendor.public');
+    
+    // GENERAL USER ROUTES (Students, Everyone)
+    Route::get('/marketplace/cart', App\Livewire\Marketplace\MarketplaceCenter::class)->name('marketplace.cart');
+    Route::get('/marketplace/checkout', App\Livewire\Marketplace\MarketplaceCenter::class)->name('marketplace.checkout');
+    Route::get('/marketplace/my-purchases', App\Livewire\Marketplace\MarketplaceCenter::class)->name('marketplace.purchases');
+    Route::get('/marketplace/reviews', App\Livewire\Marketplace\MarketplaceCenter::class)->name('marketplace.reviews');
+    
+    // VENDOR ROUTES (Instructors, Academy Admin, Super Admin)
+    Route::get('/marketplace/sell', App\Livewire\Marketplace\MarketplaceCenter::class)->name('marketplace.sell');
+    Route::get('/marketplace/seller/create', App\Livewire\Marketplace\MarketplaceCenter::class)->name('marketplace.seller.create');
+    Route::get('/marketplace/my-listings', App\Livewire\Marketplace\MarketplaceCenter::class)->name('marketplace.seller.listings');
+    Route::get('/marketplace/drafts', App\Livewire\Marketplace\MarketplaceCenter::class)->name('marketplace.seller.drafts');
+    Route::get('/marketplace/vendor/dashboard', App\Livewire\Marketplace\MarketplaceCenter::class)->name('marketplace.vendor.dashboard');
+    Route::get('/marketplace/vendor/orders', App\Livewire\Marketplace\MarketplaceCenter::class)->name('marketplace.vendor.orders');
+    Route::get('/marketplace/vendor/withdrawals', App\Livewire\Marketplace\MarketplaceCenter::class)->name('marketplace.vendor.withdrawals');
+    
+    // ADMIN ROUTES (Academy Admin, Super Admin)
+    Route::get('/marketplace/admin/vendors', App\Livewire\Marketplace\MarketplaceCenter::class)->name('marketplace.vendor.applications');
+    Route::get('/marketplace/admin/orders', App\Livewire\Marketplace\MarketplaceCenter::class)->name('marketplace.orders');
+    Route::get('/marketplace/admin/payments', App\Livewire\Marketplace\MarketplaceCenter::class)->name('marketplace.payments');
+    Route::get('/marketplace/admin/analytics', App\Livewire\Marketplace\MarketplaceCenter::class)->name('marketplace.analytics');
+    Route::get('/marketplace/admin/settings', App\Livewire\Marketplace\MarketplaceCenter::class)->name('marketplace.settings');
+    
+    // CONTENT EDITOR + ADMIN ROUTES
+    Route::get('/marketplace/promotions', App\Livewire\Marketplace\MarketplaceCenter::class)->name('marketplace.promotions');
 });
 
-// Payment callback routes (public, no auth)
-Route::post('/marketplace/payment/callback', [MarketplaceController::class, 'paymentCallback'])->name('marketplace.payment.callback');
-Route::get('/marketplace/payment/success', [MarketplaceController::class, 'paymentSuccess'])->name('marketplace.payment.success');
-Route::get('/marketplace/payment/failed', [MarketplaceController::class, 'paymentFailed'])->name('marketplace.payment.failed');
-
-
+// PAYMENT CALLBACKS (Public, no auth)
+Route::post('/marketplace/payment/callback', [App\Http\Controllers\PaymentController::class, 'marketplaceCallback'])->name('marketplace.payment.callback');
+Route::get('/marketplace/payment/success', function() {
+    return redirect()->route('marketplace.purchases')->with('success', 'Payment completed successfully!');
+})->name('marketplace.payment.success');
+Route::get('/marketplace/payment/failed', function() {
+    return redirect()->route('marketplace.checkout')->with('error', 'Payment failed. Please try again.');
+})->name('marketplace.payment.failed');
 
 
 

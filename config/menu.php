@@ -32,7 +32,7 @@ return [
                 // General
                 ['label' => 'Browse Marketplace', 'icon' => 'fas fa-search', 'route_name' => 'marketplace.browse', 'roles' => [], 'link_id' => 'marketplace.browse'],
                 ['label' => 'Categories', 'icon' => 'fas fa-tags', 'route_name' => 'marketplace.categories', 'roles' => [], 'link_id' => 'marketplace.categories'],
-                ['label' => 'Product Details', 'icon' => 'fas fa-box-open', 'route_name' => 'marketplace.product.show', 'roles' => [], 'link_id' => 'marketplace.product.show'],
+                // ['label' => 'Product Details', 'icon' => 'fas fa-box-open', 'route_name' => 'marketplace.product.show', 'roles' => [], 'link_id' => 'marketplace.product.show'],
                 ['label' => 'Cart & Checkout', 'icon' => 'fas fa-credit-card', 'route_name' => 'marketplace.checkout', 'roles' => [], 'link_id' => 'marketplace.checkout'],
                 ['label' => 'My Purchases', 'icon' => 'fas fa-shopping-cart', 'route_name' => 'marketplace.purchases', 'roles' => [User::ROLE_STUDENT, User::ROLE_AFFILIATE_AMBASSADOR], 'link_id' => 'marketplace.purchases'],
         
