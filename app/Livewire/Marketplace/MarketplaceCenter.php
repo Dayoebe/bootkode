@@ -33,28 +33,16 @@ class MarketplaceCenter extends Component
     {
         $this->user = auth()->user();
 
-        // Set active tab based on route
+        // Set active tab based on route - Updated for consolidated structure
         $currentRoute = Route::currentRouteName();
         $this->activeTab = match ($currentRoute) {
-            'marketplace.browse' => 'browse',
-            'marketplace.categories' => 'categories',
-            'marketplace.product.show' => 'product-details',
-            'marketplace.checkout' => 'checkout',
-            'marketplace.purchases' => 'purchases',
-            'marketplace.seller.create' => 'create-listing',
-            'marketplace.seller.listings' => 'my-listings',
-            'marketplace.seller.drafts' => 'drafts',
-            'marketplace.vendor.dashboard' => 'vendor-dashboard',
-            'marketplace.vendor.orders' => 'vendor-orders',
-            'marketplace.vendor.withdrawals' => 'withdrawals',
-            'marketplace.vendor.applications' => 'vendor-applications',
-            'marketplace.orders' => 'all-orders',
-            'marketplace.payments' => 'payments',
-            'marketplace.promotions' => 'promotions',
-            'marketplace.reviews' => 'reviews',
-            'marketplace.analytics' => 'analytics',
-            'marketplace.settings' => 'settings',
-            'marketplace.integrations' => 'integrations',
+            'marketplace.browse', 'marketplace.categories', 'marketplace.product.show' => 'browse',
+            'marketplace.checkout', 'marketplace.purchases' => 'shopping',
+            'marketplace.seller.create', 'marketplace.seller.listings', 'marketplace.seller.drafts' => 'vendor',
+            'marketplace.vendor.dashboard', 'marketplace.vendor.orders', 'marketplace.vendor.withdrawals' => 'business',
+            'marketplace.vendor.applications', 'marketplace.orders', 'marketplace.payments' => 'admin',
+            'marketplace.promotions', 'marketplace.reviews' => 'content',
+            'marketplace.analytics', 'marketplace.settings' => 'system',
             default => 'browse'
         };
 
