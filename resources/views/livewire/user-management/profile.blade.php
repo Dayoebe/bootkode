@@ -3,7 +3,7 @@
     <div class="" x-data="{ activeTab: @entangle('activeTab') }">
         <!-- Header Section -->
         <div
-            class="relative bg-gradient-to-r from-blue-900/80 via-purple-900/80 to-pink-900/80 backdrop-blur-sm rounded-3xl shadow-2xl border border-gray-700/50 overflow-hidden mb-8">
+            class="relative bg-gray-800 backdrop-blur-sm rounded-3xl shadow-2xl border border-gray-700/50 overflow-hidden mb-8">
             <!-- Background Pattern -->
             <div class="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg width="60" height="60" viewBox="0 0 60 60"
                 xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="none" fill-rule="evenodd"%3E%3Cg fill="%23ffffff"
@@ -20,7 +20,7 @@
                                     class="w-24 h-24 lg:w-32 lg:h-32 rounded-full object-cover border-4 border-white/20 shadow-xl group-hover:scale-105 transition-transform duration-300">
                             @else
                                 <div
-                                    class="w-24 h-24 lg:w-32 lg:h-32 rounded-full bg-gradient-to-br from-blue-500 via-purple-600 to-pink-500 flex items-center justify-center text-white text-4xl lg:text-5xl font-bold shadow-xl group-hover:scale-105 transition-transform duration-300">
+                                    class="w-24 h-24 lg:w-32 lg:h-32 rounded-full bg-pink-500 flex items-center justify-center text-white text-4xl lg:text-5xl font-bold shadow-xl group-hover:scale-105 transition-transform duration-300">
                                     {{ strtoupper(substr($user->name, 0, 1)) }}
                                 </div>
                             @endif
@@ -39,7 +39,7 @@
                             <!-- Badges -->
                             <div class="flex flex-wrap items-center gap-2 mb-3">
                                 <span
-                                    class="px-4 py-1.5 rounded-full text-sm font-medium bg-gradient-to-r from-blue-500/20 to-purple-500/20 border border-blue-500/30 text-blue-300 backdrop-blur-sm">
+                                    class="px-4 py-1.5 rounded-full text-sm font-medium bg-blue-500 border border-blue-500/30 text-white backdrop-blur-sm">
                                     <i class="fas fa-user-tag mr-1"></i>
                                     {{ ucfirst(str_replace('_', ' ', $user->role)) }}
                                 </span>
@@ -84,7 +84,7 @@
                             </button>
                         @else
                             <button wire:click="toggleEditMode"
-                                class="px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white rounded-xl font-semibold transition-all duration-300 shadow-lg hover:shadow-blue-500/25 flex items-center justify-center">
+                                class="px-6 py-3 bg-blue-600 hover:from-blue-700 hover:bg-emerald-700 text-white rounded-xl font-semibold transition-all duration-300 shadow-lg hover:shadow-blue-500/25 flex items-center justify-center">
                                 <i class="fas fa-edit mr-2"></i> Edit Profile
                             </button>
                             <button
