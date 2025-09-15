@@ -28,10 +28,6 @@
             </div>
         </div>
 
-
-
-
-
         <!-- Users Table -->
         <div class="bg-white shadow overflow-hidden sm:rounded-lg">
             <div class="flex items-center justify-between px-4 py-3 border-b border-gray-200">
