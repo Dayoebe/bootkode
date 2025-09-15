@@ -99,7 +99,8 @@
                                     <div class="ml-4">
                                         <div class="text-sm font-medium text-gray-900">{{ Str::limit($item->title, 50) }}</div>
                                         <div class="text-sm text-gray-500">
-                                            @if($item->categories->count() > 0)
+                                           {{--  --}}}
+                                            @if($item->categories && $item->categories->count() > 0)
                                                 @foreach($item->categories->take(2) as $category)
                                                     <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-blue-100 text-blue-800 mr-1">
                                                         {{ $category->name }}

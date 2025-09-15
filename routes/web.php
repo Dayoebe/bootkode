@@ -39,13 +39,13 @@ Route::get('/marketplace/instructor/{id}', function($id) {
 })->name('marketplace.instructor.show');
 
 // AUTHENTICATED ROUTES - Dashboard Access
-Route::middleware(['auth', 'verified'])->group(function () {
-    
+Route::middleware(['auth', 'verified'])->group(function () {    
     // GENERAL USER ROUTES (Students, Everyone)
     Route::get('/marketplace/cart', App\Livewire\Marketplace\MarketplaceCenter::class)->name('marketplace.cart');
     Route::get('/marketplace/checkout', App\Livewire\Marketplace\MarketplaceCenter::class)->name('marketplace.checkout');
     Route::get('/marketplace/my-purchases', App\Livewire\Marketplace\MarketplaceCenter::class)->name('marketplace.purchases');
     Route::get('/marketplace/reviews', App\Livewire\Marketplace\MarketplaceCenter::class)->name('marketplace.reviews');
+    Route::get('/marketplace/item/{slug}', App\Livewire\Marketplace\MarketplaceCenter::class)->name('marketplace.item.public');
     
     // VENDOR ROUTES (Instructors, Academy Admin, Super Admin)
     Route::get('/marketplace/sell', App\Livewire\Marketplace\MarketplaceCenter::class)->name('marketplace.sell');
