@@ -593,7 +593,7 @@
 
     @elseif($activeView === 'product' && $selectedProduct)
         <!-- Product Detail View -->
-        @include('livewire.marketplace.partials.product-detail')
+        @include('livewire.marketplace.public.product-detail')
     @endif
 
     <!-- Login Modal -->
