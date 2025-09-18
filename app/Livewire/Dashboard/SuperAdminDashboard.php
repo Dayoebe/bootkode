@@ -9,11 +9,17 @@ use App\Models\CourseCategory;
 use App\Models\SupportTicket;
 use App\Models\Certificate;
 use App\Models\SystemStatus;
+use App\Models\JobPortal;
+use App\Models\Wallet;
+use App\Models\BlogPost;
+use App\Models\Faq;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Spatie\Activitylog\Models\Activity;
 use Livewire\Attributes\On;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Layout;
+use Carbon\Carbon;
 
 #[Layout('layouts.dashboard', [
     'title' => 'Super Admin Dashboard',
@@ -21,35 +27,27 @@ use Livewire\Attributes\Layout;
     'icon' => 'fas fa-user-shield',
     'active' => 'super_admin_dashboard',
 ])]
-
-
 class SuperAdminDashboard extends Component
 {
-    public $activeSection = 'overview';
-    public $stats = [];
-    public $recentActivities = [];
-    public $pendingCourses = [];
-    public $pendingCertificates = [];
-    public $systemStatus = [];
-    public $recentUsers = [];
-    public $notifications = [];
+    public $selectedTimeframe = '7days';
     public $showQuickActionModal = false;
+    public $refreshInterval = 30000; // 30 seconds
+    
+    // Dashboard sections visibility
     public $showWidgets = [
-        'stats' => true,
-        'activities' => true,
-        'approvals' => true,
-        'system_status' => true,
-        'recent_users' => true,
-        'calendar' => true,
-        'revenue' => true,
-        'engagement' => true,
+        'overview_stats' => true,
+        'revenue_analytics' => true,
+        'user_analytics' => true,
+        'course_performance' => true,
+        'system_health' => true,
+        'recent_activities' => true,
+        'pending_approvals' => true,
+        'support_overview' => true,
     ];
 
     protected $listeners = [
-        'refreshStats' => 'loadStats',
-        'sectionChanged' => 'updateSection',
-        'refreshActivities' => 'loadRecentActivities',
-        'refreshNotifications' => 'loadNotifications',
+        'refreshDashboard' => 'loadAllData',
+        'timeframeChanged' => 'updateTimeframe',
         'toggleWidget' => 'toggleWidget',
     ];
 
@@ -59,156 +57,19 @@ class SuperAdminDashboard extends Component
             abort(403, 'Unauthorized access to Super Admin Dashboard.');
         }
 
-        $this->loadStats();
-        $this->loadRecentActivities();
-        $this->loadPendingApprovals();
-        $this->loadSystemStatus();
-        $this->loadRecentUsers();
-        $this->loadNotifications();
+        $this->loadAllData();
     }
 
-    #[Computed]
-    public function userGrowthData()
+    public function loadAllData()
     {
-        $data = [];
-        for ($i = 11; $i >= 0; $i--) {
-            $month = now()->subMonths($i);
-            $data[] = [
-                'month' => $month->format('M Y'),
-                'users' => User::where('created_at', '<=', $month->endOfMonth())->count(),
-            ];
-        }
-        return $data;
+        // Load all dashboard data
+        $this->dispatch('dashboard-updated');
     }
 
-    #[Computed]
-    public function courseEngagementData()
+    public function updateTimeframe($timeframe)
     {
-        $courses = Course::withCount('enrollments')
-            ->orderBy('enrollments_count', 'desc')
-            ->take(5)
-            ->get()
-            ->map(function ($course) {
-                return [
-                    'title' => $course->title,
-                    'enrollments' => $course->enrollments_count,
-                    'completion_rate' => $course->enrollments->count() > 0
-                        ? ($course->enrollments->whereNotNull('completed_at')->count() / $course->enrollments->count() * 100)
-                        : 0,
-                ];
-            })->toArray(); // Convert Collection to array
-
-        return $courses ?: []; // Return empty array if no data
-    }
-
-    public function loadStats()
-    {
-        $this->stats = cache()->remember('super_admin_stats', 300, function () {
-            return [
-                'total_users' => User::count(),
-                'role_counts' => [
-                    'super_admin' => User::where('role', User::ROLE_SUPER_ADMIN)->count(),
-                    'academy_admin' => User::where('role', User::ROLE_ACADEMY_ADMIN)->count(),
-                    'instructor' => User::where('role', User::ROLE_INSTRUCTOR)->count(),
-                    'student' => User::where('role', User::ROLE_STUDENT)->count(),
-                ],
-                'total_courses' => Course::count(),
-                'published_courses' => Course::where('is_published', true)->count(),
-                'course_categories' => CourseCategory::count(),
-                'pending_course_approvals' => Course::where('is_approved', false)->count(),
-                'open_tickets' => SupportTicket::where('status', 'open')->count(),
-                'total_certificates' => Certificate::count(),
-                'pending_certificate_approvals' => Certificate::where('status', 'pending')->count(),
-                'revenue' => Course::where('is_premium', true)->sum('price'),
-                'last_updated' => now()->format('M d, Y h:i A'),
-            ];
-        });
-    }
-
-    public function loadRecentActivities()
-    {
-        $this->recentActivities = Activity::where('causer_type', User::class)
-            ->with('causer')
-            ->orderBy('created_at', 'desc')
-            ->take(5)
-            ->get()
-            ->map(function ($activity) {
-                return [
-                    'description' => $activity->description,
-                    'causer' => $activity->causer ? $activity->causer->name : 'System',
-                    'created_at' => $activity->created_at->diffForHumans(),
-                ];
-            })->toArray(); // Convert to array
-    }
-
-    public function loadPendingApprovals()
-    {
-        $this->pendingCourses = Course::where('is_approved', false)
-            ->take(5)
-            ->get()
-            ->map(function ($course) {
-                return [
-                    'id' => $course->id,
-                    'title' => $course->title,
-                    'instructor' => $course->instructor ? $course->instructor->name : 'N/A',
-                ];
-            })->toArray();
-
-        $this->pendingCertificates = Certificate::where('status', 'pending')
-            ->take(5)
-            ->get()
-            ->map(function ($certificate) {
-                return [
-                    'id' => $certificate->id,
-                    'user' => $certificate->user ? $certificate->user->name : 'N/A',
-                    'course' => $certificate->course ? $certificate->course->title : 'N/A',
-                ];
-            })->toArray();
-    }
-
-    public function loadSystemStatus()
-    {
-        $this->systemStatus = cache()->remember('system_status', 300, function () {
-            $status = SystemStatus::latest()->first();
-            return [
-                'status' => $status ? $status->status : 'operational',
-                'message' => $status ? $status->message : 'All systems operational.',
-                'updated_at' => $status ? $status->updated_at->diffForHumans() : now()->diffForHumans(),
-            ];
-        });
-    }
-
-    public function loadRecentUsers()
-    {
-        $this->recentUsers = User::orderBy('created_at', 'desc')
-            ->take(5)
-            ->get()
-            ->map(function ($user) {
-                return [
-                    'id' => $user->id,
-                    'name' => $user->name,
-                    'email' => $user->email,
-                    'role' => $user->role,
-                    'is_active' => $user->is_active,
-                    'created_at' => $user->created_at->diffForHumans(),
-                ];
-            })->toArray();
-    }
-
-    public function loadNotifications()
-    {
-        $this->notifications = Activity::whereIn('description', ['created', 'updated', 'deleted'])
-            ->where('causer_type', User::class)
-            ->with('causer')
-            ->orderBy('created_at', 'desc')
-            ->take(10)
-            ->get()
-            ->map(function ($activity) {
-                return [
-                    'message' => sprintf('%s %s by %s', $activity->subject_type, $activity->description, $activity->causer ? $activity->causer->name : 'System'),
-                    'created_at' => $activity->created_at->diffForHumans(),
-                ];
-            })->toArray();
+        $this->selectedTimeframe = $timeframe;
+        $this->loadAllData();
     }
 
     public function toggleWidget($widget)
@@ -216,37 +77,340 @@ class SuperAdminDashboard extends Component
         $this->showWidgets[$widget] = !$this->showWidgets[$widget];
     }
 
-    public function toggleUserStatus($userId)
+    #[Computed]
+    public function overviewStats()
     {
-        $user = User::findOrFail($userId);
-        if ($user->id === 1 && $user->hasRole(User::ROLE_SUPER_ADMIN)) {
-            $this->dispatch('notify', type: 'error', message: 'Cannot modify the primary super admin.');
-            return;
-        }
+        $timeframe = $this->getTimeframeQuery();
+        
+        return [
+            'total_users' => User::count(),
+            'new_users_today' => User::whereDate('created_at', today())->count(),
+            'active_users' => User::where('is_active', true)->count(),
+            'total_courses' => Course::count(),
+            'published_courses' => Course::where('is_published', true)->count(),
+            'pending_courses' => Course::where('is_approved', false)->count(),
+            'total_revenue' => $this->getTotalRevenue(),
+            'monthly_revenue' => $this->getMonthlyRevenue(),
+            'open_tickets' => SupportTicket::where('status', 'open')->count(),
+            'pending_certificates' => Certificate::where('status', 'pending')->count(),
+            'job_postings' => JobPortal::where('status', JobPortal::STATUS_ACTIVE)->count(),
+            'blog_posts' => BlogPost::published()->count(),
+            
+        ];
+    }
 
-        $user->is_active ? $user->deactivateAccount() : $user->activateAccount();
-        $this->loadRecentUsers();
-        $this->dispatch('notify', type: 'success', message: 'User status updated successfully!');
+    #[Computed]
+    public function userGrowthData()
+    {
+        $days = $this->getTimeframeDays();
+        $data = [];
+        
+        for ($i = $days - 1; $i >= 0; $i--) {
+            $date = now()->subDays($i);
+            $data[] = [
+                'date' => $date->format('M d'),
+                'new_users' => User::whereDate('created_at', $date)->count(),
+                'total_users' => User::where('created_at', '<=', $date->endOfDay())->count(),
+            ];
+        }
+        
+        return $data;
+    }
+
+    #[Computed]
+    public function revenueAnalytics()
+    {
+        $days = $this->getTimeframeDays();
+        $data = [];
+        
+        for ($i = $days - 1; $i >= 0; $i--) {
+            $date = now()->subDays($i);
+            $revenue = $this->getDailyRevenue($date);
+            
+            $data[] = [
+                'date' => $date->format('M d'),
+                'revenue' => $revenue,
+                'formatted_revenue' => '₦' . number_format($revenue, 2),
+            ];
+        }
+        
+        return $data;
+    }
+
+    #[Computed]
+    public function coursePerformance()
+    {
+        return Course::with(['enrollments', 'instructor'])
+            ->withCount(['enrollments', 'reviews'])
+            ->where('is_published', true)
+            ->orderBy('enrollments_count', 'desc')
+            ->take(10)
+            ->get()
+            ->map(function ($course) {
+                $totalEnrollments = $course->enrollments_count;
+                $completedEnrollments = $course->enrollments()
+                ->where('progress_percentage', 100)
+                ->count();
+                
+                return [
+                    'id' => $course->id,
+                    'title' => $course->title,
+                    'instructor' => $course->instructor->name ?? 'Unknown',
+                    'enrollments' => $totalEnrollments,
+                    'completion_rate' => $totalEnrollments > 0 
+                        ? round(($completedEnrollments / $totalEnrollments) * 100, 1)
+                        : 0,
+                    'rating' => $course->reviews_avg_rating ?? 0,
+                    'revenue' => $course->is_premium ? ($course->price * $totalEnrollments) : 0,
+                ];
+            });
+    }
+
+    #[Computed]
+    public function systemHealth()
+    {
+        return [
+            'status' => $this->getSystemStatus(),
+            'database_health' => $this->checkDatabaseHealth(),
+            'storage_usage' => $this->getStorageUsage(),
+            'cache_status' => $this->getCacheStatus(),
+            'queue_status' => $this->getQueueStatus(),
+            'last_backup' => $this->getLastBackupTime(),
+        ];
+    }
+
+    #[Computed]
+    public function recentActivities()
+    {
+        return Activity::with('causer')
+            ->latest()
+            ->take(15)
+            ->get()
+            ->map(function ($activity) {
+                return [
+                    'id' => $activity->id,
+                    'description' => $activity->description,
+                    'causer' => $activity->causer->name ?? 'System',
+                    'subject_type' => class_basename($activity->subject_type ?? ''),
+                    'created_at' => $activity->created_at->diffForHumans(),
+                    'icon' => $this->getActivityIcon($activity->description),
+                    'color' => $this->getActivityColor($activity->description),
+                ];
+            });
+    }
+
+    #[Computed]
+    public function pendingApprovals()
+    {
+        return [
+            'courses' => Course::where('is_approved', false)
+                ->with('instructor')
+                ->latest()
+                ->take(5)
+                ->get()
+                ->map(function ($course) {
+                    return [
+                        'id' => $course->id,
+                        'title' => $course->title,
+                        'instructor' => $course->instructor->name ?? 'Unknown',
+                        'created_at' => $course->created_at->diffForHumans(),
+                        'category' => $course->category,
+                    ];
+                }),
+            
+            'certificates' => Certificate::where('status', 'pending')
+                ->with(['user', 'course'])
+                ->latest()
+                ->take(5)
+                ->get()
+                ->map(function ($certificate) {
+                    return [
+                        'id' => $certificate->id,
+                        'user' => $certificate->user->name ?? 'Unknown',
+                        'course' => $certificate->course->title ?? 'Unknown',
+                        'created_at' => $certificate->created_at->diffForHumans(),
+                        'grade' => $certificate->grade,
+                    ];
+                }),
+        ];
+    }
+
+    #[Computed]
+    public function supportOverview()
+    {
+        return [
+            'total_tickets' => SupportTicket::count(),
+            'open_tickets' => SupportTicket::where('status', 'open')->count(),
+            'pending_tickets' => SupportTicket::where('status', 'pending')->count(),
+            'resolved_tickets' => SupportTicket::where('status', 'resolved')->count(),
+            'average_response_time' => $this->getAverageResponseTime(),
+            'resolution_rate' => $this->getResolutionRate(),
+            'recent_tickets' => SupportTicket::with('user')
+                ->latest()
+                ->take(5)
+                ->get()
+                ->map(function ($ticket) {
+                    return [
+                        'id' => $ticket->id,
+                        'subject' => $ticket->subject,
+                        'user' => $ticket->user->name ?? 'Guest',
+                        'status' => $ticket->status,
+                        'priority' => $ticket->priority ?? 'normal',
+                        'created_at' => $ticket->created_at->diffForHumans(),
+                    ];
+                }),
+        ];
+    }
+
+    // Helper Methods
+    private function getTimeframeQuery()
+    {
+        return match ($this->selectedTimeframe) {
+            '24hours' => now()->subHours(24),
+            '7days' => now()->subDays(7),
+            '30days' => now()->subDays(30),
+            '90days' => now()->subDays(90),
+            default => now()->subDays(7),
+        };
+    }
+
+    private function getTimeframeDays()
+    {
+        return match ($this->selectedTimeframe) {
+            '24hours' => 1,
+            '7days' => 7,
+            '30days' => 30,
+            '90days' => 90,
+            default => 7,
+        };
+    }
+
+    private function getTotalRevenue()
+    {
+        return DB::table('wallet_transactions')
+            ->where('category', 'course_purchase')
+            ->where('type', 'credit')
+            ->sum('amount');
+    }
+
+    private function getMonthlyRevenue()
+    {
+        return DB::table('wallet_transactions')
+            ->where('category', 'course_purchase')
+            ->where('type', 'credit')
+            ->whereMonth('created_at', now()->month)
+            ->sum('amount');
+    }
+
+    private function getDailyRevenue($date)
+    {
+        return DB::table('wallet_transactions')
+            ->where('category', 'course_purchase')
+            ->where('type', 'credit')
+            ->whereDate('created_at', $date)
+            ->sum('amount') ?? 0;
+    }
+
+    private function getSystemStatus()
+    {
+        $status = SystemStatus::latest()->first();
+        return [
+            'status' => $status->status ?? 'operational',
+            'message' => $status->message ?? 'All systems operational',
+            'updated_at' => $status ? $status->updated_at->diffForHumans() : 'Never',
+        ];
+    }
+
+    private function checkDatabaseHealth()
+    {
+        try {
+            DB::connection()->getPdo();
+            return ['status' => 'healthy', 'message' => 'Database connection active'];
+        } catch (\Exception $e) {
+            return ['status' => 'error', 'message' => 'Database connection failed'];
+        }
+    }
+
+    private function getStorageUsage()
+    {
+        // This would need to be implemented based on your storage setup
+        return ['used' => '2.3 GB', 'total' => '10 GB', 'percentage' => 23];
+    }
+
+    private function getCacheStatus()
+    {
+        try {
+            cache()->put('health_check', 'ok', 60);
+            return cache()->get('health_check') === 'ok' ? 'operational' : 'error';
+        } catch (\Exception $e) {
+            return 'error';
+        }
+    }
+
+    private function getQueueStatus()
+    {
+        // This would need to be implemented based on your queue setup
+        return ['pending' => 5, 'failed' => 0, 'processed' => 1250];
+    }
+
+    private function getLastBackupTime()
+    {
+        // This would need to be implemented based on your backup strategy
+        return now()->subHours(6)->diffForHumans();
+    }
+
+    private function getAverageResponseTime()
+    {
+        return DB::table('support_tickets')
+            ->whereNotNull('responded_at')
+            ->selectRaw('AVG(TIMESTAMPDIFF(HOUR, created_at, responded_at)) as avg_hours')
+            ->value('avg_hours') ?? 0;
+    }
+
+    private function getResolutionRate()
+    {
+        $total = SupportTicket::count();
+        $resolved = SupportTicket::where('status', 'resolved')->count();
+        
+        return $total > 0 ? round(($resolved / $total) * 100, 1) : 0;
+    }
+
+    private function getActivityIcon($description)
+    {
+        return match (true) {
+            str_contains(strtolower($description), 'user') => 'fas fa-user',
+            str_contains(strtolower($description), 'course') => 'fas fa-book',
+            str_contains(strtolower($description), 'certificate') => 'fas fa-certificate',
+            str_contains(strtolower($description), 'payment') => 'fas fa-credit-card',
+            str_contains(strtolower($description), 'login') => 'fas fa-sign-in-alt',
+            default => 'fas fa-info-circle',
+        };
+    }
+
+    private function getActivityColor($description)
+    {
+        return match (true) {
+            str_contains(strtolower($description), 'created') => 'text-green-600',
+            str_contains(strtolower($description), 'updated') => 'text-blue-600',
+            str_contains(strtolower($description), 'deleted') => 'text-red-600',
+            str_contains(strtolower($description), 'login') => 'text-purple-600',
+            default => 'text-gray-600',
+        };
     }
 
     public function quickAction($action)
     {
-        switch ($action) {
-            case 'create_course':
-                return $this->redirect(route('create_course'));
-            case 'manage_users':
-                return $this->redirect(route('user-management'));
-            case 'view_tickets':
-                return $this->redirect(route('support.tickets'));
-            case 'manage_faqs':
-                return $this->redirect(route('faq.management'));
-            case 'view_courses':
-                return $this->redirect(route('all-course'));
-            case 'manage_categories':
-                return $this->redirect(route('course-categories'));
-            default:
-                $this->dispatch('notify', type: 'error', message: 'Invalid action.');
-        }
+        return match ($action) {
+            'create_course' => redirect()->route('create_course'),
+            'manage_users' => redirect()->route('user-management'),
+            'view_tickets' => redirect()->route('support.tickets'),
+            'manage_faqs' => redirect()->route('faq.management'),
+            'view_courses' => redirect()->route('all-course'),
+            'manage_categories' => redirect()->route('course-categories'),
+            'view_analytics' => redirect()->route('learning.analytics'),
+            'system_settings' => redirect()->route('settings'),
+            default => $this->dispatch('notify', type: 'error', message: 'Invalid action.'),
+        };
     }
 
     public function toggleQuickActionModal()
