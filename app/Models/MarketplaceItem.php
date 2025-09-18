@@ -100,6 +100,10 @@ class MarketplaceItem extends Model
     {
         return $this->belongsToMany(MarketplaceCategory::class, 'marketplace_item_categories');
     }
+    public function itemCategories()
+{
+    return $this->belongsToMany(MarketplaceCategory::class, 'marketplace_item_categories');
+}
     
     // Add this scope method:
     public function scopeInCategories($query, $categoryIds)

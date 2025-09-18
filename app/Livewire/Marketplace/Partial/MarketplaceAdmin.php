@@ -173,60 +173,7 @@ class MarketplaceAdmin extends Component
             }
         });
     }
-// === ENHANCED ITEM MANAGEMENT METHODS ===
-public function approveItem($itemId)
-{
-    $item = MarketplaceItem::findOrFail($itemId);
-    $item->update([
-        'status' => 'approved',
-        'approved_at' => now(),
-        'approved_by' => auth()->id(),
-        'rejection_reason' => null
-    ]);
-    
-    session()->flash('message', 'Item approved successfully.');
-    $this->loadDashboardStats();
-}
 
-public function rejectItem($itemId)
-{
-    $item = MarketplaceItem::findOrFail($itemId);
-    $item->update([
-        'status' => 'rejected',
-        'rejection_reason' => 'Rejected by admin - does not meet marketplace standards',
-        'approved_by' => auth()->id(),
-        'approved_at' => null
-    ]);
-    
-    session()->flash('message', 'Item rejected successfully.');
-    $this->loadDashboardStats();
-}
-
-public function suspendItem($itemId)
-{
-    $item = MarketplaceItem::findOrFail($itemId);
-    $item->update([
-        'status' => 'suspended',
-        'rejection_reason' => 'Suspended by admin for policy violation'
-    ]);
-    
-    session()->flash('message', 'Item suspended successfully.');
-    $this->loadDashboardStats();
-}
-
-public function reactivateItem($itemId)
-{
-    $item = MarketplaceItem::findOrFail($itemId);
-    $item->update([
-        'status' => 'approved',
-        'rejection_reason' => null,
-        'approved_at' => now(),
-        'approved_by' => auth()->id()
-    ]);
-    
-    session()->flash('message', 'Item reactivated successfully.');
-    $this->loadDashboardStats();
-}  
     private function calculatePendingPayouts()
     {
         try {
@@ -504,57 +451,6 @@ public function reactivateItem($itemId)
         $this->loadDashboardStats();
         session()->flash('message', 'Vendor reactivated successfully.');
     }
-
-    // === ITEM MANAGEMENT METHODS ===
-    // public function approveItem($itemId)
-    // {
-    //     $item = MarketplaceItem::findOrFail($itemId);
-    //     $item->update([
-    //         'status' => 'approved',
-    //         'approved_at' => now(),
-    //         'approved_by' => auth()->id(),
-    //         'rejection_reason' => null
-    //     ]);
-        
-    //     session()->flash('message', 'Item approved successfully.');
-    //     $this->loadDashboardStats();
-    // }
-
-    // public function rejectItem($itemId)
-    // {
-    //     $item = MarketplaceItem::findOrFail($itemId);
-    //     $item->update([
-    //         'status' => 'rejected',
-    //         'rejection_reason' => 'Rejected by admin - does not meet marketplace standards',
-    //         'approved_by' => auth()->id(),
-    //         'approved_at' => null
-    //     ]);
-        
-    //     session()->flash('message', 'Item rejected successfully.');
-    //     $this->loadDashboardStats();
-    // }
-
-    // public function suspendItem($itemId)
-    // {
-    //     $item = MarketplaceItem::findOrFail($itemId);
-    //     $item->update([
-    //         'status' => 'suspended',
-    //         'rejection_reason' => 'Suspended by admin for policy violation'
-    //     ]);
-        
-    //     session()->flash('message', 'Item suspended successfully.');
-    //     $this->loadDashboardStats();
-    // }
-
-    public function toggleFeatureItem($itemId)
-    {
-        $item = MarketplaceItem::findOrFail($itemId);
-        $item->update(['is_featured' => !$item->is_featured]);
-        
-        $status = $item->is_featured ? 'featured' : 'unfeatured';
-        session()->flash('message', "Item {$status} successfully.");
-    }
-
     // === ORDER MANAGEMENT METHODS ===
     public function viewOrder($orderId)
     {
@@ -827,7 +723,175 @@ public function reactivateItem($itemId)
 
         return $query->latest()->paginate(10);
     }
+// === ENHANCED ITEM MANAGEMENT METHODS ===
+public function approveItem($itemId)
+{
+    $item = MarketplaceItem::findOrFail($itemId);
+    $item->update([
+        'status' => 'approved',
+        'approved_at' => now(),
+        'approved_by' => auth()->id(),
+        'rejection_reason' => null
+    ]);
+    
+    session()->flash('message', 'Item approved successfully.');
+    $this->loadDashboardStats();
+}
 
+public function rejectItem($itemId)
+{
+    $item = MarketplaceItem::findOrFail($itemId);
+    $item->update([
+        'status' => 'rejected',
+        'rejection_reason' => 'Rejected by admin - does not meet marketplace standards',
+        'approved_by' => auth()->id(),
+        'approved_at' => null
+    ]);
+    
+    session()->flash('message', 'Item rejected successfully.');
+    $this->loadDashboardStats();
+}
+
+public function suspendItem($itemId)
+{
+    $item = MarketplaceItem::findOrFail($itemId);
+    $item->update([
+        'status' => 'suspended',
+        'rejection_reason' => 'Suspended by admin for policy violation'
+    ]);
+    
+    session()->flash('message', 'Item suspended successfully.');
+    $this->loadDashboardStats();
+}
+
+public function reactivateItem($itemId)
+{
+    $item = MarketplaceItem::findOrFail($itemId);
+    $item->update([
+        'status' => 'approved',
+        'rejection_reason' => null,
+        'approved_at' => now(),
+        'approved_by' => auth()->id()
+    ]);
+    
+    session()->flash('message', 'Item reactivated successfully.');
+    $this->loadDashboardStats();
+}
+
+public function toggleFeatureItem($itemId)
+{
+    $item = MarketplaceItem::findOrFail($itemId);
+    $item->update(['is_featured' => !$item->is_featured]);
+    
+    $status = $item->is_featured ? 'featured' : 'unfeatured';
+    session()->flash('message', "Item {$status} successfully.");
+}
+
+public function deleteItem($itemId)
+{
+    $item = MarketplaceItem::findOrFail($itemId);
+    
+    // Check if item has orders
+    if ($item->orders()->count() > 0) {
+        session()->flash('error', 'Cannot delete item with existing orders. Consider suspending instead.');
+        return;
+    }
+    
+    $item->delete();
+    session()->flash('message', 'Item deleted successfully.');
+    $this->loadDashboardStats();
+}
+
+public function editItem($itemId)
+{
+    // This could redirect to an edit page or open a modal
+    session()->flash('info', 'Edit functionality will redirect to item edit page.');
+    // You can implement: return redirect()->route('admin.items.edit', $itemId);
+}
+
+public function viewItemDetails($itemId)
+{
+    // This could open a detailed view modal or redirect
+    session()->flash('info', 'Item details view coming soon.');
+    // You can implement detailed item view here
+}
+
+// === BULK ACTIONS FOR ITEMS ===
+public function toggleSelectAll()
+{
+    if ($this->selectAll) {
+        $this->selectedItems = [];
+        $this->selectAll = false;
+    } else {
+        $this->selectedItems = $this->getItems()->pluck('id')->toArray();
+        $this->selectAll = true;
+    }
+}
+
+public function executeBulkAction()
+{
+    if (!$this->bulkAction || empty($this->selectedItems)) {
+        session()->flash('error', 'Please select items and an action.');
+        return;
+    }
+
+    $count = count($this->selectedItems);
+    
+    try {
+        switch ($this->bulkAction) {
+            case 'approve':
+                MarketplaceItem::whereIn('id', $this->selectedItems)->update([
+                    'status' => 'approved',
+                    'approved_at' => now(),
+                    'approved_by' => auth()->id(),
+                    'rejection_reason' => null
+                ]);
+                session()->flash('message', "{$count} items approved successfully.");
+                break;
+
+            case 'reject':
+                MarketplaceItem::whereIn('id', $this->selectedItems)->update([
+                    'status' => 'rejected',
+                    'rejection_reason' => 'Bulk rejection by admin',
+                    'approved_by' => auth()->id(),
+                    'approved_at' => null
+                ]);
+                session()->flash('message', "{$count} items rejected successfully.");
+                break;
+
+            case 'suspend':
+                MarketplaceItem::whereIn('id', $this->selectedItems)->update([
+                    'status' => 'suspended',
+                    'rejection_reason' => 'Bulk suspension by admin'
+                ]);
+                session()->flash('message', "{$count} items suspended successfully.");
+                break;
+
+            case 'feature':
+                MarketplaceItem::whereIn('id', $this->selectedItems)->update(['is_featured' => true]);
+                session()->flash('message', "{$count} items featured successfully.");
+                break;
+
+            case 'unfeature':
+                MarketplaceItem::whereIn('id', $this->selectedItems)->update(['is_featured' => false]);
+                session()->flash('message', "{$count} items unfeatured successfully.");
+                break;
+
+            default:
+                session()->flash('error', 'Invalid bulk action.');
+                return;
+        }
+
+        // Reset selections
+        $this->selectedItems = [];
+        $this->selectAll = false;
+        $this->bulkAction = '';
+        $this->loadDashboardStats();
+
+    } catch (\Exception $e) {
+        session()->flash('error', 'Bulk action failed: ' . $e->getMessage());
+    }
+}
     public function render()
     {
         $data = ['stats' => $this->stats];
