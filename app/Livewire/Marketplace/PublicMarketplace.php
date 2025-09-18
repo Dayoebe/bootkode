@@ -142,7 +142,7 @@ class PublicMarketplace extends Component
     public function viewProduct($productId)
     {
         $this->selectedProduct = MarketplaceItem::published()
-            ->with(['vendor', 'categories', 'reviews.user'])
+            ->with(['vendor', 'itemCategories', 'reviews.user']) // Changed to itemCategories
             ->findOrFail($productId);
         
         // Increment view count
@@ -292,10 +292,10 @@ class PublicMarketplace extends Component
                       ->orWhere('vendor_id', $this->selectedProduct->vendor_id);
                 
                 // Only add category filter if categories are loaded
-                if ($this->selectedProduct->categories && $this->selectedProduct->categories->count() > 0) {
+                if ($this->selectedProduct->itemCategories && $this->selectedProduct->itemCategories->count() > 0) {
                     $query->orWhereHas('categories', function ($catQuery) {
                         $catQuery->whereIn('marketplace_categories.id', 
-                            $this->selectedProduct->categories->pluck('id'));
+                            $this->selectedProduct->itemCategories->pluck('id'));
                     });
                 }
             })

@@ -1,4 +1,3 @@
-{{-- resources/views/livewire/marketplace/partial/marketplace-browse.blade.php --}}
 <div class="space-y-6">
     
     <!-- Internal Navigation Tabs -->
@@ -70,7 +69,7 @@
                         <option value="price">Price: Low to High</option>
                         <option value="price,desc">Price: High to Low</option>
                         <option value="average_rating">Highest Rated</option>
-                        <option value="sales_count">Best Selling</option>
+                        <option value="sales_count">Best Selling</option> <!-- Changed from 'sales' to 'sales_count' -->
                     </select>
                 </div>
             </div>
