@@ -49,7 +49,7 @@
                 <div>
                     <p class="text-sm text-gray-600">Conversion Rate</p>
                     <p class="text-2xl font-bold text-gray-900">
-                        {{ number_format(($stats['total_orders'] / max($stats['total_items'], 1)) * 100, 1) }}%
+                        {{ number_format(($stats['total_orders'] > 0 && $stats['total_items'] > 0) ? ($stats['total_orders'] / $stats['total_items']) * 100 : 0, 1) }}%
                     </p>
                 </div>
                 <div class="p-2 bg-green-100 rounded-lg">
@@ -186,7 +186,7 @@
                         <div class="text-right">
                             <p class="text-sm font-medium text-gray-900">{{ $category->total_sales }} sales</p>
                             <div class="w-24 bg-gray-200 rounded-full h-2 mt-1">
-                                <div class="bg-purple-500 h-2 rounded-full" style="width: {{ min(($category->total_sales / $topCategories->max('total_sales')) * 100, 100) }}%"></div>
+                                <div class="bg-purple-500 h-2 rounded-full" style="width: {{ $topCategories->max('total_sales') > 0 ? min(($category->total_sales / $topCategories->max('total_sales')) * 100, 100) : 0 }}%"></div>
                             </div>
                         </div>
                     </div>
