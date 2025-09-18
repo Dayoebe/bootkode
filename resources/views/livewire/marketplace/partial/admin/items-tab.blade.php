@@ -168,10 +168,13 @@
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-right text-sm text-gray-900">
                                     <div>
-                                        <span class="font-semibold">₦{{ number_format($item->price, 2) }}</span>
                                         @if($item->discount_price && $item->discount_price < $item->price)
+                                            <span class="font-semibold">₦{{ number_format($item->discount_price, 2) }}</span>
                                             <div class="text-xs text-gray-500 line-through">
-                                                ₦{{ number_format($item->price, 2) }}</div>
+                                                ₦{{ number_format($item->price, 2) }}
+                                            </div>
+                                        @else
+                                            <span class="font-semibold">₦{{ number_format($item->price, 2) }}</span>
                                         @endif
                                     </div>
                                 </td>

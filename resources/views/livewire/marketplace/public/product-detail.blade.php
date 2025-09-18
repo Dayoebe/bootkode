@@ -2,18 +2,17 @@
 <section class="py-8 bg-white">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <!-- Breadcrumb -->
-        <nav class="flex items-center space-x-2 text-sm text-gray-600 mb-8">
-            <button wire:click="backToBrowse" class="hover:text-purple-600 transition-colors">Home</button>
+        <button wire:click="backToBrowse" class="hover:text-purple-600 transition-colors">Home</button>
+        <i class="fas fa-chevron-right text-xs"></i>
+        @if($selectedProduct->itemCategories && $selectedProduct->itemCategories->count() > 0)
+            <button wire:click="viewCategory({{ $selectedProduct->itemCategories->first()->id }})" 
+                    class="hover:text-purple-600 transition-colors">
+                {{ $selectedProduct->itemCategories->first()->name }}
+            </button>
             <i class="fas fa-chevron-right text-xs"></i>
-            @if($selectedProduct->categories->count() > 0)
-                <button wire:click="viewCategory({{ $selectedProduct->categories->first()->id }})" 
-                        class="hover:text-purple-600 transition-colors">
-                    {{ $selectedProduct->categories->first()->name }}
-                </button>
-                <i class="fas fa-chevron-right text-xs"></i>
-            @endif
-            <span class="text-gray-900 font-medium">{{ Str::limit($selectedProduct->title, 40) }}</span>
-        </nav>
+        @endif
+        <span class="text-gray-900 font-medium">{{ Str::limit($selectedProduct->title, 40) }}</span>
+    </nav>
 
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
             <!-- Product Images -->
@@ -226,11 +225,11 @@
                             <i class="fas fa-cube text-gray-400"></i>
                             <span class="text-sm text-gray-700">Type: {{ $selectedProduct->type_name }}</span>
                         </div>
-                        @if($selectedProduct->categories->count() > 0)
+                        @if($selectedProduct->itemCategories->count() > 0)
                             <div class="flex items-center space-x-2">
                                 <i class="fas fa-tags text-gray-400"></i>
                                 <div class="flex flex-wrap gap-1">
-                                    @foreach($selectedProduct->categories as $category)
+                                    @foreach($selectedProduct->itemCategories as $category)
                                         <span class="text-xs bg-purple-100 text-purple-600 px-2 py-1 rounded">
                                             {{ $category->name }}
                                         </span>

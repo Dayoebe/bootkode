@@ -273,6 +273,14 @@ class MarketplaceBrowse extends Component
         // Get data based on current view
         switch ($this->currentView) {
             case 'browse':
+                // Map the sortBy to the correct database column
+                $sortColumn = match($this->sortBy) {
+                    'price' => 'price',
+                    'average_rating' => 'average_rating',
+                    'sales_count' => 'sales_count', // Changed from 'sales'
+                    default => 'created_at'
+                };
+                
                 $items = MarketplaceItem::published()
                     ->when($this->search, function ($query) {
                         $query->where(function ($q) {
@@ -291,17 +299,18 @@ class MarketplaceBrowse extends Component
                     })
                     ->when($this->minPrice, fn($query) => $query->where('price', '>=', $this->minPrice))
                     ->when($this->maxPrice, fn($query) => $query->where('price', '<=', $this->maxPrice))
-                    ->orderBy($this->sortBy, $this->sortOrder)
+                    ->orderBy($sortColumn, $this->sortOrder) // Use the mapped column
                     ->paginate(12);
-
+    
                 $featuredItems = MarketplaceItem::published()->featured()->limit(6)->get();
-
+    
                 $data = [
                     'items' => $items,
                     'featuredItems' => $featuredItems,
                     'types' => MarketplaceItem::TYPES,
                     'categories' => $this->getCategories(),
                 ];
+                
                 break;
 
             case 'categories':
