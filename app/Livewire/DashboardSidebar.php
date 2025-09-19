@@ -5,7 +5,6 @@ namespace App\Livewire;
 use Livewire\Component;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
 
 class DashboardSidebar extends Component
@@ -19,12 +18,68 @@ class DashboardSidebar extends Component
 
         if (!app()->runningInConsole()) {
             $currentRouteName = request()->route()?->getName() ?? 'dashboard';
-            $routeMap = config('menu.route_map', []);
-            $this->activeLink = $routeMap[$currentRouteName] ?? 'dashboard';
+            // Map common routes to their menu link IDs for better active state detection
+            $routeMap = [
+                'dashboard' => 'dashboard',
+                'profile.view' => 'profile.view',
+                'profile.edit' => 'profile.view',
+                'my-course' => 'my-courses',
+                'all-course' => 'all-courses',
+                'student.enrolled-courses' => 'student.enrolled-courses',
+                'courses.available' => 'courses.available',
+                'create_course' => 'create-course',
+                'cbt.management' => 'cbt.management',
+                'cbt.exam' => 'cbt.exam',
+                'cbt.viewer' => 'cbt.viewer',
+                'admin.certificates.manage' => 'admin.certificates.manage',
+                'certificates.index' => 'certificates.index',
+                'marketplace.browse' => 'marketplace.browse',
+                'community.center' => 'community',
+                'settings' => 'settings',
+                'notifications' => 'notifications',
+            ];
+            
+            $this->activeLink = $routeMap[$currentRouteName] ?? $this->determineActiveLinkFromRoute($currentRouteName);
         }
     }
 
-    // A computed property to get the filtered menu items
+    /**
+     * Determine active link from route name patterns
+     */
+    private function determineActiveLinkFromRoute(string $routeName): string
+    {
+        // Handle common patterns
+        if (str_starts_with($routeName, 'student.')) {
+            return str_replace(['student.', '.'], ['', '_'], $routeName);
+        }
+        
+        if (str_starts_with($routeName, 'admin.certificates.')) {
+            return 'admin.certificates.manage';
+        }
+        
+        if (str_starts_with($routeName, 'marketplace.')) {
+            return 'marketplace';
+        }
+        
+        if (str_starts_with($routeName, 'community.')) {
+            return 'community';
+        }
+        
+        if (str_starts_with($routeName, 'blog.') || str_starts_with($routeName, 'admin.blog.')) {
+            return 'blog_management';
+        }
+        
+        if (str_starts_with($routeName, 'affiliate.')) {
+            return 'affiliate';
+        }
+
+        // Default fallback
+        return str_replace(['.', '-'], '_', $routeName);
+    }
+
+    /**
+     * Get filtered menu items based on user roles
+     */
     public function getFilteredMenuItemsProperty()
     {
         $user = $this->user;
@@ -32,75 +87,84 @@ class DashboardSidebar extends Component
 
         // Super Admin sees everything
         if ($user && $user->hasRole(User::ROLE_SUPER_ADMIN)) {
-            return $menuItems;
+            return $this->processMenuItems($menuItems);
         }
 
         $filteredItems = [];
         foreach ($menuItems as $item) {
-            $includeItem = false;
+            $includeItem = $this->shouldIncludeMenuItem($item, $user);
 
-            // Check if the user has any of the roles for the main item.
-            // An empty 'roles' array means it's for all users.
-            if (!isset($item['roles']) || empty($item['roles'])) {
-                $includeItem = true;
-            } elseif ($user && $user->hasAnyRole($item['roles'])) {
-                $includeItem = true;
-            }
-
-            // If the main item is not included, we skip it completely.
             if (!$includeItem) {
                 continue;
             }
 
-            // Now, handle the children of the item.
+            // Handle children
             if (isset($item['children']) && !empty($item['children'])) {
                 $item['children'] = $this->filterMenuChildren($item['children'], $user);
-                // If a parent item has no children after filtering, we can remove it
-                // unless it has a valid route itself.
+                // Remove parent if it has no accessible children and no direct route
                 if (empty($item['children']) && $item['route_name'] === '#') {
                     continue;
                 }
             }
-            
-            // Add the item to our list of filtered items
+
             $filteredItems[] = $item;
         }
 
-        return $filteredItems;
+        return $this->processMenuItems($filteredItems);
     }
 
     /**
-     * Recursively filters menu children based on user roles.
-     *
-     * @param array $children
-     * @param User $user
-     * @return array
+     * Process menu items to add any computed properties
+     */
+    private function processMenuItems(array $items): array
+    {
+        return array_map(function ($item) {
+            // Add notification counts or other dynamic data here if needed
+            if (isset($item['children'])) {
+                $item['children'] = $this->processMenuItems($item['children']);
+            }
+            return $item;
+        }, $items);
+    }
+
+    /**
+     * Check if a menu item should be included based on user roles
+     */
+    private function shouldIncludeMenuItem(array $item, $user): bool
+    {
+        // Empty roles array means accessible to all
+        if (!isset($item['roles']) || empty($item['roles'])) {
+            return true;
+        }
+
+        // Check if user has required roles
+        return $user && $user->hasAnyRole($item['roles']);
+    }
+
+    /**
+     * Recursively filter menu children based on user roles
      */
     private function filterMenuChildren(array $children, $user): array
     {
         $filteredChildren = [];
+        
         foreach ($children as $child) {
-            $includeChild = false;
-
-            // An empty 'roles' array means it's for all users.
-            if (!isset($child['roles']) || empty($child['roles'])) {
-                $includeChild = true;
-            } elseif ($user && $user->hasAnyRole($child['roles'])) {
-                $includeChild = true;
-            }
-
-            if ($includeChild) {
-                // Check for nested children
+            if ($this->shouldIncludeMenuItem($child, $user)) {
+                // Handle nested children if they exist
                 if (isset($child['children']) && !empty($child['children'])) {
                     $child['children'] = $this->filterMenuChildren($child['children'], $user);
                 }
                 $filteredChildren[] = $child;
             }
         }
+        
         return $filteredChildren;
     }
 
-    private function generateMobileMenuItems($menuItems)
+    /**
+     * Generate mobile menu items (simplified version of desktop menu)
+     */
+    private function generateMobileMenuItems($menuItems): array
     {
         $maxMobileItems = 5;
         $mobileItems = [];
@@ -121,7 +185,9 @@ class DashboardSidebar extends Component
 
             if (isset($item['children']) && !empty($item['children'])) {
                 $mobileItem['children'] = array_map(function ($child) {
-                    return array_merge($child, ['link_id' => $child['link_id'] ?? Str::slug($child['label'])]);
+                    return array_merge($child, [
+                        'link_id' => $child['link_id'] ?? Str::slug($child['label'])
+                    ]);
                 }, $item['children']);
             }
 
@@ -129,17 +195,20 @@ class DashboardSidebar extends Component
             $count++;
         }
 
-        if (count($menuItems) > $maxMobileItems) {
+        // Add "More" menu if there are remaining items
+        if (count($menuItems) > $maxMobileItems - 1) {
             $remainingItems = array_slice($menuItems, $maxMobileItems - 1);
             if (!empty($remainingItems)) {
-                $mobileItems[$maxMobileItems - 1] = [
+                $mobileItems[] = [
                     'label' => 'More',
                     'icon' => 'fas fa-ellipsis-h',
                     'route_name' => '#',
                     'link_id' => 'more',
                     'badge' => false,
                     'children' => array_map(function ($item) {
-                        return array_merge($item, ['link_id' => $item['link_id'] ?? Str::slug($item['label'])]);
+                        return array_merge($item, [
+                            'link_id' => $item['link_id'] ?? Str::slug($item['label'])
+                        ]);
                     }, $remainingItems),
                 ];
             }
