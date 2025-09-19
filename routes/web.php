@@ -117,7 +117,10 @@ Route::prefix('admin/pages')->middleware(['auth', 'verified'])->group(function (
 
 
 
-
+Route::get('/profile-settings', \App\Livewire\SystemManagement\ProfileSettings::class)->name('profile.settings');
+Route::get('/notification-preferences', \App\Livewire\SystemManagement\NotificationPreferences::class)->name('notification.preferences');
+Route::get('/privacy-settings', \App\Livewire\SystemManagement\PrivacySettings::class)->name('privacy.settings');
+Route::get('/language-localization', \App\Livewire\SystemManagement\LanguageLocalization::class)->name('language.localization');
 
 
 

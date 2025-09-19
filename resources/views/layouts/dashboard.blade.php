@@ -1,5 +1,15 @@
 <!DOCTYPE html>
-<html lang="en" class="dark" x-data="{ darkMode: localStorage.getItem('darkMode') === 'true' }" x-bind:class="{ 'dark': darkMode }">
+<html lang="en" class="dark" x-data="{ 
+    darkMode: localStorage.getItem('darkMode') === 'true' || localStorage.getItem('darkMode') === null,
+    sidebarOpen: false,
+    toggleDarkMode() {
+        this.darkMode = !this.darkMode;
+        localStorage.setItem('darkMode', this.darkMode);
+    },
+    toggleSidebar() {
+        this.sidebarOpen = !this.sidebarOpen;
+    }
+}" x-bind:class="{ 'dark': darkMode }">
 
 <head>
     <meta charset="UTF-8">
@@ -15,94 +25,55 @@
     <!-- Google Fonts: Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
 
-<body class="font-sans antialiased  bg-gray-100 dark:bg-gray-900">
+<body class="font-sans antialiased bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
     @php
         $user = Auth::user();
     @endphp
+    
     <div class="flex min-h-screen">
-        <!-- Sidebar (Livewire Component) -->
+        <!-- Desktop Sidebar -->
         @livewire('dashboard-sidebar')
 
+        <!-- Sidebar Overlay for Mobile -->
+        <div 
+            x-show="sidebarOpen" 
+            x-transition:enter="transition-opacity ease-linear duration-300"
+            x-transition:enter-start="opacity-0"
+            x-transition:enter-end="opacity-100"
+            x-transition:leave="transition-opacity ease-linear duration-300"
+            x-transition:leave-start="opacity-100"
+            x-transition:leave-end="opacity-0"
+            @click="sidebarOpen = false"
+            class="fixed inset-0 z-40 bg-gray-900 bg-opacity-50 lg:hidden"
+            style="display: none;"
+        ></div>
+
         <!-- Main Content -->
-        <div class="flex-1 flex flex-col lg:ml-64">
+        <div class="flex-1 flex flex-col lg:ml-64 transition-all duration-300">
             <!-- Top Navbar -->
-            <header
-                class="bg-white dark:bg-gray-800 shadow p-4 flex justify-between items-center sticky top-0 z-40 animate__animated animate__fadeInDown">
-                <!-- Hamburger for Mobile -->
-                <button class="lg:hidden text-gray-500" @click="$dispatch('toggle-sidebar')"
-                    aria-label="Toggle sidebar">
-                    <i class="fas fa-bars text-2xl"></i>
-                </button>
-
-                <!-- User Actions -->
-                <div class="flex items-center space-x-4">
-                    <!-- Notifications -->
-                    <div class="group relative">
-                        <button class="relative text-gray-500 hover:text-blue-500" aria-label="Notifications">
-                            <i class="fas fa-bell text-xl"></i>
-                            @if ($user?->unreadNotifications()?->count() > 0)
-                                <span class="absolute top-0 right-0 bg-red-500 text-white text-xs rounded-full px-1">
-                                    {{ $user->unreadNotifications()->count() }}
-                                </span>
-                            @endif
-                        </button>
-                        <span
-                            class="absolute hidden group-hover:block bg-gray-800 text-white text-xs rounded px-2 py-1 -bottom-8 left-1/2 transform -translate-x-1/2">Notifications</span>
-                    </div>
-
-                    <!-- User Profile Dropdown -->
-                    <div x-data="{ open: false }" class="relative">
-                        <button @click="open = !open"
-                            class="flex items-center space-x-2 text-gray-700 dark:text-gray-300 hover:text-blue-500"
-                            aria-label="User menu">
-                            <img src="{{ $user?->profile_photo_url ?? asset('images/default-avatar.png') }}"
-                                alt="User avatar" class="w-8 h-8 rounded-full">
-                            <span>{{ $user?->name ?? 'Guest' }}</span>
-                            <i class="fas fa-chevron-down"></i>
-                        </button>
-                        <div x-show="open" x-transition:enter="transition ease-out duration-200"
-                            x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100"
-                            class="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 shadow-lg rounded-lg py-2 z-50">
-                            @if ($user)
-                                <a href="{{ route('profile.edit') }}"
-                                    class="block px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-blue-100 dark:hover:bg-gray-700">Edit
-                                    Profile</a>
-                                <a href="{{ route('logout') }}"
-                                    class="block px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-blue-100 dark:hover:bg-gray-700">Logout</a>
-                            @else
-                                <a href="{{ route('login') }}"
-                                    class="block px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-blue-100 dark:hover:bg-gray-700">Login</a>
-                            @endif
-                        </div>
-                    </div>
-
-                    <!-- Dark Mode Toggle -->
-                    <button @click="darkMode = !darkMode; localStorage.setItem('darkMode', darkMode)"
-                        class="text-gray-500 hover:text-blue-500" aria-label="Toggle dark mode">
-                        <i x-bind:class="darkMode ? 'fas fa-sun' : 'fas fa-moon'" class="text-xl"></i>
-                    </button>
-                </div>
-            </header>
+            <x-navbar />
 
             <!-- Content Area -->
-            <main class="p-6 flex-1">
-                @if (!$user)
-                    <div
-                        class="bg-yellow-100 dark:bg-yellow-900 border-l-4 border-yellow-500 text-yellow-700 dark:text-yellow-200 p-4 mb-4 rounded">
-                        <p>Please <a href="{{ route('login') }}" class="underline">log in</a> to access the dashboard.
-                        </p>
+            <main class="flex-1 p-4 lg:p-6 pb-20 lg:pb-6">
+                <!-- Welcome Banner (Optional) -->
+                @if($user)
+                    <div class="mb-6 p-4 bg-gradient-to-r from-blue-500 to-purple-600 rounded-xl shadow-lg text-white animate__animated animate__fadeInDown">
+                        <h1 class="text-xl lg:text-2xl font-bold">Welcome back, {{ $user->name }}!</h1>
+                        <p class="text-blue-100 mt-1">{{ ucfirst($user->getRoleNames()->first() ?? 'User') }} Dashboard</p>
                     </div>
                 @endif
-                {{ $slot }}
-                
+
+                <!-- Main Content Slot -->
+                <div class="animate__animated animate__fadeIn">
+                    {{ $slot }}
+                </div>
             </main>
         </div>
+        <x-mobile-bottom-nav />
     </div>
-
     @livewireScripts
 </body>
-
 </html>

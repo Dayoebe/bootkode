@@ -435,11 +435,36 @@ return [
             'roles' => [],
             'link_id' => 'settings',
             'children' => [
-                ['label' => 'Account Management', 'icon' => 'fas fa-user-shield', 'route_name' => ('settings'), 'roles' => []],
-                ['label' => 'Profile Settings', 'icon' => 'fas fa-user-cog', 'route_name' => '#', 'roles' => []],
-                ['label' => 'Notification Preferences', 'icon' => 'fas fa-bell', 'route_name' => '#', 'roles' => []],
-                ['label' => 'Privacy Settings', 'icon' => 'fas fa-lock', 'route_name' => '#', 'roles' => []],
-                ['label' => 'Language & Localization', 'icon' => 'fas fa-language', 'route_name' => '#', 'roles' => [User::ROLE_SUPER_ADMIN]],
+                [
+                    'label' => 'Account Management', 
+                    'icon' => 'fas fa-user-shield', 
+                    'route_name' => 'settings', 
+                    'roles' => []
+                ],
+                [
+                    'label' => 'Profile Settings', 
+                    'icon' => 'fas fa-user-cog', 
+                    'route_name' => 'profile.settings', 
+                    'roles' => []
+                ],
+                [
+                    'label' => 'Notification Preferences', 
+                    'icon' => 'fas fa-bell', 
+                    'route_name' => 'notification.preferences', 
+                    'roles' => []
+                ],
+                [
+                    'label' => 'Privacy Settings', 
+                    'icon' => 'fas fa-lock', 
+                    'route_name' => 'privacy.settings', 
+                    'roles' => []
+                ],
+                [
+                    'label' => 'Language & Localization', 
+                    'icon' => 'fas fa-language', 
+                    'route_name' => 'language.localization', 
+                    'roles' => [User::ROLE_SUPER_ADMIN]
+                ],
             ]
         ],
         [
