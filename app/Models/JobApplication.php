@@ -11,6 +11,14 @@ class JobApplication extends Model
 {
     use HasFactory;
 
+    const APPLICATION_PENDING = 'pending';
+    const APPLICATION_REVIEWING = 'reviewing';
+    const APPLICATION_SHORTLISTED = 'shortlisted';
+    const APPLICATION_INTERVIEWED = 'interviewed';
+    const APPLICATION_OFFERED = 'offered';
+    const APPLICATION_HIRED = 'hired';
+    const APPLICATION_REJECTED = 'rejected';
+
     protected $fillable = [
         'job_id',
         'user_id',
