@@ -5,7 +5,9 @@ namespace App\Livewire\Affiliate;
 
 use Livewire\Component;
 use App\Services\AffiliateService;
+use Livewire\Attributes\Layout;
 
+#[Layout('layouts.dashboard', ['title' => 'Affiliate Dashboard'])]
 class Dashboard extends Component
 {
     public $selectedPeriod = '30';
@@ -15,6 +17,19 @@ class Dashboard extends Component
     public function boot(AffiliateService $affiliateService)
     {
         $this->affiliateService = $affiliateService;
+    }
+
+    public function mount()
+    {
+        $user = auth()->user();
+        
+        // Handle redirects in mount() method
+        if (!$user->isAffiliate()) {
+            if (!$user->canBecomeAffiliate()) {
+                return redirect()->route('affiliate.not-eligible');
+            }
+            return redirect()->route('affiliate.apply');
+        }
     }
 
     public function updatedSelectedPeriod()
@@ -44,15 +59,6 @@ class Dashboard extends Component
     public function render()
     {
         $user = auth()->user();
-        
-        // Check if user is affiliate or can become one
-        if (!$user->isAffiliate()) {
-            if (!$user->canBecomeAffiliate()) {
-                return view('livewire.affiliate.not-eligible')->layout('layouts.dashboard');
-            }
-            return view('livewire.affiliate.apply')->layout('layouts.dashboard');
-        }
-
         $affiliate = $user->affiliate;
         $affiliateStats = $user->getAffiliateStats();
         $analytics = $this->affiliateService->getAffiliateAnalytics($affiliate, (int) $this->selectedPeriod);
@@ -66,6 +72,6 @@ class Dashboard extends Component
             'monthlyPerformance' => $monthlyPerformance,
             'recentCommissions' => $recentCommissions,
             'referredActivity' => $referredActivity
-        ])->layout('layouts.dashboard');
+        ]);
     }
 }
