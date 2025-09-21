@@ -4,7 +4,9 @@ namespace App\Livewire\Affiliate;
 
 use Livewire\Component;
 use App\Services\AffiliateService;
+use Livewire\Attributes\Layout;
 
+#[Layout('layouts.dashboard', ['title' => 'Affiliate tools'])]
 class Tools extends Component
 {
     public $selectedTool = 'links';
@@ -16,6 +18,15 @@ class Tools extends Component
     public function boot(AffiliateService $affiliateService)
     {
         $this->affiliateService = $affiliateService;
+    }
+
+    public function mount()
+    {
+        $user = auth()->user();
+        
+        if (!$user->isAffiliate()) {
+            return redirect()->route('affiliate.dashboard');
+        }
     }
 
     public function setTool($tool)
@@ -52,16 +63,17 @@ class Tools extends Component
     {
         $user = auth()->user();
         
+        // The redirect should be handled in mount() instead
         if (!$user->isAffiliate()) {
             return redirect()->route('affiliate.dashboard');
         }
-
+        
         $affiliate = $user->affiliate;
         $marketingAssets = $this->affiliateService->generateMarketingAssets($affiliate);
         
         return view('livewire.affiliate.tools', [
             'affiliate' => $affiliate,
             'marketingAssets' => $marketingAssets
-        ])->layout('layouts.dashboard');
+        ]);
     }
 }

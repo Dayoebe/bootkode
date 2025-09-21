@@ -6,6 +6,10 @@ namespace App\Livewire\Affiliate;
 use Livewire\Component;
 use App\Models\Affiliate;
 use App\Models\User;
+use Livewire\Attributes\Layout;
+
+#[Layout('layouts.dashboard', ['title' => 'Affiliate Settings'])]
+
 
 class Settings extends Component
 {
@@ -97,6 +101,6 @@ class Settings extends Component
         return view('livewire.affiliate.settings', [
             'affiliates' => $affiliates,
             'systemStats' => $systemStats
-        ])->layout('layouts.dashboard');
+        ]);
     }
 }

@@ -8,7 +8,9 @@ use App\Services\AffiliateService;
 use App\Models\ReferralTransaction;
 use App\Models\Referral;
 use Carbon\Carbon;
+use Livewire\Attributes\Layout;
 
+#[Layout('layouts.dashboard', ['title' => 'Affiliate Analytics'])]
 class Analytics extends Component
 {
     public $selectedPeriod = '30';
@@ -19,6 +21,15 @@ class Analytics extends Component
     public function boot(AffiliateService $affiliateService)
     {
         $this->affiliateService = $affiliateService;
+    }
+
+    public function mount()
+    {
+        $user = auth()->user();
+        
+        if (!$user->isAffiliate()) {
+            return redirect()->route('affiliate.dashboard');
+        }
     }
 
     public function setPeriod($period)
@@ -34,11 +45,6 @@ class Analytics extends Component
     public function render()
     {
         $user = auth()->user();
-        
-        if (!$user->isAffiliate()) {
-            return redirect()->route('affiliate.dashboard');
-        }
-
         $affiliate = $user->affiliate;
         $days = (int) $this->selectedPeriod;
         $analytics = $this->affiliateService->getAffiliateAnalytics($affiliate, $days);
@@ -54,7 +60,7 @@ class Analytics extends Component
             'conversionData' => $conversionData,
             'trafficSources' => $trafficSources,
             'chartData' => $this->getChartData($affiliate->id, $days)
-        ])->layout('layouts.dashboard');
+        ]);
     }
 
     private function getConversionFunnelData($affiliateId, $days)

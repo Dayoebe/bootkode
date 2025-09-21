@@ -6,7 +6,9 @@ namespace App\Livewire\Affiliate;
 use Livewire\Component;
 use Livewire\WithPagination;
 use App\Models\ReferralTransaction;
+use Livewire\Attributes\Layout;
 
+#[Layout('layouts.dashboard', ['title' => 'Affiliate Commission History'])]
 class CommissionHistory extends Component
 {
     use WithPagination;
@@ -16,6 +18,15 @@ class CommissionHistory extends Component
     public $dateRange = 'all';
     public $sortBy = 'created_at';
     public $sortDirection = 'desc';
+
+    public function mount()
+    {
+        $user = auth()->user();
+        
+        if (!$user->isAffiliate()) {
+            return redirect()->route('affiliate.dashboard');
+        }
+    }
 
     public function updatingSearch()
     {
@@ -45,10 +56,6 @@ class CommissionHistory extends Component
     public function render()
     {
         $user = auth()->user();
-        
-        if (!$user->isAffiliate()) {
-            return redirect()->route('affiliate.dashboard');
-        }
 
         $query = ReferralTransaction::query()
             ->whereHas('referral', function($q) use ($user) {
@@ -106,6 +113,6 @@ class CommissionHistory extends Component
             'transactions' => $transactions,
             'totalCommissions' => $totalCommissions,
             'pendingCommissions' => $pendingCommissions
-        ])->layout('layouts.dashboard');
+        ]);
     }
 }

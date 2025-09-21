@@ -7,7 +7,9 @@ use Livewire\Component;
 use App\Models\ReferralTransaction;
 use App\Models\Referral;
 use Carbon\Carbon;
+use Livewire\Attributes\Layout;
 
+#[Layout('layouts.dashboard', ['title' => 'Affiliate Commission Report'])]
 class CommissionReports extends Component
 {
     public $reportType = 'overview';
@@ -17,6 +19,12 @@ class CommissionReports extends Component
 
     public function mount()
     {
+        $user = auth()->user();
+        
+        if (!$user->isAffiliate()) {
+            return redirect()->route('affiliate.dashboard');
+        }
+        
         $this->dateFrom = Carbon::now()->subDays(30)->format('Y-m-d');
         $this->dateTo = Carbon::now()->format('Y-m-d');
     }
@@ -160,11 +168,6 @@ class CommissionReports extends Component
     public function render()
     {
         $user = auth()->user();
-        
-        if (!$user->isAffiliate()) {
-            return redirect()->route('affiliate.dashboard');
-        }
-
         $affiliate = $user->affiliate;
         $startDate = Carbon::parse($this->dateFrom);
         $endDate = Carbon::parse($this->dateTo);
@@ -198,6 +201,6 @@ class CommissionReports extends Component
                 'total_sales' => $totalSales,
                 'conversion_rate' => $totalReferrals > 0 ? round(($totalSales / $totalReferrals) * 100, 2) : 0
             ]
-        ])->layout('layouts.dashboard');
+        ]);
     }
 }
