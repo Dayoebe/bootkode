@@ -9,11 +9,11 @@ use App\Models\ReferralTransaction;
 use App\Models\Course;
 use App\Models\CourseEnrollment;
 use Livewire\Component;
-use Livewire\Attributes\Layout;
 use Livewire\Attributes\Computed;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
+use Livewire\Attributes\Layout;
 
 #[Layout('layouts.dashboard', ['title' => 'Affiliate Dashboard'])]
 class AffiliateAmbassadorDashboard extends Component
@@ -124,7 +124,7 @@ class AffiliateAmbassadorDashboard extends Component
     public function referralPerformance()
     {
         $affiliate = Auth::user()->affiliate;
-        if (!$affiliate) return [];
+        if (!$affiliate) return collect();
         
         return $affiliate->referrals()
             ->with(['referredUser', 'transactions'])
@@ -489,6 +489,11 @@ class AffiliateAmbassadorDashboard extends Component
             'google' => "<script>/* Google Analytics Code for {$affiliate->referral_code} */</script>",
         ];
     }
+
+    // Mock implementations for remaining methods
+    private function getEarningsForecast($affiliate) { return []; }
+    private function getMonthlyCommissionBreakdown($affiliate) { return []; }
+    private function getPaymentMethodBreakdown($affiliate) { return []; }
 
     public function copyToClipboard($text)
     {

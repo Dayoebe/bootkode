@@ -1042,4 +1042,128 @@ class User extends Authenticatable implements MustVerifyEmail
         return null;
     }
 
+    // Add these methods to your existing User.php model (around line 400, after the gamification methods)
+
+    /**
+     * Check if user is an affiliate
+     */
+    public function isAffiliate(): bool
+    {
+        return $this->affiliate()->exists();
+    }
+
+    /**
+     * Get affiliate relationship
+     */
+    public function affiliate()
+    {
+        return $this->hasOne(\App\Models\Affiliate::class);
+    }
+
+    /**
+     * Get referral record if user was referred
+     */
+    public function referralRecord()
+    {
+        return $this->hasOne(\App\Models\Referral::class, 'referred_user_id');
+    }
+
+    /**
+     * Check if user was referred by someone
+     */
+    public function wasReferred(): bool
+    {
+        return $this->referralRecord()->exists();
+    }
+
+    /**
+     * Get affiliate stats
+     */
+    public function getAffiliateStats(): array
+    {
+        if (!$this->isAffiliate()) {
+            return [
+                'formatted_total_earned' => '₦0.00',
+                'total_referrals' => 0,
+                'active_referrals' => 0,
+                'pending_commissions' => 0,
+                'referral_link' => '#',
+            ];
+        }
+
+        $affiliate = $this->affiliate;
+        
+        return [
+            'formatted_total_earned' => $affiliate->formatted_total_earned,
+            'total_referrals' => $affiliate->total_referrals,
+            'active_referrals' => $affiliate->active_referrals,
+            'pending_commissions' => $this->getPendingCommissions(),
+            'referral_link' => $affiliate->referral_link,
+        ];
+    }
+
+    /**
+     * Get pending commissions
+     */
+    public function getPendingCommissions(): float
+    {
+        if (!$this->isAffiliate()) {
+            return 0.0;
+        }
+
+        return \App\Models\ReferralTransaction::whereHas('referral', function($q) {
+                $q->where('affiliate_id', $this->affiliate->id);
+            })
+            ->where('status', \App\Models\ReferralTransaction::STATUS_PENDING)
+            ->sum('commission_amount');
+    }
+
+    /**
+     * Get commission transactions
+     */
+    public function getCommissionTransactions(int $limit = 10)
+    {
+        if (!$this->isAffiliate()) {
+            return collect();
+        }
+
+        return \App\Models\ReferralTransaction::whereHas('referral', function($q) {
+                $q->where('affiliate_id', $this->affiliate->id);
+            })
+            ->with(['course', 'referral.referredUser'])
+            ->orderBy('created_at', 'desc')
+            ->limit($limit)
+            ->get()
+            ->map(function($transaction) {
+                return (object) [
+                    'description' => "Commission from {$transaction->course->title}",
+                    'formatted_amount' => '₦' . number_format($transaction->commission_amount, 2),
+                    'created_at' => $transaction->created_at,
+                ];
+            });
+    }
+
+    /**
+     * Get referred users activity
+     */
+    public function getReferredUsersActivity(int $limit = 5)
+    {
+        if (!$this->isAffiliate()) {
+            return collect();
+        }
+
+        return \App\Models\Referral::where('affiliate_id', $this->affiliate->id)
+            ->with('referredUser')
+            ->orderBy('created_at', 'desc')
+            ->limit($limit)
+            ->get()
+            ->map(function($referral) {
+                return (object) [
+                    'referredUser' => $referral->referredUser,
+                    'status' => $referral->status,
+                    'formatted_total_spent' => $referral->formatted_total_spent,
+                    'formatted_commission_earned' => $referral->formatted_commission_earned,
+                ];
+            });
+    }
 }

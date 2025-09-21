@@ -172,16 +172,16 @@ Route::prefix('newsletter')->name('newsletter.')->group(function () {
 
 
 
-
-//Affiliate Routes
-Route::middleware(['auth'])->group(function () {
-    // Affiliate routes
-    Route::get('/affiliate/dashboard', Affiliate\Dashboard::class)->name('affiliate.dashboard');
-    Route::get('/affiliate/tools', Affiliate\Tools::class)->name('affiliate.tools');
-    Route::get('/affiliate/commissions', Affiliate\CommissionHistory::class)->name('affiliate.commissions');
-    Route::get('/affiliate/reports', Affiliate\CommissionReports::class)->name('affiliate.reports');
-    Route::get('/affiliate/analytics', Affiliate\Analytics::class)->name('affiliate.analytics');
-    Route::get('/affiliate/settings', Affiliate\Settings::class)->name('affiliate.settings');
+// Affiliate Routes
+Route::middleware(['auth'])->prefix('affiliate')->name('affiliate.')->group(function () {
+    Route::get('/dashboard', \App\Livewire\Affiliate\Dashboard::class)->name('dashboard');
+    Route::get('/tools', \App\Livewire\Affiliate\Tools::class)->name('tools');
+    Route::get('/commissions', \App\Livewire\Affiliate\CommissionHistory::class)->name('commissions');
+    Route::get('/reports', \App\Livewire\Affiliate\CommissionReports::class)->name('reports');
+    Route::get('/analytics', \App\Livewire\Affiliate\Analytics::class)->name('analytics');
+    Route::get('/settings', \App\Livewire\Affiliate\Settings::class)->name('settings');
+    Route::get('/apply', \App\Livewire\Affiliate\Apply::class)->name('apply');
+    Route::get('/not-eligible', \App\Livewire\Affiliate\NotEligible::class)->name('not-eligible');
 
     // API endpoint for referral code validation
     Route::get('/api/validate-referral/{code}', function ($code) {
@@ -189,20 +189,6 @@ Route::middleware(['auth'])->group(function () {
         return response()->json($service->validateReferralCode($code));
     })->name('api.validate-referral');
 });
-
-// Public registration route with referral support
-Route::get('/register', function () {
-    $referralCode = request('ref');
-    $validation = null;
-
-    if ($referralCode) {
-        $service = app(\App\Services\AffiliateService::class);
-        $validation = $service->validateReferralCode($referralCode);
-    }
-
-    return view('auth.register', compact('referralCode', 'validation'));
-})->name('register');
-
 
 
 

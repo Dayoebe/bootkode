@@ -291,8 +291,15 @@ class ContentEditorDashboard extends Component
 
     private function getDailyEngagement(User $editor, $date)
     {
-        return BlogReaction::whereHas('reactable', function($query) use ($editor) {
-                $query->where('author_id', $editor->id);
+        return BlogReaction::where(function($query) use ($editor) {
+                // For BlogPost reactions
+                $query->whereHasMorph('reactable', [BlogPost::class], function($q) use ($editor) {
+                    $q->where('author_id', $editor->id);
+                })
+                // For BlogComment reactions
+                ->orWhereHasMorph('reactable', [BlogComment::class], function($q) use ($editor) {
+                    $q->where('user_id', $editor->id);
+                });
             })
             ->whereDate('created_at', $date)
             ->count();
@@ -422,14 +429,19 @@ class ContentEditorDashboard extends Component
         return $score;
     }
 
-    // Mock implementations for complex analytics
     private function getTotalEngagement(User $editor, $timeframe) 
     { 
-        return BlogReaction::whereHas('reactable', function($query) use ($editor) {
-            $query->where('author_id', $editor->id);
-        })->where('created_at', '>=', $timeframe)->count();
+        return BlogReaction::where(function($query) use ($editor) {
+                $query->whereHasMorph('reactable', [BlogPost::class], function($q) use ($editor) {
+                    $q->where('author_id', $editor->id);
+                })
+                ->orWhereHasMorph('reactable', [BlogComment::class], function($q) use ($editor) {
+                    $q->where('user_id', $editor->id);
+                });
+            })
+            ->where('created_at', '>=', $timeframe)
+            ->count();
     }
-
     private function getAverageEngagementRate(User $editor) 
     { 
         $posts = BlogPost::where('author_id', $editor->id)->get();
