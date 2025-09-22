@@ -25,7 +25,7 @@ class AllCourses extends Component
     public $statusFilter = '';
     public $difficultyFilter = '';
     public $instructorFilter = '';
-    public $perPage = 12;
+    public $perPage = 10;
     public $sortField = 'created_at';
     public $sortDirection = 'desc';
 
