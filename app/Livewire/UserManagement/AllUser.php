@@ -22,14 +22,7 @@ class AllUser extends Component
     public $lastLoginStart = '';
     public $lastLoginEnd = '';
 
-    // public function mount()
-    // {
-    //     if (! Gate::allows('manage-users')) {
-    //         session()->flash('error', 'Unauthorized access to user management.');
-    //         $this->redirectRoute('dashboard');
-    //     }
-    // }
-
+   
     public function sortBy($field)
     {
         if ($this->sortField === $field) {
@@ -96,18 +89,6 @@ class AllUser extends Component
             fclose($file);
         }, 200, $headers);
     }
-
-
-
-
-
-
-
-
-
-
-
-
     public function getUserActivity($userId)
     {
         $user = User::findOrFail($userId);
@@ -129,9 +110,6 @@ class AllUser extends Component
             ->pluck('role')
             ->mapWithKeys(fn($role) => [$role => User::where('role', $role)->count()]));
     }
-
-
-
     public function render()
     {
         return view('livewire.user-management.alluser', [
