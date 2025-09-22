@@ -56,4 +56,13 @@ class BlogReaction extends Model
             return true; // Added
         }
     }
+    public function commentAuthor()
+{
+    return $this->through('reactable')->has('user');
+}
+
+public function postAuthor()
+{
+    return $this->through('reactable')->has('author');
+}
 }
