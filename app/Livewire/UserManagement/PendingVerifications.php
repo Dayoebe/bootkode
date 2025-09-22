@@ -14,7 +14,8 @@ use Illuminate\Support\Facades\Response;
 class PendingVerifications extends Component
 {
     use WithPagination;
-
+    public $createdAtStart = '';
+    public $createdAtEnd = '';
     public $search = '';
     public $sortField = 'name';
     public $sortDirection = 'asc';
@@ -95,9 +96,10 @@ public function getRoleStats()
                 ->orWhere('email', 'like', '%' . $this->search . '%')
             ))
             ->when($this->roleFilter, fn ($query) => $query->role($this->roleFilter))
+            ->when($this->createdAtStart, fn ($query) => $query->where('created_at', '>=', $this->createdAtStart))
+            ->when($this->createdAtEnd, fn ($query) => $query->where('created_at', '<=', $this->createdAtEnd . ' 23:59:59'))
             ->orderBy($this->sortField, $this->sortDirection);
     }
-
     public function export()
     {
         $users = $this->getUsersQuery()->get();
