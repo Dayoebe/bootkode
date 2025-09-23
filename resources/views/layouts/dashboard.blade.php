@@ -64,6 +64,8 @@
                     <h1 class="text-xl lg:text-2xl font-bold text-gray-800 dark:text-white">Welcome back, {{ $user->name }}!</h1>
                     <p class="text-gray-600 dark:text-gray-300 mt-1">{{ ucfirst($user->getRoleNames()->first() ?? 'User') }} Dashboard</p>
                 </div>
+
+                
             @endif
 
                 <!-- Main Content Slot -->

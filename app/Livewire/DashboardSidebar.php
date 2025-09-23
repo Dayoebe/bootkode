@@ -27,7 +27,7 @@ class DashboardSidebar extends Component
                 'all-course' => 'all-courses',
                 'student.enrolled-courses' => 'student.enrolled-courses',
                 'courses.available' => 'courses.available',
-                'create_course' => 'create-course',
+                'create.course' => 'create-course',
                 'cbt.management' => 'cbt.management',
                 'cbt.exam' => 'cbt.exam',
                 'cbt.viewer' => 'cbt.viewer',
