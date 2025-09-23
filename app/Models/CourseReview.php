@@ -9,7 +9,18 @@ class CourseReview extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['user_id', 'course_id', 'rating', 'comment'];
+    protected $fillable = [
+        'course_id',
+        'user_id',
+        'rating',
+        'review_text',
+        'is_approved'
+    ];
+    protected $casts = [
+        'rating' => 'integer',
+        'is_approved' => 'boolean'
+    ];
+
 
     public function user()
     {
