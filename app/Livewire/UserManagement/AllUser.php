@@ -22,7 +22,6 @@ class AllUser extends Component
     public $lastLoginStart = '';
     public $lastLoginEnd = '';
 
-   
     public function sortBy($field)
     {
         if ($this->sortField === $field) {
@@ -48,7 +47,7 @@ class AllUser extends Component
             ))
             ->when($this->roleFilter, fn($query) => $query->role($this->roleFilter))
             ->when($this->lastLoginStart, fn($query) => $query->where('last_login_at', '>=', $this->lastLoginStart))
-            ->when($this->lastLoginEnd, fn($query) => $query->where('last_login_at', '<=', $this->lastLoginEnd))
+            ->when($this->lastLoginEnd, fn($query) => $query->where('last_login_at', '<=', $this->lastLoginEnd . ' 23:59:59'))
             ->orderBy($this->sortField, $this->sortDirection);
     }
 
@@ -89,6 +88,7 @@ class AllUser extends Component
             fclose($file);
         }, 200, $headers);
     }
+
     public function getUserActivity($userId)
     {
         $user = User::findOrFail($userId);
@@ -105,16 +105,25 @@ class AllUser extends Component
 
     public function getRoleStats()
     {
-        return cache()->remember('user_role_stats', now()->addMinutes(10), fn() => User::select('role')
-            ->groupBy('role')
-            ->pluck('role')
-            ->mapWithKeys(fn($role) => [$role => User::where('role', $role)->count()]));
+        $roles = User::getRoles();
+        $stats = [];
+        
+        foreach ($roles as $role) {
+            $stats[$role] = User::where('role', $role)->count();
+        }
+        
+        return $stats;
     }
+
     public function render()
     {
+        $roles = User::getRoles();
+        $roleStats = $this->getRoleStats();
+        
         return view('livewire.user-management.alluser', [
             'users' => $this->getUsersQuery()->paginate($this->perPage),
-            'roles' => cache()->remember('user_roles', now()->addHours(24), fn() => User::getRoles()),
+            'roles' => $roles,
+            'roleStats' => $roleStats,
         ]);
     }
 }

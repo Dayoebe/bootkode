@@ -1,4 +1,7 @@
-<div class="p-4 sm:p-6 bg-white dark:bg-gray-800 rounded-lg shadow-md animate__animated animate__fadeIn transition-colors duration-300 max-w-full overflow-hidden" x-data="{ tooltip: '' }">
+<div class="p-4 sm:p-6 bg-white dark:bg-gray-800 rounded-lg shadow-md animate__animated animate__fadeIn transition-colors duration-300 max-w-full overflow-hidden" 
+     x-data="{ tooltip: '', mouseX: 0, mouseY: 0 }"
+     @mousemove="mouseX = $event.clientX; mouseY = $event.clientY">
+
     <!-- Flash Message -->
     @if (session('error'))
         <div class="mb-4 p-3 sm:p-4 bg-red-100 dark:bg-red-500/20 border border-red-200 dark:border-red-500/30 text-red-700 dark:text-red-300 rounded-xl animate__animated animate__fadeIn transition-colors duration-300">
@@ -33,7 +36,7 @@
         <div class="lg:col-span-2">
             <label for="search-input" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 transition-colors duration-300">Search Users</label>
             <div class="relative">
-                <input wire:model.debounce.300ms="search" type="text" id="search-input" placeholder="Search by name or email..."
+                <input wire:model.live.debounce.300ms="search" type="text" id="search-input" placeholder="Search by name or email..."
                     class="w-full p-3 pl-10 pr-4 border border-gray-300 dark:border-gray-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-400 transition-all duration-200 text-sm"
                     aria-describedby="search-help">
                 <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -47,7 +50,7 @@
         <div>
             <label for="role-filter" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 transition-colors duration-300">Role</label>
             <div class="relative">
-                <select wire:model="roleFilter" id="role-filter" class="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-700 text-gray-900 dark:text-white transition-all duration-200 text-sm appearance-none focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400" aria-describedby="role-filter-help">
+                <select wire:model.live="roleFilter" id="role-filter" class="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-700 text-gray-900 dark:text-white transition-all duration-200 text-sm appearance-none focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400" aria-describedby="role-filter-help">
                     <option value="">All Roles</option>
                     @foreach ($roles as $role)
                         <option value="{{ $role }}">{{ ucfirst($role) }}</option>
@@ -60,21 +63,25 @@
             <span id="role-filter-help" class="sr-only">Filter users by role</span>
         </div>
 
-        <!-- Date Range -->
+        <!-- Last Login Start -->
         <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 transition-colors duration-300">Last Login</label>
-            <input x-data x-init="flatpickr($el, { mode: 'range', dateFormat: 'Y-m-d' })" wire:model="lastLoginStart"
-                wire:model.debounce.500ms="lastLoginEnd" placeholder="Date range..."
-                class="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-400 transition-all duration-200 text-sm"
-                aria-describedby="login-range-help">
-            <span id="login-range-help" class="sr-only">Filter users by last login date range</span>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 transition-colors duration-300">Last Login From</label>
+            <input type="date" wire:model.live="lastLoginStart" 
+                class="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-700 text-gray-900 dark:text-white transition-all duration-200 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400">
+        </div>
+
+        <!-- Last Login End -->
+        <div>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 transition-colors duration-300">Last Login To</label>
+            <input type="date" wire:model.live="lastLoginEnd" 
+                class="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-700 text-gray-900 dark:text-white transition-all duration-200 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400">
         </div>
 
         <!-- Per Page -->
         <div>
             <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 transition-colors duration-300">Per Page</label>
             <div class="relative">
-                <select wire:model="perPage" class="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-700 text-gray-900 dark:text-white transition-all duration-200 text-sm appearance-none focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400" aria-label="Items per page">
+                <select wire:model.live="perPage" class="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-700 text-gray-900 dark:text-white transition-all duration-200 text-sm appearance-none focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400" aria-label="Items per page">
                     <option value="10">10 per page</option>
                     <option value="20">20 per page</option>
                     <option value="50">50 per page</option>
@@ -86,51 +93,14 @@
         </div>
 
         <!-- Export Button -->
-        <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 transition-colors duration-300">Actions</label>
-            <button wire:click="exportCsv"
-                class="w-full px-4 py-3 bg-green-500 hover:bg-green-600 dark:bg-green-600 dark:hover:bg-green-700 text-white rounded-xl font-medium transition-all duration-300 text-sm shadow-lg hover:shadow-green-500/25"
+        <div class="flex items-end">
+            <button wire:click="exportCsv" wire:loading.attr="disabled"
+                class="w-full px-4 py-3 bg-green-500 hover:bg-green-600 dark:bg-green-600 dark:hover:bg-green-700 text-white rounded-xl font-medium transition-all duration-300 text-sm shadow-lg hover:shadow-green-500/25 disabled:opacity-50 disabled:cursor-not-allowed"
                 aria-label="Export users to CSV">
-                <i class="fas fa-download mr-2"></i> Export CSV
+                <i class="fas fa-download mr-2"></i> 
+                <span wire:loading.remove>Export CSV</span>
+                <span wire:loading>Exporting...</span>
             </button>
-        </div>
-    </div>
-
-    <!-- User Activity Modal -->
-    <div x-data="{ open: false, activity: {} }" x-on:open-user-activity.window="open = true; activity = $event.detail">
-        <div x-show="open" x-transition.opacity.duration.300ms class="fixed inset-0 bg-gray-500 dark:bg-gray-900 bg-opacity-75 dark:bg-opacity-75 flex items-center justify-center z-50 p-4">
-            <div x-show="open" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 transform scale-90" x-transition:enter-end="opacity-100 transform scale-100" x-transition:leave="transition ease-in duration-200" x-transition:leave-start="opacity-100 transform scale-100" x-transition:leave-end="opacity-0 transform scale-90" class="bg-white dark:bg-gray-800 rounded-xl p-6 w-full max-w-lg shadow-2xl border border-gray-200 dark:border-gray-600 transition-colors duration-300">
-                <div class="flex items-center justify-between mb-4">
-                    <h2 class="text-lg sm:text-xl font-semibold text-gray-900 dark:text-white transition-colors duration-300">User Activity</h2>
-                    <button x-on:click="open = false" class="text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 transition-colors duration-300">
-                        <i class="fas fa-times text-xl"></i>
-                    </button>
-                </div>
-                
-                <div class="space-y-4">
-                    <div class="bg-gray-50 dark:bg-gray-700/50 p-4 rounded-lg">
-                        <h3 class="font-medium text-gray-900 dark:text-white mb-2">Course Enrollments</h3>
-                        <div class="text-sm text-gray-600 dark:text-gray-300" x-html="activity.enrollments ? activity.enrollments.map(e => e.course_title + ': ' + e.progress + '%').join('<br>') : 'No enrollments'">
-                        </div>
-                    </div>
-                    
-                    <div class="bg-gray-50 dark:bg-gray-700/50 p-4 rounded-lg">
-                        <h3 class="font-medium text-gray-900 dark:text-white mb-2">Certificates</h3>
-                        <p class="text-sm text-gray-600 dark:text-gray-300"><span x-text="activity.certificates || 0"></span> certificates earned</p>
-                    </div>
-                    
-                    <div class="bg-gray-50 dark:bg-gray-700/50 p-4 rounded-lg">
-                        <h3 class="font-medium text-gray-900 dark:text-white mb-2">Recent Activity</h3>
-                        <div class="text-sm text-gray-600 dark:text-gray-300" x-html="activity.recent_activity ? activity.recent_activity.join('<br>') : 'No recent activity'">
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="mt-6 flex justify-end">
-                    <button x-on:click="open = false"
-                        class="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-xl font-medium transition-colors duration-300">Close</button>
-                </div>
-            </div>
         </div>
     </div>
 
@@ -150,7 +120,7 @@
         <!-- Mobile Cards (visible on small screens) -->
         <div class="block lg:hidden">
             @forelse($users as $user)
-                <div class="border-b border-gray-200 dark:border-gray-600/50 p-4 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors duration-300" wire:click="viewUser({{ $user->id }})">
+                <div class="border-b border-gray-200 dark:border-gray-600/50 p-4 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors duration-300">
                     <div class="flex items-start justify-between mb-3">
                         <div class="flex-1 min-w-0">
                             <h4 class="text-gray-900 dark:text-white font-medium text-base break-words">{{ $user->name }}</h4>
@@ -184,9 +154,9 @@
                                 </a>
                             @endcan
                             @can('view-user-activity')
-                                <a href="{{ route('user.activity', $user->id) }}" class="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200" onclick="event.stopPropagation()" aria-label="View activity for {{ $user->name }}">
+                                <button wire:click="viewUser({{ $user->id }})" class="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200" aria-label="View activity for {{ $user->name }}">
                                     <i class="fas fa-eye"></i>
-                                </a>
+                                </button>
                             @endcan
                         </div>
                     </div>
@@ -204,7 +174,7 @@
 
         <!-- Desktop Table (hidden on small screens) -->
         <div class="hidden lg:block overflow-x-auto">
-            <table wire:poll.10s class="min-w-full" aria-label="All Users Table">
+            <table class="min-w-full" aria-label="All Users Table">
                 <thead class="bg-gradient-to-r from-blue-500 to-indigo-600 dark:from-blue-600 dark:to-indigo-700 text-white">
                     <tr>
                         <th wire:click="sortBy('name')"
@@ -231,68 +201,20 @@
                                 @endif
                             </div>
                         </th>
-                        <th wire:click="sortBy('role')"
-                            class="px-6 py-4 text-left text-xs font-medium uppercase tracking-wider cursor-pointer hover:bg-blue-600 dark:hover:bg-blue-700 transition-colors duration-200"
-                            aria-sort="{{ $sortField === 'role' ? ($sortDirection === 'asc' ? 'ascending' : 'descending') : 'none' }}">
-                            <div class="flex items-center">
-                                Role 
-                                @if ($sortField === 'role')
-                                    <i class="fas fa-sort-{{ $sortDirection === 'asc' ? 'up' : 'down' }} ml-1"></i>
-                                @else
-                                    <i class="fas fa-sort ml-1 opacity-50"></i>
-                                @endif
-                            </div>
+                        <th class="px-6 py-4 text-left text-xs font-medium uppercase tracking-wider">
+                            Role
                         </th>
-                        <th wire:click="sortBy('email_verified_at')"
-                            class="px-6 py-4 text-left text-xs font-medium uppercase tracking-wider cursor-pointer hover:bg-blue-600 dark:hover:bg-blue-700 transition-colors duration-200"
-                            aria-sort="{{ $sortField === 'email_verified_at' ? ($sortDirection === 'asc' ? 'ascending' : 'descending') : 'none' }}">
-                            <div class="flex items-center">
-                                Verified 
-                                @if ($sortField === 'email_verified_at')
-                                    <i class="fas fa-sort-{{ $sortDirection === 'asc' ? 'up' : 'down' }} ml-1"></i>
-                                @else
-                                    <i class="fas fa-sort ml-1 opacity-50"></i>
-                                @endif
-                            </div>
+                        <th class="px-6 py-4 text-left text-xs font-medium uppercase tracking-wider">
+                            Verified
                         </th>
-                        <th wire:click="sortBy('enrollments_count')"
-                            class="px-6 py-4 text-left text-xs font-medium uppercase tracking-wider cursor-pointer hover:bg-blue-600 dark:hover:bg-blue-700 transition-colors duration-200"
-                            x-on:mouseover="tooltip = 'Total courses registered'" x-on:mouseout="tooltip = ''"
-                            aria-sort="{{ $sortField === 'enrollments_count' ? ($sortDirection === 'asc' ? 'ascending' : 'descending') : 'none' }}">
-                            <div class="flex items-center">
-                                Courses 
-                                @if ($sortField === 'enrollments_count')
-                                    <i class="fas fa-sort-{{ $sortDirection === 'asc' ? 'up' : 'down' }} ml-1"></i>
-                                @else
-                                    <i class="fas fa-sort ml-1 opacity-50"></i>
-                                @endif
-                            </div>
+                        <th class="px-6 py-4 text-left text-xs font-medium uppercase tracking-wider">
+                            Courses
                         </th>
-                        <th wire:click="sortBy('completed_enrollments_count')"
-                            class="px-6 py-4 text-left text-xs font-medium uppercase tracking-wider cursor-pointer hover:bg-blue-600 dark:hover:bg-blue-700 transition-colors duration-200"
-                            x-on:mouseover="tooltip = 'Courses fully completed'" x-on:mouseout="tooltip = ''"
-                            aria-sort="{{ $sortField === 'completed_enrollments_count' ? ($sortDirection === 'asc' ? 'ascending' : 'descending') : 'none' }}">
-                            <div class="flex items-center">
-                                Completed 
-                                @if ($sortField === 'completed_enrollments_count')
-                                    <i class="fas fa-sort-{{ $sortDirection === 'asc' ? 'up' : 'down' }} ml-1"></i>
-                                @else
-                                    <i class="fas fa-sort ml-1 opacity-50"></i>
-                                @endif
-                            </div>
+                        <th class="px-6 py-4 text-left text-xs font-medium uppercase tracking-wider">
+                            Completed
                         </th>
-                        <th wire:click="sortBy('in_progress_enrollments_count')"
-                            class="px-6 py-4 text-left text-xs font-medium uppercase tracking-wider cursor-pointer hover:bg-blue-600 dark:hover:bg-blue-700 transition-colors duration-200"
-                            x-on:mouseover="tooltip = 'Courses in progress'" x-on:mouseout="tooltip = ''"
-                            aria-sort="{{ $sortField === 'in_progress_enrollments_count' ? ($sortDirection === 'asc' ? 'ascending' : 'descending') : 'none' }}">
-                            <div class="flex items-center">
-                                In Progress 
-                                @if ($sortField === 'in_progress_enrollments_count')
-                                    <i class="fas fa-sort-{{ $sortDirection === 'asc' ? 'up' : 'down' }} ml-1"></i>
-                                @else
-                                    <i class="fas fa-sort ml-1 opacity-50"></i>
-                                @endif
-                            </div>
+                        <th class="px-6 py-4 text-left text-xs font-medium uppercase tracking-wider">
+                            In Progress
                         </th>
                         <th wire:click="sortBy('last_login_at')"
                             class="px-6 py-4 text-left text-xs font-medium uppercase tracking-wider cursor-pointer hover:bg-blue-600 dark:hover:bg-blue-700 transition-colors duration-200"
@@ -306,25 +228,15 @@
                                 @endif
                             </div>
                         </th>
-                        <th wire:click="sortBy('is_active')"
-                            class="px-6 py-4 text-left text-xs font-medium uppercase tracking-wider cursor-pointer hover:bg-blue-600 dark:hover:bg-blue-700 transition-colors duration-200"
-                            aria-sort="{{ $sortField === 'is_active' ? ($sortDirection === 'asc' ? 'ascending' : 'descending') : 'none' }}">
-                            <div class="flex items-center">
-                                Active 
-                                @if ($sortField === 'is_active')
-                                    <i class="fas fa-sort-{{ $sortDirection === 'asc' ? 'up' : 'down' }} ml-1"></i>
-                                @else
-                                    <i class="fas fa-sort ml-1 opacity-50"></i>
-                                @endif
-                            </div>
+                        <th class="px-6 py-4 text-left text-xs font-medium uppercase tracking-wider">
+                            Active
                         </th>
                         <th class="px-6 py-4 text-left text-xs font-medium uppercase tracking-wider">Actions</th>
                     </tr>
                 </thead>
                 <tbody class="bg-white dark:bg-gray-700/30 divide-y divide-gray-200 dark:divide-gray-600/50">
                     @forelse($users as $user)
-                        <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors duration-200 cursor-pointer"
-                            wire:click="viewUser({{ $user->id }})">
+                        <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors duration-200">
                             <td class="px-6 py-4 whitespace-nowrap">
                                 <div class="text-sm font-medium text-gray-900 dark:text-white">{{ $user->name }}</div>
                             </td>
@@ -365,18 +277,16 @@
                                     @can('edit-users')
                                         <a href="{{ route('user.edit', $user->id) }}" 
                                            class="text-indigo-600 dark:text-indigo-400 hover:text-indigo-900 dark:hover:text-indigo-300 transition-colors duration-200" 
-                                           onclick="event.stopPropagation()" 
                                            aria-label="Edit user {{ $user->name }}">
                                             <i class="fas fa-edit"></i>
                                         </a>
                                     @endcan
                                     @can('view-user-activity')
-                                        <a href="{{ route('user.activity', $user->id) }}" 
+                                        <button wire:click="viewUser({{ $user->id }})" 
                                            class="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200 transition-colors duration-200" 
-                                           onclick="event.stopPropagation()" 
                                            aria-label="View activity for {{ $user->name }}">
                                             <i class="fas fa-eye"></i>
-                                        </a>
+                                        </button>
                                     @endcan
                                 </div>
                             </td>
@@ -400,16 +310,13 @@
     </div>
 
     <!-- Tooltip -->
-  <div x-show="tooltip" 
-     x-transition:opacity.duration.200ms 
-     class="fixed bg-gray-800 dark:bg-gray-700 text-white text-sm px-3 py-2 rounded-lg shadow-lg pointer-events-none z-40" 
-     x-text="tooltip"
-     :style="tooltip ? { left: (mouseX + 10) + 'px', top: (mouseY - 40) + 'px' } : {}"
-     style="display: none;">
-</div>
-<div class="p-4 sm:p-6 bg-white dark:bg-gray-800 rounded-lg shadow-md animate__animated animate__fadeIn transition-colors duration-300 max-w-full overflow-hidden" 
-     x-data="{ tooltip: '', mouseX: 0, mouseY: 0 }"
-     @mousemove="mouseX = $event.clientX; mouseY = $event.clientY">
+    <div x-show="tooltip" 
+         x-transition:opacity.duration.200ms 
+         class="fixed bg-gray-800 dark:bg-gray-700 text-white text-sm px-3 py-2 rounded-lg shadow-lg pointer-events-none z-40" 
+         x-text="tooltip"
+         :style="'left: ' + (mouseX + 10) + 'px; top: ' + (mouseY - 40) + 'px'"
+         style="display: none;">
+    </div>
 
     <!-- Pagination -->
     <div class="mt-6 bg-white dark:bg-gray-700/30 p-4 rounded-xl border border-gray-200 dark:border-gray-600/50 backdrop-blur-sm transition-colors duration-300">
@@ -417,77 +324,75 @@
     </div>
 
     <!-- Chart Script -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script>
-        document.addEventListener('livewire:load', () => {
-            const ctx = document.getElementById('roleChart').getContext('2d');
-            const isDark = document.documentElement.classList.contains('dark');
-            
-            new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: @json($roles),
-                    datasets: [{
-                        label: 'Users by Role',
-                        data: @json($this->getRoleStats()->values()),
-                        backgroundColor: isDark ? 'rgba(59, 130, 246, 0.6)' : 'rgba(59, 130, 246, 0.5)',
-                        borderColor: isDark ? 'rgba(59, 130, 246, 0.8)' : 'rgba(59, 130, 246, 1)',
-                        borderWidth: 1,
-                        borderRadius: 8,
-                        borderSkipped: false,
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            labels: {
-                                color: isDark ? '#e5e7eb' : '#374151'
-                            }
-                        }
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    let chartInstance = null;
+
+    function initializeChart() {
+        const ctx = document.getElementById('roleChart');
+        if (!ctx) return;
+
+        if (chartInstance) {
+            chartInstance.destroy();
+        }
+
+        const isDark = document.documentElement.classList.contains('dark');
+        const roles = @json($roles);
+        const roleStats = @json(array_values($roleStats));
+        
+        chartInstance = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: roles.map(role => role.charAt(0).toUpperCase() + role.slice(1).replace(/_/g, ' ')),
+                datasets: [{
+                    label: 'Users by Role',
+                    data: roleStats,
+                    backgroundColor: isDark ? 'rgba(59, 130, 246, 0.6)' : 'rgba(59, 130, 246, 0.5)',
+                    borderColor: isDark ? 'rgba(59, 130, 246, 0.8)' : 'rgba(59, 130, 246, 1)',
+                    borderWidth: 1,
+                    borderRadius: 8,
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: {
+                    x: { 
+                        ticks: { 
+                            color: isDark ? '#9ca3af' : '#6b7280',
+                            maxRotation: 45,
+                            minRotation: 45
+                        } 
                     },
-                    scales: {
-                        x: {
-                            ticks: {
-                                color: isDark ? '#9ca3af' : '#6b7280'
-                            },
-                            grid: {
-                                color: isDark ? '#374151' : '#e5e7eb'
-                            }
-                        },
-                        y: {
-                            beginAtZero: true,
-                            ticks: {
-                                color: isDark ? '#9ca3af' : '#6b7280'
-                            },
-                            grid: {
-                                color: isDark ? '#374151' : '#e5e7eb'
-                            }
-                        }
+                    y: { 
+                        beginAtZero: true,
+                        ticks: { color: isDark ? '#9ca3af' : '#6b7280' } 
                     }
                 }
-            });
+            }
         });
+    }
 
-        // Update chart when dark mode changes
-        document.addEventListener('DOMContentLoaded', function() {
-            const observer = new MutationObserver(function(mutations) {
-                mutations.forEach(function(mutation) {
-                    if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
-                        // Reinitialize chart with new colors when dark mode toggles
-                        setTimeout(() => {
-                            const event = new Event('livewire:load');
-                            document.dispatchEvent(event);
-                        }, 100);
-                    }
-                });
-            });
-            
-            observer.observe(document.documentElement, {
-                attributes: true,
-                attributeFilter: ['class']
-            });
+    // Initialize on page load
+    document.addEventListener('DOMContentLoaded', initializeChart);
+
+    // Reinitialize when Livewire updates (if Livewire is available)
+    if (window.Livewire) {
+        Livewire.hook('element.updated', (el) => {
+            if (el.querySelector('#roleChart')) {
+                setTimeout(initializeChart, 50);
+            }
         });
-    </script>
+    }
+
+    // Handle dark mode changes
+    new MutationObserver(function(mutations) {
+        mutations.forEach(function(mutation) {
+            if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
+                setTimeout(initializeChart, 100);
+            }
+        });
+    }).observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+</script>
 </div>
