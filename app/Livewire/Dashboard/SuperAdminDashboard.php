@@ -401,7 +401,7 @@ class SuperAdminDashboard extends Component
     public function quickAction($action)
     {
         return match ($action) {
-            'create_course' => redirect()->route('create_course'),
+            'create.course' => redirect()->route('create.course'),
             'manage_users' => redirect()->route('user-management'),
             'view_tickets' => redirect()->route('support.tickets'),
             'manage_faqs' => redirect()->route('faq.management'),
