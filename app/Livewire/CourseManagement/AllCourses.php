@@ -11,6 +11,7 @@ use Livewire\Attributes\On;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Response;
+use Illuminate\Support\Facades\Route;
 use Illuminate\Database\Eloquent\Builder;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Computed;
@@ -394,6 +395,10 @@ class AllCourses extends Component
     public function instructors()
     {
         return cache()->remember('course_instructors', now()->addHours(24), fn() => User::whereHas('roles', fn($q) => $q->where('name', 'instructor'))->orderBy('name')->get());
+    }
+    public function previewCourse(Course $course): void
+    {
+        $this->redirect(route('courses.preview', $course));
     }
 
     /**
