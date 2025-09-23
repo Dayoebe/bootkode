@@ -70,16 +70,34 @@ public function getRoleStats()
 
     public function bulkVerify()
     {
-        User::whereIn('id', $this->selectedUsers)
+        // Get the users first
+        $users = User::whereIn('id', $this->selectedUsers)
             ->whereNull('email_verified_at')
-            ->update(['email_verified_at' => now()])
-            ->each(function ($user) {
-                $user->logCustomActivity("Email verified by bulk action", ['by' => auth()->user()->name]);
-            });
+            ->get();
+    
+        // Update them and log activity
+        foreach ($users as $user) {
+            $user->forceFill(['email_verified_at' => now()])->save();
+            $user->logCustomActivity("Email verified by bulk action", ['by' => auth()->user()->name]);
+        }
+    
         $this->selectedUsers = [];
         session()->flash('success', 'Selected users verified successfully.');
     }
+    public function bulkSendReminders()
+{
+    $users = User::whereIn('id', $this->selectedUsers)
+        ->whereNull('email_verified_at')
+        ->get();
 
+    foreach ($users as $user) {
+        $user->notify(new VerifyEmailNotification());
+        $user->logCustomActivity("Verification reminder sent by bulk action", ['by' => auth()->user()->name]);
+    }
+
+    $this->selectedUsers = [];
+    session()->flash('success', 'Verification reminders sent to selected users.');
+}
     public function openUserDetailsModal($userId)
     {
         $this->selectedUserId = $userId;
