@@ -25,8 +25,6 @@ class CourseApprovals extends Component
     #[Rule('required|string|max:1000')]
     public $rejectionReason = '';
 
-
-
     public function render()
     {
         $currentPage = $this->getPage();
@@ -107,21 +105,11 @@ class CourseApprovals extends Component
         }
     }
 
-
-
-
-
-    /**
-     * Resets the pagination when the search term changes.
-     */
     public function updatingSearch()
     {
         $this->resetPage();
     }
 
-    /**
-     * Open approve confirmation modal.
-     */
     public function openApproveModal($courseId)
     {
         if (!$this->canManageCourses()) {
@@ -132,9 +120,6 @@ class CourseApprovals extends Component
         $this->isApproveModalOpen = true;
     }
 
-    /**
-     * Open reject modal with reason input.
-     */
     public function openRejectModal($courseId)
     {
         if (!$this->canManageCourses()) {
@@ -146,10 +131,6 @@ class CourseApprovals extends Component
         $this->isRejectModalOpen = true;
     }
 
-   
-    /**
-     * Close modals and reset fields.
-     */
     public function closeModal()
     {
         $this->isApproveModalOpen = false;
@@ -159,19 +140,12 @@ class CourseApprovals extends Component
         $this->resetValidation();
     }
 
-   
-    /**
-     * Check if the user can manage courses.
-     */
     private function canManageCourses()
     {
         $user = Auth::user();
         return $user && $user->hasAnyRole(['super_admin', 'academy_admin']);
     }
 
-    /**
-     * Clear cache for all pages and search terms.
-     */
     private function clearCache()
     {
         foreach (range(1, 10) as $page) {
@@ -179,10 +153,12 @@ class CourseApprovals extends Component
             Cache::forget('course_approvals_paginated_' . md5('' . $page));
         }
     }
-
-    /**
-     * Centralized flash message handler.
-     */
+    
+    public function previewCourse(Course $course)
+    {
+        return $this->redirect(route('courses.preview', $course));
+    }
+    
     private function flashMessage(string $message, string $type = 'success')
     {
         session()->flash($type === 'success' ? 'message' : 'error', $message);
