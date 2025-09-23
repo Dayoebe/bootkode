@@ -296,6 +296,11 @@ class AvailableCourses extends Component
             })->orderBy('name')->get();
         });
     }
+    public function previewCourse(int $courseId): void
+    {
+        $course = Course::findOrFail($courseId);
+        $this->redirect(route('courses.preview', $course));
+    }
 
     public function render()
     {
