@@ -119,7 +119,7 @@
                         class="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 py-2 z-50"
                         style="display: none;">
                         @if($user && ($user->hasRole('instructor') || $user->hasRole('academy_admin') || $user->hasRole('super_admin')))
-                            <a href="{{ route('create_course') }}" class="flex items-center px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                            <a href="{{ route('create.course') }}" class="flex items-center px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
                                 <i class="fas fa-book w-4 mr-3"></i>
                                 New Course
                             </a>
@@ -137,6 +137,14 @@
                     </div>
                 </div>
             </div>
+
+            <button 
+            @click="toggleDarkMode()"
+            class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+            aria-label="Toggle dark mode">
+            <i x-show="!darkMode" class="fas fa-moon text-gray-500 text-sm"></i>
+            <i x-show="darkMode" class="fas fa-sun text-yellow-500 text-sm"></i>
+        </button>
 
             <!-- Mobile Search Toggle -->
             <button 
