@@ -528,10 +528,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
 // Course CRUD Routes
 Route::middleware(['auth', 'verified'])->prefix('dashboard/courses')->name('')->group(function () {
-    Route::get('/create', \App\Livewire\CourseManagement\CourseForm::class)->name('create_course');
-    Route::get('/{courseId}/edit', \App\Livewire\CourseManagement\CourseForm::class)->name('edit_course');
+    Route::get('/create', \App\Livewire\CourseManagement\CourseForm::class)->name('create.course');
+    Route::get('/{course}/edit', \App\Livewire\CourseManagement\CourseForm::class)->name('edit_course');
     Route::get('/{course}/builder', \App\Livewire\CourseManagement\CourseBuilder::class)->name('course-builder');
     Route::get('/reviews', \App\Livewire\CourseManagement\CourseReviews::class)->name('course-reviews');
+    Route::get('/{course}/preview', \App\Livewire\CourseManagement\CoursePreview::class)->name('courses.preview');
     Route::get('/approvals', \App\Livewire\CourseManagement\CourseApprovals::class)->name('course-approvals');
     Route::get('/available', \App\Livewire\CourseManagement\AvailableCourses::class)->name('courses.available');
 });

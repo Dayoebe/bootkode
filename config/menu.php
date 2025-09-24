@@ -28,8 +28,8 @@ return [
             'link_id' => 'profile.view',
             'children' => [
                 ['label' => 'View Profile', 'icon' => 'fas fa-user', 'route_name' => 'profile.view', 'roles' => [], 'link_id' => 'profile.view',],
-                ['label' => 'Learning Analytics', 'icon' => 'fas fa-chart-line', 'route_name' => 'learning.analytics', 'roles' => [], 'link_id' => 'learning_analytics_dashboard']
-                // ['label' => 'Edit Profile', 'icon' => 'fas fa-user-edit', 'route_name' => 'profile.edit', 'roles' => [], 'link_id' => 'profile.edit',],
+                ['label' => 'Learning Analytics', 'icon' => 'fas fa-chart-line', 'route_name' => 'learning.analytics', 'roles' => [], 'link_id' => 'learning_analytics_dashboard'],
+                ['label' => 'Notifications', 'icon' => 'fas fa-bell', 'route_name' => 'notifications', 'roles' => [], 'link_id' => 'notifications',]
             ]
         ],
         [
@@ -57,7 +57,7 @@ return [
                 ['label' => 'My Courses', 'icon' => 'fas fa-edit', 'route_name' => 'my-course', 'roles' => [User::ROLE_SUPER_ADMIN, User::ROLE_ACADEMY_ADMIN, User::ROLE_INSTRUCTOR, User::ROLE_MENTOR, User::ROLE_CONTENT_EDITOR], 'link_id' => 'my-courses',],
                 ['label' => 'All Courses', 'icon' => 'fas fa-list', 'route_name' => ('all-course'), 'roles' => [User::ROLE_SUPER_ADMIN], 'link_id' => 'all-courses',],
                 ['label' => 'Available Courses', 'icon' => 'fas fa-book-open', 'route_name' => ('courses.available'), 'roles' => [User::ROLE_STUDENT], 'link_id' => 'courses.available',],
-                ['label' => 'Create Course', 'icon' => 'fas fa-plus-circle', 'route_name' => ('create_course'), 'roles' => [User::ROLE_SUPER_ADMIN, User::ROLE_ACADEMY_ADMIN, User::ROLE_INSTRUCTOR], 'link_id' => 'create-course',],
+                ['label' => 'Create Course', 'icon' => 'fas fa-plus-circle', 'route_name' => ('create.course'), 'roles' => [User::ROLE_SUPER_ADMIN, User::ROLE_ACADEMY_ADMIN, User::ROLE_INSTRUCTOR], 'link_id' => 'create-course',],
                 ['label' => 'Course Builder', 'icon' => 'fas fa-puzzle-piece', 'route_name' => ('all-course'), 'roles' => [User::ROLE_INSTRUCTOR, User::ROLE_ACADEMY_ADMIN], 'link_id' => 'all-course'],
                 ['label' => 'Course Categories', 'icon' => 'fas fa-tags', 'route_name' => ('course-categories'), 'roles' => [User::ROLE_SUPER_ADMIN, User::ROLE_ACADEMY_ADMIN, User::ROLE_CONTENT_EDITOR], 'link_id' => 'course-categories',],
                 ['label' => 'Course Reviews', 'icon' => 'fas fa-star', 'route_name' => ('course-reviews'), 'roles' => [User::ROLE_SUPER_ADMIN, User::ROLE_ACADEMY_ADMIN, User::ROLE_INSTRUCTOR], 'link_id' => 'course-reviews',],
@@ -71,27 +71,9 @@ return [
             'roles' => [],
             'link_id' => 'cbt',
             'children' => [
-                [
-                    'label' => 'Take CBT Exam',
-                    'icon' => 'fas fa-pencil-alt',
-                    'route_name' => 'cbt.exam',
-                    'roles' => [User::ROLE_STUDENT],
-                    'link_id' => 'cbt.exam'
-                ],
-                [
-                    'label' => 'View CBT Results',
-                    'icon' => 'fas fa-chart-bar',
-                    'route_name' => 'cbt.viewer',
-                    'roles' => [User::ROLE_STUDENT],
-                    'link_id' => 'cbt.viewer'
-                ],
-                [
-                    'label' => 'CBT Management',
-                    'icon' => 'fas fa-cog',
-                    'route_name' => 'cbt.management',
-                    'roles' => [User::ROLE_SUPER_ADMIN, User::ROLE_ACADEMY_ADMIN, User::ROLE_INSTRUCTOR],
-                    'link_id' => 'cbt.management'
-                ],
+                ['label' => 'Take CBT Exam', 'icon' => 'fas fa-pencil-alt', 'route_name' => 'cbt.exam', 'roles' => [User::ROLE_STUDENT], 'link_id' => 'cbt.exam'],
+                ['label' => 'View CBT Results', 'icon' => 'fas fa-chart-bar', 'route_name' => 'cbt.viewer', 'roles' => [User::ROLE_STUDENT], 'link_id' => 'cbt.viewer'],
+                ['label' => 'CBT Management', 'icon' => 'fas fa-cog', 'route_name' => 'cbt.management', 'roles' => [User::ROLE_SUPER_ADMIN, User::ROLE_ACADEMY_ADMIN, User::ROLE_INSTRUCTOR], 'link_id' => 'cbt.management'],
             ]
         ],
         [
@@ -232,7 +214,6 @@ return [
                 // ['label' => 'Product Details', 'icon' => 'fas fa-box-open', 'route_name' => 'marketplace.product.show', 'roles' => [], 'link_id' => 'marketplace.product.show'],
                 ['label' => 'Cart & Checkout', 'icon' => 'fas fa-credit-card', 'route_name' => 'marketplace.checkout', 'roles' => [], 'link_id' => 'marketplace.checkout'],
                 ['label' => 'My Purchases', 'icon' => 'fas fa-shopping-cart', 'route_name' => 'marketplace.purchases', 'roles' => [User::ROLE_STUDENT, User::ROLE_AFFILIATE_AMBASSADOR], 'link_id' => 'marketplace.purchases'],
-        
                 // Vendor
                 ['label' => 'Sell a Product', 'icon' => 'fas fa-upload', 'route_name' => 'marketplace.seller.create', 'roles' => [User::ROLE_INSTRUCTOR, User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN], 'link_id' => 'marketplace.seller.create'],
                 ['label' => 'My Listings', 'icon' => 'fas fa-list-alt', 'route_name' => 'marketplace.seller.listings', 'roles' => [User::ROLE_INSTRUCTOR, User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN], 'link_id' => 'marketplace.seller.listings'],
@@ -240,7 +221,6 @@ return [
                 ['label' => 'Vendor Dashboard', 'icon' => 'fas fa-store-alt', 'route_name' => 'marketplace.vendor.dashboard', 'roles' => [User::ROLE_INSTRUCTOR, User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN], 'link_id' => 'marketplace.vendor.dashboard'],
                 ['label' => 'Customer Orders', 'icon' => 'fas fa-box', 'route_name' => 'marketplace.vendor.orders', 'roles' => [User::ROLE_INSTRUCTOR, User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN], 'link_id' => 'marketplace.vendor.orders'],
                 ['label' => 'Withdrawals', 'icon' => 'fas fa-money-bill-wave', 'route_name' => 'marketplace.vendor.withdrawals', 'roles' => [User::ROLE_INSTRUCTOR, User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN], 'link_id' => 'marketplace.vendor.withdrawals'],
-        
                 //Admin
                 ['label' => 'Vendor Applications', 'icon' => 'fas fa-user-plus', 'route_name' => 'marketplace.vendor.applications', 'roles' => [User::ROLE_SUPER_ADMIN, User::ROLE_ACADEMY_ADMIN], 'link_id' => 'marketplace.vendor.applications'],
                 ['label' => 'All Orders', 'icon' => 'fas fa-boxes', 'route_name' => 'marketplace.orders', 'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN], 'link_id' => 'marketplace.orders'],
@@ -250,7 +230,7 @@ return [
                 ['label' => 'Marketplace Analytics', 'icon' => 'fas fa-chart-line', 'route_name' => 'marketplace.analytics', 'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN], 'link_id' => 'marketplace.analytics'],
                 ['label' => 'Marketplace Settings', 'icon' => 'fas fa-cog', 'route_name' => 'marketplace.settings', 'roles' => [User::ROLE_SUPER_ADMIN, User::ROLE_ACADEMY_ADMIN], 'link_id' => 'marketplace.settings'],
             ]
-            ],
+        ],
         [
             'label' => 'Institution Portal',
             'icon' => 'fas fa-university',
@@ -265,103 +245,25 @@ return [
                 ['label' => 'White-label Settings', 'icon' => 'fas fa-paint-roller', 'route_name' => 'institution.whitelabel', 'roles' => [User::ROLE_SUPER_ADMIN]],
             ]
         ],
-        // [
-        //     'label' => 'Financial Center',
-        //     'icon' => 'fas fa-money-bill-wave',
-        //     'route_name' => 'admin.financial.dashboard',
-        //     'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN],
-        //     'link_id' => 'financial',
-        //     'children' => [
-        //         ['label' => 'Revenue Dashboard', 'icon' => 'fas fa-chart-line', 'route_name' => 'admin.financial.dashboard', 'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN], 'link_id' => 'admin.financial.dashboard'],
-        //         ['label' => 'Wallet', 'icon' => 'fas fa-wallet', 'route_name' => 'wallet.index', 'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN, User::ROLE_STUDENT], 'link_id' => 'wallet.index'],
-        //         ['label' => 'Withdrawals', 'icon' => 'fas fa-hand-holding-usd', 'route_name' => 'withdrawals.index', 'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN, User::ROLE_STUDENT], 'link_id' => 'withdrawals.index'],
-        //     ]
-        // ],
         $financialMenu = [
             'label' => 'Financial Center',
             'icon' => 'fas fa-money-bill-wave',
-            'route_name' => '#', // Dynamic based on user role
+            'route_name' => '#',
             'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN, User::ROLE_INSTRUCTOR, User::ROLE_STUDENT],
             'link_id' => 'financial',
             'children' => [
-                [
-                    'label' => 'My Wallet',
-                    'icon' => 'fas fa-wallet',
-                    'route_name' => 'wallet.index',
-                    'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN, User::ROLE_INSTRUCTOR, User::ROLE_STUDENT],
-                    'link_id' => 'wallet.index',
-                    'description' => 'Manage your wallet balance and fund your account'
-                ],
-                [
-                    'label' => 'Transaction History',
-                    'icon' => 'fas fa-history',
-                    'route_name' => 'transactions.history',
-                    'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN, User::ROLE_INSTRUCTOR, User::ROLE_STUDENT],
-                    'link_id' => 'transactions.history',
-                    'description' => 'View all your financial transactions'
-                ],
-
+                ['label' => 'My Wallet', 'icon' => 'fas fa-wallet', 'route_name' => 'wallet.index', 'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN, User::ROLE_INSTRUCTOR, User::ROLE_STUDENT], 'link_id' => 'wallet.index', 'description' => 'Manage your wallet balance and fund your account'],
+                ['label' => 'Transaction History', 'icon' => 'fas fa-history', 'route_name' => 'transactions.history', 'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN, User::ROLE_INSTRUCTOR, User::ROLE_STUDENT], 'link_id' => 'transactions.history', 'description' => 'View all your financial transactions'],
                 // Instructor-Specific Features
-                [
-                    'label' => 'My Earnings',
-                    'icon' => 'fas fa-chart-line',
-                    'route_name' => 'instructor.earnings',
-                    'roles' => [User::ROLE_INSTRUCTOR, User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN],
-                    'link_id' => 'instructor.earnings',
-                    'description' => 'Track your course sales and earnings'
-                ],
-                [
-                    'label' => 'Withdrawals',
-                    'icon' => 'fas fa-hand-holding-usd',
-                    'route_name' => 'withdrawals.index',
-                    'roles' => [User::ROLE_INSTRUCTOR, User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN],
-                    'link_id' => 'withdrawals.index',
-                    'description' => 'Request and manage earnings withdrawals'
-                ],
-
+                ['label' => 'My Earnings', 'icon' => 'fas fa-chart-line', 'route_name' => 'instructor.earnings', 'roles' => [User::ROLE_INSTRUCTOR, User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN], 'link_id' => 'instructor.earnings', 'description' => 'Track your course sales and earnings'],
+                ['label' => 'Withdrawals', 'icon' => 'fas fa-hand-holding-usd', 'route_name' => 'withdrawals.index', 'roles' => [User::ROLE_INSTRUCTOR, User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN], 'link_id' => 'withdrawals.index', 'description' => 'Request and manage earnings withdrawals'],
                 // Admin-Only Features
-                [
-                    'label' => 'Financial Dashboard',
-                    'icon' => 'fas fa-tachometer-alt',
-                    'route_name' => 'admin.financial.dashboard',
-                    'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN],
-                    'link_id' => 'admin.financial.dashboard',
-                    'description' => 'Platform financial overview and analytics'
-                ],
-                [
-                    'label' => 'Payment Processing',
-                    'icon' => 'fas fa-credit-card',
-                    'route_name' => 'admin.payments.processing',
-                    'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN],
-                    'link_id' => 'admin.payments.processing',
-                    'description' => 'Manage payments, refunds, and withdrawals'
-                ],
-                [
-                    'label' => 'Revenue Reports',
-                    'icon' => 'fas fa-chart-bar',
-                    'route_name' => 'admin.revenue.reports',
-                    'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN],
-                    'link_id' => 'admin.revenue.reports',
-                    'description' => 'Generate financial reports and analytics'
-                ],
-                [
-                    'label' => 'Financial Settings',
-                    'icon' => 'fas fa-cogs',
-                    'route_name' => 'admin.financial.settings',
-                    'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN],
-                    'link_id' => 'admin.financial.settings',
-                    'description' => 'Configure financial system settings'
-                ],
-
+                ['label' => 'Financial Dashboard', 'icon' => 'fas fa-tachometer-alt', 'route_name' => 'admin.financial.dashboard', 'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN], 'link_id' => 'admin.financial.dashboard', 'description' => 'Platform financial overview and analytics'],
+                ['label' => 'Payment Processing', 'icon' => 'fas fa-credit-card', 'route_name' => 'admin.payments.processing', 'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN], 'link_id' => 'admin.payments.processing', 'description' => 'Manage payments, refunds, and withdrawals'],
+                ['label' => 'Revenue Reports', 'icon' => 'fas fa-chart-bar', 'route_name' => 'admin.revenue.reports', 'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN], 'link_id' => 'admin.revenue.reports', 'description' => 'Generate financial reports and analytics'],
+                ['label' => 'Financial Settings', 'icon' => 'fas fa-cogs', 'route_name' => 'admin.financial.settings', 'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN], 'link_id' => 'admin.financial.settings', 'description' => 'Configure financial system settings'],
                 // Super Admin Only
-                [
-                    'label' => 'Paystack Settings',
-                    'icon' => 'fas fa-university',
-                    'route_name' => 'admin.paystack.settings',
-                    'roles' => [User::ROLE_SUPER_ADMIN],
-                    'link_id' => 'admin.paystack.settings',
-                    'description' => 'Configure payment gateway settings'
-                ],
+                ['label' => 'Paystack Settings', 'icon' => 'fas fa-university', 'route_name' => 'admin.paystack.settings', 'roles' => [User::ROLE_SUPER_ADMIN], 'link_id' => 'admin.paystack.settings', 'description' => 'Configure payment gateway settings'],
             ]
         ],
 
@@ -380,8 +282,6 @@ return [
                 ['label' => 'Affiliate Settings', 'icon' => 'fas fa-cog', 'route_name' => 'affiliate.settings', 'roles' => [User::ROLE_SUPER_ADMIN]],
             ]
         ],
-
-
         [
             'label' => 'Gamification',
             'icon' => 'fas fa-gamepad',
@@ -434,63 +334,14 @@ return [
             'roles' => [],
             'link_id' => 'settings',
             'children' => [
-                [
-                    'label' => 'Account Management', 
-                    'icon' => 'fas fa-user-shield', 
-                    'route_name' => 'settings', 
-                    'roles' => []
-                ],
-                [
-                    'label' => 'Profile Settings', 
-                    'icon' => 'fas fa-user-cog', 
-                    'route_name' => 'profile.settings', 
-                    'roles' => []
-                ],
-                [
-                    'label' => 'Notification Preferences', 
-                    'icon' => 'fas fa-bell', 
-                    'route_name' => 'notification.preferences', 
-                    'roles' => []
-                ],
-                [
-                    'label' => 'Privacy Settings', 
-                    'icon' => 'fas fa-lock', 
-                    'route_name' => 'privacy.settings', 
-                    'roles' => []
-                ],
-                [
-                    'label' => 'Language & Localization', 
-                    'icon' => 'fas fa-language', 
-                    'route_name' => 'language.localization', 
-                    'roles' => [User::ROLE_SUPER_ADMIN]
-                ],
+                ['label' => 'Account Management', 'icon' => 'fas fa-user-shield', 'route_name' => 'settings', 'roles' => []],
+                ['label' => 'Profile Settings', 'icon' => 'fas fa-user-cog', 'route_name' => 'profile.settings', 'roles' => []],
+                ['label' => 'Notification Preferences', 'icon' => 'fas fa-bell', 'route_name' => 'notification.preferences', 'roles' => []],
+                ['label' => 'Privacy Settings', 'icon' => 'fas fa-lock', 'route_name' => 'privacy.settings', 'roles' => []],
+                ['label' => 'Language & Localization', 'icon' => 'fas fa-language', 'route_name' => 'language.localization', 'roles' => [User::ROLE_SUPER_ADMIN]],
             ]
         ],
-        [
-            'label' => 'Notifications',
-            'icon' => 'fas fa-bell',
-            'route_name' => 'notifications',
-            'roles' => [],
-            'link_id' => 'notifications',
-        ],
-        [
-            'label' => 'System Administration',
-            'icon' => 'fas fa-cogs',
-            'route_name' => '#',
-            'roles' => [User::ROLE_SUPER_ADMIN],
-            'link_id' => 'system_admin',
-            'children' => [
-                ['label' => 'Platform Settings', 'icon' => 'fas fa-cog', 'route_name' => '#', 'roles' => [User::ROLE_SUPER_ADMIN]],
-                ['label' => 'API Management', 'icon' => 'fas fa-code-branch', 'route_name' => '#', 'roles' => [User::ROLE_SUPER_ADMIN]],
-                ['label' => 'Database Management', 'icon' => 'fas fa-database', 'route_name' => '#', 'roles' => []],
-                ['label' => 'Integrations', 'icon' => 'fas fa-puzzle-piece', 'route_name' => '#', 'roles' => [User::ROLE_SUPER_ADMIN]],
-                ['label' => 'System Logs', 'icon' => 'fas fa-clipboard-list', 'route_name' => '#', 'roles' => [User::ROLE_SUPER_ADMIN]],
-                ['label' => 'Server Monitoring', 'icon' => 'fas fa-heartbeat', 'route_name' => '#', 'roles' => []],
-                ['label' => 'Announcements', 'icon' => 'fas fa-bullhorn', 'route_name' => '#', 'roles' => [User::ROLE_SUPER_ADMIN]],
-                ['label' => 'Backup & Restore', 'icon' => 'fas fa-save', 'route_name' => '#', 'roles' => []],
-                ['label' => 'Security Center', 'icon' => 'fas fa-shield-alt', 'route_name' => '#', 'roles' => []],
-            ]
-        ],
+       
         [
             'label' => 'Newsletter',
             'icon' => 'fas fa-envelope',
@@ -515,53 +366,32 @@ return [
             'roles' => [User::ROLE_SUPER_ADMIN, User::ROLE_CONTENT_EDITOR, User::ROLE_ACADEMY_ADMIN],
             'link_id' => 'page_management',
             'children' => [
-                [
-                    'label' => 'All Pages',
-                    'icon' => 'fas fa-list',
-                    'route_name' => 'pages.index',
-                    'roles' => [User::ROLE_CONTENT_EDITOR, User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN]
-                ],
-                [
-                    'label' => 'Create Page',
-                    'icon' => 'fas fa-plus-circle',
-                    'route_name' => 'pages.create',
-                    'roles' => [User::ROLE_CONTENT_EDITOR, User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN]
-                ],
-                [
-                    'label' => 'Page Analytics',
-                    'icon' => 'fas fa-chart-line',
-                    'route_name' => 'pages.analytics',
-                    'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN]
-                ],
-                [
-                    'label' => 'Page Templates',
-                    'icon' => 'fas fa-palette',
-                    'route_name' => 'pages.templates',
-                    'roles' => [User::ROLE_CONTENT_EDITOR, User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN]
-                ],
-                [
-                    'label' => 'Media Manager',
-                    'icon' => 'fas fa-photo-video',
-                    'route_name' => 'pages.media',
-                    'roles' => [User::ROLE_CONTENT_EDITOR, User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN]
-                ],
-                [
-                    'label' => 'SEO Manager',
-                    'icon' => 'fas fa-search',
-                    'route_name' => 'pages.seo',
-                    'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN]
-                ],
-                [
-                    'label' => 'Page Settings',
-                    'icon' => 'fas fa-cog',
-                    'route_name' => 'pages.settings',
-                    'roles' => [User::ROLE_SUPER_ADMIN]
-                ],
+                ['label' => 'All Pages', 'icon' => 'fas fa-list', 'route_name' => 'pages.index', 'roles' => [User::ROLE_CONTENT_EDITOR, User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN]],
+                ['label' => 'Create Page', 'icon' => 'fas fa-plus-circle', 'route_name' => 'pages.create', 'roles' => [User::ROLE_CONTENT_EDITOR, User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN]],
+                ['label' => 'Page Analytics', 'icon' => 'fas fa-chart-line', 'route_name' => 'pages.analytics', 'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN]],
+                ['label' => 'Page Templates', 'icon' => 'fas fa-palette', 'route_name' => 'pages.templates', 'roles' => [User::ROLE_CONTENT_EDITOR, User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN]],
+                ['label' => 'Media Manager', 'icon' => 'fas fa-photo-video', 'route_name' => 'pages.media', 'roles' => [User::ROLE_CONTENT_EDITOR, User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN]],
+                ['label' => 'SEO Manager', 'icon' => 'fas fa-search', 'route_name' => 'pages.seo', 'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN]],
+                ['label' => 'Page Settings', 'icon' => 'fas fa-cog', 'route_name' => 'pages.settings', 'roles' => [User::ROLE_SUPER_ADMIN]],
             ]
         ],
-
-   
-
-
+        [
+            'label' => 'System Administration',
+            'icon' => 'fas fa-cogs',
+            'route_name' => '#',
+            'roles' => [User::ROLE_SUPER_ADMIN],
+            'link_id' => 'system_admin',
+            'children' => [
+                ['label' => 'Platform Settings', 'icon' => 'fas fa-cog', 'route_name' => '#', 'roles' => [User::ROLE_SUPER_ADMIN]],
+                ['label' => 'API Management', 'icon' => 'fas fa-code-branch', 'route_name' => '#', 'roles' => [User::ROLE_SUPER_ADMIN]],
+                ['label' => 'Database Management', 'icon' => 'fas fa-database', 'route_name' => '#', 'roles' => []],
+                ['label' => 'Integrations', 'icon' => 'fas fa-puzzle-piece', 'route_name' => '#', 'roles' => [User::ROLE_SUPER_ADMIN]],
+                ['label' => 'System Logs', 'icon' => 'fas fa-clipboard-list', 'route_name' => '#', 'roles' => [User::ROLE_SUPER_ADMIN]],
+                ['label' => 'Server Monitoring', 'icon' => 'fas fa-heartbeat', 'route_name' => '#', 'roles' => []],
+                ['label' => 'Announcements', 'icon' => 'fas fa-bullhorn', 'route_name' => '#', 'roles' => [User::ROLE_SUPER_ADMIN]],
+                ['label' => 'Backup & Restore', 'icon' => 'fas fa-save', 'route_name' => '#', 'roles' => []],
+                ['label' => 'Security Center', 'icon' => 'fas fa-shield-alt', 'route_name' => '#', 'roles' => []],
+            ]
+        ],
     ]
 ];
