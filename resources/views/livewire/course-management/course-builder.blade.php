@@ -1,5 +1,5 @@
 <div x-data="courseBuilderManager()" x-init="init()">
-    <div class="bg-gray-800 p-4 sm:p-6 lg:p-8 rounded-2xl">
+    <div class="bg-gray-50 dark:bg-gray-800 p-4 sm:p-6 lg:p-8 rounded-2xl transition-colors duration-300">
         <!-- Polling Indicator -->
         <div x-show="showPollingIndicator" x-transition:enter="transition ease-out duration-300"
             x-transition:enter-start="opacity-0 transform translate-x-full"
@@ -35,15 +35,14 @@
                             wire:key="lesson-editor-{{ $activeContentId }}" />
                     @else
                         <!-- Empty State -->
-                        <div class="bg-gray-800 rounded-xl border-2 border-dashed border-gray-700 p-12 text-center">
+                        <div class="bg-gray-50 dark:bg-gray-800 rounded-xl border-2 border-dashed border-gray-300 dark:border-gray-700 p-12 text-center transition-colors duration-300">
                             <div class="max-w-md mx-auto">
-                                <div
-                                    class="w-20 h-20 bg-blue-600/20 rounded-full flex items-center justify-center mx-auto mb-6">
+                                <div class="w-20 h-20 bg-blue-600/20 rounded-full flex items-center justify-center mx-auto mb-6">
                                     <i class="fas fa-book-open text-3xl text-blue-400"></i>
                                 </div>
-                                <h3 class="text-2xl font-bold text-white mb-3">Get Started</h3>
+                                <h3 class="text-2xl font-bold text-gray-800 dark:text-white mb-3 transition-colors duration-300">Get Started</h3>
                                 @if ($course->sections->count() === 0)
-                                    <p class="text-gray-400 mb-4">
+                                    <p class="text-gray-600 dark:text-gray-400 mb-4 transition-colors duration-300">
                                         Create your first section to start building your course content.
                                     </p>
                                     <button
@@ -52,7 +51,7 @@
                                         Add Your First Section
                                     </button>
                                 @elseif($course->sections->sum(fn($section) => $section->lessons->count()) === 0)
-                                    <p class="text-gray-400 mb-4">
+                                    <p class="text-gray-600 dark:text-gray-400 mb-4 transition-colors duration-300">
                                         Your course has sections but no lessons yet. Add your first lesson to begin.
                                     </p>
                                     <button
@@ -61,7 +60,7 @@
                                         Add Your First Lesson
                                     </button>
                                 @else
-                                    <p class="text-gray-400">
+                                    <p class="text-gray-600 dark:text-gray-400 transition-colors duration-300">
                                         Select a lesson from the course outline to begin editing its content.
                                     </p>
                                 @endif
@@ -77,23 +76,23 @@
     <div x-show="showSettings" x-transition:enter="transition ease-out duration-300"
         x-transition:enter-start="opacity-0 transform -translate-y-4"
         x-transition:enter-end="opacity-100 transform translate-y-0"
-        class="fixed bottom-4 right-4 bg-gray-800 border border-gray-700 rounded-lg p-4 shadow-xl z-40">
+        class="fixed bottom-4 right-4 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg p-4 shadow-xl z-40 transition-colors duration-300">
         <div class="flex items-center justify-between mb-3">
-            <h4 class="text-white font-medium">Real-time Settings</h4>
-            <button @click="showSettings = false" class="text-gray-400 hover:text-white">
+            <h4 class="text-gray-800 dark:text-white font-medium transition-colors duration-300">Real-time Settings</h4>
+            <button @click="showSettings = false" class="text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-white transition-colors duration-300">
                 <i class="fas fa-times"></i>
             </button>
         </div>
         <div class="space-y-3 text-sm">
             <div class="flex items-center justify-between">
-                <span class="text-gray-300">Auto-refresh</span>
+                <span class="text-gray-700 dark:text-gray-300 transition-colors duration-300">Auto-refresh</span>
                 <button @click="togglePolling()" :class="pollingEnabled ? 'bg-green-600' : 'bg-gray-600'"
                     class="w-10 h-5 rounded-full relative transition-colors">
                     <div :class="pollingEnabled ? 'translate-x-5' : 'translate-x-1'"
                         class="w-3 h-3 bg-white rounded-full transform transition-transform absolute top-1"></div>
                 </button>
             </div>
-            <div class="text-xs text-gray-400">
+            <div class="text-xs text-gray-600 dark:text-gray-400 transition-colors duration-300">
                 Last activity: <span x-text="formatTime(lastActivity)"></span>
             </div>
         </div>
@@ -101,8 +100,8 @@
 
     <!-- Floating Settings Button -->
     <button @click="showSettings = !showSettings"
-        class="fixed bottom-4 left-4 bg-gray-700 hover:bg-gray-600 text-white w-10 h-10 rounded-full 
-                   flex items-center justify-center shadow-lg transition-colors z-30">
+        class="fixed bottom-4 left-4 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-800 dark:text-white w-10 h-10 rounded-full 
+                   flex items-center justify-center shadow-lg transition-colors duration-300 z-30">
         <i class="fas fa-cog"></i>
     </button>
 
