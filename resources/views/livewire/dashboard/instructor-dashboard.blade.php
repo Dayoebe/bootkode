@@ -35,7 +35,7 @@
                     </div>
                     
                     <!-- Quick Actions -->
-                    <a href="{{ route('create_course') }}" class="bg-indigo-600 dark:bg-indigo-500 hover:bg-indigo-700 dark:hover:bg-indigo-600 text-white px-4 py-2 rounded-lg font-medium transition-colors duration-200">
+                    <a href="{{ route('create.course') }}" class="bg-indigo-600 dark:bg-indigo-500 hover:bg-indigo-700 dark:hover:bg-indigo-600 text-white px-4 py-2 rounded-lg font-medium transition-colors duration-200">
                         <i class="fas fa-plus mr-2"></i>
                         New Course
                     </a>
@@ -167,7 +167,7 @@
                     <div class="text-center py-8">
                         <i class="fas fa-book-open text-gray-400 dark:text-gray-500 text-4xl mb-4"></i>
                         <p class="text-gray-600 dark:text-gray-400 mb-4 transition-colors duration-300">No courses created yet</p>
-                        <a href="{{ route('create_course') }}" class="bg-indigo-600 dark:bg-indigo-500 hover:bg-indigo-700 dark:hover:bg-indigo-600 text-white px-4 py-2 rounded-lg transition-colors">
+                        <a href="{{ route('create.course') }}" class="bg-indigo-600 dark:bg-indigo-500 hover:bg-indigo-700 dark:hover:bg-indigo-600 text-white px-4 py-2 rounded-lg transition-colors">
                             Create Your First Course
                         </a>
                     </div>
