@@ -2,13 +2,13 @@
 @if (count($assessments) > 0)
     <div class="space-y-4" id="assessments-container">
         @foreach ($assessments as $index => $assessment)
-            <div class="bg-gray-700 rounded-lg border border-gray-600 p-4 sortable-item" 
+            <div class="bg-gray-50 dark:bg-gray-700 rounded-lg border border-gray-200 dark:border-gray-600 p-4 sortable-item transition-colors duration-300" 
                  data-id="{{ $assessment['id'] }}">
                 <div class="flex items-start justify-between">
                     <!-- Assessment Info -->
                     <div class="flex items-start gap-4 flex-1">
                         <!-- Drag Handle -->
-                        <div class="drag-handle cursor-move text-gray-500 hover:text-gray-300 mt-2">
+                        <div class="drag-handle cursor-move text-gray-500 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-300 mt-2">
                             <i class="fas fa-grip-vertical"></i>
                         </div>
 
@@ -33,29 +33,29 @@
                             <div class="flex items-start justify-between mb-2">
                                 <div>
                                     <div class="flex items-center gap-2 mb-1">
-                                        <h5 class="text-white font-medium text-lg">{{ $assessment['title'] }}</h5>
-                                        <span class="px-2 py-1 text-xs rounded-full 
-                                            {{ $assessment['type'] === 'quiz' ? 'bg-blue-100 text-blue-800' : 
-                                               ($assessment['type'] === 'project' ? 'bg-green-100 text-green-800' : 
-                                                ($assessment['type'] === 'assignment' ? 'bg-yellow-100 text-yellow-800' : 
-                                                 'bg-purple-100 text-purple-800')) }}">
+                                        <h5 class="text-gray-800 dark:text-white font-medium text-lg transition-colors duration-300">{{ $assessment['title'] }}</h5>
+                                        <span class="px-2 py-1 text-xs rounded-full border transition-colors duration-300
+                                            {{ $assessment['type'] === 'quiz' ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300 border-blue-200 dark:border-blue-700' : 
+                                               ($assessment['type'] === 'project' ? 'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300 border-green-200 dark:border-green-700' : 
+                                                ($assessment['type'] === 'assignment' ? 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-300 border-yellow-200 dark:border-yellow-700' : 
+                                                 'bg-purple-100 dark:bg-purple-900/30 text-purple-800 dark:text-purple-300 border-purple-200 dark:border-purple-700')) }}">
                                             {{ $config['label'] }}
                                         </span>
                                         @if ($assessment['is_mandatory'])
-                                            <span class="px-2 py-1 text-xs bg-red-100 text-red-800 rounded-full">
+                                            <span class="px-2 py-1 text-xs bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-300 border border-red-200 dark:border-red-700 rounded-full transition-colors duration-300">
                                                 Mandatory
                                             </span>
                                         @endif
                                     </div>
 
                                     @if ($assessment['description'])
-                                        <p class="text-gray-400 text-sm mb-3 line-clamp-2">
+                                        <p class="text-gray-600 dark:text-gray-400 text-sm mb-3 line-clamp-2 transition-colors duration-300">
                                             {{ $assessment['description'] }}
                                         </p>
                                     @endif
 
                                     <!-- Assessment Stats -->
-                                    <div class="flex items-center gap-6 text-sm text-gray-400">
+                                    <div class="flex items-center gap-6 text-sm text-gray-600 dark:text-gray-400 transition-colors duration-300">
                                         <span class="flex items-center gap-1">
                                             <i class="fas fa-percentage"></i>
                                             {{ $assessment['pass_percentage'] }}% to pass
@@ -93,7 +93,7 @@
 
                                 <!-- Order Badge -->
                                 <div class="text-right">
-                                    <span class="inline-block w-8 h-8 bg-gray-600 rounded-full text-center leading-8 text-white text-sm font-medium">
+                                    <span class="inline-block w-8 h-8 bg-gray-300 dark:bg-gray-600 rounded-full text-center leading-8 text-gray-800 dark:text-white text-sm font-medium transition-colors duration-300">
                                         {{ $assessment['order'] }}
                                     </span>
                                 </div>
@@ -147,12 +147,12 @@
                     $progressPercent = $totalItems > 0 ? 100 : 0;
                     $statusText = $totalItems > 0 ? 'Ready' : 'Needs ' . ($assessment['type'] === 'quiz' ? 'Questions' : ($assessment['type'] === 'project' ? 'Criteria' : ($assessment['type'] === 'qna' ? 'Topics' : 'Items')));
                 @endphp
-                <div class="mt-4 pt-3 border-t border-gray-600">
+                <div class="mt-4 pt-3 border-t border-gray-200 dark:border-gray-600">
                     <div class="flex items-center justify-between text-sm mb-1">
-                        <span class="text-gray-400">{{ ucfirst($assessment['type']) }} Setup Progress</span>
-                        <span class="text-gray-300">{{ $statusText }}</span>
+                        <span class="text-gray-600 dark:text-gray-400 transition-colors duration-300">{{ ucfirst($assessment['type']) }} Setup Progress</span>
+                        <span class="text-gray-700 dark:text-gray-300 transition-colors duration-300">{{ $statusText }}</span>
                     </div>
-                    <div class="w-full bg-gray-600 rounded-full h-2">
+                    <div class="w-full bg-gray-300 dark:bg-gray-600 rounded-full h-2">
                         <div class="bg-{{ $totalItems > 0 ? 'green' : 'red' }}-500 h-2 rounded-full transition-all duration-300" 
                              style="width: {{ $progressPercent }}%"></div>
                     </div>
@@ -174,34 +174,34 @@
             ];
         @endphp
 
-        <div class="bg-gray-700 rounded-lg p-4 text-center">
-            <div class="text-2xl font-bold text-blue-400">{{ $stats['total'] }}</div>
-            <div class="text-sm text-gray-400">Total Assessments</div>
+        <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-4 text-center border border-gray-200 dark:border-gray-600 transition-colors duration-300">
+            <div class="text-2xl font-bold text-blue-600 dark:text-blue-400">{{ $stats['total'] }}</div>
+            <div class="text-sm text-gray-600 dark:text-gray-400">Total Assessments</div>
         </div>
 
-        <div class="bg-gray-700 rounded-lg p-4 text-center">
-            <div class="text-2xl font-bold text-green-400">{{ $stats['quizzes'] }}</div>
-            <div class="text-sm text-gray-400">Quizzes</div>
+        <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-4 text-center border border-gray-200 dark:border-gray-600 transition-colors duration-300">
+            <div class="text-2xl font-bold text-green-600 dark:text-green-400">{{ $stats['quizzes'] }}</div>
+            <div class="text-sm text-gray-600 dark:text-gray-400">Quizzes</div>
         </div>
 
-        <div class="bg-gray-700 rounded-lg p-4 text-center">
-            <div class="text-2xl font-bold text-purple-400">{{ $stats['projects'] }}</div>
-            <div class="text-sm text-gray-400">Projects</div>
+        <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-4 text-center border border-gray-200 dark:border-gray-600 transition-colors duration-300">
+            <div class="text-2xl font-bold text-purple-600 dark:text-purple-400">{{ $stats['projects'] }}</div>
+            <div class="text-sm text-gray-600 dark:text-gray-400">Projects</div>
         </div>
 
-        <div class="bg-gray-700 rounded-lg p-4 text-center">
-            <div class="text-2xl font-bold text-red-400">{{ $stats['mandatory'] }}</div>
-            <div class="text-sm text-gray-400">Mandatory</div>
+        <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-4 text-center border border-gray-200 dark:border-gray-600 transition-colors duration-300">
+            <div class="text-2xl font-bold text-red-600 dark:text-red-400">{{ $stats['mandatory'] }}</div>
+            <div class="text-sm text-gray-600 dark:text-gray-400">Mandatory</div>
         </div>
     </div>
 @else
     <!-- Empty State -->
     <div class="text-center py-12">
-        <div class="w-20 h-20 bg-gray-700 rounded-full flex items-center justify-center mx-auto mb-4">
-            <i class="fas fa-clipboard-check text-3xl text-gray-500"></i>
+        <div class="w-20 h-20 bg-gray-200 dark:bg-gray-700 rounded-full flex items-center justify-center mx-auto mb-4 border border-gray-300 dark:border-gray-600 transition-colors duration-300">
+            <i class="fas fa-clipboard-check text-3xl text-gray-500 dark:text-gray-400"></i>
         </div>
-        <h4 class="text-xl font-medium text-white mb-2">No Assessments Yet</h4>
-        <p class="text-gray-400 mb-6 max-w-md mx-auto">
+        <h4 class="text-xl font-medium text-gray-800 dark:text-white mb-2 transition-colors duration-300">No Assessments Yet</h4>
+        <p class="text-gray-600 dark:text-gray-400 mb-6 max-w-md mx-auto transition-colors duration-300">
             Create assessments to evaluate student understanding and track their progress through your lesson.
         </p>
         <button wire:click="toggleCreateForm"
