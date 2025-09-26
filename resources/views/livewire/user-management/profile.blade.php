@@ -136,9 +136,9 @@
 <div class="flex flex-wrap gap-2">
                     @foreach ($tabs as $key => $tab)
                         <button @click="activeTab = '{{ $key }}'" :class="{
-                                                'bg-gradient-to-r from-{{ $tab['color'] }}-500 to-{{ $tab['color'] }}-600 text-white shadow-lg': activeTab === '{{ $key }}',
-                                                'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700/50': activeTab !== '{{ $key }}'
-                                            }"
+                                                                    'bg-gradient-to-r from-{{ $tab['color'] }}-500 to-{{ $tab['color'] }}-600 text-white shadow-lg': activeTab === '{{ $key }}',
+                                                                    'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700/50': activeTab !== '{{ $key }}'
+                                                                }"
                             class="whitespace-nowrap px-4 py-2 sm:px-6 sm:py-3 rounded-xl font-medium text-xs sm:text-sm transition-all duration-300 flex items-center mx-1">
                             <i class="{{ $tab['icon'] }} mr-2"></i> {{ $tab['label'] }}
                         </button>
