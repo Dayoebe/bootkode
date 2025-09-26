@@ -1,85 +1,86 @@
 <div class="px-2 sm:px-4 lg:px-6">
-    <!-- Personal Information Tab -->
-    <div x-show="activeTab === 'personal'" x-transition.opacity.duration.300ms class="py-4 sm:py-6 lg:py-8">
-        <div class="flex items-center mb-6 sm:mb-8">
-            <div class="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-r from-blue-500 to-purple-600 rounded-xl flex items-center justify-center mr-3 sm:mr-4">
-                <i class="fas fa-user-circle text-white text-lg sm:text-xl"></i>
-            </div>
-            <div>
-                <h2 class="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white transition-colors duration-300">Personal Information</h2>
-                <p class="text-sm sm:text-base text-gray-600 dark:text-gray-400 transition-colors duration-300">Your profile details and account information</p>
-            </div>
+<!-- Personal Information Tab -->
+<div x-show="activeTab === 'personal'" x-transition.opacity.duration.300ms class="py-4 sm:py-6 lg:py-8">
+    <div class="flex items-center mb-6 sm:mb-8">
+        <div class="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-r from-blue-500 to-purple-600 rounded-xl flex items-center justify-center mr-3 sm:mr-4">
+            <i class="fas fa-user-circle text-white text-lg sm:text-xl"></i>
         </div>
+        <div>
+            <h2 class="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white transition-colors duration-300">Personal Information</h2>
+            <p class="text-sm sm:text-base text-gray-600 dark:text-gray-400 transition-colors duration-300">Your profile details and account information</p>
+        </div>
+    </div>
 
-        <div class="grid grid-cols-1 gap-4 sm:gap-6 md:gap-8">
-            <!-- Basic Info -->
-            <div class="space-y-4 sm:space-y-6">
-                <div class="bg-white dark:bg-gray-700/30 p-4 sm:p-6 rounded-xl border border-gray-200 dark:border-gray-600/50 backdrop-blur-sm transition-colors duration-300">
-                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-3 sm:mb-4 flex items-center transition-colors duration-300">
-                        <i class="fas fa-user text-blue-500 dark:text-blue-400 mr-2"></i>
-                        Basic Information
-                    </h3>
+    <!-- Changed grid layout to be responsive -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 md:gap-8">
+        <!-- Basic Info -->
+        <div class="space-y-4 sm:space-y-6">
+            <div class="bg-white dark:bg-gray-700/30 p-4 sm:p-6 rounded-xl border border-gray-200 dark:border-gray-600/50 backdrop-blur-sm transition-colors duration-300">
+                <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-3 sm:mb-4 flex items-center transition-colors duration-300">
+                    <i class="fas fa-user text-blue-500 dark:text-blue-400 mr-2"></i>
+                    Basic Information
+                </h3>
 
-                    <div class="space-y-3 sm:space-y-4">
-                        <div>
-                            <p class="text-xs sm:text-sm font-medium text-gray-500 dark:text-gray-400 mb-1 transition-colors duration-300">Full Name</p>
-                            <p class="text-base sm:text-lg text-gray-900 dark:text-white transition-colors duration-300">{{ $user->name }}</p>
-                        </div>
-                        <div>
-                            <p class="text-xs sm:text-sm font-medium text-gray-500 dark:text-gray-400 mb-1 transition-colors duration-300">Email Address</p>
-                            <p class="text-base sm:text-lg text-gray-900 dark:text-white flex items-center transition-colors duration-300">
-                                {{ $user->email }}
-                                @if ($user->email_verified_at)
-                                    <span class="ml-2 text-green-500 dark:text-green-400"><i class="fas fa-check-circle"></i></span>
-                                @else
-                                    <span class="ml-2 text-yellow-500 dark:text-yellow-400"><i class="fas fa-exclamation-circle"></i></span>
-                                @endif
-                            </p>
-                        </div>
-                        <div>
-                            <p class="text-xs sm:text-sm font-medium text-gray-500 dark:text-gray-400 mb-1 transition-colors duration-300">Phone Number</p>
-                            <p class="text-base sm:text-lg text-gray-900 dark:text-white transition-colors duration-300">{{ $user->phone_number ?? 'Not provided' }}</p>
-                        </div>
-                        <div>
-                            <p class="text-xs sm:text-sm font-medium text-gray-500 dark:text-gray-400 mb-1 transition-colors duration-300">Date of Birth</p>
-                            <p class="text-base sm:text-lg text-gray-900 dark:text-white transition-colors duration-300">
-                                {{ $user->date_of_birth ? $user->date_of_birth->format('M d, Y') : 'Not provided' }}
-                            </p>
-                        </div>
+                <div class="space-y-3 sm:space-y-4">
+                    <div>
+                        <p class="text-xs sm:text-sm font-medium text-gray-500 dark:text-gray-400 mb-1 transition-colors duration-300">Full Name</p>
+                        <p class="text-base sm:text-lg text-gray-900 dark:text-white transition-colors duration-300">{{ $user->name }}</p>
+                    </div>
+                    <div>
+                        <p class="text-xs sm:text-sm font-medium text-gray-500 dark:text-gray-400 mb-1 transition-colors duration-300">Email Address</p>
+                        <p class="text-base sm:text-lg text-gray-900 dark:text-white flex items-center transition-colors duration-300">
+                            {{ $user->email }}
+                            @if ($user->email_verified_at)
+                                <span class="ml-2 text-green-500 dark:text-green-400"><i class="fas fa-check-circle"></i></span>
+                            @else
+                                <span class="ml-2 text-yellow-500 dark:text-yellow-400"><i class="fas fa-exclamation-circle"></i></span>
+                            @endif
+                        </p>
+                    </div>
+                    <div>
+                        <p class="text-xs sm:text-sm font-medium text-gray-500 dark:text-gray-400 mb-1 transition-colors duration-300">Phone Number</p>
+                        <p class="text-base sm:text-lg text-gray-900 dark:text-white transition-colors duration-300">{{ $user->phone_number ?? 'Not provided' }}</p>
+                    </div>
+                    <div>
+                        <p class="text-xs sm:text-sm font-medium text-gray-500 dark:text-gray-400 mb-1 transition-colors duration-300">Date of Birth</p>
+                        <p class="text-base sm:text-lg text-gray-900 dark:text-white transition-colors duration-300">
+                            {{ $user->date_of_birth ? $user->date_of_birth->format('M d, Y') : 'Not provided' }}
+                        </p>
                     </div>
                 </div>
             </div>
+        </div>
 
-            <!-- Address & Professional Info -->
-            <div class="space-y-4 sm:space-y-6">
-                <div class="bg-white dark:bg-gray-700/30 p-4 sm:p-6 rounded-xl border border-gray-200 dark:border-gray-600/50 backdrop-blur-sm transition-colors duration-300">
-                    <h3 class="text-lg font-semibold text-gray-909 dark:text-white mb-3 sm:mb-4 flex items-center transition-colors duration-300">
-                        <i class="fas fa-briefcase text-green-500 dark:text-green-400 mr-2"></i>
-                        Professional & Location
-                    </h3>
+        <!-- Address & Professional Info -->
+        <div class="space-y-4 sm:space-y-6">
+            <div class="bg-white dark:bg-gray-700/30 p-4 sm:p-6 rounded-xl border border-gray-200 dark:border-gray-600/50 backdrop-blur-sm transition-colors duration-300">
+                <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-3 sm:mb-4 flex items-center transition-colors duration-300">
+                    <i class="fas fa-briefcase text-green-500 dark:text-green-400 mr-2"></i>
+                    Professional & Location
+                </h3>
 
-                    <div class="space-y-3 sm:space-y-4">
-                        <div>
-                            <p class="text-xs sm:text-sm font-medium text-gray-500 dark:text-gray-400 mb-1 transition-colors duration-300">Occupation</p>
-                            <p class="text-base sm:text-lg text-gray-900 dark:text-white transition-colors duration-300">{{ $user->occupation ?? 'Not provided' }}</p>
-                        </div>
-                        <div>
-                            <p class="text-xs sm:text-sm font-medium text-gray-500 dark:text-gray-400 mb-1 transition-colors duration-300">Full Address</p>
-                            <p class="text-base sm:text-lg text-gray-900 dark:text-white transition-colors duration-300">{{ $user->full_address ?? 'Not provided' }}</p>
-                        </div>
-                        <div>
-                            <p class="text-xs sm:text-sm font-medium text-gray-500 dark:text-gray-400 mb-1 transition-colors duration-300">Account Created</p>
-                            <p class="text-base sm:text-lg text-gray-900 dark:text-white transition-colors duration-300">{{ $user->created_at->format('M d, Y') }}</p>
-                        </div>
-                        <div>
-                            <p class="text-xs sm:text-sm font-medium text-gray-500 dark:text-gray-400 mb-1 transition-colors duration-300">Last Updated</p>
-                            <p class="text-base sm:text-lg text-gray-900 dark:text-white transition-colors duration-300">{{ $user->updated_at->diffForHumans() }}</p>
-                        </div>
+                <div class="space-y-3 sm:space-y-4">
+                    <div>
+                        <p class="text-xs sm:text-sm font-medium text-gray-500 dark:text-gray-400 mb-1 transition-colors duration-300">Occupation</p>
+                        <p class="text-base sm:text-lg text-gray-900 dark:text-white transition-colors duration-300">{{ $user->occupation ?? 'Not provided' }}</p>
+                    </div>
+                    <div>
+                        <p class="text-xs sm:text-sm font-medium text-gray-500 dark:text-gray-400 mb-1 transition-colors duration-300">Full Address</p>
+                        <p class="text-base sm:text-lg text-gray-900 dark:text-white transition-colors duration-300">{{ $user->full_address ?? 'Not provided' }}</p>
+                    </div>
+                    <div>
+                        <p class="text-xs sm:text-sm font-medium text-gray-500 dark:text-gray-400 mb-1 transition-colors duration-300">Account Created</p>
+                        <p class="text-base sm:text-lg text-gray-900 dark:text-white transition-colors duration-300">{{ $user->created_at->format('M d, Y') }}</p>
+                    </div>
+                    <div>
+                        <p class="text-xs sm:text-sm font-medium text-gray-500 dark:text-gray-400 mb-1 transition-colors duration-300">Last Updated</p>
+                        <p class="text-base sm:text-lg text-gray-900 dark:text-white transition-colors duration-300">{{ $user->updated_at->diffForHumans() }}</p>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+</div>
 
     <!-- Education Tab -->
     <div x-show="activeTab === 'education'" x-transition.opacity.duration.300ms class="py-4 sm:py-6 lg:py-8">
