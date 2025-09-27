@@ -58,24 +58,25 @@ class CourseOutline extends Component
     public function createSection()
     {
         $this->validateOnly('newSectionTitle');
-        $this->markAsEditing(true);
-
+    
         try {
             $section = Section::create([
                 'course_id' => $this->course->id,
                 'title' => $this->newSectionTitle,
             ]);
-
+    
+            // Reset form field
             $this->newSectionTitle = '';
             $this->expandedSections[] = $section->id;
             $this->refreshCourse();
             $this->dispatchOutlineUpdated();
-            $this->notify('Section created successfully!', 'success');
+            
+            session()->flash('success', 'Section created successfully!');
+            $this->dispatch('section-created'); // Notify frontend
+            
         } catch (\Exception $e) {
             \Log::error('Failed to create section: ' . $e->getMessage());
-            $this->notify('Failed to create section: ' . $e->getMessage(), 'error');
-        } finally {
-            $this->markAsEditing(false);
+            session()->flash('error', 'Failed to create section: ' . $e->getMessage());
         }
     }
 
