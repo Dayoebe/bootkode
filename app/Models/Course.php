@@ -76,8 +76,6 @@ class Course extends Model
         'average_rating' => 'decimal:2',
     ];
 
-    // Remove the trait definition from here - it's now imported above
-
     // Relationships
     public function instructor()
     {
@@ -142,7 +140,8 @@ class Course extends Model
         });
     
         static::updating(function ($course) {
-            if ($course->isDirty('title')) {
+            // Only auto-update slug if title changed and slug wasn't manually set
+            if ($course->isDirty('title') && !$course->isDirty('slug')) {
                 $course->slug = $course->generateUniqueSlug($course->title);
             }
         });
@@ -162,7 +161,7 @@ class Course extends Model
                     if ($projectsCount === 0 && $sectionsCount > 0) {
                         $projectsCount = $course->assessments()->where('assessments.type', 'project')->count();
                     }
-    
+
                     $course->updateQuietly([
                         'total_modules' => $sectionsCount,
                         'total_lessons' => $lessonsCount,
@@ -187,8 +186,18 @@ class Course extends Model
         $originalSlug = $slug;
         $count = 1;
 
-        while (static::where('slug', $slug)->where('id', '!=', $this->id ?? 0)->exists()) {
+        // Ensure we exclude the current course when checking for uniqueness
+        $query = static::where('slug', $slug);
+        if ($this->exists) {
+            $query->where('id', '!=', $this->id);
+        }
+
+        while ($query->exists()) {
             $slug = $originalSlug . '-' . $count++;
+            $query = static::where('slug', $slug);
+            if ($this->exists) {
+                $query->where('id', '!=', $this->id);
+            }
         }
 
         return $slug;
