@@ -2,7 +2,8 @@
     currentStep: @entangle('currentStep'),
     totalSteps: @entangle('totalSteps'),
     showPreview: false,
-    animateStep: true
+    animateStep: true,
+    isEditMode: {{ json_encode($isEditMode ?? false) }}
 }" x-init="
 $watch('currentStep', () => {
     animateStep = false;
@@ -15,10 +16,8 @@ window.addEventListener('redirect-after-delay', (event) => {
     setTimeout(() => {
         console.log('Redirecting to:', event.detail.url);
         
-        // Handle both relative and absolute URLs
         let redirectUrl = event.detail.url;
         if (!redirectUrl.startsWith('http')) {
-            // If it's a relative URL, prepend the base URL
             redirectUrl = window.location.origin + redirectUrl;
         }
         
@@ -28,18 +27,23 @@ window.addEventListener('redirect-after-delay', (event) => {
 ">
     <!-- Header with Progress -->
     <div class="mb-6 sm:mb-8">
-        <div class="bg-white dark:bg-gray-800 rounded-2xl p-4 sm:p-6 shadow-xl border border-gray-200 dark:border-gray-700 transition-colors duration-300">
+        <div
+            class="bg-white dark:bg-gray-800 rounded-2xl p-4 sm:p-6 shadow-xl border border-gray-200 dark:border-gray-700 transition-colors duration-300">
             <div class="flex flex-col sm:flex-row sm:items-center justify-between mb-4 sm:mb-6">
                 <div class="mb-4 sm:mb-0">
-                    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white flex items-center gap-2 sm:gap-3 transition-colors duration-300">
-                        <i class="fas fa-rocket text-purple-500 dark:text-purple-400"></i>
-                        Create New Course
+                    <h1
+                        class="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white flex items-center gap-2 sm:gap-3 transition-colors duration-300">
+                        <i class="fas fa-{{ $isEditMode ?? false ? 'edit' : 'rocket' }} text-{{ $isEditMode ?? false ? 'orange' : 'purple' }}-500 dark:text-{{ $isEditMode ?? false ? 'orange' : 'purple' }}-400"></i>
+                        {{ ($isEditMode ?? false) ? 'Edit Course' : 'Create New Course' }}
                     </h1>
-                    <p class="text-gray-600 dark:text-gray-300 mt-1 sm:mt-2 text-sm sm:text-base transition-colors duration-300">Share your knowledge and inspire learners worldwide</p>
+                    <p
+                        class="text-gray-600 dark:text-gray-300 mt-1 sm:mt-2 text-sm sm:text-base transition-colors duration-300">
+                        {{ ($isEditMode ?? false) ? 'Update your course content and settings' : 'Share your knowledge and inspire learners worldwide' }}</p>
                 </div>
                 <div class="text-right">
                     <div class="text-sm text-gray-500 dark:text-gray-400">Step</div>
-                    <div class="text-xl sm:text-2xl font-bold text-purple-500 dark:text-purple-400" x-text="`${currentStep}/${totalSteps}`"></div>
+                    <div class="text-xl sm:text-2xl font-bold text-{{ $isEditMode ?? false ? 'orange' : 'purple' }}-500 dark:text-{{ $isEditMode ?? false ? 'orange' : 'purple' }}-400"
+                        x-text="`${currentStep}/${totalSteps}`"></div>
                 </div>
             </div>
 
@@ -49,11 +53,12 @@ window.addEventListener('redirect-after-delay', (event) => {
                     <template x-for="step in totalSteps" :key="step">
                         <div class="flex items-center min-w-0 flex-shrink-0">
                             <div class="w-6 h-6 sm:w-8 sm:h-8 rounded-full flex items-center justify-center text-xs sm:text-sm font-semibold transition-all duration-300"
-                                :class="step <= currentStep ? 'bg-purple-500 text-white' : 'bg-gray-300 dark:bg-gray-600 text-gray-600 dark:text-gray-300'">
+                                :class="step <= currentStep ? 'bg-{{ $isEditMode ?? false ? 'orange' : 'purple' }}-500 text-white' : 'bg-gray-300 dark:bg-gray-600 text-gray-600 dark:text-gray-300'">
                                 <span x-text="step"></span>
                             </div>
-                            <div x-show="step < totalSteps" class="h-0.5 w-8 sm:w-16 mx-1 sm:mx-2 transition-colors duration-300"
-                                :class="step < currentStep ? 'bg-purple-500' : 'bg-gray-300 dark:bg-gray-600'"></div>
+                            <div x-show="step < totalSteps"
+                                class="h-0.5 w-8 sm:w-16 mx-1 sm:mx-2 transition-colors duration-300"
+                                :class="step < currentStep ? 'bg-{{ $isEditMode ?? false ? 'orange' : 'purple' }}-500' : 'bg-gray-300 dark:bg-gray-600'"></div>
                         </div>
                     </template>
                 </div>
@@ -78,14 +83,20 @@ window.addEventListener('redirect-after-delay', (event) => {
                 x-transition:leave-start="opacity-100 transform translate-x-0"
                 x-transition:leave-end="opacity-0 transform -translate-x-8">
 
-                <div class="bg-white dark:bg-gray-800 rounded-2xl p-4 sm:p-6 lg:p-8 shadow-xl border border-gray-200 dark:border-gray-700 transition-colors duration-300">
+                <div
+                    class="bg-white dark:bg-gray-800 rounded-2xl p-4 sm:p-6 lg:p-8 shadow-xl border border-gray-200 dark:border-gray-700 transition-colors duration-300">
                     <div class="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-6">
-                        <div class="w-10 h-10 sm:w-12 sm:h-12 bg-purple-500 rounded-full flex items-center justify-center flex-shrink-0">
+                        <div
+                            class="w-10 h-10 sm:w-12 sm:h-12 bg-purple-500 rounded-full flex items-center justify-center flex-shrink-0">
                             <i class="fas fa-info-circle text-white text-lg sm:text-xl"></i>
                         </div>
                         <div>
-                            <h2 class="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white transition-colors duration-300">Basic Information</h2>
-                            <p class="text-gray-600 dark:text-gray-300 text-sm sm:text-base transition-colors duration-300">Let's start with the essentials</p>
+                            <h2
+                                class="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white transition-colors duration-300">
+                                Basic Information</h2>
+                            <p
+                                class="text-gray-600 dark:text-gray-300 text-sm sm:text-base transition-colors duration-300">
+                                Let's start with the essentials</p>
                         </div>
                     </div>
 
@@ -94,7 +105,8 @@ window.addEventListener('redirect-after-delay', (event) => {
                         <div class="space-y-4 sm:space-y-6">
                             <!-- Course Title -->
                             <div class="group">
-                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 flex items-center gap-2 transition-colors duration-300">
+                                <label
+                                    class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 flex items-center gap-2 transition-colors duration-300">
                                     <i class="fas fa-heading text-purple-500 dark:text-purple-400"></i>
                                     Course Title <span class="text-red-500">*</span>
                                 </label>
@@ -108,17 +120,21 @@ window.addEventListener('redirect-after-delay', (event) => {
 
                             <!-- Course Slug -->
                             <div class="group">
-                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 flex items-center gap-2 transition-colors duration-300">
+                                <label
+                                    class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 flex items-center gap-2 transition-colors duration-300">
                                     <i class="fas fa-link text-purple-500 dark:text-purple-400"></i>
                                     Course URL Slug <span class="text-red-500">*</span>
                                 </label>
                                 <div class="relative">
-                                    <span class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 dark:text-gray-400 text-sm hidden sm:inline">bootkode.com/</span>
+                                    <span
+                                        class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 dark:text-gray-400 text-sm hidden sm:inline">bootkode.com/</span>
                                     <input type="text" wire:model.live="slug"
                                         class="w-full pl-3 sm:pl-32 pr-4 py-3 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 transition-all duration-200 group-hover:border-purple-400"
                                         placeholder="course-web-development">
                                 </div>
-                                <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Auto-generated from title. Use lowercase letters, numbers, and hyphens only.</p>
+                                <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                                    {{ ($isEditMode ?? false) ? 'Edit carefully - changing this may break existing links' : 'Auto-generated from title. Use lowercase letters, numbers, and hyphens only.' }}
+                                </p>
                                 @error('slug')
                                     <p class="mt-2 text-sm text-red-500 animate-pulse">{{ $message }}</p>
                                 @enderror
@@ -126,7 +142,8 @@ window.addEventListener('redirect-after-delay', (event) => {
 
                             <!-- Course Subtitle -->
                             <div class="group">
-                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 flex items-center gap-2 transition-colors duration-300">
+                                <label
+                                    class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 flex items-center gap-2 transition-colors duration-300">
                                     <i class="fas fa-subtitle text-purple-500 dark:text-purple-400"></i>
                                     Course Subtitle
                                 </label>
@@ -143,7 +160,8 @@ window.addEventListener('redirect-after-delay', (event) => {
                         <div class="space-y-4 sm:space-y-6">
                             <!-- Category -->
                             <div class="group">
-                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 flex items-center gap-2 transition-colors duration-300">
+                                <label
+                                    class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 flex items-center gap-2 transition-colors duration-300">
                                     <i class="fas fa-tags text-purple-500 dark:text-purple-400"></i>
                                     Category <span class="text-red-500">*</span>
                                 </label>
@@ -161,7 +179,8 @@ window.addEventListener('redirect-after-delay', (event) => {
 
                             <!-- Difficulty Level -->
                             <div class="group">
-                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 flex items-center gap-2 transition-colors duration-300">
+                                <label
+                                    class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 flex items-center gap-2 transition-colors duration-300">
                                     <i class="fas fa-layer-group text-purple-500 dark:text-purple-400"></i>
                                     Difficulty Level <span class="text-red-500">*</span>
                                 </label>
@@ -188,14 +207,20 @@ window.addEventListener('redirect-after-delay', (event) => {
                 x-transition:leave-start="opacity-100 transform translate-x-0"
                 x-transition:leave-end="opacity-0 transform -translate-x-8">
 
-                <div class="bg-white dark:bg-gray-800 rounded-2xl p-4 sm:p-6 lg:p-8 shadow-xl border border-gray-200 dark:border-gray-700 transition-colors duration-300">
+                <div
+                    class="bg-white dark:bg-gray-800 rounded-2xl p-4 sm:p-6 lg:p-8 shadow-xl border border-gray-200 dark:border-gray-700 transition-colors duration-300">
                     <div class="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-6">
-                        <div class="w-10 h-10 sm:w-12 sm:h-12 bg-blue-500 rounded-full flex items-center justify-center flex-shrink-0">
+                        <div
+                            class="w-10 h-10 sm:w-12 sm:h-12 bg-blue-500 rounded-full flex items-center justify-center flex-shrink-0">
                             <i class="fas fa-align-left text-white text-lg sm:text-xl"></i>
                         </div>
                         <div>
-                            <h2 class="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white transition-colors duration-300">Course Description</h2>
-                            <p class="text-gray-600 dark:text-gray-300 text-sm sm:text-base transition-colors duration-300">Tell students what they'll learn</p>
+                            <h2
+                                class="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white transition-colors duration-300">
+                                Course Description & Thumbnail</h2>
+                            <p
+                                class="text-gray-600 dark:text-gray-300 text-sm sm:text-base transition-colors duration-300">
+                                Tell students what they'll learn and add a course image</p>
                         </div>
                     </div>
 
@@ -203,7 +228,8 @@ window.addEventListener('redirect-after-delay', (event) => {
                         <!-- Description -->
                         <div class="space-y-4 sm:space-y-6">
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 transition-colors duration-300">
+                                <label
+                                    class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 transition-colors duration-300">
                                     Course Description
                                 </label>
                                 <textarea wire:model="description" rows="8"
@@ -220,7 +246,8 @@ window.addEventListener('redirect-after-delay', (event) => {
 
                             <!-- Target Audience -->
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 flex items-center gap-2 transition-colors duration-300">
+                                <label
+                                    class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 flex items-center gap-2 transition-colors duration-300">
                                     <i class="fas fa-users text-blue-500 dark:text-blue-400"></i>
                                     Target Audience
                                 </label>
@@ -231,40 +258,11 @@ window.addEventListener('redirect-after-delay', (event) => {
                                     <p class="mt-2 text-sm text-red-500">{{ $message }}</p>
                                 @enderror
                             </div>
-                        </div>
-
-                        <!-- Thumbnail Upload and Duration -->
-                        <div class="space-y-4 sm:space-y-6">
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 flex items-center gap-2 transition-colors duration-300">
-                                    <i class="fas fa-image text-blue-500 dark:text-blue-400"></i>
-                                    Course Thumbnail
-                                </label>
-                                <div class="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-xl p-4 sm:p-6 text-center hover:border-blue-400 transition-colors">
-                                    <input type="file" wire:model="thumbnail" class="hidden" id="thumbnail">
-                                    <label for="thumbnail" class="cursor-pointer block">
-                                        @if ($thumbnail)
-                                            <img src="{{ $thumbnail->temporaryUrl() }}"
-                                                alt="Preview" class="w-full h-32 sm:h-48 object-cover rounded-lg mb-4">
-                                        @else
-                                            <div class="w-full h-32 sm:h-48 bg-gray-100 dark:bg-gray-700 rounded-lg mb-4 flex items-center justify-center transition-colors duration-300">
-                                                <div class="text-center">
-                                                    <i class="fas fa-cloud-upload-alt text-3xl sm:text-4xl text-gray-400 mb-3 sm:mb-4"></i>
-                                                    <p class="text-gray-500 dark:text-gray-400 text-sm sm:text-base">Click to upload thumbnail</p>
-                                                </div>
-                                            </div>
-                                        @endif
-                                        <p class="text-xs sm:text-sm text-gray-500 dark:text-gray-400">Recommended: 1280x720px, JPG or PNG</p>
-                                    </label>
-                                </div>
-                                @error('thumbnail')
-                                    <p class="mt-2 text-sm text-red-500">{{ $message }}</p>
-                                @enderror
-                            </div>
 
                             <!-- Duration -->
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 flex items-center gap-2 transition-colors duration-300">
+                                <label
+                                    class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 flex items-center gap-2 transition-colors duration-300">
                                     <i class="fas fa-clock text-blue-500 dark:text-blue-400"></i>
                                     Estimated Duration (minutes)
                                 </label>
@@ -276,6 +274,142 @@ window.addEventListener('redirect-after-delay', (event) => {
                                 @enderror
                             </div>
                         </div>
+
+                        <!-- Enhanced Thumbnail Upload Section -->
+                        <div class="space-y-4 sm:space-y-6">
+                            <div>
+                                <div class="flex items-center justify-between mb-2">
+                                    <label
+                                        class="text-sm font-medium text-gray-700 dark:text-gray-300 flex items-center gap-2 transition-colors duration-300">
+                                        <i class="fas fa-image text-blue-500 dark:text-blue-400"></i>
+                                        Course Thumbnail
+                                    </label>
+                                </div>
+
+                                <!-- Enhanced Image Preview and Upload Area -->
+                                <div class="relative">
+                                    <!-- File Input (Hidden) -->
+                                    <input type="file" wire:model="thumbnail" class="hidden" id="thumbnail-upload" 
+                                           accept="image/jpeg,image/png,image/jpg">
+                                    
+                                    <!-- Image Preview Area -->
+                                    <div class="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-xl overflow-hidden bg-gray-50 dark:bg-gray-700/50 transition-all duration-300 hover:border-blue-400 hover:bg-gray-100 dark:hover:bg-gray-700">
+                                        
+                                        <!-- New Uploaded Image Preview -->
+                                        @if ($thumbnail)
+                                            <div class="relative group">
+                                                <img src="{{ $thumbnail->temporaryUrl() }}" 
+                                                     alt="New thumbnail preview"
+                                                     class="w-full h-48 sm:h-56 object-cover transition-transform duration-300 group-hover:scale-105">
+                                                
+                                                <!-- New Image Badge -->
+                                                <div class="absolute top-3 left-3">
+                                                    <span class="bg-green-500 text-white px-2 py-1 rounded-lg text-xs font-bold shadow-md">
+                                                        <i class="fas fa-plus mr-1"></i> New Image
+                                                    </span>
+                                                </div>
+                                                
+                                                <!-- Remove Button -->
+                                                <button type="button" wire:click="removeThumbnail"
+                                                        class="absolute top-3 right-3 bg-red-500 hover:bg-red-600 text-white p-2 rounded-lg shadow-md transition-colors duration-200 opacity-0 group-hover:opacity-100">
+                                                    <i class="fas fa-trash text-sm"></i>
+                                                </button>
+                                                
+                                                <!-- Change Image Button -->
+                                                <label for="thumbnail-upload" 
+                                                       class="absolute bottom-3 left-1/2 transform -translate-x-1/2 bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg shadow-md cursor-pointer transition-all duration-200 opacity-0 group-hover:opacity-100">
+                                                    <i class="fas fa-camera mr-2"></i>Change Image
+                                                </label>
+                                            </div>
+                                        
+                                        <!-- Existing Image (Edit Mode) -->
+                                        @elseif(($isEditMode ?? false) && isset($existingThumbnail) && $existingThumbnail && !($shouldRemoveThumbnail ?? false))
+                                            <div class="relative group">
+                                                <img src="{{ asset('storage/' . $existingThumbnail) }}" 
+                                                     alt="Current course thumbnail"
+                                                     class="w-full h-48 sm:h-56 object-cover transition-transform duration-300 group-hover:scale-105">
+                                                
+                                                <!-- Current Image Badge -->
+                                                <div class="absolute top-3 left-3">
+                                                    <span class="bg-blue-500 text-white px-2 py-1 rounded-lg text-xs font-bold shadow-md">
+                                                        <i class="fas fa-image mr-1"></i> Current Image
+                                                    </span>
+                                                </div>
+                                                
+                                                <!-- Remove Button -->
+                                                <button type="button" wire:click="removeThumbnail"
+                                                        class="absolute top-3 right-3 bg-red-500 hover:bg-red-600 text-white p-2 rounded-lg shadow-md transition-colors duration-200 opacity-0 group-hover:opacity-100">
+                                                    <i class="fas fa-trash text-sm"></i>
+                                                </button>
+                                                
+                                                <!-- Change Image Button -->
+                                                <label for="thumbnail-upload" 
+                                                       class="absolute bottom-3 left-1/2 transform -translate-x-1/2 bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg shadow-md cursor-pointer transition-all duration-200 opacity-0 group-hover:opacity-100">
+                                                    <i class="fas fa-camera mr-2"></i>Change Image
+                                                </label>
+                                            </div>
+                                        
+                                        <!-- No Image State -->
+                                        @else
+                                            <label for="thumbnail-upload" class="cursor-pointer block">
+                                                <div class="h-48 sm:h-56 flex flex-col items-center justify-center text-center p-6 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors duration-300">
+                                                    <div class="mb-4">
+                                                        <i class="fas fa-cloud-upload-alt text-4xl sm:text-5xl text-gray-400 mb-4"></i>
+                                                    </div>
+                                                    <h4 class="text-lg font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                                                        {{ ($isEditMode ?? false) ? (($shouldRemoveThumbnail ?? false) ? 'Upload New Thumbnail' : 'No Thumbnail Set') : 'Upload Course Thumbnail' }}
+                                                    </h4>
+                                                    <p class="text-gray-500 dark:text-gray-400 text-sm mb-4">
+                                                        Click here to browse and select an image
+                                                    </p>
+                                                    <div class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg transition-colors duration-200">
+                                                        <i class="fas fa-plus mr-2"></i>Select Image
+                                                    </div>
+                                                </div>
+                                            </label>
+                                        @endif
+                                    </div>
+
+                                    <!-- Upload Progress -->
+                                    <div wire:loading wire:target="thumbnail" 
+                                         class="absolute inset-0 bg-white/90 dark:bg-gray-800/90 rounded-xl flex items-center justify-center backdrop-blur-sm z-10">
+                                        <div class="text-center">
+                                            <div class="animate-spin rounded-full h-8 w-8 border-4 border-blue-500 border-t-transparent mx-auto mb-3"></div>
+                                            <p class="text-sm font-medium text-gray-700 dark:text-gray-300">Uploading...</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Image Requirements -->
+                                <div class="mt-3 p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
+                                    <div class="flex items-start gap-2">
+                                        <i class="fas fa-info-circle text-blue-500 mt-0.5 flex-shrink-0"></i>
+                                        <div class="text-xs text-gray-600 dark:text-gray-400">
+                                            <p class="font-semibold mb-1">Image Requirements:</p>
+                                            <ul class="list-disc list-inside space-y-1 text-xs">
+                                                <li>Recommended size: 1280x720px (16:9 ratio)</li>
+                                                <li>Supported formats: JPG, PNG</li>
+                                                <li>Maximum file size: 2MB</li>
+                                                <li>High quality images work best</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                @error('thumbnail')
+                                    <div class="mt-2 p-3 bg-red-50 dark:bg-red-900/20 rounded-lg">
+                                        <p class="text-sm text-red-600 dark:text-red-400 flex items-center gap-2">
+                                            <i class="fas fa-exclamation-triangle"></i>
+                                            {{ $message }}
+                                        </p>
+                                    </div>
+                                @enderror
+                            </div>
+                        </div>
+
+
+
+                        
                     </div>
                 </div>
             </div>
@@ -288,14 +422,20 @@ window.addEventListener('redirect-after-delay', (event) => {
                 x-transition:leave-start="opacity-100 transform translate-x-0"
                 x-transition:leave-end="opacity-0 transform -translate-x-8">
 
-                <div class="bg-white dark:bg-gray-800 rounded-2xl p-4 sm:p-6 lg:p-8 shadow-xl border border-gray-200 dark:border-gray-700 transition-colors duration-300">
+                <div
+                    class="bg-white dark:bg-gray-800 rounded-2xl p-4 sm:p-6 lg:p-8 shadow-xl border border-gray-200 dark:border-gray-700 transition-colors duration-300">
                     <div class="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-6">
-                        <div class="w-10 h-10 sm:w-12 sm:h-12 bg-green-500 rounded-full flex items-center justify-center flex-shrink-0">
+                        <div
+                            class="w-10 h-10 sm:w-12 sm:h-12 bg-green-500 rounded-full flex items-center justify-center flex-shrink-0">
                             <i class="fas fa-dollar-sign text-white text-lg sm:text-xl"></i>
                         </div>
                         <div>
-                            <h2 class="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white transition-colors duration-300">Pricing & Access</h2>
-                            <p class="text-gray-600 dark:text-gray-300 text-sm sm:text-base transition-colors duration-300">Set your course pricing strategy</p>
+                            <h2
+                                class="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white transition-colors duration-300">
+                                Pricing & Access</h2>
+                            <p
+                                class="text-gray-600 dark:text-gray-300 text-sm sm:text-base transition-colors duration-300">
+                                Set your course pricing strategy</p>
                         </div>
                     </div>
 
@@ -304,14 +444,19 @@ window.addEventListener('redirect-after-delay', (event) => {
                         <div class="relative">
                             <input type="checkbox" wire:model.live="is_free" id="free_option" class="sr-only">
                             <label for="free_option"
-                                class="block p-4 sm:p-6 rounded-xl cursor-pointer transition-all duration-200 border-2" :class="$wire.is_free ? 'border-green-500 bg-green-50 dark:bg-green-500/20' : 'border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700/50 hover:border-green-400'">
+                                class="block p-4 sm:p-6 rounded-xl cursor-pointer transition-all duration-200 border-2"
+                                :class="$wire.is_free ? 'border-green-500 bg-green-50 dark:bg-green-500/20' : 'border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700/50 hover:border-green-400'">
                                 <div class="text-center">
                                     <div class="w-12 h-12 sm:w-16 sm:h-16 mx-auto mb-3 sm:mb-4 rounded-full flex items-center justify-center transition-colors duration-300"
                                         :class="$wire.is_free ? 'bg-green-500' : 'bg-gray-400 dark:bg-gray-600'">
                                         <i class="fas fa-gift text-white text-lg sm:text-2xl"></i>
                                     </div>
-                                    <h3 class="text-base sm:text-lg font-semibold text-gray-900 dark:text-white mb-2 transition-colors duration-300">Free Course</h3>
-                                    <p class="text-gray-600 dark:text-gray-300 text-xs sm:text-sm transition-colors duration-300">Open access for everyone</p>
+                                    <h3
+                                        class="text-base sm:text-lg font-semibold text-gray-900 dark:text-white mb-2 transition-colors duration-300">
+                                        Free Course</h3>
+                                    <p
+                                        class="text-gray-600 dark:text-gray-300 text-xs sm:text-sm transition-colors duration-300">
+                                        Open access for everyone</p>
                                 </div>
                             </label>
                         </div>
@@ -320,14 +465,19 @@ window.addEventListener('redirect-after-delay', (event) => {
                         <div class="relative">
                             <input type="checkbox" wire:model.live="is_premium" id="premium_option" class="sr-only">
                             <label for="premium_option"
-                                class="block p-4 sm:p-6 rounded-xl cursor-pointer transition-all duration-200 border-2" :class="$wire.is_premium ? 'border-purple-500 bg-purple-50 dark:bg-purple-500/20' : 'border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700/50 hover:border-purple-400'">
+                                class="block p-4 sm:p-6 rounded-xl cursor-pointer transition-all duration-200 border-2"
+                                :class="$wire.is_premium ? 'border-purple-500 bg-purple-50 dark:bg-purple-500/20' : 'border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700/50 hover:border-purple-400'">
                                 <div class="text-center">
                                     <div class="w-12 h-12 sm:w-16 sm:h-16 mx-auto mb-3 sm:mb-4 rounded-full flex items-center justify-center transition-colors duration-300"
                                         :class="$wire.is_premium ? 'bg-purple-500' : 'bg-gray-400 dark:bg-gray-600'">
                                         <i class="fas fa-crown text-white text-lg sm:text-2xl"></i>
                                     </div>
-                                    <h3 class="text-base sm:text-lg font-semibold text-gray-900 dark:text-white mb-2 transition-colors duration-300">Premium Course</h3>
-                                    <p class="text-gray-600 dark:text-gray-300 text-xs sm:text-sm transition-colors duration-300">Paid course with premium features</p>
+                                    <h3
+                                        class="text-base sm:text-lg font-semibold text-gray-900 dark:text-white mb-2 transition-colors duration-300">
+                                        Premium Course</h3>
+                                    <p
+                                        class="text-gray-600 dark:text-gray-300 text-xs sm:text-sm transition-colors duration-300">
+                                        Paid course with premium features</p>
                                 </div>
                             </label>
                         </div>
@@ -335,14 +485,19 @@ window.addEventListener('redirect-after-delay', (event) => {
                         <!-- Regular Paid Course -->
                         <div class="relative">
                             <button type="button" wire:click="setPaidCourse"
-                                class="block w-full p-4 sm:p-6 rounded-xl border-2 transition-all duration-200" :class="!$wire.is_free && !$wire.is_premium ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/20' : 'border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700/50 hover:border-blue-400'">
+                                class="block w-full p-4 sm:p-6 rounded-xl border-2 transition-all duration-200"
+                                :class="!$wire.is_free && !$wire.is_premium ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/20' : 'border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700/50 hover:border-blue-400'">
                                 <div class="text-center">
                                     <div class="w-12 h-12 sm:w-16 sm:h-16 mx-auto mb-3 sm:mb-4 rounded-full flex items-center justify-center transition-colors duration-300"
                                         :class="!$wire.is_free && !$wire.is_premium ? 'bg-blue-500' : 'bg-gray-400 dark:bg-gray-600'">
                                         <i class="fas fa-money-bill-wave text-white text-lg sm:text-2xl"></i>
                                     </div>
-                                    <h3 class="text-base sm:text-lg font-semibold text-gray-900 dark:text-white mb-2 transition-colors duration-300">Paid Course</h3>
-                                    <p class="text-gray-600 dark:text-gray-300 text-xs sm:text-sm transition-colors duration-300">Standard paid course</p>
+                                    <h3
+                                        class="text-base sm:text-lg font-semibold text-gray-900 dark:text-white mb-2 transition-colors duration-300">
+                                        Paid Course</h3>
+                                    <p
+                                        class="text-gray-600 dark:text-gray-300 text-xs sm:text-sm transition-colors duration-300">
+                                        Standard paid course</p>
                                 </div>
                             </button>
                         </div>
@@ -350,12 +505,14 @@ window.addEventListener('redirect-after-delay', (event) => {
 
                     <!-- Price Input -->
                     <div x-show="!$wire.is_free" x-transition class="mb-6">
-                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 flex items-center gap-2 transition-colors duration-300">
+                        <label
+                            class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 flex items-center gap-2 transition-colors duration-300">
                             <i class="fas fa-tag text-green-500 dark:text-green-400"></i>
                             Course Price ($)
                         </label>
                         <div class="relative">
-                            <span class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 dark:text-gray-400 text-lg">$</span>
+                            <span
+                                class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 dark:text-gray-400 text-lg">$</span>
                             <input type="number" wire:model="price" step="0.01" min="0"
                                 class="w-full pl-10 pr-4 py-3 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 transition-colors duration-300"
                                 placeholder="9.99">
@@ -370,7 +527,8 @@ window.addEventListener('redirect-after-delay', (event) => {
                         <div class="flex items-center space-x-3 sm:space-x-4">
                             <input type="checkbox" wire:model="is_published" id="publish_now"
                                 class="h-4 w-4 sm:h-5 sm:w-5 text-green-500 rounded border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 focus:ring-green-400">
-                            <label for="publish_now" class="text-gray-900 dark:text-white flex items-center gap-2 text-sm sm:text-base transition-colors duration-300">
+                            <label for="publish_now"
+                                class="text-gray-900 dark:text-white flex items-center gap-2 text-sm sm:text-base transition-colors duration-300">
                                 <i class="fas fa-globe text-green-500 dark:text-green-400"></i>
                                 Publish immediately after approval
                             </label>
@@ -378,12 +536,14 @@ window.addEventListener('redirect-after-delay', (event) => {
 
                         <!-- Schedule Publishing -->
                         <div x-show="$wire.is_published" x-transition>
-                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 transition-colors duration-300">
+                            <label
+                                class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 transition-colors duration-300">
                                 Schedule Publication (Optional)
                             </label>
                             <input type="datetime-local" wire:model="scheduled_publish_at"
                                 class="w-full px-3 sm:px-4 py-3 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent text-gray-900 dark:text-white transition-colors duration-300">
-                            <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Leave empty to publish immediately when approved</p>
+                            <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Leave empty to publish immediately
+                                when approved</p>
                         </div>
                     </div>
                 </div>
@@ -397,14 +557,20 @@ window.addEventListener('redirect-after-delay', (event) => {
                 x-transition:leave-start="opacity-100 transform translate-x-0"
                 x-transition:leave-end="opacity-0 transform -translate-x-8">
 
-                <div class="bg-white dark:bg-gray-800 rounded-2xl p-4 sm:p-6 lg:p-8 shadow-xl border border-gray-200 dark:border-gray-700 transition-colors duration-300">
+                <div
+                    class="bg-white dark:bg-gray-800 rounded-2xl p-4 sm:p-6 lg:p-8 shadow-xl border border-gray-200 dark:border-gray-700 transition-colors duration-300">
                     <div class="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-6">
-                        <div class="w-10 h-10 sm:w-12 sm:h-12 bg-indigo-500 rounded-full flex items-center justify-center flex-shrink-0">
+                        <div
+                            class="w-10 h-10 sm:w-12 sm:h-12 bg-indigo-500 rounded-full flex items-center justify-center flex-shrink-0">
                             <i class="fas fa-list-ul text-white text-lg sm:text-xl"></i>
                         </div>
                         <div>
-                            <h2 class="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white transition-colors duration-300">Additional Details</h2>
-                            <p class="text-gray-600 dark:text-gray-300 text-sm sm:text-base transition-colors duration-300">Enhance your course with extra information</p>
+                            <h2
+                                class="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white transition-colors duration-300">
+                                Additional Details</h2>
+                            <p
+                                class="text-gray-600 dark:text-gray-300 text-sm sm:text-base transition-colors duration-300">
+                                Enhance your course with extra information</p>
                         </div>
                     </div>
 
@@ -412,8 +578,10 @@ window.addEventListener('redirect-after-delay', (event) => {
                         <!-- Left Column -->
                         <div class="space-y-4 sm:space-y-6">
                             <!-- Learning Outcomes -->
-                            <div class="bg-indigo-50 dark:bg-indigo-900/30 p-4 sm:p-6 rounded-xl border border-indigo-200 dark:border-indigo-800 transition-colors duration-300">
-                                <label class="block text-sm font-medium text-indigo-700 dark:text-indigo-300 mb-4 flex items-center gap-2 transition-colors duration-300">
+                            <div
+                                class="bg-indigo-50 dark:bg-indigo-900/30 p-4 sm:p-6 rounded-xl border border-indigo-200 dark:border-indigo-800 transition-colors duration-300">
+                                <label
+                                    class="block text-sm font-medium text-indigo-700 dark:text-indigo-300 mb-4 flex items-center gap-2 transition-colors duration-300">
                                     <i class="fas fa-lightbulb text-indigo-500 dark:text-indigo-400"></i>
                                     Learning Outcomes
                                 </label>
@@ -441,8 +609,10 @@ window.addEventListener('redirect-after-delay', (event) => {
                             </div>
 
                             <!-- Prerequisites -->
-                            <div class="bg-orange-50 dark:bg-orange-900/30 p-4 sm:p-6 rounded-xl border border-orange-200 dark:border-orange-800 transition-colors duration-300">
-                                <label class="block text-sm font-medium text-orange-700 dark:text-orange-300 mb-4 flex items-center gap-2 transition-colors duration-300">
+                            <div
+                                class="bg-orange-50 dark:bg-orange-900/30 p-4 sm:p-6 rounded-xl border border-orange-200 dark:border-orange-800 transition-colors duration-300">
+                                <label
+                                    class="block text-sm font-medium text-orange-700 dark:text-orange-300 mb-4 flex items-center gap-2 transition-colors duration-300">
                                     <i class="fas fa-clipboard-check text-orange-500 dark:text-orange-400"></i>
                                     Prerequisites
                                 </label>
@@ -474,7 +644,8 @@ window.addEventListener('redirect-after-delay', (event) => {
                         <div class="space-y-4 sm:space-y-6">
                             <!-- Syllabus Overview -->
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 flex items-center gap-2 transition-colors duration-300">
+                                <label
+                                    class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 flex items-center gap-2 transition-colors duration-300">
                                     <i class="fas fa-book-open text-indigo-500 dark:text-indigo-400"></i>
                                     Syllabus Overview
                                 </label>
@@ -487,14 +658,17 @@ window.addEventListener('redirect-after-delay', (event) => {
                             </div>
 
                             <!-- FAQs -->
-                            <div class="bg-purple-50 dark:bg-purple-900/30 p-4 sm:p-6 rounded-xl border border-purple-200 dark:border-purple-800 transition-colors duration-300">
-                                <label class="block text-sm font-medium text-purple-700 dark:text-purple-300 mb-4 flex items-center gap-2 transition-colors duration-300">
+                            <div
+                                class="bg-purple-50 dark:bg-purple-900/30 p-4 sm:p-6 rounded-xl border border-purple-200 dark:border-purple-800 transition-colors duration-300">
+                                <label
+                                    class="block text-sm font-medium text-purple-700 dark:text-purple-300 mb-4 flex items-center gap-2 transition-colors duration-300">
                                     <i class="fas fa-question-circle text-purple-500 dark:text-purple-400"></i>
                                     Frequently Asked Questions
                                 </label>
                                 <div class="space-y-4">
                                     @foreach ($faqs as $index => $faq)
-                                        <div class="bg-white dark:bg-gray-700/50 p-3 sm:p-4 rounded-lg border border-gray-200 dark:border-gray-600 transition-colors duration-300" wire:key="faq-{{ $index }}">
+                                        <div class="bg-white dark:bg-gray-700/50 p-3 sm:p-4 rounded-lg border border-gray-200 dark:border-gray-600 transition-colors duration-300"
+                                            wire:key="faq-{{ $index }}">
                                             <div class="space-y-3">
                                                 <input type="text" wire:model="faqs.{{ $index }}.question"
                                                     class="w-full px-3 sm:px-4 py-2 bg-gray-50 dark:bg-gray-600/50 border border-gray-200 dark:border-gray-500 rounded-lg text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-purple-500 text-sm sm:text-base transition-colors duration-300"
@@ -520,16 +694,20 @@ window.addEventListener('redirect-after-delay', (event) => {
 
                             <!-- Completion Threshold -->
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 flex items-center gap-2 transition-colors duration-300">
+                                <label
+                                    class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 flex items-center gap-2 transition-colors duration-300">
                                     <i class="fas fa-percentage text-indigo-500 dark:text-indigo-400"></i>
                                     Completion Threshold (%)
                                 </label>
                                 <div class="relative">
-                                    <input type="number" wire:model="completion_rate_threshold" min="0" max="100" step="0.01"
+                                    <input type="number" wire:model="completion_rate_threshold" min="0" max="100"
+                                        step="0.01"
                                         class="w-full px-3 sm:px-4 py-3 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 text-sm sm:text-base transition-colors duration-300">
-                                    <span class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 dark:text-gray-400">%</span>
+                                    <span
+                                        class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 dark:text-gray-400">%</span>
                                 </div>
-                                <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Minimum completion rate for certificate eligibility</p>
+                                <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Minimum completion rate for
+                                    certificate eligibility</p>
                                 @error('completion_rate_threshold')
                                     <p class="mt-2 text-sm text-red-500">{{ $message }}</p>
                                 @enderror
@@ -547,76 +725,111 @@ window.addEventListener('redirect-after-delay', (event) => {
                 x-transition:leave-start="opacity-100 transform translate-x-0"
                 x-transition:leave-end="opacity-0 transform -translate-x-8">
 
-                <div class="bg-white dark:bg-gray-800 rounded-2xl p-4 sm:p-6 lg:p-8 shadow-xl border border-gray-200 dark:border-gray-700 transition-colors duration-300">
+                <div
+                    class="bg-white dark:bg-gray-800 rounded-2xl p-4 sm:p-6 lg:p-8 shadow-xl border border-gray-200 dark:border-gray-700 transition-colors duration-300">
                     <div class="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-6">
-                        <div class="w-10 h-10 sm:w-12 sm:h-12 bg-green-500 rounded-full flex items-center justify-center flex-shrink-0">
+                        <div
+                            class="w-10 h-10 sm:w-12 sm:h-12 bg-green-500 rounded-full flex items-center justify-center flex-shrink-0">
                             <i class="fas fa-check-circle text-white text-lg sm:text-xl"></i>
                         </div>
                         <div>
-                            <h2 class="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white transition-colors duration-300">Review & Submit</h2>
-                            <p class="text-gray-600 dark:text-gray-300 text-sm sm:text-base transition-colors duration-300">Final check before submitting for approval</p>
+                            <h2
+                                class="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white transition-colors duration-300">
+                                Review & Submit</h2>
+                            <p
+                                class="text-gray-600 dark:text-gray-300 text-sm sm:text-base transition-colors duration-300">
+                                Final check before {{ ($isEditMode ?? false) ? 'updating' : 'submitting for approval' }}</p>
                         </div>
                     </div>
 
-                    <!-- courses.preview -->
+                    <!-- Course Preview -->
                     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 mb-6 sm:mb-8">
                         <!-- Course Card Preview -->
-                        <div class="bg-gray-50 dark:bg-gray-700/50 rounded-xl p-4 sm:p-6 transition-colors duration-300">
-                            <h3 class="text-base sm:text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2 transition-colors duration-300">
+                        <div
+                            class="bg-gray-50 dark:bg-gray-700/50 rounded-xl p-4 sm:p-6 transition-colors duration-300">
+                            <h3
+                                class="text-base sm:text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2 transition-colors duration-300">
                                 <i class="fas fa-eye text-blue-500 dark:text-blue-400"></i>
-                                courses.preview
+                                Course Preview
                             </h3>
-                            <div class="bg-white dark:bg-gray-800 rounded-lg p-3 sm:p-4 border border-gray-200 dark:border-gray-600 transition-colors duration-300">
-                                @if ($thumbnail)
+                            <div
+                                class="bg-white dark:bg-gray-800 rounded-lg p-3 sm:p-4 border border-gray-200 dark:border-gray-600 transition-colors duration-300">
+                                
+                                <!-- Thumbnail Preview -->
+                                @if ($thumbnail && method_exists($thumbnail, 'temporaryUrl'))
                                     <img src="{{ $thumbnail->temporaryUrl() }}" alt="Course thumbnail"
                                         class="w-full h-24 sm:h-32 object-cover rounded-lg mb-3 sm:mb-4">
+                                @elseif(($isEditMode ?? false) && isset($existingThumbnail) && $existingThumbnail && !($shouldRemoveThumbnail ?? false))
+                                    <img src="{{ asset('storage/' . $existingThumbnail) }}" alt="Course thumbnail"
+                                        class="w-full h-24 sm:h-32 object-cover rounded-lg mb-3 sm:mb-4">
                                 @else
-                                    <div class="w-full h-24 sm:h-32 bg-gray-200 dark:bg-gray-600 rounded-lg mb-3 sm:mb-4 flex items-center justify-center transition-colors duration-300">
+                                    <div
+                                        class="w-full h-24 sm:h-32 bg-gray-200 dark:bg-gray-600 rounded-lg mb-3 sm:mb-4 flex items-center justify-center transition-colors duration-300">
                                         <i class="fas fa-image text-gray-400 text-xl sm:text-2xl"></i>
                                     </div>
                                 @endif
-                                <h4 class="text-gray-900 dark:text-white font-semibold mb-2 text-sm sm:text-base transition-colors duration-300">{{ $title ?: 'Course Title' }}</h4>
-                                <p class="text-gray-600 dark:text-gray-300 text-xs sm:text-sm mb-2 transition-colors duration-300">{{ $subtitle ?: 'Course subtitle...' }}</p>
+                                
+                                <h4
+                                    class="text-gray-900 dark:text-white font-semibold mb-2 text-sm sm:text-base transition-colors duration-300">
+                                    {{ $title ?: 'Course Title' }}</h4>
+                                <p
+                                    class="text-gray-600 dark:text-gray-300 text-xs sm:text-sm mb-2 transition-colors duration-300">
+                                    {{ $subtitle ?: 'Course subtitle...' }}</p>
                                 <div class="flex justify-between items-center text-sm">
-                                    <span class="text-purple-600 dark:text-purple-400 font-semibold transition-colors duration-300">
+                                    <span
+                                        class="text-purple-600 dark:text-purple-400 font-semibold transition-colors duration-300">
                                         @if ($is_free)
                                             Free
                                         @else
                                             ${{ number_format($price, 2) }}
                                         @endif
                                     </span>
-                                    <span class="text-gray-500 dark:text-gray-400 capitalize transition-colors duration-300">{{ $difficulty_level }}</span>
+                                    <span
+                                        class="text-gray-500 dark:text-gray-400 capitalize transition-colors duration-300">{{ $difficulty_level }}</span>
                                 </div>
                             </div>
                         </div>
 
                         <!-- Course Summary -->
                         <div class="space-y-4">
-                            <h3 class="text-base sm:text-lg font-semibold text-gray-900 dark:text-white flex items-center gap-2 transition-colors duration-300">
+                            <h3
+                                class="text-base sm:text-lg font-semibold text-gray-900 dark:text-white flex items-center gap-2 transition-colors duration-300">
                                 <i class="fas fa-list text-green-500 dark:text-green-400"></i>
                                 Course Summary
                             </h3>
 
                             <div class="space-y-2 sm:space-y-3">
-                                <div class="flex flex-col sm:flex-row sm:justify-between py-2 border-b border-gray-200 dark:border-gray-600 transition-colors duration-300">
-                                    <span class="text-gray-600 dark:text-gray-300 text-sm sm:text-base transition-colors duration-300">Category:</span>
-                                    <span class="text-gray-900 dark:text-white font-medium text-sm sm:text-base transition-colors duration-300">
+                                <div
+                                    class="flex flex-col sm:flex-row sm:justify-between py-2 border-b border-gray-200 dark:border-gray-600 transition-colors duration-300">
+                                    <span
+                                        class="text-gray-600 dark:text-gray-300 text-sm sm:text-base transition-colors duration-300">Category:</span>
+                                    <span
+                                        class="text-gray-900 dark:text-white font-medium text-sm sm:text-base transition-colors duration-300">
                                         {{ $categories->firstWhere('id', $category_id)->name ?? 'Not selected' }}
                                     </span>
                                 </div>
-                                <div class="flex flex-col sm:flex-row sm:justify-between py-2 border-b border-gray-200 dark:border-gray-600 transition-colors duration-300">
-                                    <span class="text-gray-600 dark:text-gray-300 text-sm sm:text-base transition-colors duration-300">Difficulty:</span>
-                                    <span class="text-gray-900 dark:text-white font-medium capitalize text-sm sm:text-base transition-colors duration-300">{{ $difficulty_level }}</span>
+                                <div
+                                    class="flex flex-col sm:flex-row sm:justify-between py-2 border-b border-gray-200 dark:border-gray-600 transition-colors duration-300">
+                                    <span
+                                        class="text-gray-600 dark:text-gray-300 text-sm sm:text-base transition-colors duration-300">Difficulty:</span>
+                                    <span
+                                        class="text-gray-900 dark:text-white font-medium capitalize text-sm sm:text-base transition-colors duration-300">{{ $difficulty_level }}</span>
                                 </div>
-                                <div class="flex flex-col sm:flex-row sm:justify-between py-2 border-b border-gray-200 dark:border-gray-600 transition-colors duration-300">
-                                    <span class="text-gray-600 dark:text-gray-300 text-sm sm:text-base transition-colors duration-300">Duration:</span>
-                                    <span class="text-gray-900 dark:text-white font-medium text-sm sm:text-base transition-colors duration-300">
+                                <div
+                                    class="flex flex-col sm:flex-row sm:justify-between py-2 border-b border-gray-200 dark:border-gray-600 transition-colors duration-300">
+                                    <span
+                                        class="text-gray-600 dark:text-gray-300 text-sm sm:text-base transition-colors duration-300">Duration:</span>
+                                    <span
+                                        class="text-gray-900 dark:text-white font-medium text-sm sm:text-base transition-colors duration-300">
                                         {{ $estimated_duration_minutes ? $estimated_duration_minutes . ' minutes' : 'Not specified' }}
                                     </span>
                                 </div>
-                                <div class="flex flex-col sm:flex-row sm:justify-between py-2 border-b border-gray-200 dark:border-gray-600 transition-colors duration-300">
-                                    <span class="text-gray-600 dark:text-gray-300 text-sm sm:text-base transition-colors duration-300">Price:</span>
-                                    <span class="text-gray-900 dark:text-white font-medium text-sm sm:text-base transition-colors duration-300">
+                                <div
+                                    class="flex flex-col sm:flex-row sm:justify-between py-2 border-b border-gray-200 dark:border-gray-600 transition-colors duration-300">
+                                    <span
+                                        class="text-gray-600 dark:text-gray-300 text-sm sm:text-base transition-colors duration-300">Price:</span>
+                                    <span
+                                        class="text-gray-900 dark:text-white font-medium text-sm sm:text-base transition-colors duration-300">
                                         @if ($is_free)
                                             Free
                                         @elseif($is_premium)
@@ -626,42 +839,79 @@ window.addEventListener('redirect-after-delay', (event) => {
                                         @endif
                                     </span>
                                 </div>
-                                <div class="flex flex-col sm:flex-row sm:justify-between py-2 border-b border-gray-200 dark:border-gray-600 transition-colors duration-300">
-                                    <span class="text-gray-600 dark:text-gray-300 text-sm sm:text-base transition-colors duration-300">Learning Outcomes:</span>
-                                    <span class="text-gray-900 dark:text-white font-medium text-sm sm:text-base transition-colors duration-300">{{ count(array_filter($learning_outcomes)) }} items</span>
+                                <div
+                                    class="flex flex-col sm:flex-row sm:justify-between py-2 border-b border-gray-200 dark:border-gray-600 transition-colors duration-300">
+                                    <span
+                                        class="text-gray-600 dark:text-gray-300 text-sm sm:text-base transition-colors duration-300">Learning
+                                        Outcomes:</span>
+                                    <span
+                                        class="text-gray-900 dark:text-white font-medium text-sm sm:text-base transition-colors duration-300">{{ count(array_filter($learning_outcomes)) }}
+                                        items</span>
                                 </div>
                                 <div class="flex flex-col sm:flex-row sm:justify-between py-2">
-                                    <span class="text-gray-600 dark:text-gray-300 text-sm sm:text-base transition-colors duration-300">Prerequisites:</span>
-                                    <span class="text-gray-900 dark:text-white font-medium text-sm sm:text-base transition-colors duration-300">{{ count(array_filter($prerequisites)) }} items</span>
+                                    <span
+                                        class="text-gray-600 dark:text-gray-300 text-sm sm:text-base transition-colors duration-300">Prerequisites:</span>
+                                    <span
+                                        class="text-gray-900 dark:text-white font-medium text-sm sm:text-base transition-colors duration-300">{{ count(array_filter($prerequisites)) }}
+                                        items</span>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Submission Notice -->
-                    <div class="bg-blue-50 dark:bg-blue-900/30 border border-blue-200 dark:border-blue-600 rounded-xl p-4 sm:p-6 mb-4 sm:mb-6 transition-colors duration-300">
-                        <div class="flex items-start gap-3">
-                            <i class="fas fa-info-circle text-blue-500 dark:text-blue-400 text-lg sm:text-xl mt-1 flex-shrink-0"></i>
-                            <div>
-                                <h4 class="text-gray-900 dark:text-white font-semibold mb-2 text-sm sm:text-base transition-colors duration-300">Submission for Approval</h4>
-                                <p class="text-gray-700 dark:text-gray-300 text-xs sm:text-sm leading-relaxed transition-colors duration-300">
-                                    Your course will be submitted for review by our academy administrators.
-                                    You'll receive a notification once it's approved and published.
-                                    You can continue to edit your course content in the course builder after submission.
-                                </p>
+                    <!-- Submission/Update Notice -->
+                    @if(!($isEditMode ?? false))
+                        <!-- Create Mode Notice -->
+                        <div
+                            class="bg-blue-50 dark:bg-blue-900/30 border border-blue-200 dark:border-blue-600 rounded-xl p-4 sm:p-6 mb-4 sm:mb-6 transition-colors duration-300">
+                            <div class="flex items-start gap-3">
+                                <i
+                                    class="fas fa-info-circle text-blue-500 dark:text-blue-400 text-lg sm:text-xl mt-1 flex-shrink-0"></i>
+                                <div>
+                                    <h4
+                                        class="text-gray-900 dark:text-white font-semibold mb-2 text-sm sm:text-base transition-colors duration-300">
+                                        Submission for Approval</h4>
+                                    <p
+                                        class="text-gray-700 dark:text-gray-300 text-xs sm:text-sm leading-relaxed transition-colors duration-300">
+                                        Your course will be submitted for review by our academy administrators.
+                                        You'll receive a notification once it's approved and published.
+                                        You can continue to edit your course content in the course builder after submission.
+                                    </p>
+                                </div>
                             </div>
                         </div>
-                    </div>
+                    @else
+                        <!-- Edit Mode Notice -->
+                        <div
+                            class="bg-orange-50 dark:bg-orange-900/30 border border-orange-200 dark:border-orange-600 rounded-xl p-4 sm:p-6 mb-4 sm:mb-6 transition-colors duration-300">
+                            <div class="flex items-start gap-3">
+                                <i
+                                    class="fas fa-edit text-orange-500 dark:text-orange-400 text-lg sm:text-xl mt-1 flex-shrink-0"></i>
+                                <div>
+                                    <h4
+                                        class="text-gray-900 dark:text-white font-semibold mb-2 text-sm sm:text-base transition-colors duration-300">
+                                        Updating Course</h4>
+                                    <p
+                                        class="text-gray-700 dark:text-gray-300 text-xs sm:text-sm leading-relaxed transition-colors duration-300">
+                                        You are updating an existing course. Changes will be saved immediately.
+                                        {{ Auth::user()->hasRole('super_admin') || Auth::user()->hasRole('academy_admin') ? 'As an admin, you can approve/reject the course directly.' : 'Course may need re-approval if significant changes are made.' }}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    @endif
 
                     <!-- Admin Approval Option (if applicable) -->
                     @if (Auth::user()->hasRole('super_admin') || Auth::user()->hasRole('academy_admin'))
-                        <div class="bg-purple-50 dark:bg-purple-900/30 border border-purple-200 dark:border-purple-600 rounded-xl p-4 sm:p-6 mb-4 sm:mb-6 transition-colors duration-300">
+                        <div
+                            class="bg-purple-50 dark:bg-purple-900/30 border border-purple-200 dark:border-purple-600 rounded-xl p-4 sm:p-6 mb-4 sm:mb-6 transition-colors duration-300">
                             <div class="flex items-center space-x-3 sm:space-x-4">
                                 <input type="checkbox" wire:model="is_approved" id="admin_approve"
                                     class="h-4 w-4 sm:h-5 sm:w-5 text-purple-500 rounded border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 focus:ring-purple-400">
-                                <label for="admin_approve" class="text-gray-900 dark:text-white flex items-center gap-2 text-sm sm:text-base transition-colors duration-300">
+                                <label for="admin_approve"
+                                    class="text-gray-900 dark:text-white flex items-center gap-2 text-sm sm:text-base transition-colors duration-300">
                                     <i class="fas fa-shield-alt text-purple-500 dark:text-purple-400"></i>
-                                    Approve course immediately (Admin only)
+                                    {{ ($isEditMode ?? false) ? 'Course is approved' : 'Approve course immediately' }} (Admin only)
                                 </label>
                             </div>
                         </div>
@@ -685,14 +935,15 @@ window.addEventListener('redirect-after-delay', (event) => {
                     </button>
 
                     <button type="submit" x-show="currentStep === totalSteps" wire:loading.attr="disabled"
-                        class="px-6 sm:px-8 py-3 bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-xl font-semibold hover:from-green-700 hover:to-emerald-700 transition-all duration-200 shadow-lg hover:shadow-xl flex items-center justify-center gap-2 disabled:opacity-50 text-sm sm:text-base">
+                        class="px-6 sm:px-8 py-3 text-white rounded-xl font-semibold transition-all duration-200 shadow-lg hover:shadow-xl flex items-center justify-center gap-2 disabled:opacity-50 text-sm sm:text-base"
+                        :class="isEditMode ? 'bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-700 hover:to-red-700' : 'bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700'">
                         <span wire:loading.remove class="flex items-center gap-2">
-                            <i class="fas fa-rocket"></i>
-                            Submit Course
+                            <i :class="isEditMode ? 'fas fa-save' : 'fas fa-rocket'"></i>
+                            <span x-text="isEditMode ? 'Update Course' : 'Submit Course'"></span>
                         </span>
                         <span wire:loading class="flex items-center gap-2">
                             <i class="fas fa-spinner fa-spin"></i>
-                            Submitting...
+                            <span x-text="isEditMode ? 'Updating...' : 'Submitting...'"></span>
                         </span>
                     </button>
                 </div>
@@ -702,7 +953,8 @@ window.addEventListener('redirect-after-delay', (event) => {
             <div class="mt-4 sm:mt-6 flex justify-center lg:hidden">
                 <div class="flex space-x-2">
                     <template x-for="step in totalSteps" :key="step">
-                        <button type="button" @click="$wire.goToStep(step)" class="w-2 h-2 sm:w-3 sm:h-3 rounded-full transition-colors"
+                        <button type="button" @click="$wire.goToStep(step)"
+                            class="w-2 h-2 sm:w-3 sm:h-3 rounded-full transition-colors"
                             :class="step === currentStep ? 'bg-purple-500' : step < currentStep ? 'bg-purple-300 dark:bg-purple-400' : 'bg-gray-300 dark:bg-gray-600'">
                         </button>
                     </template>

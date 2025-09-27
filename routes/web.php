@@ -28,25 +28,25 @@ use App\Livewire\Content\ContentDocumentationCenter;
 // PUBLIC ROUTES (No auth required)
 Route::get('/marketplace', App\Livewire\Marketplace\PublicMarketplace::class)->name('marketplace.browse');
 Route::get('/marketplace/categories', App\Livewire\Marketplace\PublicMarketplace::class)->name('marketplace.categories');
-Route::get('/marketplace/product/{slug}', function($slug) {
+Route::get('/marketplace/product/{slug}', function ($slug) {
     return app(App\Livewire\Marketplace\PublicMarketplace::class, ['slug' => $slug, 'type' => 'product']);
 })->name('marketplace.product.show');
-Route::get('/marketplace/category/{slug}', function($slug) {
+Route::get('/marketplace/category/{slug}', function ($slug) {
     return app(App\Livewire\Marketplace\PublicMarketplace::class, ['slug' => $slug, 'type' => 'category']);
 })->name('marketplace.category.show');
-Route::get('/marketplace/instructor/{id}', function($id) {
+Route::get('/marketplace/instructor/{id}', function ($id) {
     return app(App\Livewire\Marketplace\PublicMarketplace::class, ['slug' => $id, 'type' => 'vendor']);
 })->name('marketplace.instructor.show');
 
 // AUTHENTICATED ROUTES - Dashboard Access
-Route::middleware(['auth', 'verified'])->group(function () {    
+Route::middleware(['auth', 'verified'])->group(function () {
     // GENERAL USER ROUTES (Students, Everyone)
     Route::get('/marketplace/cart', App\Livewire\Marketplace\MarketplaceCenter::class)->name('marketplace.cart');
     Route::get('/marketplace/checkout', App\Livewire\Marketplace\MarketplaceCenter::class)->name('marketplace.checkout');
     Route::get('/marketplace/my-purchases', App\Livewire\Marketplace\MarketplaceCenter::class)->name('marketplace.purchases');
     Route::get('/marketplace/reviews', App\Livewire\Marketplace\MarketplaceCenter::class)->name('marketplace.reviews');
     Route::get('/marketplace/item/{slug}', App\Livewire\Marketplace\MarketplaceCenter::class)->name('marketplace.item.public');
-    
+
     // VENDOR ROUTES (Instructors, Academy Admin, Super Admin)
     Route::get('/marketplace/sell', App\Livewire\Marketplace\MarketplaceCenter::class)->name('marketplace.sell');
     Route::get('/marketplace/seller/create', App\Livewire\Marketplace\MarketplaceCenter::class)->name('marketplace.seller.create');
@@ -55,24 +55,24 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/marketplace/vendor/dashboard', App\Livewire\Marketplace\MarketplaceCenter::class)->name('marketplace.vendor.dashboard');
     Route::get('/marketplace/vendor/orders', App\Livewire\Marketplace\MarketplaceCenter::class)->name('marketplace.vendor.orders');
     Route::get('/marketplace/vendor/withdrawals', App\Livewire\Marketplace\MarketplaceCenter::class)->name('marketplace.vendor.withdrawals');
-    
+
     // ADMIN ROUTES (Academy Admin, Super Admin)
     Route::get('/marketplace/admin/vendors', App\Livewire\Marketplace\MarketplaceCenter::class)->name('marketplace.vendor.applications');
     Route::get('/marketplace/admin/orders', App\Livewire\Marketplace\MarketplaceCenter::class)->name('marketplace.orders');
     Route::get('/marketplace/admin/payments', App\Livewire\Marketplace\MarketplaceCenter::class)->name('marketplace.payments');
     Route::get('/marketplace/admin/analytics', App\Livewire\Marketplace\MarketplaceCenter::class)->name('marketplace.analytics');
     Route::get('/marketplace/admin/settings', App\Livewire\Marketplace\MarketplaceCenter::class)->name('marketplace.settings');
-    
+
     // CONTENT EDITOR + ADMIN ROUTES
     Route::get('/marketplace/promotions', App\Livewire\Marketplace\MarketplaceCenter::class)->name('marketplace.promotions');
 });
 
 // PAYMENT CALLBACKS (Public, no auth)
 Route::post('/marketplace/payment/callback', [App\Http\Controllers\PaymentController::class, 'marketplaceCallback'])->name('marketplace.payment.callback');
-Route::get('/marketplace/payment/success', function() {
+Route::get('/marketplace/payment/success', function () {
     return redirect()->route('marketplace.purchases')->with('success', 'Payment completed successfully!');
 })->name('marketplace.payment.success');
-Route::get('/marketplace/payment/failed', function() {
+Route::get('/marketplace/payment/failed', function () {
     return redirect()->route('marketplace.checkout')->with('error', 'Payment failed. Please try again.');
 })->name('marketplace.payment.failed');
 
@@ -529,7 +529,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 // Course CRUD Routes
 Route::middleware(['auth', 'verified'])->prefix('dashboard/courses')->name('')->group(function () {
     Route::get('/create', \App\Livewire\CourseManagement\CourseForm::class)->name('create.course');
-    Route::get('/{course}/edit', \App\Livewire\CourseManagement\CourseForm::class)->name('edit_course');
+    Route::get('/{course}/edit', \App\Livewire\CourseManagement\EditCourse::class)->name('edit_course');
     Route::get('/{course}/builder', \App\Livewire\CourseManagement\CourseBuilder::class)->name('course-builder');
     Route::get('/reviews', \App\Livewire\CourseManagement\CourseReviews::class)->name('course-reviews');
     Route::get('/{course}/preview', \App\Livewire\CourseManagement\CoursePreview::class)->name('courses.preview');

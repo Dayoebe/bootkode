@@ -9,9 +9,11 @@ use App\Models\CourseCategory;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Livewire\Attributes\Layout;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 
 #[Layout('layouts.dashboard', [
-    'description' => 'Create or edit courses with details, pricing, and content',
+    'description' => 'Create new courses with details, pricing, and content',
     'icon' => 'fas fa-plus-circle',
     'active' => 'instructor.course-form'
 ])]
@@ -19,11 +21,8 @@ class CourseForm extends Component
 {
     use WithFileUploads;
 
-    public bool $isEditMode = false;
-    public ?Course $course = null;
-    public string $pageTitle = 'Course Form';
-
     public $categories = [];
+    public string $pageTitle = 'Create New Course';
 
     // Properties matching model fields
     public $title = '';
@@ -33,8 +32,7 @@ class CourseForm extends Component
     public $category_id = '';
     public $difficulty_level = 'beginner';
     public $is_published = false;
-    public $is_approved = false;
-    public $is_free = true; // Default to free
+    public $is_free = true;
     public $is_premium = false;
     public $thumbnail = null;
     public $estimated_duration_minutes = null;
@@ -68,7 +66,6 @@ class CourseForm extends Component
         'category_id' => 'required|exists:course_categories,id',
         'difficulty_level' => 'required|in:beginner,intermediate,advanced,expert',
         'is_published' => 'boolean',
-        'is_approved' => 'boolean',
         'is_free' => 'boolean',
         'is_premium' => 'boolean',
         'thumbnail' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
@@ -87,46 +84,54 @@ class CourseForm extends Component
         'scheduled_publish_at' => 'nullable|date|after:now',
     ];
 
-    public function mount($courseId = null)
+    public function mount()
     {
-        // Load categories from cache for performance
         $this->categories = Cache::remember('course_categories', 3600, fn() => CourseCategory::orderBy('name')->get());
+    }
 
-        if ($courseId) {
-            $this->course = Course::findOrFail($courseId);
-            $this->isEditMode = true;
-            $this->pageTitle = 'Edit Course: ' . $this->course->title;
+    // public function updatedThumbnail()
+    // {
+    //     Log::info('CourseForm: updatedThumbnail called');
 
-            // Fill properties from existing course
-            $this->fill($this->course->only([
-                'title',
-                'subtitle',
-                'description',
-                'category_id',
-                'difficulty_level',
-                'is_published',
-                'is_free',
-                'is_premium',
-                'target_audience',
-                'learning_outcomes',
-                'prerequisites',
-                'syllabus_overview',
-                'faqs',
-                'completion_rate_threshold',
-                'estimated_duration_minutes',
-                'price',
-                'scheduled_publish_at'
-            ]));
+    //     if ($this->thumbnail) {
+    //         try {
+    //             $this->validateOnly('thumbnail');
 
-            $this->is_approved = $this->course->is_approved;
-            $this->dispatch('update-title', $this->pageTitle);
+    //             Log::info('CourseForm: Thumbnail validation passed', [
+    //                 'file_size' => $this->thumbnail->getSize(),
+    //                 'file_type' => $this->thumbnail->getMimeType(),
+    //                 'file_name' => $this->thumbnail->getClientOriginalName()
+    //             ]);
 
-            // Override unique rule for slug in edit mode
-            $this->rules['slug'] = 'required|string|min:3|max:255|regex:/^[a-z0-9\-]+$/|unique:courses,slug,' . $this->course->id;
-        } else {
-            $this->pageTitle = 'Create New Course';
-            $this->dispatch('update-title', $this->pageTitle);
-        }
+    //             $this->dispatch('notify', [
+    //                 'message' => 'Thumbnail uploaded successfully!',
+    //                 'type' => 'success'
+    //             ]);
+
+    //         } catch (\Illuminate\Validation\ValidationException $e) {
+    //             Log::error('CourseForm: Thumbnail validation failed', ['errors' => $e->errors()]);
+    //             $this->thumbnail = null;
+    //             throw $e;
+    //         } catch (\Exception $e) {
+    //             Log::error('CourseForm: Error processing thumbnail', ['error' => $e->getMessage()]);
+    //             $this->thumbnail = null;
+    //             $this->dispatch('notify', [
+    //                 'message' => 'Error uploading thumbnail: ' . $e->getMessage(),
+    //                 'type' => 'error'
+    //             ]);
+    //         }
+    //     }
+    // }
+
+    public function removeThumbnail()
+    {
+        Log::info('CourseForm: Removing thumbnail');
+        $this->thumbnail = null;
+
+        $this->dispatch('notify', [
+            'message' => 'Thumbnail removed.',
+            'type' => 'info'
+        ]);
     }
 
     public function nextStep()
@@ -220,11 +225,6 @@ class CourseForm extends Component
         }
     }
 
-    public function updateCourse()
-    {
-        $this->save();
-    }
-
     public function updatedTitle($value)
     {
         if (!empty($value)) {
@@ -245,12 +245,11 @@ class CourseForm extends Component
         if ($value) {
             $this->is_free = false;
             if ($this->price == 0) {
-                $this->price = 9.99; // Default premium price
+                $this->price = 9.99;
             }
         } else if (!$this->is_free) {
-            // Regular paid course logic
             if ($this->price == 0) {
-                $this->price = 4.99; // Default regular price
+                $this->price = 4.99;
             }
         }
     }
@@ -260,18 +259,18 @@ class CourseForm extends Component
         $this->is_free = false;
         $this->is_premium = false;
         if ($this->price == 0) {
-            $this->price = 4.99; // Default regular price
+            $this->price = 4.99;
         }
     }
 
     public function save()
     {
-        \Log::info('CourseForm save method called', ['isEditMode' => $this->isEditMode]);
+        Log::info('CourseForm: Creating new course');
 
         try {
             // Check if this is a scheduled submission
             if ($this->scheduled_publish_at && now()->lt($this->scheduled_publish_at)) {
-                \Log::info('Course scheduled for future publication', ['scheduled_publish_at' => $this->scheduled_publish_at]);
+                Log::info('Course scheduled for future publication', ['scheduled_publish_at' => $this->scheduled_publish_at]);
                 $this->dispatch('notify', [
                     'message' => 'Course has been scheduled for submission on ' . $this->scheduled_publish_at->format('M d, Y \a\t H:i'),
                     'type' => 'info'
@@ -280,11 +279,9 @@ class CourseForm extends Component
             }
 
             // Validate all data
-            \Log::info('Validating course data');
             $this->validate();
-            \Log::info('Course data validated successfully');
 
-            // Clean up array fields by removing empty entries
+            // Clean up array fields
             $this->learning_outcomes = array_filter($this->learning_outcomes ?? [], fn($outcome) => !empty(trim($outcome)));
             $this->prerequisites = array_filter($this->prerequisites ?? [], fn($prereq) => !empty(trim($prereq)));
             $this->faqs = array_filter($this->faqs ?? [], fn($faq) => !empty(trim($faq['question'] ?? '')) && !empty(trim($faq['answer'] ?? '')));
@@ -311,16 +308,14 @@ class CourseForm extends Component
                 'scheduled_publish_at',
             ]);
 
-            \Log::debug('Prepared course data', $data);
+            // Set instructor and approval
+            $data['instructor_id'] = Auth::id();
 
-            // Only allow admins to approve courses
             $user = Auth::user();
             if ($user->hasRole('super_admin') || $user->hasRole('academy_admin')) {
-                $data['is_approved'] = $this->is_approved;
-                \Log::info('Admin approval status set', ['is_approved' => $this->is_approved]);
+                $data['is_approved'] = true;
             } else {
-                $data['is_approved'] = false; // Regular users cannot approve their own courses
-                \Log::info('Non-admin user, setting is_approved to false');
+                $data['is_approved'] = false;
             }
 
             // Sanitize description
@@ -330,76 +325,48 @@ class CourseForm extends Component
 
             // Handle thumbnail upload
             if ($this->thumbnail) {
-                \Log::info('Processing thumbnail upload');
+                Log::info('CourseForm: Processing thumbnail upload');
                 $data['thumbnail'] = $this->thumbnail->store('thumbnails', 'public');
-                \Log::info('Thumbnail stored', ['path' => $data['thumbnail']]);
-            } elseif ($this->isEditMode && !$this->thumbnail) {
-                // Preserve existing thumbnail when editing and no new file is uploaded
-                $data['thumbnail'] = $this->course->thumbnail;
-                \Log::info('Preserving existing thumbnail', ['path' => $data['thumbnail']]);
+                Log::info('CourseForm: Thumbnail stored', ['path' => $data['thumbnail']]);
             }
 
             // Handle publishing dates
             $now = now();
             if (isset($data['scheduled_publish_at']) && $now->gt($data['scheduled_publish_at'])) {
                 $data['published_at'] = $data['scheduled_publish_at'];
-                \Log::info('Setting published_at from scheduled_publish_at', ['published_at' => $data['published_at']]);
             } elseif ($data['is_published'] && !isset($data['scheduled_publish_at'])) {
                 $data['published_at'] = $now;
-                \Log::info('Setting published_at to now', ['published_at' => $data['published_at']]);
             }
 
-            if ($this->isEditMode) {
-                $this->course->update($data);
-                $message = 'Course updated successfully!';
-                $type = 'success';
-                
-                // Show success notification
-                $this->dispatch('notify', ['message' => $message, 'type' => $type]);
-                
-                // Dispatch the correct event name that matches the JavaScript listener
-                $this->dispatch('redirect-after-delay', [
-                    'url' => route('all-course'),
-                    'delay' => 1500 // 1.5 seconds delay to show the notification
-                ]);
-            } else {
-                \Log::info('Creating new course');
-                $data['instructor_id'] = Auth::id();
-                $course = Course::create($data);
-                $message = 'Course created successfully and submitted for approval!';
-                $type = 'success';
-                
-                // Use string interpolation to ensure the URL is properly constructed
-                $redirectUrl = "/dashboard/courses/{$course->id}/builder";
-                
-                \Log::info('Course created successfully', ['course_id' => $course->id]);
-                \Log::info('Redirect URL', ['url' => $redirectUrl]);
-                
-                // Show success notification
-                $this->dispatch('notify', ['message' => $message, 'type' => $type]);
-                
-                // Dispatch the correct event name that matches the JavaScript listener
-                $this->dispatch('redirect-after-delay', [
-                    'url' => $redirectUrl,
-                    'delay' => 1500 // 1.5 seconds delay to show the notification
-                ]);
-            }
+            // Create course
+            $course = Course::create($data);
+
+            Log::info('CourseForm: Course created successfully', ['course_id' => $course->id]);
+
+            $this->dispatch('notify', [
+                'message' => 'Course created successfully and submitted for approval!',
+                'type' => 'success'
+            ]);
+
+            // Redirect to course builder
+            $redirectUrl = "/dashboard/courses/{$course->id}/builder";
+            $this->dispatch('redirect-after-delay', [
+                'url' => $redirectUrl,
+                'delay' => 1500
+            ]);
 
         } catch (\Illuminate\Validation\ValidationException $e) {
-            \Log::error('Validation error in course form', ['errors' => $e->errors()]);
+            Log::error('CourseForm: Validation error', ['errors' => $e->errors()]);
             $this->dispatch('notify', [
                 'message' => 'Please check the form for errors: ' . collect($e->errors())->flatten()->first(),
                 'type' => 'error'
             ]);
-
-            // Re-throw to show validation errors in the form
             throw $e;
         } catch (\Exception $e) {
-            \Log::error('Error saving course', [
+            Log::error('CourseForm: Error creating course', [
                 'message' => $e->getMessage(),
                 'file' => $e->getFile(),
-                'line' => $e->getLine(),
-                'trace' => $e->getTraceAsString()
+                'line' => $e->getLine()
             ]);
             $this->dispatch('notify', [
                 'message' => 'Error: ' . $e->getMessage(),
@@ -408,23 +375,95 @@ class CourseForm extends Component
         }
     }
 
-    public function suggestAiContent(string $field)
+
+    public function getThumbnailPreview()
     {
-        // Placeholder for future AI integration
-        $this->dispatch('notify', ['message' => 'AI suggestion feature coming soon!', 'type' => 'info']);
+        if ($this->thumbnail) {
+            try {
+                // Store temporary file and return public URL
+                $tempPath = $this->thumbnail->store('temp-thumbnails', 'public');
+                return asset('storage/' . $tempPath);
+            } catch (\Exception $e) {
+                \Log::error('Error creating thumbnail preview', ['error' => $e->getMessage()]);
+                return null;
+            }
+        }
+
+        return null;
     }
 
+    public function updatedThumbnail()
+    {
+        Log::info('Thumbnail updated');
+
+        if ($this->thumbnail) {
+            try {
+                $this->validateOnly('thumbnail');
+
+                // Clean up any previous temp files
+                $this->cleanupTempFiles();
+
+                Log::info('Thumbnail validation passed', [
+                    'file_size' => $this->thumbnail->getSize(),
+                    'file_type' => $this->thumbnail->getMimeType(),
+                    'file_name' => $this->thumbnail->getClientOriginalName()
+                ]);
+
+                $this->dispatch('notify', [
+                    'message' => 'Thumbnail uploaded successfully!',
+                    'type' => 'success'
+                ]);
+
+            } catch (\Illuminate\Validation\ValidationException $e) {
+                Log::error('Thumbnail validation failed', ['errors' => $e->errors()]);
+                $this->thumbnail = null;
+                throw $e;
+            } catch (\Exception $e) {
+                Log::error('Error processing thumbnail', ['error' => $e->getMessage()]);
+                $this->thumbnail = null;
+                $this->dispatch('notify', [
+                    'message' => 'Error uploading thumbnail: ' . $e->getMessage(),
+                    'type' => 'error'
+                ]);
+            }
+        }
+    }
+
+    private function cleanupTempFiles()
+    {
+        try {
+            // Clean up temp files older than 1 hour
+            $tempFiles = Storage::disk('public')->files('temp-thumbnails');
+            foreach ($tempFiles as $file) {
+                if (Storage::disk('public')->lastModified($file) < now()->subHour()->timestamp) {
+                    Storage::disk('public')->delete($file);
+                }
+            }
+        } catch (\Exception $e) {
+            Log::warning('Could not cleanup temp files', ['error' => $e->getMessage()]);
+        }
+    }
+
+    // Add this computed property for the view
+    public function getThumbnailUrlProperty()
+    {
+        if ($this->thumbnail) {
+            return $this->getThumbnailPreview();
+        }
+
+        // For edit mode, return existing thumbnail
+        if (isset($this->existingThumbnail) && $this->existingThumbnail && !($this->shouldRemoveThumbnail ?? false)) {
+            return asset('storage/' . $this->existingThumbnail);
+        }
+
+        return null;
+    }
     public function render()
     {
-        if ($this->isEditMode) {
-            return view('livewire.course-management.edit-course', [
-                'categories' => $this->categories,
-            ]);
-        } else {
-            return view('livewire.course-management.create-course', [
-                'categories' => $this->categories,
-                'difficultyLevels' => $this->difficultyLevels,
-            ]);
-        }
+        return view('livewire.course-management.create-course', [
+            'categories' => $this->categories,
+            'difficultyLevels' => $this->difficultyLevels,
+            'isEditMode' => false, // Always false for create component
+        ]);
     }
 }
