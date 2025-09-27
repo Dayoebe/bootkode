@@ -224,7 +224,7 @@ class AllCourses extends Component
      */
     public function CourseForm(Course $course)
     {
-        return $this->redirect(route('edit_course', ['courseId' => $course->id]));
+        return $this->redirect(route('edit_course', ['course' => $course->id]));
     }
 
     /**

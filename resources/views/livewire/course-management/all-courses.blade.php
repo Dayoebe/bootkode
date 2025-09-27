@@ -337,41 +337,43 @@
                         
                         <!-- Action Buttons -->
                         <div class="flex justify-between items-center pt-4 border-t border-gray-100 dark:border-gray-700">
-                            <div class="flex space-x-2">
-                                <!-- Edit Course Button -->
-                                <button wire:click="CourseForm({{ $course->id }})" 
-                                        class="group bg-blue-100 hover:bg-blue-200 text-blue-600 p-2 rounded-lg transition-all duration-300 transform hover:scale-110"
-                                        title="Edit Course">
-                                    <i class="fas fa-edit text-xs"></i>
-                                </button>
-                                
-                                <!-- Course Builder Button -->
-                                <a href="{{ route('course-builder', $course) }}" 
-                                   class="group bg-purple-100 hover:bg-purple-200 text-purple-600 p-2 rounded-lg transition-all duration-300 transform hover:scale-110"
-                                   title="Build Course">
-                                    <i class="fas fa-cogs text-xs"></i>
-                                </a>
-      {{-- Remove this duplicate button --}}
-<button wire:click="previewCourse({{ $course->id }})" 
-    class="group bg-indigo-100 hover:bg-indigo-200 text-indigo-600 p-2 rounded-lg transition-all duration-300 transform hover:scale-110"
-    title="Preview Course">
-    <i class="fas fa-search text-xs"></i>
-</button>
-                                
-                                <!-- Publish Toggle -->
-                                <button wire:click="togglePublished({{ $course->id }})" 
-                                        class="group {{ $course->is_published ? 'bg-green-100 hover:bg-green-200 text-green-600' : 'bg-gray-100 hover:bg-gray-200 text-gray-600' }} p-2 rounded-lg transition-all duration-300 transform hover:scale-110"
-                                        title="{{ $course->is_published ? 'Unpublish' : 'Publish' }}">
-                                    <i class="fas fa-{{ $course->is_published ? 'eye' : 'eye-slash' }} text-xs"></i>
-                                </button>
-                                
-                                <!-- Approve/Unapprove Button -->
-                                <button wire:click="toggleApproved({{ $course->id }})" 
-                                        class="group {{ $course->is_approved ? 'bg-green-100 hover:bg-green-200 text-green-600' : 'bg-yellow-100 hover:bg-yellow-200 text-yellow-600' }} p-2 rounded-lg transition-all duration-300 transform hover:scale-110"
-                                        title="{{ $course->is_approved ? 'Unapprove Course' : 'Approve Course' }}">
-                                    <i class="fas fa-{{ $course->is_approved ? 'check-circle' : 'clock' }} text-xs"></i>
-                                </button>
-                            </div>
+                           <!-- In all-courses.blade.php - remove the duplicate preview button -->
+<div class="flex space-x-2">
+    <!-- Edit Course Button -->
+    <button wire:click="CourseForm({{ $course->id }})" 
+            class="group bg-blue-100 hover:bg-blue-200 text-blue-600 p-2 rounded-lg transition-all duration-300 transform hover:scale-110"
+            title="Edit Course">
+        <i class="fas fa-edit text-xs"></i>
+    </button>
+    
+    <!-- Course Builder Button -->
+    <a href="{{ route('course-builder', $course) }}" 
+       class="group bg-purple-100 hover:bg-purple-200 text-purple-600 p-2 rounded-lg transition-all duration-300 transform hover:scale-110"
+       title="Build Course">
+        <i class="fas fa-cogs text-xs"></i>
+    </a>
+    
+    <!-- Preview Button (keep only one) -->
+    <button wire:click="previewCourse({{ $course->id }})" 
+            class="group bg-indigo-100 hover:bg-indigo-200 text-indigo-600 p-2 rounded-lg transition-all duration-300 transform hover:scale-110"
+            title="Preview Course">
+        <i class="fas fa-search text-xs"></i>
+    </button>
+    
+    <!-- Publish Toggle -->
+    <button wire:click="togglePublished({{ $course->id }})" 
+            class="group {{ $course->is_published ? 'bg-green-100 hover:bg-green-200 text-green-600' : 'bg-gray-100 hover:bg-gray-200 text-gray-600' }} p-2 rounded-lg transition-all duration-300 transform hover:scale-110"
+            title="{{ $course->is_published ? 'Unpublish' : 'Publish' }}">
+        <i class="fas fa-{{ $course->is_published ? 'eye' : 'eye-slash' }} text-xs"></i>
+    </button>
+    
+    <!-- Approve/Unapprove Button -->
+    <button wire:click="toggleApproved({{ $course->id }})" 
+            class="group {{ $course->is_approved ? 'bg-green-100 hover:bg-green-200 text-green-600' : 'bg-yellow-100 hover:bg-yellow-200 text-yellow-600' }} p-2 rounded-lg transition-all duration-300 transform hover:scale-110"
+            title="{{ $course->is_approved ? 'Unapprove Course' : 'Approve Course' }}">
+        <i class="fas fa-{{ $course->is_approved ? 'check-circle' : 'clock' }} text-xs"></i>
+    </button>
+</div>
                             
                             <!-- Delete Button -->
                             <button wire:click="deleteCourse({{ $course->id }})" 
