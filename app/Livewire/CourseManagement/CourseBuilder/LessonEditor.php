@@ -75,10 +75,7 @@ class LessonEditor extends Component
         $this->title = $this->lesson->title ?? '';
         $this->slug = $this->lesson->slug ?? '';
         $this->description = $this->lesson->description ?? '';
-
-        // FIX: Properly handle content loading - get raw content without any decoding
         $this->content = $this->lesson->getRawOriginal('content') ?? '';
-
         $this->video_url = $this->lesson->video_url ?? '';
         $this->duration_minutes = $this->lesson->duration_minutes;
         $this->scheduled_publish_at = $this->lesson->scheduled_publish_at;
@@ -111,6 +108,38 @@ class LessonEditor extends Component
 
         $this->slug = $slug;
         $this->validateOnly('slug');
+    }
+
+    // Add the missing autoSave method
+    public function autoSave()
+    {
+        $this->validate([
+            'title' => 'required|string|max:255',
+            'content' => 'nullable|string',
+        ]);
+
+        $cleanContent = $this->content;
+        
+        if (!empty($cleanContent) && is_string($cleanContent)) {
+            $cleanContent = Purifier::clean($cleanContent, [
+                'HTML.Allowed' => 'h1,h2,h3,h4,h5,h6,p,br,strong,em,u,s,ul,ol,li,a[href],img[src|alt],blockquote,pre,code,div[class],span[class]',
+                'CSS.AllowTricky' => true,
+                'AutoFormat.RemoveEmpty' => false,
+            ]);
+        }
+
+        $this->lesson->update([
+            'title' => $this->title,
+            'content' => $cleanContent,
+            'description' => $this->description,
+        ]);
+
+        $this->dispatch('lesson-saved');
+    }
+
+    public function quickSave()
+    {
+        return $this->autoSave();
     }
 
     public function handleUpload($type, $fileProperty, $mimes, $maxSize, $storageFolder)
@@ -239,12 +268,9 @@ class LessonEditor extends Component
     {
         $this->validate();
 
-        // FIX: Clean content handling without over-processing
         $cleanContent = $this->content;
         
-        // Only apply basic cleaning if content exists
         if (!empty($cleanContent) && is_string($cleanContent)) {
-            // Use Purifier with a more permissive config
             $cleanContent = Purifier::clean($cleanContent, [
                 'HTML.Allowed' => 'h1,h2,h3,h4,h5,h6,p,br,strong,em,u,s,ul,ol,li,a[href],img[src|alt],blockquote,pre,code,div[class],span[class]',
                 'CSS.AllowTricky' => true,
