@@ -1,4 +1,3 @@
-{{-- resources/views/layouts/exam.blade.php --}}
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="h-full">
 
@@ -30,19 +29,165 @@
     {{-- Livewire Styles --}}
     @livewireStyles
 
-    {{-- Custom Exam Styles --}}
+    {{-- Enhanced Exam Styles --}}
     <style>
-        /* Disable text selection globally during exam */
-        body.exam-mode {
+        /* CSS Variables for theme customization */
+        :root {
+            --font-size-base: 16px;
+            --font-size-sm: 14px;
+            --font-size-lg: 18px;
+            --font-size-xl: 20px;
+            --font-size-2xl: 24px;
+        }
+
+        /* Font size classes */
+        .font-size-sm { font-size: 14px !important; }
+        .font-size-base { font-size: 16px !important; }
+        .font-size-lg { font-size: 18px !important; }
+        .font-size-xl { font-size: 20px !important; }
+        .font-size-2xl { font-size: 24px !important; }
+
+        /* High contrast mode */
+        .high-contrast {
+            filter: contrast(150%) !important;
+        }
+
+        .high-contrast * {
+            border-color: #000 !important;
+            background: #fff !important;
+            color: #000 !important;
+        }
+
+        .high-contrast .bg-blue-600 {
+            background-color: #000 !important;
+            color: #fff !important;
+        }
+
+        .high-contrast .bg-green-500 {
+            background-color: #000 !important;
+            color: #fff !important;
+        }
+
+        /* Dark mode enhancements */
+        .dark {
+            color-scheme: dark;
+        }
+
+        /* Keyboard navigation focus indicators */
+        .keyboard-nav *:focus {
+            outline: 3px solid #3b82f6 !important;
+            outline-offset: 2px !important;
+        }
+
+        /* Progress bar animations */
+        .progress-animate {
+            transition: width 0.5s ease-in-out;
+        }
+
+        /* Browser lockdown styles */
+        .lockdown-active {
+            position: fixed !important;
+            top: 0 !important;
+            left: 0 !important;
+            width: 100vw !important;
+            height: 100vh !important;
+            z-index: 9999999 !important;
+            background: white !important;
+        }
+
+        .dark .lockdown-active {
+            background: #1f2937 !important;
+        }
+
+        /* Mobile responsive adjustments */
+        @media (max-width: 768px) {
+            .mobile-stack {
+                flex-direction: column !important;
+            }
+            
+            .mobile-full {
+                width: 100% !important;
+            }
+            
+            .mobile-hidden {
+                display: none !important;
+            }
+            
+            .mobile-text-sm {
+                font-size: 14px !important;
+            }
+        }
+
+        /* Accessibility improvements */
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+
+        /* Print prevention */
+        @media print {
+            body {
+                display: none !important;
+            }
+        }
+
+        /* Timer critical state */
+        .timer-critical {
+            animation: pulse-red 1s infinite;
+            box-shadow: 0 0 20px rgba(239, 68, 68, 0.5);
+        }
+
+        @keyframes pulse-red {
+            0%, 100% {
+                background-color: rgb(185 28 28);
+                color: white;
+            }
+            50% {
+                background-color: rgb(239 68 68);
+                color: white;
+            }
+        }
+
+        /* Security overlay */
+        .security-overlay {
+            position: fixed !important;
+            top: 0 !important;
+            left: 0 !important;
+            width: 100vw !important;
+            height: 100vh !important;
+            background: rgba(220, 38, 38, 0.98) !important;
+            z-index: 999998 !important;
+            display: none !important;
+            align-items: center !important;
+            justify-content: center !important;
+            color: white !important;
+        }
+
+        .critical-pulse {
+            animation: criticalPulse 1s infinite;
+        }
+
+        @keyframes criticalPulse {
+            0%, 100% { 
+                background-color: rgba(220, 38, 38, 0.95);
+            }
+            50% { 
+                background-color: rgba(185, 28, 28, 0.98);
+            }
+        }
+
+        /* Application lockdown prevention */
+        body.app-locked {
             -webkit-user-select: none;
             -moz-user-select: none;
             -ms-user-select: none;
             user-select: none;
-            font-family: 'Inter', sans-serif;
         }
 
-        /* Disable image dragging */
-        body.exam-mode img {
+        body.app-locked img {
             -webkit-user-drag: none;
             -khtml-user-drag: none;
             -moz-user-drag: none;
@@ -51,164 +196,130 @@
             pointer-events: none;
         }
 
-        /* Disable right-click context menu */
-        body.exam-mode {
-            -webkit-touch-callout: none;
-            -webkit-tap-highlight-color: transparent;
-        }
-
-        /* Disable highlighting */
-        body.exam-mode *::selection {
+        body.app-locked *::selection {
             background: transparent;
         }
 
-        body.exam-mode *::-moz-selection {
+        body.app-locked *::-moz-selection {
             background: transparent;
-        }
-
-        /* Hide scrollbars but maintain functionality */
-        body.exam-mode::-webkit-scrollbar {
-            width: 4px;
-        }
-
-        body.exam-mode::-webkit-scrollbar-track {
-            background: #f1f1f1;
-        }
-
-        body.exam-mode::-webkit-scrollbar-thumb {
-            background: #c1c1c1;
-            border-radius: 2px;
-        }
-
-        /* Fullscreen styles */
-        .fullscreen-mode {
-            position: fixed !important;
-            top: 0 !important;
-            left: 0 !important;
-            width: 100vw !important;
-            height: 100vh !important;
-            background: white !important;
-            z-index: 9999 !important;
-        }
-
-        /* Disable print styles */
-        @media print {
-            body {
-                display: none !important;
-            }
-        }
-
-        /* Security warning overlay */
-        .security-warning {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background: rgba(239, 68, 68, 0.95);
-            color: white;
-            padding: 12px 20px;
-            border-radius: 8px;
-            z-index: 10000;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-            animation: slideIn 0.3s ease-out;
-        }
-
-        @keyframes slideIn {
-            from {
-                transform: translateX(100%);
-                opacity: 0;
-            }
-
-            to {
-                transform: translateX(0);
-                opacity: 1;
-            }
-        }
-
-        /* Timer warning animation */
-        .timer-critical {
-            animation: pulse-red 1s infinite;
-        }
-
-        @keyframes pulse-red {
-
-            0%,
-            100% {
-                background-color: rgb(254 226 226);
-                color: rgb(185 28 28);
-            }
-
-            50% {
-                background-color: rgb(239 68 68);
-                color: white;
-            }
-        }
-
-        /* Disable zoom */
-        body.exam-mode {
-            touch-action: manipulation;
-        }
-
-        /* Custom focus styles for accessibility */
-        body.exam-mode button:focus,
-        body.exam-mode input:focus,
-        body.exam-mode textarea:focus,
-        body.exam-mode select:focus {
-            outline: 2px solid #3B82F6 !important;
-            outline-offset: 2px !important;
-        }
-
-        /* Disable browser autofill styling */
-        body.exam-mode input:-webkit-autofill,
-        body.exam-mode input:-webkit-autofill:hover,
-        body.exam-mode input:-webkit-autofill:focus,
-        body.exam-mode input:-webkit-autofill:active {
-            -webkit-box-shadow: 0 0 0 30px white inset !important;
-            -webkit-text-fill-color: black !important;
         }
     </style>
 
     @stack('styles')
 </head>
 
-<body class="h-full bg-gray-50 exam-mode" id="examBody">
+<body class="h-full bg-gray-50 dark:bg-gray-900 font-sans antialiased transition-colors duration-300" id="examBody">
+    {{-- Accessibility Settings Panel (Hidden by default) --}}
+    <div id="accessibilityPanel" class="fixed top-4 left-4 bg-white dark:bg-gray-800 rounded-lg shadow-lg p-4 z-50 transform -translate-x-full transition-transform duration-300">
+        <div class="flex items-center justify-between mb-3">
+            <h3 class="font-semibold text-gray-900 dark:text-gray-100">Accessibility</h3>
+            <button onclick="examInterface.toggleAccessibilityPanel()" class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        
+        <div class="space-y-3">
+            <div>
+                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Font Size</label>
+                <select id="fontSizeSelect" onchange="examInterface.changeFontSize(this.value)" class="w-full px-2 py-1 border rounded text-sm dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                    <option value="sm">Small</option>
+                    <option value="base" selected>Normal</option>
+                    <option value="lg">Large</option>
+                    <option value="xl">Extra Large</option>
+                    <option value="2xl">Huge</option>
+                </select>
+            </div>
+            
+            <div>
+                <label class="flex items-center text-sm text-gray-700 dark:text-gray-300">
+                    <input type="checkbox" id="highContrastToggle" onchange="examInterface.toggleHighContrast()" class="mr-2">
+                    High Contrast
+                </label>
+            </div>
+            
+            <div>
+                <label class="flex items-center text-sm text-gray-700 dark:text-gray-300">
+                    <input type="checkbox" id="darkModeToggle" onchange="examInterface.toggleDarkMode()" class="mr-2">
+                    Dark Mode
+                </label>
+            </div>
+            
+            <div>
+                <label class="flex items-center text-sm text-gray-700 dark:text-gray-300">
+                    <input type="checkbox" id="keyboardNavToggle" onchange="examInterface.toggleKeyboardNavigation()" class="mr-2">
+                    Keyboard Navigation
+                </label>
+            </div>
+        </div>
+    </div>
+
+    {{-- Security/Browser Lockdown Overlay --}}
+    <div id="securityOverlay" class="security-overlay">
+        <div class="text-center p-8 max-w-lg">
+            <div class="w-24 h-24 bg-white bg-opacity-20 rounded-full flex items-center justify-center mx-auto mb-6 animate-spin">
+                <i class="fas fa-exclamation-triangle text-white text-4xl"></i>
+            </div>
+            <h1 class="text-4xl font-bold mb-6 animate-pulse">SECURITY VIOLATION</h1>
+            <p class="text-xl mb-4">Application switching detected!</p>
+            <p class="text-lg mb-6">You must remain in the exam application during the test.</p>
+            <div class="space-y-4">
+                <button onclick="examSecurity.returnToExam()" 
+                    class="w-full bg-white text-red-600 px-8 py-4 rounded-lg text-xl font-bold hover:bg-gray-100 transition-colors">
+                    <i class="fas fa-undo mr-3"></i>Return to Exam
+                </button>
+                <p class="text-sm opacity-90">This violation has been logged</p>
+            </div>
+        </div>
+    </div>
+
+    {{-- Progress Tracking Overlay --}}
+    <div id="progressOverlay" class="fixed bottom-4 right-4 bg-white dark:bg-gray-800 rounded-lg shadow-lg p-4 z-40 transform translate-x-full transition-transform duration-300">
+        <div class="flex items-center justify-between mb-2">
+            <h4 class="font-semibold text-gray-900 dark:text-gray-100 text-sm">Progress</h4>
+            <button onclick="examInterface.toggleProgressPanel()" class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200">
+                <i class="fas fa-times text-xs"></i>
+            </button>
+        </div>
+        <div id="progressContent" class="space-y-2 text-xs">
+            <div class="flex justify-between">
+                <span class="text-gray-600 dark:text-gray-400">Completed:</span>
+                <span id="progressCompleted" class="font-semibold">0/0</span>
+            </div>
+            <div class="flex justify-between">
+                <span class="text-gray-600 dark:text-gray-400">Time Left:</span>
+                <span id="progressTimeLeft" class="font-semibold">--:--</span>
+            </div>
+            <div class="flex justify-between">
+                <span class="text-gray-600 dark:text-gray-400">Avg. Time/Q:</span>
+                <span id="progressAvgTime" class="font-semibold">--:--</span>
+            </div>
+            <div class="flex justify-between">
+                <span class="text-gray-600 dark:text-gray-400">Est. Finish:</span>
+                <span id="progressEstFinish" class="font-semibold">--:--</span>
+            </div>
+        </div>
+    </div>
+
     {{-- Security Warning Container --}}
-    <div id="securityWarnings"></div>
+    <div id="securityWarnings" class="fixed top-4 right-4 z-40 space-y-2"></div>
 
-    {{-- Fullscreen Prompt --}}
-    <div id="fullscreenPrompt"
-        class="fixed inset-0 bg-black bg-opacity-90 z-50 flex items-center justify-center text-white"
-        style="display: none;">
-        <div class="text-center p-8">
-            <div class="w-20 h-20 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                <i class="fas fa-expand text-red-500 text-3xl"></i>
-            </div>
-            <h2 class="text-2xl font-bold mb-4">Fullscreen Required</h2>
-            <p class="text-lg mb-6">This exam must be taken in fullscreen mode for security purposes.</p>
-            <button onclick="enterFullscreen()"
-                class="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg text-lg font-semibold">
-                Enter Fullscreen
-            </button>
-        </div>
-    </div>
+    {{-- Floating Accessibility Button --}}
+    <button id="accessibilityButton" 
+        onclick="examInterface.toggleAccessibilityPanel()"
+        class="fixed top-4 left-4 bg-blue-600 text-white p-3 rounded-full shadow-lg hover:bg-blue-700 transition-colors z-40"
+        title="Accessibility Options (Alt+A)"
+        aria-label="Accessibility Options">
+        <i class="fas fa-universal-access"></i>
+    </button>
 
-    {{-- Exit Fullscreen Warning --}}
-    <div id="fullscreenExitWarning"
-        class="fixed inset-0 bg-red-600 bg-opacity-95 z-50 flex items-center justify-center text-white"
-        style="display: none;">
-        <div class="text-center p-8">
-            <div class="w-20 h-20 bg-white bg-opacity-20 rounded-full flex items-center justify-center mx-auto mb-6">
-                <i class="fas fa-exclamation-triangle text-white text-3xl"></i>
-            </div>
-            <h2 class="text-3xl font-bold mb-4">SECURITY VIOLATION</h2>
-            <p class="text-xl mb-2">You have exited fullscreen mode!</p>
-            <p class="text-lg mb-6">Please return to fullscreen immediately or your exam may be terminated.</p>
-            <button onclick="enterFullscreen()"
-                class="bg-white text-red-600 px-8 py-3 rounded-lg text-lg font-bold hover:bg-gray-100">
-                Return to Fullscreen
-            </button>
-            <p class="text-sm mt-4 opacity-75">This incident has been logged for security purposes.</p>
-        </div>
-    </div>
+    {{-- Floating Progress Button --}}
+    <button id="progressButton" 
+        onclick="examInterface.toggleProgressPanel()"
+        class="fixed bottom-4 right-4 bg-green-600 text-white p-3 rounded-full shadow-lg hover:bg-green-700 transition-colors z-40"
+        title="Progress Tracking (Alt+P)"
+        aria-label="Progress Tracking">
+        <i class="fas fa-chart-line"></i>
+    </button>
 
     {{-- Main Content --}}
     <main class="h-full">
@@ -218,325 +329,515 @@
     {{-- Livewire Scripts --}}
     @livewireScripts
 
-    {{-- Alpine.js --}}
-    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
-
-    {{-- Exam Security & Monitoring Scripts --}}
+    {{-- Enhanced Security & Interface Scripts --}}
     <script>
-        let securityViolationCount = 0;
-        let fullscreenExitCount = 0;
-        let examStarted = false;
-        let securityMonitoringActive = false;
+        // Global exam interface management
+        window.examInterface = {
+            settings: {
+                fontSize: 'base',
+                highContrast: false,
+                darkMode: localStorage.getItem('darkMode') === 'true',
+                keyboardNavigation: false
+            },
+            
+            init() {
+                this.loadSettings();
+                this.setupKeyboardHandlers();
+                this.setupMobileHandlers();
+                this.initializeTheme();
+            },
 
-        // Initialize security monitoring
-        document.addEventListener('DOMContentLoaded', function () {
-            initializeSecurityMonitoring();
-        });
+            loadSettings() {
+                const saved = localStorage.getItem('examSettings');
+                if (saved) {
+                    this.settings = { ...this.settings, ...JSON.parse(saved) };
+                    this.applySettings();
+                }
+            },
 
-        function initializeSecurityMonitoring() {
-            if (securityMonitoringActive) return;
-            securityMonitoringActive = true;
+            saveSettings() {
+                localStorage.setItem('examSettings', JSON.stringify(this.settings));
+            },
 
-            // Disable right-click context menu
-            document.addEventListener('contextmenu', function (e) {
-                e.preventDefault();
-                showSecurityWarning('Right-click is disabled during exam');
-                return false;
-            });
+            applySettings() {
+                document.body.className = document.body.className.replace(/font-size-\w+/g, '');
+                document.body.classList.add(`font-size-${this.settings.fontSize}`);
+                
+                if (this.settings.highContrast) {
+                    document.body.classList.add('high-contrast');
+                }
+                
+                if (this.settings.keyboardNavigation) {
+                    document.body.classList.add('keyboard-nav');
+                }
 
-            // Disable keyboard shortcuts
-            document.addEventListener('keydown', function (e) {
-                // Disable F12, Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+U, etc.
-                if (
-                    e.key === 'F12' ||
-                    (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'J' || e.key === 'C')) ||
-                    (e.ctrlKey && e.key === 'U') ||
-                    (e.ctrlKey && e.key === 'S') ||
-                    (e.ctrlKey && e.key === 'A') ||
-                    (e.ctrlKey && e.key === 'P') ||
-                    (e.metaKey && e.key === 'S') ||
-                    (e.metaKey && e.key === 'P')
-                ) {
-                    e.preventDefault();
-                    securityViolationCount++;
-                    showSecurityWarning('Keyboard shortcut blocked - Security violation #' + securityViolationCount);
+                document.getElementById('fontSizeSelect').value = this.settings.fontSize;
+                document.getElementById('highContrastToggle').checked = this.settings.highContrast;
+                document.getElementById('darkModeToggle').checked = this.settings.darkMode;
+                document.getElementById('keyboardNavToggle').checked = this.settings.keyboardNavigation;
+            },
 
-                    if (securityViolationCount >= 5) {
-                        showSecurityWarning('Multiple security violations detected! Exam may be terminated.');
-                        // Dispatch event to Livewire component
-                        if (window.livewire) {
-                            window.livewire.find(document.querySelector('[wire\\:id]').getAttribute('wire:id')).call('handleSecurityViolation', 'multiple_keyboard_attempts');
+            setupKeyboardHandlers() {
+                document.addEventListener('keydown', (e) => {
+                    // Accessibility shortcuts
+                    if (e.altKey && e.key === 'a') {
+                        e.preventDefault();
+                        this.toggleAccessibilityPanel();
+                    }
+                    
+                    if (e.altKey && e.key === 'p') {
+                        e.preventDefault();
+                        this.toggleProgressPanel();
+                    }
+
+                    // Navigation shortcuts (only when keyboard nav is enabled)
+                    if (this.settings.keyboardNavigation && window.examSecurity.examStarted) {
+                        if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+                            e.preventDefault();
+                            this.navigateQuestion('previous');
+                        } else if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+                            e.preventDefault();
+                            this.navigateQuestion('next');
+                        } else if (e.key === 'f' || e.key === 'F') {
+                            e.preventDefault();
+                            this.toggleCurrentQuestionFlag();
                         }
                     }
-                    return false;
-                }
 
-                // Allow specific navigation keys for the exam
-                const allowedKeys = [
-                    'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight',
-                    'Tab', 'Enter', 'Escape', 'Backspace', 'Delete',
-                    'Home', 'End', 'PageUp', 'PageDown'
-                ];
-
-                if (e.altKey && (e.key === 'ArrowLeft' || e.key === 'ArrowRight')) {
-                    // Allow Alt+Arrow for navigation in exam
-                    return true;
-                }
-            });
-
-            // Disable text selection
-            document.addEventListener('selectstart', function (e) {
-                e.preventDefault();
-                return false;
-            });
-
-            // Disable drag operations
-            document.addEventListener('dragstart', function (e) {
-                e.preventDefault();
-                return false;
-            });
-
-            // Monitor copy/paste attempts
-            document.addEventListener('copy', function (e) {
-                e.preventDefault();
-                showSecurityWarning('Copy operation blocked');
-                return false;
-            });
-
-            document.addEventListener('paste', function (e) {
-                // Allow paste in answer input fields
-                if (e.target.tagName === 'TEXTAREA' || (e.target.tagName === 'INPUT' && e.target.type === 'text')) {
-                    return true;
-                }
-                e.preventDefault();
-                showSecurityWarning('Paste operation blocked');
-                return false;
-            });
-
-            // Monitor window focus changes
-            let focusLossCount = 0;
-            let lastFocusTime = Date.now();
-
-            window.addEventListener('blur', function () {
-                if (!examStarted) return;
-
-                focusLossCount++;
-                const focusLossTime = Date.now() - lastFocusTime;
-
-                if (focusLossTime > 1000) { // Only count if focus was lost for more than 1 second
-                    showSecurityWarning('Window focus lost - Violation #' + focusLossCount);
-
-                    if (window.livewire) {
-                        window.livewire.find(document.querySelector('[wire\\:id]').getAttribute('wire:id')).call('handleVisibilityChange', false);
+                    // Font size shortcuts
+                    if (e.ctrlKey && e.key === '+') {
+                        e.preventDefault();
+                        this.increaseFontSize();
+                    } else if (e.ctrlKey && e.key === '-') {
+                        e.preventDefault();
+                        this.decreaseFontSize();
                     }
+                });
+            },
 
-                    if (focusLossCount >= 3) {
-                        showSecurityWarning('Multiple focus changes detected! This behavior is being monitored.');
-                    }
-                }
-            });
+            setupMobileHandlers() {
+                // Touch gestures for mobile navigation
+                let touchStartX = 0;
+                let touchEndX = 0;
 
-            window.addEventListener('focus', function () {
-                lastFocusTime = Date.now();
-            });
+                document.addEventListener('touchstart', (e) => {
+                    touchStartX = e.changedTouches[0].screenX;
+                });
 
-            // Monitor visibility changes (tab switching)
-            document.addEventListener('visibilitychange', function () {
-                if (!examStarted) return;
-
-                if (document.hidden) {
-                    showSecurityWarning('Tab switching detected - This activity is being monitored');
-                    if (window.livewire) {
-                        window.livewire.find(document.querySelector('[wire\\:id]').getAttribute('wire:id')).call('handleVisibilityChange', false);
-                    }
-                }
-            });
-
-            // Monitor fullscreen changes
-            document.addEventListener('fullscreenchange', handleFullscreenChange);
-            document.addEventListener('webkitfullscreenchange', handleFullscreenChange);
-            document.addEventListener('mozfullscreenchange', handleFullscreenChange);
-            document.addEventListener('msfullscreenchange', handleFullscreenChange);
-
-            // Monitor for browser developer tools
-            let devToolsOpen = false;
-            setInterval(function () {
-                if (window.outerHeight - window.innerHeight > 200 || window.outerWidth - window.innerWidth > 200) {
-                    if (!devToolsOpen) {
-                        devToolsOpen = true;
-                        showSecurityWarning('Developer tools detected - This is a serious security violation!');
-                        securityViolationCount += 3;
-
-                        if (window.livewire) {
-                            window.livewire.find(document.querySelector('[wire\\:id]').getAttribute('wire:id')).call('handleSecurityViolation', 'developer_tools_detected');
+                document.addEventListener('touchend', (e) => {
+                    if (!window.examSecurity.examStarted) return;
+                    
+                    touchEndX = e.changedTouches[0].screenX;
+                    const swipeDistance = Math.abs(touchEndX - touchStartX);
+                    
+                    if (swipeDistance > 50) {
+                        if (touchEndX < touchStartX) {
+                            // Swipe left - next question
+                            this.navigateQuestion('next');
+                        } else {
+                            // Swipe right - previous question
+                            this.navigateQuestion('previous');
                         }
                     }
+                });
+            },
+
+            initializeTheme() {
+                if (this.settings.darkMode) {
+                    document.documentElement.classList.add('dark');
                 } else {
-                    devToolsOpen = false;
+                    document.documentElement.classList.remove('dark');
                 }
-            }, 1000);
+            },
 
-            // Disable printing
-            window.addEventListener('beforeprint', function (e) {
-                e.preventDefault();
-                showSecurityWarning('Printing is disabled during exam');
-                return false;
-            });
+            // Accessibility methods
+            toggleAccessibilityPanel() {
+                const panel = document.getElementById('accessibilityPanel');
+                panel.classList.toggle('-translate-x-full');
+            },
 
-            // Monitor for screenshots (limited detection)
-            document.addEventListener('keydown', function (e) {
-                if ((e.metaKey || e.ctrlKey) && e.shiftKey && (e.key === '3' || e.key === '4')) {
-                    showSecurityWarning('Screenshot attempt detected');
-                    if (window.livewire) {
-                        window.livewire.find(document.querySelector('[wire\\:id]').getAttribute('wire:id')).call('handleSecurityViolation', 'screenshot_attempt');
-                    }
+            changeFontSize(size) {
+                this.settings.fontSize = size;
+                this.applySettings();
+                this.saveSettings();
+            },
+
+            increaseFontSize() {
+                const sizes = ['sm', 'base', 'lg', 'xl', '2xl'];
+                const currentIndex = sizes.indexOf(this.settings.fontSize);
+                if (currentIndex < sizes.length - 1) {
+                    this.changeFontSize(sizes[currentIndex + 1]);
                 }
-            });
-        }
+            },
 
-        function handleFullscreenChange() {
-            const isFullscreen = !!(
-                document.fullscreenElement ||
-                document.webkitFullscreenElement ||
-                document.mozFullScreenElement ||
-                document.msFullscreenElement
-            );
+            decreaseFontSize() {
+                const sizes = ['sm', 'base', 'lg', 'xl', '2xl'];
+                const currentIndex = sizes.indexOf(this.settings.fontSize);
+                if (currentIndex > 0) {
+                    this.changeFontSize(sizes[currentIndex - 1]);
+                }
+            },
 
-            if (!isFullscreen && examStarted) {
-                fullscreenExitCount++;
-                document.getElementById('fullscreenExitWarning').style.display = 'flex';
+            toggleHighContrast() {
+                this.settings.highContrast = !this.settings.highContrast;
+                document.body.classList.toggle('high-contrast', this.settings.highContrast);
+                this.saveSettings();
+            },
 
+            toggleDarkMode() {
+                this.settings.darkMode = !this.settings.darkMode;
+                document.documentElement.classList.toggle('dark', this.settings.darkMode);
+                localStorage.setItem('darkMode', this.settings.darkMode);
+                this.saveSettings();
+            },
+
+            toggleKeyboardNavigation() {
+                this.settings.keyboardNavigation = !this.settings.keyboardNavigation;
+                document.body.classList.toggle('keyboard-nav', this.settings.keyboardNavigation);
+                this.saveSettings();
+            },
+
+            // Progress tracking methods
+            toggleProgressPanel() {
+                const panel = document.getElementById('progressOverlay');
+                panel.classList.toggle('translate-x-full');
+            },
+
+            updateProgress(data) {
+                if (!data) return;
+                
+                document.getElementById('progressCompleted').textContent = 
+                    `${data.answered}/${data.total}`;
+                document.getElementById('progressTimeLeft').textContent = 
+                    this.formatTime(data.timeRemaining);
+                document.getElementById('progressAvgTime').textContent = 
+                    this.formatTime(data.avgTimePerQuestion);
+                document.getElementById('progressEstFinish').textContent = 
+                    data.estimatedFinishTime;
+            },
+
+            formatTime(seconds) {
+                if (!seconds) return '--:--';
+                const mins = Math.floor(seconds / 60);
+                const secs = seconds % 60;
+                return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+            },
+
+            // Navigation helpers
+            navigateQuestion(direction) {
                 if (window.livewire) {
-                    window.livewire.find(document.querySelector('[wire\\:id]').getAttribute('wire:id')).call('handleSecurityViolation', 'fullscreen_exit', fullscreenExitCount);
-                }
-
-                setTimeout(() => {
-                    if (!document.fullscreenElement) {
-                        // Force fullscreen after 10 seconds
-                        enterFullscreen();
+                    const component = document.querySelector('[wire\\:id]');
+                    if (component) {
+                        const livewireComponent = window.livewire.find(component.getAttribute('wire:id'));
+                        if (direction === 'next') {
+                            livewireComponent.call('nextQuestion');
+                        } else if (direction === 'previous') {
+                            livewireComponent.call('previousQuestion');
+                        }
                     }
-                }, 10000);
-            } else {
-                document.getElementById('fullscreenExitWarning').style.display = 'none';
-            }
-        }
-
-        function enterFullscreen() {
-            const elem = document.documentElement;
-
-            if (elem.requestFullscreen) {
-                elem.requestFullscreen();
-            } else if (elem.webkitRequestFullscreen) {
-                elem.webkitRequestFullscreen();
-            } else if (elem.mozRequestFullScreen) {
-                elem.mozRequestFullScreen();
-            } else if (elem.msRequestFullscreen) {
-                elem.msRequestFullscreen();
-            }
-
-            document.getElementById('fullscreenPrompt').style.display = 'none';
-            document.getElementById('fullscreenExitWarning').style.display = 'none';
-        }
-
-        function showSecurityWarning(message, duration = 5000) {
-            const warningDiv = document.createElement('div');
-            warningDiv.className = 'security-warning';
-            warningDiv.innerHTML = `
-                <div class="flex items-center">
-                    <i class="fas fa-shield-alt mr-2"></i>
-                    <span>${message}</span>
-                    <button onclick="this.parentElement.parentElement.remove()" class="ml-4 text-white hover:text-gray-200">
-                        <i class="fas fa-times"></i>
-                    </button>
-                </div>
-            `;
-
-            document.getElementById('securityWarnings').appendChild(warningDiv);
-
-            setTimeout(() => {
-                if (warningDiv.parentNode) {
-                    warningDiv.style.opacity = '0';
-                    setTimeout(() => warningDiv.remove(), 300);
                 }
-            }, duration);
-        }
+            },
 
-        // Mark exam as started (called from Livewire component)
-        window.markExamStarted = function () {
-            examStarted = true;
-
-            // Prompt for fullscreen if not already
-            setTimeout(() => {
-                if (!document.fullscreenElement) {
-                    document.getElementById('fullscreenPrompt').style.display = 'flex';
+            toggleCurrentQuestionFlag() {
+                if (window.livewire) {
+                    const component = document.querySelector('[wire\\:id]');
+                    if (component) {
+                        const livewireComponent = window.livewire.find(component.getAttribute('wire:id'));
+                        // Assuming current question index is available
+                        livewireComponent.call('toggleFlag', 0); // You'll need to pass actual index
+                    }
                 }
-            }, 1000);
+            }
         };
 
-        // Prevent back button
+        // Enhanced exam security with browser lockdown
+        window.examSecurity = {
+            examStarted: false,
+            fullscreenForced: false,
+            browserLocked: false,
+            violationCount: 0,
+            focusViolations: 0,
+            progressTracking: {
+                startTime: null,
+                questionTimes: [],
+                currentQuestionStart: null
+            },
+
+            init() {
+                console.log('Enhanced exam security initialized');
+                this.setupSecurityMonitoring();
+            },
+
+            setupSecurityMonitoring() {
+                // Application focus monitoring
+                window.addEventListener('blur', () => {
+                    if (this.examStarted && this.browserLocked) {
+                        this.handleApplicationSwitch();
+                    }
+                });
+
+                window.addEventListener('focus', () => {
+                    if (this.examStarted && this.browserLocked) {
+                        this.hideSecurityOverlay();
+                    }
+                });
+
+                // Visibility change monitoring
+                document.addEventListener('visibilitychange', () => {
+                    if (document.hidden && this.examStarted && this.browserLocked) {
+                        this.handleApplicationSwitch();
+                    }
+                });
+
+                // Prevent common exit shortcuts
+                document.addEventListener('keydown', (e) => {
+                    if (!this.examStarted) return;
+
+                    // Block Alt+Tab, Alt+F4, Ctrl+Alt+Del, Windows key, etc.
+                    if ((e.altKey && e.key === 'Tab') ||
+                        (e.altKey && e.key === 'F4') ||
+                        (e.ctrlKey && e.altKey && e.key === 'Delete') ||
+                        e.key === 'Meta' || e.key === 'Win') {
+                        e.preventDefault();
+                        this.handleApplicationSwitch();
+                        return false;
+                    }
+                });
+
+                // Prevent right-click during exam
+                document.addEventListener('contextmenu', (e) => {
+                    if (this.examStarted) {
+                        e.preventDefault();
+                        this.showSecurityWarning('Right-click is disabled during exam');
+                        return false;
+                    }
+                });
+            },
+
+            markExamStarted() {
+                console.log('Exam started - activating browser lockdown');
+                this.examStarted = true;
+                this.browserLocked = true;
+                this.fullscreenForced = true;
+                this.progressTracking.startTime = Date.now();
+                
+                // Apply lockdown styles
+                document.body.classList.add('app-locked', 'lockdown-active');
+                
+                // Enter fullscreen
+                this.enterFullscreen();
+                
+                // Start progress tracking
+                this.startProgressTracking();
+                
+                // Hide accessibility buttons during exam (optional)
+                // document.getElementById('accessibilityButton').style.display = 'none';
+            },
+
+            allowFullscreenExit() {
+                console.log('Allowing fullscreen exit');
+                this.examStarted = false;
+                this.browserLocked = false;
+                this.fullscreenForced = false;
+                
+                // Remove lockdown
+                document.body.classList.remove('app-locked', 'lockdown-active');
+                this.hideSecurityOverlay();
+                
+                // Show accessibility buttons again
+                document.getElementById('accessibilityButton').style.display = 'block';
+                
+                // Exit fullscreen
+                if (this.isFullscreen()) {
+                    this.exitFullscreen();
+                }
+            },
+
+            handleApplicationSwitch() {
+                this.focusViolations++;
+                this.showSecurityOverlay();
+                this.showSecurityWarning(`Application switch detected - Violation #${this.focusViolations}`);
+                
+                // Log violation to server
+                if (window.livewire) {
+                    const component = document.querySelector('[wire\\:id]');
+                    if (component) {
+                        window.livewire.find(component.getAttribute('wire:id'))
+                            .call('handleSecurityViolation', 'app_switch', this.focusViolations);
+                    }
+                }
+
+                // Auto-submit after too many violations
+                if (this.focusViolations >= 3) {
+                    this.showSecurityWarning('Too many security violations. Exam will be auto-submitted.');
+                    setTimeout(() => {
+                        if (window.livewire) {
+                            const component = document.querySelector('[wire\\:id]');
+                            if (component) {
+                                window.livewire.find(component.getAttribute('wire:id')).call('submitExam');
+                            }
+                        }
+                    }, 3000);
+                }
+            },
+
+            showSecurityOverlay() {
+                const overlay = document.getElementById('securityOverlay');
+                overlay.style.display = 'flex';
+                overlay.classList.add('critical-pulse');
+            },
+
+            hideSecurityOverlay() {
+                const overlay = document.getElementById('securityOverlay');
+                overlay.style.display = 'none';
+                overlay.classList.remove('critical-pulse');
+            },
+
+            returnToExam() {
+                this.hideSecurityOverlay();
+                window.focus();
+                this.enterFullscreen();
+            },
+
+            // Progress tracking methods
+            startProgressTracking() {
+                this.progressTracking.currentQuestionStart = Date.now();
+                this.updateProgressDisplay();
+                
+                // Update progress every 5 seconds
+                this.progressInterval = setInterval(() => {
+                    this.updateProgressDisplay();
+                }, 5000);
+            },
+
+            trackQuestionTime(questionIndex) {
+                if (this.progressTracking.currentQuestionStart) {
+                    const timeSpent = Date.now() - this.progressTracking.currentQuestionStart;
+                    this.progressTracking.questionTimes[questionIndex] = timeSpent;
+                    this.progressTracking.currentQuestionStart = Date.now();
+                }
+            },
+
+            updateProgressDisplay() {
+                if (!this.examStarted) return;
+                
+                // Get data from Livewire component
+                if (window.livewire) {
+                    const component = document.querySelector('[wire\\:id]');
+                    if (component) {
+                        const livewireComponent = window.livewire.find(component.getAttribute('wire:id'));
+                        
+                        // Calculate progress data
+                        const totalTime = Date.now() - this.progressTracking.startTime;
+                        const avgTimePerQuestion = this.progressTracking.questionTimes.length > 0 
+                            ? this.progressTracking.questionTimes.reduce((a, b) => a + b, 0) / this.progressTracking.questionTimes.length / 1000
+                            : 0;
+                        
+                        // You'll need to get these values from your Livewire component
+                        const progressData = {
+                            answered: 0, // Get from component
+                            total: 0, // Get from component
+                            timeRemaining: 0, // Get from component
+                            avgTimePerQuestion: Math.round(avgTimePerQuestion),
+                            estimatedFinishTime: this.calculateEstimatedFinish()
+                        };
+                        
+                        window.examInterface.updateProgress(progressData);
+                    }
+                }
+            },
+
+            calculateEstimatedFinish() {
+                // Calculate based on current pace
+                const now = new Date();
+                // Add estimation logic here
+                return now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            },
+
+            // Fullscreen management
+            isFullscreen() {
+                return !!(
+                    document.fullscreenElement ||
+                    document.webkitFullscreenElement ||
+                    document.mozFullScreenElement ||
+                    document.msFullscreenElement ||
+                    (window.innerHeight >= (screen.height - 100) && window.innerWidth >= (screen.width - 100))
+                );
+            },
+
+            enterFullscreen() {
+                const elem = document.documentElement;
+                
+                if (elem.requestFullscreen) {
+                    elem.requestFullscreen({ navigationUI: 'hide' }).catch(console.error);
+                } else if (elem.webkitRequestFullscreen) {
+                    elem.webkitRequestFullscreen();
+                } else if (elem.mozRequestFullScreen) {
+                    elem.mozRequestFullScreen();
+                } else if (elem.msRequestFullscreen) {
+                    elem.msRequestFullscreen();
+                }
+            },
+
+            exitFullscreen() {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen().catch(console.error);
+                } else if (document.webkitExitFullscreen) {
+                    document.webkitExitFullscreen();
+                } else if (document.mozCancelFullScreen) {
+                    document.mozCancelFullScreen();
+                } else if (document.msExitFullscreen) {
+                    document.msExitFullscreen();
+                }
+            },
+
+            showSecurityWarning(message, duration = 5000) {
+                const warningDiv = document.createElement('div');
+                warningDiv.className = 'bg-red-600 text-white px-4 py-3 rounded-lg shadow-lg animate-pulse border-2 border-red-400';
+                warningDiv.innerHTML = `
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center">
+                            <i class="fas fa-shield-alt mr-2"></i>
+                            <span class="font-semibold">${message}</span>
+                        </div>
+                        <button onclick="this.parentElement.parentElement.remove()" class="ml-4 text-white hover:text-gray-200">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                `;
+
+                const warningsContainer = document.getElementById('securityWarnings');
+                if (warningsContainer) {
+                    warningsContainer.appendChild(warningDiv);
+
+                    setTimeout(() => {
+                        if (warningDiv.parentNode) {
+                            warningDiv.style.opacity = '0';
+                            setTimeout(() => warningDiv.remove(), 300);
+                        }
+                    }, duration);
+                }
+            }
+        };
+
+        // Initialize everything on DOM ready
+        document.addEventListener('DOMContentLoaded', () => {
+            window.examInterface.init();
+            window.examSecurity.init();
+        });
+
+        // Global helper functions for Livewire
+        window.markExamStarted = () => window.examSecurity.markExamStarted();
+        window.allowFullscreenExit = () => window.examSecurity.allowFullscreenExit();
+        
+        // Prevent back button during exam
         history.pushState(null, null, location.href);
         window.onpopstate = function () {
-            if (examStarted) {
-                showSecurityWarning('Navigation blocked during exam');
+            if (window.examSecurity.examStarted) {
+                window.examSecurity.showSecurityWarning('Navigation blocked during exam');
                 history.go(1);
             }
         };
-
-        // Monitor for mobile device rotation
-        window.addEventListener('orientationchange', function () {
-            if (examStarted) {
-                setTimeout(() => {
-                    if (window.orientation !== 0) {
-                        showSecurityWarning('Please use landscape orientation for better exam experience');
-                    }
-                }, 500);
-            }
-        });
-
-        // Prevent zoom
-        document.addEventListener('gesturestart', function (e) {
-            e.preventDefault();
-        });
-
-        document.addEventListener('gesturechange', function (e) {
-            e.preventDefault();
-        });
-
-        document.addEventListener('gestureend', function (e) {
-            e.preventDefault();
-        });
-
-        // Handle beforeunload
-        window.addEventListener('beforeunload', function (e) {
-            if (examStarted && window.livewire) {
-                window.livewire.find(document.querySelector('[wire\\:id]').getAttribute('wire:id')).call('handleBeforeUnload');
-                e.preventDefault();
-                e.returnValue = 'Are you sure you want to leave? Your progress will be saved but leaving may affect your session.';
-            }
-        });
-
-        // Browser compatibility checks
-        function checkBrowserCompatibility() {
-            const isCompatible = (
-                'requestFullscreen' in document.documentElement ||
-                'webkitRequestFullscreen' in document.documentElement ||
-                'mozRequestFullScreen' in document.documentElement ||
-                'msRequestFullscreen' in document.documentElement
-            );
-
-            if (!isCompatible) {
-                alert('Your browser may not support all security features required for this exam. Please use a modern browser like Chrome, Firefox, Safari, or Edge.');
-            }
-        }
-
-        // Initialize compatibility check
-        document.addEventListener('DOMContentLoaded', checkBrowserCompatibility);
-
-        // Global error handler for exam security
-        window.addEventListener('error', function (e) {
-            console.error('Exam Error:', e.error);
-            // Don't show detailed errors to prevent information leakage
-        });
     </script>
 
     @stack('scripts')
