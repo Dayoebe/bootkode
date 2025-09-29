@@ -88,41 +88,6 @@ class CourseForm extends Component
     {
         $this->categories = Cache::remember('course_categories', 3600, fn() => CourseCategory::orderBy('name')->get());
     }
-
-    // public function updatedThumbnail()
-    // {
-    //     Log::info('CourseForm: updatedThumbnail called');
-
-    //     if ($this->thumbnail) {
-    //         try {
-    //             $this->validateOnly('thumbnail');
-
-    //             Log::info('CourseForm: Thumbnail validation passed', [
-    //                 'file_size' => $this->thumbnail->getSize(),
-    //                 'file_type' => $this->thumbnail->getMimeType(),
-    //                 'file_name' => $this->thumbnail->getClientOriginalName()
-    //             ]);
-
-    //             $this->dispatch('notify', [
-    //                 'message' => 'Thumbnail uploaded successfully!',
-    //                 'type' => 'success'
-    //             ]);
-
-    //         } catch (\Illuminate\Validation\ValidationException $e) {
-    //             Log::error('CourseForm: Thumbnail validation failed', ['errors' => $e->errors()]);
-    //             $this->thumbnail = null;
-    //             throw $e;
-    //         } catch (\Exception $e) {
-    //             Log::error('CourseForm: Error processing thumbnail', ['error' => $e->getMessage()]);
-    //             $this->thumbnail = null;
-    //             $this->dispatch('notify', [
-    //                 'message' => 'Error uploading thumbnail: ' . $e->getMessage(),
-    //                 'type' => 'error'
-    //             ]);
-    //         }
-    //     }
-    // }
-
     public function removeThumbnail()
     {
         Log::info('CourseForm: Removing thumbnail');
@@ -349,11 +314,7 @@ class CourseForm extends Component
             ]);
 
             // Redirect to course builder
-            $redirectUrl = "/dashboard/courses/{$course->id}/builder";
-            $this->dispatch('redirect-after-delay', [
-                'url' => $redirectUrl,
-                'delay' => 1500
-            ]);
+            return redirect()->route('course-builder', ['course' => $course->id]);
 
         } catch (\Illuminate\Validation\ValidationException $e) {
             Log::error('CourseForm: Validation error', ['errors' => $e->errors()]);
