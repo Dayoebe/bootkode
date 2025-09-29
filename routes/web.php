@@ -47,11 +47,6 @@ use App\Livewire\Content\ContentDocumentationCenter;
 
 
 
-Route::get('/profile-settings', \App\Livewire\SystemManagement\ProfileSettings::class)->name('profile.settings');
-Route::get('/notification-preferences', \App\Livewire\SystemManagement\NotificationPreferences::class)->name('notification.preferences');
-Route::get('/privacy-settings', \App\Livewire\SystemManagement\PrivacySettings::class)->name('privacy.settings');
-Route::get('/language-localization', \App\Livewire\SystemManagement\LanguageLocalization::class)->name('language.localization');
-
 
 
 
@@ -555,6 +550,11 @@ Route::middleware(['auth', 'verified'])->prefix('dashboard')->name('')->group(fu
     // Announcements
     Route::get('/announcements', \App\Livewire\SystemManagement\Announcements::class)->name('announcements');
     Route::get('/announcement-management', \App\Livewire\SystemManagement\AnnouncementManagement::class)->name('announcement.management');
+
+    Route::get('/profile-settings', \App\Livewire\SystemManagement\ProfileSettings::class)->name('profile.settings');
+    Route::get('/notification-preferences', \App\Livewire\SystemManagement\NotificationPreferences::class)->name('notification.preferences');
+    Route::get('/privacy-settings', \App\Livewire\SystemManagement\PrivacySettings::class)->name('privacy.settings');
+    Route::get('/language-localization', \App\Livewire\SystemManagement\LanguageLocalization::class)->name('language.localization');
 });
 
 // =============================================================================
