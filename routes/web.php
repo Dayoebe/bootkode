@@ -22,36 +22,6 @@ use App\Livewire\Content\ContentDocumentationCenter;
 |
 */
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 Route::middleware(['auth', 'verified'])->prefix('dashboard')->name('newsletter.')->group(function () {
     // Newsletter management routes (requires proper role)
     Route::get('/newsletter', App\Livewire\Newsletter\NewsletterCenter::class)->name('index');
@@ -77,26 +47,6 @@ Route::prefix('newsletter')->name('newsletter.')->group(function () {
 });
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 // Affiliate Routes
 Route::middleware(['auth'])->prefix('affiliate')->name('affiliate.')->group(function () {
     Route::get('/dashboard', \App\Livewire\Affiliate\Dashboard::class)->name('dashboard');
@@ -114,30 +64,6 @@ Route::middleware(['auth'])->prefix('affiliate')->name('affiliate.')->group(func
         return response()->json($service->validateReferralCode($code));
     })->name('api.validate-referral');
 });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 // User Wallet Routes
@@ -160,25 +86,7 @@ Route::middleware(['auth'])->group(function () {
 });
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 // Institution Portal Routes
-
 Route::prefix('institution')->name('institution.')->group(function () {
 
     // Main portal dashboard
@@ -190,8 +98,6 @@ Route::prefix('institution')->name('institution.')->group(function () {
     Route::get('/analytics', App\Livewire\Institution\InstitutionPortal::class)->name('analytics');
     Route::get('/whitelabel', App\Livewire\Institution\InstitutionPortal::class)->name('whitelabel');
 });
-
-
 
 
 // Blog Routes
@@ -223,7 +129,6 @@ Route::middleware('api')->prefix('api/blog')->name('api.blog.')->group(function 
 });
 
 
-
 // =============================================================================
 // PUBLIC PAGES (No Authentication Required) - MANUAL PAGES
 // =============================================================================
@@ -231,51 +136,6 @@ Route::get('/About', \App\Livewire\ManualPages\AboutUs::class)->name('about');
 Route::get('/Contact', \App\Livewire\ManualPages\ContactUs::class)->name('contact');
 Route::get('/Statistics', \App\Livewire\ManualPages\Statistics::class)->name('statistics');
 Route::get('/Guideline', \App\Livewire\ManualPages\Guideline::class)->name('guideline');
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 Route::middleware(['auth'])->group(function () {
@@ -345,7 +205,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/mentorship.dashboard', \App\Livewire\Mentorship\MentorDashboard::class)->name('mentorship.dashboard');
     Route::get('/mentorship/actions', \App\Livewire\Mentorship\MentorshipActions::class)->name('mentorship.actions');
 });
-
 
 Route::middleware('auth')->group(function () {
     Route::get('/search/job', \App\Livewire\Career\JobSearch::class)->name('search.job');
