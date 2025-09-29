@@ -33,23 +33,6 @@ use App\Livewire\Content\ContentDocumentationCenter;
 
 
 
-// Page management routes (protected)
-
-Route::prefix('admin/pages')->middleware(['auth', 'verified'])->group(function () {
-    // Main page manager with tab support
-    Route::get('/', \App\Livewire\Pages\PageManager::class)->name('pages.index');
-    Route::get('/create', \App\Livewire\Pages\PageManager::class)->defaults('activeTab', 'create-page')->name('pages.create');
-    Route::get('/analytics', \App\Livewire\Pages\PageManager::class)->defaults('activeTab', 'analytics')->name('pages.analytics');
-    Route::get('/templates', \App\Livewire\Pages\PageManager::class)->defaults('activeTab', 'templates')->name('pages.templates');
-    Route::get('/media', \App\Livewire\Pages\PageManager::class)->defaults('activeTab', 'media')->name('pages.media');
-    Route::get('/seo', \App\Livewire\Pages\PageManager::class)->defaults('activeTab', 'seo')->name('pages.seo');
-    Route::get('/settings', \App\Livewire\Pages\PageManager::class)->defaults('activeTab', 'settings')->name('pages.settings');
-
-    // API endpoints
-    Route::post('/upload-media', [\App\Http\Controllers\MediaController::class, 'upload'])->name('pages.upload-media');
-    Route::delete('/media/{media}', [\App\Http\Controllers\MediaController::class, 'delete'])->name('pages.delete-media');
-    Route::post('/track-view/{slug}', [PageController::class, 'trackView'])->name('pages.track-view');
-});
 
 
 
@@ -676,6 +659,22 @@ require __DIR__ . '/auth.php';
 
 
 
+// Page management routes (protected)
+Route::prefix('admin/pages')->middleware(['auth', 'verified'])->group(function () {
+    // Main page manager with tab support
+    Route::get('/', \App\Livewire\Pages\PageManager::class)->name('pages.index');
+    Route::get('/create', \App\Livewire\Pages\PageManager::class)->defaults('activeTab', 'create-page')->name('pages.create');
+    Route::get('/analytics', \App\Livewire\Pages\PageManager::class)->defaults('activeTab', 'analytics')->name('pages.analytics');
+    Route::get('/templates', \App\Livewire\Pages\PageManager::class)->defaults('activeTab', 'templates')->name('pages.templates');
+    Route::get('/media', \App\Livewire\Pages\PageManager::class)->defaults('activeTab', 'media')->name('pages.media');
+    Route::get('/seo', \App\Livewire\Pages\PageManager::class)->defaults('activeTab', 'seo')->name('pages.seo');
+    Route::get('/settings', \App\Livewire\Pages\PageManager::class)->defaults('activeTab', 'settings')->name('pages.settings');
+
+    // API endpoints
+    Route::post('/upload-media', [\App\Http\Controllers\MediaController::class, 'upload'])->name('pages.upload-media');
+    Route::delete('/media/{media}', [\App\Http\Controllers\MediaController::class, 'delete'])->name('pages.delete-media');
+    Route::post('/track-view/{slug}', [PageController::class, 'trackView'])->name('pages.track-view');
+});
 
 // =============================================================================
 // CATCH-ALL ROUTE FOR PAGES (Must be absolutely last)
