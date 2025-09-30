@@ -96,18 +96,107 @@ class LessonEditor extends Component
 
     public function generateSlug()
     {
-        $courseTitle = $this->lesson->section->course->title ?? '';
-        $baseSlug = $courseTitle ? Str::slug($courseTitle . '-' . $this->title) : Str::slug($this->title);
+        if (empty($this->title)) {
+            $this->addError('slug', 'Please enter a lesson title first');
+            return;
+        }
 
+        $course = $this->lesson->section->course;
+        
+        // Create a short course prefix (max 30 chars, remove common words)
+        $coursePrefix = $this->createCoursePrefix($course->title);
+        
+        // Combine course prefix with lesson title
+        $baseSlug = Str::slug($coursePrefix . '-' . $this->title);
+        
+        // Limit total slug length to 100 characters for database/SEO
+        $baseSlug = Str::limit($baseSlug, 100, '');
+        
+        // Check for uniqueness and add counter if needed
         $slug = $baseSlug;
         $counter = 1;
+        
         while (Lesson::where('slug', $slug)->where('id', '!=', $this->lessonId)->exists()) {
+            // Add counter before any truncation happened
             $slug = $baseSlug . '-' . $counter;
             $counter++;
+            
+            // Prevent infinite loops
+            if ($counter > 100) {
+                $slug = $baseSlug . '-' . time();
+                break;
+            }
         }
 
         $this->slug = $slug;
         $this->validateOnly('slug');
+    }
+
+    /**
+     * Create a short, meaningful course prefix from course title
+     * Examples:
+     * "Introduction to Web Development" -> "intro-web-dev"
+     * "Advanced JavaScript Programming" -> "advanced-js"
+     * "Machine Learning Basics" -> "ml-basics"
+     */
+    private function createCoursePrefix($courseTitle)
+    {
+        // Common words to remove for brevity
+        $stopWords = ['introduction', 'to', 'the', 'a', 'an', 'for', 'in', 'on', 'with', 'and', 'or'];
+        
+        // Convert to lowercase and split into words
+        $words = explode(' ', Str::lower($courseTitle));
+        
+        // Remove stop words but keep first word if it's important
+        $filtered = [];
+        foreach ($words as $index => $word) {
+            $word = trim($word);
+            
+            // Keep first word even if it's a stop word (but shorten it)
+            if ($index === 0) {
+                if (in_array($word, ['introduction', 'introductory'])) {
+                    $filtered[] = 'intro';
+                } else {
+                    $filtered[] = $word;
+                }
+            } 
+            // For other words, skip stop words
+            elseif (!in_array($word, $stopWords)) {
+                // Abbreviate common tech terms
+                $word = $this->abbreviateTerm($word);
+                $filtered[] = $word;
+            }
+        }
+        
+        // Limit to first 3 meaningful words
+        $filtered = array_slice($filtered, 0, 3);
+        
+        // Join and create slug, limit to 30 chars
+        $prefix = implode('-', $filtered);
+        return Str::limit(Str::slug($prefix), 30, '');
+    }
+
+    /**
+     * Abbreviate common technical terms for shorter slugs
+     */
+    private function abbreviateTerm($word)
+    {
+        $abbreviations = [
+            'javascript' => 'js',
+            'typescript' => 'ts',
+            'development' => 'dev',
+            'programming' => 'prog',
+            'application' => 'app',
+            'database' => 'db',
+            'machine' => 'ml',
+            'learning' => 'learn',
+            'advanced' => 'adv',
+            'beginner' => 'begin',
+            'intermediate' => 'inter',
+            'professional' => 'pro',
+        ];
+        
+        return $abbreviations[$word] ?? $word;
     }
 
     // Fixed autoSave - doesn't trigger re-render
