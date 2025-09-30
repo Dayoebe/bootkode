@@ -16,21 +16,28 @@
             <!-- Course Outline Sidebar -->
             <div class="xl:col-span-1 order-2 xl:order-1">
                 <div class="sticky top-6">
-                    <livewire:course-management.course-builder.course-outline :course="$course" :activeSectionId="$activeSectionId"
-                        :activeLessonId="$activeContentId" wire:key="outline-{{ $course->id }}-{{ $activeSectionId }}" />
+                    <livewire:course-management.course-builder.course-outline 
+                        :course="$course" 
+                        :activeSectionId="$activeSectionId"
+                        :activeLessonId="$activeContentId" 
+                        wire:key="outline-{{ $course->id }}" />
                 </div>
             </div>
 
             <!-- Main Content Area -->
             <div class="xl:col-span-3 order-1 xl:order-2 min-w-0">
-                <div class="animate__animated animate__fadeIn">
-                    @if ($activeContentType === 'lesson' && $activeContentId)
+                @if ($activeContentType === 'lesson' && $activeContentId)
+                    <!-- Show Lesson Editor -->
+                    <div class="animate__animated animate__fadeIn">
                         <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
-                            <livewire:course-management.course-builder.lesson-editor :lessonId="$activeContentId"
-                                wire:key="lesson-editor-{{ $activeContentId }}" />
+                            <livewire:course-management.course-builder.lesson-editor 
+                                :lessonId="$activeContentId"
+                                :key="'lesson-editor-' . $activeContentId" />
                         </div>
-                    @else
-                        <!-- Enhanced Empty State -->
+                    </div>
+                @else
+                    <!-- Enhanced Empty State -->
+                    <div class="animate__animated animate__fadeIn">
                         <div class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-8 lg:p-12 text-center transition-colors duration-300">
                             <div class="max-w-md mx-auto">
                                 <div class="w-20 h-20 bg-blue-600/20 rounded-full flex items-center justify-center mx-auto mb-6">
@@ -52,8 +59,8 @@
                                 @endif
                             </div>
                         </div>
-                    @endif
-                </div>
+                    </div>
+                @endif
             </div>
         </div>
     </div>
@@ -76,8 +83,12 @@
                         this.isLoading = false;
                     });
 
+                    // Handle lesson selection with smooth transition
                     Livewire.on('lesson-selected', () => {
-                        // Handle lesson selection
+                        this.isLoading = true;
+                        setTimeout(() => {
+                            this.isLoading = false;
+                        }, 300);
                     });
                 }
             };

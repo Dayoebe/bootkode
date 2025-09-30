@@ -34,9 +34,7 @@ class CourseBuilder extends Component
             $firstSection = $this->course->sections->first();
             if ($firstSection && $firstSection->lessons->count() > 0) {
                 $firstLesson = $firstSection->lessons->first();
-                $this->activeContentId = $firstLesson->id;
-                $this->activeContentType = 'lesson';
-                $this->activeSectionId = $firstSection->id;
+                $this->selectLesson($firstLesson->id);
             }
         }
     }
@@ -50,7 +48,19 @@ class CourseBuilder extends Component
             $this->activeContentType = 'lesson';
             $this->activeSectionId = $lesson->section_id;
             $this->updateActivity();
+            
+            // Notify outline to update its active state
+            $this->dispatch('lesson-selected', lessonId: $lessonId)
+                ->to('course-management.course-builder.course-outline');
         }
+    }
+
+    #[On('lesson-deselected')]
+    public function deselectLesson()
+    {
+        $this->activeContentId = null;
+        $this->activeContentType = null;
+        $this->activeSectionId = null;
     }
     
     #[On('outline-updated')]
@@ -63,22 +73,18 @@ class CourseBuilder extends Component
         // If current lesson no longer exists, reset selection
         if ($this->activeContentId && $this->activeContentType === 'lesson') {
             if (!Lesson::find($this->activeContentId)) {
-                $this->activeContentId = null;
-                $this->activeContentType = null;
-                $this->activeSectionId = null;
+                $this->deselectLesson();
             }
         }
     }
 
-    // Smart polling that only updates when needed
     public function pollForUpdates()
     {
-        // Don't poll if user is actively working (less than 30 seconds since last activity)
+        // Don't poll if user is actively working
         if ($this->lastActivity && (now()->timestamp - $this->lastActivity) < 30) {
             return;
         }
 
-        // Check if course has actually changed
         $currentHash = $this->generateCourseHash();
         if ($currentHash !== $this->lastCourseHash) {
             $this->refreshCourse();
@@ -86,14 +92,12 @@ class CourseBuilder extends Component
         }
     }
 
-    // Track user activity to pause polling during active work
     #[On('user-activity')]
     public function updateActivity()
     {
         $this->lastActivity = now()->timestamp;
     }
 
-    // Generate a hash of course structure to detect changes
     private function generateCourseHash()
     {
         $this->course->refresh();
@@ -107,7 +111,6 @@ class CourseBuilder extends Component
         return md5(json_encode($data));
     }
 
-    // Enable/disable polling based on user preferences or context
     #[On('toggle-polling')]
     public function togglePolling($enable = null)
     {
