@@ -110,38 +110,51 @@ class LessonEditor extends Component
         $this->validateOnly('slug');
     }
 
-    // Add the missing autoSave method
+    // Fixed autoSave - doesn't trigger re-render
     public function autoSave()
     {
-        $this->validate([
-            'title' => 'required|string|max:255',
-            'content' => 'nullable|string',
-        ]);
-
-        $cleanContent = $this->content;
-        
-        if (!empty($cleanContent) && is_string($cleanContent)) {
-            $cleanContent = Purifier::clean($cleanContent, [
-                'HTML.Allowed' => 'h1,h2,h3,h4,h5,h6,p,br,strong,em,u,s,ul,ol,li,a[href],img[src|alt],blockquote,pre,code,div[class],span[class]',
-                'CSS.AllowTricky' => true,
-                'AutoFormat.RemoveEmpty' => false,
+        try {
+            $this->validate([
+                'title' => 'required|string|max:255',
+                'content' => 'nullable|string',
             ]);
+
+            $cleanContent = $this->content;
+            
+            if (!empty($cleanContent) && is_string($cleanContent)) {
+                $cleanContent = Purifier::clean($cleanContent, [
+                    'HTML.Allowed' => 'h1,h2,h3,h4,h5,h6,p,br,strong,em,u,s,ul,ol,li,a[href],img[src|alt],blockquote,pre,code,div[class],span[class]',
+                    'CSS.AllowTricky' => true,
+                    'AutoFormat.RemoveEmpty' => false,
+                ]);
+            }
+
+            $this->lesson->update([
+                'title' => $this->title,
+                'content' => $cleanContent,
+                'description' => $this->description,
+            ]);
+
+            // Don't dispatch events that cause re-render
+            $this->dispatch('lesson-autosaved', ['lessonId' => $this->lessonId]);
+            
+            return true;
+        } catch (\Exception $e) {
+            \Log::error('Auto-save failed: ' . $e->getMessage());
+            return false;
         }
-
-        $this->lesson->update([
-            'title' => $this->title,
-            'content' => $cleanContent,
-            'description' => $this->description,
-        ]);
-
-        $this->dispatch('lesson-saved');
     }
 
     public function quickSave()
     {
-        return $this->autoSave();
+        $result = $this->autoSave();
+        if ($result) {
+            $this->dispatch('lesson-saved');
+        }
+        return $result;
     }
 
+    // Rest of your methods remain the same...
     public function handleUpload($type, $fileProperty, $mimes, $maxSize, $storageFolder)
     {
         $this->validate([
