@@ -108,7 +108,9 @@
                             Lesson Title * 
                             <span x-show="titleChanged" class="text-orange-500 text-xs">(unsaved)</span>
                         </label>
-                        <input type="text" wire:model.live.debounce.1000ms="title" @input="markFieldChanged('title')"
+                        <input type="text" 
+                            wire:model.live.debounce.1000ms="title" 
+                            @input="markFieldChanged('title'); scheduleSlugGeneration()"
                             class="w-full px-3 py-2 bg-white dark:bg-gray-600 border border-gray-300 dark:border-gray-500 rounded-lg text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors duration-300 text-sm"
                             :class="{ 'border-orange-400': titleChanged }">
                         @error('title')
@@ -119,21 +121,29 @@
                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 transition-colors duration-300">
                             URL Slug *
                             <span x-show="slugChanged" class="text-orange-500 text-xs">(unsaved)</span>
+                            <span x-show="slugManuallyEdited" class="text-blue-500 text-xs ml-2">(custom)</span>
                         </label>
                         <div class="flex gap-2">
-                            <input type="text" wire:model="slug" @input="markFieldChanged('slug')"
+                            <input type="text" 
+                                wire:model="slug" 
+                                @input="markFieldChanged('slug'); slugManuallyEdited = true"
+                                @focus="slugManuallyEdited = true"
                                 class="flex-1 px-3 py-2 bg-white dark:bg-gray-600 border border-gray-300 dark:border-gray-500 rounded-lg text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors duration-300 text-sm"
-                                :class="{ 'border-orange-400': slugChanged }">
-                            <button wire:click="generateSlug" wire:loading.attr="disabled" :disabled="isSaving"
+                                :class="{ 'border-orange-400': slugChanged }"
+                                placeholder="auto-generated-from-title">
+                            <button @click="manualSlugGeneration()" 
+                                :disabled="isSaving"
                                 class="px-3 py-2 bg-gray-200 dark:bg-gray-600 hover:bg-gray-300 dark:hover:bg-gray-500 text-gray-800 dark:text-white rounded-lg disabled:opacity-50 transition-colors duration-300 flex-shrink-0 text-sm"
-                                title="Generate from title">
-                                <i class="fas fa-sync-alt" wire:loading.remove></i>
-                                <i class="fas fa-spinner fa-spin" wire:loading></i>
+                                title="Regenerate slug from title">
+                                <i class="fas fa-sync-alt"></i>
                             </button>
                         </div>
                         @error('slug')
                             <span class="text-red-600 dark:text-red-400 text-sm mt-1">{{ $message }}</span>
                         @enderror
+                        <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                            Auto-generated with course prefix. Edit to customize.
+                        </p>
                     </div>
                 </div>
 
@@ -149,7 +159,7 @@
                         placeholder="Brief description of this lesson..."></textarea>
                     @error('description')
                         <span class="text-red-600 dark:text-red-400 text-sm mt-1">{{ $message }}</span>
-                    @enderror>
+                    @enderror
                 </div>
 
                 <!-- Content Editor - CRITICAL FIX HERE -->
@@ -241,6 +251,8 @@
                 autoSaveTimeout: null,
                 trixInitialized: false,
                 lastSavedContent: '',
+                slugGenerationTimeout: null,
+                slugManuallyEdited: false,
                 
                 init() {
                     this.setupEventListeners();
@@ -320,6 +332,40 @@
                     this.autoSaveTimeout = setTimeout(() => {
                         this.performAutoSave();
                     }, 5000); // Auto-save after 5 seconds of inactivity
+                },
+                
+                // Auto-generate slug when title changes (unless manually edited)
+                scheduleSlugGeneration() {
+                    // Don't auto-generate if user has manually edited the slug
+                    if (this.slugManuallyEdited) return;
+                    
+                    clearTimeout(this.slugGenerationTimeout);
+                    this.slugGenerationTimeout = setTimeout(() => {
+                        this.generateSlugFromTitle();
+                    }, 1500); // Wait 1.5 seconds after user stops typing
+                },
+                
+                async generateSlugFromTitle() {
+                    if (this.slugManuallyEdited) return;
+                    
+                    try {
+                        await @this.call('generateSlug');
+                        // Mark slug as changed after generation
+                        this.slugChanged = true;
+                    } catch (error) {
+                        console.error('Slug generation failed:', error);
+                    }
+                },
+                
+                // Manual slug generation (resets the manual edit flag)
+                async manualSlugGeneration() {
+                    try {
+                        await @this.call('generateSlug');
+                        this.slugManuallyEdited = false;
+                        this.slugChanged = true;
+                    } catch (error) {
+                        console.error('Manual slug generation failed:', error);
+                    }
                 },
                 
                 async performAutoSave() {
