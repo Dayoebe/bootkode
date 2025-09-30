@@ -32,18 +32,39 @@ class CourseOutline extends Component
         'newLessonTitleEdit' => 'required|string|max:255',
     ];
 
-    public function mount(Course $course)
+    // Listen for lesson selection from parent
+    protected $listeners = [
+        'lesson-selected' => 'handleLessonSelected',
+        'course-data-updated' => 'checkForUpdates',
+    ];
+
+    public function mount(Course $course, $activeLessonId = null, $activeSectionId = null)
     {
         $this->course = $course->load('sections.lessons');
+        $this->activeLessonId = $activeLessonId;
+        $this->activeSectionId = $activeSectionId;
         $this->expandedSections = $this->course->sections->pluck('id')->toArray();
         $this->lastUpdateHash = $this->generateOutlineHash();
     }
 
+    // Handle lesson selection updates from parent
+    public function handleLessonSelected($lessonId)
+    {
+        $lesson = Lesson::find($lessonId);
+        if ($lesson) {
+            $this->activeLessonId = $lessonId;
+            $this->activeSectionId = $lesson->section_id;
+            
+            // Ensure section is expanded
+            if (!in_array($lesson->section_id, $this->expandedSections)) {
+                $this->expandedSections[] = $lesson->section_id;
+            }
+        }
+    }
+
     // Check for updates without disrupting user work
-    #[Livewire\Attributes\On('course-data-updated')]
     public function checkForUpdates()
     {
-        // Don't update if user is currently editing
         if ($this->isEditing) {
             return;
         }
@@ -65,18 +86,16 @@ class CourseOutline extends Component
                 'title' => $this->newSectionTitle,
             ]);
     
-            // Reset form field
             $this->newSectionTitle = '';
             $this->expandedSections[] = $section->id;
             $this->refreshCourse();
             $this->dispatchOutlineUpdated();
             
-            session()->flash('success', 'Section created successfully!');
-            $this->dispatch('section-created'); // Notify frontend
+            $this->notify('Section created successfully!', 'success');
             
         } catch (\Exception $e) {
             \Log::error('Failed to create section: ' . $e->getMessage());
-            session()->flash('error', 'Failed to create section: ' . $e->getMessage());
+            $this->notify('Failed to create section: ' . $e->getMessage(), 'error');
         }
     }
 
@@ -121,6 +140,14 @@ class CourseOutline extends Component
         try {
             $section = Section::findOrFail($sectionId);
             $this->expandedSections = array_diff($this->expandedSections, [$sectionId]);
+            
+            // If deleting active section, clear active lesson
+            if ($this->activeSectionId == $sectionId) {
+                $this->activeLessonId = null;
+                $this->activeSectionId = null;
+                $this->dispatch('lesson-deselected')->to('course-management.course-builder');
+            }
+            
             $section->delete();
             $this->refreshCourse();
             $this->dispatchOutlineUpdated();
@@ -151,26 +178,116 @@ class CourseOutline extends Component
         $this->markAsEditing(true);
 
         try {
+            $section = Section::with('course')->findOrFail($sectionId);
+            $lessonTitle = $this->newLessonTitles[$sectionId];
+            
+            // Generate proper slug with course prefix
+            $slug = $this->generateLessonSlug($section->course, $lessonTitle);
+            
             $lesson = Lesson::create([
                 'section_id' => $sectionId,
-                'title' => $this->newLessonTitles[$sectionId],
-                'slug' => Str::slug($this->newLessonTitles[$sectionId])
+                'title' => $lessonTitle,
+                'slug' => $slug,
+                'content' => '', // Blank content for new lesson
             ]);
 
             $this->newLessonTitles[$sectionId] = '';
             $this->refreshCourse();
             $this->dispatchOutlineUpdated();
 
-            $this->dispatch('lesson-selected', lessonId: $lesson->id)
-                ->to('course-management.course-builder');
+            // Automatically select the new lesson
+            $this->selectLesson($lesson->id);
 
-            $this->notify('Lesson created successfully!', 'success');
+            $this->notify('Lesson created successfully! Start editing below.', 'success');
         } catch (\Exception $e) {
             \Log::error('Failed to create lesson: ' . $e->getMessage());
             $this->notify('Failed to create lesson: ' . $e->getMessage(), 'error');
         } finally {
             $this->markAsEditing(false);
         }
+    }
+
+    /**
+     * Generate a unique slug for a lesson with course prefix
+     */
+    private function generateLessonSlug($course, $lessonTitle)
+    {
+        // Create course prefix
+        $coursePrefix = $this->createCoursePrefix($course->title);
+        
+        // Combine with lesson title
+        $baseSlug = Str::slug($coursePrefix . '-' . $lessonTitle);
+        
+        // Limit length
+        $baseSlug = Str::limit($baseSlug, 100, '');
+        
+        // Check uniqueness
+        $slug = $baseSlug;
+        $counter = 1;
+        
+        while (Lesson::where('slug', $slug)->exists()) {
+            $slug = $baseSlug . '-' . $counter;
+            $counter++;
+            
+            if ($counter > 100) {
+                $slug = $baseSlug . '-' . Str::random(5);
+                break;
+            }
+        }
+        
+        return $slug;
+    }
+
+    /**
+     * Create a short, meaningful course prefix from course title
+     */
+    private function createCoursePrefix($courseTitle)
+    {
+        $stopWords = ['introduction', 'to', 'the', 'a', 'an', 'for', 'in', 'on', 'with', 'and', 'or'];
+        $words = explode(' ', Str::lower($courseTitle));
+        
+        $filtered = [];
+        foreach ($words as $index => $word) {
+            $word = trim($word);
+            
+            if ($index === 0) {
+                if (in_array($word, ['introduction', 'introductory'])) {
+                    $filtered[] = 'intro';
+                } else {
+                    $filtered[] = $word;
+                }
+            } elseif (!in_array($word, $stopWords)) {
+                $word = $this->abbreviateTerm($word);
+                $filtered[] = $word;
+            }
+        }
+        
+        $filtered = array_slice($filtered, 0, 3);
+        $prefix = implode('-', $filtered);
+        return Str::limit(Str::slug($prefix), 30, '');
+    }
+
+    /**
+     * Abbreviate common technical terms
+     */
+    private function abbreviateTerm($word)
+    {
+        $abbreviations = [
+            'javascript' => 'js',
+            'typescript' => 'ts',
+            'development' => 'dev',
+            'programming' => 'prog',
+            'application' => 'app',
+            'database' => 'db',
+            'machine' => 'ml',
+            'learning' => 'learn',
+            'advanced' => 'adv',
+            'beginner' => 'begin',
+            'intermediate' => 'inter',
+            'professional' => 'pro',
+        ];
+        
+        return $abbreviations[$word] ?? $word;
     }
 
     public function startEditLesson($lessonId)
@@ -188,7 +305,6 @@ class CourseOutline extends Component
         try {
             Lesson::findOrFail($this->editingLessonId)->update([
                 'title' => $this->newLessonTitleEdit,
-                'slug' => Str::slug($this->newLessonTitleEdit)
             ]);
 
             $this->cancelEditLesson();
@@ -210,6 +326,23 @@ class CourseOutline extends Component
 
     public function selectLesson($lessonId)
     {
+        $lesson = Lesson::find($lessonId);
+        
+        if (!$lesson) {
+            $this->notify('Lesson not found', 'error');
+            return;
+        }
+
+        // Update local state
+        $this->activeLessonId = $lessonId;
+        $this->activeSectionId = $lesson->section_id;
+        
+        // Ensure section is expanded
+        if (!in_array($lesson->section_id, $this->expandedSections)) {
+            $this->expandedSections[] = $lesson->section_id;
+        }
+
+        // Dispatch to parent CourseBuilder component
         $this->dispatch('lesson-selected', lessonId: $lessonId)
             ->to('course-management.course-builder');
 
@@ -222,6 +355,13 @@ class CourseOutline extends Component
         $this->markAsEditing(true);
 
         try {
+            // If deleting active lesson, clear selection
+            if ($this->activeLessonId == $lessonId) {
+                $this->activeLessonId = null;
+                $this->activeSectionId = null;
+                $this->dispatch('lesson-deselected')->to('course-management.course-builder');
+            }
+            
             Lesson::findOrFail($lessonId)->delete();
             $this->refreshCourse();
             $this->dispatchOutlineUpdated();
@@ -234,7 +374,6 @@ class CourseOutline extends Component
         }
     }
 
-    // Track editing state to prevent updates during user input
     private function markAsEditing($editing)
     {
         $this->isEditing = $editing;
@@ -255,7 +394,6 @@ class CourseOutline extends Component
         $this->dispatch('user-activity')->to('course-management.course-builder');
     }
 
-    // Generate hash to detect structural changes
     private function generateOutlineHash()
     {
         $this->course->refresh();

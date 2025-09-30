@@ -32,13 +32,14 @@
                 
                 <!-- Section Header -->
                 <div class="flex items-center justify-between p-3 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors duration-300 rounded-t-lg"
-                    wire:click="toggleSection({{ $section->id }})">
+                    @click.stop="$wire.toggleSection({{ $section->id }})">
                     <div class="flex items-center flex-1 min-w-0">
                         <i class="fas fa-folder text-blue-600 dark:text-blue-400 mr-2 transition-all duration-200"></i>
                         @if ($editingSectionId === $section->id)
                             <input wire:model="newSectionTitleEdit" 
                                    wire:keydown.enter="updateSection"
                                    wire:keydown.escape="cancelEditSection"
+                                   @click.stop
                                    class="bg-white dark:bg-gray-700 text-gray-900 dark:text-white px-2 py-1 rounded flex-1 border border-gray-300 dark:border-gray-600 transition-colors duration-300"
                                    autofocus>
                         @else
@@ -49,7 +50,7 @@
                         </span>
                     </div>
 
-                    <div class="flex space-x-2">
+                    <div class="flex space-x-2" @click.stop>
                         @if ($editingSectionId === $section->id)
                             <button wire:click="updateSection"
                                 class="text-green-600 dark:text-green-400 hover:text-green-700 dark:hover:text-green-300 transition-colors p-1">
@@ -89,6 +90,7 @@
                                         <input wire:model="newLessonTitleEdit" 
                                                wire:keydown.enter="updateLesson"
                                                wire:keydown.escape="cancelEditLesson"
+                                               @click.stop
                                                class="bg-white dark:bg-gray-700 text-gray-900 dark:text-white px-2 py-1 rounded flex-1 border border-gray-300 dark:border-gray-600 transition-colors duration-300"
                                                autofocus>
                                     @else
@@ -102,7 +104,7 @@
                                         </button>
                                     @endif
                                 </div>
-                                <div class="flex space-x-2">
+                                <div class="flex space-x-2" @click.stop>
                                     @if ($editingLessonId === $lesson->id)
                                         <button wire:click="updateLesson"
                                             class="text-green-600 dark:text-green-400 hover:text-green-700 dark:hover:text-green-300 transition-colors p-1">
