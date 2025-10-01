@@ -218,7 +218,7 @@
                                     <i class="fas fa-edit"></i>
                                 </button>
 
-                                <a href="{{ route('courses.preview', $course) }}"
+                                <a href="{{ route('courses.preview', $course->slug) }}"
                                 class="text-purple-600 hover:text-purple-800 dark:text-purple-400 dark:hover:text-purple-300 text-sm"
                                 title="Preview Course">
                                  <i class="fas fa-eye"></i>
