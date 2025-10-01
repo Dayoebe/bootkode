@@ -369,7 +369,7 @@
 
                             <template x-if="isEnrolled">
                                 <div class="flex flex-col sm:flex-row gap-2">
-                                    <a :href="`/courses/{{ $course->slug }}`"
+                                    <a href="{{ route('course.view', $course->slug) }}"
                                         class="flex-1 group bg-gradient-to-r from-emerald-600 to-blue-600 hover:from-emerald-700 hover:to-blue-700 text-white font-bold py-2 sm:py-2.5 px-3 sm:px-4 rounded-lg sm:rounded-xl transition-all duration-300 transform hover:scale-105 flex items-center justify-center shadow-md text-xs sm:text-sm">
                                         <i class="fas fa-play mr-1 sm:mr-2 group-hover:scale-110 transition-transform duration-300 text-xs"></i>
                                         Continue
