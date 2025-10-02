@@ -23,7 +23,7 @@ class StudentAnswer extends Model
         'graded_at',
         'feedback'
     ];
-
+    
     protected $casts = [
         'answer' => 'array',
         'is_correct' => 'boolean',
@@ -70,8 +70,8 @@ class StudentAnswer extends Model
     public function scopeLatestAttempt($query, $userId, $assessmentId)
     {
         return $query->where('user_id', $userId)
-                    ->where('assessment_id', $assessmentId)
-                    ->orderBy('attempt_number', 'desc');
+            ->where('assessment_id', $assessmentId)
+            ->orderBy('attempt_number', 'desc');
     }
 
     /**
@@ -96,9 +96,9 @@ class StudentAnswer extends Model
     public function scopePendingGrading($query)
     {
         return $query->whereNull('graded_at')
-                    ->whereHas('question', function($q) {
-                        $q->whereIn('question_type', ['essay', 'short_answer']);
-                    });
+            ->whereHas('question', function ($q) {
+                $q->whereIn('question_type', ['essay', 'short_answer']);
+            });
     }
 
     /**
@@ -150,7 +150,7 @@ class StudentAnswer extends Model
                 if (is_array($this->answer)) {
                     $options = $this->question->options ?? [];
                     return collect($this->answer)
-                        ->map(function($index) use ($options) {
+                        ->map(function ($index) use ($options) {
                             return $options[$index] ?? "Option " . ($index + 1);
                         })
                         ->join(', ');
@@ -176,9 +176,9 @@ class StudentAnswer extends Model
      */
     public function needsManualGrading()
     {
-        return is_null($this->graded_at) && 
-               $this->question && 
-               in_array($this->question->question_type, ['essay', 'short_answer']);
+        return is_null($this->graded_at) &&
+            $this->question &&
+            in_array($this->question->question_type, ['essay', 'short_answer']);
     }
 
     /**

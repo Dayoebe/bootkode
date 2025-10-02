@@ -322,49 +322,63 @@
 
                         <!-- Answer Options -->
                         @if ($currentQuestion->question_type === 'multiple_choice')
-                            <div class="space-y-3">
-                                @foreach (json_decode($currentQuestion->options, true) ?? [] as $index => $option)
-                                    <label
-                                        class="flex items-center p-4 bg-gray-600 rounded-lg hover:bg-gray-500 cursor-pointer transition-all duration-200 border-2 border-transparent hover:border-purple-500">
-                                        @if ($currentQuestion->hasMultipleCorrectAnswers())
-                                            <input type="checkbox"
-                                                wire:model.live="answers.{{ $currentQuestion->id }}"
-                                                value="{{ $index }}"
-                                                class="mr-3 rounded w-4 h-4 text-purple-600">
-                                        @else
-                                            <input type="radio"
-                                                wire:model.live="answers.{{ $currentQuestion->id }}"
-                                                value="{{ $index }}" class="mr-3 w-4 h-4 text-purple-600">
-                                        @endif
-                                        <span class="text-white text-lg">{{ chr(65 + $index) }}.
-                                            {{ $option }}</span>
-                                    </label>
-                                @endforeach
-                            </div>
-                        @elseif($currentQuestion->question_type === 'true_false')
-                            <div class="space-y-3">
-                                @foreach (json_decode($currentQuestion->options, true) ?? [] as $index => $option)
-                                    <label
-                                        class="flex items-center p-4 bg-gray-600 rounded-lg hover:bg-gray-500 cursor-pointer transition-all duration-200 border-2 border-transparent hover:border-purple-500">
-                                        <input type="radio" wire:model.live="answers.{{ $currentQuestion->id }}"
-                                            value="{{ $index }}" class="mr-3 w-4 h-4 text-purple-600">
-                                        <span class="text-white text-lg">{{ $option }}</span>
-                                    </label>
-                                @endforeach
-                            </div>
-                        @elseif(in_array($currentQuestion->question_type, ['short_answer', 'fill_blank']))
-                            <div>
-                                <input type="text" wire:model.live="answers.{{ $currentQuestion->id }}"
-                                    placeholder="Enter your answer..."
-                                    class="w-full px-4 py-3 bg-gray-600 border-2 border-gray-500 rounded-lg text-white placeholder-gray-400 focus:border-purple-500 focus:ring-purple-500 text-lg">
-                            </div>
-                        @elseif($currentQuestion->question_type === 'essay')
-                            <div>
-                                <textarea wire:model.live="answers.{{ $currentQuestion->id }}" rows="8"
-                                    placeholder="Write your essay answer here..."
-                                    class="w-full px-4 py-3 bg-gray-600 border-2 border-gray-500 rounded-lg text-white placeholder-gray-400 focus:border-purple-500 focus:ring-purple-500 resize-y text-lg"></textarea>
-                            </div>
-                        @endif
+                        <div class="space-y-3">
+                            @foreach (json_decode($currentQuestion->options, true) ?? [] as $optionIndex => $option)
+                                @php
+                                    $questionId = $currentQuestion->id;
+                                    $currentAnswer = isset($answers[$questionId]) ? $answers[$questionId] : null;
+                                    $isSelected = (string)$currentAnswer === (string)$optionIndex;
+                                @endphp
+                                <div
+                                    wire:click="$set('answers.{{ $questionId }}', '{{ $optionIndex }}')"
+                                    class="flex items-center p-4 bg-gray-600 rounded-lg hover:bg-gray-500 cursor-pointer transition-all duration-200 border-2 {{ $isSelected ? 'border-purple-500 bg-purple-700/30' : 'border-transparent' }} hover:border-purple-500">
+                                    @if ($currentQuestion->hasMultipleCorrectAnswers())
+                                        <input type="checkbox"
+                                            @if($isSelected) checked @endif
+                                            class="mr-3 rounded w-4 h-4 text-purple-600 pointer-events-none">
+                                    @else
+                                        <input type="radio"
+                                            name="question_{{ $questionId }}"
+                                            @if($isSelected) checked @endif
+                                            class="mr-3 w-4 h-4 text-purple-600 pointer-events-none">
+                                    @endif
+                                    <span class="text-white text-lg">{{ chr(65 + $optionIndex) }}.
+                                        {{ $option }}</span>
+                                </div>
+                            @endforeach
+                        </div>
+                    @elseif($currentQuestion->question_type === 'true_false')
+                        <div class="space-y-3">
+                            @foreach (json_decode($currentQuestion->options, true) ?? [] as $optionIndex => $option)
+                                @php
+                                    $questionId = $currentQuestion->id;
+                                    $currentAnswer = isset($answers[$questionId]) ? $answers[$questionId] : null;
+                                    $isSelected = (string)$currentAnswer === (string)$optionIndex;
+                                @endphp
+                                <div
+                                    wire:click="$set('answers.{{ $questionId }}', '{{ $optionIndex }}')"
+                                    class="flex items-center p-4 bg-gray-600 rounded-lg hover:bg-gray-500 cursor-pointer transition-all duration-200 border-2 {{ $isSelected ? 'border-purple-500 bg-purple-700/30' : 'border-transparent' }} hover:border-purple-500">
+                                    <input type="radio"
+                                        name="question_{{ $questionId }}"
+                                        @if($isSelected) checked @endif
+                                        class="mr-3 w-4 h-4 text-purple-600 pointer-events-none">
+                                    <span class="text-white text-lg">{{ $option }}</span>
+                                </div>
+                            @endforeach
+                        </div>
+                    @elseif(in_array($currentQuestion->question_type, ['short_answer', 'fill_blank']))
+                        <div>
+                            <input type="text" wire:model.live="answers.{{ $currentQuestion->id }}"
+                                placeholder="Enter your answer..."
+                                class="w-full px-4 py-3 bg-gray-600 border-2 border-gray-500 rounded-lg text-white placeholder-gray-400 focus:border-purple-500 focus:ring-purple-500 text-lg">
+                        </div>
+                    @elseif($currentQuestion->question_type === 'essay')
+                        <div>
+                            <textarea wire:model.live="answers.{{ $currentQuestion->id }}" rows="8"
+                                placeholder="Write your essay answer here..."
+                                class="w-full px-4 py-3 bg-gray-600 border-2 border-gray-500 rounded-lg text-white placeholder-gray-400 focus:border-purple-500 focus:ring-purple-500 resize-y text-lg"></textarea>
+                        </div>
+                    @endif
                     </div>
                 @endif
 
@@ -498,22 +512,16 @@
 
                     <!-- Answer Options Display for Multiple Choice/True-False -->
                     @if (in_array($question->question_type, ['multiple_choice', 'true_false']))
-                        @php
-                            $options = json_decode($question->options, true) ?? [];
-                            $correctAnswers = json_decode($question->correct_answers, true) ?? [];
-                            $userAnswers = [];
-                            
-                            if ($studentAnswer && isset($studentAnswer->raw_answer)) {
-                                $rawAnswer = $studentAnswer->raw_answer;
-                                
-                                // Handle JSON string answers
-                                if (is_string($rawAnswer) && json_decode($rawAnswer) !== null) {
-                                    $rawAnswer = json_decode($rawAnswer, true);
-                                }
-                                
-                                $userAnswers = is_array($rawAnswer) ? array_map('intval', $rawAnswer) : [(int) $rawAnswer];
-                            }
-                        @endphp
+                    @php
+                    $options = json_decode($question->options, true) ?? [];
+                    $correctAnswers = json_decode($question->correct_answers, true) ?? [];
+                    $userAnswers = [];
+                    
+                    if ($studentAnswer && isset($studentAnswer->answer)) {
+                        $answer = $studentAnswer->answer; // Model cast handles JSON decode
+                        $userAnswers = is_array($answer) ? array_map('intval', $answer) : [(int) $answer];
+                    }
+                @endphp
                         
                         <div class="bg-gray-800/50 rounded-lg p-4 mb-4">
                             <div class="text-sm text-gray-400 mb-3">Answer choices:</div>

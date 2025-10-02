@@ -444,26 +444,18 @@ class StudentAssessmentTaker extends Component
                     $correctAnswers++;
                 }
 
-                // Create a copy of the student answer for manipulation
-                $answerCopy = clone $studentAnswer;
-
-                // Format the answer for display
-                $answerCopy->formatted_answer = $this->formatAnswerForDisplay($question, $studentAnswer->answer);
-
-                // Add formatted correct answer
+                // Don't clone - just use the original
+                // The model cast will handle the answer decoding automatically
+                $studentAnswer->formatted_answer = $this->formatAnswerForDisplay($question, $studentAnswer->answer);
                 $question->formatted_correct_answer = $this->getFormattedCorrectAnswer($question);
 
-                // Store the raw answer for option comparison
-                $answerCopy->raw_answer = $studentAnswer->answer;
-
-                $answersData[$question->id] = $answerCopy;
+                $answersData[$question->id] = $studentAnswer;
             } else {
-                // Handle unanswered questions
                 $dummyAnswer = new \stdClass();
                 $dummyAnswer->formatted_answer = 'Not answered';
                 $dummyAnswer->is_correct = false;
                 $dummyAnswer->points_earned = 0;
-                $dummyAnswer->raw_answer = null;
+                $dummyAnswer->answer = null;
                 $question->formatted_correct_answer = $this->getFormattedCorrectAnswer($question);
                 $answersData[$question->id] = $dummyAnswer;
             }
@@ -482,7 +474,6 @@ class StudentAssessmentTaker extends Component
             'answers' => $answersData,
         ];
     }
-
     /**
      * Get formatted correct answer for display
      */
@@ -549,7 +540,6 @@ class StudentAssessmentTaker extends Component
                 // Store as single integer
                 $answerToStore = (int) $userAnswer;
             }
-            // For text answers, keep as string
 
             // Use the Question model's method to check correctness
             $isCorrect = $question->isCorrectAnswer($userAnswer);
