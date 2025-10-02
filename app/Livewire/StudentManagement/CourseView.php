@@ -8,6 +8,7 @@ use App\Models\Section;
 use App\Models\Lesson;
 use App\Models\Assessment;
 use App\Models\StudentAnswer;
+use App\Models\CourseEnrollment;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
@@ -26,19 +27,27 @@ class CourseView extends Component
 
     public function mount($course)
     {
-        // Set completion threshold from config
-        $this->sectionCompletionThreshold = config('course.section_completion_threshold', 80);
-        
-        $this->course = Course::with(['sections.lessons', 'instructor', 'category'])
-            ->where('slug', $course)
-            ->where('is_published', true)
-            ->where('is_approved', true)
-            ->firstOrFail();
+        // If $course is a string (slug), find the course by slug
+        if (is_string($course)) {
+            $this->course = Course::with(['sections.lessons', 'instructor', 'category'])
+                ->where('slug', $course)
+                ->where('is_published', true)
+                ->where('is_approved', true)
+                ->firstOrFail();
+        } else {
+            // If it's already a Course model (shouldn't happen with current setup)
+            $this->course = $course;
+        }
 
-        // Check if user is enrolled
-        if (!Auth::user()->courses()->where('course_id', $this->course->id)->exists()) {
+        // Check if user is enrolled using CourseEnrollment model
+        if (!CourseEnrollment::where('course_id', $this->course->id)
+                            ->where('user_id', Auth::id())
+                            ->exists()) {
             abort(403, 'You are not enrolled in this course.');
         }
+
+        // Set completion threshold from config
+        $this->sectionCompletionThreshold = config('course.section_completion_threshold', 80);
 
         $this->loadUserProgress();
         $this->determineUnlockedSections();
@@ -47,7 +56,7 @@ class CourseView extends Component
 
     protected function loadUserProgress()
     {
-        // Get completed lessons - make sure we get them as IDs
+        // Get completed lessons
         $completedLessonsQuery = Auth::user()->completedLessons()
             ->whereIn('lesson_id', $this->getAllLessonIds())
             ->pluck('lesson_id');
@@ -188,7 +197,6 @@ class CourseView extends Component
         }
     }
 
-
     #[On('lesson-uncompleted')]
     public function handleLessonUncompleted($lessonId)
     {
@@ -256,11 +264,13 @@ class CourseView extends Component
         $progress = $this->calculateOverallProgress();
         
         try {
-            // Update user's course progress
-            Auth::user()->courses()->updateExistingPivot($this->course->id, [
-                'progress' => $progress,
-                'updated_at' => now()
-            ]);
+            // Update user's course progress in CourseEnrollment
+            CourseEnrollment::where('course_id', $this->course->id)
+                ->where('user_id', Auth::id())
+                ->update([
+                    'progress_percentage' => $progress,
+                    'updated_at' => now()
+                ]);
         } catch (\Exception $e) {
             \Log::error('Error updating course progress: ' . $e->getMessage());
         }
@@ -279,54 +289,6 @@ class CourseView extends Component
         
         return "Complete {$this->sectionCompletionThreshold}% of previous section to unlock";
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     #[On('assessment-status-changed')]
     public function handleAssessmentStatusChanged($data)
@@ -386,6 +348,7 @@ class CourseView extends Component
 
         return true; // All assessments passed
     }
+
     public function render()
     {
         return view('livewire.student-management.course-view');

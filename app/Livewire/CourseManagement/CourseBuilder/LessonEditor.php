@@ -102,26 +102,17 @@ class LessonEditor extends Component
         }
 
         $course = $this->lesson->section->course;
-        
-        // Create a short course prefix (max 30 chars, remove common words)
         $coursePrefix = $this->createCoursePrefix($course->title);
-        
-        // Combine course prefix with lesson title
         $baseSlug = Str::slug($coursePrefix . '-' . $this->title);
-        
-        // Limit total slug length to 100 characters for database/SEO
         $baseSlug = Str::limit($baseSlug, 100, '');
         
-        // Check for uniqueness and add counter if needed
         $slug = $baseSlug;
         $counter = 1;
         
         while (Lesson::where('slug', $slug)->where('id', '!=', $this->lessonId)->exists()) {
-            // Add counter before any truncation happened
             $slug = $baseSlug . '-' . $counter;
             $counter++;
             
-            // Prevent infinite loops
             if ($counter > 100) {
                 $slug = $baseSlug . '-' . time();
                 break;
@@ -132,53 +123,32 @@ class LessonEditor extends Component
         $this->validateOnly('slug');
     }
 
-    /**
-     * Create a short, meaningful course prefix from course title
-     * Examples:
-     * "Introduction to Web Development" -> "intro-web-dev"
-     * "Advanced JavaScript Programming" -> "advanced-js"
-     * "Machine Learning Basics" -> "ml-basics"
-     */
     private function createCoursePrefix($courseTitle)
     {
-        // Common words to remove for brevity
         $stopWords = ['introduction', 'to', 'the', 'a', 'an', 'for', 'in', 'on', 'with', 'and', 'or'];
-        
-        // Convert to lowercase and split into words
         $words = explode(' ', Str::lower($courseTitle));
         
-        // Remove stop words but keep first word if it's important
         $filtered = [];
         foreach ($words as $index => $word) {
             $word = trim($word);
             
-            // Keep first word even if it's a stop word (but shorten it)
             if ($index === 0) {
                 if (in_array($word, ['introduction', 'introductory'])) {
                     $filtered[] = 'intro';
                 } else {
                     $filtered[] = $word;
                 }
-            } 
-            // For other words, skip stop words
-            elseif (!in_array($word, $stopWords)) {
-                // Abbreviate common tech terms
+            } elseif (!in_array($word, $stopWords)) {
                 $word = $this->abbreviateTerm($word);
                 $filtered[] = $word;
             }
         }
         
-        // Limit to first 3 meaningful words
         $filtered = array_slice($filtered, 0, 3);
-        
-        // Join and create slug, limit to 30 chars
         $prefix = implode('-', $filtered);
         return Str::limit(Str::slug($prefix), 30, '');
     }
 
-    /**
-     * Abbreviate common technical terms for shorter slugs
-     */
     private function abbreviateTerm($word)
     {
         $abbreviations = [
@@ -199,51 +169,65 @@ class LessonEditor extends Component
         return $abbreviations[$word] ?? $word;
     }
 
-    // Fixed autoSave - doesn't trigger re-render
+    // CRITICAL FIX: Update content from frontend without triggering re-render
+    public function updateContentFromEditor($content)
+    {
+        // Just update the property, don't trigger any events or re-renders
+        $this->content = $content;
+        
+        // Don't call $this->render() or skipRender()
+        // Livewire will handle this automatically
+    }
+
+    // FIXED: Auto-save without disrupting the editor
     public function autoSave()
     {
         try {
+            // Only validate required fields for auto-save
             $this->validate([
                 'title' => 'required|string|max:255',
-                'content' => 'nullable|string',
             ]);
 
             $cleanContent = $this->content;
             
             if (!empty($cleanContent) && is_string($cleanContent)) {
                 $cleanContent = Purifier::clean($cleanContent, [
-                    'HTML.Allowed' => 'h1,h2,h3,h4,h5,h6,p,br,strong,em,u,s,ul,ol,li,a[href],img[src|alt],blockquote,pre,code,div[class],span[class]',
+                    'HTML.Allowed' => 'h1,h2,h3,h4,h5,h6,p,br,strong,em,u,s,ul,ol,li,a[href|target],img[src|alt],blockquote,pre,code,div[class],span[class]',
                     'CSS.AllowTricky' => true,
                     'AutoFormat.RemoveEmpty' => false,
                 ]);
             }
 
-            $this->lesson->update([
+            // Use updateQuietly to avoid firing model events
+            $this->lesson->updateQuietly([
                 'title' => $this->title,
                 'content' => $cleanContent,
                 'description' => $this->description,
             ]);
 
-            // Don't dispatch events that cause re-render
-            $this->dispatch('lesson-autosaved', ['lessonId' => $this->lessonId]);
+            // Dispatch event WITHOUT causing component re-render
+            $this->dispatch('lesson-autosaved', lessonId: $this->lessonId);
             
-            return true;
+            return ['success' => true, 'message' => 'Auto-saved successfully'];
+            
         } catch (\Exception $e) {
-            \Log::error('Auto-save failed: ' . $e->getMessage());
-            return false;
+            \Log::error('Auto-save failed: ' . $e->getMessage(), [
+                'lesson_id' => $this->lessonId,
+                'trace' => $e->getTraceAsString()
+            ]);
+            return ['success' => false, 'message' => $e->getMessage()];
         }
     }
 
     public function quickSave()
     {
         $result = $this->autoSave();
-        if ($result) {
+        if ($result['success']) {
             $this->dispatch('lesson-saved');
         }
         return $result;
     }
 
-    // Rest of your methods remain the same...
     public function handleUpload($type, $fileProperty, $mimes, $maxSize, $storageFolder)
     {
         $this->validate([
@@ -357,7 +341,7 @@ class LessonEditor extends Component
 
     protected function saveFiles()
     {
-        $this->lesson->update([
+        $this->lesson->updateQuietly([
             'images' => json_encode($this->images),
             'documents' => json_encode($this->documents),
             'audios' => json_encode($this->audios),
@@ -374,7 +358,7 @@ class LessonEditor extends Component
         
         if (!empty($cleanContent) && is_string($cleanContent)) {
             $cleanContent = Purifier::clean($cleanContent, [
-                'HTML.Allowed' => 'h1,h2,h3,h4,h5,h6,p,br,strong,em,u,s,ul,ol,li,a[href],img[src|alt],blockquote,pre,code,div[class],span[class]',
+                'HTML.Allowed' => 'h1,h2,h3,h4,h5,h6,p,br,strong,em,u,s,ul,ol,li,a[href|target],img[src|alt],blockquote,pre,code,div[class],span[class]',
                 'CSS.AllowTricky' => true,
                 'AutoFormat.RemoveEmpty' => false,
             ]);

@@ -1,4 +1,4 @@
-<div class="bg-gray-900 rounded-xl p-6">
+<div class="bg-gray-100 dark:bg-gray-900 rounded-xl p-6 transition-colors duration-300">
     <!-- Course Header -->
     <livewire:student-management.course-view.course-progress-header :course="$course" :overallProgress="$this->calculateOverallProgress()"
         :currentSection="$currentSection" :completedLessons="$completedLessons" wire:key="header-{{ $course->id }}" />
@@ -22,10 +22,10 @@
                     :completedLessons="$completedLessons" :unlockedSections="$unlockedSections" wire:key="content-{{ $currentLesson->id }}" />
             @else
                 <!-- Empty State -->
-                <div class="bg-gray-800 rounded-xl p-10 text-center">
-                    <i class="fas fa-book-open text-gray-400 text-4xl mb-4"></i>
-                    <h3 class="text-lg font-medium text-white mb-2">No lesson selected</h3>
-                    <p class="text-gray-400">Select a lesson from the sidebar to begin learning.</p>
+                <div class="bg-white dark:bg-gray-800 rounded-xl p-10 text-center border border-gray-200 dark:border-gray-700 transition-colors duration-300">
+                    <i class="fas fa-book-open text-gray-400 dark:text-gray-500 text-4xl mb-4"></i>
+                    <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-2">No lesson selected</h3>
+                    <p class="text-gray-600 dark:text-gray-400">Select a lesson from the sidebar to begin learning.</p>
                 </div>
             @endif
         </div>
