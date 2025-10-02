@@ -1,41 +1,41 @@
 <div>
-    <div class="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-200 dark:border-gray-700 transition-colors duration-300">
+    <div class="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-200 dark:border-gray-700 transition-colors duration-300 shadow-lg">
         <!-- Lesson Header -->
-        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6 pb-6 border-b border-gray-200 dark:border-gray-700">
             <div class="flex-1">
                 <div class="flex items-center text-sm text-gray-500 dark:text-gray-400 mb-2">
                     <span>{{ $lesson->section->title }}</span>
                     <i class="fas fa-chevron-right mx-2"></i>
                     <span>Lesson {{ $currentIndex + 1 }}</span>
                 </div>
-                <h2 class="text-xl font-bold text-gray-900 dark:text-white">{{ $lesson->title }}</h2>
+                <h2 class="text-2xl font-bold text-gray-900 dark:text-white">{{ $lesson->title }}</h2>
 
                 @if ($lesson->description)
                     <p class="text-gray-700 dark:text-gray-300 mt-2">{{ $lesson->description }}</p>
                 @endif
 
-                <div class="flex items-center gap-4 mt-3 text-sm text-gray-600 dark:text-gray-400">
+                <div class="flex items-center gap-4 mt-3 text-sm text-gray-600 dark:text-gray-400 flex-wrap">
                     @if ($lesson->formatted_duration !== 'N/A')
-                        <span class="flex items-center">
+                        <span class="flex items-center bg-gray-100 dark:bg-gray-700 px-3 py-1 rounded-full">
                             <i class="fas fa-clock mr-1"></i>
                             {{ $lesson->formatted_duration }}
                         </span>
                     @endif
 
                     @if ($lesson->difficulty_level)
-                        <span class="capitalize bg-gray-200 dark:bg-gray-700 px-2 py-1 rounded text-xs text-gray-800 dark:text-gray-300">
+                        <span class="capitalize bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300 px-3 py-1 rounded-full text-xs font-medium">
                             {{ $lesson->difficulty_level }}
                         </span>
                     @endif
 
                     @if ($hasAssessments)
                         @if ($allAssessmentsPassed)
-                            <span class="flex items-center bg-green-600 px-2 py-1 rounded text-xs text-white">
+                            <span class="flex items-center bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-300 px-3 py-1 rounded-full text-xs font-medium">
                                 <i class="fas fa-check-circle mr-1"></i>
                                 Assessments Passed
                             </span>
                         @else
-                            <span class="flex items-center bg-red-600 px-2 py-1 rounded text-xs text-white animate-pulse">
+                            <span class="flex items-center bg-red-100 dark:bg-red-900 text-red-700 dark:text-red-300 px-3 py-1 rounded-full text-xs font-medium animate-pulse">
                                 <i class="fas fa-exclamation-triangle mr-1"></i>
                                 Assessment Required
                             </span>
@@ -48,12 +48,12 @@
             <div class="flex items-center gap-3">
                 @if ($isCompleted)
                     <button wire:click="markAsIncomplete"
-                        class="px-4 py-2 bg-yellow-600 hover:bg-yellow-700 text-white rounded-lg text-sm transition-colors flex items-center">
+                        class="px-4 py-2 bg-yellow-600 hover:bg-yellow-700 text-white rounded-lg text-sm transition-all duration-200 flex items-center shadow-md hover:shadow-lg">
                         <i class="fas fa-undo mr-2"></i> Mark Incomplete
                     </button>
                 @else
                     <button wire:click="markAsCompleted"
-                        class="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg text-sm transition-colors flex items-center
+                        class="px-4 py-2 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white rounded-lg text-sm transition-all duration-200 flex items-center shadow-md hover:shadow-lg
                         {{ $hasAssessments && !$allAssessmentsPassed ? 'opacity-50 cursor-not-allowed' : '' }}"
                         @if ($hasAssessments && !$allAssessmentsPassed) disabled @endif>
                         <i class="fas fa-check mr-2"></i> Mark Complete
@@ -74,10 +74,10 @@
             <!-- ASSESSMENTS SECTION -->
             @if ($hasAssessments)
                 <div class="mb-6">
-                    <div class="flex justify-between items-center cursor-pointer group bg-purple-100 dark:bg-purple-900/30 border-2 border-purple-500 rounded-lg p-4 hover:bg-purple-200 dark:hover:bg-purple-900/50 transition-all duration-200"
+                    <div class="flex justify-between items-center cursor-pointer group bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 border-2 border-blue-500 dark:border-blue-600 rounded-lg p-4 hover:from-blue-100 hover:to-indigo-100 dark:hover:from-blue-900/30 dark:hover:to-indigo-900/30 transition-all duration-200 shadow-md hover:shadow-lg"
                         onclick="toggleSection('assessments')">
                         <div class="flex items-center">
-                            <div class="w-10 h-10 bg-purple-600 rounded-full flex items-center justify-center mr-3">
+                            <div class="w-10 h-10 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-full flex items-center justify-center mr-3 shadow-md">
                                 <i class="fas fa-clipboard-check text-white text-lg"></i>
                             </div>
                             <div>
@@ -95,7 +95,7 @@
                                         </span>
                                     @endif
                                 </h3>
-                                <p class="text-purple-700 dark:text-purple-200 text-sm mt-1">
+                                <p class="text-blue-700 dark:text-blue-300 text-sm mt-1">
                                     @php
                                         $assessmentCount = \App\Models\Assessment::where('lesson_id', $lesson->id)->count();
                                     @endphp
@@ -105,21 +105,21 @@
                         </div>
                         <div class="flex items-center">
                             @if (!$allAssessmentsPassed)
-                                <div class="w-8 h-8 bg-red-600 rounded-full flex items-center justify-center mr-3 animate-pulse">
+                                <div class="w-8 h-8 bg-red-600 rounded-full flex items-center justify-center mr-3 animate-pulse shadow-md">
                                     <i class="fas fa-exclamation text-white text-sm"></i>
                                 </div>
                             @else
-                                <div class="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center mr-3">
+                                <div class="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center mr-3 shadow-md">
                                     <i class="fas fa-check text-white text-sm"></i>
                                 </div>
                             @endif
-                            <i class="fas fa-chevron-down text-purple-600 dark:text-purple-300 transform transition-transform"
+                            <i class="fas fa-chevron-down text-blue-600 dark:text-blue-400 transform transition-transform"
                                 id="assessments-chevron"></i>
                         </div>
                     </div>
 
                     <div class="mt-3 {{ $allAssessmentsPassed ? 'hidden' : '' }}" id="assessments-content">
-                        <div class="bg-purple-50 dark:bg-purple-900/20 border border-purple-300 dark:border-purple-500 rounded-lg p-1">
+                        <div class="bg-gray-50 dark:bg-gray-900/50 border border-blue-300 dark:border-blue-700 rounded-lg p-1 shadow-inner">
                             <livewire:student-management.course-view.student-assessment-taker :lesson="$lesson"
                                 wire:key="assessment-{{ $lesson->id }}" wire:poll.10s="pollAssessmentStatus" />
                         </div>
@@ -130,18 +130,21 @@
             <!-- Documents -->
             @if ($lesson->hasDocuments() && count($lesson->getDocumentsArray()) > 0)
                 <div class="mb-6">
-                    <div class="flex justify-between items-center cursor-pointer group"
+                    <div class="flex justify-between items-center cursor-pointer group bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4 hover:bg-gray-100 dark:hover:bg-gray-700 transition-all duration-200 border border-gray-200 dark:border-gray-600"
                         onclick="toggleSection('documents')">
-                        <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Course Materials</h3>
+                        <h3 class="text-lg font-semibold text-gray-900 dark:text-white flex items-center">
+                            <i class="fas fa-file-alt text-indigo-600 dark:text-indigo-400 mr-2"></i>
+                            Course Materials
+                        </h3>
                         <i class="fas fa-chevron-down text-gray-500 dark:text-gray-400 transform transition-transform group-hover:text-gray-700 dark:group-hover:text-white"
                             id="documents-chevron"></i>
                     </div>
                     <div class="mt-3 hidden" id="documents-content">
                         <div class="grid gap-3">
                             @foreach ($lesson->getDocumentsArray() as $index => $document)
-                                <div class="bg-gray-100 dark:bg-gray-700 rounded-lg p-4 flex items-center justify-between border border-gray-200 dark:border-gray-600">
+                                <div class="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4 flex items-center justify-between border border-gray-200 dark:border-gray-600 hover:shadow-md transition-shadow duration-200">
                                     <div class="flex items-center">
-                                        <div class="w-10 h-10 bg-indigo-600 rounded flex items-center justify-center mr-3">
+                                        <div class="w-10 h-10 bg-indigo-600 rounded flex items-center justify-center mr-3 shadow-md">
                                             @switch(strtolower($document['type'] ?? 'file'))
                                                 @case('pdf')
                                                     <i class="fas fa-file-pdf text-white"></i>
@@ -168,11 +171,11 @@
                                     <div class="flex gap-2">
                                         <button
                                             onclick="openDocumentModal('{{ asset('storage/' . $document['path']) }}', '{{ $document['name'] }}')"
-                                            class="px-3 py-1 bg-indigo-600 hover:bg-indigo-700 text-white rounded text-sm transition-colors">
+                                            class="px-3 py-1 bg-indigo-600 hover:bg-indigo-700 text-white rounded text-sm transition-colors shadow-md hover:shadow-lg">
                                             <i class="fas fa-eye mr-1"></i> View
                                         </button>
                                         <a href="{{ asset('storage/' . $document['path']) }}" target="_blank"
-                                            class="px-3 py-1 bg-gray-500 dark:bg-gray-600 hover:bg-gray-600 dark:hover:bg-gray-700 text-white rounded text-sm transition-colors">
+                                            class="px-3 py-1 bg-gray-500 dark:bg-gray-600 hover:bg-gray-600 dark:hover:bg-gray-700 text-white rounded text-sm transition-colors shadow-md hover:shadow-lg">
                                             <i class="fas fa-download mr-1"></i> Download
                                         </a>
                                     </div>
@@ -186,14 +189,17 @@
             <!-- Video Content -->
             @if ($lesson->video_url)
                 <div class="mb-6">
-                    <div class="flex justify-between items-center cursor-pointer group"
+                    <div class="flex justify-between items-center cursor-pointer group bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4 hover:bg-gray-100 dark:hover:bg-gray-700 transition-all duration-200 border border-gray-200 dark:border-gray-600"
                         onclick="toggleSection('video-content')">
-                        <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Video Lesson</h3>
+                        <h3 class="text-lg font-semibold text-gray-900 dark:text-white flex items-center">
+                            <i class="fas fa-video text-red-600 dark:text-red-400 mr-2"></i>
+                            Video Lesson
+                        </h3>
                         <i class="fas fa-chevron-down text-gray-500 dark:text-gray-400 transform transition-transform group-hover:text-gray-700 dark:group-hover:text-white"
                             id="video-content-chevron"></i>
                     </div>
                     <div class="mt-3 hidden" id="video-content-content">
-                        <div class="bg-black rounded-lg overflow-hidden">
+                        <div class="bg-black rounded-lg overflow-hidden shadow-lg">
                             @if (str_contains($lesson->video_url, 'youtube.com') || str_contains($lesson->video_url, 'youtu.be'))
                                 @php
                                     $videoId = '';
@@ -227,23 +233,26 @@
             <!-- Uploaded Videos -->
             @if ($lesson->hasVideo() && count($lesson->getVideosArray()) > 0)
                 <div class="mb-6">
-                    <div class="flex justify-between items-center cursor-pointer group"
+                    <div class="flex justify-between items-center cursor-pointer group bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4 hover:bg-gray-100 dark:hover:bg-gray-700 transition-all duration-200 border border-gray-200 dark:border-gray-600"
                         onclick="toggleSection('uploaded-videos')">
-                        <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Course Videos</h3>
+                        <h3 class="text-lg font-semibold text-gray-900 dark:text-white flex items-center">
+                            <i class="fas fa-film text-purple-600 dark:text-purple-400 mr-2"></i>
+                            Course Videos
+                        </h3>
                         <i class="fas fa-chevron-down text-gray-500 dark:text-gray-400 transform transition-transform group-hover:text-gray-700 dark:group-hover:text-white"
                             id="uploaded-videos-chevron"></i>
                     </div>
                     <div class="mt-3 hidden" id="uploaded-videos-content">
                         <div class="grid gap-4">
                             @foreach ($lesson->getVideosArray() as $video)
-                                <div class="bg-gray-100 dark:bg-gray-700 rounded-lg p-3 border border-gray-200 dark:border-gray-600">
+                                <div class="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-3 border border-gray-200 dark:border-gray-600 shadow-sm hover:shadow-md transition-shadow duration-200">
                                     <div class="flex items-center justify-between mb-2">
                                         <span class="text-gray-900 dark:text-white font-medium">{{ $video['name'] }}</span>
-                                        <span class="text-xs text-gray-600 dark:text-gray-400">
+                                        <span class="text-xs text-gray-600 dark:text-gray-400 bg-gray-200 dark:bg-gray-600 px-2 py-1 rounded-full">
                                             {{ number_format($video['size'] / 1024 / 1024, 1) }}MB
                                         </span>
                                     </div>
-                                    <video controls class="w-full rounded">
+                                    <video controls class="w-full rounded shadow-md">
                                         <source src="{{ asset('storage/' . $video['path']) }}" type="video/mp4">
                                         Your browser does not support the video tag.
                                     </video>
@@ -257,32 +266,35 @@
             <!-- Audio Content -->
             @if ($lesson->hasAudio() && count($lesson->getAudiosArray()) > 0)
                 <div class="mb-6">
-                    <div class="flex justify-between items-center cursor-pointer group"
+                    <div class="flex justify-between items-center cursor-pointer group bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4 hover:bg-gray-100 dark:hover:bg-gray-700 transition-all duration-200 border border-gray-200 dark:border-gray-600"
                         onclick="toggleSection('audio-content')">
-                        <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Audio Content</h3>
+                        <h3 class="text-lg font-semibold text-gray-900 dark:text-white flex items-center">
+                            <i class="fas fa-headphones text-green-600 dark:text-green-400 mr-2"></i>
+                            Audio Content
+                        </h3>
                         <i class="fas fa-chevron-down text-gray-500 dark:text-gray-400 transform transition-transform group-hover:text-gray-700 dark:group-hover:text-white"
                             id="audio-content-chevron"></i>
                     </div>
                     <div class="mt-3 hidden" id="audio-content-content">
                         <div class="space-y-3">
                             @foreach ($lesson->getAudiosArray() as $index => $audio)
-                                <div class="bg-gray-100 dark:bg-gray-700 rounded-lg p-4 border border-gray-200 dark:border-gray-600">
+                                <div class="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4 border border-gray-200 dark:border-gray-600 shadow-sm hover:shadow-md transition-shadow duration-200">
                                     <div class="flex items-center justify-between mb-3">
                                         <span class="text-gray-900 dark:text-white font-medium">{{ $audio['name'] }}</span>
-                                        <span class="text-xs text-gray-600 dark:text-gray-400">
+                                        <span class="text-xs text-gray-600 dark:text-gray-400 bg-gray-200 dark:bg-gray-600 px-2 py-1 rounded-full">
                                             {{ number_format($audio['size'] / 1024 / 1024, 1) }}MB
                                         </span>
                                     </div>
-                                    <div class="mini-player flex items-center gap-4 p-3 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-600">
+                                    <div class="mini-player flex items-center gap-4 p-3 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-600 shadow-sm">
                                         <button
-                                            class="play-pause-btn w-10 h-10 rounded-full bg-indigo-600 flex items-center justify-center text-white hover:bg-indigo-700 transition-colors"
+                                            class="play-pause-btn w-10 h-10 rounded-full bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center text-white hover:from-green-600 hover:to-emerald-700 transition-all duration-200 shadow-md hover:shadow-lg"
                                             onclick="togglePlayPause({{ $index }})">
                                             <i class="fas fa-play" id="play-icon-{{ $index }}"></i>
                                             <i class="fas fa-pause hidden" id="pause-icon-{{ $index }}"></i>
                                         </button>
                                         <div class="flex-1">
-                                            <div class="w-full bg-gray-300 dark:bg-gray-600 rounded-full h-2 mb-1">
-                                                <div class="bg-indigo-500 h-2 rounded-full" style="width: 0%"
+                                            <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2 mb-1 shadow-inner">
+                                                <div class="bg-gradient-to-r from-green-500 to-emerald-600 h-2 rounded-full transition-all duration-200" style="width: 0%"
                                                     id="progress-bar-{{ $index }}"></div>
                                             </div>
                                             <div class="flex justify-between text-xs text-gray-600 dark:text-gray-400">
@@ -307,24 +319,28 @@
             <!-- Images -->
             @if ($lesson->hasImage())
                 <div class="mb-6">
-                    <div class="flex justify-between items-center cursor-pointer group"
+                    <div class="flex justify-between items-center cursor-pointer group bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4 hover:bg-gray-100 dark:hover:bg-gray-700 transition-all duration-200 border border-gray-200 dark:border-gray-600"
                         onclick="toggleSection('images-content')">
-                        <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Lesson Images</h3>
+                        <h3 class="text-lg font-semibold text-gray-900 dark:text-white flex items-center">
+                            <i class="fas fa-images text-pink-600 dark:text-pink-400 mr-2"></i>
+                            Lesson Images
+                        </h3>
                         <i class="fas fa-chevron-down text-gray-500 dark:text-gray-400 transform transition-transform group-hover:text-gray-700 dark:group-hover:text-white"
                             id="images-content-chevron"></i>
                     </div>
                     <div class="mt-3 hidden" id="images-content-content">
                         @if ($lesson->image_path)
                             <img src="{{ asset('storage/' . $lesson->image_path) }}" alt="Lesson Image"
-                                class="w-full rounded-lg mb-4 border border-gray-200 dark:border-gray-700">
+                                class="w-full rounded-lg mb-4 border border-gray-200 dark:border-gray-700 shadow-md hover:shadow-lg transition-shadow duration-200 cursor-pointer"
+                                onclick="openImageModal('{{ asset('storage/' . $lesson->image_path) }}')">
                         @endif
 
                         @if (count($lesson->getImagesArray()) > 0)
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 @foreach ($lesson->getImagesArray() as $image)
-                                    <div class="bg-gray-100 dark:bg-gray-700 rounded-lg overflow-hidden border border-gray-200 dark:border-gray-600">
+                                    <div class="bg-gray-50 dark:bg-gray-700/50 rounded-lg overflow-hidden border border-gray-200 dark:border-gray-600 shadow-sm hover:shadow-md transition-shadow duration-200">
                                         <img src="{{ asset('storage/' . $image['path']) }}" alt="Lesson Image"
-                                            class="w-full h-48 object-cover cursor-pointer"
+                                            class="w-full h-48 object-cover cursor-pointer hover:opacity-90 transition-opacity duration-200"
                                             onclick="openImageModal('{{ asset('storage/' . $image['path']) }}')">
                                         <div class="p-3">
                                             <p class="text-sm text-gray-700 dark:text-gray-300">{{ $image['name'] }}</p>
@@ -340,9 +356,12 @@
             <!-- External Links -->
             @if ($lesson->hasExternalLinks() && count($lesson->getExternalLinksArray()) > 0)
                 <div class="mb-6">
-                    <div class="flex justify-between items-center cursor-pointer group"
+                    <div class="flex justify-between items-center cursor-pointer group bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4 hover:bg-gray-100 dark:hover:bg-gray-700 transition-all duration-200 border border-gray-200 dark:border-gray-600"
                         onclick="toggleSection('external-links')">
-                        <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Additional Resources</h3>
+                        <h3 class="text-lg font-semibold text-gray-900 dark:text-white flex items-center">
+                            <i class="fas fa-external-link-alt text-orange-600 dark:text-orange-400 mr-2"></i>
+                            Additional Resources
+                        </h3>
                         <i class="fas fa-chevron-down text-gray-500 dark:text-gray-400 transform transition-transform group-hover:text-gray-700 dark:group-hover:text-white"
                             id="external-links-chevron"></i>
                     </div>
@@ -350,12 +369,12 @@
                         <div class="space-y-2">
                             @foreach ($lesson->getExternalLinksArray() as $link)
                                 <a href="{{ $link['url'] }}" target="_blank"
-                                    class="block bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-lg p-4 transition-colors border border-gray-200 dark:border-gray-600">
+                                    class="block bg-gray-50 dark:bg-gray-700/50 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg p-4 transition-all duration-200 border border-gray-200 dark:border-gray-600 shadow-sm hover:shadow-md">
                                     <div class="flex items-center">
-                                        <i class="fas fa-external-link-alt text-indigo-500 dark:text-indigo-400 mr-3"></i>
+                                        <i class="fas fa-external-link-alt text-orange-500 dark:text-orange-400 mr-3"></i>
                                         <div>
                                             <p class="text-gray-900 dark:text-white font-medium">{{ $link['title'] }}</p>
-                                            <p class="text-xs text-gray-600 dark:text-gray-400">{{ $link['url'] }}</p>
+                                            <p class="text-xs text-gray-600 dark:text-gray-400 mt-1">{{ $link['url'] }}</p>
                                         </div>
                                     </div>
                                 </a>
@@ -369,11 +388,11 @@
         <!-- Document Modal -->
         <div id="document-modal"
             class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 hidden">
-            <div class="bg-white dark:bg-gray-800 rounded-lg w-11/12 h-5/6 max-w-6xl flex flex-col">
+            <div class="bg-white dark:bg-gray-800 rounded-lg w-11/12 h-5/6 max-w-6xl flex flex-col shadow-2xl">
                 <div class="flex justify-between items-center p-4 border-b border-gray-300 dark:border-gray-700">
                     <h3 class="text-lg font-semibold text-gray-900 dark:text-white" id="document-modal-title"></h3>
-                    <button onclick="closeDocumentModal()" class="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white">
-                        <i class="fas fa-times"></i>
+                    <button onclick="closeDocumentModal()" class="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">
+                        <i class="fas fa-times text-xl"></i>
                     </button>
                 </div>
                 <div class="flex-1 p-4">
@@ -385,10 +404,11 @@
         <!-- Image Modal -->
         <div id="image-modal"
             class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 hidden">
-            <div class="bg-white dark:bg-gray-800 rounded-lg w-11/12 h-5/6 max-w-6xl flex flex-col">
+            <div class="bg-white dark:bg-gray-800 rounded-lg w-11/12 h-5/6 max-w-6xl flex flex-col shadow-2xl">
                 <div class="flex justify-between items-center p-4 border-b border-gray-300 dark:border-gray-700">
-                    <button onclick="closeImageModal()" class="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white">
-                        <i class="fas fa-times"></i>
+                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Image Preview</h3>
+                    <button onclick="closeImageModal()" class="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">
+                        <i class="fas fa-times text-xl"></i>
                     </button>
                 </div>
                 <div class="flex-1 p-4 flex items-center justify-center">
@@ -402,7 +422,7 @@
             @if ($this->getPreviousLesson())
                 @php $prevLesson = $this->getPreviousLesson(); @endphp
                 <button wire:click="goToPreviousLesson"
-                    class="px-4 py-2 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-900 dark:text-white rounded-lg flex items-center transition-colors">
+                    class="px-4 py-2 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-900 dark:text-white rounded-lg flex items-center transition-all duration-200 shadow-md hover:shadow-lg">
                     <i class="fas fa-arrow-left mr-2"></i>
                     <span class="hidden sm:inline">Previous:</span>
                     <span class="ml-1 truncate max-w-32">
@@ -417,7 +437,7 @@
                 @php $nextLesson = $this->getNextLesson(); @endphp
                 @if ($this->canProceedToNext() && $this->isNextLessonUnlocked())
                     <button wire:click="goToNextLesson"
-                        class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg flex items-center transition-colors">
+                        class="px-4 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white rounded-lg flex items-center transition-all duration-200 shadow-md hover:shadow-lg">
                         <span class="hidden sm:inline">Next:</span>
                         <span class="mr-1 truncate max-w-32">
                             {{ is_object($nextLesson) ? $nextLesson->title : $nextLesson['title'] }}
@@ -437,7 +457,7 @@
                 @endif
             @else
                 <button wire:click="completeCourse"
-                    class="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg flex items-center transition-colors
+                    class="px-4 py-2 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white rounded-lg flex items-center transition-all duration-200 shadow-md hover:shadow-lg
                     {{ !$this->canProceedToNext() ? 'opacity-50 cursor-not-allowed' : '' }}"
                     @if (!$this->canProceedToNext()) disabled @endif>
                     <i class="fas fa-trophy mr-2"></i>
@@ -452,8 +472,8 @@
                 <span>Lesson {{ $currentIndex + 1 }} of {{ count($allLessons) }}</span>
                 <span>{{ round((($currentIndex + 1) / count($allLessons)) * 100) }}% through course</span>
             </div>
-            <div class="w-full bg-gray-300 dark:bg-gray-700 rounded-full h-2">
-                <div class="bg-gradient-to-r from-indigo-500 to-purple-500 h-2 rounded-full transition-all duration-300"
+            <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2 shadow-inner">
+                <div class="bg-gradient-to-r from-blue-500 to-indigo-600 h-2 rounded-full transition-all duration-300"
                     style="width: {{ round((($currentIndex + 1) / count($allLessons)) * 100) }}%"></div>
             </div>
         </div>
@@ -568,8 +588,7 @@
         }
 
         .mini-player:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            transform: translateY(-1px);
         }
 
         .play-pause-btn {
