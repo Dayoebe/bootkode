@@ -1,4 +1,14 @@
-<div>
+<div wire:poll.30s="updateTimeSpent">
+    <!-- Transition Overlay -->
+    @if($isTransitioning)
+    <div class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center backdrop-blur-sm">
+        <div class="bg-white dark:bg-gray-800 rounded-lg p-8 shadow-2xl">
+            <div class="animate-spin rounded-full h-16 w-16 border-b-4 border-blue-600 mx-auto mb-4"></div>
+            <p class="text-gray-900 dark:text-white font-medium">Loading next lesson...</p>
+        </div>
+    </div>
+    @endif
+
     <div class="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-200 dark:border-gray-700 transition-colors duration-300 shadow-lg">
         <!-- Lesson Header -->
         <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6 pb-6 border-b border-gray-200 dark:border-gray-700">
@@ -15,10 +25,23 @@
                 @endif
 
                 <div class="flex items-center gap-4 mt-3 text-sm text-gray-600 dark:text-gray-400 flex-wrap">
-                    @if ($lesson->formatted_duration !== 'N/A')
+                    <!-- Time Spent vs Estimated -->
+                    @if ($showTimeComparison)
+                        @php $timeComparison = $this->getTimeComparison(); @endphp
+                        <span class="flex items-center bg-gray-100 dark:bg-gray-700 px-3 py-1 rounded-full">
+                            <i class="fas fa-stopwatch mr-1"></i>
+                            {{ $this->getFormattedTimeSpent() }}
+                            @if($timeComparison && $timeComparison['estimated'] > 0)
+                                / {{ $timeComparison['estimated'] }}m
+                                <span class="ml-1 text-xs {{ $timeComparison['over_time'] ? 'text-yellow-600 dark:text-yellow-400' : 'text-green-600 dark:text-green-400' }}">
+                                    ({{ $timeComparison['percentage'] }}%)
+                                </span>
+                            @endif
+                        </span>
+                    @else
                         <span class="flex items-center bg-gray-100 dark:bg-gray-700 px-3 py-1 rounded-full">
                             <i class="fas fa-clock mr-1"></i>
-                            {{ $lesson->formatted_duration }}
+                            {{ $this->getFormattedTimeSpent() }}
                         </span>
                     @endif
 
@@ -61,6 +84,94 @@
                 @endif
             </div>
         </div>
+
+        <!-- Keyboard Shortcuts Info -->
+        <div class="mb-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-700 rounded-lg p-3">
+            <div class="flex items-center gap-2 text-sm text-blue-700 dark:text-blue-300">
+                <i class="fas fa-keyboard"></i>
+                <span class="font-medium">Keyboard Shortcuts:</span>
+                <span class="ml-2"><kbd class="px-2 py-1 bg-white dark:bg-gray-700 rounded border border-gray-300 dark:border-gray-600">←</kbd> Previous</span>
+                <span><kbd class="px-2 py-1 bg-white dark:bg-gray-700 rounded border border-gray-300 dark:border-gray-600">→</kbd> Next</span>
+                <span><kbd class="px-2 py-1 bg-white dark:bg-gray-700 rounded border border-gray-300 dark:border-gray-600">Space</kbd> Mark Complete</span>
+            </div>
+        </div>
+
+        <!-- Assessment Preview (if not started) -->
+        @if ($hasAssessments && !$allAssessmentsPassed)
+            @php $assessmentPreview = $this->getAssessmentPreview(); @endphp
+            @if ($assessmentPreview)
+                <div class="mb-6 bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 border-2 border-blue-300 dark:border-blue-600 rounded-xl p-6 shadow-lg">
+                    <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-4 flex items-center">
+                        <i class="fas fa-eye mr-2 text-blue-600 dark:text-blue-400"></i>
+                        Assessment Preview
+                    </h3>
+                    
+                    <div class="space-y-4">
+                        @foreach ($assessmentPreview as $preview)
+                            <div class="bg-white dark:bg-gray-800 rounded-lg p-4 border border-blue-200 dark:border-blue-700">
+                                <div class="flex justify-between items-start mb-3">
+                                    <div>
+                                        <h4 class="font-semibold text-gray-900 dark:text-white">{{ $preview['title'] }}</h4>
+                                        <span class="text-xs px-2 py-1 mt-1 inline-block rounded-full {{ $preview['type'] === 'quiz' ? 'bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300' : 'bg-indigo-100 dark:bg-indigo-900 text-indigo-700 dark:text-indigo-300' }}">
+                                            {{ ucfirst($preview['type']) }}
+                                        </span>
+                                    </div>
+                                    <span class="text-sm font-medium text-gray-600 dark:text-gray-400">
+                                        {{ $preview['total_points'] }} points
+                                    </span>
+                                </div>
+
+                                <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-3">
+                                    <div class="text-center bg-gray-50 dark:bg-gray-700 rounded-lg p-2">
+                                        <div class="text-2xl font-bold text-gray-900 dark:text-white">{{ $preview['question_count'] }}</div>
+                                        <div class="text-xs text-gray-600 dark:text-gray-400">Questions</div>
+                                    </div>
+                                    @if($preview['estimated_duration'])
+                                    <div class="text-center bg-gray-50 dark:bg-gray-700 rounded-lg p-2">
+                                        <div class="text-2xl font-bold text-gray-900 dark:text-white">{{ $preview['estimated_duration'] }}m</div>
+                                        <div class="text-xs text-gray-600 dark:text-gray-400">Duration</div>
+                                    </div>
+                                    @endif
+                                    <div class="text-center bg-gray-50 dark:bg-gray-700 rounded-lg p-2">
+                                        <div class="text-2xl font-bold text-gray-900 dark:text-white">{{ $preview['pass_percentage'] }}%</div>
+                                        <div class="text-xs text-gray-600 dark:text-gray-400">To Pass</div>
+                                    </div>
+                                    <div class="text-center bg-gray-50 dark:bg-gray-700 rounded-lg p-2">
+                                        <div class="text-2xl font-bold text-gray-900 dark:text-white">{{ count($preview['question_types']) }}</div>
+                                        <div class="text-xs text-gray-600 dark:text-gray-400">Types</div>
+                                    </div>
+                                </div>
+
+                                <!-- Question Types -->
+                                <div class="flex flex-wrap gap-2 mb-3">
+                                    @foreach ($preview['question_types'] as $type)
+                                        <span class="text-xs px-2 py-1 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-full">
+                                            {{ ucwords(str_replace('_', ' ', $type)) }}
+                                        </span>
+                                    @endforeach
+                                </div>
+
+                                <!-- Difficulty Distribution -->
+                                @if (!empty($preview['difficulty_distribution']))
+                                    <div class="flex items-center gap-2 text-sm flex-wrap">
+                                        <span class="text-gray-600 dark:text-gray-400">Difficulty:</span>
+                                        @foreach ($preview['difficulty_distribution'] as $level => $count)
+                                            <span class="px-2 py-1 rounded text-xs font-medium
+                                                {{ $level === 'easy' ? 'bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-300' : '' }}
+                                                {{ $level === 'medium' ? 'bg-yellow-100 dark:bg-yellow-900 text-yellow-700 dark:text-yellow-300' : '' }}
+                                                {{ $level === 'hard' ? 'bg-orange-100 dark:bg-orange-900 text-orange-700 dark:text-orange-300' : '' }}
+                                                {{ $level === 'expert' ? 'bg-red-100 dark:bg-red-900 text-red-700 dark:text-red-300' : '' }}">
+                                                {{ ucfirst($level) }}: {{ $count }}
+                                            </span>
+                                        @endforeach
+                                    </div>
+                                @endif
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
+            @endif
+        @endif
 
         <!-- Lesson Content -->
         <div class="lesson-content-wrapper">
@@ -480,20 +591,30 @@
     </div>
 
     <script>
-        let assessmentPollingActive = @json($shouldPoll);
-        let lastPollTime = 0;
-        const POLL_INTERVAL = 10000;
+        // Keyboard shortcuts
+        document.addEventListener('keydown', function(e) {
+            // Only handle shortcuts when not typing in input/textarea
+            if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
+                return;
+            }
 
-        if (assessmentPollingActive) {
-            setInterval(() => {
-                const now = Date.now();
-                if (now - lastPollTime >= POLL_INTERVAL) {
-                    @this.call('pollAssessmentStatus');
-                    lastPollTime = now;
-                }
-            }, POLL_INTERVAL);
-        }
+            switch(e.key) {
+                case 'ArrowLeft':
+                    e.preventDefault();
+                    @this.call('goToPreviousLesson');
+                    break;
+                case 'ArrowRight':
+                    e.preventDefault();
+                    @this.call('goToNextLesson');
+                    break;
+                case ' ':
+                    e.preventDefault();
+                    @this.call('markAsCompleted');
+                    break;
+            }
+        });
 
+        // Section toggle function
         function toggleSection(sectionId) {
             const content = document.getElementById(`${sectionId}-content`);
             const chevron = document.getElementById(`${sectionId}-chevron`);
@@ -502,6 +623,7 @@
             chevron.classList.toggle('fa-chevron-up');
         }
 
+        // Document modal functions
         function openDocumentModal(url, title) {
             document.getElementById('document-modal-title').textContent = title;
             document.getElementById('document-iframe').src = url;
@@ -513,6 +635,7 @@
             document.getElementById('document-iframe').src = '';
         }
 
+        // Image modal functions
         function openImageModal(url) {
             document.getElementById('modal-image').src = url;
             document.getElementById('image-modal').classList.remove('hidden');
@@ -523,6 +646,7 @@
             document.getElementById('modal-image').src = '';
         }
 
+        // Audio player functions
         function initAudioPlayer(index) {
             const audio = document.getElementById(`audio-${index}`);
             const durationElement = document.getElementById(`duration-${index}`);
@@ -567,6 +691,7 @@
             }
         }
 
+        // Modal close on click outside
         document.getElementById('document-modal').addEventListener('click', function(e) {
             if (e.target === this) closeDocumentModal();
         });
@@ -574,6 +699,21 @@
         document.getElementById('image-modal').addEventListener('click', function(e) {
             if (e.target === this) closeImageModal();
         });
+
+        // Assessment polling
+        let assessmentPollingActive = @json($shouldPoll);
+        let lastPollTime = 0;
+        const POLL_INTERVAL = 10000;
+
+        if (assessmentPollingActive) {
+            setInterval(() => {
+                const now = Date.now();
+                if (now - lastPollTime >= POLL_INTERVAL) {
+                    @this.call('pollAssessmentStatus');
+                    lastPollTime = now;
+                }
+            }, POLL_INTERVAL);
+        }
 
         document.addEventListener('livewire:init', () => {
             @this.on('assessment-completed', () => {
@@ -615,6 +755,23 @@
             50% {
                 opacity: .5;
             }
+        }
+
+        kbd {
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+            font-size: 0.875rem;
+            font-weight: 500;
+            line-height: 1;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .animate-spin {
+            animation: spin 1s linear infinite;
         }
     </style>
 
