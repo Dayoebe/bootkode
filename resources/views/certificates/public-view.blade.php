@@ -403,7 +403,7 @@
                     <div class="institution-seal">
                         <i class="fas fa-graduation-cap"></i>
                     </div>
-                    <div class="institution-name">ACADEMY LEARNING PLATFORM</div>
+                    <div class="institution-name">BOOTKODE ACADEMY LEARNING PLATFORM</div>
                     <div class="institution-subtitle">Excellence in Online Education</div>
                 </div>
 
@@ -415,12 +415,15 @@
 
                 <!-- Main Content -->
                 <div class="certificate-content">
-                    <div class="award-text">
-                        is hereby awarded this certificate in recognition of successfully completing
-                    </div>
-
+                    
                     <div class="recipient-name">
                         {{ $certificate->user->name }}
+                    </div>
+
+
+
+                    <div class="award-text">
+                        is hereby awarded this certificate in recognition of successfully completing
                     </div>
 
                     <div class="course-details">
