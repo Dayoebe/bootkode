@@ -9,7 +9,9 @@ use App\Models\Lesson;
 use App\Models\Assessment;
 use App\Models\StudentAnswer;
 use App\Models\CourseEnrollment;
+use App\Models\LessonProgress; // Add this if you're using the new model
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache; // ADD THIS LINE
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
 use Livewire\Attributes\On;
@@ -40,12 +42,23 @@ class CourseView extends Component
         }
 
         // Check if user is enrolled using CourseEnrollment model
-        if (!CourseEnrollment::where('course_id', $this->course->id)
-                            ->where('user_id', Auth::id())
-                            ->exists()) {
+        if (
+            !CourseEnrollment::where('course_id', $this->course->id)
+                ->where('user_id', Auth::id())
+                ->exists()
+        ) {
             abort(403, 'You are not enrolled in this course.');
         }
 
+        // Check if user wants to continue from last lesson
+        if (request()->has('continue') && request()->get('continue') === 'true') {
+            $lastLesson = $this->getLastViewedLesson();
+            if ($lastLesson) {
+                $this->currentLesson = $lastLesson;
+                $this->currentSection = $lastLesson->section;
+                return; // Skip setInitialLesson
+            }
+        }
         // Set completion threshold from config
         $this->sectionCompletionThreshold = config('course.section_completion_threshold', 80);
 
@@ -60,7 +73,7 @@ class CourseView extends Component
         $completedLessonsQuery = Auth::user()->completedLessons()
             ->whereIn('lesson_id', $this->getAllLessonIds())
             ->pluck('lesson_id');
-        
+
         $this->completedLessons = $completedLessonsQuery->toArray();
     }
 
@@ -78,7 +91,7 @@ class CourseView extends Component
     protected function determineUnlockedSections()
     {
         $this->unlockedSections = [];
-        
+
         foreach ($this->course->sections as $index => $section) {
             if ($index === 0) {
                 // First section is always unlocked
@@ -87,7 +100,7 @@ class CourseView extends Component
                 // Check if previous section meets completion threshold
                 $previousSection = $this->course->sections[$index - 1];
                 $previousProgress = $this->calculateSectionProgress($previousSection);
-                
+
                 if ($previousProgress >= $this->sectionCompletionThreshold) {
                     $this->unlockedSections[] = $section->id;
                 }
@@ -125,12 +138,12 @@ class CourseView extends Component
     {
         try {
             $lesson = Lesson::with('section')->findOrFail($lessonId);
-            
+
             // Check if the section is unlocked
             if (!in_array($lesson->section_id, $this->unlockedSections)) {
                 $sectionIndex = $this->getSectionIndex($lesson->section_id);
                 $requiredProgress = $this->sectionCompletionThreshold;
-                
+
                 $this->dispatch('notify', [
                     'message' => "Complete at least {$requiredProgress}% of the previous section to unlock this lesson.",
                     'type' => 'warning'
@@ -174,10 +187,10 @@ class CourseView extends Component
             try {
                 Auth::user()->completedLessons()->attach($lessonId, ['completed_at' => now()]);
                 $this->completedLessons[] = $lessonId;
-                
+
                 $this->updateCourseProgress();
                 $this->determineUnlockedSections();
-                
+
                 // Check if section progress now meets threshold to unlock next section
                 $lesson = Lesson::find($lessonId);
                 if ($lesson) {
@@ -204,7 +217,7 @@ class CourseView extends Component
             try {
                 Auth::user()->completedLessons()->detach($lessonId);
                 $this->completedLessons = array_values(array_diff($this->completedLessons, [$lessonId]));
-                
+
                 $this->updateCourseProgress();
                 $this->determineUnlockedSections();
                 $this->dispatch('progress-updated');
@@ -221,7 +234,7 @@ class CourseView extends Component
     {
         $currentIndex = $this->getSectionIndex($currentSection->id);
         $nextSection = $this->course->sections[$currentIndex + 1] ?? null;
-        
+
         if ($nextSection && !in_array($nextSection->id, $this->unlockedSections)) {
             $this->dispatch('section-unlocked', [
                 'sectionId' => $nextSection->id,
@@ -238,15 +251,16 @@ class CourseView extends Component
     public function calculateSectionProgress($section)
     {
         $totalLessons = $section->lessons->count();
-        if ($totalLessons === 0) return 0;
-        
+        if ($totalLessons === 0)
+            return 0;
+
         $completed = 0;
         foreach ($section->lessons as $lesson) {
             if (in_array($lesson->id, $this->completedLessons)) {
                 $completed++;
             }
         }
-        
+
         return round(($completed / $totalLessons) * 100);
     }
 
@@ -255,14 +269,14 @@ class CourseView extends Component
         $totalLessons = $this->getAllLessonIds();
         $totalCount = count($totalLessons);
         $completedCount = count($this->completedLessons);
-        
+
         return $totalCount > 0 ? round(($completedCount / $totalCount) * 100) : 0;
     }
 
     private function updateCourseProgress()
     {
         $progress = $this->calculateOverallProgress();
-        
+
         try {
             // Update user's course progress in CourseEnrollment
             CourseEnrollment::where('course_id', $this->course->id)
@@ -282,11 +296,11 @@ class CourseView extends Component
         if ($sectionIndex === 0) {
             return 'Available to start';
         }
-        
+
         if (in_array($section->id, $this->unlockedSections)) {
             return 'Unlocked';
         }
-        
+
         return "Complete {$this->sectionCompletionThreshold}% of previous section to unlock";
     }
 
@@ -295,7 +309,7 @@ class CourseView extends Component
     {
         $lessonId = $data['lessonId'];
         $allPassed = $data['allPassed'];
-        
+
         // If all assessments are now passed, we might need to update progress
         if ($allPassed && $this->currentLesson && $this->currentLesson->id == $lessonId) {
             $this->dispatch('notify', [
@@ -316,7 +330,7 @@ class CourseView extends Component
     protected function canCompleteLessonWithoutAssessments($lessonId)
     {
         $assessments = Assessment::where('lesson_id', $lessonId)->get();
-        
+
         if ($assessments->isEmpty()) {
             return true; // No assessments, can complete
         }
@@ -348,7 +362,50 @@ class CourseView extends Component
 
         return true; // All assessments passed
     }
+    /**
+     * Get the last viewed lesson for "Continue Learning" feature
+     */
+    protected function getLastViewedLesson()
+    {
+        $cacheKey = 'user_' . Auth::id() . '_last_lesson_' . $this->course->id;
+        $lastViewed = Cache::get($cacheKey);
 
+        if ($lastViewed) {
+            $lesson = Lesson::find($lastViewed['lesson_id']);
+            if ($lesson && in_array($lesson->section_id, $this->unlockedSections)) {
+                return $lesson;
+            }
+        }
+
+        // Fallback: Use database progress
+        $progress = LessonProgress::getLastAccessedLesson(Auth::id(), $this->course->id);
+        if ($progress && $progress->lesson) {
+            return $progress->lesson;
+        }
+
+        return null;
+    }
+
+    /**
+     * Resume from last viewed lesson
+     */
+    public function continueFromLastLesson()
+    {
+        $lastLesson = $this->getLastViewedLesson();
+
+        if ($lastLesson) {
+            $this->currentLesson = $lastLesson;
+            $this->currentSection = $lastLesson->section;
+
+            $this->dispatch('notify', [
+                'message' => 'Resumed from where you left off!',
+                'type' => 'success'
+            ]);
+        } else {
+            // Start from first incomplete lesson
+            $this->setInitialLesson();
+        }
+    }
     public function render()
     {
         return view('livewire.student-management.course-view');
