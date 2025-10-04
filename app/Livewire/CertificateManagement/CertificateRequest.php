@@ -6,6 +6,7 @@ use Livewire\Component;
 use App\Models\Course;
 use App\Models\Certificate;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
 
@@ -137,7 +138,7 @@ class CertificateRequest extends Component
     private function calculateCourseGrade()
     {
         // Get all assessments for this course
-        $assessments = $this->course->assessments();
+        $assessments = $this->course->assessments ?? collect();
         
         if ($assessments->count() == 0) {
             return 'Pass'; // Default grade if no assessments
