@@ -1,12 +1,8 @@
 <?php
 
-use App\Livewire\CertificateManagement\CertificateAnalytics;
-use App\Livewire\CertificateManagement\CertificateTemplates;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\CertificateVerificationController;
-use App\Livewire\CertificateManagement\CertificateRequest;
-use App\Livewire\CertificateManagement\CertificateManagement;
 use App\Http\Controllers\PageController;
+use App\Http\Controllers\CertificateVerificationController;
 use App\Livewire\Affiliate;
 use App\Livewire\Content\ContentDocumentationCenter;
 
@@ -216,41 +212,6 @@ Route::middleware('auth')->group(function () {
     Route::get('/admin/job', \App\Livewire\Career\JobManagement::class)->name('admin.job');
 });
 
-// =============================================================================
-// PUBLIC ROUTES (No Authentication Required)
-// =============================================================================
-
-// Public Certificate Verification Routes
-Route::prefix('certificate')->name('certificate.')->group(function () {
-    Route::get('/verify', [CertificateVerificationController::class, 'index'])->name('verify');
-    Route::get('/verify/{verificationCode}', [CertificateVerificationController::class, 'verify'])->name('verify.code');
-    Route::post('/verify', [CertificateVerificationController::class, 'verify'])->name('verify.submit');
-    Route::get('/view/{verificationCode}', [CertificateVerificationController::class, 'show'])->name('view');
-    Route::get('/download/{verificationCode}', [CertificateVerificationController::class, 'download'])->name('download');
-    Route::get('/qr/{verificationCode}', [CertificateVerificationController::class, 'qrCode'])->name('qr');
-    Route::get('/widget/{verificationCode}', [CertificateVerificationController::class, 'widget'])->name('widget');
-});
-
-// API Routes for Certificate Verification
-Route::prefix('api/certificate')->name('api.certificate.')->group(function () {
-    Route::get('/verify/{verificationCode}', [CertificateVerificationController::class, 'api'])->name('verify');
-    Route::post('/batch-verify', [CertificateVerificationController::class, 'batchVerify'])->name('batch.verify');
-});
-
-// Webhook Routes
-Route::prefix('webhooks/certificates')->name('webhooks.certificates.')->group(function () {
-    Route::post('/verify', function () {
-        $verificationCode = request()->input('verification_code');
-        if (!$verificationCode) {
-            return response()->json(['error' => 'Verification code required'], 400);
-        }
-        $certificate = \App\Models\Certificate::findByVerificationCode($verificationCode);
-        if (!$certificate) {
-            return response()->json(['valid' => false, 'error' => 'Certificate not found'], 404);
-        }
-        return response()->json($certificate->getVerificationData());
-    })->name('webhook.verify');
-});
 
 // =============================================================================
 // AUTHENTICATED ROUTES - DASHBOARD
@@ -293,12 +254,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
 });
 
-// Student Certificate Routes
-Route::middleware(['auth', 'verified'])->prefix('student')->name('student.')->group(function () {
-    Route::get('/certificates', \App\Livewire\CertificateManagement\StudentCertificates::class)->name('certificates.index');
-    Route::get('/certificate/request/{courseId?}', CertificateRequest::class)->name('certificate.request');
-    Route::get('/certificate/report/{verificationCode}', [CertificateVerificationController::class, 'report'])->name('certificate.report');
-});
+
 
 // =============================================================================
 // COURSE MANAGEMENT ROUTES
@@ -327,65 +283,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/projects/{slug}', [App\Http\Controllers\ProjectController::class, 'show'])->name('project.show');
 });
 
-
-// =============================================================================
-// CERTIFICATE MANAGEMENT ROUTES (ADMIN/INSTRUCTOR)
-// =============================================================================
-
-// Certificate Management Dashboard
-Route::middleware(['auth', 'verified'])->group(function () {
-    Route::get('/admin/certificates', CertificateManagement::class)->name('admin.certificates.manage');
-    Route::get('/admin/analytics', CertificateAnalytics::class)->name('admin.certificates.analytics');
-    Route::get('/admin/templates', CertificateTemplates::class)->name('admin.certificates.templates');
-});
-
-// Certificate Actions - Removed role checks
-Route::middleware(['auth', 'verified'])->prefix('admin/certificates')->name('admin.certificates.')->group(function () {
-    Route::post('/{certificate}/approve', function ($certificateId) {
-        $certificate = \App\Models\Certificate::findOrFail($certificateId);
-        $certificate->approve(auth()->id());
-        return response()->json(['success' => true, 'message' => 'Certificate approved successfully']);
-    })->name('approve');
-
-    Route::post('/{certificate}/reject', function ($certificateId) {
-        $certificate = \App\Models\Certificate::findOrFail($certificateId);
-        $reason = request()->input('reason');
-        $certificate->reject($reason, auth()->id());
-        return response()->json(['success' => true, 'message' => 'Certificate rejected']);
-    })->name('reject');
-
-    Route::post('/{certificate}/revoke', function ($certificateId) {
-        $certificate = \App\Models\Certificate::findOrFail($certificateId);
-        $reason = request()->input('reason');
-        $certificate->revoke($reason, auth()->id());
-        return response()->json(['success' => true, 'message' => 'Certificate revoked']);
-    })->name('revoke');
-});
-
-// Certificate Analytics & Reports
-Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(function () {
-    Route::post('/certificates/bulk-approve', function () {
-        $certificateIds = request()->input('certificate_ids', []);
-        $approved = 0;
-
-        foreach ($certificateIds as $id) {
-            try {
-                $certificate = \App\Models\Certificate::find($id);
-                if ($certificate && $certificate->isRequested()) {
-                    $certificate->approve(auth()->id());
-                    $approved++;
-                }
-            } catch (\Exception $e) {
-                \Log::error('Bulk approve error: ' . $e->getMessage());
-            }
-        }
-
-        return response()->json([
-            'success' => true,
-            'message' => "Approved {$approved} certificates"
-        ]);
-    })->name('certificates.bulk.approve');
-});
 
 // =============================================================================
 // SYSTEM MANAGEMENT ROUTES
@@ -417,47 +314,6 @@ Route::middleware(['auth', 'verified'])->prefix('dashboard')->name('')->group(fu
     Route::get('/language-localization', \App\Livewire\SystemManagement\LanguageLocalization::class)->name('language.localization');
 });
 
-// =============================================================================
-// UTILITY & BACKWARD COMPATIBILITY ROUTES
-// =============================================================================
-
-Route::middleware(['auth', 'verified'])->group(function () {
-    // Dashboard certificate redirect - Removed role checks
-    Route::get('/dashboard/certificates', function () {
-        return redirect()->route('admin.certificates.manage');
-    })->name('certificates.dashboard');
-
-    // Alternative certificate routes for backward compatibility
-    Route::get('/certificates', \App\Livewire\CertificateManagement\StudentCertificates::class)->name('certificates.index');
-    Route::get('/my-certificates', \App\Livewire\CertificateManagement\StudentCertificates::class)->name('my.certificates');
-    Route::get('/dashboard/my-certificates', \App\Livewire\CertificateManagement\StudentCertificates::class)->name('dashboard.certificates');
-});
-
-// =============================================================================
-// DEVELOPMENT/TESTING ROUTES (NON-PRODUCTION ONLY)
-// =============================================================================
-if (app()->environment(['local', 'staging'])) {
-    Route::prefix('dev/certificates')->name('dev.certificates.')->group(function () {
-        Route::get('/test/{userId}/{courseId}', function ($userId, $courseId) {
-            $certificate = \App\Models\Certificate::create([
-                'user_id' => $userId,
-                'course_id' => $courseId,
-                'status' => \App\Models\Certificate::STATUS_APPROVED,
-                'completion_date' => now()->subDays(rand(1, 30)),
-                'grade' => collect(['A+', 'A', 'A-', 'B+', 'B', 'Pass'])->random(),
-                'approved_at' => now(),
-                'approved_by' => 1,
-                'issued_date' => now(),
-            ]);
-
-            return response()->json([
-                'message' => 'Test certificate created',
-                'certificate' => $certificate,
-                'verification_url' => route('certificate.verify.code', $certificate->verification_code)
-            ]);
-        })->name('test');
-    });
-}
 // =============================================================================
 // MARKETPLACE ROUTES
 // =============================================================================
@@ -511,6 +367,125 @@ Route::get('/marketplace/payment/failed', function () {
     return redirect()->route('marketplace.checkout')->with('error', 'Payment failed. Please try again.');
 })->name('marketplace.payment.failed');
 
+
+// =============================================================================
+// PUBLIC CERTIFICATE VERIFICATION ROUTES (No Authentication Required)
+// =============================================================================
+
+Route::prefix('certificate')->name('certificate.')->group(function () {
+    // Verification routes
+    Route::get('/verify', [CertificateVerificationController::class, 'index'])->name('verify');
+    Route::get('/verify/{verificationCode}', [CertificateVerificationController::class, 'verify'])->name('verify.code');
+    Route::post('/verify', [CertificateVerificationController::class, 'verify'])->name('verify.submit');
+
+    // Public view route (uses unified template)
+    Route::get('/view/{verificationCode}', [CertificateVerificationController::class, 'show'])->name('view');
+
+    // Download and QR code routes
+    Route::get('/download/{verificationCode}', [CertificateVerificationController::class, 'download'])->name('download');
+    Route::get('/qr/{verificationCode}', [CertificateVerificationController::class, 'qrCode'])->name('qr');
+});
+
+// API Routes for Certificate Verification
+Route::prefix('api/certificate')->name('api.certificate.')->group(function () {
+    Route::get('/verify/{verificationCode}', [CertificateVerificationController::class, 'api'])->name('verify');
+    Route::post('/batch-verify', [CertificateVerificationController::class, 'batchVerify'])->name('batch.verify');
+});
+
+// =============================================================================
+// AUTHENTICATED CERTIFICATE ROUTES (Students)
+// =============================================================================
+
+Route::middleware(['auth', 'verified'])->prefix('student')->name('student.')->group(function () {
+    Route::get('/certificates', \App\Livewire\CertificateManagement\StudentCertificates::class)->name('certificates.index');
+    Route::get('/certificate/request/{courseId?}', \App\Livewire\CertificateManagement\CertificateRequest::class)->name('certificate.request');
+});
+
+// =============================================================================
+// CERTIFICATE MANAGEMENT ROUTES (Admin/Instructor)
+// =============================================================================
+
+Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(function () {
+    // Certificate Management Dashboard
+    Route::get('/certificates', \App\Livewire\CertificateManagement\CertificateManagement::class)->name('certificates.manage');
+    Route::get('/certificates/analytics', \App\Livewire\CertificateManagement\CertificateAnalytics::class)->name('certificates.analytics');
+    Route::get('/certificates/templates', \App\Livewire\CertificateManagement\CertificateTemplates::class)->name('certificates.templates');
+
+    // Certificate Actions
+    Route::post('/certificates/{certificate}/approve', function ($certificateId) {
+        $certificate = \App\Models\Certificate::findOrFail($certificateId);
+
+        // Permission check
+        if (!auth()->user()->hasAnyRole(['super_admin', 'academy_admin', 'instructor'])) {
+            return response()->json(['success' => false, 'message' => 'Unauthorized'], 403);
+        }
+
+        if (auth()->user()->hasRole('instructor') && $certificate->course->instructor_id !== auth()->id()) {
+            return response()->json(['success' => false, 'message' => 'Unauthorized'], 403);
+        }
+
+        $certificate->approve(auth()->id());
+        return response()->json(['success' => true, 'message' => 'Certificate approved successfully']);
+    })->name('certificates.approve');
+
+    Route::post('/certificates/{certificate}/reject', function ($certificateId) {
+        $certificate = \App\Models\Certificate::findOrFail($certificateId);
+
+        // Permission check
+        if (!auth()->user()->hasAnyRole(['super_admin', 'academy_admin', 'instructor'])) {
+            return response()->json(['success' => false, 'message' => 'Unauthorized'], 403);
+        }
+
+        if (auth()->user()->hasRole('instructor') && $certificate->course->instructor_id !== auth()->id()) {
+            return response()->json(['success' => false, 'message' => 'Unauthorized'], 403);
+        }
+
+        $reason = request()->input('reason');
+        $certificate->reject($reason, auth()->id());
+        return response()->json(['success' => true, 'message' => 'Certificate rejected']);
+    })->name('certificates.reject');
+
+    Route::post('/certificates/{certificate}/revoke', function ($certificateId) {
+        $certificate = \App\Models\Certificate::findOrFail($certificateId);
+
+        // Permission check - Only admins can revoke
+        if (!auth()->user()->hasAnyRole(['super_admin', 'academy_admin'])) {
+            return response()->json(['success' => false, 'message' => 'Unauthorized'], 403);
+        }
+
+        $reason = request()->input('reason');
+        $certificate->revoke($reason, auth()->id());
+        return response()->json(['success' => true, 'message' => 'Certificate revoked']);
+    })->name('certificates.revoke');
+
+    // Bulk Approve
+    Route::post('/certificates/bulk-approve', function () {
+        $certificateIds = request()->input('certificate_ids', []);
+
+        if (!auth()->user()->hasAnyRole(['super_admin', 'academy_admin'])) {
+            return response()->json(['success' => false, 'message' => 'Unauthorized'], 403);
+        }
+
+        $approved = 0;
+
+        foreach ($certificateIds as $id) {
+            try {
+                $certificate = \App\Models\Certificate::find($id);
+                if ($certificate && $certificate->isRequested()) {
+                    $certificate->approve(auth()->id());
+                    $approved++;
+                }
+            } catch (\Exception $e) {
+                \Log::error('Bulk approve error: ' . $e->getMessage());
+            }
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => "Approved {$approved} certificates"
+        ]);
+    })->name('certificates.bulk.approve');
+});
 
 // =============================================================================
 // AUTHENTICATION ROUTES
