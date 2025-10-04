@@ -115,7 +115,7 @@ return [
             'children' => [
                 ['label' => 'Certificate Verification', 'icon' => 'fas fa-search', 'route_name' => 'certificate.verify', 'roles' => [], 'link_id' => 'certificate.verify'],
                 ['label' => 'Request Certificate', 'icon' => 'fas fa-file-alt', 'route_name' => 'student.certificate.request', 'roles' => [User::ROLE_STUDENT], 'link_id' => 'student.certificate.request'],
-                ['label' => 'My Certificates', 'icon' => 'fas fa-award', 'route_name' => 'certificates.index', 'roles' => [User::ROLE_STUDENT], 'link_id' => 'certificates.index'],
+                ['label' => 'My Certificates', 'icon' => 'fas fa-award', 'route_name' => 'student.certificates.index', 'roles' => [User::ROLE_STUDENT], 'link_id' => 'student.certificates.index'],
                 ['label' => 'Certificate Management', 'icon' => 'fas fa-cogs', 'route_name' => 'admin.certificates.manage', 'roles' => [User::ROLE_SUPER_ADMIN, User::ROLE_ACADEMY_ADMIN, User::ROLE_INSTRUCTOR], 'link_id' => 'admin.certificates.manage'],
                 ['label' => 'Certificate Analytics', 'icon' => 'fas fa-chart-bar', 'route_name' => 'admin.certificates.analytics', 'roles' => [User::ROLE_SUPER_ADMIN], 'link_id' => 'admin.certificates.analytics'],
                 ['label' => 'Certificate Templates', 'icon' => 'fas fa-file-invoice', 'route_name' => 'admin.certificates.templates', 'roles' => [User::ROLE_SUPER_ADMIN], 'link_id' => 'admin.certificates.templates'],

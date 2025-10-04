@@ -89,7 +89,7 @@
                                             </div>
                                         </a>
 
-                                        <a href="{{ route('certificates.index') }}" 
+                                        <a href="{{ route('student.certificates.index') }}" 
                                            class="flex items-center p-3 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
                                            @click="moreMenuOpen = false">
                                             <div class="w-10 h-10 bg-purple-100 dark:bg-purple-900/20 rounded-lg flex items-center justify-center mr-3">

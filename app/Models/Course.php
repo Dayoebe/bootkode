@@ -95,7 +95,7 @@ class Course extends Model
     public function allLessons()
     {
         return $this->hasManyThrough(Lesson::class, Section::class)
-            ->select('lessons.*')
+            ->select('lessons.*') // Explicitly select lessons table columns
             ->orderBy('sections.order')
             ->orderBy('lessons.order');
     }

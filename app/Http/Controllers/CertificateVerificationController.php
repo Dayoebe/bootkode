@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Certificate;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Response;
+use Illuminate\Support\Facades\Log;
 
 class CertificateVerificationController extends Controller
 {
@@ -26,21 +28,27 @@ class CertificateVerificationController extends Controller
         $code = $verificationCode ?? $request->input('code');
         
         if (!$code) {
-            return response()->json([
-                'valid' => false,
-                'message' => 'Verification code is required.',
-                'certificate' => null
-            ]);
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'valid' => false,
+                    'message' => 'Verification code is required.',
+                    'certificate' => null
+                ]);
+            }
+            return back()->with('error', 'Verification code is required.');
         }
 
         $certificate = Certificate::findByVerificationCode($code);
         
         if (!$certificate) {
-            return response()->json([
-                'valid' => false,
-                'message' => 'Certificate not found. Please check the verification code.',
-                'certificate' => null
-            ]);
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'valid' => false,
+                    'message' => 'Certificate not found. Please check the verification code.',
+                    'certificate' => null
+                ]);
+            }
+            return back()->with('error', 'Certificate not found.');
         }
 
         $verificationData = $certificate->getVerificationData();
@@ -52,7 +60,7 @@ class CertificateVerificationController extends Controller
             return response()->json($verificationData);
         }
 
-        return view('certificates.verification-result')->with([
+        return view('certificates.verify')->with([
             'verificationData' => $verificationData,
             'certificate' => $certificate,
             'title' => 'Certificate Verification Result'
@@ -60,7 +68,7 @@ class CertificateVerificationController extends Controller
     }
 
     /**
-     * Show certificate publicly (for verified certificates)
+     * Show certificate publicly (unified view for both screen and PDF)
      */
     public function show($verificationCode)
     {
@@ -71,20 +79,23 @@ class CertificateVerificationController extends Controller
         }
 
         if (!$certificate->isActive()) {
-            return view('certificates.invalid')->with([
+            return view('certificates.verify')->with([
                 'message' => $certificate->isRevoked() 
                     ? 'This certificate has been revoked and is no longer valid.' 
                     : 'This certificate is not valid.',
                 'certificate' => $certificate,
-                'title' => 'Invalid Certificate'
+                'title' => 'Invalid Certificate',
+                'showInvalid' => true
             ]);
         }
 
         // Log view
         $this->logVerificationAttempt($certificate, request(), 'view');
 
+        // Use the unified template for display
         return view('certificates.public-view')->with([
             'certificate' => $certificate,
+            'isPdf' => false, // Screen view
             'title' => 'Certificate - ' . $certificate->certificate_number
         ]);
     }
@@ -96,13 +107,36 @@ class CertificateVerificationController extends Controller
     {
         $certificate = Certificate::findByVerificationCode($verificationCode);
         
-        if (!$certificate || !$certificate->isActive() || !$certificate->pdf_path) {
+        if (!$certificate || !$certificate->isActive()) {
             abort(404, 'Certificate not available for download');
+        }
+
+        // Auto-generate PDF if it doesn't exist
+        if (!$certificate->pdf_path || !Storage::disk('public')->exists($certificate->pdf_path)) {
+            try {
+                Log::info('PDF not found, generating on-demand', [
+                    'certificate_id' => $certificate->id,
+                    'verification_code' => $certificate->verification_code
+                ]);
+                
+                app(\App\Services\CertificateService::class)->generateCertificateAssets($certificate);
+                $certificate->refresh();
+            } catch (\Exception $e) {
+                Log::error('Failed to generate PDF on download: ' . $e->getMessage(), [
+                    'certificate_id' => $certificate->id,
+                    'trace' => $e->getTraceAsString()
+                ]);
+                abort(500, 'Failed to generate certificate PDF');
+            }
         }
 
         $filePath = storage_path('app/public/' . $certificate->pdf_path);
         
         if (!file_exists($filePath)) {
+            Log::error('PDF file not found after generation', [
+                'certificate_id' => $certificate->id,
+                'expected_path' => $filePath
+            ]);
             abort(404, 'Certificate file not found');
         }
 
@@ -125,8 +159,23 @@ class CertificateVerificationController extends Controller
     {
         $certificate = Certificate::findByVerificationCode($verificationCode);
         
-        if (!$certificate || !$certificate->isActive() || !$certificate->qr_code_path) {
+        if (!$certificate || !$certificate->isActive()) {
             abort(404, 'QR code not available');
+        }
+
+        // Auto-generate QR if it doesn't exist
+        if (!$certificate->qr_code_path || !Storage::disk('public')->exists($certificate->qr_code_path)) {
+            try {
+                Log::info('QR code not found, generating on-demand', [
+                    'certificate_id' => $certificate->id
+                ]);
+                
+                app(\App\Services\CertificateService::class)->generateCertificateAssets($certificate);
+                $certificate->refresh();
+            } catch (\Exception $e) {
+                Log::error('Failed to generate QR code: ' . $e->getMessage());
+                abort(500, 'Failed to generate QR code');
+            }
         }
 
         $filePath = storage_path('app/public/' . $certificate->qr_code_path);
@@ -146,8 +195,8 @@ class CertificateVerificationController extends Controller
     public function batchVerify(Request $request)
     {
         $request->validate([
-            'codes' => 'required|array|max:10',
-            'codes.*' => 'required|string|max:50'
+            'codes' => 'required|array|min:1|max:10',
+            'codes.*' => 'required|string|min:10|max:50'
         ]);
 
         $results = [];
@@ -195,60 +244,12 @@ class CertificateVerificationController extends Controller
     }
 
     /**
-     * Embed widget for certificate verification
-     */
-    public function widget($verificationCode)
-    {
-        $certificate = Certificate::findByVerificationCode($verificationCode);
-        
-        if (!$certificate) {
-            return view('certificates.widget-invalid');
-        }
-
-        $verificationData = $certificate->getVerificationData();
-
-        return view('certificates.verification-widget')->with([
-            'verificationData' => $verificationData,
-            'certificate' => $certificate
-        ]);
-    }
-
-    /**
-     * Generate verification report
-     */
-    public function report($verificationCode)
-    {
-        $certificate = Certificate::findByVerificationCode($verificationCode);
-        
-        if (!$certificate || !$certificate->isActive()) {
-            abort(404, 'Certificate not found');
-        }
-
-        // Only allow certificate owner or authorized users to access report
-        if (!auth()->check() || 
-            (auth()->id() !== $certificate->user_id && 
-             !auth()->user()->isSuperAdmin() && 
-             !auth()->user()->isAcademyAdmin() &&
-             !(auth()->user()->isInstructor() && $certificate->course->instructor_id === auth()->id()))) {
-            abort(403, 'Unauthorized');
-        }
-
-        $verificationLogs = $this->getVerificationLogs($certificate);
-
-        return view('certificates.verification-report')->with([
-            'certificate' => $certificate,
-            'verificationLogs' => $verificationLogs,
-            'title' => 'Certificate Verification Report'
-        ]);
-    }
-
-    /**
-     * Log verification attempt
+     * Log verification attempt with detailed information
      */
     private function logVerificationAttempt($certificate, $request, $type = 'verify')
     {
         try {
-            \Log::info('Certificate verification', [
+            Log::info('Certificate verification', [
                 'certificate_id' => $certificate->id,
                 'certificate_number' => $certificate->certificate_number,
                 'verification_code' => $certificate->verification_code,
@@ -256,23 +257,12 @@ class CertificateVerificationController extends Controller
                 'ip' => $request->ip(),
                 'user_agent' => $request->userAgent(),
                 'user_id' => auth()->id(),
-                'timestamp' => now()
+                'timestamp' => now(),
+                'referer' => $request->header('referer')
             ]);
-
-            // You could also store this in a separate verification_logs table
-            // if you want to track verification attempts more permanently
         } catch (\Exception $e) {
             // Don't let logging errors break verification
+            Log::error('Verification logging failed: ' . $e->getMessage());
         }
-    }
-
-    /**
-     * Get verification logs for certificate
-     */
-    private function getVerificationLogs($certificate)
-    {
-        // This would typically come from a separate verification_logs table
-        // For now, we'll return empty array or implement with log file parsing
-        return [];
     }
 }

@@ -1,51 +1,204 @@
 <?php
-// App\Services\CertificateService.php
 
 namespace App\Services;
 
 use App\Models\Certificate;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Log;
+use Barryvdh\DomPDF\Facade\Pdf;
+use Endroid\QrCode\QrCode;
+use Endroid\QrCode\Writer\PngWriter;
+use Endroid\QrCode\ErrorCorrectionLevel;
+use Endroid\QrCode\RoundBlockSizeMode;
+use Endroid\QrCode\Color\Color;
 
 class CertificateService
 {
-    protected $qrCodeService;
-    protected $pdfService;
-
-    public function __construct(
-        QRCodeService $qrCodeService,
-        CertificatePDFService $pdfService
-    ) {
-        $this->qrCodeService = $qrCodeService;
-        $this->pdfService = $pdfService;
-    }
-
     /**
      * Generate all certificate assets (QR code and PDF)
      */
     public function generateCertificateAssets(Certificate $certificate): bool
     {
         try {
-            // Generate QR Code
-            $qrCodePath = $this->qrCodeService->generate($certificate);
+            Log::info('Starting certificate asset generation', [
+                'certificate_id' => $certificate->id,
+                'verification_code' => $certificate->verification_code
+            ]);
+
+            // Generate QR Code FIRST
+            $qrCodePath = $this->generateQRCode($certificate);
             
-            // Generate PDF
-            $pdfPath = $this->pdfService->generate($certificate);
+            // Update certificate with QR path
+            $certificate->update(['qr_code_path' => $qrCodePath]);
             
-            // Update certificate with asset paths
-            $certificate->update([
-                'qr_code_path' => $qrCodePath,
-                'pdf_path' => $pdfPath,
+            // Refresh to get updated data
+            $certificate->refresh();
+            
+            // Generate PDF (now with QR code available)
+            $pdfPath = $this->generatePDF($certificate);
+            
+            // Update certificate with PDF path
+            $certificate->update(['pdf_path' => $pdfPath]);
+
+            Log::info('Certificate assets generated successfully', [
+                'certificate_id' => $certificate->id,
+                'qr_path' => $qrCodePath,
+                'pdf_path' => $pdfPath
             ]);
 
             return true;
         } catch (\Exception $e) {
             Log::error('Certificate asset generation failed', [
                 'certificate_id' => $certificate->id,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
             ]);
             return false;
         }
+    }
+
+    /**
+     * Generate QR Code for certificate with enhanced styling
+     */
+    protected function generateQRCode(Certificate $certificate): string
+    {
+        try {
+            // Ensure verification URL exists
+            if (empty($certificate->verification_url)) {
+                throw new \Exception('Verification URL is missing');
+            }
+
+            Log::info('Generating QR code', [
+                'certificate_id' => $certificate->id,
+                'verification_url' => $certificate->verification_url
+            ]);
+
+            // Create QR code with high error correction
+            $qrCode = QrCode::create($certificate->verification_url)
+                ->setSize(config('certificate.qr_code.size', 300))
+                ->setMargin(config('certificate.qr_code.margin', 15))
+                ->setRoundBlockSizeMode(RoundBlockSizeMode::Margin)
+                ->setErrorCorrectionLevel(ErrorCorrectionLevel::High)
+                ->setForegroundColor(new Color(12, 35, 64)) // Navy color
+                ->setBackgroundColor(new Color(255, 255, 255)); // White
+
+            $writer = new PngWriter();
+            $result = $writer->write($qrCode);
+            
+            // Generate filename and path
+            $filename = config('certificate.storage.qr_path', 'certificates/qr') . '/' 
+                . $certificate->verification_code . '.png';
+            
+            // Store QR code
+            $disk = Storage::disk(config('certificate.storage.disk', 'public'));
+            $disk->put($filename, $result->getString());
+            
+            // Verify file was created
+            if (!$disk->exists($filename)) {
+                throw new \Exception('QR code file was not created');
+            }
+
+            Log::info('QR code generated successfully', [
+                'certificate_id' => $certificate->id,
+                'filename' => $filename,
+                'file_size' => $disk->size($filename)
+            ]);
+            
+            return $filename;
+        } catch (\Exception $e) {
+            Log::error('QR Code generation failed', [
+                'certificate_id' => $certificate->id,
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            throw $e;
+        }
+    }
+
+    /**
+     * Generate PDF certificate using unified template
+     */
+    protected function generatePDF(Certificate $certificate): string
+    {
+        try {
+            Log::info('Generating PDF', [
+                'certificate_id' => $certificate->id,
+                'qr_code_path' => $certificate->qr_code_path
+            ]);
+
+            // Verify QR code exists before generating PDF
+            if ($certificate->qr_code_path) {
+                $qrPath = storage_path('app/public/' . $certificate->qr_code_path);
+                if (!file_exists($qrPath)) {
+                    Log::warning('QR code file not found during PDF generation', [
+                        'expected_path' => $qrPath
+                    ]);
+                }
+            }
+
+            // Load the unified template with isPdf flag
+            $pdf = Pdf::loadView('certificates.certificate-unified', [
+                    'certificate' => $certificate,
+                    'isPdf' => true // Flag to disable screen-only elements
+                ])
+                ->setPaper('A4', 'landscape')
+                ->setOptions([
+                    'isHtml5ParserEnabled' => true,
+                    'isRemoteEnabled' => false,
+                    'enable_php' => false,
+                    'dpi' => 96, // Lower DPI for better rendering
+                    'defaultFont' => 'DejaVu Serif',
+                    'isFontSubsettingEnabled' => false,
+                    'isPhpEnabled' => false,
+                    'chroot' => [storage_path('app/public')], // Allow local files
+                    'debugPng' => false,
+                    'debugKeepTemp' => false,
+                    'debugCss' => false,
+                    'fontHeightRatio' => 1.1
+                ]);
+            
+            $filename = config('certificate.storage.pdf_path', 'certificates/pdf') . '/' 
+                . $certificate->verification_code . '.pdf';
+            
+            // Get PDF output
+            $pdfOutput = $pdf->output();
+            
+            // Store PDF
+            $disk = Storage::disk(config('certificate.storage.disk', 'public'));
+            $disk->put($filename, $pdfOutput);
+            
+            // Verify file was created
+            if (!$disk->exists($filename)) {
+                throw new \Exception('PDF file was not created');
+            }
+
+            Log::info('PDF generated successfully', [
+                'certificate_id' => $certificate->id,
+                'filename' => $filename,
+                'file_size' => $disk->size($filename)
+            ]);
+            
+            return $filename;
+        } catch (\Exception $e) {
+            Log::error('PDF generation failed', [
+                'certificate_id' => $certificate->id,
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            throw $e;
+        }
+    }
+
+    /**
+     * Regenerate certificate assets (useful after template changes)
+     */
+    public function regenerateCertificateAssets(Certificate $certificate): bool
+    {
+        // Clean up old assets first
+        $this->cleanupAssets($certificate);
+        
+        // Generate new assets
+        return $this->generateCertificateAssets($certificate);
     }
 
     /**
@@ -95,7 +248,9 @@ class CertificateService
             return [
                 'can_request' => false,
                 'reason' => 'User is not enrolled in this course.',
-                'completion_percentage' => 0
+                'completion_percentage' => 0,
+                'completed_lessons' => 0,
+                'total_lessons' => 0
             ];
         }
 
@@ -124,14 +279,13 @@ class CertificateService
     }
 
     /**
-     * Calculate course grade
+     * Calculate course grade based on performance
      */
     public function calculateGrade($userId, $courseId): string
     {
         $course = \App\Models\Course::findOrFail($courseId);
         
-        // Get assessments for this course (if you have assessment system)
-        // This is a placeholder - adjust based on your assessment system
+        // Get assessments for this course
         $assessments = $course->assessments ?? collect();
         
         if ($assessments->count() == 0) {
@@ -139,16 +293,13 @@ class CertificateService
         }
 
         $totalScore = 0;
-        $totalPossible = 0;
         $assessmentCount = 0;
 
         foreach ($assessments as $assessment) {
-            // Get student results - adjust this based on your assessment system
             $result = $this->getAssessmentResult($userId, $assessment->id);
             
             if ($result && $result['passed']) {
                 $totalScore += $result['percentage'];
-                $totalPossible += 100;
                 $assessmentCount++;
             }
         }
@@ -166,7 +317,18 @@ class CertificateService
      */
     protected function getGradeFromScore(float $score): string
     {
-        $gradeScale = config('certificate.grading.scale', []);
+        $gradeScale = config('certificate.grading.scale', [
+            'A+' => 97,
+            'A' => 93,
+            'A-' => 90,
+            'B+' => 87,
+            'B' => 83,
+            'B-' => 80,
+            'C+' => 77,
+            'C' => 73,
+            'C-' => 70,
+            'D' => 60,
+        ]);
         
         foreach ($gradeScale as $grade => $threshold) {
             if ($score >= $threshold) {
@@ -178,17 +340,32 @@ class CertificateService
     }
 
     /**
-     * Placeholder for assessment result - implement based on your system
+     * Get assessment result for user
+     * Implement based on your assessment system
      */
     protected function getAssessmentResult($userId, $assessmentId): ?array
     {
-        // Implement this based on your assessment/quiz system
+        // This is a placeholder - implement based on your actual assessment system
         // Return format: ['passed' => bool, 'percentage' => float]
+        
+        // Example implementation:
+        // $result = \App\Models\AssessmentResult::where('user_id', $userId)
+        //     ->where('assessment_id', $assessmentId)
+        //     ->latest()
+        //     ->first();
+        // 
+        // if (!$result) return null;
+        // 
+        // return [
+        //     'passed' => $result->score >= $result->assessment->passing_score,
+        //     'percentage' => $result->score
+        // ];
+        
         return null;
     }
 
     /**
-     * Clean up certificate assets
+     * Clean up certificate assets (QR code and PDF)
      */
     public function cleanupAssets(Certificate $certificate): bool
     {
@@ -197,10 +374,12 @@ class CertificateService
             
             if ($certificate->qr_code_path && $disk->exists($certificate->qr_code_path)) {
                 $disk->delete($certificate->qr_code_path);
+                Log::info('Deleted QR code', ['path' => $certificate->qr_code_path]);
             }
             
             if ($certificate->pdf_path && $disk->exists($certificate->pdf_path)) {
                 $disk->delete($certificate->pdf_path);
+                Log::info('Deleted PDF', ['path' => $certificate->pdf_path]);
             }
             
             return true;
@@ -211,5 +390,70 @@ class CertificateService
             ]);
             return false;
         }
+    }
+
+    /**
+     * Get certificate statistics for analytics
+     */
+    public function getCertificateStatistics(): array
+    {
+        return [
+            'total_issued' => Certificate::approved()->count(),
+            'pending_approval' => Certificate::requested()->count(),
+            'rejected' => Certificate::rejected()->count(),
+            'revoked' => Certificate::revoked()->count(),
+            'issued_this_month' => Certificate::approved()
+                ->whereYear('approved_at', now()->year)
+                ->whereMonth('approved_at', now()->month)
+                ->count(),
+            'issued_this_year' => Certificate::approved()
+                ->whereYear('approved_at', now()->year)
+                ->count(),
+        ];
+    }
+
+    /**
+     * Bulk approve certificates
+     */
+    public function bulkApprove(array $certificateIds, $approverId): array
+    {
+        $approved = 0;
+        $failed = 0;
+        $errors = [];
+
+        foreach ($certificateIds as $id) {
+            try {
+                $certificate = Certificate::find($id);
+                
+                if (!$certificate) {
+                    $failed++;
+                    $errors[] = "Certificate #{$id} not found";
+                    continue;
+                }
+
+                if (!$certificate->canBeApproved()) {
+                    $failed++;
+                    $errors[] = "Certificate #{$id} cannot be approved (status: {$certificate->status})";
+                    continue;
+                }
+
+                $certificate->approve($approverId);
+                $approved++;
+            } catch (\Exception $e) {
+                $failed++;
+                $errors[] = "Certificate #{$id}: " . $e->getMessage();
+                Log::error('Bulk approve error', [
+                    'certificate_id' => $id,
+                    'error' => $e->getMessage()
+                ]);
+            }
+        }
+
+        return [
+            'success' => $approved,
+            'failed' => $failed,
+            'errors' => $errors,
+            'message' => "Approved {$approved} certificate(s). {$failed} failed."
+        ];
     }
 }

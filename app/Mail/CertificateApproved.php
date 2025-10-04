@@ -34,7 +34,7 @@ class CertificateApproved extends Mailable
             markdown: 'emails.certificates.approved',
             with: [
                 'certificate' => $this->certificate,
-                'url' => route('certificates.index'),
+                'url' => route('student.certificates.index'),
             ],
         );
     }

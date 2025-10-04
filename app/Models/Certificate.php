@@ -66,13 +66,13 @@ class Certificate extends Model
             if (empty($certificate->verification_code)) {
                 $certificate->verification_code = $certificate->generateVerificationCode();
             }
+            // Generate verification URL AFTER verification_code is set
             if (empty($certificate->verification_url)) {
                 $certificate->verification_url = route('certificate.verify.code', $certificate->verification_code);
             }
         });
 
         static::deleting(function ($certificate) {
-            // Clean up associated files
             app(CertificateService::class)->cleanupAssets($certificate);
         });
     }
@@ -131,7 +131,6 @@ class Certificate extends Model
             return 1;
         }
 
-        // Extract sequence number from certificate number
         $parts = explode('-', $lastCertificate->certificate_number);
         $lastSequence = (int) end($parts);
         
@@ -376,7 +375,6 @@ class Certificate extends Model
 
     public function getDaysToExpire()
     {
-        // If your certificates have expiration dates
         if (!$this->expires_at) {
             return null;
         }

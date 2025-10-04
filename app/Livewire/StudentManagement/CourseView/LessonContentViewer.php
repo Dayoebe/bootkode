@@ -425,7 +425,7 @@ class LessonContentViewer extends Component
             'type' => 'success'
         ]);
 
-        return redirect()->route('certificates.index', $this->lesson->section->course);
+        return redirect()->route('student.certificates.index', $this->lesson->section->course);
     }
 
     public function render()

@@ -12,6 +12,8 @@ use App\Models\CourseEnrollment;
 use App\Models\LessonProgress; // Add this if you're using the new model
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache; // ADD THIS LINE
+use App\Models\Certificate;
+use App\Notifications\CourseCompletionCertificateReady;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
 use Livewire\Attributes\On;
@@ -171,45 +173,9 @@ class CourseView extends Component
         return 0;
     }
 
-    #[On('lesson-completed')]
-    public function handleLessonCompleted($lessonId)
-    {
-        if (!in_array($lessonId, $this->completedLessons)) {
-            // Check if lesson has required assessments that need to be passed first
-            if (!$this->canCompleteLessonWithoutAssessments($lessonId)) {
-                $this->dispatch('notify', [
-                    'message' => 'You must pass all required assessments before marking this lesson as complete.',
-                    'type' => 'warning'
-                ]);
-                return;
-            }
-
-            try {
-                Auth::user()->completedLessons()->attach($lessonId, ['completed_at' => now()]);
-                $this->completedLessons[] = $lessonId;
-
-                $this->updateCourseProgress();
-                $this->determineUnlockedSections();
-
-                // Check if section progress now meets threshold to unlock next section
-                $lesson = Lesson::find($lessonId);
-                if ($lesson) {
-                    $sectionProgress = $this->calculateSectionProgress($lesson->section);
-                    if ($sectionProgress >= $this->sectionCompletionThreshold) {
-                        $this->checkAndUnlockNextSection($lesson->section);
-                    }
-                }
-
-                $this->dispatch('progress-updated');
-            } catch (\Exception $e) {
-                $this->dispatch('notify', [
-                    'message' => 'Error marking lesson as completed.',
-                    'type' => 'error'
-                ]);
-            }
-        }
-    }
-
+    /**
+     * New method to handle lesson uncompletion
+     */
     #[On('lesson-uncompleted')]
     public function handleLessonUncompleted($lessonId)
     {
@@ -404,6 +370,198 @@ class CourseView extends Component
         } else {
             // Start from first incomplete lesson
             $this->setInitialLesson();
+        }
+    }
+      /**
+     * Check if course is fully completed and award certificate
+     */
+    protected function checkAndAwardCertificate()
+    {
+        // Check if user has completed all lessons
+        $totalLessons = $this->getAllLessonIds();
+        $completedLessons = count($this->completedLessons);
+        
+        if ($completedLessons < count($totalLessons)) {
+            return false; // Not all lessons completed
+        }
+
+        // Calculate completion percentage
+        $completionPercentage = 100;
+
+        // Check if certificate already exists
+        $existingCertificate = Certificate::where('user_id', Auth::id())
+            ->where('course_id', $this->course->id)
+            ->first();
+
+        if ($existingCertificate) {
+            return false; // Certificate already exists
+        }
+
+        try {
+            // Calculate grade based on assessments
+            $grade = $this->calculateCourseGrade();
+
+            // Get completion date (last completed lesson)
+            $lastCompletedLesson = Auth::user()->completedLessons()
+                ->whereIn('lesson_id', $totalLessons)
+                ->orderBy('lesson_user.completed_at', 'desc')
+                ->first();
+
+            $completionDate = $lastCompletedLesson 
+                ? $lastCompletedLesson->pivot->completed_at 
+                : now();
+
+            // Create and auto-approve certificate
+            $certificate = Certificate::create([
+                'user_id' => Auth::id(),
+                'course_id' => $this->course->id,
+                'status' => Certificate::STATUS_APPROVED, // Auto-approve
+                'requested_at' => now(),
+                'approved_at' => now(),
+                'approved_by' => $this->course->instructor_id ?? 1, // Auto-approved by instructor or system
+                'completion_date' => $completionDate,
+                'issued_date' => now(),
+                'grade' => $grade,
+                'credits' => $this->course->credits ?? null,
+                'metadata' => [
+                    'completion_percentage' => $completionPercentage,
+                    'total_lessons' => count($totalLessons),
+                    'completed_lessons' => $completedLessons,
+                    'auto_generated' => true,
+                ]
+            ]);
+
+            // Generate certificate assets (PDF, QR code)
+            if (class_exists(\App\Services\CertificateService::class)) {
+                app(\App\Services\CertificateService::class)->generateCertificateAssets($certificate);
+            }
+
+            // Send notification to user
+            Auth::user()->notify(new CourseCompletionCertificateReady(
+                $this->course, 
+                $certificate, 
+                $completionPercentage
+            ));
+
+            // Notify instructor
+            if ($this->course->instructor) {
+                $this->course->instructor->notify(
+                    new \App\Notifications\StudentCompletedCourse(Auth::user(), $this->course, $certificate)
+                );
+            }
+
+            // Update enrollment status
+            CourseEnrollment::where('course_id', $this->course->id)
+                ->where('user_id', Auth::id())
+                ->update([
+                    'is_completed' => true,
+                    'completed_at' => now(),
+                    'progress_percentage' => 100
+                ]);
+
+            // Show success message
+            $this->dispatch('notify', [
+                'message' => '🎉 Congratulations! You completed the course and your certificate is ready!',
+                'type' => 'success'
+            ]);
+
+            $this->dispatch('certificate-awarded', [
+                'certificateId' => $certificate->id,
+                'verificationCode' => $certificate->verification_code
+            ]);
+
+            return true;
+
+        } catch (\Exception $e) {
+            \Log::error('Error awarding certificate: ' . $e->getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * Calculate course grade based on assessments
+     */
+    protected function calculateCourseGrade()
+    {
+        $assessments = $this->course->assessments()->get();
+        
+        if ($assessments->isEmpty()) {
+            return 'Pass'; // Default grade if no assessments
+        }
+
+        $totalScore = 0;
+        $assessmentCount = 0;
+
+        foreach ($assessments as $assessment) {
+            $results = $assessment->getStudentResults(Auth::id());
+            
+            if ($results && $results['passed']) {
+                $totalScore += $results['percentage'];
+                $assessmentCount++;
+            }
+        }
+
+        if ($assessmentCount == 0) {
+            return 'Pass';
+        }
+
+        $averageScore = $totalScore / $assessmentCount;
+
+        // Grade scale
+        if ($averageScore >= 97) return 'A+';
+        if ($averageScore >= 93) return 'A';
+        if ($averageScore >= 90) return 'A-';
+        if ($averageScore >= 87) return 'B+';
+        if ($averageScore >= 83) return 'B';
+        if ($averageScore >= 80) return 'B-';
+        if ($averageScore >= 77) return 'C+';
+        if ($averageScore >= 73) return 'C';
+        if ($averageScore >= 70) return 'C-';
+        if ($averageScore >= 60) return 'D';
+        
+        return 'F';
+    }
+
+    /**
+     * Update existing handleLessonCompleted method
+     */
+    #[On('lesson-completed')]
+    public function handleLessonCompleted($lessonId)
+    {
+        if (!in_array($lessonId, $this->completedLessons)) {
+            if (!$this->canCompleteLessonWithoutAssessments($lessonId)) {
+                $this->dispatch('notify', [
+                    'message' => 'You must pass all required assessments before marking this lesson as complete.',
+                    'type' => 'warning'
+                ]);
+                return;
+            }
+
+            try {
+                Auth::user()->completedLessons()->attach($lessonId, ['completed_at' => now()]);
+                $this->completedLessons[] = $lessonId;
+                
+                $this->updateCourseProgress();
+                $this->determineUnlockedSections();
+                
+                $lesson = Lesson::find($lessonId);
+                if ($lesson) {
+                    $sectionProgress = $this->calculateSectionProgress($lesson->section);
+                    if ($sectionProgress >= $this->sectionCompletionThreshold) {
+                        $this->checkAndUnlockNextSection($lesson->section);
+                    }
+                }
+
+                // CHECK IF COURSE IS FULLY COMPLETED AND AWARD CERTIFICATE
+                $this->checkAndAwardCertificate();
+
+                $this->dispatch('progress-updated');
+            } catch (\Exception $e) {
+                $this->dispatch('notify', [
+                    'message' => 'Error marking lesson as completed.',
+                    'type' => 'error'
+                ]);
+            }
         }
     }
     public function render()

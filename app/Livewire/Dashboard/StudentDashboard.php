@@ -121,7 +121,7 @@ class StudentDashboard extends Component
     {
         $user = Auth::user();
         $tasks = collect();
-
+    
         // Upcoming assessments
         $upcomingAssessments = Assessment::whereHas('course.enrollments', function($query) use ($user) {
                 $query->where('user_id', $user->id)->where('is_completed', false);
@@ -133,7 +133,7 @@ class StudentDashboard extends Component
             ->orderBy('due_date')
             ->take(5)
             ->get();
-
+    
         foreach($upcomingAssessments as $assessment) {
             $tasks->push([
                 'type' => 'assessment',
@@ -144,21 +144,23 @@ class StudentDashboard extends Component
                 'url' => route('course.view', ['course' => $assessment->course->slug]),
             ]);
         }
-
-        // Continue course lessons
-        foreach($this->learningProgress as $progress) {
-            if($progress['next_lesson']) {
-                $tasks->push([
-                    'type' => 'lesson',
-                    'title' => 'Continue: ' . $progress['next_lesson']['title'],
-                    'course' => $progress['title'],
-                    'due_date' => now()->addDays(1), // Suggested completion
-                    'priority' => 'medium',
-                    'url' => route('course.view', ['course' => $progress['id']]),
-                ]);
+    
+        // Continue course lessons - only if learningProgress has items
+        if (!empty($this->learningProgress)) {
+            foreach($this->learningProgress as $progress) {
+                if($progress['next_lesson']) {
+                    $tasks->push([
+                        'type' => 'lesson',
+                        'title' => 'Continue: ' . $progress['next_lesson']['title'],
+                        'course' => $progress['title'],
+                        'due_date' => now()->addDays(1), // Suggested completion
+                        'priority' => 'medium',
+                        'url' => route('course.view', ['course' => $progress['id']]),
+                    ]);
+                }
             }
         }
-
+    
         return $tasks->sortBy('due_date')->take(8);
     }
 
@@ -351,25 +353,24 @@ class StudentDashboard extends Component
     }
 
     private function getNextLesson($course, $userId)
-    {
-        // Get completed lessons for this course
-        $completedLessons = DB::table('lesson_user')
-            ->where('user_id', $userId)
-            ->whereNotNull('completed_at')
-            ->pluck('lesson_id');
+{
+    // Get completed lessons for this course
+    $completedLessons = DB::table('lesson_user')
+        ->where('user_id', $userId)
+        ->whereNotNull('completed_at')
+        ->pluck('lesson_id');
 
-        // Find next uncompleted lesson
-        $nextLesson = $course->allLessons()
-            ->whereNotIn('id', $completedLessons)
-            ->first();
+    // Find next uncompleted lesson - explicitly specify lessons.id
+    $nextLesson = $course->allLessons()
+        ->whereNotIn('lessons.id', $completedLessons) // Fix: specify table.column
+        ->first();
 
-        return $nextLesson ? [
-            'id' => $nextLesson->id,
-            'title' => $nextLesson->title,
-            'section' => $nextLesson->section->title ?? 'General',
-        ] : null;
-    }
-
+    return $nextLesson ? [
+        'id' => $nextLesson->id,
+        'title' => $nextLesson->title,
+        'section' => $nextLesson->section->title ?? 'General',
+    ] : null;
+}
     private function calculateTaskPriority($dueDate)
     {
         if (!$dueDate) return 'low';

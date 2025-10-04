@@ -32,7 +32,7 @@ class DashboardSidebar extends Component
                 'cbt.exam' => 'cbt.exam',
                 'cbt.viewer' => 'cbt.viewer',
                 'admin.certificates.manage' => 'admin.certificates.manage',
-                'certificates.index' => 'certificates.index',
+                'student.certificates.index' => 'student.certificates.index',
                 'marketplace.browse' => 'marketplace.browse',
                 'community.center' => 'community',
                 'settings' => 'settings',

@@ -3,186 +3,93 @@
 return [
     /*
     |--------------------------------------------------------------------------
-    | Certificate Configuration
+    | Institution Information
     |--------------------------------------------------------------------------
-    |
-    | This file contains the configuration options for the certificate system.
-    |
     */
-
-    /*
-    |--------------------------------------------------------------------------
-    | Certificate Requirements
-    |--------------------------------------------------------------------------
-    |
-    | Define the requirements for certificate eligibility.
-    |
-    */
-    'required_completion_percentage' => env('CERTIFICATE_REQUIRED_COMPLETION', 100),
-    'minimum_grade' => env('CERTIFICATE_MINIMUM_GRADE', null),
-    'require_assessments' => env('CERTIFICATE_REQUIRE_ASSESSMENTS', false),
-    
-    /*
-    |--------------------------------------------------------------------------
-    | Certificate Templates
-    |--------------------------------------------------------------------------
-    |
-    | Define available certificate templates.
-    |
-    */
-    'templates' => [
-        'default' => [
-            'name' => 'Default Certificate',
-            'view' => 'certificates.templates.default',
-            'orientation' => 'landscape',
-            'size' => 'A4',
-        ],
-        'formal' => [
-            'name' => 'Formal Certificate',
-            'view' => 'certificates.templates.formal',
-            'orientation' => 'landscape', 
-            'size' => 'A4',
-        ],
-        'modern' => [
-            'name' => 'Modern Certificate',
-            'view' => 'certificates.templates.modern',
-            'orientation' => 'landscape',
-            'size' => 'A4',
-        ],
+    'institution' => [
+        'name' => env('CERTIFICATE_INSTITUTION_NAME', 'Bootkode Academy'),
+        'subtitle' => env('CERTIFICATE_INSTITUTION_SUBTITLE', 'Learning Platform'),
+        'logo_path' => env('CERTIFICATE_LOGO_PATH', null),
     ],
 
     /*
     |--------------------------------------------------------------------------
-    | Default Template
+    | Storage Configuration
     |--------------------------------------------------------------------------
-    |
-    | The default template to use when generating certificates.
-    |
-    */
-    'default_template' => 'default',
-
-    /*
-    |--------------------------------------------------------------------------
-    | Certificate Storage
-    |--------------------------------------------------------------------------
-    |
-    | Configure where certificate files are stored.
-    |
     */
     'storage' => [
         'disk' => env('CERTIFICATE_STORAGE_DISK', 'public'),
-        'pdf_path' => 'certificates/pdfs',
-        'qr_path' => 'certificates/qr_codes',
-        'template_path' => 'certificates/templates',
+        'qr_path' => env('CERTIFICATE_QR_PATH', 'certificates/qr'),
+        'pdf_path' => env('CERTIFICATE_PDF_PATH', 'certificates/pdf'),
     ],
 
     /*
     |--------------------------------------------------------------------------
     | QR Code Configuration
     |--------------------------------------------------------------------------
-    |
-    | Configure QR code generation settings.
-    |
     */
     'qr_code' => [
-        'size' => 200,
-        'margin' => 10,
-        'format' => 'png',
-        'error_correction' => 'M', // L, M, Q, H
+        'size' => env('CERTIFICATE_QR_SIZE', 300), // Increased for better scanning
+        'margin' => env('CERTIFICATE_QR_MARGIN', 15),
+        'error_correction' => 'high', // high, low, medium, quartile
     ],
 
     /*
     |--------------------------------------------------------------------------
-    | PDF Generation
+    | PDF Configuration
     |--------------------------------------------------------------------------
-    |
-    | Configure PDF generation settings.
-    |
     */
     'pdf' => [
-        'engine' => env('CERTIFICATE_PDF_ENGINE', 'dompdf'), // dompdf, mpdf
         'options' => [
-            'isRemoteEnabled' => true,
+            'defaultFont' => 'DejaVu Sans',
             'isHtml5ParserEnabled' => true,
-            'isFontSubsettingEnabled' => true,
+            'isRemoteEnabled' => false, // Security: disabled for safety
+            'enable_php' => false, // Security: disabled for safety
+            'dpi' => 150,
+            'debugPng' => false,
+            'debugKeepTemp' => false,
+            'debugCss' => false,
         ],
     ],
 
     /*
     |--------------------------------------------------------------------------
-    | Institution Information
+    | Certificate Templates
     |--------------------------------------------------------------------------
-    |
-    | Information about the issuing institution.
-    |
     */
-    'institution' => [
-        'name' => env('CERTIFICATE_INSTITUTION_NAME', 'Academy Learning Platform'),
-        'subtitle' => env('CERTIFICATE_INSTITUTION_SUBTITLE', 'Excellence in Online Education'),
-        'logo' => env('CERTIFICATE_INSTITUTION_LOGO', null),
-        'seal' => env('CERTIFICATE_INSTITUTION_SEAL', null),
-        'website' => env('APP_URL', 'https://academy.com'),
-    ],
-
-    /*
-    |--------------------------------------------------------------------------
-    | Verification Settings
-    |--------------------------------------------------------------------------
-    |
-    | Configure certificate verification settings.
-    |
-    */
-    'verification' => [
-        'url_prefix' => env('CERTIFICATE_VERIFICATION_URL', null),
-        'rate_limit' => [
-            'attempts' => 60,
-            'decay_minutes' => 1,
+    'templates' => [
+        'default' => [
+            'view' => 'certificates.public-view',
+            'size' => 'A4',
+            'orientation' => 'landscape',
         ],
-        'cache_duration' => 3600, // 1 hour in seconds
+        // You can add more templates here
+        // 'premium' => [
+        //     'view' => 'certificates.certificate-premium',
+        //     'size' => 'A4',
+        //     'orientation' => 'landscape',
+        // ],
     ],
+
+    'default_template' => 'default',
 
     /*
     |--------------------------------------------------------------------------
-    | Notifications
+    | Certificate Requirements
     |--------------------------------------------------------------------------
-    |
-    | Configure certificate-related notifications.
-    |
     */
-    'notifications' => [
-        'enabled' => env('CERTIFICATE_NOTIFICATIONS_ENABLED', true),
-        'channels' => ['mail', 'database'],
-        'auto_approve_notifications' => [
-            'super_admin' => true,
-            'academy_admin' => true,
-            'instructor' => true,
-        ],
-    ],
+    'required_completion_percentage' => env('CERTIFICATE_REQUIRED_COMPLETION', 100),
+    'require_all_assessments_passed' => env('CERTIFICATE_REQUIRE_ASSESSMENTS', false),
+    'minimum_time_spent_hours' => env('CERTIFICATE_MIN_TIME_HOURS', 0),
 
     /*
     |--------------------------------------------------------------------------
-    | Security Settings
+    | Grading System
     |--------------------------------------------------------------------------
-    |
-    | Configure security-related settings.
-    |
-    */
-    'security' => [
-        'verification_code_length' => 32,
-        'prevent_duplicate_requests' => true,
-        'auto_cleanup_rejected' => false,
-        'revocation_allowed_roles' => ['super_admin', 'academy_admin'],
-    ],
-
-    /*
-    |--------------------------------------------------------------------------
-    | Grade Scale
-    |--------------------------------------------------------------------------
-    |
-    | Define the grading scale for certificates.
-    |
     */
     'grading' => [
+        'enabled' => env('CERTIFICATE_GRADING_ENABLED', true),
+        'default_grade' => 'Pass',
         'scale' => [
             'A+' => 97,
             'A' => 93,
@@ -196,38 +103,54 @@ return [
             'D' => 60,
             'F' => 0,
         ],
-        'passing_grade' => 60,
-        'default_grade' => 'Pass',
     ],
 
     /*
     |--------------------------------------------------------------------------
-    | Batch Operations
+    | Notifications
     |--------------------------------------------------------------------------
-    |
-    | Configure batch operation limits.
-    |
     */
-    'batch' => [
-        'max_certificates' => 50,
-        'max_bulk_approve' => 25,
-        'processing_timeout' => 300, // 5 minutes
+    'notifications' => [
+        'enabled' => env('CERTIFICATE_NOTIFICATIONS_ENABLED', true),
+        'notify_on_approval' => true,
+        'notify_on_rejection' => true,
+        'notify_on_revocation' => true,
     ],
 
     /*
     |--------------------------------------------------------------------------
-    | API Settings
+    | Security Features
     |--------------------------------------------------------------------------
-    |
-    | Configure API-related settings.
-    |
     */
-    'api' => [
-        'enabled' => true,
+    'security' => [
+        'watermark_enabled' => true,
+        'hologram_effect' => true,
+        'security_strip' => true,
+        'verify_on_download' => true,
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Verification Settings
+    |--------------------------------------------------------------------------
+    */
+    'verification' => [
+        'log_attempts' => true,
         'rate_limit' => [
-            'attempts' => 100,
-            'decay_minutes' => 1,
+            'enabled' => true,
+            'max_attempts' => 100,
+            'decay_minutes' => 60,
         ],
-        'allowed_origins' => ['*'],
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Expiration Settings
+    |--------------------------------------------------------------------------
+    */
+    'expiration' => [
+        'enabled' => env('CERTIFICATE_EXPIRATION_ENABLED', false),
+        'default_validity_years' => env('CERTIFICATE_VALIDITY_YEARS', null),
+        'notify_before_expiry_days' => 30,
     ],
 ];

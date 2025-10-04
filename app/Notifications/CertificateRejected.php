@@ -1,6 +1,4 @@
 <?php
-// App\Notifications\CertificateRejected.php
-
 namespace App\Notifications;
 
 use App\Models\Certificate;
@@ -35,7 +33,7 @@ class CertificateRejected extends Notification implements ShouldQueue
             ->line('**Certificate Number:** ' . $this->certificate->certificate_number)
             ->line('**Reason:** ' . $this->certificate->rejection_reason)
             ->line('If you believe this is an error or have questions about the rejection, please contact your instructor or support team.')
-            ->action('Contact Support', route('help.support'));
+            ->action('Contact Support', config('app.url') . '/dashboard/help-support');
     }
 
     public function toArray($notifiable)
@@ -47,7 +45,6 @@ class CertificateRejected extends Notification implements ShouldQueue
             'certificate_number' => $this->certificate->certificate_number,
             'course_title' => $this->certificate->course->title,
             'rejection_reason' => $this->certificate->rejection_reason,
-            'contact_url' => route('help.support'),
             'type' => 'certificate_rejected',
         ];
     }

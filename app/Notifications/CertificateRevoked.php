@@ -1,6 +1,4 @@
 <?php
-// App\Notifications\CertificateRevoked.php
-
 namespace App\Notifications;
 
 use App\Models\Certificate;
@@ -37,7 +35,7 @@ class CertificateRevoked extends Notification implements ShouldQueue
             ->line('**Revocation Date:** ' . $this->certificate->revoked_at->format('M j, Y'))
             ->line('The certificate is no longer valid and cannot be verified.')
             ->line('If you have questions about this revocation, please contact support immediately.')
-            ->action('Contact Support', route('help.support'));
+            ->action('Contact Support', config('app.url') . '/dashboard/help-support');
     }
 
     public function toArray($notifiable)
@@ -50,7 +48,6 @@ class CertificateRevoked extends Notification implements ShouldQueue
             'course_title' => $this->certificate->course->title,
             'revocation_reason' => $this->certificate->revocation_reason,
             'revoked_at' => $this->certificate->revoked_at,
-            'contact_url' => route('help.support'),
             'type' => 'certificate_revoked',
         ];
     }

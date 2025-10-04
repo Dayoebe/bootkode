@@ -13,11 +13,11 @@
                     <i class="fas fa-book mr-2"></i>
                     Browse Courses
                 </a>
-                <button wire:click="requestNewCertificate"
+                <a href="{{ route('student.certificate.request') }}"
                    class="px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg font-semibold transition-colors flex items-center">
                     <i class="fas fa-plus mr-2"></i>
                     Request Certificate
-                </button>
+                </a>
             </div>
         </div>
 
@@ -293,10 +293,19 @@
     </div>
     
     <script>
-    // Handle external URL opening
-    document.addEventListener('livewire:init', function () {
-        Livewire.on('open-url', (event) => {
-            window.open(event.url, '_blank');
+   document.addEventListener('livewire:initialized', function () {
+        // Handle certificate opening in new tab
+        Livewire.on('openCertificate', (event) => {
+            if (event.url) {
+                window.open(event.url, '_blank');
+            }
+        });
+
+        // Handle download certificate
+        Livewire.on('download-certificate', (event) => {
+            if (event.url) {
+                window.location.href = event.url;
+            }
         });
     });
 
@@ -304,40 +313,23 @@
     document.addEventListener('DOMContentLoaded', function() {
         const paginationLinks = document.querySelectorAll('.pagination a');
         paginationLinks.forEach(link => {
-            link.addEventListener('click', function() {
-                setTimeout(() => {
-                    window.scrollTo({ top: 0, behavior: 'smooth' });
-                }, 100);
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                const url = this.getAttribute('href');
+                if (url) {
+                    @this.call('$set', 'page', this.getAttribute('href').split('page=')[1] || 1);
+                }
             });
         });
     });
-</script>
+    </script>
 
-<style>
-    .line-clamp-2 {
-        display: -webkit-box;
-        -webkit-line-clamp: 2;
-        -webkit-box-orient: vertical;
-        overflow: hidden;
-    }
-    
-    /* Custom scrollbar for activity feed */
-    .overflow-y-auto::-webkit-scrollbar {
-        width: 6px;
-    }
-    
-    .overflow-y-auto::-webkit-scrollbar-track {
-        background: #374151;
-        border-radius: 3px;
-    }
-    
-    .overflow-y-auto::-webkit-scrollbar-thumb {
-        background: #6366f1;
-        border-radius: 3px;
-    }
-    
-    .overflow-y-auto::-webkit-scrollbar-thumb:hover {
-        background: #4f46e5;
-    }
-</style>
+    <style>
+        .line-clamp-2 {
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+    </style>
 </div>

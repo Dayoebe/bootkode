@@ -115,9 +115,9 @@ class StudentCertificates extends Component
             return;
         }
 
-        $this->dispatch('open-url', ['url' => route('certificate.view', $certificate->verification_code)]);
+        // Use JavaScript dispatch to open in new tab
+        $this->dispatch('openCertificate', url: route('certificate.view', $certificate->verification_code));
     }
-
     public function requestNewCertificate()
     {
         return redirect()->route('student.certificate.request');
