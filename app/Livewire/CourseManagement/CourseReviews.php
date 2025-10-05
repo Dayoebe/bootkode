@@ -5,13 +5,11 @@ namespace App\Livewire\CourseManagement;
 use Livewire\Component;
 use Livewire\WithPagination;
 use App\Models\CourseReview;
-use App\Models\ReviewReply;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Rule;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Str;
 
-#[Layout('layouts.dashboard', ['title' => 'Course Reviews', 'description' => 'Manage course reviews including viewing and responding to student feedback', 'icon' => 'fas fa-star', 'active' => 'instructor.course-reviews'])]
+#[Layout('layouts.dashboard', ['title' => 'Course Reviews', 'description' => 'Manage course reviews including viewing and responding to student feedback', 'icon' => 'fas fa-star', 'active' => 'course-reviews'])]
 class CourseReviews extends Component
 {
     use WithPagination;
@@ -25,17 +23,11 @@ class CourseReviews extends Component
     #[Rule('required|string|max:1000')]
     public $replyText = '';
 
-    /**
-     * Resets the pagination when the search term changes.
-     */
     public function updatingSearch()
     {
         $this->resetPage();
     }
 
-    /**
-     * Render the component view with reviews.
-     */
     public function render()
     {
         $user = Auth::user();
@@ -52,7 +44,7 @@ class CourseReviews extends Component
                         $subQuery->where('title', 'like', '%' . $this->search . '%');
                     });
             })
-            ->with(['user', 'course.instructor', 'replies.user'])
+            ->with(['user', 'course.instructor'])
             ->orderBy('created_at', 'desc')
             ->paginate(10);
 
@@ -61,9 +53,6 @@ class CourseReviews extends Component
         ]);
     }
 
-    /**
-     * Open reply modal for a review.
-     */
     public function openReplyModal($reviewId)
     {
         if (!$this->canManageReview()) {
@@ -76,9 +65,6 @@ class CourseReviews extends Component
         $this->isReplyModalOpen = true;
     }
 
-    /**
-     * Save a reply to a review.
-     */
     public function saveReply()
     {
         if (!$this->canManageReview()) {
@@ -89,24 +75,20 @@ class CourseReviews extends Component
         $this->validate();
 
         try {
-            ReviewReply::create([
-                'review_id' => $this->currentReviewId,
-                'user_id' => Auth::id(),
-                'reply_text' => strip_tags($this->replyText),
+            $review = CourseReview::findOrFail($this->currentReviewId);
+            
+            $review->update([
+                'instructor_reply' => $this->replyText,
+                'replied_at' => now()
             ]);
 
             $this->flashMessage('Reply added successfully.');
-            $this->isReplyModalOpen = false;
-            $this->replyText = '';
-            $this->dispatch('review-updated');
+            $this->closeModal();
         } catch (\Exception $e) {
-            $this->flashMessage('Error saving reply: ' . $e->getMessage(), 'error');
+            $this->flashMessage('Error: ' . $e->getMessage(), 'error');
         }
     }
 
-    /**
-     * Open delete confirmation modal.
-     */
     public function confirmDelete($reviewId)
     {
         if (!$this->canManageReview()) {
@@ -118,9 +100,6 @@ class CourseReviews extends Component
         $this->isDeleteModalOpen = true;
     }
 
-    /**
-     * Delete a review.
-     */
     public function delete()
     {
         if (!$this->canManageReview()) {
@@ -136,15 +115,11 @@ class CourseReviews extends Component
             $this->isDeleteModalOpen = false;
             $this->reviewToDelete = null;
             $this->resetPage();
-            $this->dispatch('review-updated');
         } catch (\Exception $e) {
-            $this->flashMessage('Error deleting review: ' . $e->getMessage(), 'error');
+            $this->flashMessage('Error: ' . $e->getMessage(), 'error');
         }
     }
 
-    /**
-     * Close modals and reset fields.
-     */
     public function closeModal()
     {
         $this->isReplyModalOpen = false;
@@ -154,9 +129,6 @@ class CourseReviews extends Component
         $this->resetValidation();
     }
 
-    /**
-     * Check if the user can manage reviews (admin or instructor of the course).
-     */
     private function canManageReview()
     {
         $user = Auth::user();
@@ -166,9 +138,6 @@ class CourseReviews extends Component
         return $user->hasAnyRole(['super_admin', 'academy_admin']) || $user->isInstructor();
     }
 
-    /**
-     * Centralized flash message handler.
-     */
     private function flashMessage(string $message, string $type = 'success')
     {
         session()->flash($type === 'success' ? 'message' : 'error', $message);

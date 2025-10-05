@@ -110,7 +110,7 @@
                                 <i class="fas fa-circle-notch fa-spin mr-2"></i> Loading...
                             </td>
                         </tr>
-                        @foreach ($reviews as $index => $review)
+                        @foreach ($reviews as $review)
                             <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors duration-200">
                                 <td class="px-6 py-4">
                                     <div class="text-sm font-medium text-gray-900 dark:text-white transition-colors duration-300">
@@ -143,22 +143,18 @@
                                         <div class="text-xs text-gray-500 dark:text-gray-400 mt-1 transition-colors duration-300">
                                             {{ $review->created_at->diffForHumans() }}
                                         </div>
-                                        @if ($review->replies->isNotEmpty())
+                                        
+                                        <!-- Instructor Reply Display -->
+                                        @if($review->instructor_reply)
                                             <div class="mt-2 p-2 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800 transition-colors duration-300">
-                                                <div class="text-xs text-blue-700 dark:text-blue-300 font-medium mb-1 transition-colors duration-300">
+                                                <div class="text-xs text-blue-700 dark:text-blue-300 font-medium mb-1 transition-colors duration-300 flex items-center">
                                                     <i class="fas fa-reply mr-1"></i>
-                                                    {{ $review->replies->count() }} {{ $review->replies->count() === 1 ? 'Reply' : 'Replies' }}
+                                                    Instructor Response
+                                                    <span class="ml-2 text-gray-500 dark:text-gray-400">{{ $review->replied_at?->diffForHumans() }}</span>
                                                 </div>
-                                                @foreach ($review->replies->take(1) as $reply)
-                                                    <p class="text-xs text-gray-600 dark:text-gray-300 transition-colors duration-300">
-                                                        <strong>{{ $reply->user->name }}:</strong> {{ Str::limit($reply->reply_text, 80) }}
-                                                    </p>
-                                                @endforeach
-                                                @if($review->replies->count() > 1)
-                                                    <p class="text-xs text-blue-600 dark:text-blue-400 mt-1 transition-colors duration-300">
-                                                        +{{ $review->replies->count() - 1 }} more replies
-                                                    </p>
-                                                @endif
+                                                <p class="text-xs text-gray-600 dark:text-gray-300 transition-colors duration-300">
+                                                    {{ Str::limit($review->instructor_reply, 100) }}
+                                                </p>
                                             </div>
                                         @endif
                                     </div>
@@ -179,7 +175,7 @@
                                     <div class="flex items-center space-x-2">
                                         <button wire:click="openReplyModal({{ $review->id }})" 
                                                 class="text-blue-600 dark:text-blue-400 hover:text-blue-900 dark:hover:text-blue-300 transition-colors duration-300 p-2 rounded-lg hover:bg-blue-50 dark:hover:bg-blue-900/20" 
-                                                title="Reply to review">
+                                                title="{{ $review->instructor_reply ? 'Update reply' : 'Reply to review' }}">
                                             <i class="fas fa-reply"></i>
                                         </button>
                                         <button wire:click="confirmDelete({{ $review->id }})" 
@@ -241,10 +237,10 @@
                     <textarea wire:model="replyText" id="replyText" rows="4"
                               class="w-full px-4 py-3 bg-white dark:bg-gray-700 border-2 border-gray-200 dark:border-gray-600 rounded-xl text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:border-blue-500 dark:focus:border-blue-400 focus:ring-2 focus:ring-blue-500/20 transition-all duration-300 resize-none"
                               placeholder="Thank you for your feedback. I appreciate your review and..."
-                              maxlength="1000" x-ref="replyInput"></textarea>
+                              maxlength="1000"></textarea>
                     <div class="flex justify-between items-center mt-2 text-xs text-gray-500 dark:text-gray-400">
                         <span>Be professional and constructive</span>
-                        <span>{{ strlen($replyText) }}/1000</span>
+                        <span>{{ strlen($replyText ?? '') }}/1000</span>
                     </div>
                     @error('replyText') 
                         <p class="mt-2 text-sm text-red-500 dark:text-red-400">{{ $message }}</p>
@@ -258,8 +254,8 @@
                     </button>
                     <button type="submit" wire:loading.attr="disabled"
                             class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-xl transition-colors duration-300 disabled:opacity-50">
-                        <span wire:loading.remove>Send Reply</span>
-                        <span wire:loading>
+                        <span wire:loading.remove wire:target="saveReply">Send Reply</span>
+                        <span wire:loading wire:target="saveReply">
                             <i class="fas fa-spinner fa-spin mr-2"></i>Sending...
                         </span>
                     </button>
@@ -293,7 +289,7 @@
                 </div>
                 <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2 transition-colors duration-300">Confirm Deletion</h3>
                 <p class="text-gray-600 dark:text-gray-400 text-sm transition-colors duration-300">
-                    Are you sure you want to delete this review? This action cannot be undone and will remove all associated replies.
+                    Are you sure you want to delete this review? This action cannot be undone.
                 </p>
             </div>
 
