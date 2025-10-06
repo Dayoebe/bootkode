@@ -270,7 +270,21 @@ class Course extends Model
     {
         return $query->where('is_paid', true);
     }
-
+    public function updateAverageRating()
+    {
+        $avgRating = $this->reviews()->where('is_approved', true)->avg('rating');
+        $this->update(['average_rating' => round($avgRating ?? 0, 2)]);
+    }
+    
+    public function getReviewsCount()
+    {
+        return $this->reviews()->where('is_approved', true)->count();
+    }
+    
+    public function hasReviewBy($userId)
+    {
+        return $this->reviews()->where('user_id', $userId)->exists();
+    }
     // Accessors
     public function getFormattedLearningOutcomesAttribute()
     {
