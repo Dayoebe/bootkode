@@ -6,14 +6,17 @@ use App\Models\Course;
 use App\Models\User;
 use App\Models\Announcement;
 use App\Models\Certificate;
-use App\Models\SupportTicket;
 use App\Models\UserAchievement;
 use App\Models\SystemStatus;
 use App\Models\CourseEnrollment;
 use App\Models\StudentAnswer;
 use App\Models\Assessment;
-use App\Models\CbtResult;
 use App\Models\JobApplication;
+use App\Models\Mentorship;
+use App\Models\LearningSession;
+use App\Models\Portfolio;
+use App\Models\Wishlist;
+use App\Models\CourseReview;
 use Livewire\Component;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Computed;
@@ -28,12 +31,14 @@ class StudentDashboard extends Component
     public $showWidgets = [
         'quick_stats' => true,
         'learning_progress' => true,
-        'recent_courses' => true,
         'achievements' => true,
         'upcoming_tasks' => true,
         'performance_analytics' => true,
         'announcements' => true,
         'career_tools' => true,
+        'mentorship_status' => true,
+        'recent_reviews' => true,
+        'wishlist_preview' => true,
     ];
 
     protected $listeners = [
@@ -58,17 +63,23 @@ class StudentDashboard extends Component
     public function quickStats()
     {
         $user = Auth::user();
-        $timeframe = $this->getTimeframeQuery();
         
         return [
             'enrolled_courses' => $user->enrollments()->count(),
             'completed_courses' => $user->enrollments()->where('is_completed', true)->count(),
             'certificates_earned' => $user->certificates()->approved()->count(),
-            'study_streak' => $this->calculateStudyStreak($user),
-            'lessons_completed' => $this->getCompletedLessonsCount($user),
+            'study_streak' => LearningSession::getStudyStreak($user->id),
+            'lessons_completed' => DB::table('lesson_user')
+                ->where('user_id', $user->id)
+                ->whereNotNull('completed_at')
+                ->count(),
             'average_score' => $this->getAverageAssessmentScore($user),
             'total_study_hours' => $this->getTotalStudyTime($user),
-            'current_level' => $this->getUserLevel($user),
+            'current_level' => $user->getOrCreateGamificationData()->level ?? 1,
+            'total_points' => $user->getOrCreateGamificationData()->points ?? 0,
+            'achievements_unlocked' => $user->badges()->count(),
+            'pending_assessments' => $this->getPendingAssessmentsCount($user),
+            'wishlist_count' => Wishlist::where('user_id', $user->id)->count(),
         ];
     }
 
@@ -78,14 +89,19 @@ class StudentDashboard extends Component
         $user = Auth::user();
         $enrollments = $user->enrollments()
             ->with(['course' => function($query) {
-                $query->select('id', 'title', 'thumbnail', 'estimated_duration_minutes');
+                $query->select('id', 'title', 'thumbnail', 'estimated_duration_minutes', 'instructor_id')
+                    ->with('instructor:id,name');
             }])
             ->where('progress_percentage', '<', 100)
             ->orderBy('updated_at', 'desc')
             ->take(6)
             ->get();
 
-        return $enrollments->map(function($enrollment) {
+        return $enrollments->filter(function($enrollment) {
+            return $enrollment->course !== null;
+        })->map(function($enrollment) use ($user) {
+            $nextLesson = $this->getNextLesson($enrollment->course, $user->id);
+            
             return [
                 'id' => $enrollment->course->id,
                 'title' => $enrollment->course->title,
@@ -93,7 +109,14 @@ class StudentDashboard extends Component
                 'progress' => $enrollment->progress_percentage ?? 0,
                 'last_accessed' => $enrollment->updated_at,
                 'estimated_remaining' => $this->calculateRemainingTime($enrollment),
-                'next_lesson' => $this->getNextLesson($enrollment->course, $enrollment->user_id),
+                'next_lesson' => $nextLesson,
+                'instructor_name' => optional($enrollment->course->instructor)->name ?? 'Unknown',
+                'total_lessons' => $enrollment->course->allLessons()->count(),
+                'completed_lessons' => DB::table('lesson_user')
+                    ->whereIn('lesson_id', $enrollment->course->allLessons()->pluck('id'))
+                    ->where('user_id', $user->id)
+                    ->whereNotNull('completed_at')
+                    ->count(),
             ];
         });
     }
@@ -112,6 +135,7 @@ class StudentDashboard extends Component
                     'icon' => $badge->badge_icon,
                     'rarity' => $badge->rarity,
                     'earned_at' => $badge->created_at,
+                    'points_earned' => $badge->points_awarded ?? 0,
                 ];
             });
     }
@@ -122,46 +146,81 @@ class StudentDashboard extends Component
         $user = Auth::user();
         $tasks = collect();
     
-        // Upcoming assessments
+        // Upcoming assessments from enrolled courses
         $upcomingAssessments = Assessment::whereHas('course.enrollments', function($query) use ($user) {
                 $query->where('user_id', $user->id)->where('is_completed', false);
             })
             ->whereDoesntHave('studentAnswers', function($query) use ($user) {
                 $query->where('user_id', $user->id)->whereNotNull('submitted_at');
             })
-            ->where('due_date', '>', now())
-            ->orderBy('due_date')
+            ->where(function($query) {
+                $query->where('due_date', '>', now())
+                    ->orWhere('deadline', '>', now())
+                    ->orWhereNull('due_date');
+            })
+            ->with('course:id,title,slug')
+            ->orderByRaw('COALESCE(due_date, deadline, NOW() + INTERVAL 30 DAY)')
             ->take(5)
             ->get();
     
         foreach($upcomingAssessments as $assessment) {
+            $dueDate = $assessment->due_date ?? $assessment->deadline ?? now()->addDays(30);
+            
             $tasks->push([
                 'type' => 'assessment',
                 'title' => $assessment->title,
                 'course' => $assessment->course->title,
-                'due_date' => $assessment->due_date,
-                'priority' => $this->calculateTaskPriority($assessment->due_date),
+                'due_date' => $dueDate,
+                'priority' => $this->calculateTaskPriority($dueDate),
                 'url' => route('course.view', ['course' => $assessment->course->slug]),
+                'is_mandatory' => $assessment->is_mandatory ?? false,
             ]);
         }
     
-        // Continue course lessons - only if learningProgress has items
-        if (!empty($this->learningProgress)) {
-            foreach($this->learningProgress as $progress) {
-                if($progress['next_lesson']) {
-                    $tasks->push([
-                        'type' => 'lesson',
-                        'title' => 'Continue: ' . $progress['next_lesson']['title'],
-                        'course' => $progress['title'],
-                        'due_date' => now()->addDays(1), // Suggested completion
-                        'priority' => 'medium',
-                        'url' => route('course.view', ['course' => $progress['id']]),
-                    ]);
-                }
+        // Incomplete lessons from active courses
+        $activeCourses = $user->enrollments()
+            ->where('progress_percentage', '<', 100)
+            ->where('progress_percentage', '>', 0)
+            ->with('course')
+            ->orderBy('updated_at', 'desc')
+            ->take(3)
+            ->get();
+
+        foreach($activeCourses as $enrollment) {
+            $nextLesson = $this->getNextLesson($enrollment->course, $user->id);
+            
+            if($nextLesson) {
+                $tasks->push([
+                    'type' => 'lesson',
+                    'title' => 'Continue: ' . $nextLesson['title'],
+                    'course' => $enrollment->course->title,
+                    'due_date' => now()->addDays(2),
+                    'priority' => 'medium',
+                    'url' => route('course.view', ['course' => $enrollment->course->id]),
+                    'is_mandatory' => false,
+                ]);
             }
         }
+
+        // Pending certificate requests
+        $pendingCertificates = Certificate::where('user_id', $user->id)
+            ->whereIn('status', [Certificate::STATUS_REQUESTED, Certificate::STATUS_PENDING])
+            ->with('course:id,title')
+            ->get();
+
+        foreach($pendingCertificates as $cert) {
+            $tasks->push([
+                'type' => 'certificate',
+                'title' => 'Certificate Pending: ' . $cert->course->title,
+                'course' => $cert->course->title,
+                'due_date' => $cert->requested_at->addDays(7),
+                'priority' => 'low',
+                'url' => route('student.certificates.index'),
+                'is_mandatory' => false,
+            ]);
+        }
     
-        return $tasks->sortBy('due_date')->take(8);
+        return $tasks->sortBy('due_date')->take(10);
     }
 
     #[Computed]
@@ -174,44 +233,43 @@ class StudentDashboard extends Component
         $studyActivity = [];
         for ($i = $days - 1; $i >= 0; $i--) {
             $date = now()->subDays($i);
-            $activity = StudentAnswer::where('user_id', $user->id)
-                ->whereDate('created_at', $date)
-                ->count();
+            $activity = LearningSession::where('user_id', $user->id)
+                ->whereDate('started_at', $date)
+                ->whereNotNull('ended_at')
+                ->sum('duration_minutes');
             
             $studyActivity[] = [
                 'date' => $date->format('M j'),
-                'activity' => $activity,
+                'activity' => round($activity / 60, 1), // Convert to hours
             ];
         }
 
-        // Subject performance
-        $subjectPerformance = Assessment::whereHas('studentAnswers', function($query) use ($user) {
-                $query->where('user_id', $user->id)->whereNotNull('submitted_at');
-            })
-            ->with(['course', 'studentAnswers' => function($query) use ($user) {
-                $query->where('user_id', $user->id);
-            }])
+        // Subject/Category performance
+        $subjectPerformance = CourseEnrollment::where('user_id', $user->id)
+            ->with(['course.category'])
+            ->whereNotNull('progress_percentage')
             ->get()
-            ->groupBy('course.category.name')
-            ->map(function($assessments, $category) {
-                $totalScore = 0;
-                $maxScore = 0;
-                $count = 0;
-
-                foreach($assessments as $assessment) {
-                    foreach($assessment->studentAnswers as $answer) {
-                        $totalScore += $answer->points_earned ?? 0;
-                        $maxScore += $assessment->max_score ?? 100;
-                        $count++;
-                    }
-                }
-
+            ->filter(function($enrollment) {
+                return $enrollment->course !== null;
+            })
+            ->groupBy(function($enrollment) {
+                return optional($enrollment->course->category)->name ?? 'Uncategorized';
+            })
+            ->map(function($enrollments, $category) {
+                $avgProgress = $enrollments->avg('progress_percentage');
+                $completedCount = $enrollments->where('is_completed', true)->count();
+                
                 return [
-                    'category' => $category ?? 'General',
-                    'average_score' => $maxScore > 0 ? round(($totalScore / $maxScore) * 100, 1) : 0,
-                    'assessments_taken' => $count,
+                    'category' => $category,
+                    'average_progress' => round($avgProgress, 1),
+                    'courses_enrolled' => $enrollments->count(),
+                    'courses_completed' => $completedCount,
+                    'completion_rate' => $enrollments->count() > 0 
+                        ? round(($completedCount / $enrollments->count()) * 100, 1) 
+                        : 0,
                 ];
             })
+            ->sortByDesc('average_progress')
             ->values();
 
         return [
@@ -219,24 +277,35 @@ class StudentDashboard extends Component
             'subject_performance' => $subjectPerformance,
             'weekly_goals' => $this->getWeeklyGoals($user),
             'improvement_areas' => $this->getImprovementAreas($user),
+            'total_study_time_this_period' => array_sum(array_column($studyActivity, 'activity')),
         ];
     }
 
     #[Computed]
     public function recentAnnouncements()
     {
+        $user = Auth::user();
+        $enrolledCourseIds = $user->enrollments()->pluck('course_id');
+
         return Announcement::where('status', 'published')
             ->where('published_at', '<=', now())
+            ->where(function($query) use ($enrolledCourseIds) {
+                $query->whereNull('course_id')
+                    ->orWhereIn('course_id', $enrolledCourseIds);
+            })
+            ->with('course:id,title', 'user:id,name')
             ->latest('published_at')
-            ->take(3)
+            ->take(5)
             ->get()
             ->map(function($announcement) {
                 return [
                     'id' => $announcement->id,
                     'title' => $announcement->title,
-                    'content' => \Str::limit($announcement->content, 120),
+                    'content' => \Str::limit(strip_tags($announcement->content), 150),
                     'published_at' => $announcement->published_at,
-                    'course_title' => $announcement->course->title ?? null,
+                    'course_title' => optional($announcement->course)->title ?? 'General Announcement',
+                    'author' => optional($announcement->user)->name ?? 'System',
+                    'is_new' => $announcement->published_at->isAfter(now()->subDays(3)),
                 ];
             });
     }
@@ -250,11 +319,122 @@ class StudentDashboard extends Component
             'portfolio_completion' => $this->getPortfolioCompletion($user),
             'resume_status' => $this->getResumeStatus($user),
             'job_applications' => JobApplication::where('user_id', $user->id)
+                ->with(['job' => function($query) {
+                    $query->select('id', 'title', 'company_name', 'employment_type');
+                }])
                 ->latest()
                 ->take(3)
-                ->get(),
-            'interview_prep' => $this->getInterviewPrepStatus($user),
+                ->get()
+                ->filter(function($app) {
+                    return $app->job !== null;
+                })
+                ->map(function($app) {
+                    return [
+                        'id' => $app->id,
+                        'job_title' => $app->job->title ?? 'N/A',
+                        'company' => $app->job->company_name ?? 'N/A',
+                        'status' => $app->status,
+                        'status_label' => ucfirst(str_replace('_', ' ', $app->status)),
+                        'status_color' => $this->getApplicationStatusColor($app->status),
+                        'applied_at' => $app->created_at,
+                    ];
+                }),
+            'total_applications' => JobApplication::where('user_id', $user->id)->count(),
+            'shortlisted_count' => JobApplication::where('user_id', $user->id)
+                ->where('status', 'shortlisted')
+                ->count(),
         ];
+    }
+
+    #[Computed]
+    public function mentorshipStatus()
+    {
+        $user = Auth::user();
+        
+        $activeMentorships = Mentorship::where('mentee_id', $user->id)
+            ->where('status', Mentorship::STATUS_ACTIVE)
+            ->with('mentor:id,name')
+            ->get()
+            ->filter(function($mentorship) {
+                return $mentorship->mentor !== null;
+            });
+
+        $pendingRequests = Mentorship::where('mentee_id', $user->id)
+            ->where('status', Mentorship::STATUS_PENDING)
+            ->count();
+
+        return [
+            'active_mentorships' => $activeMentorships->map(function($mentorship) {
+                return [
+                    'id' => $mentorship->id,
+                    'mentor_name' => $mentorship->mentor->name ?? 'Unknown Mentor',
+                    'started_at' => $mentorship->started_at,
+                    'progress_percentage' => $mentorship->progress_percentage ?? 0,
+                    'next_session' => $mentorship->next_session,
+                    'duration_weeks' => $mentorship->duration_weeks ?? 0,
+                ];
+            }),
+            'pending_requests' => $pendingRequests,
+            'completed_mentorships' => Mentorship::where('mentee_id', $user->id)
+                ->where('status', Mentorship::STATUS_COMPLETED)
+                ->count(),
+        ];
+    }
+
+    #[Computed]
+    public function recentReviews()
+    {
+        $user = Auth::user();
+        
+        return CourseReview::where('user_id', $user->id)
+            ->with('course:id,title,slug')
+            ->latest()
+            ->take(3)
+            ->get()
+            ->map(function($review) {
+                return [
+                    'id' => $review->id,
+                    'course_title' => $review->course->title,
+                    'rating' => $review->rating,
+                    'comment' => \Str::limit($review->comment, 100),
+                    'is_approved' => $review->is_approved,
+                    'helpful_count' => $review->helpful_count ?? 0,
+                    'has_reply' => !empty($review->instructor_reply),
+                    'created_at' => $review->created_at,
+                ];
+            });
+    }
+
+    #[Computed]
+    public function wishlistPreview()
+    {
+        $user = Auth::user();
+        
+        return Wishlist::where('user_id', $user->id)
+            ->with(['course' => function($query) {
+                $query->select('id', 'title', 'thumbnail', 'price', 'is_free', 'slug', 'average_rating', 'instructor_id')
+                    ->with('instructor:id,name');
+            }])
+            ->latest()
+            ->take(4)
+            ->get()
+            ->filter(function($wishlist) {
+                return $wishlist->course !== null;
+            })
+            ->map(function($wishlist) {
+                return [
+                    'id' => $wishlist->id,
+                    'course_id' => $wishlist->course->id,
+                    'title' => $wishlist->course->title,
+                    'thumbnail' => $wishlist->course->thumbnail,
+                    'price' => $wishlist->course->price,
+                    'is_free' => $wishlist->course->is_free,
+                    'instructor' => optional($wishlist->course->instructor)->name ?? 'Unknown',
+                    'rating' => $wishlist->course->average_rating,
+                    'slug' => $wishlist->course->slug,
+                    'added_at' => $wishlist->created_at,
+                ];
+            });
     }
 
     #[Computed]
@@ -265,20 +445,13 @@ class StudentDashboard extends Component
             'status' => $status->status ?? 'operational',
             'message' => $status->message ?? 'All systems operational',
             'updated_at' => $status ? $status->updated_at->diffForHumans() : 'Just now',
+            'incidents_count' => SystemStatus::where('status', '!=', 'operational')
+                ->where('created_at', '>', now()->subDays(7))
+                ->count(),
         ];
     }
 
     // Helper Methods
-    private function getTimeframeQuery()
-    {
-        return match ($this->selectedTimeframe) {
-            '24hours' => now()->subHours(24),
-            '7days' => now()->subDays(7),
-            '30days' => now()->subDays(30),
-            default => now()->subDays(7),
-        };
-    }
-
     private function getTimeframeDays()
     {
         return match ($this->selectedTimeframe) {
@@ -289,56 +462,36 @@ class StudentDashboard extends Component
         };
     }
 
-    private function calculateStudyStreak(User $user)
-    {
-        $streak = 0;
-        $currentDate = now()->startOfDay();
-        
-        while (true) {
-            $hasActivity = StudentAnswer::where('user_id', $user->id)
-                ->whereDate('created_at', $currentDate)
-                ->exists();
-            
-            if ($hasActivity) {
-                $streak++;
-                $currentDate->subDay();
-            } else {
-                break;
-            }
-        }
-        
-        return $streak;
-    }
-
-    private function getCompletedLessonsCount(User $user)
-    {
-        return $user->completedLessons()->count();
-    }
-
     private function getAverageAssessmentScore(User $user)
     {
-        return StudentAnswer::where('user_id', $user->id)
+        $avgScore = StudentAnswer::where('user_id', $user->id)
             ->whereNotNull('points_earned')
             ->whereNotNull('submitted_at')
             ->join('assessments', 'student_answers.assessment_id', '=', 'assessments.id')
             ->selectRaw('AVG((student_answers.points_earned / assessments.max_score) * 100) as avg_score')
-            ->value('avg_score') ?? 0;
+            ->value('avg_score');
+
+        return round($avgScore ?? 0, 1);
     }
 
     private function getTotalStudyTime(User $user)
     {
-        // This would ideally come from a learning_sessions table
-        // For now, estimate based on completed lessons and assessments
-        $completedLessons = $this->getCompletedLessonsCount($user);
-        $estimatedHours = $completedLessons * 0.5; // Assume 30 minutes per lesson
+        $totalMinutes = LearningSession::where('user_id', $user->id)
+            ->whereNotNull('ended_at')
+            ->sum('duration_minutes');
         
-        return round($estimatedHours, 1);
+        return round($totalMinutes / 60, 1);
     }
 
-    private function getUserLevel(User $user)
+    private function getPendingAssessmentsCount(User $user)
     {
-        $gamificationData = $user->getOrCreateGamificationData();
-        return $gamificationData->level ?? 1;
+        return Assessment::whereHas('course.enrollments', function($query) use ($user) {
+                $query->where('user_id', $user->id)->where('is_completed', false);
+            })
+            ->whereDoesntHave('studentAnswers', function($query) use ($user) {
+                $query->where('user_id', $user->id)->whereNotNull('submitted_at');
+            })
+            ->count();
     }
 
     private function calculateRemainingTime($enrollment)
@@ -349,28 +502,27 @@ class StudentDashboard extends Component
         $remainingPercentage = 100 - ($enrollment->progress_percentage ?? 0);
         $remainingMinutes = ($course->estimated_duration_minutes * $remainingPercentage) / 100;
         
-        return round($remainingMinutes / 60, 1); // Convert to hours
+        return round($remainingMinutes / 60, 1);
     }
 
     private function getNextLesson($course, $userId)
-{
-    // Get completed lessons for this course
-    $completedLessons = DB::table('lesson_user')
-        ->where('user_id', $userId)
-        ->whereNotNull('completed_at')
-        ->pluck('lesson_id');
+    {
+        $completedLessons = DB::table('lesson_user')
+            ->where('user_id', $userId)
+            ->whereNotNull('completed_at')
+            ->pluck('lesson_id');
 
-    // Find next uncompleted lesson - explicitly specify lessons.id
-    $nextLesson = $course->allLessons()
-        ->whereNotIn('lessons.id', $completedLessons) // Fix: specify table.column
-        ->first();
+        $nextLesson = $course->allLessons()
+            ->whereNotIn('lessons.id', $completedLessons)
+            ->first();
 
-    return $nextLesson ? [
-        'id' => $nextLesson->id,
-        'title' => $nextLesson->title,
-        'section' => $nextLesson->section->title ?? 'General',
-    ] : null;
-}
+        return $nextLesson ? [
+            'id' => $nextLesson->id,
+            'title' => $nextLesson->title,
+            'section' => $nextLesson->section->title ?? 'General',
+        ] : null;
+    }
+
     private function calculateTaskPriority($dueDate)
     {
         if (!$dueDate) return 'low';
@@ -384,68 +536,60 @@ class StudentDashboard extends Component
 
     private function getWeeklyGoals(User $user)
     {
-        // This could be stored in user preferences or calculated
-        return [
-            'lessons_target' => 5,
-            'lessons_completed' => $this->getCompletedLessonsThisWeek($user),
-            'study_hours_target' => 10,
-            'study_hours_completed' => $this->getStudyHoursThisWeek($user),
-        ];
-    }
-
-    private function getCompletedLessonsThisWeek(User $user)
-    {
-        return DB::table('lesson_user')
+        $lessonsCompleted = DB::table('lesson_user')
             ->where('user_id', $user->id)
             ->where('completed_at', '>=', now()->startOfWeek())
             ->count();
-    }
 
-    private function getStudyHoursThisWeek(User $user)
-    {
-        // Estimate based on activity this week
-        $activeDays = StudentAnswer::where('user_id', $user->id)
-            ->where('created_at', '>=', now()->startOfWeek())
-            ->distinct('created_at')
-            ->count(DB::raw('DATE(created_at)'));
-        
-        return $activeDays * 1.5; // Estimate 1.5 hours per active day
+        $studyMinutes = LearningSession::where('user_id', $user->id)
+            ->where('started_at', '>=', now()->startOfWeek())
+            ->whereNotNull('ended_at')
+            ->sum('duration_minutes');
+
+        return [
+            'lessons_target' => 5,
+            'lessons_completed' => $lessonsCompleted,
+            'study_hours_target' => 10,
+            'study_hours_completed' => round($studyMinutes / 60, 1),
+        ];
     }
 
     private function getImprovementAreas(User $user)
     {
-        // Analyze performance to suggest improvement areas
         $lowScoreAssessments = Assessment::whereHas('studentAnswers', function($query) use ($user) {
                 $query->where('user_id', $user->id)
                     ->whereRaw('(points_earned / (SELECT max_score FROM assessments WHERE id = student_answers.assessment_id)) * 100 < 70');
             })
-            ->with('course')
+            ->with(['course.category'])
             ->take(3)
-            ->get();
+            ->get()
+            ->filter(function($assessment) {
+                return $assessment->course !== null;
+            });
 
         return $lowScoreAssessments->map(function($assessment) {
             return [
-                'area' => $assessment->course->category->name ?? 'General',
+                'area' => optional($assessment->course->category)->name ?? 'General',
+                'course' => $assessment->course->title ?? 'Unknown Course',
                 'suggestion' => 'Review fundamentals and practice more exercises',
+                'resources_available' => true,
             ];
         });
     }
 
     private function getPortfolioCompletion(User $user)
     {
-        $portfolio = $user->portfolios()->first();
+        $portfolio = Portfolio::where('user_id', $user->id)->first();
         if (!$portfolio) return 0;
         
-        // Calculate completion based on filled fields
-        $totalFields = 10; // Assuming 10 key fields
+        $fields = ['title', 'description', 'category', 'technologies', 'image_path'];
         $completedFields = 0;
         
-        if ($portfolio->title) $completedFields++;
-        if ($portfolio->bio) $completedFields++;
-        if ($portfolio->skills) $completedFields++;
-        // ... check other fields
+        foreach($fields as $field) {
+            if (!empty($portfolio->$field)) $completedFields++;
+        }
         
-        return round(($completedFields / $totalFields) * 100);
+        return round(($completedFields / count($fields)) * 100);
     }
 
     private function getResumeStatus(User $user)
@@ -453,18 +597,23 @@ class StudentDashboard extends Component
         $resume = $user->resumeProfile;
         return [
             'exists' => !!$resume,
-            'completion' => $user->getResumeCompletionPercentage(),
+            'completion' => $resume ? $user->getResumeCompletionPercentage() : 0,
             'last_updated' => $resume ? $resume->updated_at->diffForHumans() : null,
         ];
     }
 
-    private function getInterviewPrepStatus(User $user)
+    private function getApplicationStatusColor($status)
     {
-        $mockInterviews = $user->mockInterviews()->count();
-        return [
-            'completed_sessions' => $mockInterviews,
-            'skill_level' => $mockInterviews > 5 ? 'Advanced' : ($mockInterviews > 2 ? 'Intermediate' : 'Beginner'),
-        ];
+        return match($status) {
+            'pending' => 'yellow',
+            'reviewing' => 'blue',
+            'shortlisted' => 'indigo',
+            'interviewed' => 'purple',
+            'offered' => 'green',
+            'hired' => 'green',
+            'rejected' => 'red',
+            default => 'gray',
+        };
     }
 
     public function render()
