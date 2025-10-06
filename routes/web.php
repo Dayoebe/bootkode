@@ -251,6 +251,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/saved-resources', \App\Livewire\StudentManagement\SavedResources::class)->name('student.saved-resources');
     Route::get('/offline-learning', \App\Livewire\StudentManagement\OfflineLearning::class)->name('student.offline-learning');
     Route::get('/course/{course}', \App\Livewire\StudentManagement\CourseView::class)->name('course.view');
+    // Route::post('/student/course/{course}/review', [\App\Livewire\StudentManagement\CourseView::class, 'submitReview'])->name('student.course.review');
+    Route::get('/course/{course}', \App\Livewire\StudentManagement\CourseView::class)->name('course.view');
 
 });
 
