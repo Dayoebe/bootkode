@@ -108,6 +108,15 @@
                                     <p class="text-xs text-gray-500">Private messages from other users</p>
                                 </div>
                             </label>
+
+                            <label class="flex items-center cursor-pointer">
+                                <input wire:model="email_instructor_replies" type="checkbox"
+                                    class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
+                                <div class="ml-3">
+                                    <span class="text-sm font-medium text-gray-700">Instructor replies</span>
+                                    <p class="text-xs text-gray-500">When instructors respond to your reviews</p>
+                                </div>
+                            </label>
                         </div>
                     </div>
 

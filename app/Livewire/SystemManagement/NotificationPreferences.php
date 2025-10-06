@@ -20,6 +20,7 @@ class NotificationPreferences extends Component
     public $email_certificate_notifications = true;
     public $email_assignment_reminders = true;
     public $email_announcement_notifications = true;
+    public $email_instructor_replies = true;
     public $email_system_updates = false;
     public $email_marketing_updates = false;
     public $email_weekly_digest = true;
@@ -103,6 +104,9 @@ class NotificationPreferences extends Component
         $this->preferred_language = $preferences['preferred_language'] ?? 'en';
         $this->notification_categories = $preferences['notification_categories'] ?? [];
         $this->blocked_senders = $preferences['blocked_senders'] ?? [];
+        
+        // Instructor replies email preference
+        $this->email_instructor_replies = $preferences['email_instructor_replies'] ?? true;
     }
 
     public function saveEmailNotifications()
@@ -118,6 +122,7 @@ class NotificationPreferences extends Component
             'email_achievement_notifications' => $this->email_achievement_notifications,
             'email_forum_replies' => $this->email_forum_replies,
             'email_direct_messages' => $this->email_direct_messages,
+            'email_instructor_replies' => $this->email_instructor_replies,
         ]);
 
         $this->dispatch('notify', 'Email notification preferences updated!', 'success');
