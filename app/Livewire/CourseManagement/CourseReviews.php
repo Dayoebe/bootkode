@@ -71,18 +71,28 @@ class CourseReviews extends Component
             $this->flashMessage('You are not authorized to reply to reviews.', 'error');
             return;
         }
-
+    
         $this->validate();
-
+    
         try {
             $review = CourseReview::findOrFail($this->currentReviewId);
             
+            // Verify instructor owns this course
+            if ($review->course->instructor_id !== Auth::id() && !Auth::user()->hasAnyRole(['super_admin', 'academy_admin'])) {
+                $this->flashMessage('You are not authorized to reply to this review.', 'error');
+                return;
+            }
+    
+            // Update the review with instructor reply
             $review->update([
                 'instructor_reply' => $this->replyText,
                 'replied_at' => now()
             ]);
-
-            $this->flashMessage('Reply added successfully.');
+    
+            // Send email notification to student
+            $review->user->notify(new \App\Notifications\InstructorReplyNotification($review));
+    
+            $this->flashMessage('Reply sent to student successfully!');
             $this->closeModal();
         } catch (\Exception $e) {
             $this->flashMessage('Error: ' . $e->getMessage(), 'error');
