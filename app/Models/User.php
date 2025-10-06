@@ -301,14 +301,18 @@ class User extends Authenticatable implements MustVerifyEmail
     // Check if user should receive email notification based on preferences
     public function shouldReceiveEmailNotification(string $notificationType): bool
     {
+        $preferences = $this->notification_preferences ?? [];
+        
         return match ($notificationType) {
-            'course_update' => $this->receive_course_updates,
-            'certificate_update' => $this->receive_certificate_notifications,
-            'support_ticket' => true, // From previous
-            'feedback_response' => true, // Add this
-            'announcement' => true, // Add this
-            'system_status' => true, // Add this
-            default => true, // System notifications always sent
+            'course_update' => $preferences['email_course_updates'] ?? $this->receive_course_updates ?? true,
+            'certificate_update' => $preferences['email_certificate_notifications'] ?? $this->receive_certificate_notifications ?? true,
+            'instructor_reply' => $preferences['email_instructor_replies'] ?? true,
+            'course_review' => true, 
+            'support_ticket' => true,
+            'feedback_response' => true,
+            'announcement' => true,
+            'system_status' => true,
+            default => true,
         };
     }
 
