@@ -4,6 +4,7 @@ namespace App\Livewire\StudentManagement;
 
 use Livewire\Component;
 use App\Models\Course;
+use App\Models\CourseReview;
 use App\Models\Section;
 use App\Models\Lesson;
 use App\Models\Assessment;
@@ -12,6 +13,7 @@ use App\Models\CourseEnrollment;
 use App\Models\LessonProgress; // Add this if you're using the new model
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache; // ADD THIS LINE
+use Illuminate\Http\Request;
 use App\Models\Certificate;
 use App\Notifications\CourseCompletionCertificateReady;
 use Livewire\Attributes\Layout;
@@ -28,6 +30,8 @@ class CourseView extends Component
     public $completedLessons = [];
     public $unlockedSections = [];
     public $sectionCompletionThreshold;
+    public $reviewRating = 5;
+    public $reviewComment = '';
 
     public function mount($course)
     {
@@ -562,6 +566,60 @@ class CourseView extends Component
                     'type' => 'error'
                 ]);
             }
+        }
+    }
+    public function submitReview()
+    {
+        // Validate
+        $this->validate([
+            'reviewRating' => 'required|integer|min:1|max:5',
+            'reviewComment' => 'required|string|min:10|max:1000'
+        ]);
+
+        // Check enrollment
+        if (!Auth::user()->enrollments()->where('course_id', $this->course->id)->exists()) {
+            $this->dispatch('notify', [
+                'message' => 'You must be enrolled to review this course.',
+                'type' => 'error',
+                'icon' => 'fas fa-exclamation-circle'
+            ]);
+            return false;
+        }
+
+        try {
+            // Create or update review
+            CourseReview::updateOrCreate(
+                [
+                    'user_id' => Auth::id(),
+                    'course_id' => $this->course->id
+                ],
+                [
+                    'rating' => $this->reviewRating,
+                    'comment' => $this->reviewComment,
+                    'is_approved' => true
+                ]
+            );
+
+            // Reset form
+            $this->reset(['reviewRating', 'reviewComment']);
+            $this->reviewRating = 5;
+
+            // Success notification
+            $this->dispatch('notify', [
+                'message' => 'Thank you for your review! 🎉',
+                'type' => 'success',
+                'icon' => 'fas fa-check-circle'
+            ]);
+
+            return true;
+
+        } catch (\Exception $e) {
+            $this->dispatch('notify', [
+                'message' => 'Failed to submit review. Please try again.',
+                'type' => 'error',
+                'icon' => 'fas fa-exclamation-triangle'
+            ]);
+            return false;
         }
     }
     public function render()
