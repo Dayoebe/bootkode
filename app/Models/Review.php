@@ -1,6 +1,4 @@
 <?php
-
-// Model 3: Review.php (Optional - for ratings and reviews)
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
