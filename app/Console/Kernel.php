@@ -18,7 +18,8 @@ class Kernel extends ConsoleKernel
         $schedule->command('gamification:reset-daily-quests')->dailyAt('00:01');
         $schedule->command('withdrawals:process')->everyFifteenMinutes();
         $schedule->command('reviews:generate-analytics')->daily();
-        
+        $schedule->command('reviews:send-reminders')->dailyAt('10:00');
+
     }
 
     /**

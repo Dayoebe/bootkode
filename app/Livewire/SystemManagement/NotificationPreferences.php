@@ -27,6 +27,9 @@ class NotificationPreferences extends Component
     public $email_achievement_notifications = true;
     public $email_forum_replies = true;
     public $email_direct_messages = true;
+    public $review_reminders_enabled = true;
+public $review_reminder_frequency = 'standard'; // standard, frequent, minimal
+
 
     // Push Notifications (Web/Mobile)
     public $push_course_updates = true;
@@ -65,6 +68,9 @@ class NotificationPreferences extends Component
     {
         // Load from user preferences or database
         $preferences = $user->notification_preferences ?? [];
+        $reviewPrefs = $user->review_reminder_preferences ?? [];
+        $this->review_reminders_enabled = $reviewPrefs['email_enabled'] ?? true;
+        $this->review_reminder_frequency = $reviewPrefs['frequency'] ?? 'standard';
 
         // Email notifications
         $this->email_course_updates = $preferences['email_course_updates'] ?? $user->receive_course_updates ?? true;
@@ -318,6 +324,18 @@ class NotificationPreferences extends Component
         ];
     }
 
+    public function saveReviewReminderPreferences()
+    {
+        $user = Auth::user();
+    $user->update([
+        'review_reminder_preferences' => [
+            'email_enabled' => $this->review_reminders_enabled,
+            'frequency' => $this->review_reminder_frequency
+            ]
+        ]);
+        
+        $this->dispatch('notify', 'Review reminder preferences updated!', 'success');
+    }
     public function render()
     {
         return view('livewire.system-management.notification-preferences');
