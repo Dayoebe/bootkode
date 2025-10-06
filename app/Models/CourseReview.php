@@ -13,14 +13,19 @@ class CourseReview extends Model
         'course_id',
         'user_id',
         'rating',
-        'review_text',
-        'is_approved'
-    ];
-    protected $casts = [
-        'rating' => 'integer',
-        'is_approved' => 'boolean'
+        'comment',
+        'is_approved',
+        'helpful_count',
+        'instructor_reply',
+        'replied_at'
     ];
 
+    protected $casts = [
+        'rating' => 'integer',
+        'is_approved' => 'boolean',
+        'helpful_count' => 'integer',
+        'replied_at' => 'datetime'
+    ];
 
     public function user()
     {
@@ -37,8 +42,31 @@ class CourseReview extends Model
         return $this->hasMany(ReviewReply::class);
     }
 
+    // Accessor to support both field names
     public function getReviewTextAttribute()
     {
         return $this->comment;
+    }
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::created(function ($review) {
+            $review->course->updateAverageRating();
+            
+            // Notify instructor
+            $review->course->instructor->notify(
+                new \App\Notifications\CoursereviewNotification($review)
+            );
+        });
+
+        static::updated(function ($review) {
+            $review->course->updateAverageRating();
+        });
+
+        static::deleted(function ($review) {
+            $review->course->updateAverageRating();
+        });
     }
 }
