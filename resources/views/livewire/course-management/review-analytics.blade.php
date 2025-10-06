@@ -1,0 +1,256 @@
+<div class="bg-gradient-to-br from-slate-50 to-blue-50 dark:from-gray-900 dark:to-gray-800 min-h-screen p-4 lg:p-6 transition-colors duration-300">
+    
+    <!-- Header -->
+    <div class="bg-white/70 dark:bg-gray-800/70 backdrop-blur-xl rounded-2xl shadow-lg p-6 mb-6 border border-white/20 dark:border-gray-700/30">
+        <div class="flex flex-col lg:flex-row lg:items-center justify-between">
+            <div class="flex items-center mb-4 lg:mb-0">
+                <div class="bg-gradient-to-r from-blue-500 to-purple-500 p-3 rounded-xl mr-4 shadow-md">
+                    <i class="fas fa-chart-line text-white text-xl"></i>
+                </div>
+                <div>
+                    <h1 class="text-2xl font-bold bg-gradient-to-r from-gray-900 to-blue-600 dark:from-white dark:to-blue-400 bg-clip-text text-transparent">
+                        Review Analytics
+                    </h1>
+                    <p class="text-gray-600 dark:text-gray-400 mt-1 text-sm">
+                        Insights and trends from student reviews
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filters -->
+    <div class="bg-white/70 dark:bg-gray-800/70 backdrop-blur-xl rounded-2xl shadow-lg p-6 mb-6 border border-white/20 dark:border-gray-700/30">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div>
+                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Course</label>
+                <select wire:model.live="courseId" class="w-full bg-white dark:bg-gray-700 border-2 border-gray-200 dark:border-gray-600 rounded-xl px-4 py-3 text-gray-900 dark:text-white">
+                    <option value="">Select a course</option>
+                    @foreach($courses as $course)
+                        <option value="{{ $course->id }}">{{ $course->title }}</option>
+                    @endforeach
+                </select>
+            </div>
+            
+            <div>
+                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Time Range</label>
+                <select wire:model.live="timeRange" class="w-full bg-white dark:bg-gray-700 border-2 border-gray-200 dark:border-gray-600 rounded-xl px-4 py-3 text-gray-900 dark:text-white">
+                    <option value="7">Last 7 days</option>
+                    <option value="30">Last 30 days</option>
+                    <option value="90">Last 90 days</option>
+                    <option value="365">Last year</option>
+                </select>
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Metric</label>
+                <select wire:model.live="selectedMetric" class="w-full bg-white dark:bg-gray-700 border-2 border-gray-200 dark:border-gray-600 rounded-xl px-4 py-3 text-gray-900 dark:text-white">
+                    <option value="rating">Average Rating</option>
+                    <option value="sentiment">Sentiment Score</option>
+                    <option value="response_rate">Response Rate</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    @if($selectedCourse)
+        <!-- Key Metrics -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+            <div class="bg-white/70 dark:bg-gray-800/70 backdrop-blur-xl rounded-xl shadow-md p-6 border border-white/20 dark:border-gray-700/30">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-600 dark:text-gray-400 text-sm font-medium">Average Rating</p>
+                        <h3 class="text-3xl font-bold text-gray-900 dark:text-white mt-2">
+                            {{ number_format($instructorMetrics['avg_rating'], 1) }}
+                        </h3>
+                        <div class="flex mt-2">
+                            @for($i = 1; $i <= 5; $i++)
+                                <i class="fas fa-star text-yellow-400 {{ $instructorMetrics['avg_rating'] >= $i ? '' : 'opacity-30' }}"></i>
+                            @endfor
+                        </div>
+                    </div>
+                    <div class="bg-yellow-100 dark:bg-yellow-900/50 p-3 rounded-lg">
+                        <i class="fas fa-star text-yellow-600 dark:text-yellow-400 text-2xl"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white/70 dark:bg-gray-800/70 backdrop-blur-xl rounded-xl shadow-md p-6 border border-white/20 dark:border-gray-700/30">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-600 dark:text-gray-400 text-sm font-medium">Total Reviews</p>
+                        <h3 class="text-3xl font-bold text-gray-900 dark:text-white mt-2">
+                            {{ $instructorMetrics['total_reviews'] }}
+                        </h3>
+                        <p class="text-sm text-gray-500 dark:text-gray-400 mt-2">
+                            {{ $instructorMetrics['replied_reviews'] }} replied
+                        </p>
+                    </div>
+                    <div class="bg-blue-100 dark:bg-blue-900/50 p-3 rounded-lg">
+                        <i class="fas fa-comments text-blue-600 dark:text-blue-400 text-2xl"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white/70 dark:bg-gray-800/70 backdrop-blur-xl rounded-xl shadow-md p-6 border border-white/20 dark:border-gray-700/30">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-600 dark:text-gray-400 text-sm font-medium">Response Rate</p>
+                        <h3 class="text-3xl font-bold text-gray-900 dark:text-white mt-2">
+                            {{ number_format($instructorMetrics['response_rate'], 0) }}%
+                        </h3>
+                        <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2 mt-2">
+                            <div class="bg-green-500 h-2 rounded-full" style="width: {{ $instructorMetrics['response_rate'] }}%"></div>
+                        </div>
+                    </div>
+                    <div class="bg-green-100 dark:bg-green-900/50 p-3 rounded-lg">
+                        <i class="fas fa-reply text-green-600 dark:text-green-400 text-2xl"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white/70 dark:bg-gray-800/70 backdrop-blur-xl rounded-xl shadow-md p-6 border border-white/20 dark:border-gray-700/30">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-600 dark:text-gray-400 text-sm font-medium">Avg Response Time</p>
+                        <h3 class="text-3xl font-bold text-gray-900 dark:text-white mt-2">
+                            {{ $instructorMetrics['avg_response_time_hours'] ?? 'N/A' }}
+                        </h3>
+                        <p class="text-sm text-gray-500 dark:text-gray-400 mt-2">hours</p>
+                    </div>
+                    <div class="bg-purple-100 dark:bg-purple-900/50 p-3 rounded-lg">
+                        <i class="fas fa-clock text-purple-600 dark:text-purple-400 text-2xl"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Rating Trends Chart -->
+        <div class="bg-white/70 dark:bg-gray-800/70 backdrop-blur-xl rounded-2xl shadow-lg p-6 mb-6 border border-white/20 dark:border-gray-700/30">
+            <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-4">Rating Trends</h3>
+            <div class="h-64" x-data="{ 
+                chartData: @js($ratingTrends),
+                init() {
+                    // You would integrate Chart.js or similar here
+                    console.log(this.chartData);
+                }
+            }">
+                <canvas id="ratingTrendsChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Satisfaction Metrics -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+            <!-- Sentiment Analysis -->
+            <div class="bg-white/70 dark:bg-gray-800/70 backdrop-blur-xl rounded-2xl shadow-lg p-6 border border-white/20 dark:border-gray-700/30">
+                <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-4 flex items-center">
+                    <i class="fas fa-smile text-green-500 mr-2"></i>
+                    Sentiment Analysis
+                </h3>
+                <div class="text-center py-8">
+                    <div class="text-6xl font-bold mb-2
+                        {{ $satisfactionMetrics['sentiment_score'] > 0.3 ? 'text-green-600' : ($satisfactionMetrics['sentiment_score'] < -0.3 ? 'text-red-600' : 'text-yellow-600') }}">
+                        {{ number_format($satisfactionMetrics['sentiment_score'], 2) }}
+                    </div>
+                    <p class="text-gray-600 dark:text-gray-400">
+                        {{ $satisfactionMetrics['sentiment_score'] > 0.3 ? 'Positive' : ($satisfactionMetrics['sentiment_score'] < -0.3 ? 'Negative' : 'Neutral') }}
+                    </p>
+                    <div class="mt-4">
+                        <span class="px-4 py-2 rounded-full text-sm font-medium
+                            {{ $satisfactionMetrics['trend'] === 'increasing' ? 'bg-green-100 text-green-800' : ($satisfactionMetrics['trend'] === 'decreasing' ? 'bg-red-100 text-red-800' : 'bg-gray-100 text-gray-800') }}">
+                            <i class="fas fa-{{ $satisfactionMetrics['trend'] === 'increasing' ? 'arrow-up' : ($satisfactionMetrics['trend'] === 'decreasing' ? 'arrow-down' : 'minus') }} mr-1"></i>
+                            Trend: {{ ucfirst($satisfactionMetrics['trend']) }}
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Top Keywords -->
+            <div class="bg-white/70 dark:bg-gray-800/70 backdrop-blur-xl rounded-2xl shadow-lg p-6 border border-white/20 dark:border-gray-700/30">
+                <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-4 flex items-center">
+                    <i class="fas fa-tags text-blue-500 mr-2"></i>
+                    Most Common Keywords
+                </h3>
+                <div class="space-y-3">
+                    @foreach($satisfactionMetrics['top_keywords'] as $keyword => $count)
+                        <div class="flex items-center justify-between">
+                            <span class="text-gray-700 dark:text-gray-300 font-medium">{{ $keyword }}</span>
+                            <div class="flex items-center">
+                                <div class="w-32 bg-gray-200 dark:bg-gray-700 rounded-full h-2 mr-3">
+                                    <div class="bg-blue-500 h-2 rounded-full" style="width: {{ min(($count / max(array_values($satisfactionMetrics['top_keywords']))) * 100, 100) }}%"></div>
+                                </div>
+                                <span class="text-sm text-gray-600 dark:text-gray-400 w-8 text-right">{{ $count }}</span>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+        </div>
+
+        <!-- Rating Distribution -->
+        <div class="bg-white/70 dark:bg-gray-800/70 backdrop-blur-xl rounded-2xl shadow-lg p-6 border border-white/20 dark:border-gray-700/30">
+            <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-4">Rating Distribution</h3>
+            <div class="space-y-3">
+                @foreach([5,4,3,2,1] as $star)
+                    @php
+                        $count = $instructorMetrics['rating_distribution'][$star] ?? 0;
+                        $percentage = $instructorMetrics['total_reviews'] > 0 ? ($count / $instructorMetrics['total_reviews']) * 100 : 0;
+                    @endphp
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 text-sm font-medium text-gray-700 dark:text-gray-300">
+                            {{ $star }} <i class="fas fa-star text-yellow-400 text-xs"></i>
+                        </div>
+                        <div class="flex-1 bg-gray-200 dark:bg-gray-700 rounded-full h-4">
+                            <div class="bg-gradient-to-r from-yellow-400 to-yellow-600 h-4 rounded-full transition-all duration-300" 
+                                 style="width: {{ $percentage }}%"></div>
+                        </div>
+                        <div class="w-16 text-sm text-gray-600 dark:text-gray-400 text-right">
+                            {{ $count }} ({{ number_format($percentage, 1) }}%)
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+        </div>
+    @else
+        <div class="text-center py-20 bg-white/70 dark:bg-gray-800/70 backdrop-blur-xl rounded-2xl shadow-lg border border-white/20 dark:border-gray-700/30">
+            <i class="fas fa-chart-line text-gray-400 text-6xl mb-4"></i>
+            <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">No Course Selected</h3>
+            <p class="text-gray-600 dark:text-gray-400">Select a course above to view analytics</p>
+        </div>
+    @endif
+</div>
+
+@push('scripts')
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    document.addEventListener('livewire:navigated', function() {
+        const ctx = document.getElementById('ratingTrendsChart');
+        if (ctx && @js($ratingTrends)) {
+            const data = @js($ratingTrends);
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: data.map(d => d.date),
+                    datasets: [{
+                        label: 'Average Rating',
+                        data: data.map(d => d.rating),
+                        borderColor: 'rgb(59, 130, 246)',
+                        backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 5
+                        }
+                    }
+                }
+            });
+        }
+    });
+</script>
+@endpush
