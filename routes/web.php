@@ -254,7 +254,26 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/course-reviews/analytics/{courseId?}', \App\Livewire\CourseManagement\ReviewAnalytics::class)->name('review-analytics');
     // Route::post('/student/course/{course}/review', [\App\Livewire\StudentManagement\CourseView::class, 'submitReview'])->name('student.course.review');
 });
+// Review reminder unsubscribe routes
+Route::get('/review-reminder/unsubscribe/{reminder}', function(App\Models\ReviewReminder $reminder) {
+    if (!request()->hasValidSignature()) {
+        abort(403, 'Invalid or expired link');
+    }
+    
+    app(\App\Services\ReviewReminderService::class)->unsubscribeFromCourse($reminder);
+    
+    return view('review-reminders.unsubscribed', ['course' => $reminder->course]);
+})->name('review-reminder.unsubscribe');
 
+Route::get('/review-reminders/unsubscribe-all', function() {
+    if (!auth()->check()) {
+        return redirect()->route('login');
+    }
+    
+    app(\App\Services\ReviewReminderService::class)->unsubscribeFromAll(auth()->user());
+    
+    return view('review-reminders.unsubscribed-all');
+})->middleware('auth')->name('review-reminders.unsubscribe-all');
 
 
 // =============================================================================
