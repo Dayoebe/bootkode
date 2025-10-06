@@ -11,6 +11,7 @@ use Endroid\QrCode\Writer\PngWriter;
 use Endroid\QrCode\ErrorCorrectionLevel;
 use Endroid\QrCode\RoundBlockSizeMode;
 use Endroid\QrCode\Color\Color;
+use Symfony\Component\String\TruncateMode;
 
 class CertificateService
 {
@@ -144,17 +145,18 @@ class CertificateService
                 ->setPaper('A4', 'landscape')
                 ->setOptions([
                     'isHtml5ParserEnabled' => true,
-                    'isRemoteEnabled' => false,
-                    'enable_php' => false,
+                    'isRemoteEnabled' => true,
+                    'enable_php' => true,
                     'dpi' => 96, // Lower DPI for better rendering
                     'defaultFont' => 'DejaVu Serif',
-                    'isFontSubsettingEnabled' => false,
-                    'isPhpEnabled' => false,
+                    'isFontSubsettingEnabled' => true,
+                    'isPhpEnabled' => true,
                     'chroot' => [storage_path('app/public')], // Allow local files
-                    'debugPng' => false,
-                    'debugKeepTemp' => false,
-                    'debugCss' => false,
-                    'fontHeightRatio' => 1.1
+                    'debugPng' => true,
+                    'debugKeepTemp' => true,
+                    'debugCss' => true,
+                    'fontHeightRatio' => 1.1,
+                    'isJavascriptEnabled' => true,                    
                 ]);
             
             $filename = config('certificate.storage.pdf_path', 'certificates/pdf') . '/' 
