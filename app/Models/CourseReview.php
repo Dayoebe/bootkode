@@ -34,9 +34,13 @@ class CourseReview extends Model
             $review->course->updateAverageRating();
             
             // Notify instructor
-            $review->course->instructor->notify(
+              $review->course->instructor->notify(
                 new \App\Notifications\CourseReviewNotification($review)
             );
+    
+            // Mark review reminder as completed
+            app(\App\Services\ReviewReminderService::class)
+                ->markReminderCompleted($review->user, $review->course);
     
             // Trigger analytics generation
             dispatch(function() use ($review) {
