@@ -13,7 +13,7 @@ class ReviewReply extends Model
 
     public function review()
     {
-        return $this->belongsTo(CourseReview::class);
+        return $this->belongsTo(CourseReview::class, 'review_id'); // Explicitly set foreign key
     }
 
     public function user()
