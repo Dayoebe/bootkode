@@ -285,6 +285,16 @@ class Course extends Model
     {
         return $this->reviews()->where('user_id', $userId)->exists();
     }
+    public function getRatingDistribution()
+    {
+        return $this->reviews()
+            ->where('is_approved', true)
+            ->selectRaw('rating, COUNT(*) as count')
+            ->groupBy('rating')
+            ->orderBy('rating', 'desc')
+            ->pluck('count', 'rating')
+            ->toArray();
+    }
     // Accessors
     public function getFormattedLearningOutcomesAttribute()
     {
