@@ -26,7 +26,45 @@ class CourseReview extends Model
         'helpful_count' => 'integer',
         'replied_at' => 'datetime'
     ];
-
+    protected static function boot()
+    {
+        parent::boot();
+    
+        static::created(function ($review) {
+            $review->course->updateAverageRating();
+            
+            // Notify instructor
+            $review->course->instructor->notify(
+                new \App\Notifications\CourseReviewNotification($review)
+            );
+    
+            // Trigger analytics generation
+            dispatch(function() use ($review) {
+                app(\App\Services\ReviewAnalyticsService::class)
+                    ->generateDailyAnalytics($review->course);
+            })->afterResponse();
+        });
+    
+        static::updated(function ($review) {
+            $review->course->updateAverageRating();
+            
+            // Regenerate analytics when review is updated
+            dispatch(function() use ($review) {
+                app(\App\Services\ReviewAnalyticsService::class)
+                    ->generateDailyAnalytics($review->course);
+            })->afterResponse();
+        });
+    
+        static::deleted(function ($review) {
+            $review->course->updateAverageRating();
+            
+            // Regenerate analytics when review is deleted
+            dispatch(function() use ($review) {
+                app(\App\Services\ReviewAnalyticsService::class)
+                    ->generateDailyAnalytics($review->course);
+            })->afterResponse();
+        });
+    }
     public function user()
     {
         return $this->belongsTo(User::class);
@@ -46,27 +84,5 @@ class CourseReview extends Model
     public function getReviewTextAttribute()
     {
         return $this->comment;
-    }
-
-    protected static function boot()
-    {
-        parent::boot();
-
-        static::created(function ($review) {
-            $review->course->updateAverageRating();
-            
-            // Notify instructor
-            $review->course->instructor->notify(
-                new \App\Notifications\CoursereviewNotification($review)
-            );
-        });
-
-        static::updated(function ($review) {
-            $review->course->updateAverageRating();
-        });
-
-        static::deleted(function ($review) {
-            $review->course->updateAverageRating();
-        });
     }
 }
