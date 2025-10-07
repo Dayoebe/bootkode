@@ -330,4 +330,50 @@ class Course extends Model
 
         return $minutes . 'm';
     }
+    /**
+ * Get instructor response rate
+ */
+public function getInstructorResponseRate()
+{
+    $totalReviews = $this->reviews()->approved()->count();
+    if ($totalReviews === 0) {
+        return 0;
+    }
+    
+    $repliedReviews = $this->reviews()->approved()->whereNotNull('instructor_reply')->count();
+    return round(($repliedReviews / $totalReviews) * 100, 2);
+}
+
+/**
+ * Get average response time in hours
+ */
+public function getAverageResponseTime()
+{
+    $repliedReviews = $this->reviews()
+        ->approved()
+        ->whereNotNull('instructor_reply')
+        ->whereNotNull('replied_at')
+        ->get();
+
+    if ($repliedReviews->isEmpty()) {
+        return null;
+    }
+
+    $totalHours = $repliedReviews->sum(function($review) {
+        return $review->replied_at->diffInHours($review->created_at);
+    });
+
+    return round($totalHours / $repliedReviews->count(), 1);
+}
+
+/**
+ * Scope for verified reviews (from students who completed course)
+ */
+public function scopeVerified($query)
+{
+    return $query->whereHas('user.enrollments', function($q) use ($query) {
+        $q->where('course_id', $query->getModel()->course_id)
+          ->where('is_completed', true);
+    });
+}
 }
