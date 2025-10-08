@@ -220,6 +220,10 @@ class ActivityParticipant extends Model
         ]);
     }
 
+    public function host()
+{
+    return $this->belongsTo(User::class, 'creator_id');
+}
     public function scopeActive($query)
     {
         return $query->whereIn('status', ['joined', 'completed']);
@@ -229,4 +233,27 @@ class ActivityParticipant extends Model
     {
         return $query->where('status', 'completed');
     }
+
+    public function scopeWithHost($query)
+{
+    return $query->with(['host' => function($q) {
+        $q->withTrashed(); // Include soft-deleted users if any
+    }]);
+}
+
+// Ensure these scopes exist
+public function scopeStudyGroups($query)
+{
+    return $query->where('type', 'study_group');
+}
+
+public function scopeCodeChallenges($query)
+{
+    return $query->where('type', 'code_challenge');
+}
+
+public function scopeLiveEvents($query)
+{
+    return $query->where('type', 'live_event');
+}
 }
