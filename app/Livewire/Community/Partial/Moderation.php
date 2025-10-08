@@ -4,38 +4,32 @@ namespace App\Livewire\Community\Partial;
 
 use Livewire\Component;
 use Livewire\WithPagination;
-use App\Models\CommunityReport;
-use App\Models\CommunityFeedback;
 use App\Models\ForumThread;
 use App\Models\ForumReply;
+use App\Models\CommunityActivity;
+use App\Models\CommunityFeedback;
 use App\Models\User;
 
 class Moderation extends Component
 {
     use WithPagination;
     
-    public $activeTab = 'reports';
-    public $statusFilter = 'pending';
-    public $search = '';
-    
-    // Add these properties for the moderation modal
+    public $activeTab = 'overview';
     public $showModerationModal = false;
     public $moderationAction = '';
     public $selectedItem = [];
     public $moderationReason = '';
     
-    // Report handling
-    public $selectedReport = null;
-    public $moderatorNotes = '';
-    
-    // Feedback management
-    public $selectedFeedback = null;
-    public $adminResponse = '';
-    public $assignedAdmin = '';
+    // Pagination properties for different tabs
+    public $threadsPerPage = 10;
+    public $repliesPerPage = 10;
+    public $groupsPerPage = 10;
+    public $challengesPerPage = 10;
+    public $eventsPerPage = 10;
+    public $feedbackPerPage = 10;
 
     public function mount()
     {
-        // Check if user has moderation permissions
         if (!auth()->user()->canManageUsers()) {
             abort(403, 'Unauthorized access to moderation panel.');
         }
@@ -47,256 +41,256 @@ class Moderation extends Component
         $this->resetPage();
     }
 
-    public function selectReport($reportId)
+    // Alias method to match the view
+    public function setTab($tab)
     {
-        $this->selectedReport = CommunityReport::with(['reporter', 'reportable', 'moderator'])->find($reportId);
-        $this->moderatorNotes = $this->selectedReport?->moderator_notes ?? '';
+        $this->setActiveTab($tab);
     }
 
-    public function resolveReport($action = 'resolved')
+    public function moderateItem($type, $id, $action)
     {
-        if (!$this->selectedReport) return;
-
-        if ($action === 'resolved') {
-            $this->selectedReport->resolve($this->moderatorNotes);
-        } else {
-            $this->selectedReport->dismiss($this->moderatorNotes);
-        }
-
-        $this->reset(['selectedReport', 'moderatorNotes']);
-        session()->flash('message', 'Report ' . $action . ' successfully.');
+        $this->selectedItem = [
+            'type' => $type,
+            'id' => $id
+        ];
+        $this->moderationAction = $action;
+        $this->showModerationModal = true;
     }
 
-    public function selectFeedback($feedbackId)
+    public function executeModerationAction()
     {
-        $this->selectedFeedback = CommunityFeedback::with(['user', 'assignedTo'])->find($feedbackId);
-        $this->adminResponse = $this->selectedFeedback?->admin_response ?? '';
-        $this->assignedAdmin = $this->selectedFeedback?->assigned_to ?? '';
-    }
-
-    public function assignFeedback()
-    {
-        if (!$this->selectedFeedback || !$this->assignedAdmin) return;
-
-        $this->selectedFeedback->assignTo($this->assignedAdmin);
-        session()->flash('message', 'Feedback assigned successfully.');
-    }
-
-    public function resolveFeedback()
-    {
-        if (!$this->selectedFeedback || !$this->adminResponse) {
-            session()->flash('error', 'Please provide a response before resolving.');
+        if (!$this->selectedItem) {
             return;
         }
 
-        $this->selectedFeedback->resolve($this->adminResponse);
-        $this->reset(['selectedFeedback', 'adminResponse', 'assignedAdmin']);
-        session()->flash('message', 'Feedback resolved successfully.');
-    }
+        $type = $this->selectedItem['type'];
+        $id = $this->selectedItem['id'];
+        $action = $this->moderationAction;
 
-    public function lockThread($threadId)
-    {
-        $thread = ForumThread::find($threadId);
-        if ($thread) {
-            $thread->update(['is_locked' => true]);
-            session()->flash('message', 'Thread locked successfully.');
+        try {
+            switch ($type) {
+                case 'thread':
+                    $this->handleThreadAction($id, $action);
+                    break;
+                case 'reply':
+                    $this->handleReplyAction($id, $action);
+                    break;
+                case 'study_group':
+                    $this->handleStudyGroupAction($id, $action);
+                    break;
+                case 'challenge':
+                    $this->handleChallengeAction($id, $action);
+                    break;
+                case 'event':
+                    $this->handleEventAction($id, $action);
+                    break;
+            }
+
+            $this->reset(['showModerationModal', 'selectedItem', 'moderationAction', 'moderationReason']);
+            session()->flash('message', ucfirst($action) . ' action completed successfully.');
+            
+        } catch (\Exception $e) {
+            session()->flash('error', 'Failed to perform moderation action: ' . $e->getMessage());
         }
     }
 
-    public function unlockThread($threadId)
+    private function handleThreadAction($id, $action)
     {
-        $thread = ForumThread::find($threadId);
-        if ($thread) {
-            $thread->update(['is_locked' => false]);
-            session()->flash('message', 'Thread unlocked successfully.');
-        }
-    }
+        $thread = ForumThread::find($id);
+        if (!$thread) return;
 
-    public function deleteContent($type, $id)
-    {
-        switch ($type) {
-            case 'thread':
-                ForumThread::find($id)?->delete();
+        switch ($action) {
+            case 'pin':
+                $thread->update(['is_pinned' => true]);
                 break;
-            case 'reply':
-                ForumReply::find($id)?->delete();
+            case 'unpin':
+                $thread->update(['is_pinned' => false]);
+                break;
+            case 'lock':
+                $thread->update(['is_locked' => true]);
+                break;
+            case 'unlock':
+                $thread->update(['is_locked' => false]);
+                break;
+            case 'delete':
+                $thread->delete();
+                break;
+            case 'view':
+                // Redirect to thread view - you might want to implement this
                 break;
         }
-        
-        session()->flash('message', ucfirst($type) . ' deleted successfully.');
     }
 
-    public function updatedSearch()
+    private function handleReplyAction($id, $action)
     {
-        $this->resetPage();
+        if ($action === 'delete') {
+            ForumReply::find($id)?->delete();
+        }
     }
 
-    public function updatedStatusFilter()
+    private function handleStudyGroupAction($id, $action)
     {
-        $this->resetPage();
+        $group = CommunityActivity::studyGroups()->find($id);
+        if (!$group) return;
+
+        switch ($action) {
+            case 'activate':
+                $group->update(['status' => 'active']);
+                break;
+            case 'deactivate':
+                $group->update(['status' => 'inactive']);
+                break;
+            case 'delete':
+                $group->delete();
+                break;
+            case 'view':
+                // Redirect to group view
+                break;
+        }
     }
 
-      // Add this method to handle moderation actions
-      public function moderateItem($type, $id, $action)
-      {
-          $this->selectedItem = [
-              'type' => $type,
-              'id' => $id
-          ];
-          $this->moderationAction = $action;
-          $this->showModerationModal = true;
-      }
-  
-      // Add this method to execute the moderation action
-      public function executeModerationAction()
-      {
-          if (!$this->selectedItem) {
-              return;
-          }
-  
-          $type = $this->selectedItem['type'];
-          $id = $this->selectedItem['id'];
-          $action = $this->moderationAction;
-  
-          switch ($type) {
-              case 'thread':
-                  $this->handleThreadAction($id, $action);
-                  break;
-              case 'reply':
-                  $this->handleReplyAction($id, $action);
-                  break;
-              case 'study_group':
-                  $this->handleStudyGroupAction($id, $action);
-                  break;
-              case 'challenge':
-                  $this->handleChallengeAction($id, $action);
-                  break;
-              case 'event':
-                  $this->handleEventAction($id, $action);
-                  break;
-          }
-  
-          $this->reset(['showModerationModal', 'selectedItem', 'moderationAction', 'moderationReason']);
-          session()->flash('message', ucfirst($action) . ' action completed successfully.');
-      }
-  
-      // Add helper methods for different actions
-      private function handleThreadAction($id, $action)
-      {
-          $thread = ForumThread::find($id);
-          if (!$thread) return;
-  
-          switch ($action) {
-              case 'pin':
-                  $thread->update(['is_pinned' => true]);
-                  break;
-              case 'unpin':
-                  $thread->update(['is_pinned' => false]);
-                  break;
-              case 'lock':
-                  $thread->update(['is_locked' => true]);
-                  break;
-              case 'unlock':
-                  $thread->update(['is_locked' => false]);
-                  break;
-              case 'delete':
-                  $thread->delete();
-                  break;
-          }
-      }
-  
-      private function handleReplyAction($id, $action)
-      {
-          if ($action === 'delete') {
-              ForumReply::find($id)?->delete();
-          }
-      }
-  
-      private function handleStudyGroupAction($id, $action)
-      {
-          // You'll need to implement study group actions
-          // For now, just show a message
-          session()->flash('message', "Study group {$action} action would be implemented here.");
-      }
-  
-      private function handleChallengeAction($id, $action)
-      {
-          // You'll need to implement challenge actions
-          // For now, just show a message
-          session()->flash('message', "Challenge {$action} action would be implemented here.");
-      }
-  
-      private function handleEventAction($id, $action)
-      {
-          // You'll need to implement event actions
-          // For now, just show a message
-          session()->flash('message', "Event {$action} action would be implemented here.");
-      }
-  
+    private function handleChallengeAction($id, $action)
+    {
+        $challenge = CommunityActivity::codeChallenges()->find($id);
+        if (!$challenge) return;
+
+        switch ($action) {
+            case 'activate':
+                $challenge->update(['status' => 'active']);
+                break;
+            case 'deactivate':
+                $challenge->update(['status' => 'inactive']);
+                break;
+            case 'delete':
+                $challenge->delete();
+                break;
+        }
+    }
+
+    private function handleEventAction($id, $action)
+    {
+        $event = CommunityActivity::liveEvents()->find($id);
+        if (!$event) return;
+
+        switch ($action) {
+            case 'cancel':
+                $event->update(['status' => 'cancelled']);
+                break;
+            case 'delete':
+                $event->delete();
+                break;
+        }
+    }
+
+    public function updateFeedbackStatus($feedbackId, $status)
+    {
+        $feedback = CommunityFeedback::find($feedbackId);
+        if ($feedback && in_array($status, ['open', 'in_progress', 'resolved', 'closed'])) {
+            $feedback->update(['status' => $status]);
+            session()->flash('message', 'Feedback status updated successfully.');
+        }
+    }
+
+    public function getStatsProperty()
+    {
+        return [
+            'total_threads' => ForumThread::count(),
+            'total_replies' => ForumReply::count(),
+            'total_groups' => CommunityActivity::studyGroups()->count(),
+            'total_challenges' => CommunityActivity::codeChallenges()->count(),
+            'total_events' => CommunityActivity::liveEvents()->count(),
+            'pending_feedback' => CommunityFeedback::where('status', 'open')->count(),
+        ];
+    }
+
+    public function getRecentThreadsProperty()
+    {
+        return ForumThread::with('user')
+            ->latest()
+            ->limit(5)
+            ->get();
+    }
+
+    public function getRecentGroupsProperty()
+    {
+        return CommunityActivity::studyGroups()
+            ->with('creator')
+            ->latest()
+            ->limit(5)
+            ->get();
+    }
+
+    public function getPendingFeedbackProperty()
+    {
+        return CommunityFeedback::with('user')
+            ->where('status', 'open')
+            ->latest()
+            ->limit(5)
+            ->get();
+    }
+
+    public function getThreadsProperty()
+    {
+        return ForumThread::with(['user', 'category'])
+            ->withCount('replies')
+            ->latest()
+            ->paginate($this->threadsPerPage);
+    }
+
+    public function getRepliesProperty()
+    {
+        return ForumReply::with(['user', 'thread'])
+            ->latest()
+            ->paginate($this->repliesPerPage);
+    }
+
+    public function getGroupsProperty()
+    {
+        return CommunityActivity::studyGroups()
+            ->with(['creator'])
+            ->withCount(['activeParticipants as members_count'])
+            ->latest()
+            ->paginate($this->groupsPerPage);
+    }
+
+    public function getChallengesProperty()
+    {
+        return CommunityActivity::codeChallenges()
+            ->with(['creator'])
+            ->withCount(['activeParticipants as submissions_count'])
+            ->latest()
+            ->paginate($this->challengesPerPage);
+    }
+
+    public function getEventsProperty()
+    {
+        return CommunityActivity::liveEvents()
+            ->with(['host' => fn($q) => $q->withTrashed(), 'activeParticipants'])
+            ->withCount(['activeParticipants as attendees_count'])
+            ->latest()
+            ->paginate($this->eventsPerPage);
+    }
+
+    public function getFeedbackProperty()
+    {
+        return CommunityFeedback::with(['user', 'assignedTo'])
+            ->latest()
+            ->paginate($this->feedbackPerPage);
+    }
+
     public function render()
     {
-        $reports = collect();
-        $feedback = collect();
-        $flaggedContent = collect();
-        $stats = [];
-
-        if ($this->activeTab === 'reports') {
-            $reports = CommunityReport::with(['reporter', 'reportable', 'moderator'])
-                ->when($this->statusFilter !== 'all', function($query) {
-                    return $query->where('status', $this->statusFilter);
-                })
-                ->when($this->search, function($query) {
-                    return $query->where('description', 'like', '%' . $this->search . '%');
-                })
-                ->latest()
-                ->paginate(15);
-
-            $stats = [
-                'pending' => CommunityReport::where('status', 'pending')->count(),
-                'resolved' => CommunityReport::where('status', 'resolved')->count(),
-                'dismissed' => CommunityReport::where('status', 'dismissed')->count(),
-            ];
-        }
-
-        if ($this->activeTab === 'feedback') {
-            $feedback = CommunityFeedback::with(['user', 'assignedTo'])
-                ->when($this->statusFilter !== 'all', function($query) {
-                    return $query->where('status', $this->statusFilter);
-                })
-                ->when($this->search, function($query) {
-                    return $query->where('title', 'like', '%' . $this->search . '%')
-                        ->orWhere('message', 'like', '%' . $this->search . '%');
-                })
-                ->latest()
-                ->paginate(15);
-
-            $stats = [
-                'open' => CommunityFeedback::where('status', 'open')->count(),
-                'in_progress' => CommunityFeedback::where('status', 'in_progress')->count(),
-                'resolved' => CommunityFeedback::where('status', 'resolved')->count(),
-            ];
-        }
-
-        if ($this->activeTab === 'content') {
-            // Get flagged content (threads with reports)
-            $flaggedContent = ForumThread::with(['user', 'category', 'reports'])
-                ->whereHas('reports')
-                ->when($this->search, function($query) {
-                    return $query->where('title', 'like', '%' . $this->search . '%');
-                })
-                ->latest()
-                ->paginate(15);
-        }
-
-        $admins = User::whereIn('role', [User::ROLE_SUPER_ADMIN, User::ROLE_ACADEMY_ADMIN])
-            ->get();
-
         return view('livewire.community.partial.moderation', [
-            'reports' => $reports,
-            'feedback' => $feedback,
-            'flaggedContent' => $flaggedContent,
-            'stats' => $stats,
-            'admins' => $admins,
+            'stats' => $this->stats,
+            'recent_threads' => $this->recent_threads,
+            'recent_groups' => $this->recent_groups,
+            'pending_feedback' => $this->pending_feedback,
+            'threads' => $this->threads,
+            'replies' => $this->replies,
+            'groups' => $this->groups,
+            'challenges' => $this->challenges,
+            'events' => $this->events,
+            'feedback' => $this->feedback,
         ]);
     }
 }
