@@ -12,8 +12,15 @@ class CommunityFeedback extends Model
     use HasFactory;
 
     protected $fillable = [
-        'user_id', 'category', 'subject', 'message', 'priority', 
-        'status', 'assigned_to', 'admin_response', 'responded_at'
+        'user_id',
+        'category',
+        'subject',
+        'message',
+        'priority',
+        'status',
+        'assigned_to',
+        'admin_response',
+        'responded_at'
     ];
 
     protected $casts = [
@@ -29,10 +36,9 @@ class CommunityFeedback extends Model
     {
         return $this->belongsTo(User::class, 'assigned_to');
     }
-
     public function getStatusColorAttribute()
     {
-        return match($this->status) {
+        return match ($this->status) {
             'open' => 'red',
             'in_progress' => 'yellow',
             'resolved' => 'green',
