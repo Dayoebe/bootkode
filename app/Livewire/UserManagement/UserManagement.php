@@ -33,7 +33,7 @@ class UserManagement extends Component
     public $search = '';
     public $sendVerificationEmail = true;
     public $perPage = 15;
-
+    public $statusFilter = 'all';
     public $createAnother = false;
     public $saveProgress = 0; // Progress indicator for saving
 
@@ -85,19 +85,87 @@ class UserManagement extends Component
         ]);
     }
 
-    protected function getUsersQuery()
-    {
-        return User::query()
-            ->select(['id', 'name', 'email', 'role', 'created_at', 'email_verified_at'])
-            ->when($this->search, function ($query) {
-                $query->where(function ($q) {
-                    $q->where('name', 'like', '%' . $this->search . '%')
-                        ->orWhere('email', 'like', '%' . $this->search . '%');
-                });
-            })
-            ->where('id', '!=', auth()->id())
-            ->latest('created_at');
+/**
+ * Activate user account
+ */
+public function activateUser($userId)
+{
+    try {
+        $user = User::findOrFail($userId);
+        
+        if ($user->id === auth()->id()) {
+            $this->dispatch('notify', 'Cannot activate your own account!', 'error');
+            return;
+        }
+
+        $user->update([
+            'is_active' => true,
+            'deactivated_at' => null
+        ]);
+
+        $this->dispatch('notify', 'User activated successfully!', 'success');
+        $this->dispatch('refreshUsers');
+
+    } catch (\Exception $e) {
+        Log::error('User activation error: ' . $e->getMessage());
+        $this->dispatch('notify', 'Error activating user: ' . $e->getMessage(), 'error');
     }
+}
+
+/**
+ * Deactivate user account
+ */
+public function deactivateUser($userId)
+{
+    try {
+        $user = User::findOrFail($userId);
+        
+        if ($user->id === auth()->id()) {
+            $this->dispatch('notify', 'Cannot deactivate your own account!', 'error');
+            return;
+        }
+
+        if ($user->isSuperAdmin()) {
+            $this->dispatch('notify', 'Super admin accounts cannot be deactivated!', 'error');
+            return;
+        }
+
+        $user->update([
+            'is_active' => false,
+            'deactivated_at' => now()
+        ]);
+
+        $this->dispatch('notify', 'User deactivated successfully!', 'success');
+        $this->dispatch('refreshUsers');
+
+    } catch (\Exception $e) {
+        Log::error('User deactivation error: ' . $e->getMessage());
+        $this->dispatch('notify', 'Error deactivating user: ' . $e->getMessage(), 'error');
+    }
+}
+
+/**
+ * Update the getUsersQuery method to include status filter
+ */
+protected function getUsersQuery()
+{
+    return User::query()
+        ->select(['id', 'name', 'email', 'role', 'is_active', 'deactivated_at', 'created_at', 'email_verified_at'])
+        ->when($this->search, function ($query) {
+            $query->where(function ($q) {
+                $q->where('name', 'like', '%' . $this->search . '%')
+                  ->orWhere('email', 'like', '%' . $this->search . '%');
+            });
+        })
+        ->when($this->statusFilter === 'active', function ($query) {
+            $query->where('is_active', true);
+        })
+        ->when($this->statusFilter === 'inactive', function ($query) {
+            $query->where('is_active', false);
+        })
+        ->where('id', '!=', auth()->id())
+        ->latest('created_at');
+}
 
     protected function getRolesForSelect(): array
     {
