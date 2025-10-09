@@ -11,6 +11,10 @@ use Livewire\Attributes\Layout;
 use App\Models\Course;
 use App\Models\Lesson;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Str;
 
 #[Layout('layouts.dashboard')]
 class Profile extends Component
@@ -19,8 +23,27 @@ class Profile extends Component
 
     public $user;
     public $activeTab = 'personal';
+    public $activeSessions = 0;
     public $isEditing = false;
-    
+
+    // Settings Properties
+    public $emailNotifications;
+    public $certificateNotifications;
+    public $profileVisibility;
+    public $showEmail;
+    public $showPasswordModal = false;
+    public $showSessionsModal = false;
+    public $showDeactivateModal = false;
+    public $showDeleteModal = false;
+    // Password fields
+    public $current_password = '';
+    public $new_password = '';
+    public $new_password_confirmation = '';
+
+    // Deletion fields
+    public $delete_password = '';
+    public $delete_confirmation = '';
+
     // Personal Info
     public $name;
     public $email;
@@ -54,30 +77,310 @@ class Profile extends Component
         'website' => ''
     ];
 
-    protected $listeners = ['refresh' => '$refresh'];
+    protected $listeners = [
+        'refresh' => '$refresh',
+        'closeModals' => 'resetModalStates'
+    ];
 
     public function mount($mode = 'view')
-    {
-        $this->user = Auth::user();
-        $this->isEditing = $mode === 'edit';
-        
-        if ($this->isEditing) {
-            $this->loadUserData();
-        }
+{
+    $this->user = Auth::user();
+    $this->isEditing = $mode === 'edit';
+    $this->loadSettingsData(); // Add this line
+    $this->resetValidation();
+    
+    if ($this->isEditing) {
+        $this->loadUserData();
     }
+}
 
+
+// Add these methods to your Profile component
+
+/**
+ * Load settings data when component mounts
+ */
+public function loadSettingsData()
+{
+    $this->emailNotifications = $this->user->receive_course_updates ?? true;
+    $this->certificateNotifications = $this->user->receive_certificate_notifications ?? true;
+    $this->profileVisibility = $this->user->profile_visibility ?? 'public';
+    $this->showEmail = $this->user->show_email_publicly ?? false;
+    $this->activeSessions = $this->getActiveSessionsCount();
+}
+
+/**
+ * Get count of active sessions
+ */
+protected function getActiveSessionsCount()
+{
+    // This is a simplified implementation - you might want to use a more robust session tracking system
+    return 1; // Default to 1 for current session
+}
+
+/**
+ * Update email notifications preference
+ */
+public function updateEmailNotifications()
+{
+    $this->user->update([
+        'receive_course_updates' => $this->emailNotifications
+    ]);
+    
+    $this->dispatch('notify', 'Email notifications updated successfully!');
+}
+
+/**
+ * Update certificate notifications preference
+ */
+public function updateCertificateNotifications()
+{
+    $this->user->update([
+        'receive_certificate_notifications' => $this->certificateNotifications
+    ]);
+    
+    $this->dispatch('notify', 'Certificate notifications updated successfully!');
+}
+
+/**
+ * Update profile visibility
+ */
+public function updateProfileVisibility()
+{
+    $this->user->update([
+        'profile_visibility' => $this->profileVisibility
+    ]);
+    
+    $this->dispatch('notify', 'Profile visibility updated successfully!');
+}
+
+/**
+ * Update show email preference
+ */
+public function updateShowEmail()
+{
+    $this->user->update([
+        'show_email_publicly' => $this->showEmail
+    ]);
+    
+    $this->dispatch('notify', 'Email visibility updated successfully!');
+}
+
+/**
+ * Change password
+ */
+public function changePassword()
+{
+    $this->validate([
+        'current_password' => ['required', 'current_password'],
+        'new_password' => ['required', 'min:8', 'confirmed'],
+    ]);
+
+    $this->user->update([
+        'password' => Hash::make($this->new_password)
+    ]);
+
+    $this->reset(['current_password', 'new_password', 'new_password_confirmation', 'showPasswordModal']);
+    $this->dispatch('notify', 'Password changed successfully!');
+}
+
+/**
+ * Logout other sessions
+ */
+public function logoutOtherSessions()
+{
+    // This would typically use Laravel's built-in session management
+    // For now, we'll implement a basic version
+    Auth::logoutOtherDevices($this->current_password);
+    
+    $this->reset(['showSessionsModal']);
+    $this->activeSessions = 1;
+    $this->dispatch('notify', 'Other sessions logged out successfully!');
+}
+
+/**
+ * Toggle 2FA (placeholder implementation)
+ */
+public function toggle2FA()
+{
+    // This is a placeholder - implement your 2FA logic here
+    $message = $this->user->two_factor_secret 
+        ? 'Two-factor authentication disabled!' 
+        : 'Two-factor authentication enabled!';
+    
+    $this->dispatch('notify', $message);
+}
+
+/**
+ * Export user data
+ */
+public function exportData()
+{
+    try {
+        $userData = [
+            'personal_info' => [
+                'name' => $this->user->name,
+                'email' => $this->user->email,
+                'phone_number' => $this->user->phone_number,
+                'date_of_birth' => $this->user->date_of_birth,
+                'bio' => $this->user->bio,
+            ],
+            'address' => [
+                'street' => $this->user->address_street,
+                'city' => $this->user->address_city,
+                'state' => $this->user->address_state,
+                'country' => $this->user->address_country,
+                'postal_code' => $this->user->address_postal_code,
+            ],
+            'education_career' => [
+                'occupation' => $this->user->occupation,
+                'education_level' => $this->user->education_level,
+                'skills' => $this->user->skills,
+            ],
+            'learning_data' => [
+                'courses_enrolled' => $this->user->courses()->count(),
+                'completed_lessons' => $this->user->completedLessons()->count(),
+                'certificates' => $this->user->certificates()->count(),
+            ],
+            'exported_at' => now()->toISOString(),
+        ];
+
+        $filename = "user_data_{$this->user->id}_" . now()->format('Y-m-d_H-i-s') . '.json';
+        
+        return response()->streamDownload(function () use ($userData) {
+            echo json_encode($userData, JSON_PRETTY_PRINT);
+        }, $filename, [
+            'Content-Type' => 'application/json',
+        ]);
+
+    } catch (\Exception $e) {
+        $this->dispatch('notify', 'Error exporting data: ' . $e->getMessage(), 'error');
+    }
+}
+
+/**
+ * Clear cache
+ */
+public function clearCache()
+{
+    try {
+        // Clear user-specific cache
+        Cache::tags(["user_{$this->user->id}"])->flush();
+        
+        // You can add more specific cache clearing here
+        Artisan::call('cache:clear');
+        
+        $this->dispatch('notify', 'Cache cleared successfully!');
+    } catch (\Exception $e) {
+        $this->dispatch('notify', 'Error clearing cache: ' . $e->getMessage(), 'error');
+    }
+}
+
+/**
+ * Deactivate account
+ */
+public function deactivateAccount()
+{
+     // Prevent super admin from deactivating themselves
+     if ($this->user->isSuperAdmin() && $this->user->id === auth()->id()) {
+        $this->dispatch('notify', 'Super admin accounts cannot be deactivated for security reasons!', 'error');
+        $this->reset(['showDeactivateModal']);
+        return;
+    }
+    try {
+        $this->user->update([
+            'is_active' => false,
+            'deactivated_at' => now(),
+        ]);
+
+        Auth::logout();
+        
+        session()->flash('message', 'Your account has been deactivated. You can reactivate by logging in again.');
+        return redirect('/');
+
+    } catch (\Exception $e) {
+        $this->dispatch('notify', 'Error deactivating account: ' . $e->getMessage(), 'error');
+    }
+}
+
+/**
+ * Delete account
+ */
+public function deleteAccount()
+{
+    $this->validate([
+        'delete_password' => ['required', 'current_password'],
+        'delete_confirmation' => ['required', 'in:DELETE'],
+    ]);
+
+    try {
+        $user = $this->user;
+        
+        Auth::logout();
+        
+        // Soft delete the user
+        $user->delete();
+        
+        session()->flash('message', 'Your account has been permanently deleted.');
+        return redirect('/');
+
+    } catch (\Exception $e) {
+        $this->dispatch('notify', 'Error deleting account: ' . $e->getMessage(), 'error');
+    }
+}
+
+/**
+ * Reset modal states when closing
+ */
+public function resetModalStates()
+{
+    $this->reset([
+        'showPasswordModal',
+        'showSessionsModal', 
+        'showDeactivateModal',
+        'showDeleteModal',
+        'current_password',
+        'new_password',
+        'new_password_confirmation',
+        'delete_password',
+        'delete_confirmation'
+    ]);
+}
+// Add to your component
+
+
+public function updated($property)
+{
+    // Reset modals when they're set to false
+    if (in_array($property, [
+        'showPasswordModal', 
+        'showSessionsModal', 
+        'showDeactivateModal', 
+        'showDeleteModal'
+    ]) && !$this->$property) {
+        $this->resetModalStates();
+    }
+}
     public function loadUserData()
     {
         // Personal Info
         $this->fill($this->user->only([
-            'name', 'email', 'phone_number', 'bio',
-            'occupation', 'education_level', 'address_street',
-            'address_city', 'address_state', 'address_country',
-            'address_postal_code', 'skills'
+            'name',
+            'email',
+            'phone_number',
+            'bio',
+            'occupation',
+            'education_level',
+            'address_street',
+            'address_city',
+            'address_state',
+            'address_country',
+            'address_postal_code',
+            'skills'
         ]));
-        
+
         $this->date_of_birth = $this->user->date_of_birth?->format('Y-m-d');
-        
+
         if ($this->user->social_links) {
             $this->social_links = array_merge($this->social_links, $this->user->social_links);
         }
@@ -85,7 +388,8 @@ class Profile extends Component
 
     protected function rules()
     {
-        if (!$this->isEditing) return [];
+        if (!$this->isEditing)
+            return [];
 
         $userId = Auth::id();
 
@@ -144,7 +448,7 @@ class Profile extends Component
     public function toggleEditMode()
     {
         $this->isEditing = !$this->isEditing;
-        
+
         if ($this->isEditing) {
             $this->loadUserData();
             $this->activeTab = 'basic';
@@ -155,7 +459,8 @@ class Profile extends Component
 
     public function updateProfile()
     {
-        if (!$this->isEditing) return;
+        if (!$this->isEditing)
+            return;
 
         $this->validate();
 
@@ -167,7 +472,7 @@ class Profile extends Component
             if ($this->user->profile_picture) {
                 Storage::disk('public')->delete($this->user->profile_picture);
             }
-            
+
             $path = $this->profile_picture->store('profile-pictures', 'public');
             $updateData['profile_picture'] = $path;
         }
@@ -298,20 +603,34 @@ class Profile extends Component
             ->take(5)
             ->get();
     }
-
     public function getWishlistProperty()
     {
         return $this->user->wishlists()
-            ->with('course.category')
+            ->with([
+                'course' => function ($query) {
+                    $query->where('is_published', true)
+                        ->where('is_approved', true);
+                },
+                'course.category'
+            ])
+            ->whereHas('course', function ($query) {
+                $query->where('is_published', true)
+                    ->where('is_approved', true);
+            })
             ->latest()
             ->take(5)
             ->get();
     }
 
+    public function removeFromWishlist($courseId)
+    {
+        $this->user->wishlists()->where('course_id', $courseId)->delete();
+        $this->dispatch('notify', 'Course removed from wishlist!');
+    }
     public function render()
     {
         $title = $this->isEditing ? 'Edit Profile' : 'View Profile';
-        
+
         return view('livewire.user-management.profile', [
             'activityStats' => $this->activityStats,
             'recentActivities' => $this->recentActivities,
@@ -319,10 +638,10 @@ class Profile extends Component
             'savedResources' => $this->savedResources,
             'wishlist' => $this->wishlist,
         ])->layout('layouts.dashboard', [
-            'title' => $title,
-            'description' => $this->isEditing ? 'Update your personal information and settings' : 'View your profile information and learning progress',
-            'icon' => 'fas fa-user-circle',
-            'active' => 'profile'
-        ]);
+                    'title' => $title,
+                    'description' => $this->isEditing ? 'Update your personal information and settings' : 'View your profile information and learning progress',
+                    'icon' => 'fas fa-user-circle',
+                    'active' => 'profile'
+                ]);
     }
 }

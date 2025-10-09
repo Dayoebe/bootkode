@@ -152,10 +152,10 @@
             class="bg-white dark:bg-gray-800/50 backdrop-blur-sm rounded-2xl border border-gray-200 dark:border-gray-700/50 overflow-hidden shadow-lg lg:shadow-xl transition-colors duration-300">
             @if ($isEditing)
                 <!-- Edit Mode Content -->
-                @include('livewire.user-management.profile.profile.edit-profile')
+                @include('livewire.user-management.profile.edit-profile')
             @else
                 <!-- View Mode Content -->
-                @include('livewire.user-management.profile.profile.view-profile')
+                @include('livewire.user-management.profile.view-profile')
             @endif
         </div>
     </div>
