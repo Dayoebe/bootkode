@@ -123,6 +123,9 @@ class User extends Authenticatable implements MustVerifyEmail
         'referred_by',
         'referral_source',
         'marketplace_items',
+        'profile_visibility',
+        'show_email_publicly',
+        'deactivated_at',
     ];
 
     protected $hidden = [
@@ -139,6 +142,8 @@ class User extends Authenticatable implements MustVerifyEmail
         'is_active' => 'boolean',
         'receive_course_updates' => 'boolean',
         'receive_certificate_notifications' => 'boolean',
+        'show_email_publicly' => 'boolean',
+        'deactivated_at' => 'datetime',
     ];
     public function isVendor(): bool
     {
@@ -302,12 +307,12 @@ class User extends Authenticatable implements MustVerifyEmail
     public function shouldReceiveEmailNotification(string $notificationType): bool
     {
         $preferences = $this->notification_preferences ?? [];
-        
+
         return match ($notificationType) {
             'course_update' => $preferences['email_course_updates'] ?? $this->receive_course_updates ?? true,
             'certificate_update' => $preferences['email_certificate_notifications'] ?? $this->receive_certificate_notifications ?? true,
             'instructor_reply' => $preferences['email_instructor_replies'] ?? true,
-            'course_review' => true, 
+            'course_review' => true,
             'support_ticket' => true,
             'feedback_response' => true,
             'announcement' => true,
@@ -348,9 +353,26 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function deactivateAccount()
     {
+        
         $this->update(['is_active' => false]);
     }
 
+    public static function getActiveCount()
+{
+    return static::where('is_active', true)->count();
+}
+
+public static function getInactiveCount()
+{
+    return static::where('is_active', false)->count();
+}
+
+public static function getRecentlyDeactivated($days = 7)
+{
+    return static::where('is_active', false)
+        ->where('deactivated_at', '>=', now()->subDays($days))
+        ->get();
+}
     public function getDashboardRouteName(): string
     {
         return match ($this->role) {
@@ -1096,7 +1118,7 @@ class User extends Authenticatable implements MustVerifyEmail
         }
 
         $affiliate = $this->affiliate;
-        
+
         return [
             'formatted_total_earned' => $affiliate->formatted_total_earned,
             'total_referrals' => $affiliate->total_referrals,
@@ -1115,9 +1137,9 @@ class User extends Authenticatable implements MustVerifyEmail
             return 0.0;
         }
 
-        return \App\Models\ReferralTransaction::whereHas('referral', function($q) {
-                $q->where('affiliate_id', $this->affiliate->id);
-            })
+        return \App\Models\ReferralTransaction::whereHas('referral', function ($q) {
+            $q->where('affiliate_id', $this->affiliate->id);
+        })
             ->where('status', \App\Models\ReferralTransaction::STATUS_PENDING)
             ->sum('commission_amount');
     }
@@ -1131,14 +1153,14 @@ class User extends Authenticatable implements MustVerifyEmail
             return collect();
         }
 
-        return \App\Models\ReferralTransaction::whereHas('referral', function($q) {
-                $q->where('affiliate_id', $this->affiliate->id);
-            })
+        return \App\Models\ReferralTransaction::whereHas('referral', function ($q) {
+            $q->where('affiliate_id', $this->affiliate->id);
+        })
             ->with(['course', 'referral.referredUser'])
             ->orderBy('created_at', 'desc')
             ->limit($limit)
             ->get()
-            ->map(function($transaction) {
+            ->map(function ($transaction) {
                 return (object) [
                     'description' => "Commission from {$transaction->course->title}",
                     'formatted_amount' => '₦' . number_format($transaction->commission_amount, 2),
@@ -1161,7 +1183,7 @@ class User extends Authenticatable implements MustVerifyEmail
             ->orderBy('created_at', 'desc')
             ->limit($limit)
             ->get()
-            ->map(function($referral) {
+            ->map(function ($referral) {
                 return (object) [
                     'referredUser' => $referral->referredUser,
                     'status' => $referral->status,
