@@ -83,18 +83,21 @@
 </div>
 
     <!-- Education Tab -->
-    <div x-show="activeTab === 'education'" x-transition.opacity.duration.300ms class="py-4 sm:py-6 lg:py-8">
-        <div class="flex items-center mb-6 sm:mb-8">
-            <div class="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-r from-purple-500 to-pink-600 rounded-xl flex items-center justify-center mr-3 sm:mr-4">
-                <i class="fas fa-graduation-cap text-white text-lg sm:text-xl"></i>
-            </div>
-            <div>
-                <h2 class="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white transition-colors duration-300">Education & Career</h2>
-                <p class="text-sm sm:text-base text-gray-600 dark:text-gray-400 transition-colors duration-300">Your educational background and professional skills</p>
-            </div>
+<div x-show="activeTab === 'education'" x-transition.opacity.duration.300ms class="py-4 sm:py-6 lg:py-8">
+    <div class="flex items-center mb-6 sm:mb-8">
+        <div class="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-r from-purple-500 to-pink-600 rounded-xl flex items-center justify-center mr-3 sm:mr-4">
+            <i class="fas fa-graduation-cap text-white text-lg sm:text-xl"></i>
         </div>
+        <div>
+            <h2 class="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white transition-colors duration-300">Education & Career</h2>
+            <p class="text-sm sm:text-base text-gray-600 dark:text-gray-400 transition-colors duration-300">Your educational background and professional skills</p>
+        </div>
+    </div>
 
-        <div class="grid grid-cols-1 gap-4 sm:gap-6 md:gap-8">
+    <!-- Changed to responsive two-column layout -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 md:gap-8">
+        <!-- Education & Career Section -->
+        <div class="space-y-4 sm:space-y-6">
             <div class="bg-white dark:bg-gray-700/30 p-4 sm:p-6 rounded-xl border border-gray-200 dark:border-gray-600/50 backdrop-blur-sm transition-colors duration-300">
                 <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-3 sm:mb-4 flex items-center transition-colors duration-300">
                     <i class="fas fa-graduation-cap text-purple-500 dark:text-purple-400 mr-2"></i>
@@ -112,7 +115,10 @@
                     </div>
                 </div>
             </div>
+        </div>
 
+        <!-- Skills & Interests Section -->
+        <div class="space-y-4 sm:space-y-6">
             <div class="bg-white dark:bg-gray-700/30 p-4 sm:p-6 rounded-xl border border-gray-200 dark:border-gray-600/50 backdrop-blur-sm transition-colors duration-300">
                 <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-3 sm:mb-4 flex items-center transition-colors duration-300">
                     <i class="fas fa-tools text-pink-500 dark:text-pink-400 mr-2"></i>
@@ -141,6 +147,7 @@
             </div>
         </div>
     </div>
+</div>
 
     <!-- Social Links Tab -->
     <div x-show="activeTab === 'social'" x-transition.opacity.duration.300ms class="py-4 sm:py-6 lg:py-8">
