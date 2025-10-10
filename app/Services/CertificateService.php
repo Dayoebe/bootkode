@@ -11,7 +11,6 @@ use Endroid\QrCode\Writer\PngWriter;
 use Endroid\QrCode\ErrorCorrectionLevel;
 use Endroid\QrCode\RoundBlockSizeMode;
 use Endroid\QrCode\Color\Color;
-use Symfony\Component\String\TruncateMode;
 
 class CertificateService
 {
@@ -80,8 +79,8 @@ class CertificateService
                 ->setMargin(config('certificate.qr_code.margin', 15))
                 ->setRoundBlockSizeMode(RoundBlockSizeMode::Margin)
                 ->setErrorCorrectionLevel(ErrorCorrectionLevel::High)
-                ->setForegroundColor(new Color(12, 35, 64)) // Navy color
-                ->setBackgroundColor(new Color(255, 255, 255)); // White
+                ->setForegroundColor(new Color(12, 35, 64))
+                ->setBackgroundColor(new Color(255, 255, 255));
 
             $writer = new PngWriter();
             $result = $writer->write($qrCode);
@@ -117,7 +116,7 @@ class CertificateService
     }
 
     /**
-     * Generate PDF certificate using unified template
+     * Generate PDF certificate using public-view template
      */
     protected function generatePDF(Certificate $certificate): string
     {
@@ -137,26 +136,26 @@ class CertificateService
                 }
             }
 
-            // Load the unified template with isPdf flag
-            $pdf = Pdf::loadView('certificates.certificate-unified', [
+            // Load the public-view template with isPdf flag set to true
+            $pdf = Pdf::loadView('certificates.public-view', [
                     'certificate' => $certificate,
-                    'isPdf' => true // Flag to disable screen-only elements
+                    'isPdf' => true // This flag disables buttons and screen-only elements
                 ])
                 ->setPaper('A4', 'landscape')
                 ->setOptions([
                     'isHtml5ParserEnabled' => true,
                     'isRemoteEnabled' => true,
                     'enable_php' => true,
-                    'dpi' => 96, // Lower DPI for better rendering
-                    'defaultFont' => 'DejaVu Serif',
+                    'dpi' => 150, // Higher DPI for better quality
+                    'defaultFont' => 'DejaVu Sans',
                     'isFontSubsettingEnabled' => true,
                     'isPhpEnabled' => true,
-                    'chroot' => [storage_path('app/public')], // Allow local files
-                    'debugPng' => true,
-                    'debugKeepTemp' => true,
-                    'debugCss' => true,
+                    'chroot' => storage_path('app/public'),
+                    'debugPng' => false,
+                    'debugKeepTemp' => false,
+                    'debugCss' => false,
                     'fontHeightRatio' => 1.1,
-                    'isJavascriptEnabled' => true,                    
+                    'isJavascriptEnabled' => false,
                 ]);
             
             $filename = config('certificate.storage.pdf_path', 'certificates/pdf') . '/' 
@@ -343,26 +342,9 @@ class CertificateService
 
     /**
      * Get assessment result for user
-     * Implement based on your assessment system
      */
     protected function getAssessmentResult($userId, $assessmentId): ?array
     {
-        // This is a placeholder - implement based on your actual assessment system
-        // Return format: ['passed' => bool, 'percentage' => float]
-        
-        // Example implementation:
-        // $result = \App\Models\AssessmentResult::where('user_id', $userId)
-        //     ->where('assessment_id', $assessmentId)
-        //     ->latest()
-        //     ->first();
-        // 
-        // if (!$result) return null;
-        // 
-        // return [
-        //     'passed' => $result->score >= $result->assessment->passing_score,
-        //     'percentage' => $result->score
-        // ];
-        
         return null;
     }
 

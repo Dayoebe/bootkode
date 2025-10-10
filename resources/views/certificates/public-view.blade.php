@@ -105,6 +105,26 @@
             overflow: hidden;
         }
 
+        /* Background Pattern */
+        .certificate-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: 
+                radial-gradient(circle at 20% 30%, rgba(184, 134, 11, 0.15) 0%, transparent 40%),
+                radial-gradient(circle at 80% 70%, rgba(218, 165, 32, 0.15) 0%, transparent 40%),
+                radial-gradient(circle at 50% 50%, rgba(255, 215, 0, 0.08) 0%, transparent 50%),
+                repeating-linear-gradient(45deg, transparent, transparent 20px, rgba(184, 134, 11, 0.06) 20px, rgba(184, 134, 11, 0.06) 22px),
+                repeating-linear-gradient(-45deg, transparent, transparent 20px, rgba(218, 165, 32, 0.06) 20px, rgba(218, 165, 32, 0.06) 22px),
+                repeating-linear-gradient(0deg, transparent, transparent 40px, rgba(184, 134, 11, 0.03) 40px, rgba(184, 134, 11, 0.03) 42px),
+                repeating-linear-gradient(90deg, transparent, transparent 40px, rgba(218, 165, 32, 0.03) 40px, rgba(218, 165, 32, 0.03) 42px);
+            z-index: 0;
+            pointer-events: none;
+        }
+
         .inner-border {
             border: 3px double #8b7355;
             margin: 8px;
@@ -114,6 +134,7 @@
             position: relative;
             display: flex;
             flex-direction: column;
+            z-index: 1;
         }
 
         .gold-accent {
@@ -179,6 +200,123 @@
             right: 12px;
             border-width: 0 4px 4px 0;
             border-radius: 8px 0 0 0;
+        }
+
+        /* Ribbon Badge - Replacing authenticity-badge */
+        .ribbon-badge {
+            position: absolute;
+            top: -8px;
+            right: 40px;
+            z-index: 10;
+        }
+
+        .ribbon-wrapper {
+            width: 80px;
+            height: 100px;
+            position: relative;
+        }
+
+        .ribbon-front {
+            background: linear-gradient(135deg, #b8860b 0%, #daa520 50%, #b8860b 100%);
+            height: 70px;
+            width: 80px;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            box-shadow: 0 4px 12px rgba(184, 134, 11, 0.4);
+        }
+
+        .ribbon-front::before {
+            content: '';
+            position: absolute;
+            height: 0;
+            width: 0;
+            top: 0;
+            left: -10px;
+            border-top: 35px solid #8b6914;
+            border-bottom: 35px solid #8b6914;
+            border-left: 10px solid transparent;
+        }
+
+        .ribbon-front::after {
+            content: '';
+            position: absolute;
+            height: 0;
+            width: 0;
+            top: 0;
+            right: -10px;
+            border-top: 35px solid #8b6914;
+            border-bottom: 35px solid #8b6914;
+            border-right: 10px solid transparent;
+        }
+
+        .ribbon-edge-topleft,
+        .ribbon-edge-topright,
+        .ribbon-edge-bottomleft,
+        .ribbon-edge-bottomright {
+            position: absolute;
+            z-index: -1;
+            border-style: solid;
+            height: 0;
+            width: 0;
+        }
+
+        .ribbon-edge-topleft {
+            top: 0;
+            left: 0;
+            border-color: #6b5010 transparent transparent #6b5010;
+            border-width: 5px;
+        }
+
+        .ribbon-edge-topright {
+            top: 0;
+            right: 0;
+            border-color: #6b5010 #6b5010 transparent transparent;
+            border-width: 5px;
+        }
+
+        .ribbon-edge-bottomleft {
+            bottom: 30px;
+            left: 0;
+            border-color: transparent transparent #6b5010 #6b5010;
+            border-width: 5px;
+        }
+
+        .ribbon-edge-bottomright {
+            bottom: 30px;
+            right: 0;
+            border-color: transparent #6b5010 #6b5010 transparent;
+            border-width: 5px;
+        }
+
+        .ribbon-icon {
+            font-size: 28pt;
+            color: #ffffff;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .ribbon-left,
+        .ribbon-right {
+            position: absolute;
+            height: 40px;
+            width: 30px;
+            top: 70px;
+        }
+
+        .ribbon-left {
+            left: 10px;
+            background: linear-gradient(to bottom, #b8860b 0%, #8b6914 100%);
+            clip-path: polygon(0 0, 100% 0, 50% 100%);
+            box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .ribbon-right {
+            right: 10px;
+            background: linear-gradient(to bottom, #b8860b 0%, #8b6914 100%);
+            clip-path: polygon(0 0, 100% 0, 50% 100%);
+            box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
         }
 
         .header {
@@ -319,7 +457,6 @@
             word-wrap: break-word;
         }
 
-        /* Dynamic sizing for long course titles */
         .course-title.long {
             font-size: 18pt;
         }
@@ -468,8 +605,8 @@
             font-family: 'Montserrat', sans-serif;
             line-height: 1.3;
             border-left: 2px solid #daa520;
-            max-height: 100px; /* Set a specific value for max-height */
-            overflow: hidden; /* Add overflow property to handle content exceeding max-height */
+            max-height: 100px;
+            overflow: hidden;
         }
 
         .verification-label {
@@ -525,13 +662,6 @@
             box-shadow: 0 2px 6px rgba(184, 134, 11, 0.2);
         }
 
-        .qr-helper-text {
-            font-size: 6.5pt;
-            color: #8b7355;
-            margin-top: 3px;
-            font-family: 'Montserrat', sans-serif;
-        }
-
         .footer {
             text-align: center;
             position: relative;
@@ -555,24 +685,6 @@
             letter-spacing: 1pt;
             font-family: 'Montserrat', sans-serif;
             font-weight: 500;
-        }
-
-        .authenticity-badge {
-            position: absolute;
-            top: 16px;
-            right: 28px;
-            background: linear-gradient(135deg, #b8860b 0%, #daa520 100%);
-            color: #ffffff;
-            padding: 5px 12px;
-            border-radius: 15px;
-            font-size: 7.5pt;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 1pt;
-            border: 2px solid #ffd700;
-            z-index: 2;
-            font-family: 'Montserrat', sans-serif;
-            box-shadow: 0 2px 8px rgba(184, 134, 11, 0.4);
         }
 
         .gold-border-accent {
@@ -607,7 +719,6 @@
     @if(!isset($isPdf) || !$isPdf)
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script>
-        // Dynamic font sizing based on content length
         document.addEventListener('DOMContentLoaded', function() {
             const courseTitle = document.querySelector('.course-title');
             if (courseTitle) {
@@ -642,7 +753,6 @@
                 <div class="gold-border-accent"></div>
                 <div class="embossed-seal"></div>
                 
-                <div class="authenticity-badge">VERIFIED</div>
                 <div class="watermark">CERTIFIED</div>
 
                 <div class="corner-ornament corner-tl"></div>
