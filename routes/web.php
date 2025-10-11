@@ -196,10 +196,24 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/cbt/manage', App\Livewire\Cbt\CbtManagement::class)->name('cbt.manage');
 });
 
-Route::middleware(['auth', 'verified'])->group(function () {
-    Route::get('/mentorship', \App\Livewire\Mentorship\MentorshipHub::class)->name('mentorship.hub');
-    Route::get('/mentorship.dashboard', \App\Livewire\Mentorship\MentorDashboard::class)->name('mentorship.dashboard');
-    Route::get('/mentorship/actions', \App\Livewire\Mentorship\MentorshipActions::class)->name('mentorship.actions');
+
+// // Replace your existing mentorship routes with:
+Route::middleware(['auth', 'verified'])->prefix('mentorship')->name('mentorship.')->group(function () {
+    Route::get('/', \App\Livewire\Mentorship\MentorshipHub::class)->name('hub');
+    Route::get('/find', \App\Livewire\Mentorship\FindMentor::class)->name('find');
+    Route::get('/my-mentorships', \App\Livewire\Mentorship\MyMentorships::class)->name('my-mentorships');
+    Route::get('/sessions', \App\Livewire\Mentorship\Sessions::class)->name('sessions');
+    Route::get('/code-reviews', \App\Livewire\Mentorship\CodeReviews::class)->name('code-reviews');
+    
+    Route::middleware(['auth', 'verified'])->group(function () {
+        Route::get('/dashboard', \App\Livewire\Mentorship\MentorDashboard::class)->name('dashboard');
+        Route::get('/profile', \App\Livewire\Mentorship\MentorProfile::class)->name('profile');
+        Route::get('/resources', \App\Livewire\Mentorship\MentorResources::class)->name('resources');
+    });
+    
+    Route::middleware(['auth', 'verified'])->group(function () {
+        Route::get('/management', \App\Livewire\Mentorship\MentorManagement::class)->name('management');
+    });
 });
 
 Route::middleware('auth')->group(function () {
