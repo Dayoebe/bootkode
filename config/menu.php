@@ -129,15 +129,17 @@ return [
             'roles' => [],
             'link_id' => 'mentorship',
             'children' => [
-                ['label' => 'Find a Mentor', 'icon' => 'fas fa-search', 'route_name' => 'mentorship.hub', 'roles' => [User::ROLE_STUDENT]],
+                ['label' => 'Dashboard', 'icon' => 'fas fa-home', 'route_name' => 'mentorship.hub', 'roles' => []],
+                ['label' => 'Find a Mentor', 'icon' => 'fas fa-search', 'route_name' => 'mentorship.find', 'roles' => [User::ROLE_STUDENT]],
                 ['label' => 'Mentor Dashboard', 'icon' => 'fas fa-chalkboard-teacher', 'route_name' => 'mentorship.dashboard', 'roles' => [User::ROLE_MENTOR, User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN]],
-                ['label' => 'Mentorship Requests', 'icon' => 'fas fa-bell', 'route_name' => 'mentorship.hub', 'roles' => [User::ROLE_MENTOR, User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN]],
-                ['label' => 'Code Review System', 'icon' => 'fas fa-code', 'route_name' => 'mentorship.hub', 'roles' => [User::ROLE_MENTOR, User::ROLE_STUDENT]],
-                ['label' => 'Session Scheduling', 'icon' => 'fas fa-calendar-check', 'route_name' => 'mentorship.hub', 'roles' => [User::ROLE_MENTOR, User::ROLE_STUDENT]],
-                ['label' => 'Mentor Resources', 'icon' => 'fas fa-tools', 'route_name' => 'mentorship.hub', 'roles' => [User::ROLE_MENTOR]],
-                ['label' => 'Mentor Management', 'icon' => 'fas fa-user-tie', 'route_name' => 'mentorship.dashboard', 'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN]],
+                ['label' => 'My Mentorships', 'icon' => 'fas fa-handshake', 'route_name' => 'mentorship.my-mentorships', 'roles' => []],
+                ['label' => 'Sessions', 'icon' => 'fas fa-calendar-check', 'route_name' => 'mentorship.sessions', 'roles' => []],
+                ['label' => 'Code Reviews', 'icon' => 'fas fa-code', 'route_name' => 'mentorship.code-reviews', 'roles' => []],
+                ['label' => 'Mentor Resources', 'icon' => 'fas fa-tools', 'route_name' => 'mentorship.resources', 'roles' => [User::ROLE_MENTOR, User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN]],
+                ['label' => 'Mentor Management', 'icon' => 'fas fa-user-tie', 'route_name' => 'mentorship.management', 'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN]],
             ]
         ],
+
         [
             'label' => 'AI Learning Tools',
             'icon' => 'fas fa-robot',
@@ -342,7 +344,7 @@ return [
                 ['label' => 'Language & Localization', 'icon' => 'fas fa-language', 'route_name' => 'language.localization', 'roles' => [User::ROLE_SUPER_ADMIN]],
             ]
         ],
-       
+
         [
             'label' => 'Newsletter',
             'icon' => 'fas fa-envelope',
