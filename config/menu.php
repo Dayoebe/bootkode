@@ -140,19 +140,19 @@ return [
             ]
         ],
 
-        [
-            'label' => 'AI Learning Tools',
-            'icon' => 'fas fa-robot',
-            'route_name' => '#',
-            'roles' => [],
-            'link_id' => 'ai_tools',
-            'children' => [
-                ['label' => 'Code Assistant', 'icon' => 'fas fa-code', 'route_name' => '#', 'roles' => []],
-                ['label' => 'Interview Prep Bot', 'icon' => 'fas fa-comment-dots', 'route_name' => '#', 'roles' => []],
-                ['label' => 'Learning Recommendations', 'icon' => 'fas fa-lightbulb', 'route_name' => '#', 'roles' => []],
-                ['label' => 'AI Tool Settings', 'icon' => 'fas fa-cog', 'route_name' => '#', 'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN]],
-            ]
-        ],
+        // [
+        //     'label' => 'AI Learning Tools',
+        //     'icon' => 'fas fa-robot',
+        //     'route_name' => '#',
+        //     'roles' => [],
+        //     'link_id' => 'ai_tools',
+        //     'children' => [
+        //         ['label' => 'Code Assistant', 'icon' => 'fas fa-code', 'route_name' => '#', 'roles' => []],
+        //         ['label' => 'Interview Prep Bot', 'icon' => 'fas fa-comment-dots', 'route_name' => '#', 'roles' => []],
+        //         ['label' => 'Learning Recommendations', 'icon' => 'fas fa-lightbulb', 'route_name' => '#', 'roles' => []],
+        //         ['label' => 'AI Tool Settings', 'icon' => 'fas fa-cog', 'route_name' => '#', 'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN]],
+        //     ]
+        // ],
         [
             'label' => 'Career Services',
             'icon' => 'fas fa-briefcase',
