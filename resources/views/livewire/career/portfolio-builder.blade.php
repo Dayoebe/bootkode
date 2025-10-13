@@ -1,7 +1,7 @@
 <div class="min-h-screen bg-gradient-to-br from-purple-50 via-white to-pink-50">
     <!-- Header Section -->
     <div class="bg-white shadow-lg border-b">
-        <div class="container mx-auto px-6 py-8">
+        <div class="px-6 py-8">
             <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between">
                 <div class="mb-6 lg:mb-0">
                     <h1 class="text-4xl font-bold text-gray-900 mb-2">Portfolio Builder</h1>
@@ -65,7 +65,7 @@
         </div>
     @endif
 
-    <div class="container mx-auto px-6 py-8">
+    <div class="px-6 py-8">
         <!-- Action Bar -->
         <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between mb-8 space-y-4 lg:space-y-0">
             <div class="flex flex-wrap items-center gap-4">
