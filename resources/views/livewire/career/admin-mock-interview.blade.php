@@ -7,7 +7,7 @@
                     <h1 class="text-3xl font-bold text-gray-900">Mock Interviews Management</h1>
                     <p class="text-gray-600 mt-1">Manage interviews, templates, and analytics</p>
                 </div>
-                
+
                 <!-- Quick Stats -->
                 <div class="hidden lg:flex space-x-6">
                     <div class="text-center">
@@ -89,7 +89,8 @@
                             <div class="flex-shrink-0">
                                 <div class="w-8 h-8 bg-blue-500 rounded-md flex items-center justify-center">
                                     <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/>
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
                                     </svg>
                                 </div>
                             </div>
@@ -107,14 +108,16 @@
                             <div class="flex-shrink-0">
                                 <div class="w-8 h-8 bg-green-500 rounded-md flex items-center justify-center">
                                     <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                                     </svg>
                                 </div>
                             </div>
                             <div class="ml-5 w-0 flex-1">
                                 <dl>
                                     <dt class="text-sm font-medium text-gray-500 truncate">Completed</dt>
-                                    <dd class="text-lg font-medium text-gray-900">{{ number_format($completedInterviews) }}</dd>
+                                    <dd class="text-lg font-medium text-gray-900">{{ number_format($completedInterviews) }}
+                                    </dd>
                                 </dl>
                             </div>
                         </div>
@@ -125,14 +128,16 @@
                             <div class="flex-shrink-0">
                                 <div class="w-8 h-8 bg-purple-500 rounded-md flex items-center justify-center">
                                     <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/>
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
                                     </svg>
                                 </div>
                             </div>
                             <div class="ml-5 w-0 flex-1">
                                 <dl>
                                     <dt class="text-sm font-medium text-gray-500 truncate">Average Score</dt>
-                                    <dd class="text-lg font-medium text-gray-900">{{ number_format($averageScore, 1) }}%</dd>
+                                    <dd class="text-lg font-medium text-gray-900">{{ number_format($averageScore, 1) }}%
+                                    </dd>
                                 </dl>
                             </div>
                         </div>
@@ -143,7 +148,8 @@
                             <div class="flex-shrink-0">
                                 <div class="w-8 h-8 bg-orange-500 rounded-md flex items-center justify-center">
                                     <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                                     </svg>
                                 </div>
                             </div>
@@ -165,10 +171,13 @@
                         <div class="space-y-3">
                             @foreach($popularTypes as $type)
                                 <div class="flex items-center justify-between">
-                                    <span class="text-sm font-medium text-gray-900 capitalize">{{ str_replace('_', ' ', $type['type']) }}</span>
+                                    <span
+                                        class="text-sm font-medium text-gray-900 capitalize">{{ str_replace('_', ' ', $type['type']) }}</span>
                                     <div class="flex items-center">
                                         <div class="w-32 bg-gray-200 rounded-full h-2 mr-3">
-                                            <div class="bg-blue-600 h-2 rounded-full" style="width: {{ ($type['count'] / max(array_column($popularTypes, 'count'))) * 100 }}%"></div>
+                                            <div class="bg-blue-600 h-2 rounded-full"
+                                                style="width: {{ ($type['count'] / max(array_column($popularTypes, 'count'))) * 100 }}%">
+                                            </div>
                                         </div>
                                         <span class="text-sm text-gray-600">{{ $type['count'] }}</span>
                                     </div>
@@ -184,7 +193,8 @@
                             <div>
                                 <div class="flex items-center justify-between">
                                     <span class="text-sm font-medium text-gray-600">Weekly Growth</span>
-                                    <span class="text-sm font-bold {{ $weeklyGrowth >= 0 ? 'text-green-600' : 'text-red-600' }}">
+                                    <span
+                                        class="text-sm font-bold {{ $weeklyGrowth >= 0 ? 'text-green-600' : 'text-red-600' }}">
                                         {{ $weeklyGrowth >= 0 ? '+' : '' }}{{ number_format($weeklyGrowth, 1) }}%
                                     </span>
                                 </div>
@@ -192,13 +202,15 @@
                             <div>
                                 <div class="flex items-center justify-between">
                                     <span class="text-sm font-medium text-gray-600">Premium Usage</span>
-                                    <span class="text-sm font-bold text-purple-600">{{ number_format($premiumUsage) }}</span>
+                                    <span
+                                        class="text-sm font-bold text-purple-600">{{ number_format($premiumUsage) }}</span>
                                 </div>
                             </div>
                             <div>
                                 <div class="flex items-center justify-between">
                                     <span class="text-sm font-medium text-gray-600">Daily Interviews</span>
-                                    <span class="text-sm font-bold text-blue-600">{{ number_format($dailyInterviews) }}</span>
+                                    <span
+                                        class="text-sm font-bold text-blue-600">{{ number_format($dailyInterviews) }}</span>
                                 </div>
                             </div>
                         </div>
@@ -219,16 +231,19 @@
                                             @endif
                                             <div class="relative flex space-x-3">
                                                 <div>
-                                                    <span class="bg-{{ $activity->getStatusColor() }}-500 h-8 w-8 rounded-full flex items-center justify-center ring-8 ring-white">
+                                                    <span
+                                                        class="bg-{{ $activity->getStatusColor() }}-500 h-8 w-8 rounded-full flex items-center justify-center ring-8 ring-white">
                                                         <span class="text-white text-sm">{{ $activity->getTypeIcon() }}</span>
                                                     </span>
                                                 </div>
                                                 <div class="min-w-0 flex-1 pt-1.5 flex justify-between space-x-4">
                                                     <div>
                                                         <p class="text-sm text-gray-500">
-                                                            <span class="font-medium text-gray-900">{{ $activity->user->name }}</span>
+                                                            <span
+                                                                class="font-medium text-gray-900">{{ $activity->user->name }}</span>
                                                             {{ $activity->isCompleted() ? 'completed' : 'started' }} interview
-                                                            <span class="font-medium text-gray-900">{{ $activity->title }}</span>
+                                                            <span
+                                                                class="font-medium text-gray-900">{{ $activity->title }}</span>
                                                         </p>
                                                     </div>
                                                     <div class="text-right text-sm whitespace-nowrap text-gray-500">
@@ -253,11 +268,13 @@
                 <div class="bg-white shadow rounded-lg p-6">
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4">
                         <div class="lg:col-span-2">
-                            <input wire:model.live.debounce.300ms="searchTerm" type="text" placeholder="Search interviews, users..."
+                            <input wire:model.live.debounce.300ms="searchTerm" type="text"
+                                placeholder="Search interviews, users..."
                                 class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
                         </div>
-                        
-                        <select wire:model.live="filterType" class="px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
+
+                        <select wire:model.live="filterType"
+                            class="px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
                             <option value="">All Types</option>
                             <option value="technical">Technical</option>
                             <option value="behavioral">Behavioral</option>
@@ -268,7 +285,8 @@
                             <option value="custom">Custom</option>
                         </select>
 
-                        <select wire:model.live="filterStatus" class="px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
+                        <select wire:model.live="filterStatus"
+                            class="px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
                             <option value="">All Status</option>
                             <option value="scheduled">Scheduled</option>
                             <option value="in_progress">In Progress</option>
@@ -277,7 +295,8 @@
                             <option value="missed">Missed</option>
                         </select>
 
-                        <select wire:model.live="filterDifficulty" class="px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
+                        <select wire:model.live="filterDifficulty"
+                            class="px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
                             <option value="">All Difficulty</option>
                             <option value="beginner">Beginner</option>
                             <option value="intermediate">Intermediate</option>
@@ -285,7 +304,8 @@
                             <option value="expert">Expert</option>
                         </select>
 
-                        <select wire:model.live="filterDateRange" class="px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
+                        <select wire:model.live="filterDateRange"
+                            class="px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
                             <option value="">All Time</option>
                             <option value="1">Last 24 hours</option>
                             <option value="7">Last 7 days</option>
@@ -298,17 +318,18 @@
                     @if($showBulkActions)
                         <div class="mt-4 flex items-center space-x-4">
                             <span class="text-sm text-gray-600">{{ count($selectedInterviews) }} selected</span>
-                            <select wire:model="bulkAction" class="px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
+                            <select wire:model="bulkAction"
+                                class="px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
                                 <option value="">Bulk Actions</option>
                                 <option value="approve">Approve</option>
                                 <option value="generate_feedback">Generate AI Feedback</option>
                                 <option value="delete">Delete</option>
                             </select>
-                            <button wire:click="executeBulkAction" 
+                            <button wire:click="executeBulkAction"
                                 class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors text-sm">
                                 Execute
                             </button>
-                            <button wire:click="clearBulkSelection" 
+                            <button wire:click="clearBulkSelection"
                                 class="text-gray-600 hover:text-gray-800 transition-colors text-sm">
                                 Clear Selection
                             </button>
@@ -351,10 +372,10 @@
                         </thead>
                         <tbody class="bg-white divide-y divide-gray-200">
                             @forelse($interviews as $interview)
-                                <tr class="{{ in_array($interview->id, $selectedInterviews) ? 'bg-blue-50' : 'hover:bg-gray-50' }}">
+                                <tr
+                                    class="{{ in_array($interview->id, $selectedInterviews) ? 'bg-blue-50' : 'hover:bg-gray-50' }}">
                                     <td class="px-6 py-4 whitespace-nowrap">
-                                        <input type="checkbox" wire:click="toggleBulkSelect({{ $interview->id }})" 
-                                            {{ in_array($interview->id, $selectedInterviews) ? 'checked' : '' }}
+                                        <input type="checkbox" wire:click="toggleBulkSelect({{ $interview->id }})" {{ in_array($interview->id, $selectedInterviews) ? 'checked' : '' }}
                                             class="w-4 h-4 text-blue-600">
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap">
@@ -364,30 +385,36 @@
                                     <td class="px-6 py-4 whitespace-nowrap">
                                         <div class="flex items-center">
                                             <div class="flex-shrink-0 h-10 w-10">
-                                                <div class="h-10 w-10 rounded-full bg-gray-300 flex items-center justify-center">
-                                                    <span class="text-sm font-medium text-gray-700">{{ substr($interview->user->name, 0, 2) }}</span>
+                                                <div
+                                                    class="h-10 w-10 rounded-full bg-gray-300 flex items-center justify-center">
+                                                    <span
+                                                        class="text-sm font-medium text-gray-700">{{ substr($interview->user->name, 0, 2) }}</span>
                                                 </div>
                                             </div>
                                             <div class="ml-4">
-                                                <div class="text-sm font-medium text-gray-900">{{ $interview->user->name }}</div>
+                                                <div class="text-sm font-medium text-gray-900">{{ $interview->user->name }}
+                                                </div>
                                                 <div class="text-sm text-gray-500">{{ $interview->user->email }}</div>
                                             </div>
                                         </div>
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap">
-                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                                        <span
+                                            class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
                                             {{ $interview->type_label }}
                                         </span>
                                         <div class="text-xs text-gray-500 mt-1">{{ $interview->difficulty_label }}</div>
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap">
-                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-{{ $interview->getStatusColor() }}-100 text-{{ $interview->getStatusColor() }}-800">
+                                        <span
+                                            class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-{{ $interview->getStatusColor() }}-100 text-{{ $interview->getStatusColor() }}-800">
                                             {{ $interview->status_label }}
                                         </span>
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap">
                                         @if($interview->overall_score)
-                                            <div class="text-sm font-medium text-gray-900">{{ number_format($interview->overall_score, 1) }}%</div>
+                                            <div class="text-sm font-medium text-gray-900">
+                                                {{ number_format($interview->overall_score, 1) }}%</div>
                                             <div class="text-xs text-gray-500">{{ $interview->overall_rating }}</div>
                                         @else
                                             <span class="text-gray-400 text-sm">N/A</span>
@@ -401,12 +428,12 @@
                                         <div class="flex items-center space-x-2">
                                             <button wire:click="viewInterview({{ $interview->id }})"
                                                 class="text-blue-600 hover:text-blue-900">View</button>
-                                            
+
                                             @if($interview->isCompleted() && !$interview->ai_feedback)
                                                 <button wire:click="generateAIFeedback({{ $interview->id }})"
                                                     class="text-green-600 hover:text-green-900">Generate AI</button>
                                             @endif
-                                            
+
                                             <button wire:click="deleteInterview({{ $interview->id }})"
                                                 wire:confirm="Are you sure you want to delete this interview?"
                                                 class="text-red-600 hover:text-red-900">Delete</button>
@@ -422,7 +449,7 @@
                             @endforelse
                         </tbody>
                     </table>
-                    
+
                     <!-- Pagination -->
                     <div class="px-6 py-3 border-t border-gray-200">
                         {{ $interviews->links() }}
@@ -448,17 +475,20 @@
                     @foreach($templates as $template)
                         <div class="bg-white shadow rounded-lg p-6 hover:shadow-lg transition-shadow">
                             <div class="flex items-center justify-between mb-4">
-                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-{{ match($template['type']) { 'technical' => 'blue', 'behavioral' => 'green', default => 'gray' } }}-100 text-{{ match($template['type']) { 'technical' => 'blue', 'behavioral' => 'green', default => 'gray' } }}-800">
+                                <span
+                                    class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-{{ match ($template['type']) { 'technical' => 'blue', 'behavioral' => 'green', default => 'gray'} }}-100 text-{{ match ($template['type']) { 'technical' => 'blue', 'behavioral' => 'green', default => 'gray'} }}-800">
                                     {{ ucfirst(str_replace('_', ' ', $template['type'])) }}
                                 </span>
                                 <span class="text-xs text-gray-500">{{ $template['usage_count'] }} uses</span>
                             </div>
-                            
+
                             <h3 class="text-lg font-medium text-gray-900 mb-2">{{ $template['title'] }}</h3>
-                            <p class="text-sm text-gray-600 mb-4">{{ $template['questions_count'] }} questions • {{ ucfirst($template['difficulty']) }}</p>
-                            
+                            <p class="text-sm text-gray-600 mb-4">{{ $template['questions_count'] }} questions •
+                                {{ ucfirst($template['difficulty']) }}</p>
+
                             <div class="flex items-center justify-between">
-                                <span class="text-xs text-gray-500">Created {{ $template['created_at']->diffForHumans() }}</span>
+                                <span class="text-xs text-gray-500">Created
+                                    {{ $template['created_at']->diffForHumans() }}</span>
                                 <div class="flex space-x-2">
                                     <button class="text-blue-600 hover:text-blue-800 text-sm">Edit</button>
                                     <button class="text-red-600 hover:text-red-800 text-sm">Delete</button>
@@ -476,24 +506,28 @@
                                 <h3 class="text-lg font-medium text-gray-900">Create Interview Template</h3>
                                 <button wire:click="resetTemplateForm" class="text-gray-400 hover:text-gray-600">
                                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M6 18L18 6M6 6l12 12" />
                                     </svg>
                                 </button>
                             </div>
-                            
+
                             <form wire:submit.prevent="createTemplate" class="p-6 overflow-y-auto max-h-[calc(90vh-120px)]">
                                 <div class="space-y-4">
                                     <div>
                                         <label class="block text-sm font-medium text-gray-700 mb-2">Template Title</label>
-                                        <input wire:model="templateTitle" type="text" placeholder="e.g., Senior Developer Technical Interview"
+                                        <input wire:model="templateTitle" type="text"
+                                            placeholder="e.g., Senior Developer Technical Interview"
                                             class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
-                                        @error('templateTitle') <p class="text-red-500 text-sm mt-1">{{ $message }}</p> @enderror
+                                        @error('templateTitle') <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                                        @enderror
                                     </div>
 
                                     <div class="grid grid-cols-2 gap-4">
                                         <div>
                                             <label class="block text-sm font-medium text-gray-700 mb-2">Type</label>
-                                            <select wire:model="templateType" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
+                                            <select wire:model="templateType"
+                                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
                                                 <option value="technical">Technical</option>
                                                 <option value="behavioral">Behavioral</option>
                                                 <option value="case_study">Case Study</option>
@@ -506,7 +540,8 @@
 
                                         <div>
                                             <label class="block text-sm font-medium text-gray-700 mb-2">Difficulty</label>
-                                            <select wire:model="templateDifficulty" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
+                                            <select wire:model="templateDifficulty"
+                                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
                                                 <option value="beginner">Beginner</option>
                                                 <option value="intermediate">Intermediate</option>
                                                 <option value="advanced">Advanced</option>
@@ -517,19 +552,21 @@
 
                                     <div>
                                         <label class="block text-sm font-medium text-gray-700 mb-2">Description</label>
-                                        <textarea wire:model="templateDescription" rows="3" placeholder="Describe this template..."
+                                        <textarea wire:model="templateDescription" rows="3"
+                                            placeholder="Describe this template..."
                                             class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"></textarea>
                                     </div>
 
                                     <!-- Questions -->
                                     <div>
                                         <label class="block text-sm font-medium text-gray-700 mb-2">Questions</label>
-                                        
+
                                         <!-- Add Question -->
                                         <div class="flex space-x-2 mb-4">
                                             <input wire:model="newTemplateQuestion" type="text" placeholder="Enter question..."
                                                 class="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
-                                            <select wire:model="templateQuestionType" class="px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
+                                            <select wire:model="templateQuestionType"
+                                                class="px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
                                                 <option value="behavioral">Behavioral</option>
                                                 <option value="technical">Technical</option>
                                                 <option value="situational">Situational</option>
@@ -552,7 +589,8 @@
                                                         <button type="button" wire:click="removeTemplateQuestion({{ $index }})"
                                                             class="text-red-600 hover:text-red-700 p-1">
                                                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                                    d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                                                             </svg>
                                                         </button>
                                                     </div>
@@ -567,8 +605,7 @@
                                         class="px-4 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50">
                                         Cancel
                                     </button>
-                                    <button type="submit"
-                                        class="bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700">
+                                    <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700">
                                         Create Template
                                     </button>
                                 </div>
@@ -594,7 +631,7 @@
                 <!-- Add New Question Form -->
                 <div class="bg-white shadow rounded-lg p-6">
                     <h3 class="text-lg font-medium text-gray-900 mb-4">Add New Question</h3>
-                    
+
                     <form wire:submit.prevent="addQuestion" class="space-y-4">
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">Question</label>
@@ -602,11 +639,12 @@
                                 class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"></textarea>
                             @error('newQuestion') <p class="text-red-500 text-sm mt-1">{{ $message }}</p> @enderror
                         </div>
-                        
+
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-2">Category</label>
-                                <select wire:model="questionCategory" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
+                                <select wire:model="questionCategory"
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
                                     <option value="technical">Technical</option>
                                     <option value="behavioral">Behavioral</option>
                                     <option value="situational">Situational</option>
@@ -615,24 +653,25 @@
                                     <option value="coding">Coding</option>
                                 </select>
                             </div>
-                            
+
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-2">Difficulty</label>
-                                <select wire:model="questionDifficulty" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
+                                <select wire:model="questionDifficulty"
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
                                     <option value="beginner">Beginner</option>
                                     <option value="intermediate">Intermediate</option>
                                     <option value="advanced">Advanced</option>
                                     <option value="expert">Expert</option>
                                 </select>
                             </div>
-                            
+
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-2">Tags</label>
                                 <input wire:model="questionTags" type="text" placeholder="comma, separated, tags"
                                     class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
                             </div>
                         </div>
-                        
+
                         <div class="flex justify-end">
                             <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700">
                                 Add Question
@@ -646,12 +685,18 @@
                     <table class="min-w-full divide-y divide-gray-200">
                         <thead class="bg-gray-50">
                             <tr>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Question</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Category</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Difficulty</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Usage</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tags</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Question</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Category</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Difficulty</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Usage</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Tags</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Actions</th>
                             </tr>
                         </thead>
                         <tbody class="bg-white divide-y divide-gray-200">
@@ -661,12 +706,14 @@
                                         <p class="text-sm text-gray-900">{{ $question['question'] }}</p>
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap">
-                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                                        <span
+                                            class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
                                             {{ ucfirst($question['category']) }}
                                         </span>
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap">
-                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+                                        <span
+                                            class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
                                             {{ ucfirst($question['difficulty']) }}
                                         </span>
                                     </td>
@@ -675,7 +722,8 @@
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap">
                                         @foreach($question['tags'] as $tag)
-                                            <span class="inline-flex items-center px-2 py-1 rounded text-xs bg-gray-100 text-gray-800 mr-1">
+                                            <span
+                                                class="inline-flex items-center px-2 py-1 rounded text-xs bg-gray-100 text-gray-800 mr-1">
                                                 {{ $tag }}
                                             </span>
                                         @endforeach
@@ -700,13 +748,15 @@
                     <div class="flex items-center justify-between">
                         <h2 class="text-xl font-semibold text-gray-900">Analytics Dashboard</h2>
                         <div class="flex items-center space-x-4">
-                            <select wire:model.live="analyticsDateRange" class="px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
+                            <select wire:model.live="analyticsDateRange"
+                                class="px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
                                 <option value="7">Last 7 days</option>
                                 <option value="30">Last 30 days</option>
                                 <option value="90">Last 90 days</option>
                                 <option value="365">Last year</option>
                             </select>
-                            <button wire:click="exportAnalytics" class="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700">
+                            <button wire:click="exportAnalytics"
+                                class="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700">
                                 Export
                             </button>
                         </div>
@@ -717,28 +767,32 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                     <div class="bg-white rounded-lg shadow p-6">
                         <div class="text-center">
-                            <div class="text-3xl font-bold text-blue-600">{{ number_format($performanceMetrics['avg_completion_rate'] ?? 0, 1) }}%</div>
+                            <div class="text-3xl font-bold text-blue-600">
+                                {{ number_format($performanceMetrics['avg_completion_rate'] ?? 0, 1) }}%</div>
                             <div class="text-sm text-gray-600">Avg Completion Rate</div>
                         </div>
                     </div>
-                    
+
                     <div class="bg-white rounded-lg shadow p-6">
                         <div class="text-center">
-                            <div class="text-3xl font-bold text-green-600">{{ number_format($performanceMetrics['user_satisfaction'] ?? 0, 1) }}</div>
+                            <div class="text-3xl font-bold text-green-600">
+                                {{ number_format($performanceMetrics['user_satisfaction'] ?? 0, 1) }}</div>
                             <div class="text-sm text-gray-600">User Satisfaction</div>
                         </div>
                     </div>
-                    
+
                     <div class="bg-white rounded-lg shadow p-6">
                         <div class="text-center">
-                            <div class="text-3xl font-bold text-purple-600">{{ number_format($userEngagementData['active_users'] ?? 0) }}</div>
+                            <div class="text-3xl font-bold text-purple-600">
+                                {{ number_format($userEngagementData['active_users'] ?? 0) }}</div>
                             <div class="text-sm text-gray-600">Active Users</div>
                         </div>
                     </div>
-                    
+
                     <div class="bg-white rounded-lg shadow p-6">
                         <div class="text-center">
-                            <div class="text-3xl font-bold text-orange-600">{{ number_format($performanceMetrics['total_interview_hours'] ?? 0) }}</div>
+                            <div class="text-3xl font-bold text-orange-600">
+                                {{ number_format($performanceMetrics['total_interview_hours'] ?? 0) }}</div>
                             <div class="text-sm text-gray-600">Total Hours</div>
                         </div>
                     </div>
@@ -767,7 +821,8 @@
                             @foreach($performanceMetrics['avg_score_by_type'] ?? [] as $type => $score)
                                 <div>
                                     <div class="flex justify-between text-sm">
-                                        <span class="font-medium text-gray-700">{{ ucfirst(str_replace('_', ' ', $type)) }}</span>
+                                        <span
+                                            class="font-medium text-gray-700">{{ ucfirst(str_replace('_', ' ', $type)) }}</span>
                                         <span class="text-gray-900">{{ number_format($score, 1) }}%</span>
                                     </div>
                                     <div class="w-full bg-gray-200 rounded-full h-2">
@@ -784,11 +839,13 @@
                     <h3 class="text-lg font-medium text-gray-900 mb-4">User Engagement Metrics</h3>
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                         <div class="text-center">
-                            <div class="text-2xl font-bold text-blue-600">{{ $userEngagementData['repeat_users'] ?? 0 }}</div>
+                            <div class="text-2xl font-bold text-blue-600">{{ $userEngagementData['repeat_users'] ?? 0 }}
+                            </div>
                             <div class="text-sm text-gray-600">Repeat Users</div>
                         </div>
                         <div class="text-center">
-                            <div class="text-2xl font-bold text-green-600">{{ $userEngagementData['avg_interviews_per_user'] ?? 0 }}</div>
+                            <div class="text-2xl font-bold text-green-600">
+                                {{ $userEngagementData['avg_interviews_per_user'] ?? 0 }}</div>
                             <div class="text-sm text-gray-600">Avg Interviews/User</div>
                         </div>
                         <div class="text-center">
@@ -813,12 +870,18 @@
                     <table class="min-w-full divide-y divide-gray-200">
                         <thead class="bg-gray-50">
                             <tr>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">User</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Interviews</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Completion Rate</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Avg Score</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Last Active</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    User</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Interviews</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Completion Rate</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Avg Score</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Last Active</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Actions</th>
                             </tr>
                         </thead>
                         <tbody class="bg-white divide-y divide-gray-200">
@@ -827,8 +890,10 @@
                                     <td class="px-6 py-4 whitespace-nowrap">
                                         <div class="flex items-center">
                                             <div class="flex-shrink-0 h-10 w-10">
-                                                <div class="h-10 w-10 rounded-full bg-gray-300 flex items-center justify-center">
-                                                    <span class="text-sm font-medium text-gray-700">{{ substr($user->name, 0, 2) }}</span>
+                                                <div
+                                                    class="h-10 w-10 rounded-full bg-gray-300 flex items-center justify-center">
+                                                    <span
+                                                        class="text-sm font-medium text-gray-700">{{ substr($user->name, 0, 2) }}</span>
                                                 </div>
                                             </div>
                                             <div class="ml-4">
@@ -865,62 +930,69 @@
         @if($activeTab === 'settings')
             <div class="space-y-6">
                 <h2 class="text-xl font-semibold text-gray-900">System Settings</h2>
-                
+
                 <div class="bg-white shadow rounded-lg p-6">
                     <h3 class="text-lg font-medium text-gray-900 mb-4">Interview Configuration</h3>
-                    
+
                     <form wire:submit.prevent="updateSystemSettings" class="space-y-6">
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Max Interview Duration (minutes)</label>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Max Interview Duration
+                                    (minutes)</label>
                                 <input wire:model="systemSettings.max_interview_duration" type="number" min="15" max="300"
                                     class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
                             </div>
-                            
+
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-2">Default Difficulty Level</label>
-                                <select wire:model="systemSettings.default_difficulty" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
+                                <select wire:model="systemSettings.default_difficulty"
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
                                     <option value="beginner">Beginner</option>
                                     <option value="intermediate">Intermediate</option>
                                     <option value="advanced">Advanced</option>
                                     <option value="expert">Expert</option>
                                 </select>
                             </div>
-                            
+
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Max Concurrent Interviews</label>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Max Concurrent
+                                    Interviews</label>
                                 <input wire:model="systemSettings.max_concurrent_interviews" type="number" min="1" max="20"
                                     class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
                             </div>
                         </div>
-                        
+
                         <!-- Feature Toggles -->
                         <div class="space-y-4">
                             <h4 class="text-md font-medium text-gray-900">Feature Settings</h4>
-                            
+
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <label class="flex items-center">
-                                    <input wire:model="systemSettings.enable_ai_feedback" type="checkbox" class="w-4 h-4 text-blue-600">
+                                    <input wire:model="systemSettings.enable_ai_feedback" type="checkbox"
+                                        class="w-4 h-4 text-blue-600">
                                     <span class="ml-2 text-sm text-gray-700">Enable AI Feedback</span>
                                 </label>
-                                
+
                                 <label class="flex items-center">
-                                    <input wire:model="systemSettings.enable_video_recording" type="checkbox" class="w-4 h-4 text-blue-600">
+                                    <input wire:model="systemSettings.enable_video_recording" type="checkbox"
+                                        class="w-4 h-4 text-blue-600">
                                     <span class="ml-2 text-sm text-gray-700">Enable Video Recording</span>
                                 </label>
-                                
+
                                 <label class="flex items-center">
-                                    <input wire:model="systemSettings.auto_generate_feedback" type="checkbox" class="w-4 h-4 text-blue-600">
+                                    <input wire:model="systemSettings.auto_generate_feedback" type="checkbox"
+                                        class="w-4 h-4 text-blue-600">
                                     <span class="ml-2 text-sm text-gray-700">Auto Generate Feedback</span>
                                 </label>
-                                
+
                                 <label class="flex items-center">
-                                    <input wire:model="systemSettings.require_premium_for_retakes" type="checkbox" class="w-4 h-4 text-blue-600">
+                                    <input wire:model="systemSettings.require_premium_for_retakes" type="checkbox"
+                                        class="w-4 h-4 text-blue-600">
                                     <span class="ml-2 text-sm text-gray-700">Require Premium for Retakes</span>
                                 </label>
                             </div>
                         </div>
-                        
+
                         <div class="flex justify-end">
                             <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700">
                                 Save Settings
@@ -940,11 +1012,12 @@
                     <h3 class="text-lg font-medium text-gray-900">Interview Details</h3>
                     <button wire:click="$set('selectedInterview', null)" class="text-gray-400 hover:text-gray-600">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M6 18L18 6M6 6l12 12" />
                         </svg>
                     </button>
                 </div>
-                
+
                 <div class="p-6 overflow-y-auto max-h-[calc(90vh-120px)]">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <!-- Basic Information -->
@@ -957,7 +1030,8 @@
                                 </div>
                                 <div>
                                     <dt class="text-sm font-medium text-gray-500">User</dt>
-                                    <dd class="text-sm text-gray-900">{{ $selectedInterview->user->name }} ({{ $selectedInterview->user->email }})</dd>
+                                    <dd class="text-sm text-gray-900">{{ $selectedInterview->user->name }}
+                                        ({{ $selectedInterview->user->email }})</dd>
                                 </div>
                                 <div>
                                     <dt class="text-sm font-medium text-gray-500">Type</dt>
@@ -966,7 +1040,8 @@
                                 <div>
                                     <dt class="text-sm font-medium text-gray-500">Status</dt>
                                     <dd>
-                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-{{ $selectedInterview->getStatusColor() }}-100 text-{{ $selectedInterview->getStatusColor() }}-800">
+                                        <span
+                                            class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-{{ $selectedInterview->getStatusColor() }}-100 text-{{ $selectedInterview->getStatusColor() }}-800">
                                             {{ $selectedInterview->status_label }}
                                         </span>
                                     </dd>
@@ -989,24 +1064,29 @@
                                 <dl class="space-y-2">
                                     <div>
                                         <dt class="text-sm font-medium text-gray-500">Overall Score</dt>
-                                        <dd class="text-sm text-gray-900">{{ number_format($selectedInterview->overall_score, 1) }}% ({{ $selectedInterview->overall_rating }})</dd>
+                                        <dd class="text-sm text-gray-900">
+                                            {{ number_format($selectedInterview->overall_score, 1) }}%
+                                            ({{ $selectedInterview->overall_rating }})</dd>
                                     </div>
                                     @if($selectedInterview->technical_score)
                                         <div>
                                             <dt class="text-sm font-medium text-gray-500">Technical</dt>
-                                            <dd class="text-sm text-gray-900">{{ number_format($selectedInterview->technical_score, 1) }}%</dd>
+                                            <dd class="text-sm text-gray-900">
+                                                {{ number_format($selectedInterview->technical_score, 1) }}%</dd>
                                         </div>
                                     @endif
                                     @if($selectedInterview->communication_score)
                                         <div>
                                             <dt class="text-sm font-medium text-gray-500">Communication</dt>
-                                            <dd class="text-sm text-gray-900">{{ number_format($selectedInterview->communication_score, 1) }}%</dd>
+                                            <dd class="text-sm text-gray-900">
+                                                {{ number_format($selectedInterview->communication_score, 1) }}%</dd>
                                         </div>
                                     @endif
                                     @if($selectedInterview->confidence_score)
                                         <div>
                                             <dt class="text-sm font-medium text-gray-500">Confidence</dt>
-                                            <dd class="text-sm text-gray-900">{{ number_format($selectedInterview->confidence_score, 1) }}%</dd>
+                                            <dd class="text-sm text-gray-900">
+                                                {{ number_format($selectedInterview->confidence_score, 1) }}%</dd>
                                         </div>
                                     @endif
                                 </dl>
@@ -1031,7 +1111,8 @@
                                                 </div>
                                                 @if(isset($selectedInterview->user_responses[$question['id']]['response_time']))
                                                     <div class="text-xs text-gray-500 mt-2">
-                                                        Response time: {{ $selectedInterview->user_responses[$question['id']]['response_time'] }}s
+                                                        Response time:
+                                                        {{ $selectedInterview->user_responses[$question['id']]['response_time'] }}s
                                                     </div>
                                                 @endif
                                             </div>
@@ -1059,7 +1140,7 @@
                                         </ul>
                                     </div>
                                 @endif
-                                
+
                                 @if($selectedInterview->weaknesses)
                                     <div>
                                         <h5 class="text-sm font-medium text-red-700 mb-2">Areas for Improvement</h5>
@@ -1070,7 +1151,7 @@
                                         </ul>
                                     </div>
                                 @endif
-                                
+
                                 @if($selectedInterview->improvement_suggestions)
                                     <div>
                                         <h5 class="text-sm font-medium text-blue-700 mb-2">Recommendations</h5>
@@ -1113,24 +1194,28 @@
                     <h3 class="text-lg font-medium text-gray-900">User Details - {{ $selectedUser->name }}</h3>
                     <button wire:click="$set('showUserModal', false)" class="text-gray-400 hover:text-gray-600">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M6 18L18 6M6 6l12 12" />
                         </svg>
                     </button>
                 </div>
-                
+
                 <div class="p-6 overflow-y-auto max-h-[calc(90vh-120px)]">
                     <!-- User Performance Overview -->
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
                         <div class="bg-blue-50 rounded-lg p-4">
-                            <div class="text-2xl font-bold text-blue-600">{{ $userPerformanceData['total_interviews'] ?? 0 }}</div>
+                            <div class="text-2xl font-bold text-blue-600">
+                                {{ $userPerformanceData['total_interviews'] ?? 0 }}</div>
                             <div class="text-sm text-gray-600">Total Interviews</div>
                         </div>
                         <div class="bg-green-50 rounded-lg p-4">
-                            <div class="text-2xl font-bold text-green-600">{{ number_format($userPerformanceData['average_score'] ?? 0, 1) }}%</div>
+                            <div class="text-2xl font-bold text-green-600">
+                                {{ number_format($userPerformanceData['average_score'] ?? 0, 1) }}%</div>
                             <div class="text-sm text-gray-600">Average Score</div>
                         </div>
                         <div class="bg-purple-50 rounded-lg p-4">
-                            <div class="text-2xl font-bold text-purple-600">{{ $userPerformanceData['improvement_rate'] ?? 0 }}%</div>
+                            <div class="text-2xl font-bold text-purple-600">
+                                {{ $userPerformanceData['improvement_rate'] ?? 0 }}%</div>
                             <div class="text-sm text-gray-600">Improvement Rate</div>
                         </div>
                     </div>
@@ -1142,11 +1227,21 @@
                             <table class="min-w-full divide-y divide-gray-300">
                                 <thead class="bg-gray-50">
                                     <tr>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Interview</th>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Type</th>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Score</th>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+                                        <th
+                                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            Interview</th>
+                                        <th
+                                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            Type</th>
+                                        <th
+                                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            Status</th>
+                                        <th
+                                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            Score</th>
+                                        <th
+                                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            Date</th>
                                     </tr>
                                 </thead>
                                 <tbody class="divide-y divide-gray-200 bg-white">
@@ -1159,7 +1254,8 @@
                                                 {{ $interview->type_label }}
                                             </td>
                                             <td class="px-6 py-4 whitespace-nowrap">
-                                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-{{ $interview->getStatusColor() }}-100 text-{{ $interview->getStatusColor() }}-800">
+                                                <span
+                                                    class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-{{ $interview->getStatusColor() }}-100 text-{{ $interview->getStatusColor() }}-800">
                                                     {{ $interview->status_label }}
                                                 </span>
                                             </td>
@@ -1192,7 +1288,7 @@
 <!-- Chart Script -->
 @if($activeTab === 'analytics' && !empty($chartData))
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             const ctx = document.getElementById('interviewTrendsChart');
             if (ctx) {
                 new Chart(ctx, {
