@@ -561,17 +561,17 @@ class AdminMockInterview extends Component
             ->orderByDesc('mock_interviews_count')
             ->limit(20)
             ->get();
-    
+
         $recentActivity = MockInterview::with(['user'])
             ->orderByDesc('created_at')
             ->limit(10)
             ->get();
-    
+
         return view('livewire.career.admin-mock-interview', [
             'users' => $users,
             'recentActivity' => $recentActivity,
         ]);
     }
-    
-    
+
+
 }
