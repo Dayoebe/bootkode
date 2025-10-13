@@ -3,66 +3,31 @@
 namespace App\Livewire\Career;
 
 use Livewire\Component;
-use Livewire\WithFileUploads;
 use Livewire\WithPagination;
 use App\Models\MockInterview;
 use App\Models\User;
-use App\Models\Course;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Str;
-use Carbon\Carbon;
+use Illuminate\Support\Facades\Cache;
 use Livewire\Attributes\Layout;
+use Livewire\Attributes\Computed;
+use Livewire\Attributes\On;
 
-#[Layout('layouts.dashboard', ['title' => 'Mock Interviews Management', 'description' => 'Manage mock interviews, templates, and analytics', 'icon' => 'fas fa-microphone-alt', 'active' => 'admin.mock-interviews'])]
-
+#[Layout('layouts.dashboard', [
+    'title' => 'Mock Interviews Management',
+    'description' => 'Manage mock interviews, templates, and analytics',
+    'icon' => 'fas fa-microphone-alt',
+    'active' => 'admin.mock-interviews'
+])]
 class AdminMockInterview extends Component
 {
-    use WithFileUploads, WithPagination;
+    use WithPagination;
 
     // Core Properties
     public $activeTab = 'overview';
-    public $interviews = [];
-    public $users = [];
     public $selectedInterview = null;
-
-    // Statistics
-    public $totalInterviews = 0;
-    public $totalUsers = 0;
-    public $completedInterviews = 0;
-    public $averageScore = 0;
-    public $dailyInterviews = 0;
-    public $weeklyGrowth = 0;
-    public $premiumUsage = 0;
-    public $popularTypes = [];
-
-    // Template Management
-    public $templates = [];
-    public $templateTitle = '';
-    public $templateDescription = '';
-    public $templateType = 'technical';
-    public $templateDifficulty = 'intermediate';
-    public $templateQuestions = [];
-    public $newTemplateQuestion = '';
-    public $templateQuestionType = 'behavioral';
-    public $editingTemplateId = null;
-    public $showTemplateForm = false;
-
-    // Question Banks
-    public $questionBanks = [];
-    public $selectedQuestionBank = null;
-    public $newQuestion = '';
-    public $questionCategory = 'technical';
-    public $questionDifficulty = 'intermediate';
-    public $questionTags = '';
-
-    // User Management
-    public $selectedUser = null;
-    public $userInterviews = [];
-    public $userPerformanceData = [];
-    public $showUserModal = false;
-
-    // Filters and Search
+    
+    // Filters
     public $searchTerm = '';
     public $filterType = '';
     public $filterStatus = '';
@@ -70,60 +35,29 @@ class AdminMockInterview extends Component
     public $filterDateRange = '';
     public $sortBy = 'created_at';
     public $sortDirection = 'desc';
-    public $perPage = 10;
-
+    public $perPage = 15;
+    
     // Bulk Actions
     public $selectedInterviews = [];
     public $bulkAction = '';
-    public $showBulkActions = false;
-
+    
     // Analytics
     public $analyticsDateRange = '30';
-    public $chartData = [];
-    public $performanceMetrics = [];
-    public $userEngagementData = [];
+    
+    // UI State
+    public $showUserModal = false;
+    public $selectedUser = null;
 
-    // System Settings
-    public $systemSettings = [
-        'max_interview_duration' => 180,
-        'default_difficulty' => 'intermediate',
-        'enable_ai_feedback' => true,
-        'enable_video_recording' => true,
-        'auto_generate_feedback' => false,
-        'require_premium_for_retakes' => true,
-        'max_concurrent_interviews' => 5,
-    ];
-
-    protected $rules = [
-        'templateTitle' => 'required|string|max:255',
-        'templateDescription' => 'nullable|string',
-        'templateType' => 'required|in:technical,behavioral,case_study,system_design,coding,hr,custom',
-        'templateDifficulty' => 'required|in:beginner,intermediate,advanced,expert',
-        'newQuestion' => 'required|string|min:10',
-        'questionCategory' => 'required|string',
-        'questionDifficulty' => 'required|string',
+    protected $queryString = [
+        'searchTerm' => ['except' => ''],
+        'filterType' => ['except' => ''],
+        'filterStatus' => ['except' => ''],
+        'activeTab' => ['except' => 'overview']
     ];
 
     public function mount()
     {
         $this->checkAdminAccess();
-        $this->loadOverviewData();
-        $this->loadInterviews();
-        $this->loadTemplates();
-        $this->loadQuestionBanks();
-        $this->loadAnalytics();
-    }
-
-    public function updated($propertyName)
-    {
-        if (in_array($propertyName, ['searchTerm', 'filterType', 'filterStatus', 'filterDifficulty', 'filterDateRange', 'sortBy', 'sortDirection'])) {
-            $this->resetPage();
-            $this->loadInterviews();
-        }
-
-        if ($propertyName === 'analyticsDateRange') {
-            $this->loadAnalytics();
-        }
     }
 
     private function checkAdminAccess()
@@ -133,34 +67,47 @@ class AdminMockInterview extends Component
         }
     }
 
-    public function loadOverviewData()
+    public function updated($propertyName)
     {
-        $this->totalInterviews = MockInterview::count();
-        $this->totalUsers = User::whereHas('mockInterviews')->count();
-        $this->completedInterviews = MockInterview::completed()->count();
-        $this->averageScore = MockInterview::completed()->avg('overall_score') ?? 0;
-
-        $this->dailyInterviews = MockInterview::whereDate('created_at', today())->count();
-
-        // Calculate weekly growth
-        $thisWeek = MockInterview::whereBetween('created_at', [now()->startOfWeek(), now()->endOfWeek()])->count();
-        $lastWeek = MockInterview::whereBetween('created_at', [now()->subWeek()->startOfWeek(), now()->subWeek()->endOfWeek()])->count();
-        $this->weeklyGrowth = $lastWeek > 0 ? (($thisWeek - $lastWeek) / $lastWeek) * 100 : 0;
-
-        $this->premiumUsage = MockInterview::where('is_premium', true)->count();
-
-        // Popular interview types
-        $this->popularTypes = MockInterview::select('type', DB::raw('count(*) as count'))
-            ->groupBy('type')
-            ->orderByDesc('count')
-            ->limit(5)
-            ->get()
-            ->toArray();
+        if (in_array($propertyName, ['searchTerm', 'filterType', 'filterStatus', 'filterDifficulty', 'filterDateRange', 'sortBy', 'sortDirection'])) {
+            $this->resetPage();
+        }
     }
 
-    public function loadInterviews()
+    // Computed Properties for Performance
+    #[Computed]
+    public function statistics()
     {
-        $query = MockInterview::with(['user', 'course']);
+        return Cache::remember('admin_mock_interview_stats', 300, function () {
+            return [
+                'totalInterviews' => MockInterview::count(),
+                'totalUsers' => User::whereHas('mockInterviews')->count(),
+                'completedInterviews' => MockInterview::completed()->count(),
+                'averageScore' => MockInterview::completed()->avg('overall_score') ?? 0,
+                'dailyInterviews' => MockInterview::whereDate('created_at', today())->count(),
+                'weeklyGrowth' => $this->calculateWeeklyGrowth(),
+                'premiumUsage' => MockInterview::where('is_premium', true)->count(),
+            ];
+        });
+    }
+
+    #[Computed]
+    public function popularTypes()
+    {
+        return Cache::remember('admin_mock_popular_types', 300, function () {
+            return MockInterview::select('type', DB::raw('count(*) as count'))
+                ->groupBy('type')
+                ->orderByDesc('count')
+                ->limit(5)
+                ->get()
+                ->toArray();
+        });
+    }
+
+    #[Computed]
+    public function interviews()
+    {
+        $query = MockInterview::with(['user:id,name,email', 'course:id,title']);
 
         // Apply search
         if ($this->searchTerm) {
@@ -195,115 +142,67 @@ class AdminMockInterview extends Component
         // Apply sorting
         $query->orderBy($this->sortBy, $this->sortDirection);
 
-        $this->interviews = $this->loadInterviews();
         return $query->paginate($this->perPage);
     }
 
-    public function loadTemplates()
+    #[Computed]
+    public function recentActivity()
     {
-        // In a real implementation, this would be a separate InterviewTemplate model
-        $this->templates = collect([
-            [
-                'id' => 1,
-                'title' => 'Senior Frontend Developer Interview',
-                'type' => 'technical',
-                'difficulty' => 'advanced',
-                'questions_count' => 12,
-                'usage_count' => 45,
-                'created_at' => now()->subDays(30),
-            ],
-            [
-                'id' => 2,
-                'title' => 'Behavioral Leadership Assessment',
-                'type' => 'behavioral',
-                'difficulty' => 'intermediate',
-                'questions_count' => 8,
-                'usage_count' => 28,
-                'created_at' => now()->subDays(15),
-            ],
-        ]);
+        return MockInterview::with(['user:id,name'])
+            ->orderByDesc('created_at')
+            ->limit(10)
+            ->get();
     }
 
-    public function loadQuestionBanks()
+    #[Computed]
+    public function topUsers()
     {
-        // Mock question bank data
-        $this->questionBanks = collect([
-            [
-                'id' => 1,
-                'category' => 'technical',
-                'question' => 'Explain the difference between synchronous and asynchronous programming.',
-                'difficulty' => 'intermediate',
-                'tags' => ['programming', 'concepts'],
-                'usage_count' => 156,
-            ],
-            [
-                'id' => 2,
-                'category' => 'behavioral',
-                'question' => 'Tell me about a time when you had to work with a difficult team member.',
-                'difficulty' => 'beginner',
-                'tags' => ['teamwork', 'conflict-resolution'],
-                'usage_count' => 203,
-            ],
-        ]);
+        return User::withCount(['mockInterviews'])
+            ->orderByDesc('mock_interviews_count')
+            ->limit(20)
+            ->get();
     }
 
-    public function loadAnalytics()
+    #[Computed]
+    public function chartData()
     {
         $days = (int) $this->analyticsDateRange;
         $startDate = now()->subDays($days);
 
-        // Interview completion trends
-        $this->chartData = MockInterview::selectRaw('DATE(created_at) as date, COUNT(*) as count')
+        return MockInterview::selectRaw('DATE(created_at) as date, COUNT(*) as count')
             ->where('created_at', '>=', $startDate)
             ->groupBy('date')
             ->orderBy('date')
             ->get()
             ->map(function ($item) {
                 return [
-                    'date' => Carbon::parse($item->date)->format('M d'),
+                    'date' => \Carbon\Carbon::parse($item->date)->format('M d'),
                     'count' => $item->count,
                 ];
             })
             ->toArray();
+    }
 
-        // Performance metrics
-        $this->performanceMetrics = [
-            'avg_completion_rate' => MockInterview::completed()->avg('completion_rate') ?? 0,
-            'avg_score_by_type' => MockInterview::completed()
-                ->selectRaw('type, AVG(overall_score) as avg_score')
-                ->groupBy('type')
-                ->get()
-                ->pluck('avg_score', 'type')
-                ->toArray(),
-            'user_satisfaction' => 4.2, // Mock data
-            'total_interview_hours' => MockInterview::completed()->sum('estimated_duration_minutes') / 60,
-        ];
+    private function calculateWeeklyGrowth()
+    {
+        $thisWeek = MockInterview::whereBetween('created_at', [now()->startOfWeek(), now()->endOfWeek()])->count();
+        $lastWeek = MockInterview::whereBetween('created_at', [now()->subWeek()->startOfWeek(), now()->subWeek()->endOfWeek()])->count();
+        
+        return $lastWeek > 0 ? round((($thisWeek - $lastWeek) / $lastWeek) * 100, 1) : 0;
+    }
 
-        // User engagement
-        $this->userEngagementData = [
-            'active_users' => User::whereHas('mockInterviews', function ($query) use ($startDate) {
-                $query->where('created_at', '>=', $startDate);
-            })->count(),
-            'repeat_users' => User::whereHas('mockInterviews', function ($query) use ($startDate) {
-                $query->where('created_at', '>=', $startDate);
-            }, '>', 1)->count(),
-            'avg_interviews_per_user' => $this->totalUsers > 0 ? round($this->totalInterviews / $this->totalUsers, 1) : 0,
-        ];
+    // Actions
+    #[On('interview-updated')]
+    public function refreshInterviews()
+    {
+        $this->resetPage();
+        Cache::forget('admin_mock_interview_stats');
+        Cache::forget('admin_mock_popular_types');
     }
 
     public function viewInterview($interviewId)
     {
         $this->selectedInterview = MockInterview::with(['user', 'course'])->find($interviewId);
-    }
-
-    public function editInterview($interviewId)
-    {
-        $interview = MockInterview::find($interviewId);
-
-        if ($interview) {
-            // Redirect to edit form or open modal
-            $this->selectedInterview = $interview;
-        }
     }
 
     public function deleteInterview($interviewId)
@@ -312,8 +211,7 @@ class AdminMockInterview extends Component
 
         if ($interview) {
             $interview->delete();
-            $this->loadInterviews();
-            $this->loadOverviewData();
+            $this->dispatch('interview-updated');
             session()->flash('message', 'Interview deleted successfully.');
         }
     }
@@ -324,7 +222,7 @@ class AdminMockInterview extends Component
 
         if ($interview) {
             $interview->update(['is_approved' => true]);
-            $this->loadInterviews();
+            $this->dispatch('interview-updated');
             session()->flash('message', 'Interview approved successfully.');
         }
     }
@@ -334,135 +232,107 @@ class AdminMockInterview extends Component
         $interview = MockInterview::find($interviewId);
 
         if ($interview && $interview->isCompleted()) {
-            // Mock AI feedback generation
-            $feedback = [
-                'strengths' => [
-                    'Clear and articulate responses',
-                    'Good technical knowledge demonstration',
-                    'Structured problem-solving approach',
-                ],
-                'areas_for_improvement' => [
-                    'Could provide more specific examples',
-                    'Practice explaining complex concepts simply',
-                    'Work on time management for responses',
-                ],
-                'recommendations' => [
-                    'Practice the STAR method for behavioral questions',
-                    'Review system design fundamentals',
-                    'Work on confident delivery',
-                ],
-                'overall_feedback' => 'Strong technical foundation with room for improvement in communication clarity.',
-            ];
-
+            // Generate feedback directly (no job)
+            $feedback = $this->createAIFeedback($interview);
+            
             $interview->update([
                 'ai_feedback' => $feedback,
-                'improvement_suggestions' => $feedback['recommendations'],
-                'strengths' => $feedback['strengths'],
-                'weaknesses' => $feedback['areas_for_improvement'],
+                'improvement_suggestions' => $feedback['recommendations'] ?? [],
+                'strengths' => $feedback['strengths'] ?? [],
+                'weaknesses' => $feedback['areas_for_improvement'] ?? [],
             ]);
 
-            $this->loadInterviews();
+            $this->dispatch('interview-updated');
             session()->flash('message', 'AI feedback generated successfully.');
         }
     }
 
-    public function createTemplate()
+    private function createAIFeedback($interview)
     {
-        $this->validate([
-            'templateTitle' => 'required|string|max:255',
-            'templateType' => 'required|string',
-            'templateDifficulty' => 'required|string',
-        ]);
-
-        // In a real implementation, this would save to InterviewTemplate model
-        session()->flash('message', 'Interview template created successfully.');
-        $this->resetTemplateForm();
-        $this->loadTemplates();
-    }
-
-    public function addTemplateQuestion()
-    {
-        if (empty($this->newTemplateQuestion)) {
-            return;
+        $responses = $interview->user_responses ?? [];
+        $questionCount = count($interview->questions ?? []);
+        $responseCount = count($responses);
+        
+        $completionRate = $questionCount > 0 ? ($responseCount / $questionCount) * 100 : 0;
+        
+        $strengths = [];
+        $improvements = [];
+        $recommendations = [];
+        
+        // Analyze completion rate
+        if ($completionRate >= 90) {
+            $strengths[] = 'Excellent interview completion rate';
+        } elseif ($completionRate < 70) {
+            $improvements[] = 'Consider completing all interview questions';
+            $recommendations[] = 'Practice time management to answer all questions';
         }
-
-        $this->templateQuestions[] = [
-            'id' => Str::uuid(),
-            'question' => $this->newTemplateQuestion,
-            'type' => $this->templateQuestionType,
-            'created_at' => now()->toISOString(),
+        
+        // Analyze response times
+        $avgResponseTime = collect($responses)->avg('response_time') ?? 0;
+        
+        if ($avgResponseTime > 0 && $avgResponseTime < 120) {
+            $strengths[] = 'Good response time management';
+        } elseif ($avgResponseTime > 180) {
+            $improvements[] = 'Response times could be improved';
+            $recommendations[] = 'Practice answering questions more concisely';
+        }
+        
+        // Analyze response quality
+        foreach ($responses as $response) {
+            $answerLength = strlen($response['answer'] ?? '');
+            
+            if ($answerLength < 50) {
+                $improvements[] = 'Some responses were too brief';
+                $recommendations[] = 'Provide more detailed explanations with examples';
+                break;
+            }
+        }
+        
+        // Add type-specific feedback
+        switch ($interview->type) {
+            case 'technical':
+                $strengths[] = 'Demonstrated technical knowledge';
+                $recommendations[] = 'Review core technical concepts regularly';
+                break;
+            case 'behavioral':
+                $strengths[] = 'Shared relevant experiences';
+                $recommendations[] = 'Use the STAR method for behavioral questions';
+                break;
+            case 'system_design':
+                $recommendations[] = 'Practice designing scalable systems';
+                break;
+        }
+        
+        // Ensure we have at least some feedback
+        if (empty($strengths)) {
+            $strengths[] = 'Participated in the interview process';
+        }
+        
+        if (empty($improvements)) {
+            $improvements[] = 'Continue practicing to refine your skills';
+        }
+        
+        if (empty($recommendations)) {
+            $recommendations[] = 'Keep practicing mock interviews regularly';
+        }
+        
+        // Generate overall feedback
+        $overallFeedback = 'Good performance overall. ';
+        if ($completionRate >= 90 && $avgResponseTime > 0 && $avgResponseTime < 150) {
+            $overallFeedback = 'Excellent performance! You demonstrated strong preparation and effective communication. Keep up the great work!';
+        } elseif ($completionRate >= 70) {
+            $overallFeedback = 'Good performance with room for improvement. Focus on providing more detailed responses and examples.';
+        } else {
+            $overallFeedback = 'There is room for improvement. Consider practicing more and working on time management.';
+        }
+        
+        return [
+            'strengths' => array_unique($strengths),
+            'areas_for_improvement' => array_unique($improvements),
+            'recommendations' => array_unique($recommendations),
+            'overall_feedback' => $overallFeedback,
+            'generated_at' => now()->toISOString(),
         ];
-
-        $this->newTemplateQuestion = '';
-    }
-
-    public function removeTemplateQuestion($index)
-    {
-        unset($this->templateQuestions[$index]);
-        $this->templateQuestions = array_values($this->templateQuestions);
-    }
-
-    public function addQuestion()
-    {
-        $this->validate([
-            'newQuestion' => 'required|string|min:10',
-            'questionCategory' => 'required|string',
-            'questionDifficulty' => 'required|string',
-        ]);
-
-        // In a real implementation, this would save to QuestionBank model
-        session()->flash('message', 'Question added to bank successfully.');
-
-        $this->reset(['newQuestion', 'questionTags']);
-        $this->loadQuestionBanks();
-    }
-
-    public function viewUser($userId)
-    {
-        $this->selectedUser = User::with(['mockInterviews'])->find($userId);
-
-        if ($this->selectedUser) {
-            $this->userInterviews = $this->selectedUser->mockInterviews()
-                ->with('course')
-                ->orderByDesc('created_at')
-                ->take(10)
-                ->get();
-
-            $this->userPerformanceData = [
-                'total_interviews' => $this->selectedUser->mockInterviews()->count(),
-                'completed_interviews' => $this->selectedUser->mockInterviews()->completed()->count(),
-                'average_score' => $this->selectedUser->mockInterviews()->completed()->avg('overall_score') ?? 0,
-                'improvement_rate' => $this->calculateUserImprovementRate($this->selectedUser),
-                'favorite_type' => $this->getUserFavoriteInterviewType($this->selectedUser),
-                'last_interview' => $this->selectedUser->mockInterviews()->latest()->first(),
-            ];
-
-            $this->showUserModal = true;
-        }
-    }
-
-    private function calculateUserImprovementRate($user)
-    {
-        $interviews = $user->mockInterviews()->completed()->orderBy('completed_at')->get();
-
-        if ($interviews->count() < 2) {
-            return 0;
-        }
-
-        $recent = $interviews->take(-3)->avg('overall_score');
-        $older = $interviews->take(3)->avg('overall_score');
-
-        return $older > 0 ? round((($recent - $older) / $older) * 100, 1) : 0;
-    }
-
-    private function getUserFavoriteInterviewType($user)
-    {
-        return $user->mockInterviews()
-            ->select('type', DB::raw('count(*) as count'))
-            ->groupBy('type')
-            ->orderByDesc('count')
-            ->first()
-            ->type ?? 'N/A';
     }
 
     public function toggleBulkSelect($interviewId)
@@ -472,20 +342,16 @@ class AdminMockInterview extends Component
         } else {
             $this->selectedInterviews[] = $interviewId;
         }
-
-        $this->showBulkActions = count($this->selectedInterviews) > 0;
     }
 
     public function selectAllVisible()
     {
         $this->selectedInterviews = $this->interviews->pluck('id')->toArray();
-        $this->showBulkActions = true;
     }
 
     public function clearBulkSelection()
     {
         $this->selectedInterviews = [];
-        $this->showBulkActions = false;
     }
 
     public function executeBulkAction()
@@ -508,70 +374,92 @@ class AdminMockInterview extends Component
                 break;
 
             case 'generate_feedback':
-                $interviews->each(function ($interview) {
+                // Generate feedback for each (limit to prevent timeout)
+                $count = 0;
+                $limit = 10; // Process max 10 at a time
+                
+                foreach ($interviews->get() as $interview) {
+                    if ($count >= $limit) break;
+                    
                     if ($interview->isCompleted() && !$interview->ai_feedback) {
-                        $this->generateAIFeedback($interview->id);
+                        $feedback = $this->createAIFeedback($interview);
+                        $interview->update([
+                            'ai_feedback' => $feedback,
+                            'improvement_suggestions' => $feedback['recommendations'] ?? [],
+                            'strengths' => $feedback['strengths'] ?? [],
+                            'weaknesses' => $feedback['areas_for_improvement'] ?? [],
+                        ]);
+                        $count++;
                     }
-                });
-                session()->flash('message', 'AI feedback generated for eligible interviews.');
+                }
+                
+                session()->flash('message', "AI feedback generated for {$count} interviews.");
                 break;
         }
 
         $this->clearBulkSelection();
-        $this->loadInterviews();
-        $this->loadOverviewData();
+        $this->dispatch('interview-updated');
     }
 
-    public function updateSystemSettings()
+    public function viewUser($userId)
     {
-        // Validate system settings
-        if ($this->systemSettings['max_interview_duration'] < 15 || $this->systemSettings['max_interview_duration'] > 300) {
-            session()->flash('error', 'Interview duration must be between 15 and 300 minutes.');
-            return;
-        }
+        $this->selectedUser = User::with(['mockInterviews' => function($query) {
+            $query->latest()->limit(10);
+        }])->find($userId);
 
-        // In a real implementation, save to settings table or config
-        session()->flash('message', 'System settings updated successfully.');
+        if ($this->selectedUser) {
+            $this->showUserModal = true;
+        }
     }
 
     public function exportAnalytics()
     {
-        // Generate analytics export
-        session()->flash('message', 'Analytics export will be sent to your email.');
-    }
+        // Simple CSV export without job
+        try {
+            $startDate = now()->subDays((int) $this->analyticsDateRange);
+            
+            $interviews = MockInterview::where('created_at', '>=', $startDate)
+                ->with(['user:id,name,email'])
+                ->get();
 
-    public function resetTemplateForm()
-    {
-        $this->reset([
-            'templateTitle',
-            'templateDescription',
-            'templateType',
-            'templateDifficulty',
-            'templateQuestions',
-            'newTemplateQuestion',
-            'templateQuestionType',
-            'editingTemplateId'
-        ]);
-        $this->showTemplateForm = false;
+            $filename = 'interview-analytics-' . now()->format('Y-m-d-His') . '.csv';
+            $filepath = storage_path('app/public/' . $filename);
+            
+            $csv = fopen($filepath, 'w');
+            
+            // Headers
+            fputcsv($csv, [
+                'ID', 'Title', 'User Name', 'User Email', 'Type', 'Status', 
+                'Difficulty', 'Overall Score', 'Created At', 'Completed At'
+            ]);
+            
+            // Data
+            foreach ($interviews as $interview) {
+                fputcsv($csv, [
+                    $interview->id,
+                    $interview->title,
+                    $interview->user->name,
+                    $interview->user->email,
+                    $interview->type,
+                    $interview->status,
+                    $interview->difficulty_level,
+                    $interview->overall_score ?? 'N/A',
+                    $interview->created_at->format('Y-m-d H:i:s'),
+                    $interview->completed_at ? $interview->completed_at->format('Y-m-d H:i:s') : 'N/A',
+                ]);
+            }
+            
+            fclose($csv);
+            
+            session()->flash('message', 'Analytics exported successfully. Download from: ' . asset('storage/' . $filename));
+            
+        } catch (\Exception $e) {
+            session()->flash('error', 'Failed to export analytics: ' . $e->getMessage());
+        }
     }
 
     public function render()
     {
-        $users = User::withCount(['mockInterviews'])
-            ->orderByDesc('mock_interviews_count')
-            ->limit(20)
-            ->get();
-
-        $recentActivity = MockInterview::with(['user'])
-            ->orderByDesc('created_at')
-            ->limit(10)
-            ->get();
-
-        return view('livewire.career.admin-mock-interview', [
-            'users' => $users,
-            'recentActivity' => $recentActivity,
-        ]);
+        return view('livewire.career.admin-mock-interview');
     }
-
-
 }
