@@ -1192,4 +1192,13 @@ public static function getRecentlyDeactivated($days = 7)
                 ];
             });
     }
+    public function interviewQuestions()
+  {
+      return $this->hasMany(InterviewQuestion::class, 'created_by');
+  }
+  
+  public function questionSets()
+  {
+      return $this->hasMany(InterviewQuestionSet::class, 'created_by');
+  }
 }
