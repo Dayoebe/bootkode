@@ -6,15 +6,16 @@ use Livewire\Component;
 use Livewire\WithFileUploads;
 use App\Models\MockInterview;
 use App\Models\Course;
-use App\Models\User;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Str;
 use Carbon\Carbon;
 use Livewire\Attributes\Layout;
 
-#[Layout('layouts.dashboard', ['title' => 'Mock Interviews', 'description' => 'Practice and improve your interview skills', 'icon' => 'fas fa-microphone-alt', 'active' => 'mock-interviews'])]
-
+#[Layout('layouts.dashboard', [
+    'title' => 'Mock Interviews',
+    'description' => 'Practice and improve your interview skills',
+    'icon' => 'fas fa-microphone-alt',
+    'active' => 'mock-interviews'
+])]
 class UserMockInterview extends Component
 {
     use WithFileUploads;
@@ -48,10 +49,6 @@ class UserMockInterview extends Component
     public $responses = [];
     public $startTime = null;
     public $endTime = null;
-    public $recordingEnabled = false;
-    public $audioRecording = null;
-    public $videoRecording = null;
-    public $interviewInProgress = false;
     public $timeRemaining = 0;
     
     // UI State
@@ -59,13 +56,12 @@ class UserMockInterview extends Component
     public $showInterviewModal = false;
     public $showResultsModal = false;
     public $editingInterviewId = null;
-    public $viewMode = 'grid';
-    public $sortBy = 'created_at';
-    public $sortDirection = 'desc';
+    public $searchTerm = '';
     public $filterType = '';
     public $filterStatus = '';
     public $filterDifficulty = '';
-    public $searchTerm = '';
+    public $sortBy = 'created_at';
+    public $sortDirection = 'desc';
     
     // Statistics
     public $totalInterviews = 0;
@@ -77,10 +73,6 @@ class UserMockInterview extends Component
     
     // Premium Features State
     public $aiAnalysisEnabled = false;
-    public $videoAnalysisEnabled = false;
-    public $speechAnalysisEnabled = false;
-    public $emotionAnalysisEnabled = false;
-    public $confidenceTrackingEnabled = false;
     
     // Question Banks
     public $technicalQuestions = [
@@ -89,6 +81,9 @@ class UserMockInterview extends Component
         'Describe the MVC architecture pattern.',
         'What are the principles of RESTful API design?',
         'Explain the concept of Big O notation with examples.',
+        'What is the difference between SQL and NoSQL databases?',
+        'How does garbage collection work in modern programming languages?',
+        'Explain the SOLID principles of object-oriented design.',
     ];
     
     public $behavioralQuestions = [
@@ -97,6 +92,9 @@ class UserMockInterview extends Component
         'Give an example of a time you showed leadership.',
         'Tell me about a mistake you made and how you handled it.',
         'Describe your greatest professional achievement.',
+        'How do you handle conflict in the workplace?',
+        'Tell me about a time you had to learn something new quickly.',
+        'Describe a situation where you disagreed with your manager.',
     ];
     
     public $systemDesignQuestions = [
@@ -105,6 +103,9 @@ class UserMockInterview extends Component
         'Design a social media news feed system.',
         'How would you design a video streaming platform?',
         'Design a distributed cache system.',
+        'How would you design a ride-sharing service like Uber?',
+        'Design a notification system for millions of users.',
+        'How would you design a search engine?',
     ];
 
     protected $rules = [
@@ -115,9 +116,6 @@ class UserMockInterview extends Component
         'difficulty_level' => 'required|in:beginner,intermediate,advanced,expert',
         'estimated_duration_minutes' => 'required|integer|min:15|max:180',
         'scheduled_at' => 'nullable|date|after:now',
-        'industry' => 'nullable|string|max:100',
-        'job_role' => 'nullable|string|max:100',
-        'company_type' => 'nullable|string|max:100',
     ];
 
     public function mount()
@@ -142,17 +140,14 @@ class UserMockInterview extends Component
     {
         $query = Auth::user()->mockInterviews()->with(['course', 'interviewer']);
 
-        // Apply search
         if ($this->searchTerm) {
             $query->where(function ($q) {
                 $q->where('title', 'like', '%' . $this->searchTerm . '%')
                   ->orWhere('description', 'like', '%' . $this->searchTerm . '%')
-                  ->orWhere('job_role', 'like', '%' . $this->searchTerm . '%')
-                  ->orWhere('industry', 'like', '%' . $this->searchTerm . '%');
+                  ->orWhere('job_role', 'like', '%' . $this->searchTerm . '%');
             });
         }
 
-        // Apply filters
         if ($this->filterType) {
             $query->where('type', $this->filterType);
         }
@@ -165,9 +160,7 @@ class UserMockInterview extends Component
             $query->where('difficulty_level', $this->filterDifficulty);
         }
 
-        // Apply sorting
         $query->orderBy($this->sortBy, $this->sortDirection);
-
         $this->mockInterviews = $query->get();
     }
 
@@ -177,16 +170,13 @@ class UserMockInterview extends Component
         $interviews = $user->mockInterviews();
         
         $this->totalInterviews = $interviews->count();
-        $this->completedInterviews = $interviews->completed()->count();
-        $this->upcomingInterviews = $interviews->upcoming()->count();
+        $this->completedInterviews = $interviews->where('status', 'completed')->count();
+        $this->upcomingInterviews = $interviews->where('status', 'scheduled')->count();
         
-        $completedInterviewsData = $interviews->completed()->get();
+        $completedInterviewsData = $interviews->where('status', 'completed')->get();
         $this->averageScore = $completedInterviewsData->avg('overall_score') ?? 0;
         
-        // Calculate streak (consecutive days with completed interviews)
         $this->streakCount = $this->calculateStreakCount($completedInterviewsData);
-        
-        // Calculate improvement rate (comparing last 5 interviews to previous 5)
         $this->improvementRate = $this->calculateImprovementRate($completedInterviewsData);
     }
 
@@ -194,7 +184,12 @@ class UserMockInterview extends Component
     {
         $streak = 0;
         $currentDate = now();
-        $interviewDates = $interviews->pluck('completed_at')->map(fn($date) => $date->format('Y-m-d'))->unique()->sort()->values();
+        $interviewDates = $interviews->pluck('completed_at')
+            ->filter()
+            ->map(fn($date) => $date->format('Y-m-d'))
+            ->unique()
+            ->sort()
+            ->values();
         
         for ($i = $interviewDates->count() - 1; $i >= 0; $i--) {
             $interviewDate = Carbon::parse($interviewDates[$i]);
@@ -225,10 +220,53 @@ class UserMockInterview extends Component
     {
         $user = Auth::user();
         $this->aiAnalysisEnabled = $user->hasRole(['premium', 'instructor', 'admin']);
-        $this->videoAnalysisEnabled = $this->aiAnalysisEnabled;
-        $this->speechAnalysisEnabled = $this->aiAnalysisEnabled;
-        $this->emotionAnalysisEnabled = $this->aiAnalysisEnabled;
-        $this->confidenceTrackingEnabled = $this->aiAnalysisEnabled;
+    }
+
+    private function generateQuestionsForType()
+    {
+        $questionCount = match($this->difficulty_level) {
+            'beginner' => 5,
+            'intermediate' => 8,
+            'advanced' => 12,
+            'expert' => 15,
+            default => 8
+        };
+
+        $sourceQuestions = match($this->type) {
+            'technical' => $this->technicalQuestions,
+            'behavioral' => $this->behavioralQuestions,
+            'system_design' => $this->systemDesignQuestions,
+            'coding' => $this->technicalQuestions,
+            'hr' => $this->behavioralQuestions,
+            default => array_merge($this->technicalQuestions, $this->behavioralQuestions)
+        };
+
+        $selectedQuestions = collect($sourceQuestions)->random(min($questionCount, count($sourceQuestions)));
+        
+        $questions = [];
+        foreach ($selectedQuestions as $index => $question) {
+            $questions[] = [
+                'id' => \Illuminate\Support\Str::uuid(),
+                'question' => $question,
+                'type' => $this->type,
+                'order' => $index + 1,
+                'time_limit' => $this->calculateTimePerQuestion(),
+                'points' => 10
+            ];
+        }
+
+        return $questions;
+    }
+
+    private function calculateTimePerQuestion()
+    {
+        return match($this->type) {
+            'technical' => 300,
+            'behavioral' => 180,
+            'system_design' => 600,
+            'coding' => 900,
+            default => 240
+        };
     }
 
     public function createInterview()
@@ -255,9 +293,7 @@ class UserMockInterview extends Component
                 'is_premium' => $this->is_premium,
                 'premium_features' => $this->premium_features,
                 'ai_feedback_enabled' => in_array('ai_feedback', $this->premium_features),
-                'video_recording_enabled' => in_array('video_recording', $this->premium_features),
-                'detailed_analytics_enabled' => in_array('detailed_analytics', $this->premium_features),
-                'slug' => Str::slug($this->title . '-' . Str::random(6)),
+                'slug' => \Illuminate\Support\Str::slug($this->title . '-' . \Illuminate\Support\Str::random(6)),
             ];
 
             if ($this->editingInterviewId) {
@@ -278,53 +314,6 @@ class UserMockInterview extends Component
         }
     }
 
-    private function generateQuestionsForType()
-    {
-        $questionCount = match($this->difficulty_level) {
-            'beginner' => 5,
-            'intermediate' => 8,
-            'advanced' => 12,
-            'expert' => 15,
-            default => 8
-        };
-
-        $questions = [];
-        $sourceQuestions = match($this->type) {
-            'technical' => $this->technicalQuestions,
-            'behavioral' => $this->behavioralQuestions,
-            'system_design' => $this->systemDesignQuestions,
-            'coding' => $this->technicalQuestions, // Could be separate array
-            'hr' => $this->behavioralQuestions, // Could be separate array
-            default => array_merge($this->technicalQuestions, $this->behavioralQuestions)
-        };
-
-        $selectedQuestions = collect($sourceQuestions)->random(min($questionCount, count($sourceQuestions)));
-        
-        foreach ($selectedQuestions as $index => $question) {
-            $questions[] = [
-                'id' => Str::uuid(),
-                'question' => $question,
-                'type' => $this->type,
-                'order' => $index + 1,
-                'time_limit' => $this->calculateTimePerQuestion(),
-                'points' => 10
-            ];
-        }
-
-        return $questions;
-    }
-
-    private function calculateTimePerQuestion()
-    {
-        return match($this->type) {
-            'technical' => 300, // 5 minutes
-            'behavioral' => 180, // 3 minutes
-            'system_design' => 600, // 10 minutes
-            'coding' => 900, // 15 minutes
-            default => 240 // 4 minutes
-        };
-    }
-
     public function startInterview($interviewId)
     {
         $interview = MockInterview::find($interviewId);
@@ -336,12 +325,13 @@ class UserMockInterview extends Component
 
         $interview->start();
         $this->currentInterview = $interview;
-        $this->interviewInProgress = true;
         $this->currentQuestionIndex = 0;
         $this->responses = [];
         $this->startTime = now();
+        $this->timeRemaining = $interview->estimated_duration_minutes * 60;
         $this->showInterviewModal = true;
         
+        $this->dispatch('interview-started', duration: $interview->estimated_duration_minutes);
         $this->loadInterviews();
     }
 
@@ -364,7 +354,6 @@ class UserMockInterview extends Component
         $this->currentAnswer = '';
         $this->currentQuestionIndex++;
 
-        // Check if interview is complete
         if ($this->currentQuestionIndex >= count($this->currentInterview->questions)) {
             $this->completeInterview();
         }
@@ -377,39 +366,29 @@ class UserMockInterview extends Component
         }
 
         $this->endTime = now();
-        $totalDuration = $this->startTime->diffInMinutes($this->endTime);
-
-        // Calculate basic scores
         $scores = $this->calculateScores();
 
         $this->currentInterview->complete($this->responses, $scores);
         
-        // Generate AI feedback if enabled
-        if ($this->currentInterview->ai_feedback_enabled && $this->aiAnalysisEnabled) {
-            $this->generateAIFeedback();
-        }
-
-        $this->interviewInProgress = false;
         $this->showInterviewModal = false;
         $this->showResultsModal = true;
         
+        $this->dispatch('interview-completed');
         $this->loadInterviews();
         $this->calculateStatistics();
     }
 
     private function calculateScores()
     {
-        // Basic scoring algorithm - in production, this would be more sophisticated
         $totalQuestions = count($this->currentInterview->questions);
         $answeredQuestions = count($this->responses);
         
         $completionRate = ($answeredQuestions / $totalQuestions) * 100;
         $averageResponseTime = collect($this->responses)->avg('response_time') ?? 0;
         
-        // Mock scoring based on completion and response quality
         $technicalScore = min(100, $completionRate * 0.8 + (120 - min($averageResponseTime, 120)) / 120 * 20);
-        $communicationScore = rand(70, 95); // Would be based on speech analysis
-        $confidenceScore = rand(65, 90); // Would be based on voice/video analysis
+        $communicationScore = rand(70, 95);
+        $confidenceScore = rand(65, 90);
         
         return [
             'overall_score' => ($technicalScore + $communicationScore + $confidenceScore) / 3,
@@ -419,36 +398,6 @@ class UserMockInterview extends Component
             'completion_rate' => $completionRate,
             'avg_response_time' => $averageResponseTime,
         ];
-    }
-
-    private function generateAIFeedback()
-    {
-        // Mock AI feedback - in production, this would call actual AI services
-        $feedback = [
-            'strengths' => [
-                'Clear and concise responses',
-                'Good technical knowledge demonstration',
-                'Appropriate use of examples',
-            ],
-            'areas_for_improvement' => [
-                'Could provide more specific examples',
-                'Consider structuring responses using STAR method',
-                'Practice speaking with more confidence',
-            ],
-            'recommendations' => [
-                'Practice technical concepts in ' . $this->currentInterview->industry,
-                'Work on reducing filler words',
-                'Prepare more behavioral examples',
-            ],
-            'overall_feedback' => 'Good performance overall. Focus on providing more concrete examples and maintaining consistent energy throughout the interview.',
-        ];
-
-        $this->currentInterview->update([
-            'ai_feedback' => $feedback,
-            'improvement_suggestions' => $feedback['recommendations'],
-            'strengths' => $feedback['strengths'],
-            'weaknesses' => $feedback['areas_for_improvement'],
-        ]);
     }
 
     public function editInterview($interviewId)
@@ -505,7 +454,6 @@ class UserMockInterview extends Component
             return;
         }
 
-        // Create a new interview instance for retake
         $retakeData = $interview->toArray();
         unset($retakeData['id'], $retakeData['created_at'], $retakeData['updated_at']);
         $retakeData['title'] = $interview->title . ' (Retake ' . ($interview->retake_count + 1) . ')';
@@ -516,7 +464,7 @@ class UserMockInterview extends Component
         $retakeData['user_responses'] = null;
         $retakeData['overall_score'] = null;
 
-        $retake = Auth::user()->mockInterviews()->create($retakeData);
+        Auth::user()->mockInterviews()->create($retakeData);
         $interview->increment('retake_count');
 
         $this->loadInterviews();
@@ -530,7 +478,7 @@ class UserMockInterview extends Component
         }
 
         $this->custom_questions[] = [
-            'id' => Str::uuid(),
+            'id' => \Illuminate\Support\Str::uuid(),
             'question' => $this->newQuestion,
             'type' => $this->questionType,
             'created_at' => now()->toISOString(),
@@ -558,6 +506,18 @@ class UserMockInterview extends Component
         $this->showResultsModal = true;
     }
 
+    public function startQuickPractice()
+    {
+        $this->title = 'Quick Practice - ' . ucfirst($this->type);
+        $this->description = 'Quick practice session for ' . ucfirst($this->type) . ' interview';
+        $this->createInterview();
+        
+        if ($this->mockInterviews->isNotEmpty()) {
+            $latestInterview = $this->mockInterviews->first();
+            $this->startInterview($latestInterview->id);
+        }
+    }
+
     public function resetForm()
     {
         $this->reset([
@@ -583,7 +543,7 @@ class UserMockInterview extends Component
 
     public function render()
     {
-        $courses = Course::published()->approved()->get(['id', 'title']);
+        $courses = Course::published()->get(['id', 'title']);
         
         return view('livewire.career.user-mock-interview', [
             'courses' => $courses,
