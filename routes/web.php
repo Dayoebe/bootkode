@@ -204,13 +204,13 @@ Route::middleware(['auth', 'verified'])->prefix('mentorship')->name('mentorship.
     Route::get('/my-mentorships', \App\Livewire\Mentorship\MyMentorships::class)->name('my-mentorships');
     Route::get('/sessions', \App\Livewire\Mentorship\Sessions::class)->name('sessions');
     Route::get('/code-reviews', \App\Livewire\Mentorship\CodeReviews::class)->name('code-reviews');
-    
+
     Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/dashboard', \App\Livewire\Mentorship\MentorDashboard::class)->name('dashboard');
         Route::get('/profile', \App\Livewire\Mentorship\MentorProfile::class)->name('profile');
         Route::get('/resources', \App\Livewire\Mentorship\MentorResources::class)->name('resources');
     });
-    
+
     Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/management', \App\Livewire\Mentorship\MentorManagement::class)->name('management');
     });
@@ -220,13 +220,17 @@ Route::middleware('auth')->group(function () {
     Route::get('/search/job', \App\Livewire\Career\JobSearch::class)->name('search.job');
     Route::get('/portfolio', \App\Livewire\Career\PortfolioBuilder::class)->name('portfolio.show');
     Route::get('/resume/builder', \App\Livewire\Career\ResumeBuilder::class)->name('resume.builder');
-    Route::get('/interview/user', \App\Livewire\Career\UserMockInterview::class)->name('user.interview');
-    Route::get('/admin/interview', \App\Livewire\Career\AdminMockInterview::class)->name('admin.interview');
     Route::get('/job', \App\Livewire\Career\JobPortal::class)->name('user.job');
     Route::get('/admin/job', \App\Livewire\Career\JobManagement::class)->name('admin.job');
 });
-
-
+Route::middleware('auth')->group(function () {
+    Route::get('/interview/user', \App\Livewire\Career\UserMockInterview::class)->name('user.interview');
+    Route::get('/admin/interview', \App\Livewire\Career\AdminMockInterview::class)->name('admin.interview');
+    Route::get('/admin/interview/questions', \App\Livewire\Career\AdminQuestionBank::class)->name('admin.interview.questions');
+    Route::get('/admin/interview/question-sets', \App\Livewire\Career\AdminQuestionSets::class)->name('admin.interview.question-sets');
+    Route::get('/interview/{interview}/take', \App\Livewire\Career\StudentInterviewTaker::class)->name('interview.take');
+    Route::get('/interview/{interview}/results', \App\Livewire\Career\InterviewResults::class)->name('interview.results');
+});
 // =============================================================================
 // AUTHENTICATED ROUTES - DASHBOARD
 // =============================================================================
@@ -270,23 +274,23 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Route::post('/student/course/{course}/review', [\App\Livewire\StudentManagement\CourseView::class, 'submitReview'])->name('student.course.review');
 });
 // Review reminder unsubscribe routes
-Route::get('/review-reminder/unsubscribe/{reminder}', function(App\Models\ReviewReminder $reminder) {
+Route::get('/review-reminder/unsubscribe/{reminder}', function (App\Models\ReviewReminder $reminder) {
     if (!request()->hasValidSignature()) {
         abort(403, 'Invalid or expired link');
     }
-    
+
     app(\App\Services\ReviewReminderService::class)->unsubscribeFromCourse($reminder);
-    
+
     return view('review-reminders.unsubscribed', ['course' => $reminder->course]);
 })->name('review-reminder.unsubscribe');
 
-Route::get('/review-reminders/unsubscribe-all', function() {
+Route::get('/review-reminders/unsubscribe-all', function () {
     if (!auth()->check()) {
         return redirect()->route('login');
     }
-    
+
     app(\App\Services\ReviewReminderService::class)->unsubscribeFromAll(auth()->user());
-    
+
     return view('review-reminders.unsubscribed-all');
 })->middleware('auth')->name('review-reminders.unsubscribe-all');
 
