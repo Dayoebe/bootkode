@@ -701,4 +701,8 @@ class MockInterview extends Model
     {
         return $query->where('course_id', $courseId);
     }
+    public function questionSet()
+  {
+      return $this->belongsTo(InterviewQuestionSet::class, 'question_set_id');
+  }
 }
