@@ -146,6 +146,8 @@
             <i x-show="darkMode" class="fas fa-sun text-yellow-500 text-sm"></i>
         </button>
 
+        <x-theme-selector />
+
             <!-- Mobile Search Toggle -->
             <button 
                 class="md:hidden p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500"
