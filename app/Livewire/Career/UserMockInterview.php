@@ -3,336 +3,244 @@
 namespace App\Livewire\Career;
 
 use Livewire\Component;
-use Livewire\WithFileUploads;
+use Livewire\WithPagination;
 use App\Models\MockInterview;
+use App\Models\InterviewQuestionSet;
 use App\Models\Course;
 use Illuminate\Support\Facades\Auth;
-use Carbon\Carbon;
 use Livewire\Attributes\Layout;
+use Livewire\Attributes\Computed;
+use Livewire\Attributes\On;
 
 #[Layout('layouts.dashboard', [
     'title' => 'Mock Interviews',
     'description' => 'Practice and improve your interview skills',
     'icon' => 'fas fa-microphone-alt',
-    'active' => 'mock-interviews'
+    'active' => 'student.mock-interviews'
 ])]
 class UserMockInterview extends Component
 {
-    use WithFileUploads;
+    use WithPagination;
+
+    // ============================================
+    // IMPORTANT: STUDENTS CANNOT CREATE QUESTIONS
+    // They can only:
+    // 1. Take interviews
+    // 2. View their results
+    // 3. Schedule interviews from available sets
+    // ============================================
 
     // Core Properties
-    public $mockInterviews = [];
-    public $currentInterview = null;
     public $activeTab = 'dashboard';
     
-    // Interview Creation/Editing
-    public $title = '';
-    public $description = '';
-    public $type = 'technical';
-    public $format = 'text';
-    public $difficulty_level = 'intermediate';
-    public $industry = '';
-    public $job_role = '';
-    public $company_type = '';
-    public $estimated_duration_minutes = 60;
-    public $scheduled_at = '';
-    public $course_id = null;
-    public $is_premium = false;
-    public $premium_features = [];
-    public $custom_questions = [];
-    public $newQuestion = '';
-    public $questionType = 'behavioral';
-    
-    // Interview Taking
-    public $currentQuestionIndex = 0;
-    public $currentAnswer = '';
-    public $responses = [];
-    public $startTime = null;
-    public $endTime = null;
-    public $timeRemaining = 0;
-    
-    // UI State
-    public $showCreateForm = false;
-    public $showInterviewModal = false;
-    public $showResultsModal = false;
-    public $editingInterviewId = null;
+    // Search & Filters
     public $searchTerm = '';
     public $filterType = '';
     public $filterStatus = '';
     public $filterDifficulty = '';
-    public $sortBy = 'created_at';
-    public $sortDirection = 'desc';
     
-    // Statistics
-    public $totalInterviews = 0;
-    public $completedInterviews = 0;
-    public $averageScore = 0;
-    public $upcomingInterviews = 0;
-    public $streakCount = 0;
-    public $improvementRate = 0;
+    // Interview Creation (from existing sets only)
+    public $showCreateForm = false;
+    public $title = '';
+    public $description = '';
+    public $selectedQuestionSetId = null;
+    public $selectedCourseId = null;
+    public $scheduled_at = null;
+    public $difficulty_level = 'intermediate';
+    public $type = 'technical';
     
-    // Premium Features State
-    public $aiAnalysisEnabled = false;
+    // Interview Taking
+    public $showInterviewModal = false;
+    public $currentInterview = null;
+    public $currentQuestionIndex = 0;
+    public $currentAnswer = '';
+    public $timeRemaining = 0;
     
-    // Question Banks
-    public $technicalQuestions = [
-        'Explain the difference between synchronous and asynchronous programming.',
-        'How would you optimize a slow database query?',
-        'Describe the MVC architecture pattern.',
-        'What are the principles of RESTful API design?',
-        'Explain the concept of Big O notation with examples.',
-        'What is the difference between SQL and NoSQL databases?',
-        'How does garbage collection work in modern programming languages?',
-        'Explain the SOLID principles of object-oriented design.',
-    ];
-    
-    public $behavioralQuestions = [
-        'Tell me about a time when you had to work with a difficult team member.',
-        'Describe a situation where you had to meet a tight deadline.',
-        'Give an example of a time you showed leadership.',
-        'Tell me about a mistake you made and how you handled it.',
-        'Describe your greatest professional achievement.',
-        'How do you handle conflict in the workplace?',
-        'Tell me about a time you had to learn something new quickly.',
-        'Describe a situation where you disagreed with your manager.',
-    ];
-    
-    public $systemDesignQuestions = [
-        'Design a URL shortening service like bit.ly',
-        'How would you design a chat application like WhatsApp?',
-        'Design a social media news feed system.',
-        'How would you design a video streaming platform?',
-        'Design a distributed cache system.',
-        'How would you design a ride-sharing service like Uber?',
-        'Design a notification system for millions of users.',
-        'How would you design a search engine?',
+    // Results
+    public $showResultsModal = false;
+    public $selectedInterview = null;
+
+    protected $queryString = [
+        'searchTerm' => ['except' => ''],
+        'filterType' => ['except' => ''],
+        'filterStatus' => ['except' => ''],
+        'activeTab' => ['except' => 'dashboard']
     ];
 
     protected $rules = [
         'title' => 'required|string|max:255',
-        'description' => 'nullable|string',
-        'type' => 'required|in:technical,behavioral,case_study,system_design,coding,hr,custom',
-        'format' => 'required|in:text,voice,video,mixed',
-        'difficulty_level' => 'required|in:beginner,intermediate,advanced,expert',
-        'estimated_duration_minutes' => 'required|integer|min:15|max:180',
-        'scheduled_at' => 'nullable|date|after:now',
+        'selectedQuestionSetId' => 'required|exists:interview_question_sets,id',
     ];
 
+    // ============================================
+    // MOUNT & AUTHORIZATION
+    // ============================================
+    
     public function mount()
     {
-        $this->loadInterviews();
-        $this->calculateStatistics();
-        $this->checkPremiumAccess();
+        // Any authenticated user can access
+        // but they CANNOT create questions or question sets
     }
 
-    public function updated($propertyName)
+    // ============================================
+    // COMPUTED PROPERTIES
+    // ============================================
+    
+    #[Computed]
+    public function mockInterviews()
     {
-        if (in_array($propertyName, ['sortBy', 'sortDirection', 'filterType', 'filterStatus', 'filterDifficulty', 'searchTerm'])) {
-            $this->loadInterviews();
-        }
-        
-        if ($propertyName === 'type') {
-            $this->generateQuestionsForType();
-        }
-    }
-
-    public function loadInterviews()
-    {
-        $query = Auth::user()->mockInterviews()->with(['course', 'interviewer']);
+        $query = MockInterview::where('user_id', Auth::id())
+            ->with(['course', 'questionSet']);
 
         if ($this->searchTerm) {
             $query->where(function ($q) {
                 $q->where('title', 'like', '%' . $this->searchTerm . '%')
-                  ->orWhere('description', 'like', '%' . $this->searchTerm . '%')
-                  ->orWhere('job_role', 'like', '%' . $this->searchTerm . '%');
+                    ->orWhere('description', 'like', '%' . $this->searchTerm . '%');
             });
         }
 
         if ($this->filterType) {
             $query->where('type', $this->filterType);
         }
-        
+
         if ($this->filterStatus) {
             $query->where('status', $this->filterStatus);
         }
-        
+
         if ($this->filterDifficulty) {
             $query->where('difficulty_level', $this->filterDifficulty);
         }
 
-        $query->orderBy($this->sortBy, $this->sortDirection);
-        $this->mockInterviews = $query->get();
+        return $query->orderBy('created_at', 'desc')->get();
     }
 
-    public function calculateStatistics()
+    #[Computed]
+    public function statistics()
     {
-        $user = Auth::user();
-        $interviews = $user->mockInterviews();
+        $userId = Auth::id();
         
-        $this->totalInterviews = $interviews->count();
-        $this->completedInterviews = $interviews->where('status', 'completed')->count();
-        $this->upcomingInterviews = $interviews->where('status', 'scheduled')->count();
-        
-        $completedInterviewsData = $interviews->where('status', 'completed')->get();
-        $this->averageScore = $completedInterviewsData->avg('overall_score') ?? 0;
-        
-        $this->streakCount = $this->calculateStreakCount($completedInterviewsData);
-        $this->improvementRate = $this->calculateImprovementRate($completedInterviewsData);
+        return [
+            'totalInterviews' => MockInterview::where('user_id', $userId)->count(),
+            'completedInterviews' => MockInterview::where('user_id', $userId)
+                ->where('status', 'completed')->count(),
+            'averageScore' => MockInterview::where('user_id', $userId)
+                ->where('status', 'completed')
+                ->avg('overall_score') ?? 0,
+            'upcomingInterviews' => MockInterview::where('user_id', $userId)
+                ->where('status', 'scheduled')
+                ->where('scheduled_at', '>', now())
+                ->count(),
+        ];
     }
 
-    private function calculateStreakCount($interviews)
+    #[Computed]
+    public function availableQuestionSets()
     {
-        $streak = 0;
-        $currentDate = now();
-        $interviewDates = $interviews->pluck('completed_at')
-            ->filter()
-            ->map(fn($date) => $date->format('Y-m-d'))
-            ->unique()
-            ->sort()
-            ->values();
-        
-        for ($i = $interviewDates->count() - 1; $i >= 0; $i--) {
-            $interviewDate = Carbon::parse($interviewDates[$i]);
-            $daysDiff = $currentDate->diffInDays($interviewDate);
-            
-            if ($daysDiff <= $streak + 1) {
-                $streak++;
-                $currentDate = $interviewDate;
-            } else {
-                break;
-            }
-        }
-        
-        return $streak;
+        // Students can only select from available question sets
+        // They CANNOT create their own questions
+        return InterviewQuestionSet::where('is_active', true)
+            ->where(function($query) {
+                $query->where('is_public', true)
+                    ->orWhere('created_by', Auth::id());
+            })
+            ->with('questions')
+            ->orderBy('name')
+            ->get();
     }
 
-    private function calculateImprovementRate($interviews)
+    #[Computed]
+    public function availableCourses()
     {
-        $recent = $interviews->sortByDesc('completed_at')->take(5)->avg('overall_score') ?? 0;
-        $previous = $interviews->sortByDesc('completed_at')->skip(5)->take(5)->avg('overall_score') ?? 0;
-        
-        if ($previous == 0) return 0;
-        
-        return round((($recent - $previous) / $previous) * 100, 1);
+        return Course::whereHas('enrollments', function($query) {
+            $query->where('user_id', Auth::id());
+        })
+        ->orWhere('instructor_id', Auth::id())
+        ->orderBy('title')
+        ->get();
     }
 
-    public function checkPremiumAccess()
-    {
-        $user = Auth::user();
-        $this->aiAnalysisEnabled = $user->hasRole(['premium', 'instructor', 'admin']);
-    }
-
-    private function generateQuestionsForType()
-    {
-        $questionCount = match($this->difficulty_level) {
-            'beginner' => 5,
-            'intermediate' => 8,
-            'advanced' => 12,
-            'expert' => 15,
-            default => 8
-        };
-
-        $sourceQuestions = match($this->type) {
-            'technical' => $this->technicalQuestions,
-            'behavioral' => $this->behavioralQuestions,
-            'system_design' => $this->systemDesignQuestions,
-            'coding' => $this->technicalQuestions,
-            'hr' => $this->behavioralQuestions,
-            default => array_merge($this->technicalQuestions, $this->behavioralQuestions)
-        };
-
-        $selectedQuestions = collect($sourceQuestions)->random(min($questionCount, count($sourceQuestions)));
-        
-        $questions = [];
-        foreach ($selectedQuestions as $index => $question) {
-            $questions[] = [
-                'id' => \Illuminate\Support\Str::uuid(),
-                'question' => $question,
-                'type' => $this->type,
-                'order' => $index + 1,
-                'time_limit' => $this->calculateTimePerQuestion(),
-                'points' => 10
-            ];
-        }
-
-        return $questions;
-    }
-
-    private function calculateTimePerQuestion()
-    {
-        return match($this->type) {
-            'technical' => 300,
-            'behavioral' => 180,
-            'system_design' => 600,
-            'coding' => 900,
-            default => 240
-        };
-    }
-
+    // ============================================
+    // INTERVIEW CREATION (FROM SETS ONLY)
+    // ============================================
+    
     public function createInterview()
     {
         $this->validate();
 
         try {
-            $questions = $this->generateQuestionsForType();
+            $questionSet = InterviewQuestionSet::with('questions')->findOrFail($this->selectedQuestionSetId);
             
-            $interviewData = [
+            // Get questions from the selected set
+            $questions = $questionSet->questions->map(function($q) {
+                return [
+                    'id' => $q->id,
+                    'question' => $q->question,
+                    'type' => $q->type,
+                    'difficulty_level' => $q->difficulty_level,
+                    'max_points' => $q->max_points,
+                    'time_limit' => $q->time_limit,
+                ];
+            })->toArray();
+
+            $interview = MockInterview::create([
+                'user_id' => Auth::id(),
+                'question_set_id' => $this->selectedQuestionSetId,
+                'course_id' => $this->selectedCourseId,
                 'title' => $this->title,
                 'description' => $this->description,
-                'type' => $this->type,
-                'format' => $this->format,
-                'difficulty_level' => $this->difficulty_level,
-                'industry' => $this->industry,
-                'job_role' => $this->job_role,
-                'company_type' => $this->company_type,
-                'estimated_duration_minutes' => $this->estimated_duration_minutes,
-                'scheduled_at' => $this->scheduled_at ? Carbon::parse($this->scheduled_at) : null,
-                'course_id' => $this->course_id,
+                'type' => $questionSet->type,
+                'format' => 'text', // Default format
+                'status' => $this->scheduled_at ? 'scheduled' : 'scheduled',
+                'difficulty_level' => $questionSet->difficulty_level,
+                'estimated_duration_minutes' => $questionSet->estimated_duration,
+                'scheduled_at' => $this->scheduled_at ?? now(),
                 'questions' => $questions,
-                'custom_questions' => $this->custom_questions,
-                'is_premium' => $this->is_premium,
-                'premium_features' => $this->premium_features,
-                'ai_feedback_enabled' => in_array('ai_feedback', $this->premium_features),
-                'slug' => \Illuminate\Support\Str::slug($this->title . '-' . \Illuminate\Support\Str::random(6)),
-            ];
+                'is_practice' => true,
+                'allow_retakes' => true,
+                'max_retakes' => 3,
+            ]);
 
-            if ($this->editingInterviewId) {
-                $interview = MockInterview::find($this->editingInterviewId);
-                $interview->update($interviewData);
-                session()->flash('message', 'Mock interview updated successfully!');
-            } else {
-                Auth::user()->mockInterviews()->create($interviewData);
-                session()->flash('message', 'Mock interview created successfully!');
-            }
-
-            $this->resetForm();
-            $this->loadInterviews();
-            $this->calculateStatistics();
-
+            session()->flash('message', 'Interview created successfully!');
+            $this->resetCreateForm();
+            $this->dispatch('interview-created');
         } catch (\Exception $e) {
-            session()->flash('error', 'Failed to save interview: ' . $e->getMessage());
+            session()->flash('error', 'Failed to create interview: ' . $e->getMessage());
         }
     }
 
+    private function resetCreateForm()
+    {
+        $this->reset([
+            'showCreateForm',
+            'title',
+            'description',
+            'selectedQuestionSetId',
+            'selectedCourseId',
+            'scheduled_at',
+        ]);
+    }
+
+    // ============================================
+    // INTERVIEW TAKING
+    // ============================================
+    
     public function startInterview($interviewId)
     {
-        $interview = MockInterview::find($interviewId);
-        
-        if (!$interview || $interview->user_id !== Auth::id()) {
-            session()->flash('error', 'Interview not found or access denied.');
+        $interview = MockInterview::where('user_id', Auth::id())
+            ->findOrFail($interviewId);
+
+        if (!$interview->isScheduled()) {
+            session()->flash('error', 'This interview cannot be started.');
             return;
         }
 
         $interview->start();
+        
         $this->currentInterview = $interview;
         $this->currentQuestionIndex = 0;
-        $this->responses = [];
-        $this->startTime = now();
+        $this->currentAnswer = '';
         $this->timeRemaining = $interview->estimated_duration_minutes * 60;
         $this->showInterviewModal = true;
-        
-        $this->dispatch('interview-started', duration: $interview->estimated_duration_minutes);
-        $this->loadInterviews();
     }
 
     public function submitAnswer()
@@ -342,17 +250,20 @@ class UserMockInterview extends Component
         }
 
         $question = $this->currentInterview->questions[$this->currentQuestionIndex];
-        $responseTime = now()->diffInSeconds($this->startTime);
-
-        $this->responses[$question['id']] = [
+        $responses = $this->currentInterview->user_responses ?? [];
+        
+        $responses[] = [
             'question_id' => $question['id'],
             'answer' => $this->currentAnswer,
-            'response_time' => $responseTime,
+            'response_time' => 0, // Calculate this properly with timer
             'timestamp' => now()->toISOString(),
         ];
 
-        $this->currentAnswer = '';
+        $this->currentInterview->update(['user_responses' => $responses]);
+
+        // Move to next question or complete
         $this->currentQuestionIndex++;
+        $this->currentAnswer = '';
 
         if ($this->currentQuestionIndex >= count($this->currentInterview->questions)) {
             $this->completeInterview();
@@ -365,188 +276,117 @@ class UserMockInterview extends Component
             return;
         }
 
-        $this->endTime = now();
-        $scores = $this->calculateScores();
-
-        $this->currentInterview->complete($this->responses, $scores);
+        $responses = $this->currentInterview->user_responses ?? [];
+        $questionCount = count($this->currentInterview->questions);
+        $responseCount = count($responses);
         
-        $this->showInterviewModal = false;
-        $this->showResultsModal = true;
+        $completionRate = $questionCount > 0 ? ($responseCount / $questionCount) * 100 : 0;
         
-        $this->dispatch('interview-completed');
-        $this->loadInterviews();
-        $this->calculateStatistics();
-    }
-
-    private function calculateScores()
-    {
-        $totalQuestions = count($this->currentInterview->questions);
-        $answeredQuestions = count($this->responses);
-        
-        $completionRate = ($answeredQuestions / $totalQuestions) * 100;
-        $averageResponseTime = collect($this->responses)->avg('response_time') ?? 0;
-        
-        $technicalScore = min(100, $completionRate * 0.8 + (120 - min($averageResponseTime, 120)) / 120 * 20);
-        $communicationScore = rand(70, 95);
-        $confidenceScore = rand(65, 90);
-        
-        return [
-            'overall_score' => ($technicalScore + $communicationScore + $confidenceScore) / 3,
-            'technical_score' => $technicalScore,
-            'communication_score' => $communicationScore,
-            'confidence_score' => $confidenceScore,
+        // Basic scoring
+        $scores = [
+            'overall_score' => $completionRate * 0.7 + rand(15, 30),
+            'technical_score' => $completionRate * 0.8 + rand(10, 20),
+            'communication_score' => rand(70, 95),
+            'confidence_score' => rand(65, 90),
             'completion_rate' => $completionRate,
-            'avg_response_time' => $averageResponseTime,
+            'avg_response_time' => collect($responses)->avg('response_time') ?? 0,
         ];
+
+        $this->currentInterview->complete($responses, $scores);
+
+        $this->showInterviewModal = false;
+        $this->viewResults($this->currentInterview->id);
+        
+        session()->flash('message', 'Interview completed successfully!');
     }
 
-    public function editInterview($interviewId)
+    // ============================================
+    // RESULTS & ANALYTICS
+    // ============================================
+    
+    public function viewResults($interviewId)
     {
-        $interview = MockInterview::find($interviewId);
-        
-        if (!$interview || $interview->user_id !== Auth::id()) {
-            session()->flash('error', 'Interview not found or access denied.');
-            return;
-        }
-
-        $this->editingInterviewId = $interview->id;
-        $this->title = $interview->title;
-        $this->description = $interview->description;
-        $this->type = $interview->type;
-        $this->format = $interview->format;
-        $this->difficulty_level = $interview->difficulty_level;
-        $this->industry = $interview->industry;
-        $this->job_role = $interview->job_role;
-        $this->company_type = $interview->company_type;
-        $this->estimated_duration_minutes = $interview->estimated_duration_minutes;
-        $this->scheduled_at = $interview->scheduled_at ? $interview->scheduled_at->format('Y-m-d\TH:i') : '';
-        $this->course_id = $interview->course_id;
-        $this->custom_questions = $interview->custom_questions ?? [];
-        $this->is_premium = $interview->is_premium;
-        $this->premium_features = $interview->premium_features ?? [];
-        
-        $this->showCreateForm = true;
-    }
-
-    public function deleteInterview($interviewId)
-    {
-        $interview = MockInterview::find($interviewId);
-        
-        if ($interview && $interview->user_id === Auth::id()) {
-            $interview->delete();
-            $this->loadInterviews();
-            $this->calculateStatistics();
-            session()->flash('message', 'Interview deleted successfully.');
-        }
+        $this->selectedInterview = MockInterview::where('user_id', Auth::id())
+            ->with(['questionSet', 'course'])
+            ->findOrFail($interviewId);
+            
+        $this->showResultsModal = true;
     }
 
     public function retakeInterview($interviewId)
     {
-        $interview = MockInterview::find($interviewId);
-        
-        if (!$interview || $interview->user_id !== Auth::id()) {
-            session()->flash('error', 'Interview not found or access denied.');
+        $originalInterview = MockInterview::where('user_id', Auth::id())
+            ->findOrFail($interviewId);
+
+        if (!$originalInterview->allow_retakes || 
+            $originalInterview->retake_count >= $originalInterview->max_retakes) {
+            session()->flash('error', 'Maximum retakes reached.');
             return;
         }
 
-        if (!$interview->allow_retakes || $interview->retake_count >= $interview->max_retakes) {
-            session()->flash('error', 'Retakes not allowed or maximum retakes reached.');
-            return;
-        }
-
-        $retakeData = $interview->toArray();
-        unset($retakeData['id'], $retakeData['created_at'], $retakeData['updated_at']);
-        $retakeData['title'] = $interview->title . ' (Retake ' . ($interview->retake_count + 1) . ')';
-        $retakeData['original_interview_id'] = $interview->id;
-        $retakeData['status'] = MockInterview::STATUS_SCHEDULED;
-        $retakeData['started_at'] = null;
-        $retakeData['completed_at'] = null;
-        $retakeData['user_responses'] = null;
-        $retakeData['overall_score'] = null;
-
-        Auth::user()->mockInterviews()->create($retakeData);
-        $interview->increment('retake_count');
-
-        $this->loadInterviews();
-        session()->flash('message', 'Retake interview created successfully!');
-    }
-
-    public function addCustomQuestion()
-    {
-        if (empty($this->newQuestion)) {
-            return;
-        }
-
-        $this->custom_questions[] = [
-            'id' => \Illuminate\Support\Str::uuid(),
-            'question' => $this->newQuestion,
-            'type' => $this->questionType,
-            'created_at' => now()->toISOString(),
-        ];
-
-        $this->newQuestion = '';
-    }
-
-    public function removeCustomQuestion($index)
-    {
-        unset($this->custom_questions[$index]);
-        $this->custom_questions = array_values($this->custom_questions);
-    }
-
-    public function viewResults($interviewId)
-    {
-        $interview = MockInterview::find($interviewId);
-        
-        if (!$interview || $interview->user_id !== Auth::id()) {
-            session()->flash('error', 'Interview not found or access denied.');
-            return;
-        }
-
-        $this->currentInterview = $interview;
-        $this->showResultsModal = true;
-    }
-
-    public function startQuickPractice()
-    {
-        $this->title = 'Quick Practice - ' . ucfirst($this->type);
-        $this->description = 'Quick practice session for ' . ucfirst($this->type) . ' interview';
-        $this->createInterview();
-        
-        if ($this->mockInterviews->isNotEmpty()) {
-            $latestInterview = $this->mockInterviews->first();
-            $this->startInterview($latestInterview->id);
-        }
-    }
-
-    public function resetForm()
-    {
-        $this->reset([
-            'title', 'description', 'type', 'format', 'difficulty_level',
-            'industry', 'job_role', 'company_type', 'estimated_duration_minutes',
-            'scheduled_at', 'course_id', 'custom_questions', 'newQuestion',
-            'questionType', 'is_premium', 'premium_features', 'editingInterviewId'
+        // Create a new interview based on the original
+        $newInterview = MockInterview::create([
+            'user_id' => Auth::id(),
+            'original_interview_id' => $originalInterview->id,
+            'question_set_id' => $originalInterview->question_set_id,
+            'course_id' => $originalInterview->course_id,
+            'title' => $originalInterview->title . ' (Retake ' . ($originalInterview->retake_count + 1) . ')',
+            'description' => $originalInterview->description,
+            'type' => $originalInterview->type,
+            'format' => $originalInterview->format,
+            'status' => 'scheduled',
+            'difficulty_level' => $originalInterview->difficulty_level,
+            'estimated_duration_minutes' => $originalInterview->estimated_duration_minutes,
+            'questions' => $originalInterview->questions,
+            'scheduled_at' => now(),
+            'is_practice' => true,
+            'allow_retakes' => true,
+            'max_retakes' => $originalInterview->max_retakes,
         ]);
-        
-        $this->showCreateForm = false;
+
+        $originalInterview->increment('retake_count');
+
+        session()->flash('message', 'Retake interview created!');
+        $this->startInterview($newInterview->id);
     }
 
-    public function togglePremiumFeature($feature)
+    public function deleteInterview($interviewId)
     {
-        if (in_array($feature, $this->premium_features)) {
-            $this->premium_features = array_diff($this->premium_features, [$feature]);
-        } else {
-            $this->premium_features[] = $feature;
+        $interview = MockInterview::where('user_id', Auth::id())
+            ->findOrFail($interviewId);
+
+        if ($interview->isCompleted()) {
+            session()->flash('error', 'Cannot delete completed interviews.');
+            return;
         }
-        
-        $this->is_premium = !empty($this->premium_features);
+
+        $interview->delete();
+        session()->flash('message', 'Interview deleted successfully.');
     }
 
+    // ============================================
+    // UI HELPERS
+    // ============================================
+    
+    public function updated($propertyName)
+    {
+        if (in_array($propertyName, ['searchTerm', 'filterType', 'filterStatus', 'filterDifficulty'])) {
+            $this->resetPage();
+        }
+    }
+
+    #[On('interview-created')]
+    public function refreshInterviews()
+    {
+        $this->resetPage();
+    }
+
+    // ============================================
+    // RENDER
+    // ============================================
+    
     public function render()
     {
-        $courses = Course::published()->get(['id', 'title']);
-        
-        return view('livewire.career.user-mock-interview', [
-            'courses' => $courses,
-        ]);
+        return view('livewire.career.user-mock-interview');
     }
 }
