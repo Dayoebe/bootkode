@@ -222,7 +222,7 @@ class DashboardSidebar extends Component
         $menuItems = $this->filteredMenuItems;
         $mobileMenuItems = $this->generateMobileMenuItems($menuItems);
 
-        return view('livewire.dashboard-sidebar', [
+        return view('livewire.dashboard.layout.dashboard-sidebar', [
             'menuItems' => $menuItems,
             'mobileMenuItems' => $mobileMenuItems,
             'user' => $this->user,
