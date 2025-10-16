@@ -21,6 +21,6 @@ class MobileBottomNav extends Component
      */
     public function render(): View|Closure|string
     {
-        return view('components.mobile-bottom-nav');
+        return view('livewire.dashboard.layout.mobile-bottom-nav');
     }
 }
