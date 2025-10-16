@@ -1,17 +1,17 @@
-<div class="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-300 p-4 md:p-6">
+<div class="min-h-screen bg-themed-primary transition-colors duration-300 p-4 md:p-6">
     <!-- Header Section -->
     <div class="mb-8">
-        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 p-6 transition-colors duration-300">
+        <div class="bg-themed-secondary rounded-2xl shadow-sm border border-themed-primary p-6 transition-colors duration-300">
             <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center space-y-4 lg:space-y-0">
                 <div>
-                    <h1 class="text-3xl font-bold text-gray-900 dark:text-white flex items-center transition-colors duration-300">
+                    <h1 class="text-3xl font-bold text-themed-primary flex items-center transition-colors duration-300">
                         <div class="bg-gradient-to-r from-indigo-500 to-purple-600 dark:from-indigo-400 dark:to-purple-500 p-2 rounded-xl mr-3">
                             <i class="fas fa-graduation-cap text-white text-lg"></i>
                         </div>
                         Academy Admin Dashboard
                     </h1>
-                    <p class="text-gray-600 dark:text-gray-400 mt-2 transition-colors duration-300">Welcome back, {{ auth()->user()->name }}! Manage your academy with confidence.</p>
-                    <div class="flex items-center mt-3 space-x-4 text-sm text-gray-500 dark:text-gray-400 transition-colors duration-300">
+                    <p class="text-themed-secondary mt-2 transition-colors duration-300">Welcome back, {{ auth()->user()->name }}! Manage your academy with confidence.</p>
+                    <div class="flex items-center mt-3 space-x-4 text-sm text-themed-tertiary transition-colors duration-300">
                         <span class="flex items-center"><i class="fas fa-clock mr-1"></i> Last updated: {{ now()->format('M d, Y H:i') }}</span>
                         <span class="flex items-center"><i class="fas fa-users mr-1"></i> {{ $this->overviewStats['total_students'] }} Students</span>
                     </div>
@@ -19,11 +19,11 @@
                 
                 <div class="flex flex-wrap items-center gap-3">
                     <!-- Timeframe Selector -->
-                    <div class="flex bg-gray-50 dark:bg-gray-700 rounded-xl p-1 border border-gray-200 dark:border-gray-600 transition-colors duration-300">
+                    <div class="flex bg-themed-tertiary rounded-xl p-1 border border-themed-primary transition-colors duration-300">
                         @foreach(['7days' => '7d', '30days' => '30d', '90days' => '90d'] as $value => $label)
                             <button 
                                 wire:click="updateTimeframe('{{ $value }}')"
-                                class="px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 {{ $selectedTimeframe === $value ? 'bg-white dark:bg-gray-600 text-indigo-600 dark:text-indigo-400 shadow-sm' : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white' }}">
+                                class="px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 {{ $selectedTimeframe === $value ? 'bg-themed-secondary text-indigo-600 dark:text-indigo-400 shadow-sm' : 'text-themed-secondary hover:text-themed-primary' }}">
                                 {{ $label }}
                             </button>
                         @endforeach
@@ -123,13 +123,13 @@
         <div class="xl:col-span-2 space-y-8">
             <!-- Student Growth Analytics -->
             @if($showWidgets['student_analytics'])
-            <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 p-6 transition-colors duration-300">
+            <div class="bg-themed-secondary rounded-2xl shadow-sm border border-themed-primary p-6 transition-colors duration-300">
                 <div class="flex items-center justify-between mb-6">
-                    <h2 class="text-xl font-bold text-gray-900 dark:text-white flex items-center transition-colors duration-300">
+                    <h2 class="text-xl font-bold text-themed-primary flex items-center transition-colors duration-300">
                         <i class="fas fa-chart-area text-indigo-600 dark:text-indigo-400 mr-2"></i>
                         Student Growth & Engagement
                     </h2>
-                    <div class="flex items-center space-x-2 text-sm text-gray-500 dark:text-gray-400">
+                    <div class="flex items-center space-x-2 text-sm text-themed-tertiary transition-colors duration-300">
                         <span class="bg-indigo-100 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 px-3 py-1 rounded-full font-medium transition-colors duration-300">
                             Last {{ $selectedTimeframe === '7days' ? '7 days' : ($selectedTimeframe === '30days' ? '30 days' : '90 days') }}
                         </span>
@@ -143,9 +143,9 @@
 
             <!-- Course Performance -->
             @if($showWidgets['course_management'])
-            <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 p-6 transition-colors duration-300">
+            <div class="bg-themed-secondary rounded-2xl shadow-sm border border-themed-primary p-6 transition-colors duration-300">
                 <div class="flex items-center justify-between mb-6">
-                    <h2 class="text-xl font-bold text-gray-900 dark:text-white flex items-center transition-colors duration-300">
+                    <h2 class="text-xl font-bold text-themed-primary flex items-center transition-colors duration-300">
                         <i class="fas fa-trophy text-yellow-500 dark:text-yellow-400 mr-2"></i>
                         Top Performing Courses
                     </h2>
@@ -155,37 +155,37 @@
                 </div>
                 <div class="space-y-4">
                     @forelse($this->coursePerformance as $index => $course)
-                    <div class="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-700 rounded-xl hover:bg-indigo-50 dark:hover:bg-indigo-900/20 transition-all duration-200">
+                    <div class="flex items-center justify-between p-4 bg-themed-tertiary rounded-xl hover:bg-themed-secondary transition-all duration-200">
                         <div class="flex items-center space-x-4">
                             <div class="w-10 h-10 bg-gradient-to-r from-indigo-500 to-purple-600 dark:from-indigo-400 dark:to-purple-500 rounded-lg flex items-center justify-center text-white font-bold">
                                 {{ $index + 1 }}
                             </div>
                             <div class="flex-1">
-                                <h4 class="font-semibold text-gray-900 dark:text-white transition-colors duration-300">{{ Str::limit($course['title'], 45) }}</h4>
-                                <p class="text-sm text-gray-600 dark:text-gray-400 transition-colors duration-300">by {{ $course['instructor'] }}</p>
+                                <h4 class="font-semibold text-themed-primary transition-colors duration-300">{{ Str::limit($course['title'], 45) }}</h4>
+                                <p class="text-sm text-themed-secondary transition-colors duration-300">by {{ $course['instructor'] }}</p>
                             </div>
                         </div>
                         <div class="flex items-center space-x-6 text-sm">
                             <div class="text-center">
                                 <div class="font-bold text-indigo-600 dark:text-indigo-400 transition-colors duration-300">{{ $course['enrollments'] }}</div>
-                                <div class="text-gray-500 dark:text-gray-400 transition-colors duration-300">enrollments</div>
+                                <div class="text-themed-tertiary transition-colors duration-300">enrollments</div>
                             </div>
                             <div class="text-center">
                                 <div class="font-bold text-green-600 dark:text-green-400 transition-colors duration-300">{{ $course['completion_rate'] }}%</div>
-                                <div class="text-gray-500 dark:text-gray-400 transition-colors duration-300">completion</div>
+                                <div class="text-themed-tertiary transition-colors duration-300">completion</div>
                             </div>
                             <div class="text-center">
                                 <div class="font-bold text-yellow-600 dark:text-yellow-400 flex items-center transition-colors duration-300">
                                     {{ number_format($course['rating'], 1) }}
                                     <i class="fas fa-star ml-1 text-xs"></i>
                                 </div>
-                                <div class="text-gray-500 dark:text-gray-400 transition-colors duration-300">rating</div>
+                                <div class="text-themed-tertiary transition-colors duration-300">rating</div>
                             </div>
                         </div>
                     </div>
                     @empty
-                    <div class="text-center py-8 text-gray-500 dark:text-gray-400">
-                        <i class="fas fa-book-open text-4xl mb-4 text-gray-300 dark:text-gray-500"></i>
+                    <div class="text-center py-8 text-themed-tertiary transition-colors duration-300">
+                        <i class="fas fa-book-open text-4xl mb-4 text-themed-tertiary opacity-50"></i>
                         <p>No course performance data available</p>
                     </div>
                     @endforelse
@@ -195,9 +195,9 @@
 
             <!-- Learning Progress Analytics -->
             @if($showWidgets['learning_progress'])
-            <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 p-6 transition-colors duration-300">
+            <div class="bg-themed-secondary rounded-2xl shadow-sm border border-themed-primary p-6 transition-colors duration-300">
                 <div class="flex items-center justify-between mb-6">
-                    <h2 class="text-xl font-bold text-gray-900 dark:text-white flex items-center transition-colors duration-300">
+                    <h2 class="text-xl font-bold text-themed-primary flex items-center transition-colors duration-300">
                         <i class="fas fa-graduation-cap text-green-600 dark:text-green-400 mr-2"></i>
                         Learning Progress Analytics
                     </h2>
@@ -213,9 +213,9 @@
 
             <!-- Category Performance -->
             @if($showWidgets['course_management'])
-            <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 p-6 transition-colors duration-300">
+            <div class="bg-themed-secondary rounded-2xl shadow-sm border border-themed-primary p-6 transition-colors duration-300">
                 <div class="flex items-center justify-between mb-6">
-                    <h2 class="text-xl font-bold text-gray-900 dark:text-white flex items-center transition-colors duration-300">
+                    <h2 class="text-xl font-bold text-themed-primary flex items-center transition-colors duration-300">
                         <i class="fas fa-layer-group text-indigo-600 dark:text-indigo-400 mr-2"></i>
                         Category Performance
                     </h2>
@@ -225,25 +225,25 @@
                 </div>
                 <div class="space-y-3">
                     @forelse($this->categoryStats as $category)
-                    <div class="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-700 rounded-xl hover:bg-indigo-50 dark:hover:bg-indigo-900/20 transition-colors duration-200">
+                    <div class="flex items-center justify-between p-4 bg-themed-tertiary rounded-xl hover:bg-themed-secondary transition-colors duration-200">
                         <div class="flex-1">
-                            <h4 class="font-semibold text-gray-900 dark:text-white transition-colors duration-300">{{ $category['name'] }}</h4>
-                            <p class="text-sm text-gray-600 dark:text-gray-400 transition-colors duration-300">{{ $category['courses_count'] }} courses</p>
+                            <h4 class="font-semibold text-themed-primary transition-colors duration-300">{{ $category['name'] }}</h4>
+                            <p class="text-sm text-themed-secondary transition-colors duration-300">{{ $category['courses_count'] }} courses</p>
                         </div>
                         <div class="flex items-center space-x-4 text-sm">
                             <div class="text-center">
                                 <div class="font-bold text-indigo-600 dark:text-indigo-400 transition-colors duration-300">{{ $category['enrollments'] }}</div>
-                                <div class="text-gray-500 dark:text-gray-400 transition-colors duration-300">enrollments</div>
+                                <div class="text-themed-tertiary transition-colors duration-300">enrollments</div>
                             </div>
                             <div class="text-center">
                                 <div class="font-bold text-green-600 dark:text-green-400 transition-colors duration-300">{{ $category['popularity'] }}</div>
-                                <div class="text-gray-500 dark:text-gray-400 transition-colors duration-300">avg/course</div>
+                                <div class="text-themed-tertiary transition-colors duration-300">avg/course</div>
                             </div>
                         </div>
                     </div>
                     @empty
-                    <div class="text-center py-6 text-gray-500 dark:text-gray-400">
-                        <i class="fas fa-layer-group text-3xl mb-3 text-gray-300 dark:text-gray-500"></i>
+                    <div class="text-center py-6 text-themed-tertiary transition-colors duration-300">
+                        <i class="fas fa-layer-group text-3xl mb-3 opacity-50"></i>
                         <p>No category data available</p>
                     </div>
                     @endforelse
@@ -256,9 +256,9 @@
         <div class="space-y-8">
             <!-- Instructor Performance -->
             @if($showWidgets['instructor_performance'])
-            <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 p-6 transition-colors duration-300">
+            <div class="bg-themed-secondary rounded-2xl shadow-sm border border-themed-primary p-6 transition-colors duration-300">
                 <div class="flex items-center justify-between mb-6">
-                    <h2 class="text-xl font-bold text-gray-900 dark:text-white flex items-center transition-colors duration-300">
+                    <h2 class="text-xl font-bold text-themed-primary flex items-center transition-colors duration-300">
                         <i class="fas fa-chalkboard-teacher text-purple-600 dark:text-purple-400 mr-2"></i>
                         Top Instructors
                     </h2>
@@ -268,7 +268,7 @@
                 </div>
                 <div class="space-y-4">
                     @forelse($this->instructorPerformance as $instructor)
-                    <div class="flex items-center space-x-4 p-3 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-200">
+                    <div class="flex items-center space-x-4 p-3 rounded-xl hover:bg-themed-tertiary transition-colors duration-200">
                         <div class="flex-shrink-0">
                             @if($instructor['profile_picture'])
                                 <img src="{{ Storage::url($instructor['profile_picture']) }}" 
@@ -281,8 +281,8 @@
                             @endif
                         </div>
                         <div class="flex-1 min-w-0">
-                            <h4 class="font-semibold text-gray-900 dark:text-white truncate transition-colors duration-300">{{ $instructor['name'] }}</h4>
-                            <p class="text-sm text-gray-600 dark:text-gray-400 transition-colors duration-300">{{ $instructor['courses_count'] }} courses</p>
+                            <h4 class="font-semibold text-themed-primary truncate transition-colors duration-300">{{ $instructor['name'] }}</h4>
+                            <p class="text-sm text-themed-secondary transition-colors duration-300">{{ $instructor['courses_count'] }} courses</p>
                         </div>
                         <div class="text-right">
                             <div class="flex items-center text-sm font-semibold text-green-600 dark:text-green-400 transition-colors duration-300">
@@ -296,8 +296,8 @@
                         </div>
                     </div>
                     @empty
-                    <div class="text-center py-6 text-gray-500 dark:text-gray-400">
-                        <i class="fas fa-chalkboard-teacher text-3xl mb-3 text-gray-300 dark:text-gray-500"></i>
+                    <div class="text-center py-6 text-themed-tertiary transition-colors duration-300">
+                        <i class="fas fa-chalkboard-teacher text-3xl mb-3 opacity-50"></i>
                         <p>No instructor data available</p>
                     </div>
                     @endforelse
@@ -307,9 +307,9 @@
 
             <!-- Content Approval Queue -->
             @if($showWidgets['content_approval'])
-            <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 p-6 transition-colors duration-300">
+            <div class="bg-themed-secondary rounded-2xl shadow-sm border border-themed-primary p-6 transition-colors duration-300">
                 <div class="flex items-center justify-between mb-6">
-                    <h2 class="text-xl font-bold text-gray-900 dark:text-white flex items-center transition-colors duration-300">
+                    <h2 class="text-xl font-bold text-themed-primary flex items-center transition-colors duration-300">
                         <i class="fas fa-clipboard-check text-orange-600 dark:text-orange-400 mr-2"></i>
                         Pending Approvals
                     </h2>
@@ -322,15 +322,15 @@
                 
                 <!-- Courses Pending Approval -->
                 <div class="mb-6">
-                    <h3 class="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3 flex items-center transition-colors duration-300">
+                    <h3 class="text-sm font-semibold text-themed-primary mb-3 flex items-center transition-colors duration-300">
                         <i class="fas fa-book text-blue-600 dark:text-blue-400 mr-2"></i>
                         Courses ({{ count($this->contentApprovalQueue['courses']) }})
                     </h3>
                     @forelse($this->contentApprovalQueue['courses'] as $course)
                     <div class="flex items-center justify-between p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg mb-2 hover:bg-blue-100 dark:hover:bg-blue-900/30 transition-colors duration-200">
                         <div class="flex-1 min-w-0">
-                            <h4 class="text-sm font-medium text-gray-900 dark:text-white truncate transition-colors duration-300">{{ $course['title'] }}</h4>
-                            <p class="text-xs text-gray-600 dark:text-gray-400 transition-colors duration-300">{{ $course['instructor'] }} • {{ $course['created_at'] }}</p>
+                            <h4 class="text-sm font-medium text-themed-primary truncate transition-colors duration-300">{{ $course['title'] }}</h4>
+                            <p class="text-xs text-themed-secondary transition-colors duration-300">{{ $course['instructor'] }} • {{ $course['created_at'] }}</p>
                         </div>
                         <div class="flex space-x-2">
                             <button wire:click="approveCourse({{ $course['id'] }})" 
@@ -345,21 +345,21 @@
                         </div>
                     </div>
                     @empty
-                    <p class="text-gray-500 dark:text-gray-400 text-sm">No pending courses</p>
+                    <p class="text-themed-tertiary text-sm transition-colors duration-300">No pending courses</p>
                     @endforelse
                 </div>
 
                 <!-- Certificates Pending Approval -->
                 <div class="mb-6">
-                    <h3 class="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3 flex items-center transition-colors duration-300">
+                    <h3 class="text-sm font-semibold text-themed-primary mb-3 flex items-center transition-colors duration-300">
                         <i class="fas fa-award text-purple-600 dark:text-purple-400 mr-2"></i>
                         Certificates ({{ count($this->contentApprovalQueue['certificates']) }})
                     </h3>
                     @forelse($this->contentApprovalQueue['certificates'] as $certificate)
                     <div class="flex items-center justify-between p-3 bg-purple-50 dark:bg-purple-900/20 rounded-lg mb-2 hover:bg-purple-100 dark:hover:bg-purple-900/30 transition-colors duration-200">
                         <div class="flex-1 min-w-0">
-                            <h4 class="text-sm font-medium text-gray-900 dark:text-white transition-colors duration-300">{{ $certificate['user'] }}</h4>
-                            <p class="text-xs text-gray-600 dark:text-gray-400 transition-colors duration-300">{{ Str::limit($certificate['course'], 30) }} • {{ $certificate['created_at'] }}</p>
+                            <h4 class="text-sm font-medium text-themed-primary transition-colors duration-300">{{ $certificate['user'] }}</h4>
+                            <p class="text-xs text-themed-secondary transition-colors duration-300">{{ Str::limit($certificate['course'], 30) }} • {{ $certificate['created_at'] }}</p>
                         </div>
                         <div class="flex space-x-2">
                             <button wire:click="approveCertificate({{ $certificate['id'] }})" 
@@ -374,21 +374,21 @@
                         </div>
                     </div>
                     @empty
-                    <p class="text-gray-500 dark:text-gray-400 text-sm">No pending certificates</p>
+                    <p class="text-themed-tertiary text-sm transition-colors duration-300">No pending certificates</p>
                     @endforelse
                 </div>
 
                 <!-- Blog Posts Pending Approval -->
                 <div>
-                    <h3 class="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3 flex items-center transition-colors duration-300">
+                    <h3 class="text-sm font-semibold text-themed-primary mb-3 flex items-center transition-colors duration-300">
                         <i class="fas fa-pen text-green-600 dark:text-green-400 mr-2"></i>
                         Blog Posts ({{ count($this->contentApprovalQueue['blog_posts']) }})
                     </h3>
                     @forelse($this->contentApprovalQueue['blog_posts'] as $post)
                     <div class="flex items-center justify-between p-3 bg-green-50 dark:bg-green-900/20 rounded-lg mb-2 hover:bg-green-100 dark:hover:bg-green-900/30 transition-colors duration-200">
                         <div class="flex-1 min-w-0">
-                            <h4 class="text-sm font-medium text-gray-900 dark:text-white truncate transition-colors duration-300">{{ $post['title'] }}</h4>
-                            <p class="text-xs text-gray-600 dark:text-gray-400 transition-colors duration-300">{{ $post['author'] }} • {{ $post['created_at'] }}</p>
+                            <h4 class="text-sm font-medium text-themed-primary truncate transition-colors duration-300">{{ $post['title'] }}</h4>
+                            <p class="text-xs text-themed-secondary transition-colors duration-300">{{ $post['author'] }} • {{ $post['created_at'] }}</p>
                         </div>
                         <div class="flex space-x-2">
                             <button class="text-green-600 dark:text-green-400 hover:text-green-700 dark:hover:text-green-300 p-1 rounded transition-colors"
@@ -402,7 +402,7 @@
                         </div>
                     </div>
                     @empty
-                    <p class="text-gray-500 dark:text-gray-400 text-sm">No pending blog posts</p>
+                    <p class="text-themed-tertiary text-sm transition-colors duration-300">No pending blog posts</p>
                     @endforelse
                 </div>
             </div>
@@ -410,27 +410,27 @@
 
             <!-- Recent Activities -->
             @if($showWidgets['recent_activities'])
-            <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 p-6 transition-colors duration-300">
+            <div class="bg-themed-secondary rounded-2xl shadow-sm border border-themed-primary p-6 transition-colors duration-300">
                 <div class="flex items-center justify-between mb-6">
-                    <h2 class="text-xl font-bold text-gray-900 dark:text-white flex items-center transition-colors duration-300">
+                    <h2 class="text-xl font-bold text-themed-primary flex items-center transition-colors duration-300">
                         <i class="fas fa-history text-indigo-600 dark:text-indigo-400 mr-2"></i>
                         Recent Activities
                     </h2>
                 </div>
                 <div class="space-y-3 max-h-96 overflow-y-auto">
                     @forelse($this->recentActivities as $activity)
-                    <div class="flex items-start space-x-3 p-3 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-200">
-                        <div class="flex-shrink-0 w-8 h-8 bg-gray-100 dark:bg-gray-600 rounded-full flex items-center justify-center transition-colors duration-300">
+                    <div class="flex items-start space-x-3 p-3 rounded-lg hover:bg-themed-tertiary transition-colors duration-200">
+                        <div class="flex-shrink-0 w-8 h-8 bg-themed-tertiary rounded-full flex items-center justify-center transition-colors duration-300">
                             <i class="{{ $activity['icon'] }} text-xs {{ $activity['color'] }}"></i>
                         </div>
                         <div class="flex-1 min-w-0">
-                            <p class="text-sm font-medium text-gray-900 dark:text-white transition-colors duration-300">{{ $activity['description'] }}</p>
-                            <p class="text-xs text-gray-500 dark:text-gray-400 transition-colors duration-300">{{ $activity['causer'] }} • {{ $activity['created_at'] }}</p>
+                            <p class="text-sm font-medium text-themed-primary transition-colors duration-300">{{ $activity['description'] }}</p>
+                            <p class="text-xs text-themed-tertiary transition-colors duration-300">{{ $activity['causer'] }} • {{ $activity['created_at'] }}</p>
                         </div>
                     </div>
                     @empty
-                    <div class="text-center py-6 text-gray-500 dark:text-gray-400">
-                        <i class="fas fa-history text-3xl mb-3 text-gray-300 dark:text-gray-500"></i>
+                    <div class="text-center py-6 text-themed-tertiary transition-colors duration-300">
+                        <i class="fas fa-history text-3xl mb-3 opacity-50"></i>
                         <p>No recent activities</p>
                     </div>
                     @endforelse
@@ -440,9 +440,9 @@
 
             <!-- Support Overview -->
             @if($showWidgets['support_overview'])
-            <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 p-6 transition-colors duration-300">
+            <div class="bg-themed-secondary rounded-2xl shadow-sm border border-themed-primary p-6 transition-colors duration-300">
                 <div class="flex items-center justify-between mb-6">
-                    <h2 class="text-xl font-bold text-gray-900 dark:text-white flex items-center transition-colors duration-300">
+                    <h2 class="text-xl font-bold text-themed-primary flex items-center transition-colors duration-300">
                         <i class="fas fa-headset text-blue-600 dark:text-blue-400 mr-2"></i>
                         Support Overview
                     </h2>
@@ -465,19 +465,19 @@
 
                 <!-- Recent Tickets -->
                 <div class="space-y-3">
-                    <h3 class="text-sm font-semibold text-gray-700 dark:text-gray-300 transition-colors duration-300">Recent Tickets</h3>
+                    <h3 class="text-sm font-semibold text-themed-primary transition-colors duration-300">Recent Tickets</h3>
                     @forelse($this->supportOverview['recent_tickets'] as $ticket)
-                    <div class="flex items-start space-x-3 p-3 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-200">
+                    <div class="flex items-start space-x-3 p-3 rounded-lg hover:bg-themed-tertiary transition-colors duration-200">
                         <div class="flex-shrink-0 w-6 h-6 rounded-full flex items-center justify-center {{ $ticket['status'] === 'open' ? 'bg-red-100 dark:bg-red-900/30' : 'bg-green-100 dark:bg-green-900/30' }} transition-colors duration-300">
                             <i class="fas {{ $ticket['status'] === 'open' ? 'fa-exclamation text-red-600 dark:text-red-400' : 'fa-check text-green-600 dark:text-green-400' }} text-xs"></i>
                         </div>
                         <div class="flex-1 min-w-0">
-                            <p class="text-sm font-medium text-gray-900 dark:text-white truncate transition-colors duration-300">{{ $ticket['subject'] }}</p>
-                            <p class="text-xs text-gray-600 dark:text-gray-400 transition-colors duration-300">{{ $ticket['user'] }} • {{ $ticket['created_at'] }}</p>
+                            <p class="text-sm font-medium text-themed-primary truncate transition-colors duration-300">{{ $ticket['subject'] }}</p>
+                            <p class="text-xs text-themed-secondary transition-colors duration-300">{{ $ticket['user'] }} • {{ $ticket['created_at'] }}</p>
                         </div>
                     </div>
                     @empty
-                    <p class="text-gray-500 dark:text-gray-400 text-sm">No recent tickets</p>
+                    <p class="text-themed-tertiary text-sm transition-colors duration-300">No recent tickets</p>
                     @endforelse
                 </div>
             </div>
@@ -488,13 +488,13 @@
     <!-- Quick Actions Modal -->
     @if($showQuickActionModal)
     <div class="fixed inset-0 bg-black/50 dark:bg-black/70 flex items-center justify-center z-50 p-4 transition-colors duration-300">
-        <div class="bg-white dark:bg-gray-800 rounded-3xl p-8 w-full max-w-2xl transform transition-all duration-300 scale-100 max-h-[90vh] overflow-y-auto border border-gray-200 dark:border-gray-700">
+        <div class="bg-themed-secondary rounded-3xl p-8 w-full max-w-2xl transform transition-all duration-300 scale-100 max-h-[90vh] overflow-y-auto border border-themed-primary">
             <div class="flex items-center justify-between mb-8">
-                <h3 class="text-2xl font-bold text-gray-900 dark:text-white flex items-center transition-colors duration-300">
+                <h3 class="text-2xl font-bold text-themed-primary flex items-center transition-colors duration-300">
                     <i class="fas fa-lightning-bolt text-indigo-600 dark:text-indigo-400 mr-3"></i>
                     Quick Actions
                 </h3>
-                <button wire:click="toggleQuickActionModal" class="text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 transition-colors">
+                <button wire:click="toggleQuickActionModal" class="text-themed-tertiary hover:text-themed-secondary transition-colors">
                     <i class="fas fa-times text-xl"></i>
                 </button>
             </div>
@@ -507,8 +507,8 @@
                         <i class="fas fa-book-open text-white"></i>
                     </div>
                     <div>
-                        <div class="font-semibold text-gray-900 dark:text-white transition-colors duration-300">Manage Courses</div>
-                        <div class="text-sm text-gray-600 dark:text-gray-400 transition-colors duration-300">View and organize all courses</div>
+                        <div class="font-semibold text-themed-primary transition-colors duration-300">Manage Courses</div>
+                        <div class="text-sm text-themed-secondary transition-colors duration-300">View and organize all courses</div>
                     </div>
                 </button>
 
@@ -519,8 +519,8 @@
                         <i class="fas fa-user-graduate text-white"></i>
                     </div>
                     <div>
-                        <div class="font-semibold text-gray-900 dark:text-white transition-colors duration-300">Manage Students</div>
-                        <div class="text-sm text-gray-600 dark:text-gray-400 transition-colors duration-300">Student administration panel</div>
+                        <div class="font-semibold text-themed-primary transition-colors duration-300">Manage Students</div>
+                        <div class="text-sm text-themed-secondary transition-colors duration-300">Student administration panel</div>
                     </div>
                 </button>
 
@@ -531,8 +531,8 @@
                         <i class="fas fa-chalkboard-teacher text-white"></i>
                     </div>
                     <div>
-                        <div class="font-semibold text-gray-900 dark:text-white transition-colors duration-300">Manage Instructors</div>
-                        <div class="text-sm text-gray-600 dark:text-gray-400 transition-colors duration-300">Instructor oversight and support</div>
+                        <div class="font-semibold text-themed-primary transition-colors duration-300">Manage Instructors</div>
+                        <div class="text-sm text-themed-secondary transition-colors duration-300">Instructor oversight and support</div>
                     </div>
                 </button>
 
@@ -543,8 +543,8 @@
                         <i class="fas fa-clipboard-check text-white"></i>
                     </div>
                     <div>
-                        <div class="font-semibold text-gray-900 dark:text-white transition-colors duration-300">Content Approval</div>
-                        <div class="text-sm text-gray-600 dark:text-gray-400 transition-colors duration-300">Review pending content</div>
+                        <div class="font-semibold text-themed-primary transition-colors duration-300">Content Approval</div>
+                        <div class="text-sm text-themed-secondary transition-colors duration-300">Review pending content</div>
                     </div>
                 </button>
 
@@ -555,8 +555,8 @@
                         <i class="fas fa-award text-white"></i>
                     </div>
                     <div>
-                        <div class="font-semibold text-gray-900 dark:text-white transition-colors duration-300">Certificates</div>
-                        <div class="text-sm text-gray-600 dark:text-gray-400 transition-colors duration-300">Manage certifications</div>
+                        <div class="font-semibold text-themed-primary transition-colors duration-300">Certificates</div>
+                        <div class="text-sm text-themed-secondary transition-colors duration-300">Manage certifications</div>
                     </div>
                 </button>
 
@@ -567,8 +567,8 @@
                         <i class="fas fa-headset text-white"></i>
                     </div>
                     <div>
-                        <div class="font-semibold text-gray-900 dark:text-white transition-colors duration-300">Support Tickets</div>
-                        <div class="text-sm text-gray-600 dark:text-gray-400 transition-colors duration-300">Handle user support requests</div>
+                        <div class="font-semibold text-themed-primary transition-colors duration-300">Support Tickets</div>
+                        <div class="text-sm text-themed-secondary transition-colors duration-300">Handle user support requests</div>
                     </div>
                 </button>
 
@@ -579,8 +579,8 @@
                         <i class="fas fa-tags text-white"></i>
                     </div>
                     <div>
-                        <div class="font-semibold text-gray-900 dark:text-white transition-colors duration-300">Categories</div>
-                        <div class="text-sm text-gray-600 dark:text-gray-400 transition-colors duration-300">Organize course categories</div>
+                        <div class="font-semibold text-themed-primary transition-colors duration-300">Categories</div>
+                        <div class="text-sm text-themed-secondary transition-colors duration-300">Organize course categories</div>
                     </div>
                 </button>
 
@@ -591,8 +591,8 @@
                         <i class="fas fa-chart-bar text-white"></i>
                     </div>
                     <div>
-                        <div class="font-semibold text-gray-900 dark:text-white transition-colors duration-300">Learning Analytics</div>
-                        <div class="text-sm text-gray-600 dark:text-gray-400 transition-colors duration-300">Detailed performance insights</div>
+                        <div class="font-semibold text-themed-primary transition-colors duration-300">Learning Analytics</div>
+                        <div class="text-sm text-themed-secondary transition-colors duration-300">Detailed performance insights</div>
                     </div>
                 </button>
             </div>
@@ -611,8 +611,8 @@
             <div x-show="open" 
                  x-transition
                  @click.outside="open = false"
-                 class="absolute bottom-full right-0 mb-3 bg-white dark:bg-gray-800 rounded-xl shadow-xl border border-gray-200 dark:border-gray-700 p-4 w-64 transition-colors duration-300">
-                <h3 class="font-semibold text-gray-900 dark:text-white mb-4 flex items-center transition-colors duration-300">
+                 class="absolute bottom-full right-0 mb-3 bg-themed-secondary rounded-xl shadow-xl border border-themed-primary p-4 w-64 transition-colors duration-300">
+                <h3 class="font-semibold text-themed-primary mb-4 flex items-center transition-colors duration-300">
                     <i class="fas fa-cog text-indigo-600 dark:text-indigo-400 mr-2"></i>
                     Dashboard Widgets
                 </h3>
@@ -621,8 +621,8 @@
                     <label class="flex items-center cursor-pointer group">
                         <input type="checkbox" 
                                wire:model="showWidgets.{{ $widget }}" 
-                               class="rounded border-gray-300 dark:border-gray-600 text-indigo-600 dark:text-indigo-400 focus:ring-indigo-500 dark:focus:ring-indigo-400 dark:bg-gray-700">
-                        <span class="ml-3 text-sm text-gray-700 dark:text-gray-300 group-hover:text-gray-900 dark:group-hover:text-white transition-colors duration-300">
+                               class="rounded border-themed-primary text-indigo-600 dark:text-indigo-400 focus:ring-indigo-500 dark:focus:ring-indigo-400 dark:bg-themed-tertiary transition-colors duration-300">
+                        <span class="ml-3 text-sm text-themed-secondary group-hover:text-themed-primary transition-colors duration-300">
                             {{ ucwords(str_replace('_', ' ', $widget)) }}
                         </span>
                     </label>
