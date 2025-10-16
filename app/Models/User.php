@@ -215,11 +215,6 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->blogReactions()->where('type', 'bookmark');
     }
-
-    public function mockInterviews()
-    {
-        return $this->hasMany(MockInterview::class);
-    }
     public function createdPages()
     {
         return $this->hasMany(Page::class, 'created_by');
@@ -1192,13 +1187,18 @@ public static function getRecentlyDeactivated($days = 7)
                 ];
             });
     }
+    public function mockInterviews()
+    {
+        return $this->hasMany(MockInterview::class);
+    }
+    
     public function interviewQuestions()
-  {
-      return $this->hasMany(InterviewQuestion::class, 'created_by');
-  }
-  
-  public function questionSets()
-  {
-      return $this->hasMany(InterviewQuestionSet::class, 'created_by');
-  }
+    {
+        return $this->hasMany(InterviewQuestion::class, 'created_by');
+    }
+    
+    public function questionSets()
+    {
+        return $this->hasMany(InterviewQuestionSet::class, 'created_by');
+    }
 }
