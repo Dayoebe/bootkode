@@ -184,14 +184,12 @@
             <main class="flex-1 p-4 lg:p-6 pb-20 lg:pb-6">
                 <!-- Welcome Banner (Optional) -->
                 @if($user)
-                <div class="mb-6 p-4 bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 animate__animated animate__fadeInDown">
-                    <h1 class="text-xl lg:text-2xl font-bold text-gray-800 dark:text-white">Welcome back, {{ $user->name }}!</h1>
-                    <p class="text-gray-600 dark:text-gray-300 mt-1">{{ ucfirst($user->getRoleNames()->first() ?? 'User') }} Dashboard</p>
+                <div class="mb-6 p-4 bg-themed-secondary rounded-xl shadow-lg border border-themed-primary animate__animated animate__fadeInDown transition-colors duration-300">
+                    <h1 class="text-xl lg:text-2xl font-bold text-themed-primary transition-colors duration-300">Welcome back, {{ $user->name }}!</h1>
+                    <p class="text-themed-secondary mt-1 transition-colors duration-300">{{ ucfirst($user->getRoleNames()->first() ?? 'User') }} Dashboard</p>
                 </div>
-
-                
-            @endif
-
+                @endif
+            
                 <!-- Main Content Slot -->
                 <div class="animate__animated animate__fadeIn">
                     {{ $slot }}
