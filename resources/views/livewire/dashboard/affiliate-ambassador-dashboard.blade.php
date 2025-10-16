@@ -1,17 +1,17 @@
-<div class="min-h-screen bg-gradient-to-br from-green-50 to-emerald-50 dark:from-gray-900 dark:to-gray-800 p-4 md:p-6 transition-colors duration-300">
+<div class="min-h-screen bg-themed-primary transition-colors duration-300 p-4 md:p-6">
     <!-- Header Section -->
     <div class="mb-8">
-        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 p-6 relative overflow-hidden transition-colors duration-300">
+        <div class="bg-themed-secondary rounded-2xl shadow-sm border border-themed-primary p-6 relative overflow-hidden transition-colors duration-300">
             <!-- Background decoration -->
             <div class="absolute top-0 right-0 w-40 h-40 bg-gradient-to-br from-green-100 to-emerald-100 dark:from-green-900/30 dark:to-emerald-900/30 rounded-full -translate-y-12 translate-x-12 opacity-60"></div>
             
             <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center space-y-4 lg:space-y-0 relative">
                 <div>
-                    <h1 class="text-3xl font-bold text-gray-900 dark:text-white flex items-center transition-colors duration-300">
+                    <h1 class="text-3xl font-bold text-themed-primary flex items-center transition-colors duration-300">
                         <i class="fas fa-handshake text-green-600 dark:text-green-400 mr-3"></i>
                         Affiliate Dashboard
                     </h1>
-                    <p class="text-gray-600 dark:text-gray-400 mt-1 transition-colors duration-300">Welcome {{ auth()->user()->name }}! Track your referrals and maximize your earnings.</p>
+                    <p class="text-themed-secondary mt-1 transition-colors duration-300">Welcome {{ auth()->user()->name }}! Track your referrals and maximize your earnings.</p>
                     
                     <div class="flex items-center space-x-4 mt-3">
                         <div class="flex items-center bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300 px-3 py-1 rounded-full text-sm transition-colors duration-300">
@@ -27,18 +27,18 @@
                 
                 <div class="flex flex-wrap items-center space-x-3">
                     <!-- Metric Selector -->
-                    <select wire:model.live="selectedMetric" class="bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm text-gray-900 dark:text-white transition-colors duration-300">
+                    <select wire:model.live="selectedMetric" class="bg-themed-secondary border border-themed-secondary text-themed-primary px-3 py-2 text-sm rounded-lg focus:ring-2 focus:ring-green-500 dark:focus:ring-green-400 focus:border-green-500 dark:focus:border-green-400 transition-colors duration-300">
                         <option value="earnings">Earnings</option>
                         <option value="referrals">Referrals</option>
                         <option value="conversions">Conversions</option>
                     </select>
                     
                     <!-- Timeframe Selector -->
-                    <div class="flex bg-gray-100 dark:bg-gray-700 rounded-lg p-1 transition-colors duration-300">
+                    <div class="flex bg-themed-tertiary rounded-lg p-1 transition-colors duration-300">
                         @foreach(['7days' => '7d', '30days' => '30d', '90days' => '90d', '12months' => '12m'] as $value => $label)
                             <button 
                                 wire:click="updateTimeframe('{{ $value }}')"
-                                class="px-3 py-1 rounded-md text-sm font-medium transition-all duration-200 {{ $selectedTimeframe === $value ? 'bg-white dark:bg-gray-600 text-green-600 dark:text-green-400 shadow-sm' : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white' }}">
+                                class="px-3 py-1 rounded-md text-sm font-medium transition-all duration-200 {{ $selectedTimeframe === $value ? 'bg-themed-secondary text-green-600 dark:text-green-400 shadow-sm' : 'text-themed-secondary hover:text-themed-primary' }}">
                                 {{ $label }}
                             </button>
                         @endforeach
@@ -57,14 +57,14 @@
     <!-- Overview Stats Grid -->
     @if($showWidgets['overview_stats'])
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6 hover:shadow-md dark:hover:shadow-xl transition-all duration-200">
+        <div class="bg-themed-secondary rounded-xl shadow-sm border border-themed-primary p-6 hover:shadow-md dark:hover:shadow-xl transition-all duration-200">
             <div class="flex items-center justify-between">
                 <div>
-                    <p class="text-sm text-gray-600 dark:text-gray-400 font-medium transition-colors duration-300">Total Earnings</p>
-                    <h3 class="text-3xl font-bold text-gray-900 dark:text-white mt-1 transition-colors duration-300">₦{{ number_format($this->overviewStats['total_earnings'], 0) }}</h3>
+                    <p class="text-sm text-themed-secondary font-medium transition-colors duration-300">Total Earnings</p>
+                    <h3 class="text-3xl font-bold text-themed-primary mt-1 transition-colors duration-300">₦{{ number_format($this->overviewStats['total_earnings'], 0) }}</h3>
                     <div class="flex items-center mt-2 text-sm">
                         <span class="text-green-600 dark:text-green-400 font-medium transition-colors duration-300">₦{{ number_format($this->overviewStats['monthly_earnings'], 0) }}</span>
-                        <span class="text-gray-500 dark:text-gray-400 ml-1 transition-colors duration-300">this month</span>
+                        <span class="text-themed-tertiary ml-1 transition-colors duration-300">this month</span>
                     </div>
                 </div>
                 <div class="bg-green-100 dark:bg-green-900/30 p-3 rounded-full transition-colors duration-300">
@@ -73,14 +73,14 @@
             </div>
         </div>
 
-        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6 hover:shadow-md dark:hover:shadow-xl transition-all duration-200">
+        <div class="bg-themed-secondary rounded-xl shadow-sm border border-themed-primary p-6 hover:shadow-md dark:hover:shadow-xl transition-all duration-200">
             <div class="flex items-center justify-between">
                 <div>
-                    <p class="text-sm text-gray-600 dark:text-gray-400 font-medium transition-colors duration-300">Total Referrals</p>
-                    <h3 class="text-3xl font-bold text-gray-900 dark:text-white mt-1 transition-colors duration-300">{{ number_format($this->overviewStats['total_referrals']) }}</h3>
+                    <p class="text-sm text-themed-secondary font-medium transition-colors duration-300">Total Referrals</p>
+                    <h3 class="text-3xl font-bold text-themed-primary mt-1 transition-colors duration-300">{{ number_format($this->overviewStats['total_referrals']) }}</h3>
                     <div class="flex items-center mt-2 text-sm">
                         <span class="text-blue-600 dark:text-blue-400 font-medium transition-colors duration-300">{{ $this->overviewStats['active_referrals'] }}</span>
-                        <span class="text-gray-500 dark:text-gray-400 ml-1 transition-colors duration-300">active</span>
+                        <span class="text-themed-tertiary ml-1 transition-colors duration-300">active</span>
                     </div>
                 </div>
                 <div class="bg-blue-100 dark:bg-blue-900/30 p-3 rounded-full transition-colors duration-300">
@@ -89,14 +89,14 @@
             </div>
         </div>
 
-        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6 hover:shadow-md dark:hover:shadow-xl transition-all duration-200">
+        <div class="bg-themed-secondary rounded-xl shadow-sm border border-themed-primary p-6 hover:shadow-md dark:hover:shadow-xl transition-all duration-200">
             <div class="flex items-center justify-between">
                 <div>
-                    <p class="text-sm text-gray-600 dark:text-gray-400 font-medium transition-colors duration-300">Conversion Rate</p>
-                    <h3 class="text-3xl font-bold text-gray-900 dark:text-white mt-1 transition-colors duration-300">{{ $this->overviewStats['conversion_rate'] }}%</h3>
+                    <p class="text-sm text-themed-secondary font-medium transition-colors duration-300">Conversion Rate</p>
+                    <h3 class="text-3xl font-bold text-themed-primary mt-1 transition-colors duration-300">{{ $this->overviewStats['conversion_rate'] }}%</h3>
                     <div class="flex items-center mt-2 text-sm">
                         <span class="text-purple-600 dark:text-purple-400 font-medium transition-colors duration-300">{{ $this->overviewStats['clicks_this_period'] }}</span>
-                        <span class="text-gray-500 dark:text-gray-400 ml-1 transition-colors duration-300">clicks</span>
+                        <span class="text-themed-tertiary ml-1 transition-colors duration-300">clicks</span>
                     </div>
                 </div>
                 <div class="bg-purple-100 dark:bg-purple-900/30 p-3 rounded-full transition-colors duration-300">
@@ -105,14 +105,14 @@
             </div>
         </div>
 
-        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6 hover:shadow-md dark:hover:shadow-xl transition-all duration-200">
+        <div class="bg-themed-secondary rounded-xl shadow-sm border border-themed-primary p-6 hover:shadow-md dark:hover:shadow-xl transition-all duration-200">
             <div class="flex items-center justify-between">
                 <div>
-                    <p class="text-sm text-gray-600 dark:text-gray-400 font-medium transition-colors duration-300">Avg. Referral Value</p>
-                    <h3 class="text-3xl font-bold text-gray-900 dark:text-white mt-1 transition-colors duration-300">₦{{ number_format($this->overviewStats['avg_referral_value'], 0) }}</h3>
+                    <p class="text-sm text-themed-secondary font-medium transition-colors duration-300">Avg. Referral Value</p>
+                    <h3 class="text-3xl font-bold text-themed-primary mt-1 transition-colors duration-300">₦{{ number_format($this->overviewStats['avg_referral_value'], 0) }}</h3>
                     <div class="flex items-center mt-2 text-sm">
                         <span class="text-orange-600 dark:text-orange-400 font-medium transition-colors duration-300">{{ $this->overviewStats['pending_referrals'] }}</span>
-                        <span class="text-gray-500 dark:text-gray-400 ml-1 transition-colors duration-300">pending</span>
+                        <span class="text-themed-tertiary ml-1 transition-colors duration-300">pending</span>
                     </div>
                 </div>
                 <div class="bg-orange-100 dark:bg-orange-900/30 p-3 rounded-full transition-colors duration-300">
@@ -129,13 +129,13 @@
         <div class="xl:col-span-2 space-y-8">
             <!-- Earnings Analytics -->
             @if($showWidgets['earnings_analytics'])
-            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6 transition-colors duration-300">
-                <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-6 transition-colors duration-300">Earnings Analytics</h2>
+            <div class="bg-themed-secondary rounded-xl shadow-sm border border-themed-primary p-6 transition-colors duration-300">
+                <h2 class="text-xl font-bold text-themed-primary mb-6 transition-colors duration-300">Earnings Analytics</h2>
                 
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                     <!-- Daily Earnings Chart -->
                     <div>
-                        <h3 class="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3 transition-colors duration-300">Daily Earnings ({{ $selectedTimeframe === '7days' ? 'Last 7 Days' : ($selectedTimeframe === '30days' ? 'Last 30 Days' : ($selectedTimeframe === '90days' ? 'Last 90 Days' : 'Last 12 Months')) }})</h3>
+                        <h3 class="text-sm font-semibold text-themed-primary mb-3 transition-colors duration-300">Daily Earnings ({{ $selectedTimeframe === '7days' ? 'Last 7 Days' : ($selectedTimeframe === '30days' ? 'Last 30 Days' : ($selectedTimeframe === '90days' ? 'Last 90 Days' : 'Last 12 Months')) }})</h3>
                         <div class="h-48">
                             <canvas id="earningsChart"></canvas>
                         </div>
@@ -143,30 +143,30 @@
                     
                     <!-- Top Earning Courses -->
                     <div>
-                        <h3 class="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3 transition-colors duration-300">Top Earning Courses</h3>
+                        <h3 class="text-sm font-semibold text-themed-primary mb-3 transition-colors duration-300">Top Earning Courses</h3>
                         <div class="space-y-3">
                             @forelse($this->earningsAnalytics['top_earning_courses'] ?? [] as $course)
-                            <div class="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700 rounded-lg transition-colors duration-300">
+                            <div class="flex items-center justify-between p-3 bg-themed-tertiary rounded-lg transition-colors duration-300">
                                 <div class="flex-1">
-                                    <h4 class="text-sm font-medium text-gray-900 dark:text-white truncate transition-colors duration-300">{{ $course['course_title'] }}</h4>
-                                    <p class="text-xs text-gray-600 dark:text-gray-400 transition-colors duration-300">{{ $course['sales_count'] }} sales</p>
+                                    <h4 class="text-sm font-medium text-themed-primary truncate transition-colors duration-300">{{ $course['course_title'] }}</h4>
+                                    <p class="text-xs text-themed-secondary transition-colors duration-300">{{ $course['sales_count'] }} sales</p>
                                 </div>
                                 <span class="text-sm font-bold text-green-600 dark:text-green-400 transition-colors duration-300">₦{{ number_format($course['total_commission'], 0) }}</span>
                             </div>
                             @empty
-                            <p class="text-gray-500 dark:text-gray-400 text-sm transition-colors duration-300">No earnings from courses yet</p>
+                            <p class="text-themed-tertiary text-sm transition-colors duration-300">No earnings from courses yet</p>
                             @endforelse
                         </div>
                         
                         <!-- Tier Progress -->
                         @if($this->overviewStats['next_tier_requirement'] > 0)
-                        <div class="mt-6 pt-4 border-t border-gray-200 dark:border-gray-600 transition-colors duration-300">
-                            <h4 class="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2 transition-colors duration-300">Next Tier Progress</h4>
+                        <div class="mt-6 pt-4 border-t border-themed-primary transition-colors duration-300">
+                            <h4 class="text-sm font-semibold text-themed-primary mb-2 transition-colors duration-300">Next Tier Progress</h4>
                             <div class="flex items-center justify-between text-sm mb-2">
-                                <span class="text-gray-600 dark:text-gray-400 transition-colors duration-300">{{ $this->overviewStats['tier_status'] }} → Next Level</span>
-                                <span class="text-gray-600 dark:text-gray-400 transition-colors duration-300">₦{{ number_format($this->overviewStats['next_tier_requirement'], 0) }} to go</span>
+                                <span class="text-themed-secondary transition-colors duration-300">{{ $this->overviewStats['tier_status'] }} → Next Level</span>
+                                <span class="text-themed-secondary transition-colors duration-300">₦{{ number_format($this->overviewStats['next_tier_requirement'], 0) }} to go</span>
                             </div>
-                            <div class="w-full bg-gray-200 dark:bg-gray-600 rounded-full h-2 transition-colors duration-300">
+                            <div class="w-full bg-themed-tertiary rounded-full h-2 transition-colors duration-300">
                                 <div class="bg-gradient-to-r from-green-400 to-emerald-500 h-2 rounded-full" 
                                      style="width: {{ 100 - (($this->overviewStats['next_tier_requirement'] / 10000) * 100) }}%"></div>
                             </div>
@@ -179,9 +179,9 @@
 
             <!-- Referral Performance -->
             @if($showWidgets['referral_performance'])
-            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6 transition-colors duration-300">
+            <div class="bg-themed-secondary rounded-xl shadow-sm border border-themed-primary p-6 transition-colors duration-300">
                 <div class="flex items-center justify-between mb-6">
-                    <h2 class="text-xl font-bold text-gray-900 dark:text-white transition-colors duration-300">Referral Performance</h2>
+                    <h2 class="text-xl font-bold text-themed-primary transition-colors duration-300">Referral Performance</h2>
                     <a href="{{ route('affiliate.analytics') }}" class="text-green-600 dark:text-green-400 hover:text-green-700 dark:hover:text-green-300 text-sm font-medium transition-colors duration-300">
                         View Details <i class="fas fa-arrow-right ml-1"></i>
                     </a>
@@ -189,14 +189,14 @@
                 
                 <div class="space-y-4 max-h-96 overflow-y-auto">
                     @forelse(collect($this->referralPerformance)->take(8) as $referral)
-                    <div class="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-700 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors duration-200">
+                    <div class="flex items-center justify-between p-4 bg-themed-tertiary rounded-lg hover:bg-themed-secondary transition-colors duration-200">
                         <div class="flex items-center space-x-4">
                             <div class="w-10 h-10 bg-gradient-to-br from-green-100 to-emerald-100 dark:from-green-900/30 dark:to-emerald-900/30 rounded-full flex items-center justify-center transition-colors duration-300">
                                 <span class="font-bold text-green-600 dark:text-green-400 text-sm">{{ substr($referral['user_name'], 0, 2) }}</span>
                             </div>
                             <div>
-                                <h4 class="font-semibold text-gray-900 dark:text-white transition-colors duration-300">{{ $referral['user_name'] }}</h4>
-                                <div class="flex items-center space-x-3 text-sm text-gray-600 dark:text-gray-400 mt-1 transition-colors duration-300">
+                                <h4 class="font-semibold text-themed-primary transition-colors duration-300">{{ $referral['user_name'] }}</h4>
+                                <div class="flex items-center space-x-3 text-sm text-themed-secondary mt-1 transition-colors duration-300">
                                     <span>{{ $referral['courses_purchased'] }} courses</span>
                                     <span>₦{{ number_format($referral['total_spent'], 0) }} spent</span>
                                     <span class="flex items-center">
@@ -216,8 +216,8 @@
                     </div>
                     @empty
                     <div class="text-center py-8">
-                        <i class="fas fa-user-plus text-gray-400 dark:text-gray-500 text-4xl mb-4 transition-colors duration-300"></i>
-                        <p class="text-gray-600 dark:text-gray-400 mb-4 transition-colors duration-300">No referrals yet</p>
+                        <i class="fas fa-user-plus text-themed-tertiary text-4xl mb-4 transition-colors duration-300"></i>
+                        <p class="text-themed-secondary mb-4 transition-colors duration-300">No referrals yet</p>
                         <button wire:click="copyToClipboard('{{ auth()->user()->affiliate?->referral_link ?? '' }}')" 
                                 class="bg-green-600 dark:bg-green-500 hover:bg-green-700 dark:hover:bg-green-600 text-white px-4 py-2 rounded-lg transition-colors">
                             Share Your Link
@@ -233,18 +233,18 @@
         <div class="space-y-8">
             <!-- Marketing Tools -->
             @if($showWidgets['marketing_tools'])
-            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6 transition-colors duration-300">
-                <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-6 transition-colors duration-300">Marketing Tools</h2>
+            <div class="bg-themed-secondary rounded-xl shadow-sm border border-themed-primary p-6 transition-colors duration-300">
+                <h2 class="text-xl font-bold text-themed-primary mb-6 transition-colors duration-300">Marketing Tools</h2>
                 
                 <div class="space-y-4">
                     <!-- Referral Link -->
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 transition-colors duration-300">Your Referral Link</label>
+                        <label class="block text-sm font-medium text-themed-primary mb-2 transition-colors duration-300">Your Referral Link</label>
                         <div class="flex items-center space-x-2">
                             <input type="text" 
                                    value="{{ $this->marketingTools['referral_link'] ?? '' }}" 
                                    readonly 
-                                   class="flex-1 bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm text-gray-900 dark:text-white transition-colors duration-300">
+                                   class="flex-1 bg-themed-tertiary border border-themed-secondary rounded-lg px-3 py-2 text-sm text-themed-primary transition-colors duration-300">
                             <button wire:click="copyToClipboard('{{ $this->marketingTools['referral_link'] ?? '' }}')" 
                                     class="bg-green-600 dark:bg-green-500 hover:bg-green-700 dark:hover:bg-green-600 text-white px-3 py-2 rounded-lg text-sm transition-colors">
                                 <i class="fas fa-copy"></i>
@@ -254,12 +254,12 @@
 
                     <!-- Referral Code -->
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 transition-colors duration-300">Referral Code</label>
+                        <label class="block text-sm font-medium text-themed-primary mb-2 transition-colors duration-300">Referral Code</label>
                         <div class="flex items-center space-x-2">
                             <input type="text" 
                                    value="{{ $this->marketingTools['referral_code'] ?? '' }}" 
                                    readonly 
-                                   class="flex-1 bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm font-mono text-gray-900 dark:text-white transition-colors duration-300">
+                                   class="flex-1 bg-themed-tertiary border border-themed-secondary rounded-lg px-3 py-2 text-sm font-mono text-themed-primary transition-colors duration-300">
                             <button wire:click="copyToClipboard('{{ $this->marketingTools['referral_code'] ?? '' }}')" 
                                     class="bg-green-600 dark:bg-green-500 hover:bg-green-700 dark:hover:bg-green-600 text-white px-3 py-2 rounded-lg text-sm transition-colors">
                                 <i class="fas fa-copy"></i>
@@ -269,20 +269,20 @@
 
                     <!-- QR Code -->
                     <div class="text-center">
-                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 transition-colors duration-300">QR Code</label>
+                        <label class="block text-sm font-medium text-themed-primary mb-2 transition-colors duration-300">QR Code</label>
                         @if(isset($this->marketingTools['qr_code_url']))
-                        <img src="{{ $this->marketingTools['qr_code_url'] }}" alt="QR Code" class="mx-auto mb-2 border dark:border-gray-600 rounded-lg transition-colors duration-300">
+                        <img src="{{ $this->marketingTools['qr_code_url'] }}" alt="QR Code" class="mx-auto mb-2 border border-themed-primary dark:border-themed-secondary rounded-lg transition-colors duration-300">
                         @endif
                         <button class="text-xs text-green-600 dark:text-green-400 hover:text-green-700 dark:hover:text-green-300 transition-colors duration-300">Download QR Code</button>
                     </div>
 
                     <!-- Social Media Templates -->
                     <div>
-                        <h4 class="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3 transition-colors duration-300">Social Media Templates</h4>
+                        <h4 class="text-sm font-semibold text-themed-primary mb-3 transition-colors duration-300">Social Media Templates</h4>
                         <div class="space-y-2">
                             @foreach($this->marketingTools['social_media_posts'] ?? [] as $platform => $template)
-                            <div class="flex items-center justify-between p-2 border border-gray-200 dark:border-gray-600 rounded transition-colors duration-300">
-                                <span class="text-sm text-gray-600 dark:text-gray-400 capitalize transition-colors duration-300">{{ $platform }}</span>
+                            <div class="flex items-center justify-between p-2 border border-themed-primary rounded transition-colors duration-300">
+                                <span class="text-sm text-themed-secondary capitalize transition-colors duration-300">{{ $platform }}</span>
                                 <button wire:click="copyToClipboard('{{ $template }}')" 
                                         class="text-green-600 dark:text-green-400 hover:text-green-700 dark:hover:text-green-300 text-sm transition-colors duration-300">
                                     Copy
@@ -297,18 +297,18 @@
 
             <!-- Top Referrals -->
             @if($showWidgets['top_referrals'])
-            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6 transition-colors duration-300">
-                <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-6 transition-colors duration-300">Top Referrals</h2>
+            <div class="bg-themed-secondary rounded-xl shadow-sm border border-themed-primary p-6 transition-colors duration-300">
+                <h2 class="text-xl font-bold text-themed-primary mb-6 transition-colors duration-300">Top Referrals</h2>
                 
                 <div class="space-y-3 max-h-80 overflow-y-auto">
                     @forelse($this->topReferrals as $index => $referral)
-                    <div class="flex items-center space-x-3 p-3 border border-gray-200 dark:border-gray-600 rounded-lg transition-colors duration-300">
+                    <div class="flex items-center space-x-3 p-3 border border-themed-primary rounded-lg transition-colors duration-300">
                         <div class="flex-shrink-0 w-8 h-8 bg-gradient-to-br from-yellow-100 to-orange-100 dark:from-yellow-900/30 dark:to-orange-900/30 rounded-full flex items-center justify-center transition-colors duration-300">
                             <span class="font-bold text-yellow-600 dark:text-yellow-400 text-sm">#{{ $index + 1 }}</span>
                         </div>
                         <div class="flex-1 min-w-0">
-                            <h4 class="text-sm font-medium text-gray-900 dark:text-white truncate transition-colors duration-300">{{ $referral['user_name'] }}</h4>
-                            <div class="flex items-center space-x-2 text-xs text-gray-500 dark:text-gray-400 mt-1 transition-colors duration-300">
+                            <h4 class="text-sm font-medium text-themed-primary truncate transition-colors duration-300">{{ $referral['user_name'] }}</h4>
+                            <div class="flex items-center space-x-2 text-xs text-themed-tertiary mt-1 transition-colors duration-300">
                                 <span>{{ $referral['courses_purchased'] }} courses</span>
                                 <span>•</span>
                                 <span>{{ $referral['join_date']->format('M Y') }}</span>
@@ -320,8 +320,8 @@
                     </div>
                     @empty
                     <div class="text-center py-6">
-                        <i class="fas fa-medal text-gray-400 dark:text-gray-500 text-3xl mb-2 transition-colors duration-300"></i>
-                        <p class="text-gray-600 dark:text-gray-400 transition-colors duration-300">No active referrals yet</p>
+                        <i class="fas fa-medal text-themed-tertiary text-3xl mb-2 transition-colors duration-300"></i>
+                        <p class="text-themed-secondary transition-colors duration-300">No active referrals yet</p>
                     </div>
                     @endforelse
                 </div>
@@ -330,9 +330,9 @@
 
             <!-- Recent Transactions -->
             @if($showWidgets['recent_transactions'])
-            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6 transition-colors duration-300">
+            <div class="bg-themed-secondary rounded-xl shadow-sm border border-themed-primary p-6 transition-colors duration-300">
                 <div class="flex items-center justify-between mb-6">
-                    <h2 class="text-xl font-bold text-gray-900 dark:text-white transition-colors duration-300">Recent Transactions</h2>
+                    <h2 class="text-xl font-bold text-themed-primary transition-colors duration-300">Recent Transactions</h2>
                     <a href="{{ route('affiliate.commissions') }}" class="text-green-600 dark:text-green-400 hover:text-green-700 dark:hover:text-green-300 text-sm font-medium transition-colors duration-300">
                         View All <i class="fas fa-arrow-right ml-1"></i>
                     </a>
@@ -340,11 +340,11 @@
                 
                 <div class="space-y-3 max-h-80 overflow-y-auto">
                     @forelse($this->recentTransactions as $transaction)
-                    <div class="flex items-center justify-between p-3 border border-gray-200 dark:border-gray-600 rounded-lg transition-colors duration-300">
+                    <div class="flex items-center justify-between p-3 border border-themed-primary rounded-lg transition-colors duration-300">
                         <div class="flex-1">
-                            <h4 class="text-sm font-medium text-gray-900 dark:text-white transition-colors duration-300">{{ $transaction['user_name'] }}</h4>
-                            <p class="text-xs text-gray-600 dark:text-gray-400 truncate transition-colors duration-300">{{ $transaction['course_title'] ?? 'Direct Referral' }}</p>
-                            <span class="text-xs text-gray-500 dark:text-gray-400 transition-colors duration-300">{{ $transaction['created_at']->format('M j, Y') }}</span>
+                            <h4 class="text-sm font-medium text-themed-primary transition-colors duration-300">{{ $transaction['user_name'] }}</h4>
+                            <p class="text-xs text-themed-secondary truncate transition-colors duration-300">{{ $transaction['course_title'] ?? 'Direct Referral' }}</p>
+                            <span class="text-xs text-themed-tertiary transition-colors duration-300">{{ $transaction['created_at']->format('M j, Y') }}</span>
                         </div>
                         <div class="text-right">
                             <div class="text-sm font-bold text-green-600 dark:text-green-400 transition-colors duration-300">₦{{ number_format($transaction['commission'], 0) }}</div>
@@ -355,8 +355,8 @@
                     </div>
                     @empty
                     <div class="text-center py-6">
-                        <i class="fas fa-receipt text-gray-400 dark:text-gray-500 text-3xl mb-2 transition-colors duration-300"></i>
-                        <p class="text-gray-600 dark:text-gray-400 transition-colors duration-300">No transactions yet</p>
+                        <i class="fas fa-receipt text-themed-tertiary text-3xl mb-2 transition-colors duration-300"></i>
+                        <p class="text-themed-secondary transition-colors duration-300">No transactions yet</p>
                     </div>
                     @endforelse
                 </div>
@@ -365,27 +365,27 @@
 
             <!-- Leaderboard -->
             @if($showWidgets['leaderboard'])
-            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6 transition-colors duration-300">
-                <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-6 transition-colors duration-300">Affiliate Leaderboard</h2>
+            <div class="bg-themed-secondary rounded-xl shadow-sm border border-themed-primary p-6 transition-colors duration-300">
+                <h2 class="text-xl font-bold text-themed-primary mb-6 transition-colors duration-300">Affiliate Leaderboard</h2>
                 
                 <div class="space-y-3">
                     @foreach($this->leaderboard as $affiliate)
-                    <div class="flex items-center space-x-3 p-3 rounded-lg {{ $affiliate['is_current_user'] ? 'bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800' : 'bg-gray-50 dark:bg-gray-700' }} transition-colors duration-300">
-                        <div class="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center {{ $affiliate['rank'] <= 3 ? 'bg-gradient-to-br from-yellow-100 to-orange-100 dark:from-yellow-900/30 dark:to-orange-900/30' : 'bg-gray-100 dark:bg-gray-600' }} transition-colors duration-300">
-                            <span class="font-bold text-sm {{ $affiliate['rank'] <= 3 ? 'text-yellow-600 dark:text-yellow-400' : 'text-gray-600 dark:text-gray-300' }}">
+                    <div class="flex items-center space-x-3 p-3 rounded-lg {{ $affiliate['is_current_user'] ? 'bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800' : 'bg-themed-tertiary' }} transition-colors duration-300">
+                        <div class="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center {{ $affiliate['rank'] <= 3 ? 'bg-gradient-to-br from-yellow-100 to-orange-100 dark:from-yellow-900/30 dark:to-orange-900/30' : 'bg-themed-secondary' }} transition-colors duration-300">
+                            <span class="font-bold text-sm {{ $affiliate['rank'] <= 3 ? 'text-yellow-600 dark:text-yellow-400' : 'text-themed-secondary' }}">
                                 {{ $affiliate['rank'] }}
                             </span>
                         </div>
                         <div class="flex-1 min-w-0">
-                            <h4 class="text-sm font-medium {{ $affiliate['is_current_user'] ? 'text-green-900 dark:text-green-300' : 'text-gray-900 dark:text-white' }} truncate transition-colors duration-300">
+                            <h4 class="text-sm font-medium {{ $affiliate['is_current_user'] ? 'text-green-900 dark:text-green-300' : 'text-themed-primary' }} truncate transition-colors duration-300">
                                 {{ $affiliate['is_current_user'] ? 'You' : $affiliate['name'] }}
                             </h4>
-                            <div class="text-xs {{ $affiliate['is_current_user'] ? 'text-green-600 dark:text-green-400' : 'text-gray-500 dark:text-gray-400' }} transition-colors duration-300">
+                            <div class="text-xs {{ $affiliate['is_current_user'] ? 'text-green-600 dark:text-green-400' : 'text-themed-tertiary' }} transition-colors duration-300">
                                 {{ $affiliate['total_referrals'] }} referrals
                             </div>
                         </div>
                         <div class="text-right">
-                            <div class="text-sm font-bold {{ $affiliate['is_current_user'] ? 'text-green-600 dark:text-green-400' : 'text-gray-900 dark:text-white' }} transition-colors duration-300">
+                            <div class="text-sm font-bold {{ $affiliate['is_current_user'] ? 'text-green-600 dark:text-green-400' : 'text-themed-primary' }} transition-colors duration-300">
                                 ₦{{ number_format($affiliate['total_earned'], 0) }}
                             </div>
                         </div>
