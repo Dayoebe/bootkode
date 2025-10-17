@@ -140,6 +140,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'last_login_at' => 'datetime',
         'social_links' => 'array',
         'is_active' => 'boolean',
+        'favorite_courses' => 'array',
         'receive_course_updates' => 'boolean',
         'receive_certificate_notifications' => 'boolean',
         'show_email_publicly' => 'boolean',
@@ -1201,4 +1202,51 @@ public static function getRecentlyDeactivated($days = 7)
     {
         return $this->hasMany(InterviewQuestionSet::class, 'created_by');
     }
+
+public function isCourseFavorited($courseId)
+{
+    $favorites = $this->favorite_courses ?? [];
+    
+    // Ensure it's always an array
+    if (is_string($favorites)) {
+        $favorites = json_decode($favorites, true) ?? [];
+    }
+    
+    return in_array((int)$courseId, $favorites);
+}
+
+public function addFavoriteCourse($courseId)
+{
+    $favorites = $this->favorite_courses ?? [];
+    
+    // Ensure it's always an array
+    if (is_string($favorites)) {
+        $favorites = json_decode($favorites, true) ?? [];
+    }
+    
+    $courseId = (int)$courseId;
+    if (!in_array($courseId, $favorites)) {
+        $favorites[] = $courseId;
+        $this->favorite_courses = $favorites;
+        $this->save();
+    }
+}
+
+public function removeFavoriteCourse($courseId)
+{
+    $favorites = $this->favorite_courses ?? [];
+    
+    // Ensure it's always an array
+    if (is_string($favorites)) {
+        $favorites = json_decode($favorites, true) ?? [];
+    }
+    
+    $courseId = (int)$courseId;
+    $favorites = array_filter($favorites, function($id) use ($courseId) {
+        return (int)$id !== $courseId;
+    });
+    
+    $this->favorite_courses = array_values($favorites);
+    $this->save();
+}
 }

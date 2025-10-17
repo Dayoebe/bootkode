@@ -226,8 +226,8 @@ Route::middleware('auth')->group(function () {
 Route::middleware('auth')->group(function () {
     Route::get('/interview/user', \App\Livewire\Career\UserMockInterview::class)->name('user.interview');
     Route::get('/admin/interview', \App\Livewire\Career\AdminMockInterview::class)->name('admin.interview');
-    Route::get('/admin/interview/questions', \App\Livewire\Career\AdminQuestionBank::class)->name('admin.interview.questions');
-    Route::get('/admin/interview/question-sets', \App\Livewire\Career\AdminQuestionSets::class)->name('admin.interview.question-sets');
+    // Route::get('/admin/interview/questions', \App\Livewire\Career\AdminQuestionBank::class)->name('admin.interview.questions');
+    // Route::get('/admin/interview/question-sets', \App\Livewire\Career\AdminQuestionSets::class)->name('admin.interview.question-sets');
     Route::get('/interview/{interview}/take', \App\Livewire\Career\StudentInterviewTaker::class)->name('interview.take');
     Route::get('/interview/{interview}/results', \App\Livewire\Career\InterviewResults::class)->name('interview.results');
 });
@@ -269,7 +269,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/saved-resources', \App\Livewire\StudentManagement\SavedResources::class)->name('student.saved-resources');
     Route::get('/offline-learning', \App\Livewire\StudentManagement\OfflineLearning::class)->name('student.offline-learning');
     Route::get('/course/{course:slug}', \App\Livewire\StudentManagement\CourseView::class)->name('course.view');
-    // Route::get('/course/{course}', \App\Livewire\StudentManagement\CourseView::class)->name('course.view');
     Route::get('/course-reviews/analytics/{courseId?}', \App\Livewire\CourseManagement\ReviewAnalytics::class)->name('review-analytics');
     // Route::post('/student/course/{course}/review', [\App\Livewire\StudentManagement\CourseView::class, 'submitReview'])->name('student.course.review');
 });

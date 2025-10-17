@@ -44,6 +44,8 @@ class CourseForm extends Component
     public array $faqs = [['question' => '', 'answer' => '']];
     public $completion_rate_threshold = 80.00;
     public $scheduled_publish_at = null;
+    public array $materials_included = [''];
+    public array $tags = [''];
 
     // Step management
     public $currentStep = 1;
@@ -82,12 +84,25 @@ class CourseForm extends Component
         'faqs.*.answer' => 'nullable|string|max:1000',
         'completion_rate_threshold' => 'numeric|between:0,100',
         'scheduled_publish_at' => 'nullable|date|after:now',
+        'materials_included' => 'array|max:10',
+        'materials_included.*' => 'nullable|string|max:255',
+        'tags' => 'array|max:10',
+        'tags.*' => 'nullable|string|max:100',
     ];
 
     public function mount()
     {
         $this->categories = Cache::remember('course_categories', 3600, fn() => CourseCategory::orderBy('name')->get());
+        
+        // Initialize the new arrays if they're empty
+        if (empty($this->materials_included)) {
+            $this->materials_included = [''];
+        }
+        if (empty($this->tags)) {
+            $this->tags = [''];
+        }
     }
+
     public function removeThumbnail()
     {
         Log::info('CourseForm: Removing thumbnail');
@@ -149,6 +164,44 @@ class CourseForm extends Component
                 $this->validate($rules);
             }
         }
+    }
+  
+    // Add methods for the new fields
+    public function addMaterial()
+    {
+        if (count($this->materials_included) < 10) {
+            $this->materials_included[] = '';
+        }
+    }
+
+    public function removeMaterial($index)
+    {
+        if (count($this->materials_included) > 1) {
+            unset($this->materials_included[$index]);
+            $this->materials_included = array_values($this->materials_included);
+        }
+    }
+
+    public function addTag()
+    {
+        if (count($this->tags) < 10) {
+            $this->tags[] = '';
+        }
+    }
+
+    public function removeTag($index)
+    {
+        if (count($this->tags) > 1) {
+            unset($this->tags[$index]);
+            $this->tags = array_values($this->tags);
+        }
+    }
+
+    // Add saveDraft method
+    public function saveDraft()
+    {
+        $this->is_published = false;
+        $this->save();
     }
 
     public function addLearningOutcome()
@@ -250,6 +303,10 @@ class CourseForm extends Component
             $this->learning_outcomes = array_filter($this->learning_outcomes ?? [], fn($outcome) => !empty(trim($outcome)));
             $this->prerequisites = array_filter($this->prerequisites ?? [], fn($prereq) => !empty(trim($prereq)));
             $this->faqs = array_filter($this->faqs ?? [], fn($faq) => !empty(trim($faq['question'] ?? '')) && !empty(trim($faq['answer'] ?? '')));
+            
+            // Clean up the new array fields
+            $this->materials_included = array_filter($this->materials_included ?? [], fn($material) => !empty(trim($material)));
+            $this->tags = array_filter($this->tags ?? [], fn($tag) => !empty(trim($tag)));
 
             // Prepare data array
             $data = $this->only([
@@ -271,6 +328,9 @@ class CourseForm extends Component
                 'estimated_duration_minutes',
                 'price',
                 'scheduled_publish_at',
+                // Include new fields
+                'materials_included',
+                'tags',
             ]);
 
             // Set instructor and approval
@@ -335,7 +395,6 @@ class CourseForm extends Component
             ]);
         }
     }
-
 
     public function getThumbnailPreview()
     {

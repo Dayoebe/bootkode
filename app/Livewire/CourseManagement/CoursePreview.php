@@ -24,6 +24,8 @@ class CoursePreview extends Component
     public $showReviewModal = false;
     public $reviewRating = 5;
     public $reviewComment = '';
+    public $isFavorited = false;
+public $shareUrl = '';
     
     // Course statistics
     public $totalLessons = 0;
@@ -53,8 +55,67 @@ class CoursePreview extends Component
         $this->checkEnrollmentStatus();
         $this->calculateStatistics();
         $this->loadUserReview();
+        
+        $this->shareUrl = route('courses.preview', $course);
+        $this->isFavorited = Auth::check() ? 
+            Auth::user()->isCourseFavorited($course->id) : 
+            false;
     }
 
+    public function toggleFavorite()
+    {
+        if (!Auth::check()) {
+            return redirect()->route('login');
+        }
+    
+        try {
+            $user = Auth::user();
+            
+            if ($user->isCourseFavorited($this->course->id)) {
+                $user->removeFavoriteCourse($this->course->id);
+                $message = 'Course removed from favorites';
+                $this->isFavorited = false;
+            } else {
+                $user->addFavoriteCourse($this->course->id);
+                $message = 'Course added to favorites';
+                $this->isFavorited = true;
+            }
+    
+            $this->dispatch('notify', [
+                'message' => $message,
+                'type' => 'success'
+            ]);
+    
+        } catch (\Exception $e) {
+            $this->dispatch('notify', [
+                'message' => 'Failed to update favorites',
+                'type' => 'error'
+            ]);
+        }
+    }
+    
+
+
+
+/**
+ * Get the next lesson for the enrolled user
+ */
+public function getNextLesson()
+{
+    if (!$this->isEnrolled) {
+        return null;
+    }
+
+    // This is a simplified version - you might want to implement based on your progress tracking
+    foreach ($this->course->sections as $section) {
+        foreach ($section->lessons as $lesson) {
+            // Check if lesson is not completed (you'll need to implement this logic)
+            return $lesson;
+        }
+    }
+    
+    return null;
+}
     private function checkEnrollmentStatus()
     {
         if (Auth::check()) {
@@ -232,7 +293,43 @@ class CoursePreview extends Component
                $this->isEnrolled && 
                $this->enrollmentProgress >= 25; // Can review after 25% completion
     }
+/**
+ * Share course functionality
+ */
+public function shareCourse($platform)
+{
+    $courseUrl = route('courses.preview', $this->course);
+    $message = "Check out this course: {$this->course->title}";
 
+    $shareUrls = [
+        'twitter' => "https://twitter.com/intent/tweet?text=" . urlencode($message . ' ' . $courseUrl),
+        'facebook' => "https://www.facebook.com/sharer/sharer.php?u=" . urlencode($courseUrl),
+        'linkedin' => "https://www.linkedin.com/sharing/share-offsite/?url=" . urlencode($courseUrl),
+        'whatsapp' => "https://wa.me/?text=" . urlencode($message . ' ' . $courseUrl),
+    ];
+
+    if (isset($shareUrls[$platform])) {
+        return redirect()->away($shareUrls[$platform]);
+    }
+
+    $this->dispatch('notify', [
+        'message' => 'Course link copied to clipboard!',
+        'type' => 'success'
+    ]);
+}
+
+
+/**
+ * Check if course is favorited by user
+ */
+public function getIsFavoritedProperty()
+{
+    if (!Auth::check()) {
+        return false;
+    }
+
+    return Auth::user()->favoriteCourses()->where('course_id', $this->course->id)->exists();
+}
     public function render()
     {
         return view('livewire.course-management.course-preview');
