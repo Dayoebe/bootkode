@@ -2,7 +2,7 @@
 @if (count($assessments) > 0)
     <div class="space-y-4">
         @foreach ($assessments as $assessment)
-            <div class="bg-gray-50 dark:bg-gray-700 rounded-lg border border-gray-200 dark:border-gray-600 p-4 transition-colors duration-300">
+            <div class="bg-themed-tertiary dark:bg-gray-700 rounded-lg border border-themed-primary dark:border-gray-600 p-4 transition-colors duration-300">
                 <div class="flex items-start justify-between">
                     <div class="flex-1 min-w-0">
                         <div class="flex items-center gap-2 mb-2">
@@ -25,17 +25,17 @@
                             </span>
                         </div>
                         
-                        <h4 class="text-lg font-medium text-gray-900 dark:text-white mb-1 truncate">
+                        <h4 class="text-lg font-medium text-gray-900 dark:text-white mb-1 truncate transition-colors duration-300">
                             {{ $assessment['title'] }}
                         </h4>
                         
                         @if ($assessment['description'])
-                            <p class="text-sm text-gray-600 dark:text-gray-400 mb-2">
+                            <p class="text-sm text-gray-600 dark:text-gray-400 mb-2 transition-colors duration-300">
                                 {{ Str::limit($assessment['description'], 120) }}
                             </p>
                         @endif
                         
-                        <div class="flex items-center gap-4 text-xs text-gray-500 dark:text-gray-400">
+                        <div class="flex items-center gap-4 text-xs text-gray-500 dark:text-gray-400 transition-colors duration-300">
                             <span>
                                 <i class="fas fa-question-circle mr-1"></i>
                                 {{ count($assessment['questions'] ?? []) }} {{ $this->getAssessmentItemType($assessment['type']) }}
@@ -97,34 +97,34 @@
             $avgPassPercentage = collect($assessments)->avg('pass_percentage');
         @endphp
         
-        <div class="bg-white dark:bg-gray-800 rounded-lg p-4 text-center border border-gray-200 dark:border-gray-700">
+        <div class="bg-themed-secondary dark:bg-gray-800 rounded-lg p-4 text-center border border-themed-primary dark:border-gray-700 transition-colors duration-300">
             <div class="text-2xl font-bold text-purple-600 dark:text-purple-400">{{ $totalAssessments }}</div>
-            <div class="text-sm text-gray-600 dark:text-gray-400">Total Assessments</div>
+            <div class="text-sm text-gray-600 dark:text-gray-400 transition-colors duration-300">Total Assessments</div>
         </div>
         
-        <div class="bg-white dark:bg-gray-800 rounded-lg p-4 text-center border border-gray-200 dark:border-gray-700">
+        <div class="bg-themed-secondary dark:bg-gray-800 rounded-lg p-4 text-center border border-themed-primary dark:border-gray-700 transition-colors duration-300">
             <div class="text-2xl font-bold text-red-600 dark:text-red-400">{{ $requiredAssessments }}</div>
-            <div class="text-sm text-gray-600 dark:text-gray-400">Required</div>
+            <div class="text-sm text-gray-600 dark:text-gray-400 transition-colors duration-300">Required</div>
         </div>
         
-        <div class="bg-white dark:bg-gray-800 rounded-lg p-4 text-center border border-gray-200 dark:border-gray-700">
+        <div class="bg-themed-secondary dark:bg-gray-800 rounded-lg p-4 text-center border border-themed-primary dark:border-gray-700 transition-colors duration-300">
             <div class="text-2xl font-bold text-blue-600 dark:text-blue-400">{{ $totalQuestions }}</div>
-            <div class="text-sm text-gray-600 dark:text-gray-400">Total Items</div>
+            <div class="text-sm text-gray-600 dark:text-gray-400 transition-colors duration-300">Total Items</div>
         </div>
         
-        <div class="bg-white dark:bg-gray-800 rounded-lg p-4 text-center border border-gray-200 dark:border-gray-700">
+        <div class="bg-themed-secondary dark:bg-gray-800 rounded-lg p-4 text-center border border-themed-primary dark:border-gray-700 transition-colors duration-300">
             <div class="text-2xl font-bold text-green-600 dark:text-green-400">{{ round($avgPassPercentage) }}%</div>
-            <div class="text-sm text-gray-600 dark:text-gray-400">Avg Pass Rate</div>
+            <div class="text-sm text-gray-600 dark:text-gray-400 transition-colors duration-300">Avg Pass Rate</div>
         </div>
     </div>
 @else
     <!-- Empty State -->
     <div class="text-center py-12">
-        <div class="w-20 h-20 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center mx-auto mb-4 border border-gray-200 dark:border-gray-600">
+        <div class="w-20 h-20 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center mx-auto mb-4 border border-gray-200 dark:border-gray-600 transition-colors duration-300">
             <i class="fas fa-clipboard-check text-3xl text-gray-400 dark:text-gray-500"></i>
         </div>
-        <h3 class="text-xl font-medium text-gray-800 dark:text-white mb-2">No Assessments Yet</h3>
-        <p class="text-gray-600 dark:text-gray-400 mb-6 max-w-md mx-auto">
+        <h3 class="text-xl font-medium text-gray-800 dark:text-white mb-2 transition-colors duration-300">No Assessments Yet</h3>
+        <p class="text-gray-600 dark:text-gray-400 mb-6 max-w-md mx-auto transition-colors duration-300">
             Assessments help evaluate student understanding and progress. Create your first assessment to get started.
         </p>
         <button wire:click="toggleCreateForm"
