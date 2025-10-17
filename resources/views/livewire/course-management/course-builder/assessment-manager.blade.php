@@ -1,13 +1,13 @@
 <div class="space-y-6">
     <!-- Success Message -->
     @if (session()->has('success'))
-        <div class="bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300 border border-green-200 dark:border-green-700 p-4 rounded-lg animate__animated animate__fadeIn">
+        <div class="bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300 border border-green-200 dark:border-green-700 p-4 rounded-lg animate__animated animate__fadeIn transition-colors duration-300">
             {{ session('success') }}
         </div>
     @endif
 
     <!-- Navigation Breadcrumb -->
-    <div class="flex items-center text-sm text-gray-600 dark:text-gray-400 mb-4">
+    <div class="flex items-center text-sm text-gray-600 dark:text-gray-400 mb-4 transition-colors duration-300">
         <span>Assessment Manager</span>
         @if ($activeView !== 'list')
             <i class="fas fa-chevron-right mx-2"></i>
@@ -22,14 +22,14 @@
     </div>
 
     <!-- Main Content Area -->
-    <div class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden transition-colors duration-300">
+    <div class="bg-themed-secondary dark:bg-gray-800 rounded-lg border border-themed-primary dark:border-gray-700 overflow-hidden transition-colors duration-300">
         <!-- Header -->
-        <div class="bg-gray-50 dark:bg-gray-900 px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+        <div class="bg-themed-tertiary dark:bg-gray-900 px-6 py-4 border-b border-themed-primary dark:border-gray-700 transition-colors duration-300">
             <div class="flex items-center justify-between">
                 <div class="flex items-center gap-3">
                     @if ($activeView === 'list')
-                        <h3 class="text-lg font-medium text-gray-800 dark:text-white">Lesson Assessments</h3>
-                        <span class="px-2 py-1 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 text-sm rounded-full border border-gray-300 dark:border-gray-600">
+                        <h3 class="text-lg font-medium text-gray-800 dark:text-white transition-colors duration-300">Lesson Assessments</h3>
+                        <span class="px-2 py-1 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 text-sm rounded-full border border-themed-primary transition-colors duration-300">
                             {{ count($assessments) }} assessments
                         </span>
                     @else
@@ -37,7 +37,7 @@
                                 class="text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-white transition-colors duration-300">
                             <i class="fas fa-arrow-left mr-2"></i>
                         </button>
-                        <h3 class="text-lg font-medium text-gray-800 dark:text-white">
+                        <h3 class="text-lg font-medium text-gray-800 dark:text-white transition-colors duration-300">
                             @if ($activeView === 'create')
                                 Create New Assessment
                             @elseif ($activeView === 'edit')
