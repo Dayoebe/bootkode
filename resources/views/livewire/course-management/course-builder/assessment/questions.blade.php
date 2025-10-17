@@ -2,7 +2,7 @@
 @if ($selectedAssessment)
     <div class="space-y-6">
         <!-- Assessment Info Header -->
-        <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-4 border border-gray-200 dark:border-gray-600 transition-colors duration-300">
+        <div class="bg-themed-tertiary dark:bg-gray-700 rounded-lg p-4 border border-themed-primary dark:border-gray-600 transition-colors duration-300">
             <div class="flex items-center justify-between">
                 <div>
                     <h4 class="text-xl font-bold text-gray-800 dark:text-white transition-colors duration-300">{{ $selectedAssessment['title'] }}</h4>
