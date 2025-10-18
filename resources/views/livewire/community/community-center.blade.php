@@ -1,131 +1,155 @@
-<div class="min-h-screen bg-gray-50 dark:bg-gray-900">
+<div class="min-h-screen bg-themed-primary">
     <!-- Header -->
-    <div class="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700">
-        <div class="px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between items-center py-6">
-                <div class="flex items-center space-x-4">
-                    <div class="bg-blue-600 dark:bg-blue-500 p-3 rounded-lg animate__animated animate__fadeInLeft">
-                        <i class="fas fa-users text-white text-xl"></i>
+    <div class="bg-themed-secondary shadow-sm border-b border-themed-primary">
+        <div class="px-4 sm:px-6 lg:px-8 py-6">
+            <div class="flex justify-between items-center flex-wrap gap-4">
+                <div class="flex items-center gap-4">
+                    <div class="bg-gradient-to-br from-blue-500 to-indigo-600 p-3 rounded-xl shadow-lg">
+                        <i class="fas fa-community text-white text-2xl"></i>
                     </div>
-                    <div class="animate__animated animate__fadeInUp">
-                        <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Community Center</h1>
-                        <p class="text-gray-600 dark:text-gray-400 mt-1">Connect, collaborate, and learn with others</p>
+                    <div>
+                        <h1 class="text-3xl font-bold text-themed-primary">Community Hub</h1>
+                        <p class="text-themed-secondary text-sm mt-1">Connect, learn & grow together</p>
                     </div>
                 </div>
-                
-                <!-- Quick Stats -->
-                <div class="hidden md:flex items-center space-x-6 animate__animated animate__fadeInRight">
-                    <div class="text-center">
-                        <div class="text-2xl font-bold text-blue-600 dark:text-blue-400">{{ \App\Models\ForumThread::count() }}</div>
-                        <div class="text-xs text-gray-500 dark:text-gray-400">Discussions</div>
+
+                <div class="hidden lg:grid grid-cols-4 gap-3">
+                    <div class="bg-white/10 backdrop-blur border border-white/20 rounded-lg p-3 text-center">
+                        <div class="text-2xl font-bold text-blue-400">{{ $stats['totalMembers'] }}</div>
+                        <div class="text-xs text-themed-secondary mt-1">Members</div>
                     </div>
-                    <div class="text-center">
-                        <div class="text-2xl font-bold text-green-600 dark:text-green-400">{{ \App\Models\CommunityActivity::studyGroups()->active()->count() }}</div>
-                        <div class="text-xs text-gray-500 dark:text-gray-400">Study Groups</div>
+                    <div class="bg-white/10 backdrop-blur border border-white/20 rounded-lg p-3 text-center">
+                        <div class="text-2xl font-bold text-green-400">{{ $stats['activeStudyGroups'] }}</div>
+                        <div class="text-xs text-themed-secondary mt-1">Groups</div>
                     </div>
-                    <div class="text-center">
-                        <div class="text-2xl font-bold text-orange-600 dark:text-orange-400">{{ \App\Models\CommunityActivity::codeChallenges()->active()->count() }}</div>
-                        <div class="text-xs text-gray-500 dark:text-gray-400">Challenges</div>
+                    <div class="bg-white/10 backdrop-blur border border-white/20 rounded-lg p-3 text-center">
+                        <div class="text-2xl font-bold text-orange-400">{{ $stats['activeChallenges'] }}</div>
+                        <div class="text-xs text-themed-secondary mt-1">Challenges</div>
+                    </div>
+                    <div class="bg-white/10 backdrop-blur border border-white/20 rounded-lg p-3 text-center">
+                        <div class="text-2xl font-bold text-indigo-400">{{ $stats['upcomingEvents'] }}</div>
+                        <div class="text-xs text-themed-secondary mt-1">Events</div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Navigation Tabs -->
-    <div class="px-4 sm:px-6 lg:px-8 py-6">
-        <div class="border-b border-gray-200 dark:border-gray-700">
-            <nav class="-mb-px flex space-x-8 overflow-x-auto">
-                @foreach([
-                        'forums' => ['label' => 'Discussion Forums', 'icon' => 'fas fa-comments', 'roles' => []],
-                        'study-groups' => ['label' => 'Study Groups', 'icon' => 'fas fa-user-friends', 'roles' => []],
-                        'code-challenges' => ['label' => 'Code Challenges', 'icon' => 'fas fa-trophy', 'roles' => []],
-                        'live-events' => ['label' => 'Live Events', 'icon' => 'fas fa-video', 'roles' => []],
-                        'moderation' => [
-                            'label' => 'Community Moderation',
-                            'icon' => 'fas fa-shield-alt',
-                            'roles' => [App\Models\User::ROLE_ACADEMY_ADMIN, App\Models\User::ROLE_SUPER_ADMIN]
-                        ],
-                        'feedback' => [
-                            'label' => 'Feedback System',
-                            'icon' => 'fas fa-comments',
-                            'roles' => [App\Models\User::ROLE_STUDENT, App\Models\User::ROLE_INSTRUCTOR]
-                        ],
-                    ] as $tab => $tabData)
-                        @if(empty($tabData['roles']) || in_array($user->role, $tabData['roles']))
-                            <button
-                                wire:click="setActiveTab('{{ $tab }}')"
-                                class="{{ $activeTab === $tab 
-                                    ? 'border-blue-500 text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20' 
-                                    : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800' 
-                                }} whitespace-nowrap py-4 px-6 border-b-2 font-medium text-sm flex items-center rounded-t-lg transition-all duration-200"
-                            >
-                                <i class="{{ $tabData['icon'] }} mr-2"></i>
-                                {{ $tabData['label'] }}
-                                
-                                @if($activeTab === $tab)
-                                    <span class="ml-2 bg-blue-500 dark:bg-blue-600 text-white text-xs px-2 py-1 rounded-full animate__animated animate__fadeInUp animate__faster">
-                                        Active
-                                    </span>
-                                @endif
-                            </button>
-                        @endif
+    <!-- Tab Navigation -->
+    <div class="bg-themed-secondary border-b border-themed-primary sticky top-0 z-30">
+        <div class="px-4 sm:px-6 lg:px-8">
+            <nav class="flex gap-1 overflow-x-auto">
+                @php
+                    $tabs = [
+                        'forums' => ['icon' => 'fas fa-comments', 'label' => 'Forums', 'color' => 'blue'],
+                        'study-groups' => ['icon' => 'fas fa-users', 'label' => 'Study Groups', 'color' => 'green'],
+                        'code-challenges' => ['icon' => 'fas fa-code', 'label' => 'Challenges', 'color' => 'orange'],
+                        'live-events' => ['icon' => 'fas fa-video', 'label' => 'Events', 'color' => 'purple'],
+                        'feedback' => ['icon' => 'fas fa-message', 'label' => 'Feedback', 'color' => 'red'],
+                    ];
+
+                    if ($isAdmin) {
+                        $tabs['moderation'] = ['icon' => 'fas fa-shield', 'label' => 'Moderation', 'color' => 'yellow'];
+                    }
+                @endphp
+
+                @foreach($tabs as $tabKey => $tabConfig)
+                    <button wire:click="setTab('{{ $tabKey }}')"
+                            class="group py-4 px-4 font-medium text-sm transition-all whitespace-nowrap {{ $activeTab === $tabKey ? 'border-b-2 border-' . $tabConfig['color'] . '-500 text-' . $tabConfig['color'] . '-600' : 'text-themed-secondary hover:text-themed-primary border-b-2 border-transparent' }}">
+                        <i class="{{ $tabConfig['icon'] }} mr-2"></i>{{ $tabConfig['label'] }}
+                    </button>
                 @endforeach
             </nav>
         </div>
     </div>
 
-    <!-- Content Area with Loading Animation -->
-    <div class="px-4 sm:px-6 lg:px-8 py-6" wire:loading.class="opacity-50 pointer-events-none">
-        <div class="animate__animated animate__fadeIn">
-            @if($activeTab === 'forums')
-                @livewire('community.partial.forums')
-            @elseif($activeTab === 'study-groups')
-                @livewire('community.partial.study-groups')
-            @elseif($activeTab === 'code-challenges')
-                @livewire('community.partial.code-challenges')
-            @elseif($activeTab === 'live-events')
-                @livewire('community.partial.live-events')
-            @elseif($activeTab === 'moderation')
-                @livewire('community.partial.moderation')
-            @elseif($activeTab === 'feedback')
-                @livewire('community.partial.feedback')
-            @endif
-        </div>
-    </div>
-
-    <!-- Loading Overlay -->
-    <div wire:loading class="fixed inset-0 bg-black bg-opacity-25 dark:bg-opacity-50 z-50 flex items-center justify-center">
-        <div class="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-xl animate__animated animate__fadeIn">
-            <div class="flex items-center space-x-3">
-                <div class="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600 dark:border-blue-400"></div>
-                <span class="text-gray-700 dark:text-gray-300">Loading...</span>
-            </div>
-        </div>
-    </div>
-
-    <!-- Flash Messages -->
-    @if (session()->has('message'))
-        <div x-data="{ show: true }" x-init="setTimeout(() => show = false, 5000)" x-show="show" 
-             x-transition:enter="animate__animated animate__slideInRight"
-             x-transition:leave="animate__animated animate__slideOutRight"
-             class="fixed top-4 right-4 bg-green-500 dark:bg-green-600 text-white px-6 py-3 rounded-lg shadow-lg z-50">
-            <div class="flex items-center">
-                <i class="fas fa-check-circle mr-2"></i>
+    <!-- Main Content -->
+    <div class="px-4 sm:px-6 lg:px-8 py-8">
+        <!-- Flash Messages -->
+        @if(session('message'))
+            <div class="mb-6 p-4 bg-green-100/20 border border-green-500/50 rounded-lg text-green-600 flex items-center gap-2">
+                <i class="fas fa-check-circle"></i>
                 {{ session('message') }}
             </div>
-        </div>
-    @endif
-
-    @if (session()->has('error'))
-        <div x-data="{ show: true }" x-init="setTimeout(() => show = false, 5000)" x-show="show" 
-             x-transition:enter="animate__animated animate__slideInRight"
-             x-transition:leave="animate__animated animate__slideOutRight"
-             class="fixed top-4 right-4 bg-red-500 dark:bg-red-600 text-white px-6 py-3 rounded-lg shadow-lg z-50">
-            <div class="flex items-center">
-                <i class="fas fa-exclamation-circle mr-2"></i>
+        @endif
+        @if(session('error'))
+            <div class="mb-6 p-4 bg-red-100/20 border border-red-500/50 rounded-lg text-red-600 flex items-center gap-2">
+                <i class="fas fa-exclamation-circle"></i>
                 {{ session('error') }}
             </div>
+        @endif
+
+        <!-- Tab Content -->
+        @switch($activeTab)
+            @case('forums')
+                @include('livewire.community.tabs.forums')
+                @break
+            @case('study-groups')
+                @include('livewire.community.tabs.study-groups')
+                @break
+            @case('code-challenges')
+                @include('livewire.community.tabs.code-challenges')
+                @break
+            @case('live-events')
+                @include('livewire.community.tabs.live-events')
+                @break
+            @case('feedback')
+                @include('livewire.community.tabs.feedback')
+                @break
+            @case('moderation')
+                @if($isAdmin)
+                    @include('livewire.community.tabs.moderation')
+                @else
+                    <div class="text-center py-12 bg-themed-secondary border border-themed-primary rounded-lg">
+                        <i class="fas fa-lock text-themed-secondary text-4xl mb-3 block"></i>
+                        <h3 class="text-lg font-semibold text-themed-primary mb-1">Access Denied</h3>
+                        <p class="text-themed-secondary">You don't have permission to access this section.</p>
+                    </div>
+                @endif
+                @break
+        @endswitch
+    </div>
+
+    <!-- Modals -->
+    @include('livewire.community.modals.forum-modal')
+    @include('livewire.community.modals.study-group-modal')
+    @include('livewire.community.modals.code-challenge-modal')
+    @include('livewire.community.modals.live-event-modal')
+    @include('livewire.community.modals.feedback-modal')
+
+    <!-- Loading Overlay -->
+    <div wire:loading class="fixed inset-0 bg-black/50 z-50 flex items-center justify-center">
+        <div class="bg-themed-secondary rounded-lg p-6 shadow-xl">
+            <div class="flex items-center gap-3">
+                <div class="animate-spin h-6 w-6 border-3 border-blue-600 border-t-transparent rounded-full"></div>
+                <span class="text-themed-primary font-medium">Loading...</span>
+            </div>
         </div>
-    @endif
+    </div>
+    
+    <style>
+        @keyframes pulse-soft {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.8; }
+        }
+
+        .animate-pulse-soft {
+            animation: pulse-soft 2s ease-in-out infinite;
+        }
+
+        @keyframes slide-in {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-slide-in {
+            animation: slide-in 0.3s ease-out;
+        }
+    </style>
 </div>
