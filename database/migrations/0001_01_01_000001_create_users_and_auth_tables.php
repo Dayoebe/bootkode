@@ -1,0 +1,99 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    public function up(): void
+    {
+        Schema::create('users', function (Blueprint $table) {
+            $table->id();
+            $table->string('name');
+            $table->string('email')->unique();
+            $table->timestamp('email_verified_at')->nullable();
+            $table->timestamp('deactivated_at')->nullable();
+            $table->string('password');
+            $table->string('role')->default('student');
+            $table->rememberToken();
+
+            // Personal Information
+            $table->date('date_of_birth')->nullable();
+            $table->string('phone_number', 20)->nullable();
+            $table->text('bio')->nullable();
+            $table->enum('profile_visibility', ['public', 'private', 'students'])->default('public');
+            $table->boolean('show_email_publicly')->default(false);
+            $table->string('profile_picture')->nullable();
+
+            // Address Information
+            $table->string('address_street')->nullable();
+            $table->string('address_city')->nullable();
+            $table->string('address_state')->nullable();
+            $table->string('address_country')->nullable();
+            $table->string('address_postal_code', 20)->nullable();
+
+            // Professional Information
+            $table->string('occupation')->nullable();
+            $table->string('education_level')->nullable();
+            $table->string('skills')->nullable();
+
+            // Social Media Links
+            $table->json('social_links')->nullable();
+
+            // Account Status & Settings
+            $table->boolean('is_active')->default(true);
+            $table->timestamp('last_login_at')->nullable();
+            $table->decimal('offline_content_size_mb', 8, 2)->default(0);
+            $table->boolean('receive_course_updates')->default(true);
+            $table->boolean('receive_certificate_notifications')->default(true);
+            $table->json('favorite_courses')->nullable();
+
+            // Financial Information
+            $table->string('bank_code')->nullable();
+            $table->string('account_number')->nullable();
+            $table->string('account_name')->nullable();
+            $table->boolean('account_verified')->default(false);
+
+            // Notification Preferences
+            $table->json('notification_preferences')->nullable();
+            $table->json('review_reminder_preferences')->nullable();
+
+            // Referral System
+            $table->foreignId('referred_by')->nullable()->constrained('users');
+            $table->string('referral_source', 50)->nullable();
+
+            // Additional Data
+            $table->json('metadata')->nullable();
+
+            $table->timestamps();
+
+            // Indexes
+            $table->index('is_active');
+            $table->index('last_login_at');
+            $table->index('deactivated_at');
+        });
+
+        Schema::create('password_reset_tokens', function (Blueprint $table) {
+            $table->string('email')->primary();
+            $table->string('token');
+            $table->timestamp('created_at')->nullable();
+        });
+
+        Schema::create('sessions', function (Blueprint $table) {
+            $table->string('id')->primary();
+            $table->foreignId('user_id')->nullable()->index();
+            $table->string('ip_address', 45)->nullable();
+            $table->text('user_agent')->nullable();
+            $table->longText('payload');
+            $table->integer('last_activity')->index();
+        });
+    }
+
+    public function down(): void
+    {
+        Schema::dropIfExists('sessions');
+        Schema::dropIfExists('password_reset_tokens');
+        Schema::dropIfExists('users');
+    }
+};
