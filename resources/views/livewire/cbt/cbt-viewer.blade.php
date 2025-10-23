@@ -1,14 +1,14 @@
-<div class="w-full px-4 bg-gray-50 dark:bg-gray-900 min-h-screen transition-colors duration-300">
+<div class="w-full px-4 bg-themed-primary dark:bg-gray-900 min-h-screen transition-colors duration-300">
     <!-- Header -->
     <div class="flex justify-between items-center mb-6 pt-6">
         <div>
-            <h1 class="text-3xl font-semibold text-gray-800 dark:text-gray-100 mb-0">
+            <h1 class="text-3xl font-semibold text-themed-primary mb-0">
                 <i class="fas fa-chart-bar mr-2"></i>My CBT Results
             </h1>
-            <p class="text-gray-600 dark:text-gray-400">View your CBT assessment results and performance</p>
+            <p class="text-themed-secondary">View your CBT assessment results and performance</p>
         </div>
         @if($viewDetails)
-            <button wire:click="closeDetails" class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-lg transition-colors duration-200">
+            <button wire:click="closeDetails" class="bg-themed-tertiary hover:bg-themed-secondary text-themed-primary px-4 py-2 rounded-lg transition-colors duration-200 border border-themed-secondary">
                 <i class="fas fa-arrow-left mr-2"></i>Back to List
             </button>
         @endif
@@ -16,9 +16,9 @@
 
     @if(!$viewDetails)
         <!-- Results Overview -->
-        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg border dark:border-gray-700">
-            <div class="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 px-6 py-4 rounded-t-lg">
-                <h6 class="text-lg font-semibold text-blue-600 dark:text-blue-400 m-0">Your CBT Assessments</h6>
+        <div class="bg-themed-secondary rounded-lg shadow-lg border border-themed-primary">
+            <div class="bg-themed-secondary border-b border-themed-secondary px-6 py-4 rounded-t-lg">
+                <h6 class="text-lg font-semibold text-accent-themed-primary m-0">Your CBT Assessments</h6>
             </div>
             <div class="p-6">
                 @if($userAssessments->count() > 0)
@@ -30,38 +30,38 @@
                                 $latestAttempt = $attempts->first();
                             @endphp
                             <div class="h-full">
-                                <div class="bg-white dark:bg-gray-700 border-l-4 {{ $bestAttempt['passed'] ? 'border-green-500' : 'border-red-500' }} rounded-lg shadow-md h-full border border-gray-200 dark:border-gray-600">
+                                <div class="bg-themed-secondary border-l-4 {{ $bestAttempt['passed'] ? 'border-green-500' : 'border-red-500' }} rounded-lg shadow-md h-full border border-themed-primary">
                                     <div class="p-6">
                                         <div class="flex justify-between items-start mb-4">
-                                            <h6 class="text-lg font-semibold text-blue-600 dark:text-blue-400">{{ $assessment->title }}</h6>
+                                            <h6 class="text-lg font-semibold text-accent-themed-primary">{{ $assessment->title }}</h6>
                                             <span class="px-3 py-1 rounded-full text-sm font-medium {{ $bestAttempt['passed'] ? 'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300' : 'bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-300' }}">
                                                 {{ $bestAttempt['passed'] ? 'PASSED' : 'FAILED' }}
                                             </span>
                                         </div>
                                         
-                                        <p class="text-gray-600 dark:text-gray-400 text-sm mb-4">{{ $assessment->description }}</p>
+                                        <p class="text-themed-secondary text-sm mb-4">{{ $assessment->description }}</p>
                                         
                                         <div class="grid grid-cols-3 gap-4 text-center mb-4">
                                             <div>
-                                                <div class="text-sm text-gray-500 dark:text-gray-400">Best Score</div>
+                                                <div class="text-sm text-themed-tertiary">Best Score</div>
                                                 <div class="text-lg font-semibold {{ $bestAttempt['passed'] ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400' }}">
                                                     {{ $bestAttempt['percentage'] }}%
                                                 </div>
                                             </div>
                                             <div>
-                                                <div class="text-sm text-gray-500 dark:text-gray-400">Attempts</div>
-                                                <div class="text-lg font-semibold text-blue-600 dark:text-blue-400">{{ $attempts->count() }}</div>
+                                                <div class="text-sm text-themed-tertiary">Attempts</div>
+                                                <div class="text-lg font-semibold text-accent-themed-primary">{{ $attempts->count() }}</div>
                                             </div>
                                             <div>
-                                                <div class="text-sm text-gray-500 dark:text-gray-400">Last Attempt</div>
-                                                <div class="text-lg font-semibold text-gray-600 dark:text-gray-400">
+                                                <div class="text-sm text-themed-tertiary">Last Attempt</div>
+                                                <div class="text-lg font-semibold text-themed-primary">
                                                     {{ $latestAttempt['submitted_at']->format('M d') }}
                                                 </div>
                                             </div>
                                         </div>
 
                                         <button wire:click="viewAssessmentDetails({{ $assessment->id }})" 
-                                                class="w-full bg-blue-50 dark:bg-blue-900/30 hover:bg-blue-100 dark:hover:bg-blue-900/50 text-blue-600 dark:text-blue-400 border border-blue-200 dark:border-blue-600 px-4 py-2 rounded-lg transition-colors duration-200">
+                                                class="w-full bg-themed-tertiary dark:bg-themed-tertiary hover:bg-themed-secondary dark:hover:bg-themed-secondary text-accent-themed-primary border border-themed-secondary px-4 py-2 rounded-lg transition-colors duration-200">
                                             <i class="fas fa-eye mr-2"></i>View Details
                                         </button>
                                     </div>
@@ -74,10 +74,10 @@
                     </div>
                 @else
                     <div class="text-center py-12">
-                        <i class="fas fa-clipboard-list text-6xl text-gray-400 dark:text-gray-500 mb-4"></i>
-                        <h5 class="text-xl text-gray-600 dark:text-gray-400 mb-2">No CBT Results Yet</h5>
-                        <p class="text-gray-500 dark:text-gray-500 mb-6">You haven't taken any CBT assessments yet.</p>
-                        <a href="{{ route('cbt.exam') }}" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg transition-colors duration-200">
+                        <i class="fas fa-clipboard-list text-6xl text-themed-tertiary mb-4"></i>
+                        <h5 class="text-xl text-themed-secondary mb-2">No CBT Results Yet</h5>
+                        <p class="text-themed-tertiary mb-6">You haven't taken any CBT assessments yet.</p>
+                        <a href="{{ route('cbt.exams') }}" class="bg-accent-themed-primary hover:bg-accent-themed-secondary text-white px-6 py-3 rounded-lg transition-colors duration-200">
                             <i class="fas fa-pencil-alt mr-2"></i>Take CBT Exam
                         </a>
                     </div>
@@ -86,8 +86,8 @@
         </div>
     @else
         <!-- Detailed View -->
-        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg animate-fade-in border dark:border-gray-700">
-            <div class="bg-blue-600 dark:bg-blue-700 text-white px-6 py-4 rounded-t-lg">
+        <div class="bg-themed-secondary rounded-lg shadow-lg animate-fade-in border border-themed-primary">
+            <div class="bg-accent-themed-primary text-white px-6 py-4 rounded-t-lg">
                 <h5 class="text-xl font-semibold m-0">
                     <i class="fas fa-chart-line mr-2"></i>{{ $selectedAssessment->title }} - Detailed Results
                 </h5>
@@ -105,42 +105,42 @@
                             <div class="text-3xl font-bold {{ $bestAttempt['passed'] ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400' }} mb-2">
                                 {{ $bestAttempt['percentage'] }}%
                             </div>
-                            <div class="text-sm text-gray-500 dark:text-gray-400">Best Score</div>
+                            <div class="text-sm text-themed-secondary">Best Score</div>
                         </div>
                     </div>
                     <div class="text-center">
-                        <div class="border border-gray-200 dark:border-gray-700 rounded-lg p-6 bg-gray-50 dark:bg-gray-900">
-                            <div class="text-2xl font-bold text-blue-500 dark:text-blue-400 mb-2">{{ $selectedAssessment->questions->count() }}</div>
-                            <div class="text-sm text-gray-500 dark:text-gray-400">Total Questions</div>
+                        <div class="border border-themed-secondary rounded-lg p-6 bg-themed-tertiary">
+                            <div class="text-2xl font-bold text-accent-themed-primary mb-2">{{ $selectedAssessment->questions->count() }}</div>
+                            <div class="text-sm text-themed-secondary">Total Questions</div>
                         </div>
                     </div>
                     <div class="text-center">
-                        <div class="border border-gray-200 dark:border-gray-700 rounded-lg p-6 bg-gray-50 dark:bg-gray-900">
-                            <div class="text-2xl font-bold text-yellow-600 dark:text-yellow-400 mb-2">{{ $selectedAssessment->pass_percentage }}%</div>
-                            <div class="text-sm text-gray-500 dark:text-gray-400">Pass Mark</div>
+                        <div class="border border-themed-secondary rounded-lg p-6 bg-themed-tertiary">
+                            <div class="text-2xl font-bold text-themed-primary mb-2">{{ $selectedAssessment->pass_percentage }}%</div>
+                            <div class="text-sm text-themed-secondary">Pass Mark</div>
                         </div>
                     </div>
                 </div>
 
                 <!-- Attempts History -->
-                <h6 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Attempt History</h6>
+                <h6 class="text-lg font-semibold text-themed-primary mb-4">Attempt History</h6>
                 <div class="overflow-x-auto">
                     <table class="w-full table-auto">
-                        <thead class="bg-gray-50 dark:bg-gray-900">
+                        <thead class="bg-themed-tertiary">
                             <tr>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Attempt</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Score</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Points</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Status</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Date</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Actions</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-themed-secondary uppercase tracking-wider">Attempt</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-themed-secondary uppercase tracking-wider">Score</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-themed-secondary uppercase tracking-wider">Points</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-themed-secondary uppercase tracking-wider">Status</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-themed-secondary uppercase tracking-wider">Date</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-themed-secondary uppercase tracking-wider">Actions</th>
                             </tr>
                         </thead>
-                        <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+                        <tbody class="bg-themed-secondary divide-y divide-themed-primary">
                             @foreach($attempts as $attempt)
-                                <tr class="hover:bg-gray-50 dark:hover:bg-gray-700">
+                                <tr class="hover:bg-themed-tertiary">
                                     <td class="px-6 py-4 whitespace-nowrap">
-                                        <span class="px-2 py-1 text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-300 rounded-full">#{{ $attempt['attempt_number'] }}</span>
+                                        <span class="px-2 py-1 text-xs font-medium bg-themed-tertiary text-themed-primary rounded-full">#{{ $attempt['attempt_number'] }}</span>
                                         @if($attempt === $bestAttempt)
                                             <span class="px-2 py-1 text-xs font-medium bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-300 rounded-full ml-1">Best</span>
                                         @endif
@@ -150,16 +150,16 @@
                                             {{ $attempt['percentage'] }}%
                                         </span>
                                     </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-gray-900 dark:text-gray-100">{{ $attempt['total_points'] }} / {{ $attempt['max_points'] }}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-themed-primary">{{ $attempt['total_points'] }} / {{ $attempt['max_points'] }}</td>
                                     <td class="px-6 py-4 whitespace-nowrap">
                                         <span class="px-3 py-1 text-sm font-medium rounded-full {{ $attempt['passed'] ? 'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300' : 'bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-300' }}">
                                             {{ $attempt['passed'] ? 'PASSED' : 'FAILED' }}
                                         </span>
                                     </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-gray-900 dark:text-gray-100">{{ $attempt['submitted_at']->format('M d, Y H:i') }}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-themed-primary">{{ $attempt['submitted_at']->format('M d, Y H:i') }}</td>
                                     <td class="px-6 py-4 whitespace-nowrap">
                                         <button wire:click="viewAttemptDetails({{ $attempt['attempt_number'] }})" 
-                                                class="bg-blue-50 dark:bg-blue-900/30 hover:bg-blue-100 dark:hover:bg-blue-900/50 text-blue-600 dark:text-blue-400 border border-blue-200 dark:border-blue-600 px-3 py-1 rounded-lg text-sm transition-colors duration-200">
+                                                class="bg-themed-tertiary dark:bg-themed-tertiary hover:bg-themed-secondary dark:hover:bg-themed-secondary text-accent-themed-primary border border-themed-secondary px-3 py-1 rounded-lg text-sm transition-colors duration-200">
                                             <i class="fas fa-eye mr-1"></i>View
                                         </button>
                                     </td>
@@ -172,62 +172,62 @@
                 <!-- Attempt Details Modal -->
                 @if($selectedAttempt)
                     <div class="fixed inset-0 bg-black bg-opacity-50 dark:bg-black dark:bg-opacity-70 z-50 flex items-center justify-center p-4">
-                        <div class="bg-white dark:bg-gray-800 rounded-lg max-w-7xl w-full max-h-screen overflow-hidden animate-fade-in-down border dark:border-gray-700">
-                            <div class="flex justify-between items-center px-6 py-4 border-b border-gray-200 dark:border-gray-700">
-                                <h5 class="text-xl font-semibold text-gray-900 dark:text-gray-100">
+                        <div class="bg-themed-secondary rounded-lg max-w-7xl w-full max-h-screen overflow-hidden animate-fade-in-down border border-themed-primary">
+                            <div class="flex justify-between items-center px-6 py-4 border-b border-themed-secondary">
+                                <h5 class="text-xl font-semibold text-themed-primary">
                                     <i class="fas fa-file-alt mr-2"></i>
                                     Attempt #{{ $selectedAttempt['attempt_number'] }} Details
                                 </h5>
-                                <button type="button" class="text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300" wire:click="$set('selectedAttempt', null)">
+                                <button type="button" class="text-themed-tertiary hover:text-themed-primary" wire:click="$set('selectedAttempt', null)">
                                     <i class="fas fa-times text-xl"></i>
                                 </button>
                             </div>
                             <div class="p-6 overflow-y-auto" style="max-height: 70vh;">
                                 <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
                                     <div class="text-center">
-                                        <div class="border rounded-lg p-6 bg-gray-50 dark:bg-gray-900 border-gray-200 dark:border-gray-700">
+                                        <div class="border rounded-lg p-6 bg-themed-tertiary border-themed-secondary">
                                             <div class="text-2xl font-bold {{ $selectedAttempt['passed'] ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400' }}">
                                                 {{ $selectedAttempt['percentage'] }}%
                                             </div>
-                                            <div class="text-sm text-gray-500 dark:text-gray-400">Final Score</div>
+                                            <div class="text-sm text-themed-secondary">Final Score</div>
                                         </div>
                                     </div>
                                     <div class="text-center">
-                                        <div class="border border-gray-200 dark:border-gray-700 rounded-lg p-6 bg-gray-50 dark:bg-gray-900">
-                                            <div class="text-xl font-semibold text-blue-600 dark:text-blue-400">{{ $selectedAttempt['correct_answers'] }}</div>
-                                            <div class="text-sm text-gray-500 dark:text-gray-400">Correct</div>
+                                        <div class="border border-themed-secondary rounded-lg p-6 bg-themed-tertiary">
+                                            <div class="text-xl font-semibold text-accent-themed-primary">{{ $selectedAttempt['correct_answers'] }}</div>
+                                            <div class="text-sm text-themed-secondary">Correct</div>
                                         </div>
                                     </div>
                                     <div class="text-center">
-                                        <div class="border border-gray-200 dark:border-gray-700 rounded-lg p-6 bg-gray-50 dark:bg-gray-900">
+                                        <div class="border border-themed-secondary rounded-lg p-6 bg-themed-tertiary">
                                             <div class="text-xl font-semibold text-red-600 dark:text-red-400">{{ $selectedAttempt['total_questions'] - $selectedAttempt['correct_answers'] }}</div>
-                                            <div class="text-sm text-gray-500 dark:text-gray-400">Incorrect</div>
+                                            <div class="text-sm text-themed-secondary">Incorrect</div>
                                         </div>
                                     </div>
                                     <div class="text-center">
-                                        <div class="border border-gray-200 dark:border-gray-700 rounded-lg p-6 bg-gray-50 dark:bg-gray-900">
-                                            <div class="text-xl font-semibold text-blue-500 dark:text-blue-400">{{ $selectedAttempt['total_points'] }}</div>
-                                            <div class="text-sm text-gray-500 dark:text-gray-400">Points</div>
+                                        <div class="border border-themed-secondary rounded-lg p-6 bg-themed-tertiary">
+                                            <div class="text-xl font-semibold text-accent-themed-primary">{{ $selectedAttempt['total_points'] }}</div>
+                                            <div class="text-sm text-themed-secondary">Points</div>
                                         </div>
                                     </div>
                                 </div>
 
                                 <!-- Question-by-Question Review -->
-                                <h6 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Question Review</h6>
+                                <h6 class="text-lg font-semibold text-themed-primary mb-4">Question Review</h6>
                                 @foreach($selectedAttempt['answers'] as $questionId => $answer)
                                     @php $question = $answer->question; @endphp
                                     <div class="border {{ $answer->is_correct ? 'border-green-300 dark:border-green-600' : 'border-red-300 dark:border-red-600' }} rounded-lg mb-4">
                                         <div class="flex justify-between items-center px-4 py-3 border-b {{ $answer->is_correct ? 'border-green-200 dark:border-green-700 bg-green-50 dark:bg-green-900/30' : 'border-red-200 dark:border-red-700 bg-red-50 dark:bg-red-900/30' }}">
-                                            <span class="font-semibold text-gray-900 dark:text-gray-100">Question {{ $loop->iteration }}</span>
+                                            <span class="font-semibold text-themed-primary">Question {{ $loop->iteration }}</span>
                                             <div class="flex space-x-2">
                                                 <span class="px-3 py-1 text-sm font-medium rounded-full {{ $answer->is_correct ? 'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300' : 'bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-300' }}">
                                                     {{ $answer->is_correct ? 'Correct' : 'Incorrect' }}
                                                 </span>
-                                                <span class="px-3 py-1 text-sm font-medium bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-300 rounded-full">{{ $answer->points_earned }}/{{ $question->points }} pts</span>
+                                                <span class="px-3 py-1 text-sm font-medium bg-themed-tertiary text-themed-primary rounded-full">{{ $answer->points_earned }}/{{ $question->points }} pts</span>
                                             </div>
                                         </div>
                                         <div class="p-4">
-                                            <p class="font-semibold text-gray-900 dark:text-gray-100 mb-4">{{ $question->question_text }}</p>
+                                            <p class="font-semibold text-themed-primary mb-4">{{ $question->question_text }}</p>
                                             
                                             @if($question->question_type === 'multiple_choice')
                                                 <div class="ml-4">
@@ -236,10 +236,10 @@
                                                             <span class="mr-2">{{ chr(65 + $index) }}.</span>
                                                             <span class="@if($answer->answer == $index) font-semibold 
                                                                   @if($answer->is_correct) text-green-600 dark:text-green-400 @else text-red-600 dark:text-red-400 @endif
-                                                                  @elseif(in_array($index, $question->correct_answers)) text-green-600 dark:text-green-400 @else text-gray-700 dark:text-gray-300 @endif">
+                                                                  @elseif(in_array($index, $question->correct_answers)) text-green-600 dark:text-green-400 @else text-themed-primary @endif">
                                                                 {{ $option }}
                                                                 @if($answer->answer == $index)
-                                                                    <i class="fas fa-arrow-left ml-2 text-gray-400 dark:text-gray-500"></i>
+                                                                    <i class="fas fa-arrow-left ml-2 text-themed-tertiary"></i>
                                                                 @endif
                                                                 @if(in_array($index, $question->correct_answers))
                                                                     <i class="fas fa-check ml-2 text-green-600 dark:text-green-400"></i>
@@ -254,9 +254,9 @@
                                                         <span class="mr-2">A.</span>
                                                         <span class="@if($answer->answer == 0) font-semibold 
                                                               @if($answer->is_correct) text-green-600 dark:text-green-400 @else text-red-600 dark:text-red-400 @endif
-                                                              @elseif(in_array(0, $question->correct_answers)) text-green-600 dark:text-green-400 @else text-gray-700 dark:text-gray-300 @endif">
+                                                              @elseif(in_array(0, $question->correct_answers)) text-green-600 dark:text-green-400 @else text-themed-primary @endif">
                                                             True
-                                                            @if($answer->answer == 0) <i class="fas fa-arrow-left ml-2 text-gray-400 dark:text-gray-500"></i> @endif
+                                                            @if($answer->answer == 0) <i class="fas fa-arrow-left ml-2 text-themed-tertiary"></i> @endif
                                                             @if(in_array(0, $question->correct_answers)) <i class="fas fa-check ml-2 text-green-600 dark:text-green-400"></i> @endif
                                                         </span>
                                                     </div>
@@ -264,26 +264,26 @@
                                                         <span class="mr-2">B.</span>
                                                         <span class="@if($answer->answer == 1) font-semibold 
                                                               @if($answer->is_correct) text-green-600 dark:text-green-400 @else text-red-600 dark:text-red-400 @endif
-                                                              @elseif(in_array(1, $question->correct_answers)) text-green-600 dark:text-green-400 @else text-gray-700 dark:text-gray-300 @endif">
+                                                              @elseif(in_array(1, $question->correct_answers)) text-green-600 dark:text-green-400 @else text-themed-primary @endif">
                                                             False
-                                                            @if($answer->answer == 1) <i class="fas fa-arrow-left ml-2 text-gray-400 dark:text-gray-500"></i> @endif
+                                                            @if($answer->answer == 1) <i class="fas fa-arrow-left ml-2 text-themed-tertiary"></i> @endif
                                                             @if(in_array(1, $question->correct_answers)) <i class="fas fa-check ml-2 text-green-600 dark:text-green-400"></i> @endif
                                                         </span>
                                                     </div>
                                                 </div>
                                             @else
                                                 <div class="ml-4">
-                                                    <div class="bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg p-4">
-                                                        <div class="font-semibold text-gray-700 dark:text-gray-300 mb-1">Your Answer:</div>
-                                                        <div class="text-gray-800 dark:text-gray-200">{{ $answer->formatted_answer }}</div>
+                                                    <div class="bg-themed-tertiary border border-themed-secondary rounded-lg p-4">
+                                                        <div class="font-semibold text-themed-secondary mb-1">Your Answer:</div>
+                                                        <div class="text-themed-primary">{{ $answer->formatted_answer }}</div>
                                                     </div>
                                                 </div>
                                             @endif
 
                                             @if($question->explanation)
-                                                <div class="mt-4 p-4 bg-gray-50 dark:bg-gray-800 rounded-lg border dark:border-gray-700">
-                                                    <div class="text-sm font-semibold text-gray-600 dark:text-gray-400 mb-1">Explanation:</div>
-                                                    <div class="text-sm text-gray-700 dark:text-gray-300">{{ $question->explanation }}</div>
+                                                <div class="mt-4 p-4 bg-themed-tertiary rounded-lg border border-themed-secondary">
+                                                    <div class="text-sm font-semibold text-themed-secondary mb-1">Explanation:</div>
+                                                    <div class="text-sm text-themed-primary">{{ $question->explanation }}</div>
                                                 </div>
                                             @endif
 

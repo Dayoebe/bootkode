@@ -1,8 +1,8 @@
-<div class="px-4 py-6 bg-gray-50 dark:bg-gray-900 min-h-screen transition-colors duration-300">
+<div class="px-4 py-6 bg-themed-primary dark:bg-gray-900 min-h-screen transition-colors duration-300">
     <!-- Page Header -->
     <div class="mb-8">
-        <h2 class="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-2">CBT Examinations</h2>
-        <p class="text-gray-600 dark:text-gray-400">Select an assessment to begin your computer-based test</p>
+        <h2 class="text-3xl font-bold text-themed-primary mb-2">CBT Examinations</h2>
+        <p class="text-themed-secondary">Select an assessment to begin your computer-based test</p>
     </div>
 
     <!-- Flash Messages -->
@@ -37,13 +37,13 @@
     @if($availableAssessments->count() > 0)
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             @foreach($availableAssessments as $assessment)
-                <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm hover:shadow-md transition-all duration-300 border-l-4 
-                    {{ $assessment->user_result && $assessment->user_result['passed'] ? 'border-l-green-500' : 'border-l-blue-500' }}">
+                <div class="bg-themed-secondary border border-themed-primary rounded-lg shadow-sm hover:shadow-md transition-all duration-300 border-l-4 
+                    {{ $assessment->user_result && $assessment->user_result['passed'] ? 'border-l-green-500' : 'border-l-accent-themed-primary' }}">
                     
                     <div class="p-6">
                         <!-- Assessment Header -->
                         <div class="flex justify-between items-start mb-4">
-                            <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100 leading-tight">{{ $assessment->title }}</h3>
+                            <h3 class="text-lg font-semibold text-themed-primary leading-tight">{{ $assessment->title }}</h3>
                             @if($assessment->user_result)
                                 <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
                                     {{ $assessment->user_result['passed'] ? 'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300' : 'bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-300' }}">
@@ -54,38 +54,38 @@
 
                         <!-- Assessment Description -->
                         @if($assessment->description)
-                            <p class="text-gray-600 dark:text-gray-400 text-sm mb-4 line-clamp-2">{{ $assessment->description }}</p>
+                            <p class="text-themed-secondary text-sm mb-4 line-clamp-2">{{ $assessment->description }}</p>
                         @endif
 
                         <!-- Assessment Stats -->
                         <div class="grid grid-cols-3 gap-3 mb-4">
                             <div class="text-center">
-                                <div class="text-xs text-gray-500 dark:text-gray-400 mb-1">Questions</div>
-                                <div class="font-semibold text-gray-900 dark:text-gray-100">{{ $assessment->questions->count() }}</div>
+                                <div class="text-xs text-themed-tertiary mb-1">Questions</div>
+                                <div class="font-semibold text-themed-primary">{{ $assessment->questions->count() }}</div>
                             </div>
                             <div class="text-center">
-                                <div class="text-xs text-gray-500 dark:text-gray-400 mb-1">Duration</div>
-                                <div class="font-semibold text-gray-900 dark:text-gray-100">{{ $assessment->formatted_duration }}</div>
+                                <div class="text-xs text-themed-tertiary mb-1">Duration</div>
+                                <div class="font-semibold text-themed-primary">{{ $assessment->formatted_duration }}</div>
                             </div>
                             <div class="text-center">
-                                <div class="text-xs text-gray-500 dark:text-gray-400 mb-1">Pass %</div>
-                                <div class="font-semibold text-gray-900 dark:text-gray-100">{{ $assessment->pass_percentage }}%</div>
+                                <div class="text-xs text-themed-tertiary mb-1">Pass %</div>
+                                <div class="font-semibold text-themed-primary">{{ $assessment->pass_percentage }}%</div>
                             </div>
                         </div>
 
                         <!-- Previous Results (if any) -->
                         @if($assessment->user_result)
-                            <div class="bg-gray-50 dark:bg-gray-900 rounded-lg p-3 mb-4">
+                            <div class="bg-themed-tertiary rounded-lg p-3 mb-4">
                                 <div class="flex justify-between items-center text-sm">
-                                    <span class="text-gray-600 dark:text-gray-400">Previous Score:</span>
+                                    <span class="text-themed-secondary">Previous Score:</span>
                                     <span class="font-semibold {{ $assessment->user_result['passed'] ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400' }}">
                                         {{ $assessment->user_result['percentage'] }}%
                                     </span>
                                 </div>
                                 @if($assessment->attempts_count > 1)
                                     <div class="flex justify-between items-center text-sm mt-1">
-                                        <span class="text-gray-600 dark:text-gray-400">Attempts:</span>
-                                        <span class="text-gray-900 dark:text-gray-100">{{ $assessment->attempts_count }}</span>
+                                        <span class="text-themed-secondary">Attempts:</span>
+                                        <span class="text-themed-primary">{{ $assessment->attempts_count }}</span>
                                     </div>
                                 @endif
                             </div>
@@ -96,7 +96,7 @@
                             @if(!$assessment->user_result || $assessment->can_retake)
                                 <button wire:click="startExam({{ $assessment->id }})" 
                                     wire:confirm="Are you ready to start this exam? Once started, the timer will begin immediately."
-                                    class="w-full bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors flex items-center justify-center font-medium">
+                                    class="w-full bg-accent-themed-primary hover:bg-accent-themed-secondary text-white px-4 py-2 rounded-lg transition-colors flex items-center justify-center font-medium">
                                     <i class="fas fa-play mr-2"></i>
                                     {{ $assessment->user_result ? 'Retake Exam' : 'Start Exam' }}
                                 </button>
@@ -104,7 +104,7 @@
 
                             @if($assessment->user_result)
                                 <button wire:click="viewResults({{ $assessment->id }})"
-                                    class="w-full bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 px-4 py-2 rounded-lg transition-colors flex items-center justify-center font-medium">
+                                    class="w-full bg-themed-tertiary hover:bg-themed-secondary text-themed-primary border border-themed-secondary px-4 py-2 rounded-lg transition-colors flex items-center justify-center font-medium">
                                     <i class="fas fa-chart-line mr-2"></i>View Results
                                 </button>
                             @endif
@@ -112,8 +112,8 @@
 
                         <!-- Course Info -->
                         @if($assessment->course)
-                            <div class="mt-4 pt-4 border-t border-gray-100 dark:border-gray-700">
-                                <div class="flex items-center text-sm text-gray-500 dark:text-gray-400">
+                            <div class="mt-4 pt-4 border-t border-themed-secondary">
+                                <div class="flex items-center text-sm text-themed-secondary">
                                     <i class="fas fa-book mr-2"></i>
                                     <span>{{ $assessment->course->title }}</span>
                                 </div>
@@ -132,20 +132,20 @@
         @endphp
 
         @if($completedAssessments > 0)
-            <div class="mt-8 bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
-                <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Your Progress Summary</h3>
+            <div class="mt-8 bg-themed-secondary rounded-lg shadow-sm border border-themed-primary p-6">
+                <h3 class="text-lg font-semibold text-themed-primary mb-4">Your Progress Summary</h3>
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div class="text-center">
-                        <div class="text-2xl font-bold text-blue-600 dark:text-blue-400">{{ $completedAssessments }}</div>
-                        <div class="text-sm text-gray-500 dark:text-gray-400">Completed</div>
+                        <div class="text-2xl font-bold text-accent-themed-primary">{{ $completedAssessments }}</div>
+                        <div class="text-sm text-themed-secondary">Completed</div>
                     </div>
                     <div class="text-center">
                         <div class="text-2xl font-bold text-green-600 dark:text-green-400">{{ $passedAssessments }}</div>
-                        <div class="text-sm text-gray-500 dark:text-gray-400">Passed</div>
+                        <div class="text-sm text-themed-secondary">Passed</div>
                     </div>
                     <div class="text-center">
                         <div class="text-2xl font-bold text-yellow-600 dark:text-yellow-400">{{ $totalAssessments - $completedAssessments }}</div>
-                        <div class="text-sm text-gray-500 dark:text-gray-400">Remaining</div>
+                        <div class="text-sm text-themed-secondary">Remaining</div>
                     </div>
                 </div>
             </div>
@@ -153,13 +153,13 @@
     @else
         <!-- No Assessments Available -->
         <div class="text-center py-16">
-            <div class="w-24 h-24 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center mx-auto mb-6">
-                <i class="fas fa-clipboard-list text-gray-400 dark:text-gray-500 text-4xl"></i>
+            <div class="w-24 h-24 bg-themed-tertiary rounded-full flex items-center justify-center mx-auto mb-6">
+                <i class="fas fa-clipboard-list text-themed-secondary text-4xl"></i>
             </div>
-            <h3 class="text-xl font-semibold text-gray-500 dark:text-gray-400 mb-2">No CBT Assessments Available</h3>
-            <p class="text-gray-400 dark:text-gray-500 mb-6">There are currently no computer-based tests available for you to take.</p>
+            <h3 class="text-xl font-semibold text-themed-secondary mb-2">No CBT Assessments Available</h3>
+            <p class="text-themed-tertiary mb-6">There are currently no computer-based tests available for you to take.</p>
             <a href="{{ route('student.dashboard') }}" 
-                class="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+                class="inline-flex items-center px-4 py-2 bg-accent-themed-primary text-white rounded-lg hover:bg-accent-themed-secondary transition-colors">
                 <i class="fas fa-arrow-left mr-2"></i>Back to Dashboard
             </a>
         </div>

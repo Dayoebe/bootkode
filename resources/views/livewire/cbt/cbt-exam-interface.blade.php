@@ -1,10 +1,10 @@
-<div x-data="cbtExamInterface" class="h-screen flex flex-col bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
+<div x-data="cbtExamInterface" class="h-screen flex flex-col bg-themed-primary dark:bg-gray-900 transition-colors duration-300">
 
     @if(!$examStarted)
         <!-- Pre-Exam Instructions (Mobile Responsive) -->
         <div class="flex-1 flex items-center justify-center p-4 md:p-6">
             <div class="w-full max-w-4xl">
-                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg border dark:border-gray-700">
+                <div class="bg-themed-secondary rounded-lg shadow-lg border border-themed-primary">
                     <div class="bg-yellow-500 dark:bg-yellow-600 text-yellow-900 dark:text-yellow-100 px-4 md:px-6 py-4 rounded-t-lg">
                         <h1 class="text-lg md:text-xl font-semibold flex items-center">
                             <i class="fas fa-info-circle mr-2"></i>Exam Instructions
@@ -12,33 +12,33 @@
                     </div>
                     <div class="p-4 md:p-8">
                         <div class="text-center mb-6 md:mb-8">
-                            <h2 class="text-2xl md:text-3xl font-bold text-blue-600 dark:text-blue-400 mb-2">{{ $assessment->title }}</h2>
+                            <h2 class="text-2xl md:text-3xl font-bold text-accent-themed-primary mb-2">{{ $assessment->title }}</h2>
                             @if($assessment->description)
-                                <p class="text-gray-600 dark:text-gray-400 text-base md:text-lg">{{ $assessment->description }}</p>
+                                <p class="text-themed-secondary text-base md:text-lg">{{ $assessment->description }}</p>
                             @endif
                         </div>
 
                         <!-- Exam Details (Mobile Responsive Grid) -->
                         <div class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 mb-6 md:mb-8">
-                            <div class="text-center border border-gray-200 dark:border-gray-700 rounded-lg p-3 md:p-4 bg-gray-50 dark:bg-gray-900">
-                                <i class="fas fa-question-circle text-2xl md:text-3xl text-blue-600 dark:text-blue-400 mb-2"></i>
-                                <div class="font-semibold text-gray-900 dark:text-gray-100 text-lg md:text-xl">{{ count($questions) }}</div>
-                                <div class="text-xs md:text-sm text-gray-500 dark:text-gray-400">Questions</div>
+                            <div class="text-center border border-themed-secondary rounded-lg p-3 md:p-4 bg-themed-tertiary">
+                                <i class="fas fa-question-circle text-2xl md:text-3xl text-accent-themed-primary mb-2"></i>
+                                <div class="font-semibold text-themed-primary text-lg md:text-xl">{{ count($questions) }}</div>
+                                <div class="text-xs md:text-sm text-themed-secondary">Questions</div>
                             </div>
-                            <div class="text-center border border-gray-200 dark:border-gray-700 rounded-lg p-3 md:p-4 bg-gray-50 dark:bg-gray-900">
-                                <i class="fas fa-clock text-2xl md:text-3xl text-yellow-500 dark:text-yellow-400 mb-2"></i>
-                                <div class="font-semibold text-gray-900 dark:text-gray-100 text-lg md:text-xl">{{ $assessment->formatted_duration }}</div>
-                                <div class="text-xs md:text-sm text-gray-500 dark:text-gray-400">Duration</div>
+                            <div class="text-center border border-themed-secondary rounded-lg p-3 md:p-4 bg-themed-tertiary">
+                                <i class="fas fa-clock text-2xl md:text-3xl text-accent-themed-primary mb-2"></i>
+                                <div class="font-semibold text-themed-primary text-lg md:text-xl">{{ $assessment->formatted_duration }}</div>
+                                <div class="text-xs md:text-sm text-themed-secondary">Duration</div>
                             </div>
-                            <div class="text-center border border-gray-200 dark:border-gray-700 rounded-lg p-3 md:p-4 bg-gray-50 dark:bg-gray-900">
-                                <i class="fas fa-trophy text-2xl md:text-3xl text-green-500 dark:text-green-400 mb-2"></i>
-                                <div class="font-semibold text-gray-900 dark:text-gray-100 text-lg md:text-xl">{{ $assessment->pass_percentage }}%</div>
-                                <div class="text-xs md:text-sm text-gray-500 dark:text-gray-400">Pass Mark</div>
+                            <div class="text-center border border-themed-secondary rounded-lg p-3 md:p-4 bg-themed-tertiary">
+                                <i class="fas fa-trophy text-2xl md:text-3xl text-accent-themed-primary mb-2"></i>
+                                <div class="font-semibold text-themed-primary text-lg md:text-xl">{{ $assessment->pass_percentage }}%</div>
+                                <div class="text-xs md:text-sm text-themed-secondary">Pass Mark</div>
                             </div>
-                            <div class="text-center border border-gray-200 dark:border-gray-700 rounded-lg p-3 md:p-4 bg-gray-50 dark:bg-gray-900">
-                                <i class="fas fa-hashtag text-2xl md:text-3xl text-purple-500 dark:text-purple-400 mb-2"></i>
-                                <div class="font-semibold text-gray-900 dark:text-gray-100 text-lg md:text-xl"># {{ $attemptNumber }}</div>
-                                <div class="text-xs md:text-sm text-gray-500 dark:text-gray-400">Attempt</div>
+                            <div class="text-center border border-themed-secondary rounded-lg p-3 md:p-4 bg-themed-tertiary">
+                                <i class="fas fa-hashtag text-2xl md:text-3xl text-accent-themed-primary mb-2"></i>
+                                <div class="font-semibold text-themed-primary text-lg md:text-xl"># {{ $attemptNumber }}</div>
+                                <div class="text-xs md:text-sm text-themed-secondary">Attempt</div>
                             </div>
                         </div>
 
@@ -128,7 +128,7 @@
                         <!-- Start Exam Button -->
                         <div class="text-center">
                             <button wire:click="startExam" wire:loading.attr="disabled" wire:target="startExam"
-                                class="bg-green-600 hover:bg-green-700 disabled:bg-green-400 text-white px-8 md:px-12 py-3 md:py-4 rounded-lg text-lg md:text-xl font-semibold transition-colors flex items-center mx-auto shadow-lg">
+                                class="bg-accent-themed-primary hover:bg-accent-themed-secondary disabled:bg-accent-themed-secondary disabled:opacity-50 text-white px-8 md:px-12 py-3 md:py-4 rounded-lg text-lg md:text-xl font-semibold transition-colors flex items-center mx-auto shadow-lg">
                                 <div wire:loading.remove wire:target="startExam" class="flex items-center">
                                     <i class="fas fa-play mr-3"></i>Start CBT Exam
                                 </div>
@@ -144,7 +144,7 @@
                                     Starting...
                                 </div>
                             </button>
-                            <p class="text-gray-500 dark:text-gray-400 text-sm mt-4">
+                            <p class="text-themed-secondary text-sm mt-4">
                                 Security features will activate when you start the exam
                             </p>
                         </div>
@@ -157,7 +157,7 @@
         <!-- Results Page (Mobile Responsive) -->
         <div class="flex-1 flex items-center justify-center p-4 md:p-6">
             <div class="w-full max-w-4xl">
-                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg border dark:border-gray-700">
+                <div class="bg-themed-secondary rounded-lg shadow-lg border border-themed-primary">
                     <div class="px-4 md:px-6 py-4 rounded-t-lg {{ $results['passed'] ? 'bg-green-600' : 'bg-red-600' }} text-white">
                         <h1 class="text-xl md:text-2xl font-semibold flex items-center justify-center">
                             <i class="fas {{ $results['passed'] ? 'fa-check-circle' : 'fa-times-circle' }} mr-3"></i>
@@ -166,8 +166,8 @@
                     </div>
                     <div class="p-4 md:p-8">
                         <div class="text-center mb-6 md:mb-8">
-                            <h2 class="text-2xl md:text-3xl font-bold text-gray-900 dark:text-gray-100 mb-2">{{ $assessment->title }}</h2>
-                            <p class="text-gray-600 dark:text-gray-400">Attempt #{{ $results['attempt_number'] }}</p>
+                            <h2 class="text-2xl md:text-3xl font-bold text-themed-primary mb-2">{{ $assessment->title }}</h2>
+                            <p class="text-themed-secondary">Attempt #{{ $results['attempt_number'] }}</p>
                         </div>
 
                         <!-- Results Grid (Mobile Responsive) -->
@@ -176,16 +176,16 @@
                                 <div class="text-3xl md:text-4xl font-bold mb-2 {{ $results['passed'] ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400' }}">
                                     {{ $results['percentage'] }}%
                                 </div>
-                                <div class="text-sm text-gray-600 dark:text-gray-400 font-medium">Final Score</div>
+                                <div class="text-sm text-themed-secondary font-medium">Final Score</div>
                             </div>
-                            <div class="border border-gray-200 dark:border-gray-700 rounded-lg p-4 md:p-6 bg-gray-50 dark:bg-gray-900">
-                                <div class="text-2xl md:text-3xl font-bold text-purple-600 dark:text-purple-400 mb-2">{{ $results['total_points'] }}</div>
-                                <div class="text-sm text-gray-600 dark:text-gray-400 font-medium">Points</div>
-                                <div class="text-xs text-gray-500 dark:text-gray-500">out of {{ $results['max_points'] }}</div>
+                            <div class="border border-themed-secondary rounded-lg p-4 md:p-6 bg-themed-tertiary">
+                                <div class="text-2xl md:text-3xl font-bold text-accent-themed-primary mb-2">{{ $results['total_points'] }}</div>
+                                <div class="text-sm text-themed-secondary font-medium">Points</div>
+                                <div class="text-xs text-themed-tertiary">out of {{ $results['max_points'] }}</div>
                             </div>
-                            <div class="border border-gray-200 dark:border-gray-700 rounded-lg p-4 md:p-6 bg-gray-50 dark:bg-gray-900">
-                                <div class="text-2xl md:text-3xl font-bold text-gray-600 dark:text-gray-400 mb-2">{{ gmdate('H:i:s', $results['time_spent']) }}</div>
-                                <div class="text-sm text-gray-600 dark:text-gray-400 font-medium">Time Used</div>
+                            <div class="border border-themed-secondary rounded-lg p-4 md:p-6 bg-themed-tertiary">
+                                <div class="text-2xl md:text-3xl font-bold text-themed-primary mb-2">{{ gmdate('H:i:s', $results['time_spent']) }}</div>
+                                <div class="text-sm text-themed-secondary font-medium">Time Used</div>
                             </div>
                         </div>
 
@@ -214,12 +214,12 @@
                             @endif
 
                             <a href="{{ route('cbt.exams') }}"
-                                class="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white px-6 md:px-8 py-3 rounded-lg text-lg font-semibold transition-colors inline-flex items-center justify-center">
+                                class="w-full sm:w-auto bg-accent-themed-primary hover:bg-accent-themed-secondary text-white px-6 md:px-8 py-3 rounded-lg text-lg font-semibold transition-colors inline-flex items-center justify-center">
                                 <i class="fas fa-list mr-2"></i>Back to Exams
                             </a>
 
                             <a href="{{ route('dashboard') }}"
-                                class="w-full sm:w-auto bg-gray-500 hover:bg-gray-600 text-white px-6 md:px-8 py-3 rounded-lg text-lg font-semibold transition-colors inline-flex items-center justify-center">
+                                class="w-full sm:w-auto bg-themed-secondary hover:bg-themed-tertiary text-themed-primary border border-themed-secondary px-6 md:px-8 py-3 rounded-lg text-lg font-semibold transition-colors inline-flex items-center justify-center">
                                 <i class="fas fa-home mr-2"></i>Dashboard
                             </a>
                         </div>
@@ -230,23 +230,23 @@
 
     @else
         <!-- Active Exam Interface (Mobile Responsive) -->
-        <div class="flex flex-col lg:flex-row h-screen bg-gray-100 dark:bg-gray-900">
+        <div class="flex flex-col lg:flex-row h-screen bg-themed-primary dark:bg-gray-900">
             <!-- Questions Sidebar (Responsive) -->
-            <div class="w-full lg:w-80 bg-gray-50 dark:bg-gray-800 border-b lg:border-r lg:border-b-0 border-gray-200 dark:border-gray-700 flex flex-col">
+            <div class="w-full lg:w-80 bg-themed-tertiary border-b lg:border-r lg:border-b-0 border-themed-secondary flex flex-col">
                 <!-- Sidebar Header -->
-                <div class="p-3 lg:p-4 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800">
-                    <h3 class="font-semibold text-gray-900 dark:text-gray-100 mb-1 text-sm lg:text-base">Question Navigator</h3>
-                    <div class="text-xs lg:text-sm text-gray-600 dark:text-gray-400">
+                <div class="p-3 lg:p-4 border-b border-themed-secondary bg-themed-secondary">
+                    <h3 class="font-semibold text-themed-primary mb-1 text-sm lg:text-base">Question Navigator</h3>
+                    <div class="text-xs lg:text-sm text-themed-secondary">
                         {{ $this->getAnsweredQuestionsCount() }} of {{ count($questions) }} answered
                     </div>
                     <!-- Enhanced Progress Bar -->
-                    <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2 mt-2">
-                        <div class="bg-blue-600 h-2 rounded-full transition-all duration-500 progress-animate"
+                    <div class="w-full bg-themed-secondary rounded-full h-2 mt-2">
+                        <div class="bg-accent-themed-primary h-2 rounded-full transition-all duration-500 progress-animate"
                             style="width: {{ count($questions) > 0 ? ($this->getAnsweredQuestionsCount() / count($questions)) * 100 : 0 }}%">
                         </div>
                     </div>
                     <!-- Time Estimate -->
-                    <div class="text-xs text-gray-500 dark:text-gray-400 mt-1" x-show="timeRemaining > 0">
+                    <div class="text-xs text-themed-tertiary mt-1" x-show="timeRemaining > 0">
                         <span x-text="`Est. ${Math.ceil((timeRemaining / 60) / (totalQuestions - answeredQuestions || 1))}min per remaining question`"></span>
                     </div>
                 </div>
@@ -256,13 +256,13 @@
                     <div class="grid grid-cols-8 lg:grid-cols-5 gap-1 lg:gap-2">
                         @foreach($questions as $index => $question)
                             <button wire:click="goToQuestion({{ $index }})" 
-                                class="relative aspect-square flex items-center justify-center text-xs lg:text-sm font-bold rounded-lg transition-all focus:ring-2 focus:ring-blue-500
+                                class="relative aspect-square flex items-center justify-center text-xs lg:text-sm font-bold rounded-lg transition-all focus:ring-2 focus:ring-accent-themed-primary
                                 @if($currentQuestionIndex === $index) 
-                                    bg-blue-600 text-white ring-2 ring-blue-300
+                                    bg-accent-themed-primary text-white ring-2 ring-accent-themed-secondary
                                 @elseif(isset($answers[$question['id']]) && $answers[$question['id']] !== null) 
                                     bg-green-500 text-white
                                 @else 
-                                    bg-white dark:bg-gray-700 border-2 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:border-blue-300 hover:bg-blue-50 dark:hover:bg-blue-900/20
+                                    bg-themed-secondary border-2 border-themed-secondary text-themed-primary hover:border-accent-themed-primary hover:bg-themed-tertiary
                                 @endif"
                                 title="Question {{ $index + 1 }}{{ $this->isQuestionFlagged($index) ? ' (Flagged)' : '' }}"
                                 tabindex="{{ $index + 1 }}">
@@ -277,20 +277,20 @@
                     <!-- Legend -->
                     <div class="mt-4 lg:mt-6 space-y-2 text-xs">
                         <div class="flex items-center">
-                            <div class="w-3 h-3 bg-blue-600 rounded mr-2"></div>
-                            <span class="text-gray-600 dark:text-gray-400">Current</span>
+                            <div class="w-3 h-3 bg-accent-themed-primary rounded mr-2"></div>
+                            <span class="text-themed-secondary">Current</span>
                         </div>
                         <div class="flex items-center">
                             <div class="w-3 h-3 bg-green-500 rounded mr-2"></div>
-                            <span class="text-gray-600 dark:text-gray-400">Answered</span>
+                            <span class="text-themed-secondary">Answered</span>
                         </div>
                         <div class="flex items-center">
-                            <div class="w-3 h-3 bg-white dark:bg-gray-700 border-2 border-gray-300 dark:border-gray-600 rounded mr-2"></div>
-                            <span class="text-gray-600 dark:text-gray-400">Not Answered</span>
+                            <div class="w-3 h-3 bg-themed-secondary border-2 border-themed-secondary rounded mr-2"></div>
+                            <span class="text-themed-secondary">Not Answered</span>
                         </div>
                         <div class="flex items-center">
                             <i class="fas fa-flag text-yellow-400 text-xs mr-2 w-3"></i>
-                            <span class="text-gray-600 dark:text-gray-400">Flagged</span>
+                            <span class="text-themed-secondary">Flagged</span>
                         </div>
                     </div>
                 </div>
@@ -334,17 +334,17 @@
                 </div>
 
                 <!-- Question Content (Mobile Responsive) -->
-                <div class="flex-1 overflow-y-auto bg-white dark:bg-gray-800">
+                <div class="flex-1 overflow-y-auto bg-themed-secondary">
                     @if($this->getCurrentQuestion())
                         @php $question = $this->getCurrentQuestion(); @endphp
                         <div class="p-4 lg:p-8 max-w-4xl mx-auto">
                             <!-- Question Header -->
                             <div class="flex flex-col lg:flex-row lg:justify-between lg:items-start mb-6 lg:mb-8">
                                 <div>
-                                    <h2 class="text-xl lg:text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">
+                                    <h2 class="text-xl lg:text-2xl font-bold text-themed-primary mb-2">
                                         Question {{ $currentQuestionIndex + 1 }}
                                     </h2>
-                                    <div class="flex flex-wrap items-center space-x-2 lg:space-x-4 text-xs lg:text-sm text-gray-500 dark:text-gray-400">
+                                    <div class="flex flex-wrap items-center space-x-2 lg:space-x-4 text-xs lg:text-sm text-themed-secondary">
                                         <span>Type: {{ ucfirst(str_replace('_', ' ', $question['question_type'] ?? 'multiple_choice')) }}</span>
                                         <span>•</span>
                                         <span>{{ $question['points'] ?? 1 }} point(s)</span>
@@ -354,8 +354,8 @@
 
                             <!-- Question Text -->
                             <div class="mb-6 lg:mb-8">
-                                <div class="bg-gray-50 dark:bg-gray-900 border-l-4 border-blue-500 dark:border-blue-400 p-4 lg:p-6 rounded-r-lg">
-                                    <p class="text-base lg:text-lg text-gray-800 dark:text-gray-200 leading-relaxed font-medium">
+                                <div class="bg-themed-tertiary border-l-4 border-accent-themed-primary p-4 lg:p-6 rounded-r-lg">
+                                    <p class="text-base lg:text-lg text-themed-primary leading-relaxed font-medium">
                                         {!! nl2br(e($question['question_text'] ?? '')) !!}
                                     </p>
                                 </div>
@@ -367,17 +367,17 @@
                                     @if(is_array($question['options']) && count($question['options']) > 0)
                                         @foreach($question['options'] as $optionIndex => $option)
                                             @if(trim($option))
-                                                <div class="border-2 rounded-lg transition-all duration-200 hover:border-blue-300 dark:hover:border-blue-500
-                                                    {{ isset($answers[$question['id']]) && $answers[$question['id']] == $optionIndex ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20 dark:border-blue-400' : 'border-gray-200 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700' }}">
+                                                <div class="border-2 rounded-lg transition-all duration-200 hover:border-accent-themed-primary
+                                                    {{ isset($answers[$question['id']]) && $answers[$question['id']] == $optionIndex ? 'border-accent-themed-primary bg-accent-themed-primary bg-opacity-10' : 'border-themed-secondary hover:bg-themed-tertiary' }}">
                                                     <label class="flex items-start cursor-pointer p-3 lg:p-4 w-full">
-                                                        <input class="form-radio mt-1 mr-3 lg:mr-4 h-4 w-4 lg:h-5 lg:w-5 text-blue-600 border-gray-300 focus:ring-blue-500"
+                                                        <input class="form-radio mt-1 mr-3 lg:mr-4 h-4 w-4 lg:h-5 lg:w-5 text-accent-themed-primary border-themed-secondary focus:ring-accent-themed-primary"
                                                             type="radio" wire:click="saveAnswer({{ $question['id'] }}, {{ $optionIndex }})"
                                                             name="question_{{ $question['id'] }}" id="option_{{ $optionIndex }}"
                                                             @if(isset($answers[$question['id']]) && $answers[$question['id']] == $optionIndex) checked @endif
                                                             tabindex="{{ $optionIndex + 10 }}">
                                                         <div class="flex-1">
-                                                            <span class="font-semibold text-blue-600 dark:text-blue-400 mr-2 lg:mr-3 text-base lg:text-lg">{{ chr(65 + $optionIndex) }}.</span>
-                                                            <span class="text-gray-800 dark:text-gray-200 text-sm lg:text-base">{{ $option }}</span>
+                                                            <span class="font-semibold text-accent-themed-primary mr-2 lg:mr-3 text-base lg:text-lg">{{ chr(65 + $optionIndex) }}.</span>
+                                                            <span class="text-themed-primary text-sm lg:text-base">{{ $option }}</span>
                                                         </div>
                                                     </label>
                                                 </div>
@@ -394,26 +394,26 @@
 
                                 @elseif(($question['question_type'] ?? '') === 'true_false')
                                     <div class="space-y-3">
-                                        <div class="border-2 rounded-lg transition-all duration-200 hover:border-blue-300 dark:hover:border-blue-500
-                                            {{ isset($answers[$question['id']]) && $answers[$question['id']] == 0 ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20 dark:border-blue-400' : 'border-gray-200 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700' }}">
+                                        <div class="border-2 rounded-lg transition-all duration-200 hover:border-accent-themed-primary
+                                            {{ isset($answers[$question['id']]) && $answers[$question['id']] == 0 ? 'border-accent-themed-primary bg-accent-themed-primary bg-opacity-10' : 'border-themed-secondary hover:bg-themed-tertiary' }}">
                                             <label class="flex items-center cursor-pointer p-3 lg:p-4 w-full">
-                                                <input class="form-radio mr-3 lg:mr-4 h-4 w-4 lg:h-5 lg:w-5 text-blue-600 border-gray-300 focus:ring-blue-500"
+                                                <input class="form-radio mr-3 lg:mr-4 h-4 w-4 lg:h-5 lg:w-5 text-accent-themed-primary border-themed-secondary focus:ring-accent-themed-primary"
                                                     type="radio" wire:click="saveAnswer({{ $question['id'] }}, 0)"
                                                     name="question_{{ $question['id'] }}" @if(isset($answers[$question['id']]) && $answers[$question['id']] == 0) checked @endif
                                                     tabindex="10">
-                                                <span class="font-semibold text-blue-600 dark:text-blue-400 mr-2 lg:mr-3 text-base lg:text-lg">A.</span>
-                                                <span class="text-gray-800 dark:text-gray-200 font-medium text-sm lg:text-base">True</span>
+                                                <span class="font-semibold text-accent-themed-primary mr-2 lg:mr-3 text-base lg:text-lg">A.</span>
+                                                <span class="text-themed-primary font-medium text-sm lg:text-base">True</span>
                                             </label>
                                         </div>
-                                        <div class="border-2 rounded-lg transition-all duration-200 hover:border-blue-300 dark:hover:border-blue-500
-                                            {{ isset($answers[$question['id']]) && $answers[$question['id']] == 1 ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20 dark:border-blue-400' : 'border-gray-200 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700' }}">
+                                        <div class="border-2 rounded-lg transition-all duration-200 hover:border-accent-themed-primary
+                                            {{ isset($answers[$question['id']]) && $answers[$question['id']] == 1 ? 'border-accent-themed-primary bg-accent-themed-primary bg-opacity-10' : 'border-themed-secondary hover:bg-themed-tertiary' }}">
                                             <label class="flex items-center cursor-pointer p-3 lg:p-4 w-full">
-                                                <input class="form-radio mr-3 lg:mr-4 h-4 w-4 lg:h-5 lg:w-5 text-blue-600 border-gray-300 focus:ring-blue-500"
+                                                <input class="form-radio mr-3 lg:mr-4 h-4 w-4 lg:h-5 lg:w-5 text-accent-themed-primary border-themed-secondary focus:ring-accent-themed-primary"
                                                     type="radio" wire:click="saveAnswer({{ $question['id'] }}, 1)"
                                                     name="question_{{ $question['id'] }}" @if(isset($answers[$question['id']]) && $answers[$question['id']] == 1) checked @endif
                                                     tabindex="11">
-                                                <span class="font-semibold text-blue-600 dark:text-blue-400 mr-2 lg:mr-3 text-base lg:text-lg">B.</span>
-                                                <span class="text-gray-800 dark:text-gray-200 font-medium text-sm lg:text-base">False</span>
+                                                <span class="font-semibold text-accent-themed-primary mr-2 lg:mr-3 text-base lg:text-lg">B.</span>
+                                                <span class="text-themed-primary font-medium text-sm lg:text-base">False</span>
                                             </label>
                                         </div>
                                     </div>
@@ -441,10 +441,10 @@
                 </div>
 
                 <!-- Navigation Footer (Mobile Responsive) -->
-                <div class="bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 p-4 lg:p-6">
+                <div class="bg-themed-secondary border-t border-themed-secondary p-4 lg:p-6">
                     <div class="flex flex-col lg:flex-row justify-between items-center space-y-4 lg:space-y-0 mb-4">
                         <button wire:click="previousQuestion" 
-                            class="w-full lg:w-auto order-2 lg:order-1 px-4 lg:px-6 py-3 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors flex items-center justify-center font-medium text-sm lg:text-base
+                            class="w-full lg:w-auto order-2 lg:order-1 px-4 lg:px-6 py-3 border border-themed-secondary text-themed-primary rounded-lg hover:bg-themed-tertiary transition-colors flex items-center justify-center font-medium text-sm lg:text-base
                             {{ !$this->canGoPrevious() ? 'opacity-50 cursor-not-allowed' : '' }}"
                             {{ !$this->canGoPrevious() ? 'disabled' : '' }}
                             tabindex="100">
@@ -452,8 +452,8 @@
                         </button>
 
                         <div class="text-center order-1 lg:order-2">
-                            <div class="text-xs lg:text-sm text-gray-500 dark:text-gray-400 mb-1">Progress</div>
-                            <div class="font-semibold text-gray-900 dark:text-gray-100 text-sm lg:text-base">
+                            <div class="text-xs lg:text-sm text-themed-secondary mb-1">Progress</div>
+                            <div class="font-semibold text-themed-primary text-sm lg:text-base">
                                 {{ $currentQuestionIndex + 1 }} / {{ count($questions) }}
                             </div>
                         </div>
@@ -466,7 +466,7 @@
                             </button>
                         @else
                             <button wire:click="nextQuestion"
-                                class="w-full lg:w-auto order-3 bg-blue-600 hover:bg-blue-700 text-white px-4 lg:px-6 py-3 rounded-lg transition-colors flex items-center justify-center font-medium text-sm lg:text-base"
+                                class="w-full lg:w-auto order-3 bg-accent-themed-primary hover:bg-accent-themed-secondary text-white px-4 lg:px-6 py-3 rounded-lg transition-colors flex items-center justify-center font-medium text-sm lg:text-base"
                                 tabindex="101">
                                 Next<i class="fas fa-arrow-right ml-2"></i>
                             </button>
@@ -474,12 +474,12 @@
                     </div>
 
                     <!-- Enhanced Progress Bar -->
-                    <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-3">
-                        <div class="bg-blue-600 h-3 rounded-full transition-all duration-500 progress-animate"
+                    <div class="w-full bg-themed-tertiary rounded-full h-3">
+                        <div class="bg-accent-themed-primary h-3 rounded-full transition-all duration-500 progress-animate"
                             style="width: {{ $this->getProgressPercentage() }}%">
                         </div>
                     </div>
-                    <div class="flex justify-between text-xs text-gray-500 dark:text-gray-400 mt-1">
+                    <div class="flex justify-between text-xs text-themed-secondary mt-1">
                         <span>{{ round($this->getProgressPercentage(), 1) }}% Complete</span>
                         <span>{{ count($questions) - $this->getAnsweredQuestionsCount() }} remaining</span>
                     </div>
@@ -491,29 +491,29 @@
     <!-- Enhanced Submit Confirmation Modal (Mobile Responsive) -->
     @if($showSubmitModal)
         <div class="fixed inset-0 bg-black bg-opacity-75 z-50 flex items-center justify-center p-4">
-            <div class="bg-white dark:bg-gray-800 rounded-lg max-w-md w-full animate-pulse-scale">
-                <div class="p-4 lg:p-6 border-b border-gray-200 dark:border-gray-700">
-                    <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100 flex items-center">
+            <div class="bg-themed-secondary rounded-lg max-w-md w-full animate-pulse-scale border border-themed-primary">
+                <div class="p-4 lg:p-6 border-b border-themed-secondary">
+                    <h3 class="text-lg font-semibold text-themed-primary flex items-center">
                         <i class="fas fa-exclamation-triangle text-red-500 mr-3"></i>
                         Confirm Exam Submission
                     </h3>
                 </div>
                 <div class="p-4 lg:p-6">
                     <div class="mb-6">
-                        <p class="text-gray-700 dark:text-gray-300 mb-4 text-sm lg:text-base">Are you sure you want to submit your exam? This action cannot be undone.</p>
+                        <p class="text-themed-primary mb-4 text-sm lg:text-base">Are you sure you want to submit your exam? This action cannot be undone.</p>
 
-                        <div class="bg-gray-50 dark:bg-gray-900 rounded-lg p-4 space-y-2">
+                        <div class="bg-themed-tertiary rounded-lg p-4 space-y-2">
                             <div class="flex justify-between text-sm">
-                                <span class="text-gray-600 dark:text-gray-400">Questions Answered:</span>
-                                <span class="font-semibold text-gray-900 dark:text-gray-100">{{ $this->getAnsweredQuestionsCount() }} / {{ count($questions) }}</span>
+                                <span class="text-themed-secondary">Questions Answered:</span>
+                                <span class="font-semibold text-themed-primary">{{ $this->getAnsweredQuestionsCount() }} / {{ count($questions) }}</span>
                             </div>
                             <div class="flex justify-between text-sm">
-                                <span class="text-gray-600 dark:text-gray-400">Time Remaining:</span>
-                                <span class="font-semibold text-gray-900 dark:text-gray-100" x-text="formatTime(timeRemaining)"></span>
+                                <span class="text-themed-secondary">Time Remaining:</span>
+                                <span class="font-semibold text-themed-primary" x-text="formatTime(timeRemaining)"></span>
                             </div>
                             @if(count($flaggedQuestions) > 0)
                                 <div class="flex justify-between text-sm">
-                                    <span class="text-gray-600 dark:text-gray-400">Flagged Questions:</span>
+                                    <span class="text-themed-secondary">Flagged Questions:</span>
                                     <span class="font-semibold text-yellow-600 dark:text-yellow-400">{{ count($flaggedQuestions) }}</span>
                                 </div>
                             @endif
@@ -531,7 +531,7 @@
 
                     <div class="flex flex-col lg:flex-row space-y-3 lg:space-y-0 lg:space-x-4">
                         <button wire:click="cancelSubmission"
-                            class="flex-1 px-4 py-3 bg-gray-200 dark:bg-gray-600 text-gray-800 dark:text-gray-200 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-500 transition-colors font-medium text-sm lg:text-base">
+                            class="flex-1 px-4 py-3 bg-themed-tertiary text-themed-primary rounded-lg hover:bg-themed-tertiary hover:opacity-75 transition-colors font-medium text-sm lg:text-base border border-themed-secondary">
                             <i class="fas fa-times mr-2"></i>Cancel
                         </button>
                         <button wire:click="submitExam"
@@ -677,8 +677,8 @@
     @push('styles')
     <style>
         .form-radio:checked {
-            background-color: #3b82f6;
-            border-color: #3b82f6;
+            background-color: rgb(var(--accent-primary));
+            border-color: rgb(var(--accent-primary));
         }
 
         .form-radio {
