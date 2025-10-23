@@ -1,17 +1,17 @@
-<div class="bg-gradient-to-br from-slate-50 to-blue-50 dark:from-gray-900 dark:to-gray-800 min-h-screen p-4 lg:p-6 transition-colors duration-300">
+<div class="bg-themed-primary min-h-screen p-4 lg:p-6 transition-colors duration-300">
     
     <!-- Header -->
-    <div class="bg-white/70 dark:bg-gray-800/70 backdrop-blur-xl rounded-2xl shadow-lg p-6 mb-6 border border-white/20 dark:border-gray-700/30">
+    <div class="bg-themed-secondary rounded-2xl shadow-lg p-6 mb-6 border border-themed-primary transition-colors duration-300">
         <div class="flex flex-col lg:flex-row lg:items-center justify-between">
             <div class="flex items-center mb-4 lg:mb-0">
                 <div class="bg-gradient-to-r from-blue-500 to-purple-500 p-3 rounded-xl mr-4 shadow-md">
                     <i class="fas fa-chart-line text-white text-xl"></i>
                 </div>
                 <div>
-                    <h1 class="text-2xl font-bold bg-gradient-to-r from-gray-900 to-blue-600 dark:from-white dark:to-blue-400 bg-clip-text text-transparent">
+                    <h1 class="text-2xl font-bold text-themed-primary transition-colors duration-300">
                         Review Analytics
                     </h1>
-                    <p class="text-gray-600 dark:text-gray-400 mt-1 text-sm">
+                    <p class="text-themed-secondary mt-1 text-sm transition-colors duration-300">
                         Insights and trends from student reviews
                     </p>
                 </div>
@@ -20,11 +20,11 @@
     </div>
 
     <!-- Filters -->
-    <div class="bg-white/70 dark:bg-gray-800/70 backdrop-blur-xl rounded-2xl shadow-lg p-6 mb-6 border border-white/20 dark:border-gray-700/30">
+    <div class="bg-themed-secondary rounded-2xl shadow-lg p-6 mb-6 border border-themed-primary transition-colors duration-300">
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
-                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Course</label>
-                <select wire:model.live="courseId" class="w-full bg-white dark:bg-gray-700 border-2 border-gray-200 dark:border-gray-600 rounded-xl px-4 py-3 text-gray-900 dark:text-white">
+                <label class="block text-sm font-medium text-themed-primary mb-2 transition-colors duration-300">Course</label>
+                <select wire:model.live="courseId" class="w-full bg-themed-tertiary border-2 border-themed-primary rounded-xl px-4 py-3 text-themed-primary placeholder-themed-secondary focus:border-accent-themed-primary focus:ring-2 focus:ring-accent-themed-primary/20 transition-all duration-300">
                     <option value="">Select a course</option>
                     @foreach($courses as $course)
                         <option value="{{ $course->id }}">{{ $course->title }}</option>
@@ -33,8 +33,8 @@
             </div>
             
             <div>
-                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Time Range</label>
-                <select wire:model.live="timeRange" class="w-full bg-white dark:bg-gray-700 border-2 border-gray-200 dark:border-gray-600 rounded-xl px-4 py-3 text-gray-900 dark:text-white">
+                <label class="block text-sm font-medium text-themed-primary mb-2 transition-colors duration-300">Time Range</label>
+                <select wire:model.live="timeRange" class="w-full bg-themed-tertiary border-2 border-themed-primary rounded-xl px-4 py-3 text-themed-primary placeholder-themed-secondary focus:border-accent-themed-primary focus:ring-2 focus:ring-accent-themed-primary/20 transition-all duration-300">
                     <option value="7">Last 7 days</option>
                     <option value="30">Last 30 days</option>
                     <option value="90">Last 90 days</option>
@@ -43,8 +43,8 @@
             </div>
 
             <div>
-                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Metric</label>
-                <select wire:model.live="selectedMetric" class="w-full bg-white dark:bg-gray-700 border-2 border-gray-200 dark:border-gray-600 rounded-xl px-4 py-3 text-gray-900 dark:text-white">
+                <label class="block text-sm font-medium text-themed-primary mb-2 transition-colors duration-300">Metric</label>
+                <select wire:model.live="selectedMetric" class="w-full bg-themed-tertiary border-2 border-themed-primary rounded-xl px-4 py-3 text-themed-primary placeholder-themed-secondary focus:border-accent-themed-primary focus:ring-2 focus:ring-accent-themed-primary/20 transition-all duration-300">
                     <option value="rating">Average Rating</option>
                     <option value="sentiment">Sentiment Score</option>
                     <option value="response_rate">Response Rate</option>
@@ -56,11 +56,11 @@
     @if($selectedCourse)
         <!-- Key Metrics -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-            <div class="bg-white/70 dark:bg-gray-800/70 backdrop-blur-xl rounded-xl shadow-md p-6 border border-white/20 dark:border-gray-700/30">
+            <div class="bg-themed-secondary rounded-xl shadow-md p-6 border border-themed-primary transform hover:scale-105 transition-all duration-300">
                 <div class="flex items-center justify-between">
                     <div>
-                        <p class="text-gray-600 dark:text-gray-400 text-sm font-medium">Average Rating</p>
-                        <h3 class="text-3xl font-bold text-gray-900 dark:text-white mt-2">
+                        <p class="text-themed-secondary text-sm font-medium transition-colors duration-300">Average Rating</p>
+                        <h3 class="text-3xl font-bold text-accent-themed-primary mt-2">
                             {{ number_format($instructorMetrics['avg_rating'], 1) }}
                         </h3>
                         <div class="flex mt-2">
@@ -69,56 +69,56 @@
                             @endfor
                         </div>
                     </div>
-                    <div class="bg-yellow-100 dark:bg-yellow-900/50 p-3 rounded-lg">
+                    <div class="bg-yellow-100 dark:bg-yellow-900/50 p-3 rounded-lg transition-colors duration-300">
                         <i class="fas fa-star text-yellow-600 dark:text-yellow-400 text-2xl"></i>
                     </div>
                 </div>
             </div>
 
-            <div class="bg-white/70 dark:bg-gray-800/70 backdrop-blur-xl rounded-xl shadow-md p-6 border border-white/20 dark:border-gray-700/30">
+            <div class="bg-themed-secondary rounded-xl shadow-md p-6 border border-themed-primary transform hover:scale-105 transition-all duration-300">
                 <div class="flex items-center justify-between">
                     <div>
-                        <p class="text-gray-600 dark:text-gray-400 text-sm font-medium">Total Reviews</p>
-                        <h3 class="text-3xl font-bold text-gray-900 dark:text-white mt-2">
+                        <p class="text-themed-secondary text-sm font-medium transition-colors duration-300">Total Reviews</p>
+                        <h3 class="text-3xl font-bold text-accent-themed-primary mt-2">
                             {{ $instructorMetrics['total_reviews'] }}
                         </h3>
-                        <p class="text-sm text-gray-500 dark:text-gray-400 mt-2">
+                        <p class="text-sm text-themed-tertiary mt-2 transition-colors duration-300">
                             {{ $instructorMetrics['replied_reviews'] }} replied
                         </p>
                     </div>
-                    <div class="bg-blue-100 dark:bg-blue-900/50 p-3 rounded-lg">
+                    <div class="bg-blue-100 dark:bg-blue-900/50 p-3 rounded-lg transition-colors duration-300">
                         <i class="fas fa-comments text-blue-600 dark:text-blue-400 text-2xl"></i>
                     </div>
                 </div>
             </div>
 
-            <div class="bg-white/70 dark:bg-gray-800/70 backdrop-blur-xl rounded-xl shadow-md p-6 border border-white/20 dark:border-gray-700/30">
+            <div class="bg-themed-secondary rounded-xl shadow-md p-6 border border-themed-primary transform hover:scale-105 transition-all duration-300">
                 <div class="flex items-center justify-between">
                     <div>
-                        <p class="text-gray-600 dark:text-gray-400 text-sm font-medium">Response Rate</p>
-                        <h3 class="text-3xl font-bold text-gray-900 dark:text-white mt-2">
+                        <p class="text-themed-secondary text-sm font-medium transition-colors duration-300">Response Rate</p>
+                        <h3 class="text-3xl font-bold text-accent-themed-primary mt-2">
                             {{ number_format($instructorMetrics['response_rate'], 0) }}%
                         </h3>
-                        <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2 mt-2">
+                        <div class="w-full bg-themed-tertiary rounded-full h-2 mt-2 transition-colors duration-300">
                             <div class="bg-green-500 h-2 rounded-full" style="width: {{ $instructorMetrics['response_rate'] }}%"></div>
                         </div>
                     </div>
-                    <div class="bg-green-100 dark:bg-green-900/50 p-3 rounded-lg">
+                    <div class="bg-green-100 dark:bg-green-900/50 p-3 rounded-lg transition-colors duration-300">
                         <i class="fas fa-reply text-green-600 dark:text-green-400 text-2xl"></i>
                     </div>
                 </div>
             </div>
 
-            <div class="bg-white/70 dark:bg-gray-800/70 backdrop-blur-xl rounded-xl shadow-md p-6 border border-white/20 dark:border-gray-700/30">
+            <div class="bg-themed-secondary rounded-xl shadow-md p-6 border border-themed-primary transform hover:scale-105 transition-all duration-300">
                 <div class="flex items-center justify-between">
                     <div>
-                        <p class="text-gray-600 dark:text-gray-400 text-sm font-medium">Avg Response Time</p>
-                        <h3 class="text-3xl font-bold text-gray-900 dark:text-white mt-2">
+                        <p class="text-themed-secondary text-sm font-medium transition-colors duration-300">Avg Response Time</p>
+                        <h3 class="text-3xl font-bold text-accent-themed-primary mt-2">
                             {{ $instructorMetrics['avg_response_time_hours'] ?? 'N/A' }}
                         </h3>
-                        <p class="text-sm text-gray-500 dark:text-gray-400 mt-2">hours</p>
+                        <p class="text-sm text-themed-tertiary mt-2 transition-colors duration-300">hours</p>
                     </div>
-                    <div class="bg-purple-100 dark:bg-purple-900/50 p-3 rounded-lg">
+                    <div class="bg-purple-100 dark:bg-purple-900/50 p-3 rounded-lg transition-colors duration-300">
                         <i class="fas fa-clock text-purple-600 dark:text-purple-400 text-2xl"></i>
                     </div>
                 </div>
@@ -126,12 +126,11 @@
         </div>
 
         <!-- Rating Trends Chart -->
-        <div class="bg-white/70 dark:bg-gray-800/70 backdrop-blur-xl rounded-2xl shadow-lg p-6 mb-6 border border-white/20 dark:border-gray-700/30">
-            <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-4">Rating Trends</h3>
+        <div class="bg-themed-secondary rounded-2xl shadow-lg p-6 mb-6 border border-themed-primary transition-colors duration-300">
+            <h3 class="text-lg font-bold text-themed-primary mb-4 transition-colors duration-300">Rating Trends</h3>
             <div class="h-64" x-data="{ 
                 chartData: @js($ratingTrends),
                 init() {
-                    // You would integrate Chart.js or similar here
                     console.log(this.chartData);
                 }
             }">
@@ -142,8 +141,8 @@
         <!-- Satisfaction Metrics -->
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
             <!-- Sentiment Analysis -->
-            <div class="bg-white/70 dark:bg-gray-800/70 backdrop-blur-xl rounded-2xl shadow-lg p-6 border border-white/20 dark:border-gray-700/30">
-                <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-4 flex items-center">
+            <div class="bg-themed-secondary rounded-2xl shadow-lg p-6 border border-themed-primary transition-colors duration-300">
+                <h3 class="text-lg font-bold text-themed-primary mb-4 flex items-center transition-colors duration-300">
                     <i class="fas fa-smile text-green-500 mr-2"></i>
                     Sentiment Analysis
                 </h3>
@@ -152,12 +151,12 @@
                         {{ $satisfactionMetrics['sentiment_score'] > 0.3 ? 'text-green-600' : ($satisfactionMetrics['sentiment_score'] < -0.3 ? 'text-red-600' : 'text-yellow-600') }}">
                         {{ number_format($satisfactionMetrics['sentiment_score'], 2) }}
                     </div>
-                    <p class="text-gray-600 dark:text-gray-400">
+                    <p class="text-themed-secondary transition-colors duration-300">
                         {{ $satisfactionMetrics['sentiment_score'] > 0.3 ? 'Positive' : ($satisfactionMetrics['sentiment_score'] < -0.3 ? 'Negative' : 'Neutral') }}
                     </p>
                     <div class="mt-4">
                         <span class="px-4 py-2 rounded-full text-sm font-medium
-                            {{ $satisfactionMetrics['trend'] === 'increasing' ? 'bg-green-100 text-green-800' : ($satisfactionMetrics['trend'] === 'decreasing' ? 'bg-red-100 text-red-800' : 'bg-gray-100 text-gray-800') }}">
+                            {{ $satisfactionMetrics['trend'] === 'increasing' ? 'bg-green-100 text-green-800' : ($satisfactionMetrics['trend'] === 'decreasing' ? 'bg-red-100 text-red-800' : 'bg-themed-tertiary text-themed-secondary') }} transition-colors duration-300">
                             <i class="fas fa-{{ $satisfactionMetrics['trend'] === 'increasing' ? 'arrow-up' : ($satisfactionMetrics['trend'] === 'decreasing' ? 'arrow-down' : 'minus') }} mr-1"></i>
                             Trend: {{ ucfirst($satisfactionMetrics['trend']) }}
                         </span>
@@ -166,20 +165,20 @@
             </div>
 
             <!-- Top Keywords -->
-            <div class="bg-white/70 dark:bg-gray-800/70 backdrop-blur-xl rounded-2xl shadow-lg p-6 border border-white/20 dark:border-gray-700/30">
-                <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-4 flex items-center">
-                    <i class="fas fa-tags text-blue-500 mr-2"></i>
+            <div class="bg-themed-secondary rounded-2xl shadow-lg p-6 border border-themed-primary transition-colors duration-300">
+                <h3 class="text-lg font-bold text-themed-primary mb-4 flex items-center transition-colors duration-300">
+                    <i class="fas fa-tags text-accent-themed-primary mr-2"></i>
                     Most Common Keywords
                 </h3>
                 <div class="space-y-3">
                     @foreach($satisfactionMetrics['top_keywords'] as $keyword => $count)
                         <div class="flex items-center justify-between">
-                            <span class="text-gray-700 dark:text-gray-300 font-medium">{{ $keyword }}</span>
+                            <span class="text-themed-primary font-medium transition-colors duration-300">{{ $keyword }}</span>
                             <div class="flex items-center">
-                                <div class="w-32 bg-gray-200 dark:bg-gray-700 rounded-full h-2 mr-3">
-                                    <div class="bg-blue-500 h-2 rounded-full" style="width: {{ min(($count / max(array_values($satisfactionMetrics['top_keywords']))) * 100, 100) }}%"></div>
+                                <div class="w-32 bg-themed-tertiary rounded-full h-2 mr-3 transition-colors duration-300">
+                                    <div class="bg-accent-themed-primary h-2 rounded-full" style="width: {{ min(($count / max(array_values($satisfactionMetrics['top_keywords']))) * 100, 100) }}%"></div>
                                 </div>
-                                <span class="text-sm text-gray-600 dark:text-gray-400 w-8 text-right">{{ $count }}</span>
+                                <span class="text-sm text-themed-secondary w-8 text-right transition-colors duration-300">{{ $count }}</span>
                             </div>
                         </div>
                     @endforeach
@@ -188,8 +187,8 @@
         </div>
 
         <!-- Rating Distribution -->
-        <div class="bg-white/70 dark:bg-gray-800/70 backdrop-blur-xl rounded-2xl shadow-lg p-6 border border-white/20 dark:border-gray-700/30">
-            <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-4">Rating Distribution</h3>
+        <div class="bg-themed-secondary rounded-2xl shadow-lg p-6 border border-themed-primary transition-colors duration-300">
+            <h3 class="text-lg font-bold text-themed-primary mb-4 transition-colors duration-300">Rating Distribution</h3>
             <div class="space-y-3">
                 @foreach([5,4,3,2,1] as $star)
                     @php
@@ -197,14 +196,14 @@
                         $percentage = $instructorMetrics['total_reviews'] > 0 ? ($count / $instructorMetrics['total_reviews']) * 100 : 0;
                     @endphp
                     <div class="flex items-center gap-4">
-                        <div class="w-12 text-sm font-medium text-gray-700 dark:text-gray-300">
+                        <div class="w-12 text-sm font-medium text-themed-primary transition-colors duration-300">
                             {{ $star }} <i class="fas fa-star text-yellow-400 text-xs"></i>
                         </div>
-                        <div class="flex-1 bg-gray-200 dark:bg-gray-700 rounded-full h-4">
+                        <div class="flex-1 bg-themed-tertiary rounded-full h-4 transition-colors duration-300">
                             <div class="bg-gradient-to-r from-yellow-400 to-yellow-600 h-4 rounded-full transition-all duration-300" 
                                  style="width: {{ $percentage }}%"></div>
                         </div>
-                        <div class="w-16 text-sm text-gray-600 dark:text-gray-400 text-right">
+                        <div class="w-16 text-sm text-themed-secondary text-right transition-colors duration-300">
                             {{ $count }} ({{ number_format($percentage, 1) }}%)
                         </div>
                     </div>
@@ -212,12 +211,23 @@
             </div>
         </div>
     @else
-        <div class="text-center py-20 bg-white/70 dark:bg-gray-800/70 backdrop-blur-xl rounded-2xl shadow-lg border border-white/20 dark:border-gray-700/30">
-            <i class="fas fa-chart-line text-gray-400 text-6xl mb-4"></i>
-            <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">No Course Selected</h3>
-            <p class="text-gray-600 dark:text-gray-400">Select a course above to view analytics</p>
+        <div class="text-center py-20 bg-themed-secondary rounded-2xl shadow-lg border border-themed-primary transition-colors duration-300">
+            <i class="fas fa-chart-line text-themed-tertiary text-6xl mb-4"></i>
+            <h3 class="text-xl font-bold text-themed-primary mb-2 transition-colors duration-300">No Course Selected</h3>
+            <p class="text-themed-secondary transition-colors duration-300">Select a course above to view analytics</p>
         </div>
     @endif
+
+    <!-- Loading Overlay -->
+    <div wire:loading class="fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center z-50">
+        <div class="bg-themed-secondary rounded-2xl p-6 flex items-center shadow-2xl border border-themed-primary transition-colors duration-300">
+            <div class="relative mr-4">
+                <div class="animate-spin rounded-full h-8 w-8 border-2 border-themed-tertiary"></div>
+                <div class="animate-spin rounded-full h-8 w-8 border-2 border-accent-themed-primary border-t-transparent absolute top-0"></div>
+            </div>
+            <span class="text-themed-primary font-semibold transition-colors duration-300">Loading analytics...</span>
+        </div>
+    </div>
 </div>
 
 @push('scripts')

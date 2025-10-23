@@ -51,6 +51,7 @@ class ReviewAnalytics extends Component
             'ratingTrends' => null,
             'instructorMetrics' => null,
             'satisfactionMetrics' => null,
+            'theme' => session('theme', 'light'),
         ];
 
         if ($selectedCourse) {
