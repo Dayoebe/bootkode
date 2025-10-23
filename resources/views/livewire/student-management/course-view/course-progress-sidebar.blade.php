@@ -1,6 +1,6 @@
-<div class="bg-white dark:bg-gray-800 rounded-xl p-4 sticky top-4 max-h-[80vh] overflow-y-auto border border-gray-200 dark:border-gray-700 transition-colors duration-300">
-    <h2 class="text-lg font-bold text-gray-900 dark:text-white mb-4 flex items-center">
-        <i class="fas fa-list-ul mr-2 text-indigo-500 dark:text-indigo-400"></i>
+<div class="bg-themed-secondary rounded-xl p-4 sticky top-4 max-h-[80vh] overflow-y-auto border border-themed-primary transition-colors duration-300 shadow-lg">
+    <h2 class="text-lg font-bold text-themed-primary mb-4 flex items-center">
+        <i class="fas fa-list-ul mr-2 text-accent-themed-primary"></i>
         Course Content
     </h2>
     
@@ -12,7 +12,7 @@
                 $isCompleted = $this->isSectionCompleted($section);
             @endphp
             
-            <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-3 transition-all duration-200 border border-gray-200 dark:border-gray-600
+            <div class="bg-themed-tertiary rounded-lg p-3 transition-all duration-200 border border-themed-secondary
                         {{ $isUnlocked ? '' : 'opacity-50' }}
                         {{ $isCompleted ? 'ring-2 ring-green-500' : '' }}">
                 
@@ -20,17 +20,17 @@
                 <div class="flex items-center justify-between mb-3">
                     <div class="flex items-center">
                         @if($isCompleted)
-                            <i class="fas fa-check-circle text-green-500 dark:text-green-400 mr-2"></i>
+                            <i class="fas fa-check-circle text-green-500 mr-2"></i>
                         @elseif($isUnlocked)
-                            <i class="fas fa-unlock text-indigo-500 dark:text-indigo-400 mr-2"></i>
+                            <i class="fas fa-unlock text-accent-themed-primary mr-2"></i>
                         @else
-                            <i class="fas fa-lock text-gray-400 dark:text-gray-500 mr-2"></i>
+                            <i class="fas fa-lock text-themed-tertiary mr-2"></i>
                         @endif
                         
-                        <h3 class="font-medium text-gray-900 dark:text-white text-sm">{{ $section->title }}</h3>
+                        <h3 class="font-medium text-themed-primary text-sm">{{ $section->title }}</h3>
                     </div>
                     
-                    <div class="flex items-center text-xs text-gray-600 dark:text-gray-400">
+                    <div class="flex items-center text-xs text-themed-tertiary">
                         <span>{{ $section->lessons->count() }}</span>
                         <i class="fas fa-book-open ml-1"></i>
                     </div>
@@ -39,11 +39,11 @@
                 <!-- Section Progress Bar -->
                 <div class="mb-3">
                     <div class="flex justify-between items-center mb-1">
-                        <span class="text-xs text-gray-600 dark:text-gray-400">Progress</span>
-                        <span class="text-xs text-gray-800 dark:text-gray-300 font-medium">{{ $sectionProgress }}%</span>
+                        <span class="text-xs text-themed-tertiary">Progress</span>
+                        <span class="text-xs font-medium text-themed-primary">{{ $sectionProgress }}%</span>
                     </div>
-                    <div class="w-full bg-gray-200 dark:bg-gray-600 rounded-full h-1.5">
-                        <div class="bg-gradient-to-r from-indigo-500 to-purple-500 h-1.5 rounded-full transition-all duration-300" 
+                    <div class="w-full bg-themed-secondary rounded-full h-1.5 border border-themed-secondary">
+                        <div class="bg-gradient-to-r from-accent-themed-primary to-accent-themed-secondary h-1.5 rounded-full transition-all duration-300" 
                              style="width: {{ $sectionProgress }}%"></div>
                     </div>
                 </div>
@@ -61,21 +61,21 @@
                             @if(!$isUnlocked) disabled @endif
                             class="w-full text-left p-2 rounded-md flex items-center justify-between text-sm transition-all duration-150
                                 {{ $isCurrentLesson 
-                                    ? 'bg-indigo-600 text-white shadow-lg' 
+                                    ? 'bg-accent-themed-primary text-white shadow-lg' 
                                     : ($isUnlocked 
-                                        ? 'bg-gray-100 dark:bg-gray-600 hover:bg-gray-200 dark:hover:bg-gray-500 text-gray-800 dark:text-gray-300' 
-                                        : 'bg-gray-100 dark:bg-gray-600 text-gray-400 dark:text-gray-500 cursor-not-allowed')
+                                        ? 'bg-themed-secondary hover:bg-themed-tertiary text-themed-primary' 
+                                        : 'bg-themed-secondary text-themed-tertiary cursor-not-allowed')
                                 }}">
                             
                             <div class="flex items-center min-w-0">
                                 @if($isLessonCompleted)
-                                    <i class="fas fa-check-circle text-green-500 dark:text-green-400 mr-2 flex-shrink-0"></i>
+                                    <i class="fas fa-check-circle text-green-500 mr-2 flex-shrink-0"></i>
                                 @elseif($isCurrentLesson)
                                     <i class="fas fa-play-circle text-white mr-2 flex-shrink-0"></i>
                                 @elseif($isUnlocked)
                                     <i class="far fa-circle mr-2 flex-shrink-0"></i>
                                 @else
-                                    <i class="fas fa-lock text-gray-400 dark:text-gray-500 mr-2 flex-shrink-0"></i>
+                                    <i class="fas fa-lock text-themed-tertiary mr-2 flex-shrink-0"></i>
                                 @endif
                                 
                                 <span class="truncate">{{ $lesson->title }}</span>
@@ -83,15 +83,15 @@
                             
                             <div class="flex items-center text-xs ml-2 flex-shrink-0">
                                 @if($lesson->formatted_duration !== 'N/A')
-                                    <span class="text-gray-600 dark:text-gray-400">{{ $lesson->formatted_duration }}</span>
+                                    <span class="text-themed-tertiary">{{ $lesson->formatted_duration }}</span>
                                 @endif
                                 
                                 @if($lesson->hasVideo())
-                                    <i class="fas fa-video ml-1 text-purple-500 dark:text-purple-400"></i>
+                                    <i class="fas fa-video ml-1 text-purple-500"></i>
                                 @endif
                                 
                                 @if($lesson->hasAudio())
-                                    <i class="fas fa-volume-up ml-1 text-blue-500 dark:text-blue-400"></i>
+                                    <i class="fas fa-volume-up ml-1 text-blue-500"></i>
                                 @endif
                             </div>
                         </button>
@@ -99,17 +99,17 @@
                 </div>
                 
                 @if(!$isUnlocked && !$loop->first)
-                    <div class="mt-2 text-xs text-gray-600 dark:text-gray-500 bg-gray-200 dark:bg-gray-600 p-2 rounded text-center">
+                    <div class="mt-2 text-xs text-themed-tertiary bg-themed-secondary p-2 rounded text-center border border-themed-secondary">
                         <i class="fas fa-info-circle mr-1"></i>
                         Complete {{ $this->sectionCompletionThreshold ?? 80 }}% of previous section to unlock
                     </div>
                 @elseif($isCompleted)
-                    <div class="mt-2 text-xs text-green-700 dark:text-green-400 bg-green-100 dark:bg-green-900/20 p-2 rounded text-center">
+                    <div class="mt-2 text-xs text-green-400 bg-green-500/20 p-2 rounded text-center border border-green-500/30">
                         <i class="fas fa-trophy mr-1"></i>
                         Section Completed!
                     </div>
                 @elseif($isUnlocked && $sectionProgress > 0)
-                    <div class="mt-2 text-xs text-blue-700 dark:text-blue-400 bg-blue-100 dark:bg-blue-900/20 p-2 rounded text-center">
+                    <div class="mt-2 text-xs text-accent-themed-primary bg-accent-themed-primary/20 p-2 rounded text-center border border-accent-themed-primary/30">
                         <i class="fas fa-play mr-1"></i>
                         In Progress - {{ $sectionProgress }}%
                     </div>
@@ -119,20 +119,26 @@
     </div>
     
     <!-- Course Stats -->
-    <div class="mt-4 pt-4 border-t border-gray-300 dark:border-gray-600">
-        <div class="text-xs text-gray-700 dark:text-gray-400 space-y-1">
+    <div class="mt-4 pt-4 border-t border-themed-secondary">
+        <div class="text-xs text-themed-tertiary space-y-1">
             <div class="flex justify-between">
                 <span>Total Sections:</span>
-                <span class="font-medium text-gray-900 dark:text-white">{{ $sections->count() }}</span>
+                <span class="font-medium text-themed-primary">{{ $sections->count() }}</span>
             </div>
             <div class="flex justify-between">
                 <span>Total Lessons:</span>
-                <span class="font-medium text-gray-900 dark:text-white">{{ $sections->flatMap->lessons->count() }}</span>
+                <span class="font-medium text-themed-primary">{{ $sections->flatMap->lessons->count() }}</span>
             </div>
             <div class="flex justify-between">
                 <span>Completed:</span>
-                <span class="text-green-600 dark:text-green-400 font-medium">{{ count($completedLessons) }}</span>
+                <span class="text-green-400 font-medium">{{ count($completedLessons) }}</span>
             </div>
         </div>
     </div>
+
+    <style>
+        * {
+            transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+        }
+    </style>
 </div>
