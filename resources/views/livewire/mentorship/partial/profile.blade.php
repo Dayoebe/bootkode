@@ -1,16 +1,16 @@
 {{-- FILE: resources/views/livewire/mentorship/partial/profile.blade.php --}}
 
-<div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 border border-gray-200 dark:border-gray-700">
+<div class="bg-themed-secondary rounded-2xl shadow-lg p-6 border border-themed-primary transition-colors duration-300">
     <div class="flex items-center justify-between mb-6">
-        <h2 class="text-2xl font-bold text-gray-900 dark:text-white">Mentor Profile</h2>
+        <h2 class="text-2xl font-bold text-themed-primary transition-colors duration-300">Mentor Profile</h2>
         @if(!$profileId)
             <button wire:click="$dispatch('open-application-modal')"
-                class="bg-blue-600 dark:bg-blue-500 text-white px-6 py-3 rounded-lg hover:bg-blue-700 dark:hover:bg-blue-600 transition-colors">
+                class="bg-accent-primary hover:bg-accent-secondary text-white px-6 py-3 rounded-lg transition-colors">
                 <i class="fas fa-user-plus mr-2"></i>Apply to Become Mentor
             </button>
         @else
             <button wire:click="editProfile"
-                class="bg-blue-600 dark:bg-blue-500 text-white px-6 py-3 rounded-lg hover:bg-blue-700 dark:hover:bg-blue-600 transition-colors">
+                class="bg-accent-primary hover:bg-accent-secondary text-white px-6 py-3 rounded-lg transition-colors">
                 <i class="fas fa-edit mr-2"></i>Edit Profile
             </button>
         @endif
@@ -19,28 +19,28 @@
     @if($profileId)
         <div class="space-y-6">
             <!-- Profile Summary -->
-            <div class="border-b border-gray-200 dark:border-gray-700 pb-6">
+            <div class="border-b border-themed-primary pb-6 transition-colors duration-300">
                 <div class="flex items-center space-x-6">
-                    <div class="w-20 h-20 bg-gradient-to-br from-blue-500 to-purple-600 dark:from-blue-600 dark:to-purple-700 rounded-full flex items-center justify-center text-white text-3xl font-bold">
+                    <div class="w-20 h-20 bg-gradient-to-br from-accent-primary to-accent-secondary rounded-full flex items-center justify-center text-white text-3xl font-bold">
                         {{ substr(auth()->user()->name, 0, 1) }}
                     </div>
                     <div class="flex-1">
-                        <h3 class="text-2xl font-bold text-gray-900 dark:text-white">{{ auth()->user()->name }}</h3>
-                        <p class="text-lg text-gray-600 dark:text-gray-400">{{ auth()->user()->mentorProfile->experience_label ?? 'Mentor' }}</p>
+                        <h3 class="text-2xl font-bold text-themed-primary transition-colors duration-300">{{ auth()->user()->name }}</h3>
+                        <p class="text-lg text-themed-secondary transition-colors duration-300">{{ auth()->user()->mentorProfile->experience_label ?? 'Mentor' }}</p>
                         <div class="flex items-center mt-2">
                             <div class="text-yellow-400 mr-2">
                                 @for($i = 1; $i <= 5; $i++)
-                                    <i class="fas fa-star {{ $i <= floor(auth()->user()->mentorProfile->rating ?? 0) ? '' : 'text-gray-300 dark:text-gray-600' }}"></i>
+                                    <i class="fas fa-star {{ $i <= floor(auth()->user()->mentorProfile->rating ?? 0) ? '' : 'text-themed-tertiary' }}"></i>
                                 @endfor
                             </div>
-                            <span class="text-sm text-gray-600 dark:text-gray-400">({{ auth()->user()->mentorProfile->total_reviews ?? 0 }} reviews)</span>
+                            <span class="text-sm text-themed-secondary transition-colors duration-300">({{ auth()->user()->mentorProfile->total_reviews ?? 0 }} reviews)</span>
                         </div>
                     </div>
                     <div class="text-right">
-                        <div class="text-2xl font-bold text-gray-900 dark:text-white">
+                        <div class="text-2xl font-bold text-themed-primary transition-colors duration-300">
                             {{ auth()->user()->mentorProfile->current_mentees ?? 0 }}/{{ $maxMentees }}
                         </div>
-                        <div class="text-sm text-gray-600 dark:text-gray-400">Active Mentees</div>
+                        <div class="text-sm text-themed-secondary transition-colors duration-300">Active Mentees</div>
                     </div>
                 </div>
             </div>
@@ -48,42 +48,42 @@
             <!-- Profile Details -->
             <div class="grid md:grid-cols-2 gap-6">
                 <div>
-                    <h4 class="font-semibold text-gray-900 dark:text-white mb-3">Specializations</h4>
+                    <h4 class="font-semibold text-themed-primary mb-3 transition-colors duration-300">Specializations</h4>
                     <div class="flex flex-wrap gap-2">
                         @foreach($specializations ?? [] as $spec)
                             @if($spec)
-                                <span class="bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 px-3 py-1 rounded-full text-sm border border-blue-200 dark:border-blue-800">{{ $spec }}</span>
+                                <span class="bg-accent-primary/10 text-accent-primary px-3 py-1 rounded-full text-sm border border-accent-primary/30 transition-colors duration-300">{{ $spec }}</span>
                             @endif
                         @endforeach
                     </div>
                 </div>
 
                 <div>
-                    <h4 class="font-semibold text-gray-900 dark:text-white mb-3">Skills</h4>
+                    <h4 class="font-semibold text-themed-primary mb-3 transition-colors duration-300">Skills</h4>
                     <div class="flex flex-wrap gap-2">
                         @foreach($skills ?? [] as $skill)
                             @if($skill)
-                                <span class="bg-green-50 dark:bg-green-900/30 text-green-700 dark:text-green-300 px-3 py-1 rounded-full text-sm border border-green-200 dark:border-green-800">{{ $skill }}</span>
+                                <span class="bg-green-100/50 dark:bg-green-900/30 text-green-700 dark:text-green-300 px-3 py-1 rounded-full text-sm border border-green-200/50 dark:border-green-800 transition-colors duration-300">{{ $skill }}</span>
                             @endif
                         @endforeach
                     </div>
                 </div>
 
                 <div class="md:col-span-2">
-                    <h4 class="font-semibold text-gray-900 dark:text-white mb-3">Bio</h4>
-                    <p class="text-gray-700 dark:text-gray-300 leading-relaxed">
+                    <h4 class="font-semibold text-themed-primary mb-3 transition-colors duration-300">Bio</h4>
+                    <p class="text-themed-secondary leading-relaxed transition-colors duration-300">
                         {{ $bio ?: 'No bio provided yet. Click "Edit Profile" to add your bio.' }}
                     </p>
                 </div>
 
                 <div>
-                    <h4 class="font-semibold text-gray-900 dark:text-white mb-3">Experience</h4>
-                    <p class="text-gray-700 dark:text-gray-300">{{ $yearsExperience }}+ years • {{ ucfirst($experienceLevel) }} Level</p>
+                    <h4 class="font-semibold text-themed-primary mb-3 transition-colors duration-300">Experience</h4>
+                    <p class="text-themed-secondary transition-colors duration-300">{{ $yearsExperience }}+ years • {{ ucfirst($experienceLevel) }} Level</p>
                 </div>
 
                 <div>
-                    <h4 class="font-semibold text-gray-900 dark:text-white mb-3">Availability</h4>
-                    <p class="text-gray-700 dark:text-gray-300">
+                    <h4 class="font-semibold text-themed-primary mb-3 transition-colors duration-300">Availability</h4>
+                    <p class="text-themed-secondary transition-colors duration-300">
                         @if($isAvailable)
                             <span class="text-green-600 dark:text-green-400"><i class="fas fa-check-circle mr-1"></i>Available for new mentees</span>
                         @else
@@ -93,8 +93,8 @@
                 </div>
 
                 <div>
-                    <h4 class="font-semibold text-gray-900 dark:text-white mb-3">Pricing</h4>
-                    <p class="text-gray-700 dark:text-gray-300">
+                    <h4 class="font-semibold text-themed-primary mb-3 transition-colors duration-300">Pricing</h4>
+                    <p class="text-themed-secondary transition-colors duration-300">
                         @if($hourlyRate > 0)
                             ${{ number_format($hourlyRate, 2) }}/hour
                         @else
@@ -107,20 +107,20 @@
                 </div>
 
                 <div>
-                    <h4 class="font-semibold text-gray-900 dark:text-white mb-3">Contact Links</h4>
+                    <h4 class="font-semibold text-themed-primary mb-3 transition-colors duration-300">Contact Links</h4>
                     <div class="flex space-x-4">
                         @if($linkedinProfile)
-                            <a href="{{ $linkedinProfile }}" target="_blank" class="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300">
+                            <a href="{{ $linkedinProfile }}" target="_blank" class="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 transition-colors">
                                 <i class="fab fa-linkedin text-xl"></i>
                             </a>
                         @endif
                         @if($githubProfile)
-                            <a href="{{ $githubProfile }}" target="_blank" class="text-gray-900 dark:text-gray-300 hover:text-gray-700 dark:hover:text-gray-400">
+                            <a href="{{ $githubProfile }}" target="_blank" class="text-themed-primary hover:text-accent-primary transition-colors">
                                 <i class="fab fa-github text-xl"></i>
                             </a>
                         @endif
                         @if($portfolioUrl)
-                            <a href="{{ $portfolioUrl }}" target="_blank" class="text-purple-600 dark:text-purple-400 hover:text-purple-800 dark:hover:text-purple-300">
+                            <a href="{{ $portfolioUrl }}" target="_blank" class="text-purple-600 dark:text-purple-400 hover:text-purple-800 dark:hover:text-purple-300 transition-colors">
                                 <i class="fas fa-globe text-xl"></i>
                             </a>
                         @endif
@@ -130,38 +130,38 @@
 
             <!-- Mentoring Approach -->
             @if($mentoringApproach)
-                <div class="border-t border-gray-200 dark:border-gray-700 pt-6">
-                    <h4 class="font-semibold text-gray-900 dark:text-white mb-3">Mentoring Approach</h4>
-                    <p class="text-gray-700 dark:text-gray-300 leading-relaxed">{{ $mentoringApproach }}</p>
+                <div class="border-t border-themed-primary pt-6 transition-colors duration-300">
+                    <h4 class="font-semibold text-themed-primary mb-3 transition-colors duration-300">Mentoring Approach</h4>
+                    <p class="text-themed-secondary leading-relaxed transition-colors duration-300">{{ $mentoringApproach }}</p>
                 </div>
             @endif
 
             <!-- Recent Reviews -->
             @if(count($recentReviews) > 0)
-                <div class="border-t border-gray-200 dark:border-gray-700 pt-6">
-                    <h4 class="font-semibold text-gray-900 dark:text-white mb-4">Recent Reviews</h4>
+                <div class="border-t border-themed-primary pt-6 transition-colors duration-300">
+                    <h4 class="font-semibold text-themed-primary mb-4 transition-colors duration-300">Recent Reviews</h4>
                     <div class="space-y-4">
                         @foreach($recentReviews as $review)
-                            <div class="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4 border border-gray-200 dark:border-gray-600">
+                            <div class="bg-themed-tertiary rounded-lg p-4 border border-themed-primary transition-colors duration-300">
                                 <div class="flex items-center justify-between mb-2">
                                     <div class="flex items-center space-x-3">
-                                        <div class="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-600 dark:from-blue-600 dark:to-purple-700 rounded-full flex items-center justify-center text-white text-sm font-bold">
+                                        <div class="w-8 h-8 bg-gradient-to-br from-accent-primary to-accent-secondary rounded-full flex items-center justify-center text-white text-sm font-bold">
                                             {{ substr($review->reviewer->name, 0, 1) }}
                                         </div>
                                         <div>
-                                            <p class="font-medium text-gray-900 dark:text-white">{{ $review->reviewer->name }}</p>
+                                            <p class="font-medium text-themed-primary transition-colors duration-300">{{ $review->reviewer->name }}</p>
                                             <div class="flex items-center">
                                                 <div class="text-yellow-400 text-sm mr-2">
                                                     @for($i = 1; $i <= 5; $i++)
-                                                        <i class="fas fa-star {{ $i <= floor($review->overall_rating) ? '' : 'text-gray-300 dark:text-gray-600' }}"></i>
+                                                        <i class="fas fa-star {{ $i <= floor($review->overall_rating) ? '' : 'text-themed-tertiary' }}"></i>
                                                     @endfor
                                                 </div>
-                                                <span class="text-xs text-gray-500 dark:text-gray-400">{{ $review->created_at->format('M j, Y') }}</span>
+                                                <span class="text-xs text-themed-secondary transition-colors duration-300">{{ $review->created_at->format('M j, Y') }}</span>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                                <p class="text-sm text-gray-700 dark:text-gray-300">{{ \Illuminate\Support\Str::limit($review->review_text, 150) }}</p>
+                                <p class="text-sm text-themed-secondary transition-colors duration-300">{{ \Illuminate\Support\Str::limit($review->review_text, 150) }}</p>
                             </div>
                         @endforeach
                     </div>
@@ -170,13 +170,13 @@
         </div>
     @else
         <div class="text-center py-16">
-            <div class="text-6xl text-gray-400 dark:text-gray-600 mb-4">
+            <div class="text-6xl text-themed-tertiary mb-4 transition-colors duration-300">
                 <i class="fas fa-user-plus"></i>
             </div>
-            <h3 class="text-xl font-semibold text-gray-700 dark:text-gray-300 mb-2">No mentor profile yet</h3>
-            <p class="text-gray-500 dark:text-gray-400 mb-6">Create your mentor profile to start accepting mentees</p>
+            <h3 class="text-xl font-semibold text-themed-primary mb-2 transition-colors duration-300">No mentor profile yet</h3>
+            <p class="text-themed-secondary mb-6 transition-colors duration-300">Create your mentor profile to start accepting mentees</p>
             <button wire:click="$dispatch('open-application-modal')"
-                class="bg-blue-600 dark:bg-blue-500 text-white px-6 py-3 rounded-lg hover:bg-blue-700 dark:hover:bg-blue-600 transition-colors">
+                class="bg-accent-primary hover:bg-accent-secondary text-white px-6 py-3 rounded-lg transition-colors">
                 <i class="fas fa-user-plus mr-2"></i>Apply to Become Mentor
             </button>
         </div>
@@ -185,12 +185,12 @@
 
 <!-- Profile Edit Modal -->
 @if($showProfileModal)
-    <div class="fixed inset-0 bg-gray-600 dark:bg-gray-900 bg-opacity-50 dark:bg-opacity-75 overflow-y-auto h-full w-full z-50">
-        <div class="relative top-20 mx-auto p-5 border border-gray-200 dark:border-gray-700 w-11/12 md:w-3/4 lg:w-1/2 shadow-lg rounded-md bg-white dark:bg-gray-800 max-h-[85vh] overflow-y-auto">
+    <div class="fixed inset-0 bg-black/50 dark:bg-black/75 overflow-y-auto h-full w-full z-50 transition-colors duration-300">
+        <div class="relative top-20 mx-auto p-5 border border-themed-primary w-11/12 md:w-3/4 lg:w-1/2 shadow-lg rounded-md bg-themed-secondary max-h-[85vh] overflow-y-auto transition-colors duration-300">
             <div class="mt-3">
                 <div class="flex items-center justify-between mb-6">
-                    <h3 class="text-2xl font-bold text-gray-900 dark:text-white">Edit Mentor Profile</h3>
-                    <button wire:click="closeModal" class="text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300">
+                    <h3 class="text-2xl font-bold text-themed-primary transition-colors duration-300">Edit Mentor Profile</h3>
+                    <button wire:click="closeModal" class="text-themed-secondary hover:text-themed-primary transition-colors">
                         <i class="fas fa-times text-xl"></i>
                     </button>
                 </div>
@@ -198,31 +198,31 @@
                 <form wire:submit.prevent="saveProfile" class="space-y-6">
                     <!-- Bio -->
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Bio *</label>
+                        <label class="block text-sm font-medium text-themed-primary mb-2 transition-colors duration-300">Bio *</label>
                         <textarea wire:model="bio" rows="4"
-                            class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                            class="w-full px-3 py-2 border border-themed-primary rounded-lg focus:ring-2 focus:ring-accent-primary focus:border-transparent bg-themed-secondary text-themed-primary placeholder-themed-tertiary transition-colors duration-300"
                             placeholder="Tell mentees about yourself..."></textarea>
                         @error('bio') <span class="text-red-500 dark:text-red-400 text-sm">{{ $message }}</span> @enderror
                     </div>
 
                     <!-- Specializations -->
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Specializations *</label>
+                        <label class="block text-sm font-medium text-themed-primary mb-2 transition-colors duration-300">Specializations *</label>
                         @foreach($specializations as $index => $specialization)
                             <div class="flex items-center space-x-2 mb-2">
                                 <input type="text" wire:model="specializations.{{ $index }}"
-                                    class="flex-1 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                                    class="flex-1 px-3 py-2 border border-themed-primary rounded-lg focus:ring-2 focus:ring-accent-primary focus:border-transparent bg-themed-secondary text-themed-primary placeholder-themed-tertiary transition-colors duration-300"
                                     placeholder="e.g., Web Development">
                                 @if(count($specializations) > 1)
                                     <button type="button" wire:click="removeSpecialization({{ $index }})"
-                                        class="text-red-600 dark:text-red-400 hover:text-red-800 dark:hover:text-red-300">
+                                        class="text-red-600 dark:text-red-400 hover:text-red-800 dark:hover:text-red-300 transition-colors">
                                         <i class="fas fa-times"></i>
                                     </button>
                                 @endif
                             </div>
                         @endforeach
                         <button type="button" wire:click="addSpecialization"
-                            class="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 text-sm">
+                            class="text-accent-primary hover:text-accent-secondary text-sm transition-colors">
                             <i class="fas fa-plus mr-1"></i>Add Specialization
                         </button>
                         @error('specializations') <span class="text-red-500 dark:text-red-400 text-sm">{{ $message }}</span> @enderror
@@ -230,22 +230,22 @@
 
                     <!-- Skills -->
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Skills</label>
+                        <label class="block text-sm font-medium text-themed-primary mb-2 transition-colors duration-300">Skills</label>
                         @foreach($skills as $index => $skill)
                             <div class="flex items-center space-x-2 mb-2">
                                 <input type="text" wire:model="skills.{{ $index }}"
-                                    class="flex-1 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                                    class="flex-1 px-3 py-2 border border-themed-primary rounded-lg focus:ring-2 focus:ring-accent-primary focus:border-transparent bg-themed-secondary text-themed-primary placeholder-themed-tertiary transition-colors duration-300"
                                     placeholder="e.g., JavaScript, Python">
                                 @if(count($skills) > 1)
                                     <button type="button" wire:click="removeSkill({{ $index }})"
-                                        class="text-red-600 dark:text-red-400 hover:text-red-800 dark:hover:text-red-300">
+                                        class="text-red-600 dark:text-red-400 hover:text-red-800 dark:hover:text-red-300 transition-colors">
                                         <i class="fas fa-times"></i>
                                     </button>
                                 @endif
                             </div>
                         @endforeach
                         <button type="button" wire:click="addSkill"
-                            class="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 text-sm">
+                            class="text-accent-primary hover:text-accent-secondary text-sm transition-colors">
                             <i class="fas fa-plus mr-1"></i>Add Skill
                         </button>
                     </div>
@@ -253,9 +253,9 @@
                     <!-- Experience Level and Years -->
                     <div class="grid md:grid-cols-2 gap-4">
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Experience Level *</label>
+                            <label class="block text-sm font-medium text-themed-primary mb-2 transition-colors duration-300">Experience Level *</label>
                             <select wire:model="experienceLevel"
-                                class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white">
+                                class="w-full px-3 py-2 border border-themed-primary rounded-lg focus:ring-2 focus:ring-accent-primary focus:border-transparent bg-themed-secondary text-themed-primary transition-colors duration-300">
                                 <option value="">Select Level</option>
                                 <option value="junior">Junior</option>
                                 <option value="mid">Mid Level</option>
@@ -265,9 +265,9 @@
                             @error('experienceLevel') <span class="text-red-500 dark:text-red-400 text-sm">{{ $message }}</span> @enderror
                         </div>
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Years of Experience *</label>
+                            <label class="block text-sm font-medium text-themed-primary mb-2 transition-colors duration-300">Years of Experience *</label>
                             <input type="number" wire:model="yearsExperience" min="0" max="50"
-                                class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white">
+                                class="w-full px-3 py-2 border border-themed-primary rounded-lg focus:ring-2 focus:ring-accent-primary focus:border-transparent bg-themed-secondary text-themed-primary transition-colors duration-300">
                             @error('yearsExperience') <span class="text-red-500 dark:text-red-400 text-sm">{{ $message }}</span> @enderror
                         </div>
                     </div>
@@ -275,24 +275,24 @@
                     <!-- Mentoring Settings -->
                     <div class="grid md:grid-cols-2 gap-4">
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Maximum Mentees *</label>
+                            <label class="block text-sm font-medium text-themed-primary mb-2 transition-colors duration-300">Maximum Mentees *</label>
                             <input type="number" wire:model="maxMentees" min="1" max="20"
-                                class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white">
+                                class="w-full px-3 py-2 border border-themed-primary rounded-lg focus:ring-2 focus:ring-accent-primary focus:border-transparent bg-themed-secondary text-themed-primary transition-colors duration-300">
                             @error('maxMentees') <span class="text-red-500 dark:text-red-400 text-sm">{{ $message }}</span> @enderror
                         </div>
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Hourly Rate (USD)</label>
+                            <label class="block text-sm font-medium text-themed-primary mb-2 transition-colors duration-300">Hourly Rate (USD)</label>
                             <input type="number" wire:model="hourlyRate" min="0" max="500" step="0.01"
-                                class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                                class="w-full px-3 py-2 border border-themed-primary rounded-lg focus:ring-2 focus:ring-accent-primary focus:border-transparent bg-themed-secondary text-themed-primary transition-colors duration-300"
                                 placeholder="0 for free mentoring">
                         </div>
                     </div>
 
                     <!-- Timezone -->
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Timezone *</label>
+                        <label class="block text-sm font-medium text-themed-primary mb-2 transition-colors duration-300">Timezone *</label>
                         <select wire:model="timezone"
-                            class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white">
+                            class="w-full px-3 py-2 border border-themed-primary rounded-lg focus:ring-2 focus:ring-accent-primary focus:border-transparent bg-themed-secondary text-themed-primary transition-colors duration-300">
                             <option value="UTC">UTC</option>
                             <option value="America/New_York">Eastern Time</option>
                             <option value="America/Chicago">Central Time</option>
@@ -307,24 +307,24 @@
 
                     <!-- Mentoring Approach -->
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Mentoring Approach *</label>
+                        <label class="block text-sm font-medium text-themed-primary mb-2 transition-colors duration-300">Mentoring Approach *</label>
                         <textarea wire:model="mentoringApproach" rows="3"
-                            class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                            class="w-full px-3 py-2 border border-themed-primary rounded-lg focus:ring-2 focus:ring-accent-primary focus:border-transparent bg-themed-secondary text-themed-primary placeholder-themed-tertiary transition-colors duration-300"
                             placeholder="Describe your mentoring style..."></textarea>
                         @error('mentoringApproach') <span class="text-red-500 dark:text-red-400 text-sm">{{ $message }}</span> @enderror
                     </div>
 
                     <!-- Communication Preferences -->
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Communication Preferences</label>
+                        <label class="block text-sm font-medium text-themed-primary mb-2 transition-colors duration-300">Communication Preferences</label>
                         <div class="grid grid-cols-2 gap-3">
                             @foreach(['Video Calls', 'Voice Calls', 'Text Chat', 'Email', 'Screen Sharing', 'Code Reviews'] as $preference)
                                 <label class="flex items-center">
                                     <input type="checkbox"
                                         wire:click="toggleCommunicationPreference('{{ $preference }}')" 
                                         {{ in_array($preference, $communicationPreferences) ? 'checked' : '' }}
-                                        class="rounded border-gray-300 dark:border-gray-600 text-blue-600 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50 bg-white dark:bg-gray-700">
-                                    <span class="ml-2 text-sm text-gray-700 dark:text-gray-300">{{ $preference }}</span>
+                                        class="rounded border-themed-primary text-accent-primary shadow-sm focus:border-accent-primary focus:ring focus:ring-accent-primary/20 bg-themed-secondary transition-colors duration-300">
+                                    <span class="ml-2 text-sm text-themed-primary transition-colors duration-300">{{ $preference }}</span>
                                 </label>
                             @endforeach
                         </div>
@@ -333,21 +333,21 @@
                     <!-- Social Links -->
                     <div class="grid md:grid-cols-3 gap-4">
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">LinkedIn</label>
+                            <label class="block text-sm font-medium text-themed-primary mb-2 transition-colors duration-300">LinkedIn</label>
                             <input type="url" wire:model="linkedinProfile"
-                                class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                                class="w-full px-3 py-2 border border-themed-primary rounded-lg focus:ring-2 focus:ring-accent-primary focus:border-transparent bg-themed-secondary text-themed-primary placeholder-themed-tertiary transition-colors duration-300"
                                 placeholder="https://linkedin.com/in/...">
                         </div>
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">GitHub</label>
+                            <label class="block text-sm font-medium text-themed-primary mb-2 transition-colors duration-300">GitHub</label>
                             <input type="url" wire:model="githubProfile"
-                                class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                                class="w-full px-3 py-2 border border-themed-primary rounded-lg focus:ring-2 focus:ring-accent-primary focus:border-transparent bg-themed-secondary text-themed-primary placeholder-themed-tertiary transition-colors duration-300"
                                 placeholder="https://github.com/...">
                         </div>
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Portfolio</label>
+                            <label class="block text-sm font-medium text-themed-primary mb-2 transition-colors duration-300">Portfolio</label>
                             <input type="url" wire:model="portfolioUrl"
-                                class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                                class="w-full px-3 py-2 border border-themed-primary rounded-lg focus:ring-2 focus:ring-accent-primary focus:border-transparent bg-themed-secondary text-themed-primary placeholder-themed-tertiary transition-colors duration-300"
                                 placeholder="https://yourportfolio.com">
                         </div>
                     </div>
@@ -357,27 +357,27 @@
                         <div>
                             <label class="flex items-center">
                                 <input type="checkbox" wire:model="offersFreeSessions"
-                                    class="rounded border-gray-300 dark:border-gray-600 text-blue-600 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50 bg-white dark:bg-gray-700">
-                                <span class="ml-2 text-sm text-gray-700 dark:text-gray-300">Offers Free Sessions</span>
+                                    class="rounded border-themed-primary text-accent-primary shadow-sm focus:border-accent-primary focus:ring focus:ring-accent-primary/20 bg-themed-secondary transition-colors duration-300">
+                                <span class="ml-2 text-sm text-themed-primary transition-colors duration-300">Offers Free Sessions</span>
                             </label>
                         </div>
                         <div>
                             <label class="flex items-center">
                                 <input type="checkbox" wire:model="isAvailable"
-                                    class="rounded border-gray-300 dark:border-gray-600 text-blue-600 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50 bg-white dark:bg-gray-700">
-                                <span class="ml-2 text-sm text-gray-700 dark:text-gray-300">Available for New Mentees</span>
+                                    class="rounded border-themed-primary text-accent-primary shadow-sm focus:border-accent-primary focus:ring focus:ring-accent-primary/20 bg-themed-secondary transition-colors duration-300">
+                                <span class="ml-2 text-sm text-themed-primary transition-colors duration-300">Available for New Mentees</span>
                             </label>
                         </div>
                     </div>
 
                     <!-- Form Actions -->
-                    <div class="flex justify-end space-x-4 pt-6 border-t border-gray-200 dark:border-gray-700">
+                    <div class="flex justify-end space-x-4 pt-6 border-t border-themed-primary transition-colors duration-300">
                         <button type="button" wire:click="closeModal"
-                            class="px-6 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                            class="px-6 py-2 border border-themed-primary rounded-lg text-themed-primary hover:bg-themed-tertiary transition-colors duration-300">
                             Cancel
                         </button>
                         <button type="submit"
-                            class="px-6 py-2 bg-blue-600 dark:bg-blue-500 text-white rounded-lg hover:bg-blue-700 dark:hover:bg-blue-600 transition-colors">
+                            class="px-6 py-2 bg-accent-primary hover:bg-accent-secondary text-white rounded-lg transition-colors">
                             <i class="fas fa-save mr-2"></i>Save Profile
                         </button>
                     </div>
