@@ -1,7 +1,7 @@
 <div>
     <!-- Desktop Sidebar -->
     <aside
-        class="bg-themed-secondary h-screen w-64 fixed left-0 top-0 overflow-y-auto transition-all duration-300 ease-in-out shadow-xl lg:translate-x-0 z-50"
+        class="bg-themed-secondary w-64 fixed left-0 top-0 bottom-0 overflow-y-auto overflow-x-hidden transition-all duration-300 ease-in-out shadow-xl lg:translate-x-0 z-50"
         :class="{ '-translate-x-full': !sidebarOpen, 'translate-x-0': sidebarOpen }"
         x-show="sidebarOpen || window.innerWidth >= 1024"
         x-transition:enter="transition-transform ease-out duration-300" 
@@ -45,7 +45,7 @@
         </div>
 
         <!-- Menu Items -->
-        <nav class="px-4 pb-4 space-y-1" role="navigation" x-data="{ searchTerm: '' }"
+        <nav class="px-4 pb-6 space-y-1 overflow-visible" role="navigation" x-data="{ searchTerm: '' }"
             @menu-search.window="searchTerm = $event.detail.term">
             @foreach ($menuItems as $index => $item)
                 <div x-data="{ 
@@ -60,16 +60,16 @@
                     @if(isset($item['children']) && !empty($item['children']))
                         <!-- Parent Menu Item with Children -->
                         <button @click="expanded = !expanded"
-                            class="flex items-center justify-between w-full p-3 rounded-xl hover:bg-themed-tertiary transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 group"
+                            class="flex items-center justify-between w-full p-3 rounded-xl hover:bg-themed-tertiary transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 group relative"
                             :class="{ 'bg-blue-50 dark:bg-blue-900/20': expanded }" 
                             aria-expanded="expanded">
-                            <div class="flex items-center space-x-3">
-                                <div class="w-8 h-8 flex items-center justify-center rounded-lg bg-themed-tertiary group-hover:bg-accent-themed-primary group-hover:bg-opacity-10 transition-colors duration-300">
+                            <div class="flex items-center space-x-3 flex-1 min-w-0">
+                                <div class="w-8 h-8 flex items-center justify-center rounded-lg bg-themed-tertiary group-hover:bg-accent-themed-primary group-hover:bg-opacity-10 transition-colors duration-300 flex-shrink-0">
                                     <i class="{{ $item['icon'] }} text-themed-secondary text-sm"></i>
                                 </div>
-                                <span class="font-medium text-themed-primary transition-colors duration-300">{{ $item['label'] }}</span>
+                                <span class="font-medium text-themed-primary transition-colors duration-300 truncate">{{ $item['label'] }}</span>
                             </div>
-                            <i class="fas fa-chevron-down text-themed-tertiary transition-transform duration-200 text-sm"
+                            <i class="fas fa-chevron-down text-themed-tertiary transition-transform duration-200 text-sm flex-shrink-0 ml-2"
                                 :class="{ 'rotate-180': expanded }"></i>
                         </button>
 
@@ -81,17 +81,18 @@
                             x-transition:leave="transition ease-in duration-150"
                             x-transition:leave-start="opacity-100 transform scale-100"
                             x-transition:leave-end="opacity-0 transform scale-95" 
-                            class="ml-6 space-y-1 mt-2" 
+                            class="ml-6 space-y-1 mt-2 pb-2 relative z-10 overflow-visible" 
                             role="menu">
                             @foreach ($item['children'] as $child)
-                                <li role="menuitem">
+                                <li role="menuitem" class="overflow-visible">
                                     <a href="{{ $child['route_name'] === '#' ? '#' : route($child['route_name']) }}"
-                                        class="flex items-center space-x-3 p-2.5 rounded-lg hover:bg-accent-themed-primary hover:bg-opacity-10 transition-all duration-200 group {{ $activeLink === ($child['link_id'] ?? str()->slug($child['label'])) ? 'bg-accent-themed-primary bg-opacity-20 accent-themed-primary' : 'text-themed-secondary' }}"
+                                        class="flex items-center space-x-3 p-2.5 rounded-lg transition-all duration-200 group {{ $activeLink === ($child['link_id'] ?? str()->slug($child['label'])) ? 'bg-opacity-20' : 'hover:bg-opacity-10' }}"
+                                        :style="{ backgroundColor: '{{ $activeLink === ($child['link_id'] ?? str()->slug($child['label'])) ? 'rgba(var(--accent-primary), 0.2)' : 'transparent' }}' }"
                                         wire:navigate>
-                                        <div class="w-6 h-6 flex items-center justify-center">
+                                        <div class="w-6 h-6 flex items-center justify-center flex-shrink-0">
                                             <i class="{{ $child['icon'] }} text-xs {{ $activeLink === ($child['link_id'] ?? str()->slug($child['label'])) ? 'accent-themed-primary' : 'text-themed-tertiary group-hover:accent-themed-primary' }} transition-colors duration-300"></i>
                                         </div>
-                                        <span class="text-sm font-medium transition-colors duration-300">{{ $child['label'] }}</span>
+                                        <span class="text-sm font-medium transition-colors duration-300 {{ $activeLink === ($child['link_id'] ?? str()->slug($child['label'])) ? 'accent-themed-primary' : 'text-themed-secondary' }}">{{ $child['label'] }}</span>
                                     </a>
                                 </li>
                             @endforeach
@@ -101,10 +102,10 @@
                         <a href="{{ $item['route_name'] === '#' ? '#' : route($item['route_name']) }}"
                             class="flex items-center space-x-3 p-3 rounded-xl hover:bg-themed-tertiary transition-all duration-200 group {{ $activeLink === ($item['link_id'] ?? str()->slug($item['label'])) ? 'bg-accent-themed-primary bg-opacity-20 accent-themed-primary' : 'text-themed-secondary' }}"
                             wire:navigate>
-                            <div class="w-8 h-8 flex items-center justify-center rounded-lg {{ $activeLink === ($item['link_id'] ?? str()->slug($item['label'])) ? 'bg-accent-themed-primary bg-opacity-30' : 'bg-themed-tertiary group-hover:bg-accent-themed-primary group-hover:bg-opacity-10' }} transition-colors duration-300">
+                            <div class="w-8 h-8 flex items-center justify-center rounded-lg {{ $activeLink === ($item['link_id'] ?? str()->slug($item['label'])) ? 'bg-accent-themed-primary bg-opacity-30' : 'bg-themed-tertiary group-hover:bg-accent-themed-primary group-hover:bg-opacity-10' }} transition-colors duration-300 flex-shrink-0">
                                 <i class="{{ $item['icon'] }} text-sm {{ $activeLink === ($item['link_id'] ?? str()->slug($item['label'])) ? 'accent-themed-primary' : 'text-themed-secondary' }} transition-colors duration-300"></i>
                             </div>
-                            <span class="font-medium transition-colors duration-300">{{ $item['label'] }}</span>
+                            <span class="font-medium transition-colors duration-300 truncate">{{ $item['label'] }}</span>
                         </a>
                     @endif
                 </div>
@@ -114,10 +115,10 @@
         <!-- Sidebar Footer -->
         <div class="sticky bottom-0 bg-themed-secondary border-t border-themed-primary p-4 transition-colors duration-300">
             <div class="flex items-center justify-between">
-                <div class="flex items-center space-x-3">
+                <div class="flex items-center space-x-3 flex-1 min-w-0">
                     <img src="{{ Auth::user()?->profile_photo_url ?? asset('images/default-avatar.png') }}"
                         alt="User avatar" 
-                        class="w-8 h-8 rounded-full border-2 border-themed-primary transition-colors duration-300">
+                        class="w-8 h-8 rounded-full border-2 border-themed-primary transition-colors duration-300 flex-shrink-0">
                     <div class="flex-1 min-w-0">
                         <p class="text-sm font-medium text-themed-primary truncate transition-colors duration-300">
                             {{ Auth::user()?->name ?? 'Guest' }}
@@ -220,6 +221,21 @@
         a:focus-visible {
             outline: 2px solid rgb(var(--accent-primary));
             outline-offset: 2px;
+        }
+
+        /* Ensure submenu items are always visible and not clipped */
+        nav > div {
+            overflow: visible;
+        }
+
+        .menu-item ul {
+            overflow: visible !important;
+        }
+
+        /* Prevent text truncation on hover for better UX */
+        .menu-item a:hover span,
+        .menu-item button:hover span {
+            display: block;
         }
     </style>
 </div>
