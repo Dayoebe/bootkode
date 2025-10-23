@@ -40,7 +40,7 @@
                         class="p-4 rounded-lg text-center transition-colors border-2 duration-300
                             {{ $assessmentType === $type 
                                 ? 'bg-' . $config['color'] . '-600 border-' . $config['color'] . '-500 text-white' 
-                                : 'bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-800 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-600 hover:border-gray-400 dark:hover:border-gray-500' }}">
+                                : 'bg-themed-secondary dark:bg-gray-700 border-themed-primary dark:border-gray-600 text-gray-800 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-600 hover:border-gray-400 dark:hover:border-gray-500' }}">
                     <i class="fas {{ $config['icon'] }} text-2xl mb-2 block"></i>
                     <div class="font-medium">{{ $config['label'] }}</div>
                     <div class="text-xs mt-1 opacity-75">{{ $config['description'] }}</div>
@@ -56,7 +56,7 @@
                 Assessment Title <span class="text-red-600 dark:text-red-400">*</span>
             </label>
             <input type="text" wire:model="assessmentTitle"
-                   class="w-full px-4 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white 
+                   class="w-full px-4 py-2 bg-themed-secondary dark:bg-gray-700 border border-themed-primary dark:border-gray-600 rounded-lg text-gray-900 dark:text-white 
                           focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-colors duration-300"
                    placeholder="Enter assessment title...">
             @error('assessmentTitle')
@@ -67,7 +67,7 @@
         <div>
             <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 transition-colors duration-300">Weight</label>
             <input type="number" wire:model="weight" step="0.1" min="0.1" max="10"
-                   class="w-full px-4 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white 
+                   class="w-full px-4 py-2 bg-themed-secondary dark:bg-gray-700 border border-themed-primary dark:border-gray-600 rounded-lg text-gray-900 dark:text-white 
                           focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-colors duration-300"
                    placeholder="1">
             <p class="text-xs text-gray-600 dark:text-gray-500 mt-1 transition-colors duration-300">How much this assessment counts towards final grade</p>
@@ -81,7 +81,7 @@
     <div>
         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 transition-colors duration-300">Description</label>
         <textarea wire:model="assessmentDescription" rows="3"
-                  class="w-full px-4 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white 
+                  class="w-full px-4 py-2 bg-themed-secondary dark:bg-gray-700 border border-themed-primary dark:border-gray-600 rounded-lg text-gray-900 dark:text-white 
                          focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-colors duration-300"
                   placeholder="Describe what students will be evaluated on..."></textarea>
         @error('assessmentDescription')
@@ -90,7 +90,7 @@
     </div>
 
     <!-- Assessment Settings -->
-    <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-6 border border-gray-200 dark:border-gray-600 transition-colors duration-300">
+    <div class="bg-themed-tertiary dark:bg-gray-700 rounded-lg p-6 border border-themed-primary dark:border-gray-600 transition-colors duration-300">
         <h4 class="text-gray-800 dark:text-white font-medium mb-4 transition-colors duration-300">Assessment Settings</h4>
         
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -101,7 +101,7 @@
                 </label>
                 <div class="relative">
                     <input type="number" wire:model="passPercentage" min="1" max="100"
-                           class="w-full px-4 py-2 pr-8 bg-white dark:bg-gray-600 border border-gray-300 dark:border-gray-500 rounded-lg text-gray-900 dark:text-white 
+                           class="w-full px-4 py-2 pr-8 bg-themed-secondary dark:bg-gray-600 border border-themed-primary dark:border-gray-500 rounded-lg text-gray-900 dark:text-white 
                                   focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-colors duration-300">
                     <span class="absolute right-3 top-2 text-gray-500 dark:text-gray-400">%</span>
                 </div>
@@ -114,7 +114,7 @@
             <div>
                 <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 transition-colors duration-300">Time Limit (minutes)</label>
                 <input type="number" wire:model="timeLimit" min="1" 
-                       class="w-full px-4 py-2 bg-white dark:bg-gray-600 border border-gray-300 dark:border-gray-500 rounded-lg text-gray-900 dark:text-white 
+                       class="w-full px-4 py-2 bg-themed-secondary dark:bg-gray-600 border border-themed-primary dark:border-gray-500 rounded-lg text-gray-900 dark:text-white 
                               focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-colors duration-300"
                        placeholder="Optional - leave empty for no limit">
                 @error('timeLimit')
@@ -131,7 +131,7 @@
                     <div>
                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 transition-colors duration-300">Maximum Attempts</label>
                         <select wire:model="maxAttempts" 
-                                class="w-full px-4 py-2 bg-white dark:bg-gray-600 border border-gray-300 dark:border-gray-500 rounded-lg text-gray-900 dark:text-white 
+                                class="w-full px-4 py-2 bg-themed-secondary dark:bg-gray-600 border border-themed-primary dark:border-gray-500 rounded-lg text-gray-900 dark:text-white 
                                        focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-colors duration-300">
                             <option value="">Unlimited</option>
                             <option value="1">1 attempt</option>
@@ -195,7 +195,7 @@
 
     <!-- Type-Specific Information -->
     @if($assessmentType !== 'quiz')
-        <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-6 border border-gray-200 dark:border-gray-600 transition-colors duration-300">
+        <div class="bg-themed-tertiary dark:bg-gray-700 rounded-lg p-6 border border-themed-primary dark:border-gray-600 transition-colors duration-300">
             <h4 class="text-gray-800 dark:text-white font-medium mb-4 transition-colors duration-300">
                 {{ ucfirst($assessmentType) }} Guidelines
             </h4>
@@ -242,7 +242,7 @@
     @endif
 
     <!-- Form Actions -->
-    <div class="flex items-center justify-between pt-6 border-t border-gray-200 dark:border-gray-700">
+    <div class="flex items-center justify-between pt-6 border-t border-themed-primary dark:border-gray-700">
         <button type="button" wire:click="backToList"
                 class="px-6 py-2 bg-gray-200 dark:bg-gray-600 hover:bg-gray-300 dark:hover:bg-gray-500 text-gray-800 dark:text-white rounded-lg transition-colors duration-300">
             <i class="fas fa-arrow-left mr-2"></i>
