@@ -89,29 +89,43 @@ class UserMockInterview extends Component
     #[Computed]
     public function mockInterviews()
     {
-        $query = MockInterview::where('user_id', Auth::id())
-            ->with(['course', 'questionSet']);
-
-        if ($this->searchTerm) {
-            $query->where(function ($q) {
-                $q->where('title', 'like', '%' . $this->searchTerm . '%')
-                    ->orWhere('description', 'like', '%' . $this->searchTerm . '%');
-            });
+        try {
+            $userId = Auth::id();
+            
+            // If user is not authenticated, return empty collection
+            if (!$userId) {
+                return collect();
+            }
+            
+            $query = MockInterview::where('user_id', $userId)
+                ->with(['course', 'questionSet']);
+    
+            if ($this->searchTerm) {
+                $query->where(function ($q) {
+                    $q->where('title', 'like', '%' . $this->searchTerm . '%')
+                        ->orWhere('description', 'like', '%' . $this->searchTerm . '%');
+                });
+            }
+    
+            if ($this->filterType) {
+                $query->where('type', $this->filterType);
+            }
+    
+            if ($this->filterStatus) {
+                $query->where('status', $this->filterStatus);
+            }
+    
+            if ($this->filterDifficulty) {
+                $query->where('difficulty_level', $this->filterDifficulty);
+            }
+    
+            return $query->orderBy('created_at', 'desc')->get() ?? collect();
+        } catch (\Exception $e) {
+            \Log::error('Error fetching mock interviews: ' . $e->getMessage(), [
+                'user_id' => Auth::id() ?? 'unknown'
+            ]);
+            return collect(); // Always return a collection, never null
         }
-
-        if ($this->filterType) {
-            $query->where('type', $this->filterType);
-        }
-
-        if ($this->filterStatus) {
-            $query->where('status', $this->filterStatus);
-        }
-
-        if ($this->filterDifficulty) {
-            $query->where('difficulty_level', $this->filterDifficulty);
-        }
-
-        return $query->orderBy('created_at', 'desc')->get();
     }
 
     #[Computed]
@@ -119,18 +133,33 @@ class UserMockInterview extends Component
     {
         $userId = Auth::id();
         
-        return [
-            'totalInterviews' => MockInterview::where('user_id', $userId)->count(),
-            'completedInterviews' => MockInterview::where('user_id', $userId)
-                ->where('status', 'completed')->count(),
-            'averageScore' => MockInterview::where('user_id', $userId)
+        try {
+            $totalInterviews = MockInterview::where('user_id', $userId)->count();
+            $completedInterviews = MockInterview::where('user_id', $userId)
+                ->where('status', 'completed')->count();
+            $averageScore = MockInterview::where('user_id', $userId)
                 ->where('status', 'completed')
-                ->avg('overall_score') ?? 0,
-            'upcomingInterviews' => MockInterview::where('user_id', $userId)
+                ->avg('overall_score') ?? 0;
+            $upcomingInterviews = MockInterview::where('user_id', $userId)
                 ->where('status', 'scheduled')
                 ->where('scheduled_at', '>', now())
-                ->count(),
-        ];
+                ->count();
+    
+            return [
+                'totalInterviews' => $totalInterviews,
+                'completedInterviews' => $completedInterviews,
+                'averageScore' => (float) $averageScore,
+                'upcomingInterviews' => $upcomingInterviews,
+            ];
+        } catch (\Exception $e) {
+            // Return default values if there's an error
+            return [
+                'totalInterviews' => 0,
+                'completedInterviews' => 0,
+                'averageScore' => 0,
+                'upcomingInterviews' => 0,
+            ];
+        }
     }
 
     #[Computed]
@@ -381,10 +410,91 @@ class UserMockInterview extends Component
         $this->resetPage();
     }
 
+    #[Computed]
+public function analytics()
+{
+    try {
+        $userId = Auth::id();
+        if (!$userId) {
+            return $this->getDefaultAnalytics();
+        }
+
+        $completedInterviews = MockInterview::where('user_id', $userId)
+            ->where('status', 'completed')
+            ->get();
+
+        $averageScore = $completedInterviews->avg('overall_score') ?? 0;
+        $previousAverage = $completedInterviews->skip(1)->avg('overall_score') ?? 0;
+        $improvementRate = $previousAverage > 0 ? (($averageScore - $previousAverage) / $previousAverage) * 100 : 0;
+
+        return [
+            'averageScore' => $averageScore,
+            'improvementRate' => max(0, round($improvementRate, 1)),
+            'streakCount' => $this->calculateStreak(),
+        ];
+    } catch (\Exception $e) {
+        return $this->getDefaultAnalytics();
+    }
+}
+
+private function getDefaultAnalytics()
+{
+    return [
+        'averageScore' => 0,
+        'improvementRate' => 0,
+        'streakCount' => 0,
+    ];
+}
+
+private function calculateStreak()
+{
+    // Calculate consecutive days with completed interviews
+    $userId = Auth::id();
+    $interviews = MockInterview::where('user_id', $userId)
+        ->where('status', 'completed')
+        ->orderBy('completed_at', 'desc')
+        ->get();
+
+    if ($interviews->isEmpty()) return 0;
+
+    $streak = 0;
+    $today = now()->startOfDay();
+
+    foreach ($interviews as $interview) {
+        $interviewDate = $interview->completed_at->startOfDay();
+        if ($interviewDate->diffInDays($today) == $streak) {
+            $streak++;
+            $today = $interviewDate;
+        } else {
+            break;
+        }
+    }
+
+    return $streak;
+}
+
     // ============================================
     // RENDER
     // ============================================
     
+    public function startQuickPractice()
+{
+    try {
+        $questionSet = InterviewQuestionSet::where('is_active', true)
+            ->where('type', $this->type)
+            ->where('difficulty_level', $this->difficulty_level)
+            ->first();
+
+        if (!$questionSet) {
+            session()->flash('error', 'No question sets available for this selection.');
+            return;
+        }
+
+        $this->createInterview();
+    } catch (\Exception $e) {
+        session()->flash('error', 'Failed to start practice: ' . $e->getMessage());
+    }
+}
     public function render()
     {
         return view('livewire.career.user-mock-interview');

@@ -9,7 +9,7 @@
                 </div>
 
                 <!-- Statistics Cards -->
-                @include('livewire.career.mock-interview.statistics-cards')
+                @include('livewire.career.mock-interview.statistics-cards', ['statistics' => $this->statistics])
             </div>
         </div>
     </div>
