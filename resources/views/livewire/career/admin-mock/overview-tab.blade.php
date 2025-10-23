@@ -1,7 +1,7 @@
 <div class="space-y-8">
     <!-- Key Metrics -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <div class="rounded-lg shadow p-6" style="background-color: rgb(var(--bg-secondary))">
+        <div class="rounded-lg shadow p-6 bg-themed-secondary border border-themed-primary">
             <div class="flex items-center">
                 <div class="flex-shrink-0">
                     <div class="w-8 h-8 bg-blue-500 rounded-md flex items-center justify-center">
@@ -13,14 +13,14 @@
                 </div>
                 <div class="ml-5 w-0 flex-1">
                     <dl>
-                        <dt class="text-sm font-medium truncate" style="color: rgb(var(--text-secondary))">Total Interviews</dt>
-                        <dd class="text-lg font-medium" style="color: rgb(var(--text-primary))">{{ number_format($this->statistics['totalInterviews']) }}</dd>
+                        <dt class="text-sm font-medium truncate text-themed-secondary">Total Interviews</dt>
+                        <dd class="text-lg font-medium text-themed-primary">{{ number_format($this->statistics['totalInterviews']) }}</dd>
                     </dl>
                 </div>
             </div>
         </div>
 
-        <div class="rounded-lg shadow p-6" style="background-color: rgb(var(--bg-secondary))">
+        <div class="rounded-lg shadow p-6 bg-themed-secondary border border-themed-primary">
             <div class="flex items-center">
                 <div class="flex-shrink-0">
                     <div class="w-8 h-8 bg-green-500 rounded-md flex items-center justify-center">
@@ -32,14 +32,14 @@
                 </div>
                 <div class="ml-5 w-0 flex-1">
                     <dl>
-                        <dt class="text-sm font-medium truncate" style="color: rgb(var(--text-secondary))">Completed</dt>
-                        <dd class="text-lg font-medium" style="color: rgb(var(--text-primary))">{{ number_format($this->statistics['completedInterviews']) }}</dd>
+                        <dt class="text-sm font-medium truncate text-themed-secondary">Completed</dt>
+                        <dd class="text-lg font-medium text-themed-primary">{{ number_format($this->statistics['completedInterviews']) }}</dd>
                     </dl>
                 </div>
             </div>
         </div>
 
-        <div class="rounded-lg shadow p-6" style="background-color: rgb(var(--bg-secondary))">
+        <div class="rounded-lg shadow p-6 bg-themed-secondary border border-themed-primary">
             <div class="flex items-center">
                 <div class="flex-shrink-0">
                     <div class="w-8 h-8 bg-purple-500 rounded-md flex items-center justify-center">
@@ -51,14 +51,14 @@
                 </div>
                 <div class="ml-5 w-0 flex-1">
                     <dl>
-                        <dt class="text-sm font-medium truncate" style="color: rgb(var(--text-secondary))">Average Score</dt>
-                        <dd class="text-lg font-medium" style="color: rgb(var(--text-primary))">{{ number_format($this->statistics['averageScore'], 1) }}%</dd>
+                        <dt class="text-sm font-medium truncate text-themed-secondary">Average Score</dt>
+                        <dd class="text-lg font-medium text-themed-primary">{{ number_format($this->statistics['averageScore'], 1) }}%</dd>
                     </dl>
                 </div>
             </div>
         </div>
 
-        <div class="rounded-lg shadow p-6" style="background-color: rgb(var(--bg-secondary))">
+        <div class="rounded-lg shadow p-6 bg-themed-secondary border border-themed-primary">
             <div class="flex items-center">
                 <div class="flex-shrink-0">
                     <div class="w-8 h-8 bg-orange-500 rounded-md flex items-center justify-center">
@@ -70,8 +70,8 @@
                 </div>
                 <div class="ml-5 w-0 flex-1">
                     <dl>
-                        <dt class="text-sm font-medium truncate" style="color: rgb(var(--text-secondary))">Active Users</dt>
-                        <dd class="text-lg font-medium" style="color: rgb(var(--text-primary))">{{ number_format($this->statistics['totalUsers']) }}</dd>
+                        <dt class="text-sm font-medium truncate text-themed-secondary">Active Users</dt>
+                        <dd class="text-lg font-medium text-themed-primary">{{ number_format($this->statistics['totalUsers']) }}</dd>
                     </dl>
                 </div>
             </div>
@@ -81,21 +81,21 @@
     <!-- Charts and Popular Types -->
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
         <!-- Popular Interview Types -->
-        <div class="shadow rounded-lg p-6" style="background-color: rgb(var(--bg-secondary))">
-            <h3 class="text-lg font-medium mb-4" style="color: rgb(var(--text-primary))">Popular Interview Types</h3>
+        <div class="shadow rounded-lg p-6 bg-themed-secondary border border-themed-primary">
+            <h3 class="text-lg font-medium mb-4 text-themed-primary">Popular Interview Types</h3>
             <div class="space-y-3">
                 @foreach($this->popularTypes as $type)
                     <div class="flex items-center justify-between">
-                        <span class="text-sm font-medium capitalize" style="color: rgb(var(--text-primary))">
+                        <span class="text-sm font-medium capitalize text-themed-primary">
                             {{ str_replace('_', ' ', $type['type']) }}
                         </span>
                         <div class="flex items-center">
-                            <div class="w-32 rounded-full h-2 mr-3" style="background-color: rgb(var(--bg-tertiary))">
-                                <div class="h-2 rounded-full"
-                                    style="width: {{ ($type['count'] / max(array_column($this->popularTypes, 'count'))) * 100 }}%; background-color: rgb(var(--accent-primary))">
+                            <div class="w-32 rounded-full h-2 mr-3 bg-themed-tertiary">
+                                <div class="h-2 rounded-full transition-all duration-300"
+                                    style="width: {{ ($type['count'] / max(array_column($this->popularTypes, 'count'))) * 100 }}%; background: linear-gradient(90deg, rgb(var(--accent-primary)), rgb(var(--accent-secondary)));">
                                 </div>
                             </div>
-                            <span class="text-sm" style="color: rgb(var(--text-secondary))">{{ $type['count'] }}</span>
+                            <span class="text-sm text-themed-secondary">{{ $type['count'] }}</span>
                         </div>
                     </div>
                 @endforeach
@@ -103,12 +103,12 @@
         </div>
 
         <!-- Growth Metrics -->
-        <div class="shadow rounded-lg p-6" style="background-color: rgb(var(--bg-secondary))">
-            <h3 class="text-lg font-medium mb-4" style="color: rgb(var(--text-primary))">Growth Metrics</h3>
+        <div class="shadow rounded-lg p-6 bg-themed-secondary border border-themed-primary">
+            <h3 class="text-lg font-medium mb-4 text-themed-primary">Growth Metrics</h3>
             <div class="space-y-4">
                 <div>
                     <div class="flex items-center justify-between">
-                        <span class="text-sm font-medium" style="color: rgb(var(--text-secondary))">Weekly Growth</span>
+                        <span class="text-sm font-medium text-themed-secondary">Weekly Growth</span>
                         <span class="text-sm font-bold {{ $this->statistics['weeklyGrowth'] >= 0 ? 'text-green-600' : 'text-red-600' }}">
                             {{ $this->statistics['weeklyGrowth'] >= 0 ? '+' : '' }}{{ number_format($this->statistics['weeklyGrowth'], 1) }}%
                         </span>
@@ -116,14 +116,14 @@
                 </div>
                 <div>
                     <div class="flex items-center justify-between">
-                        <span class="text-sm font-medium" style="color: rgb(var(--text-secondary))">Premium Usage</span>
+                        <span class="text-sm font-medium text-themed-secondary">Premium Usage</span>
                         <span class="text-sm font-bold text-purple-600">{{ number_format($this->statistics['premiumUsage']) }}</span>
                     </div>
                 </div>
                 <div>
                     <div class="flex items-center justify-between">
-                        <span class="text-sm font-medium" style="color: rgb(var(--text-secondary))">Daily Interviews</span>
-                        <span class="text-sm font-bold" style="color: rgb(var(--accent-primary))">{{ number_format($this->statistics['dailyInterviews']) }}</span>
+                        <span class="text-sm font-medium text-themed-secondary">Daily Interviews</span>
+                        <span class="text-sm font-bold text-accent-themed-primary">{{ number_format($this->statistics['dailyInterviews']) }}</span>
                     </div>
                 </div>
             </div>
@@ -131,32 +131,32 @@
     </div>
 
     <!-- Recent Activity -->
-    <div class="shadow rounded-lg" style="background-color: rgb(var(--bg-secondary))">
+    <div class="shadow rounded-lg bg-themed-secondary border border-themed-primary">
         <div class="px-4 py-5 sm:p-6">
-            <h3 class="text-lg font-medium mb-4" style="color: rgb(var(--text-primary))">Recent Activity</h3>
+            <h3 class="text-lg font-medium mb-4 text-themed-primary">Recent Activity</h3>
             <div class="flow-root">
                 <ul class="-mb-8">
                     @foreach($this->recentActivity as $activity)
                         <li>
                             <div class="relative pb-8">
                                 @if(!$loop->last)
-                                    <span class="absolute top-4 left-4 -ml-px h-full w-0.5" style="background-color: rgb(var(--border-primary))"></span>
+                                    <span class="absolute top-4 left-4 -ml-px h-full w-0.5 bg-themed-primary" style="opacity: 0.2;"></span>
                                 @endif
                                 <div class="relative flex space-x-3">
                                     <div>
-                                        <span class="bg-{{ $activity->getStatusColor() }}-500 h-8 w-8 rounded-full flex items-center justify-center ring-8" style="ring-color: rgb(var(--bg-secondary))">
-                                            <span class="text-white text-sm">{{ $activity->getTypeIcon() }}</span>
+                                        <span class="bg-green-500 h-8 w-8 rounded-full flex items-center justify-center ring-8 bg-themed-secondary">
+                                            <span class="text-white text-sm">✓</span>
                                         </span>
                                     </div>
                                     <div class="min-w-0 flex-1 pt-1.5 flex justify-between space-x-4">
                                         <div>
-                                            <p class="text-sm" style="color: rgb(var(--text-secondary))">
-                                                <span class="font-medium" style="color: rgb(var(--text-primary))">{{ $activity->user->name }}</span>
+                                            <p class="text-sm text-themed-secondary">
+                                                <span class="font-medium text-themed-primary">{{ $activity->user->name }}</span>
                                                 {{ $activity->isCompleted() ? 'completed' : 'started' }} interview
-                                                <span class="font-medium" style="color: rgb(var(--text-primary))">{{ $activity->title }}</span>
+                                                <span class="font-medium text-themed-primary">{{ $activity->title }}</span>
                                             </p>
                                         </div>
-                                        <div class="text-right text-sm whitespace-nowrap" style="color: rgb(var(--text-secondary))">
+                                        <div class="text-right text-sm whitespace-nowrap text-themed-secondary">
                                             {{ $activity->created_at->diffForHumans() }}
                                         </div>
                                     </div>
