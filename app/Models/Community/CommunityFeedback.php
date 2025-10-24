@@ -5,7 +5,7 @@ namespace App\Models\Community;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use App\Models\User;
+use App\Models\Core\User;
 
 class CommunityFeedback extends Model
 {

@@ -6,7 +6,7 @@ namespace App\Models\Community;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Builder;
-use App\Models\User;
+use App\Models\Core\User;
 
 class CommunityActivity extends Model
 {
