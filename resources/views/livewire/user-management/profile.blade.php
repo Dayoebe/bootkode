@@ -120,10 +120,11 @@
                 @endphp
                 <div class="flex flex-wrap gap-2">
                     @foreach ($tabs as $key => $tab)
-                        <button @click="activeTab = '{{ $key }}'" :class="{
-                                                                    'bg-gradient-to-r from-accent-themed-primary to-accent-themed-secondary text-white shadow-lg': activeTab === '{{ $key }}',
-                                                                    'text-themed-secondary hover:text-themed-primary hover:bg-themed-tertiary': activeTab !== '{{ $key }}'
-                                                                }"
+                        <button @click="activeTab = '{{ $key }}'" 
+                            :class="{
+                                'bg-tab-active shadow-lg': activeTab === '{{ $key }}',
+                                'text-themed-secondary hover:text-themed-primary hover:bg-themed-tertiary': activeTab !== '{{ $key }}'
+                            }"
                             class="whitespace-nowrap px-4 py-2 sm:px-6 sm:py-3 rounded-xl font-medium text-xs sm:text-sm transition-all duration-300 flex items-center mx-1">
                             <i class="{{ $tab['icon'] }} mr-2"></i> {{ $tab['label'] }}
                         </button>
