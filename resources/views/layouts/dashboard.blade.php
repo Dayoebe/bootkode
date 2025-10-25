@@ -44,22 +44,22 @@
             --border-secondary: 209 213 219;
             --accent-primary: 59 130 246;
             --accent-secondary: 37 99 235;
-            
-            /* Tab & Interactive States */
+
+            /* Tab & Interactive States - FIXED FOR CONTRAST */
             --tab-inactive-bg: 243 244 246;
             --tab-inactive-text: 107 114 128;
-            --tab-active-bg: 59 130 246;
+            --tab-active-bg: 37 99 235;
             --tab-active-text: 255 255 255;
-            
+
             /* Button States */
             --btn-hover-bg: 229 231 235;
             --btn-disabled-text: 156 163 175;
-            
+
             /* Input States */
             --input-border: 209 213 219;
             --input-focus-border: 59 130 246;
         }
-        
+
         /* Dark Theme */
         .dark {
             --bg-primary: 17 24 39;
@@ -72,20 +72,20 @@
             --border-secondary: 75 85 99;
             --accent-primary: 96 165 250;
             --accent-secondary: 59 130 246;
-            
+
             --tab-inactive-bg: 55 65 81;
             --tab-inactive-text: 209 213 219;
             --tab-active-bg: 96 165 250;
             --tab-active-text: 17 24 39;
-            
+
             --btn-hover-bg: 75 85 99;
             --btn-disabled-text: 107 114 128;
-            
+
             --input-border: 75 85 99;
             --input-focus-border: 96 165 250;
         }
-        
-        /* Sepia Theme (Reading Mode) */
+
+        /* Sepia Theme (Reading Mode) - FIXED FOR CONTRAST */
         .sepia {
             --bg-primary: 244 236 216;
             --bg-secondary: 250 245 235;
@@ -97,20 +97,21 @@
             --border-secondary: 200 185 160;
             --accent-primary: 139 92 46;
             --accent-secondary: 115 75 35;
-            
+
+            /* Tab & Interactive States - Using darker brown for active */
             --tab-inactive-bg: 238 228 208;
             --tab-inactive-text: 92 75 55;
-            --tab-active-bg: 139 92 46;
+            --tab-active-bg: 92 65 35;
             --tab-active-text: 250 245 235;
-            
+
             --btn-hover-bg: 220 205 180;
             --btn-disabled-text: 160 140 120;
-            
+
             --input-border: 200 185 160;
             --input-focus-border: 139 92 46;
         }
-        
-        /* Ocean Blue Theme */
+
+        /* Ocean Blue Theme - FIXED FOR CONTRAST */
         .ocean {
             --bg-primary: 240 249 255;
             --bg-secondary: 224 242 254;
@@ -121,21 +122,22 @@
             --border-primary: 125 211 252;
             --border-secondary: 56 189 248;
             --accent-primary: 2 132 199;
-            --accent-secondary: 3 105 161;
-            
+            --accent-secondary: 1 108 170;
+
+            /* Tab & Interactive States - Using darker teal for active */
             --tab-inactive-bg: 186 230 253;
             --tab-inactive-text: 12 74 110;
-            --tab-active-bg: 2 132 199;
+            --tab-active-bg: 1 89 144;
             --tab-active-text: 255 255 255;
-            
+
             --btn-hover-bg: 125 211 252;
             --btn-disabled-text: 14 116 144;
-            
+
             --input-border: 56 189 248;
             --input-focus-border: 2 132 199;
         }
-        
-        /* Forest Green Theme */
+
+        /* Forest Green Theme - FIXED FOR CONTRAST */
         .forest {
             --bg-primary: 236 253 245;
             --bg-secondary: 209 250 229;
@@ -147,15 +149,16 @@
             --border-secondary: 74 222 128;
             --accent-primary: 34 197 94;
             --accent-secondary: 22 163 74;
-            
+
+            /* Tab & Interactive States - Using darker green for active */
             --tab-inactive-bg: 167 243 208;
             --tab-inactive-text: 20 83 45;
-            --tab-active-bg: 34 197 94;
+            --tab-active-bg: 5 122 35;
             --tab-active-text: 255 255 255;
-            
+
             --btn-hover-bg: 134 239 172;
             --btn-disabled-text: 22 163 74;
-            
+
             --input-border: 74 222 128;
             --input-focus-border: 34 197 94;
         }
@@ -176,60 +179,75 @@
             background-color: rgb(var(--bg-primary));
             transition: background-color 0.3s;
         }
-        
+
         .bg-themed-secondary {
             background-color: rgb(var(--bg-secondary));
             transition: background-color 0.3s;
         }
-        
+
         .bg-themed-tertiary {
             background-color: rgb(var(--bg-tertiary));
             transition: background-color 0.3s;
         }
-        
+
         .text-themed-primary {
             color: rgb(var(--text-primary));
             transition: color 0.3s;
         }
-        
+
         .text-themed-secondary {
             color: rgb(var(--text-secondary));
             transition: color 0.3s;
         }
-        
+
         .text-themed-tertiary {
             color: rgb(var(--text-tertiary));
             transition: color 0.3s;
         }
-        
+
         .border-themed-primary {
             border-color: rgb(var(--border-primary));
             transition: border-color 0.3s;
         }
-        
+
         .border-themed-secondary {
             border-color: rgb(var(--border-secondary));
             transition: border-color 0.3s;
         }
-        
+
         .accent-themed-primary {
             color: rgb(var(--accent-primary));
             transition: color 0.3s;
         }
-        
+
         .accent-themed-secondary {
             color: rgb(var(--accent-secondary));
             transition: color 0.3s;
         }
-        
+
         .bg-accent-themed-primary {
             background-color: rgb(var(--accent-primary));
             transition: background-color 0.3s;
         }
-        
+
         .bg-accent-themed-secondary {
             background-color: rgb(var(--accent-secondary));
             transition: background-color 0.3s;
+        }
+
+        /* ============================================
+           NEW: TAB ACTIVE STATE UTILITIES
+           ============================================ */
+        .bg-tab-active {
+            background-color: rgb(var(--tab-active-bg));
+            color: rgb(var(--tab-active-text));
+            transition: all 0.3s;
+        }
+
+        .bg-tab-inactive {
+            background-color: rgb(var(--tab-inactive-bg));
+            color: rgb(var(--tab-inactive-text));
+            transition: all 0.3s;
         }
 
         /* ============================================
@@ -257,6 +275,7 @@
             display: flex;
             align-items: center;
             gap: 0.5rem;
+            border-radius: 0.25rem;
         }
 
         .tab-button:hover:not(.active) {
@@ -316,7 +335,9 @@
         /* ============================================
            INPUT STYLES
            ============================================ */
-        input, textarea, select {
+        input,
+        textarea,
+        select {
             background-color: rgb(var(--bg-secondary));
             color: rgb(var(--text-primary));
             border: 1px solid rgb(var(--input-border));
@@ -326,43 +347,40 @@
             font-family: inherit;
         }
 
-        input:focus, textarea:focus, select:focus {
+        input:focus,
+        textarea:focus,
+        select:focus {
             outline: none;
             border-color: rgb(var(--input-focus-border));
             box-shadow: 0 0 0 3px rgba(var(--input-focus-border), 0.1);
         }
 
-        input:disabled, textarea:disabled, select:disabled {
+        input:disabled,
+        textarea:disabled,
+        select:disabled {
             background-color: rgb(var(--bg-tertiary));
             color: rgb(var(--btn-disabled-text));
             cursor: not-allowed;
         }
-        </style>
-        
+    </style>
+
 </head>
 
 <body class="font-sans antialiased bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
     @php
         $user = Auth::user();
     @endphp
-    
+
     <div class="flex min-h-screen">
         <!-- Desktop Sidebar -->
         @livewire('dashboard-sidebar')
 
         <!-- Sidebar Overlay for Mobile -->
-        <div 
-            x-show="sidebarOpen" 
-            x-transition:enter="transition-opacity ease-linear duration-300"
-            x-transition:enter-start="opacity-0"
-            x-transition:enter-end="opacity-100"
-            x-transition:leave="transition-opacity ease-linear duration-300"
-            x-transition:leave-start="opacity-100"
-            x-transition:leave-end="opacity-0"
-            @click="sidebarOpen = false"
-            class="fixed inset-0 z-40 bg-gray-900 bg-opacity-50 lg:hidden"
-            style="display: none;"
-        ></div>
+        <div x-show="sidebarOpen" x-transition:enter="transition-opacity ease-linear duration-300"
+            x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100"
+            x-transition:leave="transition-opacity ease-linear duration-300" x-transition:leave-start="opacity-100"
+            x-transition:leave-end="opacity-0" @click="sidebarOpen = false"
+            class="fixed inset-0 z-40 bg-gray-900 bg-opacity-50 lg:hidden" style="display: none;"></div>
 
         <!-- Main Content -->
         <div class="flex-1 flex flex-col lg:ml-64 transition-all duration-300">
@@ -373,12 +391,15 @@
             <main class="flex-1 p-4 lg:p-6 pb-20 lg:pb-6">
                 <!-- Welcome Banner (Optional) -->
                 @if($user)
-                <div class="mb-6 p-4 bg-themed-secondary rounded-xl shadow-lg border border-themed-primary animate__animated animate__fadeInDown transition-colors duration-300">
-                    <h1 class="text-xl lg:text-2xl font-bold text-themed-primary transition-colors duration-300">Welcome back, {{ $user->name }}!</h1>
-                    <p class="text-themed-secondary mt-1 transition-colors duration-300">{{ ucfirst($user->getRoleNames()->first() ?? 'User') }} Dashboard</p>
-                </div>
+                    <div
+                        class="mb-6 p-4 bg-themed-secondary rounded-xl shadow-lg border border-themed-primary animate__animated animate__fadeInDown transition-colors duration-300">
+                        <h1 class="text-xl lg:text-2xl font-bold text-themed-primary transition-colors duration-300">Welcome
+                            back, {{ $user->name }}!</h1>
+                        <p class="text-themed-secondary mt-1 transition-colors duration-300">
+                            {{ ucfirst($user->getRoleNames()->first() ?? 'User') }} Dashboard</p>
+                    </div>
                 @endif
-            
+
                 <!-- Main Content Slot -->
                 <div class="animate__animated animate__fadeIn">
                     {{ $slot }}
@@ -389,4 +410,5 @@
     </div>
     @livewireScripts
 </body>
+
 </html>
