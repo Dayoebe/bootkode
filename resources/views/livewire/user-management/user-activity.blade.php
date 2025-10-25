@@ -1,20 +1,11 @@
 <div class="p-4 sm:p-6 bg-themed-secondary rounded-lg shadow-md animate__animated animate__fadeIn transition-colors duration-300 max-w-full overflow-hidden">
     <!-- Header -->
-    <div class="bg-gradient-to-r from-themed-primary to-accent-themed-primary p-6 rounded-2xl shadow-xl text-white mb-8 animate__animated animate__fadeIn transition-colors duration-300">
-        <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
-            <div>
-                <h1 class="text-3xl font-bold">
-                    <i class="fas fa-history mr-2"></i> User Activity
-                </h1>
-                <p class="text-white/80 mt-2">Monitor user actions across the platform</p>
-            </div>
-            <div class="flex items-center justify-between px-4 py-3 w-full md:w-64 bg-white/10 rounded-xl backdrop-blur-sm">
-                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <i class="fas fa-search text-white/60"></i>
-                </div>
-                <input wire:model.live.debounce.300ms="search" type="text" placeholder="Search activities..."
-                       class="block w-full pl-10 pr-3 py-2 border border-white/20 rounded-lg leading-5 bg-white/10 placeholder-white/50 text-white focus:outline-none focus:ring-2 focus:ring-white/30 focus:border-white/30 sm:text-sm transition-colors duration-200">
-            </div>
+    <div class="bg-themed-secondary backdrop-blur-sm rounded-2xl lg:rounded-3xl shadow-lg lg:shadow-2xl border border-themed-primary overflow-hidden mb-6 lg:mb-8 transition-colors duration-300">
+        <div class="relative z-10 p-6 lg:p-8">
+            <h1 class="text-3xl font-bold text-themed-primary transition-colors duration-300">
+                <i class="fas fa-history mr-2"></i> User Activity
+            </h1>
+            <p class="text-themed-secondary mt-2 transition-colors duration-300">Monitor user actions across the platform</p>
         </div>
     </div>
 
@@ -40,7 +31,7 @@
     <!-- Loading Spinner -->
     <div wire:loading class="fixed inset-0 bg-themed-primary bg-opacity-50 flex items-center justify-center z-50 transition-colors duration-300">
         <div class="bg-themed-secondary p-6 rounded-xl shadow-2xl border border-themed-primary transition-colors duration-300">
-            <i class="fas fa-spinner fa-spin accent-themed-primary text-3xl mb-2 block mx-auto" aria-label="Loading"></i>
+            <i class="fas fa-spinner fa-spin text-accent-themed-primary text-3xl mb-2 block mx-auto" aria-label="Loading"></i>
             <p class="text-themed-primary text-sm">Loading activities...</p>
         </div>
     </div>
@@ -49,33 +40,48 @@
     <div class="mb-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         <div class="flex-1">
             <label for="userFilter" class="block text-sm font-medium text-themed-primary mb-2 transition-colors duration-300">Filter by User</label>
-            <select wire:model.live="userFilter" id="userFilter"
-                    class="w-full border-themed-primary rounded-lg shadow-sm focus:border-accent-themed-primary focus:ring-accent-themed-primary bg-themed-secondary text-themed-primary transition-colors duration-200">
-                <option value="">All Users</option>
-                @foreach($users as $id => $name)
-                    <option value="{{ $id }}">{{ $name }}</option>
-                @endforeach
-            </select>
+            <div class="relative">
+                <select wire:model.live="userFilter" id="userFilter"
+                        class="w-full p-3 border border-themed-primary rounded-xl bg-themed-secondary text-themed-primary transition-all duration-200 text-sm appearance-none focus:outline-none focus:ring-2 focus:ring-accent-themed-primary">
+                    <option value="">All Users</option>
+                    @foreach($users as $id => $name)
+                        <option value="{{ $id }}">{{ $name }}</option>
+                    @endforeach
+                </select>
+                <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                    <i class="fas fa-chevron-down text-themed-secondary text-sm"></i>
+                </div>
+            </div>
         </div>
         <div class="flex-1">
             <label for="actionFilter" class="block text-sm font-medium text-themed-primary mb-2 transition-colors duration-300">Filter by Action</label>
-            <select wire:model.live="actionFilter" id="actionFilter"
-                    class="w-full border-themed-primary rounded-lg shadow-sm focus:border-accent-themed-primary focus:ring-accent-themed-primary bg-themed-secondary text-themed-primary transition-colors duration-200">
-                <option value="">All Actions</option>
-                @foreach($actionTypes as $action)
-                    <option value="{{ $action }}">{{ ucfirst(str_replace('_', ' ', $action)) }}</option>
-                @endforeach
-            </select>
+            <div class="relative">
+                <select wire:model.live="actionFilter" id="actionFilter"
+                        class="w-full p-3 border border-themed-primary rounded-xl bg-themed-secondary text-themed-primary transition-all duration-200 text-sm appearance-none focus:outline-none focus:ring-2 focus:ring-accent-themed-primary">
+                    <option value="">All Actions</option>
+                    @foreach($actionTypes as $action)
+                        <option value="{{ $action }}">{{ ucfirst(str_replace('_', ' ', $action)) }}</option>
+                    @endforeach
+                </select>
+                <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                    <i class="fas fa-chevron-down text-themed-secondary text-sm"></i>
+                </div>
+            </div>
         </div>
         <div class="flex-1">
             <label for="perPage" class="block text-sm font-medium text-themed-primary mb-2 transition-colors duration-300">Per Page</label>
-            <select wire:model.live="perPage" id="perPage"
-                    class="w-full border-themed-primary rounded-lg shadow-sm focus:border-accent-themed-primary focus:ring-accent-themed-primary bg-themed-secondary text-themed-primary transition-colors duration-200">
-                <option value="10">10 per page</option>
-                <option value="25">25 per page</option>
-                <option value="50">50 per page</option>
-                <option value="100">100 per page</option>
-            </select>
+            <div class="relative">
+                <select wire:model.live="perPage" id="perPage"
+                        class="w-full p-3 border border-themed-primary rounded-xl bg-themed-secondary text-themed-primary transition-all duration-200 text-sm appearance-none focus:outline-none focus:ring-2 focus:ring-accent-themed-primary">
+                    <option value="10">10 per page</option>
+                    <option value="25">25 per page</option>
+                    <option value="50">50 per page</option>
+                    <option value="100">100 per page</option>
+                </select>
+                <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                    <i class="fas fa-chevron-down text-themed-secondary text-sm"></i>
+                </div>
+            </div>
         </div>
     </div>
 
