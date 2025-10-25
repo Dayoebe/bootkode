@@ -5,10 +5,10 @@ namespace App\Livewire\Career;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 use Livewire\WithPagination;
-use App\Models\JobCategory;
-use App\Models\JobApplication;
-use App\Models\JobSave;
-use App\Models\User;
+use App\Models\Career\JobCategory;
+use App\Models\Career\JobApplication;
+use App\Models\Career\JobSave;
+use App\Models\Core\User;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
@@ -154,7 +154,7 @@ class JobPortal extends Component
             $user = Auth::user();
             
             // Use the full model namespace instead of JobPortal (which refers to this Livewire component)
-            $this->recommendedJobs = \App\Models\JobPortal::active()
+            $this->recommendedJobs = \App\Models\Career\JobPortal::active()
                 ->when($user->resume_profile ?? false, function ($query) use ($user) {
                     $profile = $user->resume_profile;
                     $userSkills = collect($profile->skills ?? [])->pluck('name')->toArray();
@@ -167,7 +167,7 @@ class JobPortal extends Component
                 ->get();
         } else {
             // Show popular jobs for guests
-            $this->recommendedJobs = \App\Models\JobPortal::active()
+            $this->recommendedJobs = \App\Models\Career\JobPortal::active()
                 ->orderBy('views_count', 'desc')
                 ->limit(6)
                 ->get();
@@ -177,10 +177,10 @@ class JobPortal extends Component
     public function loadJobStats()
     {
         $this->jobStats = [
-            'total_active' => \App\Models\JobPortal::active()->count(),
-            'new_this_week' => \App\Models\JobPortal::active()->where('created_at', '>=', now()->subWeek())->count(),
-            'remote_jobs' => \App\Models\JobPortal::active()->where('work_type', 'remote')->count(),
-            'premium_jobs' => \App\Models\JobPortal::active()->where('is_premium', true)->count(),
+            'total_active' => \App\Models\Career\JobPortal::active()->count(),
+            'new_this_week' => \App\Models\Career\JobPortal::active()->where('created_at', '>=', now()->subWeek())->count(),
+            'remote_jobs' => \App\Models\Career\JobPortal::active()->where('work_type', 'remote')->count(),
+            'premium_jobs' => \App\Models\Career\JobPortal::active()->where('is_premium', true)->count(),
         ];
     
         if (Auth::check()) {
@@ -192,7 +192,7 @@ class JobPortal extends Component
 
     public function viewJob($jobId)
     {
-        $this->selectedJob = \App\Models\JobPortal::with(['postedBy', 'applications'])->findOrFail($jobId);
+        $this->selectedJob = \App\Models\Career\JobPortal::with(['postedBy', 'applications'])->findOrFail($jobId);
         $this->selectedJob->incrementViews();
         $this->showJobDetails = true;
     }
@@ -209,7 +209,7 @@ class JobPortal extends Component
             return redirect()->route('login');
         }
     
-        $this->applicationJob = \App\Models\JobPortal::findOrFail($jobId);
+        $this->applicationJob = \App\Models\Career\JobPortal::findOrFail($jobId);
         
         // Check if already applied
         $existingApplication = JobApplication::where('job_id', $jobId)
@@ -398,7 +398,7 @@ class JobPortal extends Component
 
     public function render()
     {
-        $query = \App\Models\JobPortal::active()->with(['postedBy']);
+        $query = \App\Models\Career\JobPortal::active()->with(['postedBy']);
 
 
         // Apply search

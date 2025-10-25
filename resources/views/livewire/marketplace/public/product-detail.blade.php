@@ -1,6 +1,6 @@
 {{-- resources/views/livewire/marketplace/partials/product-detail.blade.php --}}
 <section class="py-8 bg-white">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class=" px-4 sm:px-6 lg:px-8">
         <!-- Breadcrumb -->
         <button wire:click="backToBrowse" class="hover:text-purple-600 transition-colors">Home</button>
         <i class="fas fa-chevron-right text-xs"></i>
@@ -341,7 +341,7 @@
 <!-- Related Products -->
 @if($relatedProducts->count() > 0)
     <section class="py-16 bg-gray-50">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class=" px-4 sm:px-6 lg:px-8">
             <h2 class="text-2xl font-bold text-gray-900 mb-8">You might also like</h2>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 @foreach($relatedProducts as $item)

@@ -2,8 +2,8 @@
 
 namespace App\Livewire\SystemManagement;
 
-use App\Models\Announcement;
-use App\Models\Course;
+use App\Models\Admin\Announcement;
+use App\Models\Learning\Course;
 use App\Notifications\NewAnnouncementNotification;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Component;

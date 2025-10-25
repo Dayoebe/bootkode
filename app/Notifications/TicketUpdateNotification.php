@@ -2,7 +2,7 @@
 
 namespace App\Notifications;
 
-use App\Models\SupportTicket;
+use App\Models\Community\SupportTicket;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;

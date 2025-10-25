@@ -103,7 +103,7 @@
                         ];
                         
                         // Add settings tab only for super admin
-                        if($user->hasRole(App\Models\User::ROLE_SUPER_ADMIN)) {
+                        if($user->hasRole(App\Models\Core\User::ROLE_SUPER_ADMIN)) {
                             $tabs['settings'] = ['label' => 'Settings', 'icon' => 'fas fa-cog', 'full_label' => 'Newsletter Settings'];
                         }
                     @endphp

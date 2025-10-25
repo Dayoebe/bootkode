@@ -3,9 +3,9 @@
 namespace App\Livewire\Cbt;
 
 use Livewire\Component;
-use App\Models\Assessment;
-use App\Models\Question;
-use App\Models\Course;
+use App\Models\Assessment\Assessment;
+use App\Models\Assessment\Question;
+use App\Models\Learning\Course;
 use Livewire\WithPagination;
 use Livewire\Attributes\Layout;
 use Illuminate\Support\Facades\Auth;

@@ -1,334 +1,625 @@
 <x-app-layout>
-    <span
-        class="bg-gradient-to-br from-blue-50 via-pink-50 to-gray-50 min-h-screen flex items-center justify-center p-4">
-        <div class="w-full max-w-4xl">
-            <div
-                class="relative bg-white/90 backdrop-blur-sm rounded-3xl shadow-2xl overflow-hidden animate__animated animate__fadeInUp">
-                <!-- Header -->
-                <div class="bg-gradient-to-r from-blue-600 to-pink-600 p-8 text-center relative">
-                    <div class="absolute top-0 left-0 w-full h-full opacity-20">
-                        <i
-                            class="fas fa-user-plus text-9xl absolute -top-4 -right-4 text-white animate__animated animate__fadeIn animate__delay-1s"></i>
+    <div class="min-h-screen bg-white flex items-center justify-center p-4">
+        <div class="w-full max-w-2xl">
+            <!-- Progress Indicator -->
+            <div class="mb-12">
+                <div class="flex items-center justify-between mb-8">
+                    <div class="flex-1">
+                        <div class="flex items-center">
+                            <div class="flex items-center justify-center w-10 h-10 rounded-full text-sm font-semibold transition-all duration-300"
+                                id="step1-indicator"
+                                :class="currentStep === 1 ? 'bg-slate-900 text-white' : 'bg-slate-200 text-slate-900'">
+                                1
+                            </div>
+                            <p class="ml-3 text-sm font-medium text-slate-900">Personal</p>
+                        </div>
                     </div>
-                    <h1 class="text-3xl font-bold text-white mb-2 relative z-10">Create Your Account</h1>
-                    <p class="text-blue-100 relative z-10">Join our community today</p>
+
+                    <div class="flex-1 flex items-center">
+                        <div class="h-0.5 flex-grow" id="progress-line-1"
+                            :class="currentStep >= 2 ? 'bg-slate-900' : 'bg-slate-200'"></div>
+                    </div>
+
+                    <div class="flex-1">
+                        <div class="flex items-center">
+                            <div class="flex items-center justify-center w-10 h-10 rounded-full text-sm font-semibold transition-all duration-300"
+                                id="step2-indicator"
+                                :class="currentStep === 2 ? 'bg-slate-900 text-white' : (currentStep > 2 ? 'bg-slate-900 text-white' : 'bg-slate-200 text-slate-900')">
+                                2
+                            </div>
+                            <p class="ml-3 text-sm font-medium text-slate-900">Address</p>
+                        </div>
+                    </div>
+
+                    <div class="flex-1 flex items-center">
+                        <div class="h-0.5 flex-grow" id="progress-line-2"
+                            :class="currentStep >= 3 ? 'bg-slate-900' : 'bg-slate-200'"></div>
+                    </div>
+
+                    <div class="flex-1">
+                        <div class="flex items-center">
+                            <div class="flex items-center justify-center w-10 h-10 rounded-full text-sm font-semibold transition-all duration-300"
+                                id="step3-indicator"
+                                :class="currentStep === 3 ? 'bg-slate-900 text-white' : (currentStep > 3 ? 'bg-slate-900 text-white' : 'bg-slate-200 text-slate-900')">
+                                3
+                            </div>
+                            <p class="ml-3 text-sm font-medium text-slate-900">Additional</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Form Container -->
+            <div class="bg-white rounded-2xl shadow-lg overflow-hidden">
+                <!-- Header -->
+                <div class="px-8 py-10 border-b border-slate-100">
+                    <h1 class="text-3xl font-bold text-slate-900 mb-2" id="form-title">Create Your Account</h1>
+                    <p class="text-slate-600" id="form-subtitle">Tell us about yourself to get started</p>
                 </div>
 
-                <form method="POST" action="{{ route('register') }}" class="p-8 grid grid-cols-1 md:grid-cols-2 gap-6"
-                    enctype="multipart/form-data">
+                <!-- Form -->
+                <form method="POST" action="{{ route('register') }}" class="p-8" enctype="multipart/form-data">
                     @csrf
 
-                    <!-- Personal Information Section -->
-                    <div class="md:col-span-2">
-                        <h2 class="text-xl font-semibold text-gray-800 mb-4 flex items-center">
-                            <i class="fas fa-user-circle mr-2 text-blue-600"></i>
-                            Personal Information
-                        </h2>
-                    </div>
-
-                    <!-- Name -->
-                    <div class="field-wrapper">
-                        <x-input-label for="name" :value="__('Full Name')" class="flex items-center">
-                            <i class="fas fa-signature mr-2 text-blue-600 text-sm"></i>
-                        </x-input-label>
-                        <x-text-input id="name" class="block mt-1 w-full" type="text" name="name"
-                            :value="old('name')" required autofocus autocomplete="name" />
-                        <x-input-error :messages="$errors->get('name')" class="mt-2" />
-                    </div>
-
-                    <!-- Email -->
-                    <div class="field-wrapper">
-                        <x-input-label for="email" :value="__('Email')" class="flex items-center">
-                            <i class="fas fa-envelope mr-2 text-blue-600 text-sm"></i>
-                        </x-input-label>
-                        <x-text-input id="email" class="block mt-1 w-full" type="email" name="email"
-                            :value="old('email')" required autocomplete="username" />
-                        <x-input-error :messages="$errors->get('email')" class="mt-2" />
-                    </div>
-
-                    <!-- Password -->
-                    <div class="field-wrapper">
-                        <x-input-label for="password" :value="__('Password')" class="flex items-center">
-                            <i class="fas fa-lock mr-2 text-blue-600 text-sm"></i>
-                        </x-input-label>
-                        <x-text-input id="password" class="block mt-1 w-full" type="password" name="password" required
-                            autocomplete="new-password" />
-                        <x-input-error :messages="$errors->get('password')" class="mt-2" />
-                    </div>
-
-                    <!-- Confirm Password -->
-                    <div class="field-wrapper">
-                        <x-input-label for="password_confirmation" :value="__('Confirm Password')" class="flex items-center">
-                            <i class="fas fa-lock mr-2 text-blue-600 text-sm"></i>
-                        </x-input-label>
-                        <x-text-input id="password_confirmation" class="block mt-1 w-full" type="password"
-                            name="password_confirmation" required autocomplete="new-password" />
-                        <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2" />
-                    </div>
-
-                    <!-- Role -->
-                    <div class="field-wrapper">
-                        <x-input-label for="role" :value="__('Role')" class="flex items-center">
-                            <i class="fas fa-user-tag mr-2 text-blue-600 text-sm"></i>
-                        </x-input-label>
-                        <select id="role" name="role"
-                            class="block mt-1 w-full rounded-md border-gray-300 shadow-sm focus:border-blue-600 focus:ring-blue-600"
-                            required>
-                            <option value="">Select your role</option>
-                            <option value="{{ App\Models\User::ROLE_STUDENT }}"
-                                {{ old('role') == App\Models\User::ROLE_STUDENT ? 'selected' : '' }}>Student</option>
-                            <option value="{{ App\Models\User::ROLE_INSTRUCTOR }}"
-                                {{ old('role') == App\Models\User::ROLE_INSTRUCTOR ? 'selected' : '' }}>Instructor
-                            </option>
-                            <option value="{{ App\Models\User::ROLE_MENTOR }}"
-                                {{ old('role') == App\Models\User::ROLE_MENTOR ? 'selected' : '' }}>Mentor</option>
-                        </select>
-                        <x-input-error :messages="$errors->get('role')" class="mt-2" />
-                    </div>
-
-                    <!-- Date of Birth -->
-                    <div class="field-wrapper">
-                        <x-input-label for="date_of_birth" :value="__('Date of Birth')" class="flex items-center">
-                            <i class="fas fa-birthday-cake mr-2 text-blue-600 text-sm"></i>
-                        </x-input-label>
-                        <x-text-input id="date_of_birth" class="block mt-1 w-full" type="date" name="date_of_birth"
-                            :value="old('date_of_birth')" required />
-                        <x-input-error :messages="$errors->get('date_of_birth')" class="mt-2" />
-                    </div>
-
-                    <!-- Phone Number -->
-                    <div class="field-wrapper">
-                        <x-input-label for="phone_number" :value="__('Phone Number')" class="flex items-center">
-                            <i class="fas fa-phone mr-2 text-blue-600 text-sm"></i>
-                        </x-input-label>
-                        <x-text-input id="phone_number" class="block mt-1 w-full" type="tel" name="phone_number"
-                            :value="old('phone_number')" required />
-                        <x-input-error :messages="$errors->get('phone_number')" class="mt-2" />
-                    </div>
-                    <!-- Skills & Interests -->
-                    <div class="field-wrapper">
-                        <x-input-label for="skills" :value="__('Skills & Interests (Optional)')" class="flex items-center">
-                            <i class="fas fa-lightbulb mr-2 text-yellow-500 text-sm"></i>
-                        </x-input-label>
-                        <x-text-input id="skills" name="skills" type="text" class="block mt-1 w-full"
-                            placeholder="e.g. Laravel, Vue.js, Photography" value="{{ old('skills') }}" />
-                        <x-input-error :messages="$errors->get('skills')" class="mt-2" />
-                        <p class="mt-1 text-xs text-gray-500">Separate multiple skills with commas</p>
-                    </div>
-                    <!-- Bio -->
-                    <div class="field-wrapper md:col-span-2">
-                        <x-input-label for="bio" :value="__('Bio (Optional)')" class="flex items-center">
-                            <i class="fas fa-info-circle mr-2 text-blue-600 text-sm"></i>
-                        </x-input-label>
-                        <textarea id="bio" name="bio"
-                            class="block mt-1 w-full rounded-md border-gray-300 shadow-sm focus:border-blue-600 focus:ring-blue-600"
-                            rows="3">{{ old('bio') }}</textarea>
-                        <x-input-error :messages="$errors->get('bio')" class="mt-2" />
-                    </div>
-
-                    <!-- Address Section -->
-                    <div class="md:col-span-2 mt-6">
-                        <h2 class="text-xl font-semibold text-gray-800 mb-4 flex items-center">
-                            <i class="fas fa-map-marker-alt mr-2 text-blue-600"></i>
-                            Address Information
-                        </h2>
-                    </div>
-
-                    <!-- Street Address -->
-                    <div class="field-wrapper md:col-span-2">
-                        <x-input-label for="address_street" :value="__('Street Address')" class="flex items-center">
-                            <i class="fas fa-road mr-2 text-blue-600 text-sm"></i>
-                        </x-input-label>
-                        <x-text-input id="address_street" class="block mt-1 w-full" type="text"
-                            name="address_street" :value="old('address_street')" required />
-                        <x-input-error :messages="$errors->get('address_street')" class="mt-2" />
-                    </div>
-
-                    <!-- City -->
-                    <div class="field-wrapper">
-                        <x-input-label for="address_city" :value="__('City')" class="flex items-center">
-                            <i class="fas fa-city mr-2 text-blue-600 text-sm"></i>
-                        </x-input-label>
-                        <x-text-input id="address_city" class="block mt-1 w-full" type="text" name="address_city"
-                            :value="old('address_city')" required />
-                        <x-input-error :messages="$errors->get('address_city')" class="mt-2" />
-                    </div>
-
-                    <!-- State/Province -->
-                    <div class="field-wrapper">
-                        <x-input-label for="address_state" :value="__('State/Province')" class="flex items-center">
-                            <i class="fas fa-map mr-2 text-blue-600 text-sm"></i>
-                        </x-input-label>
-                        <x-text-input id="address_state" class="block mt-1 w-full" type="text"
-                            name="address_state" :value="old('address_state')" required />
-                        <x-input-error :messages="$errors->get('address_state')" class="mt-2" />
-                    </div>
-
-                    <!-- Country -->
-                    <div class="field-wrapper">
-                        <x-input-label for="address_country" :value="__('Country')" class="flex items-center">
-                            <i class="fas fa-globe mr-2 text-blue-600 text-sm"></i>
-                        </x-input-label>
-                        <x-text-input id="address_country" class="block mt-1 w-full" type="text"
-                            name="address_country" :value="old('address_country')" required />
-                        <x-input-error :messages="$errors->get('address_country')" class="mt-2" />
-                    </div>
-
-                    <!-- Postal Code -->
-                    <div class="field-wrapper">
-                        <x-input-label for="address_postal_code" :value="__('Postal Code')" class="flex items-center">
-                            <i class="fas fa-mail-bulk mr-2 text-blue-600 text-sm"></i>
-                        </x-input-label>
-                        <x-text-input id="address_postal_code" class="block mt-1 w-full" type="text"
-                            name="address_postal_code" :value="old('address_postal_code')" required />
-                        <x-input-error :messages="$errors->get('address_postal_code')" class="mt-2" />
-                    </div>
-
-                    <!-- Additional Information Section -->
-                    <div class="md:col-span-2 mt-6">
-                        <h2 class="text-xl font-semibold text-gray-800 mb-4 flex items-center">
-                            <i class="fas fa-graduation-cap mr-2 text-blue-600"></i>
-                            Additional Information
-                        </h2>
-                    </div>
-
-                    <!-- Occupation -->
-                    <div class="field-wrapper">
-                        <x-input-label for="occupation" :value="__('Occupation (Optional)')" class="flex items-center">
-                            <i class="fas fa-briefcase mr-2 text-blue-600 text-sm"></i>
-                        </x-input-label>
-                        <x-text-input id="occupation" class="block mt-1 w-full" type="text" name="occupation"
-                            :value="old('occupation')" />
-                        <x-input-error :messages="$errors->get('occupation')" class="mt-2" />
-                    </div>
-
-                    <!-- Education Level -->
-                    <div class="field-wrapper">
-                        <x-input-label for="education_level" :value="__('Education Level (Optional)')" class="flex items-center">
-                            <i class="fas fa-university mr-2 text-blue-600 text-sm"></i>
-                        </x-input-label>
-                        <select id="education_level" name="education_level"
-                            class="block mt-1 w-full rounded-md border-gray-300 shadow-sm focus:border-blue-600 focus:ring-blue-600">
-                            <option value="">Select education level</option>
-                            <option value="High School"
-                                {{ old('education_level') == 'High School' ? 'selected' : '' }}>High School</option>
-                            <option value="Bachelor's Degree"
-                                {{ old('education_level') == "Bachelor's Degree" ? 'selected' : '' }}>Bachelor's Degree
-                            </option>
-                            <option value="Master's Degree"
-                                {{ old('education_level') == "Master's Degree" ? 'selected' : '' }}>Master's Degree
-                            </option>
-                            <option value="PhD" {{ old('education_level') == 'PhD' ? 'selected' : '' }}>PhD
-                            </option>
-                            <option value="Other" {{ old('education_level') == 'Other' ? 'selected' : '' }}>Other
-                            </option>
-                        </select>
-                        <x-input-error :messages="$errors->get('education_level')" class="mt-2" />
-                    </div>
-
-                    <!-- Profile Picture -->
-                    <div class="field-wrapper md:col-span-2">
-                        <x-input-label for="profile_picture" :value="__('Profile Picture (Optional)')" class="flex items-center">
-                            <i class="fas fa-camera mr-2 text-blue-600 text-sm"></i>
-                        </x-input-label>
-                        <input id="profile_picture"
-                            class="block mt-1 w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
-                            type="file" name="profile_picture" accept="image/*" />
-                        <x-input-error :messages="$errors->get('profile_picture')" class="mt-2" />
-                    </div>
-
-
-                    @if($referralCode && $validation && $validation['valid'])
-                    <div class="mb-4 p-4 bg-green-50 border border-green-200 rounded-md">
-                        <div class="flex">
-                            <div class="flex-shrink-0">
-                                <svg class="h-5 w-5 text-green-400" viewBox="0 0 20 20" fill="currentColor">
-                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
-                                </svg>
+                    <!-- STEP 1: Personal Information -->
+                    <div id="step-1" class="step-content">
+                        <div class="space-y-6">
+                            <!-- Name -->
+                            <div>
+                                <label for="name" class="block text-sm font-semibold text-slate-900 mb-2">Full Name</label>
+                                <input
+                                    id="name"
+                                    class="w-full px-4 py-3 rounded-lg border border-slate-300 text-slate-900 placeholder-slate-400 transition-all duration-200 focus:outline-none focus:border-slate-900 focus:ring-2 focus:ring-slate-900 focus:ring-opacity-10"
+                                    type="text"
+                                    name="name"
+                                    value="{{ old('name') }}"
+                                    placeholder="John Doe"
+                                    required
+                                    autofocus
+                                    autocomplete="name" />
+                                @error('name')
+                                    <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                                @enderror
                             </div>
-                            <div class="ml-3">
-                                <h3 class="text-sm font-medium text-green-800">
-                                    You're being referred by {{ $validation['referrer_name'] }}
-                                </h3>
-                                <div class="mt-2 text-sm text-green-700">
-                                    <p>Welcome! You're signing up through a referral link from {{ $validation['referrer_name'] }}.</p>
+
+                            <!-- Email -->
+                            <div>
+                                <label for="email" class="block text-sm font-semibold text-slate-900 mb-2">Email Address</label>
+                                <input
+                                    id="email"
+                                    class="w-full px-4 py-3 rounded-lg border border-slate-300 text-slate-900 placeholder-slate-400 transition-all duration-200 focus:outline-none focus:border-slate-900 focus:ring-2 focus:ring-slate-900 focus:ring-opacity-10"
+                                    type="email"
+                                    name="email"
+                                    value="{{ old('email') }}"
+                                    placeholder="john@example.com"
+                                    required
+                                    autocomplete="username" />
+                                @error('email')
+                                    <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                                @enderror
+                            </div>
+
+                            <!-- Password -->
+                            <div>
+                                <label for="password" class="block text-sm font-semibold text-slate-900 mb-2">Password</label>
+                                <div class="relative">
+                                    <input
+                                        id="password"
+                                        class="w-full px-4 py-3 pr-12 rounded-lg border border-slate-300 text-slate-900 placeholder-slate-400 transition-all duration-200 focus:outline-none focus:border-slate-900 focus:ring-2 focus:ring-slate-900 focus:ring-opacity-10"
+                                        type="password"
+                                        name="password"
+                                        placeholder="Enter a strong password"
+                                        required
+                                        autocomplete="new-password" />
+                                    <button
+                                        type="button"
+                                        onclick="togglePasswordVisibility('password', 'toggle-icon-1')"
+                                        class="absolute right-4 top-1/2 transform -translate-y-1/2 text-slate-500 hover:text-slate-700 transition-colors">
+                                        <svg id="toggle-icon-1" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                                        </svg>
+                                    </button>
                                 </div>
+                                @error('password')
+                                    <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                                @enderror
                             </div>
-                        </div>
-                        <input type="hidden" name="referral_code" value="{{ $referralCode }}">
-                    </div>
-                @elseif($referralCode && $validation && !$validation['valid'])
-                    <div class="mb-4 p-4 bg-red-50 border border-red-200 rounded-md">
-                        <div class="flex">
-                            <div class="flex-shrink-0">
-                                <svg class="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
-                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
-                                </svg>
-                            </div>
-                            <div class="ml-3">
-                                <h3 class="text-sm font-medium text-red-800">
-                                    Invalid Referral Code
-                                </h3>
-                                <div class="mt-2 text-sm text-red-700">
-                                    <p>The referral code you used is invalid or expired. You can still register normally.</p>
+
+                            <!-- Confirm Password -->
+                            <div>
+                                <label for="password_confirmation" class="block text-sm font-semibold text-slate-900 mb-2">Confirm Password</label>
+                                <div class="relative">
+                                    <input
+                                        id="password_confirmation"
+                                        class="w-full px-4 py-3 pr-12 rounded-lg border border-slate-300 text-slate-900 placeholder-slate-400 transition-all duration-200 focus:outline-none focus:border-slate-900 focus:ring-2 focus:ring-slate-900 focus:ring-opacity-10"
+                                        type="password"
+                                        name="password_confirmation"
+                                        placeholder="Confirm your password"
+                                        required
+                                        autocomplete="new-password" />
+                                    <button
+                                        type="button"
+                                        onclick="togglePasswordVisibility('password_confirmation', 'toggle-icon-2')"
+                                        class="absolute right-4 top-1/2 transform -translate-y-1/2 text-slate-500 hover:text-slate-700 transition-colors">
+                                        <svg id="toggle-icon-2" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                                        </svg>
+                                    </button>
                                 </div>
+                                @error('password_confirmation')
+                                    <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                                @enderror
+                            </div>
+
+                            <!-- Role -->
+                            <div>
+                                <label for="role" class="block text-sm font-semibold text-slate-900 mb-2">What's your role?</label>
+                                <select
+                                    id="role"
+                                    name="role"
+                                    class="w-full px-4 py-3 rounded-lg border border-slate-300 text-slate-900 transition-all duration-200 focus:outline-none focus:border-slate-900 focus:ring-2 focus:ring-slate-900 focus:ring-opacity-10"
+                                    required>
+                                    <option value="">Select your role</option>
+                                    <option value="{{ App\Models\Core\User::ROLE_STUDENT }}" {{ old('role') == App\Models\Core\User::ROLE_STUDENT ? 'selected' : '' }}>Student</option>
+                                    <option value="{{ App\Models\Core\User::ROLE_INSTRUCTOR }}" {{ old('role') == App\Models\Core\User::ROLE_INSTRUCTOR ? 'selected' : '' }}>Instructor</option>
+                                    <option value="{{ App\Models\Core\User::ROLE_MENTOR }}" {{ old('role') == App\Models\Core\User::ROLE_MENTOR ? 'selected' : '' }}>Mentor</option>
+                                </select>
+                                @error('role')
+                                    <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                                @enderror
+                            </div>
+
+                            <!-- Date of Birth -->
+                            <div>
+                                <label for="date_of_birth" class="block text-sm font-semibold text-slate-900 mb-2">Date of Birth</label>
+                                <input
+                                    id="date_of_birth"
+                                    class="w-full px-4 py-3 rounded-lg border border-slate-300 text-slate-900 placeholder-slate-400 transition-all duration-200 focus:outline-none focus:border-slate-900 focus:ring-2 focus:ring-slate-900 focus:ring-opacity-10"
+                                    type="date"
+                                    name="date_of_birth"
+                                    value="{{ old('date_of_birth') }}"
+                                    required />
+                                <p class="mt-2 text-xs text-slate-500">We need this to personalize your learning experience</p>
+                                @error('date_of_birth')
+                                    <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                                @enderror
+                            </div>
+
+                            <!-- Phone Number -->
+                            <div>
+                                <label for="phone_number" class="block text-sm font-semibold text-slate-900 mb-2">Phone Number</label>
+                                <input
+                                    id="phone_number"
+                                    class="w-full px-4 py-3 rounded-lg border border-slate-300 text-slate-900 placeholder-slate-400 transition-all duration-200 focus:outline-none focus:border-slate-900 focus:ring-2 focus:ring-slate-900 focus:ring-opacity-10"
+                                    type="tel"
+                                    name="phone_number"
+                                    value="{{ old('phone_number') }}"
+                                    placeholder="+234 8012345678"
+                                    required />
+                                @error('phone_number')
+                                    <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                                @enderror
+                            </div>
+
+                            <!-- Skills -->
+                            <div>
+                                <label for="skills" class="block text-sm font-semibold text-slate-900 mb-2">Skills & Interests (Optional)</label>
+                                <input
+                                    id="skills"
+                                    class="w-full px-4 py-3 rounded-lg border border-slate-300 text-slate-900 placeholder-slate-400 transition-all duration-200 focus:outline-none focus:border-slate-900 focus:ring-2 focus:ring-slate-900 focus:ring-opacity-10"
+                                    type="text"
+                                    name="skills"
+                                    value="{{ old('skills') }}"
+                                    placeholder="e.g. Laravel, Vue.js, Photography" />
+                                <p class="mt-2 text-xs text-slate-500">Separate multiple skills with commas</p>
+                                @error('skills')
+                                    <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                                @enderror
+                            </div>
+
+                            <!-- Bio -->
+                            <div>
+                                <label for="bio" class="block text-sm font-semibold text-slate-900 mb-2">Bio (Optional)</label>
+                                <textarea
+                                    id="bio"
+                                    name="bio"
+                                    class="w-full px-4 py-3 rounded-lg border border-slate-300 text-slate-900 placeholder-slate-400 transition-all duration-200 focus:outline-none focus:border-slate-900 focus:ring-2 focus:ring-slate-900 focus:ring-opacity-10"
+                                    rows="3"
+                                    placeholder="Tell us a bit about yourself...">{{ old('bio') }}</textarea>
+                                @error('bio')
+                                    <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                                @enderror
                             </div>
                         </div>
                     </div>
-                @endif
-                
-              
 
+                    <!-- STEP 2: Address Information -->
+                    <div id="step-2" class="step-content hidden">
+                        <div class="space-y-6">
+                            <!-- Street Address -->
+                            <div>
+                                <label for="address_street" class="block text-sm font-semibold text-slate-900 mb-2">Street Address</label>
+                                <input
+                                    id="address_street"
+                                    class="w-full px-4 py-3 rounded-lg border border-slate-300 text-slate-900 placeholder-slate-400 transition-all duration-200 focus:outline-none focus:border-slate-900 focus:ring-2 focus:ring-slate-900 focus:ring-opacity-10"
+                                    type="text"
+                                    name="address_street"
+                                    value="{{ old('address_street') }}"
+                                    placeholder="123 Main Street"
+                                    required />
+                                @error('address_street')
+                                    <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                                @enderror
+                            </div>
 
+                            <!-- City and State Grid -->
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label for="address_city" class="block text-sm font-semibold text-slate-900 mb-2">City</label>
+                                    <input
+                                        id="address_city"
+                                        class="w-full px-4 py-3 rounded-lg border border-slate-300 text-slate-900 placeholder-slate-400 transition-all duration-200 focus:outline-none focus:border-slate-900 focus:ring-2 focus:ring-slate-900 focus:ring-opacity-10"
+                                        type="text"
+                                        name="address_city"
+                                        value="{{ old('address_city') }}"
+                                        placeholder="Lagos"
+                                        required />
+                                    @error('address_city')
+                                        <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                                    @enderror
+                                </div>
 
-                    <!-- Terms and Conditions -->
-                    <div class="md:col-span-2">
-                        <label class="flex items-center">
-                            <input type="checkbox" name="terms"
-                                class="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-600 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
-                                required>
-                            <span class="ml-2 text-sm text-gray-600">
-                                I agree to the <a href="#" class="text-blue-600 hover:text-blue-800">Terms of
-                                    Service</a> and <a href="#"
-                                    class="text-blue-600 hover:text-blue-800">Privacy Policy</a>
-                            </span>
-                        </label>
-                        <x-input-error :messages="$errors->get('terms')" class="mt-2" />
+                                <div>
+                                    <label for="address_state" class="block text-sm font-semibold text-slate-900 mb-2">State/Province</label>
+                                    <input
+                                        id="address_state"
+                                        class="w-full px-4 py-3 rounded-lg border border-slate-300 text-slate-900 placeholder-slate-400 transition-all duration-200 focus:outline-none focus:border-slate-900 focus:ring-2 focus:ring-slate-900 focus:ring-opacity-10"
+                                        type="text"
+                                        name="address_state"
+                                        value="{{ old('address_state') }}"
+                                        placeholder="Lagos"
+                                        required />
+                                    @error('address_state')
+                                        <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                                    @enderror
+                                </div>
+                            </div>
+
+                            <!-- Country and Postal Code Grid -->
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label for="address_country" class="block text-sm font-semibold text-slate-900 mb-2">Country</label>
+                                    <input
+                                        id="address_country"
+                                        class="w-full px-4 py-3 rounded-lg border border-slate-300 text-slate-900 placeholder-slate-400 transition-all duration-200 focus:outline-none focus:border-slate-900 focus:ring-2 focus:ring-slate-900 focus:ring-opacity-10"
+                                        type="text"
+                                        name="address_country"
+                                        value="{{ old('address_country') }}"
+                                        placeholder="Nigeria"
+                                        required />
+                                    @error('address_country')
+                                        <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                                    @enderror
+                                </div>
+
+                                <div>
+                                    <label for="address_postal_code" class="block text-sm font-semibold text-slate-900 mb-2">Postal Code</label>
+                                    <input
+                                        id="address_postal_code"
+                                        class="w-full px-4 py-3 rounded-lg border border-slate-300 text-slate-900 placeholder-slate-400 transition-all duration-200 focus:outline-none focus:border-slate-900 focus:ring-2 focus:ring-slate-900 focus:ring-opacity-10"
+                                        type="text"
+                                        name="address_postal_code"
+                                        value="{{ old('address_postal_code') }}"
+                                        placeholder="100001"
+                                        required />
+                                    @error('address_postal_code')
+                                        <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                                    @enderror
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
-                    <!-- Submit Button -->
-                    <div class="md:col-span-2">
-                        <button type="submit"
-                            class="w-full bg-gradient-to-r from-blue-600 to-pink-600 hover:from-blue-700 hover:to-pink-700 text-white font-bold py-4 px-6 rounded-xl hover:shadow-lg transform hover:scale-[1.01] transition-all duration-300">
-                            <span class="flex items-center justify-center">
-                                <i class="fas fa-user-plus mr-2"></i>
-                                Register Now
-                            </span>
+                    <!-- STEP 3: Additional Information -->
+                    <div id="step-3" class="step-content hidden">
+                        <div class="space-y-6">
+                            <!-- Occupation -->
+                            <div>
+                                <label for="occupation" class="block text-sm font-semibold text-slate-900 mb-2">Occupation (Optional)</label>
+                                <input
+                                    id="occupation"
+                                    class="w-full px-4 py-3 rounded-lg border border-slate-300 text-slate-900 placeholder-slate-400 transition-all duration-200 focus:outline-none focus:border-slate-900 focus:ring-2 focus:ring-slate-900 focus:ring-opacity-10"
+                                    type="text"
+                                    name="occupation"
+                                    value="{{ old('occupation') }}"
+                                    placeholder="Software Developer" />
+                                @error('occupation')
+                                    <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                                @enderror
+                            </div>
+
+                            <!-- Education Level -->
+                            <div>
+                                <label for="education_level" class="block text-sm font-semibold text-slate-900 mb-2">Education Level (Optional)</label>
+                                <select
+                                    id="education_level"
+                                    name="education_level"
+                                    class="w-full px-4 py-3 rounded-lg border border-slate-300 text-slate-900 transition-all duration-200 focus:outline-none focus:border-slate-900 focus:ring-2 focus:ring-slate-900 focus:ring-opacity-10">
+                                    <option value="">Select education level</option>
+                                    <option value="High School" {{ old('education_level') == 'High School' ? 'selected' : '' }}>High School</option>
+                                    <option value="Bachelor's Degree" {{ old('education_level') == "Bachelor's Degree" ? 'selected' : '' }}>Bachelor's Degree</option>
+                                    <option value="Master's Degree" {{ old('education_level') == "Master's Degree" ? 'selected' : '' }}>Master's Degree</option>
+                                    <option value="PhD" {{ old('education_level') == 'PhD' ? 'selected' : '' }}>PhD</option>
+                                    <option value="Other" {{ old('education_level') == 'Other' ? 'selected' : '' }}>Other</option>
+                                </select>
+                                @error('education_level')
+                                    <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                                @enderror
+                            </div>
+
+                            <!-- Profile Picture -->
+                            <div>
+                                <label for="profile_picture" class="block text-sm font-semibold text-slate-900 mb-2">Profile Picture (Optional)</label>
+                                <div class="relative">
+                                    <input
+                                        id="profile_picture"
+                                        class="w-full px-4 py-3 rounded-lg border border-slate-300 text-slate-900 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-slate-100 file:text-slate-900 hover:file:bg-slate-200 transition-colors cursor-pointer"
+                                        type="file"
+                                        name="profile_picture"
+                                        accept="image/*" />
+                                </div>
+                                @error('profile_picture')
+                                    <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                                @enderror
+                            </div>
+
+                            <!-- Referral Code Alert -->
+                            @if($referralCode && $validation && $validation['valid'])
+                                <div class="p-4 bg-emerald-50 border border-emerald-200 rounded-lg">
+                                    <div class="flex">
+                                        <div class="flex-shrink-0">
+                                            <svg class="h-5 w-5 text-emerald-600" fill="currentColor" viewBox="0 0 20 20">
+                                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                                            </svg>
+                                        </div>
+                                        <div class="ml-3">
+                                            <p class="text-sm font-semibold text-emerald-900">You're being referred by {{ $validation['referrer_name'] }}</p>
+                                            <p class="mt-1 text-sm text-emerald-800">Welcome! You're signing up through a referral link.</p>
+                                        </div>
+                                    </div>
+                                    <input type="hidden" name="referral_code" value="{{ $referralCode }}">
+                                </div>
+                            @elseif($referralCode && $validation && !$validation['valid'])
+                                <div class="p-4 bg-red-50 border border-red-200 rounded-lg">
+                                    <div class="flex">
+                                        <div class="flex-shrink-0">
+                                            <svg class="h-5 w-5 text-red-600" fill="currentColor" viewBox="0 0 20 20">
+                                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+                                            </svg>
+                                        </div>
+                                        <div class="ml-3">
+                                            <p class="text-sm font-semibold text-red-900">Invalid Referral Code</p>
+                                            <p class="mt-1 text-sm text-red-800">The referral code is invalid or expired. You can still register normally.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            @endif
+
+                            <!-- Terms and Conditions -->
+                            <div class="pt-4 border-t border-slate-200">
+                                <label class="flex items-start cursor-pointer group">
+                                    <input
+                                        type="checkbox"
+                                        name="terms"
+                                        class="mt-1 w-5 h-5 rounded border-slate-300 text-slate-900 focus:ring-2 focus:ring-slate-900 focus:ring-opacity-10 cursor-pointer"
+                                        required />
+                                    <span class="ml-3 text-sm text-slate-600 group-hover:text-slate-900 transition-colors">
+                                        I agree to the <a href="#" class="font-semibold text-slate-900 hover:underline">Terms of Service</a> and <a href="#" class="font-semibold text-slate-900 hover:underline">Privacy Policy</a>
+                                    </span>
+                                </label>
+                                @error('terms')
+                                    <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                                @enderror
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Navigation Buttons -->
+                    <div class="flex gap-4 mt-8 pt-8 border-t border-slate-100">
+                        <button
+                            type="button"
+                            id="prev-btn"
+                            onclick="previousStep()"
+                            class="px-6 py-3 rounded-lg border border-slate-300 text-slate-900 font-semibold hover:bg-slate-50 transition-all duration-200 hidden">
+                            Back
+                        </button>
+                        <button
+                            type="button"
+                            id="next-btn"
+                            onclick="nextStep()"
+                            class="ml-auto px-6 py-3 rounded-lg bg-slate-900 text-white font-semibold hover:bg-slate-800 transition-all duration-200 hover:shadow-lg">
+                            Continue
+                        </button>
+                        <button
+                            type="submit"
+                            id="submit-btn"
+                            class="ml-auto px-8 py-3 rounded-lg bg-slate-900 text-white font-semibold hover:bg-slate-800 transition-all duration-200 hover:shadow-lg hidden">
+                            Create Account
                         </button>
                     </div>
 
                     <!-- Login Link -->
-                    <div class="md:col-span-2 text-center text-sm text-gray-600">
+                    <div class="text-center mt-6 text-sm text-slate-600">
                         Already have an account?
-                        <a href="{{ route('login') }}"
-                            class="text-blue-600 font-semibold hover:text-gray-600 transition-colors duration-300">
-                            Log in here
+                        <a href="{{ route('login') }}" class="font-semibold text-slate-900 hover:underline">
+                            Log in
                         </a>
                     </div>
                 </form>
             </div>
         </div>
-    </span>
+    </div>
 
-    <style>
-        .field-wrapper {
-            transition: transform .2s ease, box-shadow .2s ease;
-            @apply rounded-lg p-1;
+    <script>
+        // Toggle password visibility
+        function togglePasswordVisibility(inputId, iconId) {
+            const input = document.getElementById(inputId);
+            const icon = document.getElementById(iconId);
+
+            if (input.type === 'password') {
+                input.type = 'text';
+                // Change to eye-off icon
+                icon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-4.803m5.596-3.856a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 9.172L21 21m-10.5-1.5L3 3m8.498-1.498l7.08 7.08M3 21l7.08-7.08"></path>';
+            } else {
+                input.type = 'password';
+                // Change back to eye icon
+                icon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>';
+            }
         }
 
-        .field-wrapper:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 6px -1px rgba(102, 126, 234, 0.1), 0 2px 4px -1px rgba(102, 126, 234, 0.06);
+        let currentStep = 1;
+        const totalSteps = 3;
+
+        function showStep(step) {
+            // Hide all steps
+            document.querySelectorAll('.step-content').forEach(el => {
+                el.classList.add('hidden');
+            });
+
+            // Show current step
+            document.getElementById(`step-${step}`).classList.remove('hidden');
+
+            // Update progress
+            updateProgress();
+            updateButtons();
+            updateTitle();
+        }
+
+        function updateProgress() {
+            for (let i = 1; i <= totalSteps; i++) {
+                const indicator = document.getElementById(`step${i}-indicator`);
+                if (i === currentStep) {
+                    indicator.className = 'flex items-center justify-center w-10 h-10 rounded-full text-sm font-semibold bg-slate-900 text-white transition-all duration-300';
+                } else if (i < currentStep) {
+                    indicator.className = 'flex items-center justify-center w-10 h-10 rounded-full text-sm font-semibold bg-slate-900 text-white transition-all duration-300';
+                } else {
+                    indicator.className = 'flex items-center justify-center w-10 h-10 rounded-full text-sm font-semibold bg-slate-200 text-slate-900 transition-all duration-300';
+                }
+            }
+
+            for (let i = 1; i < totalSteps; i++) {
+                const line = document.getElementById(`progress-line-${i}`);
+                if (i < currentStep) {
+                    line.className = 'h-0.5 flex-grow bg-slate-900 transition-all duration-300';
+                } else {
+                    line.className = 'h-0.5 flex-grow bg-slate-200 transition-all duration-300';
+                }
+            }
+        }
+
+        function updateButtons() {
+            const prevBtn = document.getElementById('prev-btn');
+            const nextBtn = document.getElementById('next-btn');
+            const submitBtn = document.getElementById('submit-btn');
+
+            if (currentStep === 1) {
+                prevBtn.classList.add('hidden');
+            } else {
+                prevBtn.classList.remove('hidden');
+            }
+
+            if (currentStep === totalSteps) {
+                nextBtn.classList.add('hidden');
+                submitBtn.classList.remove('hidden');
+            } else {
+                nextBtn.classList.remove('hidden');
+                submitBtn.classList.add('hidden');
+            }
+        }
+
+        function updateTitle() {
+            const titles = [
+                'Create Your Account',
+                'Where Do You Live?',
+                'Almost Done!'
+            ];
+            const subtitles = [
+                'Tell us about yourself to get started',
+                'Help us know your location',
+                'A few more details to complete your profile'
+            ];
+
+            document.getElementById('form-title').textContent = titles[currentStep - 1];
+            document.getElementById('form-subtitle').textContent = subtitles[currentStep - 1];
+        }
+
+        function nextStep() {
+            if (currentStep < totalSteps) {
+                currentStep++;
+                showStep(currentStep);
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        }
+
+        function previousStep() {
+            if (currentStep > 1) {
+                currentStep--;
+                showStep(currentStep);
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        }
+
+        // Form validation before moving to next step
+        function validateStep(step) {
+            const inputs = document.querySelectorAll(`#step-${step} input[required], #step-${step} select[required], #step-${step} textarea[required]`);
+            let isValid = true;
+
+            inputs.forEach(input => {
+                if (!input.value.trim()) {
+                    isValid = false;
+                    input.classList.add('border-red-500', 'focus:ring-red-500');
+                } else {
+                    input.classList.remove('border-red-500', 'focus:ring-red-500');
+                }
+            });
+
+            return isValid;
+        }
+
+        // Enhanced nextStep with validation
+        const originalNextStep = nextStep;
+        nextStep = function() {
+            if (validateStep(currentStep)) {
+                if (currentStep < totalSteps) {
+                    currentStep++;
+                    showStep(currentStep);
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                }
+            } else {
+                // Shake animation for invalid form
+                const formContent = document.getElementById(`step-${currentStep}`);
+                formContent.classList.add('shake');
+                setTimeout(() => formContent.classList.remove('shake'), 500);
+            }
+        };
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            showStep(1);
+        });
+    </script>
+
+    <style>
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+            20%, 40%, 60%, 80% { transform: translateX(5px); }
+        }
+
+        .shake {
+            animation: shake 0.5s ease-in-out;
         }
     </style>
 </x-app-layout>

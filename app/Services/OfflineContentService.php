@@ -2,7 +2,7 @@
 
 namespace App\Services;
 
-use App\Models\User;
+use App\Models\Core\User;
 use Illuminate\Support\Facades\Storage;
 
 class OfflineContentService

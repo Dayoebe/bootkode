@@ -4,7 +4,7 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
-use App\Models\Withdrawal;
+use App\Models\Marketplace\Withdrawal;
 use App\Services\PaystackService;
 
 class ProcessPendingWithdrawals extends Command

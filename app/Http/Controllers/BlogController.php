@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\BlogPost;
-use App\Models\BlogComment;
-use App\Models\BlogReaction;
+use App\Models\Content\BlogPost;
+use App\Models\Content\BlogComment;
+use App\Models\Content\BlogReaction;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;

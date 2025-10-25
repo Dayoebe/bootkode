@@ -2,7 +2,7 @@
 
 namespace App\Livewire\SystemManagement;
 
-use App\Models\SupportTicket;
+use App\Models\Community\SupportTicket;
 use App\Notifications\TicketUpdateNotification;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Component;

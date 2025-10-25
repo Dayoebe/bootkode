@@ -3,7 +3,7 @@
 
 namespace App\Notifications;
 
-use App\Models\Certificate;
+use App\Models\Credentials\Certificate;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;

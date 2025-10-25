@@ -3,7 +3,7 @@
 namespace App\Livewire\Mentorship;
 
 use Livewire\Component;
-use App\Models\MentorProfile;
+use App\Models\Mentorship\MentorProfile;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\Layout;
 

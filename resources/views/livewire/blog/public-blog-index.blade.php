@@ -2,7 +2,7 @@
     {{-- Hero Section --}}
     @if($featuredPosts->count() > 0 && !$search && !$category && !$tag)
         <section class="bg-gray-700 text-white py-16 mb-12">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class=" px-4 sm:px-6 lg:px-8">
                 <div class="text-center mb-12">
                     <h1 class="text-4xl md:text-6xl font-bold mb-4">Our Blog</h1>
                     <p class="text-xl md:text-2xl text-blue-100">Discover insights, stories, and knowledge</p>

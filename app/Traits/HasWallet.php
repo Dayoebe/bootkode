@@ -3,8 +3,8 @@
 // app/Traits/HasWallet.php
 namespace App\Traits;
 
-use App\Models\Wallet;
-use App\Models\Withdrawal;
+use App\Models\Marketplace\Wallet;
+use App\Models\Marketplace\Withdrawal;
 
 trait HasWallet
 {

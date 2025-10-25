@@ -2,7 +2,7 @@
 
 namespace App\Livewire\SystemManagement;
 
-use App\Models\Faq;
+use App\Models\Community\Faq;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Livewire\Attributes\Layout;

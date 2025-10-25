@@ -4,7 +4,7 @@
 namespace App\Livewire\Financial;
 
 use Livewire\Component;
-use App\Models\Course;
+use App\Models\Learning\Course;
 use App\Services\WalletService;
 
 class CourseCheckout extends Component

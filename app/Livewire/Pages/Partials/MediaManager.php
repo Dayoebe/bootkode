@@ -5,7 +5,7 @@ namespace App\Livewire\Pages\Partials;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 use Livewire\WithPagination;
-use App\Models\PageMedia;
+use App\Models\Content\PageMedia;
 use Illuminate\Support\Facades\Storage;
 use Intervention\Image\Facades\Image;
 

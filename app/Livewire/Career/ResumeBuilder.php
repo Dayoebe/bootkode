@@ -4,7 +4,7 @@ namespace App\Livewire\Career;
 
 use Livewire\Component;
 use Livewire\WithFileUploads;
-use App\Models\ResumeProfile;
+use App\Models\Content\ResumeProfile;
 use Intervention\Image\Facades\Image;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;

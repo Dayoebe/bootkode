@@ -4,10 +4,10 @@ namespace App\Livewire\Career;
 
 use Livewire\Component;
 use Livewire\WithPagination;
-use App\Models\MockInterview;
-use App\Models\User;
-use App\Models\InterviewQuestion;
-use App\Models\InterviewQuestionSet;
+use App\Models\Mentorship\Mentorship\MockInterview;
+use App\Models\Core\User;
+use App\Models\Mentorship\Mentorship\InterviewQuestion;
+use App\Models\Mentorship\Mentorship\InterviewQuestionSet;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Cache;

@@ -2,7 +2,7 @@
 
 namespace App\Livewire\CourseManagement\CourseBuilder;
 
-use App\Models\Lesson;
+use App\Models\Learning\Lesson;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 use Illuminate\Support\Facades\Storage;

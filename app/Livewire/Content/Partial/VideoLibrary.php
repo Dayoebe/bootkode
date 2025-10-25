@@ -4,8 +4,8 @@ namespace App\Livewire\Content\Partial;
 
 use Livewire\Component;
 use Livewire\WithPagination;
-use App\Models\VideoLibrary as VideoLibraryModel; // Fixed: Use alias to avoid conflict
-use App\Models\Course;
+use App\Models\Learning\VideoLibrary as VideoLibraryModel; // Fixed: Use alias to avoid conflict
+use App\Models\Learning\Course;
 
 class VideoLibrary extends Component
 {

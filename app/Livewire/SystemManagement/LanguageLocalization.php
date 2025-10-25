@@ -2,7 +2,7 @@
 
 namespace App\Livewire\SystemManagement;
 
-use App\Models\User;
+use App\Models\Core\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Artisan;

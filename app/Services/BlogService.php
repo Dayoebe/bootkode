@@ -2,9 +2,9 @@
 
 namespace App\Services;
 
-use App\Models\BlogPost;
-use App\Models\BlogCategory;
-use App\Models\BlogSetting;
+use App\Models\Content\BlogPost;
+use App\Models\Content\BlogCategory;
+use App\Models\Content\BlogSetting;
 use Illuminate\Support\Facades\Cache;
 
 class BlogService

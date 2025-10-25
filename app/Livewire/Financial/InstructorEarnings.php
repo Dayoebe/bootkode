@@ -5,9 +5,9 @@ namespace App\Livewire\Financial;
 
 use Livewire\Component;
 use Livewire\WithPagination;
-use App\Models\WalletTransaction;
-use App\Models\Course;
-use App\Models\Withdrawal;
+use App\Models\Marketplace\WalletTransaction;
+use App\Models\Learning\Course;
+use App\Models\Marketplace\Withdrawal;
 use App\Services\WalletService;
 use Livewire\Attributes\Layout;
 use Carbon\Carbon;

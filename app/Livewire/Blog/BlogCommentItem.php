@@ -2,8 +2,8 @@
 
 namespace App\Livewire\Blog;
 
-use App\Models\BlogComment;
-use App\Models\BlogReaction;
+use App\Models\Content\BlogComment;
+use App\Models\Content\BlogReaction;
 use Livewire\Component;
 
 class BlogCommentItem extends Component

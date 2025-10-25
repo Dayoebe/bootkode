@@ -3,9 +3,9 @@
 // app/Traits/HasAffiliate.php
 namespace App\Traits;
 
-use App\Models\Affiliate;
-use App\Models\Referral;
-use App\Models\ReferralTransaction;
+use App\Models\Marketplace\Affiliate;
+use App\Models\Marketplace\Referral;
+use App\Models\Marketplace\ReferralTransaction;
 
 trait HasAffiliate
 {
@@ -24,14 +24,14 @@ trait HasAffiliate
     // Users referred by this user
     public function referredUsers()
     {
-        return $this->hasManyThrough(\App\Models\User::class, Referral::class, 'affiliate_id', 'id', 'id', 'referred_user_id')
+        return $this->hasManyThrough(\App\Models\Core\User::class, Referral::class, 'affiliate_id', 'id', 'id', 'referred_user_id')
                     ->through('affiliate');
     }
 
     // If this user was referred by someone
     public function referrer()
     {
-        return $this->belongsTo(\App\Models\User::class, 'referred_by');
+        return $this->belongsTo(\App\Models\Core\User::class, 'referred_by');
     }
 
     // Get this user's referral record (if they were referred)
@@ -105,7 +105,7 @@ trait HasAffiliate
             $walletIds[] = $this->instructorWallet->id;
         }
 
-        $query = \App\Models\WalletTransaction::whereIn('wallet_id', $walletIds)
+        $query = \App\Models\Marketplace\WalletTransaction::whereIn('wallet_id', $walletIds)
             ->where('category', 'referral_commission')
             ->with('transactionable')
             ->orderBy('created_at', 'desc');

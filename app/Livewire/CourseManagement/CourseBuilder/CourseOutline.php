@@ -2,9 +2,9 @@
 
 namespace App\Livewire\CourseManagement\CourseBuilder;
 
-use App\Models\Course;
-use App\Models\Section;
-use App\Models\Lesson;
+use App\Models\Learning\Course;
+use App\Models\Learning\Section;
+use App\Models\Learning\Lesson;
 use Livewire\Component;
 use Illuminate\Support\Str;
 

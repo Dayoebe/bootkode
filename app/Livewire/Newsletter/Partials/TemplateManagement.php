@@ -5,7 +5,7 @@ namespace App\Livewire\Newsletter\Partials;
 
 use Livewire\Component;
 use Livewire\WithPagination;
-use App\Models\NewsletterCampaign;
+use App\Models\Admin\NewsletterCampaign;
 
 class TemplateManagement extends Component
 {

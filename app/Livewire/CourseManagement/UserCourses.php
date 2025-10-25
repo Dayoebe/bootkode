@@ -4,8 +4,8 @@ namespace App\Livewire\CourseManagement;
 
 use Livewire\Component;
 use Livewire\WithPagination;
-use App\Models\Course;
-use App\Models\CourseCategory;
+use App\Models\Learning\Course;
+use App\Models\Learning\CourseCategory;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Database\Eloquent\Builder;

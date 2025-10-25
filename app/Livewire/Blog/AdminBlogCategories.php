@@ -2,7 +2,7 @@
 
 namespace App\Livewire\Blog;
 
-use App\Models\BlogCategory;
+use App\Models\Content\BlogCategory;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Illuminate\Support\Str;

@@ -4,8 +4,8 @@ namespace App\Livewire\Pages\Partials;
 
 use Livewire\Component;
 use Livewire\WithFileUploads;
-use App\Models\Page;
-use App\Models\PageMedia;
+use App\Models\Content\Page;
+use App\Models\Content\PageMedia;
 use Illuminate\Support\Str;
 use Carbon\Carbon;
 

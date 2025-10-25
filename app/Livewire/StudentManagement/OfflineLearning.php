@@ -2,9 +2,9 @@
 
 namespace App\Livewire\StudentManagement;
 
-use App\Models\Course;
-use App\Models\DownloadableContent;
-use App\Models\Lesson;
+use App\Models\Learning\Course;
+use App\Models\Learning\DownloadableContent;
+use App\Models\Learning\Lesson;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Livewire\Component;

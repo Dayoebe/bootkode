@@ -63,7 +63,7 @@
     </div>
 
     <!-- Tab Content Container -->
-    <div class="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl p-8 md:p-12 max-w-7xl mx-auto">
+    <div class="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl p-8 md:p-12 ">
 
         <!-- Student Tab -->
         @if($activeTab === 'student')

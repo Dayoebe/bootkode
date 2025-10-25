@@ -3,8 +3,8 @@
 namespace App\Livewire\Cbt;
 
 use Livewire\Component;
-use App\Models\Assessment;
-use App\Models\StudentAnswer;
+use App\Models\Assessment\Assessment;
+use App\Models\Assessment\StudentAnswer;
 use Illuminate\Support\Facades\Auth;
 use Livewire\WithPagination;
 use Livewire\Attributes\Layout;

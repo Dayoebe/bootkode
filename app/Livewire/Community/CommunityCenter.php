@@ -4,9 +4,9 @@ namespace App\Livewire\Community;
 
 use Livewire\Component;
 use Livewire\WithPagination;
-use App\Models\User;
-use App\Models\Forum\ForumThread;
-use App\Models\Forum\ForumReply;
+use App\Models\Core\User;
+use App\Models\Community\ForumThread;
+use App\Models\Community\ForumReply;
 use App\Models\Community\CommunityActivity;
 use App\Models\Community\ActivityParticipant;
 use App\Models\Community\CommunityFeedback;
@@ -597,7 +597,7 @@ public function openCodeChallenge($challengeId)
     public function unflagThread($threadId)
     {
         try {
-            $thread = \App\Models\Forum\ForumThread::findOrFail($threadId);
+            $thread = \App\Models\Community\ForumThread::findOrFail($threadId);
             $thread->update(['is_flagged' => false]);
             session()->flash('message', 'Thread unflagged and approved.');
         } catch (\Exception $e) {
@@ -608,7 +608,7 @@ public function openCodeChallenge($challengeId)
     public function removeThread($threadId)
     {
         try {
-            $thread = \App\Models\Forum\ForumThread::findOrFail($threadId);
+            $thread = \App\Models\Community\ForumThread::findOrFail($threadId);
             $thread->delete();
             session()->flash('message', 'Thread removed successfully.');
         } catch (\Exception $e) {
@@ -619,7 +619,7 @@ public function openCodeChallenge($challengeId)
     public function blockUser($userId)
     {
         try {
-            $user = \App\Models\User::findOrFail($userId);
+            $user = \App\Models\Core\User::findOrFail($userId);
             $user->update(['is_active' => false]);
             session()->flash('message', 'User blocked successfully.');
         } catch (\Exception $e) {
@@ -630,7 +630,7 @@ public function openCodeChallenge($challengeId)
     public function unblockUser($userId)
     {
         try {
-            $user = \App\Models\User::findOrFail($userId);
+            $user = \App\Models\Core\User::findOrFail($userId);
             $user->update(['is_active' => true]);
             session()->flash('message', 'User unblocked successfully.');
         } catch (\Exception $e) {
@@ -658,7 +658,7 @@ public function openCodeChallenge($challengeId)
 
     public function getFlaggedThreads()
     {
-        return \App\Models\Forum\ForumThread::with(['user'])
+        return \App\Models\Community\ForumThread::with(['user'])
             ->where('is_flagged', true)
             ->orderBy('created_at', 'desc')
             ->paginate(10);
@@ -666,7 +666,7 @@ public function openCodeChallenge($challengeId)
 
     public function getManagedUsers()
     {
-        return \App\Models\User::when($this->userSearch, function ($q) {
+        return \App\Models\Core\User::when($this->userSearch, function ($q) {
             $q->where('name', 'like', "%{$this->userSearch}%")
                 ->orWhere('email', 'like', "%{$this->userSearch}%");
         })
@@ -703,8 +703,8 @@ public function openCodeChallenge($challengeId)
         $data['moderationTab'] = $this->moderationTab;
         $data['pendingReports'] = \App\Models\Community\CommunityReport::where('status', 'pending')->count();
         $data['pendingFeedback'] = \App\Models\Community\CommunityFeedback::where('status', 'open')->count();
-        $data['flaggedThreads'] = \App\Models\Forum\ForumThread::where('is_flagged', true)->count();
-        $data['blockedUsers'] = \App\Models\User::where('is_active', false)->count();
+        $data['flaggedThreads'] = \App\Models\Community\ForumThread::where('is_flagged', true)->count();
+        $data['blockedUsers'] = \App\Models\Core\User::where('is_active', false)->count();
 
         match ($this->moderationTab) {
             'reports' => $data['communityReports'] = $this->getCommunityReports(),

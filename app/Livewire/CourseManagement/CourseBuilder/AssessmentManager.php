@@ -2,8 +2,8 @@
 
 namespace App\Livewire\CourseManagement\CourseBuilder;
 
-use App\Models\Assessment;
-use App\Models\Lesson;
+use App\Models\Assessment\Assessment;
+use App\Models\Learning\Lesson;
 use Livewire\Component;
 use Illuminate\Support\Str;
 

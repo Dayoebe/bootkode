@@ -2,7 +2,7 @@
 
 namespace App\Livewire\Blog;
 
-use App\Models\BlogSetting;
+use App\Models\Content\BlogSetting;
 use Livewire\Component;
 
 class AdminBlogSettings extends Component

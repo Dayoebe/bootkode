@@ -4,9 +4,9 @@ namespace App\Livewire\Marketplace\Partial;
 
 use Livewire\Component;
 use Livewire\WithPagination;
-use App\Models\MarketplaceItem;
-use App\Models\MarketplaceOrder;
-use App\Models\Wallet;
+use App\Models\Marketplace\MarketplaceItem;
+use App\Models\Marketplace\MarketplaceOrder;
+use App\Models\Marketplace\Wallet;
 use Illuminate\Support\Facades\DB;
 
 class MarketplaceShopping extends Component

@@ -3,7 +3,7 @@
 // app/Services/MarketplaceSearchService.php
 namespace App\Services;
 
-use App\Models\MarketplaceItem;
+use App\Models\Marketplace\MarketplaceItem;
 use Illuminate\Database\Eloquent\Builder;
 
 class MarketplaceSearchService

@@ -4,10 +4,10 @@ namespace App\Livewire\Marketplace\Partial;
 
 use Livewire\Component;
 use Livewire\WithPagination;
-use App\Models\MarketplaceItem;
-use App\Models\MarketplaceOrder;
-use App\Models\Withdrawal;
-use App\Models\Wallet;
+use App\Models\Marketplace\MarketplaceItem;
+use App\Models\Marketplace\MarketplaceOrder;
+use App\Models\Marketplace\Withdrawal;
+use App\Models\Marketplace\Wallet;
 use App\Services\PaystackService;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;

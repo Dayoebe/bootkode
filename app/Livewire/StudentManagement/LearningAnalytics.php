@@ -3,12 +3,12 @@
 namespace App\Livewire\StudentManagement;
 
 use Livewire\Component;
-use App\Models\Course;
-use App\Models\Assessment;
-use App\Models\Lesson;
-use App\Models\CourseEnrollment;
-use App\Models\UserAchievement;
-use App\Models\LearningSession;
+use App\Models\Learning\Course;
+use App\Models\Assessment\Assessment;
+use App\Models\Learning\Lesson;
+use App\Models\Learning\CourseEnrollment;
+use App\Models\Core\UserAchievement;
+use App\Models\Assessment\LearningSession;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
@@ -516,9 +516,9 @@ class LearningAnalytics extends Component
             $stats['totalStudyTime'] = $this->getTotalStudyTime($user);
             
             // Streak calculation
-            if (class_exists(\App\Models\LearningSession::class)) {
+            if (class_exists(\App\Models\Assessment\LearningSession::class)) {
                 try {
-                    $stats['activeStreak'] = \App\Models\LearningSession::getStudyStreak($user->id);
+                    $stats['activeStreak'] = \App\Models\Assessment\LearningSession::getStudyStreak($user->id);
                 } catch (\Exception $e) {
                     $stats['activeStreak'] = $this->calculateStreakFallback($user);
                 }
@@ -586,9 +586,9 @@ class LearningAnalytics extends Component
     {
         try {
             // Try to use UserAchievement model if it exists
-            if (class_exists(\App\Models\UserAchievement::class)) {
+            if (class_exists(\App\Models\Core\UserAchievement::class)) {
                 try {
-                    return \App\Models\UserAchievement::getRecentAchievements($user->id)->toArray();
+                    return \App\Models\Core\UserAchievement::getRecentAchievements($user->id)->toArray();
                 } catch (\Exception $e) {
                     \Log::warning('UserAchievement model exists but failed: ' . $e->getMessage());
                 }

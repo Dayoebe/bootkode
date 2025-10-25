@@ -4,9 +4,9 @@ namespace App\Livewire\CourseManagement;
 
 use Livewire\Component;
 use Livewire\WithPagination;
-use App\Models\Course;
-use App\Models\CourseCategory;
-use App\Models\User;
+use App\Models\Learning\Course;
+use App\Models\Learning\CourseCategory;
+use App\Models\Core\User;
 use Livewire\Attributes\On;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;

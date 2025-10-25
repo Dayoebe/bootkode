@@ -5,9 +5,9 @@ namespace App\Livewire\Marketplace\Partial;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Livewire\WithFileUploads;
-use App\Models\MarketplaceItem;
-use App\Models\MarketplaceCategory;
-use App\Models\MarketplaceOrder;
+use App\Models\Marketplace\MarketplaceItem;
+use App\Models\Marketplace\MarketplaceCategory;
+use App\Models\Marketplace\MarketplaceOrder;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
 

@@ -8,8 +8,8 @@ use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
-use App\Models\NewsletterCampaign;
-use App\Models\NewsletterInteraction;
+use App\Models\Admin\NewsletterCampaign;
+use App\Models\Admin\NewsletterInteraction;
 
 class NewsletterMail extends Mailable
 {

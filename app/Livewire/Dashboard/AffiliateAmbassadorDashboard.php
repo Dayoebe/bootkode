@@ -2,12 +2,12 @@
 
 namespace App\Livewire\Dashboard;
 
-use App\Models\User;
-use App\Models\Affiliate;
-use App\Models\Referral;
-use App\Models\ReferralTransaction;
-use App\Models\Course;
-use App\Models\CourseEnrollment;
+use App\Models\Core\User;
+use App\Models\Marketplace\Affiliate;
+use App\Models\Marketplace\Referral;
+use App\Models\Marketplace\ReferralTransaction;
+use App\Models\Learning\Course;
+use App\Models\Learning\CourseEnrollment;
 use Livewire\Component;
 use Livewire\Attributes\Computed;
 use Illuminate\Support\Facades\Auth;

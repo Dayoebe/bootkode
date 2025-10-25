@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 use App\Traits\HasRevenueSplit;
 use App\Models\Core\User; // UPDATED
-use App\Models\Credentials\CourseReview; // UPDATED
+use App\Models\Learning\CourseReview; // UPDATED
 
 class Course extends Model
 {

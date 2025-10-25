@@ -2,7 +2,7 @@
 
 namespace App\Livewire\CourseManagement;
 
-use App\Models\CourseCategory;
+use App\Models\Learning\CourseCategory;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Livewire\Attributes\Layout;

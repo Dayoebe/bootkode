@@ -3,7 +3,7 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
-use App\Models\GamificationData;
+use App\Models\Credentials\GamificationData;
 
 class ResetDailyQuests extends Command
 {

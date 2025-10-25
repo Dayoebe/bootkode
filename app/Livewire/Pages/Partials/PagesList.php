@@ -4,8 +4,8 @@ namespace App\Livewire\Pages\Partials;
 
 use Livewire\Component;
 use Livewire\WithPagination;
-use App\Models\Page;
-use App\Models\User;
+use App\Models\Content\Page;
+use App\Models\Core\User;
 use Carbon\Carbon;
 
 class PagesList extends Component

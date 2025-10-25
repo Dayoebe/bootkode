@@ -1,4 +1,4 @@
-<div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+<div class="px-4 sm:px-6 lg:px-8 py-8">
     <!-- Header -->
     <div class="bg-gradient-to-r from-indigo-600 to-purple-700 p-6 rounded-2xl shadow-xl text-white mb-8">
         <h1 class="text-3xl font-bold flex items-center">

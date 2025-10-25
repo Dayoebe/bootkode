@@ -3,7 +3,7 @@
 namespace App\Livewire\UserManagement;
 
 use App\Jobs\SendVerificationEmail; // Keep this if you use it elsewhere, but for email verification, User model's method is preferred.
-use App\Models\User;
+use App\Models\Core\User;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;

@@ -3,8 +3,8 @@
 namespace App\Livewire\Content\Partial;
 
 use Livewire\Component;
-use App\Models\Document;
-use App\Models\LearningMaterial;
+use App\Models\Learning\Document;
+use App\Models\Learning\LearningMaterial;
 
 class Localization extends Component
 {

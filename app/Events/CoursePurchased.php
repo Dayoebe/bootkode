@@ -3,9 +3,9 @@
 // app/Events/CoursePurchased.php
 namespace App\Events;
 
-use App\Models\User;
-use App\Models\Course;
-use App\Models\WalletTransaction;
+use App\Models\Core\User;
+use App\Models\Learning\Course;
+use App\Models\Marketplace\WalletTransaction;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 

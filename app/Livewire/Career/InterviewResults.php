@@ -3,7 +3,7 @@
 namespace App\Livewire\Career;
 
 use Livewire\Component;
-use App\Models\MockInterview;
+use App\Models\Mentorship\Mentorship\MockInterview;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\Layout;
 

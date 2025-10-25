@@ -4,11 +4,11 @@ namespace App\Livewire\Marketplace\Partial;
 
 use Livewire\Component;
 use Livewire\WithPagination;
-use App\Models\User;
-use App\Models\MarketplaceItem;
-use App\Models\MarketplaceOrder;
-use App\Models\WalletTransaction;
-use App\Models\Wallet;
+use App\Models\Core\User;
+use App\Models\Marketplace\MarketplaceItem;
+use App\Models\Marketplace\MarketplaceOrder;
+use App\Models\Marketplace\WalletTransaction;
+use App\Models\Marketplace\Wallet;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Cache;
 
@@ -195,7 +195,7 @@ class MarketplaceAdmin extends Component
     private function calculateProcessedPayouts()
     {
         try {
-            if (class_exists('App\Models\WalletTransaction')) {
+            if (class_exists('App\Models\Marketplace\WalletTransaction')) {
                 return WalletTransaction::where('category', 'instructor_earning')
                     ->where('type', 'credit')
                     ->sum('amount') ?? 0;
@@ -209,8 +209,8 @@ class MarketplaceAdmin extends Component
     private function getPendingPayoutRequests()
     {
         try {
-            if (class_exists('App\Models\Withdrawal')) {
-                return \App\Models\Withdrawal::where('status', 'pending')->count() ?? 0;
+            if (class_exists('App\Models\Marketplace\Withdrawal')) {
+                return \App\Models\Marketplace\Withdrawal::where('status', 'pending')->count() ?? 0;
             }
             return 0;
         } catch (\Exception $e) {
@@ -492,7 +492,7 @@ class MarketplaceAdmin extends Component
                 'admin_notes' => $refundReason,
             ]);
 
-            if (class_exists('App\Models\Wallet')) {
+            if (class_exists('App\Models\Marketplace\Wallet')) {
                 $customerWallet = Wallet::where('user_id', $order->customer_id)->first();
                 if ($customerWallet) {
                     $customerWallet->increment('balance', $order->total_amount);
@@ -528,7 +528,7 @@ class MarketplaceAdmin extends Component
             DB::beginTransaction();
             
             foreach ($eligibleOrders as $order) {
-                if (class_exists('App\Models\Wallet')) {
+                if (class_exists('App\Models\Marketplace\Wallet')) {
                     $vendorWallet = Wallet::where('user_id', $order->vendor_id)->first();
                     if (!$vendorWallet) {
                         $vendorWallet = Wallet::create([
@@ -681,7 +681,7 @@ class MarketplaceAdmin extends Component
 
     private function getPaymentTransactions()
     {
-        if (!class_exists('App\Models\WalletTransaction')) {
+        if (!class_exists('App\Models\Marketplace\WalletTransaction')) {
             return collect()->paginate(15);
         }
         
@@ -707,11 +707,11 @@ class MarketplaceAdmin extends Component
 
     private function getWithdrawalRequests()
     {
-        if (!class_exists('App\Models\Withdrawal')) {
+        if (!class_exists('App\Models\Marketplace\Withdrawal')) {
             return collect()->paginate(10);
         }
         
-        $query = \App\Models\Withdrawal::with(['user'])
+        $query = \App\Models\Marketplace\Withdrawal::with(['user'])
             ->where('status', 'pending');
 
         if ($this->search) {

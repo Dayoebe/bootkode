@@ -396,7 +396,7 @@
                     <div class="bg-themed-secondary hover:bg-themed-tertiary rounded-xl p-4 sm:p-6 transition-all duration-300 border border-themed-primary backdrop-blur-sm group">
                         <div class="flex items-start">
                             <div class="flex-shrink-0 w-10 h-10 sm:w-12 sm:h-12 rounded-lg bg-yellow-500/10 border border-yellow-500/20 flex items-center justify-center mr-3 sm:mr-4">
-                                @if ($resource->resourceable_type === 'App\Models\Lesson')
+                                @if ($resource->resourceable_type === 'App\Models\Learning\Lesson')
                                     <i class="fas fa-play text-accent-themed-primary text-sm sm:text-base"></i>
                                 @elseif($resource->resourceable_type === 'App\Models\Assignment')
                                     <i class="fas fa-tasks text-green-500 text-sm sm:text-base"></i>

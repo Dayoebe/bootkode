@@ -2,8 +2,8 @@
 
 namespace App\Livewire\CourseManagement\CourseBuilder;
 
-use App\Models\Course;
-use App\Models\CourseCategory;
+use App\Models\Learning\Course;
+use App\Models\Learning\CourseCategory;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;

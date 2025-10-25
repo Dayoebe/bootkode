@@ -4,8 +4,8 @@ namespace App\Livewire\Content\Partial;
 
 use Livewire\Component;
 use Livewire\WithPagination;
-use App\Models\Document;
-use App\Models\DocumentCategory;
+use App\Models\Learning\Document;
+use App\Models\Learning\DocumentCategory;
 
 class AllDocuments extends Component
 {

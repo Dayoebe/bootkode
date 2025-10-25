@@ -3,9 +3,9 @@
 // app/Services/MarketplaceNotificationService.php
 namespace App\Services;
 
-use App\Models\User;
-use App\Models\MarketplaceItem;
-use App\Models\MarketplaceOrder;
+use App\Models\Core\User;
+use App\Models\Marketplace\MarketplaceItem;
+use App\Models\Marketplace\MarketplaceOrder;
 use Illuminate\Support\Facades\Notification;
 
 class MarketplaceNotificationService

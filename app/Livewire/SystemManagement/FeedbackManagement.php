@@ -2,7 +2,7 @@
 
 namespace App\Livewire\SystemManagement;
 
-use App\Models\Feedback;
+use App\Models\Community\Feedback;
 use App\Notifications\FeedbackResponseNotification;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Component;

@@ -4,10 +4,10 @@ namespace App\Livewire\Mentorship;
 
 use Livewire\Component;
 use Livewire\WithFileUploads;
-use App\Models\Mentorship;
-use App\Models\MentorshipSession;
-use App\Models\CodeReview;
-use App\Models\MentorshipReview;
+use App\Models\Mentorship\Mentorship;
+use App\Models\Mentorship\MentorshipSession;
+use App\Models\Mentorship\CodeReview;
+use App\Models\Mentorship\MentorshipReview;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;

@@ -4,9 +4,9 @@ namespace App\Livewire\Marketplace\Partial;
 
 use Livewire\Component;
 use Livewire\WithPagination;
-use App\Models\ProductReview;
-use App\Models\MarketplaceItem;
-use App\Models\DiscountCode;
+use App\Models\Marketplace\ProductReview;
+use App\Models\Marketplace\MarketplaceItem;
+use App\Models\Marketplace\DiscountCode;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Cache;

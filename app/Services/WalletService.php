@@ -3,11 +3,11 @@
 // WalletService.php - Business Logic Layer
 namespace App\Services;
 
-use App\Models\User;
-use App\Models\Wallet;
-use App\Models\WalletTransaction;
-use App\Models\Course;
-use App\Models\Withdrawal;
+use App\Models\Core\User;
+use App\Models\Marketplace\Wallet;
+use App\Models\Marketplace\WalletTransaction;
+use App\Models\Learning\Course;
+use App\Models\Marketplace\Withdrawal;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 

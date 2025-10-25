@@ -1,6 +1,6 @@
 <x-app-layout>
 <div class="min-h-screen bg-gray-900 p-6">
-    <div class="max-w-7xl mx-auto">
+    <div class="">
         <!-- Header -->
         <div class="flex justify-between items-center mb-8">
             <div>

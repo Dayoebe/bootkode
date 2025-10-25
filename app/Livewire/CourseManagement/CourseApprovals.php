@@ -4,8 +4,8 @@ namespace App\Livewire\CourseManagement;
 
 use Livewire\Component;
 use Livewire\WithPagination;
-use App\Models\Course;
-use App\Models\CourseRejection;
+use App\Models\Learning\Course;
+use App\Models\Learning\CourseRejection;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Rule;
 use Illuminate\Support\Facades\Auth;

@@ -5,8 +5,8 @@ namespace App\Livewire\Financial;
 
 use Livewire\Component;
 use Livewire\WithPagination;
-use App\Models\WalletTransaction;
-use App\Models\Wallet;
+use App\Models\Marketplace\WalletTransaction;
+use App\Models\Marketplace\Wallet;
 use Livewire\Attributes\Layout;
 use Carbon\Carbon;
 
@@ -205,14 +205,17 @@ class TransactionHistory extends Component
         $userWallet = $user->wallet;
         $instructorWallet = $user->instructorWallet;
         $walletIds = array_filter([$userWallet?->id, $instructorWallet?->id]);
-
+    
+        // Always return a query builder, even when no wallets exist
+        $query = WalletTransaction::query()->with(['wallet.user', 'transactionable']);
+    
         if (empty($walletIds)) {
-            return collect([]);
+            // Return empty results if no wallets exist
+            $query->whereRaw('1 = 0');
+        } else {
+            $query->whereIn('wallet_id', $walletIds);
         }
-
-        $query = WalletTransaction::whereIn('wallet_id', $walletIds)
-            ->with(['wallet.user', 'transactionable']);
-
+    
         // Apply filters
         if ($this->search) {
             $query->where(function ($q) {
@@ -221,77 +224,81 @@ class TransactionHistory extends Component
                   ->orWhere('transaction_id', 'like', '%' . $this->search . '%');
             });
         }
-
+    
         if ($this->categoryFilter !== 'all') {
             $query->where('category', $this->categoryFilter);
         }
-
+    
         if ($this->typeFilter !== 'all') {
             $query->where('type', $this->typeFilter);
         }
-
+    
         if ($this->walletFilter !== 'all') {
             $walletType = $this->walletFilter === 'user' ? Wallet::TYPE_USER : Wallet::TYPE_INSTRUCTOR;
             $query->whereHas('wallet', function ($q) use ($walletType) {
                 $q->where('wallet_type', $walletType);
             });
         }
-
+    
         if ($this->dateFrom) {
             $query->whereDate('created_at', '>=', $this->dateFrom);
         }
-
+    
         if ($this->dateTo) {
             $query->whereDate('created_at', '<=', $this->dateTo);
         }
-
+    
         return $query->orderBy('created_at', 'desc');
     }
-
     private function getTransactionSummary()
-    {
-        $user = auth()->user();
-        
-        // Get user's wallets
-        $userWallet = $user->wallet;
-        $instructorWallet = $user->instructorWallet;
+{
+    $user = auth()->user();
+    
+    // Get user's wallets
+    $userWallet = $user->wallet;
+    $instructorWallet = $user->instructorWallet;
 
-        $userBalance = $userWallet ? $userWallet->balance : 0;
-        $instructorBalance = $instructorWallet ? $instructorWallet->balance : 0;
+    $userBalance = $userWallet ? $userWallet->balance : 0;
+    $instructorBalance = $instructorWallet ? $instructorWallet->balance : 0;
 
-        // Get filtered transactions for summary
-        $transactions = $this->getTransactionQuery()->get();
-        
-        $totalCredits = $transactions->where('type', 'credit')->sum('amount');
-        $totalDebits = $transactions->where('type', 'debit')->sum('amount');
-        $transactionCount = $transactions->count();
+    // Get filtered transactions for summary using the same query logic
+    $query = $this->getTransactionQuery();
+    
+    // Remove the orderBy for counting/summing operations
+    $query->getQuery()->orders = [];
+    
+    $transactions = $query->get();
+    
+    $totalCredits = $transactions->where('type', 'credit')->sum('amount');
+    $totalDebits = $transactions->where('type', 'debit')->sum('amount');
+    $transactionCount = $transactions->count();
 
-        // Group by category
-        $categorySummary = $transactions->groupBy('category')
-            ->map(function ($categoryTransactions) {
-                return [
-                    'count' => $categoryTransactions->count(),
-                    'total_amount' => $categoryTransactions->sum('amount'),
-                    'credits' => $categoryTransactions->where('type', 'credit')->sum('amount'),
-                    'debits' => $categoryTransactions->where('type', 'debit')->sum('amount'),
-                ];
-            });
+    // Group by category
+    $categorySummary = $transactions->groupBy('category')
+        ->map(function ($categoryTransactions) {
+            return [
+                'count' => $categoryTransactions->count(),
+                'total_amount' => $categoryTransactions->sum('amount'),
+                'credits' => $categoryTransactions->where('type', 'credit')->sum('amount'),
+                'debits' => $categoryTransactions->where('type', 'debit')->sum('amount'),
+            ];
+        });
 
-        return [
-            'current_balances' => [
-                'user_wallet' => $userBalance,
-                'instructor_wallet' => $instructorBalance,
-                'total' => $userBalance + $instructorBalance,
-            ],
-            'transaction_summary' => [
-                'total_transactions' => $transactionCount,
-                'total_credits' => $totalCredits,
-                'total_debits' => $totalDebits,
-                'net_amount' => $totalCredits - $totalDebits,
-            ],
-            'category_summary' => $categorySummary,
-        ];
-    }
+    return [
+        'current_balances' => [
+            'user_wallet' => $userBalance,
+            'instructor_wallet' => $instructorBalance,
+            'total' => $userBalance + $instructorBalance,
+        ],
+        'transaction_summary' => [
+            'total_transactions' => $transactionCount,
+            'total_credits' => $totalCredits,
+            'total_debits' => $totalDebits,
+            'net_amount' => $totalCredits - $totalDebits,
+        ],
+        'category_summary' => $categorySummary,
+    ];
+}
 
     public function render()
     {

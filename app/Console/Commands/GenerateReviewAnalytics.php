@@ -2,7 +2,7 @@
 
 namespace App\Console\Commands;
 
-use App\Models\Course;
+use App\Models\Learning\Course;
 use App\Services\ReviewAnalyticsService;
 use Illuminate\Console\Command;
 

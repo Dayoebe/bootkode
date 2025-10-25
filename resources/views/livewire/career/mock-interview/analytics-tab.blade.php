@@ -3,12 +3,12 @@
 <div class="space-y-8">
     @php
         $userId = Auth::id();
-        $completedInterviews = \App\Models\MockInterview::where('user_id', $userId)
+        $completedInterviews = \App\Models\Mentorship\Mentorship\MockInterview::where('user_id', $userId)
             ->where('status', 'completed')
             ->orderBy('completed_at', 'desc')
             ->get();
         
-        $allInterviews = \App\Models\MockInterview::where('user_id', $userId)->get();
+        $allInterviews = \App\Models\Mentorship\Mentorship\MockInterview::where('user_id', $userId)->get();
         
         $averageScore = $completedInterviews->avg('overall_score') ?? 0;
         $technicalScore = $completedInterviews->avg('technical_score') ?? 0;

@@ -4,7 +4,7 @@ namespace App\Livewire\CourseManagement;
 
 use Livewire\Component;
 use Livewire\WithPagination;
-use App\Models\CourseReview;
+use App\Models\Learning\CourseReview;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Rule;
 use Illuminate\Support\Facades\Auth;

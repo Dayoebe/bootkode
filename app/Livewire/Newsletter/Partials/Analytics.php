@@ -3,9 +3,9 @@
 namespace App\Livewire\Newsletter\Partials;
 
 use Livewire\Component;
-use App\Models\NewsletterCampaign;
-use App\Models\NewsletterSubscriber;
-use App\Models\NewsletterInteraction;
+use App\Models\Admin\NewsletterCampaign;
+use App\Models\Admin\NewsletterSubscriber;
+use App\Models\Admin\NewsletterInteraction;
 use Illuminate\Support\Facades\DB;
 
 class Analytics extends Component

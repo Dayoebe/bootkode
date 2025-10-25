@@ -3,7 +3,7 @@
     @if($activeView === 'browse')
         <!-- Hero Section -->
         <section class="bg-white dark:bg-gray-800 transition-colors duration-300">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-16">
+            <div class=" px-4 sm:px-6 lg:px-8 py-12 lg:py-16">
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
                     <div>
                         <h1 class="text-4xl lg:text-6xl font-bold text-gray-900 dark:text-white leading-tight transition-colors duration-300">
@@ -81,7 +81,7 @@
         <!-- Featured Products -->
         @if($featuredItems->count() > 0)
         <section class="py-16 bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class=" px-4 sm:px-6 lg:px-8">
                 <div class="text-center mb-12">
                     <h2 class="text-3xl font-bold text-gray-900 dark:text-white transition-colors duration-300">Featured Products</h2>
                     <p class="mt-4 text-lg text-gray-600 dark:text-gray-300 transition-colors duration-300">Hand-picked premium content from our top instructors</p>
@@ -152,7 +152,7 @@
 
         <!-- Categories Section -->
         <section class="py-16 bg-white dark:bg-gray-800 transition-colors duration-300">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class=" px-4 sm:px-6 lg:px-8">
                 <div class="text-center mb-12">
                     <h2 class="text-3xl font-bold text-gray-900 dark:text-white transition-colors duration-300">Popular Categories</h2>
                     <p class="mt-4 text-lg text-gray-600 dark:text-gray-300 transition-colors duration-300">Explore our most popular learning categories</p>
@@ -175,7 +175,7 @@
         <!-- Top Vendors Section -->
         @if($topVendors->count() > 0)
         <section class="py-16 bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class=" px-4 sm:px-6 lg:px-8">
                 <div class="text-center mb-12">
                     <h2 class="text-3xl font-bold text-gray-900 dark:text-white transition-colors duration-300">Top Instructors</h2>
                     <p class="mt-4 text-lg text-gray-600 dark:text-gray-300 transition-colors duration-300">Learn from the best in the industry</p>
@@ -209,7 +209,7 @@
         <!-- Trending Products -->
         @if($trendingItems->count() > 0)
         <section class="py-16 bg-white dark:bg-gray-800 transition-colors duration-300">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class=" px-4 sm:px-6 lg:px-8">
                 <div class="text-center mb-12">
                     <h2 class="text-3xl font-bold text-gray-900 dark:text-white transition-colors duration-300">Trending This Week</h2>
                     <p class="mt-4 text-lg text-gray-600 dark:text-gray-300 transition-colors duration-300">Most popular products from the past 7 days</p>
@@ -266,7 +266,7 @@
     @elseif($activeView === 'search' || $activeView === 'category' || $activeView === 'vendor')
         <!-- Search/Filter Results -->
         <section class="py-8 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 transition-colors duration-300">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class=" px-4 sm:px-6 lg:px-8">
                 <!-- Breadcrumb -->
                 <nav class="flex items-center space-x-2 text-sm text-gray-600 dark:text-gray-400 mb-6 transition-colors duration-300">
                     <button wire:click="backToBrowse" class="hover:text-purple-600 dark:hover:text-purple-400 transition-colors">Home</button>
@@ -441,7 +441,7 @@
 
         <!-- Products Grid/List -->
         <section class="py-8 bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class=" px-4 sm:px-6 lg:px-8">
                 @if($items->count() > 0)
                     @if($viewMode === 'grid')
                         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">

@@ -5,7 +5,7 @@ namespace App\Livewire\Affiliate;
 
 use Livewire\Component;
 use Livewire\WithPagination;
-use App\Models\ReferralTransaction;
+use App\Models\Marketplace\ReferralTransaction;
 use Livewire\Attributes\Layout;
 
 #[Layout('layouts.dashboard', ['title' => 'Affiliate Commission History'])]

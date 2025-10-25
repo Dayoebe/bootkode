@@ -4,10 +4,10 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Services\GamificationService;
-use App\Models\GamificationData;
-use App\Models\UserBadge;
-use App\Models\RewardStoreItem;
-use App\Models\UserStorePurchase;
+use App\Models\Credentials\GamificationData;
+use App\Models\Credentials\UserBadge;
+use App\Models\Marketplace\RewardStoreItem;
+use App\Models\Marketplace\UserStorePurchase;
 
 class GamificationController extends Controller
 {

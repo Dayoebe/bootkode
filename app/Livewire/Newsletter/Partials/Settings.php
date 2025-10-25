@@ -3,7 +3,7 @@
 namespace App\Livewire\Newsletter\Partials;
 
 use Livewire\Component;
-use App\Models\NewsletterCampaign;
+use App\Models\Admin\NewsletterCampaign;
 
 class Settings extends Component
 {

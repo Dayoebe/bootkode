@@ -2,8 +2,8 @@
 
 namespace App\Livewire\SystemManagement;
 
-use App\Models\Course;
-use App\Models\Feedback as FeedbackModel;
+use App\Models\Learning\Course;
+use App\Models\Community\Feedback as FeedbackModel;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
 use Livewire\WithPagination;

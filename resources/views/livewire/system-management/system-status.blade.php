@@ -1,4 +1,4 @@
-<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8" wire:poll.5000ms>
+<div class="px-4 sm:px-6 lg:px-8 py-8" wire:poll.5000ms>
     <!-- Header -->
     <div class="bg-gradient-to-r from-indigo-600 to-blue-700 p-6 rounded-2xl shadow-xl text-white mb-8 animate__animated animate__fadeIn">
         <h1 class="text-3xl font-bold text-white">

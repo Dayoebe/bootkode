@@ -3,11 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
-use App\Models\MarketplaceItem;
-use App\Models\MarketplaceOrder;
-use App\Models\User;
-use App\Models\Wallet;
-use App\Models\WalletTransaction;
+use App\Models\Marketplace\MarketplaceItem;
+use App\Models\Marketplace\MarketplaceOrder;
+use App\Models\Core\User;
+use App\Models\Marketplace\Wallet;
+use App\Models\Marketplace\WalletTransaction;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;

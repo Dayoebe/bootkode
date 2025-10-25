@@ -1,5 +1,5 @@
 <div class="min-h-screen bg-themed-primary p-6">
-    <div class="max-w-7xl mx-auto">
+    <div class="">
         <div class="flex justify-between items-center mb-6">
             <h1 class="text-3xl font-bold text-themed-primary">Question Sets</h1>
             <button wire:click="$set('showCreateSetModal', true)"

@@ -2,7 +2,7 @@
     <!-- Hero Section -->
     <section class="relative bg-slate-900 text-white py-20">
         <div class="absolute inset-0 bg-slate-800 opacity-50"></div>
-        <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <div class="relative  px-4 sm:px-6 lg:px-8 text-center">
             <div class="animate-fade-in-up">
                 <h1 class="text-5xl md:text-6xl font-bold mb-6">
                     <i class="fas fa-code text-green-500 mr-4"></i>
@@ -15,7 +15,7 @@
         </div>
 
         <!-- Floating Stats Cards -->
-        <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-16">
+        <div class="relative  px-4 sm:px-6 lg:px-8 mt-16">
             <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
                 <div class="bg-white/10 backdrop-blur-sm rounded-xl p-6 text-center border border-white/20">
                     <div class="text-3xl font-bold text-green-400">{{ number_format($stats['total_users']) }}</div>
@@ -40,7 +40,7 @@
 
     <!-- Main Content -->
     <section class="py-20">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class=" px-4 sm:px-6 lg:px-8">
 
             <!-- Our Story -->
             <div class="text-center mb-16">

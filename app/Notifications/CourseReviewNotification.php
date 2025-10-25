@@ -2,13 +2,13 @@
 
 namespace App\Notifications;
 
-use App\Models\CourseReview;
+use App\Models\Learning\CourseReview;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class CoursereviewNotification extends Notification implements ShouldQueue
+class CourseReviewNotification extends Notification implements ShouldQueue
 {
     use Queueable;
 

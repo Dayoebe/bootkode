@@ -6,7 +6,7 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
-use App\Models\BulkEnrollmentBatch;
+use App\Models\Admin\BulkEnrollmentBatch;
 
 class BulkEnrollmentCompleted extends Notification implements ShouldQueue
 {

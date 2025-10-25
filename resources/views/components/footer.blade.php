@@ -140,7 +140,7 @@
 
         <div class="flex flex-col md:flex-row justify-between items-center text-center md:text-left text-sm">
             <p class="text-gray-400 mb-4 md:mb-0">
-                &copy; {{ date('Y') }} BootKode. All rights reserved. Proprietary & Confidential.
+                &copy; {{ date('Y') }} BootKode. All rights reserved. BETA
             </p>
             <div class="flex flex-wrap justify-center md:justify-end space-x-6">
                 <a href="#" class="text-gray-400 hover:text-white transition-colors">Privacy Policy</a>

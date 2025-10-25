@@ -24,13 +24,16 @@ class Kernel extends HttpKernel
      * The application's route middleware groups.
      *
      * @var array<string, array<int, class-string|string>>
-     */
+     */    
     protected $middlewareGroups = [
-        
+        'web' => [
+            
+            'verified.warning',
+        ],
     ];
-    
     protected $routeMiddleware = [
         'gamification' => \App\Http\Middleware\UpdateGamificationActivity::class,
         'role' => \App\Http\Middleware\CheckRole::class,
+        'verified.warning' => \App\Http\Middleware\CheckEmailVerification::class,
     ];
 }

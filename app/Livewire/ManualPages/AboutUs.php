@@ -3,14 +3,14 @@
 namespace App\Livewire\ManualPages;
 
 use Livewire\Component;
-use App\Models\User;
-use App\Models\Course;
-use App\Models\Lesson;
-use App\Models\Certificate;
-use App\Models\Faq;
-use App\Models\Announcement;
-use App\Models\SystemStatus;
-use App\Models\CourseCategory;
+use App\Models\Core\User;
+use App\Models\Learning\Course;
+use App\Models\Learning\Lesson;
+use App\Models\Credentials\Certificate;
+use App\Models\Community\Faq;
+use App\Models\Admin\Announcement;
+use App\Models\Community\SystemStatus;
+use App\Models\Learning\CourseCategory;
 use Illuminate\Support\Facades\Cache;
 use Livewire\Attributes\Layout;
 

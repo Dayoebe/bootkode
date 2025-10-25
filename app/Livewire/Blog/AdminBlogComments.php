@@ -2,8 +2,8 @@
 
 namespace App\Livewire\Blog;
 
-use App\Models\BlogComment;
-use App\Models\BlogPost;
+use App\Models\Content\BlogComment;
+use App\Models\Content\BlogPost;
 use Livewire\Component;
 use Livewire\WithPagination;
 

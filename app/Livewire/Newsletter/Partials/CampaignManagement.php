@@ -5,9 +5,9 @@ namespace App\Livewire\Newsletter\Partials;
 
 use Livewire\Component;
 use Livewire\WithPagination;
-use App\Models\NewsletterCampaign;
-use App\Models\NewsletterSubscriber;
-use App\Models\NewsletterInteraction;
+use App\Models\Admin\NewsletterCampaign;
+use App\Models\Admin\NewsletterSubscriber;
+use App\Models\Admin\NewsletterInteraction;
 use App\Jobs\SendNewsletterCampaign;
 
 class CampaignManagement extends Component

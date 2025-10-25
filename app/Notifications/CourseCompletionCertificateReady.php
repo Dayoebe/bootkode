@@ -2,8 +2,8 @@
 
 namespace App\Notifications;
 
-use App\Models\Course;
-use App\Models\Certificate;
+use App\Models\Learning\Course;
+use App\Models\Credentials\Certificate;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;

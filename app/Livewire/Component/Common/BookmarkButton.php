@@ -2,7 +2,7 @@
 
 namespace App\Livewire\Component\Common;
 
-use App\Models\SavedResource;
+use App\Models\Learning\SavedResource;
 use Livewire\Component;
 
 class BookmarkButton extends Component
@@ -62,7 +62,7 @@ class BookmarkButton extends Component
     {
         // Map resourceable types to simpler types
         return match($this->resourceableType) {
-            'App\Models\Lesson' => 'lesson',
+            'App\Models\Learning\Lesson' => 'lesson',
             'App\Models\Note' => 'note',
             default => strtolower(class_basename($this->resourceableType))
         };

@@ -2,9 +2,9 @@
 namespace App\Traits;
 
 use App\Models\RevenueSplit;
-use App\Models\User;
-use App\Models\Wallet;
-use App\Models\WalletTransaction;
+use App\Models\Core\User;
+use App\Models\Marketplace\Wallet;
+use App\Models\Marketplace\WalletTransaction;
 use App\Events\CoursePurchased;
 
 trait HasRevenueSplit

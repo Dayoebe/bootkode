@@ -3,7 +3,7 @@
 // app/Notifications/MarketplaceOrderConfirmed.php
 namespace App\Notifications;
 
-use App\Models\MarketplaceOrder;
+use App\Models\Marketplace\MarketplaceOrder;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;

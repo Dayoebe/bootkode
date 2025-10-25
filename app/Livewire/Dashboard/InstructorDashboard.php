@@ -2,16 +2,16 @@
 
 namespace App\Livewire\Dashboard;
 
-use App\Models\Course;
-use App\Models\User;
-use App\Models\Certificate;
-use App\Models\CourseReview;
-use App\Models\CourseEnrollment;
-use App\Models\StudentAnswer;
-use App\Models\Assessment;
-use App\Models\SupportTicket;
-use App\Models\MarketplaceItem;
-use App\Models\JobApplication;
+use App\Models\Learning\Course;
+use App\Models\Core\User;
+use App\Models\Credentials\Certificate;
+use App\Models\Learning\CourseReview;
+use App\Models\Learning\CourseEnrollment;
+use App\Models\Assessment\StudentAnswer;
+use App\Models\Assessment\Assessment;
+use App\Models\Community\SupportTicket;
+use App\Models\Marketplace\MarketplaceItem;
+use App\Models\Career\JobApplication;
 use Livewire\Component;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Computed;
@@ -345,7 +345,7 @@ class InstructorDashboard extends Component
 private function getTotalEarnings(User $instructor)
 {
     return DB::table('wallet_transactions')
-        ->where('transactionable_type', 'App\Models\Course')
+        ->where('transactionable_type', 'App\Models\Learning\Course')
         ->whereIn('transactionable_id', function($query) use ($instructor) {
             $query->select('id')
                   ->from('courses')
@@ -360,7 +360,7 @@ private function getTotalEarnings(User $instructor)
 private function getMonthlyEarnings(User $instructor)
 {
     return DB::table('wallet_transactions')
-        ->where('transactionable_type', 'App\Models\Course')
+        ->where('transactionable_type', 'App\Models\Learning\Course')
         ->whereIn('transactionable_id', function($query) use ($instructor) {
             $query->select('id')
                   ->from('courses')
@@ -376,7 +376,7 @@ private function getMonthlyEarnings(User $instructor)
 private function getDailyEarnings(User $instructor, $date)
 {
     return DB::table('wallet_transactions')
-        ->where('transactionable_type', 'App\Models\Course')
+        ->where('transactionable_type', 'App\Models\Learning\Course')
         ->whereIn('transactionable_id', function($query) use ($instructor) {
             $query->select('id')
                   ->from('courses')

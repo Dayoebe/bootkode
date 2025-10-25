@@ -3,10 +3,10 @@
 namespace App\Livewire\StudentManagement\CourseView;
 
 use Livewire\Component;
-use App\Models\Lesson;
-use App\Models\Assessment;
-use App\Models\StudentAnswer;
-use App\Models\LessonProgress;
+use App\Models\Learning\Lesson;
+use App\Models\Assessment\Assessment;
+use App\Models\Assessment\StudentAnswer;
+use App\Models\Learning\LessonProgress;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Livewire\Attributes\On;

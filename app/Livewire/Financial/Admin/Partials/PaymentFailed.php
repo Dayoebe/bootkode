@@ -5,7 +5,7 @@ namespace App\Livewire\Financial\Admin\Partials;
 
 use Livewire\Component;
 use Livewire\WithPagination;
-use App\Models\PaystackTransaction;
+use App\Models\Marketplace\PaystackTransaction;
 use App\Services\PaystackService;
 use Carbon\Carbon;
 

@@ -4,9 +4,9 @@ namespace App\Livewire\Career;
 
 use Livewire\Component;
 use Livewire\WithPagination;
-use App\Models\MockInterview;
-use App\Models\InterviewQuestionSet;
-use App\Models\Course;
+use App\Models\Mentorship\Mentorship\MockInterview;
+use App\Models\Mentorship\Mentorship\InterviewQuestionSet;
+use App\Models\Learning\Course;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Computed;

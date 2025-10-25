@@ -2,11 +2,11 @@
 
 namespace App\Services;
 
-use App\Models\Institution;
-use App\Models\User;
-use App\Models\BulkEnrollmentBatch;
-use App\Models\CourseEnrollment;
-use App\Models\InstitutionUser;
+use App\Models\Core\Institution;
+use App\Models\Core\User;
+use App\Models\Admin\BulkEnrollmentBatch;
+use App\Models\Learning\CourseEnrollment;
+use App\Models\Admin\InstitutionUser;
 use App\Jobs\ProcessBulkEnrollment;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
@@ -268,9 +268,9 @@ class InstitutionService
                     ->avg('progress_percentage') ?? 0
             ],
             'certificates' => [
-                'total' => \App\Models\Certificate::whereIn('user_id', $userIds)
+                'total' => \App\Models\Credentials\Certificate::whereIn('user_id', $userIds)
                     ->where('status', 'approved')->count(),
-                'this_month' => \App\Models\Certificate::whereIn('user_id', $userIds)
+                'this_month' => \App\Models\Credentials\Certificate::whereIn('user_id', $userIds)
                     ->where('status', 'approved')
                     ->whereMonth('issued_date', now()->month)->count()
             ],
@@ -347,11 +347,11 @@ class InstitutionService
                     ->count()
             ],
             'engagement' => [
-                'total_study_time' => \App\Models\LearningSession::whereIn('user_id', $userIds)
+                'total_study_time' => \App\Models\Assessment\LearningSession::whereIn('user_id', $userIds)
                     ->whereBetween('started_at', [$startDate, $endDate])
                     ->whereNotNull('ended_at')
                     ->sum('duration_minutes'),
-                'average_session_duration' => \App\Models\LearningSession::whereIn('user_id', $userIds)
+                'average_session_duration' => \App\Models\Assessment\LearningSession::whereIn('user_id', $userIds)
                     ->whereBetween('started_at', [$startDate, $endDate])
                     ->whereNotNull('ended_at')
                     ->avg('duration_minutes') ?? 0

@@ -4,9 +4,9 @@
 namespace App\Livewire\Financial\Admin\Partials;
 
 use Livewire\Component;
-use App\Models\PaystackTransaction;
-use App\Models\Withdrawal;
-use App\Models\WalletTransaction;
+use App\Models\Marketplace\PaystackTransaction;
+use App\Models\Marketplace\Withdrawal;
+use App\Models\Marketplace\WalletTransaction;
 use App\Services\WalletService;
 use Carbon\Carbon;
 

@@ -3,11 +3,11 @@
 namespace App\Livewire\CourseManagement;
 
 use Livewire\Component;
-use App\Models\Course;
-use App\Models\CourseEnrollment;
-use App\Models\User;
-use App\Models\Section;
-use App\Models\Lesson;
+use App\Models\Learning\Course;
+use App\Models\Learning\CourseEnrollment;
+use App\Models\Core\User;
+use App\Models\Learning\Section;
+use App\Models\Learning\Lesson;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\On;

@@ -4,8 +4,8 @@
 namespace App\Livewire\Affiliate;
 
 use Livewire\Component;
-use App\Models\ReferralTransaction;
-use App\Models\Referral;
+use App\Models\Marketplace\ReferralTransaction;
+use App\Models\Marketplace\Referral;
 use Carbon\Carbon;
 use Livewire\Attributes\Layout;
 

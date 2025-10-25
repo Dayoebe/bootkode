@@ -2,15 +2,15 @@
 
 namespace App\Livewire\Dashboard;
 
-use App\Models\User;
-use App\Models\BlogPost;
-use App\Models\BlogCategory;
-use App\Models\BlogComment;
-use App\Models\BlogReaction;
-use App\Models\BlogSetting;
-use App\Models\Page;
-use App\Models\Faq;
-use App\Models\Announcement;
+use App\Models\Core\User;
+use App\Models\Content\BlogPost;
+use App\Models\Content\BlogCategory;
+use App\Models\Content\BlogComment;
+use App\Models\Content\BlogReaction;
+use App\Models\Content\BlogSetting;
+use App\Models\Content\Page;
+use App\Models\Community\Faq;
+use App\Models\Admin\Announcement;
 use Livewire\Component;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Computed;

@@ -60,6 +60,10 @@ class User extends Authenticatable implements MustVerifyEmail
         'show_email_publicly',
         'deactivated_at',
         'favorite_courses',
+        'timezone',
+        'language',
+        'is_profile_public',
+        'show_phone_publicly',
     ];
 
     protected $hidden = [
@@ -73,18 +77,27 @@ class User extends Authenticatable implements MustVerifyEmail
         'date_of_birth' => 'date',
         'last_login_at' => 'datetime',
         'social_links' => 'array',
-        'is_active' => 'boolean',
+        'skills' => 'array',
         'favorite_courses' => 'array',
+        'is_active' => 'boolean',
         'receive_course_updates' => 'boolean',
         'receive_certificate_notifications' => 'boolean',
         'show_email_publicly' => 'boolean',
         'deactivated_at' => 'datetime',
+        'is_profile_public' => 'boolean',
+        'show_phone_publicly' => 'boolean',
     ];
 
     protected static function booted()
     {
-        static::saved(function ($user) {
-            if ($user->isDirty('role')) {
+        static::created(function ($user) {
+            if ($user->role) {
+                $user->syncRoles([$user->role]);
+            }
+        });
+    
+        static::updated(function ($user) {
+            if ($user->isDirty('role') && $user->role) {
                 $user->syncRoles([$user->role]);
             }
         });
@@ -269,7 +282,7 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function reviews()
     {
-        return $this->hasMany(\App\Models\Credentials\CourseReview::class, 'user_id');
+        return $this->hasMany(\App\Models\Learning\CourseReview::class, 'user_id');
     }
 
     // ============================================
@@ -350,17 +363,17 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function mockInterviews()
     {
-        return $this->hasMany(\App\Models\Mentorship\MockInterview::class);
+        return $this->hasMany(\App\Models\Mentorship\Mentorship\MockInterview::class);
     }
 
     public function interviewQuestions()
     {
-        return $this->hasMany(\App\Models\Mentorship\InterviewQuestion::class, 'created_by');
+        return $this->hasMany(\App\Models\Mentorship\Mentorship\InterviewQuestion::class, 'created_by');
     }
 
     public function questionSets()
     {
-        return $this->hasMany(\App\Models\Mentorship\InterviewQuestionSet::class, 'created_by');
+        return $this->hasMany(\App\Models\Mentorship\Mentorship\InterviewQuestionSet::class, 'created_by');
     }
 
     // ============================================

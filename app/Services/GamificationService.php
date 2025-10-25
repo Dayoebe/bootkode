@@ -2,13 +2,13 @@
 
 namespace App\Services;
 
-use App\Models\User;
-use App\Models\Lesson;
-use App\Models\Assessment;
-use App\Models\GamificationData;
+use App\Models\Core\User;
+use App\Models\Learning\Lesson;
+use App\Models\Assessment\Assessment;
+use App\Models\Credentials\GamificationData;
 use App\Models\GamificationTransaction;
-use App\Models\UserBadge;
-use App\Models\LearningSession;
+use App\Models\Credentials\UserBadge;
+use App\Models\Assessment\LearningSession;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 

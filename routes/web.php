@@ -346,7 +346,6 @@ Route::middleware(['auth', 'verified'])->prefix('dashboard')->name('')->group(fu
     Route::get('/announcements', \App\Livewire\SystemManagement\Announcements::class)->name('announcements');
     Route::get('/announcement-management', \App\Livewire\SystemManagement\AnnouncementManagement::class)->name('announcement.management');
 
-    Route::get('/profile-settings', \App\Livewire\SystemManagement\ProfileSettings::class)->name('profile.settings');
     Route::get('/notification-preferences', \App\Livewire\SystemManagement\NotificationPreferences::class)->name('notification.preferences');
     Route::get('/privacy-settings', \App\Livewire\SystemManagement\PrivacySettings::class)->name('privacy.settings');
     Route::get('/language-localization', \App\Livewire\SystemManagement\LanguageLocalization::class)->name('language.localization');
@@ -451,7 +450,7 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(
 
     // Certificate Actions
     Route::post('/certificates/{certificate}/approve', function ($certificateId) {
-        $certificate = \App\Models\Certificate::findOrFail($certificateId);
+        $certificate = \App\Models\Credentials\Certificate::findOrFail($certificateId);
 
         // Permission check
         if (!auth()->user()->hasAnyRole(['super_admin', 'academy_admin', 'instructor'])) {
@@ -467,7 +466,7 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(
     })->name('certificates.approve');
 
     Route::post('/certificates/{certificate}/reject', function ($certificateId) {
-        $certificate = \App\Models\Certificate::findOrFail($certificateId);
+        $certificate = \App\Models\Credentials\Certificate::findOrFail($certificateId);
 
         // Permission check
         if (!auth()->user()->hasAnyRole(['super_admin', 'academy_admin', 'instructor'])) {
@@ -484,7 +483,7 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(
     })->name('certificates.reject');
 
     Route::post('/certificates/{certificate}/revoke', function ($certificateId) {
-        $certificate = \App\Models\Certificate::findOrFail($certificateId);
+        $certificate = \App\Models\Credentials\Certificate::findOrFail($certificateId);
 
         // Permission check - Only admins can revoke
         if (!auth()->user()->hasAnyRole(['super_admin', 'academy_admin'])) {
@@ -508,7 +507,7 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(
 
         foreach ($certificateIds as $id) {
             try {
-                $certificate = \App\Models\Certificate::find($id);
+                $certificate = \App\Models\Credentials\Certificate::find($id);
                 if ($certificate && $certificate->isRequested()) {
                     $certificate->approve(auth()->id());
                     $approved++;

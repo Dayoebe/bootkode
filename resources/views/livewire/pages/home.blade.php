@@ -112,7 +112,7 @@
 
         <!-- Features Section -->
         <section id="features" class="py-16 bg-white" x-data="{ activeTab: 'education' }">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class=" px-4 sm:px-6 lg:px-8">
                 <!-- Header -->
                 <div class="text-center mb-16 animate-fade-in">
                     <h2 class="text-3xl sm:text-4xl font-extrabold text-gray-900">
@@ -275,7 +275,7 @@
 
         <!-- Problem/Solution Section -->
         <section class="py-16 sm:py-20 bg-blue-50">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            <div class=" px-4 sm:px-6 lg:px-8 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
                 <div class="animate__animated animate__fadeInLeft">
                     <h2 class="text-3xl sm:text-4xl font-extrabold text-gray-900 mb-6">The Problem We Solve: Bridging
                         Africa's Digital Divide</h2>
@@ -326,7 +326,7 @@
 
         <!-- AI-Powered Learning Section -->
         <section class="py-16 sm:py-20 bg-pink-50">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <div class=" px-4 sm:px-6 lg:px-8 text-center">
                 <h2
                     class="text-3xl sm:text-4xl font-extrabold text-gray-900 mb-12 animate__animated animate__fadeInUp">
                     Intelligent Learning with AI
@@ -369,7 +369,7 @@
 
         <!-- Learning Paths Section -->
         <section class="py-16 sm:py-20 bg-gray-50">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <div class=" px-4 sm:px-6 lg:px-8 text-center">
                 <h2
                     class="text-3xl sm:text-4xl font-extrabold text-gray-900 mb-12 animate__animated animate__fadeInUp">
                     Choose Your Learning Path
@@ -682,7 +682,7 @@
 
         <!-- Gamification & Community Section -->
         <section class="py-16 sm:py-20 bg-teal-50">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <div class=" px-4 sm:px-6 lg:px-8 text-center">
                 <h2
                     class="text-3xl sm:text-4xl font-extrabold text-gray-900 mb-12 animate__animated animate__fadeInUp">
                     Stay Motivated with Gamification & Community
@@ -872,7 +872,7 @@
         <!-- Final Call to Action Section -->
         <section
             class="py-16 sm:py-20 bg-gradient-to-r from-blue-600 to-blue-800 text-white text-center rounded-t-xl shadow-lg animate__animated animate__fadeInUp">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class=" px-4 sm:px-6 lg:px-8">
                 <h2 class="text-3xl sm:text-4xl font-extrabold mb-4">Join the BootKode Movement Today!</h2>
                 <p class="text-lg sm:text-xl max-w-3xl mx-auto mb-8">Unlock your potential, master digital skills, and
                     build a brighter future with Africa's leading tech education platform.</p>

@@ -4,7 +4,7 @@ namespace App\Livewire\Institution;
 
 use Livewire\Component;
 use Livewire\WithPagination;
-use App\Models\Institution;
+use App\Models\Core\Institution;
 use App\Services\InstitutionService;
 
 class LicenseManagement extends Component

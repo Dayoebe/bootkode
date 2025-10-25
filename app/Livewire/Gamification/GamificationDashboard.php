@@ -4,9 +4,9 @@ namespace App\Livewire\Gamification;
 
 use Livewire\Component;
 use App\Services\GamificationService;
-use App\Models\GamificationData;
-use App\Models\UserBadge;
-use App\Models\RewardStoreItem;
+use App\Models\Credentials\GamificationData;
+use App\Models\Credentials\UserBadge;
+use App\Models\Marketplace\RewardStoreItem;
 use Livewire\Attributes\Layout;
 
 #[Layout('layouts.dashboard', ['title' => 'Gamification Dashboard', 'description' => 'Manage your gamification stats', 'icon' => 'fas fa-trophy'])]

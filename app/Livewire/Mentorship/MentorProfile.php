@@ -3,8 +3,8 @@
 namespace App\Livewire\Mentorship;
 
 use Livewire\Component;
-// use App\Models\MentorProfile;
-use App\Models\MentorshipReview;
+// use App\Models\Mentorship\MentorProfile;
+use App\Models\Mentorship\MentorshipReview;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\Layout;
 
@@ -136,7 +136,7 @@ class MentorProfile extends Component
         ]);
 
         // Notify admins
-        $admins = \App\Models\User::whereIn('role', ['academy_admin', 'super_admin'])->get();
+        $admins = \App\Models\Core\User::whereIn('role', ['academy_admin', 'super_admin'])->get();
         foreach ($admins as $admin) {
             $admin->notify(new \App\Notifications\NewMentorApplication($profile));
         }

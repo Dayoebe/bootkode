@@ -2,9 +2,9 @@
 
 namespace App\Livewire\StudentManagement;
 
-use App\Models\Course;
-use App\Models\Lesson;
-use App\Models\SavedResource;
+use App\Models\Learning\Course;
+use App\Models\Learning\Lesson;
+use App\Models\Learning\SavedResource;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
 use Livewire\WithPagination;

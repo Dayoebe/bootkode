@@ -313,7 +313,7 @@ class Settings extends Component
             'php_version' => PHP_VERSION,
             'laravel_version' => app()->version(),
             'total_pages' => \App\Models\Page::count(),
-            'total_media' => \App\Models\PageMedia::count(),
+            'total_media' => \App\Models\Content\PageMedia::count(),
             'cache_driver' => config('cache.default'),
             'queue_driver' => config('queue.default'),
             'storage_disk' => config('filesystems.default'),

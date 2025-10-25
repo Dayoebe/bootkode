@@ -3,9 +3,9 @@
 namespace App\Livewire\CertificateManagement;
 
 use Livewire\Component;
-use App\Models\Certificate;
-use App\Models\Course;
-use App\Models\User;
+use App\Models\Credentials\Certificate;
+use App\Models\Learning\Course;
+use App\Models\Core\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;

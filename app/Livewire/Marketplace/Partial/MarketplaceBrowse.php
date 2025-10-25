@@ -4,8 +4,8 @@ namespace App\Livewire\Marketplace\Partial;
 
 use Livewire\Component;
 use Livewire\WithPagination;
-use App\Models\MarketplaceItem;
-use App\Models\MarketplaceCategory;
+use App\Models\Marketplace\MarketplaceItem;
+use App\Models\Marketplace\MarketplaceCategory;
 
 class MarketplaceBrowse extends Component
 {

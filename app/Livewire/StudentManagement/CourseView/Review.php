@@ -4,8 +4,8 @@ namespace App\Livewire\StudentManagement\CourseView;
 
 use Livewire\Component;
 use Livewire\WithPagination;
-use App\Models\Course;
-use App\Models\CourseReview;
+use App\Models\Learning\Course;
+use App\Models\Learning\CourseReview;
 use Illuminate\Support\Facades\Auth;
 
 class Review extends Component

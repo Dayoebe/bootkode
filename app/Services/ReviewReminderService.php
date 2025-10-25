@@ -2,11 +2,11 @@
 
 namespace App\Services;
 
-use App\Models\Course;
-use App\Models\CourseEnrollment;
-use App\Models\CourseReview;
+use App\Models\Learning\Course;
+use App\Models\Learning\CourseEnrollment;
+use App\Models\Learning\CourseReview;
 use App\Models\ReviewReminder;
-use App\Models\User;
+use App\Models\Core\User;
 use App\Notifications\ReviewReminderNotification;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;

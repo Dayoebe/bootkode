@@ -4,7 +4,7 @@ namespace App\Livewire\Career;
 
 use Livewire\Component;
 use Livewire\WithFileUploads;
-use App\Models\Portfolio;
+use App\Models\Content\Portfolio;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;

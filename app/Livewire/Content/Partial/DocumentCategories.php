@@ -3,7 +3,7 @@
 namespace App\Livewire\Content\Partial;
 
 use Livewire\Component;
-use App\Models\DocumentCategory;
+use App\Models\Learning\DocumentCategory;
 
 class DocumentCategories extends Component
 {

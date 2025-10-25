@@ -2,8 +2,8 @@
 
 namespace App\Livewire\CourseManagement;
 
-use App\Models\Course;
-use App\Models\Lesson;
+use App\Models\Learning\Course;
+use App\Models\Learning\Lesson;
 use Livewire\Component;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\On;

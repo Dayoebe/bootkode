@@ -5,7 +5,7 @@ namespace App\Livewire\Financial\Admin\Partials;
 
 use Livewire\Component;
 use Livewire\WithPagination;
-use App\Models\Withdrawal;
+use App\Models\Marketplace\Withdrawal;
 use App\Services\WalletService;
 
 class PaymentWithdrawals extends Component

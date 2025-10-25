@@ -3,7 +3,7 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
-use App\Models\NewsletterCampaign;
+use App\Models\Admin\NewsletterCampaign;
 use App\Jobs\SendNewsletterCampaign;
 
 class SendScheduledNewsletters extends Command

@@ -3,9 +3,9 @@
 namespace App\Livewire\Newsletter;
 
 use Livewire\Component;
-use App\Models\User;
-use App\Models\NewsletterSubscriber;
-use App\Models\NewsletterCampaign;
+use App\Models\Core\User;
+use App\Models\Admin\NewsletterSubscriber;
+use App\Models\Admin\NewsletterCampaign;
 use Illuminate\Support\Facades\Route;
 use Livewire\Attributes\Layout;
 

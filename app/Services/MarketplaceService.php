@@ -2,11 +2,11 @@
 // app/Services/MarketplaceService.php
 namespace App\Services;
 
-use App\Models\MarketplaceItem;
-use App\Models\MarketplaceOrder;
-use App\Models\User;
-use App\Models\Wallet;
-use App\Models\WalletTransaction;
+use App\Models\Marketplace\MarketplaceItem;
+use App\Models\Marketplace\MarketplaceOrder;
+use App\Models\Core\User;
+use App\Models\Marketplace\Wallet;
+use App\Models\Marketplace\WalletTransaction;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use App\Notifications\MarketplaceItemApproved;

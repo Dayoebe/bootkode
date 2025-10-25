@@ -2,8 +2,8 @@
 
 namespace App\Livewire\CourseManagement\CourseBuilder;
 
-use App\Models\Question;
-use App\Models\Assessment;
+use App\Models\Assessment\Question;
+use App\Models\Assessment\Assessment;
 use Livewire\Component;
 
 class ProjectCriteriaManager extends Component

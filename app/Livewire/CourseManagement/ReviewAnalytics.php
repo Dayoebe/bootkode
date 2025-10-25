@@ -3,7 +3,7 @@
 namespace App\Livewire\CourseManagement;
 
 use Livewire\Component;
-use App\Models\Course;
+use App\Models\Learning\Course;
 use App\Services\ReviewAnalyticsService;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\Layout;

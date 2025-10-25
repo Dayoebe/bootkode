@@ -2,8 +2,8 @@
 
 namespace App\Livewire\SystemManagement;
 
-use App\Models\SupportTicket;
-use App\Models\Faq;
+use App\Models\Community\SupportTicket;
+use App\Models\Community\Faq;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
 use Livewire\WithPagination;

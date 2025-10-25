@@ -5,7 +5,7 @@ namespace App\Livewire\Institution;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Livewire\WithFileUploads;
-use App\Models\Institution;
+use App\Models\Core\Institution;
 use Illuminate\Support\Facades\Storage;
 
 class WhitelabelSettings extends Component

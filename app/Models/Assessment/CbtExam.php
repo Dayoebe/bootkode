@@ -1,7 +1,7 @@
 <?php
 
 // CbtExam.php
-namespace App\Models\Assessment\Assessment;
+namespace App\Models\Assessment;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;

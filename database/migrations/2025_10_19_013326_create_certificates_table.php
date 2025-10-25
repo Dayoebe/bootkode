@@ -18,6 +18,7 @@ return new class extends Migration
             $table->text('description')->nullable();
             
             $table->enum('status', ['pending', 'approved', 'issued', 'revoked'])->default('pending');
+            $table->timestamp('approved_at')->nullable();
             $table->enum('certificate_type', ['completion', 'achievement', 'participation'])->default('completion');
             
             $table->date('issued_date')->nullable();

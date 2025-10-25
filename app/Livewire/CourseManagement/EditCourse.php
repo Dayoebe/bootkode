@@ -4,8 +4,8 @@ namespace App\Livewire\CourseManagement;
 
 use Livewire\Component;
 use Livewire\WithFileUploads;
-use App\Models\Course;
-use App\Models\CourseCategory;
+use App\Models\Learning\Course;
+use App\Models\Learning\CourseCategory;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Livewire\Attributes\Layout;

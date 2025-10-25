@@ -28,125 +28,314 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
+        /* ============================================
+           COMPREHENSIVE THEME SYSTEM - ALL THEMES
+           ============================================ */
+
         /* Light Theme (Default) */
         .light {
-            --bg-primary: 249 250 251; /* gray-50 */
-            --bg-secondary: 255 255 255; /* white */
-            --bg-tertiary: 243 244 246; /* gray-100 */
-            --text-primary: 17 24 39; /* gray-900 */
-            --text-secondary: 75 85 99; /* gray-600 */
-            --text-tertiary: 156 163 175; /* gray-400 */
-            --border-primary: 229 231 235; /* gray-200 */
-            --border-secondary: 209 213 219; /* gray-300 */
-            --accent-primary: 59 130 246; /* blue-500 */
-            --accent-secondary: 37 99 235; /* blue-600 */
+            --bg-primary: 249 250 251;
+            --bg-secondary: 255 255 255;
+            --bg-tertiary: 243 244 246;
+            --text-primary: 17 24 39;
+            --text-secondary: 75 85 99;
+            --text-tertiary: 156 163 175;
+            --border-primary: 229 231 235;
+            --border-secondary: 209 213 219;
+            --accent-primary: 59 130 246;
+            --accent-secondary: 37 99 235;
+            
+            /* Tab & Interactive States */
+            --tab-inactive-bg: 243 244 246;
+            --tab-inactive-text: 107 114 128;
+            --tab-active-bg: 59 130 246;
+            --tab-active-text: 255 255 255;
+            
+            /* Button States */
+            --btn-hover-bg: 229 231 235;
+            --btn-disabled-text: 156 163 175;
+            
+            /* Input States */
+            --input-border: 209 213 219;
+            --input-focus-border: 59 130 246;
         }
         
         /* Dark Theme */
         .dark {
-            --bg-primary: 17 24 39; /* gray-900 */
-            --bg-secondary: 31 41 55; /* gray-800 */
-            --bg-tertiary: 55 65 81; /* gray-700 */
-            --text-primary: 255 255 255; /* white */
-            --text-secondary: 209 213 219; /* gray-300 */
-            --text-tertiary: 156 163 175; /* gray-400 */
-            --border-primary: 55 65 81; /* gray-700 */
-            --border-secondary: 75 85 99; /* gray-600 */
-            --accent-primary: 96 165 250; /* blue-400 */
-            --accent-secondary: 59 130 246; /* blue-500 */
+            --bg-primary: 17 24 39;
+            --bg-secondary: 31 41 55;
+            --bg-tertiary: 55 65 81;
+            --text-primary: 255 255 255;
+            --text-secondary: 209 213 219;
+            --text-tertiary: 156 163 175;
+            --border-primary: 55 65 81;
+            --border-secondary: 75 85 99;
+            --accent-primary: 96 165 250;
+            --accent-secondary: 59 130 246;
+            
+            --tab-inactive-bg: 55 65 81;
+            --tab-inactive-text: 209 213 219;
+            --tab-active-bg: 96 165 250;
+            --tab-active-text: 17 24 39;
+            
+            --btn-hover-bg: 75 85 99;
+            --btn-disabled-text: 107 114 128;
+            
+            --input-border: 75 85 99;
+            --input-focus-border: 96 165 250;
         }
         
         /* Sepia Theme (Reading Mode) */
         .sepia {
-            --bg-primary: 244 236 216; /* warm beige */
-            --bg-secondary: 250 245 235; /* lighter beige */
-            --bg-tertiary: 238 228 208; /* darker beige */
-            --text-primary: 92 75 55; /* warm brown */
-            --text-secondary: 120 100 80; /* medium brown */
-            --text-tertiary: 160 140 120; /* light brown */
-            --border-primary: 220 205 180; /* warm border */
-            --border-secondary: 200 185 160; /* darker border */
-            --accent-primary: 139 92 46; /* warm accent */
-            --accent-secondary: 115 75 35; /* darker accent */
+            --bg-primary: 244 236 216;
+            --bg-secondary: 250 245 235;
+            --bg-tertiary: 238 228 208;
+            --text-primary: 92 75 55;
+            --text-secondary: 120 100 80;
+            --text-tertiary: 160 140 120;
+            --border-primary: 220 205 180;
+            --border-secondary: 200 185 160;
+            --accent-primary: 139 92 46;
+            --accent-secondary: 115 75 35;
+            
+            --tab-inactive-bg: 238 228 208;
+            --tab-inactive-text: 92 75 55;
+            --tab-active-bg: 139 92 46;
+            --tab-active-text: 250 245 235;
+            
+            --btn-hover-bg: 220 205 180;
+            --btn-disabled-text: 160 140 120;
+            
+            --input-border: 200 185 160;
+            --input-focus-border: 139 92 46;
         }
         
         /* Ocean Blue Theme */
         .ocean {
-            --bg-primary: 240 249 255; /* blue-50 */
-            --bg-secondary: 224 242 254; /* blue-100 */
-            --bg-tertiary: 186 230 253; /* blue-200 */
-            --text-primary: 12 74 110; /* blue-900 */
-            --text-secondary: 7 89 133; /* blue-800 */
-            --text-tertiary: 14 116 144; /* cyan-700 */
-            --border-primary: 125 211 252; /* blue-300 */
-            --border-secondary: 56 189 248; /* blue-400 */
-            --accent-primary: 2 132 199; /* cyan-600 */
-            --accent-secondary: 3 105 161; /* cyan-700 */
+            --bg-primary: 240 249 255;
+            --bg-secondary: 224 242 254;
+            --bg-tertiary: 186 230 253;
+            --text-primary: 12 74 110;
+            --text-secondary: 7 89 133;
+            --text-tertiary: 14 116 144;
+            --border-primary: 125 211 252;
+            --border-secondary: 56 189 248;
+            --accent-primary: 2 132 199;
+            --accent-secondary: 3 105 161;
+            
+            --tab-inactive-bg: 186 230 253;
+            --tab-inactive-text: 12 74 110;
+            --tab-active-bg: 2 132 199;
+            --tab-active-text: 255 255 255;
+            
+            --btn-hover-bg: 125 211 252;
+            --btn-disabled-text: 14 116 144;
+            
+            --input-border: 56 189 248;
+            --input-focus-border: 2 132 199;
         }
         
         /* Forest Green Theme */
         .forest {
-            --bg-primary: 236 253 245; /* green-50 */
-            --bg-secondary: 209 250 229; /* green-100 */
-            --bg-tertiary: 167 243 208; /* green-200 */
-            --text-primary: 20 83 45; /* green-900 */
-            --text-secondary: 21 128 61; /* green-800 */
-            --text-tertiary: 22 163 74; /* green-700 */
-            --border-primary: 134 239 172; /* green-300 */
-            --border-secondary: 74 222 128; /* green-400 */
-            --accent-primary: 34 197 94; /* green-500 */
-            --accent-secondary: 22 163 74; /* green-600 */
+            --bg-primary: 236 253 245;
+            --bg-secondary: 209 250 229;
+            --bg-tertiary: 167 243 208;
+            --text-primary: 20 83 45;
+            --text-secondary: 21 128 61;
+            --text-tertiary: 22 163 74;
+            --border-primary: 134 239 172;
+            --border-secondary: 74 222 128;
+            --accent-primary: 34 197 94;
+            --accent-secondary: 22 163 74;
+            
+            --tab-inactive-bg: 167 243 208;
+            --tab-inactive-text: 20 83 45;
+            --tab-active-bg: 34 197 94;
+            --tab-active-text: 255 255 255;
+            
+            --btn-hover-bg: 134 239 172;
+            --btn-disabled-text: 22 163 74;
+            
+            --input-border: 74 222 128;
+            --input-focus-border: 34 197 94;
         }
-        
-        /* Apply theme variables to elements */
+
+        /* ============================================
+           BASE STYLES
+           ============================================ */
         body {
             background-color: rgb(var(--bg-primary));
             color: rgb(var(--text-primary));
+            transition: background-color 0.3s, color 0.3s;
         }
-        
-        /* Update all themed classes */
+
+        /* ============================================
+           THEMED UTILITY CLASSES
+           ============================================ */
         .bg-themed-primary {
             background-color: rgb(var(--bg-primary));
+            transition: background-color 0.3s;
         }
         
         .bg-themed-secondary {
             background-color: rgb(var(--bg-secondary));
+            transition: background-color 0.3s;
         }
         
         .bg-themed-tertiary {
             background-color: rgb(var(--bg-tertiary));
+            transition: background-color 0.3s;
         }
         
         .text-themed-primary {
             color: rgb(var(--text-primary));
+            transition: color 0.3s;
         }
         
         .text-themed-secondary {
             color: rgb(var(--text-secondary));
+            transition: color 0.3s;
         }
         
         .text-themed-tertiary {
             color: rgb(var(--text-tertiary));
+            transition: color 0.3s;
         }
         
         .border-themed-primary {
             border-color: rgb(var(--border-primary));
+            transition: border-color 0.3s;
         }
         
         .border-themed-secondary {
             border-color: rgb(var(--border-secondary));
+            transition: border-color 0.3s;
         }
         
         .accent-themed-primary {
             color: rgb(var(--accent-primary));
+            transition: color 0.3s;
+        }
+        
+        .accent-themed-secondary {
+            color: rgb(var(--accent-secondary));
+            transition: color 0.3s;
         }
         
         .bg-accent-themed-primary {
             background-color: rgb(var(--accent-primary));
+            transition: background-color 0.3s;
         }
         
         .bg-accent-themed-secondary {
             background-color: rgb(var(--accent-secondary));
+            transition: background-color 0.3s;
+        }
+
+        /* ============================================
+           TAB NAVIGATION STYLES - CRITICAL FIX
+           ============================================ */
+        .tab-nav {
+            display: flex;
+            gap: 0;
+            border-bottom: 2px solid rgb(var(--border-primary));
+            overflow-x: auto;
+            transition: border-color 0.3s;
+        }
+
+        .tab-button {
+            padding: 1rem 1.25rem;
+            background-color: transparent;
+            color: rgb(var(--tab-inactive-text));
+            border: none;
+            border-bottom: 3px solid transparent;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .tab-button:hover:not(.active) {
+            background-color: rgb(var(--tab-inactive-bg) / 0.5);
+            color: rgb(var(--tab-inactive-text));
+        }
+
+        /* ACTIVE TAB STATE - NOW FULLY VISIBLE ACROSS ALL THEMES */
+        .tab-button.active {
+            background-color: rgb(var(--tab-active-bg));
+            color: rgb(var(--tab-active-text));
+            border-bottom-color: rgb(var(--tab-active-bg));
+            box-shadow: 0 2px 8px rgba(var(--tab-active-bg), 0.3);
+        }
+
+        /* ============================================
+           BUTTON STYLES
+           ============================================ */
+        .btn-primary {
+            background-color: rgb(var(--accent-primary));
+            color: white;
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-primary:hover {
+            background-color: rgb(var(--accent-secondary));
+            box-shadow: 0 4px 12px rgba(var(--accent-primary), 0.3);
+        }
+
+        .btn-secondary {
+            background-color: rgb(var(--bg-tertiary));
+            color: rgb(var(--text-primary));
+            padding: 0.5rem 1rem;
+            border: 1px solid rgb(var(--border-primary));
+            border-radius: 0.5rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-secondary:hover {
+            background-color: rgb(var(--btn-hover-bg));
+            border-color: rgb(var(--accent-primary));
+        }
+
+        .btn-secondary:disabled {
+            color: rgb(var(--btn-disabled-text));
+            cursor: not-allowed;
+            opacity: 0.5;
+        }
+
+        /* ============================================
+           INPUT STYLES
+           ============================================ */
+        input, textarea, select {
+            background-color: rgb(var(--bg-secondary));
+            color: rgb(var(--text-primary));
+            border: 1px solid rgb(var(--input-border));
+            border-radius: 0.5rem;
+            padding: 0.5rem 0.75rem;
+            transition: all 0.3s;
+            font-family: inherit;
+        }
+
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: rgb(var(--input-focus-border));
+            box-shadow: 0 0 0 3px rgba(var(--input-focus-border), 0.1);
+        }
+
+        input:disabled, textarea:disabled, select:disabled {
+            background-color: rgb(var(--bg-tertiary));
+            color: rgb(var(--btn-disabled-text));
+            cursor: not-allowed;
         }
         </style>
         

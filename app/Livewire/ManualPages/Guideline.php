@@ -4,12 +4,12 @@ namespace App\Livewire\ManualPages;
 
 use Livewire\Component;
 use Illuminate\Support\Facades\Auth;
-use App\Models\User;
-use App\Models\Course;
-use App\Models\Lesson;
-use App\Models\CourseEnrollment;
-use App\Models\Certificate;
-use App\Models\Assessment;
+use App\Models\Core\User;
+use App\Models\Learning\Course;
+use App\Models\Learning\Lesson;
+use App\Models\Learning\CourseEnrollment;
+use App\Models\Credentials\Certificate;
+use App\Models\Assessment\Assessment;
 use Livewire\Attributes\Layout;
 
 #[Layout('layouts.app', ['title' => 'Guidelines', 'description' => "Empowering Africa's youth with digital skills, mentorship & careers.", 'developer' => 'Bootkode', 'developer_url' => 'https://bootkode.com'])]

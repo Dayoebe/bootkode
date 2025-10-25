@@ -3,16 +3,16 @@
 namespace App\Livewire\Dashboard;
 
 use Livewire\Component;
-use App\Models\User;
-use App\Models\Course;
-use App\Models\CourseCategory;
-use App\Models\SupportTicket;
-use App\Models\Certificate;
-use App\Models\SystemStatus;
-use App\Models\JobPortal;
-use App\Models\Wallet;
-use App\Models\BlogPost;
-use App\Models\Faq;
+use App\Models\Core\User;
+use App\Models\Learning\Course;
+use App\Models\Learning\CourseCategory;
+use App\Models\Community\SupportTicket;
+use App\Models\Credentials\Certificate;
+use App\Models\Community\SystemStatus;
+use App\Models\Career\JobPortal;
+use App\Models\Marketplace\Wallet;
+use App\Models\Content\BlogPost;
+use App\Models\Community\Faq;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Spatie\Activitylog\Models\Activity;

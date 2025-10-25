@@ -2,9 +2,9 @@
 
 namespace App\Livewire\Blog;
 
-use App\Models\BlogPost;
-use App\Models\BlogCategory;
-use App\Models\User;
+use App\Models\Content\BlogPost;
+use App\Models\Content\BlogCategory;
+use App\Models\Core\User;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Illuminate\Support\Facades\Storage;

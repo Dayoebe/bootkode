@@ -59,7 +59,7 @@
                 Apply Now - It's Free!
             </button>
             <p class="text-sm text-gray-500 mt-4">
-                @if(auth()->user()->hasRole(\App\Models\User::ROLE_INSTRUCTOR))
+                @if(auth()->user()->hasRole(\App\Models\Core\User::ROLE_INSTRUCTOR))
                     As an instructor, your application will be auto-approved
                 @else
                     Your application will be reviewed within 24-48 hours

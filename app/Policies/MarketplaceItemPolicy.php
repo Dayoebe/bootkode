@@ -2,8 +2,8 @@
 // app/Policies/MarketplaceItemPolicy.php
 namespace App\Policies;
 
-use App\Models\MarketplaceItem;
-use App\Models\User;
+use App\Models\Marketplace\MarketplaceItem;
+use App\Models\Core\User;
 
 class MarketplaceItemPolicy
 {

@@ -4,8 +4,8 @@
 namespace App\Livewire\Mentorship\Partial;
 
 use Livewire\Component;
-use App\Models\MentorProfile;
-use App\Models\MentorshipReview;
+use App\Models\Mentorship\MentorProfile;
+use App\Models\Mentorship\MentorshipReview;
 use Illuminate\Support\Facades\Auth;
 
 class Profile extends Component

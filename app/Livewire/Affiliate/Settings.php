@@ -4,8 +4,8 @@
 namespace App\Livewire\Affiliate;
 
 use Livewire\Component;
-use App\Models\Affiliate;
-use App\Models\User;
+use App\Models\Marketplace\Affiliate;
+use App\Models\Core\User;
 use Livewire\Attributes\Layout;
 
 #[Layout('layouts.dashboard', ['title' => 'Affiliate Settings'])]

@@ -4,7 +4,7 @@ namespace App\Livewire\Content\Partial;
 
 use Livewire\Component;
 use Livewire\WithPagination;
-use App\Models\Document;
+use App\Models\Learning\Document;
 
 class DocumentReviews extends Component
 {

@@ -2,15 +2,15 @@
 
 namespace App\Livewire\Dashboard;
 
-use App\Models\User;
-use App\Models\Course;
-use App\Models\Certificate;
-use App\Models\JobApplication;
-use App\Models\MockInterview;
-use App\Models\SupportTicket;
-use App\Models\CourseEnrollment;
-use App\Models\StudentAnswer;
-use App\Models\Assessment;
+use App\Models\Core\User;
+use App\Models\Learning\Course;
+use App\Models\Credentials\Certificate;
+use App\Models\Career\JobApplication;
+use App\Models\Mentorship\Mentorship\MockInterview;
+use App\Models\Community\SupportTicket;
+use App\Models\Learning\CourseEnrollment;
+use App\Models\Assessment\StudentAnswer;
+use App\Models\Assessment\Assessment;
 use Livewire\Component;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Computed;

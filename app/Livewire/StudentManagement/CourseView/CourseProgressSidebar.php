@@ -3,7 +3,7 @@
 namespace App\Livewire\StudentManagement\CourseView;
 
 use Livewire\Component;
-use App\Models\Course;
+use App\Models\Learning\Course;
 use Livewire\Attributes\On;
 
 class CourseProgressSidebar extends Component

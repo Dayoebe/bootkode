@@ -5,9 +5,9 @@ namespace App\Services;
 
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
-use App\Models\PaystackTransaction;
-use App\Models\Wallet;
-use App\Models\Withdrawal;
+use App\Models\Marketplace\PaystackTransaction;
+use App\Models\Marketplace\Wallet;
+use App\Models\Marketplace\Withdrawal;
 
 class PaystackService
 {

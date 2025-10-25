@@ -7,8 +7,8 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use App\Models\NewsletterCampaign;
-use App\Models\NewsletterInteraction; // Add this import
+use App\Models\Admin\NewsletterCampaign;
+use App\Models\Admin\NewsletterInteraction; // Add this import
 use App\Mail\NewsletterMail;
 use Illuminate\Support\Facades\Mail;
 

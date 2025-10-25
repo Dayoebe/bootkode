@@ -5,7 +5,7 @@ namespace App\Livewire\Newsletter\Partials;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Livewire\WithFileUploads;
-use App\Models\NewsletterSubscriber;
+use App\Models\Admin\NewsletterSubscriber;
 use Illuminate\Support\Facades\Storage;
 use League\Csv\Reader;
 use League\Csv\Writer;

@@ -5,7 +5,7 @@ namespace App\Livewire\Mentorship\Partial;
 
 use Livewire\Component;
 use Livewire\WithPagination;
-use App\Models\Mentorship;
+use App\Models\Mentorship\Mentorship;
 use Illuminate\Support\Facades\Auth;
 
 class Mentorships extends Component

@@ -3,12 +3,12 @@
 namespace App\Livewire\Institution;
 
 use Livewire\Component;
-use App\Models\User;
-use App\Models\Institution;
-use App\Models\InstitutionUser;
-use App\Models\BulkEnrollmentBatch;
-use App\Models\CourseEnrollment;
-use App\Models\Certificate;
+use App\Models\Core\User;
+use App\Models\Core\Institution;
+use App\Models\Admin\InstitutionUser;
+use App\Models\Admin\BulkEnrollmentBatch;
+use App\Models\Learning\CourseEnrollment;
+use App\Models\Credentials\Certificate;
 use Illuminate\Support\Facades\Route;
 use Livewire\Attributes\Layout;
 

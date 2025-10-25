@@ -3,7 +3,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
-use App\Models\User;
+use App\Models\Core\User;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -33,28 +33,75 @@ class AuthController extends Controller
 
     public function login(LoginRequest $request): RedirectResponse
     {
-        $request->authenticate();
-
-        $request->session()->regenerate();
-
-        // Check if email is verified
-        if (!$request->user()->hasVerifiedEmail()) {
-            Auth::logout();
-            return redirect()->route('verification.notice');
-        }
-
-        // Check if account is active
-        if (!$request->user()->is_active) {
-            Auth::logout();
+        \Log::info('=== LOGIN ATTEMPT START ===');
+        \Log::info('Email: ' . $request->email);
+        
+        try {
+            // Authenticate
+            \Log::info('Attempting authentication...');
+            $request->authenticate();
+            \Log::info('✓ Authentication successful');
+            
+            // Regenerate session
+            \Log::info('Regenerating session...');
+            $request->session()->regenerate();
+            \Log::info('✓ Session regenerated');
+            
+            // Get authenticated user
+            $user = Auth::user();
+            \Log::info('✓ User retrieved: ' . $user->id . ' (' . $user->email . ')');
+            \Log::info('User role: ' . $user->role);
+            \Log::info('User roles from Spatie: ' . json_encode($user->getRoleNames()));
+            
+            // Check account active status
+            \Log::info('Checking account active status...');
+            \Log::info('is_active: ' . ($user->is_active ? 'true' : 'false'));
+            if (!$user->is_active) {
+                \Log::warning('⚠ Account not active. Logging out.');
+                Auth::logout();
+                return back()->withErrors([
+                    'email' => 'Your account is not active. Please contact support.',
+                ]);
+            }
+            \Log::info('✓ Account is active');
+            
+            // Update last login
+            $user->update(['last_login_at' => now()]);
+            
+            // Get dashboard route
+            \Log::info('Getting dashboard route name...');
+            $dashboardRoute = $user->getDashboardRouteName();
+            \Log::info('Dashboard route: ' . $dashboardRoute);
+            
+            // Check email verification - log warning but allow login
+            \Log::info('Checking email verification...');
+            \Log::info('Email verified at: ' . ($user->email_verified_at ?? 'NULL'));
+            if (!$user->hasVerifiedEmail()) {
+                \Log::warning('⚠ Email not verified. User allowed to continue.');
+                // Flash a warning message to show in dashboard
+                session()->flash('email_not_verified', true);
+                session()->flash('verification_email', $user->email);
+            } else {
+                \Log::info('✓ Email verified');
+            }
+            
+            // Redirect to dashboard
+            \Log::info('✓ Redirecting to: ' . $dashboardRoute);
+            \Log::info('=== LOGIN ATTEMPT SUCCESS ===');
+            
+            return redirect()->intended(route($dashboardRoute));
+            
+        } catch (\Exception $e) {
+            \Log::error('❌ LOGIN ERROR: ' . $e->getMessage());
+            \Log::error('Exception type: ' . get_class($e));
+            \Log::error('Stack trace: ' . $e->getTraceAsString());
+            \Log::info('=== LOGIN ATTEMPT FAILED ===');
+            
             return back()->withErrors([
-                'email' => 'Your account is not active. Please contact support.',
+                'email' => 'An error occurred during login. Please try again.',
             ]);
         }
-
-        // Redirect to the appropriate dashboard based on role
-        return redirect()->intended(route($request->user()->getDashboardRouteName()));
     }
-
     public function logout(Request $request): RedirectResponse
     {
         Auth::guard('web')->logout();
@@ -62,6 +109,29 @@ class AuthController extends Controller
         $request->session()->regenerateToken();
         return redirect('/');
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     // Registration
     public function showRegistrationForm(): View
@@ -84,7 +154,7 @@ class AuthController extends Controller
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
             'profile_picture' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif', 'max:2048'],
             'role' => $this->getRoleValidationRules(),
-            'date_of_birth' => ['required', 'date', 'before:-18 years'],
+            'date_of_birth' => ['required', 'date'],
             'phone_number' => ['required', 'string', 'max:20'],
             'bio' => ['nullable', 'string', 'max:500'],
             'address_street' => ['required', 'string', 'max:255'],

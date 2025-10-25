@@ -2,8 +2,8 @@
 
 namespace App\Services;
 
-use App\Models\Course;
-use App\Models\CourseReview;
+use App\Models\Learning\Course;
+use App\Models\Learning\CourseReview;
 use App\Models\ReviewAnalytics;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;

@@ -2,7 +2,7 @@
 // app/Notifications/MarketplaceItemApproved.php
 namespace App\Notifications;
 
-use App\Models\MarketplaceItem;
+use App\Models\Marketplace\MarketplaceItem;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;

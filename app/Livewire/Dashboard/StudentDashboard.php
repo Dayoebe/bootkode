@@ -2,21 +2,21 @@
 
 namespace App\Livewire\Dashboard;
 
-use App\Models\Course;
-use App\Models\User;
-use App\Models\Announcement;
-use App\Models\Certificate;
-use App\Models\UserAchievement;
-use App\Models\SystemStatus;
-use App\Models\CourseEnrollment;
-use App\Models\StudentAnswer;
-use App\Models\Assessment;
-use App\Models\JobApplication;
-use App\Models\Mentorship;
-use App\Models\LearningSession;
-use App\Models\Portfolio;
-use App\Models\Wishlist;
-use App\Models\CourseReview;
+use App\Models\Learning\Course;
+use App\Models\Core\User;
+use App\Models\Admin\Announcement;
+use App\Models\Credentials\Certificate;
+use App\Models\Core\UserAchievement;
+use App\Models\Community\SystemStatus;
+use App\Models\Learning\CourseEnrollment;
+use App\Models\Assessment\StudentAnswer;
+use App\Models\Assessment\Assessment;
+use App\Models\Career\JobApplication;
+use App\Models\Mentorship\Mentorship;
+use App\Models\Assessment\LearningSession;
+use App\Models\Content\Portfolio;
+use App\Models\Career\Wishlist;
+use App\Models\Learning\CourseReview;
 use Livewire\Component;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Computed;

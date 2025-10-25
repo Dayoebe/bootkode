@@ -2,13 +2,13 @@
 
 namespace App\Livewire\SystemManagement;
 
-use App\Models\SystemStatus;
+use App\Models\Community\SystemStatus;
 use App\Notifications\SystemStatusUpdateNotification;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
 use Livewire\WithPagination;
 // use App\Livewire\Component\User
-use App\Models\User;
+use App\Models\Core\User;
 use Livewire\Attributes\Layout;
 
 #[Layout('layouts.dashboard', ['title' => 'System Status Management', 'description' => 'Manage system status and incidents', 'icon' => 'fas fa-server', 'active' => 'system-status.management'])]

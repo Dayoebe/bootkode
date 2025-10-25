@@ -3,8 +3,8 @@
 namespace App\Livewire\CertificateManagement;
 
 use Livewire\Component;
-use App\Models\Course;
-use App\Models\Certificate;
+use App\Models\Learning\Course;
+use App\Models\Credentials\Certificate;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use Livewire\Attributes\Layout;
@@ -189,7 +189,7 @@ class CertificateRequest extends Component
         }
 
         // Notify super admins
-        $superAdmins = \App\Models\User::role('super_admin')->get();
+        $superAdmins = \App\Models\Core\User::role('super_admin')->get();
         foreach ($superAdmins as $admin) {
             $admin->notify(
                 new \App\Notifications\CertificateRequestReceived($certificate)

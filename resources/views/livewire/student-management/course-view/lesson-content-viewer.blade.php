@@ -208,7 +208,7 @@
                                 </h3>
                                 <p class="text-blue-700 dark:text-blue-300 text-sm mt-1">
                                     @php
-                                        $assessmentCount = \App\Models\Assessment::where('lesson_id', $lesson->id)->count();
+                                        $assessmentCount = \App\Models\Assessment\Assessment::where('lesson_id', $lesson->id)->count();
                                     @endphp
                                     {{ $assessmentCount }} assessment{{ $assessmentCount > 1 ? 's' : '' }} must be completed to proceed
                                 </p>

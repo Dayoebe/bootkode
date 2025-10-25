@@ -3,11 +3,11 @@
 namespace App\Livewire\Content;
 
 use Livewire\Component;
-use App\Models\User;
-use App\Models\Document;
-use App\Models\DocumentCategory;
-use App\Models\LearningMaterial;
-use App\Models\VideoLibrary;
+use App\Models\Core\User;
+use App\Models\Learning\Document;
+use App\Models\Learning\DocumentCategory;
+use App\Models\Learning\LearningMaterial;
+use App\Models\Learning\VideoLibrary;
 use Illuminate\Support\Facades\Route;
 use Livewire\Attributes\Layout;
 

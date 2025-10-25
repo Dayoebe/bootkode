@@ -4,9 +4,9 @@ namespace App\Livewire\Marketplace;
 
 use Livewire\Component;
 use Livewire\WithPagination;
-use App\Models\MarketplaceItem;
-use App\Models\MarketplaceCategory;
-use App\Models\User;
+use App\Models\Marketplace\MarketplaceItem;
+use App\Models\Marketplace\MarketplaceCategory;
+use App\Models\Core\User;
 use App\Services\MarketplaceSearchService;
 use Illuminate\Support\Facades\Cache;
 use Livewire\Attributes\Layout;
@@ -314,7 +314,7 @@ class PublicMarketplace extends Component
                     $query->published();
                 })->count(),
                 'total_categories' => MarketplaceCategory::active()->count(),
-                'total_reviews' => \App\Models\ProductReview::approved()->count(),
+                'total_reviews' => \App\Models\Marketplace\ProductReview::approved()->count(),
                 'average_rating' => MarketplaceItem::published()
                     ->whereNotNull('average_rating')
                     ->avg('average_rating'),

@@ -3,11 +3,11 @@
 namespace App\Livewire\Marketplace\Partial;
 
 use Livewire\Component;
-use App\Models\MarketplaceItem;
-use App\Models\MarketplaceOrder;
-use App\Models\MarketplaceCategory;
-use App\Models\User;
-use App\Models\ProductReview;
+use App\Models\Marketplace\MarketplaceItem;
+use App\Models\Marketplace\MarketplaceOrder;
+use App\Models\Marketplace\MarketplaceCategory;
+use App\Models\Core\User;
+use App\Models\Marketplace\ProductReview;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Cache;
 

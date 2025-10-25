@@ -2,11 +2,11 @@
 
 namespace App\Services;
 
-use App\Models\Course;
-use App\Models\Section;
-use App\Models\Lesson;
-use App\Models\Assessment;
-use App\Models\UserProgress;
+use App\Models\Learning\Course;
+use App\Models\Learning\Section;
+use App\Models\Learning\Lesson;
+use App\Models\Assessment\Assessment;
+use App\Models\Core\UserProgress;
 use Illuminate\Support\Facades\Auth;
 
 class ProgressService

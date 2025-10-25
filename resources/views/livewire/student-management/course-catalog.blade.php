@@ -106,7 +106,7 @@
                     class="bg-themed-secondary rounded-xl border border-themed-primary hover:shadow-lg transition-all duration-300 overflow-hidden group">
                     <div class="relative overflow-hidden">
                         <img src="{{ asset('storage/' . ($course->thumbnail ?? 'images/default-course.png')) }}"
-                            alt="{{ $course->title }}" 
+                            alt="{{ $course->title }}"
                             class="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300">
                         <div class="absolute top-3 left-3 flex flex-col gap-2">
                             <span class="bg-accent-themed-primary text-white text-xs px-3 py-1.5 rounded-full shadow">
@@ -143,7 +143,8 @@
                         </div>
 
                         <p class="text-themed-secondary text-sm mb-4 line-clamp-2">
-                            {{ Str::limit($course->description, 80) }}</p>
+                            {{ Str::limit($course->description, 80) }}
+                        </p>
 
                         <div class="flex items-center justify-between text-sm text-themed-secondary mb-4">
                             <div class="flex items-center">
@@ -199,7 +200,8 @@
                 <i class="fas fa-book-open text-themed-tertiary text-xl"></i>
             </div>
             <h3 class="text-lg font-medium text-themed-primary mb-2">No courses found</h3>
-            <p class="text-themed-secondary mb-6 max-w-md mx-auto">Try adjusting your search filters or search terms to find what you're looking for.</p>
+            <p class="text-themed-secondary mb-6 max-w-md mx-auto">Try adjusting your search filters or search terms to find
+                what you're looking for.</p>
             <button wire:click="resetFilters"
                 class="inline-flex items-center px-4 py-2.5 bg-accent-themed-primary hover:bg-accent-themed-secondary text-white rounded-lg text-sm font-medium transition-colors">
                 <i class="fas fa-redo-alt mr-2"></i> Reset Filters
@@ -211,7 +213,8 @@
     @if($previewCourse)
         <div class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4" x-data
             x-on:click.self="$wire.closePreview()">
-            <div class="bg-themed-secondary rounded-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto border border-themed-primary">
+            <div
+                class="bg-themed-secondary rounded-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto border border-themed-primary">
                 <div class="p-6">
                     <div class="flex justify-between items-start mb-6">
                         <h2 class="text-2xl font-bold text-themed-primary">{{ $previewCourse->title }}</h2>
@@ -225,7 +228,7 @@
                         <div class="lg:col-span-2">
                             <div class="rounded-lg overflow-hidden mb-6">
                                 <img src="{{ asset('storage/' . ($previewCourse->thumbnail ?? 'images/default-course.png')) }}"
-                                alt="{{ $previewCourse->title }}" class="w-full h-60 object-cover">
+                                    alt="{{ $previewCourse->title }}" class="w-full h-60 object-cover">
                             </div>
 
                             <div class="prose max-w-none">

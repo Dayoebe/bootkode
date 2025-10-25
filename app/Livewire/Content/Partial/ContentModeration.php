@@ -4,9 +4,9 @@ namespace App\Livewire\Content\Partial;
 
 use Livewire\Component;
 use Livewire\WithPagination;
-use App\Models\Document;
-use App\Models\LearningMaterial;
-use App\Models\VideoLibrary;
+use App\Models\Learning\Document;
+use App\Models\Learning\LearningMaterial;
+use App\Models\Learning\VideoLibrary;
 
 class ContentModeration extends Component
 {

@@ -18,7 +18,7 @@ class AffiliateServiceProvider extends ServiceProvider
     {
         // Register custom wallet transaction categories
         if (!defined('WalletTransaction::CATEGORY_REFERRAL_COMMISSION')) {
-            define('App\Models\WalletTransaction::CATEGORY_REFERRAL_COMMISSION', 'referral_commission');
+            define('App\Models\Marketplace\WalletTransaction::CATEGORY_REFERRAL_COMMISSION', 'referral_commission');
         }
     }
 }

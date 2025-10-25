@@ -3,18 +3,18 @@
 namespace App\Livewire\StudentManagement;
 
 use Livewire\Component;
-use App\Models\Course;
-use App\Models\CourseReview;
-use App\Models\Section;
-use App\Models\Lesson;
-use App\Models\Assessment;
-use App\Models\StudentAnswer;
-use App\Models\CourseEnrollment;
-use App\Models\LessonProgress; // Add this if you're using the new model
+use App\Models\Learning\Course;
+use App\Models\Learning\CourseReview;
+use App\Models\Learning\Section;
+use App\Models\Learning\Lesson;
+use App\Models\Assessment\Assessment;
+use App\Models\Assessment\StudentAnswer;
+use App\Models\Learning\CourseEnrollment;
+use App\Models\Learning\LessonProgress; // Add this if you're using the new model
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache; // ADD THIS LINE
 use Illuminate\Http\Request;
-use App\Models\Certificate;
+use App\Models\Credentials\Certificate;
 use App\Notifications\CourseCompletionCertificateReady;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;

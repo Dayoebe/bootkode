@@ -3,7 +3,7 @@
 namespace App\Livewire\Pages\Partials;
 
 use Livewire\Component;
-use App\Models\Page;
+use App\Models\Content\Page;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 

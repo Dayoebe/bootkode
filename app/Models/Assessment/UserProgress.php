@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models\Assessment\Assessment;
+namespace App\Models\Assessment;
 
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Core\User; // UPDATED

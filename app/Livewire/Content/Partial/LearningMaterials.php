@@ -5,9 +5,9 @@ namespace App\Livewire\Content\Partial;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Livewire\WithFileUploads;
-use App\Models\LearningMaterial;
-use App\Models\Course;
-use App\Models\User;
+use App\Models\Learning\LearningMaterial;
+use App\Models\Learning\Course;
+use App\Models\Core\User;
 use Illuminate\Support\Facades\Storage;
 
 class LearningMaterials extends Component

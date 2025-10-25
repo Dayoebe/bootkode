@@ -2,7 +2,7 @@
 
 namespace App\Livewire\UserManagement;
 
-use App\Models\User;
+use App\Models\Core\User;
 use App\Notifications\VerifyEmailNotification;
 use Livewire\Component;
 use Livewire\WithPagination;

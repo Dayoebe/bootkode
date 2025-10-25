@@ -7,9 +7,9 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use App\Models\NewsletterCampaign;
-use App\Models\NewsletterSubscriber;
-use App\Models\NewsletterInteraction;
+use App\Models\Admin\NewsletterCampaign;
+use App\Models\Admin\NewsletterSubscriber;
+use App\Models\Admin\NewsletterInteraction;
 
 class SendNewsletterCampaign implements ShouldQueue
 {

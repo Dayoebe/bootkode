@@ -2,8 +2,8 @@
 
 namespace App\Livewire\Blog;
 
-use App\Models\BlogPost;
-use App\Models\BlogCategory;
+use App\Models\Content\BlogPost;
+use App\Models\Content\BlogCategory;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 use Illuminate\Support\Facades\Storage;

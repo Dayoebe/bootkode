@@ -3,8 +3,8 @@
 namespace App\Livewire\CertificateManagement;
 
 use Livewire\Component;
-use App\Models\Certificate;
-use App\Models\CertificateTemplate;
+use App\Models\Credentials\Certificate;
+use App\Models\Credentials\CertificateTemplate;
 use Illuminate\Support\Facades\Auth;
 use Livewire\WithFileUploads;
 use Livewire\Attributes\Layout;

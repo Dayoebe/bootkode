@@ -2,7 +2,7 @@
 
 namespace App\Livewire\SystemManagement;
 
-// use App\Models\SystemStatus;
+// use App\Models\Community\SystemStatus;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -46,7 +46,7 @@ class SystemStatus extends Component
 
     private function getServiceStatus($service)
     {
-        $latestIncident = \App\Models\SystemStatus::where('service', $service)
+        $latestIncident = \App\Models\Community\SystemStatus::where('service', $service)
             ->whereNull('resolved_at')
             ->latest('started_at')
             ->first();
@@ -56,7 +56,7 @@ class SystemStatus extends Component
 
     public function render()
     {
-        $incidents = \App\Models\SystemStatus::when($this->search, function ($query) {
+        $incidents = \App\Models\Community\SystemStatus::when($this->search, function ($query) {
             $query->where('title', 'like', '%' . $this->search . '%')
                   ->orWhere('description', 'like', '%' . $this->search . '%');
         })

@@ -2,7 +2,7 @@
 
 namespace App\Services;
 
-use App\Models\Certificate;
+use App\Models\Credentials\Certificate;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Log;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -256,7 +256,7 @@ class CertificateService
         }
 
         // Check completion
-        $course = \App\Models\Course::findOrFail($courseId);
+        $course = \App\Models\Learning\Course::findOrFail($courseId);
         $totalLessons = $course->allLessons()->count();
         $completedLessons = \DB::table('lesson_user')
             ->whereIn('lesson_id', $course->allLessons()->pluck('id'))
@@ -284,7 +284,7 @@ class CertificateService
      */
     public function calculateGrade($userId, $courseId): string
     {
-        $course = \App\Models\Course::findOrFail($courseId);
+        $course = \App\Models\Learning\Course::findOrFail($courseId);
         
         // Get assessments for this course
         $assessments = $course->assessments ?? collect();

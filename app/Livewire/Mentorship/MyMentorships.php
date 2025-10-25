@@ -4,7 +4,7 @@ namespace App\Livewire\Mentorship;
 
 use Livewire\Component;
 use Livewire\WithPagination;
-use App\Models\Mentorship;
+use App\Models\Mentorship\Mentorship;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\On;

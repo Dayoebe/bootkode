@@ -4,8 +4,8 @@ namespace App\Livewire\Newsletter\Partials;
 
 use Livewire\Component;
 use Livewire\WithPagination;
-use App\Models\NewsletterCampaign;
-use App\Models\NewsletterInteraction;
+use App\Models\Admin\NewsletterCampaign;
+use App\Models\Admin\NewsletterInteraction;
 
 class CampaignReports extends Component
 {

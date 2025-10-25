@@ -3,7 +3,7 @@
 namespace App\Livewire\CertificateManagement;
 
 use Livewire\Component;
-use App\Models\Certificate;
+use App\Models\Credentials\Certificate;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Livewire\WithPagination;

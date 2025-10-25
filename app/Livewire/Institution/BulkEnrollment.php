@@ -5,9 +5,9 @@ namespace App\Livewire\Institution;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Livewire\WithFileUploads;
-use App\Models\Institution;
-use App\Models\Course;
-use App\Models\BulkEnrollmentBatch;
+use App\Models\Core\Institution;
+use App\Models\Learning\Course;
+use App\Models\Admin\BulkEnrollmentBatch;
 use App\Services\InstitutionService;
 use Illuminate\Support\Facades\Storage;
 

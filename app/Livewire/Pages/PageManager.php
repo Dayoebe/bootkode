@@ -3,7 +3,7 @@
 namespace App\Livewire\Pages;
 
 use Livewire\Component;
-use App\Models\Page;
+use App\Models\Content\Page;
 use Livewire\Attributes\Layout;
 
 #[Layout('layouts.dashboard', [

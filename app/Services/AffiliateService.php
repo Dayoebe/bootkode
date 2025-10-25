@@ -3,12 +3,12 @@
 // app/Services/AffiliateService.php
 namespace App\Services;
 
-use App\Models\User;
-use App\Models\Course;
-use App\Models\Affiliate;
-use App\Models\Referral;
-use App\Models\ReferralTransaction;
-use App\Models\WalletTransaction;
+use App\Models\Core\User;
+use App\Models\Learning\Course;
+use App\Models\Marketplace\Affiliate;
+use App\Models\Marketplace\Referral;
+use App\Models\Marketplace\ReferralTransaction;
+use App\Models\Marketplace\WalletTransaction;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 

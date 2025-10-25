@@ -3,9 +3,9 @@
 namespace App\Livewire\Mentorship;
 
 use Livewire\Component;
-use App\Models\Mentorship;
-use App\Models\MentorshipSession;
-use App\Models\CodeReview;
+use App\Models\Mentorship\Mentorship;
+use App\Models\Mentorship\MentorshipSession;
+use App\Models\Mentorship\CodeReview;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\Layout;
 

@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
-use App\Models\Page;
+use App\Models\Content\Page;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 

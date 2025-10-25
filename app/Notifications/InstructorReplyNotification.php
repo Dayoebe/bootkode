@@ -2,7 +2,7 @@
 
 namespace App\Notifications;
 
-use App\Models\CourseReview;
+use App\Models\Learning\CourseReview;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;

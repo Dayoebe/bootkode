@@ -3,10 +3,10 @@
 namespace App\Livewire\Institution;
 
 use Livewire\Component;
-use App\Models\Institution;
-use App\Models\InstitutionUser;
-use App\Models\CourseEnrollment;
-use App\Models\Certificate;
+use App\Models\Core\Institution;
+use App\Models\Admin\InstitutionUser;
+use App\Models\Learning\CourseEnrollment;
+use App\Models\Credentials\Certificate;
 use App\Services\InstitutionService;
 
 class InstitutionAnalytics extends Component

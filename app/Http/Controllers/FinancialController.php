@@ -6,7 +6,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Services\PaystackService;
 use App\Services\WalletService;
-use App\Models\PaystackTransaction;
+use App\Models\Marketplace\PaystackTransaction;
 use Illuminate\Support\Facades\Log;
 
 class FinancialController extends Controller
@@ -94,10 +94,10 @@ class FinancialController extends Controller
     {
         $transferCode = $data['transfer_code'];
         
-        $withdrawal = \App\Models\Withdrawal::where('paystack_transfer_code', $transferCode)->first();
+        $withdrawal = \App\Models\Marketplace\Withdrawal::where('paystack_transfer_code', $transferCode)->first();
         if ($withdrawal) {
             $withdrawal->update([
-                'status' => \App\Models\Withdrawal::STATUS_COMPLETED,
+                'status' => \App\Models\Marketplace\Withdrawal::STATUS_COMPLETED,
                 'completed_at' => now()
             ]);
         }
@@ -107,10 +107,10 @@ class FinancialController extends Controller
     {
         $transferCode = $data['transfer_code'];
         
-        $withdrawal = \App\Models\Withdrawal::where('paystack_transfer_code', $transferCode)->first();
+        $withdrawal = \App\Models\Marketplace\Withdrawal::where('paystack_transfer_code', $transferCode)->first();
         if ($withdrawal) {
             $withdrawal->update([
-                'status' => \App\Models\Withdrawal::STATUS_FAILED,
+                'status' => \App\Models\Marketplace\Withdrawal::STATUS_FAILED,
                 'failure_reason' => $data['reason'] ?? 'Transfer failed'
             ]);
         }

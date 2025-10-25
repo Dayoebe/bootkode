@@ -2,8 +2,8 @@
 
 // Add this to app/Providers/AuthServiceProvider.php
 
-use App\Models\MarketplaceItem;
-use App\Models\MarketplaceOrder;
+use App\Models\Marketplace\MarketplaceItem;
+use App\Models\Marketplace\MarketplaceOrder;
 use App\Policies\MarketplaceItemPolicy;
 use App\Policies\MarketplaceOrderPolicy;
 

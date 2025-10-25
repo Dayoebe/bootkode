@@ -3,7 +3,7 @@
 namespace App\Livewire\Component;
 
 use Livewire\Component;
-use App\Models\Course; // Example
+use App\Models\Learning\Course; // Example
 
 class DashboardOverview extends Component
 {

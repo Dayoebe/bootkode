@@ -4,9 +4,9 @@ namespace App\Livewire\StudentManagement;
 
 use Livewire\Component;
 use Livewire\WithPagination;
-use App\Models\Course;
-use App\Models\CourseCategory;
-use App\Models\Wishlist;
+use App\Models\Learning\Course;
+use App\Models\Learning\CourseCategory;
+use App\Models\Career\Wishlist;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\Layout;
 

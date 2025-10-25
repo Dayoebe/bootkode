@@ -4,9 +4,9 @@ namespace App\Livewire\Mentorship;
 
 use Livewire\Component;
 use Livewire\WithPagination;
-use App\Models\MentorProfile;
-use App\Models\Mentorship;
-use App\Models\User;
+use App\Models\Mentorship\MentorProfile;
+use App\Models\Mentorship\Mentorship;
+use App\Models\Core\User;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\Layout;
 

@@ -2,7 +2,7 @@
 
 namespace App\Livewire\UserManagement;
 
-use App\Models\User;
+use App\Models\Core\User;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
 use Livewire\Component;

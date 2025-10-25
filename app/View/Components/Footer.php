@@ -2,7 +2,7 @@
 
 namespace App\View\Components;
 
-use App\Models\BlogCategory;
+use App\Models\Content\BlogCategory;
 use Closure;
 use Illuminate\Contracts\View\View;
 use Illuminate\View\Component;

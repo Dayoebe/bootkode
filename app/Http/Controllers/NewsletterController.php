@@ -3,9 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
-use App\Models\NewsletterSubscriber;
-use App\Models\NewsletterInteraction;
-use App\Models\NewsletterCampaign;
+use App\Models\Admin\NewsletterSubscriber;
+use App\Models\Admin\NewsletterInteraction;
+use App\Models\Admin\NewsletterCampaign;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 

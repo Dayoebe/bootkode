@@ -3,15 +3,15 @@
 namespace App\Livewire\Dashboard;
 
 use Livewire\Component;
-use App\Models\User;
-use App\Models\Course;
-use App\Models\CourseCategory;
-use App\Models\SupportTicket;
-use App\Models\Certificate;
-use App\Models\CourseEnrollment;
-use App\Models\BlogPost;
-use App\Models\Announcement;
-use App\Models\Faq;
+use App\Models\Core\User;
+use App\Models\Learning\Course;
+use App\Models\Learning\CourseCategory;
+use App\Models\Community\SupportTicket;
+use App\Models\Credentials\Certificate;
+use App\Models\Learning\CourseEnrollment;
+use App\Models\Content\BlogPost;
+use App\Models\Admin\Announcement;
+use App\Models\Community\Faq;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Spatie\Activitylog\Models\Activity;

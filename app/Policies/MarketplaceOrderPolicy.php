@@ -3,8 +3,8 @@
 // app/Policies/MarketplaceOrderPolicy.php
 namespace App\Policies;
 
-use App\Models\MarketplaceOrder;
-use App\Models\User;
+use App\Models\Marketplace\MarketplaceOrder;
+use App\Models\Core\User;
 
 class MarketplaceOrderPolicy
 {
