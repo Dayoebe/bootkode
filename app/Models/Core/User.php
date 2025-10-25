@@ -10,11 +10,12 @@ use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
 use App\Traits\HasWallet;
 use App\Traits\HasAffiliate;
+use App\Traits\HasActivityLogs;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class User extends Authenticatable implements MustVerifyEmail
 {
-    use HasApiTokens, HasFactory, Notifiable, HasRoles, HasWallet, HasAffiliate;
+    use HasApiTokens, HasFactory, Notifiable, HasRoles, HasWallet, HasAffiliate, HasActivityLogs;
 
     const ROLE_SUPER_ADMIN = 'super_admin';
     const ROLE_ACADEMY_ADMIN = 'academy_admin';
@@ -95,7 +96,7 @@ class User extends Authenticatable implements MustVerifyEmail
                 $user->syncRoles([$user->role]);
             }
         });
-    
+
         static::updated(function ($user) {
             if ($user->isDirty('role') && $user->role) {
                 $user->syncRoles([$user->role]);
@@ -834,7 +835,7 @@ class User extends Authenticatable implements MustVerifyEmail
             $favorites = json_decode($favorites, true) ?? [];
         }
 
-        return in_array((int)$courseId, $favorites);
+        return in_array((int) $courseId, $favorites);
     }
 
     public function addFavoriteCourse($courseId)
@@ -845,7 +846,7 @@ class User extends Authenticatable implements MustVerifyEmail
             $favorites = json_decode($favorites, true) ?? [];
         }
 
-        $courseId = (int)$courseId;
+        $courseId = (int) $courseId;
         if (!in_array($courseId, $favorites)) {
             $favorites[] = $courseId;
             $this->favorite_courses = $favorites;
@@ -861,13 +862,45 @@ class User extends Authenticatable implements MustVerifyEmail
             $favorites = json_decode($favorites, true) ?? [];
         }
 
-        $courseId = (int)$courseId;
+        $courseId = (int) $courseId;
         $favorites = array_filter($favorites, function ($id) use ($courseId) {
-            return (int)$id !== $courseId;
+            return (int) $id !== $courseId;
         });
 
         $this->favorite_courses = array_values($favorites);
         $this->save();
+    }
+
+    // ============================================
+// ACTIVITY LOGGING
+// ============================================
+
+    public function logCustomActivity(string $description, array $properties = [], string $event = 'custom')
+    {
+        return \App\Models\System\ActivityLog::create([
+            'log_name' => 'user',
+            'event' => $event,
+            'description' => $description,
+            'subject_id' => $this->id,
+            'subject_type' => static::class,
+            'causer_id' => $this->id,
+            'causer_type' => static::class,
+            'properties' => $properties,
+        ]);
+    }
+
+    public function activities()
+    {
+        return $this->hasMany(\App\Models\System\ActivityLog::class, 'causer_id')
+            ->where('causer_type', static::class);
+    }
+
+    public function getRecentActivities($limit = 10)
+    {
+        return $this->activities()
+            ->latest()
+            ->limit($limit)
+            ->get();
     }
 
     // ============================================
