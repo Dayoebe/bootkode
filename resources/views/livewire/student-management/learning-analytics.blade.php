@@ -369,7 +369,7 @@
                 </div>
                 <h3 class="text-xl font-semibold text-themed-primary mb-2">No Learning Data Yet</h3>
                 <p class="text-themed-secondary mb-6">Start learning to see your analytics and track your progress here.</p>
-                <a href="{{ route('courses.index') }}"
+                <a href="{{ route('student.course-catalog') }}"
                     class="inline-flex items-center px-4 py-2 rounded-lg text-sm font-medium bg-accent-themed-primary/20 text-accent-themed-primary border border-accent-themed-primary/30 hover:bg-accent-themed-primary/30 hover:text-accent-themed-primary transition-all duration-200">
                     <i class="fas fa-book-open mr-2"></i>
                     Browse Courses
