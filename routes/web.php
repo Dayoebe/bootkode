@@ -395,7 +395,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 });
 
 // PAYMENT CALLBACKS (Public, no auth)
-Route::post('/marketplace/payment/callback', [App\Http\Controllers\PaymentController::class, 'marketplaceCallback'])->name('marketplace.payment.callback');
+// Route::post('/marketplace/payment/callback', [App\Http\Controllers\PaymentController::class, 'marketplaceCallback'])->name('marketplace.payment.callback');
 Route::get('/marketplace/payment/success', function () {
     return redirect()->route('marketplace.purchases')->with('success', 'Payment completed successfully!');
 })->name('marketplace.payment.success');
@@ -541,9 +541,9 @@ Route::prefix('admin/pages')->middleware(['auth', 'verified'])->group(function (
     Route::get('/seo', \App\Livewire\Pages\PageManager::class)->defaults('activeTab', 'seo')->name('pages.seo');
     Route::get('/settings', \App\Livewire\Pages\PageManager::class)->defaults('activeTab', 'settings')->name('pages.settings');
 
-    // API endpoints
-    Route::post('/upload-media', [\App\Http\Controllers\MediaController::class, 'upload'])->name('pages.upload-media');
-    Route::delete('/media/{media}', [\App\Http\Controllers\MediaController::class, 'delete'])->name('pages.delete-media');
+    // // API endpoints
+    // Route::post('/upload-media', [\App\Http\Controllers\MediaController::class, 'upload'])->name('pages.upload-media');
+    // Route::delete('/media/{media}', [\App\Http\Controllers\MediaController::class, 'delete'])->name('pages.delete-media');
     Route::post('/track-view/{slug}', [PageController::class, 'trackView'])->name('pages.track-view');
 });
 
