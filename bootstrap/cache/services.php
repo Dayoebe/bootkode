@@ -43,7 +43,6 @@
     39 => 'Spatie\\LaravelImageOptimizer\\ImageOptimizerServiceProvider',
     40 => 'Spatie\\Permission\\PermissionServiceProvider',
     41 => 'App\\Providers\\AppServiceProvider',
-    42 => 'App\\Providers\\OfflineContentServiceProvider',
   ),
   'eager' => 
   array (
@@ -71,7 +70,6 @@
     21 => 'Spatie\\LaravelImageOptimizer\\ImageOptimizerServiceProvider',
     22 => 'Spatie\\Permission\\PermissionServiceProvider',
     23 => 'App\\Providers\\AppServiceProvider',
-    24 => 'App\\Providers\\OfflineContentServiceProvider',
   ),
   'deferred' => 
   array (
