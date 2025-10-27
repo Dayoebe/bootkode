@@ -7928,6 +7928,7 @@ return array(
     'Spatie\\LaravelPackageTools\\Exceptions\\InvalidPackage' => $vendorDir . '/spatie/laravel-package-tools/src/Exceptions/InvalidPackage.php',
     'Spatie\\LaravelPackageTools\\Package' => $vendorDir . '/spatie/laravel-package-tools/src/Package.php',
     'Spatie\\LaravelPackageTools\\PackageServiceProvider' => $vendorDir . '/spatie/laravel-package-tools/src/PackageServiceProvider.php',
+    'Spatie\\Permission\\Commands\\AssignRole' => $vendorDir . '/spatie/laravel-permission/src/Commands/AssignRole.php',
     'Spatie\\Permission\\Commands\\CacheReset' => $vendorDir . '/spatie/laravel-permission/src/Commands/CacheReset.php',
     'Spatie\\Permission\\Commands\\CreatePermission' => $vendorDir . '/spatie/laravel-permission/src/Commands/CreatePermission.php',
     'Spatie\\Permission\\Commands\\CreateRole' => $vendorDir . '/spatie/laravel-permission/src/Commands/CreateRole.php',

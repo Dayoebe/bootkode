@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInit956d5cc4dccb284eb964e57dd66e6ac5
+class ComposerStaticInit318c62cd75cf4ac25c804c4103471e33
 {
     public static $files = array (
         '6e3fae29631ef280660b3cdad06f25a8' => __DIR__ . '/..' . '/symfony/deprecation-contracts/function.php',
@@ -8665,6 +8665,7 @@ class ComposerStaticInit956d5cc4dccb284eb964e57dd66e6ac5
         'Spatie\\LaravelPackageTools\\Exceptions\\InvalidPackage' => __DIR__ . '/..' . '/spatie/laravel-package-tools/src/Exceptions/InvalidPackage.php',
         'Spatie\\LaravelPackageTools\\Package' => __DIR__ . '/..' . '/spatie/laravel-package-tools/src/Package.php',
         'Spatie\\LaravelPackageTools\\PackageServiceProvider' => __DIR__ . '/..' . '/spatie/laravel-package-tools/src/PackageServiceProvider.php',
+        'Spatie\\Permission\\Commands\\AssignRole' => __DIR__ . '/..' . '/spatie/laravel-permission/src/Commands/AssignRole.php',
         'Spatie\\Permission\\Commands\\CacheReset' => __DIR__ . '/..' . '/spatie/laravel-permission/src/Commands/CacheReset.php',
         'Spatie\\Permission\\Commands\\CreatePermission' => __DIR__ . '/..' . '/spatie/laravel-permission/src/Commands/CreatePermission.php',
         'Spatie\\Permission\\Commands\\CreateRole' => __DIR__ . '/..' . '/spatie/laravel-permission/src/Commands/CreateRole.php',
@@ -10211,10 +10212,10 @@ class ComposerStaticInit956d5cc4dccb284eb964e57dd66e6ac5
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInit956d5cc4dccb284eb964e57dd66e6ac5::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInit956d5cc4dccb284eb964e57dd66e6ac5::$prefixDirsPsr4;
-            $loader->prefixesPsr0 = ComposerStaticInit956d5cc4dccb284eb964e57dd66e6ac5::$prefixesPsr0;
-            $loader->classMap = ComposerStaticInit956d5cc4dccb284eb964e57dd66e6ac5::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInit318c62cd75cf4ac25c804c4103471e33::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInit318c62cd75cf4ac25c804c4103471e33::$prefixDirsPsr4;
+            $loader->prefixesPsr0 = ComposerStaticInit318c62cd75cf4ac25c804c4103471e33::$prefixesPsr0;
+            $loader->classMap = ComposerStaticInit318c62cd75cf4ac25c804c4103471e33::$classMap;
 
         }, null, ClassLoader::class);
     }
