@@ -88,7 +88,6 @@ return [
                 ['label' => 'Course Catalog', 'icon' => 'fas fa-book-open', 'route_name' => ('student.course-catalog'), 'roles' => [User::ROLE_STUDENT, User::ROLE_INSTRUCTOR, User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN],],
                 ['label' => 'Learning Analytics', 'icon' => 'fas fa-chart-line', 'route_name' => 'student.learning-analytics', 'roles' => [User::ROLE_STUDENT, User::ROLE_INSTRUCTOR, User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN], 'component' => 'learning-analytics'],
                 ['label' => 'Saved Resources', 'icon' => 'fas fa-bookmark', 'route_name' => ('student.saved-resources'), 'roles' => [User::ROLE_STUDENT], 'link_id' => 'student.saved-resources'],
-                ['label' => 'Offline Learning', 'icon' => 'fas fa-download', 'route_name' => ('student.offline-learning'), 'roles' => [User::ROLE_STUDENT], 'link_id' => 'student.offline-learning',]
             ]
         ],
         [
