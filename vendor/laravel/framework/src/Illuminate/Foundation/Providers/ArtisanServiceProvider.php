@@ -39,7 +39,7 @@ use Illuminate\Foundation\Console\ClearCompiledCommand;
 use Illuminate\Foundation\Console\ComponentMakeCommand;
 use Illuminate\Foundation\Console\ConfigCacheCommand;
 use Illuminate\Foundation\Console\ConfigClearCommand;
-use Illuminate\Foundation\Console\ConfigMakeCommand;
+use Illuminate\Console\ConfigMakeCommand;
 use Illuminate\Foundation\Console\ConfigPublishCommand;
 use Illuminate\Foundation\Console\ConfigShowCommand;
 use Illuminate\Foundation\Console\ConsoleMakeCommand;
@@ -398,7 +398,7 @@ class ArtisanServiceProvider extends ServiceProvider implements DeferrableProvid
     protected function registerConfigMakeCommand()
     {
         $this->app->singleton(ConfigMakeCommand::class, function ($app) {
-            return new ConfigMakeCommand($app['files']);
+            return new \Illuminate\Console\ConfigMakeCommand($app['files']);
         });
     }
 
