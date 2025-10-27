@@ -3,10 +3,7 @@
 namespace App\Livewire\CertificateManagement;
 
 use Livewire\Component;
-use App\Models\Credentials\Certificate;
-use App\Models\Credentials\CertificateTemplate;
 use Illuminate\Support\Facades\Auth;
-use Livewire\WithFileUploads;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
 
@@ -14,8 +11,6 @@ use Livewire\Attributes\Title;
 #[Title('Certificate Templates')]
 class CertificateTemplates extends Component
 {
-    use WithFileUploads;
-
     public $templates = [];
     public $selectedTemplate = null;
     public $showPreview = false;
@@ -52,10 +47,15 @@ class CertificateTemplates extends Component
         $this->loadTemplates();
     }
 
+    /**
+     * Load templates (in production, fetch from database)
+     */
     public function loadTemplates()
     {
-        // In a real app, you'd load from database
-        $this->templates = collect([
+        // For now, using sample templates
+        // In production: $this->templates = CertificateTemplate::all()->toArray();
+        
+        $this->templates = [
             [
                 'id' => 1,
                 'name' => 'Classic Professional',
@@ -101,7 +101,7 @@ class CertificateTemplates extends Component
                     'bodyFont' => 'Lora',
                 ]
             ],
-        ]);
+        ];
     }
 
     public function showCreateModal()
@@ -112,14 +112,14 @@ class CertificateTemplates extends Component
 
     public function showEditModal($templateId)
     {
-        $template = $this->templates->firstWhere('id', $templateId);
+        $template = collect($this->templates)->firstWhere('id', $templateId);
+        
         if ($template) {
             $this->selectedTemplate = $template;
             $this->templateName = $template['name'];
             $this->templateDescription = $template['description'];
             $this->isDefault = $template['is_default'];
             
-            // Load template settings
             $settings = $template['settings'];
             $this->backgroundColor = $settings['backgroundColor'];
             $this->borderColor = $settings['borderColor'];
@@ -136,7 +136,6 @@ class CertificateTemplates extends Component
     {
         $this->validate();
 
-        // In a real app, save to database
         $templateData = [
             'name' => $this->templateName,
             'description' => $this->templateDescription,
@@ -151,6 +150,9 @@ class CertificateTemplates extends Component
             ]
         ];
 
+        // In production, save to database:
+        // CertificateTemplate::create($templateData);
+
         $this->dispatch('notify', [
             'message' => 'Template saved successfully!',
             'type' => 'success'
@@ -164,7 +166,9 @@ class CertificateTemplates extends Component
     {
         $this->validate();
 
-        // In a real app, update database
+        // In production:
+        // CertificateTemplate::find($this->selectedTemplate['id'])->update($templateData);
+
         $this->dispatch('notify', [
             'message' => 'Template updated successfully!',
             'type' => 'success'
@@ -176,7 +180,6 @@ class CertificateTemplates extends Component
 
     public function setDefaultTemplate($templateId)
     {
-        // Only super admin can set default templates
         if (!Auth::user()->isSuperAdmin()) {
             $this->dispatch('notify', [
                 'message' => 'Only super administrators can set default templates.',
@@ -185,7 +188,8 @@ class CertificateTemplates extends Component
             return;
         }
 
-        // In a real app, update database
+        // In production: update all templates is_default to false, set this one to true
+
         $this->dispatch('notify', [
             'message' => 'Default template updated!',
             'type' => 'success'
@@ -196,7 +200,7 @@ class CertificateTemplates extends Component
 
     public function deleteTemplate($templateId)
     {
-        $template = $this->templates->firstWhere('id', $templateId);
+        $template = collect($this->templates)->firstWhere('id', $templateId);
         
         if ($template && $template['is_default']) {
             $this->dispatch('notify', [
@@ -206,7 +210,8 @@ class CertificateTemplates extends Component
             return;
         }
 
-        // In a real app, delete from database
+        // In production: CertificateTemplate::find($templateId)->delete();
+
         $this->dispatch('notify', [
             'message' => 'Template deleted successfully.',
             'type' => 'info'
@@ -239,14 +244,20 @@ class CertificateTemplates extends Component
 
     public function previewTemplate($templateId)
     {
-        $template = $this->templates->firstWhere('id', $templateId);
+        $template = collect($this->templates)->firstWhere('id', $templateId);
+        
         if ($template) {
             $this->selectedTemplate = $template;
             
-            // Create a sample certificate for preview with all required properties
+            // Create sample certificate for preview (NOT from database)
+            // This is ONLY for display, doesn't need to match database schema
+            $sampleCode = 'SAMPLE-' . strtoupper(substr(uniqid(), -8));
+            
             $this->previewCertificate = (object) [
-                'certificate_number' => 'CERT-' . strtoupper(uniqid()),
-                'verification_code' => 'VERIFY-' . strtoupper(uniqid()),
+                'id' => 0,
+                'certificate_number' => 'CERT-2024-SAMPLE-0001',
+                'verification_code' => $sampleCode,
+                'verification_url' => '#',  // Just for display
                 'user' => (object) ['name' => 'John Doe'],
                 'course' => (object) [
                     'title' => 'Sample Course Title',
@@ -258,7 +269,9 @@ class CertificateTemplates extends Component
                 'issued_date' => now(),
                 'credits' => 3,
                 'approver' => (object) ['name' => 'Dr. James Wilson'],
-                'qr_code_path' => null // Set to null for preview
+                'qr_code_path' => null,
+                'pdf_path' => null,
+                'status' => 'approved',
             ];
             
             $this->showPreview = true;
@@ -267,13 +280,8 @@ class CertificateTemplates extends Component
 
     public function render()
     {
-        $viewData = [];
-        
-        // Always pass the certificate if we have preview data
-        if ($this->previewCertificate) {
-            $viewData['certificate'] = $this->previewCertificate;
-        }
-    
-        return view('livewire.certificate-management.certificate-templates', $viewData);
+        return view('livewire.certificate-management.certificate-templates', [
+            'templates' => $this->templates,  // Ensure it's an array
+        ]);
     }
 }

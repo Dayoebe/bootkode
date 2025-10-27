@@ -1,5 +1,12 @@
 <?php
-// App/Notifications/CbtAchievementUnlocked.php
+
+namespace App\Notifications;
+
+use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Notifications\Notification;
+use Illuminate\Notifications\Messages\MailMessage;
+
 class CbtAchievementUnlocked extends Notification implements ShouldQueue
 {
     use Queueable;
@@ -25,7 +32,7 @@ class CbtAchievementUnlocked extends Notification implements ShouldQueue
             ->line("**{$this->achievement->achievement_icon} {$this->achievement->achievement_name}**")
             ->line($this->achievement->achievement_description)
             ->line("Keep up the great work in your learning journey!")
-            ->action('View All Achievements', route('student.achievements'))
+            ->action('View All Achievements', route('dashboard'))
             ->salutation('Best regards, The CBT Team');
     }
 
@@ -41,7 +48,7 @@ class CbtAchievementUnlocked extends Notification implements ShouldQueue
                 'achievement_icon' => $this->achievement->achievement_icon,
                 'achievement_description' => $this->achievement->achievement_description,
             ],
-            'action_url' => route('student.achievements'),
+            'action_url' => route('dashboard'),
         ];
     }
 }

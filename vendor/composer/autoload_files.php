@@ -39,7 +39,6 @@ return array(
     '58571171fd5812e6e447dce228f52f4d' => $vendorDir . '/laravel/framework/src/Illuminate/Support/helpers.php',
     '801c31d8ed748cfa537fa45402288c95' => $vendorDir . '/psy/psysh/src/functions.php',
     '568b22267a02ed7e8633652e03d8d755' => $vendorDir . '/algolia/algoliasearch-client-php/lib/Http/Psr7/functions.php',
-    '062a54fe8f6f91078b197f2922521dd9' => $vendorDir . '/laravel/pint/overrides/Runner/Parallel/ProcessFactory.php',
     '40275907c8566c390185147049ef6e5d' => $vendorDir . '/livewire/livewire/src/helpers.php',
     'cb61d74ad51d00867155534456b38b23' => $vendorDir . '/mews/purifier/src/helpers.php',
     'c72349b1fe8d0deeedd3a52e8aa814d8' => $vendorDir . '/mockery/mockery/library/helpers.php',

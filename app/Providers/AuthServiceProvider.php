@@ -1,7 +1,8 @@
 <?php
 
-// Add this to app/Providers/AuthServiceProvider.php
+namespace App\Providers;
 
+use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use App\Models\Marketplace\MarketplaceItem;
 use App\Models\Marketplace\MarketplaceOrder;
 use App\Policies\MarketplaceItemPolicy;
@@ -14,4 +15,9 @@ class AuthServiceProvider extends ServiceProvider
         MarketplaceItem::class => MarketplaceItemPolicy::class,
         MarketplaceOrder::class => MarketplaceOrderPolicy::class,
     ];
+
+    public function boot()
+    {
+        $this->registerPolicies();
+    }
 }

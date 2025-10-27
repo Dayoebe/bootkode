@@ -1,5 +1,5 @@
 <div class="min-h-screen bg-themed-primary p-6">
-    <div class="max-w-7xl mx-auto">
+    <div class="">
         <!-- Header -->
         <div class="flex justify-between items-center mb-8">
             <div>
