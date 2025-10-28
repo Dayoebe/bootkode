@@ -92,12 +92,12 @@ class ApplicationBuilder
     /**
      * Register the core event service provider for the application.
      *
-     * @param  iterable<int, string>|bool  $discover
+     * @param  array|bool  $discover
      * @return $this
      */
-    public function withEvents(iterable|bool $discover = true)
+    public function withEvents(array|bool $discover = [])
     {
-        if (is_iterable($discover)) {
+        if (is_array($discover) && count($discover) > 0) {
             AppEventServiceProvider::setEventDiscoveryPaths($discover);
         }
 
@@ -412,25 +412,6 @@ class ApplicationBuilder
                     $app->singleton($abstract, $concrete);
                 } else {
                     $app->singleton($concrete);
-                }
-            }
-        });
-    }
-
-    /**
-     * Register an array of scoped singleton container bindings to be bound when the application is booting.
-     *
-     * @param  array  $scopedSingletons
-     * @return $this
-     */
-    public function withScopedSingletons(array $scopedSingletons)
-    {
-        return $this->registered(function ($app) use ($scopedSingletons) {
-            foreach ($scopedSingletons as $abstract => $concrete) {
-                if (is_string($abstract)) {
-                    $app->scoped($abstract, $concrete);
-                } else {
-                    $app->scoped($concrete);
                 }
             }
         });
