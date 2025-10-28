@@ -11,6 +11,7 @@ use Illuminate\Database\Connectors\ConnectionFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\QueueEntityResolver;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Database\LostConnectionDetector;
 
 class DatabaseServiceProvider extends ServiceProvider
 {
