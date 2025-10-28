@@ -13,7 +13,7 @@
         "endroid/qr-code": "^5.0",
         "ezyang/htmlpurifier": "^4.18",
         "intervention/image": "^3.11",
-        "laravel/framework": "^12.0",
+        "laravel/framework": "^11.0",
         "laravel/sanctum": "^4.2",
         "laravel/scout": "^10.19",
         "laravel/socialite": "^5.23",
