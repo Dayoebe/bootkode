@@ -14,6 +14,7 @@
         "ezyang/htmlpurifier": "^4.18",
         "intervention/image": "^3.11",
         "laravel/framework": "^11.0",
+        "laravel/pail": "*",
         "laravel/sanctum": "^4.2",
         "laravel/scout": "^10.19",
         "laravel/socialite": "^5.23",
@@ -33,7 +34,6 @@
     "require-dev": {
         "fakerphp/faker": "^1.23",
         "laravel/breeze": "^2.3",
-        "laravel/pail": "^1.2.2",
         "laravel/pint": "^1.13",
         "laravel/sail": "^1.41",
         "mockery/mockery": "^1.6",
