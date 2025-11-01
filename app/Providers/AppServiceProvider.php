@@ -1,5 +1,4 @@
 <?php
-// Service Provider Registration: AppServiceProvider.php additions
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
@@ -23,8 +22,7 @@ class AppServiceProvider extends ServiceProvider
             // Check for scheduled campaigns every minute
             $schedule->command('newsletter:send-scheduled')
                 ->everyMinute()
-                ->withoutOverlapping()
-                ->runInBackground();
+                ->withoutOverlapping();
         });
     }
 }
