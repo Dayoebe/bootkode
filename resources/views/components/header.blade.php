@@ -13,11 +13,11 @@
             <!-- Logo -->
             <div class="flex-shrink-0 flex items-center">
                 <a href="/" class="flex items-center space-x-2 transform transition-transform hover:scale-105">
-                    <div class="flex flex-row gap-3 bg-gradient-to-r from-blue-50 to-pink-100 p-2 rounded-lg shadow-sm">
+                    <div class="flex flex-row gap-3 bg-gradient-to-r from-blue-50 to-red-100 p-2 rounded-lg shadow-sm">
                         <span class="text-2xl font-bold text-gray-900">
-                            <i class="fas fa-code h-8 wx-6 text-blue-900"> </i>
+                            <i class="fas fa-code h-8 wx-6 text-blue-500"> </i>
                             Boot<span
-                                class="bg-clip-text text-transparent bg-gradient-to-r from-pink-800 to-pink-400">Kode</span></span>
+                                class="text-blue-900 ">Kode</span></span>
                     </div>
                 </a>
             </div>
@@ -291,10 +291,10 @@
                         class="border border-b-2 border-blue-600 text-gray-600 hover:text-blue-400 font-medium hover:uppercase px-4 py-2 rounded-lg transition-colors duration-300 group">
                         <i class="fas fa-sign-in-alt mr-2 transition-transform group-hover:translate-x-0.5"></i>Log in
                     </a>
-                    <a href="{{ route('register') }}"
+                    {{-- <a href="{{ route('register') }}"
                         class="bg-gradient-to-r from-blue-400 to-pink-400 text-black font-medium hover:uppercase px-5 py-2.5 rounded-lg shadow-md hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-300 flex items-center animate-pulse-custom">
                         <i class="fas fa-user-plus mr-2"></i>Register
-                    </a>
+                    </a> --}}
                 </div>
             @endauth
 
@@ -574,10 +574,10 @@
                         class="text-gray-600 hover:text-blue-400 font-medium hover:uppercase px-4 py-2 rounded-lg transition-colors duration-300 group">
                         <i class="fas fa-sign-in-alt mr-2 transition-transform group-hover:translate-x-0.5"></i>Log in
                     </a>
-                    <a href="{{ route('register') }}"
+                    {{-- <a href="{{ route('register') }}"
                         class="bg-gradient-to-r from-blue-400 to-pink-400 text-black font-medium hover:uppercase px-5 py-2.5 rounded-lg shadow-md hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-300 flex items-center animate-pulse-custom">
                         <i class="fas fa-user-plus mr-2"></i>Register
-                    </a>
+                    </a> --}}
                 @endauth
             </div>
         </div>
