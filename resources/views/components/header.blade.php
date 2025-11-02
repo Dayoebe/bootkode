@@ -253,7 +253,7 @@
                 <div class="relative ml-4" x-data="{ open: false }" @click.away="open = false">
                     <button @click="open = !open" class="flex items-center space-x-2 focus:outline-none">
                         <div
-                            class="h-8 w-8 rounded-full bg-gradient-to-r from-blue-400 to-pink-500 flex items-center justify-center text-white font-bold">
+                            class="h-8 w-8 rounded-full bg-blue-400 flex items-center justify-center text-white font-bold">
                             {{ strtoupper(substr(auth()->user()->name, 0, 2)) }}
                         </div>
                         <span class="hidden md:inline text-gray-700 font-medium">{{ auth()->user()->name }}</span>
@@ -292,7 +292,7 @@
                         <i class="fas fa-sign-in-alt mr-2 transition-transform group-hover:translate-x-0.5"></i>Log in
                     </a>
                     {{-- <a href="{{ route('register') }}"
-                        class="bg-gradient-to-r from-blue-400 to-pink-400 text-black font-medium hover:uppercase px-5 py-2.5 rounded-lg shadow-md hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-300 flex items-center animate-pulse-custom">
+                        class="bg-blue-400 text-black font-medium hover:uppercase px-5 py-2.5 rounded-lg shadow-md hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-300 flex items-center animate-pulse-custom">
                         <i class="fas fa-user-plus mr-2"></i>Register
                     </a> --}}
                 </div>
@@ -538,7 +538,7 @@
                     <div class="relative ml-4" x-data="{ open: false }" @click.away="open = false">
                         <button @click="open = !open" class="flex items-center space-x-2 focus:outline-none">
                             <div
-                                class="h-8 w-8 rounded-full bg-gradient-to-r from-blue-400 to-pink-500 flex items-center justify-center text-white font-bold">
+                                class="h-8 w-8 rounded-full bg-blue-400 flex items-center justify-center text-white font-bold">
                                 {{ strtoupper(substr(auth()->user()->name, 0, 2)) }}
                             </div>
                             <span class=" md:inline text-gray-700 font-medium">{{ auth()->user()->name }}</span>
@@ -575,7 +575,7 @@
                         <i class="fas fa-sign-in-alt mr-2 transition-transform group-hover:translate-x-0.5"></i>Log in
                     </a>
                     {{-- <a href="{{ route('register') }}"
-                        class="bg-gradient-to-r from-blue-400 to-pink-400 text-black font-medium hover:uppercase px-5 py-2.5 rounded-lg shadow-md hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-300 flex items-center animate-pulse-custom">
+                        class="bg-blue-400 text-black font-medium hover:uppercase px-5 py-2.5 rounded-lg shadow-md hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-300 flex items-center animate-pulse-custom">
                         <i class="fas fa-user-plus mr-2"></i>Register
                     </a> --}}
                 @endauth
