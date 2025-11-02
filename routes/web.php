@@ -441,7 +441,7 @@ Route::middleware(['auth', 'verified'])->prefix('student')->name('student.')->gr
 // CERTIFICATE MANAGEMENT ROUTES (Admin/Instructor)
 // =============================================================================
 
-Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(function () {
+\Illuminate\Support\Facades\Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(function () {
     // Certificate Management Dashboard
     Route::get('/certificates', \App\Livewire\CertificateManagement\CertificateManagement::class)->name('certificates.manage');
     Route::get('/certificates/analytics', \App\Livewire\CertificateManagement\CertificateAnalytics::class)->name('certificates.analytics');
