@@ -20,6 +20,7 @@ class AppServiceProvider extends ServiceProvider
             $schedule = $this->app->make(Schedule::class);
             
             // Check for scheduled campaigns every minute
+            // Removed runInBackground() - not compatible with current Laravel version
             $schedule->command('newsletter:send-scheduled')
                 ->everyMinute()
                 ->withoutOverlapping();
