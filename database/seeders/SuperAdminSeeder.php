@@ -15,7 +15,6 @@ class SuperAdminSeeder extends Seeder
                 'name' => 'Super Admin',
                 'password' => bcrypt('9638'),
                 'email_verified_at' => now(),
-                'gender' => 'male',
                 'date_of_birth' => '1998-01-29',
                 'bio' => 'web dev',
                 'phone_number' => '09030036438',
