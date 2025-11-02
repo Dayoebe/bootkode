@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
@@ -15,15 +16,16 @@ class AppServiceProvider extends ServiceProvider
             ]);
         }
 
-        // Schedule newsletter commands
-        $this->app->booted(function () {
-            $schedule = $this->app->make(Schedule::class);
-            
-            // Check for scheduled campaigns every minute
-            // Removed runInBackground() - not compatible with current Laravel version
-            $schedule->command('newsletter:send-scheduled')
-                ->everyMinute()
-                ->withoutOverlapping();
-        });
+        // Only schedule tasks when the Schedule class is available
+        if (class_exists(Schedule::class) && $this->app->bound(Schedule::class)) {
+            $this->app->booted(function () {
+                $schedule = $this->app->make(Schedule::class);
+
+                // Check for scheduled campaigns every minute
+                $schedule->command('newsletter:send-scheduled')
+                    ->everyMinute()
+                    ->withoutOverlapping();
+            });
+        }
     }
 }
