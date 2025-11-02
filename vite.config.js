@@ -12,15 +12,17 @@ export default defineConfig({
             refresh: true,
         }),
     ],
-    resolve: {
-        alias: {
-            'trix': 'https://unpkg.com/trix@2.0.8/dist/trix.umd.min.js',
-            '@editorjs/editorjs': 'https://cdn.jsdelivr.net/npm/@editorjs/editorjs@latest',
-            '@editorjs/header': 'https://cdn.jsdelivr.net/npm/@editorjs/header@latest',
-            '@editorjs/list': 'https://cdn.jsdelivr.net/npm/@editorjs/list@latest',
-            '@editorjs/image': 'https://cdn.jsdelivr.net/npm/@editorjs/image@latest',
-            'chart.js': 'https://cdn.jsdelivr.net/npm/chart.js',
-            'sortablejs': 'https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js',
+    build: {
+        rollupOptions: {
+            external: [
+                'https://unpkg.com/trix@2.0.8/dist/trix.umd.min.js',
+                'https://cdn.jsdelivr.net/npm/@editorjs/editorjs@latest',
+                'https://cdn.jsdelivr.net/npm/@editorjs/header@latest',
+                'https://cdn.jsdelivr.net/npm/@editorjs/list@latest',
+                'https://cdn.jsdelivr.net/npm/@editorjs/image@latest',
+                'https://cdn.jsdelivr.net/npm/chart.js',
+                'https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js',
+            ],
         },
     },
 });

@@ -1,0 +1,1255 @@
+/* Enhanced Lesson Content Display Styles - Matching Trix Editor */
+.lesson-content-display {
+    color: #374151;
+    font-size: 1rem;
+    line-height: 1.7;
+    max-width: none;
+    transition: color 0.3s ease;
+}
+
+.dark .lesson-content-display {
+    color: #f3f4f6;
+}
+
+/* Headings */
+.lesson-content-display h1 {
+    font-size: 1.875rem;
+    font-weight: 700;
+    margin: 1.5rem 0 1rem 0;
+    color: #1f2937;
+    line-height: 1.2;
+    transition: color 0.3s ease;
+}
+
+.dark .lesson-content-display h1 {
+    color: #ffffff;
+}
+
+.lesson-content-display h2 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin: 1.25rem 0 0.75rem 0;
+    color: #1f2937;
+    line-height: 1.3;
+    transition: color 0.3s ease;
+}
+
+.dark .lesson-content-display h2 {
+    color: #ffffff;
+}
+
+.lesson-content-display h3 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin: 1rem 0 0.5rem 0;
+    color: #1f2937;
+    line-height: 1.4;
+    transition: color 0.3s ease;
+}
+
+.dark .lesson-content-display h3 {
+    color: #ffffff;
+}
+
+.lesson-content-display h4 {
+    font-size: 1.125rem;
+    font-weight: 600;
+    margin: 0.875rem 0 0.5rem 0;
+    color: #1f2937;
+    line-height: 1.4;
+    transition: color 0.3s ease;
+}
+
+.dark .lesson-content-display h4 {
+    color: #ffffff;
+}
+
+.lesson-content-display h5 {
+    font-size: 1rem;
+    font-weight: 600;
+    margin: 0.75rem 0 0.5rem 0;
+    color: #1f2937;
+    line-height: 1.4;
+    transition: color 0.3s ease;
+}
+
+.dark .lesson-content-display h5 {
+    color: #ffffff;
+}
+
+.lesson-content-display h6 {
+    font-size: 0.875rem;
+    font-weight: 600;
+    margin: 0.75rem 0 0.5rem 0;
+    color: #1f2937;
+    line-height: 1.4;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    transition: color 0.3s ease;
+}
+
+.dark .lesson-content-display h6 {
+    color: #ffffff;
+}
+
+/* Paragraphs */
+.lesson-content-display p {
+    margin: 0.875rem 0;
+    color: #374151;
+    line-height: 1.7;
+    transition: color 0.3s ease;
+}
+
+.dark .lesson-content-display p {
+    color: #f3f4f6;
+}
+
+/* Links */
+.lesson-content-display a {
+    color: #2563eb;
+    text-decoration: underline;
+    transition: color 0.2s ease;
+}
+
+.lesson-content-display a:hover {
+    color: #1d4ed8;
+}
+
+.dark .lesson-content-display a {
+    color: #60a5fa;
+}
+
+.dark .lesson-content-display a:hover {
+    color: #93c5fd;
+}
+
+/* Text Formatting */
+.lesson-content-display strong,
+.lesson-content-display b {
+    font-weight: 700;
+    color: #111827;
+    transition: color 0.3s ease;
+}
+
+.dark .lesson-content-display strong,
+.dark .lesson-content-display b {
+    color: #ffffff;
+}
+
+.lesson-content-display em,
+.lesson-content-display i {
+    font-style: italic;
+    color: #4b5563;
+    transition: color 0.3s ease;
+}
+
+.dark .lesson-content-display em,
+.dark .lesson-content-display i {
+    color: #e5e7eb;
+}
+
+.lesson-content-display u {
+    text-decoration: underline;
+    text-decoration-color: #6b7280;
+}
+
+.dark .lesson-content-display u {
+    text-decoration-color: #9ca3af;
+}
+
+.lesson-content-display s,
+.lesson-content-display strike,
+.lesson-content-display del {
+    text-decoration: line-through;
+    color: #6b7280;
+    transition: color 0.3s ease;
+}
+
+.dark .lesson-content-display s,
+.dark .lesson-content-display strike,
+.dark .lesson-content-display del {
+    color: #9ca3af;
+}
+
+/* Lists */
+.lesson-content-display ul {
+    list-style-type: disc;
+    margin: 1rem 0;
+    padding-left: 1.5rem;
+    color: #374151;
+    transition: color 0.3s ease;
+}
+
+.dark .lesson-content-display ul {
+    color: #f3f4f6;
+}
+
+.lesson-content-display ol {
+    list-style-type: decimal;
+    margin: 1rem 0;
+    padding-left: 1.5rem;
+    color: #374151;
+    transition: color 0.3s ease;
+}
+
+.dark .lesson-content-display ol {
+    color: #f3f4f6;
+}
+
+.lesson-content-display ul ul {
+    list-style-type: circle;
+    margin: 0.5rem 0;
+}
+
+.lesson-content-display ul ul ul {
+    list-style-type: square;
+}
+
+.lesson-content-display ol ol {
+    list-style-type: lower-alpha;
+    margin: 0.5rem 0;
+}
+
+.lesson-content-display ol ol ol {
+    list-style-type: lower-roman;
+}
+
+.lesson-content-display li {
+    margin: 0.5rem 0;
+    line-height: 1.6;
+    color: #374151;
+    transition: color 0.3s ease;
+}
+
+.dark .lesson-content-display li {
+    color: #f3f4f6;
+}
+
+.lesson-content-display li p {
+    margin: 0.25rem 0;
+}
+
+/* Blockquotes */
+.lesson-content-display blockquote {
+    border-left: 4px solid #3b82f6;
+    padding-left: 1rem;
+    padding-right: 1rem;
+    padding-top: 0.75rem;
+    padding-bottom: 0.75rem;
+    margin: 1.5rem 0;
+    font-style: italic;
+    color: #4b5563;
+    background-color: rgba(243, 244, 246, 0.5);
+    border-radius: 0.5rem;
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+.dark .lesson-content-display blockquote {
+    color: #d1d5db;
+    background-color: rgba(55, 65, 81, 0.5);
+    border-left-color: #60a5fa;
+}
+
+.lesson-content-display blockquote p {
+    margin: 0.5rem 0;
+    color: #4b5563;
+    transition: color 0.3s ease;
+}
+
+.dark .lesson-content-display blockquote p {
+    color: #d1d5db;
+}
+
+.lesson-content-display blockquote::before {
+    content: '"';
+    font-size: 2rem;
+    color: #3b82f6;
+    position: absolute;
+    left: 0.5rem;
+    top: -0.25rem;
+    font-family: Georgia, serif;
+    transition: color 0.3s ease;
+}
+
+.dark .lesson-content-display blockquote::before {
+    color: #60a5fa;
+}
+
+/* Code */
+.lesson-content-display code {
+    background-color: #f3f4f6;
+    color: #dc2626;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.375rem;
+    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+    font-size: 0.875rem;
+    font-weight: 500;
+    border: 1px solid #e5e7eb;
+    transition: all 0.3s ease;
+}
+
+.dark .lesson-content-display code {
+    background-color: #374151;
+    color: #fbbf24;
+    border-color: #4b5563;
+}
+
+.lesson-content-display pre {
+    background-color: #f9fafb;
+    color: #374151;
+    padding: 1.25rem;
+    border-radius: 0.5rem;
+    overflow-x: auto;
+    margin: 1.5rem 0;
+    border: 1px solid #e5e7eb;
+    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+    font-size: 0.875rem;
+    line-height: 1.5;
+    transition: all 0.3s ease;
+}
+
+.dark .lesson-content-display pre {
+    background-color: #1f2937;
+    color: #f3f4f6;
+    border-color: #4b5563;
+}
+
+.lesson-content-display pre code {
+    background: none;
+    color: inherit;
+    padding: 0;
+    border: none;
+    font-size: inherit;
+    border-radius: 0;
+}
+
+/* Images */
+.lesson-content-display img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 0.5rem;
+    margin: 1.5rem auto;
+    display: block;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    border: 1px solid #e5e7eb;
+    transition: all 0.3s ease;
+}
+
+.dark .lesson-content-display img {
+    border-color: #4b5563;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+}
+
+/* Horizontal Rule */
+.lesson-content-display hr {
+    border: none;
+    border-top: 2px solid #e5e7eb;
+    margin: 2rem 0;
+    border-radius: 1px;
+    transition: border-color 0.3s ease;
+}
+
+.dark .lesson-content-display hr {
+    border-top-color: #4b5563;
+}
+
+/* Tables */
+.lesson-content-display table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1.5rem 0;
+    background-color: #ffffff;
+    border-radius: 0.5rem;
+    overflow: hidden;
+    border: 1px solid #e5e7eb;
+    transition: all 0.3s ease;
+}
+
+.dark .lesson-content-display table {
+    background-color: #374151;
+    border-color: #4b5563;
+}
+
+.lesson-content-display th,
+.lesson-content-display td {
+    padding: 0.75rem 1rem;
+    text-align: left;
+    border-bottom: 1px solid #e5e7eb;
+    color: #374151;
+    transition: all 0.3s ease;
+}
+
+.dark .lesson-content-display th,
+.dark .lesson-content-display td {
+    border-bottom-color: #4b5563;
+    color: #f3f4f6;
+}
+
+.lesson-content-display th {
+    background-color: #f3f4f6;
+    font-weight: 600;
+    color: #111827;
+}
+
+.dark .lesson-content-display th {
+    background-color: #4b5563;
+    color: #ffffff;
+}
+
+.lesson-content-display tr:hover {
+    background-color: rgba(243, 244, 246, 0.5);
+}
+
+.dark .lesson-content-display tr:hover {
+    background-color: rgba(75, 85, 99, 0.5);
+}
+
+/* Div styling */
+.lesson-content-display div {
+    margin: 0.5rem 0;
+    color: #374151;
+    transition: color 0.3s ease;
+}
+
+.dark .lesson-content-display div {
+    color: #f3f4f6;
+}
+
+.lesson-content-display div.highlight {
+    background-color: rgba(251, 191, 36, 0.2);
+    padding: 0.75rem;
+    border-radius: 0.375rem;
+    border-left: 4px solid #fbbf24;
+    margin: 1rem 0;
+}
+
+/* Span styling */
+.lesson-content-display span {
+    color: inherit;
+}
+
+.lesson-content-display span.highlight {
+    background-color: rgba(251, 191, 36, 0.3);
+    padding: 0.125rem 0.25rem;
+    border-radius: 0.25rem;
+}
+
+/* Special content blocks */
+.lesson-content-display .note,
+.lesson-content-display .info {
+    background-color: rgba(59, 130, 246, 0.1);
+    border-left: 4px solid #3b82f6;
+    padding: 1rem;
+    margin: 1.5rem 0;
+    border-radius: 0.5rem;
+    color: #1e40af;
+    transition: all 0.3s ease;
+}
+
+.dark .lesson-content-display .note,
+.dark .lesson-content-display .info {
+    background-color: rgba(72, 116, 185, 0.1);
+    color: #93c5fd;
+}
+
+.lesson-content-display .warning {
+    background-color: rgba(251, 191, 36, 0.1);
+    border-left: 4px solid #fbbf24;
+    padding: 1rem;
+    margin: 1.5rem 0;
+    border-radius: 0.5rem;
+    color: #d97706;
+    transition: all 0.3s ease;
+}
+
+.dark .lesson-content-display .warning {
+    color: #fcd34d;
+}
+
+.lesson-content-display .danger,
+.lesson-content-display .error {
+    background-color: rgba(239, 68, 68, 0.1);
+    border-left: 4px solid #ef4444;
+    padding: 1rem;
+    margin: 1.5rem 0;
+    border-radius: 0.5rem;
+    color: #dc2626;
+    transition: all 0.3s ease;
+}
+
+.dark .lesson-content-display .danger,
+.dark .lesson-content-display .error {
+    color: #fca5a5;
+}
+
+.lesson-content-display .success {
+    background-color: rgba(34, 197, 94, 0.1);
+    border-left: 4px solid #22c55e;
+    padding: 1rem;
+    margin: 1.5rem 0;
+    border-radius: 0.5rem;
+    color: #16a34a;
+    transition: all 0.3s ease;
+}
+
+.dark .lesson-content-display .success {
+    color: #86efac;
+}
+
+/* Trix Editor Styles */
+.trix-content {
+    color: #374151 !important;
+    font-size: 1rem;
+    line-height: 1.6;
+    background-color: #ffffff !important;
+    border: none !important;
+    min-height: 120px;
+    transition: all 0.3s ease;
+}
+
+.dark .trix-content {
+    color: #f3f4f6 !important;
+    background-color: #1f2937 !important;
+}
+
+.trix-content h1 {
+    font-size: 1.8rem;
+    font-weight: bold;
+    margin: 1.5rem 0 1rem 0;
+    color: #111827;
+    transition: color 0.3s ease;
+}
+
+.dark .trix-content h1 {
+    color: #f3f4f6;
+}
+
+.trix-content h2 {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin: 1.2rem 0 0.8rem 0;
+    color: #111827;
+    transition: color 0.3s ease;
+}
+
+.dark .trix-content h2 {
+    color: #f3f4f6;
+}
+
+.trix-content h3 {
+    font-size: 1.3rem;
+    font-weight: bold;
+    margin: 1rem 0 0.6rem 0;
+    color: #111827;
+    transition: color 0.3s ease;
+}
+
+.dark .trix-content h3 {
+    color: #f3f4f6;
+}
+
+.trix-content p {
+    margin: 0.8rem 0;
+    color: #374151;
+    transition: color 0.3s ease;
+}
+
+.dark .trix-content p {
+    color: #f3f4f6;
+}
+
+.trix-content a {
+    color: #2563eb;
+    text-decoration: underline;
+    transition: color 0.3s ease;
+}
+
+.trix-content a:hover {
+    color: #1d4ed8;
+}
+
+.dark .trix-content a {
+    color: #60a5fa;
+}
+
+.dark .trix-content a:hover {
+    color: #93c5fd;
+}
+
+.trix-content img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 0.5rem;
+    margin: 1rem 0;
+    border: 1px solid #e5e7eb;
+    transition: border-color 0.3s ease;
+}
+
+.dark .trix-content img {
+    border-color: #4b5563;
+}
+
+.trix-content ul,
+.trix-content ol {
+    margin: 1rem 0;
+    padding-left: 2rem;
+    color: #374151;
+    transition: color 0.3s ease;
+}
+
+.dark .trix-content ul,
+.dark .trix-content ol {
+    color: #f3f4f6;
+}
+
+.trix-content li {
+    margin: 0.5rem 0;
+}
+
+.trix-content blockquote {
+    border-left: 4px solid #3b82f6;
+    padding-left: 1rem;
+    margin: 1rem 0;
+    font-style: italic;
+    color: #4b5563;
+    background-color: #f9fafb;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    transition: all 0.3s ease;
+}
+
+.dark .trix-content blockquote {
+    color: #d1d5db;
+    background-color: #374151;
+    border-left-color: #60a5fa;
+}
+
+.trix-content strong {
+    font-weight: bold;
+    color: #111827;
+    transition: color 0.3s ease;
+}
+
+.dark .trix-content strong {
+    color: #f9fafb;
+}
+
+.trix-content em {
+    font-style: italic;
+    color: #4b5563;
+    transition: color 0.3s ease;
+}
+
+.dark .trix-content em {
+    color: #e5e7eb;
+}
+
+.trix-content code {
+    background-color: #f3f4f6;
+    color: #dc2626;
+    padding: 0.2rem 0.4rem;
+    border-radius: 0.25rem;
+    font-family: 'Courier New', monospace;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+}
+
+.dark .trix-content code {
+    background-color: #374151;
+    color: #f59e0b;
+}
+
+.trix-content pre {
+    background-color: #f9fafb;
+    color: #374151;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    overflow-x: auto;
+    margin: 1rem 0;
+    border: 1px solid #e5e7eb;
+    transition: all 0.3s ease;
+}
+
+.dark .trix-content pre {
+    background-color: #1f2937;
+    color: #f3f4f6;
+    border-color: #4b5563;
+}
+
+/* Trix Toolbar Styles */
+trix-toolbar {
+    background-color: #f9fafb !important;
+    border-color: #e5e7eb !important;
+    border-radius: 0.5rem 0.5rem 0 0 !important;
+    transition: all 0.3s ease;
+}
+
+.dark trix-toolbar {
+    background-color: #374151 !important;
+    border-color: #4b5563 !important;
+}
+
+trix-toolbar .trix-button-group {
+    border-color: #e5e7eb !important;
+    transition: border-color 0.3s ease;
+}
+
+.dark trix-toolbar .trix-button-group {
+    border-color: #4b5563 !important;
+}
+
+trix-toolbar .trix-button {
+    color: #4b5563 !important;
+    background-color: transparent !important;
+    transition: all 0.3s ease;
+}
+
+.dark trix-toolbar .trix-button {
+    color: #d1d5db !important;
+}
+
+trix-toolbar .trix-button:hover {
+    background-color: #e5e7eb !important;
+}
+
+.dark trix-toolbar .trix-button:hover {
+    background-color: #4b5563 !important;
+}
+
+trix-toolbar .trix-button.trix-active {
+    background-color: #3b82f6 !important;
+    color: white !important;
+}
+
+trix-toolbar .trix-dialog {
+    background-color: #ffffff !important;
+    border-color: #e5e7eb !important;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15) !important;
+    transition: all 0.3s ease;
+}
+
+.dark trix-toolbar .trix-dialog {
+    background-color: #374151 !important;
+    border-color: #4b5563 !important;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5) !important;
+}
+
+trix-toolbar .trix-dialog .trix-input {
+    background-color: #ffffff !important;
+    border-color: #d1d5db !important;
+    color: #111827 !important;
+    transition: all 0.3s ease;
+}
+
+.dark trix-toolbar .trix-dialog .trix-input {
+    background-color: #1f2937 !important;
+    border-color: #6b7280 !important;
+    color: #f9fafb !important;
+}
+
+/* Hide file attachment tools from Trix */
+.trix-button-group--file-tools {
+    display: none !important;
+}
+
+/* Focus states */
+trix-editor:focus {
+    outline: 2px solid #3b82f6;
+    outline-offset: 2px;
+}
+
+.dark trix-editor:focus {
+    outline-color: #60a5fa;
+}
+
+/* Placeholder text */
+trix-editor::before {
+    color: #9ca3af;
+    transition: color 0.3s ease;
+}
+
+.dark trix-editor::before {
+    color: #6b7280;
+}
+
+/* Legacy wrapper styles for backwards compatibility */
+.lesson-content {
+    line-height: 1.7;
+    transition: all 0.3s ease;
+}
+
+.lesson-content h1,
+.lesson-content h2,
+.lesson-content h3,
+.lesson-content h4 {
+    color: #111827;
+    margin-top: 1.5rem;
+    margin-bottom: 1rem;
+    transition: color 0.3s ease;
+}
+
+.dark .lesson-content h1,
+.dark .lesson-content h2,
+.dark .lesson-content h3,
+.dark .lesson-content h4 {
+    color: #ffffff;
+}
+
+.lesson-content p {
+    color: #4b5563;
+    margin-bottom: 1rem;
+    transition: color 0.3s ease;
+}
+
+.dark .lesson-content p {
+    color: #d1d5db;
+}
+
+.lesson-content ul,
+.lesson-content ol {
+    color: #4b5563;
+    margin-left: 1.5rem;
+    margin-bottom: 1rem;
+    transition: color 0.3s ease;
+}
+
+.dark .lesson-content ul,
+.dark .lesson-content ol {
+    color: #d1d5db;
+}
+
+.lesson-content blockquote {
+    border-left: 4px solid #3b82f6;
+    padding-left: 1rem;
+    margin: 1.5rem 0;
+    background-color: rgba(59, 130, 246, 0.1);
+    border-radius: 0.375rem;
+    transition: all 0.3s ease;
+}
+
+.dark .lesson-content blockquote {
+    border-left-color: #4f46e5;
+    background-color: rgba(79, 70, 229, 0.1);
+}
+
+.lesson-content code {
+    background-color: #f3f4f6;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+    font-size: 0.875rem;
+    color: #dc2626;
+    transition: all 0.3s ease;
+}
+
+.dark .lesson-content code {
+    background-color: #374151;
+    color: #fbbf24;
+}
+
+.lesson-content pre {
+    background-color: #f9fafb;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    overflow-x: auto;
+    margin: 1rem 0;
+    border: 1px solid #e5e7eb;
+    transition: all 0.3s ease;
+}
+
+.dark .lesson-content pre {
+    background-color: #1f2937;
+    border-color: #4b5563;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .lesson-content-display {
+        font-size: 0.95rem;
+    }
+
+    .lesson-content-display h1 {
+        font-size: 1.625rem;
+    }
+
+    .lesson-content-display h2 {
+        font-size: 1.375rem;
+    }
+
+    .lesson-content-display h3 {
+        font-size: 1.125rem;
+    }
+
+    .lesson-content-display pre {
+        padding: 1rem;
+        font-size: 0.8rem;
+    }
+
+    .lesson-content-display table {
+        font-size: 0.875rem;
+    }
+
+    .lesson-content-display th,
+    .lesson-content-display td {
+        padding: 0.5rem 0.75rem;
+    }
+
+    trix-toolbar {
+        border-radius: 0.375rem 0.375rem 0 0 !important;
+    }
+
+    .trix-content {
+        font-size: 0.95rem;
+    }
+}
+
+/* Print styles */
+@media print {
+    .lesson-content-display,
+    .trix-content {
+        color: #000 !important;
+        background: #fff !important;
+    }
+
+    .lesson-content-display h1,
+    .lesson-content-display h2,
+    .lesson-content-display h3,
+    .lesson-content-display h4,
+    .lesson-content-display h5,
+    .lesson-content-display h6 {
+        color: #000 !important;
+        page-break-after: avoid;
+    }
+
+    .lesson-content-display blockquote {
+        border-left-color: #000 !important;
+        background: #f5f5f5 !important;
+        color: #000 !important;
+    }
+
+    .lesson-content-display code {
+        background: #f5f5f5 !important;
+        color: #000 !important;
+    }
+
+    .lesson-content-display pre {
+        background: #f5f5f5 !important;
+        color: #000 !important;
+        border: 1px solid #ccc !important;
+    }
+
+    trix-toolbar {
+        display: none !important;
+    }
+}
+
+/* Loading animation */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.animate__fadeIn {
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+/* Custom scrollbar for better integration */
+.trix-content::-webkit-scrollbar {
+    width: 6px;
+}
+
+.trix-content::-webkit-scrollbar-track {
+    background: #f1f5f9;
+    border-radius: 3px;
+}
+
+.dark .trix-content::-webkit-scrollbar-track {
+    background: #374151;
+}
+
+.trix-content::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 3px;
+}
+
+.dark .trix-content::-webkit-scrollbar-thumb {
+    background: #6b7280;
+}
+
+.trix-content::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
+}
+
+.dark .trix-content::-webkit-scrollbar-thumb:hover {
+    background: #9ca3af;
+}
+
+/* Selection styles */
+.trix-content ::selection {
+    background-color: rgba(59, 130, 246, 0.3);
+    color: inherit;
+}
+
+.dark .trix-content ::selection {
+    background-color: rgba(96, 165, 250, 0.3);
+}
+
+/* Error states for form validation */
+.trix-content.error {
+    border-color: #ef4444 !important;
+    box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.2) !important;
+}
+
+/* Success states */
+.trix-content.success {
+    border-color: #22c55e !important;
+    box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.2) !important;
+}
+
+/* Loading state */
+.trix-content.loading {
+    opacity: 0.7;
+    pointer-events: none;
+}
+
+.trix-content.loading::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 20px;
+    height: 20px;
+    margin: -10px 0 0 -10px;
+    border: 2px solid #e5e7eb;
+    border-top-color: #3b82f6;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+.dark .trix-content.loading::after {
+    border-color: #4b5563;
+    border-top-color: #60a5fa;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Enhanced focus styles for better accessibility */
+.trix-content:focus-within {
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.5);
+}
+
+.dark .trix-content:focus-within {
+    box-shadow: 0 0 0 2px rgba(96, 165, 250, 0.5);
+}
+
+/* Better list styling in editor */
+.trix-content ul[data-trix-mutable] {
+    list-style: disc;
+    padding-left: 1.5rem;
+}
+
+.trix-content ol[data-trix-mutable] {
+    list-style: decimal;
+    padding-left: 1.5rem;
+}
+
+.trix-content li[data-trix-mutable] {
+    margin: 0.25rem 0;
+    padding-left: 0.25rem;
+}
+
+/* Enhanced table styling */
+.lesson-content-display table.enhanced {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.dark .lesson-content-display table.enhanced {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.lesson-content-display table.enhanced th {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+/* Better quote styling */
+.lesson-content-display blockquote.featured {
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(147, 197, 253, 0.05));
+    border-left-width: 6px;
+    position: relative;
+    overflow: hidden;
+}
+
+.dark .lesson-content-display blockquote.featured {
+    background: linear-gradient(135deg, rgba(96, 165, 250, 0.1), rgba(147, 197, 253, 0.05));
+}
+
+.lesson-content-display blockquote.featured::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 4px;
+    background: linear-gradient(to bottom, #3b82f6, #93c5fd);
+}
+
+/* Code syntax highlighting hints */
+.lesson-content-display .code-javascript code {
+    color: #dc2626;
+}
+
+.dark .lesson-content-display .code-javascript code {
+    color: #fbbf24;
+}
+
+.lesson-content-display .code-html code {
+    color: #059669;
+}
+
+.dark .lesson-content-display .code-html code {
+    color: #34d399;
+}
+
+.lesson-content-display .code-css code {
+    color: #7c3aed;
+}
+
+.dark .lesson-content-display .code-css code {
+    color: #a78bfa;
+}
+
+/* Improved heading anchor links */
+.lesson-content-display h1:hover::before,
+.lesson-content-display h2:hover::before,
+.lesson-content-display h3:hover::before {
+    content: '#';
+    position: absolute;
+    left: -1.5rem;
+    color: #3b82f6;
+    opacity: 0.7;
+    font-weight: normal;
+    cursor: pointer;
+    transition: opacity 0.2s ease;
+}
+
+.dark .lesson-content-display h1:hover::before,
+.dark .lesson-content-display h2:hover::before,
+.dark .lesson-content-display h3:hover::before {
+    color: #60a5fa;
+}
+
+/* RTL support */
+.trix-content[dir="rtl"] {
+    text-align: right;
+    direction: rtl;
+}
+
+.trix-content[dir="rtl"] ul,
+.trix-content[dir="rtl"] ol {
+    padding-right: 2rem;
+    padding-left: 0;
+}
+
+.trix-content[dir="rtl"] blockquote {
+    border-right: 4px solid #3b82f6;
+    border-left: none;
+    padding-right: 1rem;
+    padding-left: 1rem;
+}
+
+.dark .trix-content[dir="rtl"] blockquote {
+    border-right-color: #60a5fa;
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+    .lesson-content-display,
+    .trix-content {
+        color: #000000;
+        background-color: #ffffff;
+    }
+
+    .lesson-content-display h1,
+    .lesson-content-display h2,
+    .lesson-content-display h3,
+    .lesson-content-display h4,
+    .lesson-content-display h5,
+    .lesson-content-display h6 {
+        color: #000000;
+    }
+
+    .lesson-content-display a {
+        color: #0000ff;
+        text-decoration: underline;
+    }
+
+    .lesson-content-display code {
+        background-color: #f0f0f0;
+        color: #000000;
+        border: 1px solid #000000;
+    }
+
+    .lesson-content-display pre {
+        background-color: #f0f0f0;
+        color: #000000;
+        border: 2px solid #000000;
+    }
+
+    .lesson-content-display blockquote {
+        border-left-color: #000000;
+        background-color: #f0f0f0;
+        color: #000000;
+    }
+
+    trix-toolbar {
+        background-color: #ffffff !important;
+        border-color: #000000 !important;
+    }
+
+    trix-toolbar .trix-button {
+        color: #000000 !important;
+        border: 1px solid #000000 !important;
+    }
+
+    trix-toolbar .trix-button.trix-active {
+        background-color: #000000 !important;
+        color: #ffffff !important;
+    }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+    .lesson-content-display,
+    .trix-content,
+    trix-toolbar,
+    .animate__fadeIn {
+        transition: none !important;
+        animation: none !important;
+    }
+}
+
+/* Better focus indicators for keyboard users */
+@media (prefers-reduced-motion: no-preference) {
+    trix-toolbar .trix-button:focus {
+        outline: 2px solid #3b82f6;
+        outline-offset: 2px;
+        transition: outline 0.2s ease;
+    }
+
+    .dark trix-toolbar .trix-button:focus {
+        outline-color: #60a5fa;
+    }
+}
