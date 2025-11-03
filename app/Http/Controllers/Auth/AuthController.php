@@ -111,28 +111,6 @@ class AuthController extends Controller
     }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     // Registration
     public function showRegistrationForm(): View
     {
@@ -154,20 +132,20 @@ class AuthController extends Controller
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
             'profile_picture' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif', 'max:2048'],
             'role' => $this->getRoleValidationRules(),
-            'date_of_birth' => ['required', 'date'],
-            'phone_number' => ['required', 'string', 'max:20'],
+            'date_of_birth' => ['nullable', 'date'],
+            'phone_number' => ['nullable', 'string', 'max:20'],
             'bio' => ['nullable', 'string', 'max:500'],
-            'address_street' => ['required', 'string', 'max:255'],
-            'address_city' => ['required', 'string', 'max:255'],
-            'address_state' => ['required', 'string', 'max:255'],
-            'address_country' => ['required', 'string', 'max:255'],
-            'address_postal_code' => ['required', 'string', 'max:20'],
+            'address_street' => ['nullable', 'string', 'max:255'],
+            'address_city' => ['nullable', 'string', 'max:255'],
+            'address_state' => ['nullable', 'string', 'max:255'],
+            'address_country' => ['nullable', 'string', 'max:255'],
+            'address_postal_code' => ['nullable', 'string', 'max:20'],
             'skills' => ['nullable', 'string', 'max:255'],
             'occupation' => ['nullable', 'string', 'max:255'],
             'education_level' => ['nullable', 'string', 'max:255'],
-            'terms' => ['required', 'accepted'],
+            'terms' => ['nullable', 'accepted'],
         ]);
-
+    
         $userData = [
             'name' => $request->name,
             'email' => $request->email,
@@ -186,28 +164,34 @@ class AuthController extends Controller
             'education_level' => $request->education_level,
             'is_active' => true,
         ];
-
+    
         // Handle referral registration
         $referralCode = $request->input('referral_code');
-
+    
         try {
             $user = $this->affiliateService->registerWithReferral($userData, $referralCode);
         } catch (\Exception $e) {
             // If referral registration fails, create user normally
             $user = User::create($userData);
         }
-
+    
         if ($request->hasFile('profile_picture')) {
             $path = $request->file('profile_picture')->store('profile-pictures', 'public');
             $user->profile_picture = $path;
             $user->save();
         }
-
+    
+        // Send verification email
         $user->notify(new CustomVerifyEmail());
-
-        return redirect()->route('verification.notice')->with([
-            'message' => 'Please verify your email address. We sent you a verification link.',
-            'email' => $user->email
+    
+        // Log the user in immediately
+        Auth::login($user);
+    
+        // Redirect to their dashboard with email verification warning
+        return redirect()->route($user->getDashboardRouteName())->with([
+            'email_not_verified' => true,
+            'verification_email' => $user->email,
+            'message' => 'Welcome! Please verify your email address to unlock all features.'
         ]);
     }
 

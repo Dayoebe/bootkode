@@ -9,12 +9,12 @@ class CheckEmailVerification
 {
     public function handle(Request $request, Closure $next)
     {
+        // Simply pass through, allowing unverified users to access
+        // The alert component will show in the dashboard
         if ($request->user() && !$request->user()->hasVerifiedEmail()) {
-            // Store warning in session for display in layout
-            session()->put('email_verification_warning', [
-                'email' => $request->user()->email,
-                'message' => 'Please verify your email address to unlock all features.',
-            ]);
+            // Store in session for the alert component to use
+            session()->put('email_not_verified', true);
+            session()->put('verification_email', $request->user()->email);
         }
 
         return $next($request);

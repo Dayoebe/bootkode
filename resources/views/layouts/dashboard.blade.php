@@ -52,7 +52,7 @@
             --input-border: 209 213 219;
             --input-focus-border: 59 130 246;
         }
-        
+
         /* Dark Theme */
         .dark {
             --bg-primary: 17 24 39;
@@ -74,7 +74,7 @@
             --input-border: 75 85 99;
             --input-focus-border: 96 165 250;
         }
-        
+
         /* Sepia Theme */
         .sepia {
             --bg-primary: 244 236 216;
@@ -96,7 +96,7 @@
             --input-border: 200 185 160;
             --input-focus-border: 139 92 46;
         }
-        
+
         /* Ocean Theme */
         .ocean {
             --bg-primary: 240 249 255;
@@ -118,7 +118,7 @@
             --input-border: 56 189 248;
             --input-focus-border: 2 132 199;
         }
-        
+
         /* Forest Theme */
         .forest {
             --bg-primary: 236 253 245;
@@ -157,57 +157,57 @@
             background-color: rgb(var(--bg-primary));
             transition: background-color 0.3s;
         }
-        
+
         .bg-themed-secondary {
             background-color: rgb(var(--bg-secondary));
             transition: background-color 0.3s;
         }
-        
+
         .bg-themed-tertiary {
             background-color: rgb(var(--bg-tertiary));
             transition: background-color 0.3s;
         }
-        
+
         .text-themed-primary {
             color: rgb(var(--text-primary));
             transition: color 0.3s;
         }
-        
+
         .text-themed-secondary {
             color: rgb(var(--text-secondary));
             transition: color 0.3s;
         }
-        
+
         .text-themed-tertiary {
             color: rgb(var(--text-tertiary));
             transition: color 0.3s;
         }
-        
+
         .border-themed-primary {
             border-color: rgb(var(--border-primary));
             transition: border-color 0.3s;
         }
-        
+
         .border-themed-secondary {
             border-color: rgb(var(--border-secondary));
             transition: border-color 0.3s;
         }
-        
+
         .accent-themed-primary {
             color: rgb(var(--accent-primary));
             transition: color 0.3s;
         }
-        
+
         .accent-themed-secondary {
             color: rgb(var(--accent-secondary));
             transition: color 0.3s;
         }
-        
+
         .bg-accent-themed-primary {
             background-color: rgb(var(--accent-primary));
             transition: background-color 0.3s;
         }
-        
+
         .bg-accent-themed-secondary {
             background-color: rgb(var(--accent-secondary));
             transition: background-color 0.3s;
@@ -309,7 +309,9 @@
         /* ============================================
            INPUT STYLES
            ============================================ */
-        input, textarea, select {
+        input,
+        textarea,
+        select {
             background-color: rgb(var(--bg-secondary));
             color: rgb(var(--text-primary));
             border: 1px solid rgb(var(--input-border));
@@ -319,13 +321,17 @@
             font-family: inherit;
         }
 
-        input:focus, textarea:focus, select:focus {
+        input:focus,
+        textarea:focus,
+        select:focus {
             outline: none;
             border-color: rgb(var(--input-focus-border));
             box-shadow: 0 0 0 3px rgba(var(--input-focus-border), 0.1);
         }
 
-        input:disabled, textarea:disabled, select:disabled {
+        input:disabled,
+        textarea:disabled,
+        select:disabled {
             background-color: rgb(var(--bg-tertiary));
             color: rgb(var(--btn-disabled-text));
             cursor: not-allowed;
@@ -334,27 +340,25 @@
 </head>
 
 <body class="font-sans antialiased transition-colors duration-300">
+    <!-- Email Verification Alert Component -->
+    @if(auth()->check() && !auth()->user()->hasVerifiedEmail())
+        <livewire:components.email-verification-alert />
+    @endif
+
     @php
         $user = Auth::user();
     @endphp
-    
+
     <div class="flex min-h-screen">
         <!-- Desktop Sidebar -->
         @livewire('dashboard-sidebar')
 
         <!-- Sidebar Overlay for Mobile -->
-        <div 
-            x-show="sidebarOpen" 
-            x-transition:enter="transition-opacity ease-linear duration-300"
-            x-transition:enter-start="opacity-0"
-            x-transition:enter-end="opacity-100"
-            x-transition:leave="transition-opacity ease-linear duration-300"
-            x-transition:leave-start="opacity-100"
-            x-transition:leave-end="opacity-0"
-            @click="sidebarOpen = false"
-            class="fixed inset-0 z-40 bg-themed-primary bg-opacity-50 lg:hidden"
-            style="display: none;"
-        ></div>
+        <div x-show="sidebarOpen" x-transition:enter="transition-opacity ease-linear duration-300"
+            x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100"
+            x-transition:leave="transition-opacity ease-linear duration-300" x-transition:leave-start="opacity-100"
+            x-transition:leave-end="opacity-0" @click="sidebarOpen = false"
+            class="fixed inset-0 z-40 bg-themed-primary bg-opacity-50 lg:hidden" style="display: none;"></div>
 
         <!-- Main Content -->
         <div class="flex-1 flex flex-col lg:ml-64 transition-all duration-300">
@@ -365,12 +369,15 @@
             <main class="flex-1 p-4 lg:p-6 pb-20 lg:pb-6">
                 <!-- Welcome Banner -->
                 @if($user)
-                <div class="mb-6 p-4 bg-themed-secondary rounded-xl shadow-lg border border-themed-primary animate__animated animate__fadeInDown transition-colors duration-300">
-                    <h1 class="text-xl lg:text-2xl font-bold text-themed-primary transition-colors duration-300">Welcome back, {{ $user->name }}!</h1>
-                    <p class="text-themed-secondary mt-1 transition-colors duration-300">{{ ucfirst($user->getRoleNames()->first() ?? 'User') }} Dashboard</p>
-                </div>
+                    <div
+                        class="mb-6 p-4 bg-themed-secondary rounded-xl shadow-lg border border-themed-primary animate__animated animate__fadeInDown transition-colors duration-300">
+                        <h1 class="text-xl lg:text-2xl font-bold text-themed-primary transition-colors duration-300">Welcome
+                            back, {{ $user->name }}!</h1>
+                        <p class="text-themed-secondary mt-1 transition-colors duration-300">
+                            {{ ucfirst($user->getRoleNames()->first() ?? 'User') }} Dashboard</p>
+                    </div>
                 @endif
-            
+
                 <!-- Main Content Slot -->
                 <div class="animate__animated animate__fadeIn">
                     {{ $slot }}
@@ -381,4 +388,5 @@
     </div>
     @livewireScripts
 </body>
+
 </html>
