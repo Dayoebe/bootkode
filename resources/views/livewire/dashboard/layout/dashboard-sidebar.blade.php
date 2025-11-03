@@ -15,7 +15,7 @@
         <!-- Logo/Header -->
         <div class="sticky top-0 bg-themed-secondary z-10 p-4 border-b border-themed-primary shadow-sm transition-colors duration-300">
             <div class="flex items-center justify-between">
-                <a href="{{ route('dashboard') }}" class="flex items-center space-x-3" aria-label="BootKode Home">
+                <a href="{{ route('home') }}" class="flex items-center space-x-3" aria-label="BootKode Home">
                     <div class="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-600 dark:from-blue-400 dark:to-purple-500 rounded-lg flex items-center justify-center transition-colors duration-300">
                         <i class="fas fa-code text-white text-sm"></i>
                     </div>
