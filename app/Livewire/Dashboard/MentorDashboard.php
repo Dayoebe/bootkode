@@ -6,7 +6,7 @@ use App\Models\Core\User;
 use App\Models\Learning\Course;
 use App\Models\Credentials\Certificate;
 use App\Models\Career\JobApplication;
-use App\Models\Mentorship\Mentorship\MockInterview;
+use App\Models\Mentorship\MockInterview;
 use App\Models\Community\SupportTicket;
 use App\Models\Learning\CourseEnrollment;
 use App\Models\Assessment\StudentAnswer;
