@@ -130,7 +130,7 @@ class UserCourses extends Component
         }
     
         // Use the correct parameter name that matches your route definition
-        return $this->redirect(route('edit_course', ['courseId' => $course->id]));
+        return $this->redirect(route('edit_course', ['course' => $course->id]));
     }
 
     /**

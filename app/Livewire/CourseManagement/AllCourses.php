@@ -175,7 +175,7 @@ class AllCourses extends Component
 
             $status = $course->is_published ? 'published' : 'unpublished';
             $this->updateStatistics();
-            
+
             $this->dispatch('notify', [
                 'message' => "Course {$status} successfully!",
                 'type' => 'success'
@@ -205,7 +205,7 @@ class AllCourses extends Component
 
             $status = $course->is_approved ? 'approved' : 'unapproved';
             $this->updateStatistics();
-            
+
             $this->dispatch('notify', [
                 'message' => "Course {$status} successfully!",
                 'type' => 'success'
@@ -226,7 +226,6 @@ class AllCourses extends Component
     {
         return $this->redirect(route('edit_course', ['course' => $course->id]));
     }
-
     /**
      * Deletes a course with confirmation and authorization.
      */
@@ -235,7 +234,7 @@ class AllCourses extends Component
         try {
             $course->delete();
             $this->updateStatistics();
-            
+
             $this->dispatch('notify', [
                 'message' => 'Course deleted successfully!',
                 'type' => 'success'
@@ -269,7 +268,7 @@ class AllCourses extends Component
             $count = Course::whereIn('id', $this->selectedCourses)
                 ->where(fn($q) => Auth::user()->hasRole('instructor') ? $q->where('instructor_id', Auth::id()) : $q)
                 ->update(['is_published' => true]);
-            
+
             $this->updateStatistics();
             $this->dispatch('notify', [
                 'message' => "{$count} courses have been published!",
@@ -293,7 +292,7 @@ class AllCourses extends Component
     {
         try {
             $count = Course::whereIn('id', $this->selectedCourses)->update(['is_approved' => true]);
-            
+
             $this->updateStatistics();
             $this->dispatch('notify', [
                 'message' => "{$count} courses have been approved!",
@@ -329,7 +328,7 @@ class AllCourses extends Component
             $count = Course::whereIn('id', $this->selectedCourses)
                 ->where(fn($q) => Auth::user()->hasRole('instructor') ? $q->where('instructor_id', Auth::id()) : $q)
                 ->delete();
-            
+
             $this->updateStatistics();
             $this->dispatch('notify', [
                 'message' => "{$count} courses have been deleted!",
@@ -354,7 +353,7 @@ class AllCourses extends Component
             $count = Course::whereIn('id', $this->selectedCourses)
                 ->where(fn($q) => Auth::user()->hasRole('instructor') ? $q->where('instructor_id', Auth::id()) : $q)
                 ->update(['is_published' => false]);
-            
+
             $this->updateStatistics();
             $this->dispatch('notify', [
                 'message' => "{$count} courses have been unpublished!",
