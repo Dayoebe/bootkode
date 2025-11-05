@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>{{ config('app.name', 'CBT System') }} - Exam Mode</title>
+    <meta name="google-site-verification" content="cmciE9Iqsl6Gl3u_0Zts_-SlchWbsZZ_8OMVpELH3CA" />
 
     {{-- Prevent caching --}}
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">

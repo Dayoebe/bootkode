@@ -13,6 +13,7 @@
     </title>
 
     {{-- 🧭 SEO Meta Tags --}}
+    <meta name="google-site-verification" content="cmciE9Iqsl6Gl3u_0Zts_-SlchWbsZZ_8OMVpELH3CA" />
     <meta name="description"
         content="@yield('description', 'BootKode: Empowering Africa\'s youth with digital skills, mentorship, and careers. Learn to code, get certified, and conquer the tech world.')">
     <meta name="keywords"
