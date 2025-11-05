@@ -82,7 +82,7 @@ class CourseForm extends Component
         'faqs' => 'nullable|array|max:20',
         'faqs.*.question' => 'nullable|string|max:255',
         'faqs.*.answer' => 'nullable|string|max:1000',
-        'completion_rate_threshold' => 'numeric|between:0,100',
+        'completion_rate_threshold' => 'numeric|between:0,100',      
         'scheduled_publish_at' => 'nullable|date|after:now',
         'materials_included' => 'array|max:10',
         'materials_included.*' => 'nullable|string|max:255',
@@ -102,7 +102,7 @@ class CourseForm extends Component
             $this->tags = [''];
         }
     }
-
+    
     public function removeThumbnail()
     {
         Log::info('CourseForm: Removing thumbnail');
@@ -173,7 +173,7 @@ class CourseForm extends Component
             $this->materials_included[] = '';
         }
     }
-
+    
     public function removeMaterial($index)
     {
         if (count($this->materials_included) > 1) {
@@ -181,14 +181,14 @@ class CourseForm extends Component
             $this->materials_included = array_values($this->materials_included);
         }
     }
-
+    
     public function addTag()
     {
         if (count($this->tags) < 10) {
             $this->tags[] = '';
         }
     }
-
+    
     public function removeTag($index)
     {
         if (count($this->tags) > 1) {
@@ -196,7 +196,7 @@ class CourseForm extends Component
             $this->tags = array_values($this->tags);
         }
     }
-
+    
     // Add saveDraft method
     public function saveDraft()
     {
@@ -328,7 +328,6 @@ class CourseForm extends Component
                 'estimated_duration_minutes',
                 'price',
                 'scheduled_publish_at',
-                // Include new fields
                 'materials_included',
                 'tags',
             ]);

@@ -51,9 +51,10 @@ class Course extends Model
         'views_count',
         'likes_count',
         'average_rating',
-        // Add these new fields from the migration
         'is_paid',
         'currency',
+        'materials_included',
+        'tags'
     ];
 
     protected $casts = [
@@ -76,92 +77,94 @@ class Course extends Model
         'external_links' => 'array',
         'price' => 'decimal:2',
         'average_rating' => 'decimal:2',
+        'materials_included' => 'array',
+        'tags' => 'array',
     ];
 
     // Relationships
 // UPDATED RELATIONSHIPS
-public function instructor()
-{
-    return $this->belongsTo(User::class, 'instructor_id'); // UPDATED
-}
+    public function instructor()
+    {
+        return $this->belongsTo(User::class, 'instructor_id'); // UPDATED
+    }
 
-public function category()
-{
-    return $this->belongsTo(CourseCategory::class);
-}
+    public function category()
+    {
+        return $this->belongsTo(CourseCategory::class);
+    }
 
-public function enrollments()
-{
-    return $this->hasMany(CourseEnrollment::class);
-}
+    public function enrollments()
+    {
+        return $this->hasMany(CourseEnrollment::class);
+    }
 
-public function allLessons()
-{
-    return $this->hasManyThrough(Lesson::class, Section::class)
-        ->select('lessons.*')
-        ->orderBy('sections.order')
-        ->orderBy('lessons.order');
-}
+    public function allLessons()
+    {
+        return $this->hasManyThrough(Lesson::class, Section::class)
+            ->select('lessons.*')
+            ->orderBy('sections.order')
+            ->orderBy('lessons.order');
+    }
 
-public function assessments()
-{
-    return $this->hasManyThrough(\App\Models\Assessment\Assessment::class, Section::class) // UPDATED
-        ->select('assessments.*')
-        ->orderBy('sections.order')
-        ->orderBy('assessments.order');
-}
+    public function assessments()
+    {
+        return $this->hasManyThrough(\App\Models\Assessment\Assessment::class, Section::class) // UPDATED
+            ->select('assessments.*')
+            ->orderBy('sections.order')
+            ->orderBy('assessments.order');
+    }
 
-public function directAssessments()
-{
-    return $this->hasMany(\App\Models\Assessment\Assessment::class, 'course_id'); // UPDATED
-}
+    public function directAssessments()
+    {
+        return $this->hasMany(\App\Models\Assessment\Assessment::class, 'course_id'); // UPDATED
+    }
 
-public function reviews()
-{
-    return $this->hasMany(CourseReview::class); // UPDATED
-}
+    public function reviews()
+    {
+        return $this->hasMany(CourseReview::class); // UPDATED
+    }
 
-public function sections()
-{
-    return $this->hasMany(Section::class, 'course_id');
-}
+    public function sections()
+    {
+        return $this->hasMany(Section::class, 'course_id');
+    }
 
-public function rejections()
-{
-    return $this->hasMany(\App\Models\Admin\CourseRejection::class); // UPDATED
-}
-    
-    
+    public function rejections()
+    {
+        return $this->hasMany(\App\Models\Admin\CourseRejection::class); // UPDATED
+    }
+
+
 
     // Boot method
     protected static function boot()
     {
         parent::boot();
-    
+
         static::creating(function ($course) {
             if (empty($course->slug)) {
                 $course->slug = $course->generateUniqueSlug($course->title);
             }
         });
-    
+
         static::updating(function ($course) {
             // Only auto-update slug if title changed and slug wasn't manually set
             if ($course->isDirty('title') && !$course->isDirty('slug')) {
                 $course->slug = $course->generateUniqueSlug($course->title);
             }
         });
-    
+
         static::saved(function ($course) {
             if (!$course->wasRecentlyCreated) {
                 try {
                     $sectionsCount = $course->sections()->count();
                     $lessonsCount = $sectionsCount > 0 ? $course->allLessons()->count() : 0;
-                    
+
                     $totalAssessments = $course->directAssessments()->count();
                     if ($totalAssessments === 0 && $sectionsCount > 0) {
                         $totalAssessments = $course->assessments()->count();
                     }
-                    
+
                     $projectsCount = $course->directAssessments()->where('type', 'project')->count();
                     if ($projectsCount === 0 && $sectionsCount > 0) {
                         $projectsCount = $course->assessments()->where('assessments.type', 'project')->count();
@@ -280,12 +283,12 @@ public function rejections()
         $avgRating = $this->reviews()->where('is_approved', true)->avg('rating');
         $this->update(['average_rating' => round($avgRating ?? 0, 2)]);
     }
-    
+
     public function getReviewsCount()
     {
         return $this->reviews()->where('is_approved', true)->count();
     }
-    
+
     public function hasReviewBy($userId)
     {
         return $this->reviews()->where('user_id', $userId)->exists();
@@ -319,7 +322,7 @@ public function rejections()
 
         return '₦' . number_format($this->price, 2); // Changed to Naira symbol
     }
-    
+
     public function getFormattedDurationAttribute()
     {
         if (!$this->estimated_duration_minutes) {
@@ -336,49 +339,49 @@ public function rejections()
         return $minutes . 'm';
     }
     /**
- * Get instructor response rate
- */
-public function getInstructorResponseRate()
-{
-    $totalReviews = $this->reviews()->approved()->count();
-    if ($totalReviews === 0) {
-        return 0;
-    }
-    
-    $repliedReviews = $this->reviews()->approved()->whereNotNull('instructor_reply')->count();
-    return round(($repliedReviews / $totalReviews) * 100, 2);
-}
+     * Get instructor response rate
+     */
+    public function getInstructorResponseRate()
+    {
+        $totalReviews = $this->reviews()->approved()->count();
+        if ($totalReviews === 0) {
+            return 0;
+        }
 
-/**
- * Get average response time in hours
- */
-public function getAverageResponseTime()
-{
-    $repliedReviews = $this->reviews()
-        ->approved()
-        ->whereNotNull('instructor_reply')
-        ->whereNotNull('replied_at')
-        ->get();
-
-    if ($repliedReviews->isEmpty()) {
-        return null;
+        $repliedReviews = $this->reviews()->approved()->whereNotNull('instructor_reply')->count();
+        return round(($repliedReviews / $totalReviews) * 100, 2);
     }
 
-    $totalHours = $repliedReviews->sum(function($review) {
-        return $review->replied_at->diffInHours($review->created_at);
-    });
+    /**
+     * Get average response time in hours
+     */
+    public function getAverageResponseTime()
+    {
+        $repliedReviews = $this->reviews()
+            ->approved()
+            ->whereNotNull('instructor_reply')
+            ->whereNotNull('replied_at')
+            ->get();
 
-    return round($totalHours / $repliedReviews->count(), 1);
-}
+        if ($repliedReviews->isEmpty()) {
+            return null;
+        }
 
-/**
- * Scope for verified reviews (from students who completed course)
- */
-public function scopeVerified($query)
-{
-    return $query->whereHas('user.enrollments', function($q) use ($query) {
-        $q->where('course_id', $query->getModel()->course_id)
-          ->where('is_completed', true);
-    });
-}
+        $totalHours = $repliedReviews->sum(function ($review) {
+            return $review->replied_at->diffInHours($review->created_at);
+        });
+
+        return round($totalHours / $repliedReviews->count(), 1);
+    }
+
+    /**
+     * Scope for verified reviews (from students who completed course)
+     */
+    public function scopeVerified($query)
+    {
+        return $query->whereHas('user.enrollments', function ($q) use ($query) {
+            $q->where('course_id', $query->getModel()->course_id)
+                ->where('is_completed', true);
+        });
+    }
 }
