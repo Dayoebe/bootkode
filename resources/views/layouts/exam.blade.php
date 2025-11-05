@@ -6,6 +6,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>{{ config('app.name', 'CBT System') }} - Exam Mode</title>
+    <!-- Google Tag Manager -->
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+    })(window,document,'script','dataLayer','GTM-TJ23X96Z');</script>
+    <!-- End Google Tag Manager -->
     <meta name="google-site-verification" content="cmciE9Iqsl6Gl3u_0Zts_-SlchWbsZZ_8OMVpELH3CA" />
 
     {{-- Prevent caching --}}
@@ -210,6 +217,10 @@
 </head>
 
 <body class="h-full bg-gray-50 dark:bg-gray-900 font-sans antialiased transition-colors duration-300" id="examBody">
+    <!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TJ23X96Z"
+    height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+    <!-- End Google Tag Manager (noscript) -->
     {{-- Accessibility Settings Panel (Hidden by default) --}}
     <div id="accessibilityPanel" class="fixed top-4 left-4 bg-white dark:bg-gray-800 rounded-lg shadow-lg p-4 z-50 transform -translate-x-full transition-transform duration-300">
         <div class="flex items-center justify-between mb-3">
