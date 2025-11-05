@@ -635,6 +635,32 @@ private function getRecentJobPlacements(User $mentor, $limit = 3)
             'referral_rate' => 23,
         ];
     }
+    private function calculateCareerSuccessRate($applications)
+{
+    if ($applications->isEmpty()) {
+        return 0;
+    }
+    
+    $successfulApplications = $applications->whereIn('status', [
+        JobApplication::APPLICATION_OFFERED,
+        JobApplication::APPLICATION_HIRED
+    ])->count();
+    
+    return round(($successfulApplications / $applications->count()) * 100, 1);
+}
+
+private function requiresMentorAttention($ticket)
+{
+    // Check if ticket requires immediate mentor attention
+    return $ticket->priority === 'high' || 
+           ($ticket->status === 'open' && $ticket->created_at->diffInDays(now()) > 3);
+}
+
+public function loadAllData()
+{
+    // Refresh all computed properties
+    $this->dispatch('$refresh');
+}
 
     // Mock implementations for remaining methods
     private function getMenteeEnrollmentDate(User $mentee) { return $mentee->created_at; }
