@@ -4,7 +4,7 @@ namespace App\Models\Learning;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\Core\User; // UPDATED
+use App\Models\Core\User; 
 use App\Models\Learning\Course; 
 
 class CourseReview extends Model

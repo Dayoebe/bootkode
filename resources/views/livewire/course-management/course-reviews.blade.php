@@ -152,7 +152,7 @@
                                                         {{ Str::limit($review->instructor_reply, 100) }}
                                                     </p>
                                                 </div>
-                                            @endif>
+                                            @endif
                                         </div>
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap">
