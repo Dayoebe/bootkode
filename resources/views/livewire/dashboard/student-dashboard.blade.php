@@ -184,7 +184,7 @@
                             <div class="border border-themed-primary rounded-lg p-4 hover:border-blue-300 dark:hover:border-blue-500 transition-colors duration-200">
                                 <div class="flex items-start space-x-4">
                                     @if($progress['thumbnail'])
-                                        <img src="{{ asset('storage/' . $progress['thumbnail']) }}" alt="{{ $progress['title'] }}" class="w-20 h-20 rounded-lg object-cover flex-shrink-0">
+                                        <img src="{{ $progress['thumbnail'] }}" alt="{{ $progress['title'] }}" class="w-20 h-20 rounded-lg object-cover flex-shrink-0">
                                     @else
                                         <div class="w-20 h-20 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center flex-shrink-0 transition-colors duration-300">
                                             <i class="fas fa-book text-blue-600 dark:text-blue-400 text-2xl"></i>
@@ -213,7 +213,7 @@
                                             <span class="text-xs text-themed-secondary transition-colors duration-300">{{ $progress['progress'] }}% complete</span>
                                             @if($progress['estimated_remaining'])
                                                 <span class="text-xs text-themed-secondary transition-colors duration-300">{{ $progress['estimated_remaining'] }}h remaining</span>
-                                            @endif>
+                                            @endif
                                         </div>
 
                                         @if($progress['next_lesson'])
@@ -222,7 +222,7 @@
                                                     <i class="fas fa-play-circle text-blue-500 mr-1"></i>
                                                     Next: {{ $progress['next_lesson']['title'] }}
                                                 </p>
-                                                <a href="{{ route('course.view', $progress['id']) }}" class="text-sm bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 text-white px-4 py-1 rounded-md transition-colors">
+                                                <a href="{{ route('course.view', ['course' => $progress['slug']]) }}" class="text-sm bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 text-white px-4 py-1 rounded-md transition-colors">
                                                     Continue
                                                 </a>
                                             </div>
@@ -663,7 +663,7 @@
                         @foreach($this->wishlistPreview as $item)
                             <div class="flex items-start space-x-3 border border-themed-primary rounded-lg p-3 hover:border-blue-300 dark:hover:border-blue-500 transition-colors">
                                 @if($item['thumbnail'])
-                                    <img src="{{ asset('storage/' . $item['thumbnail']) }}" alt="{{ $item['title'] }}" class="w-16 h-16 rounded object-cover flex-shrink-0">
+                                    <img src="{{ $item['thumbnail'] }}" alt="{{ $item['title'] }}" class="w-16 h-16 rounded object-cover flex-shrink-0">
                                 @else
                                     <div class="w-16 h-16 bg-themed-tertiary rounded flex items-center justify-center flex-shrink-0 transition-colors duration-300">
                                         <i class="fas fa-book text-themed-secondary"></i>

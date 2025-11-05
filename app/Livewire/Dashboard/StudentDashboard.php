@@ -22,6 +22,7 @@ use Livewire\Attributes\Layout;
 use Livewire\Attributes\Computed;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use Carbon\Carbon;
 
 #[Layout('layouts.dashboard', ['title' => 'Student Dashboard'])]
@@ -89,7 +90,7 @@ class StudentDashboard extends Component
         $user = Auth::user();
         $enrollments = $user->enrollments()
             ->with(['course' => function($query) {
-                $query->select('id', 'title', 'thumbnail', 'estimated_duration_minutes', 'instructor_id')
+                $query->select('id', 'title', 'slug', 'thumbnail', 'estimated_duration_minutes', 'instructor_id')
                     ->with('instructor:id,name');
             }])
             ->where('progress_percentage', '<', 100)
@@ -102,10 +103,28 @@ class StudentDashboard extends Component
         })->map(function($enrollment) use ($user) {
             $nextLesson = $this->getNextLesson($enrollment->course, $user->id);
             
+            // Fix thumbnail URL - check if it exists and build proper URL
+            $thumbnailUrl = null;
+            if ($enrollment->course->thumbnail) {
+                // Check if it's already a full URL
+                if (filter_var($enrollment->course->thumbnail, FILTER_VALIDATE_URL)) {
+                    $thumbnailUrl = $enrollment->course->thumbnail;
+                } 
+                // Check if file exists in storage
+                elseif (Storage::disk('public')->exists($enrollment->course->thumbnail)) {
+                    $thumbnailUrl = Storage::url($enrollment->course->thumbnail);
+                }
+                // Fallback - try direct storage path
+                else {
+                    $thumbnailUrl = asset('storage/' . $enrollment->course->thumbnail);
+                }
+            }
+            
             return [
                 'id' => $enrollment->course->id,
+                'slug' => $enrollment->course->slug, // Add slug for routing
                 'title' => $enrollment->course->title,
-                'thumbnail' => $enrollment->course->thumbnail,
+                'thumbnail' => $thumbnailUrl,
                 'progress' => $enrollment->progress_percentage ?? 0,
                 'last_accessed' => $enrollment->updated_at,
                 'estimated_remaining' => $this->calculateRemainingTime($enrollment),
@@ -181,12 +200,14 @@ class StudentDashboard extends Component
         $activeCourses = $user->enrollments()
             ->where('progress_percentage', '<', 100)
             ->where('progress_percentage', '>', 0)
-            ->with('course')
+            ->with('course:id,title,slug')
             ->orderBy('updated_at', 'desc')
             ->take(3)
             ->get();
 
         foreach($activeCourses as $enrollment) {
+            if (!$enrollment->course) continue;
+            
             $nextLesson = $this->getNextLesson($enrollment->course, $user->id);
             
             if($nextLesson) {
@@ -196,7 +217,7 @@ class StudentDashboard extends Component
                     'course' => $enrollment->course->title,
                     'due_date' => now()->addDays(2),
                     'priority' => 'medium',
-                    'url' => route('course.view', ['course' => $enrollment->course->id]),
+                    'url' => route('course.view', ['course' => $enrollment->course->slug]),
                     'is_mandatory' => false,
                 ]);
             }
@@ -422,11 +443,23 @@ class StudentDashboard extends Component
                 return $wishlist->course !== null;
             })
             ->map(function($wishlist) {
+                // Fix thumbnail URL
+                $thumbnailUrl = null;
+                if ($wishlist->course->thumbnail) {
+                    if (filter_var($wishlist->course->thumbnail, FILTER_VALIDATE_URL)) {
+                        $thumbnailUrl = $wishlist->course->thumbnail;
+                    } elseif (Storage::disk('public')->exists($wishlist->course->thumbnail)) {
+                        $thumbnailUrl = Storage::url($wishlist->course->thumbnail);
+                    } else {
+                        $thumbnailUrl = asset('storage/' . $wishlist->course->thumbnail);
+                    }
+                }
+                
                 return [
                     'id' => $wishlist->id,
                     'course_id' => $wishlist->course->id,
                     'title' => $wishlist->course->title,
-                    'thumbnail' => $wishlist->course->thumbnail,
+                    'thumbnail' => $thumbnailUrl,
                     'price' => $wishlist->course->price,
                     'is_free' => $wishlist->course->is_free,
                     'instructor' => optional($wishlist->course->instructor)->name ?? 'Unknown',
