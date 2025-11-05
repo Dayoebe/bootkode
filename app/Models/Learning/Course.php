@@ -105,7 +105,7 @@ public function allLessons()
 
 public function assessments()
 {
-    return $this->hasManyThrough(\App\Models\Assessment\Assessment\Assessment::class, Section::class) // UPDATED
+    return $this->hasManyThrough(\App\Models\Assessment\Assessment::class, Section::class) // UPDATED
         ->select('assessments.*')
         ->orderBy('sections.order')
         ->orderBy('assessments.order');
@@ -113,7 +113,7 @@ public function assessments()
 
 public function directAssessments()
 {
-    return $this->hasMany(\App\Models\Assessment\Assessment\Assessment::class, 'course_id'); // UPDATED
+    return $this->hasMany(\App\Models\Assessment\Assessment::class, 'course_id'); // UPDATED
 }
 
 public function reviews()

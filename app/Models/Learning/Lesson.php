@@ -62,7 +62,7 @@ class Lesson extends Model
 
     public function assessments()
     {
-        return $this->hasMany(\App\Models\Assessment\Assessment\Assessment::class); // UPDATED
+        return $this->hasMany(\App\Models\Assessment\Assessment::class); // UPDATED
     }
 
     // Boot method

@@ -20,6 +20,6 @@ class Section extends Model
 
     public function assessments()
     {
-        return $this->hasMany(\App\Models\Assessment\Assessment\Assessment::class)->orderBy('order'); // UPDATED
+        return $this->hasMany(\App\Models\Assessment\Assessment::class)->orderBy('order'); // UPDATED
     }
 }
