@@ -248,6 +248,16 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->hasMany(\App\Models\Career\Wishlist::class);
     }
+    public function jobApplications()
+    {
+        return $this->hasMany(\App\Models\Career\JobApplication::class);
+    }
+
+    public function jobPortals()
+    {
+        return $this->hasMany(\App\Models\Career\JobPortal::class);
+    }
+
 
     public function savedResources()
     {
@@ -272,6 +282,30 @@ class User extends Authenticatable implements MustVerifyEmail
         return $completedLessons >= $totalLessons;
     }
 
+    // Career helper methods
+    public function hasAppliedToJob($jobId): bool
+    {
+        return $this->jobApplications()
+            ->where('job_id', $jobId)
+            ->exists();
+    }
+
+    public function getActiveApplicationsCount(): int
+    {
+        return $this->jobApplications()
+            ->whereNotIn('status', [
+                \App\Models\Career\JobApplication::APPLICATION_HIRED,
+                \App\Models\Career\JobApplication::APPLICATION_REJECTED
+            ])
+            ->count();
+    }
+
+    public function getHiredApplicationsCount(): int
+    {
+        return $this->jobApplications()
+            ->where('status', \App\Models\Career\JobApplication::APPLICATION_HIRED)
+            ->count();
+    }
     // ============================================
     // CREDENTIALS & CERTIFICATES
     // ============================================
