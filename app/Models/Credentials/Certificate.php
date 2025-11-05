@@ -1,7 +1,4 @@
 <?php
-// ============================================================================
-// IMPROVED Certificate.php - Model Enhancements
-// ============================================================================
 
 namespace App\Models\Credentials;
 
@@ -23,25 +20,24 @@ class Certificate extends Model
     const STATUS_REJECTED = 'rejected';
     const STATUS_REVOKED = 'revoked';
 
-    protected $fillable = [
-        'user_id', 'course_id', 'certificate_number', 'verification_code',
-        'status', 'requested_at', 'approved_at', 'approved_by',
-        'rejected_at', 'rejected_by', 'rejection_reason',
-        'revoked_at', 'revoked_by', 'revocation_reason',
-        'issued_date', 'completion_date', 'grade', 'credits',
-        'certificate_template', 'metadata', 'verification_url',
-        'qr_code_path', 'pdf_path',
-    ];
+// In your Certificate.php model
+protected $fillable = [
+    'user_id', 'course_id', 'certificate_number', 'verification_code',
+    'status', 'approved_at', 'issued_by', // Use existing columns
+    'rejected_at', 'rejected_by', 'rejection_reason',
+    'revoked_at', 'revoked_by', 'revocation_reason',
+    'issued_date', 'completed_at', 'grade', 'credits', // Use completed_at instead of completion_date
+    'certificate_template', 'metadata', 'verification_url',
+    'qr_code_path', 'pdf_path',
+];
 
-    protected $casts = [
-        'requested_at' => 'datetime',
-        'approved_at' => 'datetime',
-        'rejected_at' => 'datetime',
-        'revoked_at' => 'datetime',
-        'issued_date' => 'datetime',
-        'completion_date' => 'datetime',
-        'metadata' => 'array',
-    ];
+protected $casts = [
+    'approved_at' => 'datetime',
+    'completed_at' => 'datetime', // Use completed_at
+    'issued_date' => 'datetime',
+    'revoked_at' => 'datetime',
+    'metadata' => 'array',
+];
 
     // ========== RELATIONSHIPS ==========
     public function user()
@@ -120,29 +116,32 @@ class Certificate extends Model
     public function isActive(): bool { return $this->isApproved() && !$this->revoked_at; }
 
     // ========== STATE TRANSITIONS ==========
-    public function approve(int $approverId = null): self
-    {
-        if (!$this->canBeApproved()) {
-            throw new \Exception("Certificate cannot be approved (status: {$this->status})");
-        }
 
-        $this->update([
-            'status' => self::STATUS_APPROVED,
-            'approved_at' => now(),
-            'approved_by' => $approverId ?? auth()->id(),
-            'issued_date' => now(),
-        ]);
 
-        // Generate assets
-        app(CertificateService::class)->generateCertificateAssets($this);
-        
-        // Notify student
-        if (config('certificate.notifications.enabled', true)) {
-            $this->user->notify(new \App\Notifications\CertificateApproved($this));
-        }
-        
-        return $this->refresh();
+// Update the approve method to use existing columns
+public function approve(int $approverId = null): self
+{
+    if (!$this->canBeApproved()) {
+        throw new \Exception("Certificate cannot be approved (status: {$this->status})");
     }
+
+    $this->update([
+        'status' => self::STATUS_APPROVED,
+        'approved_at' => now(),
+        'issued_by' => $approverId ?? auth()->id(), // Use issued_by instead of approved_by
+        'issued_date' => now(),
+    ]);
+
+    // Generate assets
+    app(CertificateService::class)->generateCertificateAssets($this);
+    
+    // Notify student
+    if (config('certificate.notifications.enabled', true)) {
+        $this->user->notify(new \App\Notifications\CertificateApproved($this));
+    }
+    
+    return $this->refresh();
+}
 
     public function reject(string $reason, int $rejecterId = null): self
     {
