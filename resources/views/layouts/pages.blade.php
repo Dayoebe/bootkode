@@ -5,17 +5,29 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=AW-10833921436"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+
+        gtag('config', 'AW-10833921436');
+    </script>
     <meta name="google-site-verification" content="cmciE9Iqsl6Gl3u_0Zts_-SlchWbsZZ_8OMVpELH3CA" />
 
     <title>{{ config('app.name', 'BootKode') }} @hasSection('title') - @yield('title') @endif</title>
 
-    <meta name="description" content="@yield('meta_description', 'BootKode: Empowering Africa\'s youth with digital skills, mentorship, and careers. Learn to code, get certified, and conquer the tech world.')">
-    <meta name="keywords" content="@yield('meta_keywords', 'BootKode, coding, tech education, Africa, Nigeria, digital skills, mentorship, careers, Laravel, Vue.js, web development, programming, certification, online courses')">
+    <meta name="description"
+        content="@yield('meta_description', 'BootKode: Empowering Africa\'s youth with digital skills, mentorship, and careers. Learn to code, get certified, and conquer the tech world.')">
+    <meta name="keywords"
+        content="@yield('meta_keywords', 'BootKode, coding, tech education, Africa, Nigeria, digital skills, mentorship, careers, Laravel, Vue.js, web development, programming, certification, online courses')">
     <link rel="canonical" href="{{ url()->current() }}">
 
     <!-- Open Graph Meta Tags -->
     <meta property="og:title" content="@yield('og_title', config('app.name'))">
-    <meta property="og:description" content="@yield('og_description', 'BootKode: Empowering Africa\'s youth with digital skills, mentorship, and careers.')">
+    <meta property="og:description"
+        content="@yield('og_description', 'BootKode: Empowering Africa\'s youth with digital skills, mentorship, and careers.')">
     <meta property="og:url" content="{{ url()->current() }}">
     <meta property="og:type" content="website">
     <meta property="og:image" content="@yield('og_image', asset('img/logo.png'))">
@@ -25,7 +37,8 @@
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:site" content="@BootKodeAfrica">
     <meta name="twitter:title" content="@yield('og_title', config('app.name'))">
-    <meta name="twitter:description" content="@yield('og_description', 'BootKode: Empowering Africa\'s youth with digital skills, mentorship, and careers.')">
+    <meta name="twitter:description"
+        content="@yield('og_description', 'BootKode: Empowering Africa\'s youth with digital skills, mentorship, and careers.')">
     <meta name="twitter:image" content="@yield('og_image', asset('img/logo.png'))">
 
     <link rel="icon" href="{{ asset('img/logo.png') }}" type="image/x-icon">
@@ -52,11 +65,18 @@
             scroll-behavior: smooth;
             overflow-x: hidden;
         }
+
         body {
             min-width: 320px;
         }
+
         @media (max-width: 640px) {
-            button, a, input, select, textarea {
+
+            button,
+            a,
+            input,
+            select,
+            textarea {
                 min-height: 44px;
             }
         }
@@ -76,7 +96,7 @@
 
     <script>
         // Prevent zoom on input focus on iOS
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             if (/iPad|iPhone|iPod/.test(navigator.userAgent)) {
                 const viewportMeta = document.querySelector('meta[name="viewport"]');
                 viewportMeta.content = 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no';
