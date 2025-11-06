@@ -17,6 +17,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BootKode - Dashboard</title>
     <!-- Google tag (gtag.js) -->
+    <meta name="google-adsense-account" content="ca-pub-3911204427206897">
 <script async src="https://www.googletagmanager.com/gtag/js?id=AW-10833921436"></script>
 <script>
   window.dataLayer = window.dataLayer || [];

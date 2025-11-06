@@ -15,6 +15,7 @@
   gtag('config', 'AW-10833921436');
 </script>
     <!-- Google Tag Manager -->
+    <meta name="google-adsense-account" content="ca-pub-3911204427206897">
 <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
     new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
     j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=

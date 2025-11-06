@@ -7,6 +7,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>{{ config('app.name', 'CBT System') }} - Exam Mode</title>
     <!-- Google tag (gtag.js) -->
+    <meta name="google-adsense-account" content="ca-pub-3911204427206897">
 <script async src="https://www.googletagmanager.com/gtag/js?id=AW-10833921436"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
