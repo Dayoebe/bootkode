@@ -118,7 +118,7 @@
                 </div>
             </div>
         </div>
-    @endif>
+    @endif
 
     {{-- Desktop Table View (hidden on mobile) --}}
     <div class="hidden lg:block bg-white dark:bg-gray-800 rounded-lg shadow-sm overflow-hidden">

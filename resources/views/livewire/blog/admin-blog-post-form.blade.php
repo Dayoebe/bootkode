@@ -1,6 +1,6 @@
 {{-- resources/views/livewire/blog/admin-blog-post-form.blade.php --}}
 <div>
-    {{-- FIXED: Add error display at the top --}}
+    {{-- Error/Success Messages --}}
     @if (session()->has('message'))
         <div class="mb-6 bg-green-50 border border-green-200 text-green-800 px-4 py-3 rounded-lg">
             <i class="fas fa-check-circle mr-2"></i>
@@ -42,7 +42,7 @@
                             <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                                 Title <span class="text-red-500">*</span>
                             </label>
-                            <input type="text" wire:model.live="title"
+                            <input type="text" wire:model.blur="title"
                                 class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white text-lg"
                                 placeholder="Enter post title..." required>
                             @error('title')<span class="text-red-500 text-sm mt-1 block">{{ $message }}</span>@enderror
@@ -71,16 +71,21 @@
                     </div>
                 </div>
 
-                {{-- Content Editor --}}
+                {{-- Content Editor - FIXED --}}
                 <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6">
                     <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                         Content <span class="text-red-500">*</span>
                     </label>
-                    <div class="mb-4" wire:ignore>
-                        <input id="content" type="hidden" name="content">
-                        <trix-editor input="content" class="prose max-w-none" style="min-height: 400px;"
-                            placeholder="Start writing your blog post...">
-                        </trix-editor>
+                    <div class="mb-4">
+                        <div wire:ignore>
+                            <input id="trix-content" type="hidden" name="content" value="{{ $content }}">
+                            <trix-editor 
+                                input="trix-content" 
+                                class="prose max-w-none trix-content" 
+                                style="min-height: 400px;"
+                                placeholder="Start writing your blog post...">
+                            </trix-editor>
+                        </div>
                     </div>
                     @error('content')<span class="text-red-500 text-sm">{{ $message }}</span>@enderror
                 </div>
@@ -97,7 +102,7 @@
                         <i class="fas fa-lightbulb mr-1"></i>
                         Leave empty to auto-generate from content (first 200 characters).
                     </p>
-                    @error('excerpt')<span class="text-red-500 text-sm mt-1 block">{{ $message }}</span>@enderror>
+                    @error('excerpt')<span class="text-red-500 text-sm mt-1 block">{{ $message }}</span>@enderror
                 </div>
 
                 {{-- SEO Settings --}}
@@ -116,42 +121,30 @@
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                                     Meta Title
-                                    <span class="text-gray-400 font-normal">(SEO Title)</span>
                                 </label>
                                 <input type="text" wire:model="meta_title"
                                     class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                                     placeholder="Auto-filled from post title">
-                                <p class="text-sm text-gray-500 mt-1">
-                                    <i class="fas fa-info-circle mr-1"></i>
-                                    This appears in search results and browser tabs
-                                </p>
                                 @error('meta_title')<span class="text-red-500 text-sm mt-1 block">{{ $message }}</span>@enderror
                             </div>
 
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                                     Meta Description
-                                    <span class="text-gray-400 font-normal">(Search Description)</span>
                                 </label>
                                 <textarea wire:model="meta_description" rows="3"
                                     class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                                    placeholder="Brief description that appears in search results..."></textarea>
-                                <p class="text-sm text-gray-500 mt-1">
-                                    <i class="fas fa-search mr-1"></i>
-                                    This appears below the title in search results
-                                </p>
-                                @error('meta_description')<span class="text-red-500 text-sm mt-1 block">{{ $message }}</span>@enderror>
+                                    placeholder="Brief description for search engines..."></textarea>
+                                @error('meta_description')<span class="text-red-500 text-sm mt-1 block">{{ $message }}</span>@enderror
                             </div>
 
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                                     Keywords
-                                    <span class="text-gray-400 font-normal">(For SEO)</span>
                                 </label>
                                 <div class="flex flex-wrap gap-2 mb-2">
                                     @foreach($meta_keywords as $index => $keyword)
-                                        <span
-                                            class="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm flex items-center">
+                                        <span class="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm flex items-center">
                                             {{ $keyword }}
                                             <button type="button" wire:click="removeKeyword({{ $index }})"
                                                 class="ml-2 text-blue-600 hover:text-blue-800">
@@ -195,13 +188,11 @@
                                 <option value="published">🌐 Published</option>
                                 <option value="scheduled">⏰ Scheduled</option>
                             </select>
-                            @error('status')<span class="text-red-500 text-sm mt-1 block">{{ $message }}</span>@enderror>
+                            @error('status')<span class="text-red-500 text-sm mt-1 block">{{ $message }}</span>@enderror
                         </div>
 
-                        {{-- Show date/time field only for scheduled posts --}}
                         @if($status === 'scheduled')
-                            <div
-                                class="bg-yellow-50 dark:bg-yellow-900 border border-yellow-200 dark:border-yellow-700 rounded-lg p-4">
+                            <div class="bg-yellow-50 dark:bg-yellow-900 border border-yellow-200 dark:border-yellow-700 rounded-lg p-4">
                                 <label class="block text-sm font-medium text-yellow-800 dark:text-yellow-200 mb-2">
                                     <i class="fas fa-calendar-alt mr-1"></i>
                                     Schedule Publish Date & Time <span class="text-red-500">*</span>
@@ -209,31 +200,7 @@
                                 <input type="datetime-local" wire:model="published_at"
                                     class="w-full px-4 py-2 border border-yellow-300 rounded-lg focus:ring-2 focus:ring-yellow-500 dark:bg-yellow-800 dark:border-yellow-600 dark:text-white"
                                     min="{{ now()->format('Y-m-d\TH:i') }}" required>
-                                <p class="text-sm text-yellow-700 dark:text-yellow-300 mt-1">
-                                    <i class="fas fa-info-circle mr-1"></i>
-                                    Post will be automatically published at this date and time
-                                </p>
-                                @error('published_at')<span class="text-red-500 text-sm mt-1 block">{{ $message }}</span>@enderror>
-                            </div>
-                        @endif
-
-                        @if($status === 'published')
-                            <div
-                                class="bg-green-50 dark:bg-green-900 border border-green-200 dark:border-green-700 rounded-lg p-3">
-                                <p class="text-sm text-green-800 dark:text-green-200">
-                                    <i class="fas fa-check-circle mr-1"></i>
-                                    Post will be published immediately with current date and time
-                                </p>
-                            </div>
-                        @endif
-
-                        @if($status === 'draft')
-                            <div
-                                class="bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg p-3">
-                                <p class="text-sm text-gray-600 dark:text-gray-400">
-                                    <i class="fas fa-edit mr-1"></i>
-                                    Post saved as draft - not visible to public
-                                </p>
+                                @error('published_at')<span class="text-red-500 text-sm mt-1 block">{{ $message }}</span>@enderror
                             </div>
                         @endif
 
@@ -259,27 +226,52 @@
                     </div>
                 </div>
 
-                {{-- FIXED: Single Category Selection --}}
+                {{-- FIXED: Multiple Categories --}}
                 <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6">
                     <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-4">
                         <i class="fas fa-folder text-purple-500 mr-2"></i>
-                        Category & Tags
+                        Categories & Tags
                     </h3>
 
                     <div class="space-y-4">
-                        {{-- Single Category Selection --}}
+                        {{-- Multiple Categories --}}
                         <div>
                             <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                                Category
+                                Categories
+                                <span class="text-gray-400 font-normal">(Select multiple)</span>
                             </label>
-                            <select wire:model="category_id"
-                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
-                                <option value="">Select a category...</option>
+                            
+                            {{-- Selected Categories Display --}}
+                            @if(count($category_ids) > 0)
+                                <div class="flex flex-wrap gap-2 mb-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                                    @foreach($category_ids as $index => $categoryId)
+                                        @php $category = $categories->find($categoryId); @endphp
+                                        @if($category)
+                                            <span class="px-3 py-1 text-sm rounded-full flex items-center"
+                                                  style="background-color: {{ $category->color }}20; color: {{ $category->color }}; border: 1px solid {{ $category->color }}40;">
+                                                <i class="fas fa-folder mr-1"></i>
+                                                {{ $category->name }}
+                                                <button type="button" 
+                                                        wire:click="removeCategory({{ $index }})"
+                                                        class="ml-2 hover:text-red-500">
+                                                    <i class="fas fa-times"></i>
+                                                </button>
+                                            </span>
+                                        @endif
+                                    @endforeach
+                                </div>
+                            @endif
+                            
+                            {{-- Category Selection Dropdown --}}
+                            <select class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                                    onchange="@this.set('category_ids', [...@this.get('category_ids'), parseInt(this.value)]); this.value='';">
+                                <option value="">Select a category to add...</option>
                                 @foreach($categories as $category)
-                                    <option value="{{ $category->id }}">{{ $category->name }}</option>
+                                    @if(!in_array($category->id, $category_ids))
+                                        <option value="{{ $category->id }}">{{ $category->name }}</option>
+                                    @endif
                                 @endforeach
                             </select>
-                            @error('category_id')<span class="text-red-500 text-sm mt-1 block">{{ $message }}</span>@enderror>
                             
                             @if(count($categories) === 0)
                                 <p class="text-sm text-gray-500 mt-2">
@@ -293,7 +285,6 @@
                         <div>
                             <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                                 Tags
-                                <span class="text-gray-400 font-normal">(Free-form keywords)</span>
                             </label>
                             <div class="flex flex-wrap gap-2 mb-2">
                                 @foreach($tags as $index => $tag)
@@ -315,10 +306,6 @@
                                     <i class="fas fa-plus"></i>
                                 </button>
                             </div>
-                            <p class="text-sm text-gray-500 mt-2">
-                                <i class="fas fa-lightbulb mr-1"></i>
-                                Tags help users find related content and improve SEO
-                            </p>
                         </div>
                     </div>
                 </div>
@@ -330,7 +317,6 @@
                         Featured Image
                     </h3>
 
-                    {{-- Show current/existing image --}}
                     @if($existing_image && !$removeExistingImage)
                         <div class="mb-4">
                             <div class="relative group">
@@ -338,8 +324,7 @@
                                     class="w-full h-48 object-cover rounded-lg">
                                 <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30 transition-opacity rounded-lg flex items-center justify-center">
                                     <button type="button" wire:click="toggleRemoveImage"
-                                        class="bg-red-500 text-white p-2 rounded-full hover:bg-red-600 transition-colors opacity-0 group-hover:opacity-100"
-                                        title="Remove image">
+                                        class="bg-red-500 text-white p-2 rounded-full hover:bg-red-600 transition-colors opacity-0 group-hover:opacity-100">
                                         <i class="fas fa-trash text-sm"></i>
                                     </button>
                                 </div>
@@ -351,24 +336,22 @@
                         </div>
                     @endif
 
-                    {{-- Show removal confirmation --}}
                     @if($removeExistingImage)
                         <div class="bg-red-50 border border-red-200 rounded-lg p-4 mb-4">
                             <div class="flex items-center justify-between">
                                 <p class="text-sm text-red-800">
                                     <i class="fas fa-exclamation-triangle mr-1"></i>
-                                    Image will be removed when you save the post.
+                                    Image will be removed when you save.
                                 </p>
                                 <button type="button" wire:click="toggleRemoveImage"
                                     class="text-sm text-red-600 hover:text-red-800 font-medium">
                                     <i class="fas fa-undo mr-1"></i>
-                                    Keep image
+                                    Keep
                                 </button>
                             </div>
                         </div>
                     @endif
 
-                    {{-- FIXED: Show new image preview with loading state --}}
                     @if($featured_image)
                         <div class="mb-4" wire:loading.remove wire:target="featured_image">
                             @if(is_object($featured_image) && method_exists($featured_image, 'temporaryUrl'))
@@ -376,7 +359,7 @@
                                     class="w-full h-48 object-cover rounded-lg">
                                 <p class="text-sm text-blue-600 mt-2">
                                     <i class="fas fa-upload mr-1"></i>
-                                    New image {{ $existing_image ? '(will replace current)' : '' }}
+                                    New image
                                 </p>
                             @endif
                         </div>
@@ -384,31 +367,14 @@
                             <div class="w-full h-48 bg-gray-200 rounded-lg flex items-center justify-center">
                                 <i class="fas fa-spinner fa-spin text-3xl text-gray-400"></i>
                             </div>
-                            <p class="text-sm text-blue-600 mt-2">
-                                <i class="fas fa-upload mr-1"></i>
-                                Uploading image...
-                            </p>
+                            <p class="text-sm text-blue-600 mt-2">Uploading...</p>
                         </div>
                     @endif
 
-                    {{-- File upload input --}}
                     @if(!$removeExistingImage)
                         <div>
                             <input type="file" wire:model="featured_image" accept="image/*"
-                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
-
-                            @if($existing_image)
-                                <p class="text-sm text-gray-500 mt-2">
-                                    <i class="fas fa-info-circle mr-1"></i>
-                                    Choose a new image to replace the current one, or leave empty to keep it.
-                                </p>
-                            @else
-                                <p class="text-sm text-gray-500 mt-2">
-                                    <i class="fas fa-upload mr-1"></i>
-                                    Upload a featured image for your post (recommended: 1200x630px, max 2MB)
-                                </p>
-                            @endif
-
+                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white text-sm">
                             @error('featured_image')
                                 <span class="text-red-500 text-sm mt-1 block">{{ $message }}</span>
                             @enderror
@@ -420,7 +386,7 @@
                 <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6">
                     <div class="space-y-3">
                         <button type="submit"
-                            class="w-full px-4 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium focus:ring-2 focus:ring-blue-500"
+                            class="w-full px-4 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium"
                             wire:loading.attr="disabled">
                             <span wire:loading.remove wire:target="save">
                                 <i class="fas fa-save mr-2"></i>
@@ -469,24 +435,20 @@
                         @endif
                     </div>
 
-                    {{-- Quick Stats (for edit mode) --}}
                     @if($isEdit && $post)
                         <div class="border-t border-gray-200 dark:border-gray-700 mt-6 pt-4">
                             <h4 class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">Post Statistics</h4>
                             <div class="grid grid-cols-3 gap-4 text-center">
                                 <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-3">
-                                    <div class="text-lg font-bold text-gray-900 dark:text-white">
-                                        {{ number_format($post->views_count) }}</div>
+                                    <div class="text-lg font-bold text-gray-900 dark:text-white">{{ number_format($post->views_count) }}</div>
                                     <div class="text-xs text-gray-500">Views</div>
                                 </div>
                                 <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-3">
-                                    <div class="text-lg font-bold text-gray-900 dark:text-white">
-                                        {{ number_format($post->likes_count) }}</div>
+                                    <div class="text-lg font-bold text-gray-900 dark:text-white">{{ number_format($post->likes_count) }}</div>
                                     <div class="text-xs text-gray-500">Likes</div>
                                 </div>
                                 <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-3">
-                                    <div class="text-lg font-bold text-gray-900 dark:text-white">
-                                        {{ number_format($post->comments_count) }}</div>
+                                    <div class="text-lg font-bold text-gray-900 dark:text-white">{{ number_format($post->comments_count) }}</div>
                                     <div class="text-xs text-gray-500">Comments</div>
                                 </div>
                             </div>
@@ -497,7 +459,7 @@
         </div>
     </form>
 
-    {{-- Trix Editor Styling --}}
+    {{-- Trix Styling --}}
     <style>
         trix-editor {
             border: 1px solid #d1d5db;
@@ -539,70 +501,63 @@
         }
     </style>
 
-    {{-- FIXED: Improved Trix editor JavaScript --}}
+    {{-- FIXED: Improved Trix Editor JavaScript --}}
+    @script
     <script>
+        // Initialize Trix editor properly
         document.addEventListener('DOMContentLoaded', function() {
-            initializeTrixEditor();
+            initTrixEditor();
         });
 
-        document.addEventListener('livewire:navigated', function() {
-            initializeTrixEditor();
-        });
-
-        function initializeTrixEditor() {
+        function initTrixEditor() {
             const trixEditor = document.querySelector('trix-editor');
-            const contentInput = document.getElementById('content');
-
-            if (!trixEditor || !contentInput) {
-                console.error('Trix editor elements not found');
+            const hiddenInput = document.getElementById('trix-content');
+            
+            if (!trixEditor || !hiddenInput) {
+                console.error('Trix elements not found');
                 return;
             }
 
-            // Set initial content from Livewire
-            const initialContent = @js($content);
-            if (initialContent && !trixEditor.editor.getDocument().toString()) {
+            // Load initial content
+            const initialContent = hiddenInput.value || '';
+            if (initialContent && trixEditor.editor) {
                 trixEditor.editor.loadHTML(initialContent);
-                contentInput.value = initialContent;
             }
 
-            // Update Livewire when content changes
-            let debounceTimer;
-            trixEditor.addEventListener('trix-change', function(event) {
-                clearTimeout(debounceTimer);
-                debounceTimer = setTimeout(() => {
-                    const content = event.target.innerHTML;
-                    contentInput.value = content;
-                    @this.set('content', content, false);
+            // Sync content to Livewire on change (debounced)
+            let timeout;
+            trixEditor.addEventListener('trix-change', function(e) {
+                clearTimeout(timeout);
+                timeout = setTimeout(function() {
+                    const content = trixEditor.innerHTML;
+                    hiddenInput.value = content;
+                    $wire.set('content', content, false);
                 }, 500);
             });
 
-            // Capture content before form submission
-            trixEditor.addEventListener('trix-blur', function(event) {
-                const content = event.target.innerHTML;
-                contentInput.value = content;
-                @this.set('content', content, false);
+            // Sync on blur
+            trixEditor.addEventListener('trix-blur', function(e) {
+                const content = trixEditor.innerHTML;
+                hiddenInput.value = content;
+                $wire.set('content', content, false);
             });
         }
 
-        // Listen for the captureContent event from Livewire
+        // Re-initialize after Livewire updates
+        Livewire.hook('morph.updated', () => {
+            setTimeout(initTrixEditor, 100);
+        });
+
+        // Capture content before form submission
         document.addEventListener('livewire:init', () => {
-            Livewire.on('captureContent', () => {
+            Livewire.on('content-updated', () => {
                 const trixEditor = document.querySelector('trix-editor');
                 if (trixEditor) {
                     const content = trixEditor.innerHTML;
-                    document.getElementById('content').value = content;
-                    @this.set('content', content, false);
+                    document.getElementById('trix-content').value = content;
                 }
             });
         });
-
-        // Ensure content is captured before any form submission
-        document.addEventListener('submit', function(e) {
-            const trixEditor = document.querySelector('trix-editor');
-            if (trixEditor) {
-                const content = trixEditor.innerHTML;
-                document.getElementById('content').value = content;
-            }
-        });
     </script>
+    @endscript
 </div>
