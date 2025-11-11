@@ -229,90 +229,99 @@
                 </div>
 
                 {{-- FIXED: Multiple Categories --}}
-                {{-- Categories --}}
-                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6">
-                    <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-4">
-                        <i class="fas fa-folder text-purple-500 mr-2"></i>
-                        Categories & Tags
-                    </h3>
+{{-- Multiple Categories --}}
+<div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6">
+    <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-4">
+        <i class="fas fa-folder text-purple-500 mr-2"></i>
+        Categories & Tags
+    </h3>
 
-                    <div class="space-y-4">
-                        {{-- Single Category Selection --}}
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                                Category <span class="text-red-500">*</span>
-                            </label>
-
-                            {{-- Selected Category Display --}}
-                            @if(count($category_ids) > 0)
-                                @php $selectedCategory = $categories->find($category_ids[0]); @endphp
-                                @if($selectedCategory)
-                                    <div class="mb-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
-                                        <span class="px-3 py-1 text-sm rounded-full flex items-center w-fit"
-                                            style="background-color: {{ $selectedCategory->color }}20; color: {{ $selectedCategory->color }}; border: 1px solid {{ $selectedCategory->color }}40;">
-                                            <i class="fas fa-folder mr-1"></i>
-                                            {{ $selectedCategory->name }}
-                                            <button type="button" wire:click="removeCategory(0)"
-                                                class="ml-2 hover:text-red-500">
-                                                <i class="fas fa-times"></i>
-                                            </button>
-                                        </span>
-                                    </div>
-                                @endif
-                            @endif
-
-                            {{-- Category Selection Dropdown --}}
-                            <select
-                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                                onchange="@this.set('category_ids', this.value ? [parseInt(this.value)] : []); this.value='';">
-                                <option value="">Select a category...</option>
-                                @foreach($categories as $category)
-                                    @if(!in_array($category->id, $category_ids))
-                                        <option value="{{ $category->id }}">{{ $category->name }}</option>
+    <div class="space-y-4">
+        {{-- Multiple Category Selection --}}
+        <div>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                Categories <span class="text-red-500">*</span>
+                <span class="text-xs text-gray-500 font-normal">(Select one or more)</span>
+            </label>
+            
+            {{-- Selected Categories Display --}}
+            @if(count($category_ids) > 0)
+                <div class="mb-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                    <div class="flex flex-wrap gap-2">
+                        @foreach($category_ids as $index => $categoryId)
+                            @php $selectedCategory = $categories->find($categoryId); @endphp
+                            @if($selectedCategory)
+                                <span class="px-3 py-1 text-sm rounded-full flex items-center"
+                                      style="background-color: {{ $selectedCategory->color }}20; color: {{ $selectedCategory->color }}; border: 1px solid {{ $selectedCategory->color }}40;">
+                                    <i class="fas fa-folder mr-1"></i>
+                                    {{ $selectedCategory->name }}
+                                    @if($index === 0)
+                                        <span class="ml-2 px-1.5 py-0.5 bg-white/50 rounded text-xs">Primary</span>
                                     @endif
-                                @endforeach
-                            </select>
-
-                            @if(count($categories) === 0)
-                                <p class="text-sm text-gray-500 mt-2">
-                                    <i class="fas fa-info-circle mr-1"></i>
-                                    No categories available. <a href="{{ route('admin.blog.categories.index') }}"
-                                        class="text-blue-600 hover:underline">Create categories first</a>.
-                                </p>
+                                    <button type="button" 
+                                            wire:click="removeCategory({{ $index }})"
+                                            class="ml-2 hover:text-red-500">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                </span>
                             @endif
-                            @error('category_ids.0')<span
-                            class="text-red-500 text-sm mt-1 block">{{ $message }}</span>@enderror
-                        </div>
-
-                        {{-- Tags --}}
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                                Tags
-                            </label>
-                            <div class="flex flex-wrap gap-2 mb-2">
-                                @foreach($tags as $index => $tag)
-                                    <span
-                                        class="px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm flex items-center">
-                                        #{{ $tag }}
-                                        <button type="button" wire:click="removeTag({{ $index }})"
-                                            class="ml-2 text-gray-500 hover:text-gray-700">
-                                            <i class="fas fa-times"></i>
-                                        </button>
-                                    </span>
-                                @endforeach
-                            </div>
-                            <div class="flex">
-                                <input type="text" wire:model="newTag" wire:keydown.enter.prevent="addTag"
-                                    class="flex-1 px-4 py-2 border border-gray-300 rounded-l-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                                    placeholder="Add tag...">
-                                <button type="button" wire:click="addTag"
-                                    class="px-4 py-2 bg-gray-600 text-white rounded-r-lg hover:bg-gray-700">
-                                    <i class="fas fa-plus"></i>
-                                </button>
-                            </div>
-                        </div>
+                        @endforeach
                     </div>
+                    <p class="text-xs text-gray-500 mt-2">
+                        <i class="fas fa-info-circle mr-1"></i>
+                        The first category is the primary category for URL routing.
+                    </p>
                 </div>
+            @endif
+            
+            {{-- Category Selection Dropdown --}}
+            <select class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                    onchange="if(this.value && !@js($category_ids).includes(parseInt(this.value))) { @this.category_ids.push(parseInt(this.value)); } this.value='';">
+                <option value="">Add a category...</option>
+                @foreach($categories as $category)
+                    @if(!in_array($category->id, $category_ids))
+                        <option value="{{ $category->id }}">{{ $category->name }}</option>
+                    @endif
+                @endforeach
+            </select>
+            
+            @if(count($categories) === 0)
+                <p class="text-sm text-gray-500 mt-2">
+                    <i class="fas fa-info-circle mr-1"></i>
+                    No categories available. <a href="{{ route('admin.blog.categories.index') }}" class="text-blue-600 hover:underline">Create categories first</a>.
+                </p>
+            @endif
+            @error('category_ids')<span class="text-red-500 text-sm mt-1 block">{{ $message }}</span>@enderror
+        </div>
+
+        {{-- Tags --}}
+        <div>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                Tags
+            </label>
+            <div class="flex flex-wrap gap-2 mb-2">
+                @foreach($tags as $index => $tag)
+                    <span class="px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm flex items-center">
+                        #{{ $tag }}
+                        <button type="button" wire:click="removeTag({{ $index }})"
+                            class="ml-2 text-gray-500 hover:text-gray-700">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </span>
+                @endforeach
+            </div>
+            <div class="flex">
+                <input type="text" wire:model="newTag" wire:keydown.enter.prevent="addTag"
+                    class="flex-1 px-4 py-2 border border-gray-300 rounded-l-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                    placeholder="Add tag...">
+                <button type="button" wire:click="addTag"
+                    class="px-4 py-2 bg-gray-600 text-white rounded-r-lg hover:bg-gray-700">
+                    <i class="fas fa-plus"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
 
                 {{-- Featured Image --}}
                 <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6">
