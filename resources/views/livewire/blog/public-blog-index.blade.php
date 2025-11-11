@@ -2,7 +2,7 @@
     {{-- Hero Section --}}
     @if($featuredPosts->count() > 0 && !$search && !$category && !$tag)
         <section class="bg-gray-700 text-white py-16 mb-12">
-            <div class=" px-4 sm:px-6 lg:px-8">
+            <div class="px-4 sm:px-6 lg:px-8">
                 <div class="text-center mb-12">
                     <h1 class="text-4xl md:text-6xl font-bold mb-4">Our Blog</h1>
                     <p class="text-xl md:text-2xl text-blue-100">Discover insights, stories, and knowledge</p>
@@ -16,15 +16,27 @@
                             @if($post->featured_image)
                                 <div class="aspect-video mb-4 rounded-lg overflow-hidden">
                                     <a href="{{ route('blog.show', $post->slug) }}">
-                                    <img src="{{ Storage::url($post->featured_image) }}" alt="{{ $post->title }}"
-                                        class="w-full h-full object-cover">
+                                        <img src="{{ Storage::url($post->featured_image) }}" alt="{{ $post->title }}"
+                                            class="w-full h-full object-cover">
                                     </a>
                                 </div>
                             @endif
                             <div class="flex items-center text-sm text-blue-200 mb-2">
                                 <i class="fas fa-calendar mr-2"></i>
                                 {{ $post->published_at->format('M d, Y') }}
-                                @if($post->category)
+                                
+                                {{-- UPDATED: Show all categories or first category --}}
+                                @if($post->categories->count() > 0)
+                                    <span class="mx-2">•</span>
+                                    <div class="flex flex-wrap gap-1">
+                                        @foreach($post->categories->take(2) as $category)
+                                            <span class="px-2 py-1 bg-white/20 rounded text-xs">{{ $category->name }}</span>
+                                        @endforeach
+                                        @if($post->categories->count() > 2)
+                                            <span class="px-2 py-1 bg-white/20 rounded text-xs">+{{ $post->categories->count() - 2 }}</span>
+                                        @endif
+                                    </div>
+                                @elseif($post->category)
                                     <span class="mx-2">•</span>
                                     <span class="px-2 py-1 bg-white/20 rounded">{{ $post->category->name }}</span>
                                 @endif
@@ -116,8 +128,8 @@
                                 @if($post->featured_image)
                                     <div class="aspect-video overflow-hidden">
                                         <a href="{{ route('blog.show', $post->slug) }}">
-                                        <img src="{{ Storage::url($post->featured_image) }}" alt="{{ $post->title }}"
-                                            class="w-full h-full object-cover hover:scale-105 transition-transform duration-300">
+                                            <img src="{{ Storage::url($post->featured_image) }}" alt="{{ $post->title }}"
+                                                class="w-full h-full object-cover hover:scale-105 transition-transform duration-300">
                                         </a>
                                     </div>
                                 @endif
@@ -129,15 +141,29 @@
                                         <span>{{ $post->author->name }}</span>
                                         <span class="mx-2">•</span>
                                         <time>{{ $post->published_at->format('M d, Y') }}</time>
-                                        @if($post->category)
-                                            <span class="mx-2">•</span>
+                                    </div>
+
+                                    {{-- UPDATED: Show all categories --}}
+                                    @if($post->categories->count() > 0)
+                                        <div class="flex flex-wrap gap-2 mb-3">
+                                            @foreach($post->categories as $category)
+                                                <a href="{{ route('blog.category', $category->slug) }}"
+                                                    class="px-2 py-1 rounded text-xs font-medium"
+                                                    style="background-color: {{ $category->color }}20; color: {{ $category->color }}">
+                                                    {{ $category->name }}
+                                                </a>
+                                            @endforeach
+                                        </div>
+                                    @elseif($post->category)
+                                        {{-- Fallback for old single category --}}
+                                        <div class="mb-3">
                                             <a href="{{ route('blog.category', $post->category->slug) }}"
-                                                class="px-2 py-1 rounded text-xs font-medium"
+                                                class="px-2 py-1 rounded text-xs font-medium inline-block"
                                                 style="background-color: {{ $post->category->color }}20; color: {{ $post->category->color }}">
                                                 {{ $post->category->name }}
                                             </a>
-                                        @endif
-                                    </div>
+                                        </div>
+                                    @endif
 
                                     <h2 class="text-xl font-bold mb-3 line-clamp-2">
                                         <a href="{{ route('blog.show', $post->slug) }}"
@@ -151,10 +177,8 @@
                                     <div class="flex items-center justify-between">
                                         <div class="flex items-center text-sm text-gray-500 space-x-4">
                                             <span><i class="fas fa-eye mr-1"></i>{{ number_format($post->views_count) }}</span>
-                                            <span><i
-                                                    class="fas fa-heart mr-1"></i>{{ number_format($post->likes_count) }}</span>
-                                            <span><i
-                                                    class="fas fa-comment mr-1"></i>{{ number_format($post->comments_count) }}</span>
+                                            <span><i class="fas fa-heart mr-1"></i>{{ number_format($post->likes_count) }}</span>
+                                            <span><i class="fas fa-comment mr-1"></i>{{ number_format($post->comments_count) }}</span>
                                             @if($post->read_time > 0)
                                                 <span><i class="fas fa-clock mr-1"></i>{{ $post->read_time }} min read</span>
                                             @endif

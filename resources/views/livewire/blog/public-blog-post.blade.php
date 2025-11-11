@@ -3,7 +3,19 @@
     {{-- Article Header --}}
     <article class="max-w-8xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <header class="mb-8">
-            @if($post->category)
+            {{-- UPDATED: Show all categories --}}
+            @if($post->categories->count() > 0)
+                <div class="mb-4 flex flex-wrap gap-2">
+                    @foreach($post->categories as $category)
+                        <a href="{{ route('blog.category', $category->slug) }}"
+                            class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium"
+                            style="background-color: {{ $category->color }}20; color: {{ $category->color }}">
+                            {{ $category->name }}
+                        </a>
+                    @endforeach
+                </div>
+            @elseif($post->category)
+                {{-- Fallback for old single category --}}
                 <div class="mb-4">
                     <a href="{{ route('blog.category', $post->category->slug) }}"
                         class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium"
@@ -17,7 +29,7 @@
 
             <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between border-b border-gray-200 pb-6">
                 <div class="flex items-center mb-4 sm:mb-0">
-                    <div class="flex-shrink-0">
+                    <div class="flex items-center">
                         <img src="{{ $post->author->profile_photo_url ?? asset('images/default-avatar.png') }}"
                             alt="{{ $post->author->name }}" class="w-12 h-12 rounded-full mr-4">
                         <div>
@@ -31,33 +43,34 @@
                             </div>
                         </div>
                     </div>
+                </div>
 
-                    <div class="flex items-center space-x-4">
-                        <div class="flex items-center text-sm text-gray-500">
-                            <i class="fas fa-eye mr-1"></i>
-                            {{ number_format($post->views_count) }} views
-                        </div>
+                <div class="flex items-center space-x-4">
+                    <div class="flex items-center text-sm text-gray-500">
+                        <i class="fas fa-eye mr-1"></i>
+                        {{ number_format($post->views_count) }} views
+                    </div>
 
-                        {{-- Reaction Buttons --}}
-                        <div class="flex items-center space-x-2">
-                            <button wire:click="toggleReaction('like')"
+                    {{-- Reaction Buttons --}}
+                    <div class="flex items-center space-x-2">
+                        <button wire:click="toggleReaction('like')"
+                            class="flex items-center px-3 py-1 rounded-full transition-colors
+                                   {{ $userHasLiked ? 'bg-red-100 text-red-600' : 'bg-gray-100 text-gray-600 hover:bg-red-50 hover:text-red-600' }}">
+                            <i class="fas fa-heart mr-1"></i>
+                            {{ number_format($post->likes_count) }}
+                        </button>
+
+                        @auth
+                            <button wire:click="toggleReaction('bookmark')"
                                 class="flex items-center px-3 py-1 rounded-full transition-colors
-                                       {{ $userHasLiked ? 'bg-red-100 text-red-600' : 'bg-gray-100 text-gray-600 hover:bg-red-50 hover:text-red-600' }}">
-                                <i class="fas fa-heart mr-1"></i>
-                                {{ number_format($post->likes_count) }}
-                            </button>
-
-                            @auth
-                                <button wire:click="toggleReaction('bookmark')"
-                                    class="flex items-center px-3 py-1 rounded-full transition-colors
                                                {{ $userHasBookmarked ? 'bg-blue-100 text-blue-600' : 'bg-gray-100 text-gray-600 hover:bg-blue-50 hover:text-blue-600' }}">
-                                    <i class="fas fa-bookmark mr-1"></i>
-                                    {{ $userHasBookmarked ? 'Saved' : 'Save' }}
-                                </button>
-                            @endauth
-                        </div>
+                                <i class="fas fa-bookmark mr-1"></i>
+                                {{ $userHasBookmarked ? 'Saved' : 'Save' }}
+                            </button>
+                        @endauth
                     </div>
                 </div>
+            </div>
         </header>
 
         {{-- Featured Image --}}
@@ -65,8 +78,8 @@
             @if($post->featured_image)
                 <div class="aspect-video mb-8 rounded-xl overflow-hidden">
                     <a href="{{ route('blog.show', $post->slug) }}">
-                    <img src="{{ Storage::url($post->featured_image) }}" alt="{{ $post->title }}"
-                        class="w-full h-full object-cover">
+                        <img src="{{ Storage::url($post->featured_image) }}" alt="{{ $post->title }}"
+                            class="w-full h-full object-cover">
                     </a>
                 </div>
             @endif
@@ -77,24 +90,30 @@
             {!! $post->content !!}
         </div>
 
-        {{-- Tags --}}
-        @if($post->tags && count($post->tags) > 0)
+        {{-- User Tags (separate from categories) --}}
+        @php
+            $userTags = is_array($post->user_tags) ? $post->user_tags : [];
+        @endphp
+
+        @if(count($userTags) > 0)
             <div class="flex flex-wrap gap-2 mb-8">
                 <span class="text-sm font-medium text-gray-500 mr-2">Tags:</span>
-                @foreach($post->tags as $tag)
-                    <a href="{{ route('blog.tag', $tag) }}"
-                        class="px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm hover:bg-gray-200 transition-colors">
-                        #{{ $tag }}
-                    </a>
+                @foreach($userTags as $tag)
+                    @if(is_string($tag))
+                        <a href="{{ route('blog.tag', $tag) }}"
+                            class="px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm hover:bg-gray-200 transition-colors">
+                            #{{ $tag }}
+                        </a>
+                    @endif
                 @endforeach
             </div>
         @endif
 
         {{-- Social Sharing --}}
         <div class="border-t border-b border-gray-200 py-6 my-8">
-            <div class="flex items-center justify-between">
+            <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                 <span class="text-lg font-medium text-gray-900">Share this post</span>
-                <div class="flex items-center space-x-4">
+                <div class="flex flex-wrap items-center gap-3">
                     <a href="https://twitter.com/intent/tweet?url={{ urlencode(request()->url()) }}&text={{ urlencode($post->title) }}"
                         target="_blank"
                         class="flex items-center px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors">
@@ -117,7 +136,7 @@
             </div>
         </div>
 
-        {{-- Comments Section --}}
+        {{-- Comments Section (unchanged) --}}
         @if($post->allow_comments)
             <section id="comments" class="mb-12">
                 <div class="flex items-center justify-between mb-6">
@@ -227,16 +246,16 @@
     {{-- Related Posts --}}
     @if($relatedPosts->count() > 0)
         <section class="bg-gray-50 py-12">
-            <div class=" px-4 sm:px-6 lg:px-8">
+            <div class="px-4 sm:px-6 lg:px-8">
                 <h3 class="text-3xl font-bold text-gray-900 mb-8 text-center">Related Posts</h3>
                 <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
                     @foreach($relatedPosts as $relatedPost)
                         <article class="bg-white rounded-xl shadow-sm overflow-hidden hover:shadow-lg transition-shadow">
                             @if($relatedPost->featured_image)
                                 <div class="aspect-video overflow-hidden">
-                                    <a href="{{ route('blog.show', $post->slug) }}">
-                                    <img src="{{ Storage::url($relatedPost->featured_image) }}" alt="{{ $relatedPost->title }}"
-                                        class="w-full h-full object-cover hover:scale-105 transition-transform duration-300">
+                                    <a href="{{ route('blog.show', $relatedPost->slug) }}">
+                                        <img src="{{ Storage::url($relatedPost->featured_image) }}" alt="{{ $relatedPost->title }}"
+                                            class="w-full h-full object-cover hover:scale-105 transition-transform duration-300">
                                     </a>
                                 </div>
                             @endif

@@ -182,7 +182,25 @@
                                 </div>
                             </td>
                             <td class="px-4 py-3">
-                                @if($post->category)
+                                @php
+                                    $postCategories = $post->categories;
+                                @endphp
+                                
+                                @if($postCategories->count() > 0)
+                                    <div class="flex flex-wrap gap-1">
+                                        @foreach($postCategories->take(2) as $cat)
+                                            <span class="px-2 py-1 text-xs font-medium rounded whitespace-nowrap"
+                                                  style="background-color: {{ $cat->color }}20; color: {{ $cat->color }}">
+                                                {{ $cat->name }}
+                                            </span>
+                                        @endforeach
+                                        @if($postCategories->count() > 2)
+                                            <span class="px-2 py-1 text-xs bg-gray-100 text-gray-600 rounded">
+                                                +{{ $postCategories->count() - 2 }}
+                                            </span>
+                                        @endif
+                                    </div>
+                                @elseif($post->category)
                                     <span class="px-2 py-1 text-xs font-medium rounded whitespace-nowrap"
                                           style="background-color: {{ $post->category->color }}20; color: {{ $post->category->color }}">
                                         {{ $post->category->name }}
@@ -311,15 +329,31 @@
                         <span class="text-gray-500">Date:</span>
                         <span class="font-medium text-gray-900 dark:text-white ml-1">{{ $post->created_at->format('M d, Y') }}</span>
                     </div>
-                    @if($post->category)
-                        <div class="col-span-2">
-                            <span class="text-gray-500">Category:</span>
-                            <span class="inline-block px-2 py-0.5 text-xs font-medium rounded ml-1"
-                                  style="background-color: {{ $post->category->color }}20; color: {{ $post->category->color }}">
-                                {{ $post->category->name }}
-                            </span>
+                    @php
+                    $postCategories = $post->categories;
+                @endphp
+                
+                @if($postCategories->count() > 0)
+                    <div class="col-span-2">
+                        <span class="text-gray-500">Categories:</span>
+                        <div class="inline-flex flex-wrap gap-1 ml-1">
+                            @foreach($postCategories as $cat)
+                                <span class="inline-block px-2 py-0.5 text-xs font-medium rounded"
+                                      style="background-color: {{ $cat->color }}20; color: {{ $cat->color }}">
+                                    {{ $cat->name }}
+                                </span>
+                            @endforeach
                         </div>
-                    @endif
+                    </div>
+                @elseif($post->category)
+                    <div class="col-span-2">
+                        <span class="text-gray-500">Category:</span>
+                        <span class="inline-block px-2 py-0.5 text-xs font-medium rounded ml-1"
+                              style="background-color: {{ $post->category->color }}20; color: {{ $post->category->color }}">
+                            {{ $post->category->name }}
+                        </span>
+                    </div>
+                @endif
                 </div>
 
                 {{-- Status and Stats --}}
