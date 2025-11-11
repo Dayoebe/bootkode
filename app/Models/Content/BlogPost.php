@@ -24,7 +24,7 @@ class BlogPost extends Model
         'status',
         'published_at',
         'author_id',
-        'category_id', // Primary category
+        'category_id',
         'views_count',
         'likes_count',
         'comments_count',
@@ -45,9 +45,6 @@ class BlogPost extends Model
         'comments_count' => 'integer',
         'read_time' => 'integer'
     ];
-
-    // Add this property to store additional category IDs
-    protected $appends = ['all_category_ids'];
 
     protected static function boot()
     {
@@ -70,44 +67,59 @@ class BlogPost extends Model
         });
     }
 
-    // NEW: Store additional categories in tags
+    // NEW: Get all categories
     public function getCategoriesAttribute()
     {
-        $categoryIds = $this->tags['categories'] ?? [];
+        $tags = $this->attributes['tags'] ?? null;
         
-        // Always include primary category
+        if (is_string($tags)) {
+            $tags = json_decode($tags, true);
+        }
+        
+        $categoryIds = $tags['categories'] ?? [];
+        
+        // Always include primary category first
         if ($this->category_id && !in_array($this->category_id, $categoryIds)) {
             array_unshift($categoryIds, $this->category_id);
         }
         
-        return BlogCategory::whereIn('id', $categoryIds)->get();
+        if (empty($categoryIds)) {
+            return collect();
+        }
+        
+        return BlogCategory::whereIn('id', array_unique($categoryIds))->get();
     }
 
+    // NEW: Get all category IDs
     public function getAllCategoryIdsAttribute()
     {
-        $categoryIds = $this->tags['categories'] ?? [];
+        $tags = $this->attributes['tags'] ?? null;
+        
+        if (is_string($tags)) {
+            $tags = json_decode($tags, true);
+        }
+        
+        $categoryIds = $tags['categories'] ?? [];
         
         // Always include primary category
         if ($this->category_id && !in_array($this->category_id, $categoryIds)) {
             array_unshift($categoryIds, $this->category_id);
         }
         
-        return array_unique($categoryIds);
+        return array_values(array_unique(array_filter($categoryIds)));
     }
 
-    public function setCategoriesAttribute($categoryIds)
+    // NEW: Get user tags only (excluding categories)
+    public function getUserTagsAttribute()
     {
-        if (empty($categoryIds)) {
-            return;
-        }
-
-        // Set primary category
-        $this->category_id = $categoryIds[0];
+        $tags = $this->attributes['tags'] ?? null;
         
-        // Store additional categories in tags
-        $tags = $this->tags ?? [];
-        $tags['categories'] = array_values(array_slice($categoryIds, 0)); // Store all including primary
-        $this->tags = $tags;
+        if (is_string($tags)) {
+            $tags = json_decode($tags, true);
+        }
+        
+        // Return user tags array, or empty array if not set
+        return $tags['tags'] ?? [];
     }
 
     // Relationships
@@ -162,10 +174,9 @@ class BlogPost extends Model
         $category = BlogCategory::where('slug', $categorySlug)->first();
         
         if (!$category) {
-            return $query->whereRaw('1 = 0'); // Return empty result
+            return $query->whereRaw('1 = 0');
         }
         
-        // Search in both category_id and tags->categories
         return $query->where(function($q) use ($category) {
             $q->where('category_id', $category->id)
               ->orWhereJsonContains('tags->categories', $category->id);
@@ -212,19 +223,5 @@ class BlogPost extends Model
     public function getExcerptAttribute($value)
     {
         return $value ?: Str::limit(strip_tags($this->content), 200);
-    }
-
-    // NEW: Get user-friendly tags (excluding categories)
-    public function getUserTagsAttribute()
-    {
-        $tags = $this->tags ?? [];
-        return $tags['tags'] ?? [];
-    }
-
-    public function setUserTagsAttribute($userTags)
-    {
-        $tags = $this->tags ?? [];
-        $tags['tags'] = $userTags;
-        $this->tags = $tags;
     }
 }

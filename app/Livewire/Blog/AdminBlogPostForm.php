@@ -77,7 +77,7 @@ class AdminBlogPostForm extends Component
             } else {
                 $this->post = BlogPost::findOrFail($post);
             }
-
+    
             $this->isEdit = true;
             
             $this->title = $this->post->title;
@@ -90,11 +90,13 @@ class AdminBlogPostForm extends Component
             
             $this->existing_image = $this->post->featured_image;
             
-            // Load categories
-            $this->category_ids = $this->post->all_category_ids;
+            // FIXED: Load all category IDs
+            $categoryIds = $this->post->all_category_ids;
+            $this->category_ids = is_array($categoryIds) ? $categoryIds : [];
             
-            // Load user tags only (not categories)
-            $this->tags = $this->post->user_tags;
+            // FIXED: Load user tags only (not categories)
+            $userTags = $this->post->user_tags;
+            $this->tags = is_array($userTags) ? $userTags : [];
             
             $this->meta_title = $this->post->meta_title ?: $this->post->title;
             $this->meta_description = $this->post->meta_description;
@@ -103,9 +105,15 @@ class AdminBlogPostForm extends Component
             $this->published_at = $this->post->published_at?->format('Y-m-d\TH:i');
             
             $this->featured_image = null;
+            
+            // Debug log
+            \Log::info('Mounted post', [
+                'category_ids' => $this->category_ids,
+                'tags' => $this->tags,
+                'raw_tags' => $this->post->getAttributes()['tags'] ?? null
+            ]);
         }
     }
-
     public function updatedTitle()
     {
         if (!$this->isEdit || empty($this->slug)) {
