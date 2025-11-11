@@ -21,7 +21,7 @@ class AdminBlogPostForm extends Component
     public $slug = '';
     public $excerpt = '';
     public $content = '';
-    public $category_ids = []; // FIXED: Back to multiple categories
+    public $category_ids = [];
     public $status = 'draft';
     public $published_at = '';
     public $featured_image;
@@ -40,26 +40,25 @@ class AdminBlogPostForm extends Component
     public $removeExistingImage = false;
 
     protected function rules()
-    {
-        $rules = [
-            'title' => 'required|min:5|max:255',
-            'slug' => 'required|min:5|max:255|unique:blog_posts,slug' . ($this->isEdit ? ',' . $this->post->id : ''),
-            'excerpt' => 'nullable|max:500',
-            'content' => 'required|min:100',
-            'category_ids' => 'nullable|array',
-            'category_ids.*' => 'exists:blog_categories,id',
-            'status' => 'required|in:draft,published,scheduled',
-            'published_at' => 'nullable|date',
-            'featured_image' => 'nullable|image|max:2048',
-            'meta_title' => 'nullable|max:255',
-            'meta_description' => 'nullable|max:1000',
-            'allow_comments' => 'boolean',
-            'is_featured' => 'boolean',
-        ];
+{
+    $rules = [
+        'title' => 'required|min:5|max:255',
+        'slug' => 'required|min:5|max:255|unique:blog_posts,slug' . ($this->isEdit ? ',' . $this->post->id : ''),
+        'excerpt' => 'nullable|max:500',
+        'content' => 'required|min:100',
+        'category_ids' => 'nullable|array|max:1', // FIX: Allow only one category
+        'category_ids.*' => 'exists:blog_categories,id',
+        'status' => 'required|in:draft,published,scheduled',
+        'published_at' => 'nullable|date',
+        'featured_image' => 'nullable|image|max:2048',
+        'meta_title' => 'nullable|max:255',
+        'meta_description' => 'nullable|max:1000',
+        'allow_comments' => 'boolean',
+        'is_featured' => 'boolean',
+    ];
 
-        return $rules;
-    }
-
+    return $rules;
+}
     protected $messages = [
         'content.required' => 'Post content is required.',
         'content.min' => 'Post content must be at least 100 characters.',
@@ -68,45 +67,40 @@ class AdminBlogPostForm extends Component
     ];
 
     public function mount($post = null)
-    {
-        if ($post) {
-            if (is_string($post)) {
-                $this->post = BlogPost::where('slug', $post)->firstOrFail();
-            } else {
-                $this->post = BlogPost::findOrFail($post);
-            }
-    
-            $this->isEdit = true;
-            
-            // FIXED: Properly load all fields
-            $this->title = $this->post->title;
-            $this->slug = $this->post->slug;
-            $this->excerpt = $this->post->excerpt;
-            $this->content = $this->post->content; // Critical for Trix
-            $this->status = $this->post->status;
-            $this->allow_comments = $this->post->allow_comments;
-            $this->is_featured = $this->post->is_featured;
-            
-            $this->existing_image = $this->post->featured_image;
-            
-            // Handle category - support both single and stored as array
-            if ($this->post->category_id) {
-                $this->category_ids = [$this->post->category_id];
-            }
-            
-            // Load tags stored in tags field
-            $this->tags = $this->post->tags ?? [];
-            
-            $this->meta_title = $this->post->meta_title ?: $this->post->title;
-            $this->meta_description = $this->post->meta_description;
-            $this->meta_keywords = $this->post->meta_keywords ?? [];
-            
-            $this->published_at = $this->post->published_at?->format('Y-m-d\TH:i');
-            
-            $this->featured_image = null;
+{
+    if ($post) {
+        if (is_string($post)) {
+            $this->post = BlogPost::where('slug', $post)->firstOrFail();
+        } else {
+            $this->post = BlogPost::findOrFail($post);
         }
-    }
 
+        $this->isEdit = true;
+        
+        $this->title = $this->post->title;
+        $this->slug = $this->post->slug;
+        $this->excerpt = $this->post->excerpt;
+        $this->content = $this->post->content;
+        $this->status = $this->post->status;
+        $this->allow_comments = $this->post->allow_comments;
+        $this->is_featured = $this->post->is_featured;
+        
+        $this->existing_image = $this->post->featured_image;
+        
+        // FIX: Load single category as array for consistency
+        $this->category_ids = $this->post->category_id ? [$this->post->category_id] : [];
+        
+        $this->tags = $this->post->tags ?? [];
+        
+        $this->meta_title = $this->post->meta_title ?: $this->post->title;
+        $this->meta_description = $this->post->meta_description;
+        $this->meta_keywords = $this->post->meta_keywords ?? [];
+        
+        $this->published_at = $this->post->published_at?->format('Y-m-d\TH:i');
+        
+        $this->featured_image = null;
+    }
+}
     public function updatedTitle()
     {
         if (!$this->isEdit || empty($this->slug)) {
@@ -160,7 +154,6 @@ class AdminBlogPostForm extends Component
         $this->meta_keywords = array_values($this->meta_keywords);
     }
 
-    // FIXED: Add method to remove category
     public function removeCategory($index)
     {
         unset($this->category_ids[$index]);
@@ -173,6 +166,12 @@ class AdminBlogPostForm extends Component
         if ($this->removeExistingImage) {
             $this->featured_image = null;
         }
+    }
+
+    // FIXED: Add method to receive content from JavaScript
+    public function updateContent($content)
+    {
+        $this->content = $content;
     }
 
     public function save($action = 'save')
@@ -189,7 +188,7 @@ class AdminBlogPostForm extends Component
                 return;
             }
         }
-
+    
         // Validate
         try {
             $this->validate();
@@ -197,23 +196,23 @@ class AdminBlogPostForm extends Component
             session()->flash('error', 'Please fix the validation errors below.');
             throw $e;
         }
-
+    
         // Prepare data
         $data = [
             'title' => $this->title,
             'slug' => $this->slug,
             'excerpt' => $this->excerpt,
             'content' => $this->content,
-            'category_id' => !empty($this->category_ids) ? $this->category_ids[0] : null, // Primary category
+            'category_id' => !empty($this->category_ids) ? $this->category_ids[0] : null,
             'meta_title' => $this->meta_title,
             'meta_description' => $this->meta_description,
             'meta_keywords' => $this->meta_keywords,
-            'tags' => array_merge($this->tags, array_slice($this->category_ids, 1)), // Additional categories as tags
+            'tags' => $this->tags,
             'allow_comments' => $this->allow_comments,
             'is_featured' => $this->is_featured,
             'status' => $this->status,
         ];
-
+    
         // Handle published_at based on status
         if ($this->status === 'published') {
             $data['published_at'] = now();
@@ -222,7 +221,7 @@ class AdminBlogPostForm extends Component
         } else {
             $data['published_at'] = $this->isEdit ? $this->post->published_at : null;
         }
-
+    
         // Handle image upload and removal
         if ($this->removeExistingImage && $this->existing_image) {
             Storage::disk('public')->delete($this->existing_image);
@@ -233,7 +232,7 @@ class AdminBlogPostForm extends Component
                 if ($this->existing_image) {
                     Storage::disk('public')->delete($this->existing_image);
                 }
-
+    
                 $filename = time() . '_' . Str::random(10) . '.' . $this->featured_image->getClientOriginalExtension();
                 $path = $this->featured_image->storeAs('blog/images', $filename, 'public');
                 $data['featured_image'] = $path;
@@ -248,11 +247,12 @@ class AdminBlogPostForm extends Component
                 $data['featured_image'] = $this->existing_image;
             }
         }
-
+    
         try {
             if ($this->isEdit) {
                 $this->post->update($data);
                 $message = 'Post updated successfully!';
+                $this->post->refresh();
             } else {
                 $data['author_id'] = auth()->id();
                 $this->post = BlogPost::create($data);
@@ -260,24 +260,27 @@ class AdminBlogPostForm extends Component
                 $this->existing_image = $this->post->featured_image;
                 $message = 'Post created successfully!';
             }
-
+    
             // Reset upload states
             $this->featured_image = null;
             $this->removeExistingImage = false;
-
+    
             session()->flash('message', $message);
-
+    
             if ($action === 'save_and_continue') {
                 return redirect()->route('admin.blog.posts.edit', $this->post->slug);
             }
-
+    
             return redirect()->route('admin.blog.posts.index');
         } catch (\Exception $e) {
             session()->flash('error', 'Error saving post: ' . $e->getMessage());
-            logger()->error('Blog post save error', ['error' => $e->getMessage(), 'trace' => $e->getTraceAsString()]);
+            logger()->error('Blog post save error', [
+                'error' => $e->getMessage(), 
+                'trace' => $e->getTraceAsString(),
+                'data' => $data
+            ]);
         }
     }
-
     public function saveDraft()
     {
         $this->status = 'draft';
