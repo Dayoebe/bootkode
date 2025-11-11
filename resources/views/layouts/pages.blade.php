@@ -23,6 +23,7 @@
         content="@yield('meta_description', 'BootKode: Empowering Africa\'s youth with digital skills, mentorship, and careers. Learn to code, get certified, and conquer the tech world.')">
     <meta name="keywords"
         content="@yield('meta_keywords', 'BootKode, coding, tech education, Africa, Nigeria, digital skills, mentorship, careers, Laravel, Vue.js, web development, programming, certification, online courses')">
+    <meta name="robots" content="@yield('meta_robots', 'index, follow')">
     <link rel="canonical" href="{{ url()->current() }}">
 
     <!-- Open Graph Meta Tags -->
@@ -30,6 +31,7 @@
     <meta property="og:description"
         content="@yield('og_description', 'BootKode: Empowering Africa\'s youth with digital skills, mentorship, and careers.')">
     <meta property="og:url" content="{{ url()->current() }}">
+
     <meta property="og:type" content="website">
     <meta property="og:image" content="@yield('og_image', asset('img/logo.png'))">
     <meta property="og:site_name" content="{{ config('app.name', 'BootKode') }}">
