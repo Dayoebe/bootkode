@@ -54,9 +54,19 @@ class CbtManagement extends Component
 
     public function mount()
     {
-        // Initialize default values
         $this->resetForm();
         $this->resetQuestionForm();
+    }
+
+    // Dispatch events when question_text or explanation changes
+    public function updatedQuestionText($value)
+    {
+        $this->dispatch('question-text-updated', $value);
+    }
+
+    public function updatedExplanation($value)
+    {
+        $this->dispatch('explanation-updated', $value);
     }
 
     public function render()
@@ -66,7 +76,6 @@ class CbtManagement extends Component
             ->latest()
             ->paginate(10);
 
-        // Get available courses for dropdown
         $courses = Course::published()->approved()->get();
 
         return view('livewire.cbt.cbt-management', compact('assessments', 'courses'));
@@ -83,28 +92,30 @@ class CbtManagement extends Component
             'course_id' => 'nullable|exists:courses,id',
         ]);
 
-        // If no course_id provided, find first available course or create default
-        if (!$this->course_id) {
-            $course = Course::first();
-            if (!$course) {
-                // Create a default course for CBT assessments
-                $course = Course::create([
+        // Only create/assign course if course_id is explicitly provided
+        if ($this->course_id) {
+            $courseId = $this->course_id;
+        } else {
+            // Create a standalone CBT assessment without course
+            // Find or create a special "Standalone CBT" course
+            $course = Course::firstOrCreate(
+                ['slug' => 'standalone-cbt-assessments'],
+                [
                     'instructor_id' => Auth::id(),
-                    'title' => 'CBT Assessments',
-                    'slug' => 'cbt-assessments',
-                    'description' => 'Default course for CBT assessments',
+                    'title' => 'Standalone CBT Assessments',
+                    'description' => 'Independent CBT assessments not tied to any specific course',
                     'is_published' => true,
                     'is_approved' => true,
                     'is_free' => true,
                     'difficulty_level' => 'beginner',
                     'estimated_duration_minutes' => 60,
-                ]);
-            }
-            $this->course_id = $course->id;
+                ]
+            );
+            $courseId = $course->id;
         }
 
         Assessment::create([
-            'course_id' => $this->course_id,
+            'course_id' => $courseId,
             'title' => $this->title,
             'description' => $this->description,
             'type' => 'quiz',
@@ -127,7 +138,15 @@ class CbtManagement extends Component
         $this->pass_percentage = $this->editingAssessment->pass_percentage;
         $this->estimated_duration_minutes = $this->editingAssessment->estimated_duration_minutes;
         $this->max_score = $this->editingAssessment->max_score;
-        $this->course_id = $this->editingAssessment->course_id;
+        
+        // Only set course_id if it's not the standalone course
+        $standaloneCourse = Course::where('slug', 'standalone-cbt-assessments')->first();
+        if ($standaloneCourse && $this->editingAssessment->course_id == $standaloneCourse->id) {
+            $this->course_id = null;
+        } else {
+            $this->course_id = $this->editingAssessment->course_id;
+        }
+        
         $this->showEditModal = true;
     }
 
@@ -147,13 +166,33 @@ class CbtManagement extends Component
             return;
         }
 
+        // Handle course_id similar to create
+        if ($this->course_id) {
+            $courseId = $this->course_id;
+        } else {
+            $course = Course::firstOrCreate(
+                ['slug' => 'standalone-cbt-assessments'],
+                [
+                    'instructor_id' => Auth::id(),
+                    'title' => 'Standalone CBT Assessments',
+                    'description' => 'Independent CBT assessments not tied to any specific course',
+                    'is_published' => true,
+                    'is_approved' => true,
+                    'is_free' => true,
+                    'difficulty_level' => 'beginner',
+                    'estimated_duration_minutes' => 60,
+                ]
+            );
+            $courseId = $course->id;
+        }
+
         $this->editingAssessment->update([
             'title' => $this->title,
             'description' => $this->description,
             'pass_percentage' => $this->pass_percentage,
             'estimated_duration_minutes' => $this->estimated_duration_minutes,
             'max_score' => $this->max_score,
-            'course_id' => $this->course_id,
+            'course_id' => $courseId,
         ]);
 
         $this->resetForm();
