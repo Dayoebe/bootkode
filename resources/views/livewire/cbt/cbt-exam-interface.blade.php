@@ -286,48 +286,56 @@
                 </div>
 
                 <!-- Navigation Footer -->
-                <div class="bg-themed-secondary border-t border-themed-secondary p-4 lg:p-6">
-                    <div class="flex flex-col lg:flex-row justify-between items-center space-y-4 lg:space-y-0 mb-4">
-                        <button wire:click="previousQuestion" 
-                            class="w-full lg:w-auto order-2 lg:order-1 px-4 lg:px-6 py-3 border border-themed-secondary text-themed-primary rounded-lg hover:bg-themed-tertiary transition-colors flex items-center justify-center font-medium text-sm lg:text-base
-                            {{ !$this->canGoPrevious() ? 'opacity-50 cursor-not-allowed' : '' }}"
-                            {{ !$this->canGoPrevious() ? 'disabled' : '' }}
-                            tabindex="100">
-                            <i class="fas fa-arrow-left mr-2"></i>Previous
-                        </button>
+<!-- Navigation Footer - Updated with more prominent buttons -->
+<div class="bg-themed-secondary border-t border-themed-secondary p-4 lg:p-6">
+    <div class="flex flex-col lg:flex-row justify-between items-center space-y-4 lg:space-y-0 mb-4">
+        <!-- Previous Button - Made more prominent -->
+        <button wire:click="previousQuestion" 
+            class="w-full lg:w-auto order-2 lg:order-1 px-6 lg:px-8 py-4 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors flex items-center justify-center font-semibold text-base lg:text-lg shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200
+            {{ !$this->canGoPrevious() ? 'opacity-50 cursor-not-allowed hover:bg-blue-600 hover:translate-y-0' : '' }}"
+            {{ !$this->canGoPrevious() ? 'disabled' : '' }}
+            tabindex="100">
+            <i class="fas fa-arrow-left mr-3 text-xl"></i>Previous Question
+        </button>
 
-                        <div class="text-center order-1 lg:order-2">
-                            <div class="text-xs lg:text-sm text-themed-secondary mb-1">Progress</div>
-                            <div class="font-semibold text-themed-primary text-sm lg:text-base">
-                                {{ $currentQuestionIndex + 1 }} / {{ count($questions) }}
-                            </div>
-                        </div>
+        <div class="text-center order-1 lg:order-2">
+            <div class="text-xs lg:text-sm text-themed-secondary mb-1">Progress</div>
+            <div class="font-bold text-themed-primary text-lg lg:text-xl">
+                {{ $currentQuestionIndex + 1 }} / {{ count($questions) }}
+            </div>
+        </div>
 
-                        @if($this->isLastQuestion())
-                            <button wire:click="showSubmitConfirmation"
-                                class="w-full lg:w-auto order-3 bg-red-600 hover:bg-red-700 text-white px-6 lg:px-8 py-3 rounded-lg transition-colors flex items-center justify-center font-semibold text-sm lg:text-base"
-                                tabindex="101">
-                                <i class="fas fa-paper-plane mr-2"></i>Submit Exam
-                            </button>
-                        @else
-                            <button wire:click="nextQuestion"
-                                class="w-full lg:w-auto order-3 bg-accent-themed-primary hover:bg-accent-themed-secondary text-white px-4 lg:px-6 py-3 rounded-lg transition-colors flex items-center justify-center font-medium text-sm lg:text-base"
-                                tabindex="101">
-                                Next<i class="fas fa-arrow-right ml-2"></i>
-                            </button>
-                        @endif
-                    </div>
+        @if($this->isLastQuestion())
+            <!-- Submit Button - Made more prominent -->
+            <button wire:click="showSubmitConfirmation"
+                class="w-full lg:w-auto order-3 bg-red-600 hover:bg-red-700 text-white px-8 lg:px-10 py-4 rounded-lg transition-colors flex items-center justify-center font-bold text-base lg:text-lg shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200"
+                tabindex="101">
+                <i class="fas fa-paper-plane mr-3 text-xl"></i>Submit Exam
+            </button>
+        @else
+            <!-- Next Button - Made more prominent -->
+            <button wire:click="nextQuestion"
+                class="w-full lg:w-auto order-3 bg-green-600 hover:bg-green-700 text-white px-6 lg:px-8 py-4 rounded-lg transition-colors flex items-center justify-center font-semibold text-base lg:text-lg shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200"
+                tabindex="101">
+                Next Question<i class="fas fa-arrow-right ml-3 text-xl"></i>
+            </button>
+        @endif
+    </div>
 
-                    <div class="w-full bg-themed-tertiary rounded-full h-3">
-                        <div class="bg-accent-themed-primary h-3 rounded-full transition-all duration-500 progress-animate"
-                            style="width: {{ $this->getProgressPercentage() }}%">
-                        </div>
-                    </div>
-                    <div class="flex justify-between text-xs text-themed-secondary mt-1">
-                        <span>{{ round($this->getProgressPercentage(), 1) }}% Complete</span>
-                        <span>{{ count($questions) - $this->getAnsweredQuestionsCount() }} remaining</span>
-                    </div>
-                </div>
+    <!-- Progress bar remains the same -->
+    <div class="w-full bg-themed-tertiary rounded-full h-3">
+        <div class="bg-accent-themed-primary h-3 rounded-full transition-all duration-500 progress-animate"
+            style="width: {{ $this->getProgressPercentage() }}%">
+        </div>
+    </div>
+    <div class="flex justify-between text-xs text-themed-secondary mt-1">
+        <span>{{ round($this->getProgressPercentage(), 1) }}% Complete</span>
+        <span>{{ count($questions) - $this->getAnsweredQuestionsCount() }} remaining</span>
+    </div>
+</div>
+
+
+
             </div>
         </div>
     @endif
