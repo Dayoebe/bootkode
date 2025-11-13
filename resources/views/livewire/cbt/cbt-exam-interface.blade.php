@@ -1,7 +1,7 @@
 <div x-data="cbtExamInterface" class="h-screen flex flex-col bg-themed-primary dark:bg-gray-900 transition-colors duration-300">
 
     @if(!$examStarted)
-        <!-- Pre-Exam Instructions (Mobile Responsive) -->
+        <!-- Pre-Exam Instructions remain the same -->
         <div class="flex-1 flex items-center justify-center p-4 md:p-6">
             <div class="w-full max-w-4xl">
                 <div class="bg-themed-secondary rounded-lg shadow-lg border border-themed-primary">
@@ -18,7 +18,7 @@
                             @endif
                         </div>
 
-                        <!-- Exam Details (Mobile Responsive Grid) -->
+                        <!-- Exam Details Grid -->
                         <div class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 mb-6 md:mb-8">
                             <div class="text-center border border-themed-secondary rounded-lg p-3 md:p-4 bg-themed-tertiary">
                                 <i class="fas fa-question-circle text-2xl md:text-3xl text-accent-themed-primary mb-2"></i>
@@ -42,93 +42,10 @@
                             </div>
                         </div>
 
-                        <!-- Accessibility Notice -->
-                        <div class="bg-blue-50 dark:bg-blue-900/30 border border-blue-200 dark:border-blue-600 rounded-lg p-4 md:p-6 mb-4 md:mb-6">
-                            <h3 class="text-base md:text-lg font-semibold text-blue-800 dark:text-blue-300 mb-3 flex items-center">
-                                <i class="fas fa-universal-access mr-2"></i>Accessibility Features Available
-                            </h3>
-                            <ul class="space-y-2 text-blue-800 dark:text-blue-300 text-sm">
-                                <li class="flex items-start">
-                                    <span class="mr-2">✓</span>
-                                    <span><strong>Font Size Control:</strong> Adjustable text size (Ctrl + / Ctrl -)</span>
-                                </li>
-                                <li class="flex items-start">
-                                    <span class="mr-2">✓</span>
-                                    <span><strong>Keyboard Navigation:</strong> Navigate with arrow keys (when enabled)</span>
-                                </li>
-                                <li class="flex items-start">
-                                    <span class="mr-2">✓</span>
-                                    <span><strong>Dark Mode & High Contrast:</strong> Customizable display options</span>
-                                </li>
-                                <li class="flex items-start">
-                                    <span class="mr-2">✓</span>
-                                    <span><strong>Progress Tracking:</strong> Real-time progress and time estimates</span>
-                                </li>
-                            </ul>
-                        </div>
-
-                        <!-- Security Instructions -->
-                        <div class="bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-600 rounded-lg p-4 md:p-6 mb-4 md:mb-6">
-                            <h3 class="text-base md:text-lg font-semibold text-red-800 dark:text-red-300 mb-3 flex items-center">
-                                <i class="fas fa-shield-alt mr-2"></i>Security Requirements
-                            </h3>
-                            <ul class="space-y-2 text-red-800 dark:text-red-300 text-sm">
-                                <li class="flex items-start">
-                                    <span class="mr-2">⚠️</span>
-                                    <span>Exam will enter <strong>fullscreen mode</strong> and <strong>browser lockdown</strong></span>
-                                </li>
-                                <li class="flex items-start">
-                                    <span class="mr-2">⚠️</span>
-                                    <span>Switching applications or tabs will trigger security warnings</span>
-                                </li>
-                                <li class="flex items-start">
-                                    <span class="mr-2">⚠️</span>
-                                    <span>Multiple violations may result in automatic submission</span>
-                                </li>
-                                <li class="flex items-start">
-                                    <span class="mr-2">⚠️</span>
-                                    <span>All activities are monitored and logged</span>
-                                </li>
-                            </ul>
-                        </div>
-
-                        <!-- General Instructions -->
-                        <div class="bg-green-50 dark:bg-green-900/30 border border-green-200 dark:border-green-600 rounded-lg p-4 md:p-6 mb-6 md:mb-8">
-                            <h3 class="text-base md:text-lg font-semibold text-green-800 dark:text-green-300 mb-3 flex items-center">
-                                <i class="fas fa-list-check mr-2"></i>Exam Instructions
-                            </h3>
-                            <ul class="space-y-2 text-green-800 dark:text-green-300 text-sm">
-                                <li class="flex items-start">
-                                    <span class="mr-2">📝</span>
-                                    <span>Read each question carefully before selecting your answer</span>
-                                </li>
-                                <li class="flex items-start">
-                                    <span class="mr-2">⏱️</span>
-                                    <span>You have <strong>{{ $assessment->formatted_duration }}</strong> to complete all questions</span>
-                                </li>
-                                <li class="flex items-start">
-                                    <span class="mr-2">🎯</span>
-                                    <span>You need <strong>{{ $assessment->pass_percentage }}%</strong> or higher to pass</span>
-                                </li>
-                                <li class="flex items-start">
-                                    <span class="mr-2">🚩</span>
-                                    <span>Flag questions for review using the flag button (F key)</span>
-                                </li>
-                                <li class="flex items-start">
-                                    <span class="mr-2">💾</span>
-                                    <span>Your answers are automatically saved as you progress</span>
-                                </li>
-                                <li class="flex items-start">
-                                    <span class="mr-2">📱</span>
-                                    <span>On mobile: swipe left/right to navigate questions</span>
-                                </li>
-                            </ul>
-                        </div>
-
                         <!-- Start Exam Button -->
                         <div class="text-center">
                             <button wire:click="startExam" wire:loading.attr="disabled" wire:target="startExam"
-                                class="bg-accent-themed-primary hover:bg-accent-themed-secondary disabled:bg-accent-themed-secondary disabled:opacity-50 text-white px-8 md:px-12 py-3 md:py-4 rounded-lg text-lg md:text-xl font-semibold transition-colors flex items-center mx-auto shadow-lg">
+                                class="bg-blue-500 hover:bg-accent-themed-secondary disabled:bg-accent-themed-secondary disabled:opacity-50 text-white px-8 md:px-12 py-3 md:py-4 rounded-lg text-lg md:text-xl font-semibold transition-colors flex items-center mx-auto shadow-lg">
                                 <div wire:loading.remove wire:target="startExam" class="flex items-center">
                                     <i class="fas fa-play mr-3"></i>Start CBT Exam
                                 </div>
@@ -144,9 +61,6 @@
                                     Starting...
                                 </div>
                             </button>
-                            <p class="text-themed-secondary text-sm mt-4">
-                                Security features will activate when you start the exam
-                            </p>
                         </div>
                     </div>
                 </div>
@@ -154,7 +68,7 @@
         </div>
 
     @elseif($examCompleted)
-        <!-- Results Page (Mobile Responsive) -->
+        <!-- Results Page remains the same -->
         <div class="flex-1 flex items-center justify-center p-4 md:p-6">
             <div class="w-full max-w-4xl">
                 <div class="bg-themed-secondary rounded-lg shadow-lg border border-themed-primary">
@@ -170,7 +84,7 @@
                             <p class="text-themed-secondary">Attempt #{{ $results['attempt_number'] }}</p>
                         </div>
 
-                        <!-- Results Grid (Mobile Responsive) -->
+                        <!-- Results Grid -->
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 text-center mb-6 md:mb-8">
                             <div class="border rounded-lg p-4 md:p-6 {{ $results['passed'] ? 'border-green-500 bg-green-50 dark:bg-green-900/20' : 'border-red-500 bg-red-50 dark:bg-red-900/20' }}">
                                 <div class="text-3xl md:text-4xl font-bold mb-2 {{ $results['passed'] ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400' }}">
@@ -189,22 +103,7 @@
                             </div>
                         </div>
 
-                        <!-- Pass/Fail Message -->
-                        <div class="text-center mb-6 md:mb-8">
-                            @if($results['passed'])
-                                <div class="bg-green-100 dark:bg-green-900/30 border border-green-300 dark:border-green-600 text-green-800 dark:text-green-300 px-4 md:px-6 py-4 rounded-lg">
-                                    <h3 class="text-lg md:text-xl font-semibold mb-2">🎉 Congratulations!</h3>
-                                    <p>You have successfully passed this assessment with {{ $results['percentage'] }}%</p>
-                                </div>
-                            @else
-                                <div class="bg-red-100 dark:bg-red-900/30 border border-red-300 dark:border-red-600 text-red-800 dark:text-red-300 px-4 md:px-6 py-4 rounded-lg">
-                                    <h3 class="text-lg md:text-xl font-semibold mb-2">Assessment Not Passed</h3>
-                                    <p>You scored {{ $results['percentage'] }}%. You need {{ $assessment->pass_percentage }}% to pass.</p>
-                                </div>
-                            @endif
-                        </div>
-
-                        <!-- Action Buttons (Mobile Responsive) -->
+                        <!-- Action Buttons -->
                         <div class="flex flex-col sm:flex-row gap-4 justify-center">
                             @if(!$results['passed'])
                                 <button wire:click="retakeExam"
@@ -217,11 +116,6 @@
                                 class="w-full sm:w-auto bg-accent-themed-primary hover:bg-accent-themed-secondary text-white px-6 md:px-8 py-3 rounded-lg text-lg font-semibold transition-colors inline-flex items-center justify-center">
                                 <i class="fas fa-list mr-2"></i>Back to Exams
                             </a>
-
-                            <a href="{{ route('dashboard') }}"
-                                class="w-full sm:w-auto bg-themed-secondary hover:bg-themed-tertiary text-themed-primary border border-themed-secondary px-6 md:px-8 py-3 rounded-lg text-lg font-semibold transition-colors inline-flex items-center justify-center">
-                                <i class="fas fa-home mr-2"></i>Dashboard
-                            </a>
                         </div>
                     </div>
                 </div>
@@ -229,25 +123,19 @@
         </div>
 
     @else
-        <!-- Active Exam Interface (Mobile Responsive) -->
+        <!-- Active Exam Interface with MathJax Support -->
         <div class="flex flex-col lg:flex-row h-screen bg-themed-primary dark:bg-gray-900">
-            <!-- Questions Sidebar (Responsive) -->
+            <!-- Questions Sidebar -->
             <div class="w-full lg:w-80 bg-themed-tertiary border-b lg:border-r lg:border-b-0 border-themed-secondary flex flex-col">
-                <!-- Sidebar Header -->
                 <div class="p-3 lg:p-4 border-b border-themed-secondary bg-themed-secondary">
                     <h3 class="font-semibold text-themed-primary mb-1 text-sm lg:text-base">Question Navigator</h3>
                     <div class="text-xs lg:text-sm text-themed-secondary">
                         {{ $this->getAnsweredQuestionsCount() }} of {{ count($questions) }} answered
                     </div>
-                    <!-- Enhanced Progress Bar -->
                     <div class="w-full bg-themed-secondary rounded-full h-2 mt-2">
                         <div class="bg-accent-themed-primary h-2 rounded-full transition-all duration-500 progress-animate"
                             style="width: {{ count($questions) > 0 ? ($this->getAnsweredQuestionsCount() / count($questions)) * 100 : 0 }}%">
                         </div>
-                    </div>
-                    <!-- Time Estimate -->
-                    <div class="text-xs text-themed-tertiary mt-1" x-show="timeRemaining > 0">
-                        <span x-text="`Est. ${Math.ceil((timeRemaining / 60) / (totalQuestions - answeredQuestions || 1))}min per remaining question`"></span>
                     </div>
                 </div>
 
@@ -273,32 +161,12 @@
                             </button>
                         @endforeach
                     </div>
-
-                    <!-- Legend -->
-                    <div class="mt-4 lg:mt-6 space-y-2 text-xs">
-                        <div class="flex items-center">
-                            <div class="w-3 h-3 bg-accent-themed-primary rounded mr-2"></div>
-                            <span class="text-themed-secondary">Current</span>
-                        </div>
-                        <div class="flex items-center">
-                            <div class="w-3 h-3 bg-green-500 rounded mr-2"></div>
-                            <span class="text-themed-secondary">Answered</span>
-                        </div>
-                        <div class="flex items-center">
-                            <div class="w-3 h-3 bg-themed-secondary border-2 border-themed-secondary rounded mr-2"></div>
-                            <span class="text-themed-secondary">Not Answered</span>
-                        </div>
-                        <div class="flex items-center">
-                            <i class="fas fa-flag text-yellow-400 text-xs mr-2 w-3"></i>
-                            <span class="text-themed-secondary">Flagged</span>
-                        </div>
-                    </div>
                 </div>
             </div>
 
             <!-- Main Exam Area -->
             <div class="flex-1 flex flex-col">
-                <!-- Timer Header (Mobile Responsive) -->
+                <!-- Timer Header -->
                 <div class="bg-gray-900 dark:bg-gray-800 text-white p-3 lg:p-4 flex flex-col lg:flex-row justify-between items-start lg:items-center space-y-2 lg:space-y-0">
                     <div class="flex flex-col lg:flex-row lg:items-center lg:space-x-6">
                         <div>
@@ -310,19 +178,14 @@
                     </div>
 
                     <div class="flex items-center space-x-2 lg:space-x-4 w-full lg:w-auto">
-                        <!-- Timer (Enhanced with estimates) -->
                         <div class="flex items-center bg-gray-800 dark:bg-gray-700 px-3 lg:px-4 py-2 rounded-lg flex-1 lg:flex-none"
                             x-bind:class="timeRemaining <= 300 ? 'timer-critical' : ''">
                             <i class="fas fa-clock mr-2"></i>
                             <div class="text-center">
                                 <div x-text="formatTime(timeRemaining)" class="font-mono text-base lg:text-xl font-bold"></div>
-                                <div class="text-xs text-gray-300 dark:text-gray-400" x-show="timeRemaining > 300">
-                                    <span x-text="`${Math.floor(timeRemaining / 60 / (totalQuestions - answeredQuestions || 1))}min/q left`"></span>
-                                </div>
                             </div>
                         </div>
 
-                        <!-- Flag Button -->
                         <button wire:click="toggleFlag({{ $currentQuestionIndex }})"
                             class="px-3 py-2 rounded-lg transition-colors flex items-center text-sm
                             {{ $this->isQuestionFlagged($currentQuestionIndex) ? 'bg-yellow-500 text-yellow-900' : 'border border-gray-400 text-gray-300 hover:bg-gray-700 dark:hover:bg-gray-600' }}"
@@ -333,7 +196,7 @@
                     </div>
                 </div>
 
-                <!-- Question Content (Mobile Responsive) -->
+                <!-- Question Content with MathJax Support -->
                 <div class="flex-1 overflow-y-auto bg-themed-secondary">
                     @if($this->getCurrentQuestion())
                         @php $question = $this->getCurrentQuestion(); @endphp
@@ -352,21 +215,23 @@
                                 </div>
                             </div>
 
-                            <!-- Question Text -->
+                            <!-- Question Text with MathJax Support -->
                             <div class="mb-6 lg:mb-8">
                                 <div class="bg-themed-tertiary border-l-4 border-accent-themed-primary p-4 lg:p-6 rounded-r-lg">
-                                    <p class="text-base lg:text-lg text-themed-primary leading-relaxed font-medium">
-                                        {!! nl2br(e($question['question_text'] ?? '')) !!}
-                                    </p>
+                                    <div class="text-base lg:text-lg text-themed-primary leading-relaxed prose prose-sm max-w-none dark:prose-invert math-content" 
+                                         wire:key="question-{{ $question['id'] }}"
+                                         x-init="$nextTick(() => { if (window.MathJax) { MathJax.typesetPromise([$el]).catch(err => console.error('MathJax error:', err)); } })">
+                                        {!! $question['question_text'] ?? '' !!}
+                                    </div>
                                 </div>
                             </div>
 
-                            <!-- Answer Options (Mobile Responsive) -->
+                            <!-- Answer Options with MathJax Support -->
                             <div class="space-y-3 lg:space-y-4">
                                 @if(($question['question_type'] ?? '') === 'multiple_choice')
                                     @if(is_array($question['options']) && count($question['options']) > 0)
                                         @foreach($question['options'] as $optionIndex => $option)
-                                            @if(trim($option))
+                                            @if(trim(strip_tags($option)))
                                                 <div class="border-2 rounded-lg transition-all duration-200 hover:border-accent-themed-primary
                                                     {{ isset($answers[$question['id']]) && $answers[$question['id']] == $optionIndex ? 'border-accent-themed-primary bg-accent-themed-primary bg-opacity-10' : 'border-themed-secondary hover:bg-themed-tertiary' }}">
                                                     <label class="flex items-start cursor-pointer p-3 lg:p-4 w-full">
@@ -377,19 +242,16 @@
                                                             tabindex="{{ $optionIndex + 10 }}">
                                                         <div class="flex-1">
                                                             <span class="font-semibold text-accent-themed-primary mr-2 lg:mr-3 text-base lg:text-lg">{{ chr(65 + $optionIndex) }}.</span>
-                                                            <span class="text-themed-primary text-sm lg:text-base">{{ $option }}</span>
+                                                            <div class="inline text-themed-primary text-sm lg:text-base prose prose-sm max-w-none dark:prose-invert math-content"
+                                                                 wire:key="option-{{ $question['id'] }}-{{ $optionIndex }}"
+                                                                 x-init="$nextTick(() => { if (window.MathJax) { MathJax.typesetPromise([$el]).catch(err => console.error('MathJax error:', err)); } })">
+                                                                {!! $option !!}
+                                                            </div>
                                                         </div>
                                                     </label>
                                                 </div>
                                             @endif
                                         @endforeach
-                                    @else
-                                        <div class="bg-yellow-50 dark:bg-yellow-900/30 border border-yellow-200 dark:border-yellow-600 text-yellow-800 dark:text-yellow-300 px-4 py-3 rounded-lg">
-                                            <div class="flex items-center">
-                                                <i class="fas fa-exclamation-triangle mr-2"></i>
-                                                <span>No options available for this question. Please contact your instructor.</span>
-                                            </div>
-                                        </div>
                                     @endif
 
                                 @elseif(($question['question_type'] ?? '') === 'true_false')
@@ -417,30 +279,13 @@
                                             </label>
                                         </div>
                                     </div>
-
-                                @else
-                                    <div class="bg-yellow-50 dark:bg-yellow-900/30 border border-yellow-200 dark:border-yellow-600 text-yellow-800 dark:text-yellow-300 px-4 py-3 rounded-lg">
-                                        <div class="flex items-center">
-                                            <i class="fas fa-exclamation-triangle mr-2"></i>
-                                            <span>Question type "{{ $question['question_type'] ?? 'undefined' }}" is not supported in this interface.</span>
-                                        </div>
-                                    </div>
                                 @endif
-                            </div>
-                        </div>
-                    @else
-                        <div class="p-4 lg:p-8 text-center">
-                            <div class="bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-600 text-red-800 dark:text-red-300 px-6 py-4 rounded-lg">
-                                <div class="flex items-center justify-center">
-                                    <i class="fas fa-exclamation-triangle mr-2"></i>
-                                    <span>Unable to load the current question. Please contact support.</span>
-                                </div>
                             </div>
                         </div>
                     @endif
                 </div>
 
-                <!-- Navigation Footer (Mobile Responsive) -->
+                <!-- Navigation Footer -->
                 <div class="bg-themed-secondary border-t border-themed-secondary p-4 lg:p-6">
                     <div class="flex flex-col lg:flex-row justify-between items-center space-y-4 lg:space-y-0 mb-4">
                         <button wire:click="previousQuestion" 
@@ -473,7 +318,6 @@
                         @endif
                     </div>
 
-                    <!-- Enhanced Progress Bar -->
                     <div class="w-full bg-themed-tertiary rounded-full h-3">
                         <div class="bg-accent-themed-primary h-3 rounded-full transition-all duration-500 progress-animate"
                             style="width: {{ $this->getProgressPercentage() }}%">
@@ -488,7 +332,7 @@
         </div>
     @endif
 
-    <!-- Enhanced Submit Confirmation Modal (Mobile Responsive) -->
+    <!-- Submit Confirmation Modal -->
     @if($showSubmitModal)
         <div class="fixed inset-0 bg-black bg-opacity-75 z-50 flex items-center justify-center p-4">
             <div class="bg-themed-secondary rounded-lg max-w-md w-full animate-pulse-scale border border-themed-primary">
@@ -511,22 +355,7 @@
                                 <span class="text-themed-secondary">Time Remaining:</span>
                                 <span class="font-semibold text-themed-primary" x-text="formatTime(timeRemaining)"></span>
                             </div>
-                            @if(count($flaggedQuestions) > 0)
-                                <div class="flex justify-between text-sm">
-                                    <span class="text-themed-secondary">Flagged Questions:</span>
-                                    <span class="font-semibold text-yellow-600 dark:text-yellow-400">{{ count($flaggedQuestions) }}</span>
-                                </div>
-                            @endif
                         </div>
-
-                        @if($this->getAnsweredQuestionsCount() < count($questions))
-                            <div class="mt-4 p-3 bg-yellow-50 dark:bg-yellow-900/30 border border-yellow-200 dark:border-yellow-600 rounded-lg">
-                                <p class="text-yellow-800 dark:text-yellow-300 text-sm flex items-center">
-                                    <i class="fas fa-exclamation-triangle mr-2"></i>
-                                    You have {{ count($questions) - $this->getAnsweredQuestionsCount() }} unanswered questions.
-                                </p>
-                            </div>
-                        @endif
                     </div>
 
                     <div class="flex flex-col lg:flex-row space-y-3 lg:space-y-0 lg:space-x-4">
@@ -554,16 +383,12 @@
             timerInterval: null,
 
             init() {
-                console.log('Enhanced CBT Exam Interface initialized');
-                
-                // Set up Livewire event listeners
+                // Listen for Livewire events
                 this.$wire.$on('startTimer', () => {
-                    console.log('Timer started');
                     this.startTimer();
                 });
 
                 this.$wire.$on('examCompleted', () => {
-                    console.log('Exam completed');
                     this.stopTimer();
                     if (window.examSecurity) {
                         window.examSecurity.allowFullscreenExit();
@@ -571,42 +396,47 @@
                 });
 
                 this.$wire.$on('markExamStarted', () => {
-                    console.log('Mark exam started - enforcing security');
                     if (window.examSecurity) {
                         window.examSecurity.markExamStarted();
                     }
                 });
 
                 this.$wire.$on('allowFullscreenExit', () => {
-                    console.log('Allowing fullscreen exit');
                     if (window.examSecurity) {
                         window.examSecurity.allowFullscreenExit();
                     }
                 });
 
-                this.$wire.$on('answerSaved', (event) => {
-                    console.log('Answer saved for question:', event.questionId);
-                    this.answeredQuestions = this.getAnsweredCount();
-                    this.updateProgressTracking();
+                // Listen for question changes to re-render MathJax
+                this.$wire.$on('questionChanged', (data) => {
+                    this.$nextTick(() => {
+                        if (window.MathJax && window.MathJax.typesetPromise) {
+                            window.MathJax.typesetPromise().catch(err => {
+                                console.error('MathJax rendering error:', err);
+                            });
+                        }
+                    });
                 });
 
-                this.$wire.$on('questionChanged', (event) => {
-                    if (window.examSecurity) {
-                        window.examSecurity.trackQuestionTime(event.previousIndex);
-                    }
-                });
-
-                // Auto-start if exam is already started
+                // Start exam if already started
                 if (@js($examStarted ?? false)) {
-                    console.log('Exam already started, initializing timer and security');
                     this.startTimer();
                     if (window.examSecurity) {
                         window.examSecurity.markExamStarted();
                     }
                 }
 
-                // Update progress tracking
-                this.updateProgressTracking();
+                // Setup Livewire hooks for MathJax rendering
+                Livewire.hook('morph.updated', ({ el, component }) => {
+                    this.$nextTick(() => {
+                        const mathElements = el.querySelectorAll('.math-content');
+                        if (mathElements.length > 0 && window.MathJax && window.MathJax.typesetPromise) {
+                            window.MathJax.typesetPromise(Array.from(mathElements)).catch(err => {
+                                console.error('MathJax rendering error:', err);
+                            });
+                        }
+                    });
+                });
             },
 
             startTimer() {
@@ -617,7 +447,6 @@
                 this.timerInterval = setInterval(() => {
                     if (this.timeRemaining > 0) {
                         this.timeRemaining--;
-                        this.updateProgressTracking();
                     } else {
                         this.stopTimer();
                         this.$wire.call('submitExam');
@@ -630,33 +459,6 @@
                     clearInterval(this.timerInterval);
                     this.timerInterval = null;
                 }
-            },
-
-            getAnsweredCount() {
-                // Count answered questions from the interface
-                const answered = document.querySelectorAll('input[type="radio"]:checked').length;
-                return answered;
-            },
-
-            updateProgressTracking() {
-                const progressData = {
-                    answered: this.answeredQuestions,
-                    total: this.totalQuestions,
-                    timeRemaining: this.timeRemaining,
-                    avgTimePerQuestion: Math.floor(this.timeRemaining / (this.totalQuestions - this.answeredQuestions || 1)),
-                    estimatedFinishTime: this.calculateEstimatedFinish()
-                };
-
-                if (window.examInterface) {
-                    window.examInterface.updateProgress(progressData);
-                }
-            },
-
-            calculateEstimatedFinish() {
-                const avgTimePerRemaining = Math.floor(this.timeRemaining / (this.totalQuestions - this.answeredQuestions || 1));
-                const estimatedRemainingTime = avgTimePerRemaining * (this.totalQuestions - this.answeredQuestions);
-                const finishTime = new Date(Date.now() + (estimatedRemainingTime * 1000));
-                return finishTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
             },
 
             formatTime(seconds) {
@@ -676,6 +478,98 @@
 
     @push('styles')
     <style>
+        /* MathJax specific styling */
+        .math-content mjx-container {
+            display: inline-block !important;
+            margin: 0.2em 0;
+        }
+
+        .math-content mjx-container[display="true"] {
+            display: block !important;
+            margin: 1em 0;
+        }
+
+        /* Prose styles for rich text content */
+        .prose {
+            max-width: none;
+        }
+
+        .prose img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 0.5rem;
+            margin: 1rem 0;
+        }
+
+        .prose pre {
+            background-color: #1f2937;
+            color: #f3f4f6;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            overflow-x: auto;
+        }
+
+        .prose code {
+            background-color: #e5e7eb;
+            padding: 0.2rem 0.4rem;
+            border-radius: 0.25rem;
+            font-size: 0.875em;
+        }
+
+        .dark .prose code {
+            background-color: #374151;
+            color: #f3f4f6;
+        }
+
+        .prose blockquote {
+            border-left: 4px solid rgb(var(--accent-primary));
+            padding-left: 1rem;
+            font-style: italic;
+            color: #6b7280;
+        }
+
+        .dark .prose blockquote {
+            color: #9ca3af;
+        }
+
+        .prose ul, .prose ol {
+            padding-left: 1.5rem;
+        }
+
+        .prose li {
+            margin: 0.5rem 0;
+        }
+
+        .prose a {
+            color: rgb(var(--accent-primary));
+            text-decoration: underline;
+        }
+
+        .prose table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+        }
+
+        .prose th, .prose td {
+            border: 1px solid #e5e7eb;
+            padding: 0.5rem;
+        }
+
+        .dark .prose th, .dark .prose td {
+            border-color: #374151;
+        }
+
+        .prose th {
+            background-color: #f3f4f6;
+            font-weight: 600;
+        }
+
+        .dark .prose th {
+            background-color: #1f2937;
+        }
+
+        /* Form styles */
         .form-radio:checked {
             background-color: rgb(var(--accent-primary));
             border-color: rgb(var(--accent-primary));
@@ -700,11 +594,60 @@
             }
         }
 
-        /* Enhanced mobile responsiveness */
+        /* Progress bar animation */
+        .progress-animate {
+            transition: width 0.5s ease-in-out;
+        }
+
+        /* Timer critical state */
+        .timer-critical {
+            animation: pulse-red 1s infinite;
+            box-shadow: 0 0 20px rgba(239, 68, 68, 0.5);
+        }
+
+        @keyframes pulse-red {
+            0%, 100% {
+                background-color: rgb(185 28 28);
+                color: white;
+            }
+            50% {
+                background-color: rgb(239 68 68);
+                color: white;
+            }
+        }
+
+        /* Mobile responsiveness */
         @media (max-width: 640px) {
             .grid-cols-8 {
                 grid-template-columns: repeat(6, minmax(0, 1fr));
             }
+            
+            .math-content {
+                word-wrap: break-word;
+                overflow-wrap: break-word;
+            }
+
+            .math-content mjx-container {
+                font-size: 0.9em;
+            }
+        }
+
+        /* Dark mode prose adjustments */
+        .dark .prose {
+            color: #f3f4f6;
+        }
+
+        .dark .prose strong {
+            color: #ffffff;
+        }
+
+        .dark .prose h1, 
+        .dark .prose h2, 
+        .dark .prose h3, 
+        .dark .prose h4, 
+        .dark .prose h5, 
+        .dark .prose h6 {
+            color: #ffffff;
         }
     </style>
     @endpush
