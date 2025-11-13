@@ -15,7 +15,7 @@
     </div>
 
     @if(!$viewDetails)
-        <!-- Results Overview -->
+        <!-- Results Overview (same as before) -->
         <div class="bg-themed-secondary rounded-lg shadow-lg border border-themed-primary">
             <div class="bg-themed-secondary border-b border-themed-secondary px-6 py-4 rounded-t-lg">
                 <h6 class="text-lg font-semibold text-accent-themed-primary m-0">Your CBT Assessments</h6>
@@ -85,7 +85,7 @@
             </div>
         </div>
     @else
-        <!-- Detailed View -->
+        <!-- Detailed View with Rich Text Support -->
         <div class="bg-themed-secondary rounded-lg shadow-lg animate-fade-in border border-themed-primary">
             <div class="bg-accent-themed-primary text-white px-6 py-4 rounded-t-lg">
                 <h5 class="text-xl font-semibold m-0">
@@ -118,6 +118,12 @@
                         <div class="border border-themed-secondary rounded-lg p-6 bg-themed-tertiary">
                             <div class="text-2xl font-bold text-themed-primary mb-2">{{ $selectedAssessment->pass_percentage }}%</div>
                             <div class="text-sm text-themed-secondary">Pass Mark</div>
+                        </div>
+                    </div>
+                    <div class="text-center">
+                        <div class="border border-themed-secondary rounded-lg p-6 bg-themed-tertiary">
+                            <div class="text-2xl font-bold text-accent-themed-primary mb-2">{{ $attempts->count() }}</div>
+                            <div class="text-sm text-themed-secondary">Attempts</div>
                         </div>
                     </div>
                 </div>
@@ -169,7 +175,7 @@
                     </table>
                 </div>
 
-                <!-- Attempt Details Modal -->
+                <!-- Attempt Details Modal with Rich Text Support -->
                 @if($selectedAttempt)
                     <div class="fixed inset-0 bg-black bg-opacity-50 dark:bg-black dark:bg-opacity-70 z-50 flex items-center justify-center p-4">
                         <div class="bg-themed-secondary rounded-lg max-w-7xl w-full max-h-screen overflow-hidden animate-fade-in-down border border-themed-primary">
@@ -212,7 +218,7 @@
                                     </div>
                                 </div>
 
-                                <!-- Question-by-Question Review -->
+                                <!-- Question-by-Question Review with Rich Text -->
                                 <h6 class="text-lg font-semibold text-themed-primary mb-4">Question Review</h6>
                                 @foreach($selectedAttempt['answers'] as $questionId => $answer)
                                     @php $question = $answer->question; @endphp
@@ -227,17 +233,20 @@
                                             </div>
                                         </div>
                                         <div class="p-4">
-                                            <p class="font-semibold text-themed-primary mb-4">{{ $question->question_text }}</p>
+                                            <!-- Question Text with Rich Text Support -->
+                                            <div class="font-semibold text-themed-primary mb-4 prose prose-sm max-w-none dark:prose-invert">
+                                                {!! $question->question_text !!}
+                                            </div>
                                             
                                             @if($question->question_type === 'multiple_choice')
                                                 <div class="ml-4">
                                                     @foreach($question->options as $index => $option)
                                                         <div class="mb-2">
-                                                            <span class="mr-2">{{ chr(65 + $index) }}.</span>
-                                                            <span class="@if($answer->answer == $index) font-semibold 
+                                                            <span class="mr-2 font-semibold">{{ chr(65 + $index) }}.</span>
+                                                            <span class="prose prose-sm max-w-none dark:prose-invert inline @if($answer->answer == $index) font-semibold 
                                                                   @if($answer->is_correct) text-green-600 dark:text-green-400 @else text-red-600 dark:text-red-400 @endif
                                                                   @elseif(in_array($index, $question->correct_answers)) text-green-600 dark:text-green-400 @else text-themed-primary @endif">
-                                                                {{ $option }}
+                                                                {!! $option !!}
                                                                 @if($answer->answer == $index)
                                                                     <i class="fas fa-arrow-left ml-2 text-themed-tertiary"></i>
                                                                 @endif
@@ -251,7 +260,7 @@
                                             @elseif($question->question_type === 'true_false')
                                                 <div class="ml-4">
                                                     <div class="mb-2">
-                                                        <span class="mr-2">A.</span>
+                                                        <span class="mr-2 font-semibold">A.</span>
                                                         <span class="@if($answer->answer == 0) font-semibold 
                                                               @if($answer->is_correct) text-green-600 dark:text-green-400 @else text-red-600 dark:text-red-400 @endif
                                                               @elseif(in_array(0, $question->correct_answers)) text-green-600 dark:text-green-400 @else text-themed-primary @endif">
@@ -261,7 +270,7 @@
                                                         </span>
                                                     </div>
                                                     <div class="mb-2">
-                                                        <span class="mr-2">B.</span>
+                                                        <span class="mr-2 font-semibold">B.</span>
                                                         <span class="@if($answer->answer == 1) font-semibold 
                                                               @if($answer->is_correct) text-green-600 dark:text-green-400 @else text-red-600 dark:text-red-400 @endif
                                                               @elseif(in_array(1, $question->correct_answers)) text-green-600 dark:text-green-400 @else text-themed-primary @endif">
@@ -283,7 +292,9 @@
                                             @if($question->explanation)
                                                 <div class="mt-4 p-4 bg-themed-tertiary rounded-lg border border-themed-secondary">
                                                     <div class="text-sm font-semibold text-themed-secondary mb-1">Explanation:</div>
-                                                    <div class="text-sm text-themed-primary">{{ $question->explanation }}</div>
+                                                    <div class="text-sm text-themed-primary prose prose-sm max-w-none dark:prose-invert">
+                                                        {!! $question->explanation !!}
+                                                    </div>
                                                 </div>
                                             @endif
 
@@ -329,7 +340,93 @@
             }
         }
 
-        /* Smooth transitions for dark mode */
+        /* Prose styles for rich text */
+        .prose img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 0.5rem;
+            margin: 0.5rem 0;
+        }
+
+        .prose pre {
+            background-color: #1f2937;
+            color: #f3f4f6;
+            padding: 0.75rem;
+            border-radius: 0.5rem;
+            overflow-x: auto;
+            font-size: 0.875rem;
+        }
+
+        .prose code {
+            background-color: #e5e7eb;
+            padding: 0.15rem 0.3rem;
+            border-radius: 0.25rem;
+            font-size: 0.875em;
+        }
+
+        .dark .prose code {
+            background-color: #374151;
+            color: #f3f4f6;
+        }
+
+        .prose blockquote {
+            border-left: 4px solid rgb(var(--accent-primary));
+            padding-left: 1rem;
+            font-style: italic;
+            color: #6b7280;
+        }
+
+        .dark .prose blockquote {
+            color: #9ca3af;
+        }
+
+        .prose ul, .prose ol {
+            padding-left: 1.25rem;
+            margin: 0.5rem 0;
+        }
+
+        .prose li {
+            margin: 0.25rem 0;
+        }
+
+        .prose a {
+            color: rgb(var(--accent-primary));
+            text-decoration: underline;
+        }
+
+        .prose table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 0.5rem 0;
+            font-size: 0.875rem;
+        }
+
+        .prose th, .prose td {
+            border: 1px solid #e5e7eb;
+            padding: 0.5rem;
+        }
+
+        .dark .prose th, .dark .prose td {
+            border-color: #374151;
+        }
+
+        .prose th {
+            background-color: #f3f4f6;
+            font-weight: 600;
+        }
+
+        .dark .prose th {
+            background-color: #1f2937;
+        }
+
+        .dark .prose {
+            color: #f3f4f6;
+        }
+
+        .dark .prose strong {
+            color: #ffffff;
+        }
+
         * {
             transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
         }

@@ -1,14 +1,14 @@
-<div class="py-4 px-4 bg-themed-primary dark:bg-gray-900 min-h-screen transition-colors duration-300">
+<div class="py-4 px-2 sm:px-4 bg-themed-primary dark:bg-gray-900 min-h-screen transition-colors duration-300">
     <!-- Header -->
-    <div class="flex justify-between items-center mb-6">
-        <div>
-            <h1 class="text-3xl font-bold text-themed-primary flex items-center">
+    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 sm:gap-0 mb-4 sm:mb-6">
+        <div class="w-full sm:w-auto">
+            <h1 class="text-2xl sm:text-3xl font-bold text-themed-primary flex items-center">
                 <i class="fas fa-cog mr-2"></i>CBT Management
             </h1>
-            <p class="text-themed-secondary">Create and manage CBT assessments and questions</p>
+            <p class="text-sm sm:text-base text-themed-secondary">Create and manage CBT assessments and questions</p>
         </div>
         <button wire:click="$set('showCreateModal', true)"
-            class="bg-accent-themed-primary hover:bg-accent-themed-secondary text-white px-4 py-2 rounded-lg flex items-center transition-colors">
+            class="w-full sm:w-auto bg-accent-themed-primary hover:bg-accent-themed-secondary text-white px-3 sm:px-4 py-2 rounded-lg flex items-center justify-center transition-colors text-sm sm:text-base">
             <i class="fas fa-plus mr-2"></i>Create CBT Assessment
         </button>
     </div>
@@ -45,44 +45,98 @@
     @endif
 
     <!-- Assessments List -->
-    <div class="bg-themed-secondary rounded-lg shadow-lg border border-themed-primary">
-        <div class="bg-themed-secondary py-4 px-6 border-b border-themed-secondary">
-            <h6 class="text-lg font-semibold text-accent-themed-primary">CBT Assessments</h6>
+    <div class="bg-themed-secondary rounded-lg shadow-lg border border-themed-primary overflow-hidden">
+        <div class="bg-themed-secondary py-3 sm:py-4 px-4 sm:px-6 border-b border-themed-secondary">
+            <h6 class="text-base sm:text-lg font-semibold text-accent-themed-primary">CBT Assessments</h6>
         </div>
-        <div class="p-6">
+        <div class="p-3 sm:p-6">
             @if($assessments->count() > 0)
-                <div class="overflow-x-auto">
+                <!-- Mobile Card View (Hidden on desktop) -->
+                <div class="block lg:hidden space-y-4">
+                    @foreach($assessments as $assessment)
+                        <div class="bg-themed-tertiary rounded-lg p-4 border border-themed-secondary">
+                            <div class="flex justify-between items-start mb-2">
+                                <h3 class="font-semibold text-themed-primary text-base">{{ $assessment->title }}</h3>
+                                <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-themed-secondary text-accent-themed-primary whitespace-nowrap ml-2">
+                                    {{ $assessment->questions->count() }} Q
+                                </span>
+                            </div>
+                            <p class="text-sm text-themed-secondary mb-3">{{ Str::limit($assessment->description, 50) }}</p>
+                            
+                            <div class="grid grid-cols-2 gap-2 mb-3 text-xs">
+                                <div>
+                                    <span class="text-themed-tertiary">Course:</span>
+                                    <p class="text-themed-primary truncate">{{ $assessment->course->title ?? 'No Course' }}</p>
+                                </div>
+                                <div>
+                                    <span class="text-themed-tertiary">Duration:</span>
+                                    <p class="text-themed-primary">{{ $assessment->formatted_duration }}</p>
+                                </div>
+                                <div>
+                                    <span class="text-themed-tertiary">Pass %:</span>
+                                    <p class="text-themed-primary">{{ $assessment->pass_percentage }}%</p>
+                                </div>
+                                <div>
+                                    <span class="text-themed-tertiary">Max Score:</span>
+                                    <p class="text-themed-primary">{{ $assessment->max_score }}</p>
+                                </div>
+                            </div>
+
+                            <div class="flex justify-end space-x-2 pt-3 border-t border-themed-secondary">
+                                <button wire:click="manageQuestions({{ $assessment->id }})"
+                                    class="text-accent-themed-primary hover:text-accent-themed-secondary p-2 rounded-lg hover:bg-themed-secondary transition-colors"
+                                    title="Manage Questions">
+                                    <i class="fas fa-question-circle"></i>
+                                </button>
+                                <button wire:click="editAssessment({{ $assessment->id }})"
+                                    class="text-themed-secondary hover:text-themed-primary p-2 rounded-lg hover:bg-themed-secondary transition-colors"
+                                    title="Edit">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button wire:click="deleteAssessment({{ $assessment->id }})"
+                                    wire:confirm="Are you sure you want to delete this assessment?"
+                                    class="text-red-600 dark:text-red-400 hover:text-red-900 dark:hover:text-red-300 p-2 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/30 transition-colors"
+                                    title="Delete">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+
+                <!-- Desktop Table View (Hidden on mobile) -->
+                <div class="hidden lg:block overflow-x-auto">
                     <table class="min-w-full table-auto">
                         <thead class="bg-themed-tertiary">
                             <tr>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-themed-secondary uppercase tracking-wider">Title</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-themed-secondary uppercase tracking-wider">Course</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-themed-secondary uppercase tracking-wider">Questions</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-themed-secondary uppercase tracking-wider">Duration</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-themed-secondary uppercase tracking-wider">Pass %</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-themed-secondary uppercase tracking-wider">Max Score</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-themed-secondary uppercase tracking-wider">Actions</th>
+                                <th class="px-4 xl:px-6 py-3 text-left text-xs font-medium text-themed-secondary uppercase tracking-wider">Title</th>
+                                <th class="px-4 xl:px-6 py-3 text-left text-xs font-medium text-themed-secondary uppercase tracking-wider">Course</th>
+                                <th class="px-4 xl:px-6 py-3 text-left text-xs font-medium text-themed-secondary uppercase tracking-wider">Questions</th>
+                                <th class="px-4 xl:px-6 py-3 text-left text-xs font-medium text-themed-secondary uppercase tracking-wider">Duration</th>
+                                <th class="px-4 xl:px-6 py-3 text-left text-xs font-medium text-themed-secondary uppercase tracking-wider">Pass %</th>
+                                <th class="px-4 xl:px-6 py-3 text-left text-xs font-medium text-themed-secondary uppercase tracking-wider">Max Score</th>
+                                <th class="px-4 xl:px-6 py-3 text-left text-xs font-medium text-themed-secondary uppercase tracking-wider">Actions</th>
                             </tr>
                         </thead>
                         <tbody class="bg-themed-secondary divide-y divide-themed-primary">
                             @foreach($assessments as $assessment)
                                 <tr class="hover:bg-themed-tertiary transition-colors">
-                                    <td class="px-6 py-4 whitespace-nowrap">
+                                    <td class="px-4 xl:px-6 py-4">
                                         <div class="font-semibold text-themed-primary">{{ $assessment->title }}</div>
                                         <div class="text-sm text-themed-secondary">{{ Str::limit($assessment->description, 50) }}</div>
                                     </td>
-                                    <td class="px-6 py-4 whitespace-nowrap">
+                                    <td class="px-4 xl:px-6 py-4">
                                         <div class="text-sm text-themed-primary">{{ $assessment->course->title ?? 'No Course' }}</div>
                                     </td>
-                                    <td class="px-6 py-4 whitespace-nowrap">
+                                    <td class="px-4 xl:px-6 py-4 whitespace-nowrap">
                                         <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-themed-tertiary text-accent-themed-primary">
                                             {{ $assessment->questions->count() }} Questions
                                         </span>
                                     </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-themed-primary">{{ $assessment->formatted_duration }}</td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-themed-primary">{{ $assessment->pass_percentage }}%</td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-themed-primary">{{ $assessment->max_score }}</td>
-                                    <td class="px-6 py-4 whitespace-nowrap">
+                                    <td class="px-4 xl:px-6 py-4 whitespace-nowrap text-sm text-themed-primary">{{ $assessment->formatted_duration }}</td>
+                                    <td class="px-4 xl:px-6 py-4 whitespace-nowrap text-sm text-themed-primary">{{ $assessment->pass_percentage }}%</td>
+                                    <td class="px-4 xl:px-6 py-4 whitespace-nowrap text-sm text-themed-primary">{{ $assessment->max_score }}</td>
+                                    <td class="px-4 xl:px-6 py-4 whitespace-nowrap">
                                         <div class="flex space-x-2">
                                             <button wire:click="manageQuestions({{ $assessment->id }})"
                                                 class="text-accent-themed-primary hover:text-accent-themed-secondary p-2 rounded-lg hover:bg-themed-tertiary transition-colors"
@@ -111,10 +165,10 @@
                     {{ $assessments->links() }}
                 </div>
             @else
-                <div class="text-center py-12">
-                    <i class="fas fa-clipboard-list text-6xl text-themed-tertiary mb-4"></i>
-                    <h5 class="text-xl font-semibold text-themed-secondary mb-2">No CBT Assessments Yet</h5>
-                    <p class="text-themed-tertiary">Create your first CBT assessment to get started.</p>
+                <div class="text-center py-8 sm:py-12">
+                    <i class="fas fa-clipboard-list text-5xl sm:text-6xl text-themed-tertiary mb-4"></i>
+                    <h5 class="text-lg sm:text-xl font-semibold text-themed-secondary mb-2">No CBT Assessments Yet</h5>
+                    <p class="text-sm sm:text-base text-themed-tertiary">Create your first CBT assessment to get started.</p>
                 </div>
             @endif
         </div>
@@ -122,61 +176,61 @@
 
     <!-- Create Assessment Modal -->
     <div class="@if($showCreateModal) fixed inset-0 bg-gray-600 bg-opacity-50 dark:bg-gray-900 dark:bg-opacity-75 overflow-y-auto h-full w-full z-50 @else hidden @endif">
-        <div class="relative top-20 mx-auto p-5 border w-11/12 max-w-4xl shadow-lg rounded-lg bg-themed-secondary border-themed-primary @if($showCreateModal) animate-fade-in-down @endif">
-            <div class="border-b border-themed-secondary pb-4 mb-4">
-                <h5 class="text-xl font-semibold text-themed-primary flex items-center">
+        <div class="relative top-4 sm:top-20 mx-2 sm:mx-auto p-4 sm:p-5 border w-auto sm:w-11/12 max-w-4xl shadow-lg rounded-lg bg-themed-secondary border-themed-primary @if($showCreateModal) animate-fade-in-down @endif">
+            <div class="border-b border-themed-secondary pb-3 sm:pb-4 mb-3 sm:mb-4">
+                <h5 class="text-lg sm:text-xl font-semibold text-themed-primary flex items-center pr-8">
                     <i class="fas fa-plus mr-2"></i>Create CBT Assessment
                 </h5>
-                <button type="button" class="absolute top-4 right-4 text-themed-tertiary hover:text-themed-secondary" wire:click="closeModals">
-                    <i class="fas fa-times text-xl"></i>
+                <button type="button" class="absolute top-3 sm:top-4 right-3 sm:right-4 text-themed-tertiary hover:text-themed-secondary" wire:click="closeModals">
+                    <i class="fas fa-times text-lg sm:text-xl"></i>
                 </button>
             </div>
             <div>
                 <form wire:submit="createAssessment">
-                    <div class="mb-4">
-                        <label for="course_id" class="block text-sm font-medium text-themed-primary mb-2">Course (Optional)</label>
-                        <select wire:model="course_id" class="w-full px-3 py-2 border border-themed-secondary rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-themed-primary focus:border-accent-themed-primary bg-themed-primary text-themed-primary placeholder-themed-tertiary">
+                    <div class="mb-3 sm:mb-4">
+                        <label for="course_id" class="block text-xs sm:text-sm font-medium text-themed-primary mb-2">Course (Optional)</label>
+                        <select wire:model="course_id" class="w-full px-2 sm:px-3 py-2 text-sm sm:text-base border border-themed-secondary rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-themed-primary focus:border-accent-themed-primary bg-themed-primary text-themed-primary placeholder-themed-tertiary">
                             <option value="">Select a course (optional)</option>
                             @foreach($courses as $course)
                                 <option value="{{ $course->id }}">{{ $course->title }}</option>
                             @endforeach
                         </select>
-                        @error('course_id') <div class="text-red-500 dark:text-red-400 text-sm mt-1">{{ $message }}</div> @enderror
+                        @error('course_id') <div class="text-red-500 dark:text-red-400 text-xs sm:text-sm mt-1">{{ $message }}</div> @enderror
                     </div>
 
-                    <div class="mb-4">
-                        <label for="title" class="block text-sm font-medium text-themed-primary mb-2">Assessment Title</label>
-                        <input type="text" wire:model="title" class="w-full px-3 py-2 border border-themed-secondary rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-themed-primary focus:border-accent-themed-primary bg-themed-primary text-themed-primary placeholder-themed-tertiary" required>
-                        @error('title') <div class="text-red-500 dark:text-red-400 text-sm mt-1">{{ $message }}</div> @enderror
+                    <div class="mb-3 sm:mb-4">
+                        <label for="title" class="block text-xs sm:text-sm font-medium text-themed-primary mb-2">Assessment Title</label>
+                        <input type="text" wire:model="title" class="w-full px-2 sm:px-3 py-2 text-sm sm:text-base border border-themed-secondary rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-themed-primary focus:border-accent-themed-primary bg-themed-primary text-themed-primary placeholder-themed-tertiary" required>
+                        @error('title') <div class="text-red-500 dark:text-red-400 text-xs sm:text-sm mt-1">{{ $message }}</div> @enderror
                     </div>
 
-                    <div class="mb-4">
-                        <label for="description" class="block text-sm font-medium text-themed-primary mb-2">Description</label>
-                        <textarea wire:model="description" class="w-full px-3 py-2 border border-themed-secondary rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-themed-primary focus:border-accent-themed-primary bg-themed-primary text-themed-primary placeholder-themed-tertiary" rows="3"></textarea>
-                        @error('description') <div class="text-red-500 dark:text-red-400 text-sm mt-1">{{ $message }}</div> @enderror
+                    <div class="mb-3 sm:mb-4">
+                        <label for="description" class="block text-xs sm:text-sm font-medium text-themed-primary mb-2">Description</label>
+                        <textarea wire:model="description" class="w-full px-2 sm:px-3 py-2 text-sm sm:text-base border border-themed-secondary rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-themed-primary focus:border-accent-themed-primary bg-themed-primary text-themed-primary placeholder-themed-tertiary" rows="3"></textarea>
+                        @error('description') <div class="text-red-500 dark:text-red-400 text-xs sm:text-sm mt-1">{{ $message }}</div> @enderror
                     </div>
 
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 mb-4 sm:mb-6">
                         <div>
-                            <label for="pass_percentage" class="block text-sm font-medium text-themed-primary mb-2">Pass Percentage</label>
-                            <input type="number" wire:model="pass_percentage" class="w-full px-3 py-2 border border-themed-secondary rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-themed-primary focus:border-accent-themed-primary bg-themed-primary text-themed-primary placeholder-themed-tertiary" min="1" max="100" required>
-                            @error('pass_percentage') <div class="text-red-500 dark:text-red-400 text-sm mt-1">{{ $message }}</div> @enderror
+                            <label for="pass_percentage" class="block text-xs sm:text-sm font-medium text-themed-primary mb-2">Pass Percentage</label>
+                            <input type="number" wire:model="pass_percentage" class="w-full px-2 sm:px-3 py-2 text-sm sm:text-base border border-themed-secondary rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-themed-primary focus:border-accent-themed-primary bg-themed-primary text-themed-primary placeholder-themed-tertiary" min="1" max="100" required>
+                            @error('pass_percentage') <div class="text-red-500 dark:text-red-400 text-xs sm:text-sm mt-1">{{ $message }}</div> @enderror
                         </div>
                         <div>
-                            <label for="estimated_duration_minutes" class="block text-sm font-medium text-themed-primary mb-2">Duration (Minutes)</label>
-                            <input type="number" wire:model="estimated_duration_minutes" class="w-full px-3 py-2 border border-themed-secondary rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-themed-primary focus:border-accent-themed-primary bg-themed-primary text-themed-primary placeholder-themed-tertiary" min="1" required>
-                            @error('estimated_duration_minutes') <div class="text-red-500 dark:text-red-400 text-sm mt-1">{{ $message }}</div> @enderror
+                            <label for="estimated_duration_minutes" class="block text-xs sm:text-sm font-medium text-themed-primary mb-2">Duration (Minutes)</label>
+                            <input type="number" wire:model="estimated_duration_minutes" class="w-full px-2 sm:px-3 py-2 text-sm sm:text-base border border-themed-secondary rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-themed-primary focus:border-accent-themed-primary bg-themed-primary text-themed-primary placeholder-themed-tertiary" min="1" required>
+                            @error('estimated_duration_minutes') <div class="text-red-500 dark:text-red-400 text-xs sm:text-sm mt-1">{{ $message }}</div> @enderror
                         </div>
                         <div>
-                            <label for="max_score" class="block text-sm font-medium text-themed-primary mb-2">Max Score</label>
-                            <input type="number" wire:model="max_score" class="w-full px-3 py-2 border border-themed-secondary rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-themed-primary focus:border-accent-themed-primary bg-themed-primary text-themed-primary placeholder-themed-tertiary" min="1" required>
-                            @error('max_score') <div class="text-red-500 dark:text-red-400 text-sm mt-1">{{ $message }}</div> @enderror
+                            <label for="max_score" class="block text-xs sm:text-sm font-medium text-themed-primary mb-2">Max Score</label>
+                            <input type="number" wire:model="max_score" class="w-full px-2 sm:px-3 py-2 text-sm sm:text-base border border-themed-secondary rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-themed-primary focus:border-accent-themed-primary bg-themed-primary text-themed-primary placeholder-themed-tertiary" min="1" required>
+                            @error('max_score') <div class="text-red-500 dark:text-red-400 text-xs sm:text-sm mt-1">{{ $message }}</div> @enderror
                         </div>
                     </div>
 
-                    <div class="flex justify-end space-x-3 pt-4 border-t border-themed-secondary">
-                        <button type="button" class="px-4 py-2 bg-themed-tertiary text-themed-primary rounded-lg hover:bg-themed-secondary transition-colors border border-themed-secondary" wire:click="closeModals">Cancel</button>
-                        <button type="submit" class="px-4 py-2 bg-accent-themed-primary text-white rounded-lg hover:bg-accent-themed-secondary transition-colors flex items-center">
+                    <div class="flex flex-col-reverse sm:flex-row justify-end gap-2 sm:gap-3 pt-3 sm:pt-4 border-t border-themed-secondary">
+                        <button type="button" class="w-full sm:w-auto px-3 sm:px-4 py-2 text-sm sm:text-base bg-themed-tertiary text-themed-primary rounded-lg hover:bg-themed-secondary transition-colors border border-themed-secondary" wire:click="closeModals">Cancel</button>
+                        <button type="submit" class="w-full sm:w-auto px-3 sm:px-4 py-2 text-sm sm:text-base bg-accent-themed-primary text-white rounded-lg hover:bg-accent-themed-secondary transition-colors flex items-center justify-center">
                             <i class="fas fa-save mr-2"></i>Create Assessment
                         </button>
                     </div>
@@ -187,61 +241,61 @@
 
     <!-- Edit Assessment Modal -->
     <div class="@if($showEditModal) fixed inset-0 bg-gray-600 bg-opacity-50 dark:bg-gray-900 dark:bg-opacity-75 overflow-y-auto h-full w-full z-50 @else hidden @endif">
-        <div class="relative top-20 mx-auto p-5 border w-11/12 max-w-4xl shadow-lg rounded-lg bg-themed-secondary border-themed-primary @if($showEditModal) animate-fade-in-down @endif">
-            <div class="border-b border-themed-secondary pb-4 mb-4">
-                <h5 class="text-xl font-semibold text-themed-primary flex items-center">
+        <div class="relative top-4 sm:top-20 mx-2 sm:mx-auto p-4 sm:p-5 border w-auto sm:w-11/12 max-w-4xl shadow-lg rounded-lg bg-themed-secondary border-themed-primary @if($showEditModal) animate-fade-in-down @endif">
+            <div class="border-b border-themed-secondary pb-3 sm:pb-4 mb-3 sm:mb-4">
+                <h5 class="text-lg sm:text-xl font-semibold text-themed-primary flex items-center pr-8">
                     <i class="fas fa-edit mr-2"></i>Edit CBT Assessment
                 </h5>
-                <button type="button" class="absolute top-4 right-4 text-themed-tertiary hover:text-themed-secondary" wire:click="closeModals">
-                    <i class="fas fa-times text-xl"></i>
+                <button type="button" class="absolute top-3 sm:top-4 right-3 sm:right-4 text-themed-tertiary hover:text-themed-secondary" wire:click="closeModals">
+                    <i class="fas fa-times text-lg sm:text-xl"></i>
                 </button>
             </div>
             <div>
                 <form wire:submit="updateAssessment">
-                    <div class="mb-4">
-                        <label for="course_id" class="block text-sm font-medium text-themed-primary mb-2">Course (Optional)</label>
-                        <select wire:model="course_id" class="w-full px-3 py-2 border border-themed-secondary rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-themed-primary focus:border-accent-themed-primary bg-themed-primary text-themed-primary placeholder-themed-tertiary">
+                    <div class="mb-3 sm:mb-4">
+                        <label for="course_id" class="block text-xs sm:text-sm font-medium text-themed-primary mb-2">Course (Optional)</label>
+                        <select wire:model="course_id" class="w-full px-2 sm:px-3 py-2 text-sm sm:text-base border border-themed-secondary rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-themed-primary focus:border-accent-themed-primary bg-themed-primary text-themed-primary placeholder-themed-tertiary">
                             <option value="">Select a course (optional)</option>
                             @foreach($courses as $course)
                                 <option value="{{ $course->id }}">{{ $course->title }}</option>
                             @endforeach
                         </select>
-                        @error('course_id') <div class="text-red-500 dark:text-red-400 text-sm mt-1">{{ $message }}</div> @enderror
+                        @error('course_id') <div class="text-red-500 dark:text-red-400 text-xs sm:text-sm mt-1">{{ $message }}</div> @enderror
                     </div>
 
-                    <div class="mb-4">
-                        <label for="title" class="block text-sm font-medium text-themed-primary mb-2">Assessment Title</label>
-                        <input type="text" wire:model="title" class="w-full px-3 py-2 border border-themed-secondary rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-themed-primary focus:border-accent-themed-primary bg-themed-primary text-themed-primary placeholder-themed-tertiary" required>
-                        @error('title') <div class="text-red-500 dark:text-red-400 text-sm mt-1">{{ $message }}</div> @enderror
+                    <div class="mb-3 sm:mb-4">
+                        <label for="title" class="block text-xs sm:text-sm font-medium text-themed-primary mb-2">Assessment Title</label>
+                        <input type="text" wire:model="title" class="w-full px-2 sm:px-3 py-2 text-sm sm:text-base border border-themed-secondary rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-themed-primary focus:border-accent-themed-primary bg-themed-primary text-themed-primary placeholder-themed-tertiary" required>
+                        @error('title') <div class="text-red-500 dark:text-red-400 text-xs sm:text-sm mt-1">{{ $message }}</div> @enderror
                     </div>
 
-                    <div class="mb-4">
-                        <label for="description" class="block text-sm font-medium text-themed-primary mb-2">Description</label>
-                        <textarea wire:model="description" class="w-full px-3 py-2 border border-themed-secondary rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-themed-primary focus:border-accent-themed-primary bg-themed-primary text-themed-primary placeholder-themed-tertiary" rows="3"></textarea>
-                        @error('description') <div class="text-red-500 dark:text-red-400 text-sm mt-1">{{ $message }}</div> @enderror
+                    <div class="mb-3 sm:mb-4">
+                        <label for="description" class="block text-xs sm:text-sm font-medium text-themed-primary mb-2">Description</label>
+                        <textarea wire:model="description" class="w-full px-2 sm:px-3 py-2 text-sm sm:text-base border border-themed-secondary rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-themed-primary focus:border-accent-themed-primary bg-themed-primary text-themed-primary placeholder-themed-tertiary" rows="3"></textarea>
+                        @error('description') <div class="text-red-500 dark:text-red-400 text-xs sm:text-sm mt-1">{{ $message }}</div> @enderror
                     </div>
 
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 mb-4 sm:mb-6">
                         <div>
-                            <label for="pass_percentage" class="block text-sm font-medium text-themed-primary mb-2">Pass Percentage</label>
-                            <input type="number" wire:model="pass_percentage" class="w-full px-3 py-2 border border-themed-secondary rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-themed-primary focus:border-accent-themed-primary bg-themed-primary text-themed-primary placeholder-themed-tertiary" min="1" max="100" required>
-                            @error('pass_percentage') <div class="text-red-500 dark:text-red-400 text-sm mt-1">{{ $message }}</div> @enderror
+                            <label for="pass_percentage" class="block text-xs sm:text-sm font-medium text-themed-primary mb-2">Pass Percentage</label>
+                            <input type="number" wire:model="pass_percentage" class="w-full px-2 sm:px-3 py-2 text-sm sm:text-base border border-themed-secondary rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-themed-primary focus:border-accent-themed-primary bg-themed-primary text-themed-primary placeholder-themed-tertiary" min="1" max="100" required>
+                            @error('pass_percentage') <div class="text-red-500 dark:text-red-400 text-xs sm:text-sm mt-1">{{ $message }}</div> @enderror
                         </div>
                         <div>
-                            <label for="estimated_duration_minutes" class="block text-sm font-medium text-themed-primary mb-2">Duration (Minutes)</label>
-                            <input type="number" wire:model="estimated_duration_minutes" class="w-full px-3 py-2 border border-themed-secondary rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-themed-primary focus:border-accent-themed-primary bg-themed-primary text-themed-primary placeholder-themed-tertiary" min="1" required>
-                            @error('estimated_duration_minutes') <div class="text-red-500 dark:text-red-400 text-sm mt-1">{{ $message }}</div> @enderror
+                            <label for="estimated_duration_minutes" class="block text-xs sm:text-sm font-medium text-themed-primary mb-2">Duration (Minutes)</label>
+                            <input type="number" wire:model="estimated_duration_minutes" class="w-full px-2 sm:px-3 py-2 text-sm sm:text-base border border-themed-secondary rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-themed-primary focus:border-accent-themed-primary bg-themed-primary text-themed-primary placeholder-themed-tertiary" min="1" required>
+                            @error('estimated_duration_minutes') <div class="text-red-500 dark:text-red-400 text-xs sm:text-sm mt-1">{{ $message }}</div> @enderror
                         </div>
                         <div>
-                            <label for="max_score" class="block text-sm font-medium text-themed-primary mb-2">Max Score</label>
-                            <input type="number" wire:model="max_score" class="w-full px-3 py-2 border border-themed-secondary rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-themed-primary focus:border-accent-themed-primary bg-themed-primary text-themed-primary placeholder-themed-tertiary" min="1" required>
-                            @error('max_score') <div class="text-red-500 dark:text-red-400 text-sm mt-1">{{ $message }}</div> @enderror
+                            <label for="max_score" class="block text-xs sm:text-sm font-medium text-themed-primary mb-2">Max Score</label>
+                            <input type="number" wire:model="max_score" class="w-full px-2 sm:px-3 py-2 text-sm sm:text-base border border-themed-secondary rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-themed-primary focus:border-accent-themed-primary bg-themed-primary text-themed-primary placeholder-themed-tertiary" min="1" required>
+                            @error('max_score') <div class="text-red-500 dark:text-red-400 text-xs sm:text-sm mt-1">{{ $message }}</div> @enderror
                         </div>
                     </div>
 
-                    <div class="flex justify-end space-x-3 pt-4 border-t border-themed-secondary">
-                        <button type="button" class="px-4 py-2 bg-themed-tertiary text-themed-primary rounded-lg hover:bg-themed-secondary transition-colors border border-themed-secondary" wire:click="closeModals">Cancel</button>
-                        <button type="submit" class="px-4 py-2 bg-accent-themed-primary text-white rounded-lg hover:bg-accent-themed-secondary transition-colors flex items-center">
+                    <div class="flex flex-col-reverse sm:flex-row justify-end gap-2 sm:gap-3 pt-3 sm:pt-4 border-t border-themed-secondary">
+                        <button type="button" class="w-full sm:w-auto px-3 sm:px-4 py-2 text-sm sm:text-base bg-themed-tertiary text-themed-primary rounded-lg hover:bg-themed-secondary transition-colors border border-themed-secondary" wire:click="closeModals">Cancel</button>
+                        <button type="submit" class="w-full sm:w-auto px-3 sm:px-4 py-2 text-sm sm:text-base bg-accent-themed-primary text-white rounded-lg hover:bg-accent-themed-secondary transition-colors flex items-center justify-center">
                             <i class="fas fa-save mr-2"></i>Update Assessment
                         </button>
                     </div>
@@ -523,6 +577,33 @@
         button[onclick^="toggleOptionPreview"]:hover i {
             transform: scale(1.1);
         }
+
+        /* Responsive scrollbar */
+        .overflow-y-auto::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .overflow-y-auto::-webkit-scrollbar-track {
+            background: rgb(var(--bg-tertiary));
+            border-radius: 3px;
+        }
+
+        .overflow-y-auto::-webkit-scrollbar-thumb {
+            background: rgb(var(--accent-primary));
+            border-radius: 3px;
+        }
+
+        .overflow-y-auto::-webkit-scrollbar-thumb:hover {
+            background: rgb(var(--accent-secondary));
+        }
+
+        /* Mobile responsive text wrapping */
+        @media (max-width: 640px) {
+            .math-content {
+                word-wrap: break-word;
+                overflow-wrap: break-word;
+            }
+        }
     </style>
 
     <script>
@@ -540,10 +621,12 @@
     // Initialize MathJax integration
     async function initMathJax() {
         await waitForMathJax();
-        console.log('MathJax initialized successfully');
         
         // Process all math content on page load
-        MathJax.typesetPromise().catch(err => console.error('MathJax error:', err));
+        MathJax.typesetPromise().catch(err => {
+            // Silent error handling - only log if there's an actual error
+            if (err) console.error('MathJax error:', err);
+        });
         
         // Set up Livewire integration
         setupLivewireIntegration();
@@ -560,9 +643,9 @@
                 // Typeset any math content that was updated
                 const mathElements = el.querySelectorAll('.math-content');
                 if (mathElements.length > 0) {
-                    MathJax.typesetPromise(Array.from(mathElements)).catch(err => 
-                        console.error('MathJax typeset error:', err)
-                    );
+                    MathJax.typesetPromise(Array.from(mathElements)).catch(err => {
+                        if (err) console.error('MathJax typeset error:', err);
+                    });
                 }
             });
 
@@ -570,9 +653,9 @@
             Livewire.hook('request', ({ respond }) => {
                 respond(() => {
                     setTimeout(() => {
-                        MathJax.typesetPromise().catch(err => 
-                            console.error('MathJax typeset error:', err)
-                        );
+                        MathJax.typesetPromise().catch(err => {
+                            if (err) console.error('MathJax typeset error:', err);
+                        });
                     }, 100);
                 });
             });
@@ -596,9 +679,9 @@
                 // Clear any existing MathJax output first
                 preview.querySelectorAll('mjx-container').forEach(el => el.remove());
                 // Typeset the new content
-                MathJax.typesetPromise([preview]).catch(err => 
-                    console.error('MathJax preview error:', err)
-                );
+                MathJax.typesetPromise([preview]).catch(err => {
+                    if (err) console.error('MathJax preview error:', err);
+                });
             } else {
                 preview.innerHTML = '<span class="text-themed-tertiary">Preview will appear here</span>';
             }
