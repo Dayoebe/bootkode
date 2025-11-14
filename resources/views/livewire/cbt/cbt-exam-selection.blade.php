@@ -24,21 +24,12 @@
         </div>
     @endif
 
-    @if (session()->has('success'))
-        <div class="mb-6 bg-green-50 dark:bg-green-900/30 border border-green-200 dark:border-green-700 text-green-800 dark:text-green-300 px-4 py-3 rounded-lg">
-            <div class="flex items-center">
-                <i class="fas fa-check-circle mr-2"></i>
-                <span>{{ session('success') }}</span>
-            </div>
-        </div>
-    @endif
-
     <!-- Assessments Grid -->
     @if($availableAssessments->count() > 0)
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             @foreach($availableAssessments as $assessment)
                 <div class="bg-themed-secondary border border-themed-primary rounded-lg shadow-sm hover:shadow-md transition-all duration-300 border-l-4 
-                    {{ $assessment->user_result && $assessment->user_result['passed'] ? 'border-l-green-500' : 'border-l-accent-themed-primary' }}">
+                    {{ $assessment->user_result && $assessment->user_result['passed'] ? 'border-l-green-500' : ($assessment->can_take ? 'border-l-accent-themed-primary' : 'border-l-red-500') }}">
                     
                     <div class="p-6">
                         <!-- Assessment Header -->
@@ -73,32 +64,53 @@
                             </div>
                         </div>
 
+                        <!-- Attempts Information -->
+                        <div class="bg-themed-tertiary rounded-lg p-3 mb-4">
+                            <div class="flex justify-between items-center text-sm mb-1">
+                                <span class="text-themed-secondary">Attempts Used:</span>
+                                <span class="font-semibold text-themed-primary">{{ $assessment->attempts_count }}</span>
+                            </div>
+                            <div class="flex justify-between items-center text-sm">
+                                <span class="text-themed-secondary">Remaining:</span>
+                                <span class="font-semibold {{ $assessment->remaining_attempts === 'Unlimited' ? 'text-blue-600 dark:text-blue-400' : ($assessment->remaining_attempts > 0 ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400') }}">
+                                    {{ $assessment->remaining_attempts === 'Unlimited' ? 'Unlimited' : $assessment->remaining_attempts }}
+                                </span>
+                            </div>
+                            
+                            @if(!$assessment->can_take)
+                                <div class="mt-2 pt-2 border-t border-themed-secondary text-xs text-red-600 dark:text-red-400 flex items-center">
+                                    <i class="fas fa-exclamation-triangle mr-1"></i>
+                                    <span>{{ $assessment->attempt_message }}</span>
+                                </div>
+                            @endif
+                        </div>
+
                         <!-- Previous Results (if any) -->
                         @if($assessment->user_result)
                             <div class="bg-themed-tertiary rounded-lg p-3 mb-4">
                                 <div class="flex justify-between items-center text-sm">
-                                    <span class="text-themed-secondary">Previous Score:</span>
+                                    <span class="text-themed-secondary">Best Score:</span>
                                     <span class="font-semibold {{ $assessment->user_result['passed'] ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400' }}">
                                         {{ $assessment->user_result['percentage'] }}%
                                     </span>
                                 </div>
-                                @if($assessment->attempts_count > 1)
-                                    <div class="flex justify-between items-center text-sm mt-1">
-                                        <span class="text-themed-secondary">Attempts:</span>
-                                        <span class="text-themed-primary">{{ $assessment->attempts_count }}</span>
-                                    </div>
-                                @endif
                             </div>
                         @endif
 
                         <!-- Action Buttons -->
                         <div class="space-y-2">
-                            @if(!$assessment->user_result || $assessment->can_retake)
+                            @if($assessment->can_take)
                                 <button wire:click="startExam({{ $assessment->id }})" 
                                     wire:confirm="Are you ready to start this exam? Once started, the timer will begin immediately."
                                     class="w-full bg-accent-themed-primary hover:bg-accent-themed-secondary text-white px-4 py-2 rounded-lg transition-colors flex items-center justify-center font-medium">
                                     <i class="fas fa-play mr-2"></i>
                                     {{ $assessment->user_result ? 'Retake Exam' : 'Start Exam' }}
+                                </button>
+                            @else
+                                <button disabled
+                                    class="w-full bg-gray-400 dark:bg-gray-600 cursor-not-allowed text-white px-4 py-2 rounded-lg flex items-center justify-center font-medium opacity-50">
+                                    <i class="fas fa-ban mr-2"></i>
+                                    No Attempts Remaining
                                 </button>
                             @endif
 
@@ -118,6 +130,13 @@
                                     <span>{{ $assessment->course->title }}</span>
                                 </div>
                             </div>
+                        @else
+                            <div class="mt-4 pt-4 border-t border-themed-secondary">
+                                <div class="flex items-center text-sm text-themed-secondary">
+                                    <i class="fas fa-certificate mr-2"></i>
+                                    <span>Standalone CBT Exam</span>
+                                </div>
+                            </div>
                         @endif
                     </div>
                 </div>
@@ -129,12 +148,13 @@
             $totalAssessments = $availableAssessments->count();
             $completedAssessments = $availableAssessments->filter(fn($a) => $a->user_result)->count();
             $passedAssessments = $availableAssessments->filter(fn($a) => $a->user_result && $a->user_result['passed'])->count();
+            $exhaustedAttempts = $availableAssessments->filter(fn($a) => !$a->can_take)->count();
         @endphp
 
         @if($completedAssessments > 0)
             <div class="mt-8 bg-themed-secondary rounded-lg shadow-sm border border-themed-primary p-6">
                 <h3 class="text-lg font-semibold text-themed-primary mb-4">Your Progress Summary</h3>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
                     <div class="text-center">
                         <div class="text-2xl font-bold text-accent-themed-primary">{{ $completedAssessments }}</div>
                         <div class="text-sm text-themed-secondary">Completed</div>
@@ -146,6 +166,10 @@
                     <div class="text-center">
                         <div class="text-2xl font-bold text-yellow-600 dark:text-yellow-400">{{ $totalAssessments - $completedAssessments }}</div>
                         <div class="text-sm text-themed-secondary">Remaining</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-2xl font-bold text-red-600 dark:text-red-400">{{ $exhaustedAttempts }}</div>
+                        <div class="text-sm text-themed-secondary">Exhausted</div>
                     </div>
                 </div>
             </div>
@@ -171,6 +195,10 @@
             <i class="fas fa-info-circle mr-2"></i>Important Notes
         </h3>
         <ul class="space-y-2 text-blue-800 dark:text-blue-300 text-sm">
+            <li class="flex items-start">
+                <span class="mr-2">•</span>
+                <span>Each assessment has a limited number of attempts. Use them wisely!</span>
+            </li>
             <li class="flex items-start">
                 <span class="mr-2">•</span>
                 <span>Ensure you have a stable internet connection before starting any exam</span>
@@ -202,7 +230,6 @@
             overflow: hidden;
         }
 
-        /* Smooth transitions for dark mode */
         * {
             transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
         }

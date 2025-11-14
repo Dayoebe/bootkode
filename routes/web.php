@@ -557,21 +557,21 @@ Route::prefix('admin/pages')->middleware(['auth', 'verified'])->group(function (
 
 
 
-use Ifsnop\Mysqldump\Mysqldump;
+// use Ifsnop\Mysqldump\Mysqldump;
 
-Route::get('/export-db', function () {
-    $file = storage_path('app/backup.sql');
+// Route::get('/export-db', function () {
+//     $file = storage_path('app/backup.sql');
 
-    $dump = new Mysqldump(
-        'mysql:host=' . env('DB_HOST') . ';dbname=' . env('DB_DATABASE'),
-        env('DB_USERNAME'),
-        env('DB_PASSWORD')
-    );
+//     $dump = new Mysqldump(
+//         'mysql:host=' . env('DB_HOST') . ';dbname=' . env('DB_DATABASE'),
+//         env('DB_USERNAME'),
+//         env('DB_PASSWORD')
+//     );
 
-    $dump->start($file);
+//     $dump->start($file);
 
-    return response()->download($file);
-});
+//     return response()->download($file);
+// });
 
 
 

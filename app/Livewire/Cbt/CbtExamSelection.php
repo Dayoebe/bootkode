@@ -12,7 +12,10 @@ class CbtExamSelection extends Component
 {
     public function render()
     {
+        // Get only standalone CBT assessments
         $availableAssessments = Assessment::where('type', 'quiz')
+            ->whereNull('section_id')
+            ->whereNull('lesson_id')
             ->with(['questions', 'course'])
             ->whereHas('questions') // Only show assessments that have questions
             ->get()
@@ -20,11 +23,18 @@ class CbtExamSelection extends Component
                 // Check if user has attempted this assessment
                 $userResult = $assessment->getStudentResults(Auth::id());
                 $assessment->user_result = $userResult;
-                $assessment->can_retake = !$userResult || !$userResult['passed'];
-                $assessment->attempts_count = $assessment->studentAnswers()
-                    ->where('user_id', Auth::id())
-                    ->distinct('attempt_number')
-                    ->count();
+                
+                // Get attempt count and check if can take
+                $attemptCount = $assessment->getStudentAttemptCount(Auth::id());
+                $assessment->attempts_count = $attemptCount;
+                
+                // Check if user can take the assessment
+                [$canTake, $message] = $assessment->canUserTakeAssessment(Auth::id());
+                $assessment->can_take = $canTake;
+                $assessment->attempt_message = $message;
+                
+                // Calculate remaining attempts
+                $assessment->remaining_attempts = $assessment->getRemainingAttempts(Auth::id());
                 
                 return $assessment;
             });
@@ -41,10 +51,11 @@ class CbtExamSelection extends Component
             return;
         }
 
-        // Check if user can take the exam
-        $userResult = $assessment->getStudentResults(Auth::id());
-        if ($userResult && $userResult['passed']) {
-            session()->flash('warning', 'You have already passed this assessment.');
+        // Check if user can take the exam (attempts check)
+        [$canTake, $message] = $assessment->canUserTakeAssessment(Auth::id());
+        
+        if (!$canTake) {
+            session()->flash('error', $message);
             return;
         }
 
@@ -54,19 +65,6 @@ class CbtExamSelection extends Component
 
     public function viewResults($assessmentId)
     {
-        $assessment = Assessment::find($assessmentId);
-        if (!$assessment) {
-            session()->flash('error', 'Assessment not found.');
-            return;
-        }
-
-        $userResult = $assessment->getStudentResults(Auth::id());
-        if (!$userResult) {
-            session()->flash('error', 'No results found for this assessment.');
-            return;
-        }
-
-        // You can redirect to a results page or show a modal
-        session()->flash('results', $userResult);
+        return redirect()->route('cbt.viewer');
     }
 }

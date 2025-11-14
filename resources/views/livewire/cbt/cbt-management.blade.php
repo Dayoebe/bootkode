@@ -1,3 +1,4 @@
+
 <div class="py-4 px-2 sm:px-4 bg-themed-primary dark:bg-gray-900 min-h-screen transition-colors duration-300">
     <!-- Header -->
     <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 sm:gap-0 mb-4 sm:mb-6">
@@ -44,14 +45,14 @@
         </div>
     @endif
 
-    <!-- Assessments List -->
+    <!-- Assessments List with Max Attempts column -->
     <div class="bg-themed-secondary rounded-lg shadow-lg border border-themed-primary overflow-hidden">
         <div class="bg-themed-secondary py-3 sm:py-4 px-4 sm:px-6 border-b border-themed-secondary">
             <h6 class="text-base sm:text-lg font-semibold text-accent-themed-primary">CBT Assessments</h6>
         </div>
         <div class="p-3 sm:p-6">
             @if($assessments->count() > 0)
-                <!-- Mobile Card View (Hidden on desktop) -->
+                <!-- Mobile Card View -->
                 <div class="block lg:hidden space-y-4">
                     @foreach($assessments as $assessment)
                         <div class="bg-themed-tertiary rounded-lg p-4 border border-themed-secondary">
@@ -66,7 +67,7 @@
                             <div class="grid grid-cols-2 gap-2 mb-3 text-xs">
                                 <div>
                                     <span class="text-themed-tertiary">Course:</span>
-                                    <p class="text-themed-primary truncate">{{ $assessment->course->title ?? 'No Course' }}</p>
+                                    <p class="text-themed-primary truncate">{{ $assessment->course->title ?? 'Standalone' }}</p>
                                 </div>
                                 <div>
                                     <span class="text-themed-tertiary">Duration:</span>
@@ -77,8 +78,8 @@
                                     <p class="text-themed-primary">{{ $assessment->pass_percentage }}%</p>
                                 </div>
                                 <div>
-                                    <span class="text-themed-tertiary">Max Score:</span>
-                                    <p class="text-themed-primary">{{ $assessment->max_score }}</p>
+                                    <span class="text-themed-tertiary">Max Attempts:</span>
+                                    <p class="text-themed-primary">{{ $assessment->formatted_max_attempts }}</p>
                                 </div>
                             </div>
 
@@ -104,7 +105,7 @@
                     @endforeach
                 </div>
 
-                <!-- Desktop Table View (Hidden on mobile) -->
+                <!-- Desktop Table View -->
                 <div class="hidden lg:block overflow-x-auto">
                     <table class="min-w-full table-auto">
                         <thead class="bg-themed-tertiary">
@@ -114,7 +115,7 @@
                                 <th class="px-4 xl:px-6 py-3 text-left text-xs font-medium text-themed-secondary uppercase tracking-wider">Questions</th>
                                 <th class="px-4 xl:px-6 py-3 text-left text-xs font-medium text-themed-secondary uppercase tracking-wider">Duration</th>
                                 <th class="px-4 xl:px-6 py-3 text-left text-xs font-medium text-themed-secondary uppercase tracking-wider">Pass %</th>
-                                <th class="px-4 xl:px-6 py-3 text-left text-xs font-medium text-themed-secondary uppercase tracking-wider">Max Score</th>
+                                <th class="px-4 xl:px-6 py-3 text-left text-xs font-medium text-themed-secondary uppercase tracking-wider">Max Attempts</th>
                                 <th class="px-4 xl:px-6 py-3 text-left text-xs font-medium text-themed-secondary uppercase tracking-wider">Actions</th>
                             </tr>
                         </thead>
@@ -126,7 +127,7 @@
                                         <div class="text-sm text-themed-secondary">{{ Str::limit($assessment->description, 50) }}</div>
                                     </td>
                                     <td class="px-4 xl:px-6 py-4">
-                                        <div class="text-sm text-themed-primary">{{ $assessment->course->title ?? 'No Course' }}</div>
+                                        <div class="text-sm text-themed-primary">{{ $assessment->course->title ?? 'Standalone' }}</div>
                                     </td>
                                     <td class="px-4 xl:px-6 py-4 whitespace-nowrap">
                                         <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-themed-tertiary text-accent-themed-primary">
@@ -135,7 +136,12 @@
                                     </td>
                                     <td class="px-4 xl:px-6 py-4 whitespace-nowrap text-sm text-themed-primary">{{ $assessment->formatted_duration }}</td>
                                     <td class="px-4 xl:px-6 py-4 whitespace-nowrap text-sm text-themed-primary">{{ $assessment->pass_percentage }}%</td>
-                                    <td class="px-4 xl:px-6 py-4 whitespace-nowrap text-sm text-themed-primary">{{ $assessment->max_score }}</td>
+                                    <td class="px-4 xl:px-6 py-4 whitespace-nowrap text-sm text-themed-primary">
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium 
+                                            {{ $assessment->max_attempts === null ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300' : 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-300' }}">
+                                            {{ $assessment->formatted_max_attempts }}
+                                        </span>
+                                    </td>
                                     <td class="px-4 xl:px-6 py-4 whitespace-nowrap">
                                         <div class="flex space-x-2">
                                             <button wire:click="manageQuestions({{ $assessment->id }})"
@@ -174,7 +180,7 @@
         </div>
     </div>
 
-    <!-- Create Assessment Modal -->
+    <!-- Create Assessment Modal with Max Attempts field -->
     <div class="@if($showCreateModal) fixed inset-0 bg-gray-600 bg-opacity-50 dark:bg-gray-900 dark:bg-opacity-75 overflow-y-auto h-full w-full z-50 @else hidden @endif">
         <div class="relative top-4 sm:top-20 mx-2 sm:mx-auto p-4 sm:p-5 border w-auto sm:w-11/12 max-w-4xl shadow-lg rounded-lg bg-themed-secondary border-themed-primary @if($showCreateModal) animate-fade-in-down @endif">
             <div class="border-b border-themed-secondary pb-3 sm:pb-4 mb-3 sm:mb-4">
@@ -190,11 +196,12 @@
                     <div class="mb-3 sm:mb-4">
                         <label for="course_id" class="block text-xs sm:text-sm font-medium text-themed-primary mb-2">Course (Optional)</label>
                         <select wire:model="course_id" class="w-full px-2 sm:px-3 py-2 text-sm sm:text-base border border-themed-secondary rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-themed-primary focus:border-accent-themed-primary bg-themed-primary text-themed-primary placeholder-themed-tertiary">
-                            <option value="">Select a course (optional)</option>
+                            <option value="">Standalone CBT (No course)</option>
                             @foreach($courses as $course)
                                 <option value="{{ $course->id }}">{{ $course->title }}</option>
                             @endforeach
                         </select>
+                        <p class="text-xs text-themed-tertiary mt-1">Leave empty for standalone CBT exam</p>
                         @error('course_id') <div class="text-red-500 dark:text-red-400 text-xs sm:text-sm mt-1">{{ $message }}</div> @enderror
                     </div>
 
@@ -210,14 +217,14 @@
                         @error('description') <div class="text-red-500 dark:text-red-400 text-xs sm:text-sm mt-1">{{ $message }}</div> @enderror
                     </div>
 
-                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 mb-4 sm:mb-6">
+                    <div class="grid grid-cols-1 sm:grid-cols-4 gap-3 sm:gap-4 mb-4 sm:mb-6">
                         <div>
-                            <label for="pass_percentage" class="block text-xs sm:text-sm font-medium text-themed-primary mb-2">Pass Percentage</label>
+                            <label for="pass_percentage" class="block text-xs sm:text-sm font-medium text-themed-primary mb-2">Pass %</label>
                             <input type="number" wire:model="pass_percentage" class="w-full px-2 sm:px-3 py-2 text-sm sm:text-base border border-themed-secondary rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-themed-primary focus:border-accent-themed-primary bg-themed-primary text-themed-primary placeholder-themed-tertiary" min="1" max="100" required>
                             @error('pass_percentage') <div class="text-red-500 dark:text-red-400 text-xs sm:text-sm mt-1">{{ $message }}</div> @enderror
                         </div>
                         <div>
-                            <label for="estimated_duration_minutes" class="block text-xs sm:text-sm font-medium text-themed-primary mb-2">Duration (Minutes)</label>
+                            <label for="estimated_duration_minutes" class="block text-xs sm:text-sm font-medium text-themed-primary mb-2">Duration (Min)</label>
                             <input type="number" wire:model="estimated_duration_minutes" class="w-full px-2 sm:px-3 py-2 text-sm sm:text-base border border-themed-secondary rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-themed-primary focus:border-accent-themed-primary bg-themed-primary text-themed-primary placeholder-themed-tertiary" min="1" required>
                             @error('estimated_duration_minutes') <div class="text-red-500 dark:text-red-400 text-xs sm:text-sm mt-1">{{ $message }}</div> @enderror
                         </div>
@@ -225,6 +232,12 @@
                             <label for="max_score" class="block text-xs sm:text-sm font-medium text-themed-primary mb-2">Max Score</label>
                             <input type="number" wire:model="max_score" class="w-full px-2 sm:px-3 py-2 text-sm sm:text-base border border-themed-secondary rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-themed-primary focus:border-accent-themed-primary bg-themed-primary text-themed-primary placeholder-themed-tertiary" min="1" required>
                             @error('max_score') <div class="text-red-500 dark:text-red-400 text-xs sm:text-sm mt-1">{{ $message }}</div> @enderror
+                        </div>
+                        <div>
+                            <label for="max_attempts" class="block text-xs sm:text-sm font-medium text-themed-primary mb-2">Max Attempts</label>
+                            <input type="number" wire:model="max_attempts" class="w-full px-2 sm:px-3 py-2 text-sm sm:text-base border border-themed-secondary rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-themed-primary focus:border-accent-themed-primary bg-themed-primary text-themed-primary placeholder-themed-tertiary" min="1" max="100" placeholder="Unlimited">
+                            <p class="text-xs text-themed-tertiary mt-1">Leave empty for unlimited</p>
+                            @error('max_attempts') <div class="text-red-500 dark:text-red-400 text-xs sm:text-sm mt-1">{{ $message }}</div> @enderror
                         </div>
                     </div>
 
@@ -239,7 +252,7 @@
         </div>
     </div>
 
-    <!-- Edit Assessment Modal -->
+    <!-- Edit Assessment Modal (similar to create, with max_attempts) -->
     <div class="@if($showEditModal) fixed inset-0 bg-gray-600 bg-opacity-50 dark:bg-gray-900 dark:bg-opacity-75 overflow-y-auto h-full w-full z-50 @else hidden @endif">
         <div class="relative top-4 sm:top-20 mx-2 sm:mx-auto p-4 sm:p-5 border w-auto sm:w-11/12 max-w-4xl shadow-lg rounded-lg bg-themed-secondary border-themed-primary @if($showEditModal) animate-fade-in-down @endif">
             <div class="border-b border-themed-secondary pb-3 sm:pb-4 mb-3 sm:mb-4">
@@ -255,7 +268,7 @@
                     <div class="mb-3 sm:mb-4">
                         <label for="course_id" class="block text-xs sm:text-sm font-medium text-themed-primary mb-2">Course (Optional)</label>
                         <select wire:model="course_id" class="w-full px-2 sm:px-3 py-2 text-sm sm:text-base border border-themed-secondary rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-themed-primary focus:border-accent-themed-primary bg-themed-primary text-themed-primary placeholder-themed-tertiary">
-                            <option value="">Select a course (optional)</option>
+                            <option value="">Standalone CBT (No course)</option>
                             @foreach($courses as $course)
                                 <option value="{{ $course->id }}">{{ $course->title }}</option>
                             @endforeach
@@ -275,14 +288,14 @@
                         @error('description') <div class="text-red-500 dark:text-red-400 text-xs sm:text-sm mt-1">{{ $message }}</div> @enderror
                     </div>
 
-                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 mb-4 sm:mb-6">
+                    <div class="grid grid-cols-1 sm:grid-cols-4 gap-3 sm:gap-4 mb-4 sm:mb-6">
                         <div>
-                            <label for="pass_percentage" class="block text-xs sm:text-sm font-medium text-themed-primary mb-2">Pass Percentage</label>
+                            <label for="pass_percentage" class="block text-xs sm:text-sm font-medium text-themed-primary mb-2">Pass %</label>
                             <input type="number" wire:model="pass_percentage" class="w-full px-2 sm:px-3 py-2 text-sm sm:text-base border border-themed-secondary rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-themed-primary focus:border-accent-themed-primary bg-themed-primary text-themed-primary placeholder-themed-tertiary" min="1" max="100" required>
                             @error('pass_percentage') <div class="text-red-500 dark:text-red-400 text-xs sm:text-sm mt-1">{{ $message }}</div> @enderror
                         </div>
                         <div>
-                            <label for="estimated_duration_minutes" class="block text-xs sm:text-sm font-medium text-themed-primary mb-2">Duration (Minutes)</label>
+                            <label for="estimated_duration_minutes" class="block text-xs sm:text-sm font-medium text-themed-primary mb-2">Duration (Min)</label>
                             <input type="number" wire:model="estimated_duration_minutes" class="w-full px-2 sm:px-3 py-2 text-sm sm:text-base border border-themed-secondary rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-themed-primary focus:border-accent-themed-primary bg-themed-primary text-themed-primary placeholder-themed-tertiary" min="1" required>
                             @error('estimated_duration_minutes') <div class="text-red-500 dark:text-red-400 text-xs sm:text-sm mt-1">{{ $message }}</div> @enderror
                         </div>
@@ -290,6 +303,12 @@
                             <label for="max_score" class="block text-xs sm:text-sm font-medium text-themed-primary mb-2">Max Score</label>
                             <input type="number" wire:model="max_score" class="w-full px-2 sm:px-3 py-2 text-sm sm:text-base border border-themed-secondary rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-themed-primary focus:border-accent-themed-primary bg-themed-primary text-themed-primary placeholder-themed-tertiary" min="1" required>
                             @error('max_score') <div class="text-red-500 dark:text-red-400 text-xs sm:text-sm mt-1">{{ $message }}</div> @enderror
+                        </div>
+                        <div>
+                            <label for="max_attempts" class="block text-xs sm:text-sm font-medium text-themed-primary mb-2">Max Attempts</label>
+                            <input type="number" wire:model="max_attempts" class="w-full px-2 sm:px-3 py-2 text-sm sm:text-base border border-themed-secondary rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-themed-primary focus:border-accent-themed-primary bg-themed-primary text-themed-primary placeholder-themed-tertiary" min="1" max="100" placeholder="Unlimited">
+                            <p class="text-xs text-themed-tertiary mt-1">Leave empty for unlimited</p>
+                            @error('max_attempts') <div class="text-red-500 dark:text-red-400 text-xs sm:text-sm mt-1">{{ $message }}</div> @enderror
                         </div>
                     </div>
 
@@ -303,6 +322,7 @@
             </div>
         </div>
     </div>
+
 
     <!-- Questions Management Modal -->
     @if($selectedAssessment)

@@ -24,6 +24,7 @@ class CbtManagement extends Component
     public $pass_percentage = 70;
     public $estimated_duration_minutes = 60;
     public $max_score = 100;
+    public $max_attempts = null; // NEW: null = unlimited
     public $type = 'quiz';
     public $course_id = null;
 
@@ -44,6 +45,7 @@ class CbtManagement extends Component
         'pass_percentage' => 'required|integer|min:1|max:100',
         'estimated_duration_minutes' => 'required|integer|min:1',
         'max_score' => 'required|integer|min:1',
+        'max_attempts' => 'nullable|integer|min:1|max:100',
         'course_id' => 'nullable|exists:courses,id',
         'question_text' => 'required|string',
         'question_type' => 'required|string',
@@ -58,7 +60,7 @@ class CbtManagement extends Component
         $this->resetQuestionForm();
     }
 
-    // Dispatch events when question_text or explanation changes
+    // Dispatch events when fields change
     public function updatedQuestionText($value)
     {
         $this->dispatch('question-text-updated', $value);
@@ -71,7 +73,10 @@ class CbtManagement extends Component
 
     public function render()
     {
+        // Get ONLY standalone CBT assessments (not tied to courses through sections)
         $assessments = Assessment::where('type', 'quiz')
+            ->whereNull('section_id')
+            ->whereNull('lesson_id')
             ->with(['questions', 'course'])
             ->latest()
             ->paginate(10);
@@ -89,30 +94,12 @@ class CbtManagement extends Component
             'pass_percentage' => 'required|integer|min:1|max:100',
             'estimated_duration_minutes' => 'required|integer|min:1',
             'max_score' => 'required|integer|min:1',
+            'max_attempts' => 'nullable|integer|min:1|max:100',
             'course_id' => 'nullable|exists:courses,id',
         ]);
 
-        // Only create/assign course if course_id is explicitly provided
-        if ($this->course_id) {
-            $courseId = $this->course_id;
-        } else {
-            // Create a standalone CBT assessment without course
-            // Find or create a special "Standalone CBT" course
-            $course = Course::firstOrCreate(
-                ['slug' => 'standalone-cbt-assessments'],
-                [
-                    'instructor_id' => Auth::id(),
-                    'title' => 'Standalone CBT Assessments',
-                    'description' => 'Independent CBT assessments not tied to any specific course',
-                    'is_published' => true,
-                    'is_approved' => true,
-                    'is_free' => true,
-                    'difficulty_level' => 'beginner',
-                    'estimated_duration_minutes' => 60,
-                ]
-            );
-            $courseId = $course->id;
-        }
+        // Handle course_id - can be null for standalone CBT
+        $courseId = $this->course_id;
 
         Assessment::create([
             'course_id' => $courseId,
@@ -122,7 +109,10 @@ class CbtManagement extends Component
             'pass_percentage' => $this->pass_percentage,
             'estimated_duration_minutes' => $this->estimated_duration_minutes,
             'max_score' => $this->max_score,
+            'max_attempts' => $this->max_attempts, // NEW
             'is_mandatory' => true,
+            'section_id' => null, // Ensure CBT is not tied to sections
+            'lesson_id' => null,  // Ensure CBT is not tied to lessons
         ]);
 
         $this->resetForm();
@@ -138,14 +128,8 @@ class CbtManagement extends Component
         $this->pass_percentage = $this->editingAssessment->pass_percentage;
         $this->estimated_duration_minutes = $this->editingAssessment->estimated_duration_minutes;
         $this->max_score = $this->editingAssessment->max_score;
-        
-        // Only set course_id if it's not the standalone course
-        $standaloneCourse = Course::where('slug', 'standalone-cbt-assessments')->first();
-        if ($standaloneCourse && $this->editingAssessment->course_id == $standaloneCourse->id) {
-            $this->course_id = null;
-        } else {
-            $this->course_id = $this->editingAssessment->course_id;
-        }
+        $this->max_attempts = $this->editingAssessment->max_attempts; // NEW
+        $this->course_id = $this->editingAssessment->course_id;
         
         $this->showEditModal = true;
     }
@@ -158,6 +142,7 @@ class CbtManagement extends Component
             'pass_percentage' => 'required|integer|min:1|max:100',
             'estimated_duration_minutes' => 'required|integer|min:1',
             'max_score' => 'required|integer|min:1',
+            'max_attempts' => 'nullable|integer|min:1|max:100',
             'course_id' => 'nullable|exists:courses,id',
         ]);
 
@@ -166,33 +151,14 @@ class CbtManagement extends Component
             return;
         }
 
-        // Handle course_id similar to create
-        if ($this->course_id) {
-            $courseId = $this->course_id;
-        } else {
-            $course = Course::firstOrCreate(
-                ['slug' => 'standalone-cbt-assessments'],
-                [
-                    'instructor_id' => Auth::id(),
-                    'title' => 'Standalone CBT Assessments',
-                    'description' => 'Independent CBT assessments not tied to any specific course',
-                    'is_published' => true,
-                    'is_approved' => true,
-                    'is_free' => true,
-                    'difficulty_level' => 'beginner',
-                    'estimated_duration_minutes' => 60,
-                ]
-            );
-            $courseId = $course->id;
-        }
-
         $this->editingAssessment->update([
             'title' => $this->title,
             'description' => $this->description,
             'pass_percentage' => $this->pass_percentage,
             'estimated_duration_minutes' => $this->estimated_duration_minutes,
             'max_score' => $this->max_score,
-            'course_id' => $courseId,
+            'max_attempts' => $this->max_attempts, // NEW
+            'course_id' => $this->course_id,
         ]);
 
         $this->resetForm();
@@ -290,6 +256,7 @@ class CbtManagement extends Component
         $this->pass_percentage = 70;
         $this->estimated_duration_minutes = 60;
         $this->max_score = 100;
+        $this->max_attempts = null; // NEW
         $this->course_id = null;
         $this->editingAssessment = null;
     }

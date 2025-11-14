@@ -6,8 +6,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Str;
-use App\Models\Learning\Course; // UPDATED
-use App\Models\Learning\Section; // UPDATED
+use App\Models\Learning\Course;
+use App\Models\Learning\Section;
 use App\Models\Learning\Lesson;
 
 class Assessment extends Model
@@ -36,7 +36,8 @@ class Assessment extends Model
         'due_date',
         'max_score',
         'instructions',
-        'order'
+        'order',
+        'max_attempts', // NEW: Limit number of attempts (null = unlimited)
     ];
 
     protected $casts = [
@@ -47,6 +48,7 @@ class Assessment extends Model
         'resources' => 'array',
         'is_mandatory' => 'boolean',
         'allows_collaboration' => 'boolean',
+        'max_attempts' => 'integer', // NEW CAST
     ];
 
     public function course()
@@ -92,6 +94,11 @@ class Assessment extends Model
                     ->whereNull('section_id')
                     ->count() + 1;
             }
+
+            // Set default max_attempts if not specified
+            if (!isset($assessment->max_attempts)) {
+                $assessment->max_attempts = null; // null = unlimited attempts
+            }
         });
     
         static::updating(function ($assessment) {
@@ -104,6 +111,53 @@ class Assessment extends Model
     public function getIsQuizAttribute()
     {
         return $this->type === 'quiz';
+    }
+
+    /**
+     * NEW: Check if user can still take this assessment
+     */
+    public function canUserTakeAssessment($userId)
+    {
+        // If max_attempts is null, unlimited attempts allowed
+        if ($this->max_attempts === null) {
+            return [true, 'You can take this assessment'];
+        }
+
+        $attemptCount = $this->getStudentAttemptCount($userId);
+        
+        if ($attemptCount >= $this->max_attempts) {
+            return [false, "Maximum attempts ({$this->max_attempts}) exhausted"];
+        }
+
+        $remainingAttempts = $this->max_attempts - $attemptCount;
+        return [true, "You have {$remainingAttempts} attempt(s) remaining"];
+    }
+
+    /**
+     * NEW: Get total number of attempts by a student
+     */
+    public function getStudentAttemptCount($userId)
+    {
+        return $this->studentAnswers()
+            ->where('user_id', $userId)
+            ->whereNotNull('submitted_at')
+            ->distinct('attempt_number')
+            ->count('attempt_number');
+    }
+
+    /**
+     * NEW: Get remaining attempts for a student
+     */
+    public function getRemainingAttempts($userId)
+    {
+        if ($this->max_attempts === null) {
+            return 'Unlimited';
+        }
+
+        $attemptCount = $this->getStudentAttemptCount($userId);
+        $remaining = $this->max_attempts - $attemptCount;
+        
+        return max(0, $remaining);
     }
 
     /**
@@ -251,6 +305,16 @@ class Assessment extends Model
     }
 
     /**
+     * NEW: Scope for standalone CBT assessments (not tied to sections/lessons)
+     */
+    public function scopeStandaloneCBT($query)
+    {
+        return $query->where('type', 'quiz')
+            ->whereNull('section_id')
+            ->whereNull('lesson_id');
+    }
+
+    /**
      * Get formatted duration
      */
     public function getFormattedDurationAttribute()
@@ -267,5 +331,17 @@ class Assessment extends Model
         }
 
         return $minutes . 'm';
+    }
+
+    /**
+     * NEW: Get formatted max attempts
+     */
+    public function getFormattedMaxAttemptsAttribute()
+    {
+        if ($this->max_attempts === null) {
+            return 'Unlimited';
+        }
+
+        return $this->max_attempts . ' attempt' . ($this->max_attempts > 1 ? 's' : '');
     }
 }

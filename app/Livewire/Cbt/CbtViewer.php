@@ -20,11 +20,13 @@ class CbtViewer extends Component
 
     public function render()
     {
-        // FIXED: Get all quiz assessments where user has attempted
+        // Get ONLY standalone CBT assessments where user has attempted
         $userAssessments = Assessment::where('type', 'quiz')
+            ->whereNull('section_id')
+            ->whereNull('lesson_id')
             ->whereHas('studentAnswers', function($query) {
                 $query->where('user_id', Auth::id())
-                      ->whereNotNull('submitted_at'); // Only completed attempts
+                      ->whereNotNull('submitted_at');
             })
             ->with(['studentAnswers' => function($query) {
                 $query->where('user_id', Auth::id())
@@ -101,7 +103,7 @@ class CbtViewer extends Component
     }
 
     /**
-     * FIXED: Better attempt aggregation with proper grouping
+     * Better attempt aggregation with proper grouping
      */
     public function getAttemptsForAssessment($assessment)
     {
