@@ -98,7 +98,7 @@
                                 <div class="text-xs text-themed-tertiary">out of {{ $results['max_points'] }}</div>
                             </div>
                             <div class="border border-themed-secondary rounded-lg p-4 md:p-6 bg-themed-tertiary">
-                                <div class="text-2xl md:text-3xl font-bold text-themed-primary mb-2">{{ gmdate('H:i:s', $results['time_spent']) }}</div>
+                                <div class="text-2xl md:text-3xl font-bold text-themed-primary mb-2">{{ $this->formatTimeSpent($results['time_spent']) }}</div>
                                 <div class="text-sm text-themed-secondary font-medium">Time Used</div>
                             </div>
                         </div>

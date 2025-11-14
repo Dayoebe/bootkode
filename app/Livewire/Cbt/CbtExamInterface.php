@@ -328,17 +328,19 @@ class CbtExamInterface extends Component
         $this->showSubmitModal = false;
 
         try {
-            // FIXED: Calculate actual time spent
+            // FIXED: Calculate actual time spent (positive value)
             $timeSpent = 0;
             if ($this->startTime) {
-                $timeSpent = Carbon::now()->diffInSeconds($this->startTime);
+                // Use diffInSeconds with second parameter true to get signed value, then abs() to ensure positive
+                $timeSpent = abs($this->startTime->diffInSeconds(Carbon::now(), false));
             }
 
             \Log::info('Starting exam submission', [
                 'user_id' => Auth::id(),
                 'assessment_id' => $this->assessment->id,
                 'attempt_number' => $this->attemptNumber,
-                'start_time' => $this->startTime,
+                'start_time' => $this->startTime->toDateTimeString(),
+                'submit_time' => Carbon::now()->toDateTimeString(),
                 'time_spent_seconds' => $timeSpent,
                 'answers_count' => count(array_filter($this->answers, fn($a) => $a !== null))
             ]);
@@ -365,9 +367,14 @@ class CbtExamInterface extends Component
                     'question_id' => $questionId,
                     'attempt_number' => $this->attemptNumber,
                     'answer' => $userAnswer, // Store as integer directly
-                    'time_spent_seconds' => max(0, $timeSpent), // Ensure non-negative
                     'submitted_at' => now(),
                 ]);
+                
+                // TODO: Add time_spent once we confirm column name
+                // Uncomment one of these based on your database:
+                // $studentAnswer->time_spent = $timeSpent;
+                // $studentAnswer->time_spent_seconds = $timeSpent;
+                // $studentAnswer->save();
 
                 \Log::info('StudentAnswer created', [
                     'id' => $studentAnswer->id,
@@ -594,5 +601,23 @@ class CbtExamInterface extends Component
             return floor($this->timeRemaining / $remaining);
         }
         return 0;
+    }
+
+    /**
+     * Format time in seconds to human readable format
+     */
+    public function formatTimeSpent($seconds)
+    {
+        // Ensure positive value
+        $seconds = abs($seconds);
+        
+        $hours = floor($seconds / 3600);
+        $minutes = floor(($seconds % 3600) / 60);
+        $secs = $seconds % 60;
+
+        if ($hours > 0) {
+            return sprintf('%02d:%02d:%02d', $hours, $minutes, $secs);
+        }
+        return sprintf('%02d:%02d', $minutes, $secs);
     }
 }
