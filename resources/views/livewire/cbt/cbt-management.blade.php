@@ -1,4 +1,3 @@
-
 <div class="py-4 px-2 sm:px-4 bg-themed-primary dark:bg-gray-900 min-h-screen transition-colors duration-300">
     <!-- Header -->
     <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 sm:gap-0 mb-4 sm:mb-6">
@@ -16,14 +15,11 @@
 
     <!-- Flash Messages -->
     @if (session()->has('message'))
-        <div class="bg-green-100 dark:bg-green-900/30 border border-green-400 dark:border-green-600 text-green-700 dark:text-green-300 px-4 py-3 rounded mb-6 animate-pulse"
-            role="alert">
+        <div class="bg-green-100 dark:bg-green-900/30 border border-green-400 dark:border-green-600 text-green-700 dark:text-green-300 px-4 py-3 rounded mb-6 animate-pulse" role="alert">
             <div class="flex items-center">
                 <i class="fas fa-check-circle mr-2"></i>
                 <span>{{ session('message') }}</span>
-                <button type="button"
-                    class="ml-auto text-green-700 dark:text-green-300 hover:text-green-900 dark:hover:text-green-100"
-                    onclick="this.parentElement.parentElement.remove()">
+                <button type="button" class="ml-auto text-green-700 dark:text-green-300 hover:text-green-900 dark:hover:text-green-100" onclick="this.parentElement.parentElement.remove()">
                     <i class="fas fa-times"></i>
                 </button>
             </div>
@@ -31,21 +27,18 @@
     @endif
 
     @if (session()->has('error'))
-        <div class="bg-red-100 dark:bg-red-900/30 border border-red-400 dark:border-red-600 text-red-700 dark:text-red-300 px-4 py-3 rounded mb-6"
-            role="alert">
+        <div class="bg-red-100 dark:bg-red-900/30 border border-red-400 dark:border-red-600 text-red-700 dark:text-red-300 px-4 py-3 rounded mb-6" role="alert">
             <div class="flex items-center">
                 <i class="fas fa-exclamation-circle mr-2"></i>
                 <span>{{ session('error') }}</span>
-                <button type="button"
-                    class="ml-auto text-red-700 dark:text-red-300 hover:text-red-900 dark:hover:text-red-100"
-                    onclick="this.parentElement.parentElement.remove()">
+                <button type="button" class="ml-auto text-red-700 dark:text-red-300 hover:text-red-900 dark:hover:text-red-100" onclick="this.parentElement.parentElement.remove()">
                     <i class="fas fa-times"></i>
                 </button>
             </div>
         </div>
     @endif
 
-    <!-- Assessments List with Max Attempts column -->
+    <!-- Assessments List -->
     <div class="bg-themed-secondary rounded-lg shadow-lg border border-themed-primary overflow-hidden">
         <div class="bg-themed-secondary py-3 sm:py-4 px-4 sm:px-6 border-b border-themed-secondary">
             <h6 class="text-base sm:text-lg font-semibold text-accent-themed-primary">CBT Assessments</h6>
@@ -70,20 +63,17 @@
                                     <p class="text-themed-primary truncate">{{ $assessment->course->title ?? 'Standalone' }}</p>
                                 </div>
                                 <div>
-                                    <span class="text-themed-tertiary">Duration:</span>
-                                    <p class="text-themed-primary">{{ $assessment->formatted_duration }}</p>
-                                </div>
-                                <div>
-                                    <span class="text-themed-tertiary">Pass %:</span>
-                                    <p class="text-themed-primary">{{ $assessment->pass_percentage }}%</p>
-                                </div>
-                                <div>
                                     <span class="text-themed-tertiary">Max Attempts:</span>
                                     <p class="text-themed-primary">{{ $assessment->formatted_max_attempts }}</p>
                                 </div>
                             </div>
 
                             <div class="flex justify-end space-x-2 pt-3 border-t border-themed-secondary">
+                                <button wire:click="viewParticipants({{ $assessment->id }})"
+                                    class="text-purple-600 hover:text-purple-800 p-2 rounded-lg hover:bg-themed-secondary transition-colors"
+                                    title="View Participants">
+                                    <i class="fas fa-users"></i>
+                                </button>
                                 <button wire:click="manageQuestions({{ $assessment->id }})"
                                     class="text-accent-themed-primary hover:text-accent-themed-secondary p-2 rounded-lg hover:bg-themed-secondary transition-colors"
                                     title="Manage Questions">
@@ -144,6 +134,11 @@
                                     </td>
                                     <td class="px-4 xl:px-6 py-4 whitespace-nowrap">
                                         <div class="flex space-x-2">
+                                            <button wire:click="viewParticipants({{ $assessment->id }})"
+                                                class="text-purple-600 dark:text-purple-400 hover:text-purple-800 dark:hover:text-purple-300 p-2 rounded-lg hover:bg-themed-tertiary transition-colors"
+                                                title="View Participants">
+                                                <i class="fas fa-users"></i>
+                                            </button>
                                             <button wire:click="manageQuestions({{ $assessment->id }})"
                                                 class="text-accent-themed-primary hover:text-accent-themed-secondary p-2 rounded-lg hover:bg-themed-tertiary transition-colors"
                                                 title="Manage Questions">
@@ -180,7 +175,7 @@
         </div>
     </div>
 
-    <!-- Create Assessment Modal with Max Attempts field -->
+    <!-- Create Assessment Modal -->
     <div class="@if($showCreateModal) fixed inset-0 bg-gray-600 bg-opacity-50 dark:bg-gray-900 dark:bg-opacity-75 overflow-y-auto h-full w-full z-50 @else hidden @endif">
         <div class="relative top-4 sm:top-20 mx-2 sm:mx-auto p-4 sm:p-5 border w-auto sm:w-11/12 max-w-4xl shadow-lg rounded-lg bg-themed-secondary border-themed-primary @if($showCreateModal) animate-fade-in-down @endif">
             <div class="border-b border-themed-secondary pb-3 sm:pb-4 mb-3 sm:mb-4">
@@ -252,7 +247,7 @@
         </div>
     </div>
 
-    <!-- Edit Assessment Modal (similar to create, with max_attempts) -->
+    <!-- Edit Assessment Modal -->
     <div class="@if($showEditModal) fixed inset-0 bg-gray-600 bg-opacity-50 dark:bg-gray-900 dark:bg-opacity-75 overflow-y-auto h-full w-full z-50 @else hidden @endif">
         <div class="relative top-4 sm:top-20 mx-2 sm:mx-auto p-4 sm:p-5 border w-auto sm:w-11/12 max-w-4xl shadow-lg rounded-lg bg-themed-secondary border-themed-primary @if($showEditModal) animate-fade-in-down @endif">
             <div class="border-b border-themed-secondary pb-3 sm:pb-4 mb-3 sm:mb-4">
@@ -323,214 +318,656 @@
         </div>
     </div>
 
-
     <!-- Questions Management Modal -->
-    @if($selectedAssessment)
-        <div class="@if($showQuestionModal) fixed inset-0 bg-gray-600 bg-opacity-50 dark:bg-gray-900 dark:bg-opacity-75 overflow-y-auto h-full w-full z-50 @else hidden @endif">
-            <div class="relative top-10 mx-auto p-5 border w-11/12 max-w-7xl shadow-lg rounded-lg bg-themed-secondary border-themed-primary @if($showQuestionModal) animate-fade-in-up @endif">
-                <div class="border-b border-themed-secondary pb-4 mb-4">
-                    <h5 class="text-xl font-semibold text-themed-primary flex items-center">
-                        <i class="fas fa-question-circle mr-2"></i>
-                        Manage Questions - {{ $selectedAssessment->title }}
-                    </h5>
-                    <button type="button" class="absolute top-4 right-4 text-themed-tertiary hover:text-themed-secondary" wire:click="closeModals">
-                        <i class="fas fa-times text-xl"></i>
-                    </button>
-                </div>
+    @if($selectedAssessment && $showQuestionModal)
+    <div class="fixed inset-0 bg-gray-600 bg-opacity-50 dark:bg-gray-900 dark:bg-opacity-75 overflow-y-auto h-full w-full z-50">
+        <div class="relative top-10 mx-auto p-5 border w-11/12 max-w-7xl shadow-lg rounded-lg bg-themed-secondary border-themed-primary animate-fade-in-up">
+            <div class="border-b border-themed-secondary pb-4 mb-4">
+                <h5 class="text-xl font-semibold text-themed-primary flex items-center">
+                    <i class="fas fa-question-circle mr-2"></i>
+                    Manage Questions - {{ $selectedAssessment->title }}
+                </h5>
+                <button type="button" class="absolute top-4 right-4 text-themed-tertiary hover:text-themed-secondary" wire:click="closeModals">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <!-- Add Question Form -->
                 <div>
-                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                        <!-- Add Question Form -->
-                        <div>
-                            <h6 class="text-lg font-semibold text-themed-primary mb-4">Add New Question</h6>
-                            <form wire:submit="addQuestion">
-                                <div class="mb-4">
-                                    <label for="question_text" class="block text-sm font-medium text-themed-primary mb-2">
-                                        Question Text
-                                        <span class="text-xs text-themed-tertiary">(Use $...$ for inline math and $$...$$ for display math)</span>
-                                    </label>
-                                    <textarea wire:model="question_text" class="w-full px-3 py-2 border border-themed-secondary rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-themed-primary focus:border-accent-themed-primary bg-themed-primary text-themed-primary placeholder-themed-tertiary" rows="3" placeholder="E.g., Solve the equation: $x^2 + y^2 = 25$" required></textarea>
-                                    @error('question_text') <div class="text-red-500 dark:text-red-400 text-sm mt-1">{{ $message }}</div> @enderror
+                    <h6 class="text-lg font-semibold text-themed-primary mb-4">Add New Question</h6>
+                    <form wire:submit="addQuestion">
+                        <div class="mb-4">
+                            <label for="question_text" class="block text-sm font-medium text-themed-primary mb-2">
+                                Question Text
+                                <span class="text-xs text-themed-tertiary">(Use $...$ for inline math and $...$ for display math)</span>
+                            </label>
+                            <textarea wire:model="question_text" class="w-full px-3 py-2 border border-themed-secondary rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-themed-primary focus:border-accent-themed-primary bg-themed-primary text-themed-primary placeholder-themed-tertiary" rows="3" placeholder="E.g., Solve the equation: $x^2 + y^2 = 25$" required></textarea>
+                            @error('question_text') <div class="text-red-500 dark:text-red-400 text-sm mt-1">{{ $message }}</div> @enderror
 
-                                    <!-- Live Preview -->
-                                    <div class="mt-2 p-3 bg-themed-tertiary rounded-lg">
-                                        <label class="text-xs text-themed-secondary mb-1 block">Preview:</label>
-                                        <div id="question-preview" class="text-themed-primary min-h-6 math-content">
-                                            @if($question_text)
-                                                {!! $question_text !!}
-                                            @else
-                                                <span class="text-themed-tertiary">Preview will appear here</span>
-                                            @endif
-                                        </div>
-                                    </div>
+                            <!-- Live Preview -->
+                            <div class="mt-2 p-3 bg-themed-tertiary rounded-lg">
+                                <label class="text-xs text-themed-secondary mb-1 block">Preview:</label>
+                                <div id="question-preview" class="text-themed-primary min-h-6 math-content">
+                                    @if($question_text)
+                                        {!! $question_text !!}
+                                    @else
+                                        <span class="text-themed-tertiary">Preview will appear here</span>
+                                    @endif
                                 </div>
-
-                                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-                                    <div class="md:col-span-2">
-                                        <label for="question_type" class="block text-sm font-medium text-themed-primary mb-2">Question Type</label>
-                                        <select wire:model.live="question_type" class="w-full px-3 py-2 border border-themed-secondary rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-themed-primary focus:border-accent-themed-primary bg-themed-primary text-themed-primary placeholder-themed-tertiary" required>
-                                            <option value="multiple_choice">Multiple Choice</option>
-                                            <option value="true_false">True/False</option>
-                                            <option value="short_answer">Short Answer</option>
-                                            <option value="essay">Essay</option>
-                                        </select>
-                                    </div>
-                                    <div>
-                                        <label for="points" class="block text-sm font-medium text-themed-primary mb-2">Points</label>
-                                        <input type="number" wire:model="points" class="w-full px-3 py-2 border border-themed-secondary rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-themed-primary focus:border-accent-themed-primary bg-themed-primary text-themed-primary placeholder-themed-tertiary" step="0.1" min="0.1" required>
-                                        @error('points') <div class="text-red-500 dark:text-red-400 text-sm mt-1">{{ $message }}</div> @enderror
-                                    </div>
-                                </div>
-
-                                @if($question_type === 'multiple_choice')
-                                    <div class="mb-4">
-                                        <label class="block text-sm font-medium text-themed-primary mb-2">
-                                            Options
-                                            <span class="text-xs text-themed-tertiary">(Use $...$ for inline math and $$...$$ for display math)</span>
-                                        </label>
-                                        @foreach($options as $index => $option)
-                                            <div class="mb-3">
-                                                <div class="flex items-center mb-1">
-                                                    <span class="bg-themed-tertiary text-themed-primary px-3 py-2 rounded-l-lg border border-r-0 border-themed-secondary text-sm font-medium">
-                                                        {{ chr(65 + $index) }}
-                                                    </span>
-                                                    <input 
-                                                        type="text" 
-                                                        wire:model="options.{{ $index }}" 
-                                                        class="flex-1 px-3 py-2 border border-themed-secondary focus:outline-none focus:ring-2 focus:ring-accent-themed-primary focus:border-accent-themed-primary bg-themed-primary text-themed-primary placeholder-themed-tertiary" 
-                                                        placeholder="Option {{ chr(65 + $index) }} (e.g., $x^2 + 5x + 6$)">
-                                                    <div class="bg-themed-tertiary border border-l-0 border-r-0 border-themed-secondary px-3 py-2">
-                                                        <input 
-                                                            type="checkbox" 
-                                                            wire:model="correct_answers" 
-                                                            value="{{ $index }}" 
-                                                            class="form-checkbox h-4 w-4 text-accent-themed-primary" 
-                                                            title="Correct Answer">
-                                                    </div>
-                                                    <button 
-                                                        type="button"
-                                                        onclick="toggleOptionPreview({{ $index }})"
-                                                        class="bg-themed-tertiary border border-l-0 border-themed-secondary rounded-r-lg px-3 py-2 hover:bg-themed-secondary transition-colors"
-                                                        title="Toggle Preview">
-                                                        <i class="fas fa-eye text-themed-secondary"></i>
-                                                    </button>
-                                                </div>
-                                                
-                                                <!-- Preview Container (Hidden by default) -->
-                                                <div id="option-preview-container-{{ $index }}" class="hidden mt-1 ml-12 option-preview-container">
-                                                    <div class="p-2 bg-themed-tertiary rounded-lg border border-themed-secondary">
-                                                        <label class="text-xs text-themed-secondary mb-1 block">Preview:</label>
-                                                        <div id="option-preview-{{ $index }}" class="text-themed-primary min-h-6 math-content option-preview-content">
-                                                            <span class="text-themed-tertiary">Preview will appear here</span>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        @endforeach
-                                        @error('options') <div class="text-red-500 dark:text-red-400 text-sm mt-1">{{ $message }}</div> @enderror
-                                        @error('correct_answers') <div class="text-red-500 dark:text-red-400 text-sm mt-1">{{ $message }}</div> @enderror
-                                    </div>
-                                @elseif($question_type === 'true_false')
-                                    <div class="mb-4">
-                                        <label class="block text-sm font-medium text-themed-primary mb-2">Correct Answer</label>
-                                        <div class="space-y-2">
-                                            <div class="flex items-center">
-                                                <input type="radio" wire:model="correct_answers" value="0" class="form-radio h-4 w-4 text-accent-themed-primary" id="true_option">
-                                                <label class="ml-2 text-sm text-themed-primary" for="true_option">True</label>
-                                            </div>
-                                            <div class="flex items-center">
-                                                <input type="radio" wire:model="correct_answers" value="1" class="form-radio h-4 w-4 text-accent-themed-primary" id="false_option">
-                                                <label class="ml-2 text-sm text-themed-primary" for="false_option">False</label>
-                                            </div>
-                                        </div>
-                                    </div>
-                                @endif
-
-                                <div class="mb-4">
-                                    <label for="explanation" class="block text-sm font-medium text-themed-primary mb-2">
-                                        Explanation
-                                        <span class="text-xs text-themed-tertiary">(Use $...$ for inline math and $...$ for display math)</span>
-                                    </label>
-                                    <textarea wire:model="explanation" class="w-full px-3 py-2 border border-themed-secondary rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-themed-primary focus:border-accent-themed-primary bg-themed-primary text-themed-primary placeholder-themed-tertiary" rows="2" placeholder="E.g., Using Pythagorean theorem: $a^2 + b^2 = c^2$"></textarea>
-
-                                    <!-- Live Preview -->
-                                    <div class="mt-2 p-3 bg-themed-tertiary rounded-lg">
-                                        <label class="text-xs text-themed-secondary mb-1 block">Preview:</label>
-                                        <div id="explanation-preview" class="text-themed-primary min-h-6 math-content">
-                                            @if($explanation)
-                                                {!! $explanation !!}
-                                            @else
-                                                <span class="text-themed-tertiary">Preview will appear here</span>
-                                            @endif
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <button type="submit" class="w-full bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors flex items-center justify-center">
-                                    <i class="fas fa-plus mr-2"></i>Add Question
-                                </button>
-                            </form>
+                            </div>
                         </div>
 
-                        <!-- Questions List -->
-                        <div>
-                            <h6 class="text-lg font-semibold text-themed-primary mb-4">Questions ({{ $selectedAssessment->questions->count() }})</h6>
-                            @if($selectedAssessment->questions->count() > 0)
-                                <div class="space-y-3 max-h-96 overflow-y-auto">
-                                    @foreach($selectedAssessment->questions as $question)
-                                        <div class="bg-themed-tertiary border border-themed-secondary rounded-lg p-4 hover:shadow-md transition-shadow">
-                                            <div class="flex justify-between items-start">
-                                                <div class="flex-1">
-                                                    <h6 class="font-semibold text-themed-primary mb-1">
-                                                        Q{{ $loop->iteration }}.
-                                                        <span class="math-content">{!! $question->question_text !!}</span>
-                                                    </h6>
-                                                    @if($question->options && count($question->options) > 0)
-                                                        <div class="mt-2 ml-4 space-y-1">
-                                                            @foreach($question->options as $index => $option)
-                                                                <div class="text-sm text-themed-secondary flex items-start">
-                                                                    <span class="font-medium mr-2">{{ chr(65 + $index) }}.</span>
-                                                                    <span class="math-content flex-1">{!! $option !!}</span>
-                                                                    @if(in_array($index, $question->correct_answers ?? []))
-                                                                        <i class="fas fa-check text-green-600 ml-2"></i>
-                                                                    @endif
-                                                                </div>
-                                                            @endforeach
-                                                        </div>
-                                                    @endif
-                                                    @if($question->explanation)
-                                                        <div class="mt-2 text-sm text-themed-secondary">
-                                                            <strong>Explanation:</strong>
-                                                            <span class="math-content">{!! $question->explanation !!}</span>
-                                                        </div>
-                                                    @endif
-                                                    <div class="flex space-x-2 mt-2">
-                                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-themed-secondary text-accent-themed-primary">
-                                                            {{ ucfirst(str_replace('_', ' ', $question->question_type)) }}
-                                                        </span>
-                                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-themed-tertiary text-accent-themed-primary">
-                                                            {{ $question->points }} pts
-                                                        </span>
-                                                    </div>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                            <div class="md:col-span-2">
+                                <label for="question_type" class="block text-sm font-medium text-themed-primary mb-2">Question Type</label>
+                                <select wire:model.live="question_type" class="w-full px-3 py-2 border border-themed-secondary rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-themed-primary focus:border-accent-themed-primary bg-themed-primary text-themed-primary placeholder-themed-tertiary" required>
+                                    <option value="multiple_choice">Multiple Choice</option>
+                                    <option value="true_false">True/False</option>
+                                    <option value="short_answer">Short Answer</option>
+                                    <option value="essay">Essay</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label for="points" class="block text-sm font-medium text-themed-primary mb-2">Points</label>
+                                <input type="number" wire:model="points" class="w-full px-3 py-2 border border-themed-secondary rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-themed-primary focus:border-accent-themed-primary bg-themed-primary text-themed-primary placeholder-themed-tertiary" step="0.1" min="0.1" required>
+                                @error('points') <div class="text-red-500 dark:text-red-400 text-sm mt-1">{{ $message }}</div> @enderror
+                            </div>
+                        </div>
+
+                        @if($question_type === 'multiple_choice')
+                            <div class="mb-4">
+                                <label class="block text-sm font-medium text-themed-primary mb-2">
+                                    Options
+                                    <span class="text-xs text-themed-tertiary">(Use $...$ for inline math and $...$ for display math)</span>
+                                </label>
+                                @foreach($options as $index => $option)
+                                    <div class="mb-3">
+                                        <div class="flex items-center mb-1">
+                                            <span class="bg-themed-tertiary text-themed-primary px-3 py-2 rounded-l-lg border border-r-0 border-themed-secondary text-sm font-medium">
+                                                {{ chr(65 + $index) }}
+                                            </span>
+                                            <input 
+                                                type="text" 
+                                                wire:model="options.{{ $index }}" 
+                                                class="flex-1 px-3 py-2 border border-themed-secondary focus:outline-none focus:ring-2 focus:ring-accent-themed-primary focus:border-accent-themed-primary bg-themed-primary text-themed-primary placeholder-themed-tertiary" 
+                                                placeholder="Option {{ chr(65 + $index) }} (e.g., $x^2 + 5x + 6$)">
+                                            <div class="bg-themed-tertiary border border-l-0 border-r-0 border-themed-secondary px-3 py-2">
+                                                <input 
+                                                    type="checkbox" 
+                                                    wire:model="correct_answers" 
+                                                    value="{{ $index }}" 
+                                                    class="form-checkbox h-4 w-4 text-accent-themed-primary" 
+                                                    title="Correct Answer">
+                                            </div>
+                                            <button 
+                                                type="button"
+                                                onclick="toggleOptionPreview({{ $index }})"
+                                                class="bg-themed-tertiary border border-l-0 border-themed-secondary rounded-r-lg px-3 py-2 hover:bg-themed-secondary transition-colors"
+                                                title="Toggle Preview">
+                                                <i class="fas fa-eye text-themed-secondary"></i>
+                                            </button>
+                                        </div>
+                                        
+                                        <!-- Preview Container -->
+                                        <div id="option-preview-container-{{ $index }}" class="hidden mt-1 ml-12 option-preview-container">
+                                            <div class="p-2 bg-themed-tertiary rounded-lg border border-themed-secondary">
+                                                <label class="text-xs text-themed-secondary mb-1 block">Preview:</label>
+                                                <div id="option-preview-{{ $index }}" class="text-themed-primary min-h-6 math-content option-preview-content">
+                                                    <span class="text-themed-tertiary">Preview will appear here</span>
                                                 </div>
-                                                <button wire:click="deleteQuestion({{ $question->id }})" wire:confirm="Are you sure you want to delete this question?" class="ml-3 text-red-600 dark:text-red-400 hover:text-red-900 dark:hover:text-red-300 p-2 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/30 transition-colors">
-                                                    <i class="fas fa-trash"></i>
-                                                </button>
                                             </div>
                                         </div>
-                                    @endforeach
+                                    </div>
+                                @endforeach
+                                @error('options') <div class="text-red-500 dark:text-red-400 text-sm mt-1">{{ $message }}</div> @enderror
+                                @error('correct_answers') <div class="text-red-500 dark:text-red-400 text-sm mt-1">{{ $message }}</div> @enderror
+                            </div>
+                        @elseif($question_type === 'true_false')
+                            <div class="mb-4">
+                                <label class="block text-sm font-medium text-themed-primary mb-2">Correct Answer</label>
+                                <div class="space-y-2">
+                                    <div class="flex items-center">
+                                        <input type="radio" wire:model="correct_answers" value="0" class="form-radio h-4 w-4 text-accent-themed-primary" id="true_option">
+                                        <label class="ml-2 text-sm text-themed-primary" for="true_option">True</label>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <input type="radio" wire:model="correct_answers" value="1" class="form-radio h-4 w-4 text-accent-themed-primary" id="false_option">
+                                        <label class="ml-2 text-sm text-themed-primary" for="false_option">False</label>
+                                    </div>
                                 </div>
-                            @else
-                                <div class="text-center py-8 border-2 border-dashed border-themed-secondary rounded-lg">
-                                    <i class="fas fa-question text-4xl text-themed-tertiary mb-3"></i>
-                                    <p class="text-themed-secondary">No questions added yet</p>
+                            </div>
+                        @endif
+
+                        <div class="mb-4">
+                            <label for="explanation" class="block text-sm font-medium text-themed-primary mb-2">
+                                Explanation
+                                <span class="text-xs text-themed-tertiary">(Use $...$ for inline math and $...$ for display math)</span>
+                            </label>
+                            <textarea wire:model="explanation" class="w-full px-3 py-2 border border-themed-secondary rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-themed-primary focus:border-accent-themed-primary bg-themed-primary text-themed-primary placeholder-themed-tertiary" rows="2" placeholder="E.g., Using Pythagorean theorem: $a^2 + b^2 = c^2$"></textarea>
+
+                            <!-- Live Preview -->
+                            <div class="mt-2 p-3 bg-themed-tertiary rounded-lg">
+                                <label class="text-xs text-themed-secondary mb-1 block">Preview:</label>
+                                <div id="explanation-preview" class="text-themed-primary min-h-6 math-content">
+                                    @if($explanation)
+                                        {!! $explanation !!}
+                                    @else
+                                        <span class="text-themed-tertiary">Preview will appear here</span>
+                                    @endif
                                 </div>
-                            @endif
+                            </div>
                         </div>
-                    </div>
+
+                        <button type="submit" class="w-full bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors flex items-center justify-center">
+                            <i class="fas fa-plus mr-2"></i>Add Question
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Questions List with Edit and Reorder -->
+                <div>
+                    <h6 class="text-lg font-semibold text-themed-primary mb-4">Questions ({{ $selectedAssessment->questions->count() }})</h6>
+                    @if($selectedAssessment->questions->count() > 0)
+                        <div id="questions-sortable" class="space-y-3 max-h-[600px] overflow-y-auto pr-2">
+                            @foreach($selectedAssessment->questions->sortBy('order') as $question)
+                                <div class="question-item bg-themed-tertiary border border-themed-secondary rounded-lg p-4 hover:shadow-md transition-shadow" data-id="{{ $question->id }}">
+                                    <div class="flex items-start">
+                                        <!-- Drag Handle -->
+                                        <div class="drag-handle cursor-move mr-3 text-themed-tertiary hover:text-themed-primary pt-1">
+                                            <i class="fas fa-grip-vertical text-lg"></i>
+                                        </div>
+                                        
+                                        <!-- Question Content -->
+                                        <div class="flex-1">
+                                            <h6 class="font-semibold text-themed-primary mb-1">
+                                                Q{{ $loop->iteration }}.
+                                                <span class="math-content">{!! Str::limit($question->question_text, 100) !!}</span>
+                                            </h6>
+                                            @if($question->options && count($question->options) > 0)
+                                                <div class="mt-2 ml-4 space-y-1">
+                                                    @foreach($question->options as $index => $option)
+                                                        <div class="text-sm text-themed-secondary flex items-start">
+                                                            <span class="font-medium mr-2">{{ chr(65 + $index) }}.</span>
+                                                            <span class="math-content flex-1">{!! Str::limit($option, 50) !!}</span>
+                                                            @if(in_array($index, $question->correct_answers ?? []))
+                                                                <i class="fas fa-check text-green-600 ml-2"></i>
+                                                            @endif
+                                                        </div>
+                                                    @endforeach
+                                                </div>
+                                            @endif
+                                            @if($question->explanation)
+                                                <div class="mt-2 text-sm text-themed-secondary">
+                                                    <strong>Explanation:</strong>
+                                                    <span class="math-content">{!! Str::limit($question->explanation, 80) !!}</span>
+                                                </div>
+                                            @endif
+                                            <div class="flex space-x-2 mt-2">
+                                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-themed-secondary text-accent-themed-primary">
+                                                    {{ ucfirst(str_replace('_', ' ', $question->question_type)) }}
+                                                </span>
+                                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-themed-tertiary text-accent-themed-primary">
+                                                    {{ $question->points }} pts
+                                                </span>
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- Action Buttons -->
+                                        <div class="flex space-x-2 ml-3">
+                                            <button wire:click="editQuestion({{ $question->id }})" 
+                                                    class="text-blue-600 hover:text-blue-800 p-2 rounded-lg hover:bg-blue-50 dark:hover:bg-blue-900/30 transition-colors"
+                                                    title="Edit Question">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                            <button wire:click="deleteQuestion({{ $question->id }})" 
+                                                    wire:confirm="Are you sure you want to delete this question?"
+                                                    class="text-red-600 hover:text-red-800 p-2 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/30 transition-colors"
+                                                    title="Delete">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
+                    @else
+                        <div class="text-center py-8 border-2 border-dashed border-themed-secondary rounded-lg">
+                            <i class="fas fa-question text-4xl text-themed-tertiary mb-3"></i>
+                            <p class="text-themed-secondary">No questions added yet</p>
+                        </div>
+                    @endif
                 </div>
             </div>
         </div>
+    </div>
     @endif
+
+    <!-- Edit Question Modal -->
+    @if($showEditQuestionModal && $editingQuestion)
+    <div class="fixed inset-0 bg-black bg-opacity-50 z-[60] flex items-center justify-center p-4">
+        <div class="bg-themed-secondary rounded-lg max-w-4xl w-full max-h-screen overflow-y-auto">
+            <div class="p-6 border-b border-themed-secondary sticky top-0 bg-themed-secondary z-10">
+                <h3 class="text-xl font-bold text-themed-primary">Edit Question</h3>
+                <button type="button" class="absolute top-4 right-4 text-themed-tertiary hover:text-themed-secondary" wire:click="closeModals">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            
+            <div class="p-6">
+                <form wire:submit="updateQuestion">
+                    <!-- Question Text -->
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-themed-primary mb-2">
+                            Question Text
+                            <span class="text-xs text-themed-tertiary">(Use $...$ for inline math, $...$ for display)</span>
+                        </label>
+                        <textarea wire:model="question_text" rows="3" 
+                                  class="w-full px-3 py-2 border border-themed-secondary rounded-lg bg-themed-primary text-themed-primary focus:ring-2 focus:ring-accent-themed-primary"
+                                  required></textarea>
+                        
+                        <!-- Live Preview -->
+                        <div class="mt-2 p-3 bg-themed-tertiary rounded-lg">
+                            <label class="text-xs text-themed-secondary mb-1 block">Preview:</label>
+                            <div id="edit-question-preview" class="math-content text-themed-primary min-h-6">
+                                @if($question_text)
+                                    {!! $question_text !!}
+                                @else
+                                    <span class="text-themed-tertiary">Preview will appear here</span>
+                                @endif
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Question Type and Points -->
+                    <div class="grid grid-cols-2 gap-4 mb-4">
+                        <div>
+                            <label class="block text-sm font-medium text-themed-primary mb-2">Question Type</label>
+                            <select wire:model.live="question_type" class="w-full px-3 py-2 border border-themed-secondary rounded-lg bg-themed-primary focus:ring-2 focus:ring-accent-themed-primary">
+                                <option value="multiple_choice">Multiple Choice</option>
+                                <option value="true_false">True/False</option>
+                                <option value="short_answer">Short Answer</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-themed-primary mb-2">Points</label>
+                            <input type="number" wire:model="points" step="0.1" min="0.1" 
+                                   class="w-full px-3 py-2 border border-themed-secondary rounded-lg bg-themed-primary focus:ring-2 focus:ring-accent-themed-primary" required>
+                        </div>
+                    </div>
+
+                    <!-- Options (Multiple Choice) -->
+                    @if($question_type === 'multiple_choice')
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-themed-primary mb-2">Options</label>
+                        @foreach($options as $index => $option)
+                        <div class="flex items-center mb-2">
+                            <span class="bg-themed-tertiary px-3 py-2 rounded-l-lg border border-r-0 border-themed-secondary text-sm font-medium text-themed-primary">
+                                {{ chr(65 + $index) }}
+                            </span>
+                            <input type="text" wire:model="options.{{ $index }}" 
+                                   class="flex-1 px-3 py-2 border border-themed-secondary bg-themed-primary focus:ring-2 focus:ring-accent-themed-primary">
+                            <div class="bg-themed-tertiary border border-l-0 border-themed-secondary px-3 py-2 rounded-r-lg">
+                                <input type="checkbox" wire:model="correct_answers" value="{{ $index }}" 
+                                       class="form-checkbox h-4 w-4 text-accent-themed-primary" title="Correct Answer">
+                            </div>
+                        </div>
+                        @endforeach
+                    </div>
+                    @elseif($question_type === 'true_false')
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-themed-primary mb-2">Correct Answer</label>
+                        <div class="space-y-2">
+                            <div class="flex items-center">
+                                <input type="radio" wire:model="correct_answers" value="0" class="form-radio h-4 w-4 text-accent-themed-primary" id="edit_true">
+                                <label class="ml-2 text-sm text-themed-primary" for="edit_true">True</label>
+                            </div>
+                            <div class="flex items-center">
+                                <input type="radio" wire:model="correct_answers" value="1" class="form-radio h-4 w-4 text-accent-themed-primary" id="edit_false">
+                                <label class="ml-2 text-sm text-themed-primary" for="edit_false">False</label>
+                            </div>
+                        </div>
+                    </div>
+                    @endif
+
+                    <!-- Explanation -->
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-themed-primary mb-2">Explanation (Optional)</label>
+                        <textarea wire:model="explanation" rows="2" 
+                                  class="w-full px-3 py-2 border border-themed-secondary rounded-lg bg-themed-primary focus:ring-2 focus:ring-accent-themed-primary"></textarea>
+                        
+                        <!-- Live Preview -->
+                        <div class="mt-2 p-3 bg-themed-tertiary rounded-lg">
+                            <label class="text-xs text-themed-secondary mb-1 block">Preview:</label>
+                            <div id="edit-explanation-preview" class="math-content text-themed-primary min-h-6">
+                                @if($explanation)
+                                    {!! $explanation !!}
+                                @else
+                                    <span class="text-themed-tertiary">Preview will appear here</span>
+                                @endif
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Buttons -->
+                    <div class="flex justify-end space-x-3 pt-4 border-t border-themed-secondary">
+                        <button type="button" wire:click="closeModals" 
+                                class="px-4 py-2 bg-gray-300 dark:bg-gray-600 text-themed-primary dark:text-white rounded-lg hover:bg-gray-400 dark:hover:bg-gray-700">
+                            Cancel
+                        </button>
+                        <button type="submit" 
+                                class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+                            <i class="fas fa-save mr-2"></i>Update Question
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    @endif
+
+    <!-- Participants Modal -->
+    @if($showParticipantsModal && $selectedAssessment)
+    <div class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+        <div class="bg-themed-secondary rounded-lg max-w-6xl w-full max-h-screen overflow-hidden">
+            <div class="p-6 border-b border-themed-secondary flex justify-between items-center">
+                <h3 class="text-xl font-bold text-themed-primary">
+                    <i class="fas fa-users mr-2"></i>
+                    Participants - {{ $selectedAssessment->title }}
+                </h3>
+                <button type="button" wire:click="closeModals" class="text-themed-tertiary hover:text-themed-secondary">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            
+            <div class="p-6 overflow-y-auto max-h-[70vh]">
+                @php
+                    $participants = $this->getParticipantsData();
+                @endphp
+
+                @if($participants->count() > 0)
+                <table class="w-full border-collapse">
+                    <thead class="bg-themed-tertiary sticky top-0">
+                        <tr>
+                            <th class="px-4 py-3 text-left text-xs font-medium uppercase text-themed-secondary">Rank</th>
+                            <th class="px-4 py-3 text-left text-xs font-medium uppercase text-themed-secondary">Student Name</th>
+                            <th class="px-4 py-3 text-left text-xs font-medium uppercase text-themed-secondary">Email</th>
+                            <th class="px-4 py-3 text-center text-xs font-medium uppercase text-themed-secondary">Attempts</th>
+                            <th class="px-4 py-3 text-center text-xs font-medium uppercase text-themed-secondary">Best Score</th>
+                            <th class="px-4 py-3 text-center text-xs font-medium uppercase text-themed-secondary">Status</th>
+                            <th class="px-4 py-3 text-center text-xs font-medium uppercase text-themed-secondary">Details</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-themed-primary">
+                        @foreach($participants as $index => $participant)
+                        <tr class="hover:bg-themed-tertiary transition-colors">
+                            <td class="px-4 py-3 text-center">
+                                <span class="inline-flex items-center justify-center w-8 h-8 rounded-full 
+                                    {{ $index < 3 ? 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-300 font-bold' : 'bg-themed-tertiary text-themed-primary' }}">
+                                    {{ $index + 1 }}
+                                </span>
+                            </td>
+                            <td class="px-4 py-3">
+                                <div class="font-semibold text-themed-primary">{{ $participant['user']->name }}</div>
+                            </td>
+                            <td class="px-4 py-3 text-themed-secondary text-sm">
+                                {{ $participant['user']->email }}
+                            </td>
+                            <td class="px-4 py-3 text-center">
+                                <span class="px-2 py-1 bg-themed-tertiary rounded-full text-sm">
+                                    {{ $participant['total_attempts'] }}
+                                </span>
+                            </td>
+                            <td class="px-4 py-3 text-center">
+                                <span class="font-bold text-lg {{ $participant['best_attempt']['passed'] ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400' }}">
+                                    {{ $participant['best_attempt']['percentage'] }}%
+                                </span>
+                                <div class="text-xs text-themed-secondary">
+                                    {{ $participant['best_attempt']['total_points'] }}/{{ $participant['best_attempt']['max_points'] }} pts
+                                </div>
+                            </td>
+                            <td class="px-4 py-3 text-center">
+                                <span class="px-3 py-1 rounded-full text-sm font-medium
+                                    {{ $participant['best_attempt']['passed'] ? 'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300' : 'bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-300' }}">
+                                    {{ $participant['best_attempt']['passed'] ? 'PASSED' : 'FAILED' }}
+                                </span>
+                            </td>
+                            <td class="px-4 py-3 text-center">
+                                <button onclick="toggleAttempts({{ $participant['user']->id }})" 
+                                        class="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 px-3 py-1 rounded hover:bg-blue-50 dark:hover:bg-blue-900/30">
+                                    <i class="fas fa-eye mr-1"></i> View All
+                                </button>
+                            </td>
+                        </tr>
+                        <!-- Expandable Attempts Details -->
+                        <tr id="attempts-{{ $participant['user']->id }}" class="hidden bg-themed-tertiary">
+                            <td colspan="7" class="px-4 py-3">
+                                <div class="pl-12">
+                                    <h4 class="font-semibold text-themed-primary mb-2">All Attempts:</h4>
+                                    <div class="space-y-2">
+                                        @foreach($participant['attempts'] as $attempt)
+                                        <div class="flex items-center justify-between p-3 bg-themed-secondary rounded-lg">
+                                            <div class="flex items-center space-x-4">
+                                                <span class="px-2 py-1 bg-themed-tertiary rounded font-mono text-sm text-themed-primary">
+                                                    #{{ $attempt['attempt_number'] }}
+                                                </span>
+                                                <span class="font-semibold {{ $attempt['passed'] ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400' }}">
+                                                    {{ $attempt['percentage'] }}%
+                                                </span>
+                                                <span class="text-themed-secondary text-sm">
+                                                    {{ $attempt['total_points'] }}/{{ $attempt['max_points'] }} points
+                                                </span>
+                                            </div>
+                                            <div class="text-themed-secondary text-sm">
+                                                {{ $attempt['submitted_at']->format('M d, Y - H:i') }}
+                                            </div>
+                                        </div>
+                                        @endforeach
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+                @else
+                <div class="text-center py-12">
+                    <i class="fas fa-users text-6xl text-themed-tertiary mb-4"></i>
+                    <h5 class="text-xl text-themed-secondary mb-2">No Participants Yet</h5>
+                    <p class="text-themed-tertiary">No students have taken this assessment yet.</p>
+                </div>
+                @endif
+            </div>
+            
+            <div class="p-6 border-t border-themed-secondary flex justify-between">
+                <div class="text-themed-secondary text-sm">
+                    Total Participants: <span class="font-semibold text-themed-primary">{{ $participants->count() }}</span>
+                </div>
+                <button wire:click="closeModals" 
+                        class="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700">
+                    Close
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+    function toggleAttempts(userId) {
+        const el = document.getElementById('attempts-' + userId);
+        el.classList.toggle('hidden');
+    }
+    </script>
+    @endif
+
+    <!-- Sortable.js and MathJax Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
+    
+    <script>
+    // Wait for MathJax to be ready
+    function waitForMathJax() {
+        return new Promise((resolve) => {
+            if (typeof MathJax !== 'undefined' && typeof MathJax.typesetPromise !== 'undefined') {
+                resolve();
+            } else {
+                document.addEventListener('mathjax-loaded', resolve);
+            }
+        });
+    }
+
+    // Initialize MathJax integration
+    async function initMathJax() {
+        await waitForMathJax();
+        
+        // Process all math content on page load
+        MathJax.typesetPromise().catch(err => {
+            if (err) console.error('MathJax error:', err);
+        });
+        
+        // Set up live preview handlers
+        setupLivePreviews();
+    }
+
+    // Set up live preview for question and explanation inputs
+    function setupLivePreviews() {
+        let questionTimeout, explanationTimeout;
+
+        // Update preview function
+        function updatePreview(inputValue, previewId) {
+            const preview = document.getElementById(previewId);
+            if (!preview) return;
+
+            const value = String(inputValue || '');
+
+            if (value.trim()) {
+                preview.innerHTML = value;
+                preview.querySelectorAll('mjx-container').forEach(el => el.remove());
+                MathJax.typesetPromise([preview]).catch(err => {
+                    if (err) console.error('MathJax preview error:', err);
+                });
+            } else {
+                preview.innerHTML = '<span class="text-themed-tertiary">Preview will appear here</span>';
+            }
+        }
+
+        // Toggle option preview visibility
+        window.toggleOptionPreview = function(index) {
+            const previewContainer = document.getElementById('option-preview-container-' + index);
+            if (previewContainer) {
+                previewContainer.classList.toggle('hidden');
+                if (!previewContainer.classList.contains('hidden')) {
+                    const input = document.querySelector(`input[wire\\:model="options.${index}"]`);
+                    if (input) {
+                        updatePreview(input.value, 'option-preview-' + index);
+                    }
+                }
+            }
+        };
+
+        // Listen for Livewire updates
+        Livewire.on('question-text-updated', (value) => {
+            clearTimeout(questionTimeout);
+            questionTimeout = setTimeout(() => {
+                updatePreview(value, 'question-preview');
+                updatePreview(value, 'edit-question-preview');
+            }, 300);
+        });
+
+        Livewire.on('explanation-updated', (value) => {
+            clearTimeout(explanationTimeout);
+            explanationTimeout = setTimeout(() => {
+                updatePreview(value, 'explanation-preview');
+                updatePreview(value, 'edit-explanation-preview');
+            }, 300);
+        });
+
+        // Handle direct input events as fallback
+        document.addEventListener('input', (e) => {
+            const target = e.target;
+            
+            if (target.hasAttribute('wire:model') && 
+                (target.getAttribute('wire:model') === 'question_text' || 
+                 target.getAttribute('wire:model').includes('question_text'))) {
+                clearTimeout(questionTimeout);
+                questionTimeout = setTimeout(() => {
+                    updatePreview(target.value, 'question-preview');
+                    updatePreview(target.value, 'edit-question-preview');
+                }, 300);
+            }
+            
+            if (target.hasAttribute('wire:model') && 
+                (target.getAttribute('wire:model') === 'explanation' || 
+                 target.getAttribute('wire:model').includes('explanation'))) {
+                clearTimeout(explanationTimeout);
+                explanationTimeout = setTimeout(() => {
+                    updatePreview(target.value, 'explanation-preview');
+                    updatePreview(target.value, 'edit-explanation-preview');
+                }, 300);
+            }
+
+            if (target.hasAttribute('wire:model') && 
+                target.getAttribute('wire:model').includes('options.')) {
+                const match = target.getAttribute('wire:model').match(/options\.(\d+)/);
+                if (match) {
+                    const optionIndex = match[1];
+                    clearTimeout(window['optionTimeout' + optionIndex]);
+                    window['optionTimeout' + optionIndex] = setTimeout(() => {
+                        updatePreview(target.value, 'option-preview-' + optionIndex);
+                    }, 300);
+                }
+            }
+        });
+    }
+
+    // Initialize Sortable for question reordering
+    function initSortable() {
+        const questionsList = document.getElementById('questions-sortable');
+        if (questionsList && !questionsList.dataset.sortableInitialized) {
+            new Sortable(questionsList, {
+                animation: 150,
+                handle: '.drag-handle',
+                ghostClass: 'sortable-ghost',
+                chosenClass: 'sortable-chosen',
+                dragClass: 'sortable-drag',
+                onEnd: function(evt) {
+                    const orderedIds = Array.from(questionsList.children)
+                        .filter(item => item.classList.contains('question-item'))
+                        .map(item => item.dataset.id);
+                    @this.reorderQuestions(orderedIds);
+                }
+            });
+            questionsList.dataset.sortableInitialized = 'true';
+        }
+    }
+
+    // Livewire hooks
+    document.addEventListener('livewire:init', () => {
+        Livewire.hook('morph.updated', ({ el, component }) => {
+            // Reinitialize sortable after DOM updates
+            initSortable();
+            
+            // Re-render MathJax
+            if (typeof MathJax !== 'undefined' && MathJax.typesetPromise) {
+                const mathElements = el.querySelectorAll('.math-content');
+                if (mathElements.length > 0) {
+                    MathJax.typesetPromise(Array.from(mathElements)).catch(err => {
+                        if (err) console.error('MathJax rendering error:', err);
+                    });
+                }
+            }
+        });
+    });
+
+    // Initialize on page load
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', () => {
+            initMathJax();
+            initSortable();
+        });
+    } else {
+        initMathJax();
+        initSortable();
+    }
+    </script>
 
     <style>
         /* Animation keyframes */
@@ -547,26 +984,15 @@
         .animate-fade-in-down { animation: fadeInDown 0.3s ease-out; }
         .animate-fade-in-up { animation: fadeInUp 0.3s ease-out; }
 
-        /* Form elements */
-        .form-checkbox:checked { background-color: rgb(var(--accent-primary)); border-color: rgb(var(--accent-primary)); }
-        .form-radio:checked { background-color: rgb(var(--accent-primary)); border-color: rgb(var(--accent-primary)); }
+        /* MathJax specific styling */
+        .math-content mjx-container {
+            display: inline-block !important;
+            margin: 0.2em 0;
+        }
 
-        .dark .form-checkbox { background-color: #374151; border-color: #6b7280; }
-        .dark .form-radio { background-color: #374151; border-color: #6b7280; }
-        .dark .form-checkbox:checked { background-color: rgb(var(--accent-primary)); border-color: rgb(var(--accent-primary)); }
-        .dark .form-radio:checked { background-color: rgb(var(--accent-primary)); border-color: rgb(var(--accent-primary)); }
-
-        /* Smooth transitions */
-        * { transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease; }
-
-        /* MathJax styling */
-        .math-content mjx-container { display: inline-block !important; }
-        
-        /* Preview styling */
-        #question-preview, #explanation-preview {
-            min-height: 24px;
-            border-left: 3px solid rgb(var(--accent-primary));
-            padding-left: 8px;
+        .math-content mjx-container[display="true"] {
+            display: block !important;
+            margin: 1em 0;
         }
 
         /* Option preview containers */
@@ -582,20 +1008,142 @@
             opacity: 1;
         }
 
-        /* Option preview content */
-        .option-preview-content {
-            min-height: 24px;
-            border-left: 3px solid rgb(var(--accent-primary));
-            padding-left: 8px;
+        /* Sortable styles */
+        .sortable-ghost {
+            opacity: 0.4;
+            background-color: rgb(var(--accent-primary) / 0.1);
         }
 
-        /* Eye icon animation */
-        button[onclick^="toggleOptionPreview"] i {
-            transition: transform 0.2s ease;
+        .sortable-chosen {
+            opacity: 0.8;
         }
 
-        button[onclick^="toggleOptionPreview"]:hover i {
-            transform: scale(1.1);
+        .sortable-drag {
+            opacity: 0;
+        }
+
+        .drag-handle {
+            cursor: move;
+            transition: color 0.2s ease;
+        }
+
+        .drag-handle:hover {
+            cursor: grab;
+        }
+
+        .drag-handle:active {
+            cursor: grabbing;
+        }
+
+        /* Form elements */
+        .form-checkbox:checked { 
+            background-color: rgb(var(--accent-primary)); 
+            border-color: rgb(var(--accent-primary)); 
+        }
+        
+        .form-radio:checked { 
+            background-color: rgb(var(--accent-primary)); 
+            border-color: rgb(var(--accent-primary)); 
+        }
+
+        .dark .form-checkbox { 
+            background-color: #374151; 
+            border-color: #6b7280; 
+        }
+        
+        .dark .form-radio { 
+            background-color: #374151; 
+            border-color: #6b7280; 
+        }
+        
+        .dark .form-checkbox:checked { 
+            background-color: rgb(var(--accent-primary)); 
+            border-color: rgb(var(--accent-primary)); 
+        }
+        
+        .dark .form-radio:checked { 
+            background-color: rgb(var(--accent-primary)); 
+            border-color: rgb(var(--accent-primary)); 
+        }
+
+        /* Prose styles for rich text content */
+        .prose {
+            max-width: none;
+        }
+
+        .prose img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 0.5rem;
+            margin: 1rem 0;
+        }
+
+        .prose pre {
+            background-color: #1f2937;
+            color: #f3f4f6;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            overflow-x: auto;
+        }
+
+        .prose code {
+            background-color: #e5e7eb;
+            padding: 0.2rem 0.4rem;
+            border-radius: 0.25rem;
+            font-size: 0.875em;
+        }
+
+        .dark .prose code {
+            background-color: #374151;
+            color: #f3f4f6;
+        }
+
+        .prose blockquote {
+            border-left: 4px solid rgb(var(--accent-primary));
+            padding-left: 1rem;
+            font-style: italic;
+            color: #6b7280;
+        }
+
+        .dark .prose blockquote {
+            color: #9ca3af;
+        }
+
+        .prose ul, .prose ol {
+            padding-left: 1.5rem;
+        }
+
+        .prose li {
+            margin: 0.5rem 0;
+        }
+
+        .prose a {
+            color: rgb(var(--accent-primary));
+            text-decoration: underline;
+        }
+
+        .prose table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+        }
+
+        .prose th, .prose td {
+            border: 1px solid #e5e7eb;
+            padding: 0.5rem;
+        }
+
+        .dark .prose th, .dark .prose td {
+            border-color: #374151;
+        }
+
+        .prose th {
+            background-color: #f3f4f6;
+            font-weight: 600;
+        }
+
+        .dark .prose th {
+            background-color: #1f2937;
         }
 
         /* Responsive scrollbar */
@@ -624,164 +1172,16 @@
                 overflow-wrap: break-word;
             }
         }
-    </style>
 
-    <script>
-    // Wait for MathJax to be ready
-    function waitForMathJax() {
-        return new Promise((resolve) => {
-            if (typeof MathJax !== 'undefined' && typeof MathJax.typesetPromise !== 'undefined') {
-                resolve();
-            } else {
-                document.addEventListener('mathjax-loaded', resolve);
-            }
-        });
-    }
-
-    // Initialize MathJax integration
-    async function initMathJax() {
-        await waitForMathJax();
-        
-        // Process all math content on page load
-        MathJax.typesetPromise().catch(err => {
-            // Silent error handling - only log if there's an actual error
-            if (err) console.error('MathJax error:', err);
-        });
-        
-        // Set up Livewire integration
-        setupLivewireIntegration();
-        
-        // Set up live preview handlers
-        setupLivePreviews();
-    }
-
-    // Handle Livewire DOM updates
-    function setupLivewireIntegration() {
-        // Listen for Livewire updates
-        document.addEventListener('livewire:init', () => {
-            Livewire.hook('morph.updated', ({ el, component }) => {
-                // Typeset any math content that was updated
-                const mathElements = el.querySelectorAll('.math-content');
-                if (mathElements.length > 0) {
-                    MathJax.typesetPromise(Array.from(mathElements)).catch(err => {
-                        if (err) console.error('MathJax typeset error:', err);
-                    });
-                }
-            });
-
-            // Also handle after any Livewire request completes
-            Livewire.hook('request', ({ respond }) => {
-                respond(() => {
-                    setTimeout(() => {
-                        MathJax.typesetPromise().catch(err => {
-                            if (err) console.error('MathJax typeset error:', err);
-                        });
-                    }, 100);
-                });
-            });
-        });
-    }
-
-    // Set up live preview for question and explanation inputs
-    function setupLivePreviews() {
-        let questionTimeout, explanationTimeout;
-
-        // Update preview function
-        function updatePreview(inputValue, previewId) {
-            const preview = document.getElementById(previewId);
-            if (!preview) return;
-
-            // Ensure inputValue is a string
-            const value = String(inputValue || '');
-
-            if (value.trim()) {
-                preview.innerHTML = value;
-                // Clear any existing MathJax output first
-                preview.querySelectorAll('mjx-container').forEach(el => el.remove());
-                // Typeset the new content
-                MathJax.typesetPromise([preview]).catch(err => {
-                    if (err) console.error('MathJax preview error:', err);
-                });
-            } else {
-                preview.innerHTML = '<span class="text-themed-tertiary">Preview will appear here</span>';
-            }
+        /* Smooth transitions */
+        * {
+            transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
         }
 
-        // Toggle option preview visibility
-        window.toggleOptionPreview = function(index) {
-            const previewContainer = document.getElementById('option-preview-container-' + index);
-            if (previewContainer) {
-                previewContainer.classList.toggle('hidden');
-                // If showing, update the preview immediately
-                if (!previewContainer.classList.contains('hidden')) {
-                    const input = document.querySelector(`input[wire\\:model="options.${index}"]`);
-                    if (input) {
-                        updatePreview(input.value, 'option-preview-' + index);
-                    }
-                }
-            }
-        };
-
-        // Listen for Livewire updates on the question_text field
-        Livewire.on('question-text-updated', (value) => {
-            clearTimeout(questionTimeout);
-            questionTimeout = setTimeout(() => {
-                updatePreview(value, 'question-preview');
-            }, 300);
-        });
-
-        // Listen for Livewire updates on the explanation field
-        Livewire.on('explanation-updated', (value) => {
-            clearTimeout(explanationTimeout);
-            explanationTimeout = setTimeout(() => {
-                updatePreview(value, 'explanation-preview');
-            }, 300);
-        });
-
-        // Also handle direct input events as fallback
-        document.addEventListener('input', (e) => {
-            const target = e.target;
-            
-            // Check if this is the question text textarea
-            if (target.hasAttribute('wire:model') && 
-                (target.getAttribute('wire:model') === 'question_text' || 
-                 target.getAttribute('wire:model').includes('question_text'))) {
-                clearTimeout(questionTimeout);
-                questionTimeout = setTimeout(() => {
-                    updatePreview(target.value, 'question-preview');
-                }, 300);
-            }
-            
-            // Check if this is the explanation textarea
-            if (target.hasAttribute('wire:model') && 
-                (target.getAttribute('wire:model') === 'explanation' || 
-                 target.getAttribute('wire:model').includes('explanation'))) {
-                clearTimeout(explanationTimeout);
-                explanationTimeout = setTimeout(() => {
-                    updatePreview(target.value, 'explanation-preview');
-                }, 300);
-            }
-
-            // Check if this is an option input
-            if (target.hasAttribute('wire:model') && 
-                target.getAttribute('wire:model').includes('options.')) {
-                const match = target.getAttribute('wire:model').match(/options\.(\d+)/);
-                if (match) {
-                    const optionIndex = match[1];
-                    clearTimeout(window['optionTimeout' + optionIndex]);
-                    window['optionTimeout' + optionIndex] = setTimeout(() => {
-                        updatePreview(target.value, 'option-preview-' + optionIndex);
-                    }, 300);
-                }
-            }
-        });
-    }
-
-    // Start initialization when DOM is ready
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', initMathJax);
-    } else {
-        initMathJax();
-    }
-    </script>
+        /* Disable transitions for specific elements */
+        .no-transition, 
+        .no-transition * {
+            transition: none !important;
+        }
+    </style>
 </div>

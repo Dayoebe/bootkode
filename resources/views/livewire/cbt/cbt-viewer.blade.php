@@ -15,7 +15,7 @@
     </div>
 
     @if(!$viewDetails)
-        <!-- Results Overview (same as before) -->
+        <!-- Results Overview -->
         <div class="bg-themed-secondary rounded-lg shadow-lg border border-themed-primary">
             <div class="bg-themed-secondary border-b border-themed-secondary px-6 py-4 rounded-t-lg">
                 <h6 class="text-lg font-semibold text-accent-themed-primary m-0">Your CBT Assessments</h6>
@@ -85,7 +85,7 @@
             </div>
         </div>
     @else
-        <!-- Detailed View with Rich Text Support -->
+        <!-- Detailed View with Enhanced MathJax Support -->
         <div class="bg-themed-secondary rounded-lg shadow-lg animate-fade-in border border-themed-primary">
             <div class="bg-accent-themed-primary text-white px-6 py-4 rounded-t-lg">
                 <h5 class="text-xl font-semibold m-0">
@@ -175,7 +175,7 @@
                     </table>
                 </div>
 
-                <!-- Attempt Details Modal with Rich Text Support -->
+                <!-- Attempt Details Modal with Enhanced MathJax Support -->
                 @if($selectedAttempt)
                     <div class="fixed inset-0 bg-black bg-opacity-50 dark:bg-black dark:bg-opacity-70 z-50 flex items-center justify-center p-4">
                         <div class="bg-themed-secondary rounded-lg max-w-7xl w-full max-h-screen overflow-hidden animate-fade-in-down border border-themed-primary">
@@ -218,7 +218,7 @@
                                     </div>
                                 </div>
 
-                                <!-- Question-by-Question Review with Rich Text -->
+                                <!-- Question-by-Question Review with Enhanced MathJax -->
                                 <h6 class="text-lg font-semibold text-themed-primary mb-4">Question Review</h6>
                                 @foreach($selectedAttempt['answers'] as $questionId => $answer)
                                     @php $question = $answer->question; @endphp
@@ -233,8 +233,8 @@
                                             </div>
                                         </div>
                                         <div class="p-4">
-                                            <!-- Question Text with Rich Text Support -->
-                                            <div class="font-semibold text-themed-primary mb-4 prose prose-sm max-w-none dark:prose-invert">
+                                            <!-- Question Text with Enhanced MathJax -->
+                                            <div class="font-semibold text-themed-primary mb-4 prose prose-sm max-w-none dark:prose-invert math-content mathjax-processed">
                                                 {!! $question->question_text !!}
                                             </div>
                                             
@@ -243,7 +243,7 @@
                                                     @foreach($question->options as $index => $option)
                                                         <div class="mb-2">
                                                             <span class="mr-2 font-semibold">{{ chr(65 + $index) }}.</span>
-                                                            <span class="prose prose-sm max-w-none dark:prose-invert inline @if($answer->answer == $index) font-semibold 
+                                                            <span class="prose prose-sm max-w-none dark:prose-invert inline math-content mathjax-processed @if($answer->answer == $index) font-semibold 
                                                                   @if($answer->is_correct) text-green-600 dark:text-green-400 @else text-red-600 dark:text-red-400 @endif
                                                                   @elseif(in_array($index, $question->correct_answers)) text-green-600 dark:text-green-400 @else text-themed-primary @endif">
                                                                 {!! $option !!}
@@ -292,7 +292,7 @@
                                             @if($question->explanation)
                                                 <div class="mt-4 p-4 bg-themed-tertiary rounded-lg border border-themed-secondary">
                                                     <div class="text-sm font-semibold text-themed-secondary mb-1">Explanation:</div>
-                                                    <div class="text-sm text-themed-primary prose prose-sm max-w-none dark:prose-invert">
+                                                    <div class="text-sm text-themed-primary prose prose-sm max-w-none dark:prose-invert math-content mathjax-processed">
                                                         {!! $question->explanation !!}
                                                     </div>
                                                 </div>
@@ -314,6 +314,159 @@
             </div>
         </div>
     @endif
+    @push('scripts')
+<script>
+// Enhanced MathJax configuration for CBT Viewer with better Livewire integration
+function initializeCbtViewerMathJax() {
+    if (typeof window.MathJax === 'undefined') {
+        console.warn('MathJax not loaded, loading now...');
+        loadMathJax();
+        return;
+    }
+    
+    configureAndProcessMath();
+}
+
+function loadMathJax() {
+    const script = document.createElement('script');
+    script.src = 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+    script.async = true;
+    script.onload = configureAndProcessMath;
+    document.head.appendChild(script);
+}
+
+function configureAndProcessMath() {
+    // Configure MathJax
+    window.MathJax = {
+        tex: {
+            inlineMath: [['$', '$'], ['\\(', '\\)']],
+            displayMath: [['$$', '$$'], ['\\[', '\\]']],
+            processEscapes: true,
+            processEnvironments: true,
+            tags: 'ams'
+        },
+        options: {
+            skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+            renderActions: {
+                addMenu: [0, '', '']
+            }
+        },
+        startup: {
+            pageReady: function() {
+                return MathJax.startup.defaultPageReady().then(function() {
+                    console.log('MathJax initialized for CBT Viewer');
+                    processAllMathContent();
+                });
+            }
+        }
+    };
+
+    // Initialize MathJax if it hasn't been initialized yet
+    if (window.MathJax && typeof window.MathJax.startup === 'object') {
+        window.MathJax.startup.promise.then(() => {
+            processAllMathContent();
+        });
+    }
+}
+
+function processAllMathContent() {
+    if (typeof MathJax === 'undefined' || !MathJax.typesetPromise) {
+        console.warn('MathJax not ready yet, retrying...');
+        setTimeout(processAllMathContent, 500);
+        return;
+    }
+
+    const mathElements = document.querySelectorAll('.math-content');
+    if (mathElements.length > 0) {
+        console.log('Processing math elements:', mathElements.length);
+        
+        // Remove any existing MathJax processing markers
+        mathElements.forEach(element => {
+            element.classList.remove('mathjax-processed', 'mathjax-processing');
+        });
+
+        MathJax.typesetPromise(mathElements)
+            .then(() => {
+                console.log('MathJax processing completed successfully');
+                mathElements.forEach(element => {
+                    element.classList.add('mathjax-processed');
+                });
+            })
+            .catch(err => {
+                console.error('MathJax typeset error:', err);
+                // Retry on error
+                setTimeout(processAllMathContent, 1000);
+            });
+    }
+}
+
+// Livewire specific integration
+document.addEventListener('livewire:init', function() {
+    // Process math when component updates
+    Livewire.hook('morph.updated', function({ el, component }) {
+        setTimeout(() => {
+            if (typeof MathJax !== 'undefined' && MathJax.typesetPromise) {
+                processAllMathContent();
+            }
+        }, 100);
+    });
+
+    // Process math when attempt details modal opens
+    Livewire.on('attemptDetailsLoaded', function() {
+        setTimeout(() => {
+            processAllMathContent();
+        }, 300);
+    });
+});
+
+// MutationObserver for dynamic content
+const observer = new MutationObserver(function(mutations) {
+    let hasMathContent = false;
+    
+    mutations.forEach(function(mutation) {
+        if (mutation.type === 'childList') {
+            mutation.addedNodes.forEach(function(node) {
+                if (node.nodeType === 1) {
+                    if (node.classList && node.classList.contains('math-content')) {
+                        hasMathContent = true;
+                    }
+                    if (node.querySelector && node.querySelector('.math-content')) {
+                        hasMathContent = true;
+                    }
+                }
+            });
+        }
+    });
+    
+    if (hasMathContent) {
+        setTimeout(processAllMathContent, 200);
+    }
+});
+
+// Start observing when DOM is ready
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', function() {
+        observer.observe(document.body, {
+            childList: true,
+            subtree: true
+        });
+        initializeCbtViewerMathJax();
+    });
+} else {
+    observer.observe(document.body, {
+        childList: true,
+        subtree: true
+    });
+    initializeCbtViewerMathJax();
+}
+
+// Also process on window load
+window.addEventListener('load', function() {
+    setTimeout(processAllMathContent, 1000);
+});
+</script>
+@endpush
+
     
     <style>
         .animate-fade-in {
@@ -337,6 +490,38 @@
             to { 
                 opacity: 1;
                 transform: translateY(0);
+            }
+        }
+
+        /* Enhanced MathJax styling */
+        .math-content mjx-container {
+            display: inline-block !important;
+            line-height: 1.2;
+        }
+
+        .math-content mjx-container[display="true"] {
+            display: block !important;
+            margin: 1em 0;
+            text-align: center;
+        }
+
+        /* Ensure proper spacing for mathematical content */
+        .math-content {
+            line-height: 1.6;
+        }
+
+        .math-content mjx-math {
+            font-size: 1.1em;
+        }
+
+        /* Mobile responsive math */
+        @media (max-width: 768px) {
+            .math-content mjx-container {
+                font-size: 0.9em;
+            }
+            
+            .math-content mjx-container[display="true"] {
+                margin: 0.5em 0;
             }
         }
 

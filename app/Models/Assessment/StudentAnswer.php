@@ -18,7 +18,7 @@ class StudentAnswer extends Model
         'answer',
         'points_earned',
         'is_correct',
-        'time_spent_seconds', // FIXED: Match database column name
+        'time_spent_seconds',
         'submitted_at',
         'graded_by',
         'graded_at',
@@ -26,8 +26,7 @@ class StudentAnswer extends Model
     ];
     
     protected $casts = [
-        // FIXED: Don't cast as array - store as JSON string or integer
-        // 'answer' => 'array',  ❌ REMOVED THIS
+        // DON'T cast answer as array - keep it flexible
         'is_correct' => 'boolean',
         'points_earned' => 'decimal:2',
         'submitted_at' => 'datetime',
@@ -122,7 +121,7 @@ class StudentAnswer extends Model
                 'question_id' => $this->question->id,
                 'question_type' => $this->question->question_type
             ]);
-            return false; // Requires manual grading
+            return false;
         }
 
         \Log::info('Starting auto-grade', [
@@ -133,10 +132,10 @@ class StudentAnswer extends Model
             'user_answer_type' => gettype($this->answer)
         ]);
 
-        // FIXED: Get the user's answer - it's stored as integer or string
+        // Get the user's answer - handle different formats
         $userAnswer = $this->answer;
         
-        // If it's stored as JSON string (like "[0]"), decode it
+        // If it's stored as JSON string, decode it
         if (is_string($userAnswer) && (strpos($userAnswer, '[') === 0 || strpos($userAnswer, '{') === 0)) {
             $decoded = json_decode($userAnswer, true);
             if (json_last_error() === JSON_ERROR_NONE) {
@@ -146,7 +145,11 @@ class StudentAnswer extends Model
         
         // Convert to integer for multiple choice and true/false
         if (in_array($this->question->question_type, ['multiple_choice', 'true_false'])) {
-            $userAnswer = (int)$userAnswer;
+            if (is_array($userAnswer)) {
+                $userAnswer = array_map('intval', $userAnswer);
+            } else {
+                $userAnswer = (int)$userAnswer;
+            }
         }
 
         \Log::info('Processed user answer', [
@@ -164,7 +167,7 @@ class StudentAnswer extends Model
         } elseif ($isCorrect === false) {
             $pointsEarned = 0;
         } else {
-            // For partial credit (e.g., multiple correct answers)
+            // For partial credit
             $pointsEarned = $this->question->calculatePartialCredit($userAnswer);
         }
 

@@ -18,18 +18,21 @@ class CbtManagement extends Component
     public $showCreateModal = false;
     public $showEditModal = false;
     public $showQuestionModal = false;
+    public $showParticipantsModal = false;
+    public $showEditQuestionModal = false;
 
     public $title = '';
     public $description = '';
     public $pass_percentage = 70;
     public $estimated_duration_minutes = 60;
     public $max_score = 100;
-    public $max_attempts = null; // NEW: null = unlimited
+    public $max_attempts = null;
     public $type = 'quiz';
     public $course_id = null;
 
     public $selectedAssessment = null;
     public $editingAssessment = null;
+    public $editingQuestion = null;
 
     // Question properties
     public $question_text = '';
@@ -60,7 +63,6 @@ class CbtManagement extends Component
         $this->resetQuestionForm();
     }
 
-    // Dispatch events when fields change
     public function updatedQuestionText($value)
     {
         $this->dispatch('question-text-updated', $value);
@@ -73,7 +75,6 @@ class CbtManagement extends Component
 
     public function render()
     {
-        // Get ONLY standalone CBT assessments (not tied to courses through sections)
         $assessments = Assessment::where('type', 'quiz')
             ->whereNull('section_id')
             ->whereNull('lesson_id')
@@ -98,21 +99,18 @@ class CbtManagement extends Component
             'course_id' => 'nullable|exists:courses,id',
         ]);
 
-        // Handle course_id - can be null for standalone CBT
-        $courseId = $this->course_id;
-
         Assessment::create([
-            'course_id' => $courseId,
+            'course_id' => $this->course_id,
             'title' => $this->title,
             'description' => $this->description,
             'type' => 'quiz',
             'pass_percentage' => $this->pass_percentage,
             'estimated_duration_minutes' => $this->estimated_duration_minutes,
             'max_score' => $this->max_score,
-            'max_attempts' => $this->max_attempts, // NEW
+            'max_attempts' => $this->max_attempts,
             'is_mandatory' => true,
-            'section_id' => null, // Ensure CBT is not tied to sections
-            'lesson_id' => null,  // Ensure CBT is not tied to lessons
+            'section_id' => null,
+            'lesson_id' => null,
         ]);
 
         $this->resetForm();
@@ -128,7 +126,7 @@ class CbtManagement extends Component
         $this->pass_percentage = $this->editingAssessment->pass_percentage;
         $this->estimated_duration_minutes = $this->editingAssessment->estimated_duration_minutes;
         $this->max_score = $this->editingAssessment->max_score;
-        $this->max_attempts = $this->editingAssessment->max_attempts; // NEW
+        $this->max_attempts = $this->editingAssessment->max_attempts;
         $this->course_id = $this->editingAssessment->course_id;
         
         $this->showEditModal = true;
@@ -157,7 +155,7 @@ class CbtManagement extends Component
             'pass_percentage' => $this->pass_percentage,
             'estimated_duration_minutes' => $this->estimated_duration_minutes,
             'max_score' => $this->max_score,
-            'max_attempts' => $this->max_attempts, // NEW
+            'max_attempts' => $this->max_attempts,
             'course_id' => $this->course_id,
         ]);
 
@@ -172,20 +170,16 @@ class CbtManagement extends Component
         if ($assessment) {
             $assessment->delete();
             session()->flash('message', 'CBT Assessment deleted successfully!');
-        } else {
-            session()->flash('error', 'Assessment not found.');
         }
     }
 
     public function manageQuestions($assessmentId)
     {
         $this->selectedAssessment = Assessment::with('questions')->find($assessmentId);
-
         if (!$this->selectedAssessment) {
             session()->flash('error', 'Assessment not found.');
             return;
         }
-
         $this->showQuestionModal = true;
         $this->resetQuestionForm();
     }
@@ -209,7 +203,6 @@ class CbtManagement extends Component
                 'correct_answers' => 'required|array|min:1',
             ]);
 
-            // Filter out empty options
             $this->options = array_values(array_filter($this->options, function ($option) {
                 return !empty(trim($option));
             }));
@@ -235,6 +228,71 @@ class CbtManagement extends Component
         session()->flash('message', 'Question added successfully!');
     }
 
+    // NEW: Edit question
+    public function editQuestion($questionId)
+    {
+        $this->editingQuestion = Question::findOrFail($questionId);
+        $this->question_text = $this->editingQuestion->question_text;
+        $this->question_type = $this->editingQuestion->question_type;
+        $this->points = $this->editingQuestion->points;
+        $this->options = $this->editingQuestion->options ?? ['', '', '', ''];
+        $this->correct_answers = $this->editingQuestion->correct_answers ?? [];
+        $this->explanation = $this->editingQuestion->explanation ?? '';
+        
+        $this->showEditQuestionModal = true;
+    }
+
+    // NEW: Update question
+    public function updateQuestion()
+    {
+        if (!$this->editingQuestion) {
+            session()->flash('error', 'Question not found.');
+            return;
+        }
+
+        $this->validate([
+            'question_text' => 'required|string',
+            'question_type' => 'required|string',
+            'points' => 'required|numeric|min:0.1',
+        ]);
+
+        if ($this->question_type === 'multiple_choice') {
+            $this->validate([
+                'options' => 'required|array|min:2',
+                'correct_answers' => 'required|array|min:1',
+            ]);
+
+            $this->options = array_values(array_filter($this->options, function ($option) {
+                return !empty(trim($option));
+            }));
+        }
+
+        $this->editingQuestion->update([
+            'question_text' => $this->question_text,
+            'question_type' => $this->question_type,
+            'points' => $this->points,
+            'options' => $this->question_type === 'multiple_choice' ? $this->options : null,
+            'correct_answers' => $this->correct_answers,
+            'explanation' => $this->explanation,
+        ]);
+
+        $this->resetQuestionForm();
+        $this->showEditQuestionModal = false;
+        $this->selectedAssessment->refresh();
+        session()->flash('message', 'Question updated successfully!');
+    }
+
+    // NEW: Reorder questions
+    public function reorderQuestions($orderedIds)
+    {
+        foreach ($orderedIds as $index => $id) {
+            Question::where('id', $id)->update(['order' => $index + 1]);
+        }
+        
+        $this->selectedAssessment->refresh();
+        session()->flash('message', 'Questions reordered successfully!');
+    }
+
     public function deleteQuestion($questionId)
     {
         $question = Question::find($questionId);
@@ -244,9 +302,65 @@ class CbtManagement extends Component
                 $this->selectedAssessment->refresh();
             }
             session()->flash('message', 'Question deleted successfully!');
-        } else {
-            session()->flash('error', 'Question not found.');
         }
+    }
+
+    // NEW: View participants
+    public function viewParticipants($assessmentId)
+    {
+        $this->selectedAssessment = Assessment::with([
+            'studentAnswers' => function($query) {
+                $query->whereNotNull('submitted_at')
+                    ->with('user')
+                    ->orderBy('user_id')
+                    ->orderBy('attempt_number', 'desc');
+            }
+        ])->findOrFail($assessmentId);
+
+        $this->showParticipantsModal = true;
+    }
+
+    // NEW: Get participants data
+    public function getParticipantsData()
+    {
+        if (!$this->selectedAssessment) {
+            return collect();
+        }
+
+        $participants = $this->selectedAssessment->studentAnswers
+            ->groupBy('user_id')
+            ->map(function($answers, $userId) {
+                $user = $answers->first()->user;
+                $attempts = $answers->groupBy('attempt_number')->map(function($attemptAnswers, $attemptNumber) {
+                    $totalPoints = $attemptAnswers->sum('points_earned');
+                    $maxPoints = $attemptAnswers->sum(function($answer) {
+                        return $answer->question ? $answer->question->points : 0;
+                    });
+                    $percentage = $maxPoints > 0 ? round(($totalPoints / $maxPoints) * 100, 1) : 0;
+                    
+                    return [
+                        'attempt_number' => $attemptNumber,
+                        'total_points' => $totalPoints,
+                        'max_points' => $maxPoints,
+                        'percentage' => $percentage,
+                        'passed' => $percentage >= $this->selectedAssessment->pass_percentage,
+                        'submitted_at' => $attemptAnswers->first()->submitted_at,
+                    ];
+                })->sortByDesc('attempt_number')->values();
+
+                $bestAttempt = $attempts->sortByDesc('percentage')->first();
+
+                return [
+                    'user' => $user,
+                    'attempts' => $attempts,
+                    'best_attempt' => $bestAttempt,
+                    'total_attempts' => $attempts->count(),
+                ];
+            })
+            ->sortByDesc('best_attempt.percentage')
+            ->values();
+
+        return $participants;
     }
 
     public function resetForm()
@@ -256,7 +370,7 @@ class CbtManagement extends Component
         $this->pass_percentage = 70;
         $this->estimated_duration_minutes = 60;
         $this->max_score = 100;
-        $this->max_attempts = null; // NEW
+        $this->max_attempts = null;
         $this->course_id = null;
         $this->editingAssessment = null;
     }
@@ -269,6 +383,7 @@ class CbtManagement extends Component
         $this->options = ['', '', '', ''];
         $this->correct_answers = [];
         $this->explanation = '';
+        $this->editingQuestion = null;
     }
 
     public function closeModals()
@@ -276,6 +391,8 @@ class CbtManagement extends Component
         $this->showCreateModal = false;
         $this->showEditModal = false;
         $this->showQuestionModal = false;
+        $this->showParticipantsModal = false;
+        $this->showEditQuestionModal = false;
         $this->selectedAssessment = null;
         $this->resetForm();
         $this->resetQuestionForm();
