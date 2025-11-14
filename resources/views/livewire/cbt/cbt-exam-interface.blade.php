@@ -113,7 +113,7 @@
                             @endif
 
                             <a href="{{ route('cbt.exams') }}"
-                                class="w-full sm:w-auto bg-accent-themed-primary hover:bg-accent-themed-secondary text-white px-6 md:px-8 py-3 rounded-lg text-lg font-semibold transition-colors inline-flex items-center justify-center">
+                                class="w-full sm:w-auto bg-blue-500 hover:bg-accent-themed-secondary text-white px-6 md:px-8 py-3 rounded-lg text-lg font-semibold transition-colors inline-flex items-center justify-center">
                                 <i class="fas fa-list mr-2"></i>Back to Exams
                             </a>
                         </div>

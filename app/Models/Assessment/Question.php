@@ -94,7 +94,6 @@ class Question extends Model
         });
     }
 
-
     /**
      * Get formatted options for display
      */
@@ -116,8 +115,6 @@ class Question extends Model
 
         return $formatted;
     }
-
-
 
     /**
      * Get question statistics
@@ -148,12 +145,9 @@ class Question extends Model
 
         $accuracy = $stats['accuracy_rate'];
 
-        if ($accuracy >= 80)
-            return 'easy';
-        if ($accuracy >= 60)
-            return 'medium';
-        if ($accuracy >= 40)
-            return 'hard';
+        if ($accuracy >= 80) return 'easy';
+        if ($accuracy >= 60) return 'medium';
+        if ($accuracy >= 40) return 'hard';
         return 'very_hard';
     }
 
@@ -172,6 +166,7 @@ class Question extends Model
     {
         return self::DIFFICULTY_LEVELS[$this->difficulty_level] ?? ucfirst($this->difficulty_level);
     }
+
     /**
      * Check if question has multiple correct answers
      */
@@ -181,87 +176,151 @@ class Question extends Model
             return false;
         }
 
-        // Decode correct_answers from JSON if it's a string
         $correctAnswers = is_string($this->correct_answers)
             ? json_decode($this->correct_answers, true)
             : $this->correct_answers;
 
         return is_array($correctAnswers) && count($correctAnswers) > 1;
     }
+
     /**
-     * Check if an answer is correct, handling both index-based and text-based correct_answers dynamically.
+     * FIXED: Simplified and more reliable answer checking
      */
     public function isCorrectAnswer($answer)
     {
-        $correctAnswers = is_string($this->correct_answers)
-            ? json_decode($this->correct_answers, true)
-            : $this->correct_answers;
+        // Log for debugging
+        \Log::info('Checking answer', [
+            'question_id' => $this->id,
+            'question_type' => $this->question_type,
+            'user_answer' => $answer,
+            'correct_answers' => $this->correct_answers,
+            'correct_answers_type' => gettype($this->correct_answers)
+        ]);
 
+        // Get correct answers as array
+        $correctAnswers = $this->correct_answers;
+        if (is_string($correctAnswers)) {
+            $correctAnswers = json_decode($correctAnswers, true);
+        }
+        
         if (!is_array($correctAnswers) || empty($correctAnswers)) {
+            \Log::warning('No correct answers defined', ['question_id' => $this->id]);
             return false;
         }
 
-        $options = $this->options ?? [];
+        // Normalize correct answers to integers
+        $correctAnswers = array_map('intval', $correctAnswers);
 
-        // Detect if correct_answers are indices (all numeric) or text values
-        $areIndices = true;
-        foreach ($correctAnswers as $ca) {
-            if (!is_numeric($ca)) {
-                $areIndices = false;
-                break;
-            }
-        }
-
-        if ($areIndices) {
-            // Index-based comparison (standard case)
-            $correctIndices = array_map('intval', $correctAnswers);
-
-            if (is_array($answer)) {
-                $userAnswers = array_map('intval', $answer);
-                sort($userAnswers);
-                sort($correctIndices);
-                return $userAnswers === $correctIndices;
-            } else {
-                return in_array((int) $answer, $correctIndices);
-            }
-        } else {
-            // Text-based comparison (edge case, e.g., manual DB set)
-            $correctTexts = array_map(function ($t) {
-                return strtolower(trim((string) $t));
-            }, $correctAnswers);
-
-            if (is_array($answer)) {
-                // Map user answers (assumed indices) to option texts
-                $userTexts = array_map(function ($i) use ($options) {
-                    return isset($options[$i]) ? strtolower(trim($options[$i])) : '';
-                }, $answer);
-                // Filter out empty mappings (invalid indices)
-                $userTexts = array_filter($userTexts);
-                sort($userTexts);
-                sort($correctTexts);
-                return $userTexts === $correctTexts;
-            } else {
-                // Single answer: if numeric, map to option text; else use as text
-                if (is_numeric($answer)) {
-                    $userText = isset($options[(int) $answer]) ? strtolower(trim($options[(int) $answer])) : '';
+        // Handle different question types
+        switch ($this->question_type) {
+            case 'multiple_choice':
+                return $this->checkMultipleChoiceAnswer($answer, $correctAnswers);
+            
+            case 'true_false':
+                return $this->checkTrueFalseAnswer($answer, $correctAnswers);
+            
+            case 'short_answer':
+            case 'fill_blank':
+                return $this->checkTextAnswer($answer, $correctAnswers);
+            
+            default:
+                // For other types, convert to int and compare
+                $userAnswer = is_array($answer) ? array_map('intval', $answer) : intval($answer);
+                
+                if (is_array($userAnswer)) {
+                    sort($userAnswer);
+                    sort($correctAnswers);
+                    $result = $userAnswer === $correctAnswers;
                 } else {
-                    $userText = strtolower(trim((string) $answer));
+                    $result = in_array($userAnswer, $correctAnswers);
                 }
-                return in_array($userText, $correctTexts);
+                
+                \Log::info('Answer check result', [
+                    'question_id' => $this->id,
+                    'result' => $result,
+                    'user_answer' => $userAnswer,
+                    'correct_answers' => $correctAnswers
+                ]);
+                
+                return $result;
+        }
+    }
+
+    /**
+     * Check multiple choice answer
+     */
+    protected function checkMultipleChoiceAnswer($answer, $correctAnswers)
+    {
+        // Handle array of answers (multiple selections)
+        if (is_array($answer)) {
+            $userAnswers = array_map('intval', $answer);
+            sort($userAnswers);
+            sort($correctAnswers);
+            
+            $result = $userAnswers === $correctAnswers;
+            
+            \Log::info('Multiple choice (multiple) check', [
+                'question_id' => $this->id,
+                'user_answers' => $userAnswers,
+                'correct_answers' => $correctAnswers,
+                'result' => $result
+            ]);
+            
+            return $result;
+        }
+        
+        // Handle single answer
+        $userAnswer = intval($answer);
+        $result = in_array($userAnswer, $correctAnswers);
+        
+        \Log::info('Multiple choice (single) check', [
+            'question_id' => $this->id,
+            'user_answer' => $userAnswer,
+            'correct_answers' => $correctAnswers,
+            'result' => $result
+        ]);
+        
+        return $result;
+    }
+
+    /**
+     * Check true/false answer
+     */
+    protected function checkTrueFalseAnswer($answer, $correctAnswers)
+    {
+        $userAnswer = intval($answer);
+        $result = in_array($userAnswer, $correctAnswers);
+        
+        \Log::info('True/False check', [
+            'question_id' => $this->id,
+            'user_answer' => $userAnswer,
+            'correct_answers' => $correctAnswers,
+            'result' => $result
+        ]);
+        
+        return $result;
+    }
+
+    /**
+     * Check text-based answer
+     */
+    protected function checkTextAnswer($answer, $correctAnswers)
+    {
+        $userAnswer = is_array($answer) ? implode(' ', $answer) : $answer;
+        $userAnswer = strtolower(trim($userAnswer));
+        
+        foreach ($correctAnswers as $correctAnswer) {
+            $correctAnswer = strtolower(trim($correctAnswer));
+            if ($userAnswer === $correctAnswer) {
+                return true;
             }
         }
-
-        // Log unexpected cases for debugging
-        \Illuminate\Support\Facades\Log::warning("Unexpected answer format in Question {$this->id}", [
-            'answer' => $answer,
-            'correct_answers' => $correctAnswers,
-        ]);
+        
         return false;
     }
 
     /**
-     * Calculate partial credit for multiple-choice with multiple correct answers.
-     * Updated to handle text-based correct_answers consistently.
+     * Calculate partial credit for multiple-choice with multiple correct answers
      */
     public function calculatePartialCredit($answer)
     {
@@ -274,35 +333,12 @@ class Question extends Model
                 ? json_decode($this->correct_answers, true)
                 : $this->correct_answers;
 
-            // Use same detection as isCorrectAnswer
-            $areIndices = true;
-            foreach ($correctAnswers as $ca) {
-                if (!is_numeric($ca)) {
-                    $areIndices = false;
-                    break;
-                }
+            $correctAnswers = array_map('intval', $correctAnswers);
+            
+            if (!is_array($answer)) {
+                $answer = [$answer];
             }
-
-            if ($areIndices) {
-                $correctAnswers = array_map('intval', $correctAnswers);
-                if (!is_array($answer)) {
-                    $answer = [$answer];
-                }
-                $answer = array_map('intval', $answer);
-            } else {
-                // Text-based: map answer to texts if indices
-                $options = $this->options ?? [];
-                if (!is_array($answer)) {
-                    $answer = [$answer];
-                }
-                $answerTexts = array_map(function ($a) use ($options) {
-                    return is_numeric($a) && isset($options[(int) $a]) ? strtolower(trim($options[(int) $a])) : strtolower(trim((string) $a));
-                }, $answer);
-                $correctAnswers = array_map(function ($c) {
-                    return strtolower(trim((string) $c));
-                }, $correctAnswers);
-                $answer = $answerTexts; // Override for comparison
-            }
+            $answer = array_map('intval', $answer);
 
             $correctCount = count(array_intersect($answer, $correctAnswers));
             $totalCorrect = count($correctAnswers);

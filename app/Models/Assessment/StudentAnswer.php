@@ -18,7 +18,7 @@ class StudentAnswer extends Model
         'answer',
         'points_earned',
         'is_correct',
-        'time_spent',
+        'time_spent_seconds', // FIXED: Match database column name
         'submitted_at',
         'graded_by',
         'graded_at',
@@ -26,7 +26,8 @@ class StudentAnswer extends Model
     ];
     
     protected $casts = [
-        'answer' => 'array',
+        // FIXED: Don't cast as array - store as JSON string or integer
+        // 'answer' => 'array',  ❌ REMOVED THIS
         'is_correct' => 'boolean',
         'points_earned' => 'decimal:2',
         'submitted_at' => 'datetime',
@@ -103,20 +104,59 @@ class StudentAnswer extends Model
     }
 
     /**
-     * Auto-grade the answer if possible
+     * FIXED: Improved auto-grade with proper answer handling
      */
     public function autoGrade()
     {
         if (!$this->question) {
+            \Log::error('Cannot auto-grade: Question not found', [
+                'student_answer_id' => $this->id,
+                'question_id' => $this->question_id
+            ]);
             return false;
         }
 
         // Only auto-grade certain question types
-        if (in_array($this->question->question_type, ['essay'])) {
+        if (in_array($this->question->question_type, ['essay', 'short_answer'])) {
+            \Log::info('Skipping auto-grade for manual grading question', [
+                'question_id' => $this->question->id,
+                'question_type' => $this->question->question_type
+            ]);
             return false; // Requires manual grading
         }
 
-        $isCorrect = $this->question->isCorrectAnswer($this->answer);
+        \Log::info('Starting auto-grade', [
+            'student_answer_id' => $this->id,
+            'question_id' => $this->question->id,
+            'question_type' => $this->question->question_type,
+            'user_answer_raw' => $this->answer,
+            'user_answer_type' => gettype($this->answer)
+        ]);
+
+        // FIXED: Get the user's answer - it's stored as integer or string
+        $userAnswer = $this->answer;
+        
+        // If it's stored as JSON string (like "[0]"), decode it
+        if (is_string($userAnswer) && (strpos($userAnswer, '[') === 0 || strpos($userAnswer, '{') === 0)) {
+            $decoded = json_decode($userAnswer, true);
+            if (json_last_error() === JSON_ERROR_NONE) {
+                $userAnswer = $decoded;
+            }
+        }
+        
+        // Convert to integer for multiple choice and true/false
+        if (in_array($this->question->question_type, ['multiple_choice', 'true_false'])) {
+            $userAnswer = (int)$userAnswer;
+        }
+
+        \Log::info('Processed user answer', [
+            'question_id' => $this->question->id,
+            'processed_answer' => $userAnswer,
+            'processed_type' => gettype($userAnswer)
+        ]);
+
+        // Check if answer is correct
+        $isCorrect = $this->question->isCorrectAnswer($userAnswer);
         $pointsEarned = 0;
 
         if ($isCorrect === true) {
@@ -125,8 +165,16 @@ class StudentAnswer extends Model
             $pointsEarned = 0;
         } else {
             // For partial credit (e.g., multiple correct answers)
-            $pointsEarned = $this->question->calculatePartialCredit($this->answer);
+            $pointsEarned = $this->question->calculatePartialCredit($userAnswer);
         }
+
+        \Log::info('Auto-grade result', [
+            'student_answer_id' => $this->id,
+            'question_id' => $this->question->id,
+            'is_correct' => $isCorrect,
+            'points_earned' => $pointsEarned,
+            'max_points' => $this->question->points
+        ]);
 
         $this->update([
             'is_correct' => $isCorrect === true,
@@ -146,29 +194,45 @@ class StudentAnswer extends Model
             return $this->answer;
         }
 
+        $answer = $this->answer;
+        
+        // If answer is JSON string, decode it
+        if (is_string($answer) && (strpos($answer, '[') === 0 || strpos($answer, '{') === 0)) {
+            $decoded = json_decode($answer, true);
+            if (json_last_error() === JSON_ERROR_NONE && $decoded !== null) {
+                $answer = $decoded;
+            }
+        }
+
         switch ($this->question->question_type) {
             case 'multiple_choice':
-                if (is_array($this->answer)) {
-                    $options = $this->question->options ?? [];
-                    return collect($this->answer)
+                $options = $this->question->options ?? [];
+                
+                if (is_array($answer)) {
+                    return collect($answer)
                         ->map(function ($index) use ($options) {
-                            return $options[$index] ?? "Option " . ($index + 1);
+                            return isset($options[$index]) 
+                                ? chr(65 + $index) . '. ' . strip_tags($options[$index])
+                                : "Option " . ($index + 1);
                         })
                         ->join(', ');
                 }
-                return $this->question->options[$this->answer] ?? 'Unknown option';
+                
+                $index = (int)$answer;
+                return isset($options[$index]) 
+                    ? chr(65 + $index) . '. ' . strip_tags($options[$index])
+                    : 'Unknown option';
 
             case 'true_false':
-                $options = $this->question->options ?? ['True', 'False'];
-                return $options[$this->answer] ?? 'Unknown';
+                return ((int)$answer === 0) ? 'True' : 'False';
 
             case 'short_answer':
             case 'fill_blank':
             case 'essay':
-                return is_array($this->answer) ? implode(' ', $this->answer) : $this->answer;
+                return is_array($answer) ? implode(' ', $answer) : $answer;
 
             default:
-                return is_array($this->answer) ? json_encode($this->answer) : $this->answer;
+                return is_array($answer) ? json_encode($answer) : $answer;
         }
     }
 

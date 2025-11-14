@@ -63,12 +63,6 @@ class CbtExamInterface extends Component
 
     public function render()
     {
-        \Log::info('CbtExamInterface render called', [
-            'examStarted' => $this->examStarted,
-            'examCompleted' => $this->examCompleted,
-            'questions_count' => count($this->questions ?? [])
-        ]);
-
         return view('livewire.cbt.cbt-exam-interface');
     }
 
@@ -146,8 +140,6 @@ class CbtExamInterface extends Component
                 previousIndex: $previousIndex, 
                 currentIndex: $this->currentQuestionIndex
             );
-            
-            \Log::info('Moved to next question', ['index' => $this->currentQuestionIndex]);
         }
     }
 
@@ -164,8 +156,6 @@ class CbtExamInterface extends Component
                 previousIndex: $previousIndex, 
                 currentIndex: $this->currentQuestionIndex
             );
-            
-            \Log::info('Moved to previous question', ['index' => $this->currentQuestionIndex]);
         }
     }
 
@@ -182,8 +172,6 @@ class CbtExamInterface extends Component
                 previousIndex: $previousIndex, 
                 currentIndex: $this->currentQuestionIndex
             );
-            
-            \Log::info('Moved to question', ['index' => $index]);
         }
     }
 
@@ -201,12 +189,6 @@ class CbtExamInterface extends Component
             
             $this->progressTracking['question_durations'][$questionIndex] = $duration;
             $this->progressTracking['total_active_time'] += $duration;
-            
-            \Log::info('Question time tracked', [
-                'question_index' => $questionIndex,
-                'duration' => $duration,
-                'total_active_time' => $this->progressTracking['total_active_time']
-            ]);
         }
     }
 
@@ -225,11 +207,6 @@ class CbtExamInterface extends Component
         } else {
             $this->flaggedQuestions[] = $questionId;
         }
-
-        \Log::info('Question flag toggled', [
-            'questionId' => $questionId,
-            'flagged' => in_array($questionId, $this->flaggedQuestions)
-        ]);
     }
 
     public function retakeExam()
@@ -253,41 +230,17 @@ class CbtExamInterface extends Component
 
         $this->securityViolations[] = $violation;
 
-        \Log::warning('CBT Security Violation', [
-            'user_id' => Auth::id(),
-            'assessment_id' => $this->assessment->id,
-            'violation' => $violation
-        ]);
-
-        // Track pause for security violations
         if ($type === 'app_switch' || $type === 'visibility_change') {
             $this->progressTracking['pause_count']++;
         }
 
-        // Enhanced security - force fullscreen on violations
         if ($type === 'fullscreen_exit') {
             $this->dispatch('forceFullscreen');
         }
 
-        // Auto-submit if too many violations
         if (count($this->securityViolations) >= 10) {
             session()->flash('error', 'Too many security violations detected. Exam auto-submitted.');
             $this->submitExam();
-        }
-    }
-
-    public function handleVisibilityChange($visible)
-    {
-        if (!$visible && $this->examStarted && !$this->examCompleted) {
-            $this->handleSecurityViolation('visibility_change', 'Tab switched or window minimized');
-            $this->dispatch('forceFullscreen');
-        }
-    }
-
-    public function handleBeforeUnload()
-    {
-        if ($this->examStarted && !$this->examCompleted) {
-            $this->handleSecurityViolation('navigation_attempt', 'User attempted to leave page');
         }
     }
 
@@ -295,56 +248,56 @@ class CbtExamInterface extends Component
     {
         \Log::info('startExam method called', [
             'user_id' => Auth::id(),
-            'assessment_id' => $this->assessment->id,
-            'current_time' => now()->toDateTimeString()
+            'assessment_id' => $this->assessment->id
         ]);
 
         try {
             $this->examStarted = true;
             $this->isFullscreenForced = true;
             $this->startTime = Carbon::now();
-            $this->startQuestionTimer(); // Start tracking first question
-            
-            \Log::info('Exam started successfully', [
-                'examStarted' => $this->examStarted,
-                'startTime' => $this->startTime->toDateTimeString()
-            ]);
+            $this->startQuestionTimer();
             
             $this->dispatch('startTimer');
             $this->dispatch('markExamStarted');
             
+            \Log::info('Exam started successfully', [
+                'start_time' => $this->startTime,
+                'user_id' => Auth::id()
+            ]);
+            
         } catch (\Exception $e) {
             \Log::error('Error starting CBT exam', [
-                'user_id' => Auth::id(),
-                'assessment_id' => $this->assessment->id,
                 'error' => $e->getMessage(),
                 'trace' => $e->getTraceAsString()
             ]);
             
-            session()->flash('error', 'Failed to start exam. Please try again. Error: ' . $e->getMessage());
+            session()->flash('error', 'Failed to start exam. Please try again.');
         }
     }
 
+    /**
+     * Save answer when user selects it
+     */
     public function saveAnswer($questionId, $answer)
     {
         try {
-            if (is_numeric($answer)) {
-                $answer = (int) $answer;
-            }
+            // Convert to integer
+            $answer = (int)$answer;
             
+            // Store in component state
             $this->answers[$questionId] = $answer;
             
             \Log::info('Answer saved', [
-                'user_id' => Auth::id(),
                 'question_id' => $questionId,
-                'answer' => $answer
+                'answer' => $answer,
+                'answer_type' => gettype($answer)
             ]);
             
+            // Dispatch event
             $this->dispatch('answerSaved', questionId: $questionId, answer: $answer);
             
         } catch (\Exception $e) {
             \Log::error('Error saving answer', [
-                'user_id' => Auth::id(),
                 'question_id' => $questionId,
                 'error' => $e->getMessage()
             ]);
@@ -361,67 +314,106 @@ class CbtExamInterface extends Component
         $this->showSubmitModal = false;
     }
 
+    /**
+     * FIXED: Submit the exam with proper time tracking and grading
+     */
     public function submitExam()
     {
         if ($this->examCompleted) {
+            \Log::warning('Exam already completed', ['user_id' => Auth::id()]);
             return;
         }
 
-        // Track final question time
         $this->trackQuestionTime($this->currentQuestionIndex);
-
         $this->showSubmitModal = false;
 
-        \Log::info('Submitting exam', [
-            'user_id' => Auth::id(),
-            'assessment_id' => $this->assessment->id,
-            'answers_count' => count(array_filter($this->answers, fn($a) => $a !== null))
-        ]);
-
         try {
+            // FIXED: Calculate actual time spent
+            $timeSpent = 0;
+            if ($this->startTime) {
+                $timeSpent = Carbon::now()->diffInSeconds($this->startTime);
+            }
+
+            \Log::info('Starting exam submission', [
+                'user_id' => Auth::id(),
+                'assessment_id' => $this->assessment->id,
+                'attempt_number' => $this->attemptNumber,
+                'start_time' => $this->startTime,
+                'time_spent_seconds' => $timeSpent,
+                'answers_count' => count(array_filter($this->answers, fn($a) => $a !== null))
+            ]);
+
             $totalPoints = 0;
             $correctAnswers = 0;
             $totalQuestions = count($this->questions);
-            $timeSpent = $this->startTime ? Carbon::now()->diffInSeconds($this->startTime) : 0;
 
-            // Create detailed submission data
-            $submissionData = [
-                'progress_tracking' => $this->progressTracking,
-                'security_violations' => $this->securityViolations,
-                'flagged_questions' => $this->flaggedQuestions,
-                'navigation_pattern' => $this->getNavigationPattern(),
-                'time_analytics' => $this->getTimeAnalytics()
-            ];
+            // Process each question
+            foreach ($this->questions as $questionData) {
+                $questionId = $questionData['id'];
+                $userAnswer = $this->answers[$questionId] ?? null;
 
-            foreach ($this->questions as $question) {
-                $answer = $this->answers[$question['id']] ?? null;
-                
+                \Log::info('Processing question', [
+                    'question_id' => $questionId,
+                    'user_answer' => $userAnswer,
+                    'user_answer_type' => gettype($userAnswer)
+                ]);
+
+                // FIXED: Create student answer with proper data
                 $studentAnswer = StudentAnswer::create([
                     'user_id' => Auth::id(),
                     'assessment_id' => $this->assessment->id,
-                    'question_id' => $question['id'],
+                    'question_id' => $questionId,
                     'attempt_number' => $this->attemptNumber,
-                    'answer' => $answer,
-                    'time_spent' => $timeSpent,
+                    'answer' => $userAnswer, // Store as integer directly
+                    'time_spent_seconds' => max(0, $timeSpent), // Ensure non-negative
                     'submitted_at' => now(),
-                    // Store additional tracking data
-                    'question_time_spent' => $this->progressTracking['question_durations'][$this->getQuestionIndex($question['id'])] ?? 0,
-                    'was_flagged' => in_array($question['id'], $this->flaggedQuestions)
                 ]);
 
-                // Auto-grade the answer
-                $studentAnswer->autoGrade();
-                $studentAnswer->refresh();
+                \Log::info('StudentAnswer created', [
+                    'id' => $studentAnswer->id,
+                    'answer_stored' => $studentAnswer->answer,
+                    'answer_type' => gettype($studentAnswer->answer)
+                ]);
 
-                if ($studentAnswer->is_correct) {
-                    $correctAnswers++;
+                // FIXED: Auto-grade the answer
+                $graded = $studentAnswer->autoGrade();
+                
+                if ($graded) {
+                    $studentAnswer->refresh();
+                    
+                    \Log::info('Question graded', [
+                        'question_id' => $questionId,
+                        'is_correct' => $studentAnswer->is_correct,
+                        'points_earned' => $studentAnswer->points_earned
+                    ]);
+
+                    if ($studentAnswer->is_correct) {
+                        $correctAnswers++;
+                    }
+                    $totalPoints += $studentAnswer->points_earned ?? 0;
+                } else {
+                    \Log::warning('Question not graded', [
+                        'question_id' => $questionId,
+                        'reason' => 'autoGrade returned false'
+                    ]);
                 }
-                $totalPoints += $studentAnswer->points_earned ?? 0;
             }
 
-            $maxPoints = collect($this->questions)->sum('points') ?: 100;
+            // Calculate results
+            $maxPoints = collect($this->questions)->sum('points') ?: $this->assessment->max_score ?: 100;
             $percentage = $maxPoints > 0 ? round(($totalPoints / $maxPoints) * 100, 1) : 0;
             $passed = $percentage >= $this->assessment->pass_percentage;
+
+            \Log::info('Exam grading completed', [
+                'user_id' => Auth::id(),
+                'total_questions' => $totalQuestions,
+                'correct_answers' => $correctAnswers,
+                'total_points' => $totalPoints,
+                'max_points' => $maxPoints,
+                'percentage' => $percentage,
+                'passed' => $passed,
+                'time_spent' => $timeSpent
+            ]);
 
             $this->results = [
                 'total_questions' => $totalQuestions,
@@ -438,34 +430,30 @@ class CbtExamInterface extends Component
                 'navigation_count' => $this->progressTracking['navigation_count']
             ];
 
-            // Store detailed results for analytics
-            $this->storeDetailedResults($submissionData);
-
             $this->examCompleted = true;
             $this->isFullscreenForced = false;
             $this->dispatch('examCompleted');
             $this->dispatch('allowFullscreenExit');
             
-            \Log::info('Exam submitted successfully', [
+            \Log::info('Exam submission completed successfully', [
+                'user_id' => Auth::id(),
                 'results' => $this->results
             ]);
             
         } catch (\Exception $e) {
-            \Log::error('Error submitting CBT exam', [
+            \Log::error('Error submitting exam', [
                 'user_id' => Auth::id(),
-                'assessment_id' => $this->assessment->id,
                 'error' => $e->getMessage(),
                 'trace' => $e->getTraceAsString()
             ]);
             
-            session()->flash('error', 'Failed to submit exam. Please contact support.');
+            session()->flash('error', 'Failed to submit exam: ' . $e->getMessage());
             
-            // Fallback results
             $this->results = [
                 'total_questions' => count($this->questions),
                 'correct_answers' => 0,
                 'total_points' => 0,
-                'max_points' => collect($this->questions)->sum('points') ?: 100,
+                'max_points' => 100,
                 'percentage' => 0,
                 'passed' => false,
                 'attempt_number' => $this->attemptNumber,
@@ -491,11 +479,10 @@ class CbtExamInterface extends Component
 
     protected function getNavigationPattern()
     {
-        // Return pattern of question navigation for analysis
         return [
             'total_navigations' => $this->progressTracking['navigation_count'],
-            'back_navigations' => 0, // Could track this separately
-            'jump_navigations' => 0, // Could track this separately
+            'back_navigations' => 0,
+            'jump_navigations' => 0,
         ];
     }
 
@@ -521,18 +508,6 @@ class CbtExamInterface extends Component
         ];
     }
 
-    protected function storeDetailedResults($submissionData)
-    {
-        // Store additional analytics data
-        // This could be stored in a separate table for detailed analytics
-        \Log::info('Detailed submission data', [
-            'user_id' => Auth::id(),
-            'assessment_id' => $this->assessment->id,
-            'submission_data' => $submissionData
-        ]);
-    }
-
-    // Progress tracking helper methods
     public function getProgressStats()
     {
         $answered = $this->getAnsweredQuestionsCount();
@@ -557,7 +532,6 @@ class CbtExamInterface extends Component
         ];
     }
 
-    // Helper methods (existing)
     public function getCurrentQuestion()
     {
         if ($this->currentQuestionIndex >= 0 && $this->currentQuestionIndex < count($this->questions)) {
@@ -603,7 +577,6 @@ class CbtExamInterface extends Component
         return $this->currentQuestionIndex === count($this->questions) - 1;
     }
 
-    // Accessibility helper methods
     public function getEstimatedCompletionTime()
     {
         $stats = $this->getProgressStats();
