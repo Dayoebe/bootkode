@@ -12,6 +12,7 @@
         "doctrine/inflector": "^2.1",
         "endroid/qr-code": "^5.0",
         "ezyang/htmlpurifier": "^4.18",
+        "ifsnop/mysqldump-php": "^2.12",
         "intervention/image": "^3.11",
         "laravel/framework": "^11.46",
         "laravel/pail": "^1.2",
@@ -27,6 +28,7 @@
         "socialiteproviders/facebook": "^4.1",
         "socialiteproviders/google": "^4.1",
         "socialiteproviders/twitter": "^4.1",
+        "spatie/db-dumper": "^3.8",
         "spatie/laravel-activitylog": "^4.10",
         "spatie/laravel-image-optimizer": "^1.8",
         "spatie/laravel-permission": "^6.21"
