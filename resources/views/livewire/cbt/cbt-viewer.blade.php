@@ -15,7 +15,7 @@
     </div>
 
     @if(!$viewDetails)
-        <!-- Results Overview -->
+        <!-- Results Overview (unchanged) -->
         <div class="bg-themed-secondary rounded-lg shadow-lg border border-themed-primary">
             <div class="bg-themed-secondary border-b border-themed-secondary px-6 py-4 rounded-t-lg">
                 <h6 class="text-lg font-semibold text-accent-themed-primary m-0">Your CBT Assessments</h6>
@@ -85,7 +85,7 @@
             </div>
         </div>
     @else
-        <!-- Detailed View with Enhanced MathJax Support -->
+        <!-- Detailed View with MathJax Support -->
         <div class="bg-themed-secondary rounded-lg shadow-lg animate-fade-in border border-themed-primary">
             <div class="bg-accent-themed-primary text-white px-6 py-4 rounded-t-lg">
                 <h5 class="text-xl font-semibold m-0">
@@ -175,9 +175,18 @@
                     </table>
                 </div>
 
-                <!-- Attempt Details Modal with Enhanced MathJax Support -->
+                <!-- Attempt Details Modal with MathJax -->
                 @if($selectedAttempt)
-                    <div class="fixed inset-0 bg-black bg-opacity-50 dark:bg-black dark:bg-opacity-70 z-50 flex items-center justify-center p-4">
+                    <div class="fixed inset-0 bg-black bg-opacity-50 dark:bg-black dark:bg-opacity-70 z-50 flex items-center justify-center p-4" 
+                         x-data="{ mounted: false }"
+                         x-init="
+                            mounted = true;
+                            $nextTick(() => {
+                                if (typeof MathJax !== 'undefined' && MathJax.typesetPromise) {
+                                    MathJax.typesetPromise().catch(err => console.error('MathJax error:', err));
+                                }
+                            });
+                         ">
                         <div class="bg-themed-secondary rounded-lg max-w-7xl w-full max-h-screen overflow-hidden animate-fade-in-down border border-themed-primary">
                             <div class="flex justify-between items-center px-6 py-4 border-b border-themed-secondary">
                                 <h5 class="text-xl font-semibold text-themed-primary">
@@ -218,11 +227,11 @@
                                     </div>
                                 </div>
 
-                                <!-- Question-by-Question Review with Enhanced MathJax -->
+                                <!-- Question-by-Question Review with MathJax -->
                                 <h6 class="text-lg font-semibold text-themed-primary mb-4">Question Review</h6>
                                 @foreach($selectedAttempt['answers'] as $questionId => $answer)
                                     @php $question = $answer->question; @endphp
-                                    <div class="border {{ $answer->is_correct ? 'border-green-300 dark:border-green-600' : 'border-red-300 dark:border-red-600' }} rounded-lg mb-4">
+                                    <div class="border-2 rounded-lg mb-4 {{ $answer->is_correct ? 'border-green-300 dark:border-green-600' : 'border-red-300 dark:border-red-600' }}">
                                         <div class="flex justify-between items-center px-4 py-3 border-b {{ $answer->is_correct ? 'border-green-200 dark:border-green-700 bg-green-50 dark:bg-green-900/30' : 'border-red-200 dark:border-red-700 bg-red-50 dark:bg-red-900/30' }}">
                                             <span class="font-semibold text-themed-primary">Question {{ $loop->iteration }}</span>
                                             <div class="flex space-x-2">
@@ -233,8 +242,8 @@
                                             </div>
                                         </div>
                                         <div class="p-4">
-                                            <!-- Question Text with Enhanced MathJax -->
-                                            <div class="font-semibold text-themed-primary mb-4 prose prose-sm max-w-none dark:prose-invert math-content mathjax-processed">
+                                            <!-- Question Text with MathJax -->
+                                            <div class="font-semibold text-themed-primary mb-4 prose prose-sm max-w-none dark:prose-invert math-content">
                                                 {!! $question->question_text !!}
                                             </div>
                                             
@@ -243,7 +252,7 @@
                                                     @foreach($question->options as $index => $option)
                                                         <div class="mb-2">
                                                             <span class="mr-2 font-semibold">{{ chr(65 + $index) }}.</span>
-                                                            <span class="prose prose-sm max-w-none dark:prose-invert inline math-content mathjax-processed @if($answer->answer == $index) font-semibold 
+                                                            <span class="prose prose-sm max-w-none dark:prose-invert inline math-content @if($answer->answer == $index) font-semibold 
                                                                   @if($answer->is_correct) text-green-600 dark:text-green-400 @else text-red-600 dark:text-red-400 @endif
                                                                   @elseif(in_array($index, $question->correct_answers)) text-green-600 dark:text-green-400 @else text-themed-primary @endif">
                                                                 {!! $option !!}
@@ -292,7 +301,7 @@
                                             @if($question->explanation)
                                                 <div class="mt-4 p-4 bg-themed-tertiary rounded-lg border border-themed-secondary">
                                                     <div class="text-sm font-semibold text-themed-secondary mb-1">Explanation:</div>
-                                                    <div class="text-sm text-themed-primary prose prose-sm max-w-none dark:prose-invert math-content mathjax-processed">
+                                                    <div class="text-sm text-themed-primary prose prose-sm max-w-none dark:prose-invert math-content">
                                                         {!! $question->explanation !!}
                                                     </div>
                                                 </div>
@@ -314,160 +323,160 @@
             </div>
         </div>
     @endif
+
     @push('scripts')
 <script>
-// Enhanced MathJax configuration for CBT Viewer with better Livewire integration
-function initializeCbtViewerMathJax() {
-    if (typeof window.MathJax === 'undefined') {
-        console.warn('MathJax not loaded, loading now...');
-        loadMathJax();
-        return;
-    }
+// Enhanced MathJax configuration for CBT Viewer
+(function() {
+    'use strict';
     
-    configureAndProcessMath();
-}
+    // Configuration
+    const MATHJAX_RETRY_DELAY = 500;
+    const MATHJAX_MAX_RETRIES = 10;
+    let mathJaxRetryCount = 0;
 
-function loadMathJax() {
-    const script = document.createElement('script');
-    script.src = 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
-    script.async = true;
-    script.onload = configureAndProcessMath;
-    document.head.appendChild(script);
-}
-
-function configureAndProcessMath() {
-    // Configure MathJax
-    window.MathJax = {
-        tex: {
-            inlineMath: [['$', '$'], ['\\(', '\\)']],
-            displayMath: [['$$', '$$'], ['\\[', '\\]']],
-            processEscapes: true,
-            processEnvironments: true,
-            tags: 'ams'
-        },
-        options: {
-            skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
-            renderActions: {
-                addMenu: [0, '', '']
+    // Wait for MathJax to be ready
+    function waitForMathJax() {
+        return new Promise((resolve, reject) => {
+            if (typeof MathJax !== 'undefined' && typeof MathJax.typesetPromise !== 'undefined') {
+                resolve();
+            } else if (mathJaxRetryCount < MATHJAX_MAX_RETRIES) {
+                mathJaxRetryCount++;
+                setTimeout(() => {
+                    waitForMathJax().then(resolve).catch(reject);
+                }, MATHJAX_RETRY_DELAY);
+            } else {
+                reject(new Error('MathJax failed to load'));
             }
-        },
-        startup: {
-            pageReady: function() {
-                return MathJax.startup.defaultPageReady().then(function() {
-                    console.log('MathJax initialized for CBT Viewer');
+        });
+    }
+
+    // Process all math content
+    function processAllMathContent() {
+        if (typeof MathJax === 'undefined' || !MathJax.typesetPromise) {
+            console.warn('MathJax not ready yet, retrying...');
+            setTimeout(processAllMathContent, MATHJAX_RETRY_DELAY);
+            return;
+        }
+
+        const mathElements = document.querySelectorAll('.math-content');
+        if (mathElements.length > 0) {
+            console.log('Processing', mathElements.length, 'math elements');
+            
+            // Remove any existing MathJax processing markers
+            mathElements.forEach(element => {
+                element.classList.remove('mathjax-processed', 'mathjax-processing');
+                // Clear any existing MathJax containers
+                const mjxContainers = element.querySelectorAll('mjx-container');
+                mjxContainers.forEach(container => container.remove());
+            });
+
+            MathJax.typesetPromise(mathElements)
+                .then(() => {
+                    console.log('MathJax processing completed successfully');
+                    mathElements.forEach(element => {
+                        element.classList.add('mathjax-processed');
+                    });
+                })
+                .catch(err => {
+                    console.error('MathJax typeset error:', err);
+                    // Retry on error
+                    setTimeout(processAllMathContent, MATHJAX_RETRY_DELAY * 2);
+                });
+        }
+    }
+
+    // Initialize MathJax integration
+    async function initMathJax() {
+        try {
+            await waitForMathJax();
+            console.log('MathJax is ready');
+            processAllMathContent();
+        } catch (error) {
+            console.error('Failed to initialize MathJax:', error);
+        }
+    }
+
+    // Livewire integration
+    document.addEventListener('livewire:init', function() {
+        // Process math when component updates
+        Livewire.hook('morph.updated', function({ el, component }) {
+            setTimeout(() => {
+                if (typeof MathJax !== 'undefined' && MathJax.typesetPromise) {
                     processAllMathContent();
-                });
-            }
-        }
-    };
-
-    // Initialize MathJax if it hasn't been initialized yet
-    if (window.MathJax && typeof window.MathJax.startup === 'object') {
-        window.MathJax.startup.promise.then(() => {
-            processAllMathContent();
-        });
-    }
-}
-
-function processAllMathContent() {
-    if (typeof MathJax === 'undefined' || !MathJax.typesetPromise) {
-        console.warn('MathJax not ready yet, retrying...');
-        setTimeout(processAllMathContent, 500);
-        return;
-    }
-
-    const mathElements = document.querySelectorAll('.math-content');
-    if (mathElements.length > 0) {
-        console.log('Processing math elements:', mathElements.length);
-        
-        // Remove any existing MathJax processing markers
-        mathElements.forEach(element => {
-            element.classList.remove('mathjax-processed', 'mathjax-processing');
-        });
-
-        MathJax.typesetPromise(mathElements)
-            .then(() => {
-                console.log('MathJax processing completed successfully');
-                mathElements.forEach(element => {
-                    element.classList.add('mathjax-processed');
-                });
-            })
-            .catch(err => {
-                console.error('MathJax typeset error:', err);
-                // Retry on error
-                setTimeout(processAllMathContent, 1000);
-            });
-    }
-}
-
-// Livewire specific integration
-document.addEventListener('livewire:init', function() {
-    // Process math when component updates
-    Livewire.hook('morph.updated', function({ el, component }) {
-        setTimeout(() => {
-            if (typeof MathJax !== 'undefined' && MathJax.typesetPromise) {
-                processAllMathContent();
-            }
-        }, 100);
-    });
-
-    // Process math when attempt details modal opens
-    Livewire.on('attemptDetailsLoaded', function() {
-        setTimeout(() => {
-            processAllMathContent();
-        }, 300);
-    });
-});
-
-// MutationObserver for dynamic content
-const observer = new MutationObserver(function(mutations) {
-    let hasMathContent = false;
-    
-    mutations.forEach(function(mutation) {
-        if (mutation.type === 'childList') {
-            mutation.addedNodes.forEach(function(node) {
-                if (node.nodeType === 1) {
-                    if (node.classList && node.classList.contains('math-content')) {
-                        hasMathContent = true;
-                    }
-                    if (node.querySelector && node.querySelector('.math-content')) {
-                        hasMathContent = true;
-                    }
                 }
-            });
+            }, 100);
+        });
+
+        // Process math when modal opens
+        Livewire.on('attemptDetailsLoaded', function() {
+            setTimeout(() => {
+                processAllMathContent();
+            }, 300);
+        });
+    });
+
+    // MutationObserver for dynamic content
+    const observer = new MutationObserver(function(mutations) {
+        let hasMathContent = false;
+        
+        mutations.forEach(function(mutation) {
+            if (mutation.type === 'childList') {
+                mutation.addedNodes.forEach(function(node) {
+                    if (node.nodeType === 1) {
+                        if (node.classList && node.classList.contains('math-content')) {
+                            hasMathContent = true;
+                        }
+                        if (node.querySelector && node.querySelector('.math-content')) {
+                            hasMathContent = true;
+                        }
+                    }
+                });
+            }
+        });
+        
+        if (hasMathContent) {
+            setTimeout(processAllMathContent, 200);
         }
     });
-    
-    if (hasMathContent) {
-        setTimeout(processAllMathContent, 200);
-    }
-});
 
-// Start observing when DOM is ready
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', function() {
+    // Start observing when DOM is ready
+    function startObserving() {
         observer.observe(document.body, {
             childList: true,
             subtree: true
         });
-        initializeCbtViewerMathJax();
-    });
-} else {
-    observer.observe(document.body, {
-        childList: true,
-        subtree: true
-    });
-    initializeCbtViewerMathJax();
-}
+    }
 
-// Also process on window load
-window.addEventListener('load', function() {
-    setTimeout(processAllMathContent, 1000);
-});
+    // Initialize everything
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', function() {
+            startObserving();
+            initMathJax();
+        });
+    } else {
+        startObserving();
+        initMathJax();
+    }
+
+    // Also process on window load as a fallback
+    window.addEventListener('load', function() {
+        setTimeout(processAllMathContent, 1000);
+    });
+
+    // Force process every 3 seconds for the first 15 seconds (for slow-loading pages)
+    let forceProcessCount = 0;
+    const forceProcessInterval = setInterval(() => {
+        forceProcessCount++;
+        processAllMathContent();
+        if (forceProcessCount >= 5) {
+            clearInterval(forceProcessInterval);
+        }
+    }, 3000);
+})();
 </script>
 @endpush
 
-    
     <style>
         .animate-fade-in {
             animation: fadeIn 0.3s ease-in-out;
@@ -492,7 +501,8 @@ window.addEventListener('load', function() {
                 transform: translateY(0);
             }
         }
-
+    
+    
         /* Enhanced MathJax styling */
         .math-content mjx-container {
             display: inline-block !important;
