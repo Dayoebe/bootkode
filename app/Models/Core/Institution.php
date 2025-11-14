@@ -7,6 +7,11 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Str;
 use App\Models\Admin\InstitutionUser;
+use App\Models\Admin\BulkEnrollmentBatch;
+use App\Models\Admin\InstitutionLicenseHistory;
+use App\Models\Learning\CourseEnrollment;
+Use App\Models\Credentials\Certificate;
+
 
 class Institution extends Model
 {
