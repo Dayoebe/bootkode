@@ -251,12 +251,12 @@ class StudentAnswer extends Model
      */
     public function getFormattedTimeSpentAttribute()
     {
-        if (!$this->time_spent) {
+        if (!$this->time_spent_seconds) {
             return 'Not recorded';
         }
 
-        $minutes = floor($this->time_spent / 60);
-        $seconds = $this->time_spent % 60;
+        $minutes = floor($this->time_spent_seconds / 60);
+        $seconds = $this->time_spent_seconds % 60;
 
         if ($minutes > 0) {
             return $minutes . 'm ' . $seconds . 's';

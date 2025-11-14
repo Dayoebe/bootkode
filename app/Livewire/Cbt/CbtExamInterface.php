@@ -367,14 +367,9 @@ class CbtExamInterface extends Component
                     'question_id' => $questionId,
                     'attempt_number' => $this->attemptNumber,
                     'answer' => $userAnswer, // Store as integer directly
+                    'time_spent_seconds' => $timeSpent, // Now we know the column name!
                     'submitted_at' => now(),
                 ]);
-                
-                // TODO: Add time_spent once we confirm column name
-                // Uncomment one of these based on your database:
-                // $studentAnswer->time_spent = $timeSpent;
-                // $studentAnswer->time_spent_seconds = $timeSpent;
-                // $studentAnswer->save();
 
                 \Log::info('StudentAnswer created', [
                     'id' => $studentAnswer->id,

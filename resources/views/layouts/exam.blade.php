@@ -6,17 +6,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>{{ config('app.name', 'CBT System') }} - Exam Mode</title>
-    
+
     <!-- Meta tags and analytics scripts remain the same -->
     <meta name="google-adsense-account" content="ca-pub-3911204427206897">
     <script async src="https://www.googletagmanager.com/gtag/js?id=AW-10833921436"></script>
     <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', 'AW-10833921436');
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+        gtag('config', 'AW-10833921436');
     </script>
-    
+
     <!-- Security and cache headers remain the same -->
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
@@ -28,29 +28,29 @@
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=inter:400,500,600,700&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
+
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @livewireStyles
 
     <!-- MathJax Configuration -->
     <script>
-    window.MathJax = {
-      tex: {
-        inlineMath: [['$', '$'], ['\\(', '\\)']],
-        displayMath: [['$$', '$$'], ['\\[', '\\]']]
-      },
-      svg: {
-        fontCache: 'global'
-      },
-      startup: {
-        pageReady: function() {
-          return MathJax.startup.defaultPageReady().then(function() {
-            // Silent loading - no console logs
-            document.dispatchEvent(new Event('mathjax-loaded'));
-          });
-        }
-      }
-    };
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']]
+            },
+            svg: {
+                fontCache: 'global'
+            },
+            startup: {
+                pageReady: function () {
+                    return MathJax.startup.defaultPageReady().then(function () {
+                        // Silent loading - no console logs
+                        document.dispatchEvent(new Event('mathjax-loaded'));
+                    });
+                }
+            }
+        };
     </script>
     <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" async></script>
 
@@ -65,15 +65,29 @@
             --font-size-2xl: 24px;
         }
 
-        .font-size-sm { font-size: 14px !important; }
-        .font-size-base { font-size: 16px !important; }
-        .font-size-lg { font-size: 18px !important; }
-        .font-size-xl { font-size: 20px !important; }
-        .font-size-2xl { font-size: 24px !important; }
+        .font-size-sm {
+            font-size: 14px !important;
+        }
+
+        .font-size-base {
+            font-size: 16px !important;
+        }
+
+        .font-size-lg {
+            font-size: 18px !important;
+        }
+
+        .font-size-xl {
+            font-size: 20px !important;
+        }
+
+        .font-size-2xl {
+            font-size: 24px !important;
+        }
 
         /* MathJax styling for exam interface */
-        .math-content mjx-container { 
-            display: inline-block !important; 
+        .math-content mjx-container {
+            display: inline-block !important;
             margin: 0.2em 0;
         }
 
@@ -110,7 +124,10 @@
         }
 
         /* High contrast mode */
-        .high-contrast { filter: contrast(150%) !important; }
+        .high-contrast {
+            filter: contrast(150%) !important;
+        }
+
         .high-contrast * {
             border-color: #000 !important;
             background: #fff !important;
@@ -118,7 +135,9 @@
         }
 
         /* Dark mode enhancements */
-        .dark { color-scheme: dark; }
+        .dark {
+            color-scheme: dark;
+        }
 
         /* Keyboard navigation focus indicators */
         .keyboard-nav *:focus {
@@ -127,7 +146,9 @@
         }
 
         /* Progress bar animations */
-        .progress-animate { transition: width 0.5s ease-in-out; }
+        .progress-animate {
+            transition: width 0.5s ease-in-out;
+        }
 
         /* Browser lockdown styles */
         .lockdown-active {
@@ -140,15 +161,28 @@
             background: white !important;
         }
 
-        .dark .lockdown-active { background: #1f2937 !important; }
+        .dark .lockdown-active {
+            background: #1f2937 !important;
+        }
 
         /* Mobile responsive adjustments */
         @media (max-width: 768px) {
-            .mobile-stack { flex-direction: column !important; }
-            .mobile-full { width: 100% !important; }
-            .mobile-hidden { display: none !important; }
-            .mobile-text-sm { font-size: 14px !important; }
-            
+            .mobile-stack {
+                flex-direction: column !important;
+            }
+
+            .mobile-full {
+                width: 100% !important;
+            }
+
+            .mobile-hidden {
+                display: none !important;
+            }
+
+            .mobile-text-sm {
+                font-size: 14px !important;
+            }
+
             .math-content {
                 word-wrap: break-word;
                 overflow-wrap: break-word;
@@ -166,7 +200,9 @@
 
         /* Print prevention */
         @media print {
-            body { display: none !important; }
+            body {
+                display: none !important;
+            }
         }
 
         /* Timer critical state */
@@ -176,10 +212,13 @@
         }
 
         @keyframes pulse-red {
-            0%, 100% {
+
+            0%,
+            100% {
                 background-color: rgb(185 28 28);
                 color: white;
             }
+
             50% {
                 background-color: rgb(239 68 68);
                 color: white;
@@ -206,8 +245,15 @@
         }
 
         @keyframes criticalPulse {
-            0%, 100% { background-color: rgba(220, 38, 38, 0.95); }
-            50% { background-color: rgba(185, 28, 28, 0.98); }
+
+            0%,
+            100% {
+                background-color: rgba(220, 38, 38, 0.95);
+            }
+
+            50% {
+                background-color: rgba(185, 28, 28, 0.98);
+            }
         }
 
         /* Application lockdown prevention */
@@ -223,8 +269,13 @@
             pointer-events: none;
         }
 
-        body.app-locked *::selection { background: transparent; }
-        body.app-locked *::-moz-selection { background: transparent; }
+        body.app-locked *::selection {
+            background: transparent;
+        }
+
+        body.app-locked *::-moz-selection {
+            background: transparent;
+        }
     </style>
 
     @stack('styles')
@@ -232,20 +283,23 @@
 
 <body class="h-full bg-gray-50 dark:bg-gray-900 font-sans antialiased transition-colors duration-300" id="examBody">
     <!-- All existing accessibility panels, overlays, and buttons remain the same -->
-    
+
     {{-- Accessibility Settings Panel --}}
-    <div id="accessibilityPanel" class="fixed top-4 left-4 bg-white dark:bg-gray-800 rounded-lg shadow-lg p-4 z-50 transform -translate-x-full transition-transform duration-300">
+    <div id="accessibilityPanel"
+        class="fixed top-4 left-4 bg-white dark:bg-gray-800 rounded-lg shadow-lg p-4 z-50 transform -translate-x-full transition-transform duration-300">
         <div class="flex items-center justify-between mb-3">
             <h3 class="font-semibold text-gray-900 dark:text-gray-100">Accessibility</h3>
-            <button onclick="examInterface.toggleAccessibilityPanel()" class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200">
+            <button onclick="examInterface.toggleAccessibilityPanel()"
+                class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200">
                 <i class="fas fa-times"></i>
             </button>
         </div>
-        
+
         <div class="space-y-3">
             <div>
                 <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Font Size</label>
-                <select id="fontSizeSelect" onchange="examInterface.changeFontSize(this.value)" class="w-full px-2 py-1 border rounded text-sm dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                <select id="fontSizeSelect" onchange="examInterface.changeFontSize(this.value)"
+                    class="w-full px-2 py-1 border rounded text-sm dark:bg-gray-700 dark:border-gray-600 dark:text-white">
                     <option value="sm">Small</option>
                     <option value="base" selected>Normal</option>
                     <option value="lg">Large</option>
@@ -253,24 +307,26 @@
                     <option value="2xl">Huge</option>
                 </select>
             </div>
-            
+
             <div>
                 <label class="flex items-center text-sm text-gray-700 dark:text-gray-300">
-                    <input type="checkbox" id="highContrastToggle" onchange="examInterface.toggleHighContrast()" class="mr-2">
+                    <input type="checkbox" id="highContrastToggle" onchange="examInterface.toggleHighContrast()"
+                        class="mr-2">
                     High Contrast
                 </label>
             </div>
-            
+
             <div>
                 <label class="flex items-center text-sm text-gray-700 dark:text-gray-300">
                     <input type="checkbox" id="darkModeToggle" onchange="examInterface.toggleDarkMode()" class="mr-2">
                     Dark Mode
                 </label>
             </div>
-            
+
             <div>
                 <label class="flex items-center text-sm text-gray-700 dark:text-gray-300">
-                    <input type="checkbox" id="keyboardNavToggle" onchange="examInterface.toggleKeyboardNavigation()" class="mr-2">
+                    <input type="checkbox" id="keyboardNavToggle" onchange="examInterface.toggleKeyboardNavigation()"
+                        class="mr-2">
                     Keyboard Navigation
                 </label>
             </div>
@@ -280,14 +336,15 @@
     {{-- Security/Browser Lockdown Overlay --}}
     <div id="securityOverlay" class="security-overlay">
         <div class="text-center p-8 max-w-lg">
-            <div class="w-24 h-24 bg-white bg-opacity-20 rounded-full flex items-center justify-center mx-auto mb-6 animate-spin">
+            <div
+                class="w-24 h-24 bg-white bg-opacity-20 rounded-full flex items-center justify-center mx-auto mb-6 animate-spin">
                 <i class="fas fa-exclamation-triangle text-white text-4xl"></i>
             </div>
             <h1 class="text-4xl font-bold mb-6 animate-pulse">SECURITY VIOLATION</h1>
             <p class="text-xl mb-4">Application switching detected!</p>
             <p class="text-lg mb-6">You must remain in the exam application during the test.</p>
             <div class="space-y-4">
-                <button onclick="examSecurity.returnToExam()" 
+                <button onclick="examSecurity.returnToExam()"
                     class="w-full bg-white text-red-600 px-8 py-4 rounded-lg text-xl font-bold hover:bg-gray-100 transition-colors">
                     <i class="fas fa-undo mr-3"></i>Return to Exam
                 </button>
@@ -297,10 +354,12 @@
     </div>
 
     {{-- Progress Tracking Overlay --}}
-    <div id="progressOverlay" class="fixed bottom-4 right-4 bg-white dark:bg-gray-800 rounded-lg shadow-lg p-4 z-40 transform translate-x-full transition-transform duration-300">
+    <div id="progressOverlay"
+        class="fixed bottom-4 right-4 bg-white dark:bg-gray-800 rounded-lg shadow-lg p-4 z-40 transform translate-x-full transition-transform duration-300">
         <div class="flex items-center justify-between mb-2">
             <h4 class="font-semibold text-gray-900 dark:text-gray-100 text-sm">Progress</h4>
-            <button onclick="examInterface.toggleProgressPanel()" class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200">
+            <button onclick="examInterface.toggleProgressPanel()"
+                class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200">
                 <i class="fas fa-times text-xs"></i>
             </button>
         </div>
@@ -328,20 +387,16 @@
     <div id="securityWarnings" class="fixed top-4 right-4 z-40 space-y-2"></div>
 
     {{-- Floating Accessibility Button --}}
-    <button id="accessibilityButton" 
-        onclick="examInterface.toggleAccessibilityPanel()"
+    <button id="accessibilityButton" onclick="examInterface.toggleAccessibilityPanel()"
         class="fixed top-4 left-4 bg-blue-600 text-white p-3 rounded-full shadow-lg hover:bg-blue-700 transition-colors z-40"
-        title="Accessibility Options (Alt+A)"
-        aria-label="Accessibility Options">
+        title="Accessibility Options (Alt+A)" aria-label="Accessibility Options">
         <i class="fas fa-universal-access"></i>
     </button>
 
     {{-- Floating Progress Button --}}
-    <button id="progressButton" 
-        onclick="examInterface.toggleProgressPanel()"
+    <button id="progressButton" onclick="examInterface.toggleProgressPanel()"
         class="fixed bottom-4 right-4 bg-green-600 text-white p-3 rounded-full shadow-lg hover:bg-green-700 transition-colors z-40"
-        title="Progress Tracking (Alt+P)"
-        aria-label="Progress Tracking">
+        title="Progress Tracking (Alt+P)" aria-label="Progress Tracking">
         <i class="fas fa-chart-line"></i>
     </button>
 
@@ -368,12 +423,12 @@
         // Initialize MathJax integration
         async function initMathJax() {
             await waitForMathJax();
-            
+
             // Process all math content on page load
             MathJax.typesetPromise().catch(err => {
                 if (err) console.error('MathJax error:', err);
             });
-            
+
             // Set up Livewire integration for MathJax
             if (typeof Livewire !== 'undefined') {
                 document.addEventListener('livewire:init', () => {
@@ -407,7 +462,7 @@
                 darkMode: localStorage.getItem('darkMode') === 'true',
                 keyboardNavigation: false
             },
-            
+
             init() {
                 this.loadSettings();
                 this.setupKeyboardHandlers();
@@ -432,11 +487,11 @@
             applySettings() {
                 document.body.className = document.body.className.replace(/font-size-\w+/g, '');
                 document.body.classList.add(`font-size-${this.settings.fontSize}`);
-                
+
                 if (this.settings.highContrast) {
                     document.body.classList.add('high-contrast');
                 }
-                
+
                 if (this.settings.keyboardNavigation) {
                     document.body.classList.add('keyboard-nav');
                 }
@@ -445,14 +500,14 @@
                 document.getElementById('highContrastToggle').checked = this.settings.highContrast;
                 document.getElementById('darkModeToggle').checked = this.settings.darkMode;
                 document.getElementById('keyboardNavToggle').checked = this.settings.keyboardNavigation;
-                
+
                 // Re-render MathJax when font size changes
                 if (typeof MathJax !== 'undefined') {
-                    MathJax.typesetClear();
                     MathJax.typesetPromise().catch(err => {
                         if (err) console.error('MathJax re-render error:', err);
                     });
                 }
+
             },
 
             changeFontSize(size) {
@@ -475,14 +530,14 @@
             },
 
             // ... rest of existing methods ...
-            
+
             setupKeyboardHandlers() {
                 document.addEventListener('keydown', (e) => {
                     if (e.altKey && e.key === 'a') {
                         e.preventDefault();
                         this.toggleAccessibilityPanel();
                     }
-                    
+
                     if (e.altKey && e.key === 'p') {
                         e.preventDefault();
                         this.toggleProgressPanel();
@@ -521,10 +576,10 @@
 
                 document.addEventListener('touchend', (e) => {
                     if (!window.examSecurity.examStarted) return;
-                    
+
                     touchEndX = e.changedTouches[0].screenX;
                     const swipeDistance = Math.abs(touchEndX - touchStartX);
-                    
+
                     if (swipeDistance > 50) {
                         if (touchEndX < touchStartX) {
                             this.navigateQuestion('next');
@@ -577,14 +632,14 @@
 
             updateProgress(data) {
                 if (!data) return;
-                
-                document.getElementById('progressCompleted').textContent = 
+
+                document.getElementById('progressCompleted').textContent =
                     `${data.answered}/${data.total}`;
-                document.getElementById('progressTimeLeft').textContent = 
+                document.getElementById('progressTimeLeft').textContent =
                     this.formatTime(data.timeRemaining);
-                document.getElementById('progressAvgTime').textContent = 
+                document.getElementById('progressAvgTime').textContent =
                     this.formatTime(data.avgTimePerQuestion);
-                document.getElementById('progressEstFinish').textContent = 
+                document.getElementById('progressEstFinish').textContent =
                     data.estimatedFinishTime;
             },
 
@@ -683,7 +738,7 @@
                 this.browserLocked = true;
                 this.fullscreenForced = true;
                 this.progressTracking.startTime = Date.now();
-                
+
                 document.body.classList.add('app-locked', 'lockdown-active');
                 this.enterFullscreen();
                 this.startProgressTracking();
@@ -693,11 +748,11 @@
                 this.examStarted = false;
                 this.browserLocked = false;
                 this.fullscreenForced = false;
-                
+
                 document.body.classList.remove('app-locked', 'lockdown-active');
                 this.hideSecurityOverlay();
                 document.getElementById('accessibilityButton').style.display = 'block';
-                
+
                 if (this.isFullscreen()) {
                     this.exitFullscreen();
                 }
@@ -707,7 +762,7 @@
                 this.focusViolations++;
                 this.showSecurityOverlay();
                 this.showSecurityWarning(`Application switch detected - Violation #${this.focusViolations}`);
-                
+
                 if (window.Livewire) {
                     const component = document.querySelector('[wire\\:id]');
                     if (component) {
@@ -750,7 +805,7 @@
             startProgressTracking() {
                 this.progressTracking.currentQuestionStart = Date.now();
                 this.updateProgressDisplay();
-                
+
                 this.progressInterval = setInterval(() => {
                     this.updateProgressDisplay();
                 }, 5000);
@@ -766,19 +821,19 @@
 
             updateProgressDisplay() {
                 if (!this.examStarted) return;
-                
+
                 // Get data from Livewire component
                 if (window.livewire) {
                     const component = document.querySelector('[wire\\:id]');
                     if (component) {
                         const livewireComponent = window.livewire.find(component.getAttribute('wire:id'));
-                        
+
                         // Calculate progress data
                         const totalTime = Date.now() - this.progressTracking.startTime;
-                        const avgTimePerQuestion = this.progressTracking.questionTimes.length > 0 
+                        const avgTimePerQuestion = this.progressTracking.questionTimes.length > 0
                             ? this.progressTracking.questionTimes.reduce((a, b) => a + b, 0) / this.progressTracking.questionTimes.length / 1000
                             : 0;
-                        
+
                         // You'll need to get these values from your Livewire component
                         const progressData = {
                             answered: 0, // Get from component
@@ -787,7 +842,7 @@
                             avgTimePerQuestion: Math.round(avgTimePerQuestion),
                             estimatedFinishTime: this.calculateEstimatedFinish()
                         };
-                        
+
                         window.examInterface.updateProgress(progressData);
                     }
                 }
@@ -813,7 +868,7 @@
 
             enterFullscreen() {
                 const elem = document.documentElement;
-                
+
                 if (elem.requestFullscreen) {
                     elem.requestFullscreen({ navigationUI: 'hide' }).catch(console.error);
                 } else if (elem.webkitRequestFullscreen) {
@@ -875,7 +930,7 @@
         // Global helper functions for Livewire
         window.markExamStarted = () => window.examSecurity.markExamStarted();
         window.allowFullscreenExit = () => window.examSecurity.allowFullscreenExit();
-        
+
         // Prevent back button during exam
         history.pushState(null, null, location.href);
         window.onpopstate = function () {
