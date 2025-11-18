@@ -169,38 +169,7 @@
             </div>
         </div>
     </div>
-
     @else
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
     
     {{-- Main Exam Interface --}}
     <div class="min-h-screen flex flex-col bg-white dark:bg-gray-900 safe-area-inset-bottom">
@@ -608,27 +577,6 @@
             </div>
         </div>
     </div>
-    
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     @endif
 

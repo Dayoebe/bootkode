@@ -669,7 +669,7 @@
     <!-- Participants Modal -->
     @if($showParticipantsModal && $selectedAssessment)
     <div class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
-        <div class="bg-themed-secondary rounded-lg max-w-6xl w-full max-h-screen overflow-hidden">
+        <div class="bg-themed-secondary rounded-lg max-w-6xl w-full max-h-screen overflow-hidden" x-data="{ expandedUser: null }">
             <div class="p-6 border-b border-themed-secondary flex justify-between items-center">
                 <h3 class="text-xl font-bold text-themed-primary">
                     <i class="fas fa-users mr-2"></i>
@@ -733,17 +733,32 @@
                                 </span>
                             </td>
                             <td class="px-4 py-3 text-center">
-                                <button onclick="toggleAttempts({{ $participant['user']->id }})" 
-                                        class="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 px-3 py-1 rounded hover:bg-blue-50 dark:hover:bg-blue-900/30">
-                                    <i class="fas fa-eye mr-1"></i> View All
+                                <button @click="expandedUser = expandedUser === {{ $participant['user_id'] }} ? null : {{ $participant['user_id'] }}" 
+                                        class="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 px-3 py-1 rounded hover:bg-blue-50 dark:hover:bg-blue-900/30 transition-colors">
+                                    <i class="fas" :class="expandedUser === {{ $participant['user_id'] }} ? 'fa-eye-slash' : 'fa-eye'"></i>
+                                    <span x-text="expandedUser === {{ $participant['user_id'] }} ? 'Hide' : 'View All'"></span>
                                 </button>
                             </td>
                         </tr>
                         <!-- Expandable Attempts Details -->
-                        <tr id="attempts-{{ $participant['user']->id }}" class="hidden bg-themed-tertiary">
+                        <tr x-show="expandedUser === {{ $participant['user_id'] }}" 
+                            x-transition:enter="transition ease-out duration-200"
+                            x-transition:enter-start="opacity-0 transform scale-95"
+                            x-transition:enter-end="opacity-100 transform scale-100"
+                            x-transition:leave="transition ease-in duration-150"
+                            x-transition:leave-start="opacity-100 transform scale-100"
+                            x-transition:leave-end="opacity-0 transform scale-95"
+                            class="bg-themed-tertiary">
                             <td colspan="7" class="px-4 py-3">
                                 <div class="pl-12">
-                                    <h4 class="font-semibold text-themed-primary mb-2">All Attempts:</h4>
+                                    <div class="flex justify-between items-center mb-3">
+                                        <h4 class="font-semibold text-themed-primary">All Attempts:</h4>
+                                        <button wire:click="clearAllUserAttempts({{ $participant['user_id'] }})"
+                                                wire:confirm="Are you sure you want to clear ALL attempts for {{ $participant['user']->name }}? This action cannot be undone."
+                                                class="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded text-sm transition-colors flex items-center">
+                                            <i class="fas fa-trash-alt mr-1"></i>Clear All Attempts
+                                        </button>
+                                    </div>
                                     <div class="space-y-2">
                                         @foreach($participant['attempts'] as $attempt)
                                         <div class="flex items-center justify-between p-3 bg-themed-secondary rounded-lg">
@@ -757,10 +772,16 @@
                                                 <span class="text-themed-secondary text-sm">
                                                     {{ $attempt['total_points'] }}/{{ $attempt['max_points'] }} points
                                                 </span>
+                                                <span class="text-themed-secondary text-sm">
+                                                    {{ $attempt['submitted_at']->format('M d, Y - H:i') }}
+                                                </span>
                                             </div>
-                                            <div class="text-themed-secondary text-sm">
-                                                {{ $attempt['submitted_at']->format('M d, Y - H:i') }}
-                                            </div>
+                                            <button wire:click="clearAttempt({{ $participant['user_id'] }}, {{ $attempt['attempt_number'] }})"
+                                                    wire:confirm="Are you sure you want to clear attempt #{{ $attempt['attempt_number'] }} for {{ $participant['user']->name }}?"
+                                                    class="text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300 p-2 rounded hover:bg-red-50 dark:hover:bg-red-900/30 transition-colors"
+                                                    title="Clear this attempt">
+                                                <i class="fas fa-times-circle"></i>
+                                            </button>
                                         </div>
                                         @endforeach
                                     </div>
@@ -790,6 +811,7 @@
             </div>
         </div>
     </div>
+    
     
     <script>
     function toggleAttempts(userId) {

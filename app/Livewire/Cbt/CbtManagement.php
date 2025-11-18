@@ -320,7 +320,6 @@ class CbtManagement extends Component
         $this->showParticipantsModal = true;
     }
 
-    // NEW: Get participants data
     public function getParticipantsData()
     {
         if (!$this->selectedAssessment) {
@@ -352,6 +351,7 @@ class CbtManagement extends Component
 
                 return [
                     'user' => $user,
+                    'user_id' => $userId,
                     'attempts' => $attempts,
                     'best_attempt' => $bestAttempt,
                     'total_attempts' => $attempts->count(),
@@ -361,6 +361,59 @@ class CbtManagement extends Component
             ->values();
 
         return $participants;
+    }
+
+    // NEW: Clear specific attempt
+    public function clearAttempt($userId, $attemptNumber)
+    {
+        if (!$this->selectedAssessment) {
+            session()->flash('error', 'No assessment selected.');
+            return;
+        }
+
+        $user = \App\Models\Core\User::find($userId);
+        if (!$user) {
+            session()->flash('error', 'User not found.');
+            return;
+        }
+
+        $deleted = \App\Models\Assessment\StudentAnswer::where('user_id', $userId)
+            ->where('assessment_id', $this->selectedAssessment->id)
+            ->where('attempt_number', $attemptNumber)
+            ->delete();
+
+        if ($deleted > 0) {
+            $this->selectedAssessment->refresh();
+            session()->flash('message', "Attempt #{$attemptNumber} cleared for {$user->name}");
+        } else {
+            session()->flash('error', 'Failed to clear attempt.');
+        }
+    }
+
+    // NEW: Clear all attempts for a user
+    public function clearAllUserAttempts($userId)
+    {
+        if (!$this->selectedAssessment) {
+            session()->flash('error', 'No assessment selected.');
+            return;
+        }
+
+        $user = \App\Models\Core\User::find($userId);
+        if (!$user) {
+            session()->flash('error', 'User not found.');
+            return;
+        }
+
+        $deleted = \App\Models\Assessment\StudentAnswer::where('user_id', $userId)
+            ->where('assessment_id', $this->selectedAssessment->id)
+            ->delete();
+
+        if ($deleted > 0) {
+            $this->selectedAssessment->refresh();
+            session()->flash('message', "All attempts cleared for {$user->name} ({$deleted} answer(s) removed)");
+        } else {
+            session()->flash('error', 'No attempts found to clear.');
+        }
     }
 
     public function resetForm()
