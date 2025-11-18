@@ -1,71 +1,53 @@
 <header class="bg-white shadow-sm sticky top-0 z-50" x-data="{
-    open: false,
+    mobileOpen: false,
+    authOpen: false,
     dropdowns: {
         courses: false,
         roadmaps: false,
         mentorship: false,
         marketplace: false,
-        community: false
+        community: false,
+        userMenu: false
     }
 }">
-    <nav class=" px-4 sm:px-6 lg:px-8">
+    <nav class="px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between items-center h-16">
             <!-- Logo -->
-            <div class="flex-shrink-0 flex items-center">
-                <a href="/" class="flex items-center space-x-2 transform transition-transform hover:scale-105">
-                    <div class="flex flex-row gap-3 bg-gradient-to-r from-blue-50 to-red-100 p-2 rounded-lg shadow-sm">
-                        <span class="text-2xl font-bold text-gray-900">
-                            <i class="fas fa-code h-8 wx-6 text-blue-500"> </i>
-                            Boot<span
-                                class="text-blue-900 ">Kode</span></span>
+            <div class="flex-shrink-0">
+                <a href="/" class="flex items-center space-x-2 hover:scale-105 transition-transform">
+                    <div class="flex gap-2 bg-gradient-to-r from-blue-50 to-red-100 p-2 rounded-lg shadow-sm">
+                        <i class="fas fa-code text-xl text-blue-500"></i>
+                        <span class="text-xl font-bold text-gray-900">
+                            Boot<span class="text-blue-900">Kode</span>
+                        </span>
                     </div>
                 </a>
             </div>
 
-            <div class="md:hidden px-3 py-3">
-                <div class="relative">
-                    <input type="text" placeholder="Search courses..."
-                        class="w-full px-4 py-2 pl-10 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent">
-                    <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
-                </div>
-            </div>
-
             <!-- Desktop Navigation -->
-            <div class="hidden md:flex md:items-center md:space-x-1">
+            <div class="hidden lg:flex items-center space-x-1">
                 <!-- Courses Dropdown -->
                 <div class="relative" x-data="{ open: false }" @mouseenter="open = true" @mouseleave="open = false">
-                    <button
-                        class="px-4 py-2 text-gray-700 hover:text-blue-500 font-medium hover:uppercase flex items-center space-x-1 transition-all duration-300 relative group">
+                    <button class="px-3 py-2 text-sm text-gray-700 hover:text-blue-500 font-medium flex items-center space-x-1 transition-all relative group">
                         <span>Courses</span>
-                        <i class="fas fa-chevron-down text-xs transition-transform duration-300"
-                            :class="{ 'rotate-180': open }"></i>
-                        <span
-                            class="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-0 h-0.5 bg-blue-400 transition-all duration-300 group-hover:w-3/4"></span>
+                        <i class="fas fa-chevron-down text-xs transition-transform" :class="{ 'rotate-180': open }"></i>
+                        <span class="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-0 h-0.5 bg-blue-400 transition-all group-hover:w-3/4"></span>
                     </button>
-                    <div class="absolute left-0 w-56 mt-2 bg-white rounded-xl shadow-xl border border-gray-100 z-50 origin-top-left transition-all duration-300"
-                        x-show="open" x-transition:enter="transition ease-out duration-200"
-                        x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100"
-                        x-transition:leave="transition ease-in duration-150"
-                        x-transition:leave-start="opacity-100 scale-100" x-transition:leave-end="opacity-0 scale-95"
-                        style="display: none;" @click.away="open = false">
+                    <div class="absolute left-0 w-56 mt-2 bg-white rounded-xl shadow-xl border border-gray-100 z-50" x-show="open" x-transition style="display: none;" @click.away="open = false">
                         <div class="py-1">
-                            <a href="#"
-                                class="block px-4 py-3 text-gray-700 hover:bg-blue-50 hover:text-blue-400 transition-colors duration-200 flex items-center rounded-lg mx-2 my-1">
+                            <a href="#" class="block px-4 py-3 text-gray-700 hover:bg-blue-50 hover:text-blue-400 transition-colors flex items-center rounded-lg mx-2 my-1">
                                 <i class="fas fa-laptop-code text-blue-400 mr-3"></i>
                                 Frontend Development
                             </a>
-                            <a href="#"
-                                class="block px-4 py-3 text-gray-700 hover:bg-blue-50 hover:text-blue-400 transition-colors duration-200 flex items-center rounded-lg mx-2 my-1">
+                            <a href="#" class="block px-4 py-3 text-gray-700 hover:bg-blue-50 hover:text-blue-400 transition-colors flex items-center rounded-lg mx-2 my-1">
                                 <i class="fas fa-server text-blue-400 mr-3"></i>
                                 Backend Development
                             </a>
-                            <a href="#"
-                                class="block px-4 py-3 text-gray-700 hover:bg-blue-50 hover:text-blue-400 transition-colors duration-200 flex items-center rounded-lg mx-2 my-1">
+                            <a href="#" class="block px-4 py-3 text-gray-700 hover:bg-blue-50 hover:text-blue-400 transition-colors flex items-center rounded-lg mx-2 my-1">
                                 <i class="fas fa-mobile-alt text-blue-400 mr-3"></i>
                                 Mobile Development
                             </a>
-                            <a href="#"
-                                class="block px-4 py-3 text-gray-700 hover:bg-blue-50 hover:text-blue-400 transition-colors duration-200 flex items-center rounded-lg mx-2 my-1">
+                            <a href="#" class="block px-4 py-3 text-gray-700 hover:bg-blue-50 hover:text-blue-400 transition-colors flex items-center rounded-lg mx-2 my-1">
                                 <i class="fas fa-database text-blue-400 mr-3"></i>
                                 Data Science
                             </a>
@@ -75,39 +57,27 @@
 
                 <!-- Marketplace Dropdown -->
                 <div class="relative" x-data="{ open: false }" @mouseenter="open = true" @mouseleave="open = false">
-                    <button
-                        class="px-4 py-2 text-gray-700 hover:text-blue-400 font-medium hover:uppercase flex items-center space-x-1 transition-all duration-300 relative group">
+                    <button class="px-3 py-2 text-sm text-gray-700 hover:text-blue-400 font-medium flex items-center space-x-1 transition-all relative group">
                         <span>Marketplace</span>
-                        <i class="fas fa-chevron-down text-xs transition-transform duration-300"
-                            :class="{ 'rotate-180': open }"></i>
-                        <span
-                            class="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-0 h-0.5 bg-blue-400 transition-all duration-300 group-hover:w-3/4"></span>
+                        <i class="fas fa-chevron-down text-xs transition-transform" :class="{ 'rotate-180': open }"></i>
+                        <span class="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-0 h-0.5 bg-blue-400 transition-all group-hover:w-3/4"></span>
                     </button>
-                    <div class="absolute left-0 w-56 mt-2 bg-white rounded-xl shadow-xl border border-gray-100 z-50 origin-top-left transition-all duration-300"
-                        x-show="open" x-transition:enter="transition ease-out duration-200"
-                        x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100"
-                        x-transition:leave="transition ease-in duration-150"
-                        x-transition:leave-start="opacity-100 scale-100" x-transition:leave-end="opacity-0 scale-95"
-                        style="display: none;" @click.away="open = false">
+                    <div class="absolute left-0 w-56 mt-2 bg-white rounded-xl shadow-xl border border-gray-100 z-50" x-show="open" x-transition style="display: none;" @click.away="open = false">
                         <div class="py-1">
-                            <a href="{{ route('marketplace.browse') }}"
-                                class="block px-4 py-3 text-gray-700 hover:bg-blue-50 hover:text-blue-400 transition-colors duration-200 flex items-center rounded-lg mx-2 my-1">
+                            <a href="{{ route('marketplace.browse') }}" class="block px-4 py-3 text-gray-700 hover:bg-blue-50 hover:text-blue-400 transition-colors flex items-center rounded-lg mx-2 my-1">
                                 <i class="fas fa-store text-blue-400 mr-3"></i>
                                 Browse All Products
                             </a>
-                            <a href="{{ route('marketplace.categories') }}"
-                                class="block px-4 py-3 text-gray-700 hover:bg-blue-50 hover:text-blue-400 transition-colors duration-200 flex items-center rounded-lg mx-2 my-1">
+                            <a href="{{ route('marketplace.categories') }}" class="block px-4 py-3 text-gray-700 hover:bg-blue-50 hover:text-blue-400 transition-colors flex items-center rounded-lg mx-2 my-1">
                                 <i class="fas fa-tags text-blue-400 mr-3"></i>
                                 Categories
                             </a>
                             @auth
-                                <a href="{{ route('marketplace.cart') }}"
-                                    class="block px-4 py-3 text-gray-700 hover:bg-blue-50 hover:text-blue-400 transition-colors duration-200 flex items-center rounded-lg mx-2 my-1">
+                                <a href="{{ route('marketplace.cart') }}" class="block px-4 py-3 text-gray-700 hover:bg-blue-50 hover:text-blue-400 transition-colors flex items-center rounded-lg mx-2 my-1">
                                     <i class="fas fa-shopping-cart text-blue-400 mr-3"></i>
                                     My Cart
                                 </a>
-                                <a href="{{ route('marketplace.purchases') }}"
-                                    class="block px-4 py-3 text-gray-700 hover:bg-blue-50 hover:text-blue-400 transition-colors duration-200 flex items-center rounded-lg mx-2 my-1">
+                                <a href="{{ route('marketplace.purchases') }}" class="block px-4 py-3 text-gray-700 hover:bg-blue-50 hover:text-blue-400 transition-colors flex items-center rounded-lg mx-2 my-1">
                                     <i class="fas fa-shopping-bag text-blue-400 mr-3"></i>
                                     My Purchases
                                 </a>
@@ -118,38 +88,26 @@
 
                 <!-- Roadmaps Dropdown -->
                 <div class="relative" x-data="{ open: false }" @mouseenter="open = true" @mouseleave="open = false">
-                    <button
-                        class="px-4 py-2 text-gray-700 hover:text-blue-400 font-medium hover:uppercase flex items-center space-x-1 transition-all duration-300 relative group">
+                    <button class="px-3 py-2 text-sm text-gray-700 hover:text-blue-400 font-medium flex items-center space-x-1 transition-all relative group">
                         <span>Roadmaps</span>
-                        <i class="fas fa-chevron-down text-xs transition-transform duration-300"
-                            :class="{ 'rotate-180': open }"></i>
-                        <span
-                            class="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-0 h-0.5 bg-blue-400 transition-all duration-300 group-hover:w-3/4"></span>
+                        <i class="fas fa-chevron-down text-xs transition-transform" :class="{ 'rotate-180': open }"></i>
+                        <span class="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-0 h-0.5 bg-blue-400 transition-all group-hover:w-3/4"></span>
                     </button>
-                    <div class="absolute left-0 w-64 mt-2 bg-white rounded-xl shadow-xl border border-gray-100 z-50 origin-top-left transition-all duration-300"
-                        x-show="open" x-transition:enter="transition ease-out duration-200"
-                        x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100"
-                        x-transition:leave="transition ease-in duration-150"
-                        x-transition:leave-start="opacity-100 scale-100" x-transition:leave-end="opacity-0 scale-95"
-                        style="display: none;" @click.away="open = false">
+                    <div class="absolute left-0 w-64 mt-2 bg-white rounded-xl shadow-xl border border-gray-100 z-50" x-show="open" x-transition style="display: none;" @click.away="open = false">
                         <div class="py-1">
-                            <a href="#"
-                                class="block px-4 py-3 text-gray-700 hover:bg-blue-50 hover:text-blue-400 transition-colors duration-200 flex items-center rounded-lg mx-2 my-1">
+                            <a href="#" class="block px-4 py-3 text-gray-700 hover:bg-blue-50 hover:text-blue-400 transition-colors flex items-center rounded-lg mx-2 my-1">
                                 <i class="fas fa-map-signs text-blue-400 mr-3"></i>
                                 Career Paths
                             </a>
-                            <a href="#"
-                                class="block px-4 py-3 text-gray-700 hover:bg-blue-50 hover:text-blue-400 transition-colors duration-200 flex items-center rounded-lg mx-2 my-1">
+                            <a href="#" class="block px-4 py-3 text-gray-700 hover:bg-blue-50 hover:text-blue-400 transition-colors flex items-center rounded-lg mx-2 my-1">
                                 <i class="fas fa-graduation-cap text-blue-400 mr-3"></i>
                                 Learning Tracks
                             </a>
-                            <a href="#"
-                                class="block px-4 py-3 text-gray-700 hover:bg-blue-50 hover:text-blue-400 transition-colors duration-200 flex items-center rounded-lg mx-2 my-1">
+                            <a href="#" class="block px-4 py-3 text-gray-700 hover:bg-blue-50 hover:text-blue-400 transition-colors flex items-center rounded-lg mx-2 my-1">
                                 <i class="fas fa-certificate text-blue-400 mr-3"></i>
                                 Certification Guide
                             </a>
-                            <a href="#"
-                                class="block px-4 py-3 text-gray-700 hover:bg-blue-50 hover:text-blue-400 transition-colors duration-200 flex items-center rounded-lg mx-2 my-1">
+                            <a href="#" class="block px-4 py-3 text-gray-700 hover:bg-blue-50 hover:text-blue-400 transition-colors flex items-center rounded-lg mx-2 my-1">
                                 <i class="fas fa-chart-line text-blue-400 mr-3"></i>
                                 Skill Progression
                             </a>
@@ -159,38 +117,26 @@
 
                 <!-- Mentorship Dropdown -->
                 <div class="relative" x-data="{ open: false }" @mouseenter="open = true" @mouseleave="open = false">
-                    <button
-                        class="px-4 py-2 text-gray-700 hover:text-blue-400 font-medium hover:uppercase flex items-center space-x-1 transition-all duration-300 relative group">
+                    <button class="px-3 py-2 text-sm text-gray-700 hover:text-blue-400 font-medium flex items-center space-x-1 transition-all relative group">
                         <span>Mentorship</span>
-                        <i class="fas fa-chevron-down text-xs transition-transform duration-300"
-                            :class="{ 'rotate-180': open }"></i>
-                        <span
-                            class="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-0 h-0.5 bg-blue-400 transition-all duration-300 group-hover:w-3/4"></span>
+                        <i class="fas fa-chevron-down text-xs transition-transform" :class="{ 'rotate-180': open }"></i>
+                        <span class="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-0 h-0.5 bg-blue-400 transition-all group-hover:w-3/4"></span>
                     </button>
-                    <div class="absolute left-0 w-56 mt-2 bg-white rounded-xl shadow-xl border border-gray-100 z-50 origin-top-left transition-all duration-300"
-                        x-show="open" x-transition:enter="transition ease-out duration-200"
-                        x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100"
-                        x-transition:leave="transition ease-in duration-150"
-                        x-transition:leave-start="opacity-100 scale-100" x-transition:leave-end="opacity-0 scale-95"
-                        style="display: none;" @click.away="open = false">
+                    <div class="absolute left-0 w-56 mt-2 bg-white rounded-xl shadow-xl border border-gray-100 z-50" x-show="open" x-transition style="display: none;" @click.away="open = false">
                         <div class="py-1">
-                            <a href="#"
-                                class="block px-4 py-3 text-gray-700 hover:bg-blue-50 hover:text-blue-400 transition-colors duration-200 flex items-center rounded-lg mx-2 my-1">
+                            <a href="#" class="block px-4 py-3 text-gray-700 hover:bg-blue-50 hover:text-blue-400 transition-colors flex items-center rounded-lg mx-2 my-1">
                                 <i class="fas fa-users text-blue-400 mr-3"></i>
                                 Find a Mentor
                             </a>
-                            <a href="#"
-                                class="block px-4 py-3 text-gray-700 hover:bg-blue-50 hover:text-blue-400 transition-colors duration-200 flex items-center rounded-lg mx-2 my-1">
+                            <a href="#" class="block px-4 py-3 text-gray-700 hover:bg-blue-50 hover:text-blue-400 transition-colors flex items-center rounded-lg mx-2 my-1">
                                 <i class="fas fa-calendar-check text-blue-400 mr-3"></i>
                                 Book Sessions
                             </a>
-                            <a href="#"
-                                class="block px-4 py-3 text-gray-700 hover:bg-blue-50 hover:text-blue-400 transition-colors duration-200 flex items-center rounded-lg mx-2 my-1">
+                            <a href="#" class="block px-4 py-3 text-gray-700 hover:bg-blue-50 hover:text-blue-400 transition-colors flex items-center rounded-lg mx-2 my-1">
                                 <i class="fas fa-code text-blue-400 mr-3"></i>
                                 Code Reviews
                             </a>
-                            <a href="#"
-                                class="block px-4 py-3 text-gray-700 hover:bg-blue-50 hover:text-blue-400 transition-colors duration-200 flex items-center rounded-lg mx-2 my-1">
+                            <a href="#" class="block px-4 py-3 text-gray-700 hover:bg-blue-50 hover:text-blue-400 transition-colors flex items-center rounded-lg mx-2 my-1">
                                 <i class="fas fa-briefcase text-blue-400 mr-3"></i>
                                 Career Guidance
                             </a>
@@ -198,212 +144,169 @@
                     </div>
                 </div>
 
-                <!-- Community Link -->
-                <a href="#"
-                    class="px-4 py-2 text-gray-700 hover:text-blue-400 font-medium hover:uppercase transition-all duration-300 relative nav-link group">
-                    <span class="relative">
+                <!-- Simple Links -->
+                <a href="#" class="px-3 py-2 text-sm text-gray-700 hover:text-blue-400 font-medium transition-all relative group">
+                    <span class="flex items-center">
                         Community
-                        <span
-                            class="absolute -top-1 -right-5 bg-secondary text-white text-xs font-bold px-2 py-0.5 rounded-full animate-pulse">New</span>
+                        <span class="ml-1 bg-red-500 text-white text-xs font-bold px-1.5 py-0.5 rounded-full">New</span>
                     </span>
-                    <span
-                        class="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-0 h-0.5 bg-blue-400 transition-all duration-300 group-hover:w-3/4"></span>
+                    <span class="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-0 h-0.5 bg-blue-400 transition-all group-hover:w-3/4"></span>
                 </a>
 
-                <!-- About Link -->
-                <a href="{{ route('about') }}"
-                    class="px-4 py-2 text-gray-700 hover:text-blue-400 font-medium hover:uppercase transition-all duration-300 relative nav-link group">
-                    <span>About Us</span>
-                    <span
-                        class="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-0 h-0.5 bg-blue-400 transition-all duration-300 group-hover:w-3/4"></span>
+                <a href="{{ route('about') }}" class="px-3 py-2 text-sm text-gray-700 hover:text-blue-400 font-medium transition-all relative group">
+                    <span>About</span>
+                    <span class="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-0 h-0.5 bg-blue-400 transition-all group-hover:w-3/4"></span>
                 </a>
-                <!-- Contact Link -->
-                <a href="{{ route('contact') }}"
-                    class="px-4 py-2 text-gray-700 hover:text-blue-400 font-medium hover:uppercase transition-all duration-300 relative nav-link group">
-                    <span>Contact Us</span>
-                    <span
-                        class="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-0 h-0.5 bg-blue-400 transition-all duration-300 group-hover:w-3/4"></span>
+
+                <a href="{{ route('contact') }}" class="px-3 py-2 text-sm text-gray-700 hover:text-blue-400 font-medium transition-all relative group">
+                    <span>Contact</span>
+                    <span class="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-0 h-0.5 bg-blue-400 transition-all group-hover:w-3/4"></span>
                 </a>
-                <!-- Statistics Link -->
-                <a href="{{ route('statistics') }}"
-                    class="px-4 py-2 text-gray-700 hover:text-blue-400 font-medium hover:uppercase transition-all duration-300 relative nav-link group">
+
+                <a href="{{ route('statistics') }}" class="px-3 py-2 text-sm text-gray-700 hover:text-blue-400 font-medium transition-all relative group">
                     <span>Statistics</span>
-                    <span
-                        class="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-0 h-0.5 bg-blue-400 transition-all duration-300 group-hover:w-3/4"></span>
+                    <span class="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-0 h-0.5 bg-blue-400 transition-all group-hover:w-3/4"></span>
                 </a>
-                <!-- Guideline Link -->
-                <a href="{{ route('guideline') }}"
-                    class="px-4 py-2 text-gray-700 hover:text-blue-400 font-medium hover:uppercase transition-all duration-300 relative nav-link group">
+
+                <a href="{{ route('guideline') }}" class="px-3 py-2 text-sm text-gray-700 hover:text-blue-400 font-medium transition-all relative group">
                     <span>Guideline</span>
-                    <span
-                        class="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-0 h-0.5 bg-blue-400 transition-all duration-300 group-hover:w-3/4"></span>
+                    <span class="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-0 h-0.5 bg-blue-400 transition-all group-hover:w-3/4"></span>
                 </a>
-                <!-- Blog Link -->
-                <a href="{{ route('blog.index') }}"
-                    class="px-4 py-2 text-gray-700 hover:text-blue-400 font-medium hover:uppercase transition-all duration-300 relative nav-link group">
+
+                <a href="{{ route('blog.index') }}" class="px-3 py-2 text-sm text-gray-700 hover:text-blue-400 font-medium transition-all relative group">
                     <span>Blog</span>
-                    <span
-                        class="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-0 h-0.5 bg-blue-400 transition-all duration-300 group-hover:w-3/4"></span>
+                    <span class="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-0 h-0.5 bg-blue-400 transition-all group-hover:w-3/4"></span>
                 </a>
             </div>
 
-            <!-- Right Section - Auth Buttons & Search -->
-            @auth
-                <!-- User dropdown -->
-                <div class="relative ml-4" x-data="{ open: false }" @click.away="open = false">
-                    <button @click="open = !open" class="flex items-center space-x-2 focus:outline-none">
-                        <div
-                            class="h-8 w-8 rounded-full bg-blue-400 flex items-center justify-center text-white font-bold">
-                            {{ strtoupper(substr(auth()->user()->name, 0, 2)) }}
+            <!-- Right Section -->
+            <div class="flex items-center gap-3">
+                @auth
+                    <!-- Authenticated User Dropdown -->
+                    <div class="relative" x-data="{ open: false }" @click.away="open = false">
+                        <button @click="open = !open" class="flex items-center space-x-2 focus:outline-none hover:opacity-80 transition">
+                            <div class="h-8 w-8 rounded-full bg-blue-500 flex items-center justify-center text-white font-bold text-sm">
+                                {{ strtoupper(substr(auth()->user()->name, 0, 2)) }}
+                            </div>
+                            <span class="hidden md:inline text-sm text-gray-700 font-medium">{{ auth()->user()->name }}</span>
+                            <i class="fas fa-chevron-down text-xs text-gray-500 transition-transform" :class="{ 'rotate-180': open }"></i>
+                        </button>
+
+                        <div x-show="open" x-transition class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-xl border border-gray-100 py-1 z-50" style="display: none;">
+                            <a href="{{ route(auth()->user()->getDashboardRouteName()) }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-500 transition">
+                                <i class="fas fa-tachometer-alt mr-2"></i> Dashboard
+                            </a>
+                            <a href="{{ route('profile.edit') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-500 transition">
+                                <i class="fas fa-user-cog mr-2"></i> Profile
+                            </a>
+                            <hr class="my-1">
+                            <form method="POST" action="{{ route('logout') }}">
+                                @csrf
+                                <button type="submit" class="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition">
+                                    <i class="fas fa-sign-out-alt mr-2"></i> Logout
+                                </button>
+                            </form>
                         </div>
-                        <span class="hidden md:inline text-gray-700 font-medium">{{ auth()->user()->name }}</span>
-                        <i class="fas fa-chevron-down text-xs text-gray-500 transition-transform duration-200"
-                            :class="{ 'rotate-180': open }"></i>
-                    </button>
-
-                    <div x-show="open" x-transition:enter="transition ease-out duration-200"
-                        x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100"
-                        x-transition:leave="transition ease-in duration-75" x-transition:leave-start="opacity-100 scale-100"
-                        x-transition:leave-end="opacity-0 scale-95"
-                        class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50">
-                        <a href="{{ route(auth()->user()->getDashboardRouteName()) }}"
-                            class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                            <i class="fas fa-tachometer-alt mr-2"></i> Dashboard
-                        </a>
-                        <a href="{{ route('profile.edit') }}"
-                            class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                            <i class="fas fa-user-cog mr-2"></i> Profile
-                        </a>
-                        <form method="POST" action="{{ route('logout') }}">
-                            @csrf
-                            <button type="submit"
-                                class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                                <i class="fas fa-sign-out-alt mr-2"></i> Logout
-                            </button>
-                        </form>
                     </div>
-                </div>
-            @else
-                <!-- Guest buttons -->
-                <div class="flex flex-row gap-4">
+                @else
+                    <!-- Guest Auth Dropdown -->
+                    <div class="hidden md:block relative" x-data="{ open: false }" @click.away="open = false">
+                        <button @click="open = !open" class="bg-blue-500 hover:bg-blue-600 text-white font-medium px-4 py-2 rounded-lg shadow-md hover:shadow-lg transition-all flex items-center gap-2">
+                            <i class="fas fa-user"></i>
+                            <span>Account</span>
+                            <i class="fas fa-chevron-down text-xs transition-transform" :class="{ 'rotate-180': open }"></i>
+                        </button>
 
-                    <a href="{{ route('login') }}"
-                        class="border border-b-2 border-blue-600 text-gray-600 hover:text-blue-400 font-medium hover:uppercase px-4 py-2 rounded-lg transition-colors duration-300 group">
-                        <i class="fas fa-sign-in-alt mr-2 transition-transform group-hover:translate-x-0.5"></i>Log in
-                    </a>
-                    {{-- <a href="{{ route('register') }}"
-                        class="bg-blue-400 text-black font-medium hover:uppercase px-5 py-2.5 rounded-lg shadow-md hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-300 flex items-center animate-pulse-custom">
-                        <i class="fas fa-user-plus mr-2"></i>Register
-                    </a> --}}
-                </div>
-            @endauth
+                        <div x-show="open" x-transition class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-xl border border-gray-100 py-1 z-50" style="display: none;">
+                            <a href="{{ route('login') }}" class="block px-4 py-3 text-gray-700 hover:bg-blue-50 hover:text-blue-500 transition flex items-center">
+                                <i class="fas fa-sign-in-alt text-blue-500 mr-3"></i>
+                                <span class="font-medium">Log In</span>
+                            </a>
+                            <a href="{{ route('register') }}" class="block px-4 py-3 text-gray-700 hover:bg-blue-50 hover:text-blue-500 transition flex items-center">
+                                <i class="fas fa-user-plus text-blue-500 mr-3"></i>
+                                <span class="font-medium">Register</span>
+                            </a>
+                        </div>
+                    </div>
+                @endauth
 
-            <!-- Mobile menu button -->
-            <div class="md:hidden flex items-center">
-                <button @click="open = !open"
-                    class="text-gray-600 hover:text-blue-400 focus:outline-none p-2 rounded-lg transition-colors">
-                    <i class="fas fa-bars text-xl" x-show="!open"></i>
-                    <i class="fas fa-times text-xl" x-show="open" style="display: none;"></i>
+                <!-- Mobile menu button -->
+                <button @click="mobileOpen = !mobileOpen" class="lg:hidden text-gray-600 hover:text-blue-500 focus:outline-none p-2 transition">
+                    <i class="fas text-xl" :class="mobileOpen ? 'fa-times' : 'fa-bars'"></i>
                 </button>
             </div>
         </div>
     </nav>
 
-    <!-- Mobile menu - Slide-in panel -->
-    <div class="md:hidden fixed inset-0 z-40 overflow-y-auto" x-show="open"
-        x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0"
-        x-transition:enter-end="opacity-100" x-transition:leave="transition ease-in duration-200"
-        x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0" style="display: none;">
+    <!-- Mobile menu -->
+    <div class="lg:hidden fixed inset-0 z-40" x-show="mobileOpen" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" x-transition:leave="transition ease-in duration-200" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0" style="display: none;">
         <!-- Overlay -->
-        <div class="fixed inset-0 bg-black bg-opacity-50" @click="open = false"></div>
+        <div class="fixed inset-0 bg-black bg-opacity-50" @click="mobileOpen = false"></div>
 
         <!-- Panel -->
-        <div class="relative bg-white w-80 max-w-full h-full ml-auto shadow-2xl transform transition-transform duration-300"
-            :class="open ? 'translate-x-0' : 'translate-x-full'">
-            <div class="flex justify-end p-4">
-                <button @click="open = false" class="text-gray-600 hover:text-blue-400 p-2 rounded-full">
+        <div class="relative bg-white w-80 max-w-full h-full ml-auto shadow-2xl overflow-y-auto">
+            <div class="flex justify-between items-center p-4 border-b">
+                <span class="font-bold text-gray-800">Menu</span>
+                <button @click="mobileOpen = false" class="text-gray-600 hover:text-blue-500 p-2">
                     <i class="fas fa-times text-xl"></i>
                 </button>
             </div>
 
-            <div class="px-4 pt-2 pb-5 space-y-1">
-                <a href="/"
-                    class="flex border border-b-2 border-blue-600 items-center px-3 py-3 text-gray-700 rounded-lg hover:bg-blue-50">
-                    <i class="fas fa-code text-blue-400 mr-3"></i>
-                    <span class="font-medium hover:lowercase uppercase">BootKode Academy</span>
-                </a>
-
+            <div class="p-4 space-y-2">
                 <!-- Mobile: Courses Dropdown -->
-                <div class="relative">
-                    <button @click="dropdowns.courses = !dropdowns.courses"
-                        class="w-full flex justify-between items-center px-3 py-3 text-gray-700 rounded-lg hover:bg-blue-50">
+                <div>
+                    <button @click="dropdowns.courses = !dropdowns.courses" class="w-full flex justify-between items-center px-3 py-3 text-gray-700 rounded-lg hover:bg-blue-50 transition">
                         <div class="flex items-center">
-                            <i class="fas fa-book-open text-blue-400 mr-3"></i>
-                            <span class="font-medium hover:uppercase">Courses</span>
+                            <i class="fas fa-book-open text-blue-500 mr-3"></i>
+                            <span class="font-medium">Courses</span>
                         </div>
-                        <i class="fas fa-chevron-down text-xs transition-transform duration-300"
-                            :class="{ 'rotate-180': dropdowns.courses }"></i>
+                        <i class="fas fa-chevron-down text-xs transition-transform" :class="{ 'rotate-180': dropdowns.courses }"></i>
                     </button>
-                    <div class="mt-1 ml-8 space-y-1" x-show="dropdowns.courses" x-collapse
-                        x-transition:enter="transition ease-out duration-200"
-                        x-transition:enter-start="opacity-0 max-h-0" x-transition:enter-end="opacity-100 max-h-96"
-                        x-transition:leave="transition ease-in duration-150"
-                        x-transition:leave-start="opacity-100 max-h-96" x-transition:leave-end="opacity-0 max-h-0"
-                        style="display: none;">
-                        <a href="#"
-                            class="block px-3 py-2 text-gray-600 rounded-lg hover:bg-blue-50 hover:text-blue-400 transition-colors duration-200 flex items-center">
-                            <i class="fas fa-laptop-code text-blue-400 mr-3 text-sm"></i>
+                    <div class="mt-1 ml-8 space-y-1" x-show="dropdowns.courses" x-collapse style="display: none;">
+                        <a href="#" class="block px-3 py-2 text-sm text-gray-600 rounded-lg hover:bg-blue-50 hover:text-blue-500 transition">
+                            <i class="fas fa-laptop-code text-blue-500 mr-2"></i>
                             Frontend Development
                         </a>
-                        <a href="#"
-                            class="block px-3 py-2 text-gray-600 rounded-lg hover:bg-blue-50 hover:text-blue-400 transition-colors duration-200 flex items-center">
-                            <i class="fas fa-server text-blue-400 mr-3 text-sm"></i>
+                        <a href="#" class="block px-3 py-2 text-sm text-gray-600 rounded-lg hover:bg-blue-50 hover:text-blue-500 transition">
+                            <i class="fas fa-server text-blue-500 mr-2"></i>
                             Backend Development
                         </a>
-                        <a href="#"
-                            class="block px-3 py-2 text-gray-600 rounded-lg hover:bg-blue-50 hover:text-blue-400 transition-colors duration-200 flex items-center">
-                            <i class="fas fa-mobile-alt text-blue-400 mr-3 text-sm"></i>
+                        <a href="#" class="block px-3 py-2 text-sm text-gray-600 rounded-lg hover:bg-blue-50 hover:text-blue-500 transition">
+                            <i class="fas fa-mobile-alt text-blue-500 mr-2"></i>
                             Mobile Development
+                        </a>
+                        <a href="#" class="block px-3 py-2 text-sm text-gray-600 rounded-lg hover:bg-blue-50 hover:text-blue-500 transition">
+                            <i class="fas fa-database text-blue-500 mr-2"></i>
+                            Data Science
                         </a>
                     </div>
                 </div>
 
                 <!-- Mobile: Marketplace Dropdown -->
-                <div class="relative">
-                    <button @click="dropdowns.marketplace = !dropdowns.marketplace"
-                        class="w-full flex justify-between items-center px-3 py-3 text-gray-700 rounded-lg hover:bg-blue-50">
+                <div>
+                    <button @click="dropdowns.marketplace = !dropdowns.marketplace" class="w-full flex justify-between items-center px-3 py-3 text-gray-700 rounded-lg hover:bg-blue-50 transition">
                         <div class="flex items-center">
-                            <i class="fas fa-store text-blue-400 mr-3"></i>
-                            <span class="font-medium hover:uppercase">Marketplace</span>
+                            <i class="fas fa-store text-blue-500 mr-3"></i>
+                            <span class="font-medium">Marketplace</span>
                         </div>
-                        <i class="fas fa-chevron-down text-xs transition-transform duration-300"
-                            :class="{ 'rotate-180': dropdowns.marketplace }"></i>
+                        <i class="fas fa-chevron-down text-xs transition-transform" :class="{ 'rotate-180': dropdowns.marketplace }"></i>
                     </button>
-                    <div class="mt-1 ml-8 space-y-1" x-show="dropdowns.marketplace" x-collapse
-                        x-transition:enter="transition ease-out duration-200"
-                        x-transition:enter-start="opacity-0 max-h-0" x-transition:enter-end="opacity-100 max-h-96"
-                        x-transition:leave="transition ease-in duration-150"
-                        x-transition:leave-start="opacity-100 max-h-96" x-transition:leave-end="opacity-0 max-h-0"
-                        style="display: none;">
-                        <a href="{{ route('marketplace.browse') }}"
-                            class="block px-3 py-2 text-gray-600 rounded-lg hover:bg-blue-50 hover:text-blue-400 transition-colors duration-200 flex items-center">
-                            <i class="fas fa-store text-blue-400 mr-3 text-sm"></i>
-                            Browse All Products
+                    <div class="mt-1 ml-8 space-y-1" x-show="dropdowns.marketplace" x-collapse style="display: none;">
+                        <a href="{{ route('marketplace.browse') }}" class="block px-3 py-2 text-sm text-gray-600 rounded-lg hover:bg-blue-50 hover:text-blue-500 transition">
+                            <i class="fas fa-store text-blue-500 mr-2"></i>
+                            Browse All
                         </a>
-                        <a href="{{ route('marketplace.categories') }}"
-                            class="block px-3 py-2 text-gray-600 rounded-lg hover:bg-blue-50 hover:text-blue-400 transition-colors duration-200 flex items-center">
-                            <i class="fas fa-tags text-blue-400 mr-3 text-sm"></i>
+                        <a href="{{ route('marketplace.categories') }}" class="block px-3 py-2 text-sm text-gray-600 rounded-lg hover:bg-blue-50 hover:text-blue-500 transition">
+                            <i class="fas fa-tags text-blue-500 mr-2"></i>
                             Categories
                         </a>
                         @auth
-                            <a href="{{ route('marketplace.cart') }}"
-                                class="block px-3 py-2 text-gray-600 rounded-lg hover:bg-blue-50 hover:text-blue-400 transition-colors duration-200 flex items-center">
-                                <i class="fas fa-shopping-cart text-blue-400 mr-3 text-sm"></i>
+                            <a href="{{ route('marketplace.cart') }}" class="block px-3 py-2 text-sm text-gray-600 rounded-lg hover:bg-blue-50 hover:text-blue-500 transition">
+                                <i class="fas fa-shopping-cart text-blue-500 mr-2"></i>
                                 My Cart
                             </a>
-                            <a href="{{ route('marketplace.purchases') }}"
-                                class="block px-3 py-2 text-gray-600 rounded-lg hover:bg-blue-50 hover:text-blue-400 transition-colors duration-200 flex items-center">
-                                <i class="fas fa-shopping-bag text-blue-400 mr-3 text-sm"></i>
+                            <a href="{{ route('marketplace.purchases') }}" class="block px-3 py-2 text-sm text-gray-600 rounded-lg hover:bg-blue-50 hover:text-blue-500 transition">
+                                <i class="fas fa-shopping-bag text-blue-500 mr-2"></i>
                                 My Purchases
                             </a>
                         @endauth
@@ -411,174 +314,126 @@
                 </div>
 
                 <!-- Mobile: Roadmaps Dropdown -->
-                <div class="relative">
-                    <button @click="dropdowns.roadmaps = !dropdowns.roadmaps"
-                        class="w-full flex justify-between items-center px-3 py-3 text-gray-700 rounded-lg hover:bg-blue-50">
+                <div>
+                    <button @click="dropdowns.roadmaps = !dropdowns.roadmaps" class="w-full flex justify-between items-center px-3 py-3 text-gray-700 rounded-lg hover:bg-blue-50 transition">
                         <div class="flex items-center">
-                            <i class="fas fa-map-marked-alt text-blue-400 mr-3"></i>
-                            <span class="font-medium hover:uppercase">Roadmaps</span>
+                            <i class="fas fa-map-marked-alt text-blue-500 mr-3"></i>
+                            <span class="font-medium">Roadmaps</span>
                         </div>
-                        <i class="fas fa-chevron-down text-xs transition-transform duration-300"
-                            :class="{ 'rotate-180': dropdowns.roadmaps }"></i>
+                        <i class="fas fa-chevron-down text-xs transition-transform" :class="{ 'rotate-180': dropdowns.roadmaps }"></i>
                     </button>
-                    <div class="mt-1 ml-8 space-y-1" x-show="dropdowns.roadmaps" x-collapse
-                        x-transition:enter="transition ease-out duration-200"
-                        x-transition:enter-start="opacity-0 max-h-0" x-transition:enter-end="opacity-100 max-h-96"
-                        x-transition:leave="transition ease-in duration-150"
-                        x-transition:leave-start="opacity-100 max-h-96" x-transition:leave-end="opacity-0 max-h-0"
-                        style="display: none;">
-                        <a href="#"
-                            class="block px-3 py-2 text-gray-600 rounded-lg hover:bg-blue-50 hover:text-blue-400 transition-colors duration-200 flex items-center">
-                            <i class="fas fa-map-signs text-blue-400 mr-3 text-sm"></i>
+                    <div class="mt-1 ml-8 space-y-1" x-show="dropdowns.roadmaps" x-collapse style="display: none;">
+                        <a href="#" class="block px-3 py-2 text-sm text-gray-600 rounded-lg hover:bg-blue-50 hover:text-blue-500 transition">
+                            <i class="fas fa-map-signs text-blue-500 mr-2"></i>
                             Career Paths
                         </a>
-                        <a href="#"
-                            class="block px-3 py-2 text-gray-600 rounded-lg hover:bg-blue-50 hover:text-blue-400 transition-colors duration-200 flex items-center">
-                            <i class="fas fa-graduation-cap text-blue-400 mr-3 text-sm"></i>
+                        <a href="#" class="block px-3 py-2 text-sm text-gray-600 rounded-lg hover:bg-blue-50 hover:text-blue-500 transition">
+                            <i class="fas fa-graduation-cap text-blue-500 mr-2"></i>
                             Learning Tracks
                         </a>
-                        <a href="#"
-                            class="block px-3 py-2 text-gray-600 rounded-lg hover:bg-blue-50 hover:text-blue-400 transition-colors duration-200 flex items-center">
-                            <i class="fas fa-certificate text-blue-400 mr-3 text-sm"></i>
-                            Certification Guide
+                        <a href="#" class="block px-3 py-2 text-sm text-gray-600 rounded-lg hover:bg-blue-50 hover:text-blue-500 transition">
+                            <i class="fas fa-certificate text-blue-500 mr-2"></i>
+                            Certification
                         </a>
                     </div>
                 </div>
 
                 <!-- Mobile: Mentorship Dropdown -->
-                <div class="relative">
-                    <button @click="dropdowns.mentorship = !dropdowns.mentorship"
-                        class="w-full flex justify-between items-center px-3 py-3 text-gray-700 rounded-lg hover:bg-blue-50">
+                <div>
+                    <button @click="dropdowns.mentorship = !dropdowns.mentorship" class="w-full flex justify-between items-center px-3 py-3 text-gray-700 rounded-lg hover:bg-blue-50 transition">
                         <div class="flex items-center">
-                            <i class="fas fa-hands-helping text-blue-400 mr-3"></i>
-                            <span class="font-medium hover:uppercase">Mentorship</span>
+                            <i class="fas fa-hands-helping text-blue-500 mr-3"></i>
+                            <span class="font-medium">Mentorship</span>
                         </div>
-                        <i class="fas fa-chevron-down text-xs transition-transform duration-300"
-                            :class="{ 'rotate-180': dropdowns.mentorship }"></i>
+                        <i class="fas fa-chevron-down text-xs transition-transform" :class="{ 'rotate-180': dropdowns.mentorship }"></i>
                     </button>
-                    <div class="mt-1 ml-8 space-y-1" x-show="dropdowns.mentorship" x-collapse
-                        x-transition:enter="transition ease-out duration-200"
-                        x-transition:enter-start="opacity-0 max-h-0" x-transition:enter-end="opacity-100 max-h-96"
-                        x-transition:leave="transition ease-in duration-150"
-                        x-transition:leave-start="opacity-100 max-h-96" x-transition:leave-end="opacity-0 max-h-0"
-                        style="display: none;">
-                        <a href="#"
-                            class="block px-3 py-2 text-gray-600 rounded-lg hover:bg-blue-50 hover:text-blue-400 transition-colors duration-200 flex items-center">
-                            <i class="fas fa-users text-blue-400 mr-3 text-sm"></i>
+                    <div class="mt-1 ml-8 space-y-1" x-show="dropdowns.mentorship" x-collapse style="display: none;">
+                        <a href="#" class="block px-3 py-2 text-sm text-gray-600 rounded-lg hover:bg-blue-50 hover:text-blue-500 transition">
+                            <i class="fas fa-users text-blue-500 mr-2"></i>
                             Find a Mentor
                         </a>
-                        <a href="#"
-                            class="block px-3 py-2 text-gray-600 rounded-lg hover:bg-blue-50 hover:text-blue-400 transition-colors duration-200 flex items-center">
-                            <i class="fas fa-calendar-check text-blue-400 mr-3 text-sm"></i>
+                        <a href="#" class="block px-3 py-2 text-sm text-gray-600 rounded-lg hover:bg-blue-50 hover:text-blue-500 transition">
+                            <i class="fas fa-calendar-check text-blue-500 mr-2"></i>
                             Book Sessions
                         </a>
-                        <a href="#"
-                            class="block px-3 py-2 text-gray-600 rounded-lg hover:bg-blue-50 hover:text-blue-400 transition-colors duration-200 flex items-center">
-                            <i class="fas fa-code text-blue-400 mr-3 text-sm"></i>
+                        <a href="#" class="block px-3 py-2 text-sm text-gray-600 rounded-lg hover:bg-blue-50 hover:text-blue-500 transition">
+                            <i class="fas fa-code text-blue-500 mr-2"></i>
                             Code Reviews
                         </a>
                     </div>
                 </div>
 
-                <!-- Mobile: Community Link -->
-                <a href="#" class="flex items-center px-3 py-3 text-gray-700 rounded-lg hover:bg-blue-50">
-                    <i class="fas fa-users text-blue-400 mr-3"></i>
-                    <span class="font-medium hover:uppercase">Community</span>
-                    <span
-                        class="ml-2 bg-secondary text-white text-xs font-bold px-2 py-0.5 rounded-full animate-pulse">New</span>
+                <!-- Mobile: Simple Links -->
+                <a href="#" class="flex items-center px-3 py-3 text-gray-700 rounded-lg hover:bg-blue-50 transition">
+                    <i class="fas fa-users text-blue-500 mr-3"></i>
+                    <span class="font-medium">Community</span>
+                    <span class="ml-2 bg-red-500 text-white text-xs font-bold px-2 py-0.5 rounded-full">New</span>
                 </a>
 
-                <!-- Mobile: About Link -->
-                <a href="{{ route('about') }}"
-                    class="flex items-center px-3 py-3 text-gray-700 rounded-lg hover:bg-blue-50">
-                    <i class="fas fa-address-card text-blue-400 mr-3"></i>
-                    <span class="font-medium hover:uppercase">About Us</span>
+                <a href="{{ route('about') }}" class="flex items-center px-3 py-3 text-gray-700 rounded-lg hover:bg-blue-50 transition">
+                    <i class="fas fa-info-circle text-blue-500 mr-3"></i>
+                    <span class="font-medium">About</span>
                 </a>
 
-                <!-- Mobile: Contact Link -->
-                <a href="{{ route('contact') }}"
-                    class="flex items-center px-3 py-3 text-gray-700 rounded-lg hover:bg-blue-50">
-                    <i class="fas fa-envelope text-blue-400 mr-3"></i>
-                    <span class="font-medium hover:uppercase">Contact Us</span>
+                <a href="{{ route('contact') }}" class="flex items-center px-3 py-3 text-gray-700 rounded-lg hover:bg-blue-50 transition">
+                    <i class="fas fa-envelope text-blue-500 mr-3"></i>
+                    <span class="font-medium">Contact</span>
                 </a>
 
-                <!-- Mobile: Guideline Link -->
-                <a href="{{ route('guideline') }}"
-                    class="flex items-center px-3 py-3 text-gray-700 rounded-lg hover:bg-blue-50">
-                    <i class="fas fa-book text-blue-400 mr-3"></i>
-                    <span class="font-medium hover:uppercase">Guideline</span>
+                <a href="{{ route('statistics') }}" class="flex items-center px-3 py-3 text-gray-700 rounded-lg hover:bg-blue-50 transition">
+                    <i class="fas fa-chart-bar text-blue-500 mr-3"></i>
+                    <span class="font-medium">Statistics</span>
                 </a>
 
-                <!-- Mobile: Statistics Link -->
-                <a href="{{ route('statistics') }}"
-                    class="flex items-center px-3 py-3 text-gray-700 rounded-lg hover:bg-blue-50">
-                    <i class="fas fa-chart-bar text-blue-400 mr-3"></i>
-                    <span class="font-medium hover:uppercase">Statistics</span>
+                <a href="{{ route('guideline') }}" class="flex items-center px-3 py-3 text-gray-700 rounded-lg hover:bg-blue-50 transition">
+                    <i class="fas fa-book text-blue-500 mr-3"></i>
+                    <span class="font-medium">Guideline</span>
                 </a>
 
-                <!-- Mobile: Blog Link -->
-                <a href="{{ route('blog.index') }}"
-                    class="flex items-center px-3 py-3 text-gray-700 rounded-lg hover:bg-blue-50">
-                    <i class="fas fa-blog text-blue-400 mr-3"></i>
-                    <span class="font-medium hover:uppercase">Blog</span>
+                <a href="{{ route('blog.index') }}" class="flex items-center px-3 py-3 text-gray-700 rounded-lg hover:bg-blue-50 transition">
+                    <i class="fas fa-blog text-blue-500 mr-3"></i>
+                    <span class="font-medium">Blog</span>
                 </a>
 
-                <!-- Mobile: Search -->
-                <div class="px-3 py-3">
-                    <div class="relative">
-                        <input type="text" placeholder="Search courses..."
-                            class="w-full px-4 py-2 pl-10 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent">
-                        <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
-                    </div>
-                </div>
-
-                <!-- Mobile: Auth Buttons -->
-                @auth
-                    <!-- User dropdown -->
-                    <div class="relative ml-4" x-data="{ open: false }" @click.away="open = false">
-                        <button @click="open = !open" class="flex items-center space-x-2 focus:outline-none">
-                            <div
-                                class="h-8 w-8 rounded-full bg-blue-400 flex items-center justify-center text-white font-bold">
-                                {{ strtoupper(substr(auth()->user()->name, 0, 2)) }}
+                <!-- Mobile: Auth Section -->
+                <div class="border-t pt-4 mt-4">
+                    @auth
+                        <div class="space-y-2">
+                            <div class="flex items-center px-3 py-2 bg-blue-50 rounded-lg">
+                                <div class="h-10 w-10 rounded-full bg-blue-500 flex items-center justify-center text-white font-bold">
+                                    {{ strtoupper(substr(auth()->user()->name, 0, 2)) }}
+                                </div>
+                                <span class="ml-3 font-medium text-gray-800">{{ auth()->user()->name }}</span>
                             </div>
-                            <span class=" md:inline text-gray-700 font-medium">{{ auth()->user()->name }}</span>
-                            <i class="fas fa-chevron-down text-xs text-gray-500 transition-transform duration-200"
-                                :class="{ 'rotate-180': open }"></i>
-                        </button>
-
-                        <div x-show="open" x-transition:enter="transition ease-out duration-200"
-                            x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100"
-                            x-transition:leave="transition ease-in duration-75"
-                            x-transition:leave-start="opacity-100 scale-100" x-transition:leave-end="opacity-0 scale-95"
-                            class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50">
-                            <a href="{{ route(auth()->user()->getDashboardRouteName()) }}"
-                                class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                                <i class="fas fa-tachometer-alt mr-2"></i> Dashboard
+                            <a href="{{ route(auth()->user()->getDashboardRouteName()) }}" class="flex items-center px-3 py-3 text-gray-700 rounded-lg hover:bg-blue-50 transition">
+                                <i class="fas fa-tachometer-alt text-blue-500 mr-3"></i>
+                                <span class="font-medium">Dashboard</span>
                             </a>
-                            <a href="{{ route('profile.edit') }}"
-                                class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                                <i class="fas fa-user-cog mr-2"></i> Profile
+                            <a href="{{ route('profile.edit') }}" class="flex items-center px-3 py-3 text-gray-700 rounded-lg hover:bg-blue-50 transition">
+                                <i class="fas fa-user-cog text-blue-500 mr-3"></i>
+                                <span class="font-medium">Profile</span>
                             </a>
                             <form method="POST" action="{{ route('logout') }}">
                                 @csrf
-                                <button type="submit"
-                                    class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                                    <i class="fas fa-sign-out-alt mr-2"></i> Logout
+                                <button type="submit" class="w-full flex items-center px-3 py-3 text-red-600 rounded-lg hover:bg-red-50 transition">
+                                    <i class="fas fa-sign-out-alt text-red-600 mr-3"></i>
+                                    <span class="font-medium">Logout</span>
                                 </button>
                             </form>
                         </div>
-                    </div>
-                @else
-                    <!-- Guest buttons -->
-                    <a href="{{ route('login') }}"
-                        class="text-gray-600 hover:text-blue-400 font-medium hover:uppercase px-4 py-2 rounded-lg transition-colors duration-300 group">
-                        <i class="fas fa-sign-in-alt mr-2 transition-transform group-hover:translate-x-0.5"></i>Log in
-                    </a>
-                    {{-- <a href="{{ route('register') }}"
-                        class="bg-blue-400 text-black font-medium hover:uppercase px-5 py-2.5 rounded-lg shadow-md hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-300 flex items-center animate-pulse-custom">
-                        <i class="fas fa-user-plus mr-2"></i>Register
-                    </a> --}}
-                @endauth
+                    @else
+                        <div class="space-y-2">
+                            <a href="{{ route('login') }}" class="flex items-center justify-center px-4 py-3 border-2 border-blue-500 text-blue-500 rounded-lg hover:bg-blue-50 transition font-medium">
+                                <i class="fas fa-sign-in-alt mr-2"></i>
+                                Log In
+                            </a>
+                            <a href="{{ route('register') }}" class="flex items-center justify-center px-4 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition font-medium shadow-md">
+                                <i class="fas fa-user-plus mr-2"></i>
+                                Register
+                            </a>
+                        </div>
+                    @endauth
+                </div>
             </div>
         </div>
     </div>

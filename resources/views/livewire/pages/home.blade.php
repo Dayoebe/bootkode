@@ -60,61 +60,152 @@
     <main>
         <!-- Hero Section -->
         <section
-            class="relative bg-gradient-to-br from-blue-700 to-indigo-900 text-white py-20 lg:py-32 overflow-hidden rounded-b-3xl shadow-xl">
-            <div class="absolute inset-0 opacity-10">
-                <svg class="h-full w-full" fill="none" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid slice"
-                    xmlns="http://www.w3.org/2000/svg">
-                    <pattern id="pattern-circles" x="0" y="0" width="10" height="10" patternUnits="userSpaceOnUse">
-                        <circle cx="5" cy="5" r="1" fill="rgba(255,255,255,0.1)" />
-                    </pattern>
-                    <rect x="0" y="0" width="100%" height="100%" fill="url(#pattern-circles)" />
-                </svg>
+            class="relative bg-gradient-to-br from-emerald-600 to-teal-700 text-white py-20 lg:py-32 overflow-hidden">
+            <!-- Animated background elements -->
+            <div class="absolute inset-0 overflow-hidden">
+                <div
+                    class="absolute top-10 left-10 w-72 h-72 bg-emerald-400 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob">
+                </div>
+                <div
+                    class="absolute top-40 right-10 w-72 h-72 bg-teal-400 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-2000">
+                </div>
+                <div
+                    class="absolute -bottom-8 left-1/2 w-72 h-72 bg-cyan-400 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-4000">
+                </div>
             </div>
 
             <div class="px-4 sm:px-6 lg:px-8 relative z-10">
                 <div class="lg:grid lg:grid-cols-12 lg:gap-8 items-center">
-                    <div class="sm:text-center lg:text-left lg:col-span-7 animate-fade-in">
-                        <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold leading-tight mb-6">
-                            Empower Your Future. <br class="hidden sm:inline"> Master Digital Skills.
+                    <!-- Left Content -->
+                    <div class="sm:text-center lg:text-left lg:col-span-6 animate-fade-in">
+                        <div
+                            class="inline-block mb-4 px-4 py-2 bg-emerald-500/30 rounded-full border border-emerald-400/50">
+                            <span class="text-sm font-semibold text-emerald-100">✨ Africa's #1 Tech Education
+                                Platform</span>
+                        </div>
+                        <h1 class="text-5xl sm:text-6xl lg:text-7xl font-black leading-tight mb-6 text-white">
+                            Code Your <span
+                                class="bg-gradient-to-r from-emerald-300 to-cyan-300 bg-clip-text text-transparent">Dream</span>
                         </h1>
-                        <p class="text-lg sm:text-xl max-w-2xl mx-auto lg:mx-0 mb-8 text-blue-100">
-                            BootKode provides structured, affordable, and locally relevant coding education to unlock
-                            Africa's tech potential.
+                        <p class="text-lg sm:text-xl max-w-2xl mx-auto lg:mx-0 mb-8 text-emerald-50 leading-relaxed">
+                            Learn industry-ready skills at your own pace. From beginner to job-ready in months, not
+                            years.
                         </p>
-                        <div class="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
+
+                        <!-- Stats -->
+                        <div class="grid grid-cols-3 gap-4 mb-8 max-w-md mx-auto lg:mx-0">
+                            <div class="bg-white/10 backdrop-blur-sm rounded-lg p-4 border border-white/20">
+                                <p class="text-2xl font-bold text-emerald-300">50K+</p>
+                                <p class="text-sm text-emerald-100">Learners</p>
+                            </div>
+                            <div class="bg-white/10 backdrop-blur-sm rounded-lg p-4 border border-white/20">
+                                <p class="text-2xl font-bold text-emerald-300">100+</p>
+                                <p class="text-sm text-emerald-100">Courses</p>
+                            </div>
+                            <div class="bg-white/10 backdrop-blur-sm rounded-lg p-4 border border-white/20">
+                                <p class="text-2xl font-bold text-emerald-300">95%</p>
+                                <p class="text-sm text-emerald-100">Success</p>
+                            </div>
+                        </div>
+
+                        <!-- CTA Buttons -->
+                        <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
                             <a href="#"
-                                class="inline-flex items-center justify-center px-8 py-4 border border-transparent border-white text-base font-bold rounded-full shadow-lg hover:text-white text-indigo-600 bg-white hover:bg-indigo-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition duration-300 ease-in-out transform hover:scale-105">
-                                Start Learning Free <i class="fas fa-arrow-right ml-3"></i>
+                                class="group relative px-8 py-4 bg-white text-emerald-700 font-bold rounded-full shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:scale-105 overflow-hidden">
+                                <span class="relative z-10 flex items-center justify-center">
+                                    Start Free <i
+                                        class="fas fa-arrow-right ml-2 group-hover:translate-x-1 transition-transform"></i>
+                                </span>
+                                <div
+                                    class="absolute inset-0 bg-emerald-100 transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left duration-300">
+                                </div>
                             </a>
                             <a href="#features"
-                                class="inline-flex items-center justify-center px-8 py-4 border-2 border-white text-base font-bold rounded-full text-white hover:bg-white hover:text-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-white transition duration-300 ease-in-out transform hover:scale-105">
-                                Explore Courses <i class="fas fa-book-open ml-3"></i>
+                                class="group px-8 py-4 border-2 border-white text-white font-bold rounded-full hover:bg-white/10 backdrop-blur-sm transition-all duration-300 transform hover:scale-105">
+                                Explore Courses <i class="fas fa-play ml-2"></i>
                             </a>
                         </div>
                     </div>
 
-                    <div class="mt-12 lg:mt-0 lg:col-span-5 animate-fade-in animate-delay-200">
-                        <div class="relative mx-auto w-full max-w-md lg:max-w-none">
-                            <div class="relative rounded-xl shadow-2xl overflow-hidden">
-                                <img class="w-full h-auto"
-                                    src="https://images.unsplash.com/photo-1551434678-e076c223a692?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80"
-                                    alt="African students learning tech skills">
-                                <div class="absolute inset-0 bg-gradient-to-t from-blue-900/50 to-blue-700/30"></div>
-                            </div>
+                    <!-- Right Image Section -->
+                    <div class="mt-12 lg:mt-0 lg:col-span-6 animate-fade-in animate-delay-0.2s">
+                        <div class="relative">
+                            <!-- Floating cards -->
                             <div
-                                class="absolute -bottom-8 -right-8 w-64 h-64 bg-blue-200 rounded-full opacity-20 animate-pulse">
+                                class="absolute -top-6 -left-6 bg-white/10 backdrop-blur-md rounded-2xl p-4 border border-white/20 shadow-xl transform -rotate-6 hover:rotate-0 transition-transform duration-300 z-20">
+                                <div class="flex items-center space-x-3">
+                                    <div class="w-10 h-10 bg-emerald-400 rounded-full flex items-center justify-center">
+                                        <i class="fas fa-check text-white text-lg"></i>
+                                    </div>
+                                    <span class="text-white font-semibold">Mobile Ready</span>
+                                </div>
+                            </div>
+
+                            <div
+                                class="absolute -bottom-6 -right-6 bg-white/10 backdrop-blur-md rounded-2xl p-4 border border-white/20 shadow-xl transform rotate-6 hover:rotate-0 transition-transform duration-300 z-20">
+                                <div class="flex items-center space-x-3">
+                                    <div class="w-10 h-10 bg-cyan-400 rounded-full flex items-center justify-center">
+                                        <i class="fas fa-star text-white text-lg"></i>
+                                    </div>
+                                    <span class="text-white font-semibold">No Coding Needed</span>
+                                </div>
+                            </div>
+
+                            <!-- Main Image -->
+                            <div class="relative rounded-3xl overflow-hidden shadow-2xl ring-1 ring-white/20">
+                                <img class="w-full h-auto object-cover"
+                                    src="https://images.unsplash.com/photo-1517694712202-14dd9538aa97?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80"
+                                    alt="Developers collaborating">
+                                <div class="absolute inset-0 bg-gradient-to-t from-emerald-900/40 to-transparent"></div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
+
+            <!-- Scroll indicator -->
+            <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-10">
+                <div class="animate-bounce">
+                    <i class="fas fa-chevron-down text-white/60 text-2xl"></i>
+                </div>
+            </div>
+
+            <style>
+                @keyframes blob {
+
+                    0%,
+                    100% {
+                        transform: translate(0, 0) scale(1);
+                    }
+
+                    33% {
+                        transform: translate(30px, -50px) scale(1.1);
+                    }
+
+                    66% {
+                        transform: translate(-20px, 20px) scale(0.9);
+                    }
+                }
+
+                .animate-blob {
+                    animation: blob 7s infinite;
+                }
+
+                .animation-delay-2000 {
+                    animation-delay: 2s;
+                }
+
+                .animation-delay-4000 {
+                    animation-delay: 4s;
+                }
+            </style>
         </section>
 
         <!-- Features Section -->
         <section id="features" class="py-16 bg-white" x-data="{ activeTab: 'education' }">
             <div class=" px-4 sm:px-6 lg:px-8">
                 <!-- Header -->
-                <div class="text-center mb-16 animate-fade-in">
+                <div class="text-center mb-6 animate-fade-in">
                     <h2 class="text-3xl sm:text-4xl font-extrabold text-gray-900">
                         Why Choose BootKode?
                     </h2>
@@ -124,37 +215,38 @@
                 </div>
 
                 <!-- Tab Navigation -->
-                <div class="flex justify-center space-x-2 mb-12">
+                <div class="flex flex-wrap justify-center gap-2 mb-6 animate-fade-in animate-delay-0.2s">
                     <button @click="activeTab = 'education'"
                         :class="{ 'bg-blue-600 text-white': activeTab === 'education', 'bg-gray-100 text-gray-700': activeTab !== 'education' }"
-                        class="px-6 py-3 rounded-lg font-medium transition-all duration-300 flex items-center">
+                        class="px-4 py-2 sm:px-6 sm:py-3 rounded-lg font-medium text-sm sm:text-base transition-all duration-300 flex items-center">
                         <i class="fas fa-graduation-cap mr-2"></i> Education
                     </button>
                     <button @click="activeTab = 'mentorship'"
                         :class="{ 'bg-blue-600 text-white': activeTab === 'mentorship', 'bg-gray-100 text-gray-700': activeTab !== 'mentorship' }"
-                        class="px-6 py-3 rounded-lg font-medium transition-all duration-300 flex items-center">
+                        class="px-4 py-2 sm:px-6 sm:py-3 rounded-lg font-medium text-sm sm:text-base transition-all duration-300 flex items-center">
                         <i class="fas fa-hands-helping mr-2"></i> Mentorship
                     </button>
                     <button @click="activeTab = 'certification'"
                         :class="{ 'bg-blue-600 text-white': activeTab === 'certification', 'bg-gray-100 text-gray-700': activeTab !== 'certification' }"
-                        class="px-6 py-3 rounded-lg font-medium transition-all duration-300 flex items-center">
+                        class="px-4 py-2 sm:px-6 sm:py-3 rounded-lg font-medium text-sm sm:text-base transition-all duration-300 flex items-center">
                         <i class="fas fa-certificate mr-2"></i> Certification
                     </button>
                 </div>
 
                 <!-- Tab Content -->
-                <div class="grid md:grid-cols-3 gap-8">
+                <div class="grid md:grid-cols-3 gap-6 md:gap-8">
                     <!-- Education Tab -->
-                    <div x-show="activeTab === 'education'" class="grid md:grid-cols-3 gap-8 md:col-span-3">
+                    <div x-show="activeTab === 'education'"
+                        class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 md:col-span-3">
                         <div
                             class="bg-white p-6 rounded-xl shadow-lg border border-gray-100 hover:shadow-xl transition-shadow duration-300 animate-fade-in">
                             <div
                                 class="flex items-center justify-center h-12 w-12 rounded-md bg-blue-100 text-blue-600 mb-4">
                                 <i class="fas fa-road text-xl"></i>
                             </div>
-                            <h3 class="text-xl font-semibold text-gray-900 mb-2">Structured Roadmaps</h3>
-                            <p class="text-gray-600">
-                                Clear, step-by-step paths from beginner to job-ready developer with African context.
+                            <h3 class="text-lg sm:text-xl font-semibold text-gray-900 mb-2">Structured Roadmaps</h3>
+                            <p class="text-sm sm:text-base text-gray-600"></p>
+                            Clear, step-by-step paths from beginner to job-ready developer with African context.
                             </p>
                         </div>
 
@@ -184,7 +276,8 @@
                     </div>
 
                     <!-- Mentorship Tab -->
-                    <div x-show="activeTab === 'mentorship'" class="grid md:grid-cols-2 lg:grid-cols-4 gap-8 md:col-span-3">
+                    <div x-show="activeTab === 'mentorship'"
+                        class="grid md:grid-cols-2 lg:grid-cols-4 gap-8 md:col-span-3">
                         <div
                             class="bg-white p-6 rounded-xl shadow-lg border border-gray-100 hover:shadow-xl transition-shadow duration-300 animate-fade-in">
                             <div
@@ -231,8 +324,7 @@
                     </div>
 
                     <!-- Certification Tab -->
-                    <div x-show="activeTab === 'certification'"
-                        class="grid md:grid-cols-3 gap-8 md:col-span-3">
+                    <div x-show="activeTab === 'certification'" class="grid md:grid-cols-3 gap-8 md:col-span-3">
                         <div
                             class="bg-white p-6 rounded-xl shadow-lg border border-gray-100 hover:shadow-xl transition-shadow duration-300 animate-fade-in">
                             <div
@@ -327,8 +419,7 @@
         <!-- AI-Powered Learning Section -->
         <section class="py-16 sm:py-20 bg-pink-50">
             <div class=" px-4 sm:px-6 lg:px-8 text-center">
-                <h2
-                    class="text-3xl sm:text-4xl font-extrabold text-gray-900 mb-12 animate__animated animate__fadeInUp">
+                <h2 class="text-3xl sm:text-4xl font-extrabold text-gray-900 mb-12 animate__animated animate__fadeInUp">
                     Intelligent Learning with AI
                 </h2>
                 <p
@@ -370,8 +461,7 @@
         <!-- Learning Paths Section -->
         <section class="py-16 sm:py-20 bg-gray-50">
             <div class=" px-4 sm:px-6 lg:px-8 text-center">
-                <h2
-                    class="text-3xl sm:text-4xl font-extrabold text-gray-900 mb-12 animate__animated animate__fadeInUp">
+                <h2 class="text-3xl sm:text-4xl font-extrabold text-gray-900 mb-12 animate__animated animate__fadeInUp">
                     Choose Your Learning Path
                 </h2>
                 <p
@@ -683,8 +773,7 @@
         <!-- Gamification & Community Section -->
         <section class="py-16 sm:py-20 bg-teal-50">
             <div class=" px-4 sm:px-6 lg:px-8 text-center">
-                <h2
-                    class="text-3xl sm:text-4xl font-extrabold text-gray-900 mb-12 animate__animated animate__fadeInUp">
+                <h2 class="text-3xl sm:text-4xl font-extrabold text-gray-900 mb-12 animate__animated animate__fadeInUp">
                     Stay Motivated with Gamification & Community
                 </h2>
                 <p
@@ -761,8 +850,7 @@
         <!-- Testimonial Section -->
         <section class="py-16 sm:py-20 bg-gray-100" x-data="testimonialSlider()">
             <div class="px-4 sm:px-6 lg:px-8 text-center">
-                <h2
-                    class="text-3xl sm:text-4xl font-extrabold text-gray-900 mb-12 animate__animated animate__fadeInUp">
+                <h2 class="text-3xl sm:text-4xl font-extrabold text-gray-900 mb-12 animate__animated animate__fadeInUp">
                     What Our Learners Say
                 </h2>
                 <div class="relative overflow-hidden">
@@ -934,26 +1022,26 @@
                 return {
                     currentIndex: 0,
                     testimonials: [{
-                            quote: "BootKode changed my life. I went from knowing nothing about code to building my first web app in months. The mentorship was invaluable!",
-                            name: "Aisha M.",
-                            title: "Frontend Developer, Lagos",
-                            avatar: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=687&q=80",
-                            rating: 5
-                        },
-                        {
-                            quote: "The structured roadmaps are a game-changer. Finally, a platform that understands the African context and helps you get job-ready!",
-                            name: "Kingsley O.",
-                            title: "Self-Taught Dev, Abuja",
-                            avatar: "https://images.unsplash.com/photo-1507003211169-0a3dd782dab4?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=687&q=80",
-                            rating: 4.5
-                        },
-                        {
-                            quote: "As an NYSC member, BootKode's offline access was a lifesaver. I could learn even in remote areas and now I'm building my own startup!",
-                            name: "Chidinma E.",
-                            title: "Mobile Developer, Enugu",
-                            avatar: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=688&q=80",
-                            rating: 5
-                        }
+                        quote: "BootKode changed my life. I went from knowing nothing about code to building my first web app in months. The mentorship was invaluable!",
+                        name: "Aisha M.",
+                        title: "Frontend Developer, Lagos",
+                        avatar: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=687&q=80",
+                        rating: 5
+                    },
+                    {
+                        quote: "The structured roadmaps are a game-changer. Finally, a platform that understands the African context and helps you get job-ready!",
+                        name: "Kingsley O.",
+                        title: "Self-Taught Dev, Abuja",
+                        avatar: "https://images.unsplash.com/photo-1507003211169-0a3dd782dab4?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=687&q=80",
+                        rating: 4.5
+                    },
+                    {
+                        quote: "As an NYSC member, BootKode's offline access was a lifesaver. I could learn even in remote areas and now I'm building my own startup!",
+                        name: "Chidinma E.",
+                        title: "Mobile Developer, Enugu",
+                        avatar: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=688&q=80",
+                        rating: 5
+                    }
                     ],
                     next() {
                         this.currentIndex = (this.currentIndex + 1) % this.testimonials.length;
