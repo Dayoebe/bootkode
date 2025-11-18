@@ -171,10 +171,41 @@
     </div>
 
     @else
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+    
     {{-- Main Exam Interface --}}
-    <div class="h-screen flex flex-col bg-white dark:bg-gray-900">
+    <div class="min-h-screen flex flex-col bg-white dark:bg-gray-900 safe-area-inset-bottom">
         {{-- Top Navigation Bar --}}
-        <div class="bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg z-20">
+        <div class="bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg z-20 flex-shrink-0">
             <div class="flex items-center justify-between px-4 md:px-6 py-4">
                 {{-- Left: Question Counter with Mobile Dropdown --}}
                 <div class="flex items-center space-x-4">
@@ -186,7 +217,7 @@
                             <span class="font-bold">{{ $currentQuestionIndex + 1 }}/{{ count($questions) }}</span>
                             <i class="fas fa-chevron-down text-sm transition-transform" :class="{ 'rotate-180': open }"></i>
                         </button>
-
+    
                         {{-- Dropdown Menu --}}
                         <div x-show="open" 
                              x-transition:enter="transition ease-out duration-200"
@@ -206,7 +237,7 @@
                                     <span>Remaining: {{ count($questions) - $this->getAnsweredQuestionsCount() }}</span>
                                 </div>
                             </div>
-
+    
                             <div class="p-4 overflow-y-auto max-h-80">
                                 {{-- Legend --}}
                                 <div class="grid grid-cols-2 gap-2 mb-4 text-xs">
@@ -229,7 +260,7 @@
                                         <span class="text-gray-600 dark:text-gray-400">Flagged</span>
                                     </div>
                                 </div>
-
+    
                                 {{-- Question Grid --}}
                                 <div class="grid grid-cols-6 gap-2">
                                     @foreach($questions as $index => $question)
@@ -251,7 +282,7 @@
                             </div>
                         </div>
                     </div>
-
+    
                     {{-- Desktop Question Counter --}}
                     <button @click="toggleSidebar()" class="hidden lg:flex items-center space-x-3">
                         <div class="flex items-center justify-center w-12 h-12 bg-white/20 rounded-xl backdrop-blur-sm">
@@ -263,7 +294,7 @@
                         </div>
                     </button>
                 </div>
-
+    
                 {{-- Center: Progress Bar (Hidden on mobile) --}}
                 <div class="hidden md:flex flex-1 max-w-md mx-8">
                     <div class="w-full bg-white/20 rounded-full h-3 backdrop-blur-sm overflow-hidden">
@@ -271,7 +302,7 @@
                              :style="`width: ${({{ $currentQuestionIndex + 1 }} / {{ count($questions) }}) * 100}%`"></div>
                     </div>
                 </div>
-
+    
                 {{-- Right: Timer & Actions --}}
                 <div class="flex items-center space-x-2 sm:space-x-4">
                     <div class="flex items-center space-x-2 bg-white/20 backdrop-blur-sm px-3 sm:px-4 py-2 rounded-xl"
@@ -287,7 +318,7 @@
                     </button>
                 </div>
             </div>
-
+    
             {{-- Mobile Progress Bar --}}
             <div class="md:hidden px-4 pb-3">
                 <div class="w-full bg-white/20 rounded-full h-2 overflow-hidden">
@@ -296,8 +327,8 @@
                 </div>
             </div>
         </div>
-
-        <div class="flex-1 flex overflow-hidden">
+    
+        <div class="flex-1 flex overflow-hidden min-h-0">
             {{-- Question Navigation Sidebar --}}
             <div class="bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 transition-all duration-300 shadow-xl lg:shadow-none z-10"
                  :class="sidebarOpen ? 'fixed inset-y-0 left-0 w-80' : 'hidden lg:block lg:w-72'">
@@ -315,7 +346,7 @@
                         <span>Remaining: {{ count($questions) - $this->getAnsweredQuestionsCount() }}</span>
                     </div>
                 </div>
-
+    
                 {{-- Question Grid --}}
                 <div class="p-4 overflow-y-auto h-[calc(100vh-180px)]">
                     {{-- Legend --}}
@@ -339,7 +370,7 @@
                             <span class="text-gray-600 dark:text-gray-400">Flagged</span>
                         </div>
                     </div>
-
+    
                     {{-- Question Numbers --}}
                     <div class="grid grid-cols-5 gap-3">
                         @foreach($questions as $index => $question)
@@ -360,7 +391,7 @@
                     </div>
                 </div>
             </div>
-
+    
             {{-- Sidebar Overlay (Mobile) --}}
             <div x-show="sidebarOpen" 
                  @click="sidebarOpen = false"
@@ -371,11 +402,11 @@
                  x-transition:leave-start="opacity-100"
                  x-transition:leave-end="opacity-0"
                  class="fixed inset-0 bg-black bg-opacity-50 lg:hidden z-0"></div>
-
+    
             {{-- Main Content Area --}}
-            <div class="flex-1 flex flex-col overflow-hidden">
+            <div class="flex-1 flex flex-col overflow-hidden min-h-0">
                 {{-- Question Content --}}
-                <div class="flex-1 overflow-y-auto p-4 md:p-8">
+                <div class="flex-1 overflow-y-auto p-4 md:p-8 pb-24 md:pb-8"> {{-- Added pb-24 for mobile --}}
                     @if($this->getCurrentQuestion())
                     @php $question = $this->getCurrentQuestion(); @endphp
                     <div class="max-w-4xl mx-auto animate__animated animate__fadeIn">
@@ -398,7 +429,7 @@
                                     <div class="text-2xl font-bold text-blue-600 dark:text-blue-400">{{ $question['points'] ?? 1 }}</div>
                                 </div>
                             </div>
-
+    
                             {{-- Question Text --}}
                             <div class="prose prose-lg max-w-none dark:prose-invert math-content text-gray-800 dark:text-gray-200"
                                  wire:key="question-{{ $question['id'] }}"
@@ -406,7 +437,7 @@
                                 {!! $question['question_text'] ?? '' !!}
                             </div>
                         </div>
-
+    
                         {{-- Answer Options --}}
                         <div class="space-y-4">
                             @if(($question['question_type'] ?? '') === 'multiple_choice')
@@ -450,7 +481,7 @@
                                         @endif
                                     @endforeach
                                 @endif
-
+    
                             @elseif(($question['question_type'] ?? '') === 'true_false')
                                 <label class="block cursor-pointer group">
                                     <input type="radio" 
@@ -482,7 +513,7 @@
                                         </div>
                                     </div>
                                 </label>
-
+    
                                 <label class="block cursor-pointer group">
                                     <input type="radio" 
                                            wire:click="saveAnswer({{ $question['id'] }}, 1)"
@@ -518,9 +549,9 @@
                     </div>
                     @endif
                 </div>
-
-                {{-- Bottom Navigation --}}
-                <div class="bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 p-4 md:p-6 shadow-lg">
+    
+                {{-- Bottom Navigation - Fixed for Mobile --}}
+                <div class="bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 p-4 md:p-6 shadow-lg sticky bottom-0 z-10 md:relative">
                     <div class="max-w-4xl mx-auto">
                         {{-- Progress Info --}}
                         <div class="flex items-center justify-between mb-4 text-sm text-gray-600 dark:text-gray-400">
@@ -533,39 +564,41 @@
                                 <span>{{ count($questions) - $this->getAnsweredQuestionsCount() }} remaining</span>
                             </div>
                         </div>
-
+    
                         {{-- Progress Bar --}}
                         <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2 mb-6 overflow-hidden">
                             <div class="bg-gradient-to-r from-blue-500 to-indigo-600 h-full rounded-full transition-all duration-500 shadow-lg"
                                  :style="`width: ${({{ $this->getAnsweredQuestionsCount() }} / {{ count($questions) }}) * 100}%`"></div>
                         </div>
-
+    
                         {{-- Navigation Buttons --}}
                         <div class="flex items-center justify-between gap-4">
                             <button wire:click="previousQuestion"
-                                    class="flex items-center space-x-2 px-6 py-3 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-xl font-semibold hover:bg-gray-200 dark:hover:bg-gray-600 transition-all disabled:opacity-50 disabled:cursor-not-allowed transform hover:scale-105"
+                                    class="flex items-center space-x-2 px-4 py-3 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-xl font-semibold hover:bg-gray-200 dark:hover:bg-gray-600 transition-all disabled:opacity-50 disabled:cursor-not-allowed transform hover:scale-105 flex-1 justify-center"
                                     {{ !$this->canGoPrevious() ? 'disabled' : '' }}>
                                 <i class="fas fa-arrow-left"></i>
                                 <span class="hidden sm:inline">Previous</span>
                             </button>
-
-                            <div class="flex-1 text-center">
+    
+                            <div class="flex-1 text-center min-w-0 px-2">
                                 <div class="text-sm text-gray-500 dark:text-gray-400">Progress</div>
-                                <div class="text-2xl font-bold text-gray-800 dark:text-white">
+                                <div class="text-lg font-bold text-gray-800 dark:text-white whitespace-nowrap">
                                     {{ round($this->getProgressPercentage(), 1) }}%
                                 </div>
                             </div>
-
+    
                             @if($this->isLastQuestion())
                             <button wire:click="showSubmitConfirmation"
-                                    class="flex items-center space-x-2 px-6 py-3 bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-xl font-bold hover:from-green-700 hover:to-emerald-700 transition-all transform hover:scale-105 shadow-lg">
+                                    class="flex items-center space-x-2 px-4 py-3 bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-xl font-bold hover:from-green-700 hover:to-emerald-700 transition-all transform hover:scale-105 shadow-lg flex-1 justify-center">
                                 <i class="fas fa-paper-plane"></i>
-                                <span>Submit</span>
+                                <span class="hidden sm:inline">Submit</span>
+                                <span class="sm:hidden">End</span>
                             </button>
                             @else
                             <button wire:click="nextQuestion"
-                                    class="flex items-center space-x-2 px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-xl font-bold hover:from-blue-700 hover:to-indigo-700 transition-all transform hover:scale-105 shadow-lg">
-                                <span>Next</span>
+                                    class="flex items-center space-x-2 px-4 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-xl font-bold hover:from-blue-700 hover:to-indigo-700 transition-all transform hover:scale-105 shadow-lg flex-1 justify-center">
+                                <span class="hidden sm:inline">Next</span>
+                                <span class="sm:hidden">Next</span>
                                 <i class="fas fa-arrow-right"></i>
                             </button>
                             @endif
@@ -575,6 +608,28 @@
             </div>
         </div>
     </div>
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     @endif
 
     {{-- Submit Confirmation Modal --}}
