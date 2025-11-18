@@ -145,11 +145,6 @@
             outline-offset: 2px !important;
         }
 
-        /* Progress bar animations */
-        .progress-animate {
-            transition: width 0.5s ease-in-out;
-        }
-
         /* Browser lockdown styles */
         .lockdown-active {
             position: fixed !important;
@@ -282,11 +277,10 @@
 </head>
 
 <body class="h-full bg-gray-50 dark:bg-gray-900 font-sans antialiased transition-colors duration-300" id="examBody">
-    <!-- All existing accessibility panels, overlays, and buttons remain the same -->
 
     {{-- Accessibility Settings Panel --}}
     <div id="accessibilityPanel"
-        class="fixed top-4 left-4 bg-white dark:bg-gray-800 rounded-lg shadow-lg p-4 z-50 transform -translate-x-full transition-transform duration-300">
+        class="fixed bottom-4 left-4 bg-white dark:bg-gray-800 rounded-lg shadow-lg p-4 z-50 transform -translate-x-full transition-transform duration-300">
         <div class="flex items-center justify-between mb-3">
             <h3 class="font-semibold text-gray-900 dark:text-gray-100">Accessibility</h3>
             <button onclick="examInterface.toggleAccessibilityPanel()"
@@ -353,51 +347,16 @@
         </div>
     </div>
 
-    {{-- Progress Tracking Overlay --}}
-    <div id="progressOverlay"
-        class="fixed bottom-4 right-4 bg-white dark:bg-gray-800 rounded-lg shadow-lg p-4 z-40 transform translate-x-full transition-transform duration-300">
-        <div class="flex items-center justify-between mb-2">
-            <h4 class="font-semibold text-gray-900 dark:text-gray-100 text-sm">Progress</h4>
-            <button onclick="examInterface.toggleProgressPanel()"
-                class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200">
-                <i class="fas fa-times text-xs"></i>
-            </button>
-        </div>
-        <div id="progressContent" class="space-y-2 text-xs">
-            <div class="flex justify-between">
-                <span class="text-gray-600 dark:text-gray-400">Completed:</span>
-                <span id="progressCompleted" class="font-semibold">0/0</span>
-            </div>
-            <div class="flex justify-between">
-                <span class="text-gray-600 dark:text-gray-400">Time Left:</span>
-                <span id="progressTimeLeft" class="font-semibold">--:--</span>
-            </div>
-            <div class="flex justify-between">
-                <span class="text-gray-600 dark:text-gray-400">Avg. Time/Q:</span>
-                <span id="progressAvgTime" class="font-semibold">--:--</span>
-            </div>
-            <div class="flex justify-between">
-                <span class="text-gray-600 dark:text-gray-400">Est. Finish:</span>
-                <span id="progressEstFinish" class="font-semibold">--:--</span>
-            </div>
-        </div>
-    </div>
+   
 
     {{-- Security Warning Container --}}
     <div id="securityWarnings" class="fixed top-4 right-4 z-40 space-y-2"></div>
 
     {{-- Floating Accessibility Button --}}
     <button id="accessibilityButton" onclick="examInterface.toggleAccessibilityPanel()"
-        class="fixed top-4 left-4 bg-blue-600 text-white p-3 rounded-full shadow-lg hover:bg-blue-700 transition-colors z-40"
+        class="fixed bottom-4 right-4 bg-blue-600 text-white p-3 rounded-full shadow-lg hover:bg-blue-700 transition-colors z-40"
         title="Accessibility Options (Alt+A)" aria-label="Accessibility Options">
         <i class="fas fa-universal-access"></i>
-    </button>
-
-    {{-- Floating Progress Button --}}
-    <button id="progressButton" onclick="examInterface.toggleProgressPanel()"
-        class="fixed bottom-4 right-4 bg-green-600 text-white p-3 rounded-full shadow-lg hover:bg-green-700 transition-colors z-40"
-        title="Progress Tracking (Alt+P)" aria-label="Progress Tracking">
-        <i class="fas fa-chart-line"></i>
     </button>
 
     {{-- Main Content --}}
@@ -528,19 +487,11 @@
                 localStorage.setItem('darkMode', this.settings.darkMode);
                 this.saveSettings();
             },
-
-            // ... rest of existing methods ...
-
             setupKeyboardHandlers() {
                 document.addEventListener('keydown', (e) => {
                     if (e.altKey && e.key === 'a') {
                         e.preventDefault();
                         this.toggleAccessibilityPanel();
-                    }
-
-                    if (e.altKey && e.key === 'p') {
-                        e.preventDefault();
-                        this.toggleProgressPanel();
                     }
 
                     if (this.settings.keyboardNavigation && window.examSecurity.examStarted) {
@@ -623,11 +574,6 @@
                 this.settings.keyboardNavigation = !this.settings.keyboardNavigation;
                 document.body.classList.toggle('keyboard-nav', this.settings.keyboardNavigation);
                 this.saveSettings();
-            },
-
-            toggleProgressPanel() {
-                const panel = document.getElementById('progressOverlay');
-                panel.classList.toggle('translate-x-full');
             },
 
             updateProgress(data) {
