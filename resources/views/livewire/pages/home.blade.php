@@ -217,17 +217,17 @@
                 <!-- Tab Navigation -->
                 <div class="flex flex-wrap justify-center gap-2 mb-6 animate-fade-in animate-delay-0.2s">
                     <button @click="activeTab = 'education'"
-                        :class="{ 'bg-blue-600 text-white': activeTab === 'education', 'bg-gray-100 text-gray-700': activeTab !== 'education' }"
+                        :class="{ 'bg-emerald-600 text-white': activeTab === 'education', 'bg-gray-100 text-gray-700': activeTab !== 'education' }"
                         class="px-4 py-2 sm:px-6 sm:py-3 rounded-lg font-medium text-sm sm:text-base transition-all duration-300 flex items-center">
                         <i class="fas fa-graduation-cap mr-2"></i> Education
                     </button>
                     <button @click="activeTab = 'mentorship'"
-                        :class="{ 'bg-blue-600 text-white': activeTab === 'mentorship', 'bg-gray-100 text-gray-700': activeTab !== 'mentorship' }"
+                        :class="{ 'bg-emerald-600 text-white': activeTab === 'mentorship', 'bg-gray-100 text-gray-700': activeTab !== 'mentorship' }"
                         class="px-4 py-2 sm:px-6 sm:py-3 rounded-lg font-medium text-sm sm:text-base transition-all duration-300 flex items-center">
                         <i class="fas fa-hands-helping mr-2"></i> Mentorship
                     </button>
                     <button @click="activeTab = 'certification'"
-                        :class="{ 'bg-blue-600 text-white': activeTab === 'certification', 'bg-gray-100 text-gray-700': activeTab !== 'certification' }"
+                        :class="{ 'bg-emerald-600 text-white': activeTab === 'certification', 'bg-gray-100 text-gray-700': activeTab !== 'certification' }"
                         class="px-4 py-2 sm:px-6 sm:py-3 rounded-lg font-medium text-sm sm:text-base transition-all duration-300 flex items-center">
                         <i class="fas fa-certificate mr-2"></i> Certification
                     </button>
@@ -241,7 +241,7 @@
                         <div
                             class="bg-white p-6 rounded-xl shadow-lg border border-gray-100 hover:shadow-xl transition-shadow duration-300 animate-fade-in">
                             <div
-                                class="flex items-center justify-center h-12 w-12 rounded-md bg-blue-100 text-blue-600 mb-4">
+                                class="flex items-center justify-center h-12 w-12 rounded-md bg-emerald-100 text-emerald-600 mb-4">
                                 <i class="fas fa-road text-xl"></i>
                             </div>
                             <h3 class="text-lg sm:text-xl font-semibold text-gray-900 mb-2">Structured Roadmaps</h3>
@@ -253,7 +253,7 @@
                         <div
                             class="bg-white p-6 rounded-xl shadow-lg border border-gray-100 hover:shadow-xl transition-shadow duration-300 animate-fade-in animate-delay-0.2s">
                             <div
-                                class="flex items-center justify-center h-12 w-12 rounded-md bg-blue-100 text-blue-600 mb-4">
+                                class="flex items-center justify-center h-12 w-12 rounded-md bg-emerald-100 text-emerald-600 mb-4">
                                 <i class="fas fa-mobile-alt text-xl"></i>
                             </div>
                             <h3 class="text-xl font-semibold text-gray-900 mb-2">Mobile-First Learning</h3>
@@ -264,7 +264,7 @@
 
                         <div
                             class="bg-white p-8 rounded-xl shadow-lg flex flex-col items-center transform hover:scale-105 transition duration-300 animate-fade-in animate-delay-0.4s">
-                            <div class="bg-blue-100 text-blue-600 rounded-full p-4 mb-6">
+                            <div class="bg-emerald-100 text-emerald-600 rounded-full p-4 mb-6">
                                 <i class="fas fa-graduation-cap text-3xl"></i>
                             </div>
                             <h3 class="text-xl font-semibold text-gray-900 mb-3 text-center">Education that Transforms
@@ -366,7 +366,7 @@
 
 
         <!-- Problem/Solution Section -->
-        <section class="py-16 sm:py-20 bg-blue-50">
+        <section class="py-16 sm:py-20 bg-emerald-50">
             <div class=" px-4 sm:px-6 lg:px-8 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
                 <div class="animate__animated animate__fadeInLeft">
                     <h2 class="text-3xl sm:text-4xl font-extrabold text-gray-900 mb-6">The Problem We Solve: Bridging
@@ -473,10 +473,10 @@
                     <!-- Path Card 1: Frontend Developer -->
                     <div
                         class="bg-white overflow-hidden shadow-lg rounded-xl transform transition-all duration-300 hover:scale-105 hover:shadow-2xl animate__animated animate__fadeInUp animate__delay-0.4s">
-                        <div class="px-4 py-5 sm:p-6 bg-gradient-to-r from-blue-500 to-blue-600 rounded-t-xl">
+                        <div class="px-4 py-5 sm:p-6 bg-gradient-to-r from-emerald-500 to-emerald-600 rounded-t-xl">
                             <div class="flex items-center">
-                                <div class="flex-shrink-0 bg-blue-100 rounded-full p-3 shadow-md">
-                                    <i class="fas fa-laptop-code text-blue-600 text-2xl"></i>
+                                <div class="flex-shrink-0 bg-emerald-100 rounded-full p-3 shadow-md">
+                                    <i class="fas fa-laptop-code text-emerald-600 text-2xl"></i>
                                 </div>
                                 <div class="ml-5 w-0 flex-1">
                                     <h3 class="text-lg font-medium text-white">Frontend Developer</h3>
@@ -512,7 +512,7 @@
                             </ul>
                             <div class="mt-6">
                                 <a href="#"
-                                    class="w-full flex items-center justify-center px-4 py-3 border border-transparent text-base font-medium rounded-full text-blue-700 bg-blue-100 hover:bg-blue-200 transition-all duration-300 transform hover:scale-105">
+                                    class="w-full flex items-center justify-center px-4 py-3 border border-transparent text-base font-medium rounded-full text-emerald-700 bg-emerald-100 hover:bg-emerald-200 transition-all duration-300 transform hover:scale-105">
                                     View Path <i class="fas fa-arrow-right ml-2"></i>
                                 </a>
                             </div>
@@ -813,7 +813,7 @@
         </section>
 
         <!-- Mobile-First & Offline Access Section -->
-        <section class="py-16 sm:py-20 bg-blue-100">
+        <section class="py-16 sm:py-20 bg-emerald-100">
             <div class="px-4 sm:px-6 lg:px-8 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
                 <div class="animate__animated animate__fadeInLeft">
                     <h2 class="text-3xl sm:text-4xl font-extrabold text-gray-900 mb-6">Learn Anywhere, Anytime, Even
@@ -822,17 +822,17 @@
                         ensuring accessibility for everyone.</p>
                     <ul class="space-y-4 text-gray-700 text-lg">
                         <li class="flex items-start">
-                            <i class="fas fa-mobile-alt text-blue-600 mt-1 mr-3 text-xl flex-shrink-0"></i>
+                            <i class="fas fa-mobile-alt text-emerald-600 mt-1 mr-3 text-xl flex-shrink-0"></i>
                             <span><strong class="font-semibold">Mobile-Responsive PWA:</strong> Access the platform
                                 seamlessly on any device, even low-end smartphones.</span>
                         </li>
                         <li class="flex items-start">
-                            <i class="fas fa-download text-blue-600 mt-1 mr-3 text-xl flex-shrink-0"></i>
+                            <i class="fas fa-download text-emerald-600 mt-1 mr-3 text-xl flex-shrink-0"></i>
                             <span><strong class="font-semibold">Offline Learning Packs:</strong> Download entire
                                 modules (videos, PDFs, audio) to learn without internet.</span>
                         </li>
                         <li class="flex items-start">
-                            <i class="fas fa-globe-africa text-blue-600 mt-1 mr-3 text-xl flex-shrink-0"></i>
+                            <i class="fas fa-globe-africa text-emerald-600 mt-1 mr-3 text-xl flex-shrink-0"></i>
                             <span><strong class="font-semibold">Localized Content:</strong> Learn with examples and
                                 instructors that resonate with the African context.</span>
                         </li>
@@ -946,11 +946,11 @@
                 <!-- Testimonial Navigation Buttons -->
                 <div class="mt-8 flex justify-center space-x-4">
                     <button @click="prev()"
-                        class="bg-blue-600 text-white p-3 rounded-full shadow-lg hover:bg-blue-700 transition duration-300 transform hover:scale-110 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                        class="bg-emerald-600 text-white p-3 rounded-full shadow-lg hover:bg-emerald-700 transition duration-300 transform hover:scale-110 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500">
                         <i class="fas fa-chevron-left"></i>
                     </button>
                     <button @click="next()"
-                        class="bg-blue-600 text-white p-3 rounded-full shadow-lg hover:bg-blue-700 transition duration-300 transform hover:scale-110 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                        class="bg-emerald-600 text-white p-3 rounded-full shadow-lg hover:bg-emerald-700 transition duration-300 transform hover:scale-110 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500">
                         <i class="fas fa-chevron-right"></i>
                     </button>
                 </div>
@@ -959,13 +959,13 @@
 
         <!-- Final Call to Action Section -->
         <section
-            class="py-16 sm:py-20 bg-gradient-to-r from-blue-600 to-blue-800 text-white text-center rounded-t-xl shadow-lg animate__animated animate__fadeInUp">
+            class="py-16 sm:py-20 bg-gradient-to-r from-emerald-600 to-emerald-800 text-white text-center rounded-t-xl shadow-lg animate__animated animate__fadeInUp">
             <div class=" px-4 sm:px-6 lg:px-8">
                 <h2 class="text-3xl sm:text-4xl font-extrabold mb-4">Join the BootKode Movement Today!</h2>
                 <p class="text-lg sm:text-xl max-w-3xl mx-auto mb-8">Unlock your potential, master digital skills, and
                     build a brighter future with Africa's leading tech education platform.</p>
                 <a href="#"
-                    class="inline-flex items-center justify-center px-10 py-4 border border-transparent text-lg font-bold rounded-full shadow-lg text-blue-800 bg-white hover:bg-blue-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-white transition duration-300 ease-in-out transform hover:scale-105 animate-pulse-custom">
+                    class="inline-flex items-center justify-center px-10 py-4 border border-transparent text-lg font-bold rounded-full shadow-lg text-emerald-800 bg-white hover:bg-emerald-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-white transition duration-300 ease-in-out transform hover:scale-105 animate-pulse-custom">
                     Get Started for Free <i class="fas fa-arrow-right ml-3"></i>
                 </a>
             </div>
