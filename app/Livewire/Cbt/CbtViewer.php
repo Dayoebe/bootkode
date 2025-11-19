@@ -35,22 +35,11 @@ class CbtViewer extends Component
             }, 'questions'])
             ->paginate(10);
 
-        \Log::info('CbtViewer render', [
-            'user_id' => Auth::id(),
-            'assessments_count' => $userAssessments->total(),
-            'assessments' => $userAssessments->pluck('id', 'title')
-        ]);
-
         return view('livewire.cbt.cbt-viewer', compact('userAssessments'));
     }
 
     public function viewAssessmentDetails($assessmentId)
     {
-        \Log::info('Viewing assessment details', [
-            'user_id' => Auth::id(),
-            'assessment_id' => $assessmentId
-        ]);
-
         $this->selectedAssessment = Assessment::with([
             'studentAnswers' => function($query) {
                 $query->where('user_id', Auth::id())
@@ -62,36 +51,14 @@ class CbtViewer extends Component
         ])->findOrFail($assessmentId);
 
         $this->viewDetails = true;
-
-        \Log::info('Assessment loaded', [
-            'assessment_id' => $this->selectedAssessment->id,
-            'student_answers_count' => $this->selectedAssessment->studentAnswers->count(),
-            'attempts' => $this->selectedAssessment->studentAnswers->pluck('attempt_number')->unique()->values()
-        ]);
     }
 
     public function viewAttemptDetails($attemptNumber)
     {
-        \Log::info('Viewing attempt details', [
-            'user_id' => Auth::id(),
-            'assessment_id' => $this->selectedAssessment->id,
-            'attempt_number' => $attemptNumber
-        ]);
-
         $this->selectedAttempt = $this->selectedAssessment->getStudentResults(Auth::id(), $attemptNumber);
 
         if (!$this->selectedAttempt) {
-            \Log::warning('No results found for attempt', [
-                'assessment_id' => $this->selectedAssessment->id,
-                'attempt_number' => $attemptNumber
-            ]);
             session()->flash('error', 'No results found for this attempt.');
-        } else {
-            \Log::info('Attempt details loaded', [
-                'total_questions' => $this->selectedAttempt['total_questions'],
-                'correct_answers' => $this->selectedAttempt['correct_answers'],
-                'percentage' => $this->selectedAttempt['percentage']
-            ]);
         }
     }
 
@@ -123,16 +90,6 @@ class CbtViewer extends Component
                 $percentage = $maxPoints > 0 ? round(($totalPoints / $maxPoints) * 100, 1) : 0;
                 $passed = $percentage >= $assessment->pass_percentage;
 
-                \Log::info('Processing attempt', [
-                    'assessment_id' => $assessment->id,
-                    'attempt_number' => $attemptNumber,
-                    'total_points' => $totalPoints,
-                    'max_points' => $maxPoints,
-                    'percentage' => $percentage,
-                    'correct_answers' => $correctAnswersCount,
-                    'total_answers' => $answers->count()
-                ]);
-
                 return [
                     'attempt_number' => $attemptNumber,
                     'total_points' => $totalPoints,
@@ -146,12 +103,6 @@ class CbtViewer extends Component
             })
             ->sortByDesc('attempt_number')
             ->values();
-
-        \Log::info('Attempts aggregated', [
-            'assessment_id' => $assessment->id,
-            'attempts_count' => $attempts->count(),
-            'attempts_data' => $attempts
-        ]);
 
         return $attempts;
     }
