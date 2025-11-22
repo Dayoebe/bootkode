@@ -53,15 +53,19 @@ class AuthController extends Controller
             \Log::info('User role: ' . $user->role);
             \Log::info('User roles from Spatie: ' . json_encode($user->getRoleNames()));
             
-            // Check account active status
+            // Check account active status FIRST (most important check)
             \Log::info('Checking account active status...');
             \Log::info('is_active: ' . ($user->is_active ? 'true' : 'false'));
+            
             if (!$user->is_active) {
                 \Log::warning('⚠ Account not active. Logging out.');
                 Auth::logout();
+                $request->session()->invalidate();
+                $request->session()->regenerateToken();
+                
                 return back()->withErrors([
-                    'email' => 'Your account is not active. Please contact support.',
-                ]);
+                    'email' => 'Your account has been deactivated. Please contact support for assistance.',
+                ])->withInput($request->only('email'));
             }
             \Log::info('✓ Account is active');
             
@@ -73,33 +77,61 @@ class AuthController extends Controller
             $dashboardRoute = $user->getDashboardRouteName();
             \Log::info('Dashboard route: ' . $dashboardRoute);
             
-            // Check email verification - log warning but allow login
+            // Check email verification - WARN but ALLOW login
             \Log::info('Checking email verification...');
             \Log::info('Email verified at: ' . ($user->email_verified_at ?? 'NULL'));
+            
             if (!$user->hasVerifiedEmail()) {
-                \Log::warning('⚠ Email not verified. User allowed to continue.');
-                // Flash a warning message to show in dashboard
+                \Log::warning('⚠ Email not verified. User allowed to continue but will see warning.');
+                
+                // Flash warning messages to show in dashboard
                 session()->flash('email_not_verified', true);
                 session()->flash('verification_email', $user->email);
+                session()->flash('warning', 'Please verify your email address to unlock all features.');
             } else {
                 \Log::info('✓ Email verified');
             }
             
-            // Redirect to dashboard
+            // Log successful login activity
+            try {
+                activity()
+                    ->causedBy($user)
+                    ->withProperties([
+                        'ip' => $request->ip(),
+                        'user_agent' => $request->userAgent(),
+                        'email_verified' => $user->hasVerifiedEmail(),
+                    ])
+                    ->log('User logged in');
+            } catch (\Exception $e) {
+                \Log::warning('Failed to log activity: ' . $e->getMessage());
+            }
+            
+            // Redirect to dashboard with success message
             \Log::info('✓ Redirecting to: ' . $dashboardRoute);
             \Log::info('=== LOGIN ATTEMPT SUCCESS ===');
             
-            return redirect()->intended(route($dashboardRoute));
+            return redirect()
+                ->intended(route($dashboardRoute))
+                ->with('success', 'Welcome back, ' . $user->name . '!');
+            
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            \Log::error('❌ LOGIN VALIDATION ERROR: ' . $e->getMessage());
+            \Log::info('=== LOGIN ATTEMPT FAILED (Validation) ===');
+            throw $e; // Re-throw to show validation errors
             
         } catch (\Exception $e) {
             \Log::error('❌ LOGIN ERROR: ' . $e->getMessage());
             \Log::error('Exception type: ' . get_class($e));
             \Log::error('Stack trace: ' . $e->getTraceAsString());
-            \Log::info('=== LOGIN ATTEMPT FAILED ===');
+            \Log::info('=== LOGIN ATTEMPT FAILED (Exception) ===');
+            
+            Auth::logout();
+            $request->session()->invalidate();
+            $request->session()->regenerateToken();
             
             return back()->withErrors([
-                'email' => 'An error occurred during login. Please try again.',
-            ]);
+                'email' => 'An error occurred during login. Please try again or contact support.',
+            ])->withInput($request->only('email'));
         }
     }
     public function logout(Request $request): RedirectResponse

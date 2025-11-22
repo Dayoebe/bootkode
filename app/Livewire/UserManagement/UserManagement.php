@@ -2,7 +2,7 @@
 
 namespace App\Livewire\UserManagement;
 
-use App\Jobs\SendVerificationEmail; // Keep this if you use it elsewhere, but for email verification, User model's method is preferred.
+use App\Jobs\SendVerificationEmail;
 use App\Models\Core\User;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Support\Facades\DB;
@@ -14,6 +14,8 @@ use Livewire\Component;
 use Livewire\WithPagination;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\Layout;
+use Illuminate\Support\Str;
+use App\Notifications\UserCreatedNotification;
 
 #[Layout('layouts.dashboard', ['title' => 'User Dashboard', 'description' => 'Manage users, roles, and permissions', 'icon' => 'fas fa-users', 'active' => 'admin.user-management'])]
 
@@ -31,11 +33,14 @@ class UserManagement extends Component
     public $password = '';
     public $password_confirmation = '';
     public $search = '';
-    public $sendVerificationEmail = true;
+    public $sendVerificationEmail = false; // Changed default to false
     public $perPage = 15;
     public $statusFilter = 'all';
     public $createAnother = false;
-    public $saveProgress = 0; // Progress indicator for saving
+    public $saveProgress = 0;
+    public $autoGeneratePassword = true; // New property
+    public $markAsVerified = true; // New property - auto verify admin-created users
+    public $sendWelcomeEmail = true; // New property
 
     // Cache roles to avoid repeated calls
     protected $roles;
@@ -65,18 +70,51 @@ class UserManagement extends Component
                 'max:255',
                 'unique:users,email' . ($this->editMode ? ',' . $this->userId : ''),
             ],
-            'role' => ['required', 'string', Rule::in(array_keys($this->getRolesForSelect()))], // Ensures valid role from your select options
+            'role' => ['required', 'string', Rule::in(array_keys($this->getRolesForSelect()))],
             'sendVerificationEmail' => ['boolean'],
+            'markAsVerified' => ['boolean'],
+            'sendWelcomeEmail' => ['boolean'],
         ];
 
-        // Password rules: Required on create, optional on edit
-        if (!$this->editMode || $this->password) { // If creating or password is filled on edit
-            $rules['password'] = ['required', 'string', 'min:8', 'confirmed'];
-            $rules['password_confirmation'] = ['required_with:password', 'string', 'min:8'];
+        // Password rules
+        if (!$this->editMode) {
+            // Creating new user
+            if (!$this->autoGeneratePassword) {
+                $rules['password'] = ['required', 'string', 'min:8', 'confirmed'];
+                $rules['password_confirmation'] = ['required_with:password', 'string', 'min:8'];
+            }
+        } else {
+            // Editing existing user - password optional
+            if ($this->password) {
+                $rules['password'] = ['required', 'string', 'min:8', 'confirmed'];
+                $rules['password_confirmation'] = ['required_with:password', 'string', 'min:8'];
+            }
         }
 
         return $rules;
     }
+
+    public function updatedAutoGeneratePassword()
+    {
+        if ($this->autoGeneratePassword) {
+            $this->password = '';
+            $this->password_confirmation = '';
+            $this->resetValidation(['password', 'password_confirmation']);
+        }
+    }
+
+    public function generateRandomPassword()
+    {
+        // Generate a strong random password
+        $password = Str::random(12);
+        $this->password = $password;
+        $this->password_confirmation = $password;
+        $this->autoGeneratePassword = false;
+        
+        $this->dispatch('notify', 'Password generated. Make sure to copy it!', 'success');
+        $this->dispatch('password-generated', $password);
+    }
+
     public function render()
     {
         return view('livewire.user-management.user-management', [
@@ -85,87 +123,78 @@ class UserManagement extends Component
         ]);
     }
 
-/**
- * Activate user account
- */
-public function activateUser($userId)
-{
-    try {
-        $user = User::findOrFail($userId);
-        
-        if ($user->id === auth()->id()) {
-            $this->dispatch('notify', 'Cannot activate your own account!', 'error');
-            return;
+    public function activateUser($userId)
+    {
+        try {
+            $user = User::findOrFail($userId);
+            
+            if ($user->id === auth()->id()) {
+                $this->dispatch('notify', 'Cannot activate your own account!', 'error');
+                return;
+            }
+
+            $user->update([
+                'is_active' => true,
+                'deactivated_at' => null
+            ]);
+
+            $this->dispatch('notify', 'User activated successfully!', 'success');
+            $this->dispatch('refreshUsers');
+
+        } catch (\Exception $e) {
+            Log::error('User activation error: ' . $e->getMessage());
+            $this->dispatch('notify', 'Error activating user: ' . $e->getMessage(), 'error');
         }
-
-        $user->update([
-            'is_active' => true,
-            'deactivated_at' => null
-        ]);
-
-        $this->dispatch('notify', 'User activated successfully!', 'success');
-        $this->dispatch('refreshUsers');
-
-    } catch (\Exception $e) {
-        Log::error('User activation error: ' . $e->getMessage());
-        $this->dispatch('notify', 'Error activating user: ' . $e->getMessage(), 'error');
     }
-}
 
-/**
- * Deactivate user account
- */
-public function deactivateUser($userId)
-{
-    try {
-        $user = User::findOrFail($userId);
-        
-        if ($user->id === auth()->id()) {
-            $this->dispatch('notify', 'Cannot deactivate your own account!', 'error');
-            return;
+    public function deactivateUser($userId)
+    {
+        try {
+            $user = User::findOrFail($userId);
+            
+            if ($user->id === auth()->id()) {
+                $this->dispatch('notify', 'Cannot deactivate your own account!', 'error');
+                return;
+            }
+
+            if ($user->isSuperAdmin()) {
+                $this->dispatch('notify', 'Super admin accounts cannot be deactivated!', 'error');
+                return;
+            }
+
+            $user->update([
+                'is_active' => false,
+                'deactivated_at' => now()
+            ]);
+
+            $this->dispatch('notify', 'User deactivated successfully!', 'success');
+            $this->dispatch('refreshUsers');
+
+        } catch (\Exception $e) {
+            Log::error('User deactivation error: ' . $e->getMessage());
+            $this->dispatch('notify', 'Error deactivating user: ' . $e->getMessage(), 'error');
         }
-
-        if ($user->isSuperAdmin()) {
-            $this->dispatch('notify', 'Super admin accounts cannot be deactivated!', 'error');
-            return;
-        }
-
-        $user->update([
-            'is_active' => false,
-            'deactivated_at' => now()
-        ]);
-
-        $this->dispatch('notify', 'User deactivated successfully!', 'success');
-        $this->dispatch('refreshUsers');
-
-    } catch (\Exception $e) {
-        Log::error('User deactivation error: ' . $e->getMessage());
-        $this->dispatch('notify', 'Error deactivating user: ' . $e->getMessage(), 'error');
     }
-}
 
-/**
- * Update the getUsersQuery method to include status filter
- */
-protected function getUsersQuery()
-{
-    return User::query()
-        ->select(['id', 'name', 'email', 'role', 'is_active', 'deactivated_at', 'created_at', 'email_verified_at'])
-        ->when($this->search, function ($query) {
-            $query->where(function ($q) {
-                $q->where('name', 'like', '%' . $this->search . '%')
-                  ->orWhere('email', 'like', '%' . $this->search . '%');
-            });
-        })
-        ->when($this->statusFilter === 'active', function ($query) {
-            $query->where('is_active', true);
-        })
-        ->when($this->statusFilter === 'inactive', function ($query) {
-            $query->where('is_active', false);
-        })
-        ->where('id', '!=', auth()->id())
-        ->latest('created_at');
-}
+    protected function getUsersQuery()
+    {
+        return User::query()
+            ->select(['id', 'name', 'email', 'role', 'is_active', 'deactivated_at', 'created_at', 'email_verified_at'])
+            ->when($this->search, function ($query) {
+                $query->where(function ($q) {
+                    $q->where('name', 'like', '%' . $this->search . '%')
+                      ->orWhere('email', 'like', '%' . $this->search . '%');
+                });
+            })
+            ->when($this->statusFilter === 'active', function ($query) {
+                $query->where('is_active', true);
+            })
+            ->when($this->statusFilter === 'inactive', function ($query) {
+                $query->where('is_active', false);
+            })
+            ->where('id', '!=', auth()->id())
+            ->latest('created_at');
+    }
 
     protected function getRolesForSelect(): array
     {
@@ -184,7 +213,10 @@ protected function getUsersQuery()
     {
         $this->resetFormFields();
         $this->editMode = false;
-        $this->sendVerificationEmail = true;
+        $this->sendVerificationEmail = false;
+        $this->markAsVerified = true;
+        $this->sendWelcomeEmail = true;
+        $this->autoGeneratePassword = true;
         $this->showUserModal = true;
     }
 
@@ -198,216 +230,134 @@ protected function getUsersQuery()
             $this->name = $user->name;
             $this->email = $user->email;
             $this->role = $user->role;
-            $this->password = ''; // Clear password for edit
+            $this->password = '';
             $this->password_confirmation = '';
-            // If editing, default to not sending verification email unless email is changed
             $this->sendVerificationEmail = false;
+            $this->autoGeneratePassword = false;
             $this->showUserModal = true;
         } catch (\Exception $e) {
             Log::error('Edit user error: ' . $e->getMessage());
             $this->dispatch('notify', 'Error loading user data', 'error');
         }
     }
+
     public function saveUser()
-{
-    try {
-        $this->validate();
+    {
+        try {
+            $this->validate();
 
-        // Progress simulation
-        for ($i = 20; $i <= 100; $i += 20) {
-            $this->saveProgress = $i;
-            usleep(200000);
-        }
-
-        if ($this->editMode) {
-            $user = User::findOrFail($this->userId);
-            $user->update([
-                'name' => $this->name,
-                'email' => $this->email,
-                'role' => $this->role,
-            ]);
-            activity()->causedBy(auth()->user())->performedOn($user)->log('Updated user');
-
-            if ($this->password) {
-                $user->update(['password' => Hash::make($this->password)]);
+            // Progress simulation
+            for ($i = 20; $i <= 100; $i += 20) {
+                $this->saveProgress = $i;
+                usleep(200000);
             }
-            
-        } else {
-            $user = User::create([
-                'name' => $this->name,
-                'email' => $this->email,
-                'password' => Hash::make($this->password),
-                'role' => $this->role,
-            ]);
-            activity()->causedBy(auth()->user())->performedOn($user)->log('Created user');
 
-            if ($this->sendVerificationEmail) {
-                $user->sendEmailVerificationNotification();
+            if ($this->editMode) {
+                $user = User::findOrFail($this->userId);
+                
+                $userData = [
+                    'name' => $this->name,
+                    'email' => $this->email,
+                    'role' => $this->role,
+                ];
+
+                // Only update password if provided
+                if ($this->password) {
+                    $userData['password'] = Hash::make($this->password);
+                }
+
+                $user->update($userData);
+                
+                activity()
+                    ->causedBy(auth()->user())
+                    ->performedOn($user)
+                    ->event('updated')
+                    ->log('Updated user');
+
+                $message = 'User updated successfully!';
+                
             } else {
-                $user->markEmailAsVerified();
+                // Creating new user
+                $generatedPassword = null;
+                
+                if ($this->autoGeneratePassword) {
+                    $generatedPassword = Str::random(12);
+                    $finalPassword = $generatedPassword;
+                } else {
+                    $finalPassword = $this->password;
+                }
+
+                $userData = [
+                    'name' => $this->name,
+                    'email' => $this->email,
+                    'password' => Hash::make($finalPassword),
+                    'role' => $this->role,
+                    'is_active' => true, // Always active when admin creates
+                ];
+
+                // Auto-verify if markAsVerified is true
+                if ($this->markAsVerified) {
+                    $userData['email_verified_at'] = now();
+                }
+
+                $user = User::create($userData);
+                
+                activity()
+                    ->causedBy(auth()->user())
+                    ->performedOn($user)
+                    ->withProperties([
+                        'auto_verified' => $this->markAsVerified,
+                        'welcome_email_sent' => $this->sendWelcomeEmail,
+                    ])
+                    ->log('Created user');
+
+                // Send welcome email with credentials
+                if ($this->sendWelcomeEmail) {
+                    try {
+                        $user->notify(new UserCreatedNotification(
+                            $generatedPassword ?? $finalPassword,
+                            auth()->user()->name,
+                            $this->sendVerificationEmail
+                        ));
+                    } catch (\Exception $e) {
+                        Log::warning('Failed to send welcome email: ' . $e->getMessage());
+                    }
+                }
+
+                // Send verification email if requested and not auto-verified
+                if ($this->sendVerificationEmail && !$this->markAsVerified) {
+                    try {
+                        $user->sendEmailVerificationNotification();
+                    } catch (\Exception $e) {
+                        Log::warning('Failed to send verification email: ' . $e->getMessage());
+                    }
+                }
+
+                $message = 'User created successfully!';
+                
+                if ($generatedPassword) {
+                    $message .= ' Temporary password sent via email.';
+                }
             }
-        }
 
-        $this->dispatch('notify', 'User ' . ($this->editMode ? 'updated' : 'created') . ' successfully!', 'success');
-        $this->dispatch('refreshUsers');
+            $this->dispatch('notify', $message, 'success');
+            $this->dispatch('refreshUsers');
 
-        if ($this->createAnother && !$this->editMode) {
-            $this->resetFormFields(); // Reset fields but keep modal open
-        } else {
-            $this->closeModalAndReset();
-        }
-
-    } catch (\Illuminate\Validation\ValidationException $e) {
-        $this->saveProgress = 0;
-        throw $e; // Let Livewire handle validation errors
-    } catch (\Exception $e) {
-        $this->saveProgress = 0;
-        $this->dispatch('notify', 'Error: ' . $e->getMessage(), 'error');
-        Log::error('User save failed: ' . $e->getMessage());
-    }
-}
-    protected function validateUser()
-    {
-        $rules = [
-            'name' => 'required|string|max:255',
-            'email' => [
-                'required',
-                'string',
-                'email',
-                'max:255',
-                Rule::unique('users')->ignore($this->userId)
-            ],
-            'role' => [
-                'required',
-                Rule::in(array_keys($this->getRolesForSelect()))
-            ],
-            'sendVerificationEmail' => 'boolean'
-        ];
-
-        if (!$this->editMode) {
-            $rules['password'] = [
-                'required',
-                'confirmed',
-                Rules\Password::defaults()
-            ];
-        } else {
-            // For edit mode, password is nullable if not changing
-            $rules['password'] = [
-                'nullable',
-                'confirmed',
-                Rules\Password::defaults()
-            ];
-        }
-
-        $this->validate($rules, [
-            'email.unique' => 'This email is already in use',
-            'password.confirmed' => 'Passwords do not match'
-        ]);
-    }
-
-    protected function prepareUserData(): array
-    {
-        $userData = [
-            'name' => trim($this->name),
-            'email' => strtolower(trim($this->email)),
-            'role' => $this->role,
-        ];
-
-        // Only add password to data if it's a new user or password field is not empty in edit mode
-        if (!$this->editMode || (!empty($this->password) && !empty($this->password_confirmation))) {
-            $userData['password'] = Hash::make($this->password);
-        }
-
-        return $userData;
-    }
-
-    protected function updateExistingUser(array $userData)
-    {
-        $user = User::findOrFail($this->userId);
-        // No need to store original email if we're checking wasChanged later
-
-        // Fill only the provided data, excluding password if it's empty
-        $user->fill(array_filter($userData, function ($value, $key) {
-            // Exclude password if it's empty during an update
-            return !($key === 'password' && empty($value));
-        }, ARRAY_FILTER_USE_BOTH));
-
-        // Handle email verification reset if email changed and option is enabled
-        if ($user->isDirty('email') && $this->sendVerificationEmail) {
-            $user->email_verified_at = null;
-        }
-
-        $user->save();
-
-        // If email changed AND sendVerificationEmail is true, dispatch the notification
-        // The User model's sendEmailVerificationNotification method will queue the CustomVerifyEmail
-        if ($user->wasChanged('email') && $this->sendVerificationEmail) {
-            try {
-                $user->sendEmailVerificationNotification();
-            } catch (\Exception $e) {
-                Log::warning('Failed to send verification email for updated user: ' . $e->getMessage());
-                // Log the warning but don't stop the save operation
+            if ($this->createAnother && !$this->editMode) {
+                $this->resetFormFields();
+                $this->createUser(); // Reset to create mode
+            } else {
+                $this->closeModalAndReset();
             }
+
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            $this->saveProgress = 0;
+            throw $e;
+        } catch (\Exception $e) {
+            $this->saveProgress = 0;
+            $this->dispatch('notify', 'Error: ' . $e->getMessage(), 'error');
+            Log::error('User save failed: ' . $e->getMessage());
         }
-
-        return $user;
-    }
-
-    protected function createNewUser(array $userData)
-    {
-        // Set email as verified if not sending verification email
-        if (!$this->sendVerificationEmail) {
-            $userData['email_verified_at'] = now();
-        }
-
-        $user = User::create($userData);
-
-        // If sendVerificationEmail is true, dispatch the notification
-        // The User model's sendEmailVerificationNotification method will queue the CustomVerifyEmail
-        if ($this->sendVerificationEmail) {
-            try {
-                $user->sendEmailVerificationNotification();
-            } catch (\Exception $e) {
-                Log::warning('Failed to send verification email for new user: ' . $e->getMessage());
-                // Log the warning but don't stop the save operation
-            }
-        }
-
-        // Dispatch the Registered event regardless of email verification status
-        event(new Registered($user));
-
-        return $user;
-    }
-
-    protected function handleSuccessfulSave(?User $user) // Accept user as a parameter
-    {
-        $message = $this->editMode
-            ? 'User updated successfully!'
-            : ($this->sendVerificationEmail
-                ? 'User created and verification email dispatched!' // Clarify it's dispatched
-                : 'User created successfully!');
-
-        $this->dispatch('notify', $message, 'success');
-        $this->closeModalAndReset();
-
-        // Force refresh the component to show updated user list
-        $this->resetPage();
-    }
-
-    protected function handleSaveError(\Exception $e)
-    {
-        Log::error('User save failed', [
-            'error' => $e->getMessage(),
-            'trace' => $e->getTraceAsString(),
-            'user_data' => [
-                'name' => $this->name,
-                'email' => $this->email,
-                'role' => $this->role,
-                'edit_mode' => $this->editMode
-            ]
-        ]);
-
-        $this->dispatch('notify', 'Save failed: ' . $e->getMessage(), 'error');
     }
 
     public function resendVerificationEmail($userId)
@@ -420,7 +370,6 @@ protected function getUsersQuery()
                 return;
             }
 
-            // Use the built-in notification method which queues the job
             $user->sendEmailVerificationNotification();
             $this->dispatch('notify', 'Verification email sent successfully!', 'success');
 
@@ -441,8 +390,13 @@ protected function getUsersQuery()
             }
 
             $user->markEmailAsVerified();
+            
+            activity()
+                ->causedBy(auth()->user())
+                ->performedOn($user)
+                ->log('Manually verified user email');
+                
             $this->dispatch('notify', 'User email marked as verified!', 'success');
-            // No need to dispatch refreshUsers here, Livewire's reactivity should handle it.
 
         } catch (\Exception $e) {
             Log::error('Failed to mark email as verified: ' . $e->getMessage());
@@ -460,7 +414,18 @@ protected function getUsersQuery()
                 return;
             }
 
+            if ($user->isSuperAdmin()) {
+                $this->dispatch('notify', 'Cannot delete super admin accounts!', 'error');
+                return;
+            }
+
             $user->delete();
+            
+            activity()
+                ->causedBy(auth()->user())
+                ->withProperties(['deleted_user_email' => $user->email])
+                ->log('Deleted user: ' . $user->name);
+                
             $this->dispatch('notify', 'User deleted successfully!', 'success');
 
         } catch (\Exception $e) {
@@ -480,7 +445,10 @@ protected function getUsersQuery()
             'password',
             'password_confirmation',
             'sendVerificationEmail',
-            'saveProgress' // Reset progress when form fields are reset
+            'markAsVerified',
+            'sendWelcomeEmail',
+            'autoGeneratePassword',
+            'saveProgress'
         ]);
 
         $this->resetErrorBag();
@@ -491,13 +459,7 @@ protected function getUsersQuery()
         $this->showUserModal = false;
         $this->resetFormFields();
     }
-    
-    // Add a new method for "Create Another" (called from notification or button)
-    public function createAnotherUser()
-    {
-        $this->createAnother = true;
-        $this->saveUser(); // Re-trigger save with flag
-    }
+
     public function updatedSearch()
     {
         $this->resetPage();
