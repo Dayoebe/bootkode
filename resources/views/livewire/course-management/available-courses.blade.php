@@ -1,16 +1,8 @@
 <div class="bg-themed-primary min-h-screen transition-colors duration-300">
-    <div class="px-4 sm:px-6 lg:px-8 py-6 space-y-6" x-data="{
-        showFilters: false,
-        viewMode: 'grid',
-        enrollmentStats: {
-            totalAvailable: {{ $totalAvailable }},
-            totalEnrolled: {{ $totalEnrolled }},
-            totalCompleted: {{ $totalCompleted }}
-        }
-    }" @enrollment-updated.window="enrollmentStats.totalEnrolled = $event.detail.totalEnrolled; enrollmentStats.totalCompleted = $event.detail.totalCompleted">
+    <div class="px-4 sm:px-6 lg:px-8 py-6 space-y-6">
 
         <!-- Header with Stats Dashboard -->
-        <div class="bg-themed-secondary rounded-2xl shadow-xl border border-themed-primary p-6 animate__animated animate__fadeInDown transition-colors duration-300">
+        <div class="bg-themed-secondary rounded-2xl shadow-xl border border-themed-primary p-6 transition-colors duration-300">
             <div class="flex flex-col lg:flex-row lg:items-center justify-between mb-6">
                 <div class="flex items-center gap-4 mb-6 lg:mb-0">
                     <div class="bg-gradient-to-r from-accent-themed-primary to-purple-600 p-4 rounded-2xl shadow-lg">
@@ -29,12 +21,14 @@
                 <!-- Quick Actions -->
                 <div class="flex flex-col sm:flex-row gap-3">
                     <button @click="viewMode = viewMode === 'grid' ? 'list' : 'grid'"
-                        class="inline-flex items-center justify-center gap-2 bg-themed-secondary hover:bg-themed-tertiary text-themed-primary px-6 py-3 rounded-xl font-bold border border-themed-primary transition-all duration-300 transform hover:scale-105">
+                        class="inline-flex items-center justify-center gap-2 bg-themed-secondary hover:bg-themed-tertiary text-themed-primary px-6 py-3 rounded-xl font-bold border border-themed-primary transition-all duration-300 transform hover:scale-105"
+                        x-data="{ viewMode: 'grid' }">
                         <i :class="viewMode === 'grid' ? 'fas fa-list' : 'fas fa-th-large'"></i>
                         <span x-text="viewMode === 'grid' ? 'List View' : 'Grid View'"></span>
                     </button>
 
                     <button @click="showFilters = !showFilters"
+                        x-data="{ showFilters: false }"
                         class="inline-flex items-center justify-center gap-2 bg-accent-themed-primary hover:bg-accent-themed-secondary text-white px-6 py-3 rounded-xl font-bold transition-all duration-300 transform hover:scale-105 shadow-lg">
                         <i class="fas fa-filter"></i>
                         <span>Filters</span>
@@ -47,8 +41,9 @@
                 <div class="bg-themed-tertiary rounded-xl p-6 transform hover:scale-105 transition-all duration-300 border border-themed-primary">
                     <div class="flex items-center justify-between">
                         <div>
-                            <h3 class="text-3xl font-black text-accent-themed-primary transition-colors duration-300"
-                                x-text="enrollmentStats.totalAvailable"></h3>
+                            <h3 class="text-3xl font-black text-accent-themed-primary transition-colors duration-300">
+                                {{ $totalAvailable }}
+                            </h3>
                             <p class="text-themed-secondary font-semibold text-sm transition-colors duration-300">
                                 Courses Available</p>
                         </div>
@@ -61,8 +56,9 @@
                 <div class="bg-themed-tertiary rounded-xl p-6 transform hover:scale-105 transition-all duration-300 border border-themed-primary">
                     <div class="flex items-center justify-between">
                         <div>
-                            <h3 class="text-3xl font-black text-green-500 transition-colors duration-300"
-                                x-text="enrollmentStats.totalEnrolled"></h3>
+                            <h3 class="text-3xl font-black text-green-500 transition-colors duration-300">
+                                {{ $totalEnrolled }}
+                            </h3>
                             <p class="text-themed-secondary font-semibold text-sm transition-colors duration-300">
                                 Currently Enrolled</p>
                         </div>
@@ -75,8 +71,9 @@
                 <div class="bg-themed-tertiary rounded-xl p-6 transform hover:scale-105 transition-all duration-300 border border-themed-primary">
                     <div class="flex items-center justify-between">
                         <div>
-                            <h3 class="text-3xl font-black text-purple-500 transition-colors duration-300"
-                                x-text="enrollmentStats.totalCompleted"></h3>
+                            <h3 class="text-3xl font-black text-purple-500 transition-colors duration-300">
+                                {{ $totalCompleted }}
+                            </h3>
                             <p class="text-themed-secondary font-semibold text-sm transition-colors duration-300">
                                 Courses Completed</p>
                         </div>
@@ -89,7 +86,7 @@
         </div>
 
         <!-- Enhanced Filters Panel -->
-        <div x-show="showFilters" 
+        <div x-data="{ showFilters: false }" x-show="showFilters" 
              x-transition:enter="transform transition-all duration-500 ease-out"
              x-transition:enter-start="opacity-0 -translate-y-10" 
              x-transition:enter-end="opacity-100 translate-y-0"
@@ -171,26 +168,12 @@
                     <label class="block text-sm font-bold text-themed-primary mb-3 transition-colors duration-300">Special Filters</label>
                     <div class="flex flex-col sm:flex-row gap-4">
                         <label class="flex items-center cursor-pointer group">
-                            <input type="checkbox" wire:model.live="showOnlyFree" class="sr-only">
-                            <div class="relative">
-                                <div class="w-6 h-6 bg-themed-tertiary border-2 border-themed-primary rounded-lg group-hover:border-green-400 transition-colors duration-200"
-                                    :class="$wire.showOnlyFree ? 'bg-green-500 border-green-500' : ''">
-                                    <i class="fas fa-check text-white text-xs absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
-                                        x-show="$wire.showOnlyFree"></i>
-                                </div>
-                            </div>
+                            <input type="checkbox" wire:model.live="showOnlyFree" class="w-5 h-5 rounded border-2 border-themed-primary text-green-500 focus:ring-2 focus:ring-green-500">
                             <span class="ml-3 text-themed-primary font-medium group-hover:text-green-600 transition-colors duration-200">Free Only</span>
                         </label>
 
                         <label class="flex items-center cursor-pointer group">
-                            <input type="checkbox" wire:model.live="showOnlyWithCertificate" class="sr-only">
-                            <div class="relative">
-                                <div class="w-6 h-6 bg-themed-tertiary border-2 border-themed-primary rounded-lg group-hover:border-purple-400 transition-colors duration-200"
-                                    :class="$wire.showOnlyWithCertificate ? 'bg-purple-500 border-purple-500' : ''">
-                                    <i class="fas fa-check text-white text-xs absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
-                                        x-show="$wire.showOnlyWithCertificate"></i>
-                                </div>
-                            </div>
+                            <input type="checkbox" wire:model.live="showOnlyWithCertificate" class="w-5 h-5 rounded border-2 border-themed-primary text-purple-500 focus:ring-2 focus:ring-purple-500">
                             <span class="ml-3 text-themed-primary font-medium group-hover:text-purple-600 transition-colors duration-200">With Certificate</span>
                         </label>
                     </div>
@@ -198,22 +181,18 @@
             </div>
         </div>
 
-        <!-- Course Grid/List -->
-        <div :class="viewMode === 'grid' ? 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6' : 'space-y-6'">
+        <!-- Course Grid -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
             @forelse($courses as $course)
-                <div class="bg-themed-secondary rounded-xl shadow-lg overflow-hidden border border-themed-primary transition-all duration-300 hover:shadow-xl hover:-translate-y-1 animate__animated animate__fadeInUp"
-                    :class="viewMode === 'list' ? 'flex flex-col sm:flex-row' : ''"
+                <div class="bg-themed-secondary rounded-xl shadow-lg overflow-hidden border border-themed-primary transition-all duration-300 hover:shadow-xl hover:-translate-y-1"
                     x-data="{
                         isEnrolled: @js($this->isEnrolled($course->id)),
                         isWishlisted: @js($this->isWishlisted($course->id)),
-                        progress: @js($this->getCourseProgress($course->id)),
-                        isEnrolling: false,
-                        isDropping: false
-                    }"
-                    style="animation-delay: {{ $loop->index * 0.05 }}s">
+                        progress: @js($this->getCourseProgress($course->id))
+                    }">
 
                     <!-- Course Image/Thumbnail -->
-                    <div class="relative" :class="viewMode === 'list' ? 'w-full sm:w-48 flex-shrink-0' : 'h-44'">
+                    <div class="relative h-44">
                         @if ($course->thumbnail)
                             <img src="{{ asset('storage/' . $course->thumbnail) }}" alt="{{ $course->title }}"
                                 class="w-full h-full object-cover">
@@ -226,14 +205,14 @@
                         <!-- Course Status Overlays -->
                         <div class="absolute top-3 left-3 flex flex-col gap-2">
                             @if ($course->is_free)
-                                <span class="bg-green-500/90 backdrop-blur-sm text-white text-xs font-bold px-3 py-1 rounded-full">
-                                    FREE
-                                </span>
-                            @else
-                                <span class="bg-accent-themed-primary/90 backdrop-blur-sm text-white text-xs font-bold px-3 py-1 rounded-full">
-                                    ${{ number_format($course->price, 2) }}
-                                </span>
-                            @endif
+                            <span class="bg-green-500/90 backdrop-blur-sm text-white text-xs font-bold px-3 py-1 rounded-full">
+                                FREE
+                            </span>
+                        @else
+                            <span class="bg-accent-themed-primary/90 backdrop-blur-sm text-white text-xs font-bold px-3 py-1 rounded-full">
+                                ${{ number_format($course->price, 2) }}
+                            </span>
+                        @endif
 
                             @if ($course->certificate_template)
                                 <span class="bg-purple-500/90 backdrop-blur-sm text-white text-xs font-bold px-3 py-1 rounded-full flex items-center">
@@ -321,21 +300,13 @@
                         <div class="flex flex-col gap-2">
                             <!-- Primary Action -->
                             <template x-if="!isEnrolled">
-                                <button @click="$wire.enroll({{ $course->id }}); isEnrolling = true"
-                                    :disabled="isEnrolling || @js(in_array($course->id, $enrollingCourseIds))"
+                                <button @click="$wire.openPaymentModal({{ $course->id }})"
+                                    :disabled="@js(in_array($course->id, $enrollingCourseIds))"
                                     class="w-full bg-accent-themed-primary hover:bg-accent-themed-secondary text-white font-bold py-2.5 px-4 rounded-xl transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center shadow-md">
-                                    <template x-if="!isEnrolling && !@js(in_array($course->id, $enrollingCourseIds))">
-                                        <span class="flex items-center gap-2">
-                                            <i class="fas fa-rocket"></i>
-                                            Enroll Now
-                                        </span>
-                                    </template>
-                                    <template x-if="isEnrolling || @js(in_array($course->id, $enrollingCourseIds))">
-                                        <span class="flex items-center gap-2">
-                                            <i class="fas fa-spinner animate-spin"></i>
-                                            Enrolling...
-                                        </span>
-                                    </template>
+                                    <span class="flex items-center gap-2">
+                                        <i class="fas fa-rocket"></i>
+                                        Enroll Now
+                                    </span>
                                 </button>
                             </template>
 
@@ -346,15 +317,10 @@
                                         <i class="fas fa-play mr-2"></i>
                                         Continue
                                     </a>
-                                    <button @click="$wire.dropCourse({{ $course->id }}); isDropping = true"
-                                        :disabled="isDropping || @js(in_array($course->id, $droppingCourseIds))"
+                                    <button @click="$wire.dropCourse({{ $course->id }})"
+                                        :disabled="@js(in_array($course->id, $droppingCourseIds))"
                                         class="bg-themed-tertiary hover:bg-red-100 text-red-700 font-bold py-2.5 px-4 rounded-xl transition-all duration-300 transform hover:scale-105 disabled:opacity-50 border border-themed-primary">
-                                        <template x-if="!isDropping && !@js(in_array($course->id, $droppingCourseIds))">
-                                            <i class="fas fa-sign-out-alt"></i>
-                                        </template>
-                                        <template x-if="isDropping || @js(in_array($course->id, $droppingCourseIds))">
-                                            <i class="fas fa-spinner animate-spin"></i>
-                                        </template>
+                                        <i class="fas fa-sign-out-alt"></i>
                                     </button>
                                 </div>
                             </template>
@@ -378,7 +344,7 @@
                     <p class="text-themed-secondary mb-8 max-w-md mx-auto text-lg transition-colors duration-300">
                         Try adjusting your search criteria or explore different categories.
                     </p>
-                    <button @click="$wire.resetFilters(); showFilters = true"
+                    <button wire:click="resetFilters"
                         class="inline-flex items-center gap-2 bg-accent-themed-primary hover:bg-accent-themed-secondary text-white px-8 py-4 rounded-xl font-bold transition-all duration-300 transform hover:scale-105">
                         <i class="fas fa-redo-alt"></i> Reset Filters
                     </button>
@@ -393,67 +359,176 @@
             </div>
         @endif
 
-        <!-- Enhanced Toast Notifications -->
-        <div x-data="{
-            show: false,
-            message: '',
-            type: 'success',
-            icon: 'fas fa-check-circle',
-            action: null
-        }" @notify.window="
-            show = true; 
-            message = $event.detail.message; 
-            type = $event.detail.type || 'success';
-            icon = $event.detail.icon || 'fas fa-check-circle';
-            action = $event.detail.action || null;
-            setTimeout(() => show = false, action ? 8000 : 5000)
-         " x-show="show" 
-            x-transition:enter="transform transition-all duration-300 ease-out"
-            x-transition:enter-start="translate-x-full opacity-0" 
-            x-transition:enter-end="translate-x-0 opacity-100"
-            x-transition:leave="transform transition-all duration-300 ease-in"
-            x-transition:leave-start="translate-x-0 opacity-100" 
-            x-transition:leave-end="translate-x-full opacity-0"
-            class="fixed top-8 right-8 z-50 max-w-md" 
-            style="display: none;">
-
-            <div class="bg-themed-secondary rounded-xl shadow-2xl border border-themed-primary overflow-hidden backdrop-blur-sm transition-colors duration-300">
-                <div :class="{
-                    'bg-gradient-to-r from-emerald-500 to-green-500': type === 'success',
-                    'bg-gradient-to-r from-red-500 to-pink-500': type === 'error',
-                    'bg-gradient-to-r from-accent-themed-primary to-purple-500': type === 'info',
-                    'bg-gradient-to-r from-yellow-500 to-orange-500': type === 'warning'
-                }" class="p-6">
-
-                    <div class="flex items-start">
-                        <div class="flex-shrink-0">
-                            <i :class="icon" class="text-white text-xl"></i>
-                        </div>
-                        <div class="ml-4 flex-1">
-                            <p class="text-white font-bold text-lg leading-tight" x-text="message"></p>
-                            <template x-if="action">
-                                <a :href="action.url"
-                                    class="inline-block mt-3 bg-white/20 hover:bg-white/30 text-white px-4 py-2 rounded-lg font-semibold text-sm transition-all duration-200"
-                                    x-text="action.label"></a>
-                            </template>
-                        </div>
-                        <button @click="show = false"
-                            class="flex-shrink-0 ml-4 text-white hover:text-gray-200 transition-colors duration-200">
-                            <i class="fas fa-times"></i>
+        <!-- Payment Confirmation Modal -->
+        <div x-show="$wire.showPaymentModal" 
+             x-transition:enter="transition ease-out duration-300"
+             x-transition:enter-start="opacity-0" 
+             x-transition:enter-end="opacity-100"
+             x-transition:leave="transition ease-in duration-200"
+             x-transition:leave-start="opacity-100" 
+             x-transition:leave-end="opacity-0"
+             class="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50"
+             style="display: none;">
+            
+            <div @click.away="$wire.closePaymentModal()"
+                 x-transition:enter="transition ease-out duration-300"
+                 x-transition:enter-start="opacity-0 scale-95" 
+                 x-transition:enter-end="opacity-100 scale-100"
+                 x-transition:leave="transition ease-in duration-200"
+                 x-transition:leave-start="opacity-100 scale-100" 
+                 x-transition:leave-end="opacity-0 scale-95"
+                 class="bg-themed-secondary rounded-2xl shadow-2xl w-full max-w-lg border border-themed-primary transition-colors duration-300">
+                
+                <!-- Modal Header -->
+                <div class="p-6 border-b border-themed-primary">
+                    <div class="flex items-center justify-between">
+                        <h3 class="text-2xl font-bold text-themed-primary flex items-center gap-3">
+                            <div class="bg-accent-themed-primary/10 p-3 rounded-xl">
+                                <i class="fas fa-wallet text-accent-themed-primary"></i>
+                            </div>
+                            Confirm Enrollment
+                        </h3>
+                        <button wire:click="closePaymentModal" 
+                                class="text-themed-secondary hover:text-themed-primary p-2 rounded-lg hover:bg-themed-tertiary transition-all duration-300">
+                            <i class="fas fa-times text-xl"></i>
                         </button>
+                    </div>
+                </div>
+
+                <!-- Modal Body -->
+                <div class="p-6 space-y-6">
+                    <!-- Course Info -->
+                    @if($selectedCourse)
+                        <div class="bg-themed-tertiary rounded-xl p-4 border border-themed-primary">
+                            <div class="flex items-start gap-4">
+                                @if($selectedCourse->thumbnail)
+                                    <img src="{{ asset('storage/' . $selectedCourse->thumbnail) }}" 
+                                         alt="{{ $selectedCourse->title }}"
+                                         class="w-20 h-20 rounded-lg object-cover flex-shrink-0">
+                                @else
+                                    <div class="w-20 h-20 rounded-lg bg-gradient-to-br from-accent-themed-primary to-purple-500 flex items-center justify-center flex-shrink-0">
+                                        <i class="fas fa-graduation-cap text-white text-2xl"></i>
+                                    </div>
+                                @endif
+                                
+                                <div class="flex-1 min-w-0">
+                                    <h4 class="font-bold text-themed-primary text-base mb-1 line-clamp-2">
+                                        {{ $selectedCourse->title }}
+                                    </h4>
+                                    <p class="text-themed-secondary text-sm">
+                                        by {{ $selectedCourse->instructor->name }}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    @endif
+
+                    <!-- Payment Summary -->
+                    <div class="space-y-4">
+                        <h4 class="font-bold text-themed-primary text-lg">Payment Summary</h4>
+                        
+                        <!-- Wallet Balance -->
+                        <div class="flex items-center justify-between p-4 bg-themed-tertiary rounded-xl border border-themed-primary">
+                            <div class="flex items-center gap-3">
+                                <div class="bg-blue-500/10 p-2 rounded-lg">
+                                    <i class="fas fa-wallet text-blue-500"></i>
+                                </div>
+                                <span class="text-themed-secondary font-medium">Current Balance</span>
+                            </div>
+                            <span class="font-bold text-themed-primary text-lg">
+                                ₦{{ number_format($walletBalance, 2) }}
+                            </span>
+                        </div>
+
+                        <!-- Course Price -->
+                        <div class="flex items-center justify-between p-4 bg-themed-tertiary rounded-xl border border-themed-primary">
+                            <div class="flex items-center gap-3">
+                                <div class="bg-orange-500/10 p-2 rounded-lg">
+                                    <i class="fas fa-tag text-orange-500"></i>
+                                </div>
+                                <span class="text-themed-secondary font-medium">Course Price</span>
+                            </div>
+                            <span class="font-bold text-themed-primary text-lg">
+                                - ₦{{ number_format($coursePrice, 2) }}
+                            </span>
+                        </div>
+
+                        <!-- Balance After Payment -->
+                        <div class="flex items-center justify-between p-4 rounded-xl border-2 transition-colors duration-300
+                            {{ $hasSufficientFunds ? 'bg-green-50 border-green-300 dark:bg-green-900/20 dark:border-green-700' : 'bg-red-50 border-red-300 dark:bg-red-900/20 dark:border-red-700' }}">
+                            <div class="flex items-center gap-3">
+                                <div class="{{ $hasSufficientFunds ? 'bg-green-500/10' : 'bg-red-500/10' }} p-2 rounded-lg">
+                                    <i class="fas {{ $hasSufficientFunds ? 'fa-check-circle text-green-500' : 'fa-exclamation-circle text-red-500' }}"></i>
+                                </div>
+                                <span class="{{ $hasSufficientFunds ? 'text-green-700 dark:text-green-300' : 'text-red-700 dark:text-red-300' }} font-medium">
+                                    Balance After Payment
+                                </span>
+                            </div>
+                            <span class="font-bold text-xl {{ $hasSufficientFunds ? 'text-green-700 dark:text-green-300' : 'text-red-700 dark:text-red-300' }}">
+                                ₦{{ number_format($balanceAfterPayment, 2) }}
+                            </span>
+                        </div>
+
+                        <!-- Insufficient Funds Warning -->
+                        @if(!$hasSufficientFunds)
+                            <div class="bg-red-50 dark:bg-red-900/20 border border-red-300 dark:border-red-700 rounded-xl p-4">
+                                <div class="flex gap-3">
+                                    <i class="fas fa-exclamation-triangle text-red-600 dark:text-red-400 text-xl flex-shrink-0"></i>
+                                    <div>
+                                        <h5 class="font-bold text-red-700 dark:text-red-300 mb-1">Insufficient Funds</h5>
+                                        <p class="text-red-600 dark:text-red-400 text-sm">
+                                            You need ₦{{ number_format($coursePrice - $walletBalance, 2) }} more to enroll in this course.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        @endif
+                    </div>
+                </div>
+
+                <!-- Modal Footer -->
+                <div class="p-6 border-t border-themed-primary bg-themed-tertiary">
+                    <div class="flex gap-3">
+                        @if($hasSufficientFunds)
+                            <button wire:click="closePaymentModal"
+                                    class="flex-1 bg-themed-secondary hover:bg-themed-primary text-themed-primary font-semibold py-3 px-6 rounded-xl transition-all duration-300 border border-themed-primary transform hover:scale-105">
+                                Cancel
+                            </button>
+                            <button wire:click="confirmEnrollment" 
+                                    wire:loading.attr="disabled"
+                                    class="flex-1 bg-accent-themed-primary hover:bg-accent-themed-secondary text-white font-bold py-3 px-6 rounded-xl transition-all duration-300 disabled:opacity-50 transform hover:scale-105 shadow-lg">
+                                <span wire:loading.remove wire:target="confirmEnrollment" class="flex items-center justify-center gap-2">
+                                    <i class="fas fa-check-circle"></i>
+                                    Confirm & Enroll
+                                </span>
+                                <span wire:loading wire:target="confirmEnrollment" class="flex items-center justify-center gap-2">
+                                    <i class="fas fa-spinner animate-spin"></i>
+                                    Processing...
+                                </span>
+                            </button>
+                        @else
+                            <button wire:click="closePaymentModal"
+                                    class="flex-1 bg-themed-secondary hover:bg-themed-primary text-themed-primary font-semibold py-3 px-6 rounded-xl transition-all duration-300 border border-themed-primary transform hover:scale-105">
+                                Cancel
+                            </button>
+                            <a href="{{ route('wallet.index') }}"
+                               class="flex-1 bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-6 rounded-xl transition-all duration-300 transform hover:scale-105 shadow-lg flex items-center justify-center gap-2">
+                                <i class="fas fa-plus-circle"></i>
+                                Fund Wallet
+                            </a>
+                        @endif
                     </div>
                 </div>
             </div>
         </div>
-
         <!-- Loading Overlay -->
-        <div wire:loading class="fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center z-50">
-            <div class="bg-themed-secondary rounded-2xl p-12 flex flex-col items-center shadow-2xl border border-themed-primary transition-colors duration-300">
-                <div class="relative mb-6">
-                    <div class="animate-spin rounded-full h-20 w-20 border-4 border-themed-tertiary"></div>
-                    <div class="animate-spin rounded-full h-20 w-20 border-4 border-accent-themed-primary border-t-transparent absolute top-0"></div>
+        <div wire:loading wire:target="confirmEnrollment" class="fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center z-50">
+            <div class="bg-themed-secondary rounded-2xl p-8 flex flex-col items-center shadow-2xl border border-themed-primary transition-colors duration-300">
+                <div class="relative mb-4">
+                    <div class="animate-spin rounded-full h-16 w-16 border-4 border-themed-tertiary"></div>
+                    <div class="animate-spin rounded-full h-16 w-16 border-4 border-accent-themed-primary border-t-transparent absolute top-0"></div>
                 </div>
-                <span class="text-themed-primary font-black text-xl transition-colors duration-300">Loading amazing courses...</span>
+                <span class="text-themed-primary font-black text-xl transition-colors duration-300">Processing enrollment...</span>
             </div>
         </div>
     </div>
@@ -463,16 +538,162 @@
             display: -webkit-box;
             -webkit-line-clamp: 2;
             -webkit-box-orient: vertical;
-        overflow: hidden;
-    }
+            overflow: hidden;
+        }
 
-    .progress-ring {
-        transition: stroke-dasharray 0.35s;
-        transform-origin: 50% 50%;
-    }
+        .progress-ring {
+            transition: stroke-dasharray 0.35s;
+            transform-origin: 50% 50%;
+        }
+        
+        [x-cloak] {
+            display: none !important;
+        }
+    </style>
+<!-- Replace the entire <script> section at the bottom of available-courses.blade.php with this -->
+    <script>
+        // Console logging for debugging enrollment flow
+        document.addEventListener('alpine:init', () => {
+            console.log('🎓 Course Enrollment System Initialized');
+        });
     
-    [x-cloak] {
-        display: none !important;
-    }
-</style>
-    </div>
+        // Log Livewire events
+        document.addEventListener('livewire:init', () => {
+            console.log('⚡ Livewire Initialized');
+            
+            Livewire.on('notify', (event) => {
+                console.log('🔔 Notification:', event);
+            });
+    
+            Livewire.on('enrollment-updated', () => {
+                console.log('✅ Enrollment Updated Event Triggered');
+            });
+    
+            // Handle enrollment success with redirect
+            Livewire.on('enrollment-success', (event) => {
+                console.log('🎉 Enrollment Success! Redirecting...', event);
+                const redirectUrl = event[0]?.redirectUrl || event.redirectUrl;
+                
+                if (redirectUrl) {
+                    console.log('🔀 Redirecting to:', redirectUrl);
+                    
+                    // Show brief success message then redirect
+                    setTimeout(() => {
+                        window.location.href = redirectUrl;
+                    }, 1500); // 1.5 second delay to show success message
+                } else {
+                    console.error('❌ No redirect URL provided');
+                }
+            });
+        });
+    
+        // Log wire:click and @click events (FIXED)
+        document.addEventListener('click', (e) => {
+            // Check for wire:click by traversing up the DOM
+            let element = e.target;
+            while (element && element !== document) {
+                if (element.hasAttribute && element.hasAttribute('wire:click')) {
+                    const action = element.getAttribute('wire:click');
+                    console.log('🖱️ Wire Click:', {
+                        action: action,
+                        element: element,
+                        classList: element.classList.toString()
+                    });
+                    break;
+                }
+                element = element.parentElement;
+            }
+    
+            // Check for @click (Alpine.js) by traversing up the DOM
+            element = e.target;
+            while (element && element !== document) {
+                if (element.hasAttribute && element.hasAttribute('@click')) {
+                    const action = element.getAttribute('@click');
+                    console.log('🔷 Alpine Click:', {
+                        action: action,
+                        element: element
+                    });
+                    break;
+                }
+                element = element.parentElement;
+            }
+        });
+    
+        // Log enrollment process
+        window.logEnrollment = function(step, data = {}) {
+            console.log(`📝 Enrollment Step: ${step}`, data);
+        };
+    
+        // Log wallet operations
+        window.logWallet = function(action, data = {}) {
+            console.log(`💰 Wallet ${action}:`, data);
+        };
+    
+        // Log Livewire navigate
+        document.addEventListener('livewire:navigating', (event) => {
+            console.log('🧭 Livewire Navigating:', event.detail);
+        });
+    
+        document.addEventListener('livewire:navigated', (event) => {
+            console.log('✨ Livewire Navigated:', event.detail);
+        });
+    
+        // Log wire:loading states
+        document.addEventListener('livewire:update', (event) => {
+            console.log('🔄 Livewire Update:', {
+                component: event.detail.component.name,
+                id: event.detail.component.id
+            });
+        });
+    
+        // Watch for modal visibility changes using MutationObserver
+        const observeModalChanges = () => {
+            const modalElement = document.querySelector('[x-show="$wire.showPaymentModal"]');
+            if (modalElement) {
+                const observer = new MutationObserver((mutations) => {
+                    mutations.forEach((mutation) => {
+                        if (mutation.attributeName === 'style' || mutation.attributeName === 'class') {
+                            const isVisible = modalElement.style.display !== 'none' && 
+                                            !modalElement.classList.contains('hidden');
+                            console.log('💳 Payment Modal Visibility Changed:', isVisible);
+                        }
+                    });
+                });
+    
+                observer.observe(modalElement, {
+                    attributes: true,
+                    attributeFilter: ['style', 'class']
+                });
+            }
+        };
+    
+        // Initialize modal observer after page load
+        document.addEventListener('DOMContentLoaded', observeModalChanges);
+        document.addEventListener('livewire:navigated', observeModalChanges);
+    </script>
+    
+    <style>
+        /* Visual feedback for loading states */
+        [wire\:loading] {
+            position: relative;
+            opacity: 0.6;
+            pointer-events: none;
+        }
+    
+        [wire\:loading]::after {
+            content: '⏳';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 24px;
+            z-index: 1000;
+            animation: spin 1s linear infinite;
+        }
+    
+        @keyframes spin {
+            0% { transform: translate(-50%, -50%) rotate(0deg); }
+            100% { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+    </style>
+</div>

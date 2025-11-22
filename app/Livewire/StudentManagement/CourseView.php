@@ -71,6 +71,19 @@ class CourseView extends Component
         $this->loadUserProgress();
         $this->determineUnlockedSections();
         $this->setInitialLesson();
+        // NEW: Check for enrollment success message
+        if (session()->has('success')) {
+            $this->dispatch('notify', [
+                'message' => session('success'),
+                'type' => 'success',
+                'icon' => 'fas fa-graduation-cap'
+            ]);
+        }
+
+        // NEW: Show confetti for first enrollment
+        if (session()->has('show_confetti')) {
+            $this->dispatch('confetti');
+        }
     }
 
     protected function loadUserProgress()
@@ -376,7 +389,7 @@ class CourseView extends Component
             $this->setInitialLesson();
         }
     }
-      /**
+    /**
      * Check if course is fully completed and award certificate
      */
     protected function checkAndAwardCertificate()
@@ -384,7 +397,7 @@ class CourseView extends Component
         // Check if user has completed all lessons
         $totalLessons = $this->getAllLessonIds();
         $completedLessons = count($this->completedLessons);
-        
+
         if ($completedLessons < count($totalLessons)) {
             return false; // Not all lessons completed
         }
@@ -411,8 +424,8 @@ class CourseView extends Component
                 ->orderBy('lesson_user.completed_at', 'desc')
                 ->first();
 
-            $completionDate = $lastCompletedLesson 
-                ? $lastCompletedLesson->pivot->completed_at 
+            $completionDate = $lastCompletedLesson
+                ? $lastCompletedLesson->pivot->completed_at
                 : now();
 
             // Create and auto-approve certificate
@@ -442,8 +455,8 @@ class CourseView extends Component
 
             // Send notification to user
             Auth::user()->notify(new CourseCompletionCertificateReady(
-                $this->course, 
-                $certificate, 
+                $this->course,
+                $certificate,
                 $completionPercentage
             ));
 
@@ -488,7 +501,7 @@ class CourseView extends Component
     protected function calculateCourseGrade()
     {
         $assessments = $this->course->assessments()->get();
-        
+
         if ($assessments->isEmpty()) {
             return 'Pass'; // Default grade if no assessments
         }
@@ -498,7 +511,7 @@ class CourseView extends Component
 
         foreach ($assessments as $assessment) {
             $results = $assessment->getStudentResults(Auth::id());
-            
+
             if ($results && $results['passed']) {
                 $totalScore += $results['percentage'];
                 $assessmentCount++;
@@ -512,17 +525,27 @@ class CourseView extends Component
         $averageScore = $totalScore / $assessmentCount;
 
         // Grade scale
-        if ($averageScore >= 97) return 'A+';
-        if ($averageScore >= 93) return 'A';
-        if ($averageScore >= 90) return 'A-';
-        if ($averageScore >= 87) return 'B+';
-        if ($averageScore >= 83) return 'B';
-        if ($averageScore >= 80) return 'B-';
-        if ($averageScore >= 77) return 'C+';
-        if ($averageScore >= 73) return 'C';
-        if ($averageScore >= 70) return 'C-';
-        if ($averageScore >= 60) return 'D';
-        
+        if ($averageScore >= 97)
+            return 'A+';
+        if ($averageScore >= 93)
+            return 'A';
+        if ($averageScore >= 90)
+            return 'A-';
+        if ($averageScore >= 87)
+            return 'B+';
+        if ($averageScore >= 83)
+            return 'B';
+        if ($averageScore >= 80)
+            return 'B-';
+        if ($averageScore >= 77)
+            return 'C+';
+        if ($averageScore >= 73)
+            return 'C';
+        if ($averageScore >= 70)
+            return 'C-';
+        if ($averageScore >= 60)
+            return 'D';
+
         return 'F';
     }
 
@@ -544,10 +567,10 @@ class CourseView extends Component
             try {
                 Auth::user()->completedLessons()->attach($lessonId, ['completed_at' => now()]);
                 $this->completedLessons[] = $lessonId;
-                
+
                 $this->updateCourseProgress();
                 $this->determineUnlockedSections();
-                
+
                 $lesson = Lesson::find($lessonId);
                 if ($lesson) {
                     $sectionProgress = $this->calculateSectionProgress($lesson->section);

@@ -155,25 +155,29 @@
                             <div
                                 class="text-center bg-themed-tertiary p-4 rounded-xl border border-themed-primary transition-colors duration-300">
                                 <div class="text-2xl font-bold text-accent-themed-primary mb-1">
-                                    {{ number_format($totalLessons) }}</div>
+                                    {{ number_format($totalLessons) }}
+                                </div>
                                 <div class="text-sm text-themed-secondary font-medium">Lessons</div>
                             </div>
                             <div
                                 class="text-center bg-themed-tertiary p-4 rounded-xl border border-themed-primary transition-colors duration-300">
                                 <div class="text-2xl font-bold text-accent-themed-primary mb-1">
-                                    {{ $this->formattedDuration }}</div>
+                                    {{ $this->formattedDuration }}
+                                </div>
                                 <div class="text-sm text-themed-secondary font-medium">Duration</div>
                             </div>
                             <div
                                 class="text-center bg-themed-tertiary p-4 rounded-xl border border-themed-primary transition-colors duration-300">
                                 <div class="text-2xl font-bold text-accent-themed-primary mb-1">
-                                    {{ number_format($totalEnrollments) }}</div>
+                                    {{ number_format($totalEnrollments) }}
+                                </div>
                                 <div class="text-sm text-themed-secondary font-medium">Students</div>
                             </div>
                             <div
                                 class="text-center bg-themed-tertiary p-4 rounded-xl border border-themed-primary transition-colors duration-300">
                                 <div class="text-2xl font-bold text-accent-themed-primary mb-1">
-                                    {{ number_format($averageRating, 1) }}</div>
+                                    {{ number_format($averageRating, 1) }}
+                                </div>
                                 <div class="text-sm text-themed-secondary font-medium">Rating</div>
                             </div>
                         </div>
@@ -381,7 +385,8 @@
                                                 <div>
                                                     <h4
                                                         class="font-medium text-themed-primary text-sm sm:text-base transition-colors duration-300">
-                                                        {{ $lesson->title }}</h4>
+                                                        {{ $lesson->title }}
+                                                    </h4>
                                                 </div>
                                             </div>
                                             <div class="flex items-center text-sm text-themed-secondary">
@@ -426,12 +431,14 @@
                                             <div class="flex-1 min-w-0">
                                                 <div class="flex items-center justify-between mb-2">
                                                     <h4 class="font-semibold text-themed-primary text-sm sm:text-base">
-                                                        {{ $review->user->name }}</h4>
+                                                        {{ $review->user->name }}
+                                                    </h4>
                                                     <span
                                                         class="text-sm text-themed-secondary">{{ $review->created_at->diffForHumans() }}</span>
                                                 </div>
                                                 <p class="text-themed-secondary text-sm sm:text-base leading-relaxed">
-                                                    {{ $review->review_text }}</p>
+                                                    {{ $review->review_text }}
+                                                </p>
                                             </div>
                                         </div>
                                     </div>
@@ -470,14 +477,17 @@
                             <div class="flex-1 min-w-0">
                                 <h3
                                     class="text-xl sm:text-2xl font-bold text-themed-primary mb-2 transition-colors duration-300">
-                                    {{ $course->instructor->name }}</h3>
+                                    {{ $course->instructor->name }}
+                                </h3>
                                 <p class="text-accent-themed-primary font-semibold mb-4">
-                                    {{ $course->instructor->email }}</p>
+                                    {{ $course->instructor->email }}
+                                </p>
 
                                 <div class="grid grid-cols-3 gap-4 text-center">
                                     <div class="bg-themed-secondary p-3 rounded-lg border border-themed-primary">
                                         <div class="text-xl font-bold text-accent-themed-primary">
-                                            {{ $course->instructor->courses()->count() }}</div>
+                                            {{ $course->instructor->courses()->count() }}
+                                        </div>
                                         <div class="text-sm text-themed-secondary">Courses</div>
                                     </div>
                                     <div class="bg-themed-secondary p-3 rounded-lg border border-themed-primary">
@@ -518,6 +528,37 @@
                     </div>
 
                     <!-- Action Button -->
+                    <template x-if="!isEnrolled">
+                        <button @click="$wire.openPaymentModal({{ $course->id }})"
+                            :disabled="@js(in_array($course->id, $enrollingCourseIds))"
+                            class="w-full bg-accent-themed-primary hover:bg-accent-themed-secondary text-white font-bold py-2.5 px-4 rounded-xl transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center shadow-md">
+                            <span class="flex items-center gap-2">
+                                <i class="fas fa-rocket"></i>
+                                Enroll Now
+                            </span>
+                        </button>
+                    </template>
+
+                    <template x-if="isEnrolled">
+                        <div class="flex gap-2">
+                            <a href="{{ route('course.view', $course->slug) }}"
+                                class="flex-1 bg-green-500 hover:bg-green-600 text-white font-bold py-2.5 px-4 rounded-xl transition-all duration-300 transform hover:scale-105 flex items-center justify-center shadow-md">
+                                <i class="fas fa-play mr-2"></i>
+                                Continue
+                            </a>
+                            <button @click="$wire.dropCourse({{ $course->id }})"
+                                :disabled="@js(in_array($course->id, $droppingCourseIds))"
+                                class="bg-themed-tertiary hover:bg-red-100 text-red-700 font-bold py-2.5 px-4 rounded-xl transition-all duration-300 transform hover:scale-105 disabled:opacity-50 border border-themed-primary">
+                                <i class="fas fa-sign-out-alt"></i>
+                            </button>
+                        </div>
+                    </template>
+
+
+
+
+
+
                     @if($this->canEnroll())
                         <button @click="showEnrollModal = true"
                             class="w-full bg-accent-themed-primary hover:bg-accent-themed-secondary text-white font-bold py-3 px-6 rounded-xl transition-all duration-300 transform hover:scale-105 shadow-lg mb-4">

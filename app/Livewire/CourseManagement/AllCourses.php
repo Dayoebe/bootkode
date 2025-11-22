@@ -218,14 +218,14 @@ class AllCourses extends Component
             ]);
         }
     }
-
-    /**
-     * Redirects to the edit course page.
-     */
-    public function CourseForm(Course $course)
-    {
-        return $this->redirect(route('edit_course', ['course' => $course->id]));
-    }
+/**
+ * Redirects to the edit course page.
+ */
+public function CourseForm(Course $course)
+{
+    // FIX: Pass the course model directly, not just the ID
+    return $this->redirect(route('edit_course', $course));
+}
     /**
      * Deletes a course with confirmation and authorization.
      */

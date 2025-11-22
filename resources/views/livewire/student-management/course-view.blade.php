@@ -4,6 +4,43 @@
         :overallProgress="$this->calculateOverallProgress()" :currentSection="$currentSection"
         :completedLessons="$completedLessons" wire:key="header-{{ $course->id }}" />
 
+<!-- Welcome Banner (Only shows on first visit after enrollment) -->
+@if(session()->has('success'))
+    <div class="mb-6 bg-gradient-to-r from-green-500 to-emerald-600 rounded-xl p-6 shadow-lg animate-fade-in transition-colors duration-300" x-data="{ show: true }" x-show="show" x-transition>
+        <div class="flex items-center justify-between">
+            <div class="flex items-center gap-4 text-white flex-1">
+                <div class="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center flex-shrink-0">
+                    <i class="fas fa-rocket text-3xl"></i>
+                </div>
+                <div class="flex-1">
+                    <h3 class="text-2xl font-bold mb-2">🎉 Welcome to Your Learning Journey!</h3>
+                    <p class="text-lg opacity-90 mb-1">{{ session('success') }}</p>
+                    <p class="text-sm opacity-75">You're now enrolled in <strong>{{ $course->title }}</strong></p>
+                </div>
+            </div>
+            <button @click="show = false" class="text-white/80 hover:text-white p-2 transition-colors">
+                <i class="fas fa-times text-xl"></i>
+            </button>
+        </div>
+        
+        <div class="mt-4 grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <div class="bg-white/10 backdrop-blur-sm rounded-lg p-3 text-center">
+                <div class="text-2xl font-bold text-white">{{ $course->sections->count() }}</div>
+                <div class="text-sm text-white/80">Sections</div>
+            </div>
+            <div class="bg-white/10 backdrop-blur-sm rounded-lg p-3 text-center">
+                <div class="text-2xl font-bold text-white">{{ $course->sections->sum(function($section) { return $section->lessons->count(); }) }}</div>
+                <div class="text-sm text-white/80">Lessons</div>
+            </div>
+            <div class="bg-white/10 backdrop-blur-sm rounded-lg p-3 text-center">
+                <div class="text-2xl font-bold text-white">{{ $course->estimated_duration_minutes ? round($course->estimated_duration_minutes / 60) . 'h' : 'Self-paced' }}</div>
+                <div class="text-sm text-white/80">Duration</div>
+            </div>
+        </div>
+    </div>
+@endif
+
+
     <!-- Continue Learning Banner -->
     @if ($this->getLastViewedLesson() && $this->getLastViewedLesson()->id !== $currentLesson?->id)
         <div
@@ -111,4 +148,36 @@
             --tw-gradient-from: rgb(var(--accent-primary));
         }
     </style>
+    @if(session()->has('show_confetti'))
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <script>
+        // Fire confetti on page load
+        window.addEventListener('DOMContentLoaded', () => {
+            // Fire confetti multiple times for effect
+            confetti({
+                particleCount: 100,
+                spread: 70,
+                origin: { y: 0.6 }
+            });
+            
+            setTimeout(() => {
+                confetti({
+                    particleCount: 50,
+                    angle: 60,
+                    spread: 55,
+                    origin: { x: 0 }
+                });
+            }, 200);
+            
+            setTimeout(() => {
+                confetti({
+                    particleCount: 50,
+                    angle: 120,
+                    spread: 55,
+                    origin: { x: 1 }
+                });
+            }, 400);
+        });
+    </script>
+@endif
 </div>

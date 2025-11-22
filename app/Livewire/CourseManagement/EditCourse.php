@@ -10,7 +10,6 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Livewire\Attributes\Layout;
 use Illuminate\Support\Str;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 
 #[Layout('layouts.dashboard', [
@@ -28,6 +27,7 @@ class EditCourse extends Component
 
     // File upload properties
     public $thumbnail;
+    public $thumbnailPreview = null;
     public $shouldRemoveThumbnail = false;
     public $existingThumbnail = null;
     public $slug_manual_edit = false;
@@ -69,8 +69,6 @@ class EditCourse extends Component
 
     public function mount(Course $course)
     {
-        Log::info('EditCourse: mount started', ['course_id' => $course->id]);
-
         $this->course = $course;
         $this->pageTitle = 'Edit Course: ' . Str::limit($course->title, 30);
         $this->categories = Cache::remember('course_categories', 3600, fn() => CourseCategory::orderBy('name')->get());
@@ -110,24 +108,12 @@ class EditCourse extends Component
         $this->faqs = is_array($course->faqs) && !empty($course->faqs)
             ? $course->faqs
             : [['question' => '', 'answer' => '']];
-
-        // Initialize new fields
         $this->materials_included = is_array($course->materials_included) && !empty($course->materials_included)
             ? $course->materials_included
             : [''];
         $this->tags = is_array($course->tags) && !empty($course->tags)
             ? $course->tags
             : [''];
-
-        Log::info('EditCourse: mount completed', [
-            'course_id' => $course->id,
-            'existing_thumbnail' => $this->existingThumbnail,
-            'learning_outcomes_count' => count($this->learning_outcomes),
-            'prerequisites_count' => count($this->prerequisites),
-            'faqs_count' => count($this->faqs),
-            'materials_included_count' => count($this->materials_included),
-            'tags_count' => count($this->tags)
-        ]);
     }
 
     protected function rules()
@@ -164,7 +150,6 @@ class EditCourse extends Component
         ];
     }
 
-
     public function addMaterial()
     {
         if (count($this->materials_included) < 10) {
@@ -195,8 +180,6 @@ class EditCourse extends Component
         }
     }
 
-
-    // Step navigation methods
     public function nextStep()
     {
         $this->validateCurrentStep();
@@ -224,9 +207,9 @@ class EditCourse extends Component
         $stepValidationRules = [
             1 => ['title', 'slug', 'category_id', 'difficulty_level'],
             2 => ['description'],
-            3 => [], // Pricing step
-            4 => [], // Additional info
-            5 => [], // Review step
+            3 => [],
+            4 => [],
+            5 => [],
         ];
 
         if (isset($stepValidationRules[$this->currentStep])) {
@@ -248,7 +231,6 @@ class EditCourse extends Component
         }
     }
 
-    // Field update handlers
     public function updatedTitle($value)
     {
         if (!$this->slug_manual_edit && !empty($value)) {
@@ -292,7 +274,6 @@ class EditCourse extends Component
         }
     }
 
-    // Dynamic field methods
     public function addLearningOutcome()
     {
         $this->learning_outcomes[] = '';
@@ -334,35 +315,44 @@ class EditCourse extends Component
 
     public function removeThumbnail()
     {
-        Log::info('EditCourse: Removing thumbnail', ['course_id' => $this->course->id]);
-
         $this->thumbnail = null;
+        $this->thumbnailPreview = null;
         $this->shouldRemoveThumbnail = true;
 
         $this->dispatch('notify', [
-            'message' => 'Current thumbnail will be removed when you save the course.',
+            'message' => 'Thumbnail will be removed when you save.',
             'type' => 'info'
         ]);
     }
 
-    // Main update method
-    public function save()
+    public function saveDraft()
     {
-        Log::info('EditCourse: Updating course', ['course_id' => $this->course->id]);
+        $this->is_published = false;
+        $this->save(true);
+    }
 
+    public function save($isDraft = false)
+    {
         try {
-            $this->validate();
+            // Validate
+            if (!$isDraft) {
+                $this->validate();
+            } else {
+                $this->validate([
+                    'title' => 'required|string|min:3|max:255',
+                    'slug' => 'required|string|min:3|max:255|regex:/^[a-z0-9\-]+$/|unique:courses,slug,' . $this->course->id,
+                    'category_id' => 'required|exists:course_categories,id',
+                ]);
+            }
 
             // Clean up arrays
             $this->learning_outcomes = array_values(array_filter($this->learning_outcomes ?? [], fn($outcome) => !empty(trim($outcome))));
             $this->prerequisites = array_values(array_filter($this->prerequisites ?? [], fn($prereq) => !empty(trim($prereq))));
             $this->faqs = array_values(array_filter($this->faqs ?? [], fn($faq) => !empty(trim($faq['question'] ?? '')) && !empty(trim($faq['answer'] ?? ''))));
-
-            // Clean up new arrays
             $this->materials_included = array_values(array_filter($this->materials_included ?? [], fn($material) => !empty(trim($material))));
             $this->tags = array_values(array_filter($this->tags ?? [], fn($tag) => !empty(trim($tag))));
 
-            // Prepare data - include new fields
+            // Prepare data
             $data = [
                 'title' => $this->title,
                 'subtitle' => $this->subtitle,
@@ -398,37 +388,29 @@ class EditCourse extends Component
             $this->handleThumbnailUpdate($data);
 
             // Handle publishing dates
-            if ($data['is_published'] && !$this->course->published_at && !$data['scheduled_publish_at']) {
+            if (!$isDraft && $data['is_published'] && !$this->course->published_at && !$data['scheduled_publish_at']) {
                 $data['published_at'] = now();
             }
 
             // Update course
             $this->course->update($data);
 
-            // Reset flags and thumbnail
+            // Reset flags
             $this->thumbnail = null;
+            $this->thumbnailPreview = null;
             $this->shouldRemoveThumbnail = false;
             $this->existingThumbnail = $this->course->fresh()->thumbnail;
 
-            Log::info('EditCourse: Course updated successfully', ['course_id' => $this->course->id]);
+            $message = $isDraft ? 'Course saved as draft!' : 'Course updated successfully!';
 
-            $this->dispatch('notify', [
-                'message' => 'Course updated successfully!',
-                'type' => 'success'
-            ]);
+            session()->flash('success', $message);
 
-            $this->dispatch('redirect-after-delay', [
-                'url' => route('all-course'),
-                'delay' => 1500
-            ]);
+            // Redirect to all courses page
+            return $this->redirect(route('all-course'), navigate: true);
 
         } catch (\Exception $e) {
-            Log::error('EditCourse: Error updating course', [
-                'course_id' => $this->course->id,
-                'message' => $e->getMessage()
-            ]);
             $this->dispatch('notify', [
-                'message' => 'Error updating course: ' . $e->getMessage(),
+                'message' => 'Error: ' . $e->getMessage(),
                 'type' => 'error'
             ]);
         }
@@ -437,121 +419,52 @@ class EditCourse extends Component
     private function handleThumbnailUpdate(&$data)
     {
         if ($this->thumbnail) {
-            Log::info('EditCourse: Processing new thumbnail upload');
-
-            // Delete old thumbnail if it exists
+            // Delete old thumbnail
             if ($this->existingThumbnail && Storage::disk('public')->exists($this->existingThumbnail)) {
                 Storage::disk('public')->delete($this->existingThumbnail);
-                Log::info('EditCourse: Deleted old thumbnail', ['path' => $this->existingThumbnail]);
             }
-
             $data['thumbnail'] = $this->thumbnail->store('thumbnails', 'public');
-            Log::info('EditCourse: New thumbnail stored', ['path' => $data['thumbnail']]);
-
         } elseif ($this->shouldRemoveThumbnail) {
-            Log::info('EditCourse: Processing thumbnail removal');
-
+            // Remove thumbnail
             if ($this->existingThumbnail && Storage::disk('public')->exists($this->existingThumbnail)) {
                 Storage::disk('public')->delete($this->existingThumbnail);
-                Log::info('EditCourse: Deleted existing thumbnail', ['path' => $this->existingThumbnail]);
             }
-
             $data['thumbnail'] = null;
-
         } else {
-            // Preserve existing thumbnail
+            // Keep existing
             $data['thumbnail'] = $this->existingThumbnail;
         }
     }
 
-    public function getThumbnailPreview()
-    {
-        if ($this->thumbnail) {
-            try {
-                // Store temporary file and return public URL
-                $tempPath = $this->thumbnail->store('temp-thumbnails', 'public');
-                return asset('storage/' . $tempPath);
-            } catch (\Exception $e) {
-                \Log::error('Error creating thumbnail preview', ['error' => $e->getMessage()]);
-                return null;
-            }
-        }
-
-        return null;
-    }
-
     public function updatedThumbnail()
     {
-        Log::info('Thumbnail updated');
-
         if ($this->thumbnail) {
             try {
                 $this->validateOnly('thumbnail');
-
-                // Clean up any previous temp files
-                $this->cleanupTempFiles();
-
-                Log::info('Thumbnail validation passed', [
-                    'file_size' => $this->thumbnail->getSize(),
-                    'file_type' => $this->thumbnail->getMimeType(),
-                    'file_name' => $this->thumbnail->getClientOriginalName()
-                ]);
+                $this->shouldRemoveThumbnail = false;
+                $this->thumbnailPreview = 'data:' . $this->thumbnail->getMimeType() . ';base64,' . base64_encode($this->thumbnail->get());
 
                 $this->dispatch('notify', [
                     'message' => 'Thumbnail uploaded successfully!',
                     'type' => 'success'
                 ]);
-
-            } catch (\Illuminate\Validation\ValidationException $e) {
-                Log::error('Thumbnail validation failed', ['errors' => $e->errors()]);
-                $this->thumbnail = null;
-                throw $e;
             } catch (\Exception $e) {
-                Log::error('Error processing thumbnail', ['error' => $e->getMessage()]);
                 $this->thumbnail = null;
+                $this->thumbnailPreview = null;
                 $this->dispatch('notify', [
-                    'message' => 'Error uploading thumbnail: ' . $e->getMessage(),
+                    'message' => 'Error uploading thumbnail.',
                     'type' => 'error'
                 ]);
             }
         }
     }
 
-    private function cleanupTempFiles()
-    {
-        try {
-            // Clean up temp files older than 1 hour
-            $tempFiles = Storage::disk('public')->files('temp-thumbnails');
-            foreach ($tempFiles as $file) {
-                if (Storage::disk('public')->lastModified($file) < now()->subHour()->timestamp) {
-                    Storage::disk('public')->delete($file);
-                }
-            }
-        } catch (\Exception $e) {
-            Log::warning('Could not cleanup temp files', ['error' => $e->getMessage()]);
-        }
-    }
-
-    // Add this computed property for the view
-    public function getThumbnailUrlProperty()
-    {
-        if ($this->thumbnail) {
-            return $this->getThumbnailPreview();
-        }
-
-        // For edit mode, return existing thumbnail
-        if (isset($this->existingThumbnail) && $this->existingThumbnail && !($this->shouldRemoveThumbnail ?? false)) {
-            return asset('storage/' . $this->existingThumbnail);
-        }
-
-        return null;
-    }
     public function render()
     {
         return view('livewire.course-management.create-course', [
             'categories' => $this->categories,
             'difficultyLevels' => $this->difficultyLevels,
-            'isEditMode' => true, // Always true for edit component
+            'isEditMode' => true,
         ]);
     }
 }

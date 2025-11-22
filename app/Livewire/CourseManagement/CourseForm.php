@@ -9,8 +9,6 @@ use App\Models\Learning\CourseCategory;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Livewire\Attributes\Layout;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Storage;
 
 #[Layout('layouts.dashboard', [
     'description' => 'Create new courses with details, pricing, and content',
@@ -24,7 +22,7 @@ class CourseForm extends Component
     public $categories = [];
     public string $pageTitle = 'Create New Course';
 
-    // Properties matching model fields
+    // Properties
     public $title = '';
     public $subtitle = '';
     public $slug = '';
@@ -35,6 +33,9 @@ class CourseForm extends Component
     public $is_free = true;
     public $is_premium = false;
     public $thumbnail = null;
+    public $thumbnailPreview = null;
+    public $existingThumbnail = null;
+    public $shouldRemoveThumbnail = false;
     public $estimated_duration_minutes = null;
     public $price = 0.00;
     public $target_audience = '';
@@ -59,7 +60,6 @@ class CourseForm extends Component
         'expert' => 'Expert'
     ];
 
-    // Validation rules
     protected $rules = [
         'title' => 'required|string|min:3|max:255',
         'subtitle' => 'nullable|string|max:255',
@@ -94,7 +94,6 @@ class CourseForm extends Component
     {
         $this->categories = Cache::remember('course_categories', 3600, fn() => CourseCategory::orderBy('name')->get());
         
-        // Initialize the new arrays if they're empty
         if (empty($this->materials_included)) {
             $this->materials_included = [''];
         }
@@ -105,8 +104,9 @@ class CourseForm extends Component
     
     public function removeThumbnail()
     {
-        Log::info('CourseForm: Removing thumbnail');
         $this->thumbnail = null;
+        $this->thumbnailPreview = null;
+        $this->shouldRemoveThumbnail = true;
 
         $this->dispatch('notify', [
             'message' => 'Thumbnail removed.',
@@ -117,7 +117,6 @@ class CourseForm extends Component
     public function nextStep()
     {
         $this->validateCurrentStep();
-
         if ($this->currentStep < $this->totalSteps) {
             $this->currentStep++;
         }
@@ -142,9 +141,9 @@ class CourseForm extends Component
         $stepValidationRules = [
             1 => ['title', 'slug', 'category_id', 'difficulty_level'],
             2 => ['description'],
-            3 => [], // Pricing step - validate dynamically based on is_free
-            4 => [], // Additional info - all optional
-            5 => [], // Review step - no additional validation
+            3 => [],
+            4 => [],
+            5 => [],
         ];
 
         if (isset($stepValidationRules[$this->currentStep])) {
@@ -155,7 +154,6 @@ class CourseForm extends Component
                 }
             }
 
-            // Add dynamic pricing validation
             if ($this->currentStep === 3 && !$this->is_free) {
                 $rules['price'] = 'required|numeric|min:0.01|max:9999';
             }
@@ -166,7 +164,6 @@ class CourseForm extends Component
         }
     }
   
-    // Add methods for the new fields
     public function addMaterial()
     {
         if (count($this->materials_included) < 10) {
@@ -197,11 +194,10 @@ class CourseForm extends Component
         }
     }
     
-    // Add saveDraft method
     public function saveDraft()
     {
         $this->is_published = false;
-        $this->save();
+        $this->save(true);
     }
 
     public function addLearningOutcome()
@@ -281,113 +277,87 @@ class CourseForm extends Component
         }
     }
 
-    public function save()
+    public function save($isDraft = false)
     {
-        Log::info('CourseForm: Creating new course');
-
         try {
-            // Check if this is a scheduled submission
-            if ($this->scheduled_publish_at && now()->lt($this->scheduled_publish_at)) {
-                Log::info('Course scheduled for future publication', ['scheduled_publish_at' => $this->scheduled_publish_at]);
+            // Check scheduled submission
+            if (!$isDraft && $this->scheduled_publish_at && now()->lt($this->scheduled_publish_at)) {
                 $this->dispatch('notify', [
-                    'message' => 'Course has been scheduled for submission on ' . $this->scheduled_publish_at->format('M d, Y \a\t H:i'),
+                    'message' => 'Course scheduled for ' . $this->scheduled_publish_at->format('M d, Y'),
                     'type' => 'info'
                 ]);
                 return;
             }
 
-            // Validate all data
-            $this->validate();
+            // Validate
+            if (!$isDraft) {
+                $this->validate();
+            } else {
+                $this->validate([
+                    'title' => 'required|string|min:3|max:255',
+                    'slug' => 'required|string|min:3|max:255|regex:/^[a-z0-9\-]+$/|unique:courses,slug',
+                    'category_id' => 'required|exists:course_categories,id',
+                ]);
+            }
 
-            // Clean up array fields
+            // Clean arrays
             $this->learning_outcomes = array_filter($this->learning_outcomes ?? [], fn($outcome) => !empty(trim($outcome)));
             $this->prerequisites = array_filter($this->prerequisites ?? [], fn($prereq) => !empty(trim($prereq)));
             $this->faqs = array_filter($this->faqs ?? [], fn($faq) => !empty(trim($faq['question'] ?? '')) && !empty(trim($faq['answer'] ?? '')));
-            
-            // Clean up the new array fields
             $this->materials_included = array_filter($this->materials_included ?? [], fn($material) => !empty(trim($material)));
             $this->tags = array_filter($this->tags ?? [], fn($tag) => !empty(trim($tag)));
 
-            // Prepare data array
+            // Prepare data
             $data = $this->only([
-                'title',
-                'subtitle',
-                'slug',
-                'description',
-                'category_id',
-                'difficulty_level',
-                'is_published',
-                'is_free',
-                'is_premium',
-                'target_audience',
-                'learning_outcomes',
-                'prerequisites',
-                'syllabus_overview',
-                'faqs',
-                'completion_rate_threshold',
-                'estimated_duration_minutes',
-                'price',
-                'scheduled_publish_at',
-                'materials_included',
-                'tags',
+                'title', 'subtitle', 'slug', 'description', 'category_id', 'difficulty_level',
+                'is_published', 'is_free', 'is_premium', 'target_audience', 'learning_outcomes',
+                'prerequisites', 'syllabus_overview', 'faqs', 'completion_rate_threshold',
+                'estimated_duration_minutes', 'price', 'scheduled_publish_at',
+                'materials_included', 'tags',
             ]);
 
-            // Set instructor and approval
             $data['instructor_id'] = Auth::id();
 
+            // Approval
             $user = Auth::user();
-            if ($user->hasRole('super_admin') || $user->hasRole('academy_admin')) {
-                $data['is_approved'] = true;
-            } else {
-                $data['is_approved'] = false;
-            }
+            $data['is_approved'] = $user->hasRole('super_admin') || $user->hasRole('academy_admin');
 
             // Sanitize description
             if (!empty($data['description'])) {
                 $data['description'] = strip_tags($data['description']);
             }
 
-            // Handle thumbnail upload
+            // Handle thumbnail
             if ($this->thumbnail) {
-                Log::info('CourseForm: Processing thumbnail upload');
                 $data['thumbnail'] = $this->thumbnail->store('thumbnails', 'public');
-                Log::info('CourseForm: Thumbnail stored', ['path' => $data['thumbnail']]);
             }
 
-            // Handle publishing dates
+            // Publishing dates
             $now = now();
-            if (isset($data['scheduled_publish_at']) && $now->gt($data['scheduled_publish_at'])) {
-                $data['published_at'] = $data['scheduled_publish_at'];
-            } elseif ($data['is_published'] && !isset($data['scheduled_publish_at'])) {
-                $data['published_at'] = $now;
+            if (!$isDraft) {
+                if (isset($data['scheduled_publish_at']) && $now->gt($data['scheduled_publish_at'])) {
+                    $data['published_at'] = $data['scheduled_publish_at'];
+                } elseif ($data['is_published'] && !isset($data['scheduled_publish_at'])) {
+                    $data['published_at'] = $now;
+                }
             }
 
-            // Create course
+            // Create
             $course = Course::create($data);
 
-            Log::info('CourseForm: Course created successfully', ['course_id' => $course->id]);
+            $message = $isDraft ? 'Course saved as draft!' : 'Course created successfully!';
 
-            $this->dispatch('notify', [
-                'message' => 'Course created successfully and submitted for approval!',
-                'type' => 'success'
-            ]);
+            session()->flash('success', $message);
 
-            // Redirect to course builder
-            return redirect()->route('course-builder', ['course' => $course->id]);
+            return $this->redirect(route('course-builder', ['course' => $course->id]), navigate: true);
 
         } catch (\Illuminate\Validation\ValidationException $e) {
-            Log::error('CourseForm: Validation error', ['errors' => $e->errors()]);
             $this->dispatch('notify', [
-                'message' => 'Please check the form for errors: ' . collect($e->errors())->flatten()->first(),
+                'message' => 'Please check form errors: ' . collect($e->errors())->flatten()->first(),
                 'type' => 'error'
             ]);
             throw $e;
         } catch (\Exception $e) {
-            Log::error('CourseForm: Error creating course', [
-                'message' => $e->getMessage(),
-                'file' => $e->getFile(),
-                'line' => $e->getLine()
-            ]);
             $this->dispatch('notify', [
                 'message' => 'Error: ' . $e->getMessage(),
                 'type' => 'error'
@@ -395,94 +365,35 @@ class CourseForm extends Component
         }
     }
 
-    public function getThumbnailPreview()
-    {
-        if ($this->thumbnail) {
-            try {
-                // Store temporary file and return public URL
-                $tempPath = $this->thumbnail->store('temp-thumbnails', 'public');
-                return asset('storage/' . $tempPath);
-            } catch (\Exception $e) {
-                \Log::error('Error creating thumbnail preview', ['error' => $e->getMessage()]);
-                return null;
-            }
-        }
-
-        return null;
-    }
-
     public function updatedThumbnail()
     {
-        Log::info('Thumbnail updated');
-
         if ($this->thumbnail) {
             try {
                 $this->validateOnly('thumbnail');
-
-                // Clean up any previous temp files
-                $this->cleanupTempFiles();
-
-                Log::info('Thumbnail validation passed', [
-                    'file_size' => $this->thumbnail->getSize(),
-                    'file_type' => $this->thumbnail->getMimeType(),
-                    'file_name' => $this->thumbnail->getClientOriginalName()
-                ]);
+                $this->shouldRemoveThumbnail = false;
+                $this->thumbnailPreview = 'data:' . $this->thumbnail->getMimeType() . ';base64,' . base64_encode($this->thumbnail->get());
 
                 $this->dispatch('notify', [
-                    'message' => 'Thumbnail uploaded successfully!',
+                    'message' => 'Thumbnail uploaded!',
                     'type' => 'success'
                 ]);
-
-            } catch (\Illuminate\Validation\ValidationException $e) {
-                Log::error('Thumbnail validation failed', ['errors' => $e->errors()]);
-                $this->thumbnail = null;
-                throw $e;
             } catch (\Exception $e) {
-                Log::error('Error processing thumbnail', ['error' => $e->getMessage()]);
                 $this->thumbnail = null;
+                $this->thumbnailPreview = null;
                 $this->dispatch('notify', [
-                    'message' => 'Error uploading thumbnail: ' . $e->getMessage(),
+                    'message' => 'Error uploading thumbnail.',
                     'type' => 'error'
                 ]);
             }
         }
     }
-
-    private function cleanupTempFiles()
-    {
-        try {
-            // Clean up temp files older than 1 hour
-            $tempFiles = Storage::disk('public')->files('temp-thumbnails');
-            foreach ($tempFiles as $file) {
-                if (Storage::disk('public')->lastModified($file) < now()->subHour()->timestamp) {
-                    Storage::disk('public')->delete($file);
-                }
-            }
-        } catch (\Exception $e) {
-            Log::warning('Could not cleanup temp files', ['error' => $e->getMessage()]);
-        }
-    }
-
-    // Add this computed property for the view
-    public function getThumbnailUrlProperty()
-    {
-        if ($this->thumbnail) {
-            return $this->getThumbnailPreview();
-        }
-
-        // For edit mode, return existing thumbnail
-        if (isset($this->existingThumbnail) && $this->existingThumbnail && !($this->shouldRemoveThumbnail ?? false)) {
-            return asset('storage/' . $this->existingThumbnail);
-        }
-
-        return null;
-    }
+    
     public function render()
     {
         return view('livewire.course-management.create-course', [
             'categories' => $this->categories,
             'difficultyLevels' => $this->difficultyLevels,
-            'isEditMode' => false, // Always false for create component
+            'isEditMode' => false,
         ]);
     }
 }
