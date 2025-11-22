@@ -5,6 +5,7 @@ use App\Http\Controllers\PageController;
 use App\Http\Controllers\CertificateVerificationController;
 use App\Livewire\Affiliate;
 use App\Livewire\Content\ContentDocumentationCenter;
+use App\Livewire\Cbt\CbtExamInterface;
 
 
 /*
@@ -188,7 +189,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // CBT Exam Routes
     Route::get('/cbt/exams', App\Livewire\Cbt\CbtExamSelection::class)->name('cbt.exams');
     Route::get('/cbt/exam/{assessment}/take', App\Livewire\Cbt\CbtExamInterface::class)->name('cbt.exam.take');
+    Route::get('/cbt/exam/{assessmentId}/summary', [CbtExamInterface::class, 'summary'])
+    ->name('cbt.exam.summary');
 
+    // /exam/{assessmentId}
     // Legacy route for backward compatibility
     Route::get('/cbt/exam/{assessmentId?}', App\Livewire\Cbt\CbtExam::class)->name('cbt.exam');
 
@@ -559,19 +563,19 @@ Route::prefix('admin/pages')->middleware(['auth', 'verified'])->group(function (
 
 // use Ifsnop\Mysqldump\Mysqldump;
 
-// Route::get('/export-db', function () {
-//     $file = storage_path('app/backup.sql');
+Route::get('/export-db', function () {
+    $file = storage_path('app/backup.sql');
 
-//     $dump = new Mysqldump(
-//         'mysql:host=' . env('DB_HOST') . ';dbname=' . env('DB_DATABASE'),
-//         env('DB_USERNAME'),
-//         env('DB_PASSWORD')
-//     );
+    $dump = new Mysqldump(
+        'mysql:host=' . env('DB_HOST') . ';dbname=' . env('DB_DATABASE'),
+        env('DB_USERNAME'),
+        env('DB_PASSWORD')
+    );
 
-//     $dump->start($file);
+    $dump->start($file);
 
-//     return response()->download($file);
-// });
+    return response()->download($file);
+});
 
 
 
