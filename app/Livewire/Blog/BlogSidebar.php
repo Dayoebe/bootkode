@@ -4,18 +4,72 @@ namespace App\Livewire\Blog;
 
 use App\Models\Content\BlogPost;
 use App\Models\Content\BlogCategory;
+use App\Models\Admin\NewsletterSubscriber;
+use Illuminate\Support\Facades\Validator;
 use Livewire\Component;
 use Illuminate\Support\Facades\Cache;
 
 class BlogSidebar extends Component
 {
     public $currentPost = null;
-    public $currentCategory = null;
+    public $currentCategory;
+    public $subscribeEmail = '';
+    public $subscribeSuccess = false;
+    public $subscribeError = '';
 
     public function mount($currentPost = null, $currentCategory = null)
     {
         $this->currentPost = $currentPost;
         $this->currentCategory = $currentCategory;
+    }
+
+    public function subscribe()
+    {
+        // Validate the email
+        $validator = Validator::make(
+            ['email' => $this->subscribeEmail],
+            ['email' => 'required|email|max:255']
+        );
+
+        if ($validator->fails()) {
+            $this->subscribeError = 'Please enter a valid email address.';
+            return;
+        }
+
+        try {
+            // Check if already subscribed
+            $existing = NewsletterSubscriber::where('email', $this->subscribeEmail)->first();
+
+            if ($existing) {
+                if ($existing->status === NewsletterSubscriber::STATUS_UNSUBSCRIBED) {
+                    $existing->update([
+                        'status' => NewsletterSubscriber::STATUS_ACTIVE,
+                        'unsubscribed_at' => null
+                    ]);
+                }
+                $this->subscribeSuccess = true;
+                $this->subscribeEmail = '';
+                $this->subscribeError = '';
+                return;
+            }
+
+            // Create new subscriber
+            NewsletterSubscriber::create([
+                'email' => $this->subscribeEmail,
+                'status' => NewsletterSubscriber::STATUS_ACTIVE,
+                'source' => 'blog_sidebar',
+                'subscribed_at' => now(),
+                'ip_address' => request()->ip(),
+            ]);
+
+            $this->subscribeSuccess = true;
+            $this->subscribeEmail = '';
+            $this->subscribeError = '';
+
+        } catch (\Exception $e) {
+            $this->subscribeError = 'Sorry, there was an error subscribing. Please try again.';
+            logger()->error('Newsletter subscription error: ' . $e->getMessage());
+        }
     }
 
     public function render()
