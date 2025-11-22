@@ -370,15 +370,14 @@
       startup: {
         pageReady: function() {
           return MathJax.startup.defaultPageReady().then(function() {
-            console.log('MathJax is ready');
             // Dispatch event when MathJax is fully loaded
             document.dispatchEvent(new Event('mathjax-loaded'));
           });
         }
       }
     };
-    </script>
-    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" async></script>
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" async></script>
 
 </head>
 
