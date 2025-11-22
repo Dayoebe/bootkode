@@ -103,34 +103,18 @@ class StudentAnswer extends Model
     }
 
     /**
-     * FIXED: Improved auto-grade with proper answer handling
+     * PRODUCTION: Clean auto-grade without debug logs
      */
     public function autoGrade()
     {
         if (!$this->question) {
-            \Log::error('Cannot auto-grade: Question not found', [
-                'student_answer_id' => $this->id,
-                'question_id' => $this->question_id
-            ]);
             return false;
         }
 
         // Only auto-grade certain question types
         if (in_array($this->question->question_type, ['essay', 'short_answer'])) {
-            \Log::info('Skipping auto-grade for manual grading question', [
-                'question_id' => $this->question->id,
-                'question_type' => $this->question->question_type
-            ]);
             return false;
         }
-
-        \Log::info('Starting auto-grade', [
-            'student_answer_id' => $this->id,
-            'question_id' => $this->question->id,
-            'question_type' => $this->question->question_type,
-            'user_answer_raw' => $this->answer,
-            'user_answer_type' => gettype($this->answer)
-        ]);
 
         // Get the user's answer - handle different formats
         $userAnswer = $this->answer;
@@ -152,12 +136,6 @@ class StudentAnswer extends Model
             }
         }
 
-        \Log::info('Processed user answer', [
-            'question_id' => $this->question->id,
-            'processed_answer' => $userAnswer,
-            'processed_type' => gettype($userAnswer)
-        ]);
-
         // Check if answer is correct
         $isCorrect = $this->question->isCorrectAnswer($userAnswer);
         $pointsEarned = 0;
@@ -170,14 +148,6 @@ class StudentAnswer extends Model
             // For partial credit
             $pointsEarned = $this->question->calculatePartialCredit($userAnswer);
         }
-
-        \Log::info('Auto-grade result', [
-            'student_answer_id' => $this->id,
-            'question_id' => $this->question->id,
-            'is_correct' => $isCorrect,
-            'points_earned' => $pointsEarned,
-            'max_points' => $this->question->points
-        ]);
 
         $this->update([
             'is_correct' => $isCorrect === true,

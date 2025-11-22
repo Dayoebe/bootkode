@@ -184,19 +184,10 @@ class Question extends Model
     }
 
     /**
-     * FIXED: Simplified and more reliable answer checking
+     * Simplified and reliable answer checking
      */
     public function isCorrectAnswer($answer)
     {
-        // Log for debugging
-        \Log::info('Checking answer', [
-            'question_id' => $this->id,
-            'question_type' => $this->question_type,
-            'user_answer' => $answer,
-            'correct_answers' => $this->correct_answers,
-            'correct_answers_type' => gettype($this->correct_answers)
-        ]);
-
         // Get correct answers as array
         $correctAnswers = $this->correct_answers;
         if (is_string($correctAnswers)) {
@@ -204,7 +195,6 @@ class Question extends Model
         }
         
         if (!is_array($correctAnswers) || empty($correctAnswers)) {
-            \Log::warning('No correct answers defined', ['question_id' => $this->id]);
             return false;
         }
 
@@ -230,19 +220,10 @@ class Question extends Model
                 if (is_array($userAnswer)) {
                     sort($userAnswer);
                     sort($correctAnswers);
-                    $result = $userAnswer === $correctAnswers;
-                } else {
-                    $result = in_array($userAnswer, $correctAnswers);
+                    return $userAnswer === $correctAnswers;
                 }
                 
-                \Log::info('Answer check result', [
-                    'question_id' => $this->id,
-                    'result' => $result,
-                    'user_answer' => $userAnswer,
-                    'correct_answers' => $correctAnswers
-                ]);
-                
-                return $result;
+                return in_array($userAnswer, $correctAnswers);
         }
     }
 
@@ -257,30 +238,12 @@ class Question extends Model
             sort($userAnswers);
             sort($correctAnswers);
             
-            $result = $userAnswers === $correctAnswers;
-            
-            \Log::info('Multiple choice (multiple) check', [
-                'question_id' => $this->id,
-                'user_answers' => $userAnswers,
-                'correct_answers' => $correctAnswers,
-                'result' => $result
-            ]);
-            
-            return $result;
+            return $userAnswers === $correctAnswers;
         }
         
         // Handle single answer
         $userAnswer = intval($answer);
-        $result = in_array($userAnswer, $correctAnswers);
-        
-        \Log::info('Multiple choice (single) check', [
-            'question_id' => $this->id,
-            'user_answer' => $userAnswer,
-            'correct_answers' => $correctAnswers,
-            'result' => $result
-        ]);
-        
-        return $result;
+        return in_array($userAnswer, $correctAnswers);
     }
 
     /**
@@ -289,16 +252,7 @@ class Question extends Model
     protected function checkTrueFalseAnswer($answer, $correctAnswers)
     {
         $userAnswer = intval($answer);
-        $result = in_array($userAnswer, $correctAnswers);
-        
-        \Log::info('True/False check', [
-            'question_id' => $this->id,
-            'user_answer' => $userAnswer,
-            'correct_answers' => $correctAnswers,
-            'result' => $result
-        ]);
-        
-        return $result;
+        return in_array($userAnswer, $correctAnswers);
     }
 
     /**

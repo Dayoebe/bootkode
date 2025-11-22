@@ -1,6 +1,5 @@
 <?php
 
-// Wallet.php
 namespace App\Models\Marketplace;
 
 use Illuminate\Database\Eloquent\Model;
@@ -57,7 +56,7 @@ class Wallet extends Model
             'last_activity' => now()
         ]);
 
-        return $this->transactions()->create([
+        $transactionData = [
             'transaction_id' => \Str::uuid(),
             'type' => 'credit',
             'category' => $category,
@@ -66,8 +65,15 @@ class Wallet extends Model
             'balance_after' => $balanceAfter,
             'description' => $description,
             'metadata' => $metadata,
-            'transactionable' => $transactionable
-        ]);
+        ];
+
+        // Add polymorphic relationship if transactionable provided
+        if ($transactionable) {
+            $transactionData['transactionable_type'] = get_class($transactionable);
+            $transactionData['transactionable_id'] = $transactionable->id;
+        }
+
+        return $this->transactions()->create($transactionData);
     }
 
     // Debit wallet balance
@@ -85,7 +91,7 @@ class Wallet extends Model
             'last_activity' => now()
         ]);
 
-        return $this->transactions()->create([
+        $transactionData = [
             'transaction_id' => \Str::uuid(),
             'type' => 'debit',
             'category' => $category,
@@ -94,8 +100,15 @@ class Wallet extends Model
             'balance_after' => $balanceAfter,
             'description' => $description,
             'metadata' => $metadata,
-            'transactionable' => $transactionable
-        ]);
+        ];
+
+        // Add polymorphic relationship if transactionable provided
+        if ($transactionable) {
+            $transactionData['transactionable_type'] = get_class($transactionable);
+            $transactionData['transactionable_id'] = $transactionable->id;
+        }
+
+        return $this->transactions()->create($transactionData);
     }
 
     // Check if wallet has sufficient balance
@@ -119,8 +132,3 @@ class Wallet extends Model
         );
     }
 }
-
-
-
-
-

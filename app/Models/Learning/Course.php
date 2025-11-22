@@ -384,4 +384,17 @@ class Course extends Model
                 ->where('is_completed', true);
         });
     }
+    /**
+ * Calculate instructor share based on revenue split
+ */
+public function calculateInstructorShare(float $amount): float
+{
+    // Check if course has custom revenue split
+    if (method_exists($this, 'getInstructorShare')) {
+        return $this->getInstructorShare($amount);
+    }
+
+    // Default to 70% instructor share
+    return $amount * 0.70;
+}
 }
