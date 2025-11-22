@@ -1,7 +1,7 @@
 {{-- resources/views/livewire/blog/blog-sidebar.blade.php --}}
 <div class="space-y-8">
     {{-- Newsletter Signup --}}
-    <div class="bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl p-6 text-white">
+    <div class="bg-gradient-to-r from-teal-600 to-emerald-600 rounded-xl p-6 text-white">
         <h3 class="text-lg font-semibold mb-2">Stay Updated!</h3>
         <p class="text-blue-100 text-sm mb-4">Subscribe to our newsletter for the latest posts and insights.</p>
 
