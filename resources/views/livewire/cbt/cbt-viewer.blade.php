@@ -424,7 +424,6 @@
                     </div>
                 </div>
 
-        
                 <!-- Question Review -->
                 <div class="space-y-3 sm:space-y-4">
                     <h4 class="font-semibold text-gray-900 dark:text-white text-base sm:text-lg flex items-center">
@@ -562,21 +561,15 @@
 
     @push('scripts')
     <script>
-    // Enhanced MathJax configuration - Working with dashboard's MathJax
+    // Enhanced MathJax configuration for CBT Viewer
     document.addEventListener('livewire:init', function() {
         console.log('CBT Viewer: Livewire initialized');
         
-        // Function to render MathJax
-        function renderMath() {
-            if (typeof MathJax === 'undefined') {
-                console.warn('MathJax not loaded yet, waiting...');
-                setTimeout(renderMath, 500);
-                return;
-            }
-            
-            if (!MathJax.typesetPromise) {
-                console.warn('MathJax typesetPromise not available, waiting...');
-                setTimeout(renderMath, 500);
+        // Global MathJax rendering function
+        window.renderCbtMath = function() {
+            if (typeof MathJax === 'undefined' || !MathJax.typesetPromise) {
+                console.warn('MathJax not ready, retrying...');
+                setTimeout(window.renderCbtMath, 500);
                 return;
             }
 
@@ -585,11 +578,8 @@
                 console.log('Rendering', mathElements.length, 'math elements');
                 
                 // Clear previous MathJax rendering
-                mathElements.forEach(element => {
-                    const mjxContainers = element.querySelectorAll('mjx-container');
-                    mjxContainers.forEach(container => container.remove());
-                });
-
+                MathJax.typesetClear(Array.from(mathElements));
+                
                 // Render new content
                 MathJax.typesetPromise(Array.from(mathElements))
                     .then(() => {
@@ -597,30 +587,29 @@
                     })
                     .catch(err => {
                         console.error('MathJax rendering error:', err);
-                        setTimeout(renderMath, 1000);
                     });
             }
-        }
+        };
 
-        // Initial render
+        // Initial render after page load
         if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', renderMath);
+            document.addEventListener('DOMContentLoaded', window.renderCbtMath);
         } else {
-            renderMath();
+            setTimeout(window.renderCbtMath, 100);
         }
 
         // Re-render on Livewire updates
         Livewire.hook('morph.updated', function({ el, component }) {
-            setTimeout(renderMath, 100);
+            setTimeout(window.renderCbtMath, 150);
         });
 
         // Listen for MathJax loaded event from dashboard
         document.addEventListener('mathjax-loaded', function() {
             console.log('MathJax loaded event received');
-            renderMath();
+            window.renderCbtMath();
         });
 
-        // Observe DOM changes
+        // Observe DOM changes for dynamically loaded content (modals)
         const observer = new MutationObserver(function(mutations) {
             let hasMathContent = false;
             
@@ -640,7 +629,8 @@
             });
             
             if (hasMathContent) {
-                setTimeout(renderMath, 200);
+                console.log('Math content detected in DOM changes');
+                setTimeout(window.renderCbtMath, 200);
             }
         });
 
@@ -649,11 +639,11 @@
             subtree: true
         });
 
-        // Force render periodically for the first 10 seconds
+        // Force render periodically for the first 10 seconds (handles late-loading modals)
         let renderCount = 0;
         const renderInterval = setInterval(() => {
             renderCount++;
-            renderMath();
+            window.renderCbtMath();
             if (renderCount >= 5) {
                 clearInterval(renderInterval);
             }

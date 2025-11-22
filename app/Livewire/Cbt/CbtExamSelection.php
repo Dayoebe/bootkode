@@ -44,6 +44,7 @@ class CbtExamSelection extends Component
 
     public function startExam($assessmentId)
     {
+        
         $assessment = Assessment::with('questions')->find($assessmentId);
         
         if (!$assessment || $assessment->questions->count() === 0) {
@@ -61,6 +62,7 @@ class CbtExamSelection extends Component
 
         // Redirect to secure exam interface
         return redirect()->route('cbt.exam.take', ['assessment' => $assessmentId]);
+        
     }
 
     public function viewResults($assessmentId)
