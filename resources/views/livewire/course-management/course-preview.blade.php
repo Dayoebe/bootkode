@@ -527,51 +527,39 @@
                         @endif
                     </div>
 
-                    <!-- Action Button -->
-                    <template x-if="!isEnrolled">
-                        <button @click="$wire.openPaymentModal({{ $course->id }})"
-                            :disabled="@js(in_array($course->id, $enrollingCourseIds))"
-                            class="w-full bg-accent-themed-primary hover:bg-accent-themed-secondary text-white font-bold py-2.5 px-4 rounded-xl transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center shadow-md">
-                            <span class="flex items-center gap-2">
-                                <i class="fas fa-rocket"></i>
-                                Enroll Now
-                            </span>
-                        </button>
-                    </template>
-
-                    <template x-if="isEnrolled">
-                        <div class="flex gap-2">
-                            <a href="{{ route('course.view', $course->slug) }}"
-                                class="flex-1 bg-green-500 hover:bg-green-600 text-white font-bold py-2.5 px-4 rounded-xl transition-all duration-300 transform hover:scale-105 flex items-center justify-center shadow-md">
-                                <i class="fas fa-play mr-2"></i>
-                                Continue
-                            </a>
-                            <button @click="$wire.dropCourse({{ $course->id }})"
-                                :disabled="@js(in_array($course->id, $droppingCourseIds))"
-                                class="bg-themed-tertiary hover:bg-red-100 text-red-700 font-bold py-2.5 px-4 rounded-xl transition-all duration-300 transform hover:scale-105 disabled:opacity-50 border border-themed-primary">
-                                <i class="fas fa-sign-out-alt"></i>
-                            </button>
-                        </div>
-                    </template>
-
-
-
-
+              <!-- Action Button -->
+              @if(!$isEnrolled)
+              <button wire:click="openEnrollmentModal"
+                  wire:loading.attr="disabled"
+                  class="w-full bg-accent-themed-primary hover:bg-accent-themed-secondary text-white font-bold py-3 px-6 rounded-xl transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center shadow-lg mb-4">
+                  <span wire:loading.remove wire:target="openEnrollmentModal" class="flex items-center gap-2">
+                      <i class="fas fa-rocket"></i>
+                      Enroll Now
+                  </span>
+                  <span wire:loading wire:target="openEnrollmentModal" class="flex items-center gap-2">
+                      <i class="fas fa-spinner animate-spin"></i>
+                      Processing...
+                  </span>
+              </button>
+          @else
+              <div class="flex gap-2 mb-4">
+                  <a href="{{ route('course.view', $course->slug) }}"
+                      class="flex-1 bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-6 rounded-xl transition-all duration-300 transform hover:scale-105 flex items-center justify-center shadow-lg">
+                      <i class="fas fa-play mr-2"></i>
+                      Continue Learning
+                  </a>
+                  <button wire:click="dropCourse({{ $course->id }})"
+                      wire:loading.attr="disabled"
+                      class="bg-themed-tertiary hover:bg-red-100 text-red-700 font-bold py-3 px-6 rounded-xl transition-all duration-300 transform hover:scale-105 disabled:opacity-50 border border-themed-primary">
+                      <i class="fas fa-sign-out-alt"></i>
+                  </button>
+              </div>
+          @endif
 
 
-                    @if($this->canEnroll())
-                        <button @click="showEnrollModal = true"
-                            class="w-full bg-accent-themed-primary hover:bg-accent-themed-secondary text-white font-bold py-3 px-6 rounded-xl transition-all duration-300 transform hover:scale-105 shadow-lg mb-4">
-                            <i class="fas fa-rocket mr-2"></i>
-                            Enroll Now
-                        </button>
-                    @else
-                        <div
-                            class="w-full bg-themed-tertiary text-themed-secondary font-bold py-3 px-6 rounded-xl text-center mb-4">
-                            <i class="fas fa-lock mr-2"></i>
-                            Not Available
-                        </div>
-                    @endif
+
+
+
 
                     <!-- Course Details -->
                     <div class="space-y-4 pt-6 border-t border-themed-primary">
@@ -774,6 +762,179 @@
             </div>
         </div>
     </div>
+
+<!-- Payment Confirmation Modal -->
+<div x-show="$wire.showPaymentModal" 
+     x-transition:enter="transition ease-out duration-300"
+     x-transition:enter-start="opacity-0" 
+     x-transition:enter-end="opacity-100"
+     x-transition:leave="transition ease-in duration-200"
+     x-transition:leave-start="opacity-100" 
+     x-transition:leave-end="opacity-0"
+     class="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50"
+     style="display: none;">
+   
+   <div @click.away="$wire.closePaymentModal()"
+        x-transition:enter="transition ease-out duration-300"
+        x-transition:enter-start="opacity-0 scale-95" 
+        x-transition:enter-end="opacity-100 scale-100"
+        x-transition:leave="transition ease-in duration-200"
+        x-transition:leave-start="opacity-100 scale-100" 
+        x-transition:leave-end="opacity-0 scale-95"
+        class="bg-themed-secondary rounded-2xl shadow-2xl w-full max-w-lg border border-themed-primary transition-colors duration-300">
+       
+       <!-- Modal Header -->
+       <div class="p-6 border-b border-themed-primary">
+           <div class="flex items-center justify-between">
+               <h3 class="text-2xl font-bold text-themed-primary flex items-center gap-3">
+                   <div class="bg-accent-themed-primary/10 p-3 rounded-xl">
+                       <i class="fas fa-wallet text-accent-themed-primary"></i>
+                   </div>
+                   Confirm Enrollment
+               </h3>
+               <button wire:click="closePaymentModal" 
+                       class="text-themed-secondary hover:text-themed-primary p-2 rounded-lg hover:bg-themed-tertiary transition-all duration-300">
+                   <i class="fas fa-times text-xl"></i>
+               </button>
+           </div>
+       </div>
+
+       <!-- Modal Body -->
+       <div class="p-6 space-y-6">
+           <!-- Course Info -->
+           <div class="bg-themed-tertiary rounded-xl p-4 border border-themed-primary">
+               <div class="flex items-start gap-4">
+                   @if($course->thumbnail)
+                       <img src="{{ asset('storage/' . $course->thumbnail) }}" 
+                            alt="{{ $course->title }}"
+                            class="w-20 h-20 rounded-lg object-cover flex-shrink-0">
+                   @else
+                       <div class="w-20 h-20 rounded-lg bg-gradient-to-br from-accent-themed-primary to-purple-500 flex items-center justify-center flex-shrink-0">
+                           <i class="fas fa-graduation-cap text-white text-2xl"></i>
+                       </div>
+                   @endif
+                   
+                   <div class="flex-1 min-w-0">
+                       <h4 class="font-bold text-themed-primary text-base mb-1 line-clamp-2">
+                           {{ $course->title }}
+                       </h4>
+                       <p class="text-themed-secondary text-sm">
+                           by {{ $course->instructor->name }}
+                       </p>
+                   </div>
+               </div>
+           </div>
+
+           <!-- Payment Summary -->
+           <div class="space-y-4">
+               <h4 class="font-bold text-themed-primary text-lg">Payment Summary</h4>
+               
+               <!-- Wallet Balance -->
+               <div class="flex items-center justify-between p-4 bg-themed-tertiary rounded-xl border border-themed-primary">
+                   <div class="flex items-center gap-3">
+                       <div class="bg-blue-500/10 p-2 rounded-lg">
+                           <i class="fas fa-wallet text-blue-500"></i>
+                       </div>
+                       <span class="text-themed-secondary font-medium">Current Balance</span>
+                   </div>
+                   <span class="font-bold text-themed-primary text-lg">
+                       ₦{{ number_format($walletBalance, 2) }}
+                   </span>
+               </div>
+
+               <!-- Course Price -->
+               <div class="flex items-center justify-between p-4 bg-themed-tertiary rounded-xl border border-themed-primary">
+                   <div class="flex items-center gap-3">
+                       <div class="bg-orange-500/10 p-2 rounded-lg">
+                           <i class="fas fa-tag text-orange-500"></i>
+                       </div>
+                       <span class="text-themed-secondary font-medium">Course Price</span>
+                   </div>
+                   <span class="font-bold text-themed-primary text-lg">
+                       - ₦{{ number_format($coursePrice, 2) }}
+                   </span>
+               </div>
+
+               <!-- Balance After Payment -->
+               <div class="flex items-center justify-between p-4 rounded-xl border-2 transition-colors duration-300
+                   {{ $hasSufficientFunds ? 'bg-green-50 border-green-300 dark:bg-green-900/20 dark:border-green-700' : 'bg-red-50 border-red-300 dark:bg-red-900/20 dark:border-red-700' }}">
+                   <div class="flex items-center gap-3">
+                       <div class="{{ $hasSufficientFunds ? 'bg-green-500/10' : 'bg-red-500/10' }} p-2 rounded-lg">
+                           <i class="fas {{ $hasSufficientFunds ? 'fa-check-circle text-green-500' : 'fa-exclamation-circle text-red-500' }}"></i>
+                       </div>
+                       <span class="{{ $hasSufficientFunds ? 'text-green-700 dark:text-green-300' : 'text-red-700 dark:text-red-300' }} font-medium">
+                           Balance After Payment
+                       </span>
+                   </div>
+                   <span class="font-bold text-xl {{ $hasSufficientFunds ? 'text-green-700 dark:text-green-300' : 'text-red-700 dark:text-red-300' }}">
+                       ₦{{ number_format($balanceAfterPayment, 2) }}
+                   </span>
+               </div>
+
+               <!-- Insufficient Funds Warning -->
+               @if(!$hasSufficientFunds)
+                   <div class="bg-red-50 dark:bg-red-900/20 border border-red-300 dark:border-red-700 rounded-xl p-4">
+                       <div class="flex gap-3">
+                           <i class="fas fa-exclamation-triangle text-red-600 dark:text-red-400 text-xl flex-shrink-0"></i>
+                           <div>
+                               <h5 class="font-bold text-red-700 dark:text-red-300 mb-1">Insufficient Funds</h5>
+                               <p class="text-red-600 dark:text-red-400 text-sm">
+                                   You need ₦{{ number_format($coursePrice - $walletBalance, 2) }} more to enroll in this course.
+                               </p>
+                           </div>
+                       </div>
+                   </div>
+               @endif
+           </div>
+       </div>
+
+       <!-- Modal Footer -->
+       <div class="p-6 border-t border-themed-primary bg-themed-tertiary">
+           <div class="flex gap-3">
+               @if($hasSufficientFunds)
+                   <button wire:click="closePaymentModal"
+                           class="flex-1 bg-themed-secondary hover:bg-themed-primary text-themed-primary font-semibold py-3 px-6 rounded-xl transition-all duration-300 border border-themed-primary transform hover:scale-105">
+                       Cancel
+                   </button>
+                   <button wire:click="confirmEnrollment" 
+                           wire:loading.attr="disabled"
+                           class="flex-1 bg-accent-themed-primary hover:bg-accent-themed-secondary text-white font-bold py-3 px-6 rounded-xl transition-all duration-300 disabled:opacity-50 transform hover:scale-105 shadow-lg">
+                       <span wire:loading.remove wire:target="confirmEnrollment" class="flex items-center justify-center gap-2">
+                           <i class="fas fa-check-circle"></i>
+                           Confirm & Enroll
+                       </span>
+                       <span wire:loading wire:target="confirmEnrollment" class="flex items-center justify-center gap-2">
+                           <i class="fas fa-spinner animate-spin"></i>
+                           Processing...
+                       </span>
+                   </button>
+               @else
+                   <button wire:click="closePaymentModal"
+                           class="flex-1 bg-themed-secondary hover:bg-themed-primary text-themed-primary font-semibold py-3 px-6 rounded-xl transition-all duration-300 border border-themed-primary transform hover:scale-105">
+                       Cancel
+                   </button>
+                   <a href="{{ route('wallet.index') }}"
+                      class="flex-1 bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-6 rounded-xl transition-all duration-300 transform hover:scale-105 shadow-lg flex items-center justify-center gap-2">
+                       <i class="fas fa-plus-circle"></i>
+                       Fund Wallet
+                   </a>
+               @endif
+           </div>
+       </div>
+   </div>
+</div>
+
+       
+       <!-- Loading Overlay -->
+       <div wire:loading wire:target="confirmEnrollment" class="fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center z-50">
+           <div class="bg-themed-secondary rounded-2xl p-8 flex flex-col items-center shadow-2xl border border-themed-primary transition-colors duration-300">
+               <div class="relative mb-4">
+                   <div class="animate-spin rounded-full h-16 w-16 border-4 border-themed-tertiary"></div>
+                   <div class="animate-spin rounded-full h-16 w-16 border-4 border-accent-themed-primary border-t-transparent absolute top-0"></div>
+               </div>
+               <span class="text-themed-primary font-black text-xl transition-colors duration-300">Processing enrollment...</span>
+           </div>
+       </div>
     @push('styles')
         <style>
             [x-cloak] {

@@ -39,11 +39,10 @@ class AvailableCourses extends Component
     // Payment Modal
     public bool $showPaymentModal = false;
     public ?Course $selectedCourse = null;
-    public float $walletBalance = 0;
-    public float $coursePrice = 0;
-    public float $balanceAfterPayment = 0;
+    public float $walletBalance = 0.0;
+    public float $coursePrice = 0.0;
+    public float $balanceAfterPayment = 0.0;
     public bool $hasSufficientFunds = false;
-
     // Statistics
     public int $totalAvailable = 0;
     public int $totalEnrolled = 0;
@@ -100,7 +99,7 @@ class AvailableCourses extends Component
     public function openPaymentModal(int $courseId): void
     {
         Log::info('Opening payment modal', ['course_id' => $courseId]);
-        
+
         try {
             $this->selectedCourse = Course::where('id', $courseId)
                 ->where('is_published', true)
@@ -154,7 +153,7 @@ class AvailableCourses extends Component
                 'error' => $e->getMessage(),
                 'trace' => $e->getTraceAsString()
             ]);
-            
+
             $this->dispatch('notify', [
                 'message' => 'Course not found or unavailable',
                 'type' => 'error',
@@ -220,7 +219,7 @@ class AvailableCourses extends Component
                         'required' => $this->selectedCourse->price,
                         'available' => $wallet->balance
                     ]);
-                    
+
                     DB::rollBack();
                     $this->closePaymentModal();
 
@@ -303,7 +302,7 @@ class AvailableCourses extends Component
 
             // Store redirect URL in session for JavaScript to handle
             session()->flash('enrollment_redirect', route('course.view', ['course' => $this->selectedCourse->slug]));
-            
+
             // Dispatch success notification with redirect
             $this->dispatch('notify', [
                 'message' => $message,
@@ -312,10 +311,10 @@ class AvailableCourses extends Component
 
             $redirectUrl = route('course.view', ['course' => $this->selectedCourse->slug]);
             Log::info('Redirecting to course view', ['url' => $redirectUrl]);
-            
+
             // Use JavaScript redirect via dispatch for better compatibility
             $this->dispatch('enrollment-success', ['redirectUrl' => $redirectUrl]);
-            
+
             // Also try Livewire redirect as fallback
             return $this->redirect($redirectUrl, navigate: true);
 
@@ -419,7 +418,7 @@ class AvailableCourses extends Component
     public function dropCourse(int $courseId): void
     {
         Log::info('Dropping course', ['course_id' => $courseId]);
-        
+
         $user = Auth::user();
         $this->droppingCourseIds[] = $courseId;
 
@@ -442,7 +441,7 @@ class AvailableCourses extends Component
                 // Process refund if eligible
                 if ($isRefundEligible && $enrollment->amount_paid > 0) {
                     Log::info('Processing refund', ['amount' => $enrollment->amount_paid]);
-                    
+
                     $wallet = Wallet::getOrCreateWallet($user->id);
                     $wallet->credit(
                         $enrollment->amount_paid,
@@ -497,7 +496,7 @@ class AvailableCourses extends Component
                 'error' => $e->getMessage(),
                 'trace' => $e->getTraceAsString()
             ]);
-            
+
             $this->dispatch('notify', [
                 'message' => 'Failed to drop course: ' . $e->getMessage(),
                 'type' => 'error',
@@ -514,7 +513,7 @@ class AvailableCourses extends Component
     public function toggleWishlist(int $courseId): void
     {
         Log::info('Toggling wishlist', ['course_id' => $courseId]);
-        
+
         $user = Auth::user();
         $this->wishlistingCourseIds[] = $courseId;
 
@@ -544,7 +543,7 @@ class AvailableCourses extends Component
                 'course_id' => $courseId,
                 'error' => $e->getMessage()
             ]);
-            
+
             $this->dispatch('notify', [
                 'message' => 'Wishlist action failed',
                 'type' => 'error',

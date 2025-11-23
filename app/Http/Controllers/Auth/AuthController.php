@@ -67,7 +67,7 @@ class AuthController extends Controller
                 session()->flash('warning', 'Please verify your email address to unlock all features.');
             }
             
-            // Log successful login activity
+            
             try {
                 activity()
                     ->causedBy($user)
@@ -181,7 +181,7 @@ class AuthController extends Controller
         // Send verification email
         $user->notify(new CustomVerifyEmail());
     
-        // Log the user in immediately
+        
         Auth::login($user);
     
         // Redirect to their dashboard with email verification warning

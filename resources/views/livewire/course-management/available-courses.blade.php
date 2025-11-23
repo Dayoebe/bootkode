@@ -359,6 +359,16 @@
             </div>
         @endif
 
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
         <!-- Payment Confirmation Modal -->
         <div x-show="$wire.showPaymentModal" 
              x-transition:enter="transition ease-out duration-300"
@@ -521,6 +531,8 @@
                 </div>
             </div>
         </div>
+
+        
         <!-- Loading Overlay -->
         <div wire:loading wire:target="confirmEnrollment" class="fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center z-50">
             <div class="bg-themed-secondary rounded-2xl p-8 flex flex-col items-center shadow-2xl border border-themed-primary transition-colors duration-300">

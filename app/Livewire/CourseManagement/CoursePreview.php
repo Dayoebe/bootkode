@@ -36,11 +36,11 @@ class CoursePreview extends Component
     public $isFavorited = false;
     public $shareUrl = '';
 
-    // Payment modal properties
+    // Payment modal properties - FIXED TYPE DECLARATIONS
     public bool $showPaymentModal = false;
-    public float $walletBalance = 0;
-    public float $coursePrice = 0;
-    public float $balanceAfterPayment = 0;
+    public float $walletBalance = 0.0;
+    public float $coursePrice = 0.0;
+    public float $balanceAfterPayment = 0.0;
     public bool $hasSufficientFunds = false;
 
     // Course statistics
@@ -91,12 +91,12 @@ class CoursePreview extends Component
             if (Auth::check()) {
                 $user = Auth::user();
                 $wallet = Wallet::getOrCreateWallet($user->id);
-                $this->walletBalance = $wallet->balance;
+                $this->walletBalance = (float) $wallet->balance;
                 Log::info('CoursePreview: Wallet balance loaded', ['balance' => $this->walletBalance]);
             }
         } catch (\Exception $e) {
             Log::error('CoursePreview: Failed to load wallet balance', ['error' => $e->getMessage()]);
-            $this->walletBalance = 0;
+            $this->walletBalance = 0.0;
         }
     }
 
@@ -161,52 +161,59 @@ class CoursePreview extends Component
         }
     }
 
+   /**
+ * Open enrollment/payment modal (main method)
+ */
+public function openEnrollmentModal()
+{
+    Log::info('CoursePreview: Opening enrollment modal', [
+        'course_id' => $this->course->id,
+        'is_free' => $this->course->is_free
+    ]);
+
+    if (!Auth::check()) {
+        Log::info('CoursePreview: User not authenticated, redirecting to login');
+        return redirect()->route('login');
+    }
+
+    // Check if already enrolled
+    if ($this->isEnrolled) {
+        Log::warning('CoursePreview: User already enrolled');
+        $this->dispatch('notify', [
+            'message' => 'You are already enrolled in this course!',
+            'type' => 'info',
+            'icon' => 'fas fa-info-circle'
+        ]);
+        return;
+    }
+
+    // For free courses, enroll directly
+    if ($this->course->is_free) {
+        Log::info('CoursePreview: Free course detected, enrolling directly');
+        $this->enroll();
+        return;
+    }
+
+    // For paid courses, show payment modal
+    $this->loadWalletBalance();
+    $this->coursePrice = (float) $this->course->price;
+    $this->balanceAfterPayment = $this->walletBalance - $this->coursePrice;
+    $this->hasSufficientFunds = $this->balanceAfterPayment >= 0;
+
+    Log::info('CoursePreview: Payment modal prepared', [
+        'wallet_balance' => $this->walletBalance,
+        'course_price' => $this->coursePrice,
+        'sufficient_funds' => $this->hasSufficientFunds
+    ]);
+
+    $this->showPaymentModal = true;
+}
     /**
-     * Open enrollment/payment modal
+     * Alias method for backward compatibility
      */
-    public function openEnrollmentModal()
+    public function openPaymentModal()
     {
-        Log::info('CoursePreview: Opening enrollment modal', [
-            'course_id' => $this->course->id,
-            'is_free' => $this->course->is_free
-        ]);
-
-        if (!Auth::check()) {
-            Log::info('CoursePreview: User not authenticated, redirecting to login');
-            return redirect()->route('login');
-        }
-
-        // Check if already enrolled
-        if ($this->isEnrolled) {
-            Log::warning('CoursePreview: User already enrolled');
-            $this->dispatch('notify', [
-                'message' => 'You are already enrolled in this course!',
-                'type' => 'info',
-                'icon' => 'fas fa-info-circle'
-            ]);
-            return;
-        }
-
-        // For free courses, enroll directly
-        if ($this->course->is_free) {
-            Log::info('CoursePreview: Free course detected, enrolling directly');
-            $this->enroll();
-            return;
-        }
-
-        // For paid courses, show payment modal
-        $this->loadWalletBalance();
-        $this->coursePrice = $this->course->price;
-        $this->balanceAfterPayment = $this->walletBalance - $this->coursePrice;
-        $this->hasSufficientFunds = $this->balanceAfterPayment >= 0;
-
-        Log::info('CoursePreview: Payment modal prepared', [
-            'wallet_balance' => $this->walletBalance,
-            'course_price' => $this->coursePrice,
-            'sufficient_funds' => $this->hasSufficientFunds
-        ]);
-
-        $this->showPaymentModal = true;
+        return $this->openEnrollmentModal();
     }
 
     /**
@@ -242,261 +249,261 @@ class CoursePreview extends Component
     }
 
     /**
- * Main enrollment method
- */
-public function enroll()
-{
-    Log::info('CoursePreview: Starting enrollment process', [
-        'course_id' => $this->course->id,
-        'user_id' => Auth::id()
-    ]);
+     * Main enrollment method
+     */
+    public function enroll()
+    {
+        Log::info('CoursePreview: Starting enrollment process', [
+            'course_id' => $this->course->id,
+            'user_id' => Auth::id()
+        ]);
 
-    if (!Auth::check()) {
-        Log::info('CoursePreview: User not authenticated');
-        return redirect()->route('login');
-    }
+        if (!Auth::check()) {
+            Log::info('CoursePreview: User not authenticated');
+            return redirect()->route('login');
+        }
 
-    if ($this->isEnrolling) {
-        Log::warning('CoursePreview: Enrollment already in progress');
-        return;
-    }
-
-    // Track enrollment state
-    $this->isEnrolling = true;
-    $this->enrollingCourseIds[] = $this->course->id;
-
-    try {
-        // Check if already enrolled
-        if ($this->isEnrolled) {
-            Log::warning('CoursePreview: User already enrolled');
-            $this->dispatch('notify', [
-                'message' => 'You are already enrolled in this course!',
-                'type' => 'info'
-            ]);
-            $this->isEnrolling = false;
-            $this->enrollingCourseIds = array_diff($this->enrollingCourseIds, [$this->course->id]);
+        if ($this->isEnrolling) {
+            Log::warning('CoursePreview: Enrollment already in progress');
             return;
         }
 
-        $user = Auth::user();
+        // Track enrollment state
+        $this->isEnrolling = true;
+        $this->enrollingCourseIds[] = $this->course->id;
 
-        DB::beginTransaction();
-        Log::info('CoursePreview: Transaction started');
-
-        // Process payment for paid courses
-        if (!$this->course->is_free) {
-            Log::info('CoursePreview: Processing payment', ['price' => $this->course->price]);
-            
-            $wallet = Wallet::getOrCreateWallet($user->id);
-            
-            if (!$wallet->hasSufficientBalance($this->course->price)) {
-                DB::rollBack();
-                Log::error('CoursePreview: Insufficient balance');
-                
-                $this->closePaymentModal();
+        try {
+            // Check if already enrolled
+            if ($this->isEnrolled) {
+                Log::warning('CoursePreview: User already enrolled');
+                $this->dispatch('notify', [
+                    'message' => 'You are already enrolled in this course!',
+                    'type' => 'info'
+                ]);
                 $this->isEnrolling = false;
                 $this->enrollingCourseIds = array_diff($this->enrollingCourseIds, [$this->course->id]);
-                
-                $this->dispatch('notify', [
-                    'message' => 'Insufficient wallet balance. Please fund your wallet.',
-                    'type' => 'error',
-                    'icon' => 'fas fa-wallet'
-                ]);
                 return;
             }
 
-            // Debit user wallet
-            $wallet->debit(
-                $this->course->price,
-                WalletTransaction::CATEGORY_COURSE_PURCHASE,
-                "Enrolled in course: {$this->course->title}",
-                $this->course,
-                [
-                    'course_id' => $this->course->id,
-                    'course_title' => $this->course->title,
-                    'enrollment_type' => 'paid'
-                ]
-            );
-            Log::info('CoursePreview: User wallet debited');
+            $user = Auth::user();
 
-            // Credit instructor
-            $this->creditInstructor($this->course);
-            Log::info('CoursePreview: Instructor credited');
-        }
+            DB::beginTransaction();
+            Log::info('CoursePreview: Transaction started');
 
-        // Create enrollment
-        $enrollment = CourseEnrollment::create([
-            'course_id' => $this->course->id,
-            'user_id' => $user->id,
-            'enrolled_at' => now(),
-            'progress_percentage' => 0,
-            'is_completed' => false,
-            'enrollment_type' => $this->course->is_free ? 'free' : 'paid',
-            'amount_paid' => $this->course->is_free ? 0 : $this->course->price
-        ]);
-        Log::info('CoursePreview: Enrollment created', ['enrollment_id' => $enrollment->id]);
-
-        // Log activity
-        $user->logCustomActivity('Enrolled in course: ' . $this->course->title, [
-            'course_id' => $this->course->id,
-            'course_title' => $this->course->title,
-            'amount_paid' => $this->course->price,
-            'enrollment_type' => $this->course->is_free ? 'free' : 'paid'
-        ]);
-
-        DB::commit();
-        Log::info('CoursePreview: Transaction committed');
-
-        // Update component state
-        $this->isEnrolled = true;
-        $this->totalEnrollments++;
-        $this->closePaymentModal();
-
-        // Send notification
-        try {
-            $user->notify(new CourseUpdateNotification($this->course));
-        } catch (\Exception $e) {
-            Log::error('CoursePreview: Failed to send notification', ['error' => $e->getMessage()]);
-        }
-
-        $message = $this->course->is_free
-            ? "Successfully enrolled in '{$this->course->title}'! Welcome aboard!"
-            : "Successfully enrolled in '{$this->course->title}'! ₦" . number_format($this->course->price, 2) . " has been deducted.";
-
-        Log::info('CoursePreview: Enrollment successful, redirecting to course view');
-
-        // Dispatch success notification
-        $this->dispatch('notify', [
-            'message' => $message,
-            'type' => 'success'
-        ]);
-
-        // Redirect to course view
-        $redirectUrl = route('course.view', ['course' => $this->course->slug]);
-        Log::info('CoursePreview: Redirecting', ['url' => $redirectUrl]);
-        
-        // Use JavaScript redirect via dispatch for better compatibility
-        $this->dispatch('enrollment-success', ['redirectUrl' => $redirectUrl]);
-        
-        // Also try Livewire redirect as fallback
-        return $this->redirect($redirectUrl, navigate: true);
-
-    } catch (\Exception $e) {
-        DB::rollBack();
-        Log::error('CoursePreview: Enrollment failed', [
-            'error' => $e->getMessage(),
-            'trace' => $e->getTraceAsString()
-        ]);
-
-        $this->dispatch('notify', [
-            'message' => 'Enrollment failed: ' . $e->getMessage(),
-            'type' => 'error'
-        ]);
-    } finally {
-        $this->isEnrolling = false;
-        $this->enrollingCourseIds = array_diff($this->enrollingCourseIds, [$this->course->id]);
-    }
-}
-
-/**
- * Drop/unenroll from course
- */
-public function dropCourse($courseId)
-{
-    Log::info('CoursePreview: Dropping course', ['course_id' => $courseId]);
-    
-    if (!Auth::check()) {
-        return redirect()->route('login');
-    }
-
-    $user = Auth::user();
-    $this->droppingCourseIds[] = $courseId;
-
-    try {
-        $enrollment = CourseEnrollment::where('course_id', $courseId)
-            ->where('user_id', $user->id)
-            ->firstOrFail();
-
-        $course = $enrollment->course;
-        Log::info('CoursePreview: Enrollment found', ['enrollment_id' => $enrollment->id]);
-
-        // Check if eligible for refund
-        $isRefundEligible = $enrollment->enrolled_at->diffInDays(now()) <= 7
-            && $enrollment->progress_percentage < 10
-            && !$course->is_free;
-
-        Log::info('CoursePreview: Refund eligibility checked', ['is_eligible' => $isRefundEligible]);
-
-        DB::transaction(function () use ($enrollment, $user, $course, $isRefundEligible) {
-            // Process refund if eligible
-            if ($isRefundEligible && $enrollment->amount_paid > 0) {
-                Log::info('CoursePreview: Processing refund', ['amount' => $enrollment->amount_paid]);
+            // Process payment for paid courses
+            if (!$this->course->is_free) {
+                Log::info('CoursePreview: Processing payment', ['price' => $this->course->price]);
                 
                 $wallet = Wallet::getOrCreateWallet($user->id);
-                $wallet->credit(
-                    $enrollment->amount_paid,
-                    WalletTransaction::CATEGORY_REFUND,
-                    "Refund for course: {$course->title}",
-                    $course,
+                
+                if (!$wallet->hasSufficientBalance($this->course->price)) {
+                    DB::rollBack();
+                    Log::error('CoursePreview: Insufficient balance');
+                    
+                    $this->closePaymentModal();
+                    $this->isEnrolling = false;
+                    $this->enrollingCourseIds = array_diff($this->enrollingCourseIds, [$this->course->id]);
+                    
+                    $this->dispatch('notify', [
+                        'message' => 'Insufficient wallet balance. Please fund your wallet.',
+                        'type' => 'error',
+                        'icon' => 'fas fa-wallet'
+                    ]);
+                    return;
+                }
+
+                // Debit user wallet
+                $wallet->debit(
+                    $this->course->price,
+                    WalletTransaction::CATEGORY_COURSE_PURCHASE,
+                    "Enrolled in course: {$this->course->title}",
+                    $this->course,
                     [
-                        'course_id' => $course->id,
-                        'original_amount' => $enrollment->amount_paid
+                        'course_id' => $this->course->id,
+                        'course_title' => $this->course->title,
+                        'enrollment_type' => 'paid'
                     ]
                 );
-                Log::info('CoursePreview: Refund processed successfully');
+                Log::info('CoursePreview: User wallet debited');
+
+                // Credit instructor
+                $this->creditInstructor($this->course);
+                Log::info('CoursePreview: Instructor credited');
             }
 
-            // Store progress before deletion
-            Cache::put("user_{$user->id}_course_{$course->id}_progress", [
-                'progress_percentage' => $enrollment->progress_percentage,
-                'dropped_at' => now(),
-                'was_refunded' => $isRefundEligible
-            ], now()->addMonths(6));
-
-            $enrollment->delete();
-            Log::info('CoursePreview: Enrollment deleted');
-
-            $user->logCustomActivity('Dropped course: ' . $course->title, [
-                'course_id' => $course->id,
-                'course_title' => $course->title,
-                'progress_lost' => $enrollment->progress_percentage,
-                'refunded' => $isRefundEligible
+            // Create enrollment
+            $enrollment = CourseEnrollment::create([
+                'course_id' => $this->course->id,
+                'user_id' => $user->id,
+                'enrolled_at' => now(),
+                'progress_percentage' => 0,
+                'is_completed' => false,
+                'enrollment_type' => $this->course->is_free ? 'free' : 'paid',
+                'amount_paid' => $this->course->is_free ? 0 : $this->course->price
             ]);
-        });
+            Log::info('CoursePreview: Enrollment created', ['enrollment_id' => $enrollment->id]);
 
-        // Update component state
-        $this->isEnrolled = false;
-        $this->enrollmentProgress = 0;
-        $this->totalEnrollments = max(0, $this->totalEnrollments - 1);
+            // Log activity
+            $user->logCustomActivity('Enrolled in course: ' . $this->course->title, [
+                'course_id' => $this->course->id,
+                'course_title' => $this->course->title,
+                'amount_paid' => $this->course->price,
+                'enrollment_type' => $this->course->is_free ? 'free' : 'paid'
+            ]);
 
-        $message = $isRefundEligible
-            ? "You have been unenrolled from '{$course->title}' and ₦" . number_format($enrollment->amount_paid, 2) . " has been refunded to your wallet."
-            : "You have been unenrolled from '{$course->title}'. Your progress has been saved for 6 months.";
+            DB::commit();
+            Log::info('CoursePreview: Transaction committed');
 
-        Log::info('CoursePreview: Course dropped successfully', ['message' => $message]);
+            // Update component state
+            $this->isEnrolled = true;
+            $this->totalEnrollments++;
+            $this->closePaymentModal();
 
-        $this->dispatch('notify', [
-            'message' => $message,
-            'type' => 'warning',
-            'icon' => 'fas fa-sign-out-alt'
-        ]);
+            // Send notification
+            try {
+                $user->notify(new CourseUpdateNotification($this->course));
+            } catch (\Exception $e) {
+                Log::error('CoursePreview: Failed to send notification', ['error' => $e->getMessage()]);
+            }
 
-    } catch (\Exception $e) {
-        Log::error('CoursePreview: Failed to drop course', [
-            'course_id' => $courseId,
-            'error' => $e->getMessage(),
-            'trace' => $e->getTraceAsString()
-        ]);
-        
-        $this->dispatch('notify', [
-            'message' => 'Failed to drop course: ' . $e->getMessage(),
-            'type' => 'error',
-            'icon' => 'fas fa-exclamation-triangle'
-        ]);
-    } finally {
-        $this->droppingCourseIds = array_diff($this->droppingCourseIds, [$courseId]);
+            $message = $this->course->is_free
+                ? "Successfully enrolled in '{$this->course->title}'! Welcome aboard!"
+                : "Successfully enrolled in '{$this->course->title}'! ₦" . number_format($this->course->price, 2) . " has been deducted.";
+
+            Log::info('CoursePreview: Enrollment successful, redirecting to course view');
+
+            // Dispatch success notification
+            $this->dispatch('notify', [
+                'message' => $message,
+                'type' => 'success'
+            ]);
+
+            // Redirect to course view
+            $redirectUrl = route('course.view', ['course' => $this->course->slug]);
+            Log::info('CoursePreview: Redirecting', ['url' => $redirectUrl]);
+            
+            // Use JavaScript redirect via dispatch for better compatibility
+            $this->dispatch('enrollment-success', ['redirectUrl' => $redirectUrl]);
+            
+            // Also try Livewire redirect as fallback
+            return $this->redirect($redirectUrl, navigate: true);
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error('CoursePreview: Enrollment failed', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+
+            $this->dispatch('notify', [
+                'message' => 'Enrollment failed: ' . $e->getMessage(),
+                'type' => 'error'
+            ]);
+        } finally {
+            $this->isEnrolling = false;
+            $this->enrollingCourseIds = array_diff($this->enrollingCourseIds, [$this->course->id]);
+        }
     }
-}
+
+    /**
+     * Drop/unenroll from course
+     */
+    public function dropCourse($courseId)
+    {
+        Log::info('CoursePreview: Dropping course', ['course_id' => $courseId]);
+        
+        if (!Auth::check()) {
+            return redirect()->route('login');
+        }
+
+        $user = Auth::user();
+        $this->droppingCourseIds[] = $courseId;
+
+        try {
+            $enrollment = CourseEnrollment::where('course_id', $courseId)
+                ->where('user_id', $user->id)
+                ->firstOrFail();
+
+            $course = $enrollment->course;
+            Log::info('CoursePreview: Enrollment found', ['enrollment_id' => $enrollment->id]);
+
+            // Check if eligible for refund
+            $isRefundEligible = $enrollment->enrolled_at->diffInDays(now()) <= 7
+                && $enrollment->progress_percentage < 10
+                && !$course->is_free;
+
+            Log::info('CoursePreview: Refund eligibility checked', ['is_eligible' => $isRefundEligible]);
+
+            DB::transaction(function () use ($enrollment, $user, $course, $isRefundEligible) {
+                // Process refund if eligible
+                if ($isRefundEligible && $enrollment->amount_paid > 0) {
+                    Log::info('CoursePreview: Processing refund', ['amount' => $enrollment->amount_paid]);
+                    
+                    $wallet = Wallet::getOrCreateWallet($user->id);
+                    $wallet->credit(
+                        $enrollment->amount_paid,
+                        WalletTransaction::CATEGORY_REFUND,
+                        "Refund for course: {$course->title}",
+                        $course,
+                        [
+                            'course_id' => $course->id,
+                            'original_amount' => $enrollment->amount_paid
+                        ]
+                    );
+                    Log::info('CoursePreview: Refund processed successfully');
+                }
+
+                // Store progress before deletion
+                Cache::put("user_{$user->id}_course_{$course->id}_progress", [
+                    'progress_percentage' => $enrollment->progress_percentage,
+                    'dropped_at' => now(),
+                    'was_refunded' => $isRefundEligible
+                ], now()->addMonths(6));
+
+                $enrollment->delete();
+                Log::info('CoursePreview: Enrollment deleted');
+
+                $user->logCustomActivity('Dropped course: ' . $course->title, [
+                    'course_id' => $course->id,
+                    'course_title' => $course->title,
+                    'progress_lost' => $enrollment->progress_percentage,
+                    'refunded' => $isRefundEligible
+                ]);
+            });
+
+            // Update component state
+            $this->isEnrolled = false;
+            $this->enrollmentProgress = 0;
+            $this->totalEnrollments = max(0, $this->totalEnrollments - 1);
+
+            $message = $isRefundEligible
+                ? "You have been unenrolled from '{$course->title}' and ₦" . number_format($enrollment->amount_paid, 2) . " has been refunded to your wallet."
+                : "You have been unenrolled from '{$course->title}'. Your progress has been saved for 6 months.";
+
+            Log::info('CoursePreview: Course dropped successfully', ['message' => $message]);
+
+            $this->dispatch('notify', [
+                'message' => $message,
+                'type' => 'warning',
+                'icon' => 'fas fa-sign-out-alt'
+            ]);
+
+        } catch (\Exception $e) {
+            Log::error('CoursePreview: Failed to drop course', [
+                'course_id' => $courseId,
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            
+            $this->dispatch('notify', [
+                'message' => 'Failed to drop course: ' . $e->getMessage(),
+                'type' => 'error',
+                'icon' => 'fas fa-exclamation-triangle'
+            ]);
+        } finally {
+            $this->droppingCourseIds = array_diff($this->droppingCourseIds, [$courseId]);
+        }
+    }
     
     /**
      * Credit instructor wallet
