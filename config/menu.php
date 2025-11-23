@@ -32,7 +32,6 @@ return [
                 ['label' => 'Notifications', 'icon' => 'fas fa-bell', 'route_name' => 'notifications', 'roles' => [], 'link_id' => 'notifications',]
             ]
         ],
-        
         [
             'label' => 'User Management',
             'icon' => 'fas fa-users-cog',
