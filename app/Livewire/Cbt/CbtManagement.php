@@ -27,6 +27,8 @@ class CbtManagement extends Component
     public $estimated_duration_minutes = 60;
     public $max_score = 100;
     public $max_attempts = null;
+    public $shuffle_questions = false; // NEW
+    public $shuffle_options = false;   // NEW
     public $type = 'quiz';
     public $course_id = null;
 
@@ -49,6 +51,8 @@ class CbtManagement extends Component
         'estimated_duration_minutes' => 'required|integer|min:1',
         'max_score' => 'required|integer|min:1',
         'max_attempts' => 'nullable|integer|min:1|max:100',
+        'shuffle_questions' => 'boolean',
+        'shuffle_options' => 'boolean',
         'course_id' => 'nullable|exists:courses,id',
         'question_text' => 'required|string',
         'question_type' => 'required|string',
@@ -96,6 +100,8 @@ class CbtManagement extends Component
             'estimated_duration_minutes' => 'required|integer|min:1',
             'max_score' => 'required|integer|min:1',
             'max_attempts' => 'nullable|integer|min:1|max:100',
+            'shuffle_questions' => 'boolean',
+            'shuffle_options' => 'boolean',
             'course_id' => 'nullable|exists:courses,id',
         ]);
 
@@ -108,6 +114,8 @@ class CbtManagement extends Component
             'estimated_duration_minutes' => $this->estimated_duration_minutes,
             'max_score' => $this->max_score,
             'max_attempts' => $this->max_attempts,
+            'shuffle_questions' => $this->shuffle_questions,
+            'shuffle_options' => $this->shuffle_options,
             'is_mandatory' => true,
             'section_id' => null,
             'lesson_id' => null,
@@ -127,8 +135,10 @@ class CbtManagement extends Component
         $this->estimated_duration_minutes = $this->editingAssessment->estimated_duration_minutes;
         $this->max_score = $this->editingAssessment->max_score;
         $this->max_attempts = $this->editingAssessment->max_attempts;
+        $this->shuffle_questions = $this->editingAssessment->shuffle_questions ?? false;
+        $this->shuffle_options = $this->editingAssessment->shuffle_options ?? false;
         $this->course_id = $this->editingAssessment->course_id;
-        
+
         $this->showEditModal = true;
     }
 
@@ -141,6 +151,8 @@ class CbtManagement extends Component
             'estimated_duration_minutes' => 'required|integer|min:1',
             'max_score' => 'required|integer|min:1',
             'max_attempts' => 'nullable|integer|min:1|max:100',
+            'shuffle_questions' => 'boolean',
+            'shuffle_options' => 'boolean',
             'course_id' => 'nullable|exists:courses,id',
         ]);
 
@@ -156,6 +168,8 @@ class CbtManagement extends Component
             'estimated_duration_minutes' => $this->estimated_duration_minutes,
             'max_score' => $this->max_score,
             'max_attempts' => $this->max_attempts,
+            'shuffle_questions' => $this->shuffle_questions,
+            'shuffle_options' => $this->shuffle_options,
             'course_id' => $this->course_id,
         ]);
 
@@ -228,7 +242,6 @@ class CbtManagement extends Component
         session()->flash('message', 'Question added successfully!');
     }
 
-    // NEW: Edit question
     public function editQuestion($questionId)
     {
         $this->editingQuestion = Question::findOrFail($questionId);
@@ -238,11 +251,10 @@ class CbtManagement extends Component
         $this->options = $this->editingQuestion->options ?? ['', '', '', ''];
         $this->correct_answers = $this->editingQuestion->correct_answers ?? [];
         $this->explanation = $this->editingQuestion->explanation ?? '';
-        
+
         $this->showEditQuestionModal = true;
     }
 
-    // NEW: Update question
     public function updateQuestion()
     {
         if (!$this->editingQuestion) {
@@ -282,13 +294,12 @@ class CbtManagement extends Component
         session()->flash('message', 'Question updated successfully!');
     }
 
-    // NEW: Reorder questions
     public function reorderQuestions($orderedIds)
     {
         foreach ($orderedIds as $index => $id) {
             Question::where('id', $id)->update(['order' => $index + 1]);
         }
-        
+
         $this->selectedAssessment->refresh();
         session()->flash('message', 'Questions reordered successfully!');
     }
@@ -305,11 +316,10 @@ class CbtManagement extends Component
         }
     }
 
-    // NEW: View participants
     public function viewParticipants($assessmentId)
     {
         $this->selectedAssessment = Assessment::with([
-            'studentAnswers' => function($query) {
+            'studentAnswers' => function ($query) {
                 $query->whereNotNull('submitted_at')
                     ->with('user')
                     ->orderBy('user_id')
@@ -328,15 +338,15 @@ class CbtManagement extends Component
 
         $participants = $this->selectedAssessment->studentAnswers
             ->groupBy('user_id')
-            ->map(function($answers, $userId) {
+            ->map(function ($answers, $userId) {
                 $user = $answers->first()->user;
-                $attempts = $answers->groupBy('attempt_number')->map(function($attemptAnswers, $attemptNumber) {
+                $attempts = $answers->groupBy('attempt_number')->map(function ($attemptAnswers, $attemptNumber) {
                     $totalPoints = $attemptAnswers->sum('points_earned');
-                    $maxPoints = $attemptAnswers->sum(function($answer) {
+                    $maxPoints = $attemptAnswers->sum(function ($answer) {
                         return $answer->question ? $answer->question->points : 0;
                     });
                     $percentage = $maxPoints > 0 ? round(($totalPoints / $maxPoints) * 100, 1) : 0;
-                    
+
                     return [
                         'attempt_number' => $attemptNumber,
                         'total_points' => $totalPoints,
@@ -363,7 +373,6 @@ class CbtManagement extends Component
         return $participants;
     }
 
-    // NEW: Clear specific attempt
     public function clearAttempt($userId, $attemptNumber)
     {
         if (!$this->selectedAssessment) {
@@ -390,7 +399,6 @@ class CbtManagement extends Component
         }
     }
 
-    // NEW: Clear all attempts for a user
     public function clearAllUserAttempts($userId)
     {
         if (!$this->selectedAssessment) {
@@ -424,6 +432,8 @@ class CbtManagement extends Component
         $this->estimated_duration_minutes = 60;
         $this->max_score = 100;
         $this->max_attempts = null;
+        $this->shuffle_questions = false;
+        $this->shuffle_options = false;
         $this->course_id = null;
         $this->editingAssessment = null;
     }

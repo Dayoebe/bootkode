@@ -37,7 +37,9 @@ class Assessment extends Model
         'max_score',
         'instructions',
         'order',
-        'max_attempts', // NEW: Limit number of attempts (null = unlimited)
+        'max_attempts',
+        'shuffle_questions',
+        'shuffle_options',
     ];
 
     protected $casts = [
@@ -48,7 +50,9 @@ class Assessment extends Model
         'resources' => 'array',
         'is_mandatory' => 'boolean',
         'allows_collaboration' => 'boolean',
-        'max_attempts' => 'integer', // NEW CAST
+        'max_attempts' => 'integer',
+        'shuffle_questions' => 'boolean',
+        'shuffle_options' => 'boolean',
     ];
 
     public function course()
@@ -79,11 +83,11 @@ class Assessment extends Model
     protected static function boot()
     {
         parent::boot();
-    
+
         static::creating(function ($assessment) {
             // Generate slug
             $assessment->slug = Str::slug($assessment->title);
-            
+
             // Set order based on whether it has a section or not
             if ($assessment->section_id) {
                 // For assessments within sections
@@ -100,7 +104,7 @@ class Assessment extends Model
                 $assessment->max_attempts = null; // null = unlimited attempts
             }
         });
-    
+
         static::updating(function ($assessment) {
             if ($assessment->isDirty('title')) {
                 $assessment->slug = Str::slug($assessment->title);
@@ -124,7 +128,7 @@ class Assessment extends Model
         }
 
         $attemptCount = $this->getStudentAttemptCount($userId);
-        
+
         if ($attemptCount >= $this->max_attempts) {
             return [false, "Maximum attempts ({$this->max_attempts}) exhausted"];
         }
@@ -156,7 +160,7 @@ class Assessment extends Model
 
         $attemptCount = $this->getStudentAttemptCount($userId);
         $remaining = $this->max_attempts - $attemptCount;
-        
+
         return max(0, $remaining);
     }
 

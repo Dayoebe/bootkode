@@ -28,6 +28,7 @@ class CbtExamInterface extends Component
     public $securityViolations = [];
     public $showSubmitModal = false;
     public $isFullscreenForced = false;
+    public $questionOrder = []; // NEW: Store the shuffled order
     
     // Progress tracking properties
     public $progressTracking = [
@@ -39,19 +40,19 @@ class CbtExamInterface extends Component
         'navigation_count' => 0
     ];
 
-   // In CbtExamInterface.php - Update the mount method parameter
-public function mount($assessment) // Changed from $assessmentId
-{
-    $this->assessment = Assessment::with('questions')->findOrFail($assessment); // Changed parameter usage
-    
-    if (!$this->assessment || $this->assessment->questions->count() === 0) {
-        session()->flash('error', 'Invalid assessment or no questions available.');
-        return redirect()->route('cbt.exams');
+    public function mount($assessment)
+    {
+        $this->assessment = Assessment::with('questions')->findOrFail($assessment);
+        
+        if (!$this->assessment || $this->assessment->questions->count() === 0) {
+            session()->flash('error', 'Invalid assessment or no questions available.');
+            return redirect()->route('cbt.exams');
+        }
+
+        $this->loadQuestions();
+        $this->initializeExam();
     }
 
-    $this->loadQuestions();
-    $this->initializeExam();
-}
     public function render()
     {
         return view('livewire.cbt.cbt-exam-interface');
@@ -59,7 +60,14 @@ public function mount($assessment) // Changed from $assessmentId
 
     protected function loadQuestions()
     {
-        $this->questions = $this->assessment->questions->map(function ($question) {
+        $questionCollection = $this->assessment->questions;
+        
+        // NEW: Shuffle questions if enabled
+        if ($this->assessment->shuffle_questions) {
+            $questionCollection = $questionCollection->shuffle();
+        }
+        
+        $this->questions = $questionCollection->map(function ($question) {
             $questionArray = $question->toArray();
 
             // Handle options field
@@ -74,20 +82,63 @@ public function mount($assessment) // Changed from $assessmentId
                 $questionArray['options'] = [];
             }
 
-            // Handle correct_answers field
-            if (isset($questionArray['correct_answers'])) {
-                if (is_string($questionArray['correct_answers'])) {
-                    $decodedAnswers = json_decode($questionArray['correct_answers'], true);
-                    $questionArray['correct_answers'] = is_array($decodedAnswers) ? $decodedAnswers : [];
-                } elseif (!is_array($questionArray['correct_answers'])) {
-                    $questionArray['correct_answers'] = [$questionArray['correct_answers']];
+            // NEW: Shuffle options if enabled
+            if ($this->assessment->shuffle_options && !empty($questionArray['options'])) {
+                $originalOptions = $questionArray['options'];
+                $originalCorrectAnswers = $questionArray['correct_answers'] ?? [];
+                
+                // Create indexed array for shuffling
+                $indexedOptions = [];
+                foreach ($originalOptions as $index => $option) {
+                    $indexedOptions[] = [
+                        'original_index' => $index,
+                        'text' => $option
+                    ];
                 }
-            } else {
-                $questionArray['correct_answers'] = [];
+                
+                // Shuffle the options
+                shuffle($indexedOptions);
+                
+                // Build mapping from original to new indices
+                $indexMapping = [];
+                $newOptions = [];
+                foreach ($indexedOptions as $newIndex => $item) {
+                    $indexMapping[$item['original_index']] = $newIndex;
+                    $newOptions[$newIndex] = $item['text'];
+                }
+                
+                // Remap correct answers to new indices
+                $newCorrectAnswers = [];
+                foreach ($originalCorrectAnswers as $correctAnswer) {
+                    if (isset($indexMapping[$correctAnswer])) {
+                        $newCorrectAnswers[] = $indexMapping[$correctAnswer];
+                    }
+                }
+                
+                $questionArray['options'] = $newOptions;
+                $questionArray['correct_answers'] = $newCorrectAnswers;
+                $questionArray['original_correct_answers'] = $originalCorrectAnswers; // Store for reference
+                $questionArray['option_mapping'] = $indexMapping; // Store mapping
+            }
+
+            // Handle correct_answers field (if not already processed by shuffle)
+            if (!isset($questionArray['correct_answers'])) {
+                $correctAnswers = $question->correct_answers;
+                if (is_string($correctAnswers)) {
+                    $decodedAnswers = json_decode($correctAnswers, true);
+                    $questionArray['correct_answers'] = is_array($decodedAnswers) ? $decodedAnswers : [];
+                } elseif (!is_array($correctAnswers)) {
+                    $questionArray['correct_answers'] = [$correctAnswers];
+                } else {
+                    $questionArray['correct_answers'] = $correctAnswers;
+                }
             }
 
             return $questionArray;
-        })->toArray();
+        })->values()->toArray(); // Use values() to reset array keys after shuffle
+        
+        // NEW: Store the question order (mapping from display index to actual question ID)
+        $this->questionOrder = collect($this->questions)->pluck('id')->toArray();
     }
 
     protected function initializeExam()
@@ -250,9 +301,6 @@ public function mount($assessment) // Changed from $assessmentId
         }
     }
 
-    /**
-     * Save answer when user selects it
-     */
     public function saveAnswer($questionId, $answer)
     {
         try {
@@ -283,9 +331,6 @@ public function mount($assessment) // Changed from $assessmentId
         $this->showSubmitModal = false;
     }
 
-    /**
-     * Submit the exam with proper time tracking and grading
-     */
     public function submitExam()
     {
         if ($this->examCompleted) {
@@ -311,7 +356,7 @@ public function mount($assessment) // Changed from $assessmentId
                 $questionId = $questionData['id'];
                 $userAnswer = $this->answers[$questionId] ?? null;
 
-                // Create student answer with proper data
+                // NEW: Store question order for this attempt
                 $studentAnswer = StudentAnswer::create([
                     'user_id' => Auth::id(),
                     'assessment_id' => $this->assessment->id,
@@ -320,6 +365,7 @@ public function mount($assessment) // Changed from $assessmentId
                     'answer' => $userAnswer,
                     'time_spent_seconds' => $timeSpent,
                     'submitted_at' => now(),
+                    'question_order' => $this->questionOrder, // Store shuffle order
                 ]);
 
                 // Auto-grade the answer
@@ -352,7 +398,9 @@ public function mount($assessment) // Changed from $assessmentId
                 'security_violations' => count($this->securityViolations),
                 'active_time' => $this->progressTracking['total_active_time'],
                 'pause_count' => $this->progressTracking['pause_count'],
-                'navigation_count' => $this->progressTracking['navigation_count']
+                'navigation_count' => $this->progressTracking['navigation_count'],
+                'questions_shuffled' => $this->assessment->shuffle_questions,
+                'options_shuffled' => $this->assessment->shuffle_options,
             ];
 
             $this->examCompleted = true;
@@ -431,12 +479,8 @@ public function mount($assessment) // Changed from $assessmentId
         return $this->currentQuestionIndex === count($this->questions) - 1;
     }
 
-    /**
-     * Format time in seconds to human readable format
-     */
     public function formatTimeSpent($seconds)
     {
-        // Ensure positive value
         $seconds = abs($seconds);
         
         $hours = floor($seconds / 3600);
@@ -463,7 +507,6 @@ public function mount($assessment) // Changed from $assessmentId
     protected function sendResultsEmail()
     {
         try {
-            // Dispatch job to queue
             SendExamResultsEmail::dispatch(
                 Auth::user(),
                 $this->assessment,

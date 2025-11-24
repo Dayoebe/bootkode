@@ -56,62 +56,44 @@
         };
     </script>
     <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" async></script>
-
+    @push('styles')
     <style>
-        /* Base Variables */
-        :root {
-            --font-size-base: 16px;
-        }
-
-        /* MathJax Content Styling */
-        .math-content mjx-container {
-            display: inline-block !important;
-            margin: 0.2em 0;
-            max-width: 100%;
-            overflow-x: auto;
-        }
-
-        .math-content mjx-container[display="true"] {
-            display: block !important;
-            margin: 1em 0;
-            text-align: center;
-        }
-
-        /* CRITICAL: Hide MathJax menu blue boxes */
-        mjx-container[jax="CHTML"][display="true"] {
-            display: block !important;
-            text-align: center;
+        mjx-container {
+            all: revert !important;
+            pointer-events: none !important;
         }
         
         mjx-container[jax="CHTML"] {
-            display: inline-block !important;
             cursor: default !important;
+            pointer-events: none !important;
+            user-select: none !important;
+            -webkit-user-select: none !important;
+            background: transparent !important;
+            outline: none !important;
+            border: none !important;
+            box-shadow: none !important;
+            text-decoration: none !important;
         }
         
-        mjx-container[jax="CHTML"]:hover {
+        mjx-container[jax="CHTML"]:hover,
+        mjx-container[jax="CHTML"]:focus {
             background-color: transparent !important;
+            outline: none !important;
+            text-decoration: none !important;
         }
         
-        /* Remove the clickable menu trigger */
-        mjx-container > svg {
-            display: block !important;
+        mjx-container mjx-math {
+            pointer-events: none !important;
+            text-decoration: none !important;
         }
         
-        /* Hide MathJax assistive text */
-        .MJX_Assistive_MathML {
-            display: none !important;
-        }
-
-        /* Optimize animations for performance */
-        * {
-            animation-duration: 0.2s !important;
-        }
-
-        /* Prevent printing */
-        @media print {
-            body { display: none !important; }
+        /* Hide context menu on math elements */
+        mjx-container {
+            -webkit-touch-callout: none !important;
         }
     </style>
+    
+    @endpush
 
     @stack('styles')
 </head>
