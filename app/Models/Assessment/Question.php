@@ -188,6 +188,15 @@ class Question extends Model
      */
     public function isCorrectAnswer($answer)
     {
+        // CRITICAL: First check if answer is null, empty, or "null" string
+        if ($answer === null || $answer === '' || $answer === 'null' || $answer === []) {
+            \Log::info('Answer is null/empty - marking as incorrect', [
+                'question_id' => $this->id,
+                'answer' => $answer
+            ]);
+            return false;
+        }
+
         // Get correct answers as array
         $correctAnswers = $this->correct_answers;
         if (is_string($correctAnswers)) {
@@ -195,11 +204,21 @@ class Question extends Model
         }
         
         if (!is_array($correctAnswers) || empty($correctAnswers)) {
+            \Log::warning('Question has no correct answers defined', [
+                'question_id' => $this->id
+            ]);
             return false;
         }
 
         // Normalize correct answers to integers
         $correctAnswers = array_map('intval', $correctAnswers);
+
+        \Log::info('Checking answer correctness', [
+            'question_id' => $this->id,
+            'question_type' => $this->question_type,
+            'user_answer' => $answer,
+            'correct_answers' => $correctAnswers
+        ]);
 
         // Handle different question types
         switch ($this->question_type) {
@@ -226,33 +245,70 @@ class Question extends Model
                 return in_array($userAnswer, $correctAnswers);
         }
     }
-
     /**
      * Check multiple choice answer
      */
     protected function checkMultipleChoiceAnswer($answer, $correctAnswers)
     {
+        // Additional null check
+        if ($answer === null || $answer === '' || $answer === 'null') {
+            return false;
+        }
+
         // Handle array of answers (multiple selections)
         if (is_array($answer)) {
+            // Empty array = no answer
+            if (empty($answer)) {
+                return false;
+            }
+
             $userAnswers = array_map('intval', $answer);
             sort($userAnswers);
             sort($correctAnswers);
             
-            return $userAnswers === $correctAnswers;
+            $result = $userAnswers === $correctAnswers;
+            
+            \Log::info('Multiple choice (array) result', [
+                'user_answers' => $userAnswers,
+                'correct_answers' => $correctAnswers,
+                'is_correct' => $result
+            ]);
+            
+            return $result;
         }
         
         // Handle single answer
         $userAnswer = intval($answer);
-        return in_array($userAnswer, $correctAnswers);
+        $result = in_array($userAnswer, $correctAnswers);
+        
+        \Log::info('Multiple choice (single) result', [
+            'user_answer' => $userAnswer,
+            'correct_answers' => $correctAnswers,
+            'is_correct' => $result
+        ]);
+        
+        return $result;
     }
-
-    /**
+  /**
      * Check true/false answer
      */
     protected function checkTrueFalseAnswer($answer, $correctAnswers)
     {
+        // Additional null check
+        if ($answer === null || $answer === '' || $answer === 'null') {
+            return false;
+        }
+
         $userAnswer = intval($answer);
-        return in_array($userAnswer, $correctAnswers);
+        $result = in_array($userAnswer, $correctAnswers);
+        
+        \Log::info('True/False result', [
+            'user_answer' => $userAnswer,
+            'correct_answers' => $correctAnswers,
+            'is_correct' => $result
+        ]);
+        
+        return $result;
     }
 
     /**
@@ -260,6 +316,11 @@ class Question extends Model
      */
     protected function checkTextAnswer($answer, $correctAnswers)
     {
+        // Additional null check
+        if ($answer === null || $answer === '' || $answer === 'null') {
+            return false;
+        }
+
         $userAnswer = is_array($answer) ? implode(' ', $answer) : $answer;
         $userAnswer = strtolower(trim($userAnswer));
         
@@ -278,6 +339,11 @@ class Question extends Model
      */
     public function calculatePartialCredit($answer)
     {
+        // Additional null check
+        if ($answer === null || $answer === '' || $answer === 'null' || $answer === []) {
+            return 0;
+        }
+
         if ($this->isCorrectAnswer($answer) === true) {
             return $this->points;
         }
@@ -294,6 +360,11 @@ class Question extends Model
             }
             $answer = array_map('intval', $answer);
 
+            // Empty answer = no credit
+            if (empty($answer)) {
+                return 0;
+            }
+
             $correctCount = count(array_intersect($answer, $correctAnswers));
             $totalCorrect = count($correctAnswers);
             $incorrectCount = count(array_diff($answer, $correctAnswers));
@@ -305,4 +376,5 @@ class Question extends Model
 
         return 0;
     }
+
 }

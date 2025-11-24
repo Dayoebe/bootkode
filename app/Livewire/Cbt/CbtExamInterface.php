@@ -304,7 +304,14 @@ class CbtExamInterface extends Component
     public function saveAnswer($questionId, $answer)
     {
         try {
-            // Convert to integer
+            // CRITICAL: Don't save if answer is null or empty
+            if ($answer === null || $answer === '' || $answer === 'null') {
+                // Clear the answer if user deselects
+                $this->answers[$questionId] = null;
+                return;
+            }
+            
+            // Convert to integer for multiple choice
             $answer = (int)$answer;
             
             // Store in component state
@@ -316,6 +323,7 @@ class CbtExamInterface extends Component
         } catch (\Exception $e) {
             \Log::error('Error saving answer', [
                 'question_id' => $questionId,
+                'answer' => $answer,
                 'error' => $e->getMessage()
             ]);
         }
@@ -341,7 +349,7 @@ class CbtExamInterface extends Component
         $this->showSubmitModal = false;
 
         try {
-            // Calculate actual time spent (positive value)
+            // Calculate actual time spent
             $timeSpent = 0;
             if ($this->startTime) {
                 $timeSpent = abs($this->startTime->diffInSeconds(Carbon::now(), false));
@@ -350,13 +358,27 @@ class CbtExamInterface extends Component
             $totalPoints = 0;
             $correctAnswers = 0;
             $totalQuestions = count($this->questions);
+            $answeredQuestions = 0; // NEW: Track answered questions
 
             // Process each question
             foreach ($this->questions as $questionData) {
                 $questionId = $questionData['id'];
                 $userAnswer = $this->answers[$questionId] ?? null;
 
-                // NEW: Store question order for this attempt
+                // CRITICAL FIX: Skip completely unanswered questions
+                // Don't create StudentAnswer record for unanswered questions
+                if ($userAnswer === null || $userAnswer === '' || $userAnswer === 'null') {
+                    \Log::info('Skipping unanswered question', [
+                        'question_id' => $questionId,
+                        'user_id' => Auth::id()
+                    ]);
+                    continue; // Skip this question entirely
+                }
+
+                // Only process answered questions
+                $answeredQuestions++;
+
+                // Create student answer record
                 $studentAnswer = StudentAnswer::create([
                     'user_id' => Auth::id(),
                     'assessment_id' => $this->assessment->id,
@@ -365,7 +387,7 @@ class CbtExamInterface extends Component
                     'answer' => $userAnswer,
                     'time_spent_seconds' => $timeSpent,
                     'submitted_at' => now(),
-                    'question_order' => $this->questionOrder, // Store shuffle order
+                    'question_order' => $this->questionOrder,
                 ]);
 
                 // Auto-grade the answer
@@ -388,6 +410,8 @@ class CbtExamInterface extends Component
 
             $this->results = [
                 'total_questions' => $totalQuestions,
+                'answered_questions' => $answeredQuestions, // NEW
+                'unanswered_questions' => $totalQuestions - $answeredQuestions, // NEW
                 'correct_answers' => $correctAnswers,
                 'total_points' => $totalPoints,
                 'max_points' => $maxPoints,
@@ -407,17 +431,28 @@ class CbtExamInterface extends Component
             $this->isFullscreenForced = false;
             $this->dispatch('examCompleted');
             $this->dispatch('allowFullscreenExit');
+
+            \Log::info('Exam submitted successfully', [
+                'user_id' => Auth::id(),
+                'assessment_id' => $this->assessment->id,
+                'answered' => $answeredQuestions,
+                'unanswered' => $totalQuestions - $answeredQuestions,
+                'percentage' => $percentage
+            ]);
             
         } catch (\Exception $e) {
             \Log::error('Error submitting exam', [
                 'user_id' => Auth::id(),
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
             ]);
             
             session()->flash('error', 'Failed to submit exam: ' . $e->getMessage());
             
             $this->results = [
                 'total_questions' => count($this->questions),
+                'answered_questions' => 0,
+                'unanswered_questions' => count($this->questions),
                 'correct_answers' => 0,
                 'total_points' => 0,
                 'max_points' => 100,

@@ -22,52 +22,38 @@ class StudentAnswer extends Model
         'submitted_at',
         'graded_by',
         'graded_at',
-        'feedback'
+        'feedback',
+        'question_order'
     ];
     
     protected $casts = [
-        // DON'T cast answer as array - keep it flexible
         'is_correct' => 'boolean',
         'points_earned' => 'decimal:2',
         'submitted_at' => 'datetime',
-        'graded_at' => 'datetime'
+        'graded_at' => 'datetime',
+        'question_order' => 'array'
     ];
 
-    /**
-     * Get the user who submitted the answer
-     */
     public function user()
     {
         return $this->belongsTo(User::class);
     }
 
-    /**
-     * Get the assessment this answer belongs to
-     */
     public function assessment()
     {
         return $this->belongsTo(Assessment::class);
     }
 
-    /**
-     * Get the question this answer is for
-     */
     public function question()
     {
         return $this->belongsTo(Question::class);
     }
 
-    /**
-     * Get the grader (if manually graded)
-     */
     public function grader()
     {
         return $this->belongsTo(User::class, 'graded_by');
     }
 
-    /**
-     * Scope for latest attempt
-     */
     public function scopeLatestAttempt($query, $userId, $assessmentId)
     {
         return $query->where('user_id', $userId)
@@ -75,25 +61,16 @@ class StudentAnswer extends Model
             ->orderBy('attempt_number', 'desc');
     }
 
-    /**
-     * Scope for correct answers
-     */
     public function scopeCorrect($query)
     {
         return $query->where('is_correct', true);
     }
 
-    /**
-     * Scope for graded answers
-     */
     public function scopeGraded($query)
     {
         return $query->whereNotNull('graded_at');
     }
 
-    /**
-     * Scope for pending grading
-     */
     public function scopePendingGrading($query)
     {
         return $query->whereNull('graded_at')
@@ -103,12 +80,33 @@ class StudentAnswer extends Model
     }
 
     /**
-     * PRODUCTION: Clean auto-grade without debug logs
+     * FIXED: Auto-grade with proper null/empty answer handling
      */
     public function autoGrade()
     {
         if (!$this->question) {
+            \Log::warning('Attempted to grade answer without question', [
+                'answer_id' => $this->id,
+                'question_id' => $this->question_id
+            ]);
             return false;
+        }
+
+        // CRITICAL: Check if answer is null, empty, or "null" string
+        if ($this->answer === null || $this->answer === '' || $this->answer === 'null') {
+            \Log::info('Grading unanswered question as incorrect', [
+                'question_id' => $this->question_id,
+                'user_id' => $this->user_id
+            ]);
+            
+            // Mark as incorrect with 0 points
+            $this->update([
+                'is_correct' => false,
+                'points_earned' => 0,
+                'graded_at' => now()
+            ]);
+            
+            return true;
         }
 
         // Only auto-grade certain question types
@@ -136,6 +134,12 @@ class StudentAnswer extends Model
             }
         }
 
+        \Log::info('Auto-grading answer', [
+            'question_id' => $this->question_id,
+            'user_answer' => $userAnswer,
+            'question_type' => $this->question->question_type
+        ]);
+
         // Check if answer is correct
         $isCorrect = $this->question->isCorrectAnswer($userAnswer);
         $pointsEarned = 0;
@@ -155,14 +159,22 @@ class StudentAnswer extends Model
             'graded_at' => now()
         ]);
 
+        \Log::info('Answer graded', [
+            'question_id' => $this->question_id,
+            'is_correct' => $isCorrect === true,
+            'points_earned' => $pointsEarned
+        ]);
+
         return true;
     }
 
-    /**
-     * Get formatted answer for display
-     */
     public function getFormattedAnswerAttribute()
     {
+        // FIXED: Handle null/empty answers
+        if ($this->answer === null || $this->answer === '' || $this->answer === 'null') {
+            return 'Not Answered';
+        }
+
         if (!$this->question) {
             return $this->answer;
         }
@@ -209,9 +221,6 @@ class StudentAnswer extends Model
         }
     }
 
-    /**
-     * Check if answer needs manual grading
-     */
     public function needsManualGrading()
     {
         return is_null($this->graded_at) &&
@@ -219,9 +228,6 @@ class StudentAnswer extends Model
             in_array($this->question->question_type, ['essay', 'short_answer']);
     }
 
-    /**
-     * Get time spent in human readable format
-     */
     public function getFormattedTimeSpentAttribute()
     {
         if (!$this->time_spent_seconds) {
@@ -238,9 +244,6 @@ class StudentAnswer extends Model
         return $seconds . 's';
     }
 
-    /**
-     * Calculate accuracy percentage
-     */
     public function getAccuracyPercentage()
     {
         if (!$this->question || $this->question->points == 0) {
