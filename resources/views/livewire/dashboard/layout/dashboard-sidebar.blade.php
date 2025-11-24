@@ -1,15 +1,9 @@
 <div>
     <!-- Desktop Sidebar -->
     <aside
-        class="bg-themed-secondary w-64 fixed left-0 top-0 bottom-0 overflow-y-auto overflow-x-hidden transition-all duration-300 ease-in-out shadow-xl lg:translate-x-0 z-50"
+        class="bg-themed-secondary w-64 fixed left-0 top-0 bottom-0 overflow-y-auto overflow-x-hidden transition-transform duration-300 ease-in-out shadow-xl lg:translate-x-0 z-50"
         :class="{ '-translate-x-full': !sidebarOpen, 'translate-x-0': sidebarOpen }"
         x-show="sidebarOpen || window.innerWidth >= 1024"
-        x-transition:enter="transition-transform ease-out duration-300" 
-        x-transition:enter-start="-translate-x-full"
-        x-transition:enter-end="translate-x-0" 
-        x-transition:leave="transition-transform ease-in duration-300"
-        x-transition:leave-start="translate-x-0" 
-        x-transition:leave-end="-translate-x-full" 
         wire:ignore.self>
 
         <!-- Logo/Header -->
@@ -54,8 +48,7 @@
                 }" 
                 x-show="visible"
                 x-effect="visible = searchTerm === '' || '{{ strtolower($item['label']) }}'.includes(searchTerm.toLowerCase())"
-                class="menu-item" 
-                style="animation-delay: {{ $index * 0.1 }}s;">
+                class="menu-item">
 
                     @if(isset($item['children']) && !empty($item['children']))
                         <!-- Parent Menu Item with Children -->
@@ -86,6 +79,7 @@
                             @foreach ($item['children'] as $child)
                                 <li role="menuitem" class="overflow-visible">
                                     <a href="{{ $child['route_name'] === '#' ? '#' : route($child['route_name']) }}"
+                                        @click="if (window.innerWidth < 1024) { sidebarOpen = false }"
                                         class="flex items-center space-x-3 p-2.5 rounded-lg transition-all duration-200 group {{ $activeLink === ($child['link_id'] ?? str()->slug($child['label'])) ? 'bg-opacity-20' : 'hover:bg-opacity-10' }}"
                                         :style="{ backgroundColor: '{{ $activeLink === ($child['link_id'] ?? str()->slug($child['label'])) ? 'rgba(var(--accent-primary), 0.2)' : 'transparent' }}' }"
                                         wire:navigate>
@@ -100,6 +94,7 @@
                     @else
                         <!-- Single Menu Item -->
                         <a href="{{ $item['route_name'] === '#' ? '#' : route($item['route_name']) }}"
+                            @click="if (window.innerWidth < 1024) { sidebarOpen = false }"
                             class="flex items-center space-x-3 p-3 rounded-xl hover:bg-themed-tertiary transition-all duration-200 group {{ $activeLink === ($item['link_id'] ?? str()->slug($item['label'])) ? 'bg-accent-themed-primary bg-opacity-20 accent-themed-primary' : 'text-themed-secondary' }}"
                             wire:navigate>
                             <div class="w-8 h-8 flex items-center justify-center rounded-lg {{ $activeLink === ($item['link_id'] ?? str()->slug($item['label'])) ? 'bg-accent-themed-primary bg-opacity-30' : 'bg-themed-tertiary group-hover:bg-accent-themed-primary group-hover:bg-opacity-10' }} transition-colors duration-300 flex-shrink-0">
@@ -134,19 +129,10 @@
     </aside>
 
     <style>
-        @keyframes fadeInLeft {
-            from {
-                opacity: 0;
-                transform: translateX(-20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateX(0);
-            }
-        }
-
+        /* Remove animation delays for simpler experience */
         .menu-item {
-            animation: fadeInLeft 0.6s ease-out forwards;
+            opacity: 1;
+            transform: translateX(0);
         }
 
         /* Custom scrollbar - theme aware */
@@ -230,12 +216,6 @@
 
         .menu-item ul {
             overflow: visible !important;
-        }
-
-        /* Prevent text truncation on hover for better UX */
-        .menu-item a:hover span,
-        .menu-item button:hover span {
-            display: block;
         }
     </style>
 </div>
