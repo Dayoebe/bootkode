@@ -144,7 +144,7 @@ return new class extends Migration
         // Assessments
         Schema::create('assessments', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('course_id')->constrained()->onDelete('cascade');
+            $table->foreignId('course_id')->nullable()->constrained()->onDelete('cascade');
             $table->foreignId('section_id')->nullable()->constrained('sections')->onDelete('set null');
             $table->foreignId('lesson_id')->nullable()->constrained('lessons')->onDelete('set null');
 
@@ -168,7 +168,10 @@ return new class extends Migration
             $table->text('evaluation_criteria')->nullable();
             $table->datetime('due_date')->nullable();
             $table->integer('max_score')->default(100);
-            $table->text('instructions')->nullable();
+            $table->unsignedInteger('max_attempts')->nullable();
+            $table->boolean('shuffle_questions')->default(false);
+            $table->boolean('shuffle_options')->default(false);
+            $table->text('instructions')->nullable()->after('shuffle_options');
 
             $table->timestamps();
             $table->softDeletes();
@@ -226,7 +229,9 @@ return new class extends Migration
             $table->foreignId('question_id')->constrained()->onDelete('cascade');
             
             $table->integer('attempt_number')->default(1);
-            $table->json('answer')->nullable();
+            $table->json('question_order')->nullable();
+            $table->json('exam_data')->nullable();
+            $table->text('answer')->nullable();
             $table->decimal('points_earned', 8, 2)->default(0);
             $table->boolean('is_correct')->default(false);
             $table->integer('time_spent_seconds')->default(0);
