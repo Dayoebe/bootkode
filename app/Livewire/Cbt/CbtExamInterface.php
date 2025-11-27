@@ -365,108 +365,122 @@ class CbtExamInterface extends Component
     }
 
     public function submitExam()
-    {
-        if ($this->examCompleted) {
-            return;
-        }
-
-        $this->trackQuestionTime($this->currentQuestionIndex);
-        $this->showSubmitModal = false;
-
-        try {
-            $timeSpent = 0;
-            if ($this->startTime) {
-                $timeSpent = abs($this->startTime->diffInSeconds(Carbon::now(), false));
-            }
-
-            $totalPoints = 0;
-            $correctAnswers = 0;
-            $totalQuestions = count($this->questions);
-            $answeredQuestions = 0;
-
-            foreach ($this->questions as $questionData) {
-                $questionId = $questionData['id'];
-                $userAnswer = $this->answers[$questionId] ?? null;
-
-                if ($userAnswer === null || $userAnswer === '' || $userAnswer === 'null') {
-                    continue;
-                }
-
-                $answeredQuestions++;
-
-                $studentAnswer = StudentAnswer::create([
-                    'user_id' => Auth::id(),
-                    'assessment_id' => $this->assessment->id,
-                    'question_id' => $questionId,
-                    'attempt_number' => $this->attemptNumber,
-                    'answer' => $userAnswer,
-                    'time_spent_seconds' => $timeSpent,
-                    'submitted_at' => now(),
-                    'question_order' => $this->questionOrder,
-                ]);
-
-                $graded = $studentAnswer->autoGrade();
-                
-                if ($graded) {
-                    $studentAnswer->refresh();
-
-                    if ($studentAnswer->is_correct) {
-                        $correctAnswers++;
-                    }
-                    $totalPoints += $studentAnswer->points_earned ?? 0;
-                }
-            }
-
-            $maxPoints = collect($this->questions)->sum('points') ?: $this->assessment->max_score ?: 100;
-            $percentage = $maxPoints > 0 ? round(($totalPoints / $maxPoints) * 100, 1) : 0;
-            $passed = $percentage >= $this->assessment->pass_percentage;
-
-            $this->results = [
-                'total_questions' => $totalQuestions,
-                'answered_questions' => $answeredQuestions,
-                'unanswered_questions' => $totalQuestions - $answeredQuestions,
-                'correct_answers' => $correctAnswers,
-                'total_points' => $totalPoints,
-                'max_points' => $maxPoints,
-                'percentage' => $percentage,
-                'passed' => $passed,
-                'attempt_number' => $this->attemptNumber,
-                'time_spent' => $timeSpent,
-                'security_violations' => count($this->securityViolations),
-                'active_time' => $this->progressTracking['total_active_time'],
-                'pause_count' => $this->progressTracking['pause_count'],
-                'navigation_count' => $this->progressTracking['navigation_count'],
-                'questions_shuffled' => $this->assessment->shuffle_questions,
-                'options_shuffled' => $this->assessment->shuffle_options,
-            ];
-
-            $this->examCompleted = true;
-            $this->isFullscreenForced = false;
-            $this->dispatch('examCompleted');
-            $this->dispatch('allowFullscreenExit');
-            
-        } catch (\Exception $e) {
-            session()->flash('error', 'Failed to submit exam. Please contact support.');
-            
-            $this->results = [
-                'total_questions' => count($this->questions),
-                'answered_questions' => 0,
-                'unanswered_questions' => count($this->questions),
-                'correct_answers' => 0,
-                'total_points' => 0,
-                'max_points' => 100,
-                'percentage' => 0,
-                'passed' => false,
-                'attempt_number' => $this->attemptNumber,
-                'time_spent' => 0,
-                'security_violations' => count($this->securityViolations)
-            ];
-            
-            $this->examCompleted = true;
-            $this->isFullscreenForced = false;
-            $this->dispatch('allowFullscreenExit');
-        }
+{
+    if ($this->examCompleted) {
+        return;
     }
+
+    $this->trackQuestionTime($this->currentQuestionIndex);
+    $this->showSubmitModal = false;
+
+    try {
+        $timeSpent = 0;
+        if ($this->startTime) {
+            $timeSpent = abs($this->startTime->diffInSeconds(Carbon::now(), false));
+        }
+
+        $totalPoints = 0;
+        $correctAnswers = 0;
+        $totalQuestions = count($this->questions);
+        $answeredQuestions = 0;
+
+        foreach ($this->questions as $questionData) {
+            $questionId = $questionData['id'];
+            $userAnswer = $this->answers[$questionId] ?? null;
+
+            if ($userAnswer === null || $userAnswer === '' || $userAnswer === 'null') {
+                continue;
+            }
+
+            $answeredQuestions++;
+
+            // Store exam data for grading
+            $examData = [
+                'was_shuffled' => $questionData['was_shuffled'] ?? false,
+                'option_mapping' => $questionData['option_mapping'] ?? null,
+                'inverse_mapping' => $questionData['inverse_mapping'] ?? null,
+                'original_correct_answers' => $questionData['original_correct_answers'] ?? null,
+                'shuffled_correct_answers' => $questionData['correct_answers'] ?? null,
+                'question_index' => array_search($questionId, $this->questionOrder)
+            ];
+
+            $studentAnswer = StudentAnswer::create([
+                'user_id' => Auth::id(),
+                'assessment_id' => $this->assessment->id,
+                'question_id' => $questionId,
+                'attempt_number' => $this->attemptNumber,
+                'answer' => $userAnswer,
+                'time_spent_seconds' => $timeSpent,
+                'submitted_at' => now(),
+                'question_order' => $this->questionOrder,
+                'exam_data' => $examData, // Store shuffling metadata
+            ]);
+
+            $graded = $studentAnswer->autoGrade();
+            
+            if ($graded) {
+                $studentAnswer->refresh();
+
+                if ($studentAnswer->is_correct) {
+                    $correctAnswers++;
+                }
+                $totalPoints += $studentAnswer->points_earned ?? 0;
+            }
+        }
+
+        $maxPoints = collect($this->questions)->sum('points') ?: $this->assessment->max_score ?: 100;
+        $percentage = $maxPoints > 0 ? round(($totalPoints / $maxPoints) * 100, 1) : 0;
+        $passed = $percentage >= $this->assessment->pass_percentage;
+
+        $this->results = [
+            'total_questions' => $totalQuestions,
+            'answered_questions' => $answeredQuestions,
+            'unanswered_questions' => $totalQuestions - $answeredQuestions,
+            'correct_answers' => $correctAnswers,
+            'total_points' => $totalPoints,
+            'max_points' => $maxPoints,
+            'percentage' => $percentage,
+            'passed' => $passed,
+            'attempt_number' => $this->attemptNumber,
+            'time_spent' => $timeSpent,
+            'security_violations' => count($this->securityViolations),
+            'active_time' => $this->progressTracking['total_active_time'],
+            'pause_count' => $this->progressTracking['pause_count'],
+            'navigation_count' => $this->progressTracking['navigation_count'],
+            'questions_shuffled' => $this->assessment->shuffle_questions,
+            'options_shuffled' => $this->assessment->shuffle_options,
+        ];
+
+        $this->examCompleted = true;
+        $this->isFullscreenForced = false;
+        $this->dispatch('examCompleted');
+        $this->dispatch('allowFullscreenExit');
+        
+    } catch (\Exception $e) {
+        session()->flash('error', 'Failed to submit exam. Please contact support.');
+        
+        $this->results = [
+            'total_questions' => count($this->questions),
+            'answered_questions' => 0,
+            'unanswered_questions' => count($this->questions),
+            'correct_answers' => 0,
+            'total_points' => 0,
+            'max_points' => 100,
+            'percentage' => 0,
+            'passed' => false,
+            'attempt_number' => $this->attemptNumber,
+            'time_spent' => 0,
+            'security_violations' => count($this->securityViolations)
+        ];
+        
+        $this->examCompleted = true;
+        $this->isFullscreenForced = false;
+        $this->dispatch('allowFullscreenExit');
+    }
+        
+    }
+
+
 
     public function getCurrentQuestion()
     {

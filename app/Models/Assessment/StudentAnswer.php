@@ -4,7 +4,6 @@ namespace App\Models\Assessment;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\Core\User;
 
 class StudentAnswer extends Model
 {
@@ -12,7 +11,7 @@ class StudentAnswer extends Model
 
     protected $fillable = [
         'user_id',
-        'assessment_id',
+        'assessment_id', 
         'question_id',
         'attempt_number',
         'answer',
@@ -20,20 +19,166 @@ class StudentAnswer extends Model
         'is_correct',
         'time_spent_seconds',
         'submitted_at',
-        'graded_by',
-        'graded_at',
-        'feedback',
-        'question_order'
+        'question_order',
+        'exam_data' // Add this field to store shuffling metadata
     ];
-    
+
     protected $casts = [
-        'is_correct' => 'boolean',
-        'points_earned' => 'decimal:2',
+        'exam_data' => 'array',
         'submitted_at' => 'datetime',
-        'graded_at' => 'datetime',
         'question_order' => 'array'
     ];
 
+    /**
+     * Perfect autoGrade method that handles shuffled options
+     */
+    public function autoGrade()
+    {
+        try {
+            $question = $this->question;
+            $userAnswer = $this->answer;
+            
+            // Get exam data containing shuffling information
+            $examData = $this->exam_data ?? [];
+            
+            \Log::info('Auto-grading started', [
+                'student_answer_id' => $this->id,
+                'question_id' => $question->id,
+                'question_type' => $question->question_type,
+                'user_answer' => $userAnswer,
+                'exam_data' => $examData
+            ]);
+
+            if ($question->question_type === 'multiple_choice') {
+                $this->gradeMultipleChoice($question, $userAnswer, $examData);
+                
+            } elseif ($question->question_type === 'true_false') {
+                $this->gradeTrueFalse($question, $userAnswer);
+                
+            } else {
+                // Default handling for other question types
+                $this->is_correct = false;
+                $this->points_earned = 0;
+            }
+
+            // Save the results
+            $this->save();
+
+            \Log::info('Auto-grading completed', [
+                'student_answer_id' => $this->id,
+                'is_correct' => $this->is_correct,
+                'points_earned' => $this->points_earned
+            ]);
+
+            return true;
+
+        } catch (\Exception $e) {
+            \Log::error('Auto-grading failed', [
+                'student_answer_id' => $this->id,
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+
+            // Default to incorrect on error
+            $this->is_correct = false;
+            $this->points_earned = 0;
+            $this->save();
+
+            return false;
+        }
+    }
+
+    /**
+     * Grade multiple choice questions with shuffling support
+     */
+    protected function gradeMultipleChoice($question, $userAnswer, $examData)
+    {
+        // Get correct answers from database (original indices)
+        $originalCorrectAnswers = $question->correct_answers;
+        
+        // Handle string format correct_answers
+        if (is_string($originalCorrectAnswers)) {
+            $originalCorrectAnswers = json_decode($originalCorrectAnswers, true) ?? [];
+        }
+        
+        // Ensure it's an array
+        if (!is_array($originalCorrectAnswers)) {
+            $originalCorrectAnswers = [$originalCorrectAnswers];
+        }
+        
+        // Convert to integers
+        $originalCorrectAnswers = array_map('intval', $originalCorrectAnswers);
+
+        \Log::debug('Multiple choice grading details', [
+            'user_answer' => $userAnswer,
+            'original_correct_answers' => $originalCorrectAnswers,
+            'was_shuffled' => $examData['was_shuffled'] ?? false,
+            'inverse_mapping' => $examData['inverse_mapping'] ?? null
+        ]);
+
+        // Handle shuffled options
+        if (isset($examData['was_shuffled']) && $examData['was_shuffled'] && isset($examData['inverse_mapping'])) {
+            $inverseMapping = $examData['inverse_mapping'];
+            
+            // User's answer is in shuffled index, map back to original
+            if (isset($inverseMapping[$userAnswer])) {
+                $userOriginalAnswer = $inverseMapping[$userAnswer];
+                $this->is_correct = in_array($userOriginalAnswer, $originalCorrectAnswers);
+            } else {
+                // Invalid answer (shouldn't happen in normal operation)
+                $this->is_correct = false;
+            }
+        } else {
+            // No shuffling - direct comparison
+            $this->is_correct = in_array((int)$userAnswer, $originalCorrectAnswers);
+        }
+
+        // Calculate points
+        if ($this->is_correct) {
+            $this->points_earned = $question->points;
+        } else {
+            $this->points_earned = 0;
+        }
+    }
+
+    /**
+     * Grade true/false questions
+     */
+    protected function gradeTrueFalse($question, $userAnswer)
+    {
+        // Get correct answer from database
+        $correctAnswer = $question->correct_answers;
+        
+        // Handle string format
+        if (is_string($correctAnswer)) {
+            $correctAnswer = json_decode($correctAnswer, true);
+        }
+        
+        // Handle array format
+        if (is_array($correctAnswer)) {
+            $correctAnswer = $correctAnswer[0] ?? 0;
+        }
+        
+        $correctAnswer = (int)$correctAnswer;
+        $userAnswer = (int)$userAnswer;
+
+        \Log::debug('True/False grading details', [
+            'user_answer' => $userAnswer,
+            'correct_answer' => $correctAnswer
+        ]);
+
+        $this->is_correct = $userAnswer === $correctAnswer;
+        
+        if ($this->is_correct) {
+            $this->points_earned = $question->points;
+        } else {
+            $this->points_earned = 0;
+        }
+    }
+
+    /**
+     * Relationships
+     */
     public function user()
     {
         return $this->belongsTo(User::class);
@@ -49,207 +194,18 @@ class StudentAnswer extends Model
         return $this->belongsTo(Question::class);
     }
 
-    public function grader()
-    {
-        return $this->belongsTo(User::class, 'graded_by');
-    }
-
-    public function scopeLatestAttempt($query, $userId, $assessmentId)
-    {
-        return $query->where('user_id', $userId)
-            ->where('assessment_id', $assessmentId)
-            ->orderBy('attempt_number', 'desc');
-    }
-
-    public function scopeCorrect($query)
-    {
-        return $query->where('is_correct', true);
-    }
-
-    public function scopeGraded($query)
-    {
-        return $query->whereNotNull('graded_at');
-    }
-
-    public function scopePendingGrading($query)
-    {
-        return $query->whereNull('graded_at')
-            ->whereHas('question', function ($q) {
-                $q->whereIn('question_type', ['essay', 'short_answer']);
-            });
-    }
-
     /**
-     * FIXED: Auto-grade with proper null/empty answer handling
+     * Format answer for display
      */
-    public function autoGrade()
-    {
-        if (!$this->question) {
-            \Log::warning('Attempted to grade answer without question', [
-                'answer_id' => $this->id,
-                'question_id' => $this->question_id
-            ]);
-            return false;
-        }
-
-        // CRITICAL: Check if answer is null, empty, or "null" string
-        if ($this->answer === null || $this->answer === '' || $this->answer === 'null') {
-            \Log::info('Grading unanswered question as incorrect', [
-                'question_id' => $this->question_id,
-                'user_id' => $this->user_id
-            ]);
-            
-            // Mark as incorrect with 0 points
-            $this->update([
-                'is_correct' => false,
-                'points_earned' => 0,
-                'graded_at' => now()
-            ]);
-            
-            return true;
-        }
-
-        // Only auto-grade certain question types
-        if (in_array($this->question->question_type, ['essay', 'short_answer'])) {
-            return false;
-        }
-
-        // Get the user's answer - handle different formats
-        $userAnswer = $this->answer;
-        
-        // If it's stored as JSON string, decode it
-        if (is_string($userAnswer) && (strpos($userAnswer, '[') === 0 || strpos($userAnswer, '{') === 0)) {
-            $decoded = json_decode($userAnswer, true);
-            if (json_last_error() === JSON_ERROR_NONE) {
-                $userAnswer = $decoded;
-            }
-        }
-        
-        // Convert to integer for multiple choice and true/false
-        if (in_array($this->question->question_type, ['multiple_choice', 'true_false'])) {
-            if (is_array($userAnswer)) {
-                $userAnswer = array_map('intval', $userAnswer);
-            } else {
-                $userAnswer = (int)$userAnswer;
-            }
-        }
-
-        \Log::info('Auto-grading answer', [
-            'question_id' => $this->question_id,
-            'user_answer' => $userAnswer,
-            'question_type' => $this->question->question_type
-        ]);
-
-        // Check if answer is correct
-        $isCorrect = $this->question->isCorrectAnswer($userAnswer);
-        $pointsEarned = 0;
-
-        if ($isCorrect === true) {
-            $pointsEarned = $this->question->points;
-        } elseif ($isCorrect === false) {
-            $pointsEarned = 0;
-        } else {
-            // For partial credit
-            $pointsEarned = $this->question->calculatePartialCredit($userAnswer);
-        }
-
-        $this->update([
-            'is_correct' => $isCorrect === true,
-            'points_earned' => $pointsEarned,
-            'graded_at' => now()
-        ]);
-
-        \Log::info('Answer graded', [
-            'question_id' => $this->question_id,
-            'is_correct' => $isCorrect === true,
-            'points_earned' => $pointsEarned
-        ]);
-
-        return true;
-    }
-
     public function getFormattedAnswerAttribute()
     {
-        // FIXED: Handle null/empty answers
-        if ($this->answer === null || $this->answer === '' || $this->answer === 'null') {
-            return 'Not Answered';
+        if ($this->question->question_type === 'multiple_choice') {
+            $options = ['A', 'B', 'C', 'D', 'E', 'F'];
+            return $options[$this->answer] ?? 'Unknown';
+        } elseif ($this->question->question_type === 'true_false') {
+            return $this->answer == 0 ? 'True' : 'False';
         }
-
-        if (!$this->question) {
-            return $this->answer;
-        }
-
-        $answer = $this->answer;
         
-        // If answer is JSON string, decode it
-        if (is_string($answer) && (strpos($answer, '[') === 0 || strpos($answer, '{') === 0)) {
-            $decoded = json_decode($answer, true);
-            if (json_last_error() === JSON_ERROR_NONE && $decoded !== null) {
-                $answer = $decoded;
-            }
-        }
-
-        switch ($this->question->question_type) {
-            case 'multiple_choice':
-                $options = $this->question->options ?? [];
-                
-                if (is_array($answer)) {
-                    return collect($answer)
-                        ->map(function ($index) use ($options) {
-                            return isset($options[$index]) 
-                                ? chr(65 + $index) . '. ' . strip_tags($options[$index])
-                                : "Option " . ($index + 1);
-                        })
-                        ->join(', ');
-                }
-                
-                $index = (int)$answer;
-                return isset($options[$index]) 
-                    ? chr(65 + $index) . '. ' . strip_tags($options[$index])
-                    : 'Unknown option';
-
-            case 'true_false':
-                return ((int)$answer === 0) ? 'True' : 'False';
-
-            case 'short_answer':
-            case 'fill_blank':
-            case 'essay':
-                return is_array($answer) ? implode(' ', $answer) : $answer;
-
-            default:
-                return is_array($answer) ? json_encode($answer) : $answer;
-        }
-    }
-
-    public function needsManualGrading()
-    {
-        return is_null($this->graded_at) &&
-            $this->question &&
-            in_array($this->question->question_type, ['essay', 'short_answer']);
-    }
-
-    public function getFormattedTimeSpentAttribute()
-    {
-        if (!$this->time_spent_seconds) {
-            return 'Not recorded';
-        }
-
-        $minutes = floor($this->time_spent_seconds / 60);
-        $seconds = $this->time_spent_seconds % 60;
-
-        if ($minutes > 0) {
-            return $minutes . 'm ' . $seconds . 's';
-        }
-
-        return $seconds . 's';
-    }
-
-    public function getAccuracyPercentage()
-    {
-        if (!$this->question || $this->question->points == 0) {
-            return 0;
-        }
-
-        return round(($this->points_earned / $this->question->points) * 100, 1);
+        return $this->answer;
     }
 }
