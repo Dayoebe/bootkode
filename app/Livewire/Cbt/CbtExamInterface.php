@@ -56,81 +56,134 @@ class CbtExamInterface extends Component
     {
         return view('livewire.cbt.cbt-exam-interface');
     }
-
     protected function loadQuestions()
-    {
-        $questionCollection = $this->assessment->questions;
-        
-        if ($this->assessment->shuffle_questions) {
-            $questionCollection = $questionCollection->shuffle();
-        }
-        
-        $this->questions = $questionCollection->map(function ($question) {
-            $questionArray = $question->toArray();
+{
+    $questionCollection = $this->assessment->questions;
+    
+    if ($this->assessment->shuffle_questions) {
+        $questionCollection = $questionCollection->shuffle();
+    }
+    
+    $this->questions = $questionCollection->map(function ($question) {
+        $questionArray = $question->toArray();
 
-            if (isset($questionArray['options'])) {
-                if (is_string($questionArray['options'])) {
-                    $decodedOptions = json_decode($questionArray['options'], true);
-                    $questionArray['options'] = is_array($decodedOptions) ? $decodedOptions : [];
-                } elseif (!is_array($questionArray['options'])) {
-                    $questionArray['options'] = [];
-                }
-            } else {
+        // Ensure options are properly formatted
+        if (isset($questionArray['options'])) {
+            if (is_string($questionArray['options'])) {
+                $decodedOptions = json_decode($questionArray['options'], true);
+                $questionArray['options'] = is_array($decodedOptions) ? $decodedOptions : [];
+            } elseif (!is_array($questionArray['options'])) {
                 $questionArray['options'] = [];
             }
+        } else {
+            $questionArray['options'] = [];
+        }
 
-            if ($this->assessment->shuffle_options && !empty($questionArray['options'])) {
-                $originalOptions = $questionArray['options'];
-                $originalCorrectAnswers = $questionArray['correct_answers'] ?? [];
-                
-                $indexedOptions = [];
-                foreach ($originalOptions as $index => $option) {
-                    $indexedOptions[] = [
-                        'original_index' => $index,
-                        'text' => $option
-                    ];
-                }
-                
-                shuffle($indexedOptions);
-                
-                $indexMapping = [];
-                $newOptions = [];
-                foreach ($indexedOptions as $newIndex => $item) {
-                    $indexMapping[$item['original_index']] = $newIndex;
-                    $newOptions[$newIndex] = $item['text'];
-                }
-                
-                $newCorrectAnswers = [];
-                foreach ($originalCorrectAnswers as $correctAnswer) {
-                    if (isset($indexMapping[$correctAnswer])) {
-                        $newCorrectAnswers[] = $indexMapping[$correctAnswer];
-                    }
-                }
-                
-                $questionArray['options'] = $newOptions;
-                $questionArray['correct_answers'] = $newCorrectAnswers;
-                $questionArray['original_correct_answers'] = $originalCorrectAnswers;
-                $questionArray['option_mapping'] = $indexMapping;
+        // Ensure correct_answers are properly formatted
+        if (!isset($questionArray['correct_answers'])) {
+            $correctAnswers = $question->correct_answers;
+            if (is_string($correctAnswers)) {
+                $decodedAnswers = json_decode($correctAnswers, true);
+                $questionArray['correct_answers'] = is_array($decodedAnswers) ? $decodedAnswers : [];
+            } elseif (!is_array($correctAnswers)) {
+                $questionArray['correct_answers'] = [$correctAnswers];
+            } else {
+                $questionArray['correct_answers'] = $correctAnswers;
             }
+        }
 
-            if (!isset($questionArray['correct_answers'])) {
-                $correctAnswers = $question->correct_answers;
-                if (is_string($correctAnswers)) {
-                    $decodedAnswers = json_decode($correctAnswers, true);
-                    $questionArray['correct_answers'] = is_array($decodedAnswers) ? $decodedAnswers : [];
-                } elseif (!is_array($correctAnswers)) {
-                    $questionArray['correct_answers'] = [$correctAnswers];
-                } else {
-                    $questionArray['correct_answers'] = $correctAnswers;
-                }
-            }
-
-            return $questionArray;
-        })->values()->toArray();
+        // Store original correct answers for grading reference
+        $questionArray['original_correct_answers'] = $questionArray['correct_answers'];
         
-        $this->questionOrder = collect($this->questions)->pluck('id')->toArray();
-    }
+        // Handle option shuffling with proper mapping
+        if ($this->assessment->shuffle_options && !empty($questionArray['options']) && $questionArray['question_type'] === 'multiple_choice') {
+            $originalOptions = $questionArray['options'];
+            $originalCorrectAnswers = $questionArray['correct_answers'];
+            
+            // Create indexed options with original positions
+            $indexedOptions = [];
+            foreach ($originalOptions as $index => $option) {
+                $indexedOptions[] = [
+                    'original_index' => $index,
+                    'text' => $option
+                ];
+            }
+            
+            // Shuffle the options
+            shuffle($indexedOptions);
+            
+            // Create mapping between new and original indices
+            $indexMapping = [];
+            $newOptions = [];
+            $newCorrectAnswers = [];
+            
+            foreach ($indexedOptions as $newIndex => $item) {
+                $originalIndex = $item['original_index'];
+                $indexMapping[$newIndex] = $originalIndex; // Map: new_index => original_index
+                $newOptions[$newIndex] = $item['text'];
+                
+                // If this original index was correct, mark the new index as correct
+                if (in_array($originalIndex, $originalCorrectAnswers)) {
+                    $newCorrectAnswers[] = $newIndex;
+                }
+            }
+            
+            // Update the question with shuffled data
+            $questionArray['options'] = $newOptions;
+            $questionArray['correct_answers'] = $newCorrectAnswers;
+            $questionArray['original_correct_answers'] = $originalCorrectAnswers;
+            $questionArray['option_mapping'] = $indexMapping; // For display to original mapping
+            $questionArray['inverse_mapping'] = array_flip($indexMapping); // For original to display mapping (useful for grading)
+            $questionArray['was_shuffled'] = true;
+        } else {
+            // No shuffling, ensure consistent data structure
+            $questionArray['option_mapping'] = null;
+            $questionArray['inverse_mapping'] = null;
+            $questionArray['was_shuffled'] = false;
+        }
 
+        // For true/false questions, ensure correct_answers is properly formatted
+        if ($questionArray['question_type'] === 'true_false') {
+            if (is_array($questionArray['correct_answers'])) {
+                // Ensure we're using integers
+                $questionArray['correct_answers'] = array_map('intval', $questionArray['correct_answers']);
+            } else {
+                $questionArray['correct_answers'] = [intval($questionArray['correct_answers'])];
+            }
+        }
+
+        // Ensure points is set and is numeric
+        if (!isset($questionArray['points']) || !is_numeric($questionArray['points'])) {
+            $questionArray['points'] = 1;
+        } else {
+            $questionArray['points'] = floatval($questionArray['points']);
+        }
+
+        return $questionArray;
+    })->values()->toArray();
+    
+    $this->questionOrder = collect($this->questions)->pluck('id')->toArray();
+    
+    // Log for debugging
+    \Log::info('Questions loaded for assessment', [
+        'assessment_id' => $this->assessment->id,
+        'total_questions' => count($this->questions),
+        'shuffle_questions' => $this->assessment->shuffle_questions,
+        'shuffle_options' => $this->assessment->shuffle_options,
+        'questions_sample' => collect($this->questions)->take(2)->map(function($q) {
+            return [
+                'id' => $q['id'],
+                'type' => $q['question_type'],
+                'correct_answers' => $q['correct_answers'],
+                'original_correct_answers' => $q['original_correct_answers'] ?? null,
+                'was_shuffled' => $q['was_shuffled'] ?? false,
+                'options_count' => count($q['options'] ?? [])
+            ];
+        })->toArray()
+    ]);
+}
+
+ 
     protected function initializeExam()
     {
         $this->timeRemaining = $this->assessment->estimated_duration_minutes * 60;
