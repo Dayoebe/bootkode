@@ -2,8 +2,8 @@
 
 namespace App\Models\Assessment;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class StudentAnswer extends Model
 {
@@ -11,7 +11,7 @@ class StudentAnswer extends Model
 
     protected $fillable = [
         'user_id',
-        'assessment_id', 
+        'assessment_id',
         'question_id',
         'attempt_number',
         'answer',
@@ -20,7 +20,7 @@ class StudentAnswer extends Model
         'time_spent_seconds',
         'submitted_at',
         'question_order',
-        'exam_data' // Add this field to store shuffling metadata
+        'exam_data'
     ];
 
     protected $casts = [
@@ -30,42 +30,54 @@ class StudentAnswer extends Model
     ];
 
     /**
-     * Perfect autoGrade method that handles shuffled options
+     * Auto-grade the answer
+     * The answer is ALREADY in original position (mapped in CbtExamInterface)
      */
     public function autoGrade()
     {
         try {
             $question = $this->question;
-            $userAnswer = $this->answer;
-            
-            // Get exam data containing shuffling information
-            $examData = $this->exam_data ?? [];
-            
-            \Log::info('Auto-grading started', [
-                'student_answer_id' => $this->id,
+            $userAnswer = $this->answer; // Already in ORIGINAL position
+
+            if (!$question) {
+                $this->is_correct = false;
+                $this->points_earned = 0;
+                $this->save();
+                return false;
+            }
+
+            // Get original correct answers from database
+            $originalCorrectAnswers = $question->correct_answers;
+            if (is_string($originalCorrectAnswers)) {
+                $originalCorrectAnswers = json_decode($originalCorrectAnswers, true) ?? [];
+            }
+            if (!is_array($originalCorrectAnswers)) {
+                $originalCorrectAnswers = [$originalCorrectAnswers];
+            }
+            $originalCorrectAnswers = array_map('intval', $originalCorrectAnswers);
+
+            \Log::info('Auto-grading', [
                 'question_id' => $question->id,
                 'question_type' => $question->question_type,
                 'user_answer' => $userAnswer,
-                'exam_data' => $examData
+                'original_correct' => $originalCorrectAnswers,
+                'exam_data' => $this->exam_data
             ]);
 
+            // Grade based on question type
             if ($question->question_type === 'multiple_choice') {
-                $this->gradeMultipleChoice($question, $userAnswer, $examData);
-                
+                $this->gradeMultipleChoice($question, $userAnswer, $originalCorrectAnswers);
             } elseif ($question->question_type === 'true_false') {
-                $this->gradeTrueFalse($question, $userAnswer);
-                
+                $this->gradeTrueFalse($question, $userAnswer, $originalCorrectAnswers);
             } else {
-                // Default handling for other question types
                 $this->is_correct = false;
                 $this->points_earned = 0;
             }
 
-            // Save the results
             $this->save();
 
-            \Log::info('Auto-grading completed', [
-                'student_answer_id' => $this->id,
+            \Log::info('Grading result', [
+                'question_id' => $question->id,
                 'is_correct' => $this->is_correct,
                 'points_earned' => $this->points_earned
             ]);
@@ -73,122 +85,60 @@ class StudentAnswer extends Model
             return true;
 
         } catch (\Exception $e) {
-            \Log::error('Auto-grading failed', [
-                'student_answer_id' => $this->id,
+            \Log::error('Auto-grade failed', [
                 'error' => $e->getMessage(),
                 'trace' => $e->getTraceAsString()
             ]);
-
-            // Default to incorrect on error
             $this->is_correct = false;
             $this->points_earned = 0;
             $this->save();
-
             return false;
         }
     }
 
     /**
-     * Grade multiple choice questions with shuffling support
+     * Grade multiple choice - answer is ALREADY mapped to original position
      */
-    protected function gradeMultipleChoice($question, $userAnswer, $examData)
+    protected function gradeMultipleChoice($question, $userAnswer, $originalCorrectAnswers)
     {
-        // Get correct answers from database (original indices)
-        $originalCorrectAnswers = $question->correct_answers;
-        
-        // Handle string format correct_answers
-        if (is_string($originalCorrectAnswers)) {
-            $originalCorrectAnswers = json_decode($originalCorrectAnswers, true) ?? [];
-        }
-        
-        // Ensure it's an array
-        if (!is_array($originalCorrectAnswers)) {
-            $originalCorrectAnswers = [$originalCorrectAnswers];
-        }
-        
-        // Convert to integers
-        $originalCorrectAnswers = array_map('intval', $originalCorrectAnswers);
+        // Simple comparison - userAnswer is already in original position
+        $this->is_correct = in_array((int) $userAnswer, $originalCorrectAnswers);
+        $this->points_earned = $this->is_correct ? $question->points : 0;
 
-        \Log::debug('Multiple choice grading details', [
+        \Log::debug('Multiple choice grading', [
             'user_answer' => $userAnswer,
-            'original_correct_answers' => $originalCorrectAnswers,
-            'was_shuffled' => $examData['was_shuffled'] ?? false,
-            'inverse_mapping' => $examData['inverse_mapping'] ?? null
+            'correct_answers' => $originalCorrectAnswers,
+            'is_correct' => $this->is_correct
         ]);
-
-        // Handle shuffled options
-        if (isset($examData['was_shuffled']) && $examData['was_shuffled'] && isset($examData['inverse_mapping'])) {
-            $inverseMapping = $examData['inverse_mapping'];
-            
-            // User's answer is in shuffled index, map back to original
-            if (isset($inverseMapping[$userAnswer])) {
-                $userOriginalAnswer = $inverseMapping[$userAnswer];
-                $this->is_correct = in_array($userOriginalAnswer, $originalCorrectAnswers);
-            } else {
-                // Invalid answer (shouldn't happen in normal operation)
-                $this->is_correct = false;
-            }
-        } else {
-            // No shuffling - direct comparison
-            $this->is_correct = in_array((int)$userAnswer, $originalCorrectAnswers);
-        }
-
-        // Calculate points
-        if ($this->is_correct) {
-            $this->points_earned = $question->points;
-        } else {
-            $this->points_earned = 0;
-        }
     }
 
     /**
-     * Grade true/false questions
+     * Grade true/false
      */
-    protected function gradeTrueFalse($question, $userAnswer)
+    protected function gradeTrueFalse($question, $userAnswer, $originalCorrectAnswers)
     {
-        // Get correct answer from database
-        $correctAnswer = $question->correct_answers;
-        
-        // Handle string format
-        if (is_string($correctAnswer)) {
-            $correctAnswer = json_decode($correctAnswer, true);
-        }
-        
-        // Handle array format
-        if (is_array($correctAnswer)) {
-            $correctAnswer = $correctAnswer[0] ?? 0;
-        }
-        
-        $correctAnswer = (int)$correctAnswer;
-        $userAnswer = (int)$userAnswer;
-
-        \Log::debug('True/False grading details', [
-            'user_answer' => $userAnswer,
-            'correct_answer' => $correctAnswer
-        ]);
+        $correctAnswer = (int) ($originalCorrectAnswers[0] ?? 0);
+        $userAnswer = (int) $userAnswer;
 
         $this->is_correct = $userAnswer === $correctAnswer;
-        
-        if ($this->is_correct) {
-            $this->points_earned = $question->points;
-        } else {
-            $this->points_earned = 0;
-        }
+        $this->points_earned = $this->is_correct ? $question->points : 0;
+
+        \Log::debug('True/false grading', [
+            'user_answer' => $userAnswer,
+            'correct_answer' => $correctAnswer,
+            'is_correct' => $this->is_correct
+        ]);
     }
 
-    /**
-     * Relationships
-     */
+    // Relationships
     public function user()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(\App\Models\Core\User::class);
     }
-
     public function assessment()
     {
         return $this->belongsTo(Assessment::class);
     }
-
     public function question()
     {
         return $this->belongsTo(Question::class);
@@ -205,7 +155,6 @@ class StudentAnswer extends Model
         } elseif ($this->question->question_type === 'true_false') {
             return $this->answer == 0 ? 'True' : 'False';
         }
-        
         return $this->answer;
     }
 }

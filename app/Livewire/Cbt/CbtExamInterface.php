@@ -44,7 +44,7 @@ class CbtExamInterface extends Component
         $this->assessment = Assessment::with('questions')->findOrFail($assessment);
         
         if (!$this->assessment || $this->assessment->questions->count() === 0) {
-            session()->flash('error', 'Invalid assessment or no questions available.');
+            session()->flash('error', 'Invalid assessment.');
             return redirect()->route('cbt.exams');
         }
 
@@ -56,154 +56,174 @@ class CbtExamInterface extends Component
     {
         return view('livewire.cbt.cbt-exam-interface');
     }
+
     protected function loadQuestions()
-{
-    $questionCollection = $this->assessment->questions;
-    
-    if ($this->assessment->shuffle_questions) {
-        $questionCollection = $questionCollection->shuffle();
-    }
-    
-    $this->questions = $questionCollection->map(function ($question) {
-        $questionArray = $question->toArray();
-
-        // Ensure options are properly formatted
-        if (isset($questionArray['options'])) {
-            if (is_string($questionArray['options'])) {
-                $decodedOptions = json_decode($questionArray['options'], true);
-                $questionArray['options'] = is_array($decodedOptions) ? $decodedOptions : [];
-            } elseif (!is_array($questionArray['options'])) {
-                $questionArray['options'] = [];
-            }
-        } else {
-            $questionArray['options'] = [];
-        }
-
-        // Ensure correct_answers are properly formatted
-        if (!isset($questionArray['correct_answers'])) {
-            $correctAnswers = $question->correct_answers;
-            if (is_string($correctAnswers)) {
-                $decodedAnswers = json_decode($correctAnswers, true);
-                $questionArray['correct_answers'] = is_array($decodedAnswers) ? $decodedAnswers : [];
-            } elseif (!is_array($correctAnswers)) {
-                $questionArray['correct_answers'] = [$correctAnswers];
-            } else {
-                $questionArray['correct_answers'] = $correctAnswers;
-            }
-        }
-
-        // Store original correct answers for grading reference
-        $questionArray['original_correct_answers'] = $questionArray['correct_answers'];
+    {
+        $questionCollection = $this->assessment->questions;
         
-        // Handle option shuffling with proper mapping
-        if ($this->assessment->shuffle_options && !empty($questionArray['options']) && $questionArray['question_type'] === 'multiple_choice') {
-            $originalOptions = $questionArray['options'];
-            $originalCorrectAnswers = $questionArray['correct_answers'];
-            
-            // Create indexed options with original positions
-            $indexedOptions = [];
-            foreach ($originalOptions as $index => $option) {
-                $indexedOptions[] = [
-                    'original_index' => $index,
-                    'text' => $option
-                ];
+        if ($this->assessment->shuffle_questions) {
+            $questionCollection = $questionCollection->shuffle();
+        }
+        
+        $this->questions = $questionCollection->map(function ($question) {
+            $q = $question->toArray();
+
+            // Format options
+            $q['options'] = is_string($q['options'] ?? null) 
+                ? json_decode($q['options'], true) ?? [] 
+                : ($q['options'] ?? []);
+
+            // Format correct answers
+            $correctAnswers = $q['correct_answers'] ?? $question->correct_answers;
+            if (is_string($correctAnswers)) {
+                $correctAnswers = json_decode($correctAnswers, true) ?? [$correctAnswers];
+            } elseif (!is_array($correctAnswers)) {
+                $correctAnswers = [$correctAnswers];
             }
+            $q['original_correct_answers'] = array_map('intval', $correctAnswers);
             
-            // Shuffle the options
-            shuffle($indexedOptions);
-            
-            // Create mapping between new and original indices
-            $indexMapping = [];
-            $newOptions = [];
-            $newCorrectAnswers = [];
-            
-            foreach ($indexedOptions as $newIndex => $item) {
-                $originalIndex = $item['original_index'];
-                $indexMapping[$newIndex] = $originalIndex; // Map: new_index => original_index
-                $newOptions[$newIndex] = $item['text'];
+            // Shuffle options if enabled
+            if ($this->assessment->shuffle_options && 
+                !empty($q['options']) && 
+                $q['question_type'] === 'multiple_choice') {
                 
-                // If this original index was correct, mark the new index as correct
-                if (in_array($originalIndex, $originalCorrectAnswers)) {
-                    $newCorrectAnswers[] = $newIndex;
+                $original = $q['options'];
+                $originalCorrect = $q['original_correct_answers'];
+                
+                // Create indexed array
+                $indexed = [];
+                foreach ($original as $idx => $text) {
+                    $indexed[] = ['orig_idx' => $idx, 'text' => $text];
                 }
-            }
-            
-            // Update the question with shuffled data
-            $questionArray['options'] = $newOptions;
-            $questionArray['correct_answers'] = $newCorrectAnswers;
-            $questionArray['original_correct_answers'] = $originalCorrectAnswers;
-            $questionArray['option_mapping'] = $indexMapping; // For display to original mapping
-            $questionArray['inverse_mapping'] = array_flip($indexMapping); // For original to display mapping (useful for grading)
-            $questionArray['was_shuffled'] = true;
-        } else {
-            // No shuffling, ensure consistent data structure
-            $questionArray['option_mapping'] = null;
-            $questionArray['inverse_mapping'] = null;
-            $questionArray['was_shuffled'] = false;
-        }
-
-        // For true/false questions, ensure correct_answers is properly formatted
-        if ($questionArray['question_type'] === 'true_false') {
-            if (is_array($questionArray['correct_answers'])) {
-                // Ensure we're using integers
-                $questionArray['correct_answers'] = array_map('intval', $questionArray['correct_answers']);
+                
+                shuffle($indexed);
+                
+                // Build mappings
+                $newOptions = [];
+                $displayToOriginal = [];
+                $originalToDisplay = [];
+                
+                foreach ($indexed as $newIdx => $item) {
+                    $origIdx = $item['orig_idx'];
+                    $newOptions[$newIdx] = $item['text'];
+                    $displayToOriginal[$newIdx] = $origIdx; // NEW → ORIGINAL
+                    $originalToDisplay[$origIdx] = $newIdx; // ORIGINAL → NEW
+                }
+                
+                $q['options'] = $newOptions;
+                $q['display_to_original_map'] = $displayToOriginal;
+                $q['was_shuffled'] = true;
+                
             } else {
-                $questionArray['correct_answers'] = [intval($questionArray['correct_answers'])];
+                $q['display_to_original_map'] = null;
+                $q['was_shuffled'] = false;
             }
-        }
 
-        // Ensure points is set and is numeric
-        if (!isset($questionArray['points']) || !is_numeric($questionArray['points'])) {
-            $questionArray['points'] = 1;
-        } else {
-            $questionArray['points'] = floatval($questionArray['points']);
-        }
+            if ($q['question_type'] === 'true_false') {
+                $q['original_correct_answers'] = array_map('intval', $q['original_correct_answers']);
+            }
 
-        return $questionArray;
-    })->values()->toArray();
-    
-    $this->questionOrder = collect($this->questions)->pluck('id')->toArray();
-    
-    // Log for debugging
-    \Log::info('Questions loaded for assessment', [
-        'assessment_id' => $this->assessment->id,
-        'total_questions' => count($this->questions),
-        'shuffle_questions' => $this->assessment->shuffle_questions,
-        'shuffle_options' => $this->assessment->shuffle_options,
-        'questions_sample' => collect($this->questions)->take(2)->map(function($q) {
-            return [
-                'id' => $q['id'],
-                'type' => $q['question_type'],
-                'correct_answers' => $q['correct_answers'],
-                'original_correct_answers' => $q['original_correct_answers'] ?? null,
-                'was_shuffled' => $q['was_shuffled'] ?? false,
-                'options_count' => count($q['options'] ?? [])
-            ];
-        })->toArray()
-    ]);
-}
+            $q['points'] = floatval($q['points'] ?? 1);
+            return $q;
+            
+        })->values()->toArray();
+        
+        $this->questionOrder = collect($this->questions)->pluck('id')->toArray();
+    }
 
- 
     protected function initializeExam()
     {
         $this->timeRemaining = $this->assessment->estimated_duration_minutes * 60;
         $this->attemptNumber = $this->assessment->getNextAttemptNumber(Auth::id());
-
         foreach ($this->questions as $question) {
             $this->answers[$question['id']] = null;
         }
-
-        $this->progressTracking = [
-            'question_start_times' => [],
-            'question_end_times' => [],
-            'question_durations' => [],
-            'total_active_time' => 0,
-            'pause_count' => 0,
-            'navigation_count' => 0,
-            'current_question_start' => null
-        ];
     }
 
+    public function saveAnswer($questionId, $answer)
+    {
+        if ($answer === null || $answer === '' || $answer === 'null') {
+            $this->answers[$questionId] = null;
+            return;
+        }
+        $this->answers[$questionId] = (int)$answer; // Store displayed position
+    }
+
+    public function submitExam()
+    {
+        if ($this->examCompleted) return;
+        $this->showSubmitModal = false;
+
+        try {
+            $timeSpent = $this->startTime ? abs($this->startTime->diffInSeconds(now(), false)) : 0;
+            $totalPoints = 0;
+            $correctAnswers = 0;
+            $answeredQuestions = 0;
+
+            foreach ($this->questions as $qData) {
+                $qId = $qData['id'];
+                $userDisplayAnswer = $this->answers[$qId] ?? null;
+
+                if ($userDisplayAnswer === null || $userDisplayAnswer === '') continue;
+                $answeredQuestions++;
+
+                // Map displayed answer to original
+                $userOriginalAnswer = $userDisplayAnswer;
+                if ($qData['was_shuffled'] && isset($qData['display_to_original_map'][$userDisplayAnswer])) {
+                    $userOriginalAnswer = $qData['display_to_original_map'][$userDisplayAnswer];
+                }
+
+                $examData = [
+                    'was_shuffled' => $qData['was_shuffled'],
+                    'user_displayed_answer' => $userDisplayAnswer,
+                    'user_original_answer' => $userOriginalAnswer,
+                    'display_to_original_map' => $qData['display_to_original_map'],
+                    'original_correct_answers' => $qData['original_correct_answers']
+                ];
+
+                // CRITICAL: Store ORIGINAL answer
+                $studentAnswer = StudentAnswer::create([
+                    'user_id' => Auth::id(),
+                    'assessment_id' => $this->assessment->id,
+                    'question_id' => $qId,
+                    'attempt_number' => $this->attemptNumber,
+                    'answer' => $userOriginalAnswer, // ← Store original position
+                    'time_spent_seconds' => $timeSpent,
+                    'submitted_at' => now(),
+                    'question_order' => $this->questionOrder,
+                    'exam_data' => $examData,
+                ]);
+
+                if ($studentAnswer->autoGrade()) {
+                    $studentAnswer->refresh();
+                    if ($studentAnswer->is_correct) $correctAnswers++;
+                    $totalPoints += $studentAnswer->points_earned ?? 0;
+                }
+            }
+
+            $maxPoints = collect($this->questions)->sum('points') ?: 100;
+            $percentage = $maxPoints > 0 ? round(($totalPoints / $maxPoints) * 100, 1) : 0;
+
+            $this->results = [
+                'total_questions' => count($this->questions),
+                'answered_questions' => $answeredQuestions,
+                'correct_answers' => $correctAnswers,
+                'total_points' => $totalPoints,
+                'max_points' => $maxPoints,
+                'percentage' => $percentage,
+                'passed' => $percentage >= $this->assessment->pass_percentage,
+                'attempt_number' => $this->attemptNumber,
+                'time_spent' => $timeSpent,
+            ];
+
+            $this->examCompleted = true;
+            $this->dispatch('examCompleted');
+            
+        } catch (\Exception $e) {
+            \Log::error('Submit failed: ' . $e->getMessage());
+            session()->flash('error', 'Failed to submit exam.');
+        }
+    }
     public function nextQuestion()
     {
         if ($this->currentQuestionIndex < count($this->questions) - 1) {
@@ -337,22 +357,6 @@ class CbtExamInterface extends Component
         }
     }
 
-    public function saveAnswer($questionId, $answer)
-    {
-        try {
-            if ($answer === null || $answer === '' || $answer === 'null') {
-                $this->answers[$questionId] = null;
-                return;
-            }
-            
-            $answer = (int)$answer;
-            $this->answers[$questionId] = $answer;
-            $this->dispatch('answerSaved', questionId: $questionId, answer: $answer);
-            
-        } catch (\Exception $e) {
-            // Silent fail - don't disrupt student experience
-        }
-    }
 
     public function showSubmitConfirmation()
     {
@@ -364,121 +368,7 @@ class CbtExamInterface extends Component
         $this->showSubmitModal = false;
     }
 
-    public function submitExam()
-{
-    if ($this->examCompleted) {
-        return;
-    }
-
-    $this->trackQuestionTime($this->currentQuestionIndex);
-    $this->showSubmitModal = false;
-
-    try {
-        $timeSpent = 0;
-        if ($this->startTime) {
-            $timeSpent = abs($this->startTime->diffInSeconds(Carbon::now(), false));
-        }
-
-        $totalPoints = 0;
-        $correctAnswers = 0;
-        $totalQuestions = count($this->questions);
-        $answeredQuestions = 0;
-
-        foreach ($this->questions as $questionData) {
-            $questionId = $questionData['id'];
-            $userAnswer = $this->answers[$questionId] ?? null;
-
-            if ($userAnswer === null || $userAnswer === '' || $userAnswer === 'null') {
-                continue;
-            }
-
-            $answeredQuestions++;
-
-            // Store exam data for grading
-            $examData = [
-                'was_shuffled' => $questionData['was_shuffled'] ?? false,
-                'option_mapping' => $questionData['option_mapping'] ?? null,
-                'inverse_mapping' => $questionData['inverse_mapping'] ?? null,
-                'original_correct_answers' => $questionData['original_correct_answers'] ?? null,
-                'shuffled_correct_answers' => $questionData['correct_answers'] ?? null,
-                'question_index' => array_search($questionId, $this->questionOrder)
-            ];
-
-            $studentAnswer = StudentAnswer::create([
-                'user_id' => Auth::id(),
-                'assessment_id' => $this->assessment->id,
-                'question_id' => $questionId,
-                'attempt_number' => $this->attemptNumber,
-                'answer' => $userAnswer,
-                'time_spent_seconds' => $timeSpent,
-                'submitted_at' => now(),
-                'question_order' => $this->questionOrder,
-                'exam_data' => $examData, // Store shuffling metadata
-            ]);
-
-            $graded = $studentAnswer->autoGrade();
-            
-            if ($graded) {
-                $studentAnswer->refresh();
-
-                if ($studentAnswer->is_correct) {
-                    $correctAnswers++;
-                }
-                $totalPoints += $studentAnswer->points_earned ?? 0;
-            }
-        }
-
-        $maxPoints = collect($this->questions)->sum('points') ?: $this->assessment->max_score ?: 100;
-        $percentage = $maxPoints > 0 ? round(($totalPoints / $maxPoints) * 100, 1) : 0;
-        $passed = $percentage >= $this->assessment->pass_percentage;
-
-        $this->results = [
-            'total_questions' => $totalQuestions,
-            'answered_questions' => $answeredQuestions,
-            'unanswered_questions' => $totalQuestions - $answeredQuestions,
-            'correct_answers' => $correctAnswers,
-            'total_points' => $totalPoints,
-            'max_points' => $maxPoints,
-            'percentage' => $percentage,
-            'passed' => $passed,
-            'attempt_number' => $this->attemptNumber,
-            'time_spent' => $timeSpent,
-            'security_violations' => count($this->securityViolations),
-            'active_time' => $this->progressTracking['total_active_time'],
-            'pause_count' => $this->progressTracking['pause_count'],
-            'navigation_count' => $this->progressTracking['navigation_count'],
-            'questions_shuffled' => $this->assessment->shuffle_questions,
-            'options_shuffled' => $this->assessment->shuffle_options,
-        ];
-
-        $this->examCompleted = true;
-        $this->isFullscreenForced = false;
-        $this->dispatch('examCompleted');
-        $this->dispatch('allowFullscreenExit');
-        
-    } catch (\Exception $e) {
-        session()->flash('error', 'Failed to submit exam. Please contact support.');
-        
-        $this->results = [
-            'total_questions' => count($this->questions),
-            'answered_questions' => 0,
-            'unanswered_questions' => count($this->questions),
-            'correct_answers' => 0,
-            'total_points' => 0,
-            'max_points' => 100,
-            'percentage' => 0,
-            'passed' => false,
-            'attempt_number' => $this->attemptNumber,
-            'time_spent' => 0,
-            'security_violations' => count($this->securityViolations)
-        ];
-        
-        $this->examCompleted = true;
-        $this->isFullscreenForced = false;
-        $this->dispatch('allowFullscreenExit');
-    }
-        
-    }
+   
 
 
 
