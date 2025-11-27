@@ -28,9 +28,8 @@ class CbtExamInterface extends Component
     public $securityViolations = [];
     public $showSubmitModal = false;
     public $isFullscreenForced = false;
-    public $questionOrder = []; // NEW: Store the shuffled order
+    public $questionOrder = [];
     
-    // Progress tracking properties
     public $progressTracking = [
         'question_start_times' => [],
         'question_end_times' => [],
@@ -62,7 +61,6 @@ class CbtExamInterface extends Component
     {
         $questionCollection = $this->assessment->questions;
         
-        // NEW: Shuffle questions if enabled
         if ($this->assessment->shuffle_questions) {
             $questionCollection = $questionCollection->shuffle();
         }
@@ -70,7 +68,6 @@ class CbtExamInterface extends Component
         $this->questions = $questionCollection->map(function ($question) {
             $questionArray = $question->toArray();
 
-            // Handle options field
             if (isset($questionArray['options'])) {
                 if (is_string($questionArray['options'])) {
                     $decodedOptions = json_decode($questionArray['options'], true);
@@ -82,12 +79,10 @@ class CbtExamInterface extends Component
                 $questionArray['options'] = [];
             }
 
-            // NEW: Shuffle options if enabled
             if ($this->assessment->shuffle_options && !empty($questionArray['options'])) {
                 $originalOptions = $questionArray['options'];
                 $originalCorrectAnswers = $questionArray['correct_answers'] ?? [];
                 
-                // Create indexed array for shuffling
                 $indexedOptions = [];
                 foreach ($originalOptions as $index => $option) {
                     $indexedOptions[] = [
@@ -96,10 +91,8 @@ class CbtExamInterface extends Component
                     ];
                 }
                 
-                // Shuffle the options
                 shuffle($indexedOptions);
                 
-                // Build mapping from original to new indices
                 $indexMapping = [];
                 $newOptions = [];
                 foreach ($indexedOptions as $newIndex => $item) {
@@ -107,7 +100,6 @@ class CbtExamInterface extends Component
                     $newOptions[$newIndex] = $item['text'];
                 }
                 
-                // Remap correct answers to new indices
                 $newCorrectAnswers = [];
                 foreach ($originalCorrectAnswers as $correctAnswer) {
                     if (isset($indexMapping[$correctAnswer])) {
@@ -117,11 +109,10 @@ class CbtExamInterface extends Component
                 
                 $questionArray['options'] = $newOptions;
                 $questionArray['correct_answers'] = $newCorrectAnswers;
-                $questionArray['original_correct_answers'] = $originalCorrectAnswers; // Store for reference
-                $questionArray['option_mapping'] = $indexMapping; // Store mapping
+                $questionArray['original_correct_answers'] = $originalCorrectAnswers;
+                $questionArray['option_mapping'] = $indexMapping;
             }
 
-            // Handle correct_answers field (if not already processed by shuffle)
             if (!isset($questionArray['correct_answers'])) {
                 $correctAnswers = $question->correct_answers;
                 if (is_string($correctAnswers)) {
@@ -135,9 +126,8 @@ class CbtExamInterface extends Component
             }
 
             return $questionArray;
-        })->values()->toArray(); // Use values() to reset array keys after shuffle
+        })->values()->toArray();
         
-        // NEW: Store the question order (mapping from display index to actual question ID)
         $this->questionOrder = collect($this->questions)->pluck('id')->toArray();
     }
 
@@ -146,12 +136,10 @@ class CbtExamInterface extends Component
         $this->timeRemaining = $this->assessment->estimated_duration_minutes * 60;
         $this->attemptNumber = $this->assessment->getNextAttemptNumber(Auth::id());
 
-        // Initialize answers array
         foreach ($this->questions as $question) {
             $this->answers[$question['id']] = null;
         }
 
-        // Initialize progress tracking
         $this->progressTracking = [
             'question_start_times' => [],
             'question_end_times' => [],
@@ -292,11 +280,6 @@ class CbtExamInterface extends Component
             $this->dispatch('markExamStarted');
             
         } catch (\Exception $e) {
-            \Log::error('Error starting CBT exam', [
-                'error' => $e->getMessage(),
-                'user_id' => Auth::id()
-            ]);
-            
             session()->flash('error', 'Failed to start exam. Please try again.');
         }
     }
@@ -304,28 +287,17 @@ class CbtExamInterface extends Component
     public function saveAnswer($questionId, $answer)
     {
         try {
-            // CRITICAL: Don't save if answer is null or empty
             if ($answer === null || $answer === '' || $answer === 'null') {
-                // Clear the answer if user deselects
                 $this->answers[$questionId] = null;
                 return;
             }
             
-            // Convert to integer for multiple choice
             $answer = (int)$answer;
-            
-            // Store in component state
             $this->answers[$questionId] = $answer;
-            
-            // Dispatch event
             $this->dispatch('answerSaved', questionId: $questionId, answer: $answer);
             
         } catch (\Exception $e) {
-            \Log::error('Error saving answer', [
-                'question_id' => $questionId,
-                'answer' => $answer,
-                'error' => $e->getMessage()
-            ]);
+            // Silent fail - don't disrupt student experience
         }
     }
 
@@ -349,7 +321,6 @@ class CbtExamInterface extends Component
         $this->showSubmitModal = false;
 
         try {
-            // Calculate actual time spent
             $timeSpent = 0;
             if ($this->startTime) {
                 $timeSpent = abs($this->startTime->diffInSeconds(Carbon::now(), false));
@@ -358,27 +329,18 @@ class CbtExamInterface extends Component
             $totalPoints = 0;
             $correctAnswers = 0;
             $totalQuestions = count($this->questions);
-            $answeredQuestions = 0; // NEW: Track answered questions
+            $answeredQuestions = 0;
 
-            // Process each question
             foreach ($this->questions as $questionData) {
                 $questionId = $questionData['id'];
                 $userAnswer = $this->answers[$questionId] ?? null;
 
-                // CRITICAL FIX: Skip completely unanswered questions
-                // Don't create StudentAnswer record for unanswered questions
                 if ($userAnswer === null || $userAnswer === '' || $userAnswer === 'null') {
-                    \Log::info('Skipping unanswered question', [
-                        'question_id' => $questionId,
-                        'user_id' => Auth::id()
-                    ]);
-                    continue; // Skip this question entirely
+                    continue;
                 }
 
-                // Only process answered questions
                 $answeredQuestions++;
 
-                // Create student answer record
                 $studentAnswer = StudentAnswer::create([
                     'user_id' => Auth::id(),
                     'assessment_id' => $this->assessment->id,
@@ -390,7 +352,6 @@ class CbtExamInterface extends Component
                     'question_order' => $this->questionOrder,
                 ]);
 
-                // Auto-grade the answer
                 $graded = $studentAnswer->autoGrade();
                 
                 if ($graded) {
@@ -403,15 +364,14 @@ class CbtExamInterface extends Component
                 }
             }
 
-            // Calculate results
             $maxPoints = collect($this->questions)->sum('points') ?: $this->assessment->max_score ?: 100;
             $percentage = $maxPoints > 0 ? round(($totalPoints / $maxPoints) * 100, 1) : 0;
             $passed = $percentage >= $this->assessment->pass_percentage;
 
             $this->results = [
                 'total_questions' => $totalQuestions,
-                'answered_questions' => $answeredQuestions, // NEW
-                'unanswered_questions' => $totalQuestions - $answeredQuestions, // NEW
+                'answered_questions' => $answeredQuestions,
+                'unanswered_questions' => $totalQuestions - $answeredQuestions,
                 'correct_answers' => $correctAnswers,
                 'total_points' => $totalPoints,
                 'max_points' => $maxPoints,
@@ -431,23 +391,9 @@ class CbtExamInterface extends Component
             $this->isFullscreenForced = false;
             $this->dispatch('examCompleted');
             $this->dispatch('allowFullscreenExit');
-
-            \Log::info('Exam submitted successfully', [
-                'user_id' => Auth::id(),
-                'assessment_id' => $this->assessment->id,
-                'answered' => $answeredQuestions,
-                'unanswered' => $totalQuestions - $answeredQuestions,
-                'percentage' => $percentage
-            ]);
             
         } catch (\Exception $e) {
-            \Log::error('Error submitting exam', [
-                'user_id' => Auth::id(),
-                'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString()
-            ]);
-            
-            session()->flash('error', 'Failed to submit exam: ' . $e->getMessage());
+            session()->flash('error', 'Failed to submit exam. Please contact support.');
             
             $this->results = [
                 'total_questions' => count($this->questions),
@@ -552,10 +498,7 @@ class CbtExamInterface extends Component
             session()->flash('message', 'Results will be sent to your email shortly!');
             
         } catch (\Exception $e) {
-            \Log::error('Failed to queue results email', [
-                'error' => $e->getMessage(),
-                'user_id' => Auth::id()
-            ]);
+            // Silent fail - email not critical
         }
     }
 }
