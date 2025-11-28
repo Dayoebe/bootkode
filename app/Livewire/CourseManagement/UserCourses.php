@@ -23,6 +23,7 @@ class UserCourses extends Component
     public $perPage = 10;
     public $sortField = 'created_at';
     public $sortDirection = 'desc';
+    public $viewMode = 'grid'; // grid or list
 
     public array $selectedCourses = [];
     public bool $selectAll = false;
@@ -35,16 +36,16 @@ class UserCourses extends Component
         return Course::query()
             ->with(['category', 'enrollments'])
             ->where('instructor_id', Auth::id())
-            ->when($this->search, fn ($query) => $query->where(fn ($q) => $q
+            ->when($this->search, fn($query) => $query->where(fn($q) => $q
                 ->where('title', 'like', '%' . $this->search . '%')
                 ->orWhere('description', 'like', '%' . $this->search . '%')))
-            ->when($this->categoryFilter, fn ($query) => $query->where('category_id', $this->categoryFilter))
-            ->when($this->statusFilter, fn ($query) => $query
-                ->when($this->statusFilter === 'published', fn ($q) => $q->where('is_published', true))
-                ->when($this->statusFilter === 'unpublished', fn ($q) => $q->where('is_published', false))
-                ->when($this->statusFilter === 'approved', fn ($q) => $q->where('is_approved', true))
-                ->when($this->statusFilter === 'unapproved', fn ($q) => $q->where('is_approved', false)))
-            ->when($this->difficultyFilter, fn ($query) => $query->where('difficulty_level', $this->difficultyFilter));
+            ->when($this->categoryFilter, fn($query) => $query->where('category_id', $this->categoryFilter))
+            ->when($this->statusFilter, fn($query) => $query
+                ->when($this->statusFilter === 'published', fn($q) => $q->where('is_published', true))
+                ->when($this->statusFilter === 'unpublished', fn($q) => $q->where('is_published', false))
+                ->when($this->statusFilter === 'approved', fn($q) => $q->where('is_approved', true))
+                ->when($this->statusFilter === 'unapproved', fn($q) => $q->where('is_approved', false)))
+            ->when($this->difficultyFilter, fn($query) => $query->where('difficulty_level', $this->difficultyFilter));
     }
 
     /**
@@ -67,7 +68,7 @@ class UserCourses extends Component
     public function updatedSelectAll($value)
     {
         if ($value) {
-            $this->selectedCourses = $this->getCoursesQuery()->pluck('id')->map(fn ($id) => (string) $id)->toArray();
+            $this->selectedCourses = $this->getCoursesQuery()->pluck('id')->map(fn($id) => (string) $id)->toArray();
         } else {
             $this->selectedCourses = [];
         }
@@ -103,7 +104,11 @@ class UserCourses extends Component
     {
         // Ensure user owns this course
         if ($course->instructor_id !== Auth::id()) {
-            session()->flash('error', 'Unauthorized to modify this course.');
+            $this->dispatch('notify', [
+                'message' => 'Unauthorized to modify this course.',
+                'type' => 'error',
+                'icon' => 'fas fa-exclamation-triangle'
+            ]);
             return;
         }
 
@@ -112,25 +117,57 @@ class UserCourses extends Component
             $course->save();
 
             $status = $course->is_published ? 'published' : 'unpublished';
-            session()->flash('success', "Course {$status} successfully.");
+
+            $this->dispatch('notify', [
+                'message' => "Course {$status} successfully!",
+                'type' => 'success',
+                'icon' => 'fas fa-check-circle'
+            ]);
         } catch (\Exception $e) {
-            session()->flash('error', 'Failed to toggle publish status.');
+            $this->dispatch('notify', [
+                'message' => 'Failed to toggle publish status.',
+                'type' => 'error',
+                'icon' => 'fas fa-exclamation-triangle'
+            ]);
         }
     }
 
     /**
-     * Redirects to the edit course page
+     * Redirects to the edit course page - FIXED
      */
     public function editCourse(Course $course)
     {
         // Ensure user owns this course
         if ($course->instructor_id !== Auth::id()) {
-            session()->flash('error', 'Unauthorized to edit this course.');
+            $this->dispatch('notify', [
+                'message' => 'Unauthorized to edit this course.',
+                'type' => 'error',
+                'icon' => 'fas fa-exclamation-triangle'
+            ]);
             return;
         }
-    
-        // Use the correct parameter name that matches your route definition
+
+        // FIX: Use the course model directly, not just the ID
         return $this->redirect(route('edit_course', ['course' => $course->id]));
+    }
+
+    /**
+     * Preview course - FIXED
+     */
+    public function previewCourse(Course $course)
+    {
+        // Ensure user owns this course
+        if ($course->instructor_id !== Auth::id()) {
+            $this->dispatch('notify', [
+                'message' => 'Unauthorized to preview this course.',
+                'type' => 'error',
+                'icon' => 'fas fa-exclamation-triangle'
+            ]);
+            return;
+        }
+
+        // FIX: Pass the course model, not the slug
+        return $this->redirect(route('courses.preview', ['course' => $course]));
     }
 
     /**
@@ -140,15 +177,28 @@ class UserCourses extends Component
     {
         // Ensure user owns this course
         if ($course->instructor_id !== Auth::id()) {
-            session()->flash('error', 'Unauthorized to delete this course.');
+            $this->dispatch('notify', [
+                'message' => 'Unauthorized to delete this course.',
+                'type' => 'error',
+                'icon' => 'fas fa-exclamation-triangle'
+            ]);
             return;
         }
 
         try {
             $course->delete();
-            session()->flash('success', 'Course deleted successfully.');
+
+            $this->dispatch('notify', [
+                'message' => 'Course deleted successfully!',
+                'type' => 'success',
+                'icon' => 'fas fa-check-circle'
+            ]);
         } catch (\Exception $e) {
-            session()->flash('error', 'Failed to delete course.');
+            $this->dispatch('notify', [
+                'message' => 'Failed to delete course.',
+                'type' => 'error',
+                'icon' => 'fas fa-exclamation-triangle'
+            ]);
         }
     }
 
@@ -161,11 +211,19 @@ class UserCourses extends Component
             $count = Course::whereIn('id', $this->selectedCourses)
                 ->where('instructor_id', Auth::id())
                 ->update(['is_published' => true]);
-                
-            session()->flash('success', "{$count} courses have been published.");
+
+            $this->dispatch('notify', [
+                'message' => "{$count} courses have been published.",
+                'type' => 'success',
+                'icon' => 'fas fa-check-circle'
+            ]);
             $this->resetBulkActions();
         } catch (\Exception $e) {
-            session()->flash('error', 'Failed to bulk publish.');
+            $this->dispatch('notify', [
+                'message' => 'Failed to bulk publish.',
+                'type' => 'error',
+                'icon' => 'fas fa-exclamation-triangle'
+            ]);
         }
     }
 
@@ -178,11 +236,19 @@ class UserCourses extends Component
             $count = Course::whereIn('id', $this->selectedCourses)
                 ->where('instructor_id', Auth::id())
                 ->update(['is_published' => false]);
-                
-            session()->flash('success', "{$count} courses have been unpublished.");
+
+            $this->dispatch('notify', [
+                'message' => "{$count} courses have been unpublished.",
+                'type' => 'success',
+                'icon' => 'fas fa-check-circle'
+            ]);
             $this->resetBulkActions();
         } catch (\Exception $e) {
-            session()->flash('error', 'Failed to bulk unpublish.');
+            $this->dispatch('notify', [
+                'message' => 'Failed to bulk unpublish.',
+                'type' => 'error',
+                'icon' => 'fas fa-exclamation-triangle'
+            ]);
         }
     }
 
@@ -195,11 +261,19 @@ class UserCourses extends Component
             $count = Course::whereIn('id', $this->selectedCourses)
                 ->where('instructor_id', Auth::id())
                 ->delete();
-                
-            session()->flash('success', "{$count} courses have been deleted.");
+
+            $this->dispatch('notify', [
+                'message' => "{$count} courses have been deleted.",
+                'type' => 'success',
+                'icon' => 'fas fa-check-circle'
+            ]);
             $this->resetBulkActions();
         } catch (\Exception $e) {
-            session()->flash('error', 'Failed to bulk delete.');
+            $this->dispatch('notify', [
+                'message' => 'Failed to bulk delete.',
+                'type' => 'error',
+                'icon' => 'fas fa-exclamation-triangle'
+            ]);
         }
     }
 
@@ -210,6 +284,18 @@ class UserCourses extends Component
     {
         $this->selectedCourses = [];
         $this->selectAll = false;
+    }
+
+    /**
+     * Reset all filters
+     */
+    public function resetFilters()
+    {
+        $this->search = '';
+        $this->categoryFilter = '';
+        $this->statusFilter = '';
+        $this->difficultyFilter = '';
+        $this->resetPage();
     }
 
     /**

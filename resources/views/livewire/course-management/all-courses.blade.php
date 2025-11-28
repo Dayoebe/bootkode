@@ -337,47 +337,58 @@
                             </div>
                             
                             <!-- Action Buttons -->
-                            <div class="flex justify-between items-center pt-4 border-t border-themed-primary transition-colors duration-300">
-                                <div class="flex gap-2">
-                                    <button wire:click="CourseForm({{ $course->id }})" 
-                                            class="p-2 rounded-lg bg-accent-themed-primary/10 hover:bg-accent-themed-primary/20 text-accent-themed-primary transition-all duration-300 transform hover:scale-110"
-                                            title="Edit Course">
-                                        <i class="fas fa-edit text-sm"></i>
-                                    </button>
-                                    
-                                    <a href="{{ route('course-builder', $course) }}" 
-                                       class="p-2 rounded-lg bg-purple-100/50 hover:bg-purple-200/50 text-purple-600 transition-all duration-300 transform hover:scale-110"
-                                       title="Build Course">
-                                        <i class="fas fa-cogs text-sm"></i>
-                                    </a>
-                                    
-                                    <button wire:click="previewCourse({{ $course->id }})" 
-                                            class="p-2 rounded-lg bg-indigo-100/50 hover:bg-indigo-200/50 text-indigo-600 transition-all duration-300 transform hover:scale-110"
-                                            title="Preview Course">
-                                        <i class="fas fa-search text-sm"></i>
-                                    </button>
-                                    
-                                    <button wire:click="togglePublished({{ $course->id }})" 
-                                            class="p-2 rounded-lg transition-all duration-300 transform hover:scale-110 {{ $course->is_published ? 'bg-green-100/50 hover:bg-green-200/50 text-green-600' : 'bg-themed-tertiary hover:bg-gray-200 text-themed-secondary' }}"
-                                            title="{{ $course->is_published ? 'Unpublish' : 'Publish' }}">
-                                        <i class="fas fa-{{ $course->is_published ? 'eye' : 'eye-slash' }} text-sm"></i>
-                                    </button>
-                                    
-                                    <button wire:click="toggleApproved({{ $course->id }})" 
-                                            class="p-2 rounded-lg transition-all duration-300 transform hover:scale-110 {{ $course->is_approved ? 'bg-green-100/50 hover:bg-green-200/50 text-green-600' : 'bg-yellow-100/50 hover:bg-yellow-200/50 text-yellow-600' }}"
-                                            title="{{ $course->is_approved ? 'Unapprove Course' : 'Approve Course' }}">
-                                        <i class="fas fa-{{ $course->is_approved ? 'check-circle' : 'clock' }} text-sm"></i>
-                                    </button>
-                                </div>
-                                
-                                <!-- Delete Button -->
-                                <button wire:click="deleteCourse({{ $course->id }})" 
-                                        wire:confirm="Are you sure you want to delete this course?"
-                                        class="p-2 rounded-lg bg-red-100/50 hover:bg-red-200/50 text-red-600 transition-all duration-300 transform hover:scale-110"
-                                        title="Delete Course">
-                                    <i class="fas fa-trash-alt text-sm"></i>
-                                </button>
-                            </div>
+<!-- Action Buttons -->
+<!-- Action Buttons -->
+<div class="flex flex-wrap gap-2 pt-4 border-t border-themed-primary transition-colors duration-300">
+    <!-- Edit Course -->
+    <button wire:click="CourseForm({{ $course->id }})" 
+            class="flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-semibold bg-accent-themed-primary/10 hover:bg-accent-themed-primary/20 text-accent-themed-primary transition-all duration-300"
+            title="Edit Course">
+        <i class="fas fa-edit"></i>
+        <span>Edit</span>
+    </button>
+    
+    <!-- Build Course -->
+    <a href="{{ route('course-builder', $course) }}" 
+       class="flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-semibold bg-purple-100/50 hover:bg-purple-200/50 text-purple-600 transition-all duration-300"
+       title="Build Course">
+        <i class="fas fa-cogs"></i>
+        <span>Build</span>
+    </a>
+    
+    <!-- Preview Course -->
+    <button wire:click="previewCourse({{ $course->id }})" 
+            class="flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-semibold bg-indigo-100/50 hover:bg-indigo-200/50 text-indigo-600 transition-all duration-300"
+            title="Preview Course">
+        <i class="fas fa-eye"></i>
+        <span>Preview</span>
+    </button>
+    
+    <!-- Publish/Unpublish -->
+    <button wire:click="togglePublished({{ $course->id }})" 
+            class="flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-semibold transition-all duration-300 {{ $course->is_published ? 'bg-green-100/50 text-green-700 hover:bg-green-200/50' : 'bg-gray-100/50 text-gray-700 hover:bg-gray-200/50' }}"
+            title="{{ $course->is_published ? 'Unpublish' : 'Publish' }}">
+        <i class="fas fa-{{ $course->is_published ? 'eye' : 'eye-slash' }}"></i>
+        <span>{{ $course->is_published ? 'Unpublish' : 'Publish' }}</span>
+    </button>
+    
+    <!-- Approve/Unapprove -->
+    <button wire:click="toggleApproved({{ $course->id }})" 
+            class="flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-semibold transition-all duration-300 {{ $course->is_approved ? 'bg-green-100/50 text-green-700 hover:bg-green-200/50' : 'bg-yellow-100/50 text-yellow-700 hover:bg-yellow-200/50' }}"
+            title="{{ $course->is_approved ? 'Unapprove' : 'Approve' }}">
+        <i class="fas fa-{{ $course->is_approved ? 'check-circle' : 'clock' }}"></i>
+        <span>{{ $course->is_approved ? 'Unapprove' : 'Approve' }}</span>
+    </button>
+    
+    <!-- Delete Button -->
+    <button wire:click="deleteCourse({{ $course->id }})" 
+            wire:confirm="Are you sure you want to delete this course?"
+            class="flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-semibold bg-red-100/50 hover:bg-red-200/50 text-red-600 transition-all duration-300"
+            title="Delete Course">
+        <i class="fas fa-trash-alt"></i>
+        <span>Delete</span>
+    </button>
+</div>
                         </div>
                     </div>
                 @endforeach
