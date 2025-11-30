@@ -15,9 +15,12 @@ use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
 use App\Notifications\CustomVerifyEmail;
 use App\Services\AffiliateService;
+use App\Traits\HasCloudinaryUpload;
 
 class AuthController extends Controller
 {
+    use HasCloudinaryUpload; // Add the trait here
+    
     protected $affiliateService;
 
     public function __construct(AffiliateService $affiliateService)
@@ -66,7 +69,6 @@ class AuthController extends Controller
                 session()->flash('verification_email', $user->email);
                 session()->flash('warning', 'Please verify your email address to unlock all features.');
             }
-            
             
             try {
                 activity()
@@ -124,12 +126,13 @@ class AuthController extends Controller
 
     public function register(Request $request): RedirectResponse
     {
+        // UPDATED VALIDATION - Made fields nullable except name and email
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:' . User::class],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
             'profile_picture' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif', 'max:2048'],
-            'role' => $this->getRoleValidationRules(),
+            'role' => ['nullable', ...$this->getRoleValidationRules()], // Made nullable
             'date_of_birth' => ['nullable', 'date'],
             'phone_number' => ['nullable', 'string', 'max:20'],
             'bio' => ['nullable', 'string', 'max:500'],
@@ -148,7 +151,7 @@ class AuthController extends Controller
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'role' => $request->role,
+            'role' => $request->role ?? User::ROLE_STUDENT, // Default to student if not provided
             'date_of_birth' => $request->date_of_birth,
             'phone_number' => $request->phone_number,
             'bio' => $request->bio,
@@ -172,16 +175,30 @@ class AuthController extends Controller
             $user = User::create($userData);
         }
     
+        // Handle profile picture upload to Cloudinary
         if ($request->hasFile('profile_picture')) {
-            $path = $request->file('profile_picture')->store('profile-pictures', 'public');
-            $user->profile_picture = $path;
-            $user->save();
+            try {
+                $file = $request->file('profile_picture');
+                
+                // FIXED: Use the trait method instead of cloudinary() helper
+                $uploadResult = $this->uploadProfilePicture($file, $user->id);
+                
+                if ($uploadResult && isset($uploadResult['secure_url'])) {
+                    $user->profile_picture = $uploadResult['secure_url'];
+                    $user->save();
+                }
+            } catch (\Exception $e) {
+                \Log::error('Profile picture upload error during registration', [
+                    'user_id' => $user->id,
+                    'error' => $e->getMessage()
+                ]);
+                // Continue registration even if image upload fails
+            }
         }
     
         // Send verification email
         $user->notify(new CustomVerifyEmail());
     
-        
         Auth::login($user);
     
         // Redirect to their dashboard with email verification warning
@@ -195,7 +212,6 @@ class AuthController extends Controller
     protected function getRoleValidationRules(): array
     {
         return [
-            'required',
             'string',
             'in:' . implode(',', [
                 User::ROLE_STUDENT,

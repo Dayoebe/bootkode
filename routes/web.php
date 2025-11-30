@@ -579,7 +579,18 @@ Route::get('/export-db', function () {
 });
 
 
-
+Route::get('/test-cloudinary', function () {
+    try {
+        $c = new \Cloudinary\Cloudinary();
+        return $c->uploadApi()->upload('https://upload.wikimedia.org/wikipedia/commons/a/ae/Olympic_flag.jpg', [
+            'public_id' => 'olympic_flag_test_' . time(),
+            'folder' => 'tests'
+        ]);
+        return "Cloudinary working!";
+    } catch (\Exception $e) {
+        return "Error: " . $e->getMessage();
+    }
+});
 
 
 
