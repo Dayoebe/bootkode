@@ -160,7 +160,7 @@
                                     id="role"
                                     name="role"
                                     class="w-full px-4 py-3 rounded-lg border border-slate-300 text-slate-900 transition-all duration-200 focus:outline-none focus:border-slate-900 focus:ring-2 focus:ring-slate-900 focus:ring-opacity-10"
-                                    required>
+                                    >
                                     <option value="">Select your role</option>
                                     <option value="{{ App\Models\Core\User::ROLE_STUDENT }}" {{ old('role') == App\Models\Core\User::ROLE_STUDENT ? 'selected' : '' }}>Student</option>
                                     <option value="{{ App\Models\Core\User::ROLE_INSTRUCTOR }}" {{ old('role') == App\Models\Core\User::ROLE_INSTRUCTOR ? 'selected' : '' }}>Instructor</option>
@@ -180,7 +180,7 @@
                                     type="date"
                                     name="date_of_birth"
                                     value="{{ old('date_of_birth') }}"
-                                    required />
+                                    />
                                 <p class="mt-2 text-xs text-slate-500">We need this to personalize your learning experience</p>
                                 @error('date_of_birth')
                                     <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
@@ -197,7 +197,7 @@
                                     name="phone_number"
                                     value="{{ old('phone_number') }}"
                                     placeholder="+234 8012345678"
-                                    required />
+                                     />
                                 @error('phone_number')
                                     <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
                                 @enderror
@@ -247,8 +247,7 @@
                                     type="text"
                                     name="address_street"
                                     value="{{ old('address_street') }}"
-                                    placeholder="123 Main Street"
-                                    required />
+                                    placeholder="123 Main Street" />
                                 @error('address_street')
                                     <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
                                 @enderror
@@ -264,8 +263,7 @@
                                         type="text"
                                         name="address_city"
                                         value="{{ old('address_city') }}"
-                                        placeholder="Lagos"
-                                        required />
+                                        placeholder="Lagos" />
                                     @error('address_city')
                                         <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
                                     @enderror
@@ -279,8 +277,7 @@
                                         type="text"
                                         name="address_state"
                                         value="{{ old('address_state') }}"
-                                        placeholder="Lagos"
-                                        required />
+                                        placeholder="Lagos" />
                                     @error('address_state')
                                         <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
                                     @enderror
@@ -297,8 +294,7 @@
                                         type="text"
                                         name="address_country"
                                         value="{{ old('address_country') }}"
-                                        placeholder="Nigeria"
-                                        required />
+                                        placeholder="Nigeria" />
                                     @error('address_country')
                                         <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
                                     @enderror
@@ -312,8 +308,7 @@
                                         type="text"
                                         name="address_postal_code"
                                         value="{{ old('address_postal_code') }}"
-                                        placeholder="100001"
-                                        required />
+                                        placeholder="100001" />
                                     @error('address_postal_code')
                                         <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
                                     @enderror
