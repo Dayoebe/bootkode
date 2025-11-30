@@ -125,7 +125,7 @@
                                 <div class="flex items-center">
                                     <div class="flex-shrink-0 w-10 h-10 rounded-full overflow-hidden">
                                         @if($user->profile_picture)
-                                            <img src="{{ asset('storage/' . $user->profile_picture) }}"
+                                            <img src="{{ $user->profile_picture }}"
                                                 alt="Avatar of {{ $user->name }}" class="w-full h-full object-cover"
                                                 loading="lazy">
                                         @else
@@ -244,7 +244,10 @@
                     <div class="flex items-center gap-3 flex-1 min-w-0">
                         <div class="flex-shrink-0 w-12 h-12 rounded-full overflow-hidden">
                             @if($user->profile_picture)
-                                <img src="{{ asset('storage/' . $user->profile_picture) }}" alt="Avatar of {{ $user->name }}"
+                                {{-- <img src="{{ asset('storage/' . $user->profile_picture) }}"  --}}
+                                <img src="{{ $user->profile_picture }}"
+                                
+                                alt="Avatar of {{ $user->name }}"
                                     class="w-full h-full object-cover" loading="lazy">
                             @else
                                 <div

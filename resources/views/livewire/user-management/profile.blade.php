@@ -14,15 +14,32 @@
                     <!-- Profile Info -->
                     <div class="flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-6 flex-1">
                         <div class="relative group">
-                            @if ($user->profile_picture)
-                                <img src="{{ asset('storage/' . $user->profile_picture) }}"
-                                    class="w-20 h-20 sm:w-24 sm:h-24 lg:w-32 lg:h-32 rounded-full object-cover border-4 border-accent-themed-primary/30 shadow-xl group-hover:scale-105 transition-transform duration-300">
-                            @else
-                                <div class="w-20 h-20 sm:w-24 sm:h-24 lg:w-32 lg:h-32 rounded-full bg-gradient-to-br from-accent-themed-primary to-accent-themed-secondary flex items-center justify-center text-white text-3xl sm:text-4xl lg:text-5xl font-bold shadow-xl group-hover:scale-105 transition-transform duration-300">
-                                    {{ strtoupper(substr($user->name, 0, 1)) }}
-                                </div>
-                            @endif
 
+                   
+                            @if($user->profile_picture)
+    <img src="{{ $user->profile_picture }}" 
+         class="w-32 h-32 rounded-full object-cover" 
+         alt="{{ $user->name }}">
+@else
+    <!-- fallback avatar -->
+    <div class="w-32 h-32 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 
+                flex items-center justify-center text-white text-4xl font-bold">
+        {{ strtoupper(substr($user->name, 0, 1)) }}
+    </div>
+@endif
+
+
+
+                            {{-- @if ($user->profile_picture)
+                            <img src="{{ $user->getProfilePictureUrl(400, 400) }}"
+                                class="w-20 h-20 sm:w-24 sm:h-24 lg:w-32 lg:h-32 rounded-full object-cover border-4 border-accent-themed-primary/30 shadow-xl group-hover:scale-105 transition-transform duration-300"
+                                alt="{{ $user->name }}'s profile picture"
+                                loading="lazy">
+                        @else
+                            <div class="w-20 h-20 sm:w-24 sm:h-24 lg:w-32 lg:h-32 rounded-full bg-gradient-to-br from-accent-themed-primary to-accent-themed-secondary flex items-center justify-center text-white text-3xl sm:text-4xl lg:text-5xl font-bold shadow-xl group-hover:scale-105 transition-transform duration-300">
+                                {{ strtoupper(substr($user->name, 0, 1)) }}
+                            </div>
+                        @endif --}}
                             <!-- Status Indicator -->
                             <div class="absolute bottom-0 right-0 w-5 h-5 sm:w-6 sm:h-6 lg:w-8 lg:h-8 bg-green-500 rounded-full border-4 border-themed-secondary flex items-center justify-center">
                                 <div class="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-white rounded-full animate-pulse"></div>

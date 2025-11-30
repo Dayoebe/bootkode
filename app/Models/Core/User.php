@@ -11,11 +11,12 @@ use Spatie\Permission\Traits\HasRoles;
 use App\Traits\HasWallet;
 use App\Traits\HasAffiliate;
 use App\Traits\HasActivityLogs;
+use App\Traits\HasCloudinaryUpload;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class User extends Authenticatable implements MustVerifyEmail
 {
-    use HasApiTokens, HasFactory, Notifiable, HasRoles, HasWallet, HasAffiliate, HasActivityLogs;
+    use HasApiTokens, HasFactory, Notifiable, HasRoles, HasWallet, HasAffiliate, HasActivityLogs, HasCloudinaryUpload;
 
     const ROLE_SUPER_ADMIN = 'super_admin';
     const ROLE_ACADEMY_ADMIN = 'academy_admin';
@@ -977,4 +978,49 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         $this->notify(new \App\Notifications\CustomVerifyEmail());
     }
+     /**
+     * Get optimized profile picture URL
+     * 
+     * @param int $width
+     * @param int $height
+     * @return string|null
+     */
+    public function getProfilePictureUrl(int $width = 400, int $height = 400): ?string
+    {
+        if (!$this->profile_picture) {
+            return null;
+        }
+
+        // If it's already a Cloudinary URL, return optimized version
+        if (strpos($this->profile_picture, 'cloudinary.com') !== false) {
+            $publicId = $this->extractPublicId($this->profile_picture);
+            if ($publicId) {
+                return $this->getOptimizedUrl($publicId, [
+                    'width' => $width,
+                    'height' => $height,
+                    'crop' => 'fill',
+                    'gravity' => 'face'
+                ]);
+            }
+        }
+
+        // Fallback to original URL
+        return $this->profile_picture;
+    }
+
+    /**
+     * Get thumbnail profile picture URL
+     * 
+     * @return string|null
+     */
+    public function getProfileThumbnailUrl(): ?string
+    {
+        return $this->getProfilePictureUrl(150, 150);
+    }
+    public function getProfileCoverUrl(int $width = 800, int $height = 400): ?string
+    {
+
+        return $this->cover_picture ? $this->cover_picture : null;
+    }
+
 }

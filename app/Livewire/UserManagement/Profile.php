@@ -6,7 +6,6 @@ use Livewire\Component;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
 use Livewire\WithFileUploads;
-use Illuminate\Support\Facades\Storage;
 use Livewire\Attributes\Layout;
 use App\Models\Learning\Course;
 use App\Models\Learning\Lesson;
@@ -15,11 +14,12 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Str;
+use App\Traits\HasCloudinaryUpload;
 
 #[Layout('layouts.dashboard')]
 class Profile extends Component
 {
-    use WithFileUploads;
+    use WithFileUploads, HasCloudinaryUpload;
 
     public $user;
     public $activeTab = 'personal';
@@ -35,6 +35,7 @@ class Profile extends Component
     public $showSessionsModal = false;
     public $showDeactivateModal = false;
     public $showDeleteModal = false;
+    
     // Password fields
     public $current_password = '';
     public $new_password = '';
@@ -83,287 +84,238 @@ class Profile extends Component
     ];
 
     public function mount($mode = 'view')
-{
-    $this->user = Auth::user();
-    $this->isEditing = $mode === 'edit';
-    $this->loadSettingsData(); // Add this line
-    $this->resetValidation();
-    
-    if ($this->isEditing) {
-        $this->loadUserData();
-    }
-}
-
-
-// Add these methods to your Profile component
-
-/**
- * Load settings data when component mounts
- */
-public function loadSettingsData()
-{
-    $this->emailNotifications = $this->user->receive_course_updates ?? true;
-    $this->certificateNotifications = $this->user->receive_certificate_notifications ?? true;
-    $this->profileVisibility = $this->user->profile_visibility ?? 'public';
-    $this->showEmail = $this->user->show_email_publicly ?? false;
-    $this->activeSessions = $this->getActiveSessionsCount();
-}
-
-/**
- * Get count of active sessions
- */
-protected function getActiveSessionsCount()
-{
-    // This is a simplified implementation - you might want to use a more robust session tracking system
-    return 1; // Default to 1 for current session
-}
-
-/**
- * Update email notifications preference
- */
-public function updateEmailNotifications()
-{
-    $this->user->update([
-        'receive_course_updates' => $this->emailNotifications
-    ]);
-    
-    $this->dispatch('notify', 'Email notifications updated successfully!');
-}
-
-/**
- * Update certificate notifications preference
- */
-public function updateCertificateNotifications()
-{
-    $this->user->update([
-        'receive_certificate_notifications' => $this->certificateNotifications
-    ]);
-    
-    $this->dispatch('notify', 'Certificate notifications updated successfully!');
-}
-
-/**
- * Update profile visibility
- */
-public function updateProfileVisibility()
-{
-    $this->user->update([
-        'profile_visibility' => $this->profileVisibility
-    ]);
-    
-    $this->dispatch('notify', 'Profile visibility updated successfully!');
-}
-
-/**
- * Update show email preference
- */
-public function updateShowEmail()
-{
-    $this->user->update([
-        'show_email_publicly' => $this->showEmail
-    ]);
-    
-    $this->dispatch('notify', 'Email visibility updated successfully!');
-}
-
-/**
- * Change password
- */
-public function changePassword()
-{
-    $this->validate([
-        'current_password' => ['required', 'current_password'],
-        'new_password' => ['required', 'min:8', 'confirmed'],
-    ]);
-
-    $this->user->update([
-        'password' => Hash::make($this->new_password)
-    ]);
-
-    $this->reset(['current_password', 'new_password', 'new_password_confirmation', 'showPasswordModal']);
-    $this->dispatch('notify', 'Password changed successfully!');
-}
-
-/**
- * Logout other sessions
- */
-public function logoutOtherSessions()
-{
-    // This would typically use Laravel's built-in session management
-    // For now, we'll implement a basic version
-    Auth::logoutOtherDevices($this->current_password);
-    
-    $this->reset(['showSessionsModal']);
-    $this->activeSessions = 1;
-    $this->dispatch('notify', 'Other sessions logged out successfully!');
-}
-
-/**
- * Toggle 2FA (placeholder implementation)
- */
-public function toggle2FA()
-{
-    // This is a placeholder - implement your 2FA logic here
-    $message = $this->user->two_factor_secret 
-        ? 'Two-factor authentication disabled!' 
-        : 'Two-factor authentication enabled!';
-    
-    $this->dispatch('notify', $message);
-}
-
-/**
- * Export user data
- */
-public function exportData()
-{
-    try {
-        $userData = [
-            'personal_info' => [
-                'name' => $this->user->name,
-                'email' => $this->user->email,
-                'phone_number' => $this->user->phone_number,
-                'date_of_birth' => $this->user->date_of_birth,
-                'bio' => $this->user->bio,
-            ],
-            'address' => [
-                'street' => $this->user->address_street,
-                'city' => $this->user->address_city,
-                'state' => $this->user->address_state,
-                'country' => $this->user->address_country,
-                'postal_code' => $this->user->address_postal_code,
-            ],
-            'education_career' => [
-                'occupation' => $this->user->occupation,
-                'education_level' => $this->user->education_level,
-                'skills' => $this->user->skills,
-            ],
-            'learning_data' => [
-                'courses_enrolled' => $this->user->courses()->count(),
-                'completed_lessons' => $this->user->completedLessons()->count(),
-                'certificates' => $this->user->certificates()->count(),
-            ],
-            'exported_at' => now()->toISOString(),
-        ];
-
-        $filename = "user_data_{$this->user->id}_" . now()->format('Y-m-d_H-i-s') . '.json';
+    {
+        $this->user = Auth::user();
+        $this->isEditing = $mode === 'edit';
+        $this->loadSettingsData();
+        $this->resetValidation();
         
-        return response()->streamDownload(function () use ($userData) {
-            echo json_encode($userData, JSON_PRETTY_PRINT);
-        }, $filename, [
-            'Content-Type' => 'application/json',
-        ]);
-
-    } catch (\Exception $e) {
-        $this->dispatch('notify', 'Error exporting data: ' . $e->getMessage(), 'error');
+        if ($this->isEditing) {
+            $this->loadUserData();
+        }
     }
-}
 
-/**
- * Clear cache
- */
-public function clearCache()
-{
-    try {
-        // Clear user-specific cache
-        Cache::tags(["user_{$this->user->id}"])->flush();
-        
-        // You can add more specific cache clearing here
-        Artisan::call('cache:clear');
-        
-        $this->dispatch('notify', 'Cache cleared successfully!');
-    } catch (\Exception $e) {
-        $this->dispatch('notify', 'Error clearing cache: ' . $e->getMessage(), 'error');
+    public function loadSettingsData()
+    {
+        $this->emailNotifications = $this->user->receive_course_updates ?? true;
+        $this->certificateNotifications = $this->user->receive_certificate_notifications ?? true;
+        $this->profileVisibility = $this->user->profile_visibility ?? 'public';
+        $this->showEmail = $this->user->show_email_publicly ?? false;
+        $this->activeSessions = $this->getActiveSessionsCount();
     }
-}
 
-/**
- * Deactivate account
- */
-public function deactivateAccount()
-{
-     // Prevent super admin from deactivating themselves
-     if ($this->user->isSuperAdmin() && $this->user->id === auth()->id()) {
-        $this->dispatch('notify', 'Super admin accounts cannot be deactivated for security reasons!', 'error');
-        $this->reset(['showDeactivateModal']);
-        return;
+    protected function getActiveSessionsCount()
+    {
+        return 1;
     }
-    try {
+
+    public function updateEmailNotifications()
+    {
         $this->user->update([
-            'is_active' => false,
-            'deactivated_at' => now(),
+            'receive_course_updates' => $this->emailNotifications
+        ]);
+        
+        $this->dispatch('notify', 'Email notifications updated successfully!');
+    }
+
+    public function updateCertificateNotifications()
+    {
+        $this->user->update([
+            'receive_certificate_notifications' => $this->certificateNotifications
+        ]);
+        
+        $this->dispatch('notify', 'Certificate notifications updated successfully!');
+    }
+
+    public function updateProfileVisibility()
+    {
+        $this->user->update([
+            'profile_visibility' => $this->profileVisibility
+        ]);
+        
+        $this->dispatch('notify', 'Profile visibility updated successfully!');
+    }
+
+    public function updateShowEmail()
+    {
+        $this->user->update([
+            'show_email_publicly' => $this->showEmail
+        ]);
+        
+        $this->dispatch('notify', 'Email visibility updated successfully!');
+    }
+
+    public function changePassword()
+    {
+        $this->validate([
+            'current_password' => ['required', 'current_password'],
+            'new_password' => ['required', 'min:8', 'confirmed'],
         ]);
 
-        Auth::logout();
-        
-        session()->flash('message', 'Your account has been deactivated. You can reactivate by logging in again.');
-        return redirect('/');
+        $this->user->update([
+            'password' => Hash::make($this->new_password)
+        ]);
 
-    } catch (\Exception $e) {
-        $this->dispatch('notify', 'Error deactivating account: ' . $e->getMessage(), 'error');
+        $this->reset(['current_password', 'new_password', 'new_password_confirmation', 'showPasswordModal']);
+        $this->dispatch('notify', 'Password changed successfully!');
     }
-}
 
-/**
- * Delete account
- */
-public function deleteAccount()
-{
-    $this->validate([
-        'delete_password' => ['required', 'current_password'],
-        'delete_confirmation' => ['required', 'in:DELETE'],
-    ]);
-
-    try {
-        $user = $this->user;
+    public function logoutOtherSessions()
+    {
+        Auth::logoutOtherDevices($this->current_password);
         
-        Auth::logout();
-        
-        // Soft delete the user
-        $user->delete();
-        
-        session()->flash('message', 'Your account has been permanently deleted.');
-        return redirect('/');
-
-    } catch (\Exception $e) {
-        $this->dispatch('notify', 'Error deleting account: ' . $e->getMessage(), 'error');
+        $this->reset(['showSessionsModal']);
+        $this->activeSessions = 1;
+        $this->dispatch('notify', 'Other sessions logged out successfully!');
     }
-}
 
-/**
- * Reset modal states when closing
- */
-public function resetModalStates()
-{
-    $this->reset([
-        'showPasswordModal',
-        'showSessionsModal', 
-        'showDeactivateModal',
-        'showDeleteModal',
-        'current_password',
-        'new_password',
-        'new_password_confirmation',
-        'delete_password',
-        'delete_confirmation'
-    ]);
-}
-// Add to your component
-
-
-public function updated($property)
-{
-    // Reset modals when they're set to false
-    if (in_array($property, [
-        'showPasswordModal', 
-        'showSessionsModal', 
-        'showDeactivateModal', 
-        'showDeleteModal'
-    ]) && !$this->$property) {
-        $this->resetModalStates();
+    public function toggle2FA()
+    {
+        $message = $this->user->two_factor_secret 
+            ? 'Two-factor authentication disabled!' 
+            : 'Two-factor authentication enabled!';
+        
+        $this->dispatch('notify', $message);
     }
-}
+
+    public function exportData()
+    {
+        try {
+            $userData = [
+                'personal_info' => [
+                    'name' => $this->user->name,
+                    'email' => $this->user->email,
+                    'phone_number' => $this->user->phone_number,
+                    'date_of_birth' => $this->user->date_of_birth,
+                    'bio' => $this->user->bio,
+                ],
+                'address' => [
+                    'street' => $this->user->address_street,
+                    'city' => $this->user->address_city,
+                    'state' => $this->user->address_state,
+                    'country' => $this->user->address_country,
+                    'postal_code' => $this->user->address_postal_code,
+                ],
+                'education_career' => [
+                    'occupation' => $this->user->occupation,
+                    'education_level' => $this->user->education_level,
+                    'skills' => $this->user->skills,
+                ],
+                'learning_data' => [
+                    'courses_enrolled' => $this->user->courses()->count(),
+                    'completed_lessons' => $this->user->completedLessons()->count(),
+                    'certificates' => $this->user->certificates()->count(),
+                ],
+                'exported_at' => now()->toISOString(),
+            ];
+
+            $filename = "user_data_{$this->user->id}_" . now()->format('Y-m-d_H-i-s') . '.json';
+            
+            return response()->streamDownload(function () use ($userData) {
+                echo json_encode($userData, JSON_PRETTY_PRINT);
+            }, $filename, [
+                'Content-Type' => 'application/json',
+            ]);
+
+        } catch (\Exception $e) {
+            $this->dispatch('notify', 'Error exporting data: ' . $e->getMessage(), 'error');
+        }
+    }
+
+    public function clearCache()
+    {
+        try {
+            Cache::tags(["user_{$this->user->id}"])->flush();
+            Artisan::call('cache:clear');
+            
+            $this->dispatch('notify', 'Cache cleared successfully!');
+        } catch (\Exception $e) {
+            $this->dispatch('notify', 'Error clearing cache: ' . $e->getMessage(), 'error');
+        }
+    }
+
+    public function deactivateAccount()
+    {
+        if ($this->user->isSuperAdmin() && $this->user->id === auth()->id()) {
+            $this->dispatch('notify', 'Super admin accounts cannot be deactivated for security reasons!', 'error');
+            $this->reset(['showDeactivateModal']);
+            return;
+        }
+        
+        try {
+            $this->user->update([
+                'is_active' => false,
+                'deactivated_at' => now(),
+            ]);
+
+            Auth::logout();
+            
+            session()->flash('message', 'Your account has been deactivated. You can reactivate by logging in again.');
+            return redirect('/');
+
+        } catch (\Exception $e) {
+            $this->dispatch('notify', 'Error deactivating account: ' . $e->getMessage(), 'error');
+        }
+    }
+
+    public function deleteAccount()
+    {
+        $this->validate([
+            'delete_password' => ['required', 'current_password'],
+            'delete_confirmation' => ['required', 'in:DELETE'],
+        ]);
+
+        try {
+            $user = $this->user;
+            
+            // Delete profile picture from Cloudinary if exists
+            if ($user->profile_picture) {
+                $publicId = $this->extractPublicId($user->profile_picture);
+                if ($publicId) {
+                    $this->deleteFromCloudinary($publicId);
+                }
+            }
+            
+            Auth::logout();
+            $user->delete();
+            
+            session()->flash('message', 'Your account has been permanently deleted.');
+            return redirect('/');
+
+        } catch (\Exception $e) {
+            $this->dispatch('notify', 'Error deleting account: ' . $e->getMessage(), 'error');
+        }
+    }
+
+    public function resetModalStates()
+    {
+        $this->reset([
+            'showPasswordModal',
+            'showSessionsModal', 
+            'showDeactivateModal',
+            'showDeleteModal',
+            'current_password',
+            'new_password',
+            'new_password_confirmation',
+            'delete_password',
+            'delete_confirmation'
+        ]);
+    }
+
+    public function updated($property)
+    {
+        if (in_array($property, [
+            'showPasswordModal', 
+            'showSessionsModal', 
+            'showDeactivateModal', 
+            'showDeleteModal'
+        ]) && !$this->$property) {
+            $this->resetModalStates();
+        }
+    }
+
     public function loadUserData()
     {
-        // Personal Info
         $this->fill($this->user->only([
             'name',
             'email',
@@ -394,7 +346,6 @@ public function updated($property)
         $userId = Auth::id();
 
         return [
-            // Basic Info
             'name' => 'required|string|max:255',
             'email' => [
                 'required',
@@ -406,23 +357,15 @@ public function updated($property)
             'phone_number' => 'nullable|string|max:20|regex:/^[\d\s\-+]+$/',
             'date_of_birth' => 'nullable|date|before:-13 years',
             'bio' => 'nullable|string|max:500',
-
-            // Address
             'address_street' => 'nullable|string|max:255',
             'address_city' => 'nullable|string|max:100',
             'address_state' => 'nullable|string|max:100',
             'address_country' => 'nullable|string|max:100',
             'address_postal_code' => 'nullable|string|max:20',
-
-            // Education & Career
             'occupation' => 'nullable|string|max:100',
             'education_level' => 'nullable|string|max:100',
             'skills' => 'nullable|string|max:255',
-
-            // Profile Picture
             'profile_picture' => 'nullable|image|max:2048|mimes:jpeg,png,jpg,gif',
-
-            // Social Links
             'social_links.twitter' => 'nullable|url|starts_with:https://twitter.com,https://x.com',
             'social_links.facebook' => 'nullable|url|starts_with:https://facebook.com',
             'social_links.linkedin' => 'nullable|url|starts_with:https://linkedin.com',
@@ -466,15 +409,25 @@ public function updated($property)
 
         $updateData = $this->getUpdateData();
 
-        // Handle profile picture upload
+        // Handle profile picture upload to Cloudinary
         if ($this->profile_picture) {
-            // Delete old picture if exists
+            // Delete old picture from Cloudinary if exists
             if ($this->user->profile_picture) {
-                Storage::disk('public')->delete($this->user->profile_picture);
+                $oldPublicId = $this->extractPublicId($this->user->profile_picture);
+                if ($oldPublicId) {
+                    $this->deleteFromCloudinary($oldPublicId);
+                }
             }
 
-            $path = $this->profile_picture->store('profile-pictures', 'public');
-            $updateData['profile_picture'] = $path;
+            // Upload new picture to Cloudinary
+            $uploadResult = $this->uploadProfilePicture($this->profile_picture, $this->user->id);
+            
+            if ($uploadResult) {
+                $updateData['profile_picture'] = $uploadResult['secure_url'];
+            } else {
+                $this->dispatch('notify', 'Failed to upload profile picture. Please try again.', 'error');
+                return;
+            }
         }
 
         $this->user->update($updateData);
@@ -515,7 +468,12 @@ public function updated($property)
     public function deleteProfilePicture()
     {
         if ($this->user->profile_picture) {
-            Storage::disk('public')->delete($this->user->profile_picture);
+            // Delete from Cloudinary
+            $publicId = $this->extractPublicId($this->user->profile_picture);
+            if ($publicId) {
+                $this->deleteFromCloudinary($publicId);
+            }
+            
             $this->user->update(['profile_picture' => null]);
         }
 
@@ -563,14 +521,14 @@ public function updated($property)
     public function getRecentActivitiesProperty()
     {
         return $this->user->completedLessons()
-            ->with(['section.course']) // Fixed: use section instead of module
+            ->with(['section.course'])
             ->orderByDesc('lesson_user.completed_at')
             ->take(5)
             ->get()
             ->map(function ($lesson) {
                 return [
                     'title' => 'Completed lesson: ' . $lesson->title,
-                    'course' => $lesson->section->course->title ?? 'Unknown Course', // Fixed relationship
+                    'course' => $lesson->section->course->title ?? 'Unknown Course',
                     'date' => $lesson->pivot->completed_at,
                     'icon' => 'check-circle',
                     'color' => 'green-400',
@@ -591,7 +549,6 @@ public function updated($property)
         $firstCompletion = $completedLessons->min('pivot.completed_at');
         $weeks = max(1, Carbon::parse($firstCompletion)->diffInWeeks(now()));
 
-        // Assuming duration_minutes exists on lessons
         return round($completedLessons->sum('duration_minutes') / 60 / $weeks, 1);
     }
 
@@ -603,6 +560,7 @@ public function updated($property)
             ->take(5)
             ->get();
     }
+
     public function getWishlistProperty()
     {
         return $this->user->wishlists()
@@ -627,6 +585,7 @@ public function updated($property)
         $this->user->wishlists()->where('course_id', $courseId)->delete();
         $this->dispatch('notify', 'Course removed from wishlist!');
     }
+
     public function render()
     {
         $title = $this->isEditing ? 'Edit Profile' : 'View Profile';
@@ -638,10 +597,10 @@ public function updated($property)
             'savedResources' => $this->savedResources,
             'wishlist' => $this->wishlist,
         ])->layout('layouts.dashboard', [
-                    'title' => $title,
-                    'description' => $this->isEditing ? 'Update your personal information and settings' : 'View your profile information and learning progress',
-                    'icon' => 'fas fa-user-circle',
-                    'active' => 'profile'
-                ]);
+            'title' => $title,
+            'description' => $this->isEditing ? 'Update your personal information and settings' : 'View your profile information and learning progress',
+            'icon' => 'fas fa-user-circle',
+            'active' => 'profile'
+        ]);
     }
 }

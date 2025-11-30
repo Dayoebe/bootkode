@@ -167,7 +167,10 @@
                                 <div class="flex items-center gap-3">
                                     <div class="w-10 h-10 rounded-full overflow-hidden flex-shrink-0">
                                         @if($user->profile_picture)
-                                            <img src="{{ asset('storage/' . $user->profile_picture) }}" alt="Avatar" class="w-full h-full object-cover" loading="lazy">
+                                            {{-- <img src="{{ asset('storage/' . $user->profile_picture) }}"  --}}
+                                            
+                                            <img src="{{ $user->profile_picture }}"
+                                            alt="Avatar" class="w-full h-full object-cover" loading="lazy">
                                         @else
                                             <div class="w-full h-full bg-gradient-to-br from-accent-themed-primary to-accent-themed-secondary flex items-center justify-center font-bold text-sm">
                                                 {{ strtoupper(substr($user->name, 0, 1)) }}
@@ -247,7 +250,9 @@
                     <div class="flex items-center gap-3 flex-1 min-w-0">
                         <div class="w-12 h-12 rounded-full overflow-hidden flex-shrink-0">
                             @if($user->profile_picture)
-                                <img src="{{ asset('storage/' . $user->profile_picture) }}" alt="Avatar" class="w-full h-full object-cover" loading="lazy">
+                                {{-- <img src="{{ asset('storage/' . $user->profile_picture) }}"  --}}
+                                <img src="{{ $user->profile_picture }}"
+                                alt="Avatar" class="w-full h-full object-cover" loading="lazy">
                             @else
                                 <div class="w-full h-full bg-gradient-to-br from-accent-themed-primary to-accent-themed-secondary flex items-center justify-center text-white font-bold">
                                     {{ strtoupper(substr($user->name, 0, 1)) }}

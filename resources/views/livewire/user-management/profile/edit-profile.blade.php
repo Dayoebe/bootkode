@@ -432,7 +432,8 @@
                             <i class="fas fa-check text-white text-sm"></i>
                         </div>
                     @elseif($user->profile_picture)
-                        <img src="{{ asset('storage/' . $user->profile_picture) }}"
+                    
+                    <img src="{{ $user->profile_picture }}"
                             class="w-36 h-36 sm:w-48 sm:h-48 rounded-2xl object-cover border-4 border-themed-primary shadow-2xl transition-colors duration-300">
                     @else
                         <div class="w-36 h-36 sm:w-48 sm:h-48 rounded-2xl bg-gradient-to-br from-red-500 to-orange-600 flex items-center justify-center text-white text-4xl sm:text-6xl font-bold shadow-2xl">

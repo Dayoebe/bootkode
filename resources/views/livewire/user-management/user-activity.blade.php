@@ -94,7 +94,8 @@
                         <div class="flex items-center space-x-4">
                             <div class="flex-shrink-0">
                                 @if($activity->causer && $activity->causer->profile_picture)
-                                    <img src="{{ asset('storage/' . $activity->causer->profile_picture) }}"
+                                    <img src="{{ $activity->causer->profile_picture }}"
+                                            alt="Avatar of {{ $activity->causer->name }}"
                                          class="h-12 w-12 rounded-full object-cover border-2 border-accent-themed-primary/20">
                                 @else
                                     <div class="h-12 w-12 rounded-full bg-gradient-to-r from-accent-themed-primary to-accent-themed-secondary flex items-center justify-center text-white text-xl font-bold">

@@ -174,6 +174,8 @@ class AuthController extends Controller
         } catch (\Exception $e) {
             $user = User::create($userData);
         }
+
+        
     
         // Handle profile picture upload to Cloudinary
         if ($request->hasFile('profile_picture')) {
@@ -187,6 +189,9 @@ class AuthController extends Controller
                     $user->profile_picture = $uploadResult['secure_url'];
                     $user->save();
                 }
+
+
+
             } catch (\Exception $e) {
                 \Log::error('Profile picture upload error during registration', [
                     'user_id' => $user->id,
