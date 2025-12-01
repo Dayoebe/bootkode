@@ -152,7 +152,9 @@
                             <td class="px-4 py-3">
                                 <div class="flex items-start space-x-3 max-w-md">
                                     @if($post->featured_image)
-                                        <img src="{{ Storage::url($post->featured_image) }}" 
+                                    
+                                    {{-- <img src="{{ Storage::url($post->featured_image) }}"  --}}
+                    <img src="{{ $post->featured_image }}" 
                                              alt="{{ $post->title }}"
                                              class="w-12 h-12 rounded object-cover flex-shrink-0">
                                     @else

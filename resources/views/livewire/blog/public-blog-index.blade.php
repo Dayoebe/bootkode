@@ -16,7 +16,7 @@
                             @if($post->featured_image)
                                 <div class="aspect-video mb-4 rounded-lg overflow-hidden">
                                     <a href="{{ route('blog.show', $post->slug) }}">
-                                        <img src="{{ Storage::url($post->featured_image) }}" alt="{{ $post->title }}"
+                                        <img src="{{ $post->featured_image }}" alt="{{ $post->title }}"
                                             class="w-full h-full object-cover">
                                     </a>
                                 </div>
@@ -128,7 +128,7 @@
                                 @if($post->featured_image)
                                     <div class="aspect-video overflow-hidden">
                                         <a href="{{ route('blog.show', $post->slug) }}">
-                                            <img src="{{ Storage::url($post->featured_image) }}" alt="{{ $post->title }}"
+                                            <img src="{{ $post->featured_image }}" alt="{{ $post->title }}"
                                                 class="w-full h-full object-cover hover:scale-105 transition-transform duration-300">
                                         </a>
                                     </div>

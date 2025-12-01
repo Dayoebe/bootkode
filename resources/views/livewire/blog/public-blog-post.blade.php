@@ -63,7 +63,7 @@
                         @auth
                             <button wire:click="toggleReaction('bookmark')"
                                 class="flex items-center px-3 py-1 rounded-full transition-colors
-                                               {{ $userHasBookmarked ? 'bg-blue-100 text-blue-600' : 'bg-gray-100 text-gray-600 hover:bg-blue-50 hover:text-blue-600' }}">
+                                                       {{ $userHasBookmarked ? 'bg-blue-100 text-blue-600' : 'bg-gray-100 text-gray-600 hover:bg-blue-50 hover:text-blue-600' }}">
                                 <i class="fas fa-bookmark mr-1"></i>
                                 {{ $userHasBookmarked ? 'Saved' : 'Save' }}
                             </button>
@@ -78,7 +78,7 @@
             @if($post->featured_image)
                 <div class="aspect-video mb-8 rounded-xl overflow-hidden">
                     <a href="{{ route('blog.show', $post->slug) }}">
-                        <img src="{{ Storage::url($post->featured_image) }}" alt="{{ $post->title }}"
+                        <img src="{{ $post->featured_image }}" alt="{{ $post->title }}" loading="lazy"
                             class="w-full h-full object-cover">
                     </a>
                 </div>

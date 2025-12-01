@@ -333,7 +333,7 @@
                     @if($existing_image && !$removeExistingImage)
                         <div class="mb-4">
                             <div class="relative group">
-                                <img src="{{ Storage::url($existing_image) }}" alt="Current featured image"
+                                <img src="{{ $existing_image }}" alt="Current featured image"
                                     class="w-full h-48 object-cover rounded-lg">
                                 <div
                                     class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30 transition-opacity rounded-lg flex items-center justify-center">
