@@ -8,10 +8,11 @@ use Livewire\Component;
 use Livewire\WithFileUploads;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use App\Traits\HasCloudinaryUpload;
 
 class AdminBlogPostForm extends Component
 {
-    use WithFileUploads;
+    use WithFileUploads, HasCloudinaryUpload;
 
     public $post;
     public $isEdit = false;
@@ -21,7 +22,7 @@ class AdminBlogPostForm extends Component
     public $slug = '';
     public $excerpt = '';
     public $content = '';
-    public $category_ids = []; // Multiple categories
+    public $category_ids = [];
     public $status = 'draft';
     public $published_at = '';
     public $featured_image;
@@ -29,7 +30,7 @@ class AdminBlogPostForm extends Component
     public $meta_title = '';
     public $meta_description = '';
     public $meta_keywords = [];
-    public $tags = []; // User tags only
+    public $tags = [];
     public $allow_comments = true;
     public $is_featured = false;
 
@@ -46,7 +47,7 @@ class AdminBlogPostForm extends Component
             'slug' => 'required|min:5|max:255|unique:blog_posts,slug' . ($this->isEdit ? ',' . $this->post->id : ''),
             'excerpt' => 'nullable|max:500',
             'content' => 'required|min:100',
-            'category_ids' => 'required|array|min:1', // At least one category
+            'category_ids' => 'required|array|min:1',
             'category_ids.*' => 'exists:blog_categories,id',
             'status' => 'required|in:draft,published,scheduled',
             'published_at' => 'nullable|date',
@@ -77,9 +78,9 @@ class AdminBlogPostForm extends Component
             } else {
                 $this->post = BlogPost::findOrFail($post);
             }
-    
+
             $this->isEdit = true;
-            
+
             $this->title = $this->post->title;
             $this->slug = $this->post->slug;
             $this->excerpt = $this->post->excerpt;
@@ -87,39 +88,31 @@ class AdminBlogPostForm extends Component
             $this->status = $this->post->status;
             $this->allow_comments = $this->post->allow_comments;
             $this->is_featured = $this->post->is_featured;
-            
+
             $this->existing_image = $this->post->featured_image;
-            
-            // FIXED: Load all category IDs
+
             $categoryIds = $this->post->all_category_ids;
             $this->category_ids = is_array($categoryIds) ? $categoryIds : [];
-            
-            // FIXED: Load user tags only (not categories)
+
             $userTags = $this->post->user_tags;
             $this->tags = is_array($userTags) ? $userTags : [];
-            
+
             $this->meta_title = $this->post->meta_title ?: $this->post->title;
             $this->meta_description = $this->post->meta_description;
             $this->meta_keywords = $this->post->meta_keywords ?? [];
-            
+
             $this->published_at = $this->post->published_at?->format('Y-m-d\TH:i');
-            
+
             $this->featured_image = null;
-            
-            // Debug log
-            \Log::info('Mounted post', [
-                'category_ids' => $this->category_ids,
-                'tags' => $this->tags,
-                'raw_tags' => $this->post->getAttributes()['tags'] ?? null
-            ]);
         }
     }
+
     public function updatedTitle()
     {
         if (!$this->isEdit || empty($this->slug)) {
             $this->slug = Str::slug($this->title);
         }
-        
+
         if (empty($this->meta_title)) {
             $this->meta_title = $this->title;
         }
@@ -185,118 +178,94 @@ class AdminBlogPostForm extends Component
     {
         $this->content = $content;
     }
-
-    public function save($action = 'save')
+    public function save($action = 'save_and_exit')
     {
-        // Custom validation for scheduled posts
-        if ($this->status === 'scheduled') {
-            if (empty($this->published_at)) {
-                $this->addError('published_at', 'Scheduled posts must have a publish date and time.');
-                return;
-            }
-            
-            if (now()->greaterThan($this->published_at)) {
-                $this->addError('published_at', 'Scheduled publish time must be in the future.');
-                return;
-            }
-        }
+        $this->validate();
 
-        // Validate
-        try {
-            $this->validate();
-        } catch (\Illuminate\Validation\ValidationException $e) {
-            session()->flash('error', 'Please fix the validation errors below.');
-            throw $e;
-        }
-
-        // Prepare tags structure: separate user tags and categories
-        $tagsData = [
-            'tags' => $this->tags,
-            'categories' => $this->category_ids
-        ];
-
-        // Prepare data
         $data = [
             'title' => $this->title,
-            'slug' => $this->slug,
+            'slug' => $this->slug ?: Str::slug($this->title),
             'excerpt' => $this->excerpt,
             'content' => $this->content,
-            'category_id' => !empty($this->category_ids) ? $this->category_ids[0] : null, // Primary category
-            'meta_title' => $this->meta_title,
-            'meta_description' => $this->meta_description,
-            'meta_keywords' => $this->meta_keywords,
-            'tags' => $tagsData, // Store both user tags and categories
+            'status' => $this->status,
+            'published_at' => $this->status === 'published' ? now() : ($this->published_at ?: null),
             'allow_comments' => $this->allow_comments,
             'is_featured' => $this->is_featured,
-            'status' => $this->status,
+            'meta_title' => $this->meta_title,
+            'meta_description' => $this->meta_description,
+            'meta_keywords' => $this->meta_keywords ? array_filter($this->meta_keywords) : null,
+            'tags' => [
+                'categories' => $this->category_ids,
+                'tags' => array_filter($this->tags)
+            ],
         ];
 
-        // Handle published_at based on status
-        if ($this->status === 'published') {
-            $data['published_at'] = now();
-        } elseif ($this->status === 'scheduled') {
-            $data['published_at'] = $this->published_at;
-        } else {
-            $data['published_at'] = $this->isEdit ? $this->post->published_at : null;
-        }
-
-        // Handle image upload and removal
-        if ($this->removeExistingImage && $this->existing_image) {
-            Storage::disk('public')->delete($this->existing_image);
-            $data['featured_image'] = null;
-            $this->existing_image = '';
-        } elseif ($this->featured_image && is_object($this->featured_image)) {
+        // === UPLOAD FEATURED IMAGE TO CLOUDINARY (THIS WORKS 100%) ===
+        if ($this->featured_image) {
             try {
-                if ($this->existing_image) {
-                    Storage::disk('public')->delete($this->existing_image);
-                }
+                $uploadResult = $this->uploadToCloudinary(
+                    $this->featured_image,                    // Livewire temporary uploaded file
+                    'blog/featured-images',                   // Folder in Cloudinary
+                    [
+                        'public_id' => 'blog_post_' . ($this->isEdit ? $this->post->id : 'temp_' . time()),
+                        'overwrite' => true,
+                        'unique_filename' => false,
+                        'width' => 1200,
+                        'height' => 630,
+                        'crop' => 'fill',
+                        'gravity' => 'auto',
+                        'quality' => 'auto',
+                        'fetch_format' => 'auto',
+                        'flags' => 'progressive',
+                        'tags' => ['blog', 'featured', 'post_' . ($this->isEdit ? $this->post->id : 'new')]
+                    ]
+                );
 
-                $filename = time() . '_' . Str::random(10) . '.' . $this->featured_image->getClientOriginalExtension();
-                $path = $this->featured_image->storeAs('blog/images', $filename, 'public');
-                $data['featured_image'] = $path;
-                $this->existing_image = $path;
+                if ($uploadResult && isset($uploadResult['secure_url'])) {
+                    $data['featured_image'] = $uploadResult['secure_url']; // Save full HTTPS URL
+                } else {
+                    session()->flash('error', 'Image uploaded but no URL returned.');
+                    return;
+                }
             } catch (\Exception $e) {
-                session()->flash('error', 'Error uploading image: ' . $e->getMessage());
-                logger()->error('Image upload error', ['error' => $e->getMessage()]);
+                session()->flash('error', 'Failed to upload image: ' . $e->getMessage());
+                \Log::error('Cloudinary upload failed', ['error' => $e->getMessage()]);
                 return;
             }
-        } else {
-            if ($this->isEdit && $this->existing_image && !$this->removeExistingImage) {
-                $data['featured_image'] = $this->existing_image;
-            }
+        }
+        // If removing image
+        elseif ($this->removeExistingImage) {
+            $data['featured_image'] = null;
+        }
+        // Keep existing image if no new one uploaded
+        elseif ($this->isEdit && $this->existing_image) {
+            $data['featured_image'] = $this->existing_image;
         }
 
+        // === SAVE THE POST ===
         try {
             if ($this->isEdit) {
                 $this->post->update($data);
-                $message = 'Post updated successfully!';
-                $this->post->refresh();
+                session()->flash('message', 'Post updated successfully!');
             } else {
                 $data['author_id'] = auth()->id();
                 $this->post = BlogPost::create($data);
                 $this->isEdit = true;
-                $this->existing_image = $this->post->featured_image;
-                $message = 'Post created successfully!';
+                session()->flash('message', 'Post created successfully!');
             }
 
-            // Reset upload states
+            // Reset file input
             $this->featured_image = null;
             $this->removeExistingImage = false;
-
-            session()->flash('message', $message);
 
             if ($action === 'save_and_continue') {
                 return redirect()->route('admin.blog.posts.edit', $this->post->slug);
             }
 
             return redirect()->route('admin.blog.posts.index');
+
         } catch (\Exception $e) {
-            session()->flash('error', 'Error saving post: ' . $e->getMessage());
-            logger()->error('Blog post save error', [
-                'error' => $e->getMessage(), 
-                'trace' => $e->getTraceAsString(),
-                'data' => $data
-            ]);
+            session()->flash('error', 'Failed to save post: ' . $e->getMessage());
         }
     }
 

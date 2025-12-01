@@ -200,11 +200,6 @@ class BlogPost extends Model
         return max(1, round($wordCount / 200));
     }
 
-    public function getFeaturedImageUrlAttribute()
-    {
-        return $this->featured_image ? Storage::url($this->featured_image) : null;
-    }
-
     public function incrementViews()
     {
         $this->increment('views_count');
@@ -224,4 +219,8 @@ class BlogPost extends Model
     {
         return $value ?: Str::limit(strip_tags($this->content), 200);
     }
+    public function getFeaturedImageUrlAttribute()
+{
+    return $this->featured_image ?: asset('img/2.png');
+}
 }

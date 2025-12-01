@@ -22,7 +22,7 @@ class AdminBlogPosts extends Component
     public $postToDelete = null;
     public $bulkActions = [];
     public $bulkAction = '';
-    public $selectAll = false; // FIXED: Added missing property
+    public $selectAll = false;
 
     protected $queryString = [
         'search' => ['except' => ''],
@@ -32,19 +32,15 @@ class AdminBlogPosts extends Component
         'sortBy' => ['except' => 'latest'],
     ];
 
-    // FIXED: Added updatedSelectAll method to handle select all checkbox
     public function updatedSelectAll($value)
     {
         if ($value) {
-            // Select all posts on current page
             $this->bulkActions = $this->getFilteredQuery()->pluck('id')->toArray();
         } else {
-            // Deselect all
             $this->bulkActions = [];
         }
     }
 
-    // FIXED: Added updatedBulkActions to sync with selectAll checkbox
     public function updatedBulkActions()
     {
         $allPostIds = $this->getFilteredQuery()->pluck('id')->toArray();
@@ -89,9 +85,27 @@ class AdminBlogPosts extends Component
             $post = BlogPost::find($this->postToDelete);
             
             if ($post) {
-                // Delete featured image if exists
+                // Delete featured image from Cloudinary or local storage
                 if ($post->featured_image) {
-                    Storage::disk('public')->delete($post->featured_image);
+                    if (strpos($post->featured_image, 'cloudinary.com') !== false) {
+                        // Delete from Cloudinary
+                        try {
+                            preg_match('/\/upload\/(?:v\d+\/)?(.+)\.[^.]+$/', $post->featured_image, $matches);
+                            $publicId = $matches[1] ?? null;
+                            
+                            if ($publicId) {
+                                cloudinary()->destroy($publicId);
+                            }
+                        } catch (\Exception $e) {
+                            \Log::warning('Failed to delete image from Cloudinary', [
+                                'image' => $post->featured_image,
+                                'error' => $e->getMessage()
+                            ]);
+                        }
+                    } else {
+                        // Delete from local storage (legacy)
+                        Storage::disk('public')->delete($post->featured_image);
+                    }
                 }
                 
                 $post->delete();
@@ -101,7 +115,7 @@ class AdminBlogPosts extends Component
         
         $this->showDeleteModal = false;
         $this->postToDelete = null;
-        $this->selectAll = false; // Reset select all after deletion
+        $this->selectAll = false;
     }
 
     public function togglePostStatus($postId)
@@ -167,11 +181,29 @@ class AdminBlogPosts extends Component
                     break;
                     
                 case 'delete':
-                    // Delete featured images
+                    // Delete featured images from Cloudinary or local storage
                     $postsToDelete = $posts->get();
                     foreach ($postsToDelete as $post) {
                         if ($post->featured_image) {
-                            Storage::disk('public')->delete($post->featured_image);
+                            if (strpos($post->featured_image, 'cloudinary.com') !== false) {
+                                // Delete from Cloudinary
+                                try {
+                                    preg_match('/\/upload\/(?:v\d+\/)?(.+)\.[^.]+$/', $post->featured_image, $matches);
+                                    $publicId = $matches[1] ?? null;
+                                    
+                                    if ($publicId) {
+                                        cloudinary()->destroy($publicId);
+                                    }
+                                } catch (\Exception $e) {
+                                    \Log::warning('Failed to delete image in bulk action', [
+                                        'image' => $post->featured_image,
+                                        'error' => $e->getMessage()
+                                    ]);
+                                }
+                            } else {
+                                // Delete from local storage (legacy)
+                                Storage::disk('public')->delete($post->featured_image);
+                            }
                         }
                     }
                     $posts->delete();
@@ -190,12 +222,10 @@ class AdminBlogPosts extends Component
         $this->reset(['bulkActions', 'bulkAction', 'selectAll']);
     }
 
-    // FIXED: Helper method to get filtered query (DRY principle)
     private function getFilteredQuery()
     {
         $query = BlogPost::with(['author', 'category']);
 
-        // Apply filters
         if ($this->search) {
             $query->where('title', 'like', '%' . $this->search . '%');
         }
@@ -212,7 +242,6 @@ class AdminBlogPosts extends Component
             $query->where('author_id', $this->authorFilter);
         }
 
-        // Apply sorting
         switch ($this->sortBy) {
             case 'title':
                 $query->orderBy('title');
@@ -240,7 +269,6 @@ class AdminBlogPosts extends Component
     {
         $posts = $this->getFilteredQuery()->paginate(15);
 
-        // Get filter options
         $categories = BlogCategory::active()->ordered()->get();
         $authors = User::whereIn('id', BlogPost::distinct()->pluck('author_id'))->get();
 
