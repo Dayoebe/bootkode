@@ -169,7 +169,8 @@
                             <td class="px-6 py-4 whitespace-nowrap">
                                 <div class="w-10 h-10 rounded-full overflow-hidden">
                                     @if($user->profile_picture)
-                                        <img src="{{ asset('storage/' . $user->profile_picture) }}" 
+                                        {{-- <img src="{{ asset('storage/' . $user->profile_picture) }}"  --}}
+                                        <img src="{{ $user->profile_picture }}"
                                             alt="Avatar of {{ $user->name }}" class="w-full h-full object-cover" loading="lazy">
                                     @else
                                         <div class="w-full h-full bg-gradient-to-br from-orange-400 to-red-500 flex items-center justify-center text-white font-bold">
@@ -239,7 +240,8 @@
                             aria-label="Select user {{ $user->name }}">
                         <div class="w-10 h-10 rounded-full overflow-hidden flex-shrink-0">
                             @if($user->profile_picture)
-                                <img src="{{ asset('storage/' . $user->profile_picture) }}" 
+                                {{-- <img src="{{ asset('storage/' . $user->profile_picture) }}"  --}}
+                                <img src="{{ $user->profile_picture }}"
                                     alt="Avatar of {{ $user->name }}" class="w-full h-full object-cover" loading="lazy">
                             @else
                                 <div class="w-full h-full bg-gradient-to-br from-orange-400 to-red-500 flex items-center justify-center text-white font-bold text-sm">
