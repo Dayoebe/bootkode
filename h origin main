@@ -1,0 +1,5189 @@
+[33mcommit  [m[33m ([m[1;36mHEAD -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m)[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Thu Nov 27 07:52:42 2025 +0100
+
+    Add exam data storage to student answers and enhance auto-grading logic
+
+[33mcommit 5ed6b64813920f91b1ee24157f2112c58c5e34a8[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Thu Nov 27 07:39:46 2025 +0100
+
+    refactor load question method
+
+[33mcommit 78e334a8a35f35ced31150d17e2d01d47ddbec0c[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Thu Nov 27 07:14:33 2025 +0100
+
+    Removed log and refactor exam layout
+
+[33mcommit b2839e8ab94d1a1072257ef7c7487c3e3ba2d78c[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Mon Nov 24 22:39:30 2025 +0100
+
+    Only correct answer is graded
+
+[33mcommit 5ef0ace3a3ef46eac5186194eda13b7c0d2060cc[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Mon Nov 24 22:25:06 2025 +0100
+
+    Added exam shuffling both questions and answer
+
+[33mcommit d657459d60f6b9f22517901287267f38d5de0acc[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Mon Nov 24 15:35:37 2025 +0100
+
+    Sidebar better than before
+
+[33mcommit 03362800651d6c71c39222f1728e94ad1ae6efa2[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sun Nov 23 17:49:12 2025 +0100
+
+    Adjust the available and preview course to enroll user
+
+[33mcommit cf1e8911bfdee1922f472224df9a9fe4a11f2ebf[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sun Nov 23 15:48:51 2025 +0100
+
+    Refactor for better view
+
+[33mcommit 16d8998a6873bfea5cdef61f864324eaa1ce9542[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sun Nov 23 15:47:32 2025 +0100
+
+    Refactor for better view
+
+[33mcommit 56ce23b0cbda2a90dd51e0a632520460fe6f100e[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sun Nov 23 14:34:16 2025 +0100
+
+    Removed logs. ready for production
+
+[33mcommit 6c6e5c296f53710b38b446899542632d89644993[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sat Nov 22 20:24:31 2025 +0100
+
+    create user first before editing
+
+[33mcommit 52f0506c7831bae4416b871aff07f6283d2491d1[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sat Nov 22 20:24:06 2025 +0100
+
+    Added create user menu
+
+[33mcommit ed4ce471bedf06fb76f4cd19163a636576bef675[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sat Nov 22 20:01:49 2025 +0100
+
+    feat: Add UserCreatedNotification and enhance user management features
+    
+    - Implemented UserCreatedNotification for new user account creation with temporary password and email verification options.
+    - Created migration to ensure 'is_active', 'deactivated_at', and 'last_login_at' fields exist in the users table.
+    - Updated activity_log migration to make 'event' field nullable with a default value.
+    - Enhanced user management Blade view with improved layout, loading states, and user feedback.
+    - Added functionality for auto-generating passwords and sending welcome/verification emails upon user creation.
+
+[33mcommit 739f394c8b9ab618a909f5a11138c04a7460048f[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sat Nov 22 18:54:48 2025 +0100
+
+    Change colour purple to emerald
+
+[33mcommit 90212fa4fbc81d938f72875eebf493d4320cb256[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sat Nov 22 18:43:52 2025 +0100
+
+    Add course creation steps with loading overlay, navigation, pricing, progress bar, review, and thumbnail upload components
+    
+    - Implemented loading overlay for processing state during course creation.
+    - Created navigation component for step transitions with save draft and submit buttons.
+    - Added pricing step with options for free, premium, and paid courses, including price input and publishing options.
+    - Developed a progress bar to visually indicate the current step in the course creation process.
+    - Implemented a review step to display course details before submission, including a preview of the thumbnail and course information.
+    - Added thumbnail upload functionality with enhanced preview and image requirements.
+    - Introduced a welcome banner for students upon enrollment with course statistics.
+    - Included confetti animation on successful enrollment to enhance user experience.
+
+[33mcommit 791c49841cffef4bdbc4f1a2fbeafc064f05454c[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sat Nov 22 18:43:12 2025 +0100
+
+    Removed log... ready for production
+
+[33mcommit 6e5c72cc8cc69e8fa2314515c008440697501978[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sat Nov 22 18:41:56 2025 +0100
+
+    removed log and added some stuff. Ready for production
+
+[33mcommit 7de4b09069e45be54fb21bfc46e06edad5aeaa02[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sat Nov 22 18:28:34 2025 +0100
+
+    Exam result mail
+
+[33mcommit 05a10d0dc0acfee274b0fa950b75314e5fe125f5[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sat Nov 22 18:27:24 2025 +0100
+
+    Added enhanced timer component
+
+[33mcommit b58805973232e0ab3b0678cb42790ebfb17f2c3d[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sat Nov 22 18:23:12 2025 +0100
+
+    Refactor exam methods
+
+[33mcommit de824c5fcc52c304bb3460730d35ff925f052dab[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sat Nov 22 18:22:26 2025 +0100
+
+    Enhanced timer and better exam summary for the exam interface component
+
+[33mcommit bf03aae8f055e351dfee9fb22ccc375288b2332b[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sat Nov 22 18:21:14 2025 +0100
+
+    Refactor blog sidebar component
+
+[33mcommit cbbaebae595480694bba2f8b4ce167c151494334[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sat Nov 22 18:20:27 2025 +0100
+
+    Refactor login request
+
+[33mcommit 2ae89072d3d7d0d57cba932e100f713e4a03948a[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sat Nov 22 18:19:25 2025 +0100
+
+    Added some migrations
+
+[33mcommit e53098003d8033f4866835307c09041e4eee5dc4[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sat Nov 22 18:19:01 2025 +0100
+
+    Download database
+
+[33mcommit 8843fcbebb49e71899c364712a1c5a96d7124051[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Wed Nov 19 06:51:51 2025 +0100
+
+    Refactor code structure for improved readability and maintainability
+
+[33mcommit b47b415592b05c2d58bd2b38549507397f2322cc[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Tue Nov 18 17:21:46 2025 +0100
+
+    Can get participant details now
+
+[33mcommit 6c84089c096b1948256164d1848f813869bc0df3[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Tue Nov 18 10:01:24 2025 +0100
+
+    refactor it for mobile screen
+
+[33mcommit d3e7b5c7f0d0f0c8e4e0f3ff42b045ef40a1d128[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Tue Nov 18 06:44:29 2025 +0100
+
+    Refactor CBT exam interface and layout
+
+[33mcommit e10c3a5f071faa71722b4d7e6b681c2720d7397e[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Tue Nov 18 05:25:46 2025 +0100
+
+    Redesign the homepage, header and footer
+
+[33mcommit 46bdf6feb63619049fa9e82a8fa914697aec256f[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Tue Nov 18 04:59:18 2025 +0100
+
+    Redesign header and homepage
+
+[33mcommit 35baf463de89f2021c1da06e2ddae27537fb3b9d[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Mon Nov 17 06:02:59 2025 +0100
+
+    de-export db
+
+[33mcommit ce4e0bc8552c1e0ca23a3f1e04f9433f479d4a1a[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Mon Nov 17 06:00:17 2025 +0100
+
+    refactor exam interface for smaller screen
+
+[33mcommit 826c741f90f6449431d4d1ce4e45ca8add6b86d8[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Mon Nov 17 05:19:55 2025 +0100
+
+    expor db
+
+[33mcommit 003a34fc22a96e68267181f60c4aac7b3d7123d7[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Fri Nov 14 20:20:48 2025 +0100
+
+    Add missing model imports in Institution.php for better functionality
+
+[33mcommit 9532c03bbcd76bd0a1ca1ad131d833e4757ee306[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Fri Nov 14 20:09:53 2025 +0100
+
+    Added App\Models\Admin\InstitutionUser
+
+[33mcommit 0f87e9e4c56578ae802a30731360dc2768d80c18[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Fri Nov 14 15:40:24 2025 +0100
+
+    Mathjax working perfect
+
+[33mcommit 52c9815c5946eff00def9efc7dbc6f5d5b4a76ca[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Fri Nov 14 06:23:18 2025 +0100
+
+    Enhance MathJax integration in CBT Viewer for improved rendering of mathematical content
+    
+    - Updated comments to reflect enhanced MathJax support.
+    - Added JavaScript functions to load and configure MathJax dynamically.
+    - Implemented processing of mathematical content on Livewire updates and modal openings.
+    - Introduced MutationObserver to handle dynamic content changes for MathJax processing.
+    - Enhanced CSS styles for better display of mathematical elements, including mobile responsiveness.
+
+[33mcommit bb644eaeca1ecb398021610b7469eccb3dfaa13d[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Fri Nov 14 04:29:15 2025 +0100
+
+    Make course ID nullable
+
+[33mcommit 6dd62dcfcf276cbedce2234458a02427158e5df7[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Fri Nov 14 03:58:18 2025 +0100
+
+    Add max attempts feature to assessments: Implement max_attempts column in database, update assessment model methods for attempt tracking, and enhance CBT interfaces to display attempts information.
+
+[33mcommit 6aefa83687c76b0e35392262d310fca3edcc249a[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Fri Nov 14 02:49:50 2025 +0100
+
+    Update composer dependencies and development requirements
+    
+    - Updated 'laravel/laravel' reference to '876b6406f621bdd0ff648684cd3bb411ccd138f4' and set 'dev' to true.
+    - Added new development dependencies: 'cordoval/hamcrest-php', 'davedevelopment/hamcrest-php', 'fakerphp/faker', 'filp/whoops', 'hamcrest/hamcrest-php', 'kodova/hamcrest-php', 'laravel/breeze', 'laravel/pint', 'laravel/sail', 'mockery/mockery', 'nunomaduro/collision', 'phar-io/manifest', 'phar-io/version', 'phpunit/php-code-coverage', 'phpunit/php-file-iterator', 'phpunit/php-invoker', 'phpunit/php-text-template', 'phpunit/php-timer', 'phpunit/phpunit', 'sebastian/*', 'spatie/db-dumper', 'symfony/yaml', 'theseer/tokenizer', and 'staabm/side-effects-detector'.
+    - Updated existing dependencies to their latest versions.
+
+[33mcommit 876b6406f621bdd0ff648684cd3bb411ccd138f4[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Fri Nov 14 02:37:28 2025 +0100
+
+    Refactor CBT Exam Interface and StudentAnswer Model: Add time spent tracking for student answers and update formatting logic to use the correct column name.
+
+[33mcommit 8f3cee515f37322c0f90458245d561f21fc0452c[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Fri Nov 14 02:29:52 2025 +0100
+
+    Exam working perfect
+
+[33mcommit 4b8086dc7f53068a68baa581fa123789d44fc7c0[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Fri Nov 14 02:22:55 2025 +0100
+
+    Refactor CBT Exam Interface and Viewer: Remove redundant logging, enhance answer handling, and improve UI button styles for better user experience.
+
+[33mcommit 51a780b4cc8692279f6024e9d10a0dc28dcac0b3[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Thu Nov 13 02:27:53 2025 +0100
+
+    Modified the navigation part
+
+[33mcommit 9aee98cda0dc60cb021d33a34b087472eb87ba56[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Thu Nov 13 01:59:31 2025 +0100
+
+    Refactor CBT Management and Viewer: Enhance UI for mobile responsiveness, improve accessibility with MathJax integration, and implement rich text support for questions and explanations. Update styles for better readability and maintainability across components.
+
+[33mcommit c0fbff71e6a6a81aa5119d3bad926315ae111b78[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Thu Nov 13 01:55:26 2025 +0100
+
+    Refactor CBT Exam Interface: Enhance accessibility, improve mobile responsiveness, and integrate MathJax support for dynamic question rendering. Remove redundant sections and update styles for better user experience.
+
+[33mcommit b769cb99909d3989945c2155c25dd459ade1b197[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Thu Nov 13 00:48:45 2025 +0100
+
+    Refactor code structure for improved readability and maintainability
+
+[33mcommit 53f9d099d863a2a05d13c669860b26dd25219a55[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Wed Nov 12 00:47:33 2025 +0100
+
+    Fix category and tag loading in AdminBlogPostForm: ensure arrays are returned and add debug logging
+
+[33mcommit 504d387e11e5efc628408a47da6b5179bcf52661[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Wed Nov 12 00:47:11 2025 +0100
+
+    Update blog post and index views to support multiple categories display and improve UI for category representation
+
+[33mcommit f7a63824a0509a342b3134f13742c115ab49f8b1[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Wed Nov 12 00:21:24 2025 +0100
+
+    Enhance AdminBlogPostForm: implement multiple category selection, update validation rules, and improve UI for tags management
+
+[33mcommit 2cf848f48aaa05bbf2b1c5de8fe0d94d44dcb0a9[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Wed Nov 12 00:02:20 2025 +0100
+
+    Refactor AdminBlogPostForm: revert to single category selection, enhance Trix editor integration, and fix minor UI issues
+
+[33mcommit d201d7017b1cde30b321521f26619c23664f765d[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Tue Nov 11 09:20:39 2025 +0100
+
+    Add missing robots meta tag and clean up Open Graph tags in pages layout
+
+[33mcommit 032e9b5fed35900f95d60c0f308654e9947f2756[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Fri Nov 7 06:30:38 2025 +0100
+
+    Remove unused hot file
+
+[33mcommit d43483eeeb03c2345fae09b6b90c1dc02fe8f9b9[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Fri Nov 7 06:27:10 2025 +0100
+
+    delete hot
+
+[33mcommit b6329ba30dee269a6c53eec319bee0dae9b69d52[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Fri Nov 7 06:26:13 2025 +0100
+
+    npm run build
+
+[33mcommit d7f1d7b0a0883bfa70bff923ac644ad24ca25b1d[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Fri Nov 7 06:21:55 2025 +0100
+
+    Refactor AdminBlogPostForm and admin-blog-posts: revert to multiple category selection, enhance Trix editor integration, and fix minor UI issues
+
+[33mcommit d71e84d5d463b38f23b8d7d686f74cda7b924eef[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Fri Nov 7 05:30:18 2025 +0100
+
+    Enhance AdminBlogPosts and AdminBlogComments: add selectAll functionality, improve bulk actions, and refine UI components
+
+[33mcommit 988437749ed1f9786574fc8ca9ea89f71a5ad906[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Fri Nov 7 05:02:31 2025 +0100
+
+    Refactor AdminBlogPostForm: revert to single category selection, enhance validation messages, and improve Trix editor integration
+
+[33mcommit 12d5921f1872e0509aa0c9e0ddb4749f980eb0c7[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Thu Nov 6 06:35:23 2025 +0100
+
+    Added adsense account
+
+[33mcommit 7597210c4d4d72f4158e0134dea080db163eb68f[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Thu Nov 6 06:24:33 2025 +0100
+
+    Added Google tag for analytics
+
+[33mcommit e4615246f9cbc8dd886226e7ee01e77cea18066f[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Thu Nov 6 00:37:25 2025 +0100
+
+    Added google tag
+
+[33mcommit be6fe71a38f0ed27c9232ef21cf5ffe6982d9d4b[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Thu Nov 6 00:26:14 2025 +0100
+
+    Added google verification stuff
+
+[33mcommit edd7d317884e72774da3d97900448f9761c639ec[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Thu Nov 6 00:08:45 2025 +0100
+
+    Add materials_included and tags fields to Course model and update CourseForm and EditCourse components
+
+[33mcommit bf43ea500540f5806076af3ceb278a9f54a880e3[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Wed Nov 5 23:40:56 2025 +0100
+
+    refactor course review component
+
+[33mcommit ba4a644b597a8612cec26633fa0a1264165f635c[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Wed Nov 5 23:38:26 2025 +0100
+
+    Fix route parameter name in editCourse method for UserCourses component
+
+[33mcommit d3e98cb087a1bebd7f484740f23279f557ce1f3c[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Wed Nov 5 23:28:27 2025 +0100
+
+    Refactor Certificate model: update fillable and casts properties, and modify approve method to use existing columns
+
+[33mcommit 35688d77d8633864bbc449624acaafc04c013224[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Wed Nov 5 23:12:38 2025 +0100
+
+    Modified App\Models\Assessment\Assessment\ to App\Models\Assessment\
+
+[33mcommit 4dd2f06914b27d7aed759032ef7c2e3612c6b573[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Wed Nov 5 23:01:17 2025 +0100
+
+    Adjusted student dashboard for appropriate route and image path
+
+[33mcommit 76565767c71580924d53d983a7e6696df8ce2d87[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Wed Nov 5 22:38:05 2025 +0100
+
+    Modified the mentorship dashboard
+
+[33mcommit e1e167315d300fa578463bb16d9caa53504b7476[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Wed Nov 5 22:33:27 2025 +0100
+
+    Update the job application relationship
+
+[33mcommit 431a577a41b6f0375874f79bbfe7dd1572692575[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Wed Nov 5 22:16:46 2025 +0100
+
+    Npm run dev
+
+[33mcommit 61716788576dd540e8c3da211c89c2a6d955238d[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Wed Nov 5 22:14:06 2025 +0100
+
+    Normal again
+
+[33mcommit 0b83ad501d10b7e56bc26e6b99ae3ea8ccf6a614[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Wed Nov 5 22:11:45 2025 +0100
+
+    Adjust mentor dashboard
+
+[33mcommit 9d93960c0b0e438665db0c465f77376cec46bca7[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Wed Nov 5 22:07:29 2025 +0100
+
+    Whatever this means
+
+[33mcommit fd3d4dfa6bb23594a966e4254140670904a15dae[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Mon Nov 3 16:17:44 2025 +0100
+
+    Added missing mockinterview model
+
+[33mcommit 000385d15562dac27605d985937b9aaaee014bcd[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Mon Nov 3 02:25:10 2025 +0100
+
+    Disable social login buttons and add notification for unavailable features
+
+[33mcommit 28148c6f1abf186fda7bb71084c58fe34b18ec71[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Mon Nov 3 02:14:51 2025 +0100
+
+    Added homepage link to bootkode
+
+[33mcommit 35d35f3a9bbec35ce0e610a55c2da529ce7aa99e[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Mon Nov 3 01:25:36 2025 +0100
+
+    Refactor registration validation rules to make fields nullable and update email verification handling in dashboard
+
+[33mcommit 7c787de319fc64566ff8ccfe679a628b959bc7b3[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sun Nov 2 23:51:49 2025 +0100
+
+    Removed pink from the page
+
+[33mcommit 3d3136873d137547d6140c0f984d8827f5b659bf[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sun Nov 2 23:49:18 2025 +0100
+
+    Removed register
+
+[33mcommit 7fd008a8ba4f0c680720760196743d60e0a62d17[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sun Nov 2 23:23:35 2025 +0100
+
+    Final update for the superadmin
+
+[33mcommit 72d2e60060f3d948f57b32d1b59de626fbb09f3a[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sun Nov 2 23:19:56 2025 +0100
+
+    Update superadmin seeder
+
+[33mcommit b39643176dc1a23d989c423ada8948da8be54518[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sun Nov 2 23:17:02 2025 +0100
+
+    Update super admin seeder
+
+[33mcommit 25a3896d55f7fcd59cc560064bc6c9764cda9583[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sun Nov 2 23:13:36 2025 +0100
+
+    Added superadmin seeder
+
+[33mcommit 81683a85638a3ccb3a41f0779d40d5a36c07ac07[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sun Nov 2 22:56:14 2025 +0100
+
+    Refactor SEO and viewport meta tags for improved clarity and organization
+
+[33mcommit c0d803f1750f9268d2b30fb63f4bda908d6b7bd0[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sun Nov 2 22:49:52 2025 +0100
+
+    Add Trix editor styles for enhanced lesson content display
+
+[33mcommit d44e517b021b92d231690f9b3b4ee3a1a2efe5ca[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sun Nov 2 22:46:50 2025 +0100
+
+    Update gitignore
+
+[33mcommit 82e8176efe636489f1c9a4796cfad260891c8fec[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sun Nov 2 22:28:54 2025 +0100
+
+    npm run build
+
+[33mcommit 9a956cddd6b10705696241e7b3d812cb38eb9d15[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sun Nov 2 22:03:31 2025 +0100
+
+    Updated everything
+
+[33mcommit 465296237992237442a92befa28e72df03e41816[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sun Nov 2 21:56:43 2025 +0100
+
+    Update composer again
+
+[33mcommit 743521666e726949e3fafbd388ed7358888c9ee4[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sun Nov 2 21:49:59 2025 +0100
+
+    Update composer
+
+[33mcommit 0db5287e89dc3627d211178d31d8484046e43abe[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sun Nov 2 21:45:54 2025 +0100
+
+    Remove runInBackground() - compatibility fix
+
+[33mcommit e3dffb9cb7878ca0c94e9b129514f1c9c0008105[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sun Nov 2 21:41:56 2025 +0100
+
+    Force composer lock update - remove Process dependency
+
+[33mcommit 67fcc7e43149ab4f842e1a08ebbf8fd73d17461f[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sat Nov 1 21:26:04 2025 +0100
+
+    Update composer.lock with Laravel 11.46.1
+
+[33mcommit 748d43be8aad7dc37594518b9fbed45feee94b61[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sat Nov 1 21:21:51 2025 +0100
+
+    Remove runInBackground from scheduler
+
+[33mcommit 8d4cdd7cefff8bfda3de1f657387f5462557eb7f[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sat Nov 1 21:20:17 2025 +0100
+
+    Made some changes
+
+[33mcommit e940a8cb5ed7772349295759c835056a4d4b8f0e[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sat Nov 1 21:16:42 2025 +0100
+
+    Update Laravel framework to 11.1 for Process support
+
+[33mcommit f4337dda67c586d5de01a9e8a0139bb107816aeb[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sat Nov 1 21:13:02 2025 +0100
+
+    I dn't need RouteServiceProvider
+
+[33mcommit 97e905d28671904ff6dc0a889fa552321d7b55f9[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sat Nov 1 21:10:52 2025 +0100
+
+    Modified composer and config app
+
+[33mcommit 6388166117e0ef267c8a4fe9fb38de224d0a2348[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sat Nov 1 21:02:28 2025 +0100
+
+    composer dump-autoload -o
+    php artisan package:discover --force
+
+[33mcommit 2a4cf7242e66657fc21cd5c6c867fddb680c49ba[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sat Nov 1 21:01:08 2025 +0100
+
+    # Clear everything and reinstall cleanly
+    rm -rf vendor composer.lock
+    composer install --no-interaction
+    php artisan config:clear
+    php artisan cache:clear
+
+[33mcommit 1abb0b4eb83c17d25ce6d29c76d0a29b0bdab9fa[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sat Nov 1 20:58:39 2025 +0100
+
+    composer require laravel/pail
+
+[33mcommit 9e8618f95fbe71f90eaf604f9d5edfe407e40812[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Tue Oct 28 09:11:48 2025 +0100
+
+    did a thing
+
+[33mcommit 49889a5bdd53680464820bf0c1833d143d683271[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Tue Oct 28 09:06:02 2025 +0100
+
+    Everything should work
+
+[33mcommit d3148ae662d874117f6581592c75ec3d31598a38[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Tue Oct 28 08:45:47 2025 +0100
+
+    Downgrade from 12 to 11
+
+[33mcommit 3bb35ea5e7ebb80829a14f8b81b09208eb07725e[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Tue Oct 28 08:45:15 2025 +0100
+
+    Downgrade to Laravel 11 for Laravel Cloud compatibility
+
+[33mcommit bfb5c2e693edc1d61be2b5ce7c9e1d509f898a3d[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Tue Oct 28 08:41:44 2025 +0100
+
+    Everything should be good
+
+[33mcommit 8f780dbbb85727fa3a138c9094961f5982a1e687[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Tue Oct 28 08:36:53 2025 +0100
+
+    This should work
+
+[33mcommit 0be89dc17a89e5e2d57f9ed8f68e1c37d2266b88[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Tue Oct 28 08:27:08 2025 +0100
+
+    clear dependencies
+
+[33mcommit 202a73ea0a0bd3c94d26ee8a58b7dbe8be291de4[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Tue Oct 28 08:26:17 2025 +0100
+
+    Update composer
+
+[33mcommit 4edea6d930092709146a3331f912a96322006da1[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Tue Oct 28 08:20:01 2025 +0100
+
+    Removed ConfigMakeCommand
+
+[33mcommit e90719aa595eecc3bae50a1b1a2b3e0d90cf5e85[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Mon Oct 27 23:45:22 2025 +0100
+
+    Update composer
+
+[33mcommit 623d4e3bb8191fc935a84901f86a96af3dc6a2e8[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Mon Oct 27 23:36:05 2025 +0100
+
+    I'm on the cloud
+
+[33mcommit e3a063ddccd40e7af5da2f14863a83df7ed3c735[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Mon Oct 27 23:01:15 2025 +0100
+
+    This should be perfect
+
+[33mcommit add3ac18d9daddbbac1d4eec80bf20ef03e665ba[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Mon Oct 27 22:57:20 2025 +0100
+
+    removed registerConfigMakeCommand
+
+[33mcommit 4d35ddaa754a56ac0c5d5e9a377c6ffcfbb75860[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Mon Oct 27 22:53:32 2025 +0100
+
+    Adjusted this part
+
+[33mcommit 15d1d18196f5788ca57a7766a5aebe58398130cd[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Mon Oct 27 22:48:41 2025 +0100
+
+    removed invalid routes
+
+[33mcommit 84c236d029344ef3f4b8b0c6b88e392001bcb37b[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Mon Oct 27 22:40:28 2025 +0100
+
+    Adjusted to reflect new changes in cloud
+
+[33mcommit 511ee456bfb32c5e21670c88001d9c5a4bebd6d7[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Mon Oct 27 22:39:14 2025 +0100
+
+    Whatever this means
+
+[33mcommit 76db71f7a341c2499e5bde763f98843d0f10f244[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Mon Oct 27 22:00:55 2025 +0100
+
+    Added certificate template blade
+
+[33mcommit 8771f30819b59691e2280c65a9a82a1832128108[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Mon Oct 27 21:59:12 2025 +0100
+
+    Resolved invalid route in the browse course
+
+[33mcommit 74742ca4a64bc88a2f83428e1af9b5619818b6d2[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Mon Oct 27 21:58:44 2025 +0100
+
+    Removed offline content from the menu
+
+[33mcommit c679602f43489cfc680da00b94acc747336e6200[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Mon Oct 27 21:58:21 2025 +0100
+
+    removed offline content from the route
+
+[33mcommit 01ffe2a5c0bdb7f74c088e27cf8508b1bcf8d672[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Mon Oct 27 21:57:57 2025 +0100
+
+    removed offline content service provider
+
+[33mcommit 3dce08dcea8849bcb2707326751bf552c98486c8[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Mon Oct 27 21:57:05 2025 +0100
+
+    Whatever this means
+
+[33mcommit db5a1eac92db8f6b7499408c56550940bcd22205[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Mon Oct 27 21:56:51 2025 +0100
+
+    Whatever this means
+
+[33mcommit aa7a6c942c6e8667c67c7fdbd801e400370fa128[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Mon Oct 27 21:56:28 2025 +0100
+
+    Removed offline learning component
+
+[33mcommit b34f9ac1d34208f4b8b00273bc13e7fed348b967[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Mon Oct 27 21:56:16 2025 +0100
+
+    Removed offline content service
+
+[33mcommit ffef26a10f2f3df0e478877b4d4650be5c10d99e[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Mon Oct 27 21:55:59 2025 +0100
+
+    Removed offline learning service provider
+
+[33mcommit a53d6ccbae077c12b5f40f132622342647b00caf[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Mon Oct 27 21:55:36 2025 +0100
+
+    Removed offline learning blade
+
+[33mcommit 86706b73d71c55eaa7bb50e020c0c18bd8300bdb[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sun Oct 26 20:06:49 2025 +0100
+
+    Refactor all courses to reflect on the new dashboard layout design
+
+[33mcommit 600530b80c298d8ce9c2e7b9f2656af3efa28d8a[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sun Oct 26 20:06:23 2025 +0100
+
+    Refactor available courses to reflect on the new dashboard layout design
+
+[33mcommit d8d10f300f9c1b55bb80d890ce2ddd588e1f81b2[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sun Oct 26 20:06:03 2025 +0100
+
+    Refactor course approvals to reflect on the new dashboard layout design
+
+[33mcommit 438a6a380f83b2e8084b1faf64bd89d0d9878295[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sun Oct 26 20:05:42 2025 +0100
+
+    Refactor course categories to reflect on the new dashboard layout design
+
+[33mcommit ffa0d8f6ceb27b78947be233afd7074a0e4bdabf[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sun Oct 26 20:05:25 2025 +0100
+
+    Refactor course reviews to reflect on the new dashboard layout design
+
+[33mcommit 22aa9af8d20faea8e89ee8deff92b2d008532d24[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sun Oct 26 20:05:07 2025 +0100
+
+    Refactor review analytics to reflect on the new dashboard layout design
+
+[33mcommit 76de04b2fd580d876219181192b1afebc71a70de[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sun Oct 26 20:04:47 2025 +0100
+
+    Refactor user courses to reflect on the new dashboard layout design
+
+[33mcommit a54e54b66698b46080de5c537cb28484e0289c5a[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sun Oct 26 20:04:30 2025 +0100
+
+    Refactor all user to reflect on the new dashboard layout design
+
+[33mcommit 4926dbca9747310eeed4278d320873143fea0910[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sun Oct 26 20:04:12 2025 +0100
+
+    Refactor pending verification to reflect on the new dashboard layout design
+
+[33mcommit b5a5f63f12132500b01393a76dbea4c5b1b66e47[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sun Oct 26 20:03:00 2025 +0100
+
+    Refactor role permission to reflect on the new dashboard layout design
+
+[33mcommit ebaee4ed2c6cb34ac83f0b0966d2e0c84f808864[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sun Oct 26 00:00:15 2025 +0100
+
+    Created activity log and triats
+
+[33mcommit f4df64d9b2cadca23806b427cc86ee08b4232ac4[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sat Oct 25 23:59:55 2025 +0100
+
+    Added activity log
+
+[33mcommit 57ab87a3e2f7432fddafb84c23c046cf1e8069eb[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sat Oct 25 23:59:38 2025 +0100
+
+    Adjusted the design
+
+[33mcommit ba314ca1d220007fb156984119ba72b63c1daded[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sat Oct 25 23:50:46 2025 +0100
+
+    Refactor the user activity to reflect the dashboard layout
+
+[33mcommit 1bb2d9b6bae8df281dc9796b76611485d2bcbad0[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sat Oct 25 23:50:03 2025 +0100
+
+    refactor the layout for appropriate colour combination
+
+[33mcommit 3f42ca32e1faebaf00f135ee1fa687d41fa92137[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sat Oct 25 23:10:57 2025 +0100
+
+    Adjusted the tab colours
+
+[33mcommit 6c5cb77519d208c59eed6916199a290098df6ea6[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sat Oct 25 23:10:34 2025 +0100
+
+    Adjusted the theme to work with tab and tabs background
+
+[33mcommit 803fdfe1b824bbd3cfe8c2949d126d112f5344c4[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sat Oct 25 22:36:32 2025 +0100
+
+    Used appropriate file path for the model
+
+[33mcommit 32a8205169d21bb28286ae7bdd17cc9386e311e6[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sat Oct 25 15:20:28 2025 +0100
+
+    Removed project from the student management
+
+[33mcommit 22f0c1529d076502bc3c6323963fbb4f7de8af3c[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Fri Oct 24 21:54:04 2025 +0100
+
+    Created credentials models
+
+[33mcommit 86d463fcac6b9af3b03ac700557360eab7902db2[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Fri Oct 24 21:53:06 2025 +0100
+
+    Created content models
+
+[33mcommit 9f523663fa9777e762237c3c9bd3972122c538f8[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Fri Oct 24 21:51:46 2025 +0100
+
+    Created marketplace models
+
+[33mcommit 29cb2c1023f112d9aae98b3b0b4fc3fe3a742e8b[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Fri Oct 24 21:50:48 2025 +0100
+
+    Created mentorship models
+
+[33mcommit dc08a351cb7639860c60d37fb20d00828eed7ac1[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Fri Oct 24 21:49:50 2025 +0100
+
+    Created learning models
+
+[33mcommit c98b0dee60da596ab4c0ebb93b4e53f555607c63[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Fri Oct 24 21:48:51 2025 +0100
+
+    Created core models
+
+[33mcommit 6ba03aa9809549a47290cdc62b65399898504d60[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Fri Oct 24 21:45:43 2025 +0100
+
+    Created Community models
+
+[33mcommit b6a21cb5bd1f32dfa607f52d38cdd25b5fb58de3[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Fri Oct 24 21:44:47 2025 +0100
+
+    Created Career models
+
+[33mcommit 526bc4800bbf62e52b5bad334c7b4d491087661d[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Fri Oct 24 21:43:16 2025 +0100
+
+    Created Assessment Models
+
+[33mcommit 6fc1e865e3c202a3cdfc1b5f4a0a55392687c3ab[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Fri Oct 24 21:42:31 2025 +0100
+
+    created admin models
+
+[33mcommit 3d3117407ec39f15b1ae8ec681c23a6852bbd533[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Fri Oct 24 21:33:03 2025 +0100
+
+    Delete all models so as to regroup them
+
+[33mcommit 5a30af7eb2c363f5350d255912d0f6671385bd96[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Fri Oct 24 20:43:43 2025 +0100
+
+    Whatever this means
+
+[33mcommit 9d522c61267901748dba8857f070f42cd2b62593[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Thu Oct 23 14:28:10 2025 +0100
+
+    Whatever this means
+
+[33mcommit b1ccf584635bd15c5e69406037a9d5eac853b6ad[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Thu Oct 23 14:20:44 2025 +0100
+
+    style: Update dashboard sidebar component for improved theming and user experience
+
+[33mcommit bba918877b763b05064cca2a4dbb3b2466161239[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Thu Oct 23 14:20:26 2025 +0100
+
+    style: Update course management component for improved theming and user experience
+
+[33mcommit 50fc29690ca5e3eb03c18e4a8f28f78f72578a19[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Thu Oct 23 14:20:11 2025 +0100
+
+    style: Update course management component for improved theming and user experience
+
+[33mcommit 3caebfa10548b957365d23de8735565dee965bb5[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Thu Oct 23 14:19:55 2025 +0100
+
+    style: Update certificate management component for improved theming and user experience
+
+[33mcommit 488fa67757c3e647a0e4d9801487dd138bf3a52c[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Thu Oct 23 14:19:36 2025 +0100
+
+    style: Update career component for improved theming and user experience
+
+[33mcommit 7bfada457eb816636c881dcac8989912373bff9d[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Thu Oct 23 14:19:20 2025 +0100
+
+    style: Update admin mock component for improved theming and user experience
+
+[33mcommit b7aa09d63be0c321018a6e098df43536527e96a3[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Thu Oct 23 14:18:30 2025 +0100
+
+    style: Update user mock interview component for improved theming and user experience
+
+[33mcommit 7d2569f2e2ca38260fabfdcb7691af88b417d275[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Thu Oct 23 14:17:27 2025 +0100
+
+    style: Update mentorship component for improved theming and user experience
+
+[33mcommit 0ae07ddea2de4b06005115c9e7af7fe150d640c8[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Thu Oct 23 14:17:05 2025 +0100
+
+    style: Update student management component for improved theming and user experience
+
+[33mcommit f53fc1418f41993224f39cf12071c4b0c17fc271[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Thu Oct 23 14:16:27 2025 +0100
+
+    style: Update course management component for improved theming and user experience
+
+[33mcommit 4f3f865e4d1aa6c5a7da77e9f7a5d3da65ee0f1d[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Thu Oct 23 14:15:19 2025 +0100
+
+    style: Update job management component for improved theming and user experience
+
+[33mcommit 0eff40c79443a71150c18decc174b9aef6dba062[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Thu Oct 23 14:14:57 2025 +0100
+
+    style: Update career component for improved theming and user experience
+
+[33mcommit eaf536ed6b16f4ad94d4f62c7160f67eff76921a[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Thu Oct 23 14:14:13 2025 +0100
+
+    Refactor certificate request page styles and colors for improved theming
+    
+    - Updated background and text colors to use themed variables for consistency.
+    - Enhanced course information card with themed colors and improved layout.
+    - Modified progress and certificate status cards to align with new design.
+    - Adjusted button styles to reflect new color scheme.
+    - Improved accessibility and readability by updating text colors.
+
+[33mcommit eae7bfa0570b6f190b413c0877e8e26f3defc255[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Thu Oct 23 14:13:22 2025 +0100
+
+    Refactor course view components for theme consistency and improved styling
+    
+    - Updated course-view.blade.php to use themed colors for banners and buttons, enhancing visual appeal.
+    - Modified course-progress-header.blade.php to align text colors with the new theme, ensuring better readability.
+    - Revamped course-progress-sidebar.blade.php with themed backgrounds and borders, improving user experience.
+    - Enhanced enrolled-courses.blade.php with consistent theming for course cards and buttons, promoting a cohesive design.
+    - Added transition styles for smoother theme changes across components.
+
+[33mcommit 23eefb528bc0b2817fd60282728e20c3ace9afe8[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Thu Oct 23 14:12:28 2025 +0100
+
+    style: update CBT viewer styles for improved theming and readability
+    
+    - Changed background and text colors to use themed classes for consistency.
+    - Updated button styles to match the new theme.
+    - Enhanced the visibility of assessment results with better color contrasts.
+    - Adjusted text colors for various elements to align with the new design.
+    - Improved the layout of the attempt history and detailed view sections.
+
+[33mcommit d28597511ba5948f7da706611d74fdfb7b72db0e[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Thu Oct 23 14:11:57 2025 +0100
+
+    style: Update result modal component for improved theming and user experience
+
+[33mcommit 707d3965502a51fe6dd3dcf0f0b06e31af2719d6[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Thu Oct 23 14:11:42 2025 +0100
+
+    style: Update resume section component for improved theming and user experience
+
+[33mcommit 8b30a7cdf7c3f09d4880dbbb6aa73f23c2b47dfa[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Thu Oct 23 14:11:25 2025 +0100
+
+    style: Update interview tab component for improved theming and user experience
+
+[33mcommit 33b34c18b54cb3abd8b0ec35a184993cae45a005[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Thu Oct 23 14:11:10 2025 +0100
+
+    style: Update practice tab component for improved theming and user experience
+
+[33mcommit 69425c662f0081e87b0f5cbe58132e6cc605be70[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Thu Oct 23 14:10:47 2025 +0100
+
+    style: Update ReviewAnalytics component for improved theming and user experience; add theme support to analytics data
+
+[33mcommit 1b4bdabcb6d7880f93d2e6270c7ab0c2293b5203[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Thu Oct 23 14:10:05 2025 +0100
+
+    Enhance UserMockInterview component: Add error handling and improve analytics calculations; update view to pass statistics data
+
+[33mcommit ca4029e79dfdc933432a5c4244a80730ab8af0fd[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Thu Oct 23 14:09:13 2025 +0100
+
+    style: Update dashboard tab component for improved theming and user experience
+
+[33mcommit ee0cfca05e9a436491508db19e677c6db1f5238c[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Thu Oct 23 14:08:54 2025 +0100
+
+    style: Update review component for improved theming and user experience
+
+[33mcommit a490e0bc558db16ec5e2d7c2a1b77e677cd266ec[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Thu Oct 23 14:08:20 2025 +0100
+
+    Enhance notifications UI and functionality
+    
+    - Updated the header background gradient and text colors for better visibility.
+    - Improved the search input and buttons with rounded styles and color transitions.
+    - Refined filter labels and select inputs with themed colors.
+    - Enhanced notifications list with improved hover effects and icon styling.
+    - Updated empty state message with a more engaging design.
+    - Improved toast notification handling with Alpine.js for better user experience.
+
+[33mcommit 9c313dc2330d520e28f5254a95460dd5bdcf7543[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Thu Oct 23 14:06:52 2025 +0100
+
+    Refactor Privacy Settings UI: Update styles and improve accessibility
+    
+    - Changed background and border colors for various sections to themed colors.
+    - Updated text colors for better contrast and readability.
+    - Enhanced hover effects for radio buttons and checkboxes.
+    - Improved layout and spacing for better user experience.
+    - Added dark mode support for icons and text.
+    - Removed deprecated session management and data rights sections.
+
+[33mcommit 4488d4fbe068380c4a0021263d1ac0b838daac0a[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Thu Oct 23 13:47:39 2025 +0100
+
+    Update CSS asset reference in manifest.json to new hashed filename
+
+[33mcommit 623e4021b0b8f911e624dbeeb477ac19814ba20b[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Thu Oct 23 00:22:09 2025 +0100
+
+    deleted unused files
+
+[33mcommit 60398000840616ce73f280215e2d30021d5c1055[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Thu Oct 23 00:01:21 2025 +0100
+
+    style: Enhance profile settings page for improved user experience and visual consistency
+
+[33mcommit 10c3ec5eef4dc387cbdbb55f213933c822907762[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Thu Oct 23 00:00:55 2025 +0100
+
+    style: Enhance settings in system management page for improved user experience and visual consistency
+
+[33mcommit f4a9e3159636026875afd95cf5e511a571a831f3[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Thu Oct 23 00:00:31 2025 +0100
+
+    style: Enhance system status page for improved user experience and visual consistency
+
+[33mcommit 01c183337bc1938b508e0e5ac88f3e26d72c1dce[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Thu Oct 23 00:00:14 2025 +0100
+
+    style: Enhance pending verification page for improved user experience and visual consistency
+
+[33mcommit f8f402f8b6c4633c05c7534ce8adc0106d551890[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Wed Oct 22 23:59:47 2025 +0100
+
+    style: Enhance role permission page for improved user experience and visual consistency
+
+[33mcommit 0fed73241e0f2871eabb772f5e8d0ba22450095b[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Wed Oct 22 23:59:28 2025 +0100
+
+    style: Enhance user activity page for improved user experience and visual consistency
+
+[33mcommit fc431647f7cc9d982b327cb17f2ba48d123045aa[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Wed Oct 22 23:59:05 2025 +0100
+
+    style: Enhance support ticket management page for improved user experience and visual consistency
+
+[33mcommit d93addcc1f59534031890a94bbfb4a78e2d96ef0[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Wed Oct 22 18:55:33 2025 +0100
+
+    style: Update styles for view profile in user management page to enhance visual consistency and accessibility
+
+[33mcommit 5919409138ecae72525c21bdb6ce80733a2ddbde[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Wed Oct 22 18:55:14 2025 +0100
+
+    style: Update styles for profile in user management page to enhance visual consistency and accessibility
+
+[33mcommit df7972827bc7387f4496013a952055f7f15c2d45[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Wed Oct 22 18:54:54 2025 +0100
+
+    style: Update styles for user management page to enhance visual consistency and accessibility
+
+[33mcommit d2f89351b36ba0a6d753fb2426077dc8a62a8d2b[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Wed Oct 22 18:54:37 2025 +0100
+
+    style: Update styles for user management page to enhance visual consistency and accessibility
+
+[33mcommit fae3ffd10cb9863819857077114dfb951e1b6a0e[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Tue Oct 21 19:59:02 2025 +0100
+
+    style: Update styles for mentor overview page to enhance visual consistency and accessibility
+
+[33mcommit 2ff4424e270415a1b34bb50e7fa44628e879711b[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Tue Oct 21 19:58:35 2025 +0100
+
+    style: Update styles for code review page to enhance visual consistency and accessibility
+
+[33mcommit 38298d2fbfcd6f969a4e90f60274bb3a4fe50655[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Tue Oct 21 19:58:19 2025 +0100
+
+    style: Update styles for Mentorship page to enhance visual consistency and accessibility
+
+[33mcommit 93dac1888c10fbec6732fd9ddf21ba07dc5b0a0b[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Tue Oct 21 19:58:04 2025 +0100
+
+    style: Update styles for Mentor resources page to enhance visual consistency and accessibility
+
+[33mcommit f651012cbd72bb1e01b4c95344db0c1c7cd009ff[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Tue Oct 21 19:57:45 2025 +0100
+
+    style: Update styles for Mentor dashboard page to enhance visual consistency and accessibility
+
+[33mcommit e62fec051d8e8922b241e94a91e167b51ffd5fcc[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Tue Oct 21 19:56:54 2025 +0100
+
+    style: Update styles for my Mentor page to enhance visual consistency and accessibility
+
+[33mcommit db1b9d9caa6b1357525aae5fce4a40319a713e95[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Tue Oct 21 19:56:37 2025 +0100
+
+    style: Update styles for Mentorship actions page to enhance visual consistency and accessibility
+
+[33mcommit 5426fe1ecc73e1414dbb9a3b7021b0a2494d66cc[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Tue Oct 21 19:56:17 2025 +0100
+
+    style: Update styles for Mentor management page to enhance visual consistency and accessibility
+
+[33mcommit f8d5bcbd82bcdddbc0fca5349fcfad7edebed55f[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Tue Oct 21 19:54:52 2025 +0100
+
+    style: Update styles for mentorship hub page to enhance visual consistency and accessibility
+
+[33mcommit f3d505e3d83d49a68d3f42ed89d59ad87af41710[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Tue Oct 21 19:54:29 2025 +0100
+
+    style: Update styles for Find Mentor page to enhance visual consistency and accessibility
+
+[33mcommit a63781d6e53b4ec389d71a20e39347c9c41115bd[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Tue Oct 21 19:54:11 2025 +0100
+
+    Implement feature X to enhance user experience and fix bug Y in module Z
+
+[33mcommit 485895578b9dbcd4635718eb655b3eaf38b1896b[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Tue Oct 21 19:53:49 2025 +0100
+
+    style: Update button styles and improve form accessibility in Question Sets
+
+[33mcommit df010c5344334f89979eec4e83083d372c8c6510[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Tue Oct 21 19:52:39 2025 +0100
+
+    feat: Add mock interviews, gamification, and institution management tables
+    
+    - Created migration for mock interviews, including related tables for interview questions, question sets, and question set items.
+    - Introduced gamification tables for tracking user points, badges, transactions, and reward store items.
+    - Established institution management tables for handling institutions, users, license histories, and bulk enrollment batches.
+    - Added personal access tokens and permission management tables for enhanced security and role management.
+    - Implemented activity log and certificates tables for tracking user activities and managing course completion certificates.
+
+[33mcommit ced5ddbf4dff11e1de7ce414b11c0910467116ce[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Mon Oct 20 03:37:50 2025 +0100
+
+    Moved the model to a folder
+
+[33mcommit d6718255ae9abab52aa1f821aea24245084fc417[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Mon Oct 20 03:37:32 2025 +0100
+
+    Moved the model to a folder
+
+[33mcommit 631705967645f66e81c8176b1224f1284f1d973f[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sun Oct 19 21:00:56 2025 +0100
+
+    Deleted unwanted migrations
+
+[33mcommit 7f15a57af54718e294f536b8deb6646023da84c3[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sun Oct 19 21:00:20 2025 +0100
+
+    Deleted unwanted migrations
+
+[33mcommit e9cc7a3633682d248be46704e23f900b5e62af74[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sun Oct 19 20:59:52 2025 +0100
+
+    Deleted unwanted migrations
+
+[33mcommit c0f9815919fee48d8f083c82e18068207ff739b9[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sun Oct 19 20:59:16 2025 +0100
+
+    Deleted unwanted migrations
+
+[33mcommit 8ca781c956815483dbaac2521529ca9f2dc957eb[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sun Oct 19 20:58:46 2025 +0100
+
+    Deleted unwanted migrations
+
+[33mcommit 535948580c8f39b65005ed30a71e90a02d16bc33[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sun Oct 19 20:58:25 2025 +0100
+
+    Deleted unwanted migrations
+
+[33mcommit 62a70126e3d18340a870becfd7e98a706617761f[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sun Oct 19 20:57:57 2025 +0100
+
+    Deleted unwanted migrations
+
+[33mcommit fb27ce9983ba76df50acfb0efdee92f05a8b9814[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sat Oct 18 22:43:20 2025 +0100
+
+    Add mock interview management features including create modal, dashboard, and results display
+    
+    - Implemented create modal for new mock interviews with form validation.
+    - Added dashboard tab with quick actions and recent interviews overview.
+    - Introduced flash messages for user feedback on actions.
+    - Created practice tab for quick practice sessions with sample questions.
+    - Developed results modal to display interview results and feedback.
+    - Included scripts for timer functionality and auto-hide flash messages.
+    - Added statistics cards to display interview metrics.
+    - Implemented tab navigation for easy access to different sections.
+
+[33mcommit 767c4b5451f2a23fa4a191365c43b6e9a8b5b85f[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sat Oct 18 22:42:41 2025 +0100
+
+    Add Question Bank and Question Sets management views with modals for creating and editing questions
+
+[33mcommit 00b751be9056cbcc24650ecc0880b61ed4d49da5[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sat Oct 18 22:42:00 2025 +0100
+
+    Add sidebar theme selector component with theme toggle functionality
+
+[33mcommit e473f9779f3326fd2ab2e84a2856e17b24f7f712[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sat Oct 18 22:41:02 2025 +0100
+
+    Add StudentInterviewTaker component and views for managing mock interviews
+
+[33mcommit 77f7a9ea97746e884f4a054bef75068768b309a2[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sat Oct 18 08:33:29 2025 +0100
+
+    Add community features: study group modal, code challenges, feedback, forums, live events, moderation, and study groups tabs
+    
+    - Implemented a modal for creating study groups with necessary fields.
+    - Created a tab for code challenges with search and filter options.
+    - Added a feedback tab for users to submit and view feedback.
+    - Developed a forums tab for discussions with search functionality.
+    - Introduced a live events tab for managing and registering for events.
+    - Established a moderation tab for handling reports, feedback, flagged content, and user management.
+    - Created a study groups tab for users to join or leave study groups.
+
+[33mcommit ce5a1f8fa7547f8b05b61fe4d65c462336d9f10e[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sat Oct 18 08:31:05 2025 +0100
+
+    Add InterviewQuestion and InterviewQuestionSet models with migrations and views for mock interviews
+
+[33mcommit 978b21e01778195f4b045a5ffa39d1bd7b4c8e96[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sat Oct 18 08:12:47 2025 +0100
+
+    Refactor certificate tab to enhance theming, improve visual consistency, and implement tab navigation for services and incidents
+
+[33mcommit 755513023f94270e3493f121841ce960b5fd98e2[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sat Oct 18 08:12:01 2025 +0100
+
+    Refactor Community Center Component and Blade View
+    
+    - Enhanced the CommunityCenter Livewire component with new properties and methods for managing forums, study groups, code challenges, live events, and feedback.
+    - Implemented pagination and improved data retrieval methods for community activities.
+    - Created a new migration for consolidated community tables including forum threads, replies, activities, participants, feedback, and reports.
+    - Updated the community-center Blade view for better UI/UX with improved tab navigation, flash messages, and loading animations.
+    - Added modals for creating and managing community activities and feedback.
+
+[33mcommit 9dc64709ce84b5e77f411173a515e410662060bd[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sat Oct 18 08:10:51 2025 +0100
+
+    Refactor edit profile to enhance theming, improve visual consistency, and implement tab navigation for services and incidents
+
+[33mcommit b188d25e73366628e30b2238299827abf9a1768f[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sat Oct 18 08:10:21 2025 +0100
+
+    Refactor lesson editor to enhance theming, improve visual consistency, and implement tab navigation for services and incidents
+
+[33mcommit 58c0ec234222c7b87c3566416d74d7562ee56f75[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sat Oct 18 08:09:47 2025 +0100
+
+    Refactor project criteria management to enhance theming, improve visual consistency, and implement tab navigation for services and incidents
+
+[33mcommit 5f1db4acc05f5546e62cbc81f4973b6a823b3495[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sat Oct 18 08:08:41 2025 +0100
+
+    deleted old files and replaced with better component
+
+[33mcommit 1a6861087fce5d18a2b81b10459dced98940ebd9[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Fri Oct 17 15:43:43 2025 +0100
+
+    Refactor question management to enhance theming and improve visual consistency
+
+[33mcommit f8b20c079d3e12a7e98eee13b9f073ea2d45f955[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Fri Oct 17 15:43:25 2025 +0100
+
+    Refactor feedback management to enhance theming and improve visual consistency
+
+[33mcommit 0578cbd8aa0698d69328bf4cd09373d323b2092e[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Fri Oct 17 15:37:15 2025 +0100
+
+    Refactor notification preference to enhance theming and improve visual consistency
+
+[33mcommit 5a8e1e0978ace760740bf381d524c7cc21f3dbec[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Fri Oct 17 15:36:54 2025 +0100
+
+    Refactor language localization to enhance theming and improve visual consistency
+
+[33mcommit e4cedb6141ceaaf4e8eeae42ae6fb0be9d348515[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Fri Oct 17 15:36:38 2025 +0100
+
+    Refactor help support to enhance theming and improve visual consistency
+
+[33mcommit d90af769bea21f43be8fcb098903d366b2f04a13[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Fri Oct 17 15:36:24 2025 +0100
+
+    Refactor feedback to enhance theming and improve visual consistency
+
+[33mcommit b652e25e783c2a9d20dbe716f274e23932583579[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Fri Oct 17 15:36:09 2025 +0100
+
+    Refactor questions blade to enhance theming and improve visual consistency
+
+[33mcommit 6c747df636a7822ff7f67f5774a2f227366c5b2a[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Fri Oct 17 15:35:25 2025 +0100
+
+    Refactor faq management to enhance theming and improve visual consistency
+
+[33mcommit 5b7dc9841c5fde3db4f7bdee90c24cd0336829b0[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Fri Oct 17 15:35:05 2025 +0100
+
+    Refactor announcement to enhance theming and improve visual consistency
+
+[33mcommit a850c02827d65ac05d66eeb306e44f16884c8b51[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Fri Oct 17 15:34:48 2025 +0100
+
+    Refactor announcement management to enhance theming and improve visual consistency
+
+[33mcommit c7ef05179bdcea3fb0a16d8db7b4d44881031ead[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Fri Oct 17 15:34:25 2025 +0100
+
+    Refactor list to enhance theming and improve visual consistency
+
+[33mcommit 9a5e38617f9b2fcb82a1b227cdb5dbd7e8ce8114[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Fri Oct 17 15:34:11 2025 +0100
+
+    Refactor assessment manager to enhance theming and improve visual consistency
+
+[33mcommit 0a22454ceb8780823a8be9e739d5c120b3b7b9bf[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Fri Oct 17 15:33:39 2025 +0100
+
+    Refactor user courses to enhance theming and improve visual consistency
+
+[33mcommit 04efccc8a7ebb6fa81d3d940947da1797e4f2478[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Fri Oct 17 15:33:18 2025 +0100
+
+    Refactor settings tab to enhance theming and improve visual consistency
+
+[33mcommit 98bcacffc3b79e6ed480a7293f598d45221d513c[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Fri Oct 17 15:32:51 2025 +0100
+
+    Refactor wishlist tab to enhance theming and improve visual consistency
+
+[33mcommit fcf837f2335de605740934084c1df0e43f5f633d[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Fri Oct 17 15:32:08 2025 +0100
+
+    Add favorite courses functionality to User model
+
+[33mcommit c3f8a40ac22e077c82e78133db0d979f54894a73[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Thu Oct 16 02:50:53 2025 +0100
+
+    Refactor learning analytics dashboard to utilize themed classes for improved consistency and maintainability
+
+[33mcommit 6faf527eac7e23dfafa035fa85e2d280a0bfba53[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Thu Oct 16 02:49:12 2025 +0100
+
+    Refactor mobile bottom nav to utilize themed classes for improved consistency and maintainability
+
+[33mcommit 8124b22b53480ce5387d960c3b0d1a9641e9d3c7[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Thu Oct 16 02:48:40 2025 +0100
+
+    Refactor dashboard to utilize themed classes for improved consistency and maintainability
+
+[33mcommit 64c1a7c0d0266ef5df65b7411981176da5d2b5d2[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Thu Oct 16 02:48:18 2025 +0100
+
+    Refactor dashboard sidebar to utilize themed classes for improved consistency and maintainability
+
+[33mcommit 17e519ee9027ed3d03e7a2f0a06af0a810810d38[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Thu Oct 16 02:47:37 2025 +0100
+
+    Refactor learning analytics dashboard to utilize themed classes for improved consistency and maintainability
+
+[33mcommit 863010647355a92e8b17298109bf400b3c9e9dda[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Thu Oct 16 02:46:51 2025 +0100
+
+    Refactor instructor dashboard to utilize themed classes for improved consistency and maintainability
+
+[33mcommit c5d3865c8714f900ebc67c91fd57b7f34700409e[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Thu Oct 16 02:46:34 2025 +0100
+
+    Refactor content editor dashboard to utilize themed classes for improved consistency and maintainability
+
+[33mcommit deeab0c84e7b8b406eb4568d2b8f354ca46448f0[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Thu Oct 16 02:45:47 2025 +0100
+
+    Refactor affiliate ambassador dashboard to utilize themed classes for improved consistency and maintainability
+
+[33mcommit 6c2bc60c173a4e8925481bd31a846c80a340fdcc[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Thu Oct 16 02:45:19 2025 +0100
+
+    Refactor student dashboard to utilize themed classes for improved consistency and maintainability
+
+[33mcommit f50bf719f2097bdb523a8c81c41ac47918a46f31[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Thu Oct 16 02:45:01 2025 +0100
+
+    Refactor mentor dashboard to utilize themed classes for improved consistency and maintainability
+
+[33mcommit 76b55410e20dc01b30a8c2190f8627cb538af13b[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Thu Oct 16 02:44:43 2025 +0100
+
+    Refactor academy admin dashboard to utilize themed classes for improved consistency and maintainability
+
+[33mcommit 50a49d1c4430d5b018908662eed6a37c2dc33517[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Thu Oct 16 02:44:11 2025 +0100
+
+    Refactor super admin dashboard to utilize themed classes for improved consistency and maintainability
+
+[33mcommit baaf892ea6739e2aabb2d322bfa53e0820f3554e[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Thu Oct 16 02:43:51 2025 +0100
+
+    Refactor theme selector component to improve theme management and enhance user experience
+
+[33mcommit 8037605db0a1cff0eca2153efa8c5ef18b1a595a[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Thu Oct 16 02:43:31 2025 +0100
+
+    Refactor welcome banner styles to use themed classes for improved consistency and maintainability
+
+[33mcommit 1d8202296c31b4e5ad0fc16dbd95a448f882dfb1[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Thu Oct 16 02:42:48 2025 +0100
+
+    chnaged the blade for the bottom nav
+
+[33mcommit 4d4b16992b6f5d35abdb8c74f0a46d53f85cef51[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Thu Oct 16 02:42:15 2025 +0100
+
+    Added interview relationship
+
+[33mcommit 1ce9b8f625504a927d962d20543063d648929497[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Thu Oct 16 02:39:52 2025 +0100
+
+    Refactor UserMockInterview component to enhance question management and improve authorization checks
+
+[33mcommit b6dafb6695cff4f86b1c4a8b706c585742bce8ab[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Thu Oct 16 02:39:13 2025 +0100
+
+    Refactor MockInterview model to enhance question management and improve authorization checks
+
+[33mcommit 1f8f58338c6ea71d54c85564574ceb4911185ca3[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Thu Oct 16 02:38:21 2025 +0100
+
+    Refactor AdminMockInterview component to enhance question management and improve authorization checks
+
+[33mcommit a3445a4d44f7a510391cf813f7a79a64e725d25f[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Thu Oct 16 02:35:44 2025 +0100
+
+    changed the dashboard layout sidebar blade
+
+[33mcommit 2c3578eef987189979058cb92169682c8ccf04a2[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Thu Oct 16 02:34:59 2025 +0100
+
+    changed the layout dashboard blade
+
+[33mcommit 7e32a84c4ef5aa353181329bc8cd890a30034618[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Thu Oct 16 02:33:51 2025 +0100
+
+    Removed unwanted files
+
+[33mcommit a6bc95a9282de3067616303472ea4896dbd3666f[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Wed Oct 15 06:30:23 2025 +0100
+
+    moved this to a new folder
+
+[33mcommit ba9a88dd3ffa00ef40ab4c3d89ee12f45016347d[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Wed Oct 15 06:29:51 2025 +0100
+
+    Moved this to a new folder
+
+[33mcommit e744495b4c676f49d5e784782f393f374c14a1e2[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Wed Oct 15 06:29:26 2025 +0100
+
+    Soon to be deleted
+
+[33mcommit ccfed597e3faf4ad1dc4214ec27ca311e90db84b[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Wed Oct 15 00:11:14 2025 +0100
+
+    Refactor analytics tab styles for consistency and improved readability
+
+[33mcommit 552b780a7c13e7479a5f7177aa35d3e2e0ac6dc1[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Wed Oct 15 00:10:57 2025 +0100
+
+    Refactor interview details modal tab styles for consistency and improved readability
+
+[33mcommit 5d819bd0f05c8c1680b1e5f387c1f9c072ec6517[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Wed Oct 15 00:10:34 2025 +0100
+
+    Refactor interview tab styles for consistency and improved readability
+
+[33mcommit e4da30c795b5b0c43681eef08b320158736fcda2[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Wed Oct 15 00:10:13 2025 +0100
+
+    Refactor overview tab styles for consistency and improved readability
+
+[33mcommit f3bfdd2f16c25721e76a02252f266d2b5096e816[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Wed Oct 15 00:09:54 2025 +0100
+
+    Refactor code structure for improved readability and maintainability
+
+[33mcommit e341e8c43c0a4561ce46304e3eb2c0efad486539[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Wed Oct 15 00:09:42 2025 +0100
+
+    added tabs to the blade
+
+[33mcommit 2ead3f4b6edd54f56e6e559a4fbc2afc7c633142[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Wed Oct 15 00:08:44 2025 +0100
+
+    Added 5 themes to replace just dark and light mode
+
+[33mcommit 66892be7102b64b2df89e3c1f72ce7c6c339508d[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Wed Oct 15 00:07:16 2025 +0100
+
+    Refactor code structure for improved readability and maintainability
+
+[33mcommit a6bd88a10ce7999fa2963a02ebc2f9b8b4de6141[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Tue Oct 14 07:46:46 2025 +0100
+
+    Added themes to the classes
+
+[33mcommit f6750c54d0b955f4ed59dd0c555b8acfd0c7b396[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Tue Oct 14 07:46:30 2025 +0100
+
+    Added themes to the classes
+
+[33mcommit ff38e6311a35c14840a7828921878e03d03e75a4[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Tue Oct 14 07:45:58 2025 +0100
+
+    Added five new themes to the existing light and dark mode
+
+[33mcommit e6c45ae661f3a2a629cac50c2f3efedd59acf6b8[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Tue Oct 14 07:45:13 2025 +0100
+
+    Added theme selector
+
+[33mcommit 51b21c494ca99808b5aa50cdf7233afe0dcb4536[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Tue Oct 14 00:26:07 2025 +0100
+
+    Analytics tab subcomponent
+
+[33mcommit b1a8fdd1c2c4bb30f2a66d0359a860e86bfa1607[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Tue Oct 14 00:25:50 2025 +0100
+
+    interview details modal
+
+[33mcommit 91d9eaa2d07c6fa7e9e17f392dc34c318a8b8b27[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Tue Oct 14 00:25:35 2025 +0100
+
+    Interview tab subcomponent
+
+[33mcommit a0b6588a93f4f8e3b5535e6d0b03ba797b687d12[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Tue Oct 14 00:25:21 2025 +0100
+
+    Overview tab subcomponent
+
+[33mcommit 4fa1b463acd0942f8714978b720f164786b4569d[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Tue Oct 14 00:25:05 2025 +0100
+
+    User details modal
+
+[33mcommit 6c3cd5e7cc31edc6dcec9c49023218043f03c9ea[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Tue Oct 14 00:24:47 2025 +0100
+
+    User's tab subcomponent
+
+[33mcommit 3e46365c3ee752ab98fe72e10fe1d208a67241c3[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Tue Oct 14 00:24:22 2025 +0100
+
+    Refactor code with new tabs. splitting the entire files into subcomponents
+
+[33mcommit 4514826ae2802499191518a97fb36e09e08f0c6f[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Mon Oct 13 17:20:22 2025 +0100
+
+    Delete empty public view for career
+
+[33mcommit c0d889b0d361bf2916559d59553929fc50148a56[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Mon Oct 13 17:19:26 2025 +0100
+
+    Refactor the code for easy readability and maintainability
+
+[33mcommit 0331206dfbaaa5c4aacc1079957178c59202b85c[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Mon Oct 13 17:18:34 2025 +0100
+
+    remove the container class
+
+[33mcommit 8ff92847e427ffd5f303951b887b1d38270f23fa[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Mon Oct 13 17:17:43 2025 +0100
+
+    Refactor code structure for improved readability and maintainability
+
+[33mcommit f9d0089ac6424d39cae01db19d28031814474dfe[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Mon Oct 13 17:16:17 2025 +0100
+
+    Implement feature X to enhance user experience and fix bug Y in module Z
+
+[33mcommit d5e738f682eba96cdbc1fd91e8eaaa72f3c8979d[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Mon Oct 13 17:14:41 2025 +0100
+
+    Commented out AI feature for future update
+
+[33mcommit ffb06b1c2944ce387553f26ae3287f1810c5b30b[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Mon Oct 13 17:14:08 2025 +0100
+
+    Refactor render method in AdminMockInterview component to improve code readability
+
+[33mcommit 6021a27a893e6a46e6d70f4381830f09cadde26e[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sat Oct 11 22:37:26 2025 +0100
+
+    Add Mentor profile component for managing mentor applications and profiles
+
+[33mcommit 09a036d45feaf5761a34f892da2f4f60aba38857[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sat Oct 11 22:37:09 2025 +0100
+
+    Add Mentor overview component for managing mentor applications and profiles
+
+[33mcommit 2d79c04c336ce614e9f2de07a75148332795eb21[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sat Oct 11 22:36:33 2025 +0100
+
+    Add Mentorship component for managing mentor applications and profiles
+
+[33mcommit 11ac1f8f349ceb46b17cf02ecf8091778b9e0bbf[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sat Oct 11 22:36:15 2025 +0100
+
+    Add Mentor analytics component for managing mentor applications and profiles
+
+[33mcommit a2c4c7cc0f684ddf685565f8bc4d2295231ee251[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sat Oct 11 22:35:52 2025 +0100
+
+    Add Mentor session component for managing mentor applications and profiles
+
+[33mcommit 0b689e3cce3e6f299d7c32cd58455b7e427428ab[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sat Oct 11 22:35:27 2025 +0100
+
+    Add Mentor hub component for managing mentor applications and profiles
+
+[33mcommit f0bb5571819c38a65dfda2edc0b69a9191e694d7[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sat Oct 11 22:35:08 2025 +0100
+
+    Add my Mentorships component for managing mentor applications and profiles
+
+[33mcommit d413c9258c7f473d00d4bb5a5a9602a5355d0f9f[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sat Oct 11 22:34:42 2025 +0100
+
+    Add Mentor resources component for managing mentor applications and profiles
+
+[33mcommit cb834fba472fd2954ae8bb91d8fc64aef2e79410[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sat Oct 11 22:34:20 2025 +0100
+
+    Add Mentor profile component for managing mentor applications and profiles
+
+[33mcommit f138b14040804bdea8dcca104b71e2c58e1a2099[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sat Oct 11 22:34:00 2025 +0100
+
+    Add Mentor Management component for managing mentor applications and profiles
+
+[33mcommit d230be64ca4f50348a9d433f1ba42b0a32e8362e[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sat Oct 11 22:33:34 2025 +0100
+
+    Implement code changes to enhance functionality and improve performance
+
+[33mcommit 5dd4f48457d9cd586f11476c8403aa251a6808b3[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sat Oct 11 22:33:14 2025 +0100
+
+    Add FindMentor component and view for mentor search and request functionality
+
+[33mcommit 53f6c752d01aba2078abb1b174fcefb0bf754bbe[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sat Oct 11 22:32:45 2025 +0100
+
+    Add Code Reviews component and view for managing code review requests
+
+[33mcommit 3599a581e315c5569a2a0d1be438b4d1f8a917b5[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sat Oct 11 16:03:13 2025 +0100
+
+    What this means
+
+[33mcommit 6877776efb70dcac77f5f7d94ea74877aac71fd1[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Fri Oct 10 22:56:28 2025 +0100
+
+    Added darkmode to the content documentation blade
+
+[33mcommit a4ded69de5ae90ad762764cecd695ddfc386fb79[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Fri Oct 10 22:56:11 2025 +0100
+
+    Added darkmode to the all documents blade
+
+[33mcommit b4c3a916ad7d6a2705689f545407230138bd0c4d[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Fri Oct 10 22:55:55 2025 +0100
+
+    Added darkmode to the content moderation blade
+
+[33mcommit cfe218bb7ca5f111b205aca71ca60af55e585cac[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Fri Oct 10 22:55:35 2025 +0100
+
+    Added darkmode to the create document blade
+
+[33mcommit 7ebff449bcbfe90d5be4bb6277454e1b7def061f[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Fri Oct 10 22:55:20 2025 +0100
+
+    Added darkmode to the document categories blade
+
+[33mcommit 0c88ed4e3f0fe5f60ce5a4494bbe679e85fd9ae8[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Fri Oct 10 22:55:03 2025 +0100
+
+    Added darkmode to the document reviews blade
+
+[33mcommit fe7e8807df3c9b0ca7e7eb3407e65e09135dd52b[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Fri Oct 10 22:54:39 2025 +0100
+
+    Added darkmode to the documentation blade
+
+[33mcommit f147c85b1ceeb6250c30a2d1c585bb35838e0f49[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Fri Oct 10 22:54:23 2025 +0100
+
+    Added darkmode to the learning materials blade
+
+[33mcommit 60d76e1f7d34305e236fd2152eac0718baa6a102[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Fri Oct 10 22:54:02 2025 +0100
+
+    Added darkmode to the localization blade
+
+[33mcommit 2adbc433db1f435391a6da5091d2d44440c5fa44[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Fri Oct 10 22:53:45 2025 +0100
+
+    Added darkmode to the video library blade
+
+[33mcommit 0051f0bbca9b2b430ecd13046e91b15f19a5e92d[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Fri Oct 10 22:52:59 2025 +0100
+
+    Change layout to be responsive
+
+[33mcommit 911a076ebaa8b963e3b3a2656d799e440a8f2d07[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Fri Oct 10 22:52:13 2025 +0100
+
+    removed Verified from the certificate top right hand corner
+
+[33mcommit 2c6e65a9c2c14d7666a7c278fe8bdb7c7735b416[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Fri Oct 10 22:51:18 2025 +0100
+
+    Refactor document settings component
+
+[33mcommit e444d2e4330c00cafa29d731bdc711aef5b04b2e[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Fri Oct 10 22:50:11 2025 +0100
+
+    Whatever this means
+
+[33mcommit e690a3d356bc9c45c3e4be7999473d79d2af9810[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Thu Oct 9 19:28:58 2025 +0100
+
+    Added profile visibility features
+
+[33mcommit b52d6053589d0a103dac107d0b691de737183c26[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Thu Oct 9 19:28:29 2025 +0100
+
+    Seperated settings tab from the profile component
+
+[33mcommit df66ab88140ef130494250ac806ee9ddabd577e7[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Thu Oct 9 19:28:16 2025 +0100
+
+    Seperated Certificate tab from the profile component
+
+[33mcommit da33668602cf33dc1bc9907dbe0d114734fbf3b8[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Thu Oct 9 19:28:00 2025 +0100
+
+    Seperated wishlist tab from the profile component
+
+[33mcommit ccba7e623a8b38359fec773642ed1e7ec5bb33d1[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Thu Oct 9 19:27:12 2025 +0100
+
+    Added deactivation of account
+
+[33mcommit d3d28eda447e14ef2282a70b6925af672bc257de[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Thu Oct 9 19:26:24 2025 +0100
+
+    Added profile deactivation
+
+[33mcommit b80177b19e16fa9c1f64b640cad454e6a069122a[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Thu Oct 9 19:25:52 2025 +0100
+
+    Check if account is active
+
+[33mcommit 4f26b7198ab2e4972ebd4e524c4f78073f2a7bdb[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Thu Oct 9 19:25:26 2025 +0100
+
+    Added deactivation to the user's table
+
+[33mcommit d5cb81d7e2538306bd98c9b5f8ecbedade815f0b[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Thu Oct 9 19:24:38 2025 +0100
+
+    Added new feature to the view profile component
+
+[33mcommit 4935d6912b04d82f79cec51f69cac8e18ed8afa3[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Thu Oct 9 19:24:14 2025 +0100
+
+    moved the edit profile to profile folder
+
+[33mcommit 140f2a1094a2640d72de409922098d5a7662c51d[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Thu Oct 9 17:55:16 2025 +0100
+
+    Moved the edit and view profile elsewhere
+
+[33mcommit c0e191af3b9d4c4629a3d21a5a6f06a75aa37526[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Wed Oct 8 21:33:09 2025 +0100
+
+    Update course route to use slug for improved URL structure
+
+[33mcommit 6f23bc126d14e5d4d96c4f1a5d1c24f47fa4a19c[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Wed Oct 8 21:32:58 2025 +0100
+
+    Enhance UI consistency and accessibility with dark mode support across overview component
+
+[33mcommit 1e94fd0882299c5fc31354dac70f46142f4c5f33[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Wed Oct 8 21:32:37 2025 +0100
+
+    Enhance UI consistency and accessibility with dark mode support across bulk enrollment component
+
+[33mcommit 9e07890ebf50dbc2208f57eb5430d9e7bfbcc066[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Wed Oct 8 21:32:22 2025 +0100
+
+    Enhance UI consistency and accessibility with dark mode support across institution analytics component
+
+[33mcommit 15b5cfa2c7552ee2b2a2d766d8dd577047fb1c62[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Wed Oct 8 21:32:03 2025 +0100
+
+    Enhance UI consistency and accessibility with dark mode support across mentor dashboard component
+
+[33mcommit beab36a8c723368a186b049dd3b00afb9b07c293[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Wed Oct 8 21:31:38 2025 +0100
+
+    Enhance UI consistency and accessibility with dark mode support across institution portal component
+
+[33mcommit 04191525e8327fbe192fd3306d1aa05746c536c2[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Wed Oct 8 21:31:14 2025 +0100
+
+    Enhance UI consistency and accessibility with dark mode support across white label settings component
+
+[33mcommit 8c9818b3572a4fadc45c68d6cd65a60b2d792688[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Wed Oct 8 21:27:49 2025 +0100
+
+    Enhance UI consistency and accessibility with dark mode support across license management component
+
+[33mcommit 7d720923a1b2310ccf337f25a10a878dfd33b4ae[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Wed Oct 8 21:26:21 2025 +0100
+
+    Enhance UI consistency and accessibility with dark mode support across forum component
+
+[33mcommit c809755f14c6cc968ab00f9cf382382178adfca5[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Wed Oct 8 21:25:47 2025 +0100
+
+    Enhance UI consistency and accessibility with dark mode support across study group component
+
+[33mcommit 8c6e6c1d50e0f8b70decf29ab875133197e19b8f[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Wed Oct 8 21:25:29 2025 +0100
+
+    Enhance UI consistency and accessibility with dark mode support across live event component
+
+[33mcommit 04e6e4a0432e1fc56f3d088280e056eb3251b143[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Wed Oct 8 21:25:12 2025 +0100
+
+    Enhance UI consistency and accessibility with dark mode support across feedback component
+
+[33mcommit 14aee26dc094a19da635ac68e59b5853d3da3792[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Wed Oct 8 21:22:44 2025 +0100
+
+    Enhance UI consistency and accessibility with dark mode support across code challenges component
+
+[33mcommit a217fa8fe88c9fbe229c4a5102faad1614033ff8[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Wed Oct 8 21:22:21 2025 +0100
+
+    Refactor code structure for improved readability and maintainability
+
+[33mcommit 3006006b021d82a260b8b985eb94e20057a1b0be[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Wed Oct 8 21:21:31 2025 +0100
+
+    Refactor code structure for improved readability and maintainability
+
+[33mcommit 7a47eebcf23e55c37d129a54c472045b0b881423[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Wed Oct 8 21:20:51 2025 +0100
+
+    Refactor code structure for improved readability and maintainability
+
+[33mcommit d97fc77e15f9e7768c67942cab7405d39a58ab47[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Wed Oct 8 21:19:45 2025 +0100
+
+    Implement code changes to enhance functionality and improve performance
+
+[33mcommit 9cc3d53faaa9c85e41840fbb73f81efc22276623[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Tue Oct 7 03:49:41 2025 +0100
+
+    Response for course review
+
+[33mcommit 97eedd3f279221d68939d4b444b144c4b4ebe91b[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Tue Oct 7 03:49:14 2025 +0100
+
+    Removed ambiguous code from the course review
+
+[33mcommit 2e3c4696e51d2492b5456537382a6a0c04c18eef[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Tue Oct 7 03:48:37 2025 +0100
+
+    made Review component
+
+[33mcommit c889b70f246e76b091d54f29b5fa37914418e54c[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Mon Oct 6 15:16:55 2025 +0100
+
+    Course review reminder notification
+
+[33mcommit 9f7cc275f3ca90228e867185f417f85b12759619[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Mon Oct 6 15:16:35 2025 +0100
+
+    Course review reminder
+
+[33mcommit 45ec817ad7598a51bfb61b999684c04330f18ebe[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Mon Oct 6 15:16:22 2025 +0100
+
+    Course review reminder service
+
+[33mcommit 26d633c49f28fc02640f0a74bc5bf98b6f4f7009[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Mon Oct 6 15:15:57 2025 +0100
+
+    Course Review model
+
+[33mcommit 7ec17baa392543055e32fd61a0cb9cb175d6326d[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Mon Oct 6 15:15:43 2025 +0100
+
+    Review reminder migration
+
+[33mcommit 3f225b9a56c44f54b65fad806627bc85b95ab328[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Mon Oct 6 15:15:23 2025 +0100
+
+    Subscribed to the review mail
+
+[33mcommit 38d1c0b55ad697187623787b89c37763c5949cc8[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Mon Oct 6 15:14:58 2025 +0100
+
+    Send review notification
+
+[33mcommit 9bca5f07ffc8c9a9bb955a4267ec6e969fb421aa[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Mon Oct 6 15:02:14 2025 +0100
+
+    Added new migration for the review analytics
+
+[33mcommit 9d53cc9dd6a46b76d69fd9b30ece5733c9782047[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Mon Oct 6 15:01:46 2025 +0100
+
+    The instructor reply notification
+
+[33mcommit c36253f818d712af7c0c5a94f44236481aa7225c[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Mon Oct 6 15:01:26 2025 +0100
+
+    Updated the menu, route and user model
+
+[33mcommit 0cd964ddb3f17d0bc888f3853752faf454ec4418[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Mon Oct 6 15:00:21 2025 +0100
+
+    Review analytics service and model
+
+[33mcommit 461ba03c734d4514d2c94389ef0aa953ff2b88e9[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Mon Oct 6 14:59:49 2025 +0100
+
+    Updated the CourseReview model to have the review analytics
+
+[33mcommit a5d17e18b92e350786e3db3348a3f6ba122fa035[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Mon Oct 6 14:59:28 2025 +0100
+
+    Updated the course model to have the review analytics
+
+[33mcommit 6c67bec2612985d98ae06ab3e4881ae8565def0c[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Mon Oct 6 14:59:04 2025 +0100
+
+    refactor Notification preference for the review reply
+
+[33mcommit f8f02e10066ba1702a679070ae1d01e4c1f60a7f[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Mon Oct 6 14:58:37 2025 +0100
+
+    Review Analytics Component
+
+[33mcommit 31ce0c070eb234f75314d752f71693a2d749818c[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Mon Oct 6 14:58:16 2025 +0100
+
+    Generate review analytics
+
+[33mcommit 6b98e9301c2c105039935e44d1d73cbda8829353[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Mon Oct 6 14:22:13 2025 +0100
+
+    Rearranged course route for the review
+
+[33mcommit cd3f17824f98913fd961e0fc21849341e1b77a78[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Mon Oct 6 14:21:41 2025 +0100
+
+    Added review to the available course
+
+[33mcommit 064af979613f0a4b100c07a80d4f36d9cb75a5be[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Mon Oct 6 14:21:13 2025 +0100
+
+    Certificate service not yet perfect
+
+[33mcommit f785b29517492edf66f00d41893e0625e6346880[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Mon Oct 6 14:20:44 2025 +0100
+
+    refactor review reply
+
+[33mcommit bd50fe54c88124770e6bb2878152682d7061cb3e[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Mon Oct 6 14:20:23 2025 +0100
+
+    Refactor review model
+
+[33mcommit 22f031735c15dc3dcfa9c86bb424575bb417fbfb[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Mon Oct 6 14:19:50 2025 +0100
+
+    Added review to the course
+
+[33mcommit 9acafc249267a0c704f1347673d832a9e0626240[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Mon Oct 6 14:19:23 2025 +0100
+
+    Refactor course model for rating
+
+[33mcommit 91ad969eb9e73fea2f1a405aeff16a063fe96b79[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Mon Oct 6 14:19:00 2025 +0100
+
+    Refactor course view component
+
+[33mcommit 47785e64aa957858988254368d3daa01bbc4841c[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Mon Oct 6 14:18:36 2025 +0100
+
+    Refactor student's dashboard
+
+[33mcommit 0693c264793dab2a8a023f3ab46f36669cf1b646[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Mon Oct 6 14:18:07 2025 +0100
+
+    Added reply notifications
+
+[33mcommit 58ce43b1139f57992f0c8ac55415f671a9bb0b31[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Mon Oct 6 14:17:33 2025 +0100
+
+    Made Course review notification
+
+[33mcommit 3e327d082a153ef2de8ebaef61b3a7fe5d253b1e[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sun Oct 5 06:30:09 2025 +0100
+
+    Course review component
+
+[33mcommit 504e283398daed9005aeeebdf71cc6a954602a8e[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sat Oct 4 20:04:32 2025 +0100
+
+    Certificate Approved mail
+
+[33mcommit 52680f3a7b0b2019919c6ab1f68fd5229c345a86[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sat Oct 4 20:04:01 2025 +0100
+
+    Certificate request mail
+
+[33mcommit abd9cb704df4c22f28d371340b931958708f2f28[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sat Oct 4 20:03:13 2025 +0100
+
+    Certificate Approval mail
+
+[33mcommit 7e6af3c5cb82d793d60a884857acbd9b13b21365[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sat Oct 4 20:02:47 2025 +0100
+
+    Refactor route for certification purpose
+
+[33mcommit 5c1189d2a5bc1a4da715c422252907362946a207[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sat Oct 4 20:01:50 2025 +0100
+
+    Delete certificate pdf
+
+[33mcommit 016354abda7a71d6708423fadbcd86e3258f0f41[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sat Oct 4 20:01:07 2025 +0100
+
+    Made certificate pdf download
+
+[33mcommit 7ed016cca1b2a7e789aeede72410385c3cea685f[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sat Oct 4 09:32:15 2025 +0100
+
+    Delete unwanted files
+
+[33mcommit 1a0fd2eaf07ed3312eae34e1587a3bda5144b895[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Fri Oct 3 15:29:31 2025 +0100
+
+    Adjusted the user name and course name
+
+[33mcommit ef20186d252deba1f48cc7605d6cc1f4d630668d[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Fri Oct 3 15:10:26 2025 +0100
+
+    Lesson progress migration and model
+
+[33mcommit 0dea877d104f7bee19f931261dea5f2fd18533a9[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Fri Oct 3 15:09:52 2025 +0100
+
+    updated the lesson content viewer to have lesson progress
+
+[33mcommit df13a2dc2a9dc93ba1ada214b7a1cff3fb0812f1[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Fri Oct 3 15:09:23 2025 +0100
+
+    updated the course view to have lesson progress
+
+[33mcommit 7eff00436c410380d4a67b6850cc3257c81d0250[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Fri Oct 3 15:08:53 2025 +0100
+
+    Deleted whatever that one does
+
+[33mcommit ab48994fe63543770a93a31643edab82324a49dd[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Thu Oct 2 23:07:11 2025 +0100
+
+    Implement feature X to enhance user experience and fix bug Y in module Z
+
+[33mcommit 00d065f8ca387b6cec207a66323139219ee11c5a[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Thu Oct 2 23:06:34 2025 +0100
+
+    Enhance lesson content viewer UI and improve assessment handling logic
+
+[33mcommit a4069e29aa5d88786201df7cb681079abb4fec71[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Thu Oct 2 02:59:31 2025 +0100
+
+    Finally, the quiz is working!!!!
+
+[33mcommit 20cd7e8ec0aed1dd5259d998e9ed2e7495bc6944[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Thu Oct 2 02:07:49 2025 +0100
+
+    Added darkmode to lesson content viewer
+
+[33mcommit 8f06b22afb7087cda67cbfeb84ef7f12dbbb972e[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Thu Oct 2 02:03:27 2025 +0100
+
+    Refactor course component
+
+[33mcommit 2671dbe8f7df9014601a4084e8fc26bf3eaa4ee1[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Wed Oct 1 21:15:20 2025 +0100
+
+    Refactor business modals blade
+
+[33mcommit e8f29ac5842fe0f811cddce699d990e924cf5fa0[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Wed Oct 1 21:14:48 2025 +0100
+
+    refactor category modal blade
+
+[33mcommit 0734d1bf8305cd48e30c4bfa8e2521c9d8434089[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Wed Oct 1 21:14:25 2025 +0100
+
+    Refactor marketplace vendor
+
+[33mcommit 70641f0c069b13319f7590c64f5b787479a72589[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Wed Oct 1 21:14:05 2025 +0100
+
+    refactor marketplace system
+
+[33mcommit 1e317e6cf3d5120895a4ca8e291ba1d65265677a[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Wed Oct 1 21:13:47 2025 +0100
+
+    Refactor marketplace shopping
+
+[33mcommit b6a31ce0952fe204886d28adc79e3ed10f9bda05[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Wed Oct 1 21:13:30 2025 +0100
+
+    Refactor browse marketplace
+
+[33mcommit 52e601495e30649d5c814ff737d36950a6cce8d2[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Wed Oct 1 21:13:11 2025 +0100
+
+    refactor public marketplace blade
+
+[33mcommit 3e95e5eccb3135c19cbdc90a6978e033daa741d6[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Wed Oct 1 21:12:52 2025 +0100
+
+    Refactor marketplace blade
+
+[33mcommit 594d3bf9c01d79697cf1ab8b75985ce6bfb530b1[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Wed Oct 1 21:11:57 2025 +0100
+
+    Modified lesson editor to work
+
+[33mcommit e9703a3a7f0ab65b30615e3050fa3c408552b3bd[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Wed Oct 1 21:11:08 2025 +0100
+
+    refactor the preview button
+
+[33mcommit e44a1d758702cfa8f51b8f8cc24e9884de92160f[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Wed Oct 1 21:09:24 2025 +0100
+
+    Modified the available course blade
+
+[33mcommit 577de44ed81501a3528de810b0b81f41738081ca[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Wed Oct 1 21:08:53 2025 +0100
+
+    Modified the course viewer
+
+[33mcommit 69bd4484b998182088c117b4b374c0e435d3ba96[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Tue Sep 30 11:54:40 2025 +0100
+
+    Refactor Course Outline component
+
+[33mcommit 53edbf110f9bbffe0a5162a605221bfbbb03812c[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Tue Sep 30 11:54:10 2025 +0100
+
+    Refactor course builder component
+
+[33mcommit eb22f48fcd768454b91d64f3d044e14c085b73a7[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Tue Sep 30 07:06:02 2025 +0100
+
+    Auto save after few seconds
+
+[33mcommit 9bdfde91ee3936ff11092a43387e041230cb25e4[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Tue Sep 30 07:05:16 2025 +0100
+
+    Lesson editor autogenerate slug
+
+[33mcommit 46cc2a37f4b563cd6321ae3487a4385cca521891[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Tue Sep 30 06:49:12 2025 +0100
+
+    Refactor lesson editor blade
+
+[33mcommit e96d4ab54d46ed0d7e38b1c04c24658212a2dd56[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Tue Sep 30 06:48:53 2025 +0100
+
+    Refactor lesson editor component
+
+[33mcommit d8d7a16a8997c5a4210a3f7aea5d7c429bed7aba[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Tue Sep 30 00:01:39 2025 +0100
+
+    Arranged web routes
+
+[33mcommit 4481b49132f441b137242bf455bedf351a05075d[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Mon Sep 29 23:59:13 2025 +0100
+
+    Grouped system management
+
+[33mcommit b156ba0a2e30de86336f5a1255e02ae9fed6e309[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Mon Sep 29 23:58:16 2025 +0100
+
+    Moved manual page down
+
+[33mcommit 7512d5ed452c78a1f2e612c1c76121afef638a0a[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Mon Sep 29 23:57:02 2025 +0100
+
+    mOVED MARKETPLACE DOWN
+
+[33mcommit 524b17e2697850858ce1626a3aabd15888bb0cf2[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Mon Sep 29 23:54:04 2025 +0100
+
+    Removed extra lines from the dashboard
+
+[33mcommit 510583e72ae70dcb72b5f6f5ce80500d8f1fb7c2[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Mon Sep 29 23:51:41 2025 +0100
+
+    Refactor dashboard layout
+
+[33mcommit 1823aec0d87d2d2de15d6a36d68527a15137afbe[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Mon Sep 29 20:14:36 2025 +0100
+
+    Redirect to course builder after creation
+
+[33mcommit 34fff6f15fab383cf3ae8e2b0d763bcda08c22c5[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sun Sep 28 21:35:18 2025 +0100
+
+    Refactor CBT component
+
+[33mcommit 516535aa1b80e9686921732f670eab8a382ba41b[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sun Sep 28 21:34:56 2025 +0100
+
+    Added trasition colours to redirect page
+
+[33mcommit 7b95a6bf4a147bfdb3307b60e5a6a2a7fd6e8978[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sun Sep 28 21:34:20 2025 +0100
+
+    Added darkmode to exam page
+
+[33mcommit dffae9c5dffef3bfef3887f7425281438e9c165b[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sun Sep 28 21:34:00 2025 +0100
+
+    Refactor CBT instruction interface
+
+[33mcommit 32c749cac2f7e3c66e1cb3347eacad8345e39014[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sat Sep 27 23:44:03 2025 +0100
+
+    Added edit component to seperate the courseform from editing
+
+[33mcommit bd58393fbd05bb696a7c52555b96d12d0d818d7f[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sat Sep 27 23:43:08 2025 +0100
+
+    Added toolbar subcomponent
+
+[33mcommit daa075602020d2177ee83f8d5ee9ca987971f446[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sat Sep 27 23:41:30 2025 +0100
+
+    Refactor course outline subcomponent
+
+[33mcommit 6f13c4c89fc8dc48dd550d4b70627cfcb30868e2[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sat Sep 27 23:40:39 2025 +0100
+
+    Refactor lesson editor subcomponent
+
+[33mcommit f36b9b4ba7a2dbda0578f80d87ec11417401da0a[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sat Sep 27 23:39:23 2025 +0100
+
+    Refactor list subcomponent
+
+[33mcommit a75c568d1c80dab10813be21be1c464858770642[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sat Sep 27 23:37:37 2025 +0100
+
+    Added preview course to each course card
+
+[33mcommit 3d30f8a90fea28bca9cb715c3c0362180fe3a5e4[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sat Sep 27 23:36:56 2025 +0100
+
+    Removed edit course blade
+
+[33mcommit f7c605f735f8bc766e6ebe52014c122c71746c72[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sat Sep 27 23:34:40 2025 +0100
+
+    Autogenerate course title slug when creating and editing course
+
+[33mcommit e81e10718c7f814eceea38f29dfc546f5e77de1e[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Fri Sep 26 06:13:26 2025 +0100
+
+    made a responsive profile blade
+
+[33mcommit ec086645556be831038499669820b2d07e929800[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Fri Sep 26 06:11:46 2025 +0100
+
+    Refactor view profile blade to make it responsive
+
+[33mcommit f96771ec33f1813f6fb8a0311ae1c59d8bf52b27[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Thu Sep 25 20:29:07 2025 +0100
+
+    Refactor course builder component
+
+[33mcommit af30b480aba0dee2890d0522d7dcd5de7a792457[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Thu Sep 25 20:28:41 2025 +0100
+
+    QnA subcomponent in assessment section in the course builder
+
+[33mcommit fc193f21a0a35c1237673f7aa262672934ea18b1[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Thu Sep 25 20:19:50 2025 +0100
+
+    Question manager in course builder component
+
+[33mcommit 8e7644f437b35b0473c11f0fb9197440002c9975[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Thu Sep 25 20:19:28 2025 +0100
+
+    Toolbar sub component in course builder
+
+[33mcommit b8a85b7b65f7f6b3b9728a786c5a6cab90c8ee61[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Thu Sep 25 20:19:06 2025 +0100
+
+    form component for the course builder
+
+[33mcommit 70934e7c73f016d9dcc7aee4ab55560ec4af1666[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Thu Sep 25 20:18:05 2025 +0100
+
+    List assessment section in course builder component
+
+[33mcommit 83c60769a43aeefe2675a56746911a7b77f770de[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Thu Sep 25 20:17:24 2025 +0100
+
+    question sub component is assesment section in course builder component
+
+[33mcommit 39538f8c2fdb07e947aeaea49ac1514f3d585956[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Thu Sep 25 20:15:56 2025 +0100
+
+    Modified instructor's dashboard
+
+[33mcommit d3338391e5b8ba0d1b98bb7b1b4250e0ee2c3888[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Thu Sep 25 20:15:37 2025 +0100
+
+    Refactor learning analytics component
+
+[33mcommit 2e4de723d7370392e92d140f83bd47ba239d9686[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Thu Sep 25 20:14:45 2025 +0100
+
+    refactor profile component in User management
+
+[33mcommit 7c6f406b5d4259b4088b4da9674cecefa9536174[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Thu Sep 25 03:29:31 2025 +0100
+
+    Refactor user management component
+
+[33mcommit f8210cefcb592d483c554463bc7a2b3e22cc03fe[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Wed Sep 24 21:51:31 2025 +0100
+
+    Added darkmode to user's activity
+
+[33mcommit b83f2a1cd6fc2de6c7cddbc8993489b1e2ac9f31[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Wed Sep 24 21:51:09 2025 +0100
+
+    refactor User management blade component
+
+[33mcommit 1ccb40dd397a9b2390776f76a0d70983964652c6[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Wed Sep 24 21:49:38 2025 +0100
+
+    Refactor navbar component
+
+[33mcommit 0733d25aafe987a66d77fe86cd967b98ec60f27f[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Wed Sep 24 21:48:51 2025 +0100
+
+    Refactor menu and web route
+
+[33mcommit a31b934241bb282d1ba06c55a0747e94e10c93cd[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Tue Sep 23 22:07:52 2025 +0100
+
+    Refactor super admin dashboard design to support darkmode
+
+[33mcommit d4205ae976ff964dc7324bc5f0e4cacba86bc100[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Tue Sep 23 22:07:30 2025 +0100
+
+    Refactor course review component design to support dark mode
+
+[33mcommit 3a018afd32d455d68feae2380b9650ee88fde2fa[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Tue Sep 23 22:06:32 2025 +0100
+
+    Refactor pending verification component design to support dark mode
+
+[33mcommit 3f01c33d74a580b78559d6198c2bc5e6a40be057[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Tue Sep 23 22:05:59 2025 +0100
+
+    Refactor all user component design to support dark mode
+
+[33mcommit 8ba6c96561b03f58bc6b7dcb3ce11da343cd258d[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Tue Sep 23 22:05:18 2025 +0100
+
+    Refactor course approval component design to support dark mode
+
+[33mcommit 7c90d71090e6e46d74ac424f93c94dc14b81c79b[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Tue Sep 23 22:04:48 2025 +0100
+
+    Refactor Available courses component design to support dark mode
+
+[33mcommit 3b2f98e2efdee58820eef232dd3476ed6f370db2[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Tue Sep 23 22:04:04 2025 +0100
+
+    Refactor all courses component design to support darkmode
+
+[33mcommit b0e57960d1baa6ad92651fa953c867521911148b[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Tue Sep 23 22:03:30 2025 +0100
+
+    Refactor dashboard design to support darkmode
+
+[33mcommit fd6ca92d2ed07b3fe81066a780ee6dc4d19e1351[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Mon Sep 22 23:53:20 2025 +0100
+
+    Added course preview component
+
+[33mcommit 5d6661ba2965b08fd456bc9ea6606d48273c2d42[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Mon Sep 22 23:52:37 2025 +0100
+
+    Refactor all user component
+
+[33mcommit edacc7fcc5b5911a7696f65343498c347a80233c[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Mon Sep 22 06:34:44 2025 +0100
+
+    Added comment author and post author method
+
+[33mcommit 0eaa42f30632e20c7055137e9767f7885c7bc249[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Mon Sep 22 06:33:27 2025 +0100
+
+    modified get user query method
+
+[33mcommit c91e2d261b080426b9436de948acb006f5c2fd68[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Mon Sep 22 06:32:32 2025 +0100
+
+    Changed courses perpage to 10
+
+[33mcommit f52a7d02b5346e019330daa447d7eeeed5a6b510[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sun Sep 21 23:40:28 2025 +0100
+
+    Refactor affiliate ambassador dashboard
+
+[33mcommit f9852bf753d3af43542d8e48df23df20330f3716[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sun Sep 21 23:39:25 2025 +0100
+
+    Added other stuff to the dashboard component
+
+[33mcommit ee51a19299f155b781cf7e4a5e152dc9cf049cb3[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sun Sep 21 23:38:26 2025 +0100
+
+    Refactor Dashboard component
+
+[33mcommit c3e20eb1122272fd0321d20483e9c989a83ae989[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sun Sep 21 23:37:55 2025 +0100
+
+    Refactor affiliate ambassador dashboard
+
+[33mcommit 7bf476a71188b89c2adcf7b9d7a39974ae913244[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sun Sep 21 23:37:30 2025 +0100
+
+    Refactor academy admin dashboard
+
+[33mcommit cf0cf02fff36c951444cd3abb79c1f15691ea680[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sun Sep 21 23:37:11 2025 +0100
+
+    Refactor content editor dashboard
+
+[33mcommit eec73cd4ea6695ac9b3b3a0398fab324575ecd11[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sun Sep 21 23:36:56 2025 +0100
+
+    Refactor instructor dashboard
+
+[33mcommit 18b7089f271713c8d0d1d13dd1a58ecffb2534c5[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sun Sep 21 23:36:43 2025 +0100
+
+    Refactor student dashboard
+
+[33mcommit ccd0db7b1331c1291677ad1b00d584db4f37ad9b[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sun Sep 21 23:36:20 2025 +0100
+
+    Refactor super admin dashboard
+
+[33mcommit 259df613ace612b7adc559ba708bfe47610a5cb1[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sun Sep 21 23:36:02 2025 +0100
+
+    Refactor mentor dashboard
+
+[33mcommit 55c4085837bd7da0c691fc8a7d850ccb071a673e[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sun Sep 21 15:05:39 2025 +0100
+
+    Changed view content to view profile
+
+[33mcommit 9adc8a51bd9d01d8d85a93cb3405e96863a34d98[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sun Sep 21 15:05:01 2025 +0100
+
+    Changed edit content to edit profile
+
+[33mcommit a43bec57d867b79ca72d9265efac640c31160726[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Fri Sep 19 17:56:29 2025 +0100
+
+    Refactor dashboard layout
+
+[33mcommit 98010cfc2d30ff9f6e91df713340e2f77e258438[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Fri Sep 19 17:56:01 2025 +0100
+
+    Dashboard Nav bar
+
+[33mcommit a93d7ae6167933a3a07c34315abedd86d449b8db[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Fri Sep 19 17:55:42 2025 +0100
+
+    Mobile button nav
+
+[33mcommit 081b3c6cc4f57204ffc0114d16c5ade36a955329[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Fri Sep 19 17:51:46 2025 +0100
+
+    refactor sidebar dashboard
+
+[33mcommit 547c33c3adf75296410af584c10e45c014beaa92[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Fri Sep 19 17:50:05 2025 +0100
+
+    Settings component
+
+[33mcommit 2e01c8d3f3f94dca73a60bd7733bda974851d5cb[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Fri Sep 19 17:49:24 2025 +0100
+
+    Added pending const to the model
+
+[33mcommit c754de62e8f08ac6dd5d8b3d1e418d7048b22edb[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Fri Sep 19 17:48:46 2025 +0100
+
+    Profile setting component
+
+[33mcommit d4423b66456b1461db42e02858eebed3843af570[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Fri Sep 19 17:48:27 2025 +0100
+
+    Privacy setting component
+
+[33mcommit eafb57e8373da10e4fb6d3261a8927361c7ddb57[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Fri Sep 19 17:48:01 2025 +0100
+
+    Notification preference component
+
+[33mcommit f0bb2c9f1a93aa12de78484bc70034adb2b2b208[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Fri Sep 19 17:47:39 2025 +0100
+
+    Language localization component
+
+[33mcommit 420cc1b0f51bfa65ac6886285af3530e405ba461[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Thu Sep 18 05:17:40 2025 +0100
+
+    refactor marketplace vendor
+
+[33mcommit 543745bb86e47e38c5f93447216011d5b8e07724[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Thu Sep 18 05:15:26 2025 +0100
+
+    Refactor marketplace browse
+
+[33mcommit bc4d45470635e097968c0e85b50d8cfacc9a8aea[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Thu Sep 18 04:57:56 2025 +0100
+
+    Refactor marketplace admin
+
+[33mcommit 32c89aeb44045f4f2fa34828bfef3be6382a9040[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Thu Sep 18 04:56:30 2025 +0100
+
+    Refactor public marketplace
+
+[33mcommit e638a9e7193e164353e8c23e4b1b5dbafce8137d[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Thu Sep 18 04:55:34 2025 +0100
+
+    Refactor super admin dashboard
+
+[33mcommit 80c12f1bdba6afeed49c1070137feb3e876b0b5c[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Thu Sep 18 04:54:21 2025 +0100
+
+    Refactor student dashboard
+
+[33mcommit 1698a8300af6a039a377c9de6c6c5a279b57ea5b[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Thu Sep 18 04:53:38 2025 +0100
+
+    Refactor mentor's dashboard
+
+[33mcommit 10f2e6995ef21bafd53e19951db923bfca89e2e5[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Thu Sep 18 04:50:25 2025 +0100
+
+    Refactor instructor's dashboard
+
+[33mcommit e9fb211172084d2307beb7f39348ed9d67f0e32f[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Thu Sep 18 04:49:58 2025 +0100
+
+    Refactor Content editor dashboard
+
+[33mcommit 635d316f0b8f20fc5d88d4232db6093bc15ef4b1[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Thu Sep 18 04:47:33 2025 +0100
+
+    Refactor Affiliate ambassador dashboard
+
+[33mcommit d3ffc7f2a81f941fe38201d9dd35edbed03aa4f6[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Thu Sep 18 04:47:04 2025 +0100
+
+    Refactor Academy admin dashboard
+
+[33mcommit fd78cfc506d56da57b447a586c31b22e7deb2e2b[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Wed Sep 17 00:26:34 2025 +0100
+
+    Adjust listing subcomponents
+
+[33mcommit 1a77de8019918e562796b55b0de903c1244adeb6[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Mon Sep 15 22:45:05 2025 +0100
+
+    Item blade in marketplace admin
+
+[33mcommit 503654f62c7b2e07fad706b75c4669ce51f7e75f[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Mon Sep 15 22:44:40 2025 +0100
+
+    analytics tab in marketplace admin
+
+[33mcommit 121222654e305016805fd58bc3d2149aad4b305b[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Mon Sep 15 22:44:06 2025 +0100
+
+    Modal in marketplace admin
+
+[33mcommit 98a0835e309d0f65dcfdbef7b6c822bfdcb0c848[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Mon Sep 15 22:43:39 2025 +0100
+
+    Orders tab
+
+[33mcommit c6da9a7d98613357761406fc2a1646e3ea1b1593[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Mon Sep 15 22:43:21 2025 +0100
+
+    Overview tab
+
+[33mcommit c4d2aa4798e15991b4b78d0e04f0be8ff19dc60b[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Mon Sep 15 22:42:54 2025 +0100
+
+    Vendor tab
+
+[33mcommit 71fd7401713c4cf0f77810fa619e33a13511ffb5[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Mon Sep 15 22:42:37 2025 +0100
+
+    Payment tab
+
+[33mcommit cfc76e88218996ad2a58b0cd287c599aa4db3963[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Mon Sep 15 22:42:21 2025 +0100
+
+    Chnaged the route of the attached file
+
+[33mcommit 79084a1058b929652cace5c5ecd44759779102a3[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Mon Sep 15 22:41:20 2025 +0100
+
+    Added tab blade to the page
+
+[33mcommit b9cc054d13b759493012cf5a73d5840990828404[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Mon Sep 15 22:40:46 2025 +0100
+
+    Changed colour in the user management blade
+
+[33mcommit 6923f868bac1a52364378a7666cc8b768c888132[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Mon Sep 15 22:40:03 2025 +0100
+
+    Profile blade component
+
+[33mcommit 9a3d404aea9e249767020446687d3405a0799e79[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Mon Sep 15 22:29:38 2025 +0100
+
+    Moved product detail to a new location
+
+[33mcommit ef57211e5664b99ed220da69b65fac9a49a4bce7[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Mon Sep 15 21:35:09 2025 +0100
+
+    Changed the position of the marketplace
+
+[33mcommit ae470b6e73e76fcc3550cdea2ae5d0a66c3a06ce[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sun Sep 14 20:27:11 2025 +0100
+
+    Marketplace vendor component
+
+[33mcommit 74b3b5e8f3cf80043687dff3afea99d483e83c83[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sun Sep 14 20:25:37 2025 +0100
+
+    Marketplace system component
+
+[33mcommit 6a6640c7be33802cfdc0be0b48cf5a855496164c[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sun Sep 14 20:24:48 2025 +0100
+
+    Market place shopping component
+
+[33mcommit fd529d351c865f38e7fd5540edb5a080cd7693b2[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sun Sep 14 20:24:10 2025 +0100
+
+    Market place content
+
+[33mcommit 6419258cef2597724912332d252377c205b5231f[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sun Sep 14 20:23:20 2025 +0100
+
+    Marketplace business component
+
+[33mcommit 6e1c22599dcd9d446ed3fe9d5ecbcb5131f62a6c[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sun Sep 14 20:22:48 2025 +0100
+
+    Marketplace browse component
+
+[33mcommit 70d3c3c16fe79765e52bd8d12cbadbd5802691e6[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sun Sep 14 20:22:12 2025 +0100
+
+    Marketplace admin component
+
+[33mcommit ec1732b5909a772cb2f278e20fe3b1e7acedabfe[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sun Sep 14 20:21:35 2025 +0100
+
+    Public market place component
+
+[33mcommit c3f3cb7f0d85b55d6fe1aecffc52ee41f0bb0f9d[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sun Sep 14 20:21:01 2025 +0100
+
+    Market center component
+
+[33mcommit 38953be9b0fe80ea5448e927f38f33c32c1b36df[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sun Sep 14 20:20:39 2025 +0100
+
+    Layout, menu and route
+
+[33mcommit 45f8d0368415a3880e114ad46362a93cbd2b214c[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sun Sep 14 20:19:45 2025 +0100
+
+    Discount model -m
+
+[33mcommit 9a2cb155ec470844990161df6297da9adeaa2b9c[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sun Sep 14 20:18:37 2025 +0100
+
+    review subcomponent
+
+[33mcommit 5a81f5b78e230024807ceb9328b260d70aad36cf[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sun Sep 14 16:17:17 2025 +0100
+
+    Delete unwanted marketplace component files
+
+[33mcommit 08b07032c1effd39b1405b709b2f5797786c2337[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sat Sep 13 08:43:16 2025 +0100
+
+    Saved drafts
+
+[33mcommit 4c3469fad952f167192ff924b98ecf72885066dd[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sat Sep 13 08:43:00 2025 +0100
+
+    review ratings
+
+[33mcommit 712d1eab939bddc1808223629c826ade2d9c962f[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sat Sep 13 08:42:45 2025 +0100
+
+    promotion discount
+
+[33mcommit fea09fc5b5be631961f36e81ff43f7e4ac407c85[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sat Sep 13 08:42:27 2025 +0100
+
+    Product details
+
+[33mcommit dbc46c8d7def5ec780f7402cc9407dd9365e9214[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sat Sep 13 08:42:03 2025 +0100
+
+    Payment payout
+
+[33mcommit 3998c9103ad016ee4cc49703ba1ae08557caab25[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sat Sep 13 08:41:45 2025 +0100
+
+    my purchase
+
+[33mcommit 4d47123e225a13dd20d3ecbcf3aa99f5f6f0d964[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sat Sep 13 08:41:29 2025 +0100
+
+    my listings
+
+[33mcommit 2836b40f6c2f17107d58388ad7b8d21b22bb0585[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sat Sep 13 08:41:13 2025 +0100
+
+    Marketplace settings
+
+[33mcommit 261ed9570e946e5c92a487035fbe9528d6afa2e9[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sat Sep 13 08:40:57 2025 +0100
+
+    Marketplace categories
+
+[33mcommit a95c731bd3c9cdc6786e699b82ec2ea51cf15251[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sat Sep 13 08:40:43 2025 +0100
+
+    Marketplace analysis
+
+[33mcommit bb66e370d441e5bb417b2982e8738f57b696da06[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sat Sep 13 08:40:25 2025 +0100
+
+    create listing
+
+[33mcommit 12e2b0e83a3b0ef1b1eb4e6d46e29be0fa7d4d0c[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sat Sep 13 08:40:09 2025 +0100
+
+    vendor application
+
+[33mcommit 81ae1359a222ce8c158bd5b1008fa5048e006558[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sat Sep 13 08:39:49 2025 +0100
+
+    vendor dashboard
+
+[33mcommit c5a2c7361d1ea508594b20adbbbaa1bec2ff22b4[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sat Sep 13 08:39:29 2025 +0100
+
+    vendor orders
+
+[33mcommit 2d19057f8ac85122f817cb5e77f4c6f495525e78[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sat Sep 13 08:39:11 2025 +0100
+
+    vendor withdrawal
+
+[33mcommit 2da013c326bb927c2499435f0a76c878ff2a5958[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sat Sep 13 08:38:50 2025 +0100
+
+    cart checkout
+
+[33mcommit cff24f477afe47c8976fbe16f252a64791e36680[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sat Sep 13 08:38:30 2025 +0100
+
+    browse Marketplace
+
+[33mcommit fecd81976ef97d7c6259a8f2c6d279883e5a1015[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sat Sep 13 08:38:14 2025 +0100
+
+    Marketplace all order
+
+[33mcommit 21eb7fb88a2b709ef0fbd5c5476d90a6b0850e39[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sat Sep 13 08:37:48 2025 +0100
+
+    Marketplace provider
+
+[33mcommit d95f443277f08828b5faef6bec1508ce95d5e0f4[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sat Sep 13 08:37:34 2025 +0100
+
+    Marketplace policies
+
+[33mcommit 12983f7a701caea1f2bd5ea35fd9b022b620e485[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sat Sep 13 08:37:15 2025 +0100
+
+    Marketplace notifications
+
+[33mcommit a5f0538ceccbaf69db7b42daa340164a74f4b375[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sat Sep 13 08:36:50 2025 +0100
+
+    Marketplace services
+
+[33mcommit 5a903c4a6a870c46f6a13866366aaaf5f8fcff92[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sat Sep 13 08:36:13 2025 +0100
+
+    Marketplace models
+
+[33mcommit 2ce01b05d62382d0b61f9e971b4f2d8523dac51f[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sat Sep 13 08:35:39 2025 +0100
+
+    Marketplace center
+
+[33mcommit af03ee7bafc804802956e104aed9860dcce45aa0[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sat Sep 13 08:35:19 2025 +0100
+
+    Marketplace controller
+
+[33mcommit bb72c56be13389e0986f55b2f0fa3552f0f37f3d[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sat Sep 13 08:34:50 2025 +0100
+
+    Marketplace migration
+
+[33mcommit 648fa7ca2a55c04d67e66eccbe396931f18e86bc[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sat Sep 13 07:38:42 2025 +0100
+
+    Update Users' model
+
+[33mcommit 7b488e7b45b5608d2abaff85b6aafb03e9235547[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sat Sep 13 02:56:30 2025 +0100
+
+    Update Composer
+
+[33mcommit f545676fb5140cec057c02cfecfd959061b3540e[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Thu Sep 11 21:05:47 2025 +0100
+
+    Added appropriate method to display images
+
+[33mcommit 9a7299cd10eb054242cf0e1a3a80d6078048fabd[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Thu Sep 11 21:05:22 2025 +0100
+
+    Template component
+
+[33mcommit 717781f2260098eb9f2bd3350df6550f19fe7f60[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Thu Sep 11 21:05:06 2025 +0100
+
+    Settings component
+
+[33mcommit c30e5cff2e84aabe029c4e0265789fde5ad05179[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Thu Sep 11 21:04:33 2025 +0100
+
+    Page list component
+
+[33mcommit 8dfd3992fb5f064b7f0495b83c21ed2a1abf22ac[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Thu Sep 11 21:04:12 2025 +0100
+
+    SEO manager component
+
+[33mcommit 345ad80659a81a6e23469e3b55c46ffd8e58d24c[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Thu Sep 11 21:03:22 2025 +0100
+
+    Media manager component
+
+[33mcommit cbb61eec39786345acc8695b4b26765370785813[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Thu Sep 11 21:03:00 2025 +0100
+
+    Create page component
+
+[33mcommit 8e5b88f0b1404b3edacb79dfe737befd4f5652ed[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Thu Sep 11 21:02:02 2025 +0100
+
+    Page analytics component
+
+[33mcommit 74b288d0bfe613a413a919dd8b69c9caf774c086[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Thu Sep 11 21:01:26 2025 +0100
+
+    Page manager component
+
+[33mcommit 44cb2227822456d884a22a459b05fc486e633b13[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Thu Sep 11 21:01:03 2025 +0100
+
+    Update composer
+
+[33mcommit 4fa1e1293d0d13c4841ae6bd6ecf5097d065f764[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Thu Sep 11 21:00:27 2025 +0100
+
+    Deleted blade files
+
+[33mcommit 285f43fab2085d03025e490af257b48342e7d037[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Wed Sep 10 22:12:11 2025 +0100
+
+    Page subcomponents
+
+[33mcommit 03b106f1d2aa2105f0777d32767a35492a415e47[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Wed Sep 10 22:11:54 2025 +0100
+
+    Page layout
+
+[33mcommit f718d925907ca6002ef37559641dcb9a4127e24a[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Wed Sep 10 22:11:39 2025 +0100
+
+    Page database
+
+[33mcommit b0885145d66f99f55d5974760b6c53fb88567082[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Wed Sep 10 22:11:25 2025 +0100
+
+    Page model
+
+[33mcommit 03aa0f3b462bb186f0ae299cb70ae1910c5dd6a8[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Wed Sep 10 22:11:13 2025 +0100
+
+    Page manager component
+
+[33mcommit 2973edaf824f8f7febd1cbf8275f8a99a9607be1[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Wed Sep 10 22:10:47 2025 +0100
+
+    Pages controller component
+
+[33mcommit f813c2cad8761d0ae57d9f8d61edd59b8843db9c[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Wed Sep 10 22:02:35 2025 +0100
+
+    Pages controller
+
+[33mcommit c5d46c002b1a48c759f7f568a055aac6d45c69ff[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Wed Sep 10 18:48:12 2025 +0100
+
+    Guideline subcomponents
+
+[33mcommit 02ef235a6b76adb7ce3df9d026ad4a171b26a50b[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Wed Sep 10 18:47:27 2025 +0100
+
+    Guideline component
+
+[33mcommit 700814276bb5a3280a0e831d7f378345b2677efa[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Wed Sep 10 18:47:07 2025 +0100
+
+    Statistics component
+
+[33mcommit 2aff9a79de90ff7554742e0b8666bd033374fe38[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Wed Sep 10 18:46:48 2025 +0100
+
+    About us component
+
+[33mcommit 8a8308cbd993ec13c7a9629706b60d6c227c972c[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Wed Sep 10 18:46:32 2025 +0100
+
+    Contact us component
+
+[33mcommit f472b76cf5772ee6348aaa49f1c5dea22b25d078[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Wed Sep 10 18:45:57 2025 +0100
+
+    Delete manual page components
+
+[33mcommit d7fcb48b769b9f72ae8ec2075c1a00095e95b763[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Wed Sep 10 03:28:56 2025 +0100
+
+    Refactor old code
+
+[33mcommit ae8c27e0bb3b4e4143ea97b7345e662c0a534d43[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Wed Sep 10 03:28:30 2025 +0100
+
+    Performance optimization component
+
+[33mcommit 4deeac235fc6bd9b6ffb5e876275a6fd08fb50a7[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Tue Sep 9 21:56:09 2025 +0100
+
+    Newsletter settings component
+
+[33mcommit 39e660daf813dd20ef04131b90b55d6cbbca7152[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Tue Sep 9 21:55:53 2025 +0100
+
+    Newsletter performance optimization
+
+[33mcommit f6ac933bae5b700dfa6d7d5faf28ac7ce2ea5657[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Tue Sep 9 21:55:02 2025 +0100
+
+    Newsletter campaign report
+
+[33mcommit b7139bd7f1a7b6c92976f0beec07628d0362689d[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Tue Sep 9 21:54:31 2025 +0100
+
+    Newsletter template component
+
+[33mcommit 599f8d00b0e40671f14cb7a0f166b0dd9162d325[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Tue Sep 9 21:54:02 2025 +0100
+
+    Newsletter center component
+
+[33mcommit 07e83109905732d58646fd006eeb4c812f0921be[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Tue Sep 9 21:53:05 2025 +0100
+
+    Newsletter preferences
+
+[33mcommit 7ebbb41253407fc8e2bdbc4667a67133e113ec21[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Tue Sep 9 21:52:30 2025 +0100
+
+    Newsletter campaign management
+
+[33mcommit 4e2d5f4d4ef5b35d1128d893eb72b742bf17ce3f[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Tue Sep 9 21:51:33 2025 +0100
+
+    Newsletter subscriber management
+
+[33mcommit bb1e95b719ed2979d8f0747ab79c79cbd54f53ec[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Tue Sep 9 21:50:44 2025 +0100
+
+    Newsletter analytics
+
+[33mcommit 4135189e26c708ed8f1c370048aa8ee638f4bc66[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Tue Sep 9 21:50:11 2025 +0100
+
+    Newsletter controller
+
+[33mcommit 85b1351bff1d5211da5348afb523104053d05ddb[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Tue Sep 9 21:49:33 2025 +0100
+
+    Added newsletter to footer
+
+[33mcommit e6e3f8856d7dd19ebf39f4295ede0bb2e5a1b768[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Tue Sep 9 06:29:39 2025 +0100
+
+    Delete duplicate migrations
+
+[33mcommit 192fd63b0b46208d327f7ab06effe3ff5e574cb8[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Mon Sep 8 20:54:28 2025 +0100
+
+    Affiliate Dashboard component
+
+[33mcommit 34c0f70da2688498d0ee202ab4cacfce8c843d55[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Mon Sep 8 20:53:55 2025 +0100
+
+    Commission report component
+
+[33mcommit ed1cb23b40d1b0cbb936b8f63114a4b8c1624652[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Mon Sep 8 20:53:15 2025 +0100
+
+    Commission history component
+
+[33mcommit 87969ec671496cc692514faf0794b109b69c3a2a[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Mon Sep 8 20:52:34 2025 +0100
+
+    Affiliate provider
+
+[33mcommit 33a3cbb50f18fd474966a20749b27e640ea52bd6[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Mon Sep 8 20:51:53 2025 +0100
+
+    Settings component
+
+[33mcommit 1181c1110738c1ab55e27fedd9107c830c87182f[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Mon Sep 8 20:49:45 2025 +0100
+
+    Analytics Component
+
+[33mcommit 3740f89b41ad7385355e73e0685cbf40d1188457[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Mon Sep 8 20:49:00 2025 +0100
+
+    Register with referral
+
+[33mcommit 0706d8d56488b1113e82e8a6f6df8dbae10528ad[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Mon Sep 8 20:48:38 2025 +0100
+
+    referral models
+
+[33mcommit 9b4aa05e97d0655057511c686a2468994753ddcb[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Mon Sep 8 20:47:41 2025 +0100
+
+    Course purchased
+
+[33mcommit a41f4f2f80afc22fd168af801dff6e5036b679dd[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Mon Sep 8 07:07:33 2025 +0100
+
+    Affililiate tool component
+
+[33mcommit 623cf4f1f9092818df79ddbdd763dd83a2191a6d[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sun Sep 7 22:27:21 2025 +0100
+
+    Payment withdrawal component
+
+[33mcommit a890ed88c46ec35e8f16b2fcc4f6d26ea65bc7a5[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sun Sep 7 22:27:04 2025 +0100
+
+    Payment transactions component
+
+[33mcommit 459dc8220f44eae6de0fa09bd91d2ce8074087cc[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sun Sep 7 22:26:43 2025 +0100
+
+    Payment report component
+
+[33mcommit 9a2cfa38a224717388dbc90534985e77a105393d[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sun Sep 7 22:26:25 2025 +0100
+
+    Payment overview component
+
+[33mcommit 1b5356d348dee7e0fd838d0431a4ca20e5512ebb[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sun Sep 7 22:25:48 2025 +0100
+
+    Payment failed component
+
+[33mcommit 01722f02d5610b6e3ad349ab1e301f4dae20080f[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sun Sep 7 22:24:27 2025 +0100
+
+    revenue report component
+
+[33mcommit 521ea33529da1be4795079c02b21bf9ed8d4e824[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sun Sep 7 22:24:07 2025 +0100
+
+    Paystack settings component
+
+[33mcommit 0584cbcd11d95cb2c1fa2f0143fda31f7e0b5350[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sun Sep 7 22:23:43 2025 +0100
+
+    Payment processing component
+
+[33mcommit 59900cf6a53c418e5b68bb987bc51c7855fb2178[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sun Sep 7 22:23:14 2025 +0100
+
+    Finance setting component
+
+[33mcommit 534ff3c332ede11ff088dc255c3b311124b47a9b[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sun Sep 7 22:22:15 2025 +0100
+
+    Finance dashboard component
+
+[33mcommit b0781dee8f9ae090b9c187a85613694de303fafa[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sun Sep 7 22:21:24 2025 +0100
+
+    Withdrawal component
+
+[33mcommit 7d47e23208fdfbcf883bec450bc6ccf9121e0f63[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sun Sep 7 22:20:42 2025 +0100
+
+    Wallet dashboard component
+
+[33mcommit 3a78c6db5b30d0db8edbc948ba31f435646a82a1[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sun Sep 7 22:19:30 2025 +0100
+
+    Transaction history component
+
+[33mcommit fdda336629ab409533e25d3e46cd018ca8307147[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sun Sep 7 22:18:29 2025 +0100
+
+    Instructor's earning component
+
+[33mcommit c5d4064447edd1af3f2241f7e44fc5f73371fba1[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sun Sep 7 22:17:55 2025 +0100
+
+    Course check out component
+
+[33mcommit a95ff3dc01779ef230c2f9811fa00de02a708966[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sun Sep 7 22:17:11 2025 +0100
+
+    Added financial controller
+
+[33mcommit 8bf0b75b7dea5bd4f1b8b8a2324eab83403eacde[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sun Sep 7 20:27:26 2025 +0100
+
+    Auto process payment
+
+[33mcommit 99fa27ab10715b1e359ca20da3dce857fcd6ffb9[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sat Sep 6 19:55:26 2025 +0100
+
+    Image display in the overview page
+
+[33mcommit fe06d6a3a47084b866012c8f0de2d6c9a97b10da[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sat Sep 6 13:25:44 2025 +0100
+
+    Institution Component
+
+[33mcommit 154dd162525abb0e8063a20438fa1ab8dde71cac[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sat Sep 6 13:25:23 2025 +0100
+
+    White label settings component
+
+[33mcommit 917f4fc12e1f397a411076221cbd59a435d67c27[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sat Sep 6 13:22:05 2025 +0100
+
+    Partner institution component component
+
+[33mcommit 776683c93b6606edd1bbb415054313ea8cba3820[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sat Sep 6 13:21:00 2025 +0100
+
+    Micense management component
+
+[33mcommit 8eb0ba376b1dfb4d7e9a6d8f8ba30be056ea415e[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sat Sep 6 13:19:42 2025 +0100
+
+    Institution portal component
+
+[33mcommit fb32a3e53ea87172fcef41a5925e1dcafeb13f3f[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sat Sep 6 13:19:18 2025 +0100
+
+    Institution analytics subcomponent
+
+[33mcommit 67c6a766f699a078e96ba6b79c18983ac45b8219[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sat Sep 6 13:17:53 2025 +0100
+
+    Bulk enrollment component
+
+[33mcommit 4754eca01077eea8f2d870db566bfa1b07ef7540[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sat Sep 6 13:16:06 2025 +0100
+
+    Added notification mail to institution
+
+[33mcommit 7ac0cc6ddd60efd9eb1a7ae856f01757dbca3da7[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sat Sep 6 13:12:14 2025 +0100
+
+    Added subcomponents to guideline component
+
+[33mcommit acf4754c5de1990873ba5dcb099d2b5b890752bb[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sat Sep 6 13:10:25 2025 +0100
+
+    Institution migrations
+
+[33mcommit ce5b09b487f64291b9a3ae63b0650ebad7973686[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sat Sep 6 13:09:21 2025 +0100
+
+    Institution enrollment service and job
+
+[33mcommit 0a8965e6439141b8ced59e64935b4d8098a7a674[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sat Sep 6 03:09:30 2025 +0100
+
+    Added Support\Str to enable successful email
+
+[33mcommit 19f0dd1ba0b45fde6c9d9d9ce36ad490b04f5859[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sat Sep 6 03:08:50 2025 +0100
+
+    Redesign public post blade
+
+[33mcommit 53a03872bc238961ca068785b060878e61639247[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sat Sep 6 03:08:12 2025 +0100
+
+    Removed date and time from published now
+
+[33mcommit a3d65c8d83f6d5ef66bc1b3c4fd79c52030296a2[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Fri Sep 5 20:19:45 2025 +0100
+
+    Added Blog component
+
+[33mcommit e28cc288e81c5bf47febe66e2cbfbce4ef784335[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Thu Sep 4 23:57:37 2025 +0100
+
+    Created blog settings migration and model
+
+[33mcommit a476c01ec4a3dcd6e185d41bdf9d05a79d27ea7b[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Thu Sep 4 23:57:18 2025 +0100
+
+    Created blog reaction migration and model
+
+[33mcommit 6af6615df28cb2c25e76bc9c961c8a04af6a3d53[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Thu Sep 4 23:56:55 2025 +0100
+
+    Created blog post migration and model
+
+[33mcommit 1e5fd8d8e3a7687300f255b336a3e4be99d9e8b6[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Thu Sep 4 23:56:30 2025 +0100
+
+    Created Blog comment migration and model
+
+[33mcommit 6ebe39928e553390646db2793258da095f914afb[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Thu Sep 4 23:56:02 2025 +0100
+
+    Created Blog category migration and model
+
+[33mcommit 4f4de3305fb7c849597066031064e4979c51bc37[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Thu Sep 4 23:51:02 2025 +0100
+
+    Refactor the code for fast loading
+
+[33mcommit 30aac41b18992e1c35bc21cf81d34907486f3929[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Thu Sep 4 23:40:24 2025 +0100
+
+    Add blog menu to the sidebar
+
+[33mcommit a46dd97593aef27dffe8e06740e08c70143e45d6[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Wed Sep 3 20:16:41 2025 +0100
+
+    Gamification component
+
+[33mcommit 13b40ba40ecc1dc9cc308e8ecc7af192af3c6a3a[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Wed Sep 3 20:16:19 2025 +0100
+
+    Update Composer
+
+[33mcommit 4215ee59160ce244095b43037c2d94b02b63b836[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Wed Sep 3 13:18:43 2025 +0100
+
+    Added learning analytics dashboard
+
+[33mcommit 0da6a9fc7000c2a9a4c9c66f705f44bc55bf35ff[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Tue Sep 2 17:16:22 2025 +0100
+
+    Added Community component
+
+[33mcommit 0fdc79a6f013545b73891c9abd0034e85f5b00e8[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Tue Sep 2 17:14:32 2025 +0100
+
+    Changed to Category
+
+[33mcommit 713a4a66160ed4c0b69b0fd9f4e58e8151b481e9[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Tue Sep 2 17:12:23 2025 +0100
+
+    Changed the migrations
+
+[33mcommit 257694e702a1955a40771035a7873776ef67cb4c[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Tue Sep 2 15:19:43 2025 +0100
+
+    Models for forum
+
+[33mcommit a21295ee12a6462c8b5dd8b92f8288bc85e06e51[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Tue Sep 2 14:54:13 2025 +0100
+
+    Combined forum migrations
+
+[33mcommit ca94736d4f058e539eb8927abf19382f362efc4d[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Tue Sep 2 01:54:31 2025 +0100
+
+    Created migrations for forum
+
+[33mcommit fb61e617964c8e44e87ca787fb1fafdbc3f15532[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Tue Sep 2 01:39:39 2025 +0100
+
+    Added CBT Component
+
+[33mcommit 34edbe9c5c6a7a6959e3cff10e2b451fe06edd4a[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Mon Sep 1 01:31:27 2025 +0100
+
+    Delete old CBT files
+
+[33mcommit 073b0b0c713d4b8dcc98de8aa4377f92b94518bb[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sun Aug 31 01:31:46 2025 +0100
+
+    Made CBT Component
+
+[33mcommit eb41e0ca7bb5d28e817f261899e995937377fe79[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sat Aug 30 12:30:34 2025 +0100
+
+    Hot
+
+[33mcommit b792740b2dbd693065459f3151f103bba9767bc2[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sat Aug 30 04:14:15 2025 +0100
+
+    Added mentorship hub components
+
+[33mcommit fd058d64d0ff59d51f24f6c26fa99bcc3d9a7574[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sat Aug 30 04:13:38 2025 +0100
+
+    Added mock interview component
+
+[33mcommit 20f65189cd1c73205ddfb9addcdecbbd9e013d31[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sat Aug 30 03:56:57 2025 +0100
+
+    Added job management component
+
+[33mcommit 031169b8c5c6eb8d1557879be15e3eeed4248a16[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sat Aug 30 03:53:56 2025 +0100
+
+    Added job portal component
+
+[33mcommit ecd3396d9467ce8590cdbd11955ebf7a8f51c482[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Fri Aug 29 01:04:17 2025 +0100
+
+    Added Resume component
+
+[33mcommit 8c1ed720130ce64587cda73470dc4f653fb4a0ce[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Fri Aug 29 01:02:22 2025 +0100
+
+    Added portfolio component
+
+[33mcommit a055547e62baa21422a9afaf4e4c064e2c6e5c5f[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Fri Aug 29 01:01:22 2025 +0100
+
+    Update composer
+
+[33mcommit 5bcb8f1ada104adab26cd324e27f7be7667baf6e[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Wed Aug 27 23:55:43 2025 +0100
+
+    Added job search component
+
+[33mcommit 6827ca75d040c8fa911cf30680a6839f0ae879e5[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Wed Aug 27 23:55:16 2025 +0100
+
+    Added portfolio component
+
+[33mcommit 471bdf9513b2486eacc10100d6a243269c608cec[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Wed Aug 27 00:18:33 2025 +0100
+
+    Everything looks cool
+
+[33mcommit 206e8621f45bf28eedd76e9e7b3bf79cf5f4e4ff[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Tue Aug 26 19:21:58 2025 +0100
+
+    Added polling to course viewer and builder
+
+[33mcommit ae250d634ebf0c6d7098c99f4195a82716c93d8e[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Tue Aug 26 13:10:32 2025 +0100
+
+    Working fine
+
+[33mcommit 3a1c8c91a388c24b978893d76bd65f9a4c443698[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Tue Aug 26 09:10:01 2025 +0100
+
+    added home button
+
+[33mcommit 58e8d9d0fecd95d08a799c82945349fdf384af1f[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Tue Aug 26 09:07:11 2025 +0100
+
+    Progress. Some of the answer are correct
+
+[33mcommit 1511a78d522da44811900c0a196e0f49d7954058[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Tue Aug 26 03:34:20 2025 +0100
+
+    Redesign help page
+
+[33mcommit 7ec272d6284ea40da54bdb88dfdaf45517ca9dfe[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Tue Aug 26 02:57:06 2025 +0100
+
+    Working assessment taker
+
+[33mcommit f760a0c20fbce428042d5cd31db2f18e7f1c2c5d[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Tue Aug 26 02:25:13 2025 +0100
+
+    The view is good but the answer is not in the right place
+
+[33mcommit 0b5d0251c68c6ece57b362c7c3bd315432eb7c31[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Tue Aug 26 02:20:59 2025 +0100
+
+    Working Assessment
+
+[33mcommit 38a3ffd91e5085fe69d9020e52f5d4d84c4740cd[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Mon Aug 25 23:39:55 2025 +0100
+
+    Redesign student dashboard
+
+[33mcommit c4c85f43b1a1220747c947680f9484f0ded2a033[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Mon Aug 25 23:38:26 2025 +0100
+
+    Added announcement component
+
+[33mcommit d91a0976d1a5ccabcd51db2f4a89c56d3997d92d[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Mon Aug 25 23:37:48 2025 +0100
+
+    Added feedback component
+
+[33mcommit 4d4451990833b5862a25facb734eb36745618cd5[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Mon Aug 25 23:37:15 2025 +0100
+
+    Added help support component
+
+[33mcommit 5097e2ce6d595b6ceb6420447ce4b3b9446bb619[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Mon Aug 25 23:36:46 2025 +0100
+
+    Added guideline component
+
+[33mcommit d107a4abbb22afa4d69346da2dadc6b99ca5238c[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Mon Aug 25 23:36:19 2025 +0100
+
+    Added homepage and it's link
+
+[33mcommit 31fc873706b4954e602f46de2c53d833eced5bfc[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Mon Aug 25 23:34:49 2025 +0100
+
+    Added contact us page
+
+[33mcommit 4d26515805e16b5b5e730bc74690f7b2b8f39450[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Mon Aug 25 23:33:28 2025 +0100
+
+    Added About us page
+
+[33mcommit f120a40a8e8f9c89781315dc301c2150a465dbdd[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Mon Aug 25 13:09:45 2025 +0100
+
+    graph working
+
+[33mcommit 2dfa41b80a6b7a6db703ad63b7cfbb1e65e96ffb[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Mon Aug 25 12:53:08 2025 +0100
+
+    Added statistics component
+
+[33mcommit 8d2294d5d2d00cfb47460e8abeccfb8b51fc751c[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Mon Aug 25 08:20:24 2025 +0100
+
+    Redesign user-activity blade
+
+[33mcommit e5e80349157a8d190b8838d0031d52a0b1496881[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Mon Aug 25 08:19:58 2025 +0100
+
+    Refactor pending verification component
+
+[33mcommit 4f1f7b2455bb2189f8c511702a77077afa4f52b5[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Mon Aug 25 08:19:20 2025 +0100
+
+    Redesign Certification component
+
+[33mcommit 75ca3ad2f5e782302c9f42d8a1255a237944282d[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Mon Aug 25 08:17:40 2025 +0100
+
+    Redesign profile management component
+
+[33mcommit a959e4a5f08ec5cff77ebf27c4bd4f360dfd8f0d[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sun Aug 24 14:54:09 2025 +0100
+
+    Added Assessment to student
+
+[33mcommit 290f627f4fc4991ed52420856e904dd31a727a07[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sun Aug 24 14:53:33 2025 +0100
+
+    Added certificate component
+
+[33mcommit 604a5cb0ed4c8c08e3abd2eb74211250b2533826[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sun Aug 24 00:30:19 2025 +0100
+
+    Added Learning analytics component
+
+[33mcommit 347e0603b7847e2708254ea452355c0c58b78b86[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sun Aug 24 00:27:54 2025 +0100
+
+    Removed CBT Component
+
+[33mcommit e04978b76669768245cb689d3c60e332d54d868e[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sat Aug 23 21:33:33 2025 +0100
+
+    Deleted unwanted migrations
+
+[33mcommit 048fb6478926d6357633c5075ee958539019b1b1[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sat Aug 23 08:43:44 2025 +0100
+
+    Courses working perfect
+
+[33mcommit 3e24fae8310fa8ff5fe77f9d9186c5ed45bc11d2[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sat Aug 23 08:34:36 2025 +0100
+
+    Changed Json to longText in lesson content table
+
+[33mcommit 37756284d6474ea26ad7f9344620e07cd1fedd20[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sat Aug 23 08:34:00 2025 +0100
+
+    Change Json to longText in lesson content table
+
+[33mcommit 697660023e53216576e293ac873c56f55d933685[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sat Aug 23 08:32:49 2025 +0100
+
+    Added Course view component
+
+[33mcommit 82958a1512bb7b6010dcef4d0c8e8d98bcb05da1[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sat Aug 23 08:23:29 2025 +0100
+
+    Fixed trix error
+
+[33mcommit 288c60df5efdbe1edc98e859dbb2a44bc62db648[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sat Aug 23 05:41:27 2025 +0100
+
+    Refactor All Courses component
+
+[33mcommit 2578c1ce6b0dded7d52e8428b9593263d03b9241[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Fri Aug 22 16:30:35 2025 +0100
+
+    Regrouped files based on their functions
+
+[33mcommit e77225892b95104415a528b3ce5812ff7251469b[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Fri Aug 22 16:28:48 2025 +0100
+
+    Regroup files
+
+[33mcommit 996a5336f621d23c05fbfabded3e375f664e492f[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Fri Aug 22 09:45:59 2025 +0100
+
+    Removed log from the code
+
+[33mcommit 7fe04db795881399c7cecf67bf3cec0b3322519e[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Fri Aug 22 09:44:01 2025 +0100
+
+    Removed seeder files
+
+[33mcommit eed824c7dd2e3d7f2fdeb882732ba66dbcbc1981[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Thu Aug 21 23:46:31 2025 +0100
+
+    Unified Create and edit course controller into course form
+
+[33mcommit 81f895be972b556c6d0f7efd7ee82003609e9423[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Thu Aug 21 15:14:01 2025 +0100
+
+    Added assessment manager
+
+[33mcommit 758310c26f390ce7607989029b070fd1326d30ac[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Thu Aug 21 15:13:28 2025 +0100
+
+    Added Course management component
+
+[33mcommit 66a3ff3070eea832eb04dcb820ffaa3ea0c26971[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Thu Aug 21 15:10:55 2025 +0100
+
+    Removed unnecessary migrations
+
+[33mcommit 95a0c852c5e5c38a7a5554eb11c1fe760a1df98b[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Thu Aug 21 00:51:32 2025 +0100
+
+    Course component working
+
+[33mcommit ed7a96de3deb693e55996e3b6d31ae34f8e4803c[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Wed Aug 20 23:11:34 2025 +0100
+
+    Redesign the layout of the page
+
+[33mcommit e3d966ba4a35b19c84e6f07def31bcd02a1c97ad[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Wed Aug 20 23:10:32 2025 +0100
+
+    Added toolbar component
+
+[33mcommit 1be8ae964d88307d2e6374082de41a31719ec7cd[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Wed Aug 20 23:10:12 2025 +0100
+
+    Added lesson editor component
+
+[33mcommit 794ff9b6b28eec9b63d579cbddb0c4e691268faf[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Wed Aug 20 23:09:38 2025 +0100
+
+    Added Course outline component
+
+[33mcommit ef308fca3a2d35f4edb054cd791d8bf322b42fa4[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Wed Aug 20 23:09:20 2025 +0100
+
+    Added Course builder component
+
+[33mcommit f188a47a9f4175530a0848a21997fa4bf94f46fc[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Wed Aug 20 17:17:11 2025 +0100
+
+    Updated lesson, Accessment and user progress table
+
+[33mcommit abf34a1b53640265e8f12b853464a8a17d4268bc[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Wed Aug 20 17:15:57 2025 +0100
+
+    Deleted unnecessary livewire components and models
+
+[33mcommit abb8ecfa0c875ba60ced0b0ce9b5b90d77c756d8[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Tue Aug 19 01:05:02 2025 +0100
+
+    Added Toolbar subcomponent
+
+[33mcommit 4cf4ead8ffbeb18743419f56bae5d680cba55140[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Tue Aug 19 01:04:23 2025 +0100
+
+    Added Lesson Editor Subcomponent
+
+[33mcommit f5ae8b38f67f97632c995d3fb5453abf22086e5b[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Tue Aug 19 01:03:45 2025 +0100
+
+    Added Course builder subcomponent
+
+[33mcommit d64c30872d2a2d0b8472dc63fac0852c1160b1dc[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Tue Aug 19 01:03:14 2025 +0100
+
+    Added Course Outline subcomponent
+
+[33mcommit b0cca255ad7ef51b32c9dd8545a29e8f7ecb9632[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Mon Aug 18 16:54:31 2025 +0100
+
+    Added Course outline component
+
+[33mcommit 7e43d2e7a298a14cdb1ff17db78eedfe29982f45[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Mon Aug 18 03:26:40 2025 +0100
+
+    Added Course approval component
+
+[33mcommit 3c3dc0b622f293185403a5bf101dd6a539fcb6ff[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Mon Aug 18 02:34:21 2025 +0100
+
+    Create course component
+
+[33mcommit eb7161c8d7ffd7275394d36274919d23192efd64[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Mon Aug 18 02:33:25 2025 +0100
+
+    Reply course review migration
+
+[33mcommit d0f045dabc8f9ef12db386850e052bddd6ab0af6[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Mon Aug 18 02:32:56 2025 +0100
+
+    Course review component
+
+[33mcommit c382adea4c0d9f880d90f98454788ccea9d4cf1a[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Mon Aug 18 02:32:23 2025 +0100
+
+    Added course review component
+
+[33mcommit 82aed6b563b5a49f4509cdd39d34ffda446eda58[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Mon Aug 18 02:30:39 2025 +0100
+
+    create Course Outline component
+
+[33mcommit 2ff0f0b8720df01095702e1f7be7ef9bdd2d74f1[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Mon Aug 18 02:29:45 2025 +0100
+
+    Added course category component
+
+[33mcommit 339be02eafc0f02dd23553f6f84d29b07db698c7[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Mon Aug 18 02:29:07 2025 +0100
+
+    Added Al course component
+
+[33mcommit 13f8adc0e5144f44a0c3fc22d6f3fd778762faa9[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Mon Aug 18 02:28:25 2025 +0100
+
+    Added Available course component
+
+[33mcommit 07c3a6ad19fde75915f6d09ce7b6a4750cd68420[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sun Aug 17 22:07:14 2025 +0100
+
+    Redesign User dashboard
+
+[33mcommit 08c6682f709bfee46a4f3913a72690b3497029f7[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sun Aug 17 22:06:32 2025 +0100
+
+    Added new migrations
+
+[33mcommit 44f32df9887a351f353d8da094021ce4ee510b94[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sun Aug 17 22:06:01 2025 +0100
+
+    Added All User component
+
+[33mcommit 69129838439f4887a5d3cde758ff91a0be5348a5[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sun Aug 17 22:04:51 2025 +0100
+
+    Added notification js and rebuild entire file
+
+[33mcommit d0d8ee40066706a2c153271a562a3403271802cc[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sun Aug 17 22:03:49 2025 +0100
+
+    Deleted unwanted models
+
+[33mcommit fe5877860b9a9dd6c2610d43665cf164d2669f10[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Fri Aug 15 14:20:46 2025 +0100
+
+    Added sidebar link menu
+
+[33mcommit 937319a8ea164e8758243038da4923cbb55be47b[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Wed Aug 13 20:49:37 2025 +0100
+
+    Dashboard Overview Component
+
+[33mcommit 691e8266d5a1e301486603d60a7c59214f392e2d[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Wed Aug 13 20:49:08 2025 +0100
+
+    Other added components
+
+[33mcommit f282b2c3242836c96a2aa737afc7d5b77403653c[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Wed Aug 13 20:47:56 2025 +0100
+
+    Saved resource component
+
+[33mcommit 935664581ee164f3bf65764de25ed3db8cb1f2c3[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Wed Aug 13 20:47:30 2025 +0100
+
+    Added Course Component
+
+[33mcommit 6ea25206564f9bb3fcf62c29b4ee529b9cd2ec64[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Wed Aug 13 20:46:05 2025 +0100
+
+    All courses component
+
+[33mcommit 5905df8238a529d2c36c9cee049c99269a7674ef[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Wed Aug 13 20:45:22 2025 +0100
+
+    Offline learning
+
+[33mcommit 3add9dfe217a0d9b50c3f71d69fb074cad2c7905[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Wed Aug 13 20:44:27 2025 +0100
+
+    Learning analytics component
+
+[33mcommit 0f87ca9389da63b971e42ff45df5589d957d883b[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Wed Aug 13 20:43:42 2025 +0100
+
+    FAQ Model
+
+[33mcommit 604e05ce6cb92d36d47093f07ca1de38a2619788[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Wed Aug 13 20:43:21 2025 +0100
+
+    System status component
+
+[33mcommit 25ec3357f6a186382ba0a9815e6ed95ee4c688fd[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Wed Aug 13 20:42:27 2025 +0100
+
+    FAQ, support and feedback component
+
+[33mcommit 57f3c92f7afe5174cdeae99f59a56dd2d374e62e[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Wed Aug 13 20:40:55 2025 +0100
+
+    CBT Exam component
+
+[33mcommit c052ba6b9f7d29b7dfdf133333c4300b5803c9f6[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Wed Aug 13 20:39:42 2025 +0100
+
+    Added Feedback component
+
+[33mcommit 61effc687a3088db84151d3f11665ad2226d6324[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Wed Aug 13 20:38:25 2025 +0100
+
+    Added CBT Component
+
+[33mcommit eca4c489c183a0893b9181db08d60be7d87f7fae[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Wed Aug 13 15:21:27 2025 +0100
+
+    Added Announcement and its management
+
+[33mcommit 00126fe0e5893b5fb7ebb322edf357d783c25a92[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Wed Aug 13 15:20:40 2025 +0100
+
+    Added features to the super admin dashboard
+
+[33mcommit 1fe8239ada3eda9531413033d5f114e049b0ec65[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Wed Aug 13 15:19:48 2025 +0100
+
+    Added social login functionality
+
+[33mcommit 8421e7aced49add3bf355cafcdb82186b5a2bf6f[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Wed Aug 13 12:47:21 2025 +0100
+
+    Added notification component
+
+[33mcommit 41a868040a46c02fa84a95dfb64a476b8f54ff64[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Wed Aug 13 12:45:41 2025 +0100
+
+    Added settings component
+
+[33mcommit d67a468d4a54bde44308ce0d6440efd18599ae9a[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Wed Aug 13 12:44:34 2025 +0100
+
+    Added User Activity Component
+
+[33mcommit 61c5424cb72a3fbddb6c1790a55a651336b6b60e[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Wed Aug 13 12:41:31 2025 +0100
+
+    User management, edit and view profile working
+
+[33mcommit 43d63bc35f8825d1a1996696ce92e63b004868ff[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Tue Aug 12 06:29:55 2025 +0100
+
+    Complete Certificate component
+
+[33mcommit b1e618f3d48fb76b3d9659fbcf5bf54285ca2180[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Tue Aug 12 05:21:11 2025 +0100
+
+    Added Certificate component and it's associated properties
+
+[33mcommit e9ac8bc9562e3d0efe8a579cbcb63f177f9efb62[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Mon Aug 11 12:25:28 2025 +0100
+
+    Modify User management and its controller
+
+[33mcommit 4c32130489726f807813e8d1fc59989acff96dfa[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Mon Aug 11 12:22:25 2025 +0100
+
+    Modified the layouts
+
+[33mcommit f992071b981850ba0aadb475e7e559c9570efea1[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Mon Aug 11 12:21:05 2025 +0100
+
+    Added error pages
+
+[33mcommit 8ebd2a4300a219d6fa0fd9bbc53f12bcdce73685[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sun Aug 10 11:34:14 2025 +0100
+
+    Added skills to user's table
+
+[33mcommit 27db1ba9d9bcb9d2e3be25c6a5bce1e1aa7193ea[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Fri Aug 8 00:56:41 2025 +0100
+
+    Created password controller to manage user password update and reset
+
+[33mcommit 6b0253a1c2cc0492ce86b8d455d67f91efd9d5b2[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Thu Aug 7 23:59:30 2025 +0100
+
+    Added normal route for login
+
+[33mcommit 022c5943b3f86d334c319639f29cc508ce3b558b[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Thu Aug 7 23:56:14 2025 +0100
+
+    Added necessary route
+
+[33mcommit dd161ab77f21ce92063c9cee7476189529cae26a[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Thu Aug 7 23:52:57 2025 +0100
+
+    Installed qr code and dom pdf
+
+[33mcommit 2f2035a8c9f1620e68b41c2fffb4993094d97b4b[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Wed Aug 6 09:06:06 2025 +0100
+
+    Created a pivot table for course - Users
+
+[33mcommit ddf8eeafd44606d02affcbdbf072f58f42d0c7b3[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Wed Aug 6 09:05:01 2025 +0100
+
+    Added .png
+
+[33mcommit d28990063ac2427cb1178bb955db108fe5ccf793[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Wed Aug 6 09:03:32 2025 +0100
+
+    Removed Unwanted controller files
+
+[33mcommit b54c581313def171cbb2b99c0cd8a06419a51f45[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Wed Aug 6 09:01:59 2025 +0100
+
+    Removed redundant code
+
+[33mcommit 1df327ee2df5c33f2b448d63dcacefaaa0cf671a[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Tue Aug 5 03:33:38 2025 +0100
+
+    Added extra information to the users table
+
+[33mcommit 7fec56eea05c70d6eef8399c3c9ec513738d21d7[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Tue Aug 5 03:32:47 2025 +0100
+
+    Removed factory faker
+
+[33mcommit ef665033341de0b58aa8bbd1b471257bf962ba62[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Mon Aug 4 20:40:37 2025 +0100
+
+    Hot
+
+[33mcommit 0e108d3064d7955710d582cbce552d972025324c[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sun Aug 3 21:32:09 2025 +0100
+
+    Made User management component
+
+[33mcommit 3614ee9ddc99eb880fd5e77949f401addb80fff4[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sun Aug 3 18:46:13 2025 +0100
+
+    Added course policy
+
+[33mcommit 3e26f879282bb956abfbfadcfd6a383064a86fa3[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sun Aug 3 18:45:15 2025 +0100
+
+    Added Quiz editor component
+
+[33mcommit 0fc2e31e3001b42bb80666f5fbd3716b7cc01c12[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sun Aug 3 18:44:50 2025 +0100
+
+    Added course preview component
+
+[33mcommit 76f59eadde2da356daf81304a357618c9a699405[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sun Aug 3 18:44:04 2025 +0100
+
+    Added toolbar component
+
+[33mcommit 0712cac734ae20bdbba366bc90c5f696abe6525c[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sun Aug 3 18:38:56 2025 +0100
+
+    Added lesson editor component
+
+[33mcommit 45486f746d02f166ddb0569d42a789ca87423934[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sun Aug 3 15:23:41 2025 +0100
+
+    Added Media modal component and blade
+
+[33mcommit 1ba6b73b82d490aad528ae068ab8aba7a141de32[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sun Aug 3 15:22:42 2025 +0100
+
+    Add LessonEditor component and Blade view for course content management
+
+[33mcommit bc641f00d89ee3c60e775ab8311a22d3922f3883[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sun Aug 3 15:22:28 2025 +0100
+
+    Add CourseOutline component and associated Blade view for course management
+
+[33mcommit 3bdc4a1f3f4c3a596649bf8e5f7a5bd2521c5be7[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sun Aug 3 15:22:14 2025 +0100
+
+    Refactor code structure for improved readability and maintainability
+
+[33mcommit b3cd1095c2d6a01898414ba1da56fa4ac4bd65e3[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sun Aug 3 15:21:55 2025 +0100
+
+    Streamline Alpine.js plugin initialization and comment out unused code
+
+[33mcommit a682fceab49520a5a7c78a0df498449a0f1da3c9[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sun Aug 3 06:32:38 2025 +0100
+
+    Implement code changes to enhance functionality and improve performance
+
+[33mcommit 76f2dbb7456978efde012bf70f3dc8af070e66cb[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sun Aug 3 05:30:57 2025 +0100
+
+    Implement code changes to enhance functionality and improve performance
+
+[33mcommit f57580c8573f29abfad30fbdd4426cf3f8eb1116[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sun Aug 3 04:45:50 2025 +0100
+
+    Implement code changes to enhance functionality and improve performance
+
+[33mcommit e04e2e4eeca8e0ef26efae70fd5bd32369ba6f1d[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sat Aug 2 22:08:54 2025 +0100
+
+    feat: update routing for course management components and remove unused notification code
+
+[33mcommit 2a6fd026ea115584e3a2f6bef2152939553d4a86[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sat Aug 2 22:08:37 2025 +0100
+
+    feat: add Course Reviews component with search functionality and pagination
+
+[33mcommit a583e32b81d65a702c5775ea39dee055d9d06420[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sat Aug 2 22:08:09 2025 +0100
+
+    feat: implement Edit Course functionality with form validation and category selection
+
+[33mcommit 68eb192aad5b5ca8f419eba1faaa1f0e1a444e94[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sat Aug 2 22:07:46 2025 +0100
+
+    feat: implement Create Course functionality with validation and file upload support
+
+[33mcommit 1ed5e14b8f69e6c99249a66e4846ad5a59671d5c[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sat Aug 2 22:07:11 2025 +0100
+
+    feat: add Course Categories component with search, create, edit, and delete functionality
+
+[33mcommit 9fe923c141e5f98667ee88a7da0e0adc95af4bba[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sat Aug 2 22:06:40 2025 +0100
+
+    feat: add Course Approvals component with search, approve, and reject functionality
+
+[33mcommit ad5655a7f92a55de56d6221bc33abe353ace9290[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sat Aug 2 22:06:13 2025 +0100
+
+    feat: implement AllCourses component with search and filter functionality
+
+[33mcommit 7901b6f2022330eb661c0349067c447660c03d45[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sat Aug 2 21:43:23 2025 +0100
+
+    Remove unnecessary blank line before features section
+
+[33mcommit 4adb47588d22ea19274d9445d85dd6b0c644039d[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sat Aug 2 21:43:01 2025 +0100
+
+    feat: update sidebar navigation links and enhance dashboard layout
+
+[33mcommit 21ff0f16c9ec45d0169ad9d23dfccc94169a7d71[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sat Aug 2 21:42:25 2025 +0100
+
+    feat: add migrations for Course, CourseCategory, CourseSection, CourseLesson, Module, Assignment, Quiz, Question, Option, and CourseReview
+
+[33mcommit 6e2f8b36d54fc5aa893d6c4d923bb5744b14b8b3[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sat Aug 2 21:41:46 2025 +0100
+
+    feat: add models for Course, Assignment, CourseCategory, CourseSection, CourseLesson, CourseReview, Lesson, Module, Option, Question, and Quiz
+
+[33mcommit c579471b8f254f01e09640fba87bfa3d5b89c853[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sat Aug 2 17:17:18 2025 +0100
+
+    Update package dependencies and enhance course management routes
+
+[33mcommit de9c8026daffe8a19d18f774b239068ca193dec1[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Thu Jul 31 10:44:39 2025 +0100
+
+    Update asset filenames in manifest and clean up CSS and JS files
+    
+    - Updated the asset filenames in the manifest.json for both CSS and JS files to reflect recent changes.
+    - Removed commented-out Tailwind CSS import and unused cloak styles from app.css.
+    - Added new lines for better readability in app.js.
+
+[33mcommit 2681cd5144b55cb7b42b1fe57bba2d8bf71e53d9[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Wed Jul 30 16:17:55 2025 +0100
+
+    Refactor Super Admin Dashboard and Update Routes
+    
+    - Enhanced the Super Admin Dashboard to dynamically load components based on the current route.
+    - Added fallback content for unmatched routes.
+    - Updated the toast notification component to support additional notification types (warning, info).
+    - Organized route definitions for course management and profile management under authenticated middleware.
+    - Cleaned up unnecessary comments and improved code readability.
+
+[33mcommit 7837225a41b7290420c907cf5150562705071a33[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Wed Jul 30 07:15:11 2025 +0100
+
+    feat: update asset filenames in manifest.json and enhance Alpine.js functionality
+    
+    - Updated CSS and JS asset filenames in public/build/manifest.json.
+    - Added Alpine.js plugins for persistence and collapse in resources/js/app.js.
+    - Refined dashboard layout in resources/views/layouts/dashboard.blade.php, including:
+      - Updated Font Awesome version.
+      - Removed unused styles and scripts.
+      - Improved sidebar and header structure.
+      - Enhanced notification component with Alpine.js.
+    - Configured Vite to optimize dependencies for Alpine.js plugins.
+
+[33mcommit 1e9382cb0750467cb0766b42aba506e76e96375e[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Wed Jul 30 07:11:50 2025 +0100
+
+    Remove profile management component view file
+
+[33mcommit a1c945886dee322ba3a075a177abb392b6d001b8[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Tue Jul 29 20:02:38 2025 +0100
+
+    Implement feature X to enhance user experience and fix bug Y in module Z
+
+[33mcommit 8503f1613241e0ed0b6cb1783e641143514addf2[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Tue Jul 29 19:46:44 2025 +0100
+
+    Enhance Dashboard UI and User Management Features
+    
+    - Updated the sidebar design for improved aesthetics and usability, including new colors and transitions.
+    - Refactored the Super Admin Dashboard to utilize Livewire components for user management and profile management.
+    - Improved the user table with better styling and added functionality for user actions (edit, delete).
+    - Enhanced the home page button styles for better visibility and interaction.
+    - Updated routing for user profiles and dashboards to streamline access and ensure proper middleware usage.
+    - Added toast notifications for user actions to improve user feedback.
+
+[33mcommit 67235888b32833c5b228d6a2d09cae9d1e2f65b7[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Tue Jul 29 19:46:12 2025 +0100
+
+    Add Laravel Sanctum and Spatie Permission service providers to package and services configuration
+
+[33mcommit 6a9e42bbdd16cff8652d14fd353369e96b5fc1c6[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Tue Jul 29 19:45:45 2025 +0100
+
+    Add Footer and Header components with basic structure and render methods
+
+[33mcommit 1346839f68c48b785ccda622b36163a43d9ab7aa[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Tue Jul 29 19:44:58 2025 +0100
+
+    Implement profile management component, update email verification URL handling, and refactor authentication views
+
+[33mcommit 83d52e2e7cbf55eec1de7fc0c3a727f9b3ce6173[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Tue Jul 29 19:43:37 2025 +0100
+
+    Add manifest.json for asset management and update .gitignore file permissions
+
+[33mcommit d8381a9126496faa942cb42976723cbd69ec760c[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Tue Jul 29 19:43:14 2025 +0100
+
+    Add hot reload URL and update CSS with commented Tailwind directives
+    
+    - Created a new file 'public/hot' containing the hot reload URL.
+    - Updated 'resources/css/app.css' to include commented-out Tailwind import and x-cloak styles.
+
+[33mcommit a03133ef6d121c5e64618f4c807a37aedf9fe5fd[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Tue Jul 29 19:42:44 2025 +0100
+
+    Update .gitignore file permissions and remove logs directory ignore
+
+[33mcommit a3b0e6091497d427c269c7aaa16dd76125d92d79[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Tue Jul 29 19:42:06 2025 +0100
+
+    Update .gitignore to include additional Laravel and environment files
+
+[33mcommit efad7b2bc3ffa53d44dd8eef9e797c62d8cd1008[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Tue Jul 29 19:29:53 2025 +0100
+
+    Add role column to users table and create permission tables migration
+
+[33mcommit 1ba56b62164e2edd8f1366197c59774b2c3cd67c[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Tue Jul 29 19:25:46 2025 +0100
+
+    Update package dependencies and versions for improved compatibility
+
+[33mcommit 4805cd390cfa30e85a6aa0689299543d3abbb62c[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Tue Jul 29 07:30:12 2025 +0100
+
+    Added dashboard side bar for easy navigation
+
+[33mcommit 06bac68fe3a65507abd3b05ab054d8fc8dd5357c[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Mon Jul 28 00:00:23 2025 +0100
+
+    Made verification mail once user is registered
+
+[33mcommit bd72fc70cecb4b300362c2eb6856f6b24d7dcd97[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sun Jul 27 23:59:19 2025 +0100
+
+    Removed guest and navigation layout
+
+[33mcommit 3fad19c480028d5ff213051e4a4c69c828c5eee9[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sun Jul 27 23:58:13 2025 +0100
+
+    Installed tailwindcss email variant
+
+[33mcommit a2d5687d79800d132207c8a21633024c681768ab[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sun Jul 27 05:05:22 2025 +0100
+
+    Update composer
+
+[33mcommit 4a3aad0ddff7a94502404ce99f4f41efdb30b552[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sun Jul 27 05:04:11 2025 +0100
+
+    Made dashboard for all the  user's role
+
+[33mcommit 863888d8d249a04e7cff45dc8970835a5a3f5b1e[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sun Jul 27 05:03:09 2025 +0100
+
+    created Homepage for the project
+
+[33mcommit 82d9e7aa0e10e0e497269e86bf2f8588019aae68[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sun Jul 27 05:02:11 2025 +0100
+
+    Made general dashboard to direct login user to relevant dashboard according to their role
+
+[33mcommit 52492151d9273c1a2af070c231f3e0ea36544889[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sun Jul 27 05:01:18 2025 +0100
+
+    Made dashboard controller to redirect to livewire dashboard
+
+[33mcommit 7a815457f70e45fdcabe6837d3c177f90946ace2[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sun Jul 27 04:59:35 2025 +0100
+
+    Installed Sanctum to use tinker to create superadmin
+
+[33mcommit 4a88ad1ada51a4e725dd37a6b1492531e3e2343e[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sat Jul 26 15:17:02 2025 +0100
+
+    Added Spatie
+
+[33mcommit d191b13ed5afdabf391ae129efd1b5f8a02c5ef5[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sat Jul 26 15:14:58 2025 +0100
+
+    logo 2
+
+[33mcommit 607f67a61b137558afb734a3b501cc948d0b123f[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sat Jul 26 15:14:46 2025 +0100
+
+    Logo 1
+
+[33mcommit fc7650f7f68617db6124ded73df3dac18ea99d35[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sat Jul 26 15:13:09 2025 +0100
+
+    Added Navbar and footer with complete applayout
+
+[33mcommit ba0504fe51bb2756215d5d5bc3ca595d7b03d09d[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sat Jul 26 15:11:28 2025 +0100
+
+    Added role spatie
+
+[33mcommit 04ff5ba86b8c55db02d5cd937d91fd74e31e154f[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Sat Jul 26 14:51:21 2025 +0100
+
+    Deleted  default welcome and dashboard blade
+
+[33mcommit ec72815b85f15ac64d7f7beeb7a4e0b179b4a2ee[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Fri Jul 25 22:58:17 2025 +0100
+
+    Installed Alpine JS
+
+[33mcommit 80e413fc29aa8a7e728c4e67d52d3fe9ae18e185[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Fri Jul 25 22:55:37 2025 +0100
+
+    Installed Livewire
+
+[33mcommit 75ee893894d3361bdbc52507a4f918a582a733bd[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Fri Jul 25 22:52:40 2025 +0100
+
+    Installed Vite and postcss autoprefixer
+
+[33mcommit 48e8b3b05e2bf0f9ed583b8aec20d9d863c97811[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Fri Jul 25 22:43:29 2025 +0100
+
+    Installed Breeze
+
+[33mcommit 41fce7e0b54d35c8dc04d280feb8c934d14adb74[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Fri Jul 25 22:41:06 2025 +0100
+
+    Installed Tailwind and update NPM
+
+[33mcommit 0a087a6f09093a473d6aa9f59c25b2335349e4c2[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Fri Jul 25 22:34:59 2025 +0100
+
+    Installed NPM
+
+[33mcommit 60f8a981c80666789884a36f6b86fd7af8110a16[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Fri Jul 25 22:31:48 2025 +0100
+
+    Installed Laravel
+
+[33mcommit c727c721302161bbbe20bd12207ffae6f8188e70[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Fri Jul 25 22:28:57 2025 +0100
+
+    Initial Commit
+
+[33mcommit 8e9def07fac17fb47d33d8bc4140b2d1c86e813a[m
+Author: Dayoebe <oyetoke.ebenezer@gmail.com>
+Date:   Fri Jul 25 22:14:12 2025 +0100
+
+    Initial commit - BOOTKODE
+
+[33mcommit c793c014e039ddb453dc81fa6bd50472f089808b[m
+Author: Adedayo Oyetoke <93457474+Dayoebe@users.noreply.github.com>
+Date:   Fri Jul 25 22:00:53 2025 +0100
+
+    Initial commit
