@@ -338,10 +338,9 @@
                             
                             <!-- Action Buttons -->
 <!-- Action Buttons -->
-<!-- Action Buttons -->
 <div class="flex flex-wrap gap-2 pt-4 border-t border-themed-primary transition-colors duration-300">
     <!-- Edit Course -->
-    <button wire:click="CourseForm({{ $course->id }})" 
+    <button wire:click="editCourse({{ $course->id }})" 
             class="flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-semibold bg-accent-themed-primary/10 hover:bg-accent-themed-primary/20 text-accent-themed-primary transition-all duration-300"
             title="Edit Course">
         <i class="fas fa-edit"></i>

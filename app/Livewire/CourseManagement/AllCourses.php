@@ -74,7 +74,8 @@ class AllCourses extends Component
         $user = Auth::user();
 
         return Course::query()
-            ->with(['instructor', 'category', 'enrollments'])
+        
+            ->withCount(['instructor', 'category', 'enrollments'])
             ->when(!$user->hasRole('super_admin'), fn($query) => $query->where('instructor_id', $user->id()))
             ->when($this->search, fn($query) => $query->where(fn($q) => $q
                 ->where('title', 'like', '%' . $this->search . '%')
@@ -221,7 +222,7 @@ class AllCourses extends Component
 /**
  * Redirects to the edit course page.
  */
-public function CourseForm(Course $course)
+public function editCourse(Course $course)
 {
     // FIX: Pass the course model directly, not just the ID
     return $this->redirect(route('edit_course', $course));
