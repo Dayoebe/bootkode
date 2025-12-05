@@ -37,8 +37,12 @@ class CourseView extends Component
     {
         // If $course is a string (slug), find the course by slug
         if (is_string($course)) {
-            $this->course = Course::with(['sections.lessons', 'instructor', 'category'])
-                ->where('slug', $course)
+            $this->course = Course::with([
+                'sections.lessons.assessments.questions',
+                'instructor',
+                'category',
+                'enrollments' => fn($q) => $q->where('user_id', Auth::id())
+            ])->where('slug', $course)
                 ->where('is_published', true)
                 ->where('is_approved', true)
                 ->firstOrFail();
@@ -80,9 +84,10 @@ class CourseView extends Component
             ]);
         }
 
-        // NEW: Show confetti for first enrollment
+        // NEW: Dispatch confetti event instead of setting session flag
         if (session()->has('show_confetti')) {
             $this->dispatch('confetti');
+            session()->forget('show_confetti'); // Remove flag after dispatching
         }
     }
 

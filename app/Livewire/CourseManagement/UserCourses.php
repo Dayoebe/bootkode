@@ -147,8 +147,9 @@ class UserCourses extends Component
             return;
         }
 
-        // FIX: Use the course model directly, not just the ID
-        return $this->redirect(route('edit_course', ['course' => $course->id]));
+        
+        return $this->redirect(route('edit_course', $course));
+        // return $this->redirect(route('edit_course', ['course' => $course->id]));
     }
 
     /**
@@ -167,7 +168,8 @@ class UserCourses extends Component
         }
 
         // FIX: Pass the course model, not the slug
-        return $this->redirect(route('courses.preview', ['course' => $course]));
+        return $this->redirect(route('courses.preview', $course));
+        // return $this->redirect(route('courses.preview', ['course' => $course]));
     }
 
     /**

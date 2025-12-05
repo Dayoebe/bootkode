@@ -149,10 +149,38 @@
         }
     </style>
     @if(session()->has('show_confetti'))
-    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    @push('scripts')
     <script>
-        // Fire confetti on page load
-        window.addEventListener('DOMContentLoaded', () => {
+        // Dynamically load confetti script only when needed
+        document.addEventListener('livewire:init', () => {
+            Livewire.on('confetti', () => {
+                // Check if confetti is already loaded
+                if (typeof confetti === 'undefined') {
+                    // Dynamically load the script
+                    const script = document.createElement('script');
+                    script.src = 'https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js';
+                    script.onload = () => {
+                        console.log('✅ Confetti script loaded');
+                        fireConfetti();
+                    };
+                    script.onerror = () => {
+                        console.error('❌ Failed to load confetti script');
+                    };
+                    document.head.appendChild(script);
+                } else {
+                    // Script already loaded, fire immediately
+                    fireConfetti();
+                }
+            });
+        });
+    
+        // Function to fire confetti
+        function fireConfetti() {
+            if (typeof confetti === 'undefined') {
+                console.error('❌ Confetti library not loaded');
+                return;
+            }
+    
             // Fire confetti multiple times for effect
             confetti({
                 particleCount: 100,
@@ -177,7 +205,18 @@
                     origin: { x: 1 }
                 });
             }, 400);
-        });
+        }
+    
+        // Check for session flag on page load
+        @if(session()->has('show_confetti'))
+            document.addEventListener('DOMContentLoaded', () => {
+                // Trigger the confetti event
+                if (window.Livewire) {
+                    Livewire.dispatch('confetti');
+                }
+            });
+        @endif
     </script>
+    @endpush
 @endif
 </div>
