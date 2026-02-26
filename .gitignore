@@ -52,7 +52,7 @@ bootstrap/cache/*.php
 # Ignoring compiled assets if using Vite/Laravel Mix
 
 !public/build
-
+/public/hot
 # /public/js/*.js
 # /public/js/*.map
 # /public/css/*.css
