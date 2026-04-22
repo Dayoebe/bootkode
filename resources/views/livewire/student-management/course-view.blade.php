@@ -1,137 +1,246 @@
-<div class="bg-gray-100 dark:bg-gray-900 rounded-xl p-6 transition-colors duration-300">
-    <!-- Course Header -->
-    <livewire:student-management.course-view.course-progress-header :course="$course"
-        :overallProgress="$this->calculateOverallProgress()" :currentSection="$currentSection"
-        :completedLessons="$completedLessons" wire:key="header-{{ $course->id }}" />
+@php
+    $overallProgress = $this->calculateOverallProgress();
+    $sectionCount = $course->sections->count();
+    $lessonCount = $course->sections->sum(fn($section) => $section->lessons->count());
+    $lastViewedLesson = $this->getLastViewedLesson();
+@endphp
 
-<!-- Welcome Banner (Only shows on first visit after enrollment) -->
-@if(session()->has('success'))
-    <div class="mb-6 bg-gradient-to-r from-green-500 to-emerald-600 rounded-xl p-6 shadow-lg animate-fade-in transition-colors duration-300" x-data="{ show: true }" x-show="show" x-transition>
-        <div class="flex items-center justify-between">
-            <div class="flex items-center gap-4 text-white flex-1">
-                <div class="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center flex-shrink-0">
-                    <i class="fas fa-rocket text-3xl"></i>
-                </div>
-                <div class="flex-1">
-                    <h3 class="text-2xl font-bold mb-2">🎉 Welcome to Your Learning Journey!</h3>
-                    <p class="text-lg opacity-90 mb-1">{{ session('success') }}</p>
-                    <p class="text-sm opacity-75">You're now enrolled in <strong>{{ $course->title }}</strong></p>
-                </div>
-            </div>
-            <button @click="show = false" class="text-white/80 hover:text-white p-2 transition-colors">
-                <i class="fas fa-times text-xl"></i>
-            </button>
-        </div>
-        
-        <div class="mt-4 grid grid-cols-1 sm:grid-cols-3 gap-3">
-            <div class="bg-white/10 backdrop-blur-sm rounded-lg p-3 text-center">
-                <div class="text-2xl font-bold text-white">{{ $course->sections->count() }}</div>
-                <div class="text-sm text-white/80">Sections</div>
-            </div>
-            <div class="bg-white/10 backdrop-blur-sm rounded-lg p-3 text-center">
-                <div class="text-2xl font-bold text-white">{{ $course->sections->sum(function($section) { return $section->lessons->count(); }) }}</div>
-                <div class="text-sm text-white/80">Lessons</div>
-            </div>
-            <div class="bg-white/10 backdrop-blur-sm rounded-lg p-3 text-center">
-                <div class="text-2xl font-bold text-white">{{ $course->estimated_duration_minutes ? round($course->estimated_duration_minutes / 60) . 'h' : 'Self-paced' }}</div>
-                <div class="text-sm text-white/80">Duration</div>
-            </div>
-        </div>
+<div
+    x-data="{ navOpen: false }"
+    x-on:close-course-nav.window="navOpen = false"
+    class="course-view-shell relative overflow-hidden rounded-[2rem]">
+    <div class="pointer-events-none absolute inset-0 opacity-70"
+        style="background:
+            radial-gradient(circle at top left, rgba(var(--accent-primary), 0.12), transparent 28%),
+            radial-gradient(circle at top right, rgba(var(--accent-secondary), 0.1), transparent 26%),
+            linear-gradient(180deg, rgba(var(--accent-primary), 0.03), transparent 35%);">
     </div>
-@endif
 
+    <div class="relative space-y-6 md:space-y-8">
+        <livewire:student-management.course-view.course-progress-header :course="$course"
+            :overallProgress="$overallProgress" :currentSection="$currentSection"
+            :completedLessons="$completedLessons" wire:key="header-{{ $course->id }}" />
 
-    <!-- Continue Learning Banner -->
-    @if ($this->getLastViewedLesson() && $this->getLastViewedLesson()->id !== $currentLesson?->id)
-        <div
-            class="mb-6 bg-gradient-to-r from-accent-themed-primary to-accent-themed-secondary rounded-xl p-4 shadow-lg animate-fade-in transition-colors duration-300">
-            <div class="flex items-center justify-between">
-                <div class="flex items-center gap-3 text-white">
-                    <div class="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center">
-                        <i class="fas fa-play-circle text-2xl"></i>
+        @if (session()->has('success'))
+            <div x-data="{ show: true }" x-show="show" x-transition.opacity.duration.300ms
+                class="overflow-hidden rounded-[2rem] border border-emerald-400/40 bg-gradient-to-r from-emerald-500 to-green-600 p-6 text-white shadow-xl animate__animated animate__fadeIn">
+                <div class="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
+                    <div class="flex items-start gap-4">
+                        <div class="flex h-16 w-16 flex-shrink-0 items-center justify-center rounded-3xl bg-white/15 shadow-lg">
+                            <i class="fas fa-rocket text-3xl"></i>
+                        </div>
+
+                        <div>
+                            <p class="text-xs font-semibold uppercase tracking-[0.2em] text-white/80">Enrollment confirmed</p>
+                            <h3 class="mt-2 text-2xl font-semibold">Welcome to your new course</h3>
+                            <p class="mt-2 text-sm leading-6 text-white/85">{{ session('success') }}</p>
+                            <p class="mt-1 text-sm text-white/75">
+                                You are enrolled in <span class="font-semibold">{{ $course->title }}</span>.
+                            </p>
+                        </div>
                     </div>
-                    <div>
-                        <h3 class="font-bold text-lg">Continue Learning</h3>
-                        <p class="text-sm opacity-90">
-                            Resume from: <span class="font-medium">{{ $this->getLastViewedLesson()->title }}</span>
+
+                    <button @click="show = false"
+                        class="self-start rounded-2xl border border-white/20 bg-white/10 px-4 py-3 text-sm font-medium text-white transition hover:bg-white/15">
+                        Dismiss
+                    </button>
+                </div>
+
+                <div class="mt-6 grid gap-3 sm:grid-cols-3">
+                    <div class="rounded-2xl border border-white/15 bg-white/10 p-4 text-center backdrop-blur-sm">
+                        <p class="text-2xl font-semibold">{{ $sectionCount }}</p>
+                        <p class="mt-1 text-xs font-semibold uppercase tracking-[0.16em] text-white/75">Sections</p>
+                    </div>
+                    <div class="rounded-2xl border border-white/15 bg-white/10 p-4 text-center backdrop-blur-sm">
+                        <p class="text-2xl font-semibold">{{ $lessonCount }}</p>
+                        <p class="mt-1 text-xs font-semibold uppercase tracking-[0.16em] text-white/75">Lessons</p>
+                    </div>
+                    <div class="rounded-2xl border border-white/15 bg-white/10 p-4 text-center backdrop-blur-sm">
+                        <p class="text-2xl font-semibold">
+                            {{ $course->estimated_duration_minutes ? round($course->estimated_duration_minutes / 60) . 'h' : 'Self-paced' }}
+                        </p>
+                        <p class="mt-1 text-xs font-semibold uppercase tracking-[0.16em] text-white/75">Estimated Time</p>
+                    </div>
+                </div>
+            </div>
+        @endif
+
+        @if ($lastViewedLesson && $lastViewedLesson->id !== $currentLesson?->id)
+            <div
+                class="overflow-hidden rounded-[2rem] border border-themed-primary bg-themed-secondary p-5 shadow-xl animate__animated animate__fadeInUp">
+                <div class="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+                    <div class="flex items-start gap-4">
+                        <div class="flex h-14 w-14 flex-shrink-0 items-center justify-center rounded-3xl text-white shadow-lg"
+                            style="background: linear-gradient(135deg, rgb(var(--accent-primary)), rgb(var(--accent-secondary)));">
+                            <i class="fas fa-play-circle text-2xl"></i>
+                        </div>
+
+                        <div>
+                            <p class="text-xs font-semibold uppercase tracking-[0.18em] text-themed-secondary">Continue learning</p>
+                            <h3 class="mt-2 text-xl font-semibold text-themed-primary">Jump back into your last lesson</h3>
+                            <p class="mt-2 text-sm leading-6 text-themed-secondary">
+                                Resume from <span class="font-semibold text-themed-primary">{{ $lastViewedLesson->title }}</span>
+                                and keep your momentum.
+                            </p>
+                        </div>
+                    </div>
+
+                    <button wire:click="continueFromLastLesson"
+                        class="inline-flex items-center justify-center gap-2 rounded-2xl px-5 py-3 text-sm font-semibold text-white shadow-lg transition hover:-translate-y-0.5"
+                        style="background: linear-gradient(135deg, rgb(var(--accent-primary)), rgb(var(--accent-secondary)));">
+                        <i class="fas fa-arrow-right"></i>
+                        Continue
+                    </button>
+                </div>
+            </div>
+        @endif
+
+        @if ($certificateEarned ?? false)
+            <div
+                class="overflow-hidden rounded-[2rem] border border-emerald-400/40 bg-gradient-to-r from-emerald-500 to-green-600 p-6 text-white shadow-xl animate__animated animate__fadeInUp">
+                <div class="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
+                    <div class="flex items-start gap-4">
+                        <div class="flex h-16 w-16 flex-shrink-0 items-center justify-center rounded-3xl bg-white/15 shadow-lg">
+                            <i class="fas fa-trophy text-3xl"></i>
+                        </div>
+
+                        <div>
+                            <p class="text-xs font-semibold uppercase tracking-[0.2em] text-white/80">Course completed</p>
+                            <h3 class="mt-2 text-2xl font-semibold">Your certificate is ready</h3>
+                            <p class="mt-2 text-sm leading-6 text-white/85">
+                                You have finished this course. View your certificate and keep building your portfolio.
+                            </p>
+                        </div>
+                    </div>
+
+                    <a href="{{ route('student.certificates.index') }}"
+                        class="inline-flex items-center justify-center gap-2 rounded-2xl bg-white px-5 py-3 text-sm font-semibold text-emerald-600 shadow-lg transition hover:-translate-y-0.5 hover:bg-emerald-50">
+                        <i class="fas fa-certificate"></i>
+                        View Certificate
+                    </a>
+                </div>
+            </div>
+        @endif
+
+        <div class="lg:hidden">
+            <div class="sticky top-4 z-30 overflow-hidden rounded-[1.75rem] border border-themed-primary bg-themed-secondary p-4 shadow-xl animate__animated animate__fadeInUp">
+                <div class="flex items-center justify-between gap-4">
+                    <div class="min-w-0">
+                        <p class="text-xs font-semibold uppercase tracking-[0.18em] text-themed-secondary">Current lesson</p>
+                        <p class="mt-2 truncate text-sm font-semibold text-themed-primary">
+                            {{ $currentLesson?->title ?? 'Choose a lesson to begin' }}
+                        </p>
+                        <p class="mt-1 text-xs text-themed-secondary">
+                            {{ $currentSection?->title ?? 'Course overview' }} • {{ $overallProgress }}% complete
                         </p>
                     </div>
+
+                    <button @click="navOpen = true"
+                        class="inline-flex flex-shrink-0 items-center gap-2 rounded-2xl px-4 py-3 text-sm font-semibold text-white shadow-lg transition"
+                        style="background: linear-gradient(135deg, rgb(var(--accent-primary)), rgb(var(--accent-secondary)));">
+                        <i class="fas fa-compass"></i>
+                        Course Map
+                    </button>
                 </div>
-                <button wire:click="continueFromLastLesson"
-                    class="px-6 py-3 bg-white text-accent-themed-primary hover:bg-gray-100 rounded-lg font-semibold transition-all duration-200 shadow-md hover:shadow-lg flex items-center gap-2">
-                    <i class="fas fa-arrow-right"></i>
-                    Continue
-                </button>
             </div>
         </div>
-    @endif
 
-    <!-- Certificate Earned Banner -->
-    @if($certificateEarned ?? false)
-        <div
-            class="mb-6 bg-gradient-to-r from-green-500 to-emerald-600 rounded-xl p-6 text-white shadow-lg animate-fade-in transition-colors duration-300">
-            <div class="flex items-center justify-between">
-                <div class="flex items-center gap-4">
-                    <div class="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center">
-                        <i class="fas fa-trophy text-3xl"></i>
-                    </div>
-                    <div>
-                        <h3 class="text-2xl font-bold mb-1">Congratulations!</h3>
-                        <p class="text-lg opacity-90">You've completed this course and earned your certificate!</p>
-                    </div>
-                </div>
-                <a href="{{ route('student.certificates.index') }}"
-                    class="px-6 py-3 bg-white text-green-600 hover:bg-gray-100 rounded-lg font-semibold transition-all duration-200 shadow-md hover:shadow-lg flex items-center gap-2">
-                    <i class="fas fa-certificate"></i>
-                    View Certificate
-                </a>
-            </div>
-        </div>
-    @endif
+        <div x-cloak x-show="navOpen" class="fixed inset-0 z-50 lg:hidden">
+            <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" @click="navOpen = false"></div>
 
-    <div class="grid grid-cols-1 lg:grid-cols-4 gap-6 mt-6">
-        <!-- Sidebar - Course Navigation -->
-        <div class="lg:col-span-1">
-            <livewire:student-management.course-view.course-progress-sidebar :course="$course"
-                :sections="$course->sections" :currentLesson="$currentLesson" :completedLessons="$completedLessons"
-                :unlockedSections="$unlockedSections" :sectionCompletionThreshold="$sectionCompletionThreshold"
-                wire:key="sidebar-{{ $course->id }}-{{ $currentLesson?->id ?? 'none' }}" />
-        </div>
-
-        <!-- Main Content - Lesson View -->
-        <div class="lg:col-span-3">
-            @if ($currentLesson)
-                @php
-                    $allLessons = $course->sections->flatMap->lessons;
-                @endphp
-
-                <livewire:student-management.course-view.lesson-content-viewer :lesson="$currentLesson"
-                    :allLessons="$allLessons->toArray()" :completedLessons="$completedLessons"
-                    :unlockedSections="$unlockedSections" wire:key="content-{{ $currentLesson->id }}" />
-            @else
-                <!-- Empty State -->
+            <div class="absolute inset-y-0 left-0 w-full max-w-md p-4">
                 <div
-                    class="bg-themed-secondary rounded-xl p-10 text-center border border-themed-primary transition-colors duration-300 shadow-lg">
-                    <i class="fas fa-book-open text-themed-tertiary text-4xl mb-4"></i>
-                    <h3 class="text-lg font-medium text-themed-primary mb-2">No lesson selected</h3>
-                    <p class="text-themed-secondary">Select a lesson from the sidebar to begin learning.</p>
-                </div>
-            @endif
-        </div>
-    </div>
+                    class="flex h-full flex-col overflow-hidden rounded-[2rem] border border-themed-primary bg-themed-secondary shadow-2xl animate__animated animate__fadeInLeft">
+                    <div class="flex items-center justify-between border-b border-themed-secondary px-5 py-4">
+                        <div>
+                            <p class="text-xs font-semibold uppercase tracking-[0.18em] text-themed-secondary">Learning map</p>
+                            <h2 class="mt-1 text-lg font-semibold text-themed-primary">Navigate the course</h2>
+                        </div>
 
-    <!-- Reviews Section -->
-    <div class="mt-12">
-        <livewire:student-management.course-view.review :course="$course" wire:key="reviews-{{ $course->id }}" />
+                        <button @click="navOpen = false"
+                            class="flex h-10 w-10 items-center justify-center rounded-2xl border border-themed-secondary bg-themed-tertiary text-themed-primary transition hover:bg-themed-secondary">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+
+                    <div class="flex-1 overflow-y-auto p-4">
+                        <livewire:student-management.course-view.course-progress-sidebar :course="$course"
+                            :sections="$course->sections" :currentLesson="$currentLesson" :completedLessons="$completedLessons"
+                            :unlockedSections="$unlockedSections" :sectionCompletionThreshold="$sectionCompletionThreshold"
+                            wire:key="sidebar-mobile-{{ $course->id }}-{{ $currentLesson?->id ?? 'none' }}" />
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 gap-6 lg:grid-cols-[22rem_minmax(0,1fr)] lg:items-start">
+            <aside class="hidden lg:block">
+                <livewire:student-management.course-view.course-progress-sidebar :course="$course"
+                    :sections="$course->sections" :currentLesson="$currentLesson" :completedLessons="$completedLessons"
+                    :unlockedSections="$unlockedSections" :sectionCompletionThreshold="$sectionCompletionThreshold"
+                    wire:key="sidebar-desktop-{{ $course->id }}-{{ $currentLesson?->id ?? 'none' }}" />
+            </aside>
+
+            <div class="min-w-0">
+                @if ($currentLesson)
+                    @php
+                        $allLessons = $course->sections->flatMap->lessons;
+                    @endphp
+
+                    <livewire:student-management.course-view.lesson-content-viewer :lesson="$currentLesson"
+                        :allLessons="$allLessons->toArray()" :completedLessons="$completedLessons"
+                        :unlockedSections="$unlockedSections" wire:key="content-{{ $currentLesson->id }}" />
+                @else
+                    <div
+                        class="rounded-[2rem] border border-themed-primary bg-themed-secondary p-10 text-center shadow-xl animate__animated animate__fadeInUp">
+                        <div class="mx-auto flex h-16 w-16 items-center justify-center rounded-3xl border border-themed-secondary bg-themed-tertiary">
+                            <i class="fas fa-book-open text-2xl accent-themed-primary"></i>
+                        </div>
+                        <h3 class="mt-5 text-xl font-semibold text-themed-primary">No lesson selected</h3>
+                        <p class="mt-2 text-sm leading-6 text-themed-secondary">
+                            Open the course map and choose any unlocked lesson to begin learning.
+                        </p>
+                        <button @click="navOpen = true"
+                            class="mt-5 inline-flex items-center gap-2 rounded-2xl border border-themed-secondary bg-themed-tertiary px-5 py-3 text-sm font-semibold text-themed-primary transition hover:bg-themed-secondary lg:hidden">
+                            <i class="fas fa-compass"></i>
+                            Open Course Map
+                        </button>
+                    </div>
+                @endif
+            </div>
+        </div>
+
+        <section id="course-reviews"
+            class="overflow-hidden rounded-[2rem] border border-themed-primary bg-themed-secondary p-5 shadow-xl animate__animated animate__fadeInUp">
+            <div class="flex flex-col gap-3 border-b border-themed-secondary pb-5 sm:flex-row sm:items-end sm:justify-between">
+                <div>
+                    <p class="text-xs font-semibold uppercase tracking-[0.18em] text-themed-secondary">Community feedback</p>
+                    <h2 class="mt-2 text-2xl font-semibold text-themed-primary">How this course is landing</h2>
+                    <p class="mt-2 text-sm leading-6 text-themed-secondary">
+                        Share a review, see what other learners think, and help improve future learning paths.
+                    </p>
+                </div>
+
+                <div class="rounded-2xl border border-themed-secondary bg-themed-tertiary px-4 py-3 text-sm text-themed-secondary">
+                    <span class="font-semibold text-themed-primary">{{ $overallProgress }}%</span> course progress
+                </div>
+            </div>
+
+            <div class="mt-5">
+                <livewire:student-management.course-view.review :course="$course" wire:key="reviews-{{ $course->id }}" />
+            </div>
+        </section>
     </div>
 
     <style>
-        /* Theme transition support */
-        * {
+        .course-view-shell [x-cloak] {
+            display: none !important;
+        }
+
+        .course-view-shell * {
             transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
         }
 
-        /* Ensure proper color application for accents */
         .text-accent-themed-primary {
             color: rgb(var(--accent-primary));
         }
@@ -148,75 +257,66 @@
             --tw-gradient-from: rgb(var(--accent-primary));
         }
     </style>
-    @if(session()->has('show_confetti'))
-    @push('scripts')
-    <script>
-        // Dynamically load confetti script only when needed
-        document.addEventListener('livewire:init', () => {
-            Livewire.on('confetti', () => {
-                // Check if confetti is already loaded
-                if (typeof confetti === 'undefined') {
-                    // Dynamically load the script
-                    const script = document.createElement('script');
-                    script.src = 'https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js';
-                    script.onload = () => {
-                        console.log('✅ Confetti script loaded');
-                        fireConfetti();
-                    };
-                    script.onerror = () => {
-                        console.error('❌ Failed to load confetti script');
-                    };
-                    document.head.appendChild(script);
-                } else {
-                    // Script already loaded, fire immediately
-                    fireConfetti();
-                }
-            });
-        });
-    
-        // Function to fire confetti
-        function fireConfetti() {
-            if (typeof confetti === 'undefined') {
-                console.error('❌ Confetti library not loaded');
-                return;
-            }
-    
-            // Fire confetti multiple times for effect
-            confetti({
-                particleCount: 100,
-                spread: 70,
-                origin: { y: 0.6 }
-            });
-            
-            setTimeout(() => {
-                confetti({
-                    particleCount: 50,
-                    angle: 60,
-                    spread: 55,
-                    origin: { x: 0 }
+
+    @if (session()->has('show_confetti'))
+        @push('scripts')
+            <script>
+                document.addEventListener('livewire:init', () => {
+                    Livewire.on('confetti', () => {
+                        if (typeof confetti === 'undefined') {
+                            const script = document.createElement('script');
+                            script.src = 'https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js';
+                            script.onload = () => {
+                                fireConfetti();
+                            };
+                            script.onerror = () => {
+                                console.error('Failed to load confetti script');
+                            };
+                            document.head.appendChild(script);
+                        } else {
+                            fireConfetti();
+                        }
+                    });
                 });
-            }, 200);
-            
-            setTimeout(() => {
-                confetti({
-                    particleCount: 50,
-                    angle: 120,
-                    spread: 55,
-                    origin: { x: 1 }
-                });
-            }, 400);
-        }
-    
-        // Check for session flag on page load
-        @if(session()->has('show_confetti'))
-            document.addEventListener('DOMContentLoaded', () => {
-                // Trigger the confetti event
-                if (window.Livewire) {
-                    Livewire.dispatch('confetti');
+
+                function fireConfetti() {
+                    if (typeof confetti === 'undefined') {
+                        return;
+                    }
+
+                    confetti({
+                        particleCount: 100,
+                        spread: 70,
+                        origin: { y: 0.6 }
+                    });
+
+                    setTimeout(() => {
+                        confetti({
+                            particleCount: 50,
+                            angle: 60,
+                            spread: 55,
+                            origin: { x: 0 }
+                        });
+                    }, 200);
+
+                    setTimeout(() => {
+                        confetti({
+                            particleCount: 50,
+                            angle: 120,
+                            spread: 55,
+                            origin: { x: 1 }
+                        });
+                    }, 400);
                 }
-            });
-        @endif
-    </script>
-    @endpush
-@endif
+
+                @if (session()->has('show_confetti'))
+                    document.addEventListener('DOMContentLoaded', () => {
+                        if (window.Livewire) {
+                            Livewire.dispatch('confetti');
+                        }
+                    });
+                @endif
+            </script>
+        @endpush
+    @endif
 </div>
