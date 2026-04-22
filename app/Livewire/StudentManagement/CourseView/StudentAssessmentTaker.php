@@ -366,7 +366,7 @@ class StudentAssessmentTaker extends Component
     {
         switch ($question->question_type) {
             case 'multiple_choice':
-                $options = json_decode($question->options, true) ?? [];
+                $options = $this->normalizeToArray($question->options);
 
                 // Handle JSON string answers
                 if (is_string($answer) && $this->isJson($answer)) {
@@ -390,7 +390,7 @@ class StudentAssessmentTaker extends Component
                 }
 
             case 'true_false':
-                $options = json_decode($question->options, true) ?? ['True', 'False'];
+                $options = $this->normalizeToArray($question->options, ['True', 'False']);
                 $index = (int) $answer;
                 return isset($options[$index]) ? $options[$index] : 'Invalid selection';
 
@@ -479,7 +479,7 @@ class StudentAssessmentTaker extends Component
      */
     protected function getFormattedCorrectAnswer($question)
     {
-        $correctAnswers = json_decode($question->correct_answers, true) ?? [];
+        $correctAnswers = $this->normalizeToArray($question->correct_answers);
 
         if (empty($correctAnswers)) {
             return 'No correct answer set';
@@ -487,7 +487,7 @@ class StudentAssessmentTaker extends Component
 
         switch ($question->question_type) {
             case 'multiple_choice':
-                $options = json_decode($question->options, true) ?? [];
+                $options = $this->normalizeToArray($question->options);
                 $formattedAnswers = [];
 
                 foreach ($correctAnswers as $index) {
@@ -500,7 +500,7 @@ class StudentAssessmentTaker extends Component
                 return !empty($formattedAnswers) ? implode(', ', $formattedAnswers) : 'Invalid correct answer';
 
             case 'true_false':
-                $options = json_decode($question->options, true) ?? ['True', 'False'];
+                $options = $this->normalizeToArray($question->options, ['True', 'False']);
                 $index = (int) $correctAnswers[0];
                 return isset($options[$index]) ? $options[$index] : 'Invalid correct answer';
 
@@ -526,19 +526,19 @@ class StudentAssessmentTaker extends Component
             // Store answer in consistent format for database
             $answerToStore = $userAnswer;
 
-            // For multiple choice, always store as array in the answer column
-            // The StudentAnswer model will cast it to JSON automatically
+            // Normalize complex answers before writing to the scalar database column.
             if ($question->question_type === 'multiple_choice') {
                 if (is_array($userAnswer)) {
-                    // Multiple selections - store as array of integers
                     $answerToStore = array_map('intval', $userAnswer);
                 } else {
-                    // Single selection - store as array with single integer
                     $answerToStore = [(int) $userAnswer];
                 }
             } elseif ($question->question_type === 'true_false') {
-                // Store as single integer
                 $answerToStore = (int) $userAnswer;
+            }
+
+            if (is_array($answerToStore)) {
+                $answerToStore = json_encode(array_values($answerToStore));
             }
 
             // Use the Question model's method to check correctness
@@ -569,6 +569,20 @@ class StudentAssessmentTaker extends Component
                 ]
             );
         }
+    }
+
+    protected function normalizeToArray($value, array $default = [])
+    {
+        if (is_array($value)) {
+            return $value;
+        }
+
+        if (is_string($value) && $this->isJson($value)) {
+            $decoded = json_decode($value, true);
+            return is_array($decoded) ? $decoded : $default;
+        }
+
+        return $default;
     }
 
     public function render()

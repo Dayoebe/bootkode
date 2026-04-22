@@ -151,7 +151,25 @@ class StudentAnswer extends Model
     {
         if ($this->question->question_type === 'multiple_choice') {
             $options = ['A', 'B', 'C', 'D', 'E', 'F'];
-            return $options[$this->answer] ?? 'Unknown';
+            $answer = $this->answer;
+
+            if (is_string($answer)) {
+                $decoded = json_decode($answer, true);
+                if (json_last_error() === JSON_ERROR_NONE) {
+                    $answer = $decoded;
+                }
+            }
+
+            if (is_array($answer)) {
+                $letters = collect($answer)
+                    ->map(fn($index) => $options[(int) $index] ?? null)
+                    ->filter()
+                    ->values();
+
+                return $letters->isNotEmpty() ? $letters->implode(', ') : 'Unknown';
+            }
+
+            return $options[(int) $answer] ?? 'Unknown';
         } elseif ($this->question->question_type === 'true_false') {
             return $this->answer == 0 ? 'True' : 'False';
         }
