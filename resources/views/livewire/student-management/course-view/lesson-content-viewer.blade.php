@@ -305,52 +305,52 @@
             <!-- ASSESSMENTS SECTION -->
             @if ($hasAssessments)
                 <div class="mb-6">
-                    <div class="flex justify-between items-center cursor-pointer group bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 border-2 border-blue-500 dark:border-blue-600 rounded-lg p-4 hover:from-blue-100 hover:to-indigo-100 dark:hover:from-blue-900/30 dark:hover:to-indigo-900/30 transition-all duration-200 shadow-md hover:shadow-lg"
-                        onclick="toggleSection('assessments')">
-                        <div class="flex items-center">
-                            <div class="w-10 h-10 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-full flex items-center justify-center mr-3 shadow-md">
-                                <i class="fas fa-clipboard-check text-white text-lg"></i>
+                    <button type="button"
+                        @click="toggle('assessments')"
+                        class="group flex w-full items-center justify-between rounded-[1.5rem] border-2 border-blue-400/70 bg-gradient-to-r from-blue-50 to-indigo-50 p-4 text-left shadow-md transition hover:-translate-y-0.5 hover:shadow-lg dark:border-blue-600 dark:from-blue-900/20 dark:to-indigo-900/20">
+                        <div class="flex items-center gap-4">
+                            <div class="flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-600 to-indigo-600 text-white shadow-md">
+                                <i class="fas fa-clipboard-check text-lg"></i>
                             </div>
                             <div>
                                 <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
                                     Assessment Required
                                     @if (!$allAssessmentsPassed)
-                                        <span class="inline-flex items-center ml-2 px-2 py-1 rounded-full text-xs font-medium bg-red-600 text-white animate-pulse">
+                                        <span class="ml-2 inline-flex items-center rounded-full bg-red-600 px-2 py-1 text-xs font-medium text-white animate-pulse">
                                             <i class="fas fa-exclamation-triangle mr-1"></i>
                                             Required
                                         </span>
                                     @else
-                                        <span class="inline-flex items-center ml-2 px-2 py-1 rounded-full text-xs font-medium bg-green-600 text-white">
+                                        <span class="ml-2 inline-flex items-center rounded-full bg-green-600 px-2 py-1 text-xs font-medium text-white">
                                             <i class="fas fa-check mr-1"></i>
                                             Completed
                                         </span>
                                     @endif
                                 </h3>
-                                <p class="text-blue-700 dark:text-blue-300 text-sm mt-1">
-                                    @php
-                                        $assessmentCount = \App\Models\Assessment\Assessment::where('lesson_id', $lesson->id)->count();
-                                    @endphp
-                                    {{ $assessmentCount }} assessment{{ $assessmentCount > 1 ? 's' : '' }} must be completed to proceed
+                                <p class="mt-1 text-sm text-blue-700 dark:text-blue-300">
+                                    {{ $assessmentCount }} assessment{{ $assessmentCount > 1 ? 's' : '' }} attached to this lesson.
                                 </p>
                             </div>
                         </div>
-                        <div class="flex items-center">
+
+                        <div class="flex items-center gap-3">
                             @if (!$allAssessmentsPassed)
-                                <div class="w-8 h-8 bg-red-600 rounded-full flex items-center justify-center mr-3 animate-pulse shadow-md">
-                                    <i class="fas fa-exclamation text-white text-sm"></i>
+                                <div class="flex h-8 w-8 items-center justify-center rounded-full bg-red-600 text-white shadow-md animate-pulse">
+                                    <i class="fas fa-exclamation text-sm"></i>
                                 </div>
                             @else
-                                <div class="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center mr-3 shadow-md">
-                                    <i class="fas fa-check text-white text-sm"></i>
+                                <div class="flex h-8 w-8 items-center justify-center rounded-full bg-green-500 text-white shadow-md">
+                                    <i class="fas fa-check text-sm"></i>
                                 </div>
                             @endif
-                            <i class="fas fa-chevron-down text-blue-600 dark:text-blue-400 transform transition-transform"
-                                id="assessments-chevron"></i>
-                        </div>
-                    </div>
 
-                    <div class="mt-3 {{ $allAssessmentsPassed ? 'hidden' : '' }}" id="assessments-content">
-                        <div class="bg-gray-50 dark:bg-gray-900/50 border border-blue-300 dark:border-blue-700 rounded-lg p-1 shadow-inner">
+                            <i class="fas fa-chevron-down text-blue-600 transition-transform duration-300 dark:text-blue-400"
+                                :class="{ 'rotate-180': isOpen('assessments') }"></i>
+                        </div>
+                    </button>
+
+                    <div class="mt-3" x-show="isOpen('assessments')" x-transition.opacity.scale.origin.top>
+                        <div class="rounded-[1.5rem] border border-blue-300 bg-gray-50 p-1 shadow-inner dark:border-blue-700 dark:bg-gray-900/50">
                             <livewire:student-management.course-view.student-assessment-taker :lesson="$lesson"
                                 wire:key="assessment-{{ $lesson->id }}" wire:poll.10s="pollAssessmentStatus" />
                         </div>
@@ -361,21 +361,26 @@
             <!-- Documents -->
             @if ($lesson->hasDocuments() && count($lesson->getDocumentsArray()) > 0)
                 <div class="mb-6">
-                    <div class="flex justify-between items-center cursor-pointer group bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4 hover:bg-gray-100 dark:hover:bg-gray-700 transition-all duration-200 border border-gray-200 dark:border-gray-600"
-                        onclick="toggleSection('documents')">
-                        <h3 class="text-lg font-semibold text-gray-900 dark:text-white flex items-center">
-                            <i class="fas fa-file-alt text-indigo-600 dark:text-indigo-400 mr-2"></i>
+                    <button type="button"
+                        @click="toggle('documents')"
+                        class="group flex w-full items-center justify-between rounded-[1.5rem] border border-gray-200 bg-gray-50 p-4 text-left transition hover:bg-gray-100 dark:border-gray-600 dark:bg-gray-700/50 dark:hover:bg-gray-700">
+                        <h3 class="flex items-center text-lg font-semibold text-gray-900 dark:text-white">
+                            <i class="fas fa-file-alt mr-2 text-indigo-600 dark:text-indigo-400"></i>
                             Course Materials
                         </h3>
-                        <i class="fas fa-chevron-down text-gray-500 dark:text-gray-400 transform transition-transform group-hover:text-gray-700 dark:group-hover:text-white"
-                            id="documents-chevron"></i>
-                    </div>
-                    <div class="mt-3 hidden" id="documents-content">
+                        <i class="fas fa-chevron-down text-gray-500 transition-transform duration-300 group-hover:text-gray-700 dark:text-gray-400 dark:group-hover:text-white"
+                            :class="{ 'rotate-180': isOpen('documents') }"></i>
+                    </button>
+
+                    <div class="mt-3" x-show="isOpen('documents')" x-transition.opacity.scale.origin.top>
                         <div class="grid gap-3">
-                            @foreach ($lesson->getDocumentsArray() as $index => $document)
-                                <div class="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4 flex items-center justify-between border border-gray-200 dark:border-gray-600 hover:shadow-md transition-shadow duration-200">
+                            @foreach ($lesson->getDocumentsArray() as $document)
+                                @php
+                                    $documentUrl = asset('storage/' . $document['path']);
+                                @endphp
+                                <div class="flex items-center justify-between rounded-xl border border-gray-200 bg-gray-50 p-4 transition-shadow duration-200 hover:shadow-md dark:border-gray-600 dark:bg-gray-700/50">
                                     <div class="flex items-center">
-                                        <div class="w-10 h-10 bg-indigo-600 rounded flex items-center justify-center mr-3 shadow-md">
+                                        <div class="mr-3 flex h-10 w-10 items-center justify-center rounded bg-indigo-600 shadow-md">
                                             @switch(strtolower($document['type'] ?? 'file'))
                                                 @case('pdf')
                                                     <i class="fas fa-file-pdf text-white"></i>
@@ -393,20 +398,20 @@
                                             @endswitch
                                         </div>
                                         <div>
-                                            <p class="text-gray-900 dark:text-white font-medium">{{ $document['name'] }}</p>
+                                            <p class="font-medium text-gray-900 dark:text-white">{{ $document['name'] }}</p>
                                             <p class="text-xs text-gray-600 dark:text-gray-400">
                                                 {{ number_format($document['size'] / 1024 / 1024, 1) }}MB
                                             </p>
                                         </div>
                                     </div>
                                     <div class="flex gap-2">
-                                        <button
-                                            onclick="openDocumentModal('{{ asset('storage/' . $document['path']) }}', '{{ $document['name'] }}')"
-                                            class="px-3 py-1 bg-indigo-600 hover:bg-indigo-700 text-white rounded text-sm transition-colors shadow-md hover:shadow-lg">
+                                        <button type="button"
+                                            x-on:click='openDocument(@js($documentUrl), @js($document["name"]))'
+                                            class="rounded-lg bg-indigo-600 px-3 py-1 text-sm text-white shadow-md transition-colors hover:bg-indigo-700 hover:shadow-lg">
                                             <i class="fas fa-eye mr-1"></i> View
                                         </button>
-                                        <a href="{{ asset('storage/' . $document['path']) }}" target="_blank"
-                                            class="px-3 py-1 bg-gray-500 dark:bg-gray-600 hover:bg-gray-600 dark:hover:bg-gray-700 text-white rounded text-sm transition-colors shadow-md hover:shadow-lg">
+                                        <a href="{{ $documentUrl }}" target="_blank"
+                                            class="rounded-lg bg-gray-500 px-3 py-1 text-sm text-white shadow-md transition-colors hover:bg-gray-600 hover:shadow-lg dark:bg-gray-600 dark:hover:bg-gray-700">
                                             <i class="fas fa-download mr-1"></i> Download
                                         </a>
                                     </div>
@@ -420,17 +425,19 @@
             <!-- Video Content -->
             @if ($lesson->video_url)
                 <div class="mb-6">
-                    <div class="flex justify-between items-center cursor-pointer group bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4 hover:bg-gray-100 dark:hover:bg-gray-700 transition-all duration-200 border border-gray-200 dark:border-gray-600"
-                        onclick="toggleSection('video-content')">
-                        <h3 class="text-lg font-semibold text-gray-900 dark:text-white flex items-center">
-                            <i class="fas fa-video text-red-600 dark:text-red-400 mr-2"></i>
+                    <button type="button"
+                        @click="toggle('video-content')"
+                        class="group flex w-full items-center justify-between rounded-[1.5rem] border border-gray-200 bg-gray-50 p-4 text-left transition hover:bg-gray-100 dark:border-gray-600 dark:bg-gray-700/50 dark:hover:bg-gray-700">
+                        <h3 class="flex items-center text-lg font-semibold text-gray-900 dark:text-white">
+                            <i class="fas fa-video mr-2 text-red-600 dark:text-red-400"></i>
                             Video Lesson
                         </h3>
-                        <i class="fas fa-chevron-down text-gray-500 dark:text-gray-400 transform transition-transform group-hover:text-gray-700 dark:group-hover:text-white"
-                            id="video-content-chevron"></i>
-                    </div>
-                    <div class="mt-3 hidden" id="video-content-content">
-                        <div class="bg-black rounded-lg overflow-hidden shadow-lg">
+                        <i class="fas fa-chevron-down text-gray-500 transition-transform duration-300 group-hover:text-gray-700 dark:text-gray-400 dark:group-hover:text-white"
+                            :class="{ 'rotate-180': isOpen('video-content') }"></i>
+                    </button>
+
+                    <div class="mt-3" x-show="isOpen('video-content')" x-transition.opacity.scale.origin.top>
+                        <div class="overflow-hidden rounded-[1.5rem] bg-black shadow-lg">
                             @if (str_contains($lesson->video_url, 'youtube.com') || str_contains($lesson->video_url, 'youtu.be'))
                                 @php
                                     $videoId = '';
@@ -443,7 +450,7 @@
                                 @endphp
 
                                 @if ($videoId)
-                                    <iframe class="w-full aspect-video"
+                                    <iframe class="aspect-video w-full"
                                         src="https://www.youtube.com/embed/{{ $videoId }}" title="Lesson Video"
                                         frameborder="0"
                                         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
@@ -451,7 +458,7 @@
                                     </iframe>
                                 @endif
                             @else
-                                <video controls class="w-full aspect-video">
+                                <video controls class="aspect-video w-full">
                                     <source src="{{ $lesson->video_url }}" type="video/mp4">
                                     Your browser does not support the video tag.
                                 </video>
@@ -464,22 +471,24 @@
             <!-- Uploaded Videos -->
             @if ($lesson->hasVideo() && count($lesson->getVideosArray()) > 0)
                 <div class="mb-6">
-                    <div class="flex justify-between items-center cursor-pointer group bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4 hover:bg-gray-100 dark:hover:bg-gray-700 transition-all duration-200 border border-gray-200 dark:border-gray-600"
-                        onclick="toggleSection('uploaded-videos')">
-                        <h3 class="text-lg font-semibold text-gray-900 dark:text-white flex items-center">
-                            <i class="fas fa-film text-purple-600 dark:text-purple-400 mr-2"></i>
+                    <button type="button"
+                        @click="toggle('uploaded-videos')"
+                        class="group flex w-full items-center justify-between rounded-[1.5rem] border border-gray-200 bg-gray-50 p-4 text-left transition hover:bg-gray-100 dark:border-gray-600 dark:bg-gray-700/50 dark:hover:bg-gray-700">
+                        <h3 class="flex items-center text-lg font-semibold text-gray-900 dark:text-white">
+                            <i class="fas fa-film mr-2 text-purple-600 dark:text-purple-400"></i>
                             Course Videos
                         </h3>
-                        <i class="fas fa-chevron-down text-gray-500 dark:text-gray-400 transform transition-transform group-hover:text-gray-700 dark:group-hover:text-white"
-                            id="uploaded-videos-chevron"></i>
-                    </div>
-                    <div class="mt-3 hidden" id="uploaded-videos-content">
+                        <i class="fas fa-chevron-down text-gray-500 transition-transform duration-300 group-hover:text-gray-700 dark:text-gray-400 dark:group-hover:text-white"
+                            :class="{ 'rotate-180': isOpen('uploaded-videos') }"></i>
+                    </button>
+
+                    <div class="mt-3" x-show="isOpen('uploaded-videos')" x-transition.opacity.scale.origin.top>
                         <div class="grid gap-4">
                             @foreach ($lesson->getVideosArray() as $video)
-                                <div class="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-3 border border-gray-200 dark:border-gray-600 shadow-sm hover:shadow-md transition-shadow duration-200">
-                                    <div class="flex items-center justify-between mb-2">
-                                        <span class="text-gray-900 dark:text-white font-medium">{{ $video['name'] }}</span>
-                                        <span class="text-xs text-gray-600 dark:text-gray-400 bg-gray-200 dark:bg-gray-600 px-2 py-1 rounded-full">
+                                <div class="rounded-xl border border-gray-200 bg-gray-50 p-3 shadow-sm transition-shadow duration-200 hover:shadow-md dark:border-gray-600 dark:bg-gray-700/50">
+                                    <div class="mb-2 flex items-center justify-between">
+                                        <span class="font-medium text-gray-900 dark:text-white">{{ $video['name'] }}</span>
+                                        <span class="rounded-full bg-gray-200 px-2 py-1 text-xs text-gray-600 dark:bg-gray-600 dark:text-gray-400">
                                             {{ number_format($video['size'] / 1024 / 1024, 1) }}MB
                                         </span>
                                     </div>
@@ -497,36 +506,38 @@
             <!-- Audio Content -->
             @if ($lesson->hasAudio() && count($lesson->getAudiosArray()) > 0)
                 <div class="mb-6">
-                    <div class="flex justify-between items-center cursor-pointer group bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4 hover:bg-gray-100 dark:hover:bg-gray-700 transition-all duration-200 border border-gray-200 dark:border-gray-600"
-                        onclick="toggleSection('audio-content')">
-                        <h3 class="text-lg font-semibold text-gray-900 dark:text-white flex items-center">
-                            <i class="fas fa-headphones text-green-600 dark:text-green-400 mr-2"></i>
+                    <button type="button"
+                        @click="toggle('audio-content')"
+                        class="group flex w-full items-center justify-between rounded-[1.5rem] border border-gray-200 bg-gray-50 p-4 text-left transition hover:bg-gray-100 dark:border-gray-600 dark:bg-gray-700/50 dark:hover:bg-gray-700">
+                        <h3 class="flex items-center text-lg font-semibold text-gray-900 dark:text-white">
+                            <i class="fas fa-headphones mr-2 text-green-600 dark:text-green-400"></i>
                             Audio Content
                         </h3>
-                        <i class="fas fa-chevron-down text-gray-500 dark:text-gray-400 transform transition-transform group-hover:text-gray-700 dark:group-hover:text-white"
-                            id="audio-content-chevron"></i>
-                    </div>
-                    <div class="mt-3 hidden" id="audio-content-content">
+                        <i class="fas fa-chevron-down text-gray-500 transition-transform duration-300 group-hover:text-gray-700 dark:text-gray-400 dark:group-hover:text-white"
+                            :class="{ 'rotate-180': isOpen('audio-content') }"></i>
+                    </button>
+
+                    <div class="mt-3" x-show="isOpen('audio-content')" x-transition.opacity.scale.origin.top>
                         <div class="space-y-3">
                             @foreach ($lesson->getAudiosArray() as $index => $audio)
-                                <div class="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4 border border-gray-200 dark:border-gray-600 shadow-sm hover:shadow-md transition-shadow duration-200">
-                                    <div class="flex items-center justify-between mb-3">
-                                        <span class="text-gray-900 dark:text-white font-medium">{{ $audio['name'] }}</span>
-                                        <span class="text-xs text-gray-600 dark:text-gray-400 bg-gray-200 dark:bg-gray-600 px-2 py-1 rounded-full">
+                                <div class="rounded-xl border border-gray-200 bg-gray-50 p-4 shadow-sm transition-shadow duration-200 hover:shadow-md dark:border-gray-600 dark:bg-gray-700/50">
+                                    <div class="mb-3 flex items-center justify-between">
+                                        <span class="font-medium text-gray-900 dark:text-white">{{ $audio['name'] }}</span>
+                                        <span class="rounded-full bg-gray-200 px-2 py-1 text-xs text-gray-600 dark:bg-gray-600 dark:text-gray-400">
                                             {{ number_format($audio['size'] / 1024 / 1024, 1) }}MB
                                         </span>
                                     </div>
-                                    <div class="mini-player flex items-center gap-4 p-3 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-600 shadow-sm">
-                                        <button
-                                            class="play-pause-btn w-10 h-10 rounded-full bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center text-white hover:from-green-600 hover:to-emerald-700 transition-all duration-200 shadow-md hover:shadow-lg"
+                                    <div class="mini-player flex items-center gap-4 rounded-lg border border-gray-200 bg-white p-3 shadow-sm dark:border-gray-600 dark:bg-gray-800">
+                                        <button type="button"
+                                            class="play-pause-btn flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-green-500 to-emerald-600 text-white shadow-md transition-all duration-200 hover:from-green-600 hover:to-emerald-700 hover:shadow-lg"
                                             onclick="togglePlayPause({{ $index }})">
                                             <i class="fas fa-play" id="play-icon-{{ $index }}"></i>
                                             <i class="fas fa-pause hidden" id="pause-icon-{{ $index }}"></i>
                                         </button>
                                         <div class="flex-1">
-                                            <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2 mb-1 shadow-inner">
-                                                <div class="bg-gradient-to-r from-green-500 to-emerald-600 h-2 rounded-full transition-all duration-200" style="width: 0%"
-                                                    id="progress-bar-{{ $index }}"></div>
+                                            <div class="mb-1 h-2 w-full rounded-full bg-gray-200 shadow-inner dark:bg-gray-700">
+                                                <div class="h-2 rounded-full bg-gradient-to-r from-green-500 to-emerald-600 transition-all duration-200"
+                                                    style="width: 0%" id="progress-bar-{{ $index }}"></div>
                                             </div>
                                             <div class="flex justify-between text-xs text-gray-600 dark:text-gray-400">
                                                 <span id="current-time-{{ $index }}">0:00</span>
@@ -550,29 +561,37 @@
             <!-- Images -->
             @if ($lesson->hasImage())
                 <div class="mb-6">
-                    <div class="flex justify-between items-center cursor-pointer group bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4 hover:bg-gray-100 dark:hover:bg-gray-700 transition-all duration-200 border border-gray-200 dark:border-gray-600"
-                        onclick="toggleSection('images-content')">
-                        <h3 class="text-lg font-semibold text-gray-900 dark:text-white flex items-center">
-                            <i class="fas fa-images text-pink-600 dark:text-pink-400 mr-2"></i>
+                    <button type="button"
+                        @click="toggle('images-content')"
+                        class="group flex w-full items-center justify-between rounded-[1.5rem] border border-gray-200 bg-gray-50 p-4 text-left transition hover:bg-gray-100 dark:border-gray-600 dark:bg-gray-700/50 dark:hover:bg-gray-700">
+                        <h3 class="flex items-center text-lg font-semibold text-gray-900 dark:text-white">
+                            <i class="fas fa-images mr-2 text-pink-600 dark:text-pink-400"></i>
                             Lesson Images
                         </h3>
-                        <i class="fas fa-chevron-down text-gray-500 dark:text-gray-400 transform transition-transform group-hover:text-gray-700 dark:group-hover:text-white"
-                            id="images-content-chevron"></i>
-                    </div>
-                    <div class="mt-3 hidden" id="images-content-content">
+                        <i class="fas fa-chevron-down text-gray-500 transition-transform duration-300 group-hover:text-gray-700 dark:text-gray-400 dark:group-hover:text-white"
+                            :class="{ 'rotate-180': isOpen('images-content') }"></i>
+                    </button>
+
+                    <div class="mt-3" x-show="isOpen('images-content')" x-transition.opacity.scale.origin.top>
                         @if ($lesson->image_path)
-                            <img src="{{ asset('storage/' . $lesson->image_path) }}" alt="Lesson Image"
-                                class="w-full rounded-lg mb-4 border border-gray-200 dark:border-gray-700 shadow-md hover:shadow-lg transition-shadow duration-200 cursor-pointer"
-                                onclick="openImageModal('{{ asset('storage/' . $lesson->image_path) }}')">
+                            @php
+                                $mainImageUrl = asset('storage/' . $lesson->image_path);
+                            @endphp
+                            <img src="{{ $mainImageUrl }}" alt="Lesson Image"
+                                class="mb-4 w-full cursor-pointer rounded-lg border border-gray-200 shadow-md transition-shadow duration-200 hover:shadow-lg dark:border-gray-700"
+                                x-on:click='openImage(@js($mainImageUrl))'>
                         @endif
 
                         @if (count($lesson->getImagesArray()) > 0)
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
                                 @foreach ($lesson->getImagesArray() as $image)
-                                    <div class="bg-gray-50 dark:bg-gray-700/50 rounded-lg overflow-hidden border border-gray-200 dark:border-gray-600 shadow-sm hover:shadow-md transition-shadow duration-200">
-                                        <img src="{{ asset('storage/' . $image['path']) }}" alt="Lesson Image"
-                                            class="w-full h-48 object-cover cursor-pointer hover:opacity-90 transition-opacity duration-200"
-                                            onclick="openImageModal('{{ asset('storage/' . $image['path']) }}')">
+                                    @php
+                                        $imageUrl = asset('storage/' . $image['path']);
+                                    @endphp
+                                    <div class="overflow-hidden rounded-lg border border-gray-200 bg-gray-50 shadow-sm transition-shadow duration-200 hover:shadow-md dark:border-gray-600 dark:bg-gray-700/50">
+                                        <img src="{{ $imageUrl }}" alt="Lesson Image"
+                                            class="h-48 w-full cursor-pointer object-cover transition-opacity duration-200 hover:opacity-90"
+                                            x-on:click='openImage(@js($imageUrl))'>
                                         <div class="p-3">
                                             <p class="text-sm text-gray-700 dark:text-gray-300">{{ $image['name'] }}</p>
                                         </div>
@@ -587,25 +606,27 @@
             <!-- External Links -->
             @if ($lesson->hasExternalLinks() && count($lesson->getExternalLinksArray()) > 0)
                 <div class="mb-6">
-                    <div class="flex justify-between items-center cursor-pointer group bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4 hover:bg-gray-100 dark:hover:bg-gray-700 transition-all duration-200 border border-gray-200 dark:border-gray-600"
-                        onclick="toggleSection('external-links')">
-                        <h3 class="text-lg font-semibold text-gray-900 dark:text-white flex items-center">
-                            <i class="fas fa-external-link-alt text-orange-600 dark:text-orange-400 mr-2"></i>
+                    <button type="button"
+                        @click="toggle('external-links')"
+                        class="group flex w-full items-center justify-between rounded-[1.5rem] border border-gray-200 bg-gray-50 p-4 text-left transition hover:bg-gray-100 dark:border-gray-600 dark:bg-gray-700/50 dark:hover:bg-gray-700">
+                        <h3 class="flex items-center text-lg font-semibold text-gray-900 dark:text-white">
+                            <i class="fas fa-external-link-alt mr-2 text-orange-600 dark:text-orange-400"></i>
                             Additional Resources
                         </h3>
-                        <i class="fas fa-chevron-down text-gray-500 dark:text-gray-400 transform transition-transform group-hover:text-gray-700 dark:group-hover:text-white"
-                            id="external-links-chevron"></i>
-                    </div>
-                    <div class="mt-3 hidden" id="external-links-content">
+                        <i class="fas fa-chevron-down text-gray-500 transition-transform duration-300 group-hover:text-gray-700 dark:text-gray-400 dark:group-hover:text-white"
+                            :class="{ 'rotate-180': isOpen('external-links') }"></i>
+                    </button>
+
+                    <div class="mt-3" x-show="isOpen('external-links')" x-transition.opacity.scale.origin.top>
                         <div class="space-y-2">
                             @foreach ($lesson->getExternalLinksArray() as $link)
                                 <a href="{{ $link['url'] }}" target="_blank"
-                                    class="block bg-gray-50 dark:bg-gray-700/50 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg p-4 transition-all duration-200 border border-gray-200 dark:border-gray-600 shadow-sm hover:shadow-md">
+                                    class="block rounded-lg border border-gray-200 bg-gray-50 p-4 shadow-sm transition-all duration-200 hover:bg-gray-100 hover:shadow-md dark:border-gray-600 dark:bg-gray-700/50 dark:hover:bg-gray-700">
                                     <div class="flex items-center">
-                                        <i class="fas fa-external-link-alt text-orange-500 dark:text-orange-400 mr-3"></i>
+                                        <i class="fas fa-external-link-alt mr-3 text-orange-500 dark:text-orange-400"></i>
                                         <div>
-                                            <p class="text-gray-900 dark:text-white font-medium">{{ $link['title'] }}</p>
-                                            <p class="text-xs text-gray-600 dark:text-gray-400 mt-1">{{ $link['url'] }}</p>
+                                            <p class="font-medium text-gray-900 dark:text-white">{{ $link['title'] }}</p>
+                                            <p class="mt-1 text-xs text-gray-600 dark:text-gray-400">{{ $link['url'] }}</p>
                                         </div>
                                     </div>
                                 </a>
@@ -617,159 +638,143 @@
         </div>
 
         <!-- Document Modal -->
-        <div id="document-modal"
-            class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 hidden">
-            <div class="bg-white dark:bg-gray-800 rounded-lg w-11/12 h-5/6 max-w-6xl flex flex-col shadow-2xl">
-                <div class="flex justify-between items-center p-4 border-b border-gray-300 dark:border-gray-700">
-                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white" id="document-modal-title"></h3>
-                    <button onclick="closeDocumentModal()" class="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">
+        <div x-cloak x-show="documentModalOpen" x-transition.opacity
+            class="fixed inset-0 z-50 flex items-center justify-center bg-black/75 p-4"
+            @click.self="closeDocument()">
+            <div class="flex h-[85vh] w-full max-w-6xl flex-col overflow-hidden rounded-[1.75rem] border border-themed-primary bg-themed-secondary shadow-2xl">
+                <div class="flex items-center justify-between border-b border-themed-secondary p-4">
+                    <h3 class="text-lg font-semibold text-themed-primary" x-text="documentModalTitle"></h3>
+                    <button type="button" @click="closeDocument()"
+                        class="text-themed-secondary transition-colors hover:text-themed-primary">
                         <i class="fas fa-times text-xl"></i>
                     </button>
                 </div>
                 <div class="flex-1 p-4">
-                    <iframe id="document-iframe" class="w-full h-full bg-white rounded" frameborder="0"></iframe>
+                    <iframe class="h-full w-full rounded bg-white" frameborder="0" x-bind:src="documentModalUrl"></iframe>
                 </div>
             </div>
         </div>
 
         <!-- Image Modal -->
-        <div id="image-modal"
-            class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 hidden">
-            <div class="bg-white dark:bg-gray-800 rounded-lg w-11/12 h-5/6 max-w-6xl flex flex-col shadow-2xl">
-                <div class="flex justify-between items-center p-4 border-b border-gray-300 dark:border-gray-700">
-                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Image Preview</h3>
-                    <button onclick="closeImageModal()" class="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">
+        <div x-cloak x-show="imageModalOpen" x-transition.opacity
+            class="fixed inset-0 z-50 flex items-center justify-center bg-black/75 p-4"
+            @click.self="closeImage()">
+            <div class="flex h-[85vh] w-full max-w-6xl flex-col overflow-hidden rounded-[1.75rem] border border-themed-primary bg-themed-secondary shadow-2xl">
+                <div class="flex items-center justify-between border-b border-themed-secondary p-4">
+                    <h3 class="text-lg font-semibold text-themed-primary">Image Preview</h3>
+                    <button type="button" @click="closeImage()"
+                        class="text-themed-secondary transition-colors hover:text-themed-primary">
                         <i class="fas fa-times text-xl"></i>
                     </button>
                 </div>
-                <div class="flex-1 p-4 flex items-center justify-center">
-                    <img id="modal-image" class="max-w-full max-h-full object-contain" src="" alt="">
+                <div class="flex flex-1 items-center justify-center p-4">
+                    <img class="max-h-full max-w-full object-contain" x-bind:src="imageModalUrl" alt="">
                 </div>
             </div>
         </div>
 
         <!-- Lesson Navigation -->
-        <div class="flex justify-between items-center mt-8 pt-6 border-t border-gray-300 dark:border-gray-700">
-            @if ($this->getPreviousLesson())
-                @php $prevLesson = $this->getPreviousLesson(); @endphp
-                <button wire:click="goToPreviousLesson"
-                    class="px-4 py-2 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-900 dark:text-white rounded-lg flex items-center transition-all duration-200 shadow-md hover:shadow-lg">
-                    <i class="fas fa-arrow-left mr-2"></i>
-                    <span class="hidden sm:inline">Previous:</span>
-                    <span class="ml-1 truncate max-w-32">
-                        {{ is_object($prevLesson) ? $prevLesson->title : $prevLesson['title'] }}
-                    </span>
-                </button>
-            @else
-                <div></div>
-            @endif
-
-            @if ($this->getNextLesson())
-                @php $nextLesson = $this->getNextLesson(); @endphp
-                @if ($this->canProceedToNext() && $this->isNextLessonUnlocked())
-                    <button wire:click="goToNextLesson"
-                        class="px-4 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white rounded-lg flex items-center transition-all duration-200 shadow-md hover:shadow-lg">
-                        <span class="hidden sm:inline">Next:</span>
-                        <span class="mr-1 truncate max-w-32">
-                            {{ is_object($nextLesson) ? $nextLesson->title : $nextLesson['title'] }}
-                        </span>
-                        <i class="fas fa-arrow-right ml-2"></i>
-                    </button>
-                @elseif (!$this->canProceedToNext())
-                    <div class="px-4 py-2 bg-red-600 text-white rounded-lg flex items-center cursor-not-allowed opacity-75">
-                        <i class="fas fa-clipboard-check mr-2"></i>
-                        <span class="text-sm">Complete assessments to continue</span>
+        <div class="mt-8 grid gap-4 xl:grid-cols-[minmax(0,1fr)_auto]">
+            <div class="rounded-[1.75rem] border border-themed-secondary bg-themed-tertiary p-5 shadow-sm">
+                <div class="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+                    <div>
+                        <p class="text-xs font-semibold uppercase tracking-[0.18em] text-themed-tertiary">Course Navigation</p>
+                        <h3 class="mt-2 text-xl font-semibold text-themed-primary">
+                            Lesson {{ $currentIndex + 1 }} of {{ $totalLessons }}
+                        </h3>
+                        <p class="mt-1 text-sm leading-6 text-themed-secondary">
+                            @if ($nextLesson)
+                                {{ $this->canProceedToNext() ? 'You can move forward as soon as you are ready.' : 'Pass the required assessment in this lesson to continue.' }}
+                            @else
+                                You are on the final lesson. Complete it when you are ready to finish the course.
+                            @endif
+                        </p>
                     </div>
+
+                    <div class="rounded-2xl border border-themed-secondary bg-themed-secondary px-4 py-3 text-sm text-themed-secondary">
+                        <span class="font-semibold text-themed-primary">{{ $coursePosition }}%</span> through course
+                    </div>
+                </div>
+
+                <div class="mt-5 h-3 overflow-hidden rounded-full border border-themed-secondary bg-themed-secondary">
+                    <div class="h-full rounded-full transition-all duration-500"
+                        style="width: {{ $coursePosition }}%; background: linear-gradient(135deg, rgb(var(--accent-primary)), rgb(var(--accent-secondary)));">
+                    </div>
+                </div>
+
+                <div class="mt-4 grid gap-3 md:grid-cols-2">
+                    <div class="rounded-2xl border border-themed-secondary bg-themed-secondary px-4 py-4">
+                        <p class="text-xs font-semibold uppercase tracking-[0.16em] text-themed-tertiary">Previous</p>
+                        <p class="mt-2 text-sm font-semibold text-themed-primary">
+                            {{ $previousLesson ? (is_object($previousLesson) ? $previousLesson->title : $previousLesson['title']) : 'Start of course' }}
+                        </p>
+                    </div>
+
+                    <div class="rounded-2xl border border-themed-secondary bg-themed-secondary px-4 py-4">
+                        <p class="text-xs font-semibold uppercase tracking-[0.16em] text-themed-tertiary">
+                            {{ $nextLesson ? 'Next' : 'Finish' }}
+                        </p>
+                        <p class="mt-2 text-sm font-semibold text-themed-primary">
+                            {{ $nextLesson ? (is_object($nextLesson) ? $nextLesson->title : $nextLesson['title']) : 'Complete this course when ready' }}
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex flex-col gap-3 sm:flex-row xl:flex-col xl:justify-end">
+                @if ($previousLesson)
+                    <button wire:click="goToPreviousLesson"
+                        class="inline-flex min-w-[14rem] items-center justify-center gap-2 rounded-2xl border border-themed-secondary bg-themed-tertiary px-5 py-3 text-sm font-semibold text-themed-primary shadow-sm transition hover:-translate-y-0.5 hover:bg-themed-secondary">
+                        <i class="fas fa-arrow-left"></i>
+                        Previous Lesson
+                    </button>
                 @else
-                    <div class="px-4 py-2 bg-gray-400 dark:bg-gray-600 text-gray-700 dark:text-gray-400 rounded-lg flex items-center cursor-not-allowed">
-                        <i class="fas fa-lock mr-2"></i>
-                        <span class="text-sm">Complete section to continue</span>
+                    <div class="inline-flex min-w-[14rem] items-center justify-center gap-2 rounded-2xl border border-themed-secondary bg-themed-secondary px-5 py-3 text-sm font-medium text-themed-secondary">
+                        <i class="fas fa-book-open"></i>
+                        Start of course
                     </div>
                 @endif
-            @else
-                <button wire:click="completeCourse"
-                    class="px-4 py-2 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white rounded-lg flex items-center transition-all duration-200 shadow-md hover:shadow-lg
-                    {{ !$this->canProceedToNext() ? 'opacity-50 cursor-not-allowed' : '' }}"
-                    @if (!$this->canProceedToNext()) disabled @endif>
-                    <i class="fas fa-trophy mr-2"></i>
-                    Complete Course
-                </button>
-            @endif
-        </div>
 
-        <!-- Progress Indicator -->
-        <div class="mt-4">
-            <div class="flex justify-between text-sm text-gray-600 dark:text-gray-400 mb-2">
-                <span>Lesson {{ $currentIndex + 1 }} of {{ count($allLessons) }}</span>
-                <span>{{ round((($currentIndex + 1) / count($allLessons)) * 100) }}% through course</span>
-            </div>
-            <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2 shadow-inner">
-                <div class="bg-gradient-to-r from-blue-500 to-indigo-600 h-2 rounded-full transition-all duration-300"
-                    style="width: {{ round((($currentIndex + 1) / count($allLessons)) * 100) }}%"></div>
+                @if ($nextLesson)
+                    @if ($this->canProceedToNext() && $this->isNextLessonUnlocked())
+                        <button wire:click="goToNextLesson"
+                            class="inline-flex min-w-[14rem] items-center justify-center gap-2 rounded-2xl px-5 py-3 text-sm font-semibold text-white shadow-lg transition hover:-translate-y-0.5"
+                            style="background: linear-gradient(135deg, rgb(var(--accent-primary)), rgb(var(--accent-secondary)));">
+                            Next Lesson
+                            <i class="fas fa-arrow-right"></i>
+                        </button>
+                    @elseif (!$this->canProceedToNext())
+                        <div class="inline-flex min-w-[14rem] items-center justify-center gap-2 rounded-2xl bg-red-600 px-5 py-3 text-sm font-semibold text-white opacity-85">
+                            <i class="fas fa-clipboard-check"></i>
+                            Complete assessments to continue
+                        </div>
+                    @else
+                        <div class="inline-flex min-w-[14rem] items-center justify-center gap-2 rounded-2xl bg-gray-400 px-5 py-3 text-sm font-semibold text-white dark:bg-gray-600">
+                            <i class="fas fa-lock"></i>
+                            Complete section to continue
+                        </div>
+                    @endif
+                @else
+                    <button wire:click="completeCourse"
+                        class="inline-flex min-w-[14rem] items-center justify-center gap-2 rounded-2xl bg-emerald-600 px-5 py-3 text-sm font-semibold text-white shadow-lg transition hover:-translate-y-0.5 hover:bg-emerald-700 {{ !$this->canProceedToNext() ? 'cursor-not-allowed opacity-50' : '' }}"
+                        @if (!$this->canProceedToNext()) disabled @endif>
+                        <i class="fas fa-trophy"></i>
+                        Complete Course
+                    </button>
+                @endif
             </div>
         </div>
     </div>
 
     <script>
-        // Keyboard shortcuts
-        document.addEventListener('keydown', function(e) {
-            // Only handle shortcuts when not typing in input/textarea
-            if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
-                return;
-            }
+        window.bootkodeLessonViewer = window.bootkodeLessonViewer || {};
 
-            switch(e.key) {
-                case 'ArrowLeft':
-                    e.preventDefault();
-                    @this.call('goToPreviousLesson');
-                    break;
-                case 'ArrowRight':
-                    e.preventDefault();
-                    @this.call('goToNextLesson');
-                    break;
-                case ' ':
-                    e.preventDefault();
-                    @this.call('markAsCompleted');
-                    break;
-            }
-        });
-
-        // Section toggle function
-        function toggleSection(sectionId) {
-            const content = document.getElementById(`${sectionId}-content`);
-            const chevron = document.getElementById(`${sectionId}-chevron`);
-            content.classList.toggle('hidden');
-            chevron.classList.toggle('fa-chevron-down');
-            chevron.classList.toggle('fa-chevron-up');
-        }
-
-        // Document modal functions
-        function openDocumentModal(url, title) {
-            document.getElementById('document-modal-title').textContent = title;
-            document.getElementById('document-iframe').src = url;
-            document.getElementById('document-modal').classList.remove('hidden');
-        }
-
-        function closeDocumentModal() {
-            document.getElementById('document-modal').classList.add('hidden');
-            document.getElementById('document-iframe').src = '';
-        }
-
-        // Image modal functions
-        function openImageModal(url) {
-            document.getElementById('modal-image').src = url;
-            document.getElementById('image-modal').classList.remove('hidden');
-        }
-
-        function closeImageModal() {
-            document.getElementById('image-modal').classList.add('hidden');
-            document.getElementById('modal-image').src = '';
-        }
-
-        // Audio player functions
         function initAudioPlayer(index) {
             const audio = document.getElementById(`audio-${index}`);
             const durationElement = document.getElementById(`duration-${index}`);
+            if (!audio || !durationElement || Number.isNaN(audio.duration)) {
+                return;
+            }
             const minutes = Math.floor(audio.duration / 60);
             const seconds = Math.floor(audio.duration % 60);
             durationElement.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
@@ -779,6 +784,9 @@
             const audio = document.getElementById(`audio-${index}`);
             const playIcon = document.getElementById(`play-icon-${index}`);
             const pauseIcon = document.getElementById(`pause-icon-${index}`);
+            if (!audio || !playIcon || !pauseIcon) {
+                return;
+            }
 
             if (audio.paused) {
                 audio.play();
@@ -795,6 +803,9 @@
             const audio = document.getElementById(`audio-${index}`);
             const progressBar = document.getElementById(`progress-bar-${index}`);
             const currentTimeElement = document.getElementById(`current-time-${index}`);
+            if (!audio || !progressBar || !currentTimeElement || !audio.duration) {
+                return;
+            }
 
             const progress = (audio.currentTime / audio.duration) * 100;
             progressBar.style.width = `${progress}%`;
@@ -811,38 +822,49 @@
             }
         }
 
-        // Modal close on click outside
-        document.getElementById('document-modal').addEventListener('click', function(e) {
-            if (e.target === this) closeDocumentModal();
-        });
+        if (window.bootkodeLessonViewer.assessmentPoller) {
+            clearInterval(window.bootkodeLessonViewer.assessmentPoller);
+            window.bootkodeLessonViewer.assessmentPoller = null;
+        }
 
-        document.getElementById('image-modal').addEventListener('click', function(e) {
-            if (e.target === this) closeImageModal();
-        });
+        if (@json($shouldPoll)) {
+            let lastPollTime = 0;
+            const POLL_INTERVAL = 10000;
+            const lessonViewerComponent = @this;
 
-        // Assessment polling
-        let assessmentPollingActive = @json($shouldPoll);
-        let lastPollTime = 0;
-        const POLL_INTERVAL = 10000;
-
-        if (assessmentPollingActive) {
-            setInterval(() => {
+            window.bootkodeLessonViewer.assessmentPoller = setInterval(() => {
                 const now = Date.now();
-                if (now - lastPollTime >= POLL_INTERVAL) {
-                    @this.call('pollAssessmentStatus');
-                    lastPollTime = now;
+
+                if (now - lastPollTime < POLL_INTERVAL) {
+                    return;
                 }
+
+                lessonViewerComponent.call('pollAssessmentStatus');
+                lastPollTime = now;
             }, POLL_INTERVAL);
         }
 
         document.addEventListener('livewire:init', () => {
-            @this.on('assessment-completed', () => {
-                assessmentPollingActive = false;
+            if (window.bootkodeLessonViewer.assessmentListenerBound) {
+                return;
+            }
+
+            window.bootkodeLessonViewer.assessmentListenerBound = true;
+
+            Livewire.on('assessment-completed', () => {
+                if (window.bootkodeLessonViewer.assessmentPoller) {
+                    clearInterval(window.bootkodeLessonViewer.assessmentPoller);
+                    window.bootkodeLessonViewer.assessmentPoller = null;
+                }
             });
         });
     </script>
 
     <style>
+        .lesson-viewer [x-cloak] {
+            display: none !important;
+        }
+
         .mini-player {
             transition: all 0.3s ease;
         }
@@ -859,11 +881,6 @@
             transform: scale(1.05);
         }
 
-        #document-modal,
-        #image-modal {
-            transition: opacity 0.3s ease;
-        }
-
         .animate-pulse {
             animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
         }
@@ -875,13 +892,6 @@
             50% {
                 opacity: .5;
             }
-        }
-
-        kbd {
-            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-            font-size: 0.875rem;
-            font-weight: 500;
-            line-height: 1;
         }
 
         @keyframes spin {

@@ -197,6 +197,29 @@ class StudentAssessmentTaker extends Component
         }
     }
 
+    public function toggleMultipleChoiceAnswer($questionId, $optionIndex)
+    {
+        $selectedAnswers = $this->answers[$questionId] ?? [];
+
+        if (!is_array($selectedAnswers)) {
+            $selectedAnswers = $selectedAnswers === null || $selectedAnswers === ''
+                ? []
+                : [(int) $selectedAnswers];
+        }
+
+        $selectedAnswers = array_values(array_map('intval', $selectedAnswers));
+        $optionIndex = (int) $optionIndex;
+
+        if (in_array($optionIndex, $selectedAnswers, true)) {
+            $selectedAnswers = array_values(array_diff($selectedAnswers, [$optionIndex]));
+        } else {
+            $selectedAnswers[] = $optionIndex;
+            sort($selectedAnswers);
+        }
+
+        $this->answers[$questionId] = $selectedAnswers;
+    }
+
     public function goToQuestion($index)
     {
         if ($index >= 0 && $index < count($this->questions)) {

@@ -275,21 +275,33 @@
                             : (json_decode($currentQuestion->options ?? '[]', true) ?: []);
                     @endphp
 
-                    @if ($currentQuestion->question_type === 'multiple_choice')
-                        <div class="space-y-3">
-                            @foreach ($questionOptions as $optionIndex => $option)
-                                @php
-                                    $questionId = $currentQuestion->id;
-                                    $currentAnswer = isset($answers[$questionId]) ? $answers[$questionId] : null;
-                                    $isSelected = (string)$currentAnswer === (string)$optionIndex;
-                                @endphp
-                                <div
-                                    wire:click="$set('answers.{{ $questionId }}', '{{ $optionIndex }}')"
-                                    class="flex items-center p-4 bg-themed-secondary rounded-lg hover:bg-themed-tertiary/50 cursor-pointer transition-all duration-200 border-2 {{ $isSelected ? 'border-accent-themed-primary bg-accent-themed-primary/10 shadow-md' : 'border-themed-secondary' }}">
-                                    @if ($currentQuestion->hasMultipleCorrectAnswers())
-                                        <input type="checkbox"
-                                            @if($isSelected) checked @endif
-                                            class="mr-3 rounded w-5 h-5 text-accent-themed-primary pointer-events-none border-themed-secondary">
+	                    @if ($currentQuestion->question_type === 'multiple_choice')
+	                        <div class="space-y-3">
+	                            @foreach ($questionOptions as $optionIndex => $option)
+	                                @php
+	                                    $questionId = $currentQuestion->id;
+	                                    $currentAnswer = $answers[$questionId] ?? null;
+	                                    $isMultiSelect = $currentQuestion->hasMultipleCorrectAnswers();
+	                                    $selectedAnswers = is_array($currentAnswer)
+	                                        ? array_map('intval', $currentAnswer)
+	                                        : (($currentAnswer === null || $currentAnswer === '')
+	                                            ? []
+	                                            : [(int) $currentAnswer]);
+	                                    $isSelected = $isMultiSelect
+	                                        ? in_array((int) $optionIndex, $selectedAnswers, true)
+	                                        : (string) $currentAnswer === (string) $optionIndex;
+	                                @endphp
+	                                <div
+	                                    @if ($isMultiSelect)
+	                                        wire:click="toggleMultipleChoiceAnswer({{ $questionId }}, {{ $optionIndex }})"
+	                                    @else
+	                                        wire:click="$set('answers.{{ $questionId }}', '{{ $optionIndex }}')"
+	                                    @endif
+	                                    class="flex items-center p-4 bg-themed-secondary rounded-lg hover:bg-themed-tertiary/50 cursor-pointer transition-all duration-200 border-2 {{ $isSelected ? 'border-accent-themed-primary bg-accent-themed-primary/10 shadow-md' : 'border-themed-secondary' }}">
+	                                    @if ($isMultiSelect)
+	                                        <input type="checkbox"
+	                                            @if($isSelected) checked @endif
+	                                            class="mr-3 rounded w-5 h-5 text-accent-themed-primary pointer-events-none border-themed-secondary">
                                     @else
                                         <input type="radio"
                                             name="question_{{ $questionId }}"
