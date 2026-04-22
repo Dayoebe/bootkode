@@ -1,0 +1,26 @@
+{
+  "topic": "Laravel API Development",
+  "category": {
+    "name": "Web Development",
+    "description": "Build practical software engineering and web delivery skills."
+  },
+  "instructor": {
+    "id": 1
+  },
+  "target_audience": "Junior PHP developers who want to design and ship cleaner API features.",
+  "skill_level": "intermediate",
+  "course_goals": [
+    "Design clean API workflows from request to response",
+    "Build maintainable features with validation, data flow, and integration discipline",
+    "Ship with stronger quality checks, testing habits, and review standards"
+  ],
+  "section_count": 5,
+  "lessons_per_section": 4,
+  "video_lessons_per_section": 1,
+  "include_faqs": true,
+  "include_resources": true,
+  "include_quizzes": true,
+  "publish": false,
+  "approve": false,
+  "duplicate_strategy": "return_existing"
+}

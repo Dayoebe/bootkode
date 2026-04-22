@@ -1,0 +1,79 @@
+{
+  "topic": "Applied Data Analysis with Excel and SQL",
+  "category": {
+    "name": "Data Analysis",
+    "description": "Courses focused on analytics, reporting, dashboards, and practical decision support."
+  },
+  "instructor": {
+    "id": 1
+  },
+  "target_audience": "Operations staff, junior analysts, and career switchers who want a more practical analytics workflow.",
+  "skill_level": "intermediate",
+  "course_goals": [
+    "Frame better analysis questions before touching the dataset",
+    "Clean and structure raw data into a dependable working table",
+    "Turn findings into clearer reporting and recommendations"
+  ],
+  "include_faqs": true,
+  "include_resources": true,
+  "include_quizzes": true,
+  "publish": false,
+  "approve": false,
+  "duplicate_strategy": "return_existing",
+  "sections": [
+    {
+      "title": "Framing the Analysis Problem",
+      "description": "Clarify the question, define useful metrics, and set a workflow for the rest of the course.",
+      "lessons": [
+        {
+          "title": "Understanding the Decision Behind the Request",
+          "content_type": "text"
+        },
+        {
+          "title": "Defining Metrics, Dimensions, and Scope",
+          "content_type": "text"
+        },
+        {
+          "title": "Video Walkthrough: Turning a Brief into an Analysis Plan",
+          "content_type": "video"
+        }
+      ]
+    },
+    {
+      "title": "Cleaning and Structuring the Dataset",
+      "description": "Move from raw exports into consistent, trustworthy analysis tables.",
+      "lessons": [
+        {
+          "title": "Spotting Data Quality Risks Early",
+          "content_type": "text"
+        },
+        {
+          "title": "Building a Reusable Cleaning Routine",
+          "content_type": "text"
+        },
+        {
+          "title": "Video Walkthrough: Cleaning a Messy Dataset Step by Step",
+          "content_type": "video"
+        }
+      ]
+    },
+    {
+      "title": "Insight Discovery and Reporting",
+      "description": "Surface meaningful findings and communicate them in a way decision-makers can use.",
+      "lessons": [
+        {
+          "title": "Exploring Trends, Segments, and Outliers",
+          "content_type": "text"
+        },
+        {
+          "title": "Turning Findings into Recommendations",
+          "content_type": "text"
+        },
+        {
+          "title": "Video Walkthrough: Structuring a Simple Reporting Narrative",
+          "content_type": "video"
+        }
+      ]
+    }
+  ]
+}

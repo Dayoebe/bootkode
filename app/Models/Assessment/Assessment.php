@@ -85,8 +85,7 @@ class Assessment extends Model
         parent::boot();
 
         static::creating(function ($assessment) {
-            // Generate slug
-            $assessment->slug = Str::slug($assessment->title);
+            $assessment->slug = $assessment->generateUniqueSlug($assessment->title);
 
             // Set order based on whether it has a section or not
             if ($assessment->section_id) {
@@ -107,9 +106,23 @@ class Assessment extends Model
 
         static::updating(function ($assessment) {
             if ($assessment->isDirty('title')) {
-                $assessment->slug = Str::slug($assessment->title);
+                $assessment->slug = $assessment->generateUniqueSlug($assessment->title);
             }
         });
+    }
+
+    protected function generateUniqueSlug(string $title): string
+    {
+        $slug = Str::slug($title);
+        $originalSlug = $slug;
+        $counter = 1;
+
+        while (static::where('slug', $slug)->where('id', '!=', $this->id ?? 0)->exists()) {
+            $slug = $originalSlug . '-' . $counter;
+            $counter++;
+        }
+
+        return $slug;
     }
 
     public function getIsQuizAttribute()
