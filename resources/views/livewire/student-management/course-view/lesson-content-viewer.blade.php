@@ -1,98 +1,218 @@
-<div wire:poll.30s="updateTimeSpent">
+@php
+    $totalLessons = count($allLessons);
+    $coursePosition = $totalLessons > 0 ? round((($currentIndex + 1) / $totalLessons) * 100) : 0;
+    $timeComparison = $showTimeComparison ? $this->getTimeComparison() : null;
+    $previousLesson = $this->getPreviousLesson();
+    $nextLesson = $this->getNextLesson();
+    $estimatedDuration = $lesson->estimated_duration_minutes ?? $lesson->duration_minutes ?? null;
+    $documentCount = $lesson->hasDocuments() ? count($lesson->getDocumentsArray()) : 0;
+    $uploadedVideoCount = $lesson->hasVideo() ? count($lesson->getVideosArray()) : 0;
+    $audioCount = $lesson->hasAudio() ? count($lesson->getAudiosArray()) : 0;
+    $imageCount = ($lesson->image_path ? 1 : 0) + ($lesson->hasImage() ? count($lesson->getImagesArray()) : 0);
+    $linkCount = $lesson->hasExternalLinks() ? count($lesson->getExternalLinksArray()) : 0;
+    $resourceCount = $documentCount + $uploadedVideoCount + $audioCount + $imageCount + $linkCount + ($lesson->video_url ? 1 : 0);
+    $assessmentCount = $hasAssessments ? \App\Models\Assessment\Assessment::where('lesson_id', $lesson->id)->count() : 0;
+    $openPanels = [];
+
+    if ($hasAssessments && !$allAssessmentsPassed) {
+        $openPanels[] = 'assessments';
+    }
+
+    if ($lesson->video_url) {
+        $openPanels[] = 'video-content';
+    }
+@endphp
+
+<div
+    wire:poll.30s="updateTimeSpent"
+    x-data="{
+        openPanels: @js($openPanels),
+        documentModalOpen: false,
+        documentModalUrl: '',
+        documentModalTitle: '',
+        imageModalOpen: false,
+        imageModalUrl: '',
+        toggle(panel) {
+            this.openPanels = this.openPanels.includes(panel)
+                ? this.openPanels.filter(item => item !== panel)
+                : [...this.openPanels, panel];
+        },
+        isOpen(panel) {
+            return this.openPanels.includes(panel);
+        },
+        openDocument(url, title) {
+            this.documentModalUrl = url;
+            this.documentModalTitle = title;
+            this.documentModalOpen = true;
+        },
+        closeDocument() {
+            this.documentModalOpen = false;
+            this.documentModalUrl = '';
+            this.documentModalTitle = '';
+        },
+        openImage(url) {
+            this.imageModalUrl = url;
+            this.imageModalOpen = true;
+        },
+        closeImage() {
+            this.imageModalOpen = false;
+            this.imageModalUrl = '';
+        }
+    }"
+    x-on:keydown.escape.window="closeDocument(); closeImage()"
+    class="lesson-viewer">
     <!-- Transition Overlay -->
     @if($isTransitioning)
-    <div class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center backdrop-blur-sm">
-        <div class="bg-white dark:bg-gray-800 rounded-lg p-8 shadow-2xl">
-            <div class="animate-spin rounded-full h-16 w-16 border-b-4 border-blue-600 mx-auto mb-4"></div>
-            <p class="text-gray-900 dark:text-white font-medium">Loading next lesson...</p>
+    <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/55 backdrop-blur-sm">
+        <div class="rounded-[1.75rem] border border-themed-primary bg-themed-secondary p-8 shadow-2xl">
+            <div class="mx-auto mb-4 h-16 w-16 animate-spin rounded-full border-b-4"
+                style="border-color: rgba(var(--accent-primary), 0.25); border-bottom-color: rgb(var(--accent-primary));"></div>
+            <p class="font-medium text-themed-primary">Loading next lesson...</p>
         </div>
     </div>
     @endif
 
-    <div class="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-200 dark:border-gray-700 transition-colors duration-300 shadow-lg">
-        <!-- Lesson Header -->
-        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6 pb-6 border-b border-gray-200 dark:border-gray-700">
-            <div class="flex-1">
-                <div class="flex items-center text-sm text-gray-500 dark:text-gray-400 mb-2">
-                    <span>{{ $lesson->section->title }}</span>
-                    <i class="fas fa-chevron-right mx-2"></i>
-                    <span>Lesson {{ $currentIndex + 1 }}</span>
-                </div>
-                <h2 class="text-2xl font-bold text-gray-900 dark:text-white">{{ $lesson->title }}</h2>
-
-                @if ($lesson->description)
-                    <p class="text-gray-700 dark:text-gray-300 mt-2">{{ $lesson->description }}</p>
-                @endif
-
-                <div class="flex items-center gap-4 mt-3 text-sm text-gray-600 dark:text-gray-400 flex-wrap">
-                    <!-- Time Spent vs Estimated -->
-                    @if ($showTimeComparison)
-                        @php $timeComparison = $this->getTimeComparison(); @endphp
-                        <span class="flex items-center bg-gray-100 dark:bg-gray-700 px-3 py-1 rounded-full">
-                            <i class="fas fa-stopwatch mr-1"></i>
-                            {{ $this->getFormattedTimeSpent() }}
-                            @if($timeComparison && $timeComparison['estimated'] > 0)
-                                / {{ $timeComparison['estimated'] }}m
-                                <span class="ml-1 text-xs {{ $timeComparison['over_time'] ? 'text-yellow-600 dark:text-yellow-400' : 'text-green-600 dark:text-green-400' }}">
-                                    ({{ $timeComparison['percentage'] }}%)
+    <div class="overflow-hidden rounded-[2rem] border border-themed-primary bg-themed-secondary p-5 shadow-xl transition-colors duration-300 animate__animated animate__fadeInUp md:p-6">
+        <div class="mb-6 overflow-hidden rounded-[1.75rem] border border-themed-secondary shadow-lg"
+            style="background:
+                radial-gradient(circle at top left, rgba(var(--accent-primary), 0.16), transparent 34%),
+                radial-gradient(circle at top right, rgba(var(--accent-secondary), 0.12), transparent 32%),
+                linear-gradient(160deg, rgba(var(--accent-primary), 0.06), rgba(var(--accent-secondary), 0.03));">
+            <div class="p-5 md:p-6">
+                <div class="flex flex-col gap-6 xl:flex-row xl:items-start xl:justify-between">
+                    <div class="max-w-3xl">
+                        <div class="flex flex-wrap items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em]">
+                            <span class="rounded-full border border-themed-secondary bg-themed-secondary px-3 py-1 text-themed-secondary">
+                                {{ $lesson->section->title }}
+                            </span>
+                            <span class="rounded-full border border-themed-secondary bg-themed-secondary px-3 py-1 text-themed-secondary">
+                                Lesson {{ $currentIndex + 1 }} of {{ $totalLessons }}
+                            </span>
+                            @if ($lesson->difficulty_level)
+                                <span class="rounded-full border border-themed-secondary bg-themed-secondary px-3 py-1 text-themed-secondary capitalize">
+                                    {{ $lesson->difficulty_level }}
                                 </span>
                             @endif
-                        </span>
-                    @else
-                        <span class="flex items-center bg-gray-100 dark:bg-gray-700 px-3 py-1 rounded-full">
-                            <i class="fas fa-clock mr-1"></i>
-                            {{ $this->getFormattedTimeSpent() }}
-                        </span>
-                    @endif
+                            @if ($hasAssessments)
+                                <span
+                                    class="rounded-full px-3 py-1 text-white {{ $allAssessmentsPassed ? 'bg-emerald-600' : 'bg-amber-500' }}">
+                                    {{ $allAssessmentsPassed ? 'Assessments passed' : 'Assessment required' }}
+                                </span>
+                            @endif
+                        </div>
 
-                    @if ($lesson->difficulty_level)
-                        <span class="capitalize bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300 px-3 py-1 rounded-full text-xs font-medium">
-                            {{ $lesson->difficulty_level }}
-                        </span>
-                    @endif
+                        <h2 class="mt-5 text-3xl font-semibold tracking-tight text-themed-primary md:text-4xl">
+                            {{ $lesson->title }}
+                        </h2>
 
-                    @if ($hasAssessments)
-                        @if ($allAssessmentsPassed)
-                            <span class="flex items-center bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-300 px-3 py-1 rounded-full text-xs font-medium">
-                                <i class="fas fa-check-circle mr-1"></i>
-                                Assessments Passed
-                            </span>
-                        @else
-                            <span class="flex items-center bg-red-100 dark:bg-red-900 text-red-700 dark:text-red-300 px-3 py-1 rounded-full text-xs font-medium animate-pulse">
-                                <i class="fas fa-exclamation-triangle mr-1"></i>
-                                Assessment Required
-                            </span>
+                        @if ($lesson->description)
+                            <p class="mt-3 max-w-2xl text-base leading-7 text-themed-secondary md:text-lg">
+                                {{ $lesson->description }}
+                            </p>
                         @endif
-                    @endif
+
+                        <div class="mt-6 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+                            <div class="rounded-2xl border border-themed-secondary bg-themed-tertiary p-4 shadow-sm">
+                                <p class="text-xs font-semibold uppercase tracking-[0.16em] text-themed-tertiary">Time Spent</p>
+                                <p class="mt-2 text-2xl font-semibold text-themed-primary">{{ $this->getFormattedTimeSpent() }}</p>
+                                @if ($timeComparison && $timeComparison['estimated'] > 0)
+                                    <p class="mt-1 text-xs {{ $timeComparison['over_time'] ? 'text-amber-500' : 'text-emerald-500' }}">
+                                        {{ $timeComparison['percentage'] }}% of {{ $timeComparison['estimated'] }}m estimate
+                                    </p>
+                                @endif
+                            </div>
+
+                            <div class="rounded-2xl border border-themed-secondary bg-themed-tertiary p-4 shadow-sm">
+                                <p class="text-xs font-semibold uppercase tracking-[0.16em] text-themed-tertiary">Lesson Length</p>
+                                <p class="mt-2 text-2xl font-semibold text-themed-primary">
+                                    {{ $estimatedDuration ? $estimatedDuration . ' min' : 'Self-paced' }}
+                                </p>
+                                <p class="mt-1 text-xs text-themed-secondary">Estimated learning time</p>
+                            </div>
+
+                            <div class="rounded-2xl border border-themed-secondary bg-themed-tertiary p-4 shadow-sm">
+                                <p class="text-xs font-semibold uppercase tracking-[0.16em] text-themed-tertiary">Resources</p>
+                                <p class="mt-2 text-2xl font-semibold text-themed-primary">{{ $resourceCount }}</p>
+                                <p class="mt-1 text-xs text-themed-secondary">Files, media, and links</p>
+                            </div>
+
+                            <div class="rounded-2xl border border-themed-secondary bg-themed-tertiary p-4 shadow-sm">
+                                <p class="text-xs font-semibold uppercase tracking-[0.16em] text-themed-tertiary">Lesson Gate</p>
+                                <p class="mt-2 text-2xl font-semibold text-themed-primary">
+                                    @if ($isCompleted)
+                                        Done
+                                    @elseif ($hasAssessments && !$allAssessmentsPassed)
+                                        Review
+                                    @else
+                                        Ready
+                                    @endif
+                                </p>
+                                <p class="mt-1 text-xs text-themed-secondary">
+                                    {{ $hasAssessments ? ($allAssessmentsPassed ? 'You can move forward' : 'Pass assessments to continue') : 'No blocking assessment' }}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="w-full xl:max-w-sm">
+                        <div class="rounded-[1.75rem] border border-themed-secondary bg-themed-tertiary p-5 shadow-lg">
+                            <p class="text-xs font-semibold uppercase tracking-[0.18em] text-themed-tertiary">Lesson Status</p>
+
+                            <div class="mt-4 flex items-start gap-4">
+                                <span
+                                    class="flex h-14 w-14 flex-shrink-0 items-center justify-center rounded-3xl text-white shadow-lg {{ $isCompleted ? 'bg-emerald-600' : ($hasAssessments && !$allAssessmentsPassed ? 'bg-amber-500' : 'bg-blue-600') }}">
+                                    <i class="fas {{ $isCompleted ? 'fa-check' : ($hasAssessments && !$allAssessmentsPassed ? 'fa-clipboard-check' : 'fa-play') }} text-lg"></i>
+                                </span>
+
+                                <div>
+                                    <p class="text-lg font-semibold text-themed-primary">
+                                        @if ($isCompleted)
+                                            Lesson completed
+                                        @elseif ($hasAssessments && !$allAssessmentsPassed)
+                                            Complete the assessment
+                                        @else
+                                            Ready to mark complete
+                                        @endif
+                                    </p>
+                                    <p class="mt-1 text-sm leading-6 text-themed-secondary">
+                                        You are {{ $coursePosition }}% through the full course sequence.
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div class="mt-5 h-3 overflow-hidden rounded-full border border-themed-secondary bg-themed-secondary">
+                                <div class="h-full rounded-full transition-all duration-500"
+                                    style="width: {{ $coursePosition }}%; background: linear-gradient(135deg, rgb(var(--accent-primary)), rgb(var(--accent-secondary)));">
+                                </div>
+                            </div>
+
+                            <div class="mt-5 space-y-3">
+                                @if ($isCompleted)
+                                    <button wire:click="markAsIncomplete"
+                                        class="inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-amber-500 px-4 py-3 text-sm font-semibold text-white shadow-md transition hover:bg-amber-600">
+                                        <i class="fas fa-undo"></i>
+                                        Mark Incomplete
+                                    </button>
+                                @else
+                                    <button wire:click="markAsCompleted"
+                                        class="inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-emerald-600 px-4 py-3 text-sm font-semibold text-white shadow-md transition hover:bg-emerald-700 {{ $hasAssessments && !$allAssessmentsPassed ? 'cursor-not-allowed opacity-50' : '' }}"
+                                        @if ($hasAssessments && !$allAssessmentsPassed) disabled @endif>
+                                        <i class="fas fa-check"></i>
+                                        Mark Complete
+                                    </button>
+                                @endif
+
+                                <div class="rounded-2xl border border-themed-secondary bg-themed-secondary px-4 py-3 text-sm text-themed-secondary">
+                                    @if ($hasAssessments && !$allAssessmentsPassed)
+                                        Finish the required assessment before moving to the next lesson.
+                                    @else
+                                        Use the course map or the next button below to keep progressing.
+                                    @endif
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-            </div>
-
-            <!-- Completion Toggle -->
-            <div class="flex items-center gap-3">
-                @if ($isCompleted)
-                    <button wire:click="markAsIncomplete"
-                        class="px-4 py-2 bg-yellow-600 hover:bg-yellow-700 text-white rounded-lg text-sm transition-all duration-200 flex items-center shadow-md hover:shadow-lg">
-                        <i class="fas fa-undo mr-2"></i> Mark Incomplete
-                    </button>
-                @else
-                    <button wire:click="markAsCompleted"
-                        class="px-4 py-2 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white rounded-lg text-sm transition-all duration-200 flex items-center shadow-md hover:shadow-lg
-                        {{ $hasAssessments && !$allAssessmentsPassed ? 'opacity-50 cursor-not-allowed' : '' }}"
-                        @if ($hasAssessments && !$allAssessmentsPassed) disabled @endif>
-                        <i class="fas fa-check mr-2"></i> Mark Complete
-                    </button>
-                @endif
-            </div>
-        </div>
-
-        <!-- Keyboard Shortcuts Info -->
-        <div class="mb-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-700 rounded-lg p-3">
-            <div class="flex items-center gap-2 text-sm text-blue-700 dark:text-blue-300">
-                <i class="fas fa-keyboard"></i>
-                <span class="font-medium">Keyboard Shortcuts:</span>
-                <span class="ml-2"><kbd class="px-2 py-1 bg-white dark:bg-gray-700 rounded border border-gray-300 dark:border-gray-600">←</kbd> Previous</span>
-                <span><kbd class="px-2 py-1 bg-white dark:bg-gray-700 rounded border border-gray-300 dark:border-gray-600">→</kbd> Next</span>
-                <span><kbd class="px-2 py-1 bg-white dark:bg-gray-700 rounded border border-gray-300 dark:border-gray-600">Space</kbd> Mark Complete</span>
             </div>
         </div>
 

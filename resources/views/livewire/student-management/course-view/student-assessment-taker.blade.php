@@ -269,9 +269,15 @@
                     </div>
 
                     <!-- Answer Options -->
+                    @php
+                        $questionOptions = is_array($currentQuestion->options)
+                            ? $currentQuestion->options
+                            : (json_decode($currentQuestion->options ?? '[]', true) ?: []);
+                    @endphp
+
                     @if ($currentQuestion->question_type === 'multiple_choice')
                         <div class="space-y-3">
-                            @foreach (json_decode($currentQuestion->options, true) ?? [] as $optionIndex => $option)
+                            @foreach ($questionOptions as $optionIndex => $option)
                                 @php
                                     $questionId = $currentQuestion->id;
                                     $currentAnswer = isset($answers[$questionId]) ? $answers[$questionId] : null;
@@ -297,7 +303,7 @@
                         </div>
                     @elseif($currentQuestion->question_type === 'true_false')
                         <div class="space-y-3">
-                            @foreach (json_decode($currentQuestion->options, true) ?? [] as $optionIndex => $option)
+                            @foreach ($questionOptions as $optionIndex => $option)
                                 @php
                                     $questionId = $currentQuestion->id;
                                     $currentAnswer = isset($answers[$questionId]) ? $answers[$questionId] : null;
