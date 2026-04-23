@@ -10,6 +10,7 @@ use App\Models\Learning\LessonProgress;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Livewire\Attributes\On;
+use Livewire\Attributes\Reactive;
 
 class LessonContentViewer extends Component
 {
@@ -17,7 +18,9 @@ class LessonContentViewer extends Component
     public $allLessons;
     public $currentIndex;
     public $isCompleted = false;
+    #[Reactive]
     public $completedLessons;
+    #[Reactive]
     public $unlockedSections;
     public $hasAssessments = false;
     public $allAssessmentsPassed = false;
@@ -166,21 +169,20 @@ class LessonContentViewer extends Component
             return null;
         }
 
-        $assessments = Assessment::where('lesson_id', $this->lesson->id)->get();
+        $assessments = $this->getLessonAssessments();
         
         $preview = [];
         foreach ($assessments as $assessment) {
-            $questionTypes = $assessment->questions()
-                ->select('question_type')
-                ->get()
+            $questions = $assessment->questions;
+
+            $questionTypes = $questions
                 ->pluck('question_type')
                 ->unique()
                 ->values();
 
-            $difficultyDistribution = $assessment->questions()
-                ->select('difficulty_level')
-                ->get()
+            $difficultyDistribution = $questions
                 ->pluck('difficulty_level')
+                ->filter()
                 ->countBy()
                 ->toArray();
 
@@ -188,12 +190,12 @@ class LessonContentViewer extends Component
                 'id' => $assessment->id,
                 'title' => $assessment->title,
                 'type' => $assessment->type,
-                'question_count' => $assessment->questions->count(),
+                'question_count' => $questions->count(),
                 'question_types' => $questionTypes,
                 'difficulty_distribution' => $difficultyDistribution,
                 'estimated_duration' => $assessment->estimated_duration_minutes,
                 'pass_percentage' => $assessment->pass_percentage,
-                'total_points' => $assessment->questions->sum('points'),
+                'total_points' => $questions->sum('points'),
             ];
         }
 
@@ -202,7 +204,7 @@ class LessonContentViewer extends Component
 
     protected function checkAssessments()
     {
-        $assessments = Assessment::where('lesson_id', $this->lesson->id)->get();
+        $assessments = $this->getLessonAssessments();
         $this->hasAssessments = $assessments->count() > 0;
 
         if ($this->hasAssessments) {
@@ -240,6 +242,21 @@ class LessonContentViewer extends Component
         }
 
         return true;
+    }
+
+    protected function getLessonAssessments()
+    {
+        if ($this->lesson->relationLoaded('assessments')) {
+            $assessments = $this->lesson->assessments;
+            $assessments->loadMissing('questions');
+
+            return $assessments;
+        }
+
+        return Assessment::where('lesson_id', $this->lesson->id)
+            ->orderBy('order')
+            ->with('questions')
+            ->get();
     }
 
     #[On('progress-updated')]

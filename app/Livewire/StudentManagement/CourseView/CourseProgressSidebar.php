@@ -5,14 +5,20 @@ namespace App\Livewire\StudentManagement\CourseView;
 use Livewire\Component;
 use App\Models\Learning\Course;
 use Livewire\Attributes\On;
+use Livewire\Attributes\Reactive;
 
 class CourseProgressSidebar extends Component
 {
     public $course;
+    #[Reactive]
     public $sections;
+    #[Reactive]
     public $currentLesson;
+    #[Reactive]
     public $completedLessons;
+    #[Reactive]
     public $unlockedSections;
+    #[Reactive]
     public $sectionCompletionThreshold;
 
     public function mount(

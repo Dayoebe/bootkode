@@ -1,8 +1,17 @@
 @php
-    $overallProgress = $this->calculateOverallProgress();
+    $overallProgress = $this->overallProgress;
     $sectionCount = $course->sections->count();
     $lessonCount = $course->sections->sum(fn($section) => $section->lessons->count());
-    $lastViewedLesson = $this->getLastViewedLesson();
+    $lastViewedLesson = $this->lastViewedLesson;
+    $resumeLesson = $lastViewedLesson && $lastViewedLesson->id !== $currentLesson?->id ? $lastViewedLesson : null;
+    $completedSectionCount = $course->sections->filter(function ($section) use ($completedLessons) {
+        return $section->lessons->count() > 0
+            && $section->lessons->every(fn($lesson) => in_array($lesson->id, $completedLessons, true));
+    })->count();
+    $unlockedSectionCount = count($unlockedSections);
+    $currentSectionProgress = $currentSection ? $this->calculateSectionProgress($currentSection) : 0;
+    $nextLockedSection = $course->sections->first(fn($section) => !in_array($section->id, $unlockedSections, true));
+    $progressKey = $course->id . '-' . $progressVersion . '-' . ($currentLesson?->id ?? 'none');
 @endphp
 
 <div
@@ -19,7 +28,9 @@
     <div class="relative space-y-6 md:space-y-8">
         <livewire:student-management.course-view.course-progress-header :course="$course"
             :overallProgress="$overallProgress" :currentSection="$currentSection"
-            :completedLessons="$completedLessons" wire:key="header-{{ $course->id }}" />
+            :completedLessons="$completedLessons" :unlockedSections="$unlockedSections"
+            :sectionCompletionThreshold="$sectionCompletionThreshold"
+            wire:key="header-{{ $progressKey }}" />
 
         @if (session()->has('success'))
             <div x-data="{ show: true }" x-show="show" x-transition.opacity.duration.300ms
@@ -65,7 +76,7 @@
             </div>
         @endif
 
-        @if ($lastViewedLesson && $lastViewedLesson->id !== $currentLesson?->id)
+        @if ($resumeLesson)
             <div
                 class="overflow-hidden rounded-[2rem] border border-themed-primary bg-themed-secondary p-5 shadow-xl animate__animated animate__fadeInUp">
                 <div class="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
@@ -79,7 +90,7 @@
                             <p class="text-xs font-semibold uppercase tracking-[0.18em] text-themed-secondary">Continue learning</p>
                             <h3 class="mt-2 text-xl font-semibold text-themed-primary">Jump back into your last lesson</h3>
                             <p class="mt-2 text-sm leading-6 text-themed-secondary">
-                                Resume from <span class="font-semibold text-themed-primary">{{ $lastViewedLesson->title }}</span>
+                                Resume from <span class="font-semibold text-themed-primary">{{ $resumeLesson->title }}</span>
                                 and keep your momentum.
                             </p>
                         </div>
@@ -94,6 +105,67 @@
                 </div>
             </div>
         @endif
+
+        <section class="grid gap-4 md:grid-cols-2 2xl:grid-cols-4">
+            <div class="overflow-hidden rounded-[1.75rem] border border-themed-primary bg-themed-secondary p-5 shadow-lg">
+                <p class="text-xs font-semibold uppercase tracking-[0.18em] text-themed-secondary">Unlocked Sections</p>
+                <div class="mt-3 flex items-end justify-between gap-3">
+                    <span class="text-3xl font-semibold text-themed-primary">{{ $unlockedSectionCount }}</span>
+                    <span class="rounded-full border border-themed-secondary bg-themed-tertiary px-3 py-1 text-xs font-semibold text-themed-secondary">
+                        of {{ $sectionCount }}
+                    </span>
+                </div>
+                <p class="mt-3 text-sm leading-6 text-themed-secondary">
+                    {{ $nextLockedSection ? 'Keep progressing to open the next chapter.' : 'Every section is open for review.' }}
+                </p>
+            </div>
+
+            <div class="overflow-hidden rounded-[1.75rem] border border-themed-primary bg-themed-secondary p-5 shadow-lg">
+                <p class="text-xs font-semibold uppercase tracking-[0.18em] text-themed-secondary">Completed Lessons</p>
+                <div class="mt-3 flex items-end justify-between gap-3">
+                    <span class="text-3xl font-semibold text-themed-primary">{{ count($completedLessons) }}</span>
+                    <span class="rounded-full border border-themed-secondary bg-themed-tertiary px-3 py-1 text-xs font-semibold text-themed-secondary">
+                        {{ $lessonCount }} total
+                    </span>
+                </div>
+                <p class="mt-3 text-sm leading-6 text-themed-secondary">
+                    {{ $overallProgress }}% of the course is done and saved to your enrollment record.
+                </p>
+            </div>
+
+            <div class="overflow-hidden rounded-[1.75rem] border border-themed-primary bg-themed-secondary p-5 shadow-lg">
+                <p class="text-xs font-semibold uppercase tracking-[0.18em] text-themed-secondary">Current Section</p>
+                <div class="mt-3 flex items-end justify-between gap-3">
+                    <span class="truncate text-2xl font-semibold text-themed-primary">
+                        {{ $currentSection?->title ?? 'Ready to begin' }}
+                    </span>
+                    <span class="rounded-full border border-themed-secondary bg-themed-tertiary px-3 py-1 text-xs font-semibold text-themed-secondary">
+                        {{ $currentSectionProgress }}%
+                    </span>
+                </div>
+                <div class="mt-4 h-2 overflow-hidden rounded-full border border-themed-secondary bg-themed-tertiary">
+                    <div class="h-full rounded-full"
+                        style="width: {{ $currentSectionProgress }}%; background: linear-gradient(135deg, rgb(var(--accent-primary)), rgb(var(--accent-secondary)));">
+                    </div>
+                </div>
+            </div>
+
+            <div class="overflow-hidden rounded-[1.75rem] border border-themed-primary bg-themed-secondary p-5 shadow-lg">
+                <p class="text-xs font-semibold uppercase tracking-[0.18em] text-themed-secondary">Next Unlock</p>
+                <div class="mt-3">
+                    <p class="text-2xl font-semibold text-themed-primary">
+                        {{ $nextLockedSection?->title ?? 'All open' }}
+                    </p>
+                    <p class="mt-2 text-sm leading-6 text-themed-secondary">
+                        @if ($nextLockedSection)
+                            Reach {{ $sectionCompletionThreshold }}% in the current section to unlock it.
+                        @else
+                            You can move freely through every section now.
+                        @endif
+                    </p>
+                </div>
+            </div>
+        </section>
 
         @if ($certificateEarned ?? false)
             <div
@@ -124,23 +196,33 @@
 
         <div class="lg:hidden">
             <div class="sticky top-4 z-30 overflow-hidden rounded-[1.75rem] border border-themed-primary bg-themed-secondary p-4 shadow-xl animate__animated animate__fadeInUp">
-                <div class="flex items-center justify-between gap-4">
-                    <div class="min-w-0">
-                        <p class="text-xs font-semibold uppercase tracking-[0.18em] text-themed-secondary">Current lesson</p>
+                    <div class="flex items-center justify-between gap-4">
+                        <div class="min-w-0">
+                            <p class="text-xs font-semibold uppercase tracking-[0.18em] text-themed-secondary">Current lesson</p>
                         <p class="mt-2 truncate text-sm font-semibold text-themed-primary">
                             {{ $currentLesson?->title ?? 'Choose a lesson to begin' }}
                         </p>
                         <p class="mt-1 text-xs text-themed-secondary">
-                            {{ $currentSection?->title ?? 'Course overview' }} • {{ $overallProgress }}% complete
-                        </p>
-                    </div>
+                                {{ $currentSection?->title ?? 'Course overview' }} • {{ $overallProgress }}% complete
+                            </p>
+                        </div>
 
-                    <button @click="navOpen = true"
-                        class="inline-flex flex-shrink-0 items-center gap-2 rounded-2xl px-4 py-3 text-sm font-semibold text-white shadow-lg transition"
-                        style="background: linear-gradient(135deg, rgb(var(--accent-primary)), rgb(var(--accent-secondary)));">
-                        <i class="fas fa-compass"></i>
-                        Course Map
-                    </button>
+                    <div class="flex flex-shrink-0 items-center gap-2">
+                        @if ($resumeLesson)
+                            <button wire:click="continueFromLastLesson"
+                                class="inline-flex items-center gap-2 rounded-2xl border border-themed-secondary bg-themed-tertiary px-4 py-3 text-sm font-semibold text-themed-primary shadow-sm transition">
+                                <i class="fas fa-history"></i>
+                                Resume
+                            </button>
+                        @endif
+
+                        <button @click="navOpen = true"
+                            class="inline-flex items-center gap-2 rounded-2xl px-4 py-3 text-sm font-semibold text-white shadow-lg transition"
+                            style="background: linear-gradient(135deg, rgb(var(--accent-primary)), rgb(var(--accent-secondary)));">
+                            <i class="fas fa-compass"></i>
+                            Course Map
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -167,7 +249,7 @@
                         <livewire:student-management.course-view.course-progress-sidebar :course="$course"
                             :sections="$course->sections" :currentLesson="$currentLesson" :completedLessons="$completedLessons"
                             :unlockedSections="$unlockedSections" :sectionCompletionThreshold="$sectionCompletionThreshold"
-                            wire:key="sidebar-mobile-{{ $course->id }}-{{ $currentLesson?->id ?? 'none' }}" />
+                            wire:key="sidebar-mobile-{{ $progressKey }}" />
                     </div>
                 </div>
             </div>
@@ -178,7 +260,7 @@
                 <livewire:student-management.course-view.course-progress-sidebar :course="$course"
                     :sections="$course->sections" :currentLesson="$currentLesson" :completedLessons="$completedLessons"
                     :unlockedSections="$unlockedSections" :sectionCompletionThreshold="$sectionCompletionThreshold"
-                    wire:key="sidebar-desktop-{{ $course->id }}-{{ $currentLesson?->id ?? 'none' }}" />
+                    wire:key="sidebar-desktop-{{ $progressKey }}" />
             </aside>
 
             <div class="min-w-0">
@@ -258,7 +340,7 @@
         }
     </style>
 
-    @if (session()->has('show_confetti'))
+    @if ($shouldCelebrate)
         @push('scripts')
             <script>
                 document.addEventListener('livewire:init', () => {
@@ -309,7 +391,7 @@
                     }, 400);
                 }
 
-                @if (session()->has('show_confetti'))
+                @if ($shouldCelebrate)
                     document.addEventListener('DOMContentLoaded', () => {
                         if (window.Livewire) {
                             Livewire.dispatch('confetti');
