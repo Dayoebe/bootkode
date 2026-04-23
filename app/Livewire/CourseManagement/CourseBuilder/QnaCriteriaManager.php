@@ -4,6 +4,8 @@ namespace App\Livewire\CourseManagement\CourseBuilder;
 
 use App\Models\Assessment\Question;
 use App\Models\Assessment\Assessment;
+use Illuminate\Contracts\Support\Arrayable;
+use Illuminate\Support\Collection;
 use Livewire\Component;
 
 class QnaCriteriaManager extends Component
@@ -225,7 +227,7 @@ class QnaCriteriaManager extends Component
         $this->isRequired = $topic['is_required'] ?? true;
         $this->timeLimit = $topic['time_limit'];
 
-        $qnaData = json_decode($topic['options'], true) ?? [];
+        $qnaData = $this->normalizeToArray($topic['options']);
         $this->topicType = $qnaData['topic_type'] ?? 'discussion';
         $this->minResponses = $qnaData['min_responses'] ?? 1;
         $this->minResponseLength = $qnaData['min_response_length'] ?? 50;
@@ -233,6 +235,37 @@ class QnaCriteriaManager extends Component
         $this->moderatorApproval = $qnaData['moderator_approval'] ?? false;
         $this->discussionPrompts = $qnaData['discussion_prompts'] ?? $this->discussionPrompts;
         $this->evaluationCriteria = $qnaData['evaluation_criteria'] ?? $this->evaluationCriteria;
+    }
+
+    protected function normalizeToArray($value, array $default = []): array
+    {
+        if (is_array($value)) {
+            return $value;
+        }
+
+        if ($value instanceof Collection) {
+            return $value->values()->all();
+        }
+
+        if ($value instanceof Arrayable) {
+            $arrayValue = $value->toArray();
+
+            return is_array($arrayValue) ? $arrayValue : $default;
+        }
+
+        if ($value instanceof \JsonSerializable) {
+            $jsonValue = $value->jsonSerialize();
+
+            return is_array($jsonValue) ? $jsonValue : $default;
+        }
+
+        if (is_string($value)) {
+            $decoded = json_decode($value, true);
+
+            return is_array($decoded) ? $decoded : $default;
+        }
+
+        return $default;
     }
 
     public function updateTopic()

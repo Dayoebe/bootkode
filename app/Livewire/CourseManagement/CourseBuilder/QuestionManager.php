@@ -4,6 +4,8 @@ namespace App\Livewire\CourseManagement\CourseBuilder;
 
 use App\Models\Assessment\Question;
 use App\Models\Assessment\Assessment;
+use Illuminate\Contracts\Support\Arrayable;
+use Illuminate\Support\Collection;
 use Livewire\Component;
 
 class QuestionManager extends Component
@@ -184,18 +186,49 @@ class QuestionManager extends Component
         $this->timeLimit = $question['time_limit'];
 
         if ($question['question_type'] === 'multiple_choice') {
-            $this->options = json_decode($question['options'], true) ?? [];
-            $this->correctAnswers = json_decode($question['correct_answers'], true) ?? [];
+            $this->options = $this->normalizeToArray($question['options']);
+            $this->correctAnswers = array_map('intval', $this->normalizeToArray($question['correct_answers']));
         } elseif ($question['question_type'] === 'true_false') {
-            $options = json_decode($question['options'], true) ?? ['True', 'False'];
+            $options = $this->normalizeToArray($question['options'], ['True', 'False']);
             $this->trueAnswerText = $options[0] ?? 'True';
             $this->falseAnswerText = $options[1] ?? 'False';
-            $correctAnswers = json_decode($question['correct_answers'], true) ?? [0];
+            $correctAnswers = array_map('intval', $this->normalizeToArray($question['correct_answers'], [0]));
             $this->correctAnswer = $correctAnswers[0] === 0 ? 'true' : 'false';
         } elseif (in_array($question['question_type'], ['short_answer', 'fill_blank'])) {
-            $correctAnswers = json_decode($question['correct_answers'], true) ?? [''];
+            $correctAnswers = $this->normalizeToArray($question['correct_answers'], ['']);
             $this->correctAnswer = $correctAnswers[0] ?? '';
         }
+    }
+
+    protected function normalizeToArray($value, array $default = []): array
+    {
+        if (is_array($value)) {
+            return $value;
+        }
+
+        if ($value instanceof Collection) {
+            return $value->values()->all();
+        }
+
+        if ($value instanceof Arrayable) {
+            $arrayValue = $value->toArray();
+
+            return is_array($arrayValue) ? $arrayValue : $default;
+        }
+
+        if ($value instanceof \JsonSerializable) {
+            $jsonValue = $value->jsonSerialize();
+
+            return is_array($jsonValue) ? $jsonValue : $default;
+        }
+
+        if (is_string($value)) {
+            $decoded = json_decode($value, true);
+
+            return is_array($decoded) ? $decoded : $default;
+        }
+
+        return $default;
     }
 
     public function updateQuestion()

@@ -1,3 +1,34 @@
+@php
+    $normalizeBuilderArray = static function ($value, array $default = []) {
+        if (is_array($value)) {
+            return $value;
+        }
+
+        if ($value instanceof \Illuminate\Support\Collection) {
+            return $value->values()->all();
+        }
+
+        if ($value instanceof \Illuminate\Contracts\Support\Arrayable) {
+            $arrayValue = $value->toArray();
+
+            return is_array($arrayValue) ? $arrayValue : $default;
+        }
+
+        if ($value instanceof \JsonSerializable) {
+            $jsonValue = $value->jsonSerialize();
+
+            return is_array($jsonValue) ? $jsonValue : $default;
+        }
+
+        if (is_string($value)) {
+            $decoded = json_decode($value, true);
+
+            return is_array($decoded) ? $decoded : $default;
+        }
+
+        return $default;
+    };
+@endphp
 <div class="space-y-6">
     <!-- Success Message -->
     @if (session()->has('success'))
@@ -290,7 +321,7 @@
             <div class="space-y-3" id="questions-container">
                 @foreach ($questions as $index => $question)
                     @php
-                        $assignmentData = json_decode($question['options'], true) ?? [];
+                        $assignmentData = $normalizeBuilderArray($question['options']);
                         $assignmentType = $assignmentData['assignment_type'] ?? 'essay';
                         $rubricCriteria = $assignmentData['rubric_criteria'] ?? [];
                     @endphp
@@ -416,7 +447,7 @@
                     $timedQuestions = 0;
 
                     foreach ($questions as $q) {
-                        $data = json_decode($q['options'], true) ?? [];
+                        $data = $normalizeBuilderArray($q['options']);
                         $type = $data['assignment_type'] ?? 'essay';
                         $typeStats[$type] = ($typeStats[$type] ?? 0) + 1;
                         if (!empty($data['word_limit'])) {

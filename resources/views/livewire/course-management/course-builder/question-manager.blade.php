@@ -1,4 +1,35 @@
 <div class="space-y-6">
+    @php
+        $normalizeQuestionArray = static function ($value, array $default = []) {
+            if (is_array($value)) {
+                return $value;
+            }
+
+            if ($value instanceof \Illuminate\Support\Collection) {
+                return $value->values()->all();
+            }
+
+            if ($value instanceof \Illuminate\Contracts\Support\Arrayable) {
+                $arrayValue = $value->toArray();
+
+                return is_array($arrayValue) ? $arrayValue : $default;
+            }
+
+            if ($value instanceof \JsonSerializable) {
+                $jsonValue = $value->jsonSerialize();
+
+                return is_array($jsonValue) ? $jsonValue : $default;
+            }
+
+            if (is_string($value)) {
+                $decoded = json_decode($value, true);
+
+                return is_array($decoded) ? $decoded : $default;
+            }
+
+            return $default;
+        };
+    @endphp
     <!-- Success Message -->
     @if (session()->has('success'))
         <div class="bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300 border border-green-200 dark:border-green-700 p-4 rounded-lg animate__animated animate__fadeIn transition-colors duration-300">
@@ -274,8 +305,8 @@
 
                                         @if ($question['question_type'] === 'multiple_choice')
                                             @php
-                                                $options = json_decode($question['options'], true) ?? [];
-                                                $correctAnswers = json_decode($question['correct_answers'], true) ?? [];
+                                                $options = $normalizeQuestionArray($question['options']);
+                                                $correctAnswers = array_map('intval', $normalizeQuestionArray($question['correct_answers']));
                                             @endphp
                                             <div class="space-y-1">
                                                 @foreach ($options as $optIndex => $option)
@@ -292,8 +323,8 @@
                                             </div>
                                         @elseif ($question['question_type'] === 'true_false')
                                             @php
-                                                $options = json_decode($question['options'], true) ?? ['True', 'False'];
-                                                $correctAnswers = json_decode($question['correct_answers'], true) ?? [0];
+                                                $options = $normalizeQuestionArray($question['options'], ['True', 'False']);
+                                                $correctAnswers = array_map('intval', $normalizeQuestionArray($question['correct_answers'], [0]));
                                             @endphp
                                             <div class="flex gap-4 text-sm">
                                                 <span class="flex items-center gap-1">
@@ -307,7 +338,7 @@
                                             </div>
                                         @elseif (in_array($question['question_type'], ['short_answer', 'fill_blank']))
                                             @php
-                                                $correctAnswers = json_decode($question['correct_answers'], true) ?? [];
+                                                $correctAnswers = $normalizeQuestionArray($question['correct_answers']);
                                             @endphp
                                             @if (!empty($correctAnswers[0]))
                                                 <div class="text-sm text-green-700 dark:text-green-300 bg-green-50 dark:bg-green-900/20 px-2 py-1 rounded border border-green-200 dark:border-green-700 transition-colors duration-300">

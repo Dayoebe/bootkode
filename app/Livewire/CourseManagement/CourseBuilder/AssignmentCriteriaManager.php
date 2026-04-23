@@ -4,6 +4,8 @@ namespace App\Livewire\CourseManagement\CourseBuilder;
 
 use App\Models\Assessment\Question;
 use App\Models\Assessment\Assessment;
+use Illuminate\Contracts\Support\Arrayable;
+use Illuminate\Support\Collection;
 use Livewire\Component;
 
 class AssignmentCriteriaManager extends Component
@@ -192,15 +194,46 @@ class AssignmentCriteriaManager extends Component
         $this->isRequired = $question['is_required'] ?? true;
         $this->timeLimit = $question['time_limit'];
 
-        $assignmentData = json_decode($question['options'], true) ?? [];
+        $assignmentData = $this->normalizeToArray($question['options']);
         $this->questionType = $assignmentData['assignment_type'] ?? 'essay';
-        $this->wordLimit = $assignmentData['word_limit'];
+        $this->wordLimit = $assignmentData['word_limit'] ?? null;
         $this->rubricCriteria = $assignmentData['rubric_criteria'] ?? $this->rubricCriteria;
         $this->sampleAnswer = $assignmentData['sample_answer'] ?? '';
         $this->gradingNotes = $assignmentData['grading_notes'] ?? '';
         $this->allowFileUpload = $assignmentData['allow_file_upload'] ?? false;
         $this->fileTypes = $assignmentData['file_types'] ?? [];
         $this->maxFileSize = $assignmentData['max_file_size'] ?? 10;
+    }
+
+    protected function normalizeToArray($value, array $default = []): array
+    {
+        if (is_array($value)) {
+            return $value;
+        }
+
+        if ($value instanceof Collection) {
+            return $value->values()->all();
+        }
+
+        if ($value instanceof Arrayable) {
+            $arrayValue = $value->toArray();
+
+            return is_array($arrayValue) ? $arrayValue : $default;
+        }
+
+        if ($value instanceof \JsonSerializable) {
+            $jsonValue = $value->jsonSerialize();
+
+            return is_array($jsonValue) ? $jsonValue : $default;
+        }
+
+        if (is_string($value)) {
+            $decoded = json_decode($value, true);
+
+            return is_array($decoded) ? $decoded : $default;
+        }
+
+        return $default;
     }
 
     public function updateQuestion()

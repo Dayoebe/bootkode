@@ -1,4 +1,35 @@
 <div>
+    @php
+        $normalizeAssessmentArray = static function ($value, array $default = []) {
+            if (is_array($value)) {
+                return $value;
+            }
+
+            if ($value instanceof \Illuminate\Support\Collection) {
+                return $value->values()->all();
+            }
+
+            if ($value instanceof \Illuminate\Contracts\Support\Arrayable) {
+                $arrayValue = $value->toArray();
+
+                return is_array($arrayValue) ? $arrayValue : $default;
+            }
+
+            if ($value instanceof \JsonSerializable) {
+                $jsonValue = $value->jsonSerialize();
+
+                return is_array($jsonValue) ? $jsonValue : $default;
+            }
+
+            if (is_string($value)) {
+                $decoded = json_decode($value, true);
+
+                return is_array($decoded) ? $decoded : $default;
+            }
+
+            return $default;
+        };
+    @endphp
     @if ($assessmentState === 'list')
         <!-- Assessment List -->
         @if ($assessments->count() > 0)
@@ -270,9 +301,10 @@
 
                     <!-- Answer Options -->
                     @php
-                        $questionOptions = is_array($currentQuestion->options)
-                            ? $currentQuestion->options
-                            : (json_decode($currentQuestion->options ?? '[]', true) ?: []);
+                        $questionOptions = $normalizeAssessmentArray(
+                            $currentQuestion->options,
+                            $currentQuestion->question_type === 'true_false' ? ['True', 'False'] : []
+                        );
                     @endphp
 
 	                    @if ($currentQuestion->question_type === 'multiple_choice')
@@ -473,12 +505,11 @@
                         <!-- Answer Options Display for Multiple Choice/True-False -->
                         @if (in_array($question->question_type, ['multiple_choice', 'true_false']))
                             @php
-                                $options = is_array($question->options)
-                                    ? $question->options
-                                    : (json_decode($question->options ?? '[]', true) ?: []);
-                                $correctAnswers = is_array($question->correct_answers)
-                                    ? array_map('intval', $question->correct_answers)
-                                    : (json_decode($question->correct_answers ?? '[]', true) ?: []);
+                                $options = $normalizeAssessmentArray(
+                                    $question->options,
+                                    $question->question_type === 'true_false' ? ['True', 'False'] : []
+                                );
+                                $correctAnswers = array_map('intval', $normalizeAssessmentArray($question->correct_answers));
                                 $userAnswers = [];
                                 
                                 if ($studentAnswer && isset($studentAnswer->answer)) {
@@ -491,7 +522,11 @@
                                         }
                                     }
 
-                                    $userAnswers = is_array($answer) ? array_map('intval', $answer) : [(int) $answer];
+                                    $userAnswers = is_array($answer)
+                                        ? array_map('intval', $answer)
+                                        : (($answer === null || $answer === '')
+                                            ? []
+                                            : [(int) $answer]);
                                 }
                             @endphp
                             

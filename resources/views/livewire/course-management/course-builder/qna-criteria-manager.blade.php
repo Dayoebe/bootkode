@@ -1,3 +1,34 @@
+@php
+    $normalizeBuilderArray = static function ($value, array $default = []) {
+        if (is_array($value)) {
+            return $value;
+        }
+
+        if ($value instanceof \Illuminate\Support\Collection) {
+            return $value->values()->all();
+        }
+
+        if ($value instanceof \Illuminate\Contracts\Support\Arrayable) {
+            $arrayValue = $value->toArray();
+
+            return is_array($arrayValue) ? $arrayValue : $default;
+        }
+
+        if ($value instanceof \JsonSerializable) {
+            $jsonValue = $value->jsonSerialize();
+
+            return is_array($jsonValue) ? $jsonValue : $default;
+        }
+
+        if (is_string($value)) {
+            $decoded = json_decode($value, true);
+
+            return is_array($decoded) ? $decoded : $default;
+        }
+
+        return $default;
+    };
+@endphp
 <div class="space-y-6">
     <!-- Success Message -->
     @if (session()->has('success'))
@@ -248,7 +279,7 @@
             <div class="space-y-3" id="topics-container">
                 @foreach ($topics as $index => $topic)
                     @php
-                        $topicData = json_decode($topic['options'], true) ?? [];
+                        $topicData = $normalizeBuilderArray($topic['options']);
                         $topicType = $topicData['topic_type'] ?? 'discussion';
                     @endphp
                     <div class="bg-themed-tertiary rounded-lg border border-themed-primary p-4 sortable-item transition-colors duration-300" 
@@ -345,7 +376,7 @@
                     $typeStats = [];
                     $totalPoints = array_sum(array_column($topics, 'points'));
                     foreach ($topics as $topic) {
-                        $data = json_decode($topic['options'], true) ?? [];
+                        $data = $normalizeBuilderArray($topic['options']);
                         $type = $data['topic_type'] ?? 'discussion';
                         $typeStats[$type] = ($typeStats[$type] ?? 0) + 1;
                     }

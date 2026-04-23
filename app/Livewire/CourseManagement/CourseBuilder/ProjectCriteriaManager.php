@@ -4,6 +4,8 @@ namespace App\Livewire\CourseManagement\CourseBuilder;
 
 use App\Models\Assessment\Question;
 use App\Models\Assessment\Assessment;
+use Illuminate\Contracts\Support\Arrayable;
+use Illuminate\Support\Collection;
 use Livewire\Component;
 
 class ProjectCriteriaManager extends Component
@@ -162,13 +164,44 @@ class ProjectCriteriaManager extends Component
         $this->points = $criteria['points'];
         $this->isRequired = $criteria['is_required'] ?? true;
 
-        $projectData = json_decode($criteria['options'], true) ?? [];
+        $projectData = $this->normalizeToArray($criteria['options']);
         $this->criteriaType = $projectData['criteria_type'] ?? 'deliverable';
         $this->fileTypes = $projectData['file_types'] ?? [];
         $this->maxFileSize = $projectData['max_file_size'] ?? 10;
         $this->minFiles = $projectData['min_files'] ?? 1;
         $this->maxFiles = $projectData['max_files'] ?? 5;
         $this->rubricLevels = $projectData['rubric_levels'] ?? $this->rubricLevels;
+    }
+
+    protected function normalizeToArray($value, array $default = []): array
+    {
+        if (is_array($value)) {
+            return $value;
+        }
+
+        if ($value instanceof Collection) {
+            return $value->values()->all();
+        }
+
+        if ($value instanceof Arrayable) {
+            $arrayValue = $value->toArray();
+
+            return is_array($arrayValue) ? $arrayValue : $default;
+        }
+
+        if ($value instanceof \JsonSerializable) {
+            $jsonValue = $value->jsonSerialize();
+
+            return is_array($jsonValue) ? $jsonValue : $default;
+        }
+
+        if (is_string($value)) {
+            $decoded = json_decode($value, true);
+
+            return is_array($decoded) ? $decoded : $default;
+        }
+
+        return $default;
     }
 
     public function updateCriteria()
