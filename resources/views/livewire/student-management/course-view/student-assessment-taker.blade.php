@@ -473,12 +473,24 @@
                         <!-- Answer Options Display for Multiple Choice/True-False -->
                         @if (in_array($question->question_type, ['multiple_choice', 'true_false']))
                             @php
-                                $options = json_decode($question->options, true) ?? [];
-                                $correctAnswers = json_decode($question->correct_answers, true) ?? [];
+                                $options = is_array($question->options)
+                                    ? $question->options
+                                    : (json_decode($question->options ?? '[]', true) ?: []);
+                                $correctAnswers = is_array($question->correct_answers)
+                                    ? array_map('intval', $question->correct_answers)
+                                    : (json_decode($question->correct_answers ?? '[]', true) ?: []);
                                 $userAnswers = [];
                                 
                                 if ($studentAnswer && isset($studentAnswer->answer)) {
                                     $answer = $studentAnswer->answer;
+
+                                    if (is_string($answer)) {
+                                        $decodedAnswer = json_decode($answer, true);
+                                        if (json_last_error() === JSON_ERROR_NONE) {
+                                            $answer = $decodedAnswer;
+                                        }
+                                    }
+
                                     $userAnswers = is_array($answer) ? array_map('intval', $answer) : [(int) $answer];
                                 }
                             @endphp

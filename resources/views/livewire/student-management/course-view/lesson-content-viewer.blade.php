@@ -32,6 +32,21 @@
         documentModalTitle: '',
         imageModalOpen: false,
         imageModalUrl: '',
+        liveSeconds: @js((int) $timeSpentSeconds),
+        estimatedMinutes: @js((int) ($timeComparison['estimated'] ?? 0)),
+        init() {
+            this.liveSeconds = Math.max(this.liveSeconds, @js((int) $timeSpentSeconds));
+
+            window.bootkodeLessonViewer = window.bootkodeLessonViewer || {};
+
+            if (window.bootkodeLessonViewer.liveTimer) {
+                clearInterval(window.bootkodeLessonViewer.liveTimer);
+            }
+
+            window.bootkodeLessonViewer.liveTimer = setInterval(() => {
+                this.liveSeconds += 1;
+            }, 1000);
+        },
         toggle(panel) {
             this.openPanels = this.openPanels.includes(panel)
                 ? this.openPanels.filter(item => item !== panel)
@@ -57,6 +72,39 @@
         closeImage() {
             this.imageModalOpen = false;
             this.imageModalUrl = '';
+        },
+        formattedLiveTime() {
+            const minutesTotal = Math.floor(this.liveSeconds / 60);
+            const seconds = this.liveSeconds % 60;
+
+            if (minutesTotal > 60) {
+                const hours = Math.floor(minutesTotal / 60);
+                const minutes = minutesTotal % 60;
+                return `${hours}h ${minutes}m`;
+            }
+
+            return `${minutesTotal}m ${seconds}s`;
+        },
+        timeEstimateText() {
+            if (!this.estimatedMinutes) {
+                return '';
+            }
+
+            const actualMinutes = Math.floor(this.liveSeconds / 60);
+            const percentage = this.estimatedMinutes > 0
+                ? Math.round((actualMinutes / this.estimatedMinutes) * 100)
+                : 0;
+
+            return `${percentage}% of ${this.estimatedMinutes}m estimate`;
+        },
+        timeEstimateClass() {
+            if (!this.estimatedMinutes) {
+                return '';
+            }
+
+            return Math.floor(this.liveSeconds / 60) > this.estimatedMinutes
+                ? 'text-amber-500'
+                : 'text-emerald-500';
         }
     }"
     x-on:keydown.escape.window="closeDocument(); closeImage()"
@@ -114,9 +162,11 @@
                         <div class="mt-6 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
                             <div class="rounded-2xl border border-themed-secondary bg-themed-tertiary p-4 shadow-sm">
                                 <p class="text-xs font-semibold uppercase tracking-[0.16em] text-themed-tertiary">Time Spent</p>
-                                <p class="mt-2 text-2xl font-semibold text-themed-primary">{{ $this->getFormattedTimeSpent() }}</p>
+                                <p class="mt-2 text-2xl font-semibold text-themed-primary" x-text="formattedLiveTime()">
+                                    {{ $this->getFormattedTimeSpent() }}
+                                </p>
                                 @if ($timeComparison && $timeComparison['estimated'] > 0)
-                                    <p class="mt-1 text-xs {{ $timeComparison['over_time'] ? 'text-amber-500' : 'text-emerald-500' }}">
+                                    <p class="mt-1 text-xs" :class="timeEstimateClass()" x-text="timeEstimateText()">
                                         {{ $timeComparison['percentage'] }}% of {{ $timeComparison['estimated'] }}m estimate
                                     </p>
                                 @endif
