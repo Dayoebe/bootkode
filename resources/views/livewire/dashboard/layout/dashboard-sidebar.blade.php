@@ -86,7 +86,12 @@
                                         <div class="w-6 h-6 flex items-center justify-center flex-shrink-0">
                                             <i class="{{ $child['icon'] }} text-xs {{ $activeLink === ($child['link_id'] ?? str()->slug($child['label'])) ? 'accent-themed-primary' : 'text-themed-tertiary group-hover:accent-themed-primary' }} transition-colors duration-300"></i>
                                         </div>
-                                        <span class="text-sm font-medium transition-colors duration-300 {{ $activeLink === ($child['link_id'] ?? str()->slug($child['label'])) ? 'accent-themed-primary' : 'text-themed-secondary' }}">{{ $child['label'] }}</span>
+                                        <span class="flex-1 text-sm font-medium transition-colors duration-300 {{ $activeLink === ($child['link_id'] ?? str()->slug($child['label'])) ? 'accent-themed-primary' : 'text-themed-secondary' }}">{{ $child['label'] }}</span>
+                                        @if (($child['badge_count'] ?? 0) > 0)
+                                            <span class="ml-auto rounded-full bg-red-500 px-2 py-0.5 text-[10px] font-semibold leading-none text-white">
+                                                {{ $child['badge_count'] > 9 ? '9+' : $child['badge_count'] }}
+                                            </span>
+                                        @endif
                                     </a>
                                 </li>
                             @endforeach
@@ -100,7 +105,12 @@
                             <div class="w-8 h-8 flex items-center justify-center rounded-lg {{ $activeLink === ($item['link_id'] ?? str()->slug($item['label'])) ? 'bg-accent-themed-primary bg-opacity-30' : 'bg-themed-tertiary group-hover:bg-accent-themed-primary group-hover:bg-opacity-10' }} transition-colors duration-300 flex-shrink-0">
                                 <i class="{{ $item['icon'] }} text-sm {{ $activeLink === ($item['link_id'] ?? str()->slug($item['label'])) ? 'accent-themed-primary' : 'text-themed-secondary' }} transition-colors duration-300"></i>
                             </div>
-                            <span class="font-medium transition-colors duration-300 truncate">{{ $item['label'] }}</span>
+                            <span class="flex-1 font-medium transition-colors duration-300 truncate">{{ $item['label'] }}</span>
+                            @if (($item['badge_count'] ?? 0) > 0)
+                                <span class="ml-auto rounded-full bg-red-500 px-2 py-0.5 text-[10px] font-semibold leading-none text-white">
+                                    {{ $item['badge_count'] > 9 ? '9+' : $item['badge_count'] }}
+                                </span>
+                            @endif
                         </a>
                     @endif
                 </div>

@@ -1,11 +1,21 @@
 @php
     $currentRoute = request()->route()?->getName() ?? 'dashboard';
+    $user = auth()->user();
+    $unreadChatCount = $user
+        ? \App\Models\Messaging\DirectMessage::query()
+            ->where('sender_id', '!=', $user->id)
+            ->whereNull('read_at')
+            ->whereHas('conversation', fn($query) => $query->forParticipant($user))
+            ->count()
+        : 0;
+    $unreadNotificationCount = $user?->unreadNotifications()?->count() ?? 0;
     $mobileMenuItems = [
         [
             'label' => 'Home',
             'icon' => 'fas fa-home',
             'route' => 'dashboard',
-            'active' => $currentRoute === 'dashboard'
+            'active' => $currentRoute === 'dashboard',
+            'badge' => $unreadNotificationCount
         ],
         [
             'label' => 'Courses',
@@ -14,16 +24,17 @@
             'active' => in_array($currentRoute, ['student.enrolled-courses', 'my-course', 'all-course', 'courses.available'])
         ],
         [
+            'label' => 'Chat',
+            'icon' => 'fas fa-comments',
+            'route' => 'messages.index',
+            'active' => in_array($currentRoute, ['messages.index', 'messages.show']),
+            'badge' => $unreadChatCount
+        ],
+        [
             'label' => 'Community',
             'icon' => 'fas fa-users',
             'route' => 'community.center',
             'active' => str_contains($currentRoute, 'community.')
-        ],
-        [
-            'label' => 'Profile',
-            'icon' => 'fas fa-user',
-            'route' => 'profile.view',
-            'active' => in_array($currentRoute, ['profile.view', 'profile.edit', 'settings'])
         ],
         [
             'label' => 'More',
@@ -204,9 +215,9 @@
                        wire:navigate>
                         <div class="relative">
                             <i class="{{ $item['icon'] }} text-lg mb-1"></i>
-                            @if($item['label'] === 'Home' && auth()->user()?->unreadNotifications()?->count() > 0)
+                            @if(($item['badge'] ?? 0) > 0)
                                 <span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">
-                                    {{ auth()->user()->unreadNotifications()->count() > 9 ? '9+' : auth()->user()->unreadNotifications()->count() }}
+                                    {{ $item['badge'] > 9 ? '9+' : $item['badge'] }}
                                 </span>
                             @endif
                         </div>

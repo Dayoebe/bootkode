@@ -21,6 +21,13 @@ return [
             ]
         ],
         [
+            'label' => 'Chat',
+            'icon' => 'fas fa-comments',
+            'route_name' => 'messages.index',
+            'roles' => [],
+            'link_id' => 'messages',
+        ],
+        [
             'label' => 'Profile',
             'icon' => 'fas fa-user',
             'route_name' => 'profile.view',

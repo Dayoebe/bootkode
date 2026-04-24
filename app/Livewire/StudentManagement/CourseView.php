@@ -694,7 +694,7 @@ class CourseView extends Component
             $conversation = app(DirectMessagingService::class)
                 ->getOrCreateCourseConversation($this->course, Auth::user());
 
-            return $this->redirectRoute('messages.index', [
+            return $this->redirectRoute('messages.show', [
                 'conversation' => $conversation->id,
             ], navigate: true);
         } catch (AuthorizationException $exception) {

@@ -76,7 +76,7 @@ class AllCourses extends Component
         return Course::query()
         
             ->withCount(['instructor', 'category', 'enrollments'])
-            ->when(!$user->hasRole('super_admin'), fn($query) => $query->where('instructor_id', $user->id()))
+            ->when(!$user->hasRole('super_admin'), fn($query) => $query->where('instructor_id', $user->id))
             ->when($this->search, fn($query) => $query->where(fn($q) => $q
                 ->where('title', 'like', '%' . $this->search . '%')
                 ->orWhere('description', 'like', '%' . $this->search . '%')))

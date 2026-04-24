@@ -1,5 +1,13 @@
 @php
     $user = Auth::user();
+    $unreadNotificationCount = $user?->unreadNotifications()?->count() ?? 0;
+    $unreadChatCount = $user
+        ? \App\Models\Messaging\DirectMessage::query()
+            ->where('sender_id', '!=', $user->id)
+            ->whereNull('read_at')
+            ->whereHas('conversation', fn($query) => $query->forParticipant($user))
+            ->count()
+        : 0;
 @endphp
 
 <header
@@ -50,10 +58,10 @@
                         class="relative p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500"
                         aria-label="Notifications">
                         <i class="fas fa-bell text-gray-600 dark:text-gray-300"></i>
-                        @if ($user?->unreadNotifications()?->count() > 0)
+                        @if ($unreadNotificationCount > 0)
                             <span
                                 class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
-                                {{ $user->unreadNotifications()->count() }}
+                                {{ $unreadNotificationCount > 9 ? '9+' : $unreadNotificationCount }}
                             </span>
                         @endif
                     </button>
@@ -70,15 +78,15 @@
                             <h3 class="text-sm font-semibold text-gray-900 dark:text-white">Notifications</h3>
                         </div>
                         <div class="max-h-64 overflow-y-auto">
-                            @if ($user?->unreadNotifications()?->count() > 0)
+                            @if ($unreadNotificationCount > 0)
                                 @foreach ($user->unreadNotifications()->take(5)->get() as $notification)
-                                    <div
-                                        class="px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-700 border-b border-gray-100 dark:border-gray-600 last:border-0">
+                                    <a href="{{ $notification->data['action_url'] ?? route('notifications') }}"
+                                        class="block px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-700 border-b border-gray-100 dark:border-gray-600 last:border-0">
                                         <p class="text-sm text-gray-900 dark:text-white">
                                             {{ $notification->data['message'] ?? 'New notification' }}</p>
                                         <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
                                             {{ $notification->created_at->diffForHumans() }}</p>
-                                    </div>
+                                    </a>
                                 @endforeach
                             @else
                                 <div class="px-4 py-6 text-center">
@@ -87,7 +95,7 @@
                                 </div>
                             @endif
                         </div>
-                        @if ($user?->unreadNotifications()?->count() > 0)
+                        @if ($unreadNotificationCount > 0)
                             <div class="px-4 py-2 border-t border-gray-200 dark:border-gray-700">
                                 <a href="{{ route('notifications') }}"
                                     class="text-sm text-blue-600 dark:text-blue-400 hover:underline">
@@ -97,6 +105,18 @@
                         @endif
                     </div>
                 </div>
+
+                <a href="{{ route('messages.index') }}"
+                    class="relative p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    aria-label="Chat" wire:navigate>
+                    <i class="fas fa-comments text-gray-600 dark:text-gray-300"></i>
+                    @if ($unreadChatCount > 0)
+                        <span
+                            class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                            {{ $unreadChatCount > 9 ? '9+' : $unreadChatCount }}
+                        </span>
+                    @endif
+                </a>
 
                 <!-- Quick Create -->
                 <div class="relative" x-data="{ open: false }">

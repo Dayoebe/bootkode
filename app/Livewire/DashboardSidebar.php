@@ -38,6 +38,7 @@ class DashboardSidebar extends Component
                 'settings' => 'settings',
                 'notifications' => 'notifications',
                 'messages.index' => 'messages',
+                'messages.show' => 'messages',
             ];
             
             $this->activeLink = $routeMap[$currentRouteName] ?? $this->determineActiveLinkFromRoute($currentRouteName);
@@ -120,12 +121,29 @@ class DashboardSidebar extends Component
     private function processMenuItems(array $items): array
     {
         return array_map(function ($item) {
-            // Add notification counts or other dynamic data here if needed
+            if (($item['link_id'] ?? null) === 'messages') {
+                $item['badge_count'] = $this->getUnreadChatCount();
+            }
+
             if (isset($item['children'])) {
                 $item['children'] = $this->processMenuItems($item['children']);
             }
+
             return $item;
         }, $items);
+    }
+
+    private function getUnreadChatCount(): int
+    {
+        if (!$this->user) {
+            return 0;
+        }
+
+        return \App\Models\Messaging\DirectMessage::query()
+            ->where('sender_id', '!=', $this->user->id)
+            ->whereNull('read_at')
+            ->whereHas('conversation', fn($query) => $query->forParticipant($this->user))
+            ->count();
     }
 
     /**

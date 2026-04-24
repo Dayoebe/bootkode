@@ -40,7 +40,7 @@ class DirectMessageReceived extends Notification
             ->greeting('Hello ' . $notifiable->name . ',')
             ->line($this->directMessage->sender->name . ' sent you a message about ' . $conversation->course->title . '.')
             ->line(Str::limit($this->directMessage->body, 160))
-            ->action('Open Conversation', route('messages.index', ['conversation' => $conversation->id]));
+            ->action('Open Conversation', route('messages.show', ['conversation' => $conversation->id]));
     }
 
     public function toArray($notifiable): array
@@ -56,7 +56,7 @@ class DirectMessageReceived extends Notification
             'course_title' => $conversation->course->title,
             'sender_id' => $this->directMessage->sender_id,
             'sender_name' => $this->directMessage->sender->name,
-            'action_url' => route('messages.index', ['conversation' => $conversation->id]),
+            'action_url' => route('messages.show', ['conversation' => $conversation->id]),
             'icon' => 'fas fa-comments',
         ];
     }

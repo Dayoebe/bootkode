@@ -27,10 +27,13 @@ class DirectMessages extends Component
         'messageBody' => ['required', 'string', 'min:1', 'max:2000'],
     ];
 
-    public function mount(?DirectConversation $conversation = null): void
+    public function mount($conversation = null): void
     {
-        if ($conversation) {
-            app(DirectMessagingService::class)->ensureParticipant(Auth::user(), $conversation);
+        if ($conversation !== null) {
+            $conversation = DirectConversation::query()
+                ->forParticipant(Auth::user())
+                ->findOrFail((int) $conversation);
+
             $this->activeConversationId = $conversation->id;
             $this->markActiveConversationRead();
 
