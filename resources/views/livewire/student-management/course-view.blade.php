@@ -106,7 +106,7 @@
             </div>
         @endif
 
-        <section class="grid gap-4 md:grid-cols-2 2xl:grid-cols-4">
+        <section class="grid gap-4 sm:grid-cols-2 2xl:grid-cols-4">
             <div class="overflow-hidden rounded-[1.75rem] border border-themed-primary bg-themed-secondary p-5 shadow-lg">
                 <p class="text-xs font-semibold uppercase tracking-[0.18em] text-themed-secondary">Unlocked Sections</p>
                 <div class="mt-3 flex items-end justify-between gap-3">
@@ -196,28 +196,46 @@
 
         <div class="lg:hidden">
             <div class="sticky top-4 z-30 overflow-hidden rounded-[1.75rem] border border-themed-primary bg-themed-secondary p-4 shadow-xl animate__animated animate__fadeInUp">
-                    <div class="flex items-center justify-between gap-4">
+                <div class="flex flex-col gap-4">
+                    <div class="flex items-start justify-between gap-4">
                         <div class="min-w-0">
                             <p class="text-xs font-semibold uppercase tracking-[0.18em] text-themed-secondary">Current lesson</p>
                         <p class="mt-2 truncate text-sm font-semibold text-themed-primary">
                             {{ $currentLesson?->title ?? 'Choose a lesson to begin' }}
                         </p>
                         <p class="mt-1 text-xs text-themed-secondary">
-                                {{ $currentSection?->title ?? 'Course overview' }} • {{ $overallProgress }}% complete
-                            </p>
+                            {{ $currentSection?->title ?? 'Course overview' }} • {{ $overallProgress }}% complete
+                        </p>
                         </div>
 
-                    <div class="flex flex-shrink-0 items-center gap-2">
+                        <div class="rounded-2xl border border-themed-secondary bg-themed-tertiary px-3 py-2 text-right">
+                            <p class="text-[11px] font-semibold uppercase tracking-[0.16em] text-themed-secondary">Completed</p>
+                            <p class="mt-1 text-sm font-semibold text-themed-primary">{{ count($completedLessons) }}/{{ $lessonCount }}</p>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-3">
+                        <div class="rounded-2xl border border-themed-secondary bg-themed-tertiary px-4 py-3">
+                            <p class="text-[11px] font-semibold uppercase tracking-[0.16em] text-themed-secondary">Unlocked</p>
+                            <p class="mt-1 text-lg font-semibold text-themed-primary">{{ $unlockedSectionCount }}/{{ $sectionCount }}</p>
+                        </div>
+                        <div class="rounded-2xl border border-themed-secondary bg-themed-tertiary px-4 py-3">
+                            <p class="text-[11px] font-semibold uppercase tracking-[0.16em] text-themed-secondary">Current Section</p>
+                            <p class="mt-1 truncate text-sm font-semibold text-themed-primary">{{ $currentSection?->title ?? 'Ready to start' }}</p>
+                        </div>
+                    </div>
+
+                    <div class="grid gap-2 sm:grid-cols-2">
                         @if ($resumeLesson)
                             <button wire:click="continueFromLastLesson"
-                                class="inline-flex items-center gap-2 rounded-2xl border border-themed-secondary bg-themed-tertiary px-4 py-3 text-sm font-semibold text-themed-primary shadow-sm transition">
+                                class="inline-flex w-full items-center justify-center gap-2 rounded-2xl border border-themed-secondary bg-themed-tertiary px-4 py-3 text-sm font-semibold text-themed-primary shadow-sm transition">
                                 <i class="fas fa-history"></i>
                                 Resume
                             </button>
                         @endif
 
                         <button @click="navOpen = true"
-                            class="inline-flex items-center gap-2 rounded-2xl px-4 py-3 text-sm font-semibold text-white shadow-lg transition"
+                            class="inline-flex w-full items-center justify-center gap-2 rounded-2xl px-4 py-3 text-sm font-semibold text-white shadow-lg transition"
                             style="background: linear-gradient(135deg, rgb(var(--accent-primary)), rgb(var(--accent-secondary)));">
                             <i class="fas fa-compass"></i>
                             Course Map
@@ -271,10 +289,11 @@
 
                     <livewire:student-management.course-view.lesson-content-viewer :lesson="$currentLesson"
                         :allLessons="$allLessons->toArray()" :completedLessons="$completedLessons"
-                        :unlockedSections="$unlockedSections" wire:key="content-{{ $currentLesson->id }}" />
+                        :unlockedSections="$unlockedSections"
+                        wire:key="content-{{ $currentLesson->id }}-{{ $progressVersion }}" />
                 @else
                     <div
-                        class="rounded-[2rem] border border-themed-primary bg-themed-secondary p-10 text-center shadow-xl animate__animated animate__fadeInUp">
+                        class="rounded-[2rem] border border-themed-primary bg-themed-secondary p-6 text-center shadow-xl animate__animated animate__fadeInUp sm:p-10">
                         <div class="mx-auto flex h-16 w-16 items-center justify-center rounded-3xl border border-themed-secondary bg-themed-tertiary">
                             <i class="fas fa-book-open text-2xl accent-themed-primary"></i>
                         </div>
@@ -293,22 +312,22 @@
         </div>
 
         <section id="course-reviews"
-            class="overflow-hidden rounded-[2rem] border border-themed-primary bg-themed-secondary p-5 shadow-xl animate__animated animate__fadeInUp">
-            <div class="flex flex-col gap-3 border-b border-themed-secondary pb-5 sm:flex-row sm:items-end sm:justify-between">
+            class="overflow-hidden rounded-[1.5rem] border border-themed-secondary bg-themed-tertiary/40 p-4 shadow-sm animate__animated animate__fadeInUp">
+            <div class="flex flex-col gap-2 border-b border-themed-secondary/70 pb-4 sm:flex-row sm:items-end sm:justify-between">
                 <div>
-                    <p class="text-xs font-semibold uppercase tracking-[0.18em] text-themed-secondary">Community feedback</p>
-                    <h2 class="mt-2 text-2xl font-semibold text-themed-primary">How this course is landing</h2>
-                    <p class="mt-2 text-sm leading-6 text-themed-secondary">
-                        Share a review, see what other learners think, and help improve future learning paths.
+                    <p class="text-[11px] font-semibold uppercase tracking-[0.18em] text-themed-secondary">Optional</p>
+                    <h2 class="mt-2 text-lg font-semibold text-themed-primary">Learner reviews</h2>
+                    <p class="mt-1 text-sm leading-6 text-themed-secondary">
+                        Keep this collapsed unless you want to read feedback or leave a review.
                     </p>
                 </div>
 
-                <div class="rounded-2xl border border-themed-secondary bg-themed-tertiary px-4 py-3 text-sm text-themed-secondary">
-                    <span class="font-semibold text-themed-primary">{{ $overallProgress }}%</span> course progress
+                <div class="rounded-2xl border border-themed-secondary bg-themed-secondary px-4 py-2 text-xs text-themed-secondary">
+                    Secondary section
                 </div>
             </div>
 
-            <div class="mt-5">
+            <div class="mt-4">
                 <livewire:student-management.course-view.review :course="$course" wire:key="reviews-{{ $course->id }}" />
             </div>
         </section>

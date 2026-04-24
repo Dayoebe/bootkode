@@ -10,7 +10,6 @@ use App\Models\Learning\LessonProgress;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Livewire\Attributes\On;
-use Livewire\Attributes\Reactive;
 
 class LessonContentViewer extends Component
 {
@@ -18,9 +17,7 @@ class LessonContentViewer extends Component
     public $allLessons;
     public $currentIndex;
     public $isCompleted = false;
-    #[Reactive]
     public $completedLessons;
-    #[Reactive]
     public $unlockedSections;
     public $hasAssessments = false;
     public $allAssessmentsPassed = false;
@@ -37,6 +34,7 @@ class LessonContentViewer extends Component
     public $lessonStartTime;
     public $estimatedTime;
     public $showTimeComparison = false;
+
     public function mount($lesson, $allLessons, $completedLessons = [], $unlockedSections = [])
     {
         $this->lesson = $lesson;
@@ -52,9 +50,6 @@ class LessonContentViewer extends Component
             $this->allLessons = collect($allLessons);
         }
 
-        $this->completedLessons = $completedLessons ?? [];
-        $this->unlockedSections = $unlockedSections ?? [];
-
         $this->currentIndex = $this->allLessons->search(function ($l) {
             $lessonId = is_object($l) ? $l->id : $l['id'];
             return $lessonId == $this->lesson->id;
@@ -64,7 +59,7 @@ class LessonContentViewer extends Component
             $this->currentIndex = 0;
         }
 
-        $this->isCompleted = in_array($this->lesson->id, $this->completedLessons);
+        $this->isCompleted = in_array($this->lesson->id, $completedLessons ?? [], true);
         $this->checkAssessments();
         $this->lastAssessmentCheck = now();
 
@@ -262,7 +257,7 @@ class LessonContentViewer extends Component
     #[On('progress-updated')]
     public function refreshProgress()
     {
-        $this->isCompleted = in_array($this->lesson->id, $this->completedLessons);
+        $this->isCompleted = in_array($this->lesson->id, $this->completedLessons, true);
         $this->checkAssessments();
     }
 
@@ -274,6 +269,13 @@ class LessonContentViewer extends Component
 
         if ($this->allAssessmentsPassed) {
             $this->shouldPoll = false;
+
+            if (!$this->isCompleted) {
+                $this->dispatch('lesson-completed', lessonId: $this->lesson->id)
+                    ->to('student-management.course-view');
+
+                $this->isCompleted = true;
+            }
         }
     }
 
@@ -365,11 +367,6 @@ class LessonContentViewer extends Component
         // Save time before transitioning
         $this->updateTimeSpent();
 
-        // AUTO-COMPLETE CURRENT LESSON if it has no assessments OR all assessments are passed
-        if (!$this->isCompleted && (!$this->hasAssessments || $this->allAssessmentsPassed)) {
-            $this->markAsCompleted();
-        }
-
         // Check if current lesson requirements are met
         if ($this->hasAssessments && !$this->allAssessmentsPassed) {
             $this->dispatch('notify', [
@@ -381,20 +378,8 @@ class LessonContentViewer extends Component
 
         $nextLesson = $this->allLessons[$this->currentIndex + 1] ?? null;
         if ($nextLesson) {
-            $this->isTransitioning = true;
-            $lessonId = is_object($nextLesson) ? $nextLesson->id : $nextLesson['id'];
-            $sectionId = is_object($nextLesson) ? $nextLesson->section_id : $nextLesson['section_id'];
-
-            if (in_array($sectionId, $this->unlockedSections)) {
-                $this->dispatch('lesson-selected', lessonId: $lessonId)
-                    ->to('student-management.course-view');
-            } else {
-                $this->isTransitioning = false;
-                $this->dispatch('notify', [
-                    'message' => 'Complete the current section to unlock the next lesson.',
-                    'type' => 'warning'
-                ]);
-            }
+            $this->dispatch('advance-to-next-lesson', lessonId: $this->lesson->id)
+                ->to('student-management.course-view');
         }
     }
 
@@ -406,16 +391,6 @@ class LessonContentViewer extends Component
     public function getNextLesson()
     {
         return $this->allLessons[$this->currentIndex + 1] ?? null;
-    }
-
-    public function isNextLessonUnlocked()
-    {
-        $nextLesson = $this->getNextLesson();
-        if (!$nextLesson)
-            return false;
-
-        $sectionId = is_object($nextLesson) ? $nextLesson->section_id : $nextLesson['section_id'];
-        return in_array($sectionId, $this->unlockedSections);
     }
 
     public function canProceedToNext()
@@ -433,16 +408,8 @@ class LessonContentViewer extends Component
             return;
         }
 
-        if (!$this->isCompleted) {
-            $this->markAsCompleted();
-        }
-
-        $this->dispatch('notify', [
-            'message' => 'Congratulations! You have completed this course!',
-            'type' => 'success'
-        ]);
-
-        return redirect()->route('student.certificates.index', $this->lesson->section->course);
+        $this->dispatch('complete-course-from-lesson', lessonId: $this->lesson->id)
+            ->to('student-management.course-view');
     }
 
     public function render()

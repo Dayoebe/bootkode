@@ -5,6 +5,7 @@
         ->values()
         ->all();
     $totalLessons = $sections->flatMap->lessons->count();
+    $overallProgress = $totalLessons > 0 ? round((count($completedLessons) / $totalLessons) * 100) : 0;
 @endphp
 
 <div x-data="{
@@ -18,7 +19,7 @@
             return this.expandedSections.includes(id);
         }
     }"
-    class="sticky top-4 rounded-[2rem] border border-themed-primary bg-themed-secondary p-4 shadow-xl transition-colors duration-300 animate__animated animate__fadeInLeft">
+    class="rounded-[2rem] border border-themed-primary bg-themed-secondary p-4 shadow-xl transition-colors duration-300 animate__animated animate__fadeInLeft lg:sticky lg:top-4">
     <div class="rounded-2xl border border-themed-secondary p-5 shadow-sm"
         style="background: linear-gradient(160deg, rgba(var(--accent-primary), 0.14), rgba(var(--accent-secondary), 0.08));">
         <div class="flex items-start justify-between gap-4">
@@ -34,23 +35,31 @@
             </span>
         </div>
 
-        <div class="mt-5 grid grid-cols-3 gap-3 text-center">
-            <div class="rounded-2xl border border-themed-secondary bg-themed-secondary px-3 py-3 shadow-sm">
-                <p class="text-lg font-semibold text-themed-primary">{{ $sections->count() }}</p>
-                <p class="text-[11px] uppercase tracking-[0.16em] text-themed-tertiary">Sections</p>
-            </div>
-            <div class="rounded-2xl border border-themed-secondary bg-themed-secondary px-3 py-3 shadow-sm">
-                <p class="text-lg font-semibold text-themed-primary">{{ $totalLessons }}</p>
-                <p class="text-[11px] uppercase tracking-[0.16em] text-themed-tertiary">Lessons</p>
-            </div>
+        <div class="mt-5 grid grid-cols-2 gap-3 text-center">
             <div class="rounded-2xl border border-themed-secondary bg-themed-secondary px-3 py-3 shadow-sm">
                 <p class="text-lg font-semibold text-themed-primary">{{ count($completedLessons) }}</p>
-                <p class="text-[11px] uppercase tracking-[0.16em] text-themed-tertiary">Done</p>
+                <p class="text-[11px] uppercase tracking-[0.16em] text-themed-tertiary">Completed</p>
+            </div>
+            <div class="rounded-2xl border border-themed-secondary bg-themed-secondary px-3 py-3 shadow-sm">
+                <p class="text-lg font-semibold text-themed-primary">{{ count($unlockedSections) }}</p>
+                <p class="text-[11px] uppercase tracking-[0.16em] text-themed-tertiary">Unlocked</p>
+            </div>
+        </div>
+
+        <div class="mt-4 rounded-2xl border border-themed-secondary bg-themed-secondary p-4 shadow-sm">
+            <div class="flex items-center justify-between gap-3">
+                <p class="text-xs font-semibold uppercase tracking-[0.16em] text-themed-tertiary">Course Progress</p>
+                <span class="text-sm font-semibold text-themed-primary">{{ $overallProgress }}%</span>
+            </div>
+            <div class="mt-3 h-2 overflow-hidden rounded-full border border-themed-secondary bg-themed-tertiary">
+                <div class="h-full rounded-full"
+                    style="width: {{ $overallProgress }}%; background: linear-gradient(135deg, rgb(var(--accent-primary)), rgb(var(--accent-secondary)));">
+                </div>
             </div>
         </div>
     </div>
 
-    <div class="mt-4 max-h-[calc(100vh-14rem)] space-y-3 overflow-y-auto pr-1">
+    <div class="mt-4 space-y-3 pr-1 lg:max-h-[calc(100vh-14rem)] lg:overflow-y-auto">
         @foreach ($sections as $section)
             @php
                 $sectionProgress = $this->calculateSectionProgress($section);
@@ -117,7 +126,7 @@
                     <div class="space-y-2 border-t border-themed-secondary pt-4">
                         @foreach ($section->lessons as $lesson)
                             @php
-                                $isLessonCompleted = in_array($lesson->id, $completedLessons);
+                                $isLessonCompleted = in_array($lesson->id, $completedLessons, true);
                                 $isCurrentLesson = $currentLesson && $currentLesson->id == $lesson->id;
                             @endphp
 

@@ -5,51 +5,20 @@ namespace App\Livewire\StudentManagement\CourseView;
 use Livewire\Component;
 use App\Models\Learning\Course;
 use Livewire\Attributes\On;
-use Livewire\Attributes\Reactive;
 
 class CourseProgressHeader extends Component
 {
     public $course;
-    #[Reactive]
     public $overallProgress;
-    #[Reactive]
     public $currentSection;
-    #[Reactive]
     public $completedLessons;
-    #[Reactive]
     public $unlockedSections;
-    #[Reactive]
     public $sectionCompletionThreshold;
-    public $totalLessons;
-
-    public function mount(
-        Course $course,
-        $overallProgress = 0,
-        $currentSection = null,
-        $completedLessons = [],
-        $unlockedSections = [],
-        $sectionCompletionThreshold = 80
-    )
-    {
-        $this->course = $course;
-        $this->overallProgress = $overallProgress;
-        $this->currentSection = $currentSection;
-        $this->completedLessons = $completedLessons ?? [];
-        $this->unlockedSections = $unlockedSections ?? [];
-        $this->sectionCompletionThreshold = $sectionCompletionThreshold;
-        $this->totalLessons = $course->sections->flatMap->lessons->count();
-    }
 
     #[On('progress-updated')]
-    public function updateProgress($overallProgress = null, $currentSection = null)
+    public function updateProgress()
     {
-        if ($overallProgress !== null) {
-            $this->overallProgress = $overallProgress;
-        }
-        
-        if ($currentSection !== null) {
-            $this->currentSection = $currentSection;
-        }
+        $this->dispatch('$refresh');
     }
 
     #[On('section-completed')]
@@ -63,7 +32,7 @@ class CourseProgressHeader extends Component
 
     public function getProgressStats()
     {
-        $totalLessons = $this->totalLessons;
+        $totalLessons = $this->course->sections->flatMap->lessons->count();
         $completedCount = count($this->completedLessons ?? []);
         
         return [

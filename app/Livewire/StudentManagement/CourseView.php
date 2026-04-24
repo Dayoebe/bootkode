@@ -111,6 +111,11 @@ class CourseView extends Component
         $this->certificateEarned = Certificate::where('user_id', Auth::id())
             ->where('course_id', $this->course->id)
             ->exists();
+
+        if ($this->currentLesson instanceof Lesson) {
+            $this->syncCurrentLessonToAccessibleState();
+        }
+
         $this->progressVersion++;
     }
 
@@ -145,7 +150,7 @@ class CourseView extends Component
                 $previousSection = $this->course->sections[$index - 1];
                 $previousProgress = $this->calculateSectionProgress($previousSection);
 
-                if ($previousProgress >= $this->sectionCompletionThreshold) {
+                if ($previousSection->lessons->isEmpty() || $previousProgress >= $this->sectionCompletionThreshold) {
                     $this->unlockedSections[] = $section->id;
                 }
             }
@@ -155,24 +160,23 @@ class CourseView extends Component
     protected function setInitialLesson($preferredLesson = null)
     {
         if ($preferredLesson instanceof Lesson && $this->isLessonAccessible($preferredLesson)) {
-            $this->currentLesson = $preferredLesson;
-            $this->currentSection = $preferredLesson->section;
+            $this->focusLesson($preferredLesson, $preferredLesson->section);
             return;
         }
 
-        foreach ($this->course->sections as $section) {
-            if (in_array($section->id, $this->unlockedSections)) {
-                foreach ($section->lessons as $lesson) {
-                    if (!in_array($lesson->id, $this->completedLessons)) {
-                        $this->currentLesson = $lesson;
-                        $this->currentSection = $section;
-                        return;
-                }
-            }
+        $firstIncompleteLesson = $this->findFirstIncompleteAccessibleLesson();
+        if ($firstIncompleteLesson) {
+            $this->focusLesson($firstIncompleteLesson['lesson'], $firstIncompleteLesson['section']);
+            return;
         }
 
-        $this->currentLesson = null;
-        $this->currentSection = null;
+        $firstAccessibleLesson = $this->findFirstAccessibleLesson();
+        if ($firstAccessibleLesson) {
+            $this->focusLesson($firstAccessibleLesson['lesson'], $firstAccessibleLesson['section']);
+            return;
+        }
+
+        $this->clearCurrentLesson();
     }
 
     protected function isLessonAccessible(Lesson $lesson): bool
@@ -200,14 +204,174 @@ class CourseView extends Component
         return null;
     }
 
-        // If all unlocked lessons are completed, set to first lesson of first unlocked section
+    protected function findFirstIncompleteAccessibleLesson(): ?array
+    {
         foreach ($this->course->sections as $section) {
-            if (in_array($section->id, $this->unlockedSections) && $section->lessons->count() > 0) {
-                $this->currentLesson = $section->lessons->first();
-                $this->currentSection = $section;
-                return;
+            if (!in_array($section->id, $this->unlockedSections, true)) {
+                continue;
+            }
+
+            foreach ($section->lessons as $lesson) {
+                if (!in_array($lesson->id, $this->completedLessons, true)) {
+                    return [
+                        'lesson' => $lesson,
+                        'section' => $section,
+                    ];
+                }
             }
         }
+
+        return null;
+    }
+
+    protected function findFirstAccessibleLesson(): ?array
+    {
+        foreach ($this->course->sections as $section) {
+            if (!in_array($section->id, $this->unlockedSections, true)) {
+                continue;
+            }
+
+            $lesson = $section->lessons->first();
+
+            if ($lesson) {
+                return [
+                    'lesson' => $lesson,
+                    'section' => $section,
+                ];
+            }
+        }
+
+        return null;
+    }
+
+    protected function getOrderedLessonMap()
+    {
+        return $this->course->sections
+            ->flatMap(fn($section) => $section->lessons->map(fn($lesson) => [
+                'lesson' => $lesson,
+                'section' => $section,
+            ]))
+            ->values();
+    }
+
+    protected function findAdjacentLesson(int $lessonId, string $direction = 'next'): ?array
+    {
+        $orderedLessons = $this->getOrderedLessonMap();
+        $currentIndex = $orderedLessons->search(
+            fn($item) => (int) $item['lesson']->id === $lessonId
+        );
+
+        if ($currentIndex === false) {
+            return null;
+        }
+
+        $targetIndex = $direction === 'previous' ? $currentIndex - 1 : $currentIndex + 1;
+
+        return $orderedLessons->get($targetIndex);
+    }
+
+    protected function focusLesson(?Lesson $lesson, ?Section $section = null): void
+    {
+        $this->currentLesson = $lesson;
+        $this->currentSection = $section ?? $lesson?->section;
+    }
+
+    protected function clearCurrentLesson(): void
+    {
+        $this->currentLesson = null;
+        $this->currentSection = null;
+    }
+
+    protected function syncCurrentLessonToAccessibleState(): void
+    {
+        $currentLessonData = $this->currentLesson
+            ? $this->findLessonInCourse($this->currentLesson->id)
+            : null;
+
+        if ($currentLessonData && in_array($currentLessonData['section']->id, $this->unlockedSections, true)) {
+            $this->focusLesson($currentLessonData['lesson'], $currentLessonData['section']);
+            return;
+        }
+
+        $this->setInitialLesson($this->lastViewedLesson);
+    }
+
+    protected function rememberLastViewedLesson(Lesson $lesson): void
+    {
+        Cache::put(
+            'user_' . Auth::id() . '_last_lesson_' . $this->course->id,
+            [
+                'lesson_id' => $lesson->id,
+                'section_id' => $lesson->section_id,
+                'timestamp' => now(),
+            ],
+            now()->addDays(30)
+        );
+
+        $this->lastViewedLesson = $lesson;
+    }
+
+    protected function completeLessonProgress(int $lessonId): bool
+    {
+        try {
+            if (in_array($lessonId, $this->completedLessons, true)) {
+                return true;
+            }
+
+            if (!$this->canCompleteLessonWithoutAssessments($lessonId)) {
+                return false;
+            }
+
+            Auth::user()->completedLessons()->syncWithoutDetaching([
+                $lessonId => ['completed_at' => now()],
+            ]);
+
+            $this->refreshProgressState();
+            $this->updateCourseProgress();
+
+            $lessonData = $this->findLessonInCourse($lessonId);
+            if ($lessonData) {
+                $sectionProgress = $this->calculateSectionProgress($lessonData['section']);
+
+                if ($sectionProgress >= $this->sectionCompletionThreshold) {
+                    $this->checkAndUnlockNextSection($lessonData['section']);
+                }
+            }
+
+            $this->checkAndAwardCertificate();
+            $this->refreshProgressState();
+            $this->dispatch('progress-updated');
+
+            return true;
+        } catch (\Exception $e) {
+            \Log::error('Error marking lesson progress', [
+                'lesson_id' => $lessonId,
+                'course_id' => $this->course->id,
+                'user_id' => Auth::id(),
+                'error' => $e->getMessage(),
+            ]);
+
+            return false;
+        }
+    }
+
+    protected function getNextSectionUnlockMessage(array $currentLessonData, array $nextLessonData): string
+    {
+        $currentSection = $currentLessonData['section'];
+        $nextSection = $nextLessonData['section'];
+        $totalLessons = $currentSection->lessons->count();
+        $requiredLessons = max(1, (int) ceil($totalLessons * ($this->sectionCompletionThreshold / 100)));
+        $completedLessons = $currentSection->lessons
+            ->filter(fn($lesson) => in_array($lesson->id, $this->completedLessons, true))
+            ->count();
+        $remainingLessons = max($requiredLessons - $completedLessons, 0);
+
+        if ($remainingLessons <= 0) {
+            return "The next section ({$nextSection->title}) is refreshing. Try again now.";
+        }
+
+        return "Complete {$remainingLessons} more lesson" . ($remainingLessons === 1 ? '' : 's')
+            . " in {$currentSection->title} to unlock {$nextSection->title}.";
     }
 
     #[On('lesson-selected')]
@@ -228,15 +392,82 @@ class CourseView extends Component
                 return;
             }
 
-            $this->currentLesson = $lessonData['lesson'];
-            $this->currentSection = $lessonData['section'];
-            $this->lastViewedLesson = $lessonData['lesson'];
+            $this->focusLesson($lessonData['lesson'], $lessonData['section']);
+            $this->rememberLastViewedLesson($lessonData['lesson']);
         } catch (\Exception $e) {
             $this->dispatch('notify', [
                 'message' => 'Lesson not found.',
                 'type' => 'error'
             ]);
         }
+    }
+
+    #[On('advance-to-next-lesson')]
+    public function advanceToNextLesson($lessonId)
+    {
+        $lessonId = (int) $lessonId;
+        $currentLessonData = $this->findLessonInCourse($lessonId);
+
+        if (!$currentLessonData) {
+            $this->dispatch('notify', [
+                'message' => 'Current lesson could not be resolved.',
+                'type' => 'error'
+            ]);
+            return;
+        }
+
+        if (!$this->completeLessonProgress($lessonId)) {
+            $this->dispatch('notify', [
+                'message' => 'Pass every required assessment before continuing.',
+                'type' => 'warning'
+            ]);
+            return;
+        }
+
+        $nextLessonData = $this->findAdjacentLesson($lessonId, 'next');
+
+        if (!$nextLessonData) {
+            $this->focusLesson($currentLessonData['lesson'], $currentLessonData['section']);
+            return;
+        }
+
+        if (!in_array($nextLessonData['section']->id, $this->unlockedSections, true)) {
+            $this->dispatch('notify', [
+                'message' => $this->getNextSectionUnlockMessage($currentLessonData, $nextLessonData),
+                'type' => 'warning'
+            ]);
+            return;
+        }
+
+        $this->focusLesson($nextLessonData['lesson'], $nextLessonData['section']);
+        $this->rememberLastViewedLesson($nextLessonData['lesson']);
+        $this->dispatch('progress-updated');
+    }
+
+    #[On('complete-course-from-lesson')]
+    public function completeCourseFromLesson($lessonId)
+    {
+        $lessonId = (int) $lessonId;
+
+        if (!$this->completeLessonProgress($lessonId)) {
+            $this->dispatch('notify', [
+                'message' => 'Pass every required assessment before finishing the course.',
+                'type' => 'warning'
+            ]);
+            return;
+        }
+
+        if ($this->overallProgress < 100) {
+            $this->dispatch('notify', [
+                'message' => 'Complete all remaining lessons before finishing the course.',
+                'type' => 'warning'
+            ]);
+            return;
+        }
+
+        session()->flash('success', 'Course completed. Opening your certificates.');
+
+        return $this->redirectRoute('student.certificates.index', navigate: true);
     }
 
     protected function getSectionIndex($sectionId)
@@ -255,7 +486,7 @@ class CourseView extends Component
     #[On('lesson-uncompleted')]
     public function handleLessonUncompleted($lessonId)
     {
-        if (in_array($lessonId, $this->completedLessons)) {
+        if (in_array($lessonId, $this->completedLessons, true)) {
             try {
                 Auth::user()->completedLessons()->detach($lessonId);
                 $this->refreshProgressState();
@@ -275,7 +506,7 @@ class CourseView extends Component
         $currentIndex = $this->getSectionIndex($currentSection->id);
         $nextSection = $this->course->sections[$currentIndex + 1] ?? null;
 
-        if ($nextSection && !in_array($nextSection->id, $this->unlockedSections)) {
+        if ($nextSection && !in_array($nextSection->id, $this->unlockedSections, true)) {
             $this->dispatch('section-unlocked', [
                 'sectionId' => $nextSection->id,
                 'sectionTitle' => $nextSection->title
@@ -285,7 +516,7 @@ class CourseView extends Component
 
     public function isSectionUnlocked($sectionId)
     {
-        return in_array($sectionId, $this->unlockedSections);
+        return in_array($sectionId, $this->unlockedSections, true);
     }
 
     public function calculateSectionProgress($section)
@@ -296,7 +527,7 @@ class CourseView extends Component
 
         $completed = 0;
         foreach ($section->lessons as $lesson) {
-            if (in_array($lesson->id, $this->completedLessons)) {
+            if (in_array($lesson->id, $this->completedLessons, true)) {
                 $completed++;
             }
         }
@@ -337,7 +568,7 @@ class CourseView extends Component
             return 'Available to start';
         }
 
-        if (in_array($section->id, $this->unlockedSections)) {
+        if (in_array($section->id, $this->unlockedSections, true)) {
             return 'Unlocked';
         }
 
@@ -441,8 +672,8 @@ class CourseView extends Component
         $lastLesson = $this->lastViewedLesson;
 
         if ($lastLesson) {
-            $this->currentLesson = $lastLesson;
-            $this->currentSection = $lastLesson->section;
+            $this->focusLesson($lastLesson, $lastLesson->section);
+            $this->rememberLastViewedLesson($lastLesson);
 
             $this->dispatch('notify', [
                 'message' => 'Resumed from where you left off!',
@@ -620,40 +851,15 @@ class CourseView extends Component
     #[On('lesson-completed')]
     public function handleLessonCompleted($lessonId)
     {
-        if (!in_array($lessonId, $this->completedLessons)) {
-            if (!$this->canCompleteLessonWithoutAssessments($lessonId)) {
+        $lessonId = (int) $lessonId;
+
+        if (!in_array($lessonId, $this->completedLessons, true)) {
+            if (!$this->completeLessonProgress($lessonId)) {
                 $this->dispatch('notify', [
                     'message' => 'You must pass all required assessments before marking this lesson as complete.',
                     'type' => 'warning'
                 ]);
                 return;
-            }
-
-            try {
-                Auth::user()->completedLessons()->syncWithoutDetaching([
-                    $lessonId => ['completed_at' => now()],
-                ]);
-
-                $this->refreshProgressState();
-                $this->updateCourseProgress();
-
-                $lesson = Lesson::find($lessonId);
-                if ($lesson) {
-                    $sectionProgress = $this->calculateSectionProgress($lesson->section);
-                    if ($sectionProgress >= $this->sectionCompletionThreshold) {
-                        $this->checkAndUnlockNextSection($lesson->section);
-                    }
-                }
-
-                $this->checkAndAwardCertificate();
-                $this->refreshProgressState();
-
-                $this->dispatch('progress-updated');
-            } catch (\Exception $e) {
-                $this->dispatch('notify', [
-                    'message' => 'Error marking lesson as completed.',
-                    'type' => 'error'
-                ]);
             }
         }
     }

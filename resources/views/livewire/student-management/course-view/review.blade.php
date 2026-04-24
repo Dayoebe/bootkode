@@ -4,22 +4,22 @@
      wire:poll.10s="{{ !$showReviewForm ? '' : 'keep-alive' }}">
     
     <!-- Header with Collapse Toggle -->
-    <div class="bg-themed-secondary rounded-xl p-4 border border-themed-primary transition-colors duration-300">
+    <div class="rounded-xl border border-themed-secondary bg-themed-secondary/70 p-4 transition-colors duration-300">
         <div class="flex items-center justify-between">
             <div class="flex items-center gap-3">
-                <div class="w-10 h-10 bg-accent-themed-primary rounded-lg flex items-center justify-center">
-                    <i class="fas fa-star text-white text-lg"></i>
+                <div class="flex h-9 w-9 items-center justify-center rounded-lg border border-themed-secondary bg-themed-tertiary">
+                    <i class="fas fa-star text-sm accent-themed-primary"></i>
                 </div>
                 <div>
-                    <h2 class="text-xl font-bold text-themed-primary">Course Reviews</h2>
-                    <p class="text-sm text-themed-secondary">
+                    <h2 class="text-base font-semibold text-themed-primary">Learner Reviews</h2>
+                    <p class="text-xs text-themed-secondary">
                         {{ $totalReviews }} {{ Str::plural('review', $totalReviews) }} • 
                         {{ number_format($averageRating, 1) }} <i class="fas fa-star text-yellow-400 text-xs"></i>
                     </p>
                 </div>
             </div>
             <button @click="$wire.toggleCollapse()"
-                    class="text-themed-tertiary hover:text-themed-primary transition-colors duration-300">
+                    class="rounded-lg border border-themed-secondary bg-themed-tertiary px-3 py-2 text-themed-tertiary transition-colors duration-300 hover:text-themed-primary">
                 <i class="fas fa-chevron-down text-lg transform transition-transform" 
                    :class="{ 'rotate-180': !isCollapsed }"></i>
             </button>

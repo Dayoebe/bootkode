@@ -5,37 +5,15 @@ namespace App\Livewire\StudentManagement\CourseView;
 use Livewire\Component;
 use App\Models\Learning\Course;
 use Livewire\Attributes\On;
-use Livewire\Attributes\Reactive;
 
 class CourseProgressSidebar extends Component
 {
     public $course;
-    #[Reactive]
     public $sections;
-    #[Reactive]
     public $currentLesson;
-    #[Reactive]
     public $completedLessons;
-    #[Reactive]
     public $unlockedSections;
-    #[Reactive]
     public $sectionCompletionThreshold;
-
-    public function mount(
-        Course $course, 
-        $sections, 
-        $currentLesson = null, 
-        $completedLessons = [], 
-        $unlockedSections = [],
-        $sectionCompletionThreshold = 80
-    ) {
-        $this->course = $course;
-        $this->sections = $sections;
-        $this->currentLesson = $currentLesson;
-        $this->completedLessons = $completedLessons ?? [];
-        $this->unlockedSections = $unlockedSections ?? [];
-        $this->sectionCompletionThreshold = $sectionCompletionThreshold;
-    }
 
     #[On('progress-updated')]
     public function refreshProgress()
@@ -47,7 +25,7 @@ class CourseProgressSidebar extends Component
     public function selectLesson($lessonId, $sectionId)
     {
         // Check if section is unlocked
-        if (!in_array($sectionId, $this->unlockedSections)) {
+        if (!in_array($sectionId, $this->unlockedSections, true)) {
             $this->dispatch('notify', [
                 'message' => "Complete at least {$this->sectionCompletionThreshold}% of the previous section to unlock this lesson.",
                 'type' => 'warning'
@@ -65,7 +43,7 @@ class CourseProgressSidebar extends Component
         
         $completed = 0;
         foreach ($section->lessons as $lesson) {
-            if (in_array($lesson->id, $this->completedLessons)) {
+            if (in_array($lesson->id, $this->completedLessons, true)) {
                 $completed++;
             }
         }
@@ -75,13 +53,13 @@ class CourseProgressSidebar extends Component
 
     public function isSectionUnlocked($sectionId)
     {
-        return in_array($sectionId, $this->unlockedSections);
+        return in_array($sectionId, $this->unlockedSections, true);
     }
 
     public function isSectionCompleted($section)
     {
         foreach ($section->lessons as $lesson) {
-            if (!in_array($lesson->id, $this->completedLessons)) {
+            if (!in_array($lesson->id, $this->completedLessons, true)) {
                 return false;
             }
         }

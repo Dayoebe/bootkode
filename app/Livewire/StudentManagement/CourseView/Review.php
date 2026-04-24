@@ -16,7 +16,7 @@ class Review extends Component
     public $rating = 5;
     public $comment = '';
     public $showReviewForm = false;
-    public $isCollapsed = false; // New collapse state
+    public $isCollapsed = true;
     
     // Simplified filters
     public $filterRating = '';

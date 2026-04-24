@@ -11,7 +11,9 @@
     $imageCount = ($lesson->image_path ? 1 : 0) + ($lesson->hasImage() ? count($lesson->getImagesArray()) : 0);
     $linkCount = $lesson->hasExternalLinks() ? count($lesson->getExternalLinksArray()) : 0;
     $resourceCount = $documentCount + $uploadedVideoCount + $audioCount + $imageCount + $linkCount + ($lesson->video_url ? 1 : 0);
-    $assessmentCount = $hasAssessments ? \App\Models\Assessment\Assessment::where('lesson_id', $lesson->id)->count() : 0;
+    $assessmentCount = $hasAssessments
+        ? ($lesson->relationLoaded('assessments') ? $lesson->assessments->count() : \App\Models\Assessment\Assessment::where('lesson_id', $lesson->id)->count())
+        : 0;
     $openPanels = [];
 
     if ($hasAssessments && !$allAssessmentsPassed) {
@@ -24,6 +26,7 @@
 @endphp
 
 <div
+    @if($shouldPoll) wire:poll.15s.visible="pollAssessmentStatus" @endif
     wire:poll.30s="updateTimeSpent"
     x-data="{
         openPanels: @js($openPanels),
@@ -270,16 +273,16 @@
         @if ($hasAssessments && !$allAssessmentsPassed)
             @php $assessmentPreview = $this->getAssessmentPreview(); @endphp
             @if ($assessmentPreview)
-                <div class="mb-6 bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 border-2 border-blue-300 dark:border-blue-600 rounded-xl p-6 shadow-lg">
-                    <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-4 flex items-center">
+                <div class="mb-6 rounded-[1.75rem] border border-blue-300/70 bg-gradient-to-br from-blue-50 to-indigo-50 p-4 shadow-lg dark:border-blue-600 dark:from-blue-900/20 dark:to-indigo-900/20 md:p-6">
+                    <h3 class="mb-4 flex items-center text-lg font-bold text-gray-900 dark:text-white">
                         <i class="fas fa-eye mr-2 text-blue-600 dark:text-blue-400"></i>
                         Assessment Preview
                     </h3>
                     
                     <div class="space-y-4">
                         @foreach ($assessmentPreview as $preview)
-                            <div class="bg-white dark:bg-gray-800 rounded-lg p-4 border border-blue-200 dark:border-blue-700">
-                                <div class="flex justify-between items-start mb-3">
+                            <div class="rounded-[1.25rem] border border-blue-200 bg-white p-4 dark:border-blue-700 dark:bg-gray-800">
+                                <div class="mb-3 flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                                     <div>
                                         <h4 class="font-semibold text-gray-900 dark:text-white">{{ $preview['title'] }}</h4>
                                         <span class="text-xs px-2 py-1 mt-1 inline-block rounded-full {{ $preview['type'] === 'quiz' ? 'bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300' : 'bg-indigo-100 dark:bg-indigo-900 text-indigo-700 dark:text-indigo-300' }}">
@@ -291,7 +294,7 @@
                                     </span>
                                 </div>
 
-                                <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-3">
+                                <div class="mb-3 grid grid-cols-2 gap-3 xl:grid-cols-4">
                                     <div class="text-center bg-gray-50 dark:bg-gray-700 rounded-lg p-2">
                                         <div class="text-2xl font-bold text-gray-900 dark:text-white">{{ $preview['question_count'] }}</div>
                                         <div class="text-xs text-gray-600 dark:text-gray-400">Questions</div>
@@ -323,7 +326,7 @@
 
                                 <!-- Difficulty Distribution -->
                                 @if (!empty($preview['difficulty_distribution']))
-                                    <div class="flex items-center gap-2 text-sm flex-wrap">
+                                    <div class="flex flex-wrap items-center gap-2 text-sm">
                                         <span class="text-gray-600 dark:text-gray-400">Difficulty:</span>
                                         @foreach ($preview['difficulty_distribution'] as $level => $count)
                                             <span class="px-2 py-1 rounded text-xs font-medium
@@ -402,7 +405,7 @@
                     <div class="mt-3" x-show="isOpen('assessments')" x-transition.opacity.scale.origin.top>
                         <div class="rounded-[1.5rem] border border-blue-300 bg-gray-50 p-1 shadow-inner dark:border-blue-700 dark:bg-gray-900/50">
                             <livewire:student-management.course-view.student-assessment-taker :lesson="$lesson"
-                                wire:key="assessment-{{ $lesson->id }}" wire:poll.10s="pollAssessmentStatus" />
+                                wire:key="assessment-{{ $lesson->id }}" />
                         </div>
                     </div>
                 </div>
@@ -428,9 +431,9 @@
                                 @php
                                     $documentUrl = asset('storage/' . $document['path']);
                                 @endphp
-                                <div class="flex items-center justify-between rounded-xl border border-gray-200 bg-gray-50 p-4 transition-shadow duration-200 hover:shadow-md dark:border-gray-600 dark:bg-gray-700/50">
-                                    <div class="flex items-center">
-                                        <div class="mr-3 flex h-10 w-10 items-center justify-center rounded bg-indigo-600 shadow-md">
+                                <div class="flex flex-col gap-4 rounded-xl border border-gray-200 bg-gray-50 p-4 transition-shadow duration-200 hover:shadow-md dark:border-gray-600 dark:bg-gray-700/50 sm:flex-row sm:items-center sm:justify-between">
+                                    <div class="flex items-center gap-3 min-w-0">
+                                        <div class="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded bg-indigo-600 shadow-md">
                                             @switch(strtolower($document['type'] ?? 'file'))
                                                 @case('pdf')
                                                     <i class="fas fa-file-pdf text-white"></i>
@@ -447,21 +450,21 @@
                                                     <i class="fas fa-file text-white"></i>
                                             @endswitch
                                         </div>
-                                        <div>
-                                            <p class="font-medium text-gray-900 dark:text-white">{{ $document['name'] }}</p>
+                                        <div class="min-w-0">
+                                            <p class="truncate font-medium text-gray-900 dark:text-white">{{ $document['name'] }}</p>
                                             <p class="text-xs text-gray-600 dark:text-gray-400">
                                                 {{ number_format($document['size'] / 1024 / 1024, 1) }}MB
                                             </p>
                                         </div>
                                     </div>
-                                    <div class="flex gap-2">
+                                    <div class="grid grid-cols-2 gap-2 sm:flex sm:w-auto">
                                         <button type="button"
                                             x-on:click='openDocument(@js($documentUrl), @js($document["name"]))'
-                                            class="rounded-lg bg-indigo-600 px-3 py-1 text-sm text-white shadow-md transition-colors hover:bg-indigo-700 hover:shadow-lg">
+                                            class="rounded-lg bg-indigo-600 px-3 py-2 text-sm text-white shadow-md transition-colors hover:bg-indigo-700 hover:shadow-lg">
                                             <i class="fas fa-eye mr-1"></i> View
                                         </button>
                                         <a href="{{ $documentUrl }}" target="_blank"
-                                            class="rounded-lg bg-gray-500 px-3 py-1 text-sm text-white shadow-md transition-colors hover:bg-gray-600 hover:shadow-lg dark:bg-gray-600 dark:hover:bg-gray-700">
+                                            class="rounded-lg bg-gray-500 px-3 py-2 text-sm text-white shadow-md transition-colors hover:bg-gray-600 hover:shadow-lg dark:bg-gray-600 dark:hover:bg-gray-700">
                                             <i class="fas fa-download mr-1"></i> Download
                                         </a>
                                     </div>
@@ -774,39 +777,34 @@
             <div class="flex flex-col gap-3 sm:flex-row xl:flex-col xl:justify-end">
                 @if ($previousLesson)
                     <button wire:click="goToPreviousLesson"
-                        class="inline-flex min-w-[14rem] items-center justify-center gap-2 rounded-2xl border border-themed-secondary bg-themed-tertiary px-5 py-3 text-sm font-semibold text-themed-primary shadow-sm transition hover:-translate-y-0.5 hover:bg-themed-secondary">
+                        class="inline-flex w-full min-w-0 items-center justify-center gap-2 rounded-2xl border border-themed-secondary bg-themed-tertiary px-5 py-3 text-sm font-semibold text-themed-primary shadow-sm transition hover:-translate-y-0.5 hover:bg-themed-secondary sm:min-w-[14rem]">
                         <i class="fas fa-arrow-left"></i>
                         Previous Lesson
                     </button>
                 @else
-                    <div class="inline-flex min-w-[14rem] items-center justify-center gap-2 rounded-2xl border border-themed-secondary bg-themed-secondary px-5 py-3 text-sm font-medium text-themed-secondary">
+                    <div class="inline-flex w-full min-w-0 items-center justify-center gap-2 rounded-2xl border border-themed-secondary bg-themed-secondary px-5 py-3 text-sm font-medium text-themed-secondary sm:min-w-[14rem]">
                         <i class="fas fa-book-open"></i>
                         Start of course
                     </div>
                 @endif
 
                 @if ($nextLesson)
-                    @if ($this->canProceedToNext() && $this->isNextLessonUnlocked())
+                    @if ($this->canProceedToNext())
                         <button wire:click="goToNextLesson"
-                            class="inline-flex min-w-[14rem] items-center justify-center gap-2 rounded-2xl px-5 py-3 text-sm font-semibold text-white shadow-lg transition hover:-translate-y-0.5"
+                            class="inline-flex w-full min-w-0 items-center justify-center gap-2 rounded-2xl px-5 py-3 text-sm font-semibold text-white shadow-lg transition hover:-translate-y-0.5 sm:min-w-[14rem]"
                             style="background: linear-gradient(135deg, rgb(var(--accent-primary)), rgb(var(--accent-secondary)));">
-                            Next Lesson
+                            Continue
                             <i class="fas fa-arrow-right"></i>
                         </button>
-                    @elseif (!$this->canProceedToNext())
-                        <div class="inline-flex min-w-[14rem] items-center justify-center gap-2 rounded-2xl bg-red-600 px-5 py-3 text-sm font-semibold text-white opacity-85">
+                    @else
+                        <div class="inline-flex w-full min-w-0 items-center justify-center gap-2 rounded-2xl bg-red-600 px-5 py-3 text-sm font-semibold text-white opacity-85 sm:min-w-[14rem]">
                             <i class="fas fa-clipboard-check"></i>
                             Complete assessments to continue
-                        </div>
-                    @else
-                        <div class="inline-flex min-w-[14rem] items-center justify-center gap-2 rounded-2xl bg-gray-400 px-5 py-3 text-sm font-semibold text-white dark:bg-gray-600">
-                            <i class="fas fa-lock"></i>
-                            Complete section to continue
                         </div>
                     @endif
                 @else
                     <button wire:click="completeCourse"
-                        class="inline-flex min-w-[14rem] items-center justify-center gap-2 rounded-2xl bg-emerald-600 px-5 py-3 text-sm font-semibold text-white shadow-lg transition hover:-translate-y-0.5 hover:bg-emerald-700 {{ !$this->canProceedToNext() ? 'cursor-not-allowed opacity-50' : '' }}"
+                        class="inline-flex w-full min-w-0 items-center justify-center gap-2 rounded-2xl bg-emerald-600 px-5 py-3 text-sm font-semibold text-white shadow-lg transition hover:-translate-y-0.5 hover:bg-emerald-700 sm:min-w-[14rem] {{ !$this->canProceedToNext() ? 'cursor-not-allowed opacity-50' : '' }}"
                         @if (!$this->canProceedToNext()) disabled @endif>
                         <i class="fas fa-trophy"></i>
                         Complete Course
@@ -872,47 +870,34 @@
             }
         }
 
-        if (window.bootkodeLessonViewer.assessmentPoller) {
-            clearInterval(window.bootkodeLessonViewer.assessmentPoller);
-            window.bootkodeLessonViewer.assessmentPoller = null;
-        }
-
-        if (@json($shouldPoll)) {
-            let lastPollTime = 0;
-            const POLL_INTERVAL = 10000;
-            const lessonViewerComponent = @this;
-
-            window.bootkodeLessonViewer.assessmentPoller = setInterval(() => {
-                const now = Date.now();
-
-                if (now - lastPollTime < POLL_INTERVAL) {
-                    return;
-                }
-
-                lessonViewerComponent.call('pollAssessmentStatus');
-                lastPollTime = now;
-            }, POLL_INTERVAL);
-        }
-
-        document.addEventListener('livewire:init', () => {
-            if (window.bootkodeLessonViewer.assessmentListenerBound) {
-                return;
-            }
-
-            window.bootkodeLessonViewer.assessmentListenerBound = true;
-
-            Livewire.on('assessment-completed', () => {
-                if (window.bootkodeLessonViewer.assessmentPoller) {
-                    clearInterval(window.bootkodeLessonViewer.assessmentPoller);
-                    window.bootkodeLessonViewer.assessmentPoller = null;
-                }
-            });
-        });
     </script>
 
     <style>
         .lesson-viewer [x-cloak] {
             display: none !important;
+        }
+
+        .lesson-content-display {
+            overflow-wrap: anywhere;
+        }
+
+        .lesson-content-display iframe,
+        .lesson-content-display img,
+        .lesson-content-display video,
+        .lesson-content-display table {
+            max-width: 100%;
+        }
+
+        .lesson-content-display table {
+            display: block;
+            overflow-x: auto;
+            white-space: nowrap;
+        }
+
+        .lesson-content-display pre {
+            max-width: 100%;
+            overflow-x: auto;
+            white-space: pre-wrap;
         }
 
         .mini-player {
