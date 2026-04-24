@@ -4,9 +4,7 @@ namespace App\Notifications;
 
 use App\Models\Messaging\DirectMessage;
 use Illuminate\Bus\Queueable;
-use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
-use Illuminate\Support\Str;
 
 class DirectMessageReceived extends Notification
 {
@@ -22,25 +20,7 @@ class DirectMessageReceived extends Notification
 
     public function via($notifiable): array
     {
-        $channels = ['database'];
-
-        if ($notifiable->shouldReceiveEmailNotification('direct_message')) {
-            $channels[] = 'mail';
-        }
-
-        return $channels;
-    }
-
-    public function toMail($notifiable): MailMessage
-    {
-        $conversation = $this->directMessage->conversation;
-
-        return (new MailMessage)
-            ->subject('New message from ' . $this->directMessage->sender->name)
-            ->greeting('Hello ' . $notifiable->name . ',')
-            ->line($this->directMessage->sender->name . ' sent you a message about ' . $conversation->course->title . '.')
-            ->line(Str::limit($this->directMessage->body, 160))
-            ->action('Open Conversation', route('messages.show', ['conversation' => $conversation->id]));
+        return ['database'];
     }
 
     public function toArray($notifiable): array

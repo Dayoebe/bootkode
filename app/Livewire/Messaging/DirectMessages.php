@@ -146,6 +146,7 @@ class DirectMessages extends Component
         $this->activeConversationId = $conversation->id;
         $this->resetValidation();
         $this->markActiveConversationRead();
+        $this->dispatch('conversation-opened');
     }
 
     public function startConversationForCourse(int $courseId): void
@@ -154,8 +155,12 @@ class DirectMessages extends Component
         $this->openCourseConversation($course);
     }
 
-    public function sendMessage(): void
+    public function sendMessage(?string $body = null): void
     {
+        if ($body !== null) {
+            $this->messageBody = $body;
+        }
+
         $this->messageBody = trim($this->messageBody);
         $this->validate();
 
@@ -189,6 +194,7 @@ class DirectMessages extends Component
         $this->resetValidation();
         $this->activeConversationId = $conversation->id;
         $this->markActiveConversationRead();
+        $this->dispatch('conversation-opened');
     }
 
     public function pollMessages(): void
@@ -205,6 +211,7 @@ class DirectMessages extends Component
             $this->activeConversationId = $conversation->id;
             $this->markActiveConversationRead();
             $this->resetValidation();
+            $this->dispatch('conversation-opened');
         } catch (AuthorizationException $exception) {
             abort(403, $exception->getMessage());
         } catch (ValidationException $exception) {
