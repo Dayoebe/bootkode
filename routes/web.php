@@ -244,6 +244,10 @@ Route::get('/dashboard', \App\Livewire\Component\DashboardOverview::class)
     ->middleware(['auth', 'verified'])
     ->name('dashboard');
 
+Route::get('/messages/{conversation?}', \App\Livewire\Messaging\DirectMessages::class)
+    ->middleware(['auth', 'verified'])
+    ->name('messages.index');
+
 // =============================================================================
 // USER PROFILE & MANAGEMENT ROUTES
 // =============================================================================

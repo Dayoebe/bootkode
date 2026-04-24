@@ -15,6 +15,9 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use App\Models\Credentials\Certificate;
 use App\Notifications\CourseCompletionCertificateReady;
+use App\Services\DirectMessagingService;
+use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Validation\ValidationException;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
 use Livewire\Attributes\On;
@@ -682,6 +685,28 @@ class CourseView extends Component
         } else {
             // Start from first incomplete lesson
             $this->setInitialLesson();
+        }
+    }
+
+    public function messageInstructor()
+    {
+        try {
+            $conversation = app(DirectMessagingService::class)
+                ->getOrCreateCourseConversation($this->course, Auth::user());
+
+            return $this->redirectRoute('messages.index', [
+                'conversation' => $conversation->id,
+            ], navigate: true);
+        } catch (AuthorizationException $exception) {
+            $this->dispatch('notify', [
+                'message' => $exception->getMessage(),
+                'type' => 'error',
+            ]);
+        } catch (ValidationException $exception) {
+            $this->dispatch('notify', [
+                'message' => collect($exception->errors())->flatten()->first(),
+                'type' => 'error',
+            ]);
         }
     }
     /**

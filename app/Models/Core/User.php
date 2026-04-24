@@ -62,6 +62,10 @@ class User extends Authenticatable implements MustVerifyEmail
         'show_email_publicly',
         'deactivated_at',
         'favorite_courses',
+        'notification_preferences',
+        'review_reminder_preferences',
+        'privacy_settings',
+        'metadata',
         'timezone',
         'language',
         'is_profile_public',
@@ -86,6 +90,10 @@ class User extends Authenticatable implements MustVerifyEmail
         'receive_certificate_notifications' => 'boolean',
         'show_email_publicly' => 'boolean',
         'deactivated_at' => 'datetime',
+        'notification_preferences' => 'array',
+        'review_reminder_preferences' => 'array',
+        'privacy_settings' => 'array',
+        'metadata' => 'array',
         'is_profile_public' => 'boolean',
         'show_phone_publicly' => 'boolean',
     ];
@@ -231,6 +239,21 @@ class User extends Authenticatable implements MustVerifyEmail
     public function enrollments()
     {
         return $this->hasMany(\App\Models\Learning\CourseEnrollment::class);
+    }
+
+    public function studentDirectConversations()
+    {
+        return $this->hasMany(\App\Models\Messaging\DirectConversation::class, 'student_id');
+    }
+
+    public function instructorDirectConversations()
+    {
+        return $this->hasMany(\App\Models\Messaging\DirectConversation::class, 'instructor_id');
+    }
+
+    public function sentDirectMessages()
+    {
+        return $this->hasMany(\App\Models\Messaging\DirectMessage::class, 'sender_id');
     }
 
     public function completedLessons()
@@ -831,6 +854,7 @@ class User extends Authenticatable implements MustVerifyEmail
             'course_update' => $preferences['email_course_updates'] ?? $this->receive_course_updates ?? true,
             'certificate_update' => $preferences['email_certificate_notifications'] ?? $this->receive_certificate_notifications ?? true,
             'instructor_reply' => $preferences['email_instructor_replies'] ?? true,
+            'direct_message' => $preferences['email_direct_messages'] ?? true,
             'course_review' => true,
             'support_ticket' => true,
             'feedback_response' => true,

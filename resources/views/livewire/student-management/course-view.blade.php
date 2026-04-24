@@ -106,6 +106,30 @@
             </div>
         @endif
 
+        @if ($course->instructor)
+            <section class="overflow-hidden rounded-[1.5rem] border border-themed-primary bg-themed-secondary p-5 shadow-lg">
+                <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+                    <div class="flex min-w-0 items-center gap-4">
+                        <div class="flex h-14 w-14 flex-shrink-0 items-center justify-center rounded-2xl bg-blue-600 text-lg font-semibold text-white">
+                            {{ \Illuminate\Support\Str::upper(\Illuminate\Support\Str::substr($course->instructor->name ?? 'I', 0, 1)) }}
+                        </div>
+                        <div class="min-w-0">
+                            <p class="text-xs font-semibold uppercase tracking-[0.18em] text-themed-secondary">Instructor support</p>
+                            <h2 class="mt-1 truncate text-lg font-semibold text-themed-primary">{{ $course->instructor->name }}</h2>
+                            <p class="mt-1 text-sm leading-6 text-themed-secondary">Ask course questions directly and keep the conversation attached to this course.</p>
+                        </div>
+                    </div>
+
+                    <button wire:click="messageInstructor" wire:loading.attr="disabled" wire:target="messageInstructor"
+                        class="inline-flex items-center justify-center gap-2 rounded-2xl bg-blue-600 px-5 py-3 text-sm font-semibold text-white shadow-lg transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-60">
+                        <i class="fas fa-comment-dots"></i>
+                        <span wire:loading.remove wire:target="messageInstructor">Message Instructor</span>
+                        <span wire:loading wire:target="messageInstructor">Opening</span>
+                    </button>
+                </div>
+            </section>
+        @endif
+
         <section class="grid gap-4 sm:grid-cols-2 2xl:grid-cols-4">
             <div class="overflow-hidden rounded-[1.75rem] border border-themed-primary bg-themed-secondary p-5 shadow-lg">
                 <p class="text-xs font-semibold uppercase tracking-[0.18em] text-themed-secondary">Unlocked Sections</p>

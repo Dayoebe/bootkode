@@ -124,6 +124,11 @@ class Course extends Model
         return $this->hasMany(CourseReview::class); // UPDATED
     }
 
+    public function directConversations()
+    {
+        return $this->hasMany(\App\Models\Messaging\DirectConversation::class);
+    }
+
     public function sections()
     {
         return $this->hasMany(Section::class, 'course_id');

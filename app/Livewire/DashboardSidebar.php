@@ -37,6 +37,7 @@ class DashboardSidebar extends Component
                 'community.center' => 'community',
                 'settings' => 'settings',
                 'notifications' => 'notifications',
+                'messages.index' => 'messages',
             ];
             
             $this->activeLink = $routeMap[$currentRouteName] ?? $this->determineActiveLinkFromRoute($currentRouteName);

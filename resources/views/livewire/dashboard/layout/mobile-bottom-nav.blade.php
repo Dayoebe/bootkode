@@ -101,6 +101,18 @@
                                             </div>
                                         </a>
 
+                                        <a href="{{ route('messages.index') }}"
+                                           class="flex items-center p-3 rounded-lg hover:bg-themed-tertiary transition-colors"
+                                           @click="moreMenuOpen = false">
+                                            <div class="w-10 h-10 bg-blue-100 dark:bg-blue-900/20 rounded-lg flex items-center justify-center mr-3 transition-colors duration-300">
+                                                <i class="fas fa-comments text-blue-600 dark:text-blue-400"></i>
+                                            </div>
+                                            <div>
+                                                <p class="text-sm font-medium text-themed-primary transition-colors duration-300">Messages</p>
+                                                <p class="text-xs text-themed-secondary transition-colors duration-300">Chat with instructors</p>
+                                            </div>
+                                        </a>
+
                                         @if(auth()->user()->hasRole(['instructor', 'academy_admin', 'super_admin']))
                                             <a href="{{ route('cbt.management') }}" 
                                                class="flex items-center p-3 rounded-lg hover:bg-themed-tertiary transition-colors"

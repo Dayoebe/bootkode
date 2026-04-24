@@ -88,6 +88,7 @@ return [
                 ['label' => 'My Courses', 'icon' => 'fas fa-book', 'route_name' => ('student.enrolled-courses'), 'roles' => [User::ROLE_STUDENT], 'component' => 'enrolled-courses', 'link_id' => 'student.enrolled-courses',],
                 ['label' => 'Course Catalog', 'icon' => 'fas fa-book-open', 'route_name' => ('student.course-catalog'), 'roles' => [User::ROLE_STUDENT, User::ROLE_INSTRUCTOR, User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN],],
                 ['label' => 'Learning Analytics', 'icon' => 'fas fa-chart-line', 'route_name' => 'student.learning-analytics', 'roles' => [User::ROLE_STUDENT, User::ROLE_INSTRUCTOR, User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN], 'component' => 'learning-analytics'],
+                ['label' => 'Messages', 'icon' => 'fas fa-comments', 'route_name' => 'messages.index', 'roles' => [User::ROLE_STUDENT, User::ROLE_INSTRUCTOR, User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN], 'link_id' => 'messages'],
                 ['label' => 'Saved Resources', 'icon' => 'fas fa-bookmark', 'route_name' => ('student.saved-resources'), 'roles' => [User::ROLE_STUDENT], 'link_id' => 'student.saved-resources'],
             ]
         ],
