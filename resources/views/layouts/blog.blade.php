@@ -1,10 +1,11 @@
 {{-- resources/views/layouts/blog.blade.php --}}
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="bg-slate-50">
 <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    <meta name="theme-color" content="#0f172a">
     <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=AW-10833921436"></script>
 <script>
@@ -93,7 +94,7 @@
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
-    <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Sora:wght@600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <!-- Scripts -->
@@ -164,7 +165,7 @@
     </style>
 </head>
 
-<body class="font-sans antialiased bg-gray-50">
+<body class="bk-public-app font-sans antialiased bg-slate-50 text-slate-900">
     <!-- Google Tag Manager (noscript) -->
 <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TJ23X96Z"
     height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
@@ -176,7 +177,7 @@
 
         {{-- Page Content --}}
         <main>
-            <div class="w-full px-4 py-6 sm:px-6 sm:py-8 md:px-8 lg:px-12 xl:px-16 2xl:px-20">
+            <div class="w-full px-4 py-5 sm:px-6 sm:py-7 md:px-8 lg:px-10 xl:px-12 2xl:px-16">
                 {{ $slot }}
             </div> 
         </main>

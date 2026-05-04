@@ -1,10 +1,11 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="h-full bg-gray-50">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="h-full bg-slate-50">
 
 <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    <meta name="theme-color" content="#0f172a">
     <!-- Google tag (gtag.js) -->
     <meta name="google-adsense-account" content="ca-pub-3911204427206897">
     <script async src="https://www.googletagmanager.com/gtag/js?id=AW-10833921436"></script>
@@ -49,7 +50,7 @@
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Sora:wght@600;700;800&display=swap" rel="stylesheet">
 
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
@@ -88,10 +89,10 @@
     @yield('styles')
 </head>
 
-<body class="font-san antialiased text-gray-900 bg-gray-50 flex flex-col min-h-screen w-full overflow-x-hidden">
+<body class="bk-public-app font-sans antialiased text-slate-900 bg-slate-50 flex flex-col min-h-screen w-full overflow-x-hidden">
     <x-header />
     <main class="flex-grow w-full">
-        <div class="w-full px-4 py-6 sm:px-6 sm:py-8 md:px-8 lg:px-12 xl:px-16 2xl:px-20">
+        <div class="w-full px-4 py-5 sm:px-6 sm:py-7 md:px-8 lg:px-10 xl:px-12 2xl:px-16">
             @yield('content')
         </div>
     </main>
