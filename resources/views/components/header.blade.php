@@ -211,16 +211,17 @@
         </aside>
     </div>
 
-    <nav class="bk-mobile-tabbar lg:hidden" aria-label="Mobile primary navigation">
-        @foreach (array_slice($navItems, 0, 4) as $item)
-            <a href="{{ $item['href'] }}" class="{{ $item['active'] ? 'active' : '' }}">
-                <i class="fas {{ $item['icon'] }}"></i>
-                <span>{{ $item['label'] }}</span>
-            </a>
-        @endforeach
-        <a href="{{ $accountUrl }}" class="{{ request()->routeIs('login') || request()->routeIs('register') || request()->routeIs('dashboard') ? 'active' : '' }}">
-            <i class="fas fa-user"></i>
-            <span>{{ $user ? 'Account' : 'Login' }}</span>
-        </a>
-    </nav>
 </header>
+
+<nav class="bk-mobile-tabbar lg:hidden" aria-label="Mobile primary navigation">
+    @foreach (array_slice($navItems, 0, 4) as $item)
+        <a href="{{ $item['href'] }}" class="{{ $item['active'] ? 'active' : '' }}">
+            <i class="fas {{ $item['icon'] }}"></i>
+            <span>{{ $item['label'] }}</span>
+        </a>
+    @endforeach
+    <a href="{{ $accountUrl }}" class="{{ request()->routeIs('login') || request()->routeIs('register') || request()->routeIs('dashboard') ? 'active' : '' }}">
+        <i class="fas fa-user"></i>
+        <span>{{ $user ? 'Account' : 'Login' }}</span>
+    </a>
+</nav>

@@ -22,6 +22,7 @@ class DirectMessages extends Component
     public ?int $activeConversationId = null;
     public string $messageBody = '';
     public string $search = '';
+    public int $lastSeenMessageId = 0;
 
     protected array $rules = [
         'messageBody' => ['required', 'string', 'min:1', 'max:2000'],
@@ -36,6 +37,7 @@ class DirectMessages extends Component
 
             $this->activeConversationId = $conversation->id;
             $this->markActiveConversationRead();
+            $this->syncLastSeenMessageId();
 
             return;
         }
@@ -53,6 +55,7 @@ class DirectMessages extends Component
 
         $this->activeConversationId = $this->conversations->first()?->id;
         $this->markActiveConversationRead();
+        $this->syncLastSeenMessageId();
     }
 
     public function getConversationsProperty()
@@ -146,6 +149,7 @@ class DirectMessages extends Component
         $this->activeConversationId = $conversation->id;
         $this->resetValidation();
         $this->markActiveConversationRead();
+        $this->syncLastSeenMessageId();
         $this->dispatch('conversation-opened');
     }
 
@@ -193,12 +197,14 @@ class DirectMessages extends Component
         $this->messageBody = '';
         $this->resetValidation();
         $this->activeConversationId = $conversation->id;
+        $this->lastSeenMessageId = $message->id;
         $this->markActiveConversationRead();
         $this->dispatch('conversation-opened');
     }
 
     public function pollMessages(): void
     {
+        $this->dispatchIncomingMessageNotice();
         $this->markActiveConversationRead();
     }
 
@@ -210,6 +216,7 @@ class DirectMessages extends Component
 
             $this->activeConversationId = $conversation->id;
             $this->markActiveConversationRead();
+            $this->syncLastSeenMessageId();
             $this->resetValidation();
             $this->dispatch('conversation-opened');
         } catch (AuthorizationException $exception) {
@@ -230,6 +237,51 @@ class DirectMessages extends Component
             ->where('sender_id', '!=', Auth::id())
             ->whereNull('read_at')
             ->update(['read_at' => now()]);
+    }
+
+    private function dispatchIncomingMessageNotice(): void
+    {
+        if (!$this->activeConversationId) {
+            $this->lastSeenMessageId = 0;
+            return;
+        }
+
+        $latestMessageId = (int) DirectMessage::query()
+            ->where('direct_conversation_id', $this->activeConversationId)
+            ->max('id');
+
+        if ($latestMessageId === 0) {
+            $this->lastSeenMessageId = 0;
+            return;
+        }
+
+        if ($latestMessageId <= $this->lastSeenMessageId) {
+            return;
+        }
+
+        $incomingCount = DirectMessage::query()
+            ->where('direct_conversation_id', $this->activeConversationId)
+            ->where('id', '>', $this->lastSeenMessageId)
+            ->where('sender_id', '!=', Auth::id())
+            ->count();
+
+        $this->lastSeenMessageId = $latestMessageId;
+
+        if ($incomingCount > 0) {
+            $this->dispatch('incoming-message', count: $incomingCount);
+        }
+    }
+
+    private function syncLastSeenMessageId(): void
+    {
+        if (!$this->activeConversationId) {
+            $this->lastSeenMessageId = 0;
+            return;
+        }
+
+        $this->lastSeenMessageId = (int) DirectMessage::query()
+            ->where('direct_conversation_id', $this->activeConversationId)
+            ->max('id');
     }
 
     public function render()

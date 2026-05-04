@@ -1,71 +1,59 @@
-{{-- resources/views/livewire/blog/public-blog-post.blade.php --}}
-<div>
-    {{-- Article Header --}}
-    <article class="max-w-8xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <header class="mb-8">
-            {{-- UPDATED: Show all categories --}}
-            @if($post->categories->count() > 0)
-                <div class="mb-4 flex flex-wrap gap-2">
-                    @foreach($post->categories as $category)
-                        <a href="{{ route('blog.category', $category->slug) }}"
-                            class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium"
-                            style="background-color: {{ $category->color }}20; color: {{ $category->color }}">
-                            {{ $category->name }}
+@php
+    $featuredImage = null;
+    if ($post->featured_image) {
+        $featuredImage = \Illuminate\Support\Str::startsWith($post->featured_image, ['http://', 'https://'])
+            ? $post->featured_image
+            : \Illuminate\Support\Facades\Storage::url($post->featured_image);
+    }
+    $userTags = is_array($post->user_tags) ? $post->user_tags : [];
+@endphp
+
+<div class="bk-edge-to-edge bg-slate-50">
+    <article>
+        <header class="bg-slate-950 text-white">
+            <div class="bk-shell py-10 sm:py-14 lg:py-20">
+                <div class="flex flex-wrap gap-2">
+                    @if($post->categories->count() > 0)
+                        @foreach($post->categories as $postCategory)
+                            <a href="{{ route('blog.category', $postCategory->slug) }}" class="rounded-full bg-white/10 px-3 py-1 text-sm font-black text-white">
+                                {{ $postCategory->name }}
+                            </a>
+                        @endforeach
+                    @elseif($post->category)
+                        <a href="{{ route('blog.category', $post->category->slug) }}" class="rounded-full bg-white/10 px-3 py-1 text-sm font-black text-white">
+                            {{ $post->category->name }}
                         </a>
-                    @endforeach
+                    @endif
                 </div>
-            @elseif($post->category)
-                {{-- Fallback for old single category --}}
-                <div class="mb-4">
-                    <a href="{{ route('blog.category', $post->category->slug) }}"
-                        class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium"
-                        style="background-color: {{ $post->category->color }}20; color: {{ $post->category->color }}">
-                        {{ $post->category->name }}
-                    </a>
-                </div>
-            @endif
 
-            <h1 class="text-4xl md:text-5xl font-bold text-gray-900 mb-6">{{ $post->title }}</h1>
+                <h1 class="bk-display mt-5 max-w-4xl text-3xl font-black leading-tight text-white sm:text-5xl lg:text-6xl">
+                    {{ $post->title }}
+                </h1>
 
-            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between border-b border-gray-200 pb-6">
-                <div class="flex items-center mb-4 sm:mb-0">
-                    <div class="flex items-center">
-                        <img src="{{ $post->author->profile_photo_url ?? asset('images/default-avatar.png') }}"
-                            alt="{{ $post->author->name }}" class="w-12 h-12 rounded-full mr-4">
+                <div class="mt-6 flex flex-col gap-5 border-t border-white/10 pt-5 sm:flex-row sm:items-center sm:justify-between">
+                    <div class="flex items-center gap-3">
+                        <img src="{{ $post->author->profile_photo_url ?? asset('images/default-avatar.png') }}" alt="{{ $post->author->name }}" class="h-12 w-12 rounded-full object-cover">
                         <div>
-                            <p class="font-medium text-gray-900">{{ $post->author->name }}</p>
-                            <div class="flex items-center text-sm text-gray-500">
+                            <p class="font-black text-white">{{ $post->author->name }}</p>
+                            <div class="mt-1 flex flex-wrap items-center gap-2 text-sm font-semibold text-slate-300">
                                 <time>{{ $post->published_at->format('M d, Y') }}</time>
                                 @if($post->read_time > 0)
-                                    <span class="mx-2">•</span>
                                     <span>{{ $post->read_time }} min read</span>
                                 @endif
                             </div>
                         </div>
                     </div>
-                </div>
 
-                <div class="flex items-center space-x-4">
-                    <div class="flex items-center text-sm text-gray-500">
-                        <i class="fas fa-eye mr-1"></i>
-                        {{ number_format($post->views_count) }} views
-                    </div>
-
-                    {{-- Reaction Buttons --}}
-                    <div class="flex items-center space-x-2">
-                        <button wire:click="toggleReaction('like')"
-                            class="flex items-center px-3 py-1 rounded-full transition-colors
-                                   {{ $userHasLiked ? 'bg-red-100 text-red-600' : 'bg-gray-100 text-gray-600 hover:bg-red-50 hover:text-red-600' }}">
-                            <i class="fas fa-heart mr-1"></i>
-                            {{ number_format($post->likes_count) }}
+                    <div class="flex flex-wrap items-center gap-2">
+                        <span class="rounded-full bg-white/10 px-3 py-2 text-sm font-bold text-slate-200">
+                            <i class="fas fa-eye mr-1"></i>{{ number_format($post->views_count) }}
+                        </span>
+                        <button wire:click="toggleReaction('like')" class="rounded-full px-3 py-2 text-sm font-black transition {{ $userHasLiked ? 'bg-rose-500 text-white' : 'bg-white/10 text-slate-200 hover:bg-white/15' }}">
+                            <i class="fas fa-heart mr-1"></i>{{ number_format($post->likes_count) }}
                         </button>
-
                         @auth
-                            <button wire:click="toggleReaction('bookmark')"
-                                class="flex items-center px-3 py-1 rounded-full transition-colors
-                                                       {{ $userHasBookmarked ? 'bg-blue-100 text-blue-600' : 'bg-gray-100 text-gray-600 hover:bg-blue-50 hover:text-blue-600' }}">
-                                <i class="fas fa-bookmark mr-1"></i>
-                                {{ $userHasBookmarked ? 'Saved' : 'Save' }}
+                            <button wire:click="toggleReaction('bookmark')" class="rounded-full px-3 py-2 text-sm font-black transition {{ $userHasBookmarked ? 'bg-sky-500 text-white' : 'bg-white/10 text-slate-200 hover:bg-white/15' }}">
+                                <i class="fas fa-bookmark mr-1"></i>{{ $userHasBookmarked ? 'Saved' : 'Save' }}
                             </button>
                         @endauth
                     </div>
@@ -73,205 +61,178 @@
             </div>
         </header>
 
-        {{-- Featured Image --}}
-        <div class="max-w-4xl mx-auto">
-            @if($post->featured_image)
-                <div class="aspect-video mb-8 rounded-xl overflow-hidden">
-                    <a href="{{ route('blog.show', $post->slug) }}">
-                        <img src="{{ $post->featured_image }}" alt="{{ $post->title }}" loading="lazy"
-                            class="w-full h-full object-cover">
-                    </a>
+        @if($featuredImage)
+            <div class="bk-shell -mt-8 sm:-mt-10">
+                <div class="overflow-hidden rounded-[2rem] border-4 border-white bg-slate-100 shadow-2xl shadow-slate-900/10">
+                    <img src="{{ $featuredImage }}" alt="{{ $post->title }}" loading="lazy" class="h-[260px] w-full object-cover sm:h-[420px]">
                 </div>
+            </div>
+        @endif
+
+        <div class="bk-shell py-10 sm:py-14">
+            <div class="grid gap-8 lg:grid-cols-[minmax(0,1fr)_280px]">
+                <div class="bk-card p-5 sm:p-7 lg:p-9">
+                    <div class="prose prose-slate max-w-none prose-headings:font-black prose-a:text-teal-700 prose-img:rounded-2xl">
+                        {!! $post->content !!}
+                    </div>
+
+                    @if(count($userTags) > 0)
+                        <div class="mt-8 flex flex-wrap gap-2 border-t border-slate-100 pt-6">
+                            @foreach($userTags as $tag)
+                                @if(is_string($tag))
+                                    <a href="{{ route('blog.tag', $tag) }}" class="rounded-full bg-slate-100 px-3 py-1 text-sm font-bold text-slate-700">
+                                        #{{ $tag }}
+                                    </a>
+                                @endif
+                            @endforeach
+                        </div>
+                    @endif
+                </div>
+
+                <aside class="space-y-4 lg:sticky lg:top-24 lg:self-start">
+                    <div class="bk-card p-5">
+                        <h2 class="font-black text-slate-950">Share</h2>
+                        <div class="mt-4 grid gap-2">
+                            <a href="https://twitter.com/intent/tweet?url={{ urlencode(request()->url()) }}&text={{ urlencode($post->title) }}" target="_blank" rel="noopener" class="flex items-center gap-3 rounded-2xl bg-slate-50 px-3 py-3 text-sm font-black text-slate-700">
+                                <i class="fab fa-x-twitter text-slate-950"></i>X
+                            </a>
+                            <a href="https://www.facebook.com/sharer/sharer.php?u={{ urlencode(request()->url()) }}" target="_blank" rel="noopener" class="flex items-center gap-3 rounded-2xl bg-slate-50 px-3 py-3 text-sm font-black text-slate-700">
+                                <i class="fab fa-facebook text-blue-700"></i>Facebook
+                            </a>
+                            <a href="https://www.linkedin.com/sharing/share-offsite/?url={{ urlencode(request()->url()) }}" target="_blank" rel="noopener" class="flex items-center gap-3 rounded-2xl bg-slate-50 px-3 py-3 text-sm font-black text-slate-700">
+                                <i class="fab fa-linkedin text-sky-700"></i>LinkedIn
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="bk-soft-card p-5">
+                        <p class="text-sm font-black text-slate-950">Article activity</p>
+                        <div class="mt-4 grid grid-cols-3 gap-2 text-center">
+                            <div class="rounded-2xl bg-white p-3">
+                                <p class="font-black text-slate-950">{{ number_format($post->views_count) }}</p>
+                                <p class="text-[11px] font-bold text-slate-500">Views</p>
+                            </div>
+                            <div class="rounded-2xl bg-white p-3">
+                                <p class="font-black text-slate-950">{{ number_format($post->likes_count) }}</p>
+                                <p class="text-[11px] font-bold text-slate-500">Likes</p>
+                            </div>
+                            <div class="rounded-2xl bg-white p-3">
+                                <p class="font-black text-slate-950">{{ number_format($post->comments_count) }}</p>
+                                <p class="text-[11px] font-bold text-slate-500">Comments</p>
+                            </div>
+                        </div>
+                    </div>
+                </aside>
+            </div>
+
+            @if($post->allow_comments)
+                <section id="comments" class="mt-10">
+                    <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                        <h2 class="bk-display text-3xl font-black text-slate-950">Comments ({{ number_format($post->comments_count) }})</h2>
+                        <button wire:click="toggleCommentForm" class="bk-primary-btn w-full sm:w-auto">
+                            <i class="fas fa-comment text-sm"></i>
+                            Leave a comment
+                        </button>
+                    </div>
+
+                    @if($showCommentForm)
+                        <div class="bk-card mt-6 p-5 sm:p-6">
+                            <h3 class="text-lg font-black text-slate-950">
+                                @if($replyTo)
+                                    Reply to comment
+                                    <button wire:click="cancelReply" class="ml-2 text-sm font-bold text-slate-500">(cancel)</button>
+                                @else
+                                    Leave a comment
+                                @endif
+                            </h3>
+
+                            <form wire:submit.prevent="submitComment" class="mt-5 space-y-4">
+                                @if($errors->has('guestInfo'))
+                                    <div class="rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-semibold text-red-800">
+                                        {{ $errors->first('guestInfo') }}
+                                    </div>
+                                @endif
+
+                                @guest
+                                    <div class="grid gap-4 md:grid-cols-2">
+                                        <div>
+                                            <label class="text-sm font-black text-slate-800">Name</label>
+                                            <input type="text" wire:model="guestName" class="bk-input mt-2" placeholder="Your name">
+                                        </div>
+                                        <div>
+                                            <label class="text-sm font-black text-slate-800">Email</label>
+                                            <input type="email" wire:model="guestEmail" class="bk-input mt-2" placeholder="your@email.com">
+                                            @error('guestEmail')<p class="mt-2 text-sm font-semibold text-red-600">{{ $message }}</p>@enderror
+                                        </div>
+                                    </div>
+                                @endguest
+
+                                <div>
+                                    <label class="text-sm font-black text-slate-800">Comment</label>
+                                    <textarea wire:model="newComment" rows="4" class="bk-input mt-2 resize-none" placeholder="Share your thoughts"></textarea>
+                                    @error('newComment')<p class="mt-2 text-sm font-semibold text-red-600">{{ $message }}</p>@enderror
+                                </div>
+
+                                <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                                    <p class="text-sm text-slate-500">
+                                        @auth
+                                            Commenting as {{ auth()->user()->name }}
+                                        @else
+                                            You can comment as a guest or <a href="{{ route('login') }}" class="font-bold text-teal-700">log in</a>.
+                                        @endauth
+                                    </p>
+                                    <div class="flex gap-2">
+                                        <button type="button" wire:click="toggleCommentForm" class="bk-secondary-btn">Cancel</button>
+                                        <button type="submit" class="bk-primary-btn">Post</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    @endif
+
+                    @if($comments->count() > 0)
+                        <div class="mt-6 space-y-4">
+                            @foreach($comments as $comment)
+                                @livewire('blog.blog-comment-item', ['comment' => $comment], key($comment->id))
+                            @endforeach
+                        </div>
+                        <div class="mt-8">{{ $comments->links() }}</div>
+                    @else
+                        <div class="bk-card mt-6 p-8 text-center">
+                            <i class="fas fa-comments text-4xl text-slate-300"></i>
+                            <p class="mt-3 text-sm font-semibold text-slate-600">No comments yet.</p>
+                        </div>
+                    @endif
+                </section>
             @endif
         </div>
-
-        {{-- Article Content --}}
-        <div class="prose prose-lg max-w-none mb-12">
-            {!! $post->content !!}
-        </div>
-
-        {{-- User Tags (separate from categories) --}}
-        @php
-            $userTags = is_array($post->user_tags) ? $post->user_tags : [];
-        @endphp
-
-        @if(count($userTags) > 0)
-            <div class="flex flex-wrap gap-2 mb-8">
-                <span class="text-sm font-medium text-gray-500 mr-2">Tags:</span>
-                @foreach($userTags as $tag)
-                    @if(is_string($tag))
-                        <a href="{{ route('blog.tag', $tag) }}"
-                            class="px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm hover:bg-gray-200 transition-colors">
-                            #{{ $tag }}
-                        </a>
-                    @endif
-                @endforeach
-            </div>
-        @endif
-
-        {{-- Social Sharing --}}
-        <div class="border-t border-b border-gray-200 py-6 my-8">
-            <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-                <span class="text-lg font-medium text-gray-900">Share this post</span>
-                <div class="flex flex-wrap items-center gap-3">
-                    <a href="https://twitter.com/intent/tweet?url={{ urlencode(request()->url()) }}&text={{ urlencode($post->title) }}"
-                        target="_blank"
-                        class="flex items-center px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors">
-                        <i class="fab fa-twitter mr-2"></i>
-                        Twitter
-                    </a>
-                    <a href="https://www.facebook.com/sharer/sharer.php?u={{ urlencode(request()->url()) }}"
-                        target="_blank"
-                        class="flex items-center px-4 py-2 bg-blue-800 text-white rounded-lg hover:bg-blue-900 transition-colors">
-                        <i class="fab fa-facebook mr-2"></i>
-                        Facebook
-                    </a>
-                    <a href="https://www.linkedin.com/sharing/share-offsite/?url={{ urlencode(request()->url()) }}"
-                        target="_blank"
-                        class="flex items-center px-4 py-2 bg-blue-700 text-white rounded-lg hover:bg-blue-800 transition-colors">
-                        <i class="fab fa-linkedin mr-2"></i>
-                        LinkedIn
-                    </a>
-                </div>
-            </div>
-        </div>
-
-        {{-- Comments Section (unchanged) --}}
-        @if($post->allow_comments)
-            <section id="comments" class="mb-12">
-                <div class="flex items-center justify-between mb-6">
-                    <h3 class="text-2xl font-bold text-gray-900">
-                        Comments ({{ number_format($post->comments_count) }})
-                    </h3>
-                    <button wire:click="toggleCommentForm"
-                        class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
-                        <i class="fas fa-comment mr-2"></i>
-                        Leave a Comment
-                    </button>
-                </div>
-
-                {{-- Comment Form --}}
-                @if($showCommentForm)
-                    <div class="bg-gray-50 rounded-xl p-6 mb-8">
-                        <h4 class="text-lg font-medium mb-4">
-                            @if($replyTo)
-                                Reply to Comment
-                                <button wire:click="cancelReply" class="ml-2 text-sm text-gray-500 hover:text-gray-700">
-                                    (Cancel)
-                                </button>
-                            @else
-                                Leave a Comment
-                            @endif
-                        </h4>
-
-                        <form wire:submit.prevent="submitComment">
-                            @if($errors->has('guestInfo'))
-                                <div class="mb-4 p-3 bg-red-100 border border-red-300 text-red-700 rounded-lg">
-                                    {{ $errors->first('guestInfo') }}
-                                </div>
-                            @endif
-
-                            @guest
-                                <div class="grid md:grid-cols-2 gap-4 mb-4">
-                                    <div>
-                                        <label class="block text-sm font-medium text-gray-700 mb-2">Name (optional)</label>
-                                        <input type="text" wire:model="guestName"
-                                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                                            placeholder="Your name">
-                                    </div>
-                                    <div>
-                                        <label class="block text-sm font-medium text-gray-700 mb-2">Email (optional)</label>
-                                        <input type="email" wire:model="guestEmail"
-                                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                                            placeholder="your@email.com">
-                                        @error('guestEmail')<span class="text-red-500 text-sm">{{ $message }}</span>@enderror
-                                    </div>
-                                </div>
-                            @endguest
-
-                            <div class="mb-4">
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Comment</label>
-                                <textarea wire:model="newComment" rows="4"
-                                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                                    placeholder="Share your thoughts..."></textarea>
-                                @error('newComment')<span class="text-red-500 text-sm">{{ $message }}</span>@enderror
-                            </div>
-
-                            <div class="flex items-center justify-between">
-                                <p class="text-sm text-gray-500">
-                                    @auth
-                                        Commenting as {{ auth()->user()->name }}
-                                    @else
-                                        You can comment as a guest or <a href="{{ route('login') }}"
-                                            class="text-blue-600 hover:underline">login</a>
-                                    @endauth
-                                </p>
-                                <div class="space-x-3">
-                                    <button type="button" wire:click="toggleCommentForm"
-                                        class="px-4 py-2 text-gray-600 hover:text-gray-800">
-                                        Cancel
-                                    </button>
-                                    <button type="submit"
-                                        class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
-                                        Post Comment
-                                    </button>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-                @endif
-
-                {{-- Comments List --}}
-                @if($comments->count() > 0)
-                    <div class="space-y-6">
-                        @foreach($comments as $comment)
-                            @livewire('blog.blog-comment-item', ['comment' => $comment], key($comment->id))
-                        @endforeach
-                    </div>
-
-                    {{-- Comments Pagination --}}
-                    <div class="mt-8">
-                        {{ $comments->links() }}
-                    </div>
-                @else
-                    <div class="text-center py-8">
-                        <i class="fas fa-comments text-4xl text-gray-300 mb-4"></i>
-                        <p class="text-gray-500">No comments yet. Be the first to share your thoughts!</p>
-                    </div>
-                @endif
-            </section>
-        @endif
     </article>
 
-    {{-- Related Posts --}}
     @if($relatedPosts->count() > 0)
-        <section class="bg-gray-50 py-12">
-            <div class="px-4 sm:px-6 lg:px-8">
-                <h3 class="text-3xl font-bold text-gray-900 mb-8 text-center">Related Posts</h3>
-                <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <section class="bg-white py-12 sm:py-16">
+            <div class="bk-shell">
+                <h2 class="bk-display text-3xl font-black text-slate-950">Related posts</h2>
+                <div class="mt-6 grid gap-4 md:grid-cols-2 lg:grid-cols-4">
                     @foreach($relatedPosts as $relatedPost)
-                        <article class="bg-white rounded-xl shadow-sm overflow-hidden hover:shadow-lg transition-shadow">
-                            @if($relatedPost->featured_image)
-                                <div class="aspect-video overflow-hidden">
-                                    <a href="{{ route('blog.show', $relatedPost->slug) }}">
-                                        <img src="{{ Storage::url($relatedPost->featured_image) }}" alt="{{ $relatedPost->title }}"
-                                            class="w-full h-full object-cover hover:scale-105 transition-transform duration-300">
-                                    </a>
-                                </div>
+                        @php
+                            $relatedImage = null;
+                            if ($relatedPost->featured_image) {
+                                $relatedImage = \Illuminate\Support\Str::startsWith($relatedPost->featured_image, ['http://', 'https://'])
+                                    ? $relatedPost->featured_image
+                                    : \Illuminate\Support\Facades\Storage::url($relatedPost->featured_image);
+                            }
+                        @endphp
+                        <article class="bk-card overflow-hidden">
+                            @if($relatedImage)
+                                <a href="{{ route('blog.show', $relatedPost->slug) }}" class="block aspect-video overflow-hidden bg-slate-100">
+                                    <img src="{{ $relatedImage }}" alt="{{ $relatedPost->title }}" class="h-full w-full object-cover transition hover:scale-105">
+                                </a>
                             @endif
                             <div class="p-4">
-                                <h4 class="font-medium mb-2 line-clamp-2">
-                                    <a href="{{ route('blog.show', $relatedPost->slug) }}"
-                                        class="hover:text-blue-600 transition-colors">
-                                        {{ $relatedPost->title }}
-                                    </a>
-                                </h4>
-                                <p class="text-sm text-gray-600 line-clamp-2">{{ $relatedPost->excerpt }}</p>
-                                <div class="flex items-center text-xs text-gray-500 mt-2">
-                                    <span>{{ $relatedPost->published_at->format('M d') }}</span>
-                                    <span class="mx-2">•</span>
-                                    <span>{{ number_format($relatedPost->views_count) }} views</span>
-                                </div>
+                                <h3 class="line-clamp-2 font-black text-slate-950">
+                                    <a href="{{ route('blog.show', $relatedPost->slug) }}" class="hover:text-teal-700">{{ $relatedPost->title }}</a>
+                                </h3>
+                                <p class="mt-2 line-clamp-2 text-sm text-slate-600">{{ $relatedPost->excerpt }}</p>
                             </div>
                         </article>
                     @endforeach

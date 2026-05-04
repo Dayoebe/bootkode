@@ -1,62 +1,40 @@
-<div>
-    {{-- Hero Section --}}
+<div class="bk-edge-to-edge bg-slate-50">
     @if($featuredPosts->count() > 0 && !$search && !$category && !$tag)
-        <section class="bg-gray-700 text-white py-16 mb-12">
-            <div class="px-4 sm:px-6 lg:px-8">
-                <div class="text-center mb-12">
-                    <h1 class="text-4xl md:text-6xl font-bold mb-4">Our Blog</h1>
-                    <p class="text-xl md:text-2xl text-blue-100">Discover insights, stories, and knowledge</p>
-                </div>
+        <section class="bg-slate-950 text-white">
+            <div class="bk-shell py-12 sm:py-16 lg:py-20">
+                <span class="bk-eyebrow border-white/15 bg-white/10 text-white">BootKode Blog</span>
+                <h1 class="bk-display mt-4 max-w-4xl text-3xl font-black leading-tight text-white sm:text-5xl">
+                    Practical notes for learners, builders, and mentors
+                </h1>
+                <p class="mt-4 max-w-2xl text-base leading-7 text-slate-300">
+                    Read field notes, course updates, learning guidance, and career advice from the BootKode ecosystem.
+                </p>
 
-                {{-- Featured Posts --}}
-                <div class="grid md:grid-cols-3 gap-8">
+                <div class="mt-8 grid gap-4 md:grid-cols-3">
                     @foreach($featuredPosts as $post)
-                        <article
-                            class="bg-white/10 backdrop-blur-lg rounded-xl p-6 hover:bg-white/20 transition-all duration-300">
+                        <article class="overflow-hidden rounded-3xl border border-white/10 bg-white/10 backdrop-blur">
                             @if($post->featured_image)
-                                <div class="aspect-video mb-4 rounded-lg overflow-hidden">
-                                    <a href="{{ route('blog.show', $post->slug) }}">
-                                        <img src="{{ $post->featured_image }}" alt="{{ $post->title }}"
-                                            class="w-full h-full object-cover">
-                                    </a>
-                                </div>
-                            @endif
-                            <div class="flex items-center text-sm text-blue-200 mb-2">
-                                <i class="fas fa-calendar mr-2"></i>
-                                {{ $post->published_at->format('M d, Y') }}
-                                
-                                {{-- UPDATED: Show all categories or first category --}}
-                                @if($post->categories->count() > 0)
-                                    <span class="mx-2">•</span>
-                                    <div class="flex flex-wrap gap-1">
-                                        @foreach($post->categories->take(2) as $category)
-                                            <span class="px-2 py-1 bg-white/20 rounded text-xs">{{ $category->name }}</span>
-                                        @endforeach
-                                        @if($post->categories->count() > 2)
-                                            <span class="px-2 py-1 bg-white/20 rounded text-xs">+{{ $post->categories->count() - 2 }}</span>
-                                        @endif
-                                    </div>
-                                @elseif($post->category)
-                                    <span class="mx-2">•</span>
-                                    <span class="px-2 py-1 bg-white/20 rounded">{{ $post->category->name }}</span>
-                                @endif
-                            </div>
-                            <h3 class="text-xl font-bold mb-2 line-clamp-2">
-                                <a href="{{ route('blog.show', $post->slug) }}" class="hover:text-blue-200 transition-colors">
-                                    {{ $post->title }}
+                                <a href="{{ route('blog.show', $post->slug) }}" class="block aspect-video overflow-hidden">
+                                    <img src="{{ $post->featured_image }}" alt="{{ $post->title }}" class="h-full w-full object-cover transition duration-300 hover:scale-105">
                                 </a>
-                            </h3>
-                            <p class="text-blue-100 line-clamp-3 mb-4">{{ $post->excerpt }}</p>
-                            <div class="flex items-center justify-between">
-                                <div class="flex items-center text-sm text-blue-200">
-                                    <i class="fas fa-eye mr-1"></i>
-                                    {{ number_format($post->views_count) }}
-                                    <i class="fas fa-heart ml-3 mr-1"></i>
-                                    {{ number_format($post->likes_count) }}
+                            @endif
+                            <div class="p-5">
+                                <div class="flex flex-wrap items-center gap-2 text-xs font-bold text-slate-300">
+                                    <time>{{ $post->published_at->format('M d, Y') }}</time>
+                                    @if($post->categories->count() > 0)
+                                        @foreach($post->categories->take(1) as $postCategory)
+                                            <span class="rounded-full bg-white/10 px-2 py-1">{{ $postCategory->name }}</span>
+                                        @endforeach
+                                    @elseif($post->category)
+                                        <span class="rounded-full bg-white/10 px-2 py-1">{{ $post->category->name }}</span>
+                                    @endif
                                 </div>
-                                <a href="{{ route('blog.show', $post->slug) }}"
-                                    class="text-white hover:text-blue-200 font-medium">
-                                    Read More →
+                                <h2 class="mt-3 line-clamp-2 text-xl font-black leading-snug text-white">
+                                    <a href="{{ route('blog.show', $post->slug) }}">{{ $post->title }}</a>
+                                </h2>
+                                <p class="mt-2 line-clamp-3 text-sm leading-6 text-slate-300">{{ $post->excerpt }}</p>
+                                <a href="{{ route('blog.show', $post->slug) }}" class="mt-4 inline-flex items-center gap-2 text-sm font-black text-teal-200">
+                                    Read article <i class="fas fa-arrow-right text-xs"></i>
                                 </a>
                             </div>
                         </article>
@@ -66,154 +44,115 @@
         </section>
     @endif
 
-    {{-- Main Content --}}
-    <div class="px-4 sm:px-6 lg:px-8">
-        <div class="flex flex-col lg:flex-row gap-8">
-            {{-- Main Content --}}
-            <main class="lg:w-2/3">
-                {{-- Search & Filters --}}
-                <div class="bg-white rounded-xl shadow-sm p-6 mb-8">
-                    <div class="flex flex-col md:flex-row gap-4 items-end">
-                        <div class="flex-1">
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Search Posts</label>
-                            <input type="text" wire:model.live.debounce.300ms="search" placeholder="Search for posts..."
-                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+    <section class="py-10 sm:py-14 lg:py-16">
+        <div class="bk-shell">
+            <div class="grid gap-8 lg:grid-cols-[0.68fr_0.32fr]">
+                <main>
+                    <div class="bk-card p-4 sm:p-5">
+                        <div class="grid gap-4 md:grid-cols-[1fr_180px_auto] md:items-end">
+                            <div>
+                                <label class="text-sm font-black text-slate-800">Search posts</label>
+                                <input type="text" wire:model.live.debounce.300ms="search" placeholder="Search articles..." class="bk-input mt-2">
+                            </div>
+                            <div>
+                                <label class="text-sm font-black text-slate-800">Sort by</label>
+                                <select wire:model.live="sortBy" class="bk-input mt-2">
+                                    <option value="latest">Latest</option>
+                                    <option value="popular">Popular</option>
+                                    <option value="trending">Trending</option>
+                                    <option value="oldest">Oldest</option>
+                                </select>
+                            </div>
+                            @if($search || $category || $tag)
+                                <button wire:click="clearFilters" class="bk-secondary-btn">Clear</button>
+                            @endif
                         </div>
-                        <div class="md:w-48">
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Sort by</label>
-                            <select wire:model.live="sortBy"
-                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
-                                <option value="latest">Latest</option>
-                                <option value="popular">Popular</option>
-                                <option value="trending">Trending</option>
-                                <option value="oldest">Oldest</option>
-                            </select>
-                        </div>
+
                         @if($search || $category || $tag)
-                            <button wire:click="clearFilters"
-                                class="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors">
-                                Clear Filters
-                            </button>
+                            <div class="mt-4 flex flex-wrap gap-2">
+                                @if($search)
+                                    <span class="rounded-full bg-sky-50 px-3 py-1 text-sm font-bold text-sky-800">Search: "{{ $search }}"</span>
+                                @endif
+                                @if($category)
+                                    <span class="rounded-full bg-teal-50 px-3 py-1 text-sm font-bold text-teal-800">Category: {{ $category->name }}</span>
+                                @endif
+                                @if($tag)
+                                    <span class="rounded-full bg-rose-50 px-3 py-1 text-sm font-bold text-rose-800">Tag: {{ $tag }}</span>
+                                @endif
+                            </div>
                         @endif
                     </div>
 
-                    {{-- Active Filters --}}
-                    @if($search || $category || $tag)
-                        <div class="mt-4 flex flex-wrap gap-2">
-                            @if($search)
-                                <span class="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm">
-                                    Search: "{{ $search }}"
-                                </span>
-                            @endif
-                            @if($category)
-                                <span class="px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm">
-                                    Category: {{ $category->name }}
-                                </span>
-                            @endif
-                            @if($tag)
-                                <span class="px-3 py-1 bg-purple-100 text-purple-800 rounded-full text-sm">
-                                    Tag: {{ $tag }}
-                                </span>
+                    @if($posts->count() > 0)
+                        <div class="mt-6 grid gap-4 md:grid-cols-2">
+                            @foreach($posts as $post)
+                                <article class="bk-card overflow-hidden">
+                                    @if($post->featured_image)
+                                        <a href="{{ route('blog.show', $post->slug) }}" class="block aspect-video overflow-hidden bg-slate-100">
+                                            <img src="{{ $post->featured_image }}" alt="{{ $post->title }}" class="h-full w-full object-cover transition duration-300 hover:scale-105">
+                                        </a>
+                                    @endif
+
+                                    <div class="p-5">
+                                        <div class="flex items-center gap-3 text-xs font-bold text-slate-500">
+                                            <img src="{{ $post->author->profile_photo_url ?? asset('images/default-avatar.png') }}" alt="{{ $post->author->name }}" class="h-8 w-8 rounded-full object-cover">
+                                            <span class="truncate">{{ $post->author->name }}</span>
+                                            <span>{{ $post->published_at->format('M d, Y') }}</span>
+                                        </div>
+
+                                        @if($post->categories->count() > 0)
+                                            <div class="mt-4 flex flex-wrap gap-2">
+                                                @foreach($post->categories->take(3) as $postCategory)
+                                                    <a href="{{ route('blog.category', $postCategory->slug) }}" class="rounded-full bg-slate-100 px-2.5 py-1 text-xs font-black text-slate-700">
+                                                        {{ $postCategory->name }}
+                                                    </a>
+                                                @endforeach
+                                            </div>
+                                        @elseif($post->category)
+                                            <div class="mt-4">
+                                                <a href="{{ route('blog.category', $post->category->slug) }}" class="rounded-full bg-slate-100 px-2.5 py-1 text-xs font-black text-slate-700">
+                                                    {{ $post->category->name }}
+                                                </a>
+                                            </div>
+                                        @endif
+
+                                        <h2 class="mt-3 line-clamp-2 text-xl font-black leading-snug text-slate-950">
+                                            <a href="{{ route('blog.show', $post->slug) }}" class="hover:text-teal-700">{{ $post->title }}</a>
+                                        </h2>
+                                        <p class="mt-2 line-clamp-3 text-sm leading-6 text-slate-600">{{ $post->excerpt }}</p>
+
+                                        <div class="mt-4 flex items-center justify-between gap-3 border-t border-slate-100 pt-4">
+                                            <div class="flex items-center gap-3 text-xs font-bold text-slate-500">
+                                                <span><i class="fas fa-eye mr-1"></i>{{ number_format($post->views_count) }}</span>
+                                                <span><i class="fas fa-heart mr-1"></i>{{ number_format($post->likes_count) }}</span>
+                                                <span><i class="fas fa-comment mr-1"></i>{{ number_format($post->comments_count) }}</span>
+                                            </div>
+                                            <a href="{{ route('blog.show', $post->slug) }}" class="text-sm font-black text-teal-700">Read</a>
+                                        </div>
+                                    </div>
+                                </article>
+                            @endforeach
+                        </div>
+
+                        <div class="mt-8">
+                            {{ $posts->links() }}
+                        </div>
+                    @else
+                        <div class="bk-card mt-6 p-10 text-center">
+                            <i class="fas fa-search text-4xl text-slate-300"></i>
+                            <h2 class="mt-4 text-xl font-black text-slate-950">No posts found</h2>
+                            <p class="mt-2 text-sm text-slate-600">Try a different search term or clear your filters.</p>
+                            @if($search || $category || $tag)
+                                <button wire:click="clearFilters" class="bk-primary-btn mt-5">Clear filters</button>
                             @endif
                         </div>
                     @endif
-                </div>
+                </main>
 
-                {{-- Posts Grid --}}
-                @if($posts->count() > 0)
-                    <div class="grid md:grid-cols-2 gap-8 mb-8">
-                        @foreach($posts as $post)
-                            <article
-                                class="bg-white rounded-xl shadow-sm overflow-hidden hover:shadow-lg transition-shadow duration-300">
-                                @if($post->featured_image)
-                                    <div class="aspect-video overflow-hidden">
-                                        <a href="{{ route('blog.show', $post->slug) }}">
-                                            <img src="{{ $post->featured_image }}" alt="{{ $post->title }}"
-                                                class="w-full h-full object-cover hover:scale-105 transition-transform duration-300">
-                                        </a>
-                                    </div>
-                                @endif
-
-                                <div class="p-6">
-                                    <div class="flex items-center text-sm text-gray-500 mb-3">
-                                        <img src="{{ $post->author->profile_photo_url ?? asset('images/default-avatar.png') }}"
-                                            alt="{{ $post->author->name }}" class="w-6 h-6 rounded-full mr-2">
-                                        <span>{{ $post->author->name }}</span>
-                                        <span class="mx-2">•</span>
-                                        <time>{{ $post->published_at->format('M d, Y') }}</time>
-                                    </div>
-
-                                    {{-- UPDATED: Show all categories --}}
-                                    @if($post->categories->count() > 0)
-                                        <div class="flex flex-wrap gap-2 mb-3">
-                                            @foreach($post->categories as $category)
-                                                <a href="{{ route('blog.category', $category->slug) }}"
-                                                    class="px-2 py-1 rounded text-xs font-medium"
-                                                    style="background-color: {{ $category->color }}20; color: {{ $category->color }}">
-                                                    {{ $category->name }}
-                                                </a>
-                                            @endforeach
-                                        </div>
-                                    @elseif($post->category)
-                                        {{-- Fallback for old single category --}}
-                                        <div class="mb-3">
-                                            <a href="{{ route('blog.category', $post->category->slug) }}"
-                                                class="px-2 py-1 rounded text-xs font-medium inline-block"
-                                                style="background-color: {{ $post->category->color }}20; color: {{ $post->category->color }}">
-                                                {{ $post->category->name }}
-                                            </a>
-                                        </div>
-                                    @endif
-
-                                    <h2 class="text-xl font-bold mb-3 line-clamp-2">
-                                        <a href="{{ route('blog.show', $post->slug) }}"
-                                            class="hover:text-blue-600 transition-colors">
-                                            {{ $post->title }}
-                                        </a>
-                                    </h2>
-
-                                    <p class="text-gray-600 mb-4 line-clamp-3">{{ $post->excerpt }}</p>
-
-                                    <div class="flex items-center justify-between">
-                                        <div class="flex items-center text-sm text-gray-500 space-x-4">
-                                            <span><i class="fas fa-eye mr-1"></i>{{ number_format($post->views_count) }}</span>
-                                            <span><i class="fas fa-heart mr-1"></i>{{ number_format($post->likes_count) }}</span>
-                                            <span><i class="fas fa-comment mr-1"></i>{{ number_format($post->comments_count) }}</span>
-                                            @if($post->read_time > 0)
-                                                <span><i class="fas fa-clock mr-1"></i>{{ $post->read_time }} min read</span>
-                                            @endif
-                                        </div>
-                                        <a href="{{ route('blog.show', $post->slug) }}"
-                                            class="text-blue-600 hover:text-blue-800 font-medium">
-                                            Read More →
-                                        </a>
-                                    </div>
-                                </div>
-                            </article>
-                        @endforeach
-                    </div>
-
-                    {{-- Pagination --}}
-                    {{ $posts->links() }}
-                @else
-                    <div class="text-center py-12">
-                        <i class="fas fa-search text-6xl text-gray-300 mb-4"></i>
-                        <h3 class="text-xl font-medium text-gray-900 mb-2">No posts found</h3>
-                        <p class="text-gray-500 mb-6">We couldn't find any posts matching your criteria.</p>
-                        @if($search || $category || $tag)
-                            <button wire:click="clearFilters"
-                                class="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
-                                Clear Filters
-                            </button>
-                        @endif
-                    </div>
-                @endif
-            </main>
-
-            {{-- Sidebar --}}
-            <aside class="lg:w-1/3">
-                @livewire('blog.blog-sidebar', ['currentCategory' => $category])
-            </aside>
+                <aside class="lg:sticky lg:top-24 lg:self-start">
+                    @livewire('blog.blog-sidebar', ['currentCategory' => $category])
+                </aside>
+            </div>
         </div>
-    </div>
+    </section>
 </div>

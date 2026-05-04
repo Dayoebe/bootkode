@@ -1,192 +1,115 @@
-<div class="p-4 md:p-8 bg-gray-50 dark:bg-gray-900 min-h-screen font-sans">
-    <!-- Header Section -->
-    <header class="text-center mb-16">
-        <div class="relative">
-            <h1 class="text-5xl md:text-6xl font-bold text-gray-900 dark:text-white mb-6 tracking-tight">
-                Welcome to BootKode
+@php
+    $tabs = [
+        'student' => ['label' => 'Students', 'icon' => 'fa-user-graduate'],
+        'instructor' => ['label' => 'Instructors', 'icon' => 'fa-chalkboard-user'],
+        'mentor' => ['label' => 'Mentors', 'icon' => 'fa-people-arrows'],
+        'certificate' => ['label' => 'Certificates', 'icon' => 'fa-certificate'],
+    ];
+
+    $guides = [
+        'student' => [
+            ['title' => 'Choose one complete path', 'copy' => 'Start with a course that matches your current goal. Finish its modules before jumping across unrelated topics.'],
+            ['title' => 'Practice after every lesson', 'copy' => 'Turn each lesson into a small task, note, code sample, dashboard, or project commit.'],
+            ['title' => 'Keep proof of progress', 'copy' => 'Save screenshots, repos, notes, certificates, and capstone outcomes as portfolio evidence.'],
+        ],
+        'instructor' => [
+            ['title' => 'Teach with outcomes', 'copy' => 'Every module should have a clear learner result, practice task, and review checkpoint.'],
+            ['title' => 'Keep lessons practical', 'copy' => 'Use real examples, common mistakes, and professional criteria instead of vague theory.'],
+            ['title' => 'Review before publishing', 'copy' => 'Check structure, clarity, mobile readability, quizzes, and completion requirements.'],
+        ],
+        'mentor' => [
+            ['title' => 'Review the work, not only the answer', 'copy' => 'Look at reasoning, structure, tradeoffs, naming, and failure handling.'],
+            ['title' => 'Give specific next actions', 'copy' => 'Feedback should leave the learner with a clear improvement step.'],
+            ['title' => 'Support consistency', 'copy' => 'Help learners keep a realistic weekly rhythm and unblock them quickly.'],
+        ],
+        'certificate' => [
+            ['title' => 'Complete the course requirements', 'copy' => 'Meet the completion threshold, required assessments, and project expectations.'],
+            ['title' => 'Request review when ready', 'copy' => 'Submit only after your course progress and evidence are clean enough to verify.'],
+            ['title' => 'Share verified credentials', 'copy' => 'Use the certificate verification link when presenting your achievement.'],
+        ],
+    ];
+@endphp
+
+<div class="bk-edge-to-edge bg-slate-50">
+    <section class="bg-slate-950 text-white">
+        <div class="bk-shell py-12 sm:py-16 lg:py-20">
+            <span class="bk-eyebrow border-white/15 bg-white/10 text-white">Guidelines</span>
+            <h1 class="bk-display mt-4 max-w-4xl text-3xl font-black leading-tight text-white sm:text-5xl">
+                A clear operating standard for learners, instructors, mentors, and certificates
             </h1>
-            <div class="w-24 h-1 bg-blue-600 mx-auto mb-6 rounded-full"></div>
-            <p class="text-xl md:text-2xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto leading-relaxed">
-                Your comprehensive pathway to digital excellence, professional mentorship, and a thriving tech career in
-                Africa's growing digital economy.
-            </p>
-            <div class="flex justify-center items-center mt-8 space-x-8 flex-wrap gap-4">
-                <div class="text-center">
-                    <div class="text-2xl font-bold text-blue-600">{{ number_format($stats['totalUsers']) }}+</div>
-                    <div class="text-sm text-gray-500">Active Users</div>
+            <div class="mt-8 grid grid-cols-2 gap-3 lg:grid-cols-4">
+                @foreach ([
+                    ['label' => 'Learners', 'value' => $stats['totalStudents'] ?? 0],
+                    ['label' => 'Courses', 'value' => $stats['totalCourses'] ?? 0],
+                    ['label' => 'Lessons', 'value' => $stats['totalLessons'] ?? 0],
+                    ['label' => 'Assessments', 'value' => $stats['totalAssessments'] ?? 0],
+                ] as $stat)
+                    <div class="rounded-2xl border border-white/10 bg-white/10 p-4">
+                        <p class="text-2xl font-black text-white">{{ number_format($stat['value']) }}</p>
+                        <p class="mt-1 text-sm font-bold text-slate-300">{{ $stat['label'] }}</p>
+                    </div>
+                @endforeach
+            </div>
+        </div>
+    </section>
+
+    <section class="py-10 sm:py-14 lg:py-16">
+        <div class="bk-shell grid gap-6 lg:grid-cols-[0.32fr_0.68fr]">
+            <aside class="lg:sticky lg:top-24 lg:self-start">
+                <div class="bk-card p-3">
+                    @foreach ($tabs as $key => $tab)
+                        <button
+                            type="button"
+                            wire:click="selectTab('{{ $key }}')"
+                            class="flex w-full items-center gap-3 rounded-2xl px-4 py-3 text-left text-sm font-black transition {{ $activeTab === $key ? 'bg-slate-950 text-white' : 'text-slate-700 hover:bg-slate-100' }}"
+                        >
+                            <i class="fas {{ $tab['icon'] }} w-5 {{ $activeTab === $key ? 'text-white' : 'text-teal-700' }}"></i>
+                            {{ $tab['label'] }}
+                        </button>
+                    @endforeach
                 </div>
-                <div class="text-center">
-                    <div class="text-2xl font-bold text-blue-600">{{ number_format($stats['totalCourses']) }}+</div>
-                    <div class="text-sm text-gray-500">Courses Available</div>
+            </aside>
+
+            <div class="space-y-5">
+                <div class="bk-card p-5 sm:p-6">
+                    <div class="flex items-start gap-4">
+                        <span class="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-teal-50 text-teal-700">
+                            <i class="fas {{ $tabs[$activeTab]['icon'] ?? 'fa-compass' }}"></i>
+                        </span>
+                        <div>
+                            <p class="text-sm font-black text-teal-700">{{ $tabs[$activeTab]['label'] ?? 'Guideline' }}</p>
+                            <h2 class="bk-display mt-1 text-3xl font-black text-slate-950">What good progress looks like</h2>
+                        </div>
+                    </div>
                 </div>
-                <div class="text-center">
-                    <div class="text-2xl font-bold text-blue-600">{{ $stats['successRate'] }}%</div>
-                    <div class="text-sm text-gray-500">Success Rate</div>
+
+                <div class="grid gap-4 md:grid-cols-3">
+                    @foreach ($guides[$activeTab] ?? $guides['student'] as $index => $guide)
+                        <article class="bk-card p-5">
+                            <span class="grid h-10 w-10 place-items-center rounded-2xl bg-slate-100 text-sm font-black text-slate-950">{{ $index + 1 }}</span>
+                            <h3 class="mt-4 text-lg font-black text-slate-950">{{ $guide['title'] }}</h3>
+                            <p class="mt-2 text-sm leading-6 text-slate-600">{{ $guide['copy'] }}</p>
+                        </article>
+                    @endforeach
                 </div>
-                <div class="text-center">
-                    <div class="text-2xl font-bold text-blue-600">{{ number_format($stats['totalLessons']) }}+</div>
-                    <div class="text-sm text-gray-500">Total Lessons</div>
+
+                <div class="bk-soft-card p-5 sm:p-6">
+                    <div class="grid gap-4 sm:grid-cols-3">
+                        <div>
+                            <p class="text-2xl font-black text-slate-950">{{ number_format($stats['totalEnrollments'] ?? 0) }}</p>
+                            <p class="text-sm font-bold text-slate-600">Enrollments</p>
+                        </div>
+                        <div>
+                            <p class="text-2xl font-black text-slate-950">{{ number_format($stats['completedCourses'] ?? 0) }}</p>
+                            <p class="text-sm font-bold text-slate-600">Completed courses</p>
+                        </div>
+                        <div>
+                            <p class="text-2xl font-black text-slate-950">{{ $stats['successRate'] ?? 0 }}%</p>
+                            <p class="text-sm font-bold text-slate-600">Completion rate</p>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-    </header>
-
-    <!-- Tab Navigation -->
-    <div
-        class="flex flex-wrap justify-center mb-12 gap-3 bg-white dark:bg-gray-800 p-2 rounded-2xl shadow-lg max-w-4xl mx-auto">
-        <button wire:click="selectTab('student')"
-            class="flex items-center space-x-3 px-8 py-4 rounded-xl font-semibold transition-all duration-300 {{ $activeTab === 'student' ? 'bg-blue-600 text-white shadow-md' : 'text-gray-600 hover:text-blue-600 hover:bg-blue-50 dark:text-gray-300 dark:hover:bg-gray-700' }}">
-            <i class="fas fa-user-graduate text-lg"></i>
-            <span>Students</span>
-            <span
-                class="bg-blue-100 text-blue-600 px-2 py-1 rounded-full text-xs ml-2">{{ number_format($stats['totalStudents']) }}</span>
-        </button>
-        <button wire:click="selectTab('instructor')"
-            class="flex items-center space-x-3 px-8 py-4 rounded-xl font-semibold transition-all duration-300 {{ $activeTab === 'instructor' ? 'bg-blue-600 text-white shadow-md' : 'text-gray-600 hover:text-blue-600 hover:bg-blue-50 dark:text-gray-300 dark:hover:bg-gray-700' }}">
-            <i class="fas fa-chalkboard-teacher text-lg"></i>
-            <span>Instructors</span>
-            <span
-                class="bg-blue-100 text-blue-600 px-2 py-1 rounded-full text-xs ml-2">{{ number_format($stats['totalInstructors']) }}</span>
-        </button>
-        <button wire:click="selectTab('mentor')"
-            class="flex items-center space-x-3 px-8 py-4 rounded-xl font-semibold transition-all duration-300 {{ $activeTab === 'mentor' ? 'bg-blue-600 text-white shadow-md' : 'text-gray-600 hover:text-blue-600 hover:bg-blue-50 dark:text-gray-300 dark:hover:bg-gray-700' }}">
-            <i class="fas fa-handshake text-lg"></i>
-            <span>Mentors</span>
-            <span
-                class="bg-blue-100 text-blue-600 px-2 py-1 rounded-full text-xs ml-2">{{ number_format($stats['totalMentors']) }}</span>
-        </button>
-        <button wire:click="selectTab('admin')"
-            class="flex items-center space-x-3 px-8 py-4 rounded-xl font-semibold transition-all duration-300 {{ $activeTab === 'admin' ? 'bg-blue-600 text-white shadow-md' : 'text-gray-600 hover:text-blue-600 hover:bg-blue-50 dark:text-gray-300 dark:hover:bg-gray-700' }}">
-            <i class="fas fa-user-shield text-lg"></i>
-            <span>Admins</span>
-        </button>
-    </div>
-
-    <!-- Tab Content Container -->
-    <div class="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl p-8 md:p-12 ">
-
-        <!-- Student Tab -->
-        @if($activeTab === 'student')
-            @include('livewire.manual-pages.guidelines.student-tab', ['stats' => $stats])
-        @endif
-
-        <!-- Instructor Tab -->
-        @if($activeTab === 'instructor')
-            @include('livewire.manual-pages.guidelines.instructor-tab', ['stats' => $stats])
-        @endif
-
-        <!-- Mentor Tab -->
-        @if($activeTab === 'mentor')
-            @include('livewire.manual-pages.guidelines.mentor-tab', ['stats' => $stats])
-        @endif
-
-        <!-- Admin Tab -->
-        @if($activeTab === 'admin')
-            @include('livewire.manual-pages.guidelines.admin-tab', ['stats' => $stats])
-        @endif
-
-    </div>
-
-    <!-- Call to Action Section -->
-    <div class="mt-16 bg-blue-600 rounded-3xl p-8 md:p-12 text-center text-white">
-        <h3 class="text-3xl md:text-4xl font-bold mb-4">Ready to Transform Your Future?</h3>
-        <p class="text-xl mb-8 text-blue-100 max-w-3xl mx-auto">
-            Join over {{ number_format($stats['totalUsers']) }} learners,
-            {{ number_format($stats['totalInstructors']) }} instructors, {{ number_format($stats['totalMentors']) }}
-            mentors,
-            and administrators who are building Africa's digital future through BootKode.
-        </p>
-        <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
-            <a href="{{ route('register') }}"
-                class="bg-white text-blue-600 px-8 py-4 rounded-xl font-semibold text-lg hover:bg-blue-50 transition-colors duration-300 shadow-lg inline-flex items-center">
-                <i class="fas fa-rocket mr-2"></i>
-                Get Started Today
-            </a>
-            <a href="#"
-                class="border-2 border-white text-white px-8 py-4 rounded-xl font-semibold text-lg hover:bg-white hover:text-blue-600 transition-colors duration-300 inline-flex items-center">
-                <i class="fas fa-calendar-alt mr-2"></i>
-                Schedule a Demo
-            </a>
-        </div>
-        <div class="mt-8 flex justify-center items-center space-x-8 text-blue-100 flex-wrap gap-4">
-            <div class="flex items-center">
-                <i class="fas fa-check mr-2"></i>
-                <span>Free to start</span>
-            </div>
-            <div class="flex items-center">
-                <i class="fas fa-check mr-2"></i>
-                <span>No setup fees</span>
-            </div>
-            <div class="flex items-center">
-                <i class="fas fa-check mr-2"></i>
-                <span>24/7 support</span>
-            </div>
-            <div class="flex items-center">
-                <i class="fas fa-check mr-2"></i>
-                <span>{{ $stats['successRate'] }}% success rate</span>
-            </div>
-        </div>
-    </div>
-
-    <style>
-        body {
-            font-family: 'Inter', sans-serif;
-        }
-
-        .shadow-2xl {
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-        }
-
-        .shadow-lg {
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-        }
-
-        /* Custom animations */
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .animate-fade-in-up {
-            animation: fadeInUp 0.8s ease-out forwards;
-        }
-
-        /* Hover effects */
-        .hover-lift {
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-
-        .hover-lift:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.15);
-        }
-
-        /* Dark mode improvements */
-        .dark .bg-white {
-            background-color: #1f2937;
-        }
-
-        .dark .shadow-2xl {
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-        }
-
-        /* Responsive improvements */
-        @media (max-width: 768px) {
-            .roadmap-step {
-                flex-direction: column;
-                text-align: center;
-            }
-
-            .roadmap-line {
-                display: none;
-            }
-        }
-    </style>
+    </section>
 </div>

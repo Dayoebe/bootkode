@@ -6,17 +6,48 @@
 
 <div
     class="mx-auto max-w-7xl"
-    wire:poll.5000ms="pollMessages"
+    wire:poll.2000ms="pollMessages"
     x-data="{
         conversationsOpen: false,
         desktopConversationsOpen: true,
         draft: '',
         sending: false,
+        newMessageCount: 0,
+        pinnedToBottom: true,
         scrollMessages() {
             this.$nextTick(() => {
                 const el = this.$refs.messages;
-                if (el) el.scrollTop = el.scrollHeight;
+                if (!el) return;
+
+                el.scrollTop = el.scrollHeight;
+                this.pinnedToBottom = true;
             });
+        },
+        isNearBottom() {
+            const el = this.$refs.messages;
+            if (!el) return true;
+
+            return el.scrollHeight - el.scrollTop - el.clientHeight < 180;
+        },
+        handleMessagesScroll() {
+            this.pinnedToBottom = this.isNearBottom();
+
+            if (this.pinnedToBottom) {
+                this.newMessageCount = 0;
+            }
+        },
+        handleIncomingMessage(count) {
+            if (this.pinnedToBottom || this.isNearBottom()) {
+                this.newMessageCount = 0;
+                this.scrollMessages();
+                return;
+            }
+
+            this.newMessageCount += Number(count || 1);
+        },
+        viewLatestMessage() {
+            this.newMessageCount = 0;
+            this.scrollMessages();
         },
         resizeComposer() {
             this.$nextTick(() => {
@@ -47,7 +78,8 @@
         }
     }"
     x-init="scrollMessages()"
-    x-on:conversation-opened.window="conversationsOpen = false; scrollMessages()">
+    x-on:conversation-opened.window="conversationsOpen = false; newMessageCount = 0; scrollMessages()"
+    x-on:incoming-message.window="handleIncomingMessage($event.detail.count)">
     @error('messageBody')
         <div class="mb-4 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
             {{ $message }}
@@ -90,7 +122,7 @@
                 </aside>
             </div>
 
-            <section class="flex min-h-0 min-w-0 flex-1 flex-col bg-themed-primary">
+            <section class="relative flex min-h-0 min-w-0 flex-1 flex-col bg-themed-primary">
                 <header class="flex min-h-[4.5rem] items-center justify-between gap-3 border-b border-themed-primary bg-themed-secondary px-3 py-3 sm:px-5">
                     <div class="flex min-w-0 items-center gap-3">
                         <button
@@ -133,55 +165,78 @@
                     @endif
                 </header>
 
-                <div class="min-h-0 flex-1 overflow-y-auto px-3 py-4 sm:px-5" x-ref="messages" x-init="scrollMessages()">
-                    @if ($activeConversation)
-                        <div class="mx-auto flex max-w-3xl flex-col gap-4">
-                            @forelse ($messages as $directMessage)
-                                @php
-                                    $isMine = (int) $directMessage->sender_id === (int) $authId;
-                                @endphp
+                <div class="relative min-h-0 flex-1">
+                    <div
+                        class="h-full overflow-y-auto px-3 py-4 sm:px-5"
+                        x-ref="messages"
+                        x-init="scrollMessages()"
+                        x-on:scroll.passive="handleMessagesScroll()">
+                        @if ($activeConversation)
+                            <div class="mx-auto flex max-w-3xl flex-col gap-4">
+                                @forelse ($messages as $directMessage)
+                                    @php
+                                        $isMine = (int) $directMessage->sender_id === (int) $authId;
+                                    @endphp
 
-                                <div class="flex {{ $isMine ? 'justify-end' : 'justify-start' }}">
-                                    <div class="max-w-[88%] sm:max-w-[76%]">
-                                        <div class="{{ $isMine ? 'rounded-l-xl rounded-tr-xl bg-blue-600 text-white' : 'rounded-r-xl rounded-tl-xl border border-themed-primary bg-themed-secondary text-themed-primary' }} px-4 py-3 shadow-sm">
-                                            <p class="break-words whitespace-pre-line text-sm leading-6">{{ $directMessage->body }}</p>
-                                        </div>
+                                    <div class="flex {{ $isMine ? 'justify-end' : 'justify-start' }}">
+                                        <div class="max-w-[88%] sm:max-w-[76%]">
+                                            <div class="{{ $isMine ? 'rounded-l-xl rounded-tr-xl bg-blue-600 text-white' : 'rounded-r-xl rounded-tl-xl border border-themed-primary bg-themed-secondary text-themed-primary' }} px-4 py-3 shadow-sm">
+                                                <p class="break-words whitespace-pre-line text-sm leading-6">{{ $directMessage->body }}</p>
+                                            </div>
 
-                                        <div class="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1 text-[11px] {{ $isMine ? 'justify-end text-themed-tertiary' : 'text-themed-secondary' }}">
-                                            <span class="max-w-[9rem] truncate">{{ $directMessage->sender?->name }}</span>
-                                            <span>{{ $directMessage->created_at->format('M j, g:i A') }}</span>
-                                            @if ($isMine && $directMessage->read_at)
-                                                <span>Read</span>
-                                            @endif
+                                            <div class="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1 text-[11px] {{ $isMine ? 'justify-end text-themed-tertiary' : 'text-themed-secondary' }}">
+                                                <span class="max-w-[9rem] truncate">{{ $directMessage->sender?->name }}</span>
+                                                <span>{{ $directMessage->created_at->format('M j, g:i A') }}</span>
+                                                @if ($isMine && $directMessage->read_at)
+                                                    <span>Read</span>
+                                                @endif
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                            @empty
-                                <div class="flex min-h-[22rem] items-center justify-center text-center">
-                                    <div>
-                                        <div class="mx-auto flex h-14 w-14 items-center justify-center rounded-lg bg-themed-tertiary">
-                                            <i class="fas fa-comment-dots text-xl text-themed-secondary"></i>
+                                @empty
+                                    <div class="flex min-h-[22rem] items-center justify-center text-center">
+                                        <div>
+                                            <div class="mx-auto flex h-14 w-14 items-center justify-center rounded-lg bg-themed-tertiary">
+                                                <i class="fas fa-comment-dots text-xl text-themed-secondary"></i>
+                                            </div>
+                                            <p class="mt-4 text-sm font-semibold text-themed-primary">Start the conversation</p>
                                         </div>
-                                        <p class="mt-4 text-sm font-semibold text-themed-primary">Start the conversation</p>
                                     </div>
-                                </div>
-                            @endforelse
-                        </div>
-                    @else
-                        <div class="flex h-full items-center justify-center p-6 text-center">
-                            <div class="max-w-sm">
-                                <div class="mx-auto flex h-16 w-16 items-center justify-center rounded-lg bg-themed-secondary shadow">
-                                    <i class="fas fa-comments text-2xl text-themed-secondary"></i>
-                                </div>
-                                <h2 class="mt-4 text-lg font-semibold text-themed-primary">Choose a conversation</h2>
-                                <button
-                                    type="button"
-                                    @click="conversationsOpen = true"
-                                    class="mt-5 inline-flex items-center justify-center gap-2 rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-blue-700 lg:hidden">
-                                    <i class="fas fa-comments"></i>
-                                    Conversations
-                                </button>
+                                @endforelse
                             </div>
+                        @else
+                            <div class="flex h-full items-center justify-center p-6 text-center">
+                                <div class="max-w-sm">
+                                    <div class="mx-auto flex h-16 w-16 items-center justify-center rounded-lg bg-themed-secondary shadow">
+                                        <i class="fas fa-comments text-2xl text-themed-secondary"></i>
+                                    </div>
+                                    <h2 class="mt-4 text-lg font-semibold text-themed-primary">Choose a conversation</h2>
+                                    <button
+                                        type="button"
+                                        @click="conversationsOpen = true"
+                                        class="mt-5 inline-flex items-center justify-center gap-2 rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-blue-700 lg:hidden">
+                                        <i class="fas fa-comments"></i>
+                                        Conversations
+                                    </button>
+                                </div>
+                            </div>
+                        @endif
+                    </div>
+
+                    @if ($activeConversation)
+                        <div
+                            x-cloak
+                            x-show="newMessageCount > 0"
+                            x-transition.opacity.duration.150ms
+                            class="pointer-events-none absolute inset-x-0 bottom-4 z-10 flex justify-center px-4">
+                            <button
+                                type="button"
+                                @click="viewLatestMessage()"
+                                class="pointer-events-auto inline-flex items-center gap-2 rounded-full bg-blue-600 px-4 py-2 text-xs font-semibold text-white shadow-lg ring-1 ring-white/20 transition hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400">
+                                <i class="fas fa-arrow-down text-[11px]"></i>
+                                <span x-text="newMessageCount === 1 ? '1 new message' : `${newMessageCount} new messages`"></span>
+                                <span class="underline underline-offset-2">View</span>
+                            </button>
                         </div>
                     @endif
                 </div>

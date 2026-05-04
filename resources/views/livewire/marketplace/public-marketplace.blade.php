@@ -1,649 +1,304 @@
-{{-- resources/views/livewire/marketplace/public-marketplace.blade.php --}}
-<div class="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-300" x-data="{ mobileFiltersOpen: false, mobileMenuOpen: false }">
-    @if($activeView === 'browse')
-        <!-- Hero Section -->
-        <section class="bg-white dark:bg-gray-800 transition-colors duration-300">
-            <div class=" px-4 sm:px-6 lg:px-8 py-12 lg:py-16">
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+@php
+    $imageFor = function ($item) {
+        if ($item && method_exists($item, 'getPrimaryImage') && $item->getPrimaryImage()) {
+            return \Illuminate\Support\Facades\Storage::url($item->getPrimaryImage());
+        }
+
+        return asset('images/default-course.png');
+    };
+
+    $title = match ($activeView) {
+        'search' => 'Search results',
+        'category' => $selectedCategory?->name ?? 'Category',
+        'vendor' => $selectedVendor?->name ?? 'Instructor',
+        default => 'BootKode Marketplace',
+    };
+@endphp
+
+<div class="bk-edge-to-edge bg-slate-50" x-data="{ filtersOpen: false }">
+    @if($activeView === 'product' && $selectedProduct)
+        <section class="bg-slate-950 text-white">
+            <div class="bk-shell py-10 sm:py-14 lg:py-16">
+                <button wire:click="backToBrowse" class="inline-flex items-center gap-2 rounded-full bg-white/10 px-4 py-2 text-sm font-black text-white transition hover:bg-white/15">
+                    <i class="fas fa-arrow-left text-xs"></i>
+                    Marketplace
+                </button>
+                <div class="mt-6 grid gap-8 lg:grid-cols-[1fr_380px] lg:items-start">
                     <div>
-                        <h1 class="text-4xl lg:text-6xl font-bold text-gray-900 dark:text-white leading-tight transition-colors duration-300">
-                            Learn from the <span class="text-purple-600 dark:text-purple-400">best</span> instructors worldwide
-                        </h1>
-                        <p class="mt-6 text-xl text-gray-600 dark:text-gray-300 leading-relaxed transition-colors duration-300">
-                            Discover high-quality courses, digital resources, and services from expert instructors. 
-                            Build your skills with trusted content at affordable prices.
-                        </p>
-                        <div class="mt-8 flex flex-col sm:flex-row gap-4">
-                            @guest
-                                <button wire:click="redirectToRegister" 
-                                        class="bg-purple-600 dark:bg-purple-500 text-white px-8 py-4 rounded-lg hover:bg-purple-700 dark:hover:bg-purple-600 transition-colors font-semibold text-lg">
-                                    Start Learning Today
-                                </button>
-                                <button wire:click="redirectToLogin" 
-                                        class="border-2 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 px-8 py-4 rounded-lg hover:border-purple-600 dark:hover:border-purple-400 hover:text-purple-600 dark:hover:text-purple-400 transition-colors font-semibold text-lg">
-                                    Sign In
-                                </button>
-                            @endguest
-                        </div>
-                        
-                        <!-- Stats -->
-                        <div class="mt-12 grid grid-cols-3 gap-8">
-                            <div>
-                                <div class="text-2xl font-bold text-purple-600 dark:text-purple-400">{{ number_format($stats['total_products']) }}+</div>
-                                <div class="text-sm text-gray-600 dark:text-gray-400 mt-1">Quality Products</div>
-                            </div>
-                            <div>
-                                <div class="text-2xl font-bold text-purple-600 dark:text-purple-400">{{ number_format($stats['total_vendors']) }}+</div>
-                                <div class="text-sm text-gray-600 dark:text-gray-400 mt-1">Expert Instructors</div>
-                            </div>
-                            <div>
-                                <div class="text-2xl font-bold text-purple-600 dark:text-purple-400">{{ number_format($stats['average_rating'], 1) }}/5</div>
-                                <div class="text-sm text-gray-600 dark:text-gray-400 mt-1">Average Rating</div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Hero Image/Illustration -->
-                    <div class="relative">
-                        <div class="aspect-square bg-purple-100 dark:bg-purple-900 rounded-2xl overflow-hidden transition-colors duration-300">
-                            <div class="h-full w-full bg-purple-200 dark:bg-purple-800 flex items-center justify-center transition-colors duration-300">
-                                <i class="fas fa-graduation-cap text-purple-500 dark:text-purple-400 text-8xl"></i>
-                            </div>
-                        </div>
-                        <!-- Floating cards -->
-                        <div class="absolute -top-4 -left-4 bg-white dark:bg-gray-800 rounded-lg shadow-lg p-4 border border-gray-200 dark:border-gray-700 transition-colors duration-300">
-                            <div class="flex items-center space-x-2">
-                                <div class="w-8 h-8 bg-green-100 dark:bg-green-900 rounded-full flex items-center justify-center transition-colors duration-300">
-                                    <i class="fas fa-play text-green-600 dark:text-green-400 text-sm"></i>
-                                </div>
-                                <div>
-                                    <div class="text-sm font-semibold text-gray-900 dark:text-white">25k+ Videos</div>
-                                    <div class="text-xs text-gray-500 dark:text-gray-400">High Quality</div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="absolute -bottom-4 -right-4 bg-white dark:bg-gray-800 rounded-lg shadow-lg p-4 border border-gray-200 dark:border-gray-700 transition-colors duration-300">
-                            <div class="flex items-center space-x-2">
-                                <div class="w-8 h-8 bg-blue-100 dark:bg-blue-900 rounded-full flex items-center justify-center transition-colors duration-300">
-                                    <i class="fas fa-certificate text-blue-600 dark:text-blue-400 text-sm"></i>
-                                </div>
-                                <div>
-                                    <div class="text-sm font-semibold text-gray-900 dark:text-white">Certificates</div>
-                                    <div class="text-xs text-gray-500 dark:text-gray-400">On Completion</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Featured Products -->
-        @if($featuredItems->count() > 0)
-        <section class="py-16 bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
-            <div class=" px-4 sm:px-6 lg:px-8">
-                <div class="text-center mb-12">
-                    <h2 class="text-3xl font-bold text-gray-900 dark:text-white transition-colors duration-300">Featured Products</h2>
-                    <p class="mt-4 text-lg text-gray-600 dark:text-gray-300 transition-colors duration-300">Hand-picked premium content from our top instructors</p>
-                </div>
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                    @foreach($featuredItems as $item)
-                        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden hover:shadow-md dark:hover:shadow-gray-900/20 transition-all duration-200 group cursor-pointer" 
-                             wire:click="viewProduct({{ $item->id }})">
-                            <div class="aspect-video bg-gray-200 dark:bg-gray-700 overflow-hidden transition-colors duration-300">
-                                @if($item->getPrimaryImage())
-                                    <img src="{{ Storage::url($item->getPrimaryImage()) }}" 
-                                         alt="{{ $item->title }}" 
-                                         class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200">
-                                @else
-                                    <div class="w-full h-full flex items-center justify-center bg-purple-100 dark:bg-purple-900 transition-colors duration-300">
-                                        <i class="fas fa-book text-purple-400 dark:text-purple-500 text-2xl"></i>
-                                    </div>
-                                @endif
-                            </div>
-                            <div class="p-6">
-                                <div class="flex items-center justify-between mb-2">
-                                    <span class="text-xs font-medium text-purple-600 dark:text-purple-400 bg-purple-100 dark:bg-purple-900 px-2 py-1 rounded transition-colors duration-300">
-                                        {{ $item->type_name }}
-                                    </span>
-                                    @if($item->hasDiscount())
-                                        <span class="text-xs font-medium text-red-600 dark:text-red-400 bg-red-100 dark:bg-red-900 px-2 py-1 rounded transition-colors duration-300">
-                                            {{ $item->getDiscountPercentage() }}% OFF
-                                        </span>
-                                    @endif
-                                </div>
-                                <h3 class="font-semibold text-gray-900 dark:text-white mb-2 line-clamp-2 group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors">
-                                    {{ $item->title }}
-                                </h3>
-                                <p class="text-sm text-gray-600 dark:text-gray-400 mb-3 line-clamp-2 transition-colors duration-300">{{ $item->short_description }}</p>
-                                <div class="flex items-center justify-between">
-                                    <div class="flex items-center space-x-2">
-                                        <div class="w-8 h-8 bg-purple-100 dark:bg-purple-900 rounded-full flex items-center justify-center transition-colors duration-300">
-                                            <span class="text-xs font-semibold text-purple-600 dark:text-purple-400">
-                                                {{ substr($item->vendor->name, 0, 2) }}
-                                            </span>
-                                        </div>
-                                        <span class="text-sm text-gray-700 dark:text-gray-300 transition-colors duration-300">{{ $item->vendor->name }}</span>
-                                    </div>
-                                    <div class="text-right">
-                                        @if($item->hasDiscount())
-                                            <div class="text-xs text-gray-500 dark:text-gray-400 line-through transition-colors duration-300">{{ $item->getFormattedOriginalPrice() }}</div>
-                                        @endif
-                                        <div class="font-bold text-purple-600 dark:text-purple-400 transition-colors duration-300">{{ $item->getFormattedPrice() }}</div>
-                                    </div>
-                                </div>
-                                @if($item->average_rating > 0)
-                                    <div class="flex items-center mt-3 pt-3 border-t border-gray-100 dark:border-gray-700 transition-colors duration-300">
-                                        <div class="flex items-center space-x-1">
-                                            @for($i = 1; $i <= 5; $i++)
-                                                <i class="fas fa-star text-xs {{ $i <= $item->average_rating ? 'text-yellow-400' : 'text-gray-300 dark:text-gray-600' }}"></i>
-                                            @endfor
-                                        </div>
-                                        <span class="text-sm text-gray-600 dark:text-gray-400 ml-2 transition-colors duration-300">({{ $item->reviews_count }})</span>
-                                    </div>
-                                @endif
-                            </div>
-                        </div>
-                    @endforeach
-                </div>
-            </div>
-        </section>
-        @endif
-
-        <!-- Categories Section -->
-        <section class="py-16 bg-white dark:bg-gray-800 transition-colors duration-300">
-            <div class=" px-4 sm:px-6 lg:px-8">
-                <div class="text-center mb-12">
-                    <h2 class="text-3xl font-bold text-gray-900 dark:text-white transition-colors duration-300">Popular Categories</h2>
-                    <p class="mt-4 text-lg text-gray-600 dark:text-gray-300 transition-colors duration-300">Explore our most popular learning categories</p>
-                </div>
-                <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
-                    @foreach($popularCategories as $category)
-                        <button wire:click="viewCategory({{ $category->id }})" 
-                                class="group p-6 bg-gray-50 dark:bg-gray-700 rounded-xl hover:bg-purple-50 dark:hover:bg-purple-900 transition-colors duration-200 text-center">
-                            <div class="w-12 h-12 bg-white dark:bg-gray-600 rounded-lg mx-auto mb-4 flex items-center justify-center shadow-sm group-hover:shadow-md transition-all duration-200">
-                                <i class="{{ $category->icon ?? 'fas fa-tag' }} text-purple-600 dark:text-purple-400 text-xl"></i>
-                            </div>
-                            <h3 class="font-semibold text-gray-900 dark:text-white mb-1 transition-colors duration-300">{{ $category->name }}</h3>
-                            <p class="text-sm text-gray-600 dark:text-gray-400 transition-colors duration-300">{{ $category->items_count }} items</p>
-                        </button>
-                    @endforeach
-                </div>
-            </div>
-        </section>
-
-        <!-- Top Vendors Section -->
-        @if($topVendors->count() > 0)
-        <section class="py-16 bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
-            <div class=" px-4 sm:px-6 lg:px-8">
-                <div class="text-center mb-12">
-                    <h2 class="text-3xl font-bold text-gray-900 dark:text-white transition-colors duration-300">Top Instructors</h2>
-                    <p class="mt-4 text-lg text-gray-600 dark:text-gray-300 transition-colors duration-300">Learn from the best in the industry</p>
-                </div>
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    @foreach($topVendors as $vendor)
-                        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6 text-center hover:shadow-md dark:hover:shadow-gray-900/20 transition-all duration-200 cursor-pointer"
-                             wire:click="viewVendor({{ $vendor->id }})">
-                            <div class="w-20 h-20 bg-purple-100 dark:bg-purple-900 rounded-full mx-auto mb-4 flex items-center justify-center transition-colors duration-300">
-                                <span class="text-2xl font-bold text-purple-600 dark:text-purple-400">
-                                    {{ substr($vendor->name, 0, 2) }}
-                                </span>
-                            </div>
-                            <h3 class="font-semibold text-gray-900 dark:text-white mb-1 transition-colors duration-300">{{ $vendor->name }}</h3>
-                            <p class="text-sm text-gray-600 dark:text-gray-400 mb-3 transition-colors duration-300">{{ $vendor->published_items_count }} Products</p>
-                            @if($vendor->avg_rating > 0)
-                                <div class="flex items-center justify-center space-x-1 mb-2">
-                                    @for($i = 1; $i <= 5; $i++)
-                                        <i class="fas fa-star text-sm {{ $i <= $vendor->avg_rating ? 'text-yellow-400' : 'text-gray-300 dark:text-gray-600' }}"></i>
-                                    @endfor
-                                    <span class="text-sm text-gray-600 dark:text-gray-400 ml-1 transition-colors duration-300">({{ number_format($vendor->avg_rating, 1) }})</span>
-                                </div>
+                        <div class="flex flex-wrap gap-2">
+                            <span class="rounded-full bg-teal-400 px-3 py-1 text-xs font-black text-slate-950">{{ $selectedProduct->type_name }}</span>
+                            @if($selectedProduct->itemCategories && $selectedProduct->itemCategories->count() > 0)
+                                @foreach($selectedProduct->itemCategories->take(3) as $productCategory)
+                                    <button wire:click="viewCategory({{ $productCategory->id }})" class="rounded-full bg-white/10 px-3 py-1 text-xs font-black text-white">
+                                        {{ $productCategory->name }}
+                                    </button>
+                                @endforeach
                             @endif
                         </div>
-                    @endforeach
-                </div>
-            </div>
-        </section>
-        @endif
+                        <h1 class="bk-display mt-4 text-3xl font-black leading-tight text-white sm:text-5xl">{{ $selectedProduct->title }}</h1>
+                        <p class="mt-4 max-w-3xl text-base leading-7 text-slate-300">{{ $selectedProduct->short_description ?: \Illuminate\Support\Str::limit(strip_tags($selectedProduct->description), 220) }}</p>
+                    </div>
 
-        <!-- Trending Products -->
-        @if($trendingItems->count() > 0)
-        <section class="py-16 bg-white dark:bg-gray-800 transition-colors duration-300">
-            <div class=" px-4 sm:px-6 lg:px-8">
-                <div class="text-center mb-12">
-                    <h2 class="text-3xl font-bold text-gray-900 dark:text-white transition-colors duration-300">Trending This Week</h2>
-                    <p class="mt-4 text-lg text-gray-600 dark:text-gray-300 transition-colors duration-300">Most popular products from the past 7 days</p>
-                </div>
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    @foreach($trendingItems as $item)
-                        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden hover:shadow-md dark:hover:shadow-gray-900/20 transition-all duration-200 group cursor-pointer" 
-                             wire:click="viewProduct({{ $item->id }})">
-                            <div class="aspect-video bg-gray-200 dark:bg-gray-700 overflow-hidden relative transition-colors duration-300">
-                                @if($item->getPrimaryImage())
-                                    <img src="{{ Storage::url($item->getPrimaryImage()) }}" 
-                                         alt="{{ $item->title }}" 
-                                         class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200">
-                                @else
-                                    <div class="w-full h-full flex items-center justify-center bg-purple-100 dark:bg-purple-900 transition-colors duration-300">
-                                        <i class="fas fa-book text-purple-400 dark:text-purple-500 text-2xl"></i>
-                                    </div>
-                                @endif
-                                <div class="absolute top-3 left-3">
-                                    <span class="bg-red-500 dark:bg-red-600 text-white text-xs px-2 py-1 rounded-full font-medium">
-                                        <i class="fas fa-fire mr-1"></i>Trending
-                                    </span>
-                                </div>
-                            </div>
-                            <div class="p-6">
-                                <div class="flex items-center justify-between mb-2">
-                                    <span class="text-xs font-medium text-purple-600 dark:text-purple-400 bg-purple-100 dark:bg-purple-900 px-2 py-1 rounded transition-colors duration-300">
-                                        {{ $item->type_name }}
-                                    </span>
-                                    <span class="text-xs text-gray-500 dark:text-gray-400 transition-colors duration-300">{{ $item->views_count }} views</span>
-                                </div>
-                                <h3 class="font-semibold text-gray-900 dark:text-white mb-2 line-clamp-2 group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors">
-                                    {{ $item->title }}
-                                </h3>
-                                <div class="flex items-center justify-between">
-                                    <div class="flex items-center space-x-2">
-                                        <div class="w-6 h-6 bg-purple-100 dark:bg-purple-900 rounded-full flex items-center justify-center transition-colors duration-300">
-                                            <span class="text-xs font-semibold text-purple-600 dark:text-purple-400">
-                                                {{ substr($item->vendor->name, 0, 1) }}
-                                            </span>
-                                        </div>
-                                        <span class="text-sm text-gray-700 dark:text-gray-300 transition-colors duration-300">{{ $item->vendor->name }}</span>
-                                    </div>
-                                    <div class="font-bold text-purple-600 dark:text-purple-400 transition-colors duration-300">{{ $item->getFormattedPrice() }}</div>
-                                </div>
-                            </div>
+                    <aside class="rounded-3xl border border-white/10 bg-white/10 p-5 backdrop-blur">
+                        <p class="text-sm font-bold text-slate-300">Price</p>
+                        <div class="mt-2">
+                            @if($selectedProduct->hasDiscount())
+                                <p class="text-3xl font-black text-white">{{ $selectedProduct->getFormattedPrice() }}</p>
+                                <p class="mt-1 text-sm font-bold text-slate-400 line-through">{{ $selectedProduct->getFormattedOriginalPrice() }}</p>
+                            @else
+                                <p class="text-3xl font-black text-white">{{ $selectedProduct->getFormattedPrice() }}</p>
+                            @endif
                         </div>
-                    @endforeach
+                        @guest
+                            <button wire:click="requireLogin('purchase')" class="mt-5 w-full rounded-2xl bg-white px-4 py-3 text-sm font-black text-slate-950">Buy now</button>
+                            <button wire:click="requireLogin('wishlist')" class="mt-2 w-full rounded-2xl border border-white/20 px-4 py-3 text-sm font-black text-white">Add to wishlist</button>
+                        @else
+                            <a href="{{ route('marketplace.browse') }}" class="mt-5 flex w-full items-center justify-center rounded-2xl bg-white px-4 py-3 text-sm font-black text-slate-950">Buy now</a>
+                        @endguest
+                    </aside>
                 </div>
             </div>
         </section>
-        @endif
 
-    @elseif($activeView === 'search' || $activeView === 'category' || $activeView === 'vendor')
-        <!-- Search/Filter Results -->
-        <section class="py-8 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 transition-colors duration-300">
-            <div class=" px-4 sm:px-6 lg:px-8">
-                <!-- Breadcrumb -->
-                <nav class="flex items-center space-x-2 text-sm text-gray-600 dark:text-gray-400 mb-6 transition-colors duration-300">
-                    <button wire:click="backToBrowse" class="hover:text-purple-600 dark:hover:text-purple-400 transition-colors">Home</button>
-                    <i class="fas fa-chevron-right text-xs"></i>
-                    @if($activeView === 'search')
-                        <span class="text-gray-900 dark:text-white font-medium transition-colors duration-300">Search Results</span>
-                    @elseif($activeView === 'category' && $selectedCategory)
-                        <span class="text-gray-900 dark:text-white font-medium transition-colors duration-300">{{ $selectedCategory->name }}</span>
-                    @elseif($activeView === 'vendor' && $selectedVendor)
-                        <span class="text-gray-900 dark:text-white font-medium transition-colors duration-300">{{ $selectedVendor->name }}'s Products</span>
-                    @endif
-                </nav>
+        <section class="py-10 sm:py-14 lg:py-16">
+            <div class="bk-shell grid gap-8 lg:grid-cols-[1fr_340px]">
+                <div class="space-y-6">
+                    <div class="bk-card overflow-hidden">
+                        <img src="{{ $imageFor($selectedProduct) }}" alt="{{ $selectedProduct->title }}" class="h-[260px] w-full object-cover sm:h-[420px]">
+                    </div>
 
-                <!-- Header -->
-                <div class="flex flex-col lg:flex-row lg:items-center justify-between mb-8">
-                    <div>
-                        @if($activeView === 'search')
-                            <h1 class="text-2xl font-bold text-gray-900 dark:text-white transition-colors duration-300">
-                                @if($searchTerm)
-                                    Results for "{{ $searchTerm }}"
-                                @else
-                                    All Products
-                                @endif
-                            </h1>
-                            <p class="text-gray-600 dark:text-gray-300 mt-1 transition-colors duration-300">{{ $items->total() }} products found</p>
-                        @elseif($activeView === 'category' && $selectedCategory)
-                            <h1 class="text-2xl font-bold text-gray-900 dark:text-white transition-colors duration-300">{{ $selectedCategory->name }}</h1>
-                            <p class="text-gray-600 dark:text-gray-300 mt-1 transition-colors duration-300">{{ $selectedCategory->description ?? $items->total() . ' products available' }}</p>
-                        @elseif($activeView === 'vendor' && $selectedVendor)
-                            <div class="flex items-center space-x-4">
-                                <div class="w-16 h-16 bg-purple-100 dark:bg-purple-900 rounded-full flex items-center justify-center transition-colors duration-300">
-                                    <span class="text-xl font-bold text-purple-600 dark:text-purple-400">
-                                        {{ substr($selectedVendor->name, 0, 2) }}
-                                    </span>
-                                </div>
-                                <div>
-                                    <h1 class="text-2xl font-bold text-gray-900 dark:text-white transition-colors duration-300">{{ $selectedVendor->name }}</h1>
-                                    <p class="text-gray-600 dark:text-gray-300 transition-colors duration-300">{{ $items->total() }} products available</p>
-                                </div>
+                    <div class="bk-card p-5 sm:p-7">
+                        <h2 class="bk-display text-3xl font-black text-slate-950">What is included</h2>
+                        <div class="prose prose-slate mt-5 max-w-none prose-headings:font-black prose-a:text-teal-700">
+                            {!! nl2br(e($selectedProduct->description)) !!}
+                        </div>
+
+                        @if($selectedProduct->files && count($selectedProduct->files) > 0)
+                            <div class="mt-6 grid gap-3 sm:grid-cols-2">
+                                @foreach($selectedProduct->files as $file)
+                                    <div class="rounded-2xl bg-slate-50 p-4 text-sm font-bold text-slate-700">
+                                        <i class="fas fa-file mr-2 text-teal-700"></i>{{ $file['name'] }}
+                                    </div>
+                                @endforeach
                             </div>
                         @endif
                     </div>
-
-                    <!-- Controls -->
-                    <div class="flex items-center space-x-4 mt-6 lg:mt-0">
-                        <button wire:click="toggleFilters" 
-                                class="flex items-center space-x-2 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg hover:border-purple-600 dark:hover:border-purple-400 hover:text-purple-600 dark:hover:text-purple-400 text-gray-700 dark:text-gray-300 transition-colors duration-300">
-                            <i class="fas fa-filter"></i>
-                            <span>Filters</span>
-                            @if(count($selectedCategories) > 0 || count($selectedTypes) > 0 || $minRating > 0)
-                                <span class="bg-purple-100 dark:bg-purple-900 text-purple-600 dark:text-purple-400 text-xs px-2 py-1 rounded-full transition-colors duration-300">
-                                    {{ count($selectedCategories) + count($selectedTypes) + ($minRating > 0 ? 1 : 0) }}
-                                </span>
-                            @endif
-                        </button>
-                        
-                        <select wire:model.live="sortBy" class="border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg px-3 py-2 focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-colors duration-300">
-                            <option value="featured">Featured</option>
-                            <option value="latest">Latest</option>
-                            <option value="price_low">Price: Low to High</option>
-                            <option value="price_high">Price: High to Low</option>
-                            <option value="popular">Most Popular</option>
-                            <option value="rating">Highest Rated</option>
-                        </select>
-
-                        <button wire:click="toggleViewMode" class="p-2 border border-gray-300 dark:border-gray-600 rounded-lg hover:border-purple-600 dark:hover:border-purple-400 hover:text-purple-600 dark:hover:text-purple-400 text-gray-700 dark:text-gray-300 transition-colors duration-300">
-                            <i class="fas {{ $viewMode === 'grid' ? 'fa-list' : 'fa-th-large' }}"></i>
-                        </button>
-                    </div>
                 </div>
 
-                <!-- Filters Panel -->
-                @if($showFilters)
-                    <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-6 mb-8 border border-gray-200 dark:border-gray-600 transition-colors duration-300">
-                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                            <!-- Categories -->
-                            <div>
-                                <label class="block text-sm font-medium text-gray-900 dark:text-white mb-2 transition-colors duration-300">Categories</label>
-                                <div class="space-y-2 max-h-40 overflow-y-auto">
-                                    @foreach($allCategories as $category)
-                                        <label class="flex items-center">
-                                            <input type="checkbox" 
-                                                   wire:model.live="selectedCategories" 
-                                                   value="{{ $category->id }}"
-                                                   class="rounded border-gray-300 dark:border-gray-600 dark:bg-gray-700 text-purple-600 focus:ring-purple-500">
-                                            <span class="ml-2 text-sm text-gray-700 dark:text-gray-300 transition-colors duration-300">{{ $category->name }}</span>
-                                        </label>
-                                    @endforeach
-                                </div>
-                            </div>
-
-                            <!-- Types -->
-                            <div>
-                                <label class="block text-sm font-medium text-gray-900 dark:text-white mb-2 transition-colors duration-300">Product Type</label>
-                                <div class="space-y-2">
-                                    @foreach($itemTypes as $key => $label)
-                                        <label class="flex items-center">
-                                            <input type="checkbox" 
-                                                   wire:model.live="selectedTypes" 
-                                                   value="{{ $key }}"
-                                                   class="rounded border-gray-300 dark:border-gray-600 dark:bg-gray-700 text-purple-600 focus:ring-purple-500">
-                                            <span class="ml-2 text-sm text-gray-700 dark:text-gray-300 transition-colors duration-300">{{ $label }}</span>
-                                        </label>
-                                    @endforeach
-                                </div>
-                            </div>
-
-                            <!-- Price Range -->
-                            <div>
-                                <label class="block text-sm font-medium text-gray-900 dark:text-white mb-2 transition-colors duration-300">Price Range</label>
-                                <div class="space-y-2">
-                                    <div>
-                                        <label class="block text-xs text-gray-600 dark:text-gray-400 transition-colors duration-300">Min Price (₦)</label>
-                                        <input type="number" 
-                                               wire:model.live.debounce.500ms="priceMin" 
-                                               min="0" 
-                                               class="w-full border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded px-3 py-2 text-sm focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-colors duration-300">
-                                    </div>
-                                    <div>
-                                        <label class="block text-xs text-gray-600 dark:text-gray-400 transition-colors duration-300">Max Price (₦)</label>
-                                        <input type="number" 
-                                               wire:model.live.debounce.500ms="priceMax" 
-                                               min="0" 
-                                               class="w-full border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded px-3 py-2 text-sm focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-colors duration-300">
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Rating -->
-                            <div>
-                                <label class="block text-sm font-medium text-gray-900 dark:text-white mb-2 transition-colors duration-300">Minimum Rating</label>
-                                <div class="space-y-2">
-                                    @for($i = 5; $i >= 1; $i--)
-                                        <label class="flex items-center">
-                                            <input type="radio" 
-                                                   wire:model.live="minRating" 
-                                                   value="{{ $i }}" 
-                                                   name="rating"
-                                                   class="rounded border-gray-300 dark:border-gray-600 dark:bg-gray-700 text-purple-600 focus:ring-purple-500">
-                                            <div class="ml-2 flex items-center">
-                                                @for($j = 1; $j <= 5; $j++)
-                                                    <i class="fas fa-star text-sm {{ $j <= $i ? 'text-yellow-400' : 'text-gray-300 dark:text-gray-600' }}"></i>
-                                                @endfor
-                                                <span class="ml-1 text-sm text-gray-700 dark:text-gray-300 transition-colors duration-300">& up</span>
-                                            </div>
-                                        </label>
-                                    @endfor
-                                    <label class="flex items-center">
-                                        <input type="radio" 
-                                               wire:model.live="minRating" 
-                                               value="0" 
-                                               name="rating"
-                                               class="rounded border-gray-300 dark:border-gray-600 dark:bg-gray-700 text-purple-600 focus:ring-purple-500">
-                                        <span class="ml-2 text-sm text-gray-700 dark:text-gray-300 transition-colors duration-300">All Ratings</span>
-                                    </label>
-                                </div>
+                <aside class="space-y-4 lg:sticky lg:top-24 lg:self-start">
+                    <div class="bk-card p-5">
+                        <h3 class="font-black text-slate-950">Instructor</h3>
+                        <div class="mt-4 flex items-center gap-3">
+                            <span class="grid h-12 w-12 place-items-center rounded-full bg-teal-700 text-sm font-black text-white">
+                                {{ substr($selectedProduct->vendor->name, 0, 2) }}
+                            </span>
+                            <div class="min-w-0">
+                                <p class="truncate font-black text-slate-950">{{ $selectedProduct->vendor->name }}</p>
+                                <p class="text-sm font-semibold text-slate-500">{{ $selectedProduct->vendor->marketplaceItems()->published()->count() }} products</p>
                             </div>
                         </div>
+                        @if($selectedProduct->vendor->bio)
+                            <p class="mt-4 line-clamp-4 text-sm leading-6 text-slate-600">{{ $selectedProduct->vendor->bio }}</p>
+                        @endif
+                        <button wire:click="viewVendor({{ $selectedProduct->vendor->id }})" class="bk-secondary-btn mt-5 w-full">View instructor</button>
+                    </div>
 
-                        <div class="flex items-center justify-between mt-6 pt-6 border-t border-gray-200 dark:border-gray-600 transition-colors duration-300">
-                            <button wire:click="clearFilters" class="text-purple-600 dark:text-purple-400 hover:text-purple-700 dark:hover:text-purple-300 font-medium text-sm transition-colors duration-300">
-                                Clear All Filters
-                            </button>
-                            <button wire:click="toggleFilters" class="bg-purple-600 dark:bg-purple-500 text-white px-4 py-2 rounded-lg hover:bg-purple-700 dark:hover:bg-purple-600 transition-colors text-sm">
-                                Apply Filters
-                            </button>
+                    <div class="bk-soft-card p-5">
+                        <div class="grid grid-cols-2 gap-2">
+                            <div class="rounded-2xl bg-white p-3">
+                                <p class="font-black text-slate-950">{{ number_format($selectedProduct->views_count) }}</p>
+                                <p class="text-xs font-bold text-slate-500">Views</p>
+                            </div>
+                            <div class="rounded-2xl bg-white p-3">
+                                <p class="font-black text-slate-950">{{ number_format($selectedProduct->sales_count) }}</p>
+                                <p class="text-xs font-bold text-slate-500">Sales</p>
+                            </div>
                         </div>
                     </div>
-                @endif
+                </aside>
             </div>
         </section>
 
-        <!-- Products Grid/List -->
-        <section class="py-8 bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
-            <div class=" px-4 sm:px-6 lg:px-8">
-                @if($items->count() > 0)
-                    @if($viewMode === 'grid')
-                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        @if($relatedProducts->count() > 0)
+            <section class="bg-white py-12 sm:py-16">
+                <div class="bk-shell">
+                    <h2 class="bk-display text-3xl font-black text-slate-950">Related products</h2>
+                    <div class="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+                        @foreach($relatedProducts as $item)
+                            <article wire:click="viewProduct({{ $item->id }})" class="bk-card cursor-pointer overflow-hidden">
+                                <img src="{{ $imageFor($item) }}" alt="{{ $item->title }}" class="h-40 w-full object-cover">
+                                <div class="p-4">
+                                    <h3 class="line-clamp-2 font-black text-slate-950">{{ $item->title }}</h3>
+                                    <p class="mt-2 text-sm font-black text-teal-700">{{ $item->getFormattedPrice() }}</p>
+                                </div>
+                            </article>
+                        @endforeach
+                    </div>
+                </div>
+            </section>
+        @endif
+    @else
+        <section class="bg-slate-950 text-white">
+            <div class="bk-shell py-12 sm:py-16 lg:py-20">
+                <div class="grid gap-8 lg:grid-cols-[1fr_360px] lg:items-end">
+                    <div>
+                        <span class="bk-eyebrow border-white/15 bg-white/10 text-white">Marketplace</span>
+                        <h1 class="bk-display mt-4 max-w-4xl text-3xl font-black leading-tight text-white sm:text-5xl">
+                            {{ $title }}
+                        </h1>
+                        <p class="mt-4 max-w-2xl text-base leading-7 text-slate-300">
+                            Courses, resources, templates, and services from BootKode instructors and creators.
+                        </p>
+                    </div>
+                    <div class="grid grid-cols-3 gap-2">
+                        <div class="rounded-2xl border border-white/10 bg-white/10 p-3">
+                            <p class="text-2xl font-black text-white">{{ number_format($stats['total_products']) }}</p>
+                            <p class="text-xs font-bold text-slate-300">Products</p>
+                        </div>
+                        <div class="rounded-2xl border border-white/10 bg-white/10 p-3">
+                            <p class="text-2xl font-black text-white">{{ number_format($stats['total_vendors']) }}</p>
+                            <p class="text-xs font-bold text-slate-300">Instructors</p>
+                        </div>
+                        <div class="rounded-2xl border border-white/10 bg-white/10 p-3">
+                            <p class="text-2xl font-black text-white">{{ number_format($stats['average_rating'] ?? 0, 1) }}</p>
+                            <p class="text-xs font-bold text-slate-300">Rating</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        @if($activeView === 'browse')
+            <section class="border-b border-slate-200 bg-white">
+                <div class="bk-shell grid gap-3 py-4 sm:grid-cols-2 lg:grid-cols-4">
+                    @foreach($popularCategories->take(4) as $category)
+                        <button wire:click="viewCategory({{ $category->id }})" class="flex items-center gap-3 rounded-2xl border border-slate-200 p-4 text-left transition hover:border-teal-200 hover:bg-teal-50">
+                            <span class="grid h-11 w-11 place-items-center rounded-2xl bg-slate-100 text-teal-700">
+                                <i class="{{ $category->icon ?? 'fas fa-tag' }}"></i>
+                            </span>
+                            <span>
+                                <span class="block font-black text-slate-950">{{ $category->name }}</span>
+                                <span class="text-sm font-semibold text-slate-500">{{ $category->items_count }} items</span>
+                            </span>
+                        </button>
+                    @endforeach
+                </div>
+            </section>
+        @endif
+
+        <section class="py-10 sm:py-14 lg:py-16">
+            <div class="bk-shell grid gap-6 lg:grid-cols-[280px_1fr]">
+                <aside class="lg:sticky lg:top-24 lg:self-start">
+                    <div class="bk-card p-4">
+                        <div class="flex items-center justify-between lg:hidden">
+                            <h2 class="font-black text-slate-950">Filters</h2>
+                            <button type="button" class="rounded-full bg-slate-100 px-3 py-2 text-sm font-black text-slate-700" @click="filtersOpen = !filtersOpen">Toggle</button>
+                        </div>
+
+                        <div class="mt-4 space-y-5 lg:mt-0" x-show="filtersOpen || window.innerWidth >= 1024" x-cloak>
+                            <div>
+                                <label class="text-sm font-black text-slate-800">Search</label>
+                                <input wire:model.live.debounce.300ms="searchTerm" type="text" class="bk-input mt-2" placeholder="Search products">
+                            </div>
+
+                            <div>
+                                <label class="text-sm font-black text-slate-800">Sort</label>
+                                <select wire:model.live="sortBy" class="bk-input mt-2">
+                                    <option value="featured">Featured</option>
+                                    <option value="latest">Latest</option>
+                                    <option value="price_low">Price low</option>
+                                    <option value="price_high">Price high</option>
+                                    <option value="popular">Popular</option>
+                                    <option value="rating">Rating</option>
+                                </select>
+                            </div>
+
+                            <div>
+                                <p class="text-sm font-black text-slate-800">Categories</p>
+                                <div class="mt-3 max-h-64 space-y-2 overflow-y-auto pr-1">
+                                    @foreach($allCategories as $category)
+                                        <label class="flex items-center gap-3 rounded-2xl bg-slate-50 px-3 py-3 text-sm font-bold text-slate-700">
+                                            <input type="checkbox" wire:model.live="selectedCategories" value="{{ $category->id }}" class="rounded border-slate-300 text-teal-700 focus:ring-teal-700">
+                                            <span class="min-w-0 flex-1 truncate">{{ $category->name }}</span>
+                                        </label>
+                                    @endforeach
+                                </div>
+                            </div>
+
+                            <button wire:click="clearFilters" class="bk-secondary-btn w-full">Clear filters</button>
+                        </div>
+                    </div>
+                </aside>
+
+                <main>
+                    <div class="mb-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                        <div>
+                            <h2 class="bk-display text-3xl font-black text-slate-950">{{ $title }}</h2>
+                            @if(method_exists($items, 'total'))
+                                <p class="mt-1 text-sm font-semibold text-slate-500">{{ number_format($items->total()) }} products found</p>
+                            @endif
+                        </div>
+                        <button wire:click="backToBrowse" class="bk-secondary-btn w-full sm:w-auto">Marketplace home</button>
+                    </div>
+
+                    @if($items->count() > 0)
+                        <div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
                             @foreach($items as $item)
-                                <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden hover:shadow-md dark:hover:shadow-gray-900/20 transition-all duration-200 group cursor-pointer" 
-                                     wire:click="viewProduct({{ $item->id }})">
-                                    <div class="aspect-video bg-gray-200 dark:bg-gray-700 overflow-hidden transition-colors duration-300">
-                                        @if($item->getPrimaryImage())
-                                            <img src="{{ Storage::url($item->getPrimaryImage()) }}" 
-                                                 alt="{{ $item->title }}" 
-                                                 class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200">
-                                        @else
-                                            <div class="w-full h-full flex items-center justify-center bg-purple-100 dark:bg-purple-900 transition-colors duration-300">
-                                                <i class="fas fa-book text-purple-400 dark:text-purple-500 text-2xl"></i>
-                                            </div>
-                                        @endif
+                                <article wire:click="viewProduct({{ $item->id }})" class="bk-card cursor-pointer overflow-hidden transition hover:-translate-y-0.5 hover:shadow-xl">
+                                    <div class="aspect-video bg-slate-100">
+                                        <img src="{{ $imageFor($item) }}" alt="{{ $item->title }}" class="h-full w-full object-cover">
                                     </div>
                                     <div class="p-4">
-                                        <div class="flex items-center justify-between mb-2">
-                                            <span class="text-xs font-medium text-purple-600 dark:text-purple-400 bg-purple-100 dark:bg-purple-900 px-2 py-1 rounded transition-colors duration-300">
-                                                {{ $item->type_name }}
-                                            </span>
+                                        <div class="flex items-center justify-between gap-2">
+                                            <span class="rounded-full bg-teal-50 px-2.5 py-1 text-xs font-black text-teal-800">{{ $item->type_name }}</span>
                                             @if($item->hasDiscount())
-                                                <span class="text-xs font-medium text-red-600 dark:text-red-400 bg-red-100 dark:bg-red-900 px-2 py-1 rounded transition-colors duration-300">
-                                                    {{ $item->getDiscountPercentage() }}% OFF
-                                                </span>
+                                                <span class="rounded-full bg-rose-50 px-2.5 py-1 text-xs font-black text-rose-700">{{ $item->getDiscountPercentage() }}% off</span>
                                             @endif
                                         </div>
-                                        <h3 class="font-semibold text-gray-900 dark:text-white mb-2 line-clamp-2 group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors text-sm">
-                                            {{ $item->title }}
-                                        </h3>
-                                        <div class="flex items-center justify-between">
-                                            <div class="flex items-center space-x-2">
-                                                <div class="w-6 h-6 bg-purple-100 dark:bg-purple-900 rounded-full flex items-center justify-center transition-colors duration-300">
-                                                    <span class="text-xs font-semibold text-purple-600 dark:text-purple-400">
-                                                        {{ substr($item->vendor->name, 0, 1) }}
-                                                    </span>
-                                                </div>
-                                                <span class="text-xs text-gray-700 dark:text-gray-300 truncate transition-colors duration-300">{{ $item->vendor->name }}</span>
-                                            </div>
-                                            <div class="text-right">
-                                                @if($item->hasDiscount())
-                                                    <div class="text-xs text-gray-500 dark:text-gray-400 line-through transition-colors duration-300">{{ $item->getFormattedOriginalPrice() }}</div>
+                                        <h3 class="mt-3 line-clamp-2 text-lg font-black leading-snug text-slate-950">{{ $item->title }}</h3>
+                                        <p class="mt-2 line-clamp-2 text-sm leading-6 text-slate-600">{{ $item->short_description }}</p>
+                                        <div class="mt-4 flex items-center justify-between gap-3 border-t border-slate-100 pt-4">
+                                            <div class="min-w-0 text-sm font-bold text-slate-600">
+                                                <span class="block truncate">{{ $item->vendor->name }}</span>
+                                                @if($item->average_rating > 0)
+                                                    <span class="text-xs text-amber-600"><i class="fas fa-star"></i> {{ number_format($item->average_rating, 1) }}</span>
                                                 @endif
-                                                <div class="font-bold text-purple-600 dark:text-purple-400 text-sm transition-colors duration-300">{{ $item->getFormattedPrice() }}</div>
                                             </div>
+                                            <p class="shrink-0 text-sm font-black text-teal-700">{{ $item->getFormattedPrice() }}</p>
                                         </div>
-                                        @if($item->average_rating > 0)
-                                            <div class="flex items-center mt-2 pt-2 border-t border-gray-100 dark:border-gray-700 transition-colors duration-300">
-                                                <div class="flex items-center space-x-1">
-                                                    @for($i = 1; $i <= 5; $i++)
-                                                        <i class="fas fa-star text-xs {{ $i <= $item->average_rating ? 'text-yellow-400' : 'text-gray-300 dark:text-gray-600' }}"></i>
-                                                    @endfor
-                                                </div>
-                                                <span class="text-xs text-gray-600 dark:text-gray-400 ml-2 transition-colors duration-300">({{ $item->reviews_count }})</span>
-                                            </div>
-                                        @endif
                                     </div>
-                                </div>
+                                </article>
                             @endforeach
                         </div>
+
+                        @if(method_exists($items, 'links'))
+                            <div class="mt-8">{{ $items->links() }}</div>
+                        @endif
                     @else
-                        <!-- List View -->
-                        <div class="space-y-4">
-                            @foreach($items as $item)
-                                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6 hover:shadow-md dark:hover:shadow-gray-900/20 transition-all duration-200 cursor-pointer"
-                                     wire:click="viewProduct({{ $item->id }})">
-                                    <div class="flex items-start space-x-4">
-                                        <div class="w-24 h-24 bg-gray-200 dark:bg-gray-700 rounded-lg overflow-hidden flex-shrink-0 transition-colors duration-300">
-                                            @if($item->getPrimaryImage())
-                                                <img src="{{ Storage::url($item->getPrimaryImage()) }}" 
-                                                     alt="{{ $item->title }}" 
-                                                     class="w-full h-full object-cover">
-                                            @else
-                                                <div class="w-full h-full flex items-center justify-center bg-purple-100 dark:bg-purple-900 transition-colors duration-300">
-                                                    <i class="fas fa-book text-purple-400 dark:text-purple-500"></i>
-                                                </div>
-                                            @endif
-                                        </div>
-                                        <div class="flex-1">
-                                            <div class="flex items-start justify-between">
-                                                <div>
-                                                    <div class="flex items-center space-x-2 mb-2">
-                                                        <span class="text-xs font-medium text-purple-600 dark:text-purple-400 bg-purple-100 dark:bg-purple-900 px-2 py-1 rounded transition-colors duration-300">
-                                                            {{ $item->type_name }}
-                                                        </span>
-                                                        @if($item->hasDiscount())
-                                                            <span class="text-xs font-medium text-red-600 dark:text-red-400 bg-red-100 dark:bg-red-900 px-2 py-1 rounded transition-colors duration-300">
-                                                                {{ $item->getDiscountPercentage() }}% OFF
-                                                            </span>
-                                                        @endif
-                                                    </div>
-                                                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2 hover:text-purple-600 dark:hover:text-purple-400 transition-colors">
-                                                        {{ $item->title }}
-                                                    </h3>
-                                                    <p class="text-gray-600 dark:text-gray-400 text-sm mb-3 line-clamp-2 transition-colors duration-300">{{ $item->short_description }}</p>
-                                                    <div class="flex items-center space-x-4">
-                                                        <div class="flex items-center space-x-2">
-                                                            <div class="w-6 h-6 bg-purple-100 dark:bg-purple-900 rounded-full flex items-center justify-center transition-colors duration-300">
-                                                                <span class="text-xs font-semibold text-purple-600 dark:text-purple-400">
-                                                                    {{ substr($item->vendor->name, 0, 1) }}
-                                                                </span>
-                                                            </div>
-                                                            <span class="text-sm text-gray-700 dark:text-gray-300 transition-colors duration-300">{{ $item->vendor->name }}</span>
-                                                        </div>
-                                                        @if($item->average_rating > 0)
-                                                            <div class="flex items-center space-x-1">
-                                                                @for($i = 1; $i <= 5; $i++)
-                                                                    <i class="fas fa-star text-xs {{ $i <= $item->average_rating ? 'text-yellow-400' : 'text-gray-300 dark:text-gray-600' }}"></i>
-                                                                @endfor
-                                                                <span class="text-sm text-gray-600 dark:text-gray-400 ml-1 transition-colors duration-300">({{ $item->reviews_count }})</span>
-                                                            </div>
-                                                        @endif
-                                                    </div>
-                                                </div>
-                                                <div class="text-right">
-                                                    @if($item->hasDiscount())
-                                                        <div class="text-sm text-gray-500 dark:text-gray-400 line-through transition-colors duration-300">{{ $item->getFormattedOriginalPrice() }}</div>
-                                                    @endif
-                                                    <div class="text-xl font-bold text-purple-600 dark:text-purple-400 transition-colors duration-300">{{ $item->getFormattedPrice() }}</div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            @endforeach
+                        <div class="bk-card p-10 text-center">
+                            <i class="fas fa-store text-4xl text-slate-300"></i>
+                            <h2 class="mt-4 text-xl font-black text-slate-950">No products found</h2>
+                            <p class="mt-2 text-sm text-slate-600">Try changing the search or category filters.</p>
+                            <button wire:click="clearFilters" class="bk-primary-btn mt-5">Clear filters</button>
                         </div>
                     @endif
-
-                    <!-- Pagination -->
-                    <div class="mt-8">
-                        {{ $items->links() }}
-                    </div>
-                @else
-                    <!-- Empty State -->
-                    <div class="text-center py-12">
-                        <div class="w-16 h-16 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center mx-auto mb-4 transition-colors duration-300">
-                            <i class="fas fa-search text-gray-400 dark:text-gray-500 text-2xl"></i>
-                        </div>
-                        <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-2 transition-colors duration-300">No products found</h3>
-                        <p class="text-gray-600 dark:text-gray-400 mb-4 transition-colors duration-300">Try adjusting your search or filter criteria</p>
-                        <button wire:click="clearFilters" class="text-purple-600 dark:text-purple-400 hover:text-purple-700 dark:hover:text-purple-300 font-medium transition-colors duration-300">
-                            Clear all filters
-                        </button>
-                    </div>
-                @endif
+                </main>
             </div>
         </section>
-
-    @elseif($activeView === 'product' && $selectedProduct)
-        <!-- Product Detail View -->
-        @include('livewire.marketplace.public.product-detail')
     @endif
 
-    <!-- Login Modal -->
     @if($showLoginModal)
-        <div class="fixed inset-0 bg-gray-600 dark:bg-gray-900 bg-opacity-50 dark:bg-opacity-75 flex items-center justify-center z-50 transition-colors duration-300" 
-             x-transition:enter="ease-out duration-300"
-             x-transition:enter-start="opacity-0"
-             x-transition:enter-end="opacity-100"
-             x-transition:leave="ease-in duration-200"
-             x-transition:leave-start="opacity-100"
-             x-transition:leave-end="opacity-0">
-            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-xl p-6 w-full max-w-md mx-4 transition-colors duration-300"
-                 x-transition:enter="ease-out duration-300"
-                 x-transition:enter-start="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-                 x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100"
-                 x-transition:leave="ease-in duration-200"
-                 x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100"
-                 x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95">
-                
-                <div class="text-center">
-                    <div class="w-16 h-16 bg-purple-100 dark:bg-purple-900 rounded-full flex items-center justify-center mx-auto mb-4 transition-colors duration-300">
-                        <i class="fas fa-lock text-purple-600 dark:text-purple-400 text-2xl"></i>
-                    </div>
-                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2 transition-colors duration-300">Sign in required</h3>
-                    <p class="text-gray-600 dark:text-gray-400 mb-6 transition-colors duration-300">
-                        @if($loginAction === 'purchase')
-                            Please sign in to purchase this product and access exclusive content.
-                        @elseif($loginAction === 'wishlist')
-                            Please sign in to add items to your wishlist.
-                        @elseif($loginAction === 'review')
-                            Please sign in to leave a review.
-                        @else
-                            Please sign in to continue with this action.
-                        @endif
-                    </p>
-                    
-                    <div class="space-y-3">
-                        <button wire:click="redirectToLogin" 
-                                class="w-full bg-purple-600 dark:bg-purple-500 text-white px-4 py-3 rounded-lg hover:bg-purple-700 dark:hover:bg-purple-600 transition-colors font-medium">
-                            Sign In
-                        </button>
-                        <button wire:click="redirectToRegister" 
-                                class="w-full border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 px-4 py-3 rounded-lg hover:border-purple-600 dark:hover:border-purple-400 hover:text-purple-600 dark:hover:text-purple-400 transition-colors font-medium">
-                            Create Account
-                        </button>
-                        <button wire:click="closeLoginModal" 
-                                class="w-full text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 px-4 py-2 text-sm transition-colors">
-                            Cancel
-                        </button>
-                    </div>
+        <div class="fixed inset-0 z-[70] flex items-center justify-center bg-slate-950/55 p-4 backdrop-blur-sm">
+            <div class="w-full max-w-md rounded-3xl bg-white p-6 shadow-2xl">
+                <div class="mx-auto grid h-14 w-14 place-items-center rounded-full bg-slate-950 text-white">
+                    <i class="fas fa-lock"></i>
+                </div>
+                <h2 class="mt-4 text-center text-xl font-black text-slate-950">Sign in required</h2>
+                <p class="mt-2 text-center text-sm leading-6 text-slate-600">Create an account or sign in to continue with this marketplace action.</p>
+                <div class="mt-6 space-y-2">
+                    <button wire:click="redirectToLogin" class="bk-primary-btn w-full">Sign in</button>
+                    <button wire:click="redirectToRegister" class="bk-secondary-btn w-full">Create account</button>
+                    <button wire:click="closeLoginModal" class="w-full rounded-2xl px-4 py-3 text-sm font-black text-slate-500">Cancel</button>
                 </div>
             </div>
         </div>
