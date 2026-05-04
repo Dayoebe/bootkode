@@ -1,440 +1,226 @@
-<header class="bg-white shadow-sm sticky top-0 z-50" x-data="{
-    mobileOpen: false,
-    authOpen: false,
-    dropdowns: {
-        courses: false,
-        roadmaps: false,
-        mentorship: false,
-        marketplace: false,
-        community: false,
-        userMenu: false
-    }
-}">
-    <nav class="px-4 sm:px-6 lg:px-8">
-        <div class="flex justify-between items-center h-16">
-            <!-- Logo -->
-            <div class="flex-shrink-0">
-                <a href="/" class="flex items-center space-x-2 hover:scale-105 transition-transform">
-                    <div class="flex gap-2 bg-gradient-to-r from-emerald-50 to-red-100 p-2 rounded-lg shadow-sm">
-                        <i class="fas fa-code text-xl text-emerald-500"></i>
-                        <span class="text-xl font-bold text-gray-900">
-                            Boot<span class="text-emerald-900">Kode</span>
+@php
+    $user = auth()->user();
+    $coursesUrl = $user ? route('student.course-catalog') : route('register');
+    $coursesLabel = $user ? 'Courses' : 'Start learning';
+    $accountUrl = $user ? route($user->getDashboardRouteName()) : route('login');
+    $primaryCtaUrl = $user ? route($user->getDashboardRouteName()) : route('register');
+
+    $navItems = [
+        ['label' => 'Home', 'href' => url('/'), 'icon' => 'fa-house', 'active' => request()->is('/')],
+        ['label' => $coursesLabel, 'href' => $coursesUrl, 'icon' => 'fa-book-open', 'active' => request()->routeIs('student.course-catalog')],
+        ['label' => 'Marketplace', 'href' => route('marketplace.browse'), 'icon' => 'fa-store', 'active' => request()->routeIs('marketplace.*')],
+        ['label' => 'Blog', 'href' => route('blog.index'), 'icon' => 'fa-newspaper', 'active' => request()->routeIs('blog.*')],
+        ['label' => 'About', 'href' => route('about'), 'icon' => 'fa-circle-info', 'active' => request()->routeIs('about')],
+        ['label' => 'Contact', 'href' => route('contact'), 'icon' => 'fa-envelope', 'active' => request()->routeIs('contact')],
+    ];
+
+    $quickLinks = [
+        ['label' => 'Statistics', 'href' => route('statistics'), 'icon' => 'fa-chart-simple'],
+        ['label' => 'Guidelines', 'href' => route('guideline'), 'icon' => 'fa-compass'],
+        ['label' => 'Certificate Verify', 'href' => route('certificate.verify'), 'icon' => 'fa-certificate'],
+    ];
+@endphp
+
+<header
+    class="bk-public-header sticky top-0 z-50 border-b border-slate-200/80 bg-white/92 backdrop-blur-xl"
+    x-data="{ mobileOpen: false, accountOpen: false }"
+    @keydown.escape.window="mobileOpen = false; accountOpen = false"
+>
+    <nav class="bk-shell flex h-16 items-center justify-between gap-3 lg:h-[72px]" aria-label="Main navigation">
+        <a href="{{ url('/') }}" class="flex min-w-0 items-center gap-3" aria-label="BootKode home">
+            <span class="grid h-10 w-10 shrink-0 place-items-center rounded-2xl bg-slate-950 text-white shadow-sm">
+                <i class="fas fa-code text-sm"></i>
+            </span>
+            <span class="min-w-0">
+                <span class="block text-base font-black tracking-tight text-slate-950 sm:text-lg">BootKode</span>
+                <span class="hidden text-[11px] font-semibold uppercase tracking-[0.18em] text-teal-700 sm:block">Academy</span>
+            </span>
+        </a>
+
+        <div class="hidden items-center gap-1 lg:flex">
+            @foreach ($navItems as $item)
+                <a
+                    href="{{ $item['href'] }}"
+                    class="rounded-full px-4 py-2 text-sm font-bold transition {{ $item['active'] ? 'bg-slate-950 text-white shadow-sm' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-950' }}"
+                >
+                    {{ $item['label'] }}
+                </a>
+            @endforeach
+        </div>
+
+        <div class="flex items-center gap-2">
+            @auth
+                <a
+                    href="{{ route('messages.index') }}"
+                    class="hidden h-10 w-10 place-items-center rounded-full border border-slate-200 text-slate-700 transition hover:border-teal-300 hover:bg-teal-50 hover:text-teal-800 sm:grid"
+                    aria-label="Messages"
+                    wire:navigate
+                >
+                    <i class="fas fa-message text-sm"></i>
+                </a>
+
+                <div class="relative" @click.away="accountOpen = false">
+                    <button
+                        type="button"
+                        class="flex h-11 items-center gap-2 rounded-full border border-slate-200 bg-white px-2 pl-2 pr-3 text-sm font-bold text-slate-800 shadow-sm transition hover:border-slate-300 hover:bg-slate-50"
+                        @click="accountOpen = !accountOpen"
+                        :aria-expanded="accountOpen.toString()"
+                    >
+                        <span class="grid h-8 w-8 place-items-center rounded-full bg-teal-700 text-xs font-black text-white">
+                            {{ strtoupper(substr($user->name, 0, 2)) }}
                         </span>
-                    </div>
-                </a>
-            </div>
-
-            <!-- Desktop Navigation -->
-            <div class="hidden lg:flex items-center space-x-1">
-                <!-- Courses Dropdown -->
-                <div class="relative" x-data="{ open: false }" @mouseenter="open = true" @mouseleave="open = false">
-                    <button class="px-3 py-2 text-sm text-gray-700 hover:text-emerald-500 font-medium flex items-center space-x-1 transition-all relative group">
-                        <span>Courses</span>
-                        <i class="fas fa-chevron-down text-xs transition-transform" :class="{ 'rotate-180': open }"></i>
-                        <span class="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-0 h-0.5 bg-emerald-400 transition-all group-hover:w-3/4"></span>
+                        <span class="hidden max-w-28 truncate sm:inline">{{ $user->name }}</span>
+                        <i class="fas fa-chevron-down text-[10px] text-slate-400" :class="{ 'rotate-180': accountOpen }"></i>
                     </button>
-                    <div class="absolute left-0 w-56 mt-2 bg-white rounded-xl shadow-xl border border-gray-100 z-50" x-show="open" x-transition style="display: none;" @click.away="open = false">
-                        <div class="py-1">
-                            <a href="#" class="block px-4 py-3 text-gray-700 hover:bg-emerald-50 hover:text-emerald-400 transition-colors flex items-center rounded-lg mx-2 my-1">
-                                <i class="fas fa-laptop-code text-emerald-400 mr-3"></i>
-                                Frontend Development
-                            </a>
-                            <a href="#" class="block px-4 py-3 text-gray-700 hover:bg-emerald-50 hover:text-emerald-400 transition-colors flex items-center rounded-lg mx-2 my-1">
-                                <i class="fas fa-server text-emerald-400 mr-3"></i>
-                                Backend Development
-                            </a>
-                            <a href="#" class="block px-4 py-3 text-gray-700 hover:bg-emerald-50 hover:text-emerald-400 transition-colors flex items-center rounded-lg mx-2 my-1">
-                                <i class="fas fa-mobile-alt text-emerald-400 mr-3"></i>
-                                Mobile Development
-                            </a>
-                            <a href="#" class="block px-4 py-3 text-gray-700 hover:bg-emerald-50 hover:text-emerald-400 transition-colors flex items-center rounded-lg mx-2 my-1">
-                                <i class="fas fa-database text-emerald-400 mr-3"></i>
-                                Data Science
-                            </a>
+
+                    <div
+                        x-show="accountOpen"
+                        x-transition.origin.top.right
+                        class="absolute right-0 mt-3 w-64 rounded-2xl border border-slate-200 bg-white p-2 shadow-2xl shadow-slate-900/10"
+                        style="display: none;"
+                    >
+                        <div class="px-3 py-3">
+                            <p class="truncate text-sm font-black text-slate-950">{{ $user->name }}</p>
+                            <p class="truncate text-xs text-slate-500">{{ $user->email }}</p>
                         </div>
+                        <a href="{{ route($user->getDashboardRouteName()) }}" class="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-bold text-slate-700 hover:bg-slate-100">
+                            <i class="fas fa-gauge-high w-4 text-teal-700"></i>
+                            Dashboard
+                        </a>
+                        <a href="{{ route('profile.view') }}" class="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-bold text-slate-700 hover:bg-slate-100">
+                            <i class="fas fa-user w-4 text-sky-700"></i>
+                            Profile
+                        </a>
+                        <a href="{{ route('student.course-catalog') }}" class="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-bold text-slate-700 hover:bg-slate-100">
+                            <i class="fas fa-book-open w-4 text-rose-700"></i>
+                            Course catalog
+                        </a>
+                        <form method="POST" action="{{ route('logout') }}" class="mt-1 border-t border-slate-100 pt-1">
+                            @csrf
+                            <button type="submit" class="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left text-sm font-bold text-red-600 hover:bg-red-50">
+                                <i class="fas fa-arrow-right-from-bracket w-4"></i>
+                                Logout
+                            </button>
+                        </form>
                     </div>
                 </div>
-
-                <!-- Marketplace Dropdown -->
-                <div class="relative" x-data="{ open: false }" @mouseenter="open = true" @mouseleave="open = false">
-                    <button class="px-3 py-2 text-sm text-gray-700 hover:text-emerald-400 font-medium flex items-center space-x-1 transition-all relative group">
-                        <span>Marketplace</span>
-                        <i class="fas fa-chevron-down text-xs transition-transform" :class="{ 'rotate-180': open }"></i>
-                        <span class="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-0 h-0.5 bg-emerald-400 transition-all group-hover:w-3/4"></span>
-                    </button>
-                    <div class="absolute left-0 w-56 mt-2 bg-white rounded-xl shadow-xl border border-gray-100 z-50" x-show="open" x-transition style="display: none;" @click.away="open = false">
-                        <div class="py-1">
-                            <a href="{{ route('marketplace.browse') }}" class="block px-4 py-3 text-gray-700 hover:bg-emerald-50 hover:text-emerald-400 transition-colors flex items-center rounded-lg mx-2 my-1">
-                                <i class="fas fa-store text-emerald-400 mr-3"></i>
-                                Browse All Products
-                            </a>
-                            <a href="{{ route('marketplace.categories') }}" class="block px-4 py-3 text-gray-700 hover:bg-emerald-50 hover:text-emerald-400 transition-colors flex items-center rounded-lg mx-2 my-1">
-                                <i class="fas fa-tags text-emerald-400 mr-3"></i>
-                                Categories
-                            </a>
-                            @auth
-                                <a href="{{ route('marketplace.cart') }}" class="block px-4 py-3 text-gray-700 hover:bg-emerald-50 hover:text-emerald-400 transition-colors flex items-center rounded-lg mx-2 my-1">
-                                    <i class="fas fa-shopping-cart text-emerald-400 mr-3"></i>
-                                    My Cart
-                                </a>
-                                <a href="{{ route('marketplace.purchases') }}" class="block px-4 py-3 text-gray-700 hover:bg-emerald-50 hover:text-emerald-400 transition-colors flex items-center rounded-lg mx-2 my-1">
-                                    <i class="fas fa-shopping-bag text-emerald-400 mr-3"></i>
-                                    My Purchases
-                                </a>
-                            @endauth
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Roadmaps Dropdown -->
-                <div class="relative" x-data="{ open: false }" @mouseenter="open = true" @mouseleave="open = false">
-                    <button class="px-3 py-2 text-sm text-gray-700 hover:text-emerald-400 font-medium flex items-center space-x-1 transition-all relative group">
-                        <span>Roadmaps</span>
-                        <i class="fas fa-chevron-down text-xs transition-transform" :class="{ 'rotate-180': open }"></i>
-                        <span class="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-0 h-0.5 bg-emerald-400 transition-all group-hover:w-3/4"></span>
-                    </button>
-                    <div class="absolute left-0 w-64 mt-2 bg-white rounded-xl shadow-xl border border-gray-100 z-50" x-show="open" x-transition style="display: none;" @click.away="open = false">
-                        <div class="py-1">
-                            <a href="#" class="block px-4 py-3 text-gray-700 hover:bg-emerald-50 hover:text-emerald-400 transition-colors flex items-center rounded-lg mx-2 my-1">
-                                <i class="fas fa-map-signs text-emerald-400 mr-3"></i>
-                                Career Paths
-                            </a>
-                            <a href="#" class="block px-4 py-3 text-gray-700 hover:bg-emerald-50 hover:text-emerald-400 transition-colors flex items-center rounded-lg mx-2 my-1">
-                                <i class="fas fa-graduation-cap text-emerald-400 mr-3"></i>
-                                Learning Tracks
-                            </a>
-                            <a href="#" class="block px-4 py-3 text-gray-700 hover:bg-emerald-50 hover:text-emerald-400 transition-colors flex items-center rounded-lg mx-2 my-1">
-                                <i class="fas fa-certificate text-emerald-400 mr-3"></i>
-                                Certification Guide
-                            </a>
-                            <a href="#" class="block px-4 py-3 text-gray-700 hover:bg-emerald-50 hover:text-emerald-400 transition-colors flex items-center rounded-lg mx-2 my-1">
-                                <i class="fas fa-chart-line text-emerald-400 mr-3"></i>
-                                Skill Progression
-                            </a>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Mentorship Dropdown -->
-                <div class="relative" x-data="{ open: false }" @mouseenter="open = true" @mouseleave="open = false">
-                    <button class="px-3 py-2 text-sm text-gray-700 hover:text-emerald-400 font-medium flex items-center space-x-1 transition-all relative group">
-                        <span>Mentorship</span>
-                        <i class="fas fa-chevron-down text-xs transition-transform" :class="{ 'rotate-180': open }"></i>
-                        <span class="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-0 h-0.5 bg-emerald-400 transition-all group-hover:w-3/4"></span>
-                    </button>
-                    <div class="absolute left-0 w-56 mt-2 bg-white rounded-xl shadow-xl border border-gray-100 z-50" x-show="open" x-transition style="display: none;" @click.away="open = false">
-                        <div class="py-1">
-                            <a href="#" class="block px-4 py-3 text-gray-700 hover:bg-emerald-50 hover:text-emerald-400 transition-colors flex items-center rounded-lg mx-2 my-1">
-                                <i class="fas fa-users text-emerald-400 mr-3"></i>
-                                Find a Mentor
-                            </a>
-                            <a href="#" class="block px-4 py-3 text-gray-700 hover:bg-emerald-50 hover:text-emerald-400 transition-colors flex items-center rounded-lg mx-2 my-1">
-                                <i class="fas fa-calendar-check text-emerald-400 mr-3"></i>
-                                Book Sessions
-                            </a>
-                            <a href="#" class="block px-4 py-3 text-gray-700 hover:bg-emerald-50 hover:text-emerald-400 transition-colors flex items-center rounded-lg mx-2 my-1">
-                                <i class="fas fa-code text-emerald-400 mr-3"></i>
-                                Code Reviews
-                            </a>
-                            <a href="#" class="block px-4 py-3 text-gray-700 hover:bg-emerald-50 hover:text-emerald-400 transition-colors flex items-center rounded-lg mx-2 my-1">
-                                <i class="fas fa-briefcase text-emerald-400 mr-3"></i>
-                                Career Guidance
-                            </a>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Simple Links -->
-                <a href="#" class="px-3 py-2 text-sm text-gray-700 hover:text-emerald-400 font-medium transition-all relative group">
-                    <span class="flex items-center">
-                        Community
-                        <span class="ml-1 bg-red-500 text-white text-xs font-bold px-1.5 py-0.5 rounded-full">New</span>
-                    </span>
-                    <span class="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-0 h-0.5 bg-emerald-400 transition-all group-hover:w-3/4"></span>
+            @else
+                <a href="{{ route('login') }}" class="hidden rounded-full px-4 py-2 text-sm font-bold text-slate-700 transition hover:bg-slate-100 sm:inline-flex">
+                    Log in
                 </a>
-
-                <a href="{{ route('about') }}" class="px-3 py-2 text-sm text-gray-700 hover:text-emerald-400 font-medium transition-all relative group">
-                    <span>About</span>
-                    <span class="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-0 h-0.5 bg-emerald-400 transition-all group-hover:w-3/4"></span>
+                <a href="{{ route('register') }}" class="hidden rounded-full bg-slate-950 px-4 py-2 text-sm font-black text-white shadow-sm transition hover:bg-slate-800 sm:inline-flex">
+                    Start free
                 </a>
+            @endauth
 
-                <a href="{{ route('contact') }}" class="px-3 py-2 text-sm text-gray-700 hover:text-emerald-400 font-medium transition-all relative group">
-                    <span>Contact</span>
-                    <span class="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-0 h-0.5 bg-emerald-400 transition-all group-hover:w-3/4"></span>
-                </a>
-
-                <a href="{{ route('statistics') }}" class="px-3 py-2 text-sm text-gray-700 hover:text-emerald-400 font-medium transition-all relative group">
-                    <span>Statistics</span>
-                    <span class="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-0 h-0.5 bg-emerald-400 transition-all group-hover:w-3/4"></span>
-                </a>
-
-                <a href="{{ route('guideline') }}" class="px-3 py-2 text-sm text-gray-700 hover:text-emerald-400 font-medium transition-all relative group">
-                    <span>Guideline</span>
-                    <span class="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-0 h-0.5 bg-emerald-400 transition-all group-hover:w-3/4"></span>
-                </a>
-
-                <a href="{{ route('blog.index') }}" class="px-3 py-2 text-sm text-gray-700 hover:text-emerald-400 font-medium transition-all relative group">
-                    <span>Blog</span>
-                    <span class="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-0 h-0.5 bg-emerald-400 transition-all group-hover:w-3/4"></span>
-                </a>
-            </div>
-
-            <!-- Right Section -->
-            <div class="flex items-center gap-3">
-                @auth
-                    <!-- Authenticated User Dropdown -->
-                    <div class="relative" x-data="{ open: false }" @click.away="open = false">
-                        <button @click="open = !open" class="flex items-center space-x-2 focus:outline-none hover:opacity-80 transition">
-                            <div class="h-8 w-8 rounded-full bg-emerald-500 flex items-center justify-center text-white font-bold text-sm">
-                                {{ strtoupper(substr(auth()->user()->name, 0, 2)) }}
-                            </div>
-                            <span class="hidden md:inline text-sm text-gray-700 font-medium">{{ auth()->user()->name }}</span>
-                            <i class="fas fa-chevron-down text-xs text-gray-500 transition-transform" :class="{ 'rotate-180': open }"></i>
-                        </button>
-
-                        <div x-show="open" x-transition class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-xl border border-gray-100 py-1 z-50" style="display: none;">
-                            <a href="{{ route(auth()->user()->getDashboardRouteName()) }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-emerald-50 hover:text-emerald-500 transition">
-                                <i class="fas fa-tachometer-alt mr-2"></i> Dashboard
-                            </a>
-                            <a href="{{ route('profile.edit') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-emerald-50 hover:text-emerald-500 transition">
-                                <i class="fas fa-user-cog mr-2"></i> Profile
-                            </a>
-                            <hr class="my-1">
-                            <form method="POST" action="{{ route('logout') }}">
-                                @csrf
-                                <button type="submit" class="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition">
-                                    <i class="fas fa-sign-out-alt mr-2"></i> Logout
-                                </button>
-                            </form>
-                        </div>
-                    </div>
-                @else
-                    <!-- Guest Auth Dropdown -->
-                    <div class="hidden md:block relative" x-data="{ open: false }" @click.away="open = false">
-                        <button @click="open = !open" class="bg-emerald-500 hover:bg-emerald-600 text-white font-medium px-4 py-2 rounded-lg shadow-md hover:shadow-lg transition-all flex items-center gap-2">
-                            <i class="fas fa-user"></i>
-                            <span>Account</span>
-                            <i class="fas fa-chevron-down text-xs transition-transform" :class="{ 'rotate-180': open }"></i>
-                        </button>
-
-                        <div x-show="open" x-transition class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-xl border border-gray-100 py-1 z-50" style="display: none;">
-                            <a href="{{ route('login') }}" class="block px-4 py-3 text-gray-700 hover:bg-emerald-50 hover:text-emerald-500 transition flex items-center">
-                                <i class="fas fa-sign-in-alt text-emerald-500 mr-3"></i>
-                                <span class="font-medium">Log In</span>
-                            </a>
-                            <a href="{{ route('register') }}" class="block px-4 py-3 text-gray-700 hover:bg-emerald-50 hover:text-emerald-500 transition flex items-center">
-                                <i class="fas fa-user-plus text-emerald-500 mr-3"></i>
-                                <span class="font-medium">Register</span>
-                            </a>
-                        </div>
-                    </div>
-                @endauth
-
-                <!-- Mobile menu button -->
-                <button @click="mobileOpen = !mobileOpen" class="lg:hidden text-gray-600 hover:text-emerald-500 focus:outline-none p-2 transition">
-                    <i class="fas text-xl" :class="mobileOpen ? 'fa-times' : 'fa-bars'"></i>
-                </button>
-            </div>
+            <button
+                type="button"
+                class="grid h-11 w-11 place-items-center rounded-full border border-slate-200 bg-white text-slate-800 shadow-sm transition hover:border-slate-300 hover:bg-slate-50 lg:hidden"
+                @click="mobileOpen = true"
+                aria-label="Open menu"
+            >
+                <i class="fas fa-bars"></i>
+            </button>
         </div>
     </nav>
 
-    <!-- Mobile menu -->
-    <div class="lg:hidden fixed inset-0 z-40" x-show="mobileOpen" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" x-transition:leave="transition ease-in duration-200" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0" style="display: none;">
-        <!-- Overlay -->
-        <div class="fixed inset-0 bg-black bg-opacity-50" @click="mobileOpen = false"></div>
+    <div x-show="mobileOpen" class="fixed inset-0 z-50 lg:hidden" style="display: none;">
+        <div
+            class="absolute inset-0 bg-slate-950/45 backdrop-blur-sm"
+            x-transition.opacity
+            @click="mobileOpen = false"
+        ></div>
 
-        <!-- Panel -->
-        <div class="relative bg-white w-80 max-w-full h-full ml-auto shadow-2xl overflow-y-auto">
-            <div class="flex justify-between items-center p-4 border-b">
-                <span class="font-bold text-gray-800">Menu</span>
-                <button @click="mobileOpen = false" class="text-gray-600 hover:text-emerald-500 p-2">
-                    <i class="fas fa-times text-xl"></i>
+        <aside
+            class="absolute right-0 top-0 flex h-full w-[min(92vw,390px)] flex-col overflow-y-auto bg-white shadow-2xl"
+            x-transition:enter="transition ease-out duration-200"
+            x-transition:enter-start="translate-x-full"
+            x-transition:enter-end="translate-x-0"
+            x-transition:leave="transition ease-in duration-150"
+            x-transition:leave-start="translate-x-0"
+            x-transition:leave-end="translate-x-full"
+        >
+            <div class="flex items-center justify-between border-b border-slate-200 px-5 py-4">
+                <div class="flex items-center gap-3">
+                    <span class="grid h-10 w-10 place-items-center rounded-2xl bg-slate-950 text-white">
+                        <i class="fas fa-code text-sm"></i>
+                    </span>
+                    <div>
+                        <p class="font-black text-slate-950">BootKode</p>
+                        <p class="text-xs font-semibold text-slate-500">Learn, build, certify</p>
+                    </div>
+                </div>
+                <button type="button" class="grid h-10 w-10 place-items-center rounded-full bg-slate-100 text-slate-700" @click="mobileOpen = false" aria-label="Close menu">
+                    <i class="fas fa-xmark"></i>
                 </button>
             </div>
 
-            <div class="p-4 space-y-2">
-                <!-- Mobile: Courses Dropdown -->
-                <div>
-                    <button @click="dropdowns.courses = !dropdowns.courses" class="w-full flex justify-between items-center px-3 py-3 text-gray-700 rounded-lg hover:bg-emerald-50 transition">
-                        <div class="flex items-center">
-                            <i class="fas fa-book-open text-emerald-500 mr-3"></i>
-                            <span class="font-medium">Courses</span>
-                        </div>
-                        <i class="fas fa-chevron-down text-xs transition-transform" :class="{ 'rotate-180': dropdowns.courses }"></i>
-                    </button>
-                    <div class="mt-1 ml-8 space-y-1" x-show="dropdowns.courses" x-collapse style="display: none;">
-                        <a href="#" class="block px-3 py-2 text-sm text-gray-600 rounded-lg hover:bg-emerald-50 hover:text-emerald-500 transition">
-                            <i class="fas fa-laptop-code text-emerald-500 mr-2"></i>
-                            Frontend Development
-                        </a>
-                        <a href="#" class="block px-3 py-2 text-sm text-gray-600 rounded-lg hover:bg-emerald-50 hover:text-emerald-500 transition">
-                            <i class="fas fa-server text-emerald-500 mr-2"></i>
-                            Backend Development
-                        </a>
-                        <a href="#" class="block px-3 py-2 text-sm text-gray-600 rounded-lg hover:bg-emerald-50 hover:text-emerald-500 transition">
-                            <i class="fas fa-mobile-alt text-emerald-500 mr-2"></i>
-                            Mobile Development
-                        </a>
-                        <a href="#" class="block px-3 py-2 text-sm text-gray-600 rounded-lg hover:bg-emerald-50 hover:text-emerald-500 transition">
-                            <i class="fas fa-database text-emerald-500 mr-2"></i>
-                            Data Science
-                        </a>
-                    </div>
+            <div class="space-y-5 px-5 py-5">
+                <div class="rounded-3xl bg-slate-950 p-5 text-white">
+                    <p class="text-xs font-bold uppercase tracking-[0.16em] text-teal-200">Mobile learning shell</p>
+                    <p class="mt-2 text-xl font-black leading-tight">Pick a path and continue with fewer taps.</p>
+                    <a href="{{ $primaryCtaUrl }}" class="mt-4 inline-flex w-full items-center justify-center rounded-2xl bg-white px-4 py-3 text-sm font-black text-slate-950">
+                        {{ $user ? 'Open dashboard' : 'Create account' }}
+                    </a>
                 </div>
 
-                <!-- Mobile: Marketplace Dropdown -->
+                <div class="grid grid-cols-2 gap-2">
+                    @foreach ($navItems as $item)
+                        <a href="{{ $item['href'] }}" class="flex items-center gap-3 rounded-2xl border border-slate-200 px-3 py-3 text-sm font-bold {{ $item['active'] ? 'bg-slate-950 text-white' : 'text-slate-700' }}">
+                            <i class="fas {{ $item['icon'] }} w-4 {{ $item['active'] ? 'text-white' : 'text-teal-700' }}"></i>
+                            <span class="truncate">{{ $item['label'] }}</span>
+                        </a>
+                    @endforeach
+                </div>
+
                 <div>
-                    <button @click="dropdowns.marketplace = !dropdowns.marketplace" class="w-full flex justify-between items-center px-3 py-3 text-gray-700 rounded-lg hover:bg-emerald-50 transition">
-                        <div class="flex items-center">
-                            <i class="fas fa-store text-emerald-500 mr-3"></i>
-                            <span class="font-medium">Marketplace</span>
-                        </div>
-                        <i class="fas fa-chevron-down text-xs transition-transform" :class="{ 'rotate-180': dropdowns.marketplace }"></i>
-                    </button>
-                    <div class="mt-1 ml-8 space-y-1" x-show="dropdowns.marketplace" x-collapse style="display: none;">
-                        <a href="{{ route('marketplace.browse') }}" class="block px-3 py-2 text-sm text-gray-600 rounded-lg hover:bg-emerald-50 hover:text-emerald-500 transition">
-                            <i class="fas fa-store text-emerald-500 mr-2"></i>
-                            Browse All
-                        </a>
-                        <a href="{{ route('marketplace.categories') }}" class="block px-3 py-2 text-sm text-gray-600 rounded-lg hover:bg-emerald-50 hover:text-emerald-500 transition">
-                            <i class="fas fa-tags text-emerald-500 mr-2"></i>
-                            Categories
-                        </a>
-                        @auth
-                            <a href="{{ route('marketplace.cart') }}" class="block px-3 py-2 text-sm text-gray-600 rounded-lg hover:bg-emerald-50 hover:text-emerald-500 transition">
-                                <i class="fas fa-shopping-cart text-emerald-500 mr-2"></i>
-                                My Cart
+                    <p class="px-1 text-xs font-black uppercase tracking-[0.16em] text-slate-400">More</p>
+                    <div class="mt-2 space-y-2">
+                        @foreach ($quickLinks as $item)
+                            <a href="{{ $item['href'] }}" class="flex items-center gap-3 rounded-2xl px-3 py-3 text-sm font-bold text-slate-700 hover:bg-slate-100">
+                                <i class="fas {{ $item['icon'] }} w-5 text-sky-700"></i>
+                                {{ $item['label'] }}
                             </a>
-                            <a href="{{ route('marketplace.purchases') }}" class="block px-3 py-2 text-sm text-gray-600 rounded-lg hover:bg-emerald-50 hover:text-emerald-500 transition">
-                                <i class="fas fa-shopping-bag text-emerald-500 mr-2"></i>
-                                My Purchases
-                            </a>
-                        @endauth
+                        @endforeach
                     </div>
                 </div>
 
-                <!-- Mobile: Roadmaps Dropdown -->
-                <div>
-                    <button @click="dropdowns.roadmaps = !dropdowns.roadmaps" class="w-full flex justify-between items-center px-3 py-3 text-gray-700 rounded-lg hover:bg-emerald-50 transition">
-                        <div class="flex items-center">
-                            <i class="fas fa-map-marked-alt text-emerald-500 mr-3"></i>
-                            <span class="font-medium">Roadmaps</span>
-                        </div>
-                        <i class="fas fa-chevron-down text-xs transition-transform" :class="{ 'rotate-180': dropdowns.roadmaps }"></i>
-                    </button>
-                    <div class="mt-1 ml-8 space-y-1" x-show="dropdowns.roadmaps" x-collapse style="display: none;">
-                        <a href="#" class="block px-3 py-2 text-sm text-gray-600 rounded-lg hover:bg-emerald-50 hover:text-emerald-500 transition">
-                            <i class="fas fa-map-signs text-emerald-500 mr-2"></i>
-                            Career Paths
-                        </a>
-                        <a href="#" class="block px-3 py-2 text-sm text-gray-600 rounded-lg hover:bg-emerald-50 hover:text-emerald-500 transition">
-                            <i class="fas fa-graduation-cap text-emerald-500 mr-2"></i>
-                            Learning Tracks
-                        </a>
-                        <a href="#" class="block px-3 py-2 text-sm text-gray-600 rounded-lg hover:bg-emerald-50 hover:text-emerald-500 transition">
-                            <i class="fas fa-certificate text-emerald-500 mr-2"></i>
-                            Certification
-                        </a>
-                    </div>
-                </div>
-
-                <!-- Mobile: Mentorship Dropdown -->
-                <div>
-                    <button @click="dropdowns.mentorship = !dropdowns.mentorship" class="w-full flex justify-between items-center px-3 py-3 text-gray-700 rounded-lg hover:bg-emerald-50 transition">
-                        <div class="flex items-center">
-                            <i class="fas fa-hands-helping text-emerald-500 mr-3"></i>
-                            <span class="font-medium">Mentorship</span>
-                        </div>
-                        <i class="fas fa-chevron-down text-xs transition-transform" :class="{ 'rotate-180': dropdowns.mentorship }"></i>
-                    </button>
-                    <div class="mt-1 ml-8 space-y-1" x-show="dropdowns.mentorship" x-collapse style="display: none;">
-                        <a href="#" class="block px-3 py-2 text-sm text-gray-600 rounded-lg hover:bg-emerald-50 hover:text-emerald-500 transition">
-                            <i class="fas fa-users text-emerald-500 mr-2"></i>
-                            Find a Mentor
-                        </a>
-                        <a href="#" class="block px-3 py-2 text-sm text-gray-600 rounded-lg hover:bg-emerald-50 hover:text-emerald-500 transition">
-                            <i class="fas fa-calendar-check text-emerald-500 mr-2"></i>
-                            Book Sessions
-                        </a>
-                        <a href="#" class="block px-3 py-2 text-sm text-gray-600 rounded-lg hover:bg-emerald-50 hover:text-emerald-500 transition">
-                            <i class="fas fa-code text-emerald-500 mr-2"></i>
-                            Code Reviews
-                        </a>
-                    </div>
-                </div>
-
-                <!-- Mobile: Simple Links -->
-                <a href="#" class="flex items-center px-3 py-3 text-gray-700 rounded-lg hover:bg-emerald-50 transition">
-                    <i class="fas fa-users text-emerald-500 mr-3"></i>
-                    <span class="font-medium">Community</span>
-                    <span class="ml-2 bg-red-500 text-white text-xs font-bold px-2 py-0.5 rounded-full">New</span>
-                </a>
-
-                <a href="{{ route('about') }}" class="flex items-center px-3 py-3 text-gray-700 rounded-lg hover:bg-emerald-50 transition">
-                    <i class="fas fa-info-circle text-emerald-500 mr-3"></i>
-                    <span class="font-medium">About</span>
-                </a>
-
-                <a href="{{ route('contact') }}" class="flex items-center px-3 py-3 text-gray-700 rounded-lg hover:bg-emerald-50 transition">
-                    <i class="fas fa-envelope text-emerald-500 mr-3"></i>
-                    <span class="font-medium">Contact</span>
-                </a>
-
-                <a href="{{ route('statistics') }}" class="flex items-center px-3 py-3 text-gray-700 rounded-lg hover:bg-emerald-50 transition">
-                    <i class="fas fa-chart-bar text-emerald-500 mr-3"></i>
-                    <span class="font-medium">Statistics</span>
-                </a>
-
-                <a href="{{ route('guideline') }}" class="flex items-center px-3 py-3 text-gray-700 rounded-lg hover:bg-emerald-50 transition">
-                    <i class="fas fa-book text-emerald-500 mr-3"></i>
-                    <span class="font-medium">Guideline</span>
-                </a>
-
-                <a href="{{ route('blog.index') }}" class="flex items-center px-3 py-3 text-gray-700 rounded-lg hover:bg-emerald-50 transition">
-                    <i class="fas fa-blog text-emerald-500 mr-3"></i>
-                    <span class="font-medium">Blog</span>
-                </a>
-
-                <!-- Mobile: Auth Section -->
-                <div class="border-t pt-4 mt-4">
-                    @auth
-                        <div class="space-y-2">
-                            <div class="flex items-center px-3 py-2 bg-emerald-50 rounded-lg">
-                                <div class="h-10 w-10 rounded-full bg-emerald-500 flex items-center justify-center text-white font-bold">
-                                    {{ strtoupper(substr(auth()->user()->name, 0, 2)) }}
-                                </div>
-                                <span class="ml-3 font-medium text-gray-800">{{ auth()->user()->name }}</span>
+                @auth
+                    <div class="rounded-3xl border border-slate-200 p-4">
+                        <div class="flex items-center gap-3">
+                            <span class="grid h-11 w-11 place-items-center rounded-full bg-teal-700 text-sm font-black text-white">
+                                {{ strtoupper(substr($user->name, 0, 2)) }}
+                            </span>
+                            <div class="min-w-0">
+                                <p class="truncate text-sm font-black text-slate-950">{{ $user->name }}</p>
+                                <p class="truncate text-xs text-slate-500">{{ $user->email }}</p>
                             </div>
-                            <a href="{{ route(auth()->user()->getDashboardRouteName()) }}" class="flex items-center px-3 py-3 text-gray-700 rounded-lg hover:bg-emerald-50 transition">
-                                <i class="fas fa-tachometer-alt text-emerald-500 mr-3"></i>
-                                <span class="font-medium">Dashboard</span>
-                            </a>
-                            <a href="{{ route('profile.edit') }}" class="flex items-center px-3 py-3 text-gray-700 rounded-lg hover:bg-emerald-50 transition">
-                                <i class="fas fa-user-cog text-emerald-500 mr-3"></i>
-                                <span class="font-medium">Profile</span>
-                            </a>
-                            <form method="POST" action="{{ route('logout') }}">
-                                @csrf
-                                <button type="submit" class="w-full flex items-center px-3 py-3 text-red-600 rounded-lg hover:bg-red-50 transition">
-                                    <i class="fas fa-sign-out-alt text-red-600 mr-3"></i>
-                                    <span class="font-medium">Logout</span>
-                                </button>
-                            </form>
                         </div>
-                    @else
-                        <div class="space-y-2">
-                            <a href="{{ route('login') }}" class="flex items-center justify-center px-4 py-3 border-2 border-emerald-500 text-emerald-500 rounded-lg hover:bg-emerald-50 transition font-medium">
-                                <i class="fas fa-sign-in-alt mr-2"></i>
-                                Log In
-                            </a>
-                            <a href="{{ route('register') }}" class="flex items-center justify-center px-4 py-3 bg-emerald-500 text-white rounded-lg hover:bg-emerald-600 transition font-medium shadow-md">
-                                <i class="fas fa-user-plus mr-2"></i>
-                                Register
-                            </a>
+                        <div class="mt-3 grid grid-cols-2 gap-2">
+                            <a href="{{ route($user->getDashboardRouteName()) }}" class="rounded-2xl bg-slate-100 px-3 py-3 text-center text-sm font-bold text-slate-800">Dashboard</a>
+                            <a href="{{ route('profile.view') }}" class="rounded-2xl bg-slate-100 px-3 py-3 text-center text-sm font-bold text-slate-800">Profile</a>
                         </div>
-                    @endauth
-                </div>
+                    </div>
+                @else
+                    <div class="grid grid-cols-2 gap-2">
+                        <a href="{{ route('login') }}" class="rounded-2xl border border-slate-200 px-4 py-3 text-center text-sm font-black text-slate-800">Log in</a>
+                        <a href="{{ route('register') }}" class="rounded-2xl bg-teal-700 px-4 py-3 text-center text-sm font-black text-white">Register</a>
+                    </div>
+                @endauth
             </div>
-        </div>
+        </aside>
     </div>
+
+    <nav class="bk-mobile-tabbar lg:hidden" aria-label="Mobile primary navigation">
+        @foreach (array_slice($navItems, 0, 4) as $item)
+            <a href="{{ $item['href'] }}" class="{{ $item['active'] ? 'active' : '' }}">
+                <i class="fas {{ $item['icon'] }}"></i>
+                <span>{{ $item['label'] }}</span>
+            </a>
+        @endforeach
+        <a href="{{ $accountUrl }}" class="{{ request()->routeIs('login') || request()->routeIs('register') || request()->routeIs('dashboard') ? 'active' : '' }}">
+            <i class="fas fa-user"></i>
+            <span>{{ $user ? 'Account' : 'Login' }}</span>
+        </a>
+    </nav>
 </header>
