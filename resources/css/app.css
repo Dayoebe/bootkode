@@ -721,120 +721,141 @@
 
 /* Legacy dashboard surfaces were built with fixed Tailwind colors. Keep them
    inside the active dashboard theme without touching public marketing pages. */
-:is(.bk-newsletter, .bk-page-manager) {
+:is(.bk-themed-surface, .bk-newsletter, .bk-page-manager) {
     color: rgb(var(--text-primary));
 }
 
-:is(.bk-newsletter, .bk-page-manager) :is(.bg-white) {
+:is(.bk-themed-surface, .bk-newsletter, .bk-page-manager) :is(.bg-white) {
     background-color: rgb(var(--bg-secondary)) !important;
 }
 
-:is(.bk-newsletter, .bk-page-manager) :is(.bg-gray-50, .bg-gray-100) {
+:is(.bk-themed-surface, .bk-newsletter, .bk-page-manager) :is(.bg-gray-50, .bg-gray-100, .bg-slate-50, .bg-slate-100) {
     background-color: rgb(var(--bg-tertiary)) !important;
 }
 
-:is(.bk-newsletter, .bk-page-manager) :is(.bg-blue-50, .bg-purple-50, .bg-indigo-50) {
+:is(.bk-themed-surface, .bk-newsletter, .bk-page-manager) :is(.bg-gray-200, .bg-gray-300, .bg-slate-200, .bg-slate-300) {
+    background-color: rgb(var(--border-primary)) !important;
+}
+
+:is(.bk-themed-surface, .bk-newsletter, .bk-page-manager) :is(.bg-blue-50, .bg-purple-50, .bg-indigo-50, .bg-sky-50, .bg-teal-50) {
     background-color: rgb(var(--accent-primary) / 0.12) !important;
 }
 
-:is(.bk-newsletter, .bk-page-manager) :is(.bg-blue-100, .bg-purple-100, .bg-indigo-100) {
+:is(.bk-themed-surface, .bk-newsletter, .bk-page-manager) :is(.bg-blue-100, .bg-purple-100, .bg-indigo-100, .bg-sky-100, .bg-teal-100) {
     background-color: rgb(var(--accent-primary) / 0.16) !important;
 }
 
-:is(.bk-newsletter, .bk-page-manager) :is(.bg-blue-600, .bg-purple-600, .bg-indigo-600) {
+:is(.bk-themed-surface, .bk-newsletter, .bk-page-manager) :is(.bg-blue-500, .bg-blue-600, .bg-purple-500, .bg-purple-600, .bg-indigo-500, .bg-indigo-600, .bg-sky-500, .bg-sky-600, .bg-teal-500, .bg-teal-600) {
     background-color: rgb(var(--accent-primary)) !important;
     color: rgb(var(--tab-active-text)) !important;
 }
 
-:is(.bk-newsletter, .bk-page-manager) :is(.hover\:bg-blue-700:hover, .hover\:bg-purple-700:hover, .hover\:bg-indigo-700:hover) {
+:is(.bk-themed-surface, .bk-newsletter, .bk-page-manager) :is(.hover\:bg-blue-700:hover, .hover\:bg-purple-700:hover, .hover\:bg-indigo-700:hover, .hover\:bg-sky-700:hover, .hover\:bg-teal-700:hover) {
     background-color: rgb(var(--accent-secondary)) !important;
 }
 
-:is(.bk-newsletter, .bk-page-manager) :is(.bg-gray-600) {
+:is(.bk-themed-surface, .bk-newsletter, .bk-page-manager) :is(.bg-gray-500, .bg-gray-600, .bg-slate-500, .bg-slate-600) {
     background-color: rgb(var(--text-secondary)) !important;
     color: rgb(var(--bg-secondary)) !important;
 }
 
-:is(.bk-newsletter, .bk-page-manager) :is(.hover\:bg-gray-700:hover) {
+:is(.bk-themed-surface, .bk-newsletter, .bk-page-manager) :is(.hover\:bg-gray-700:hover, .hover\:bg-slate-700:hover, .hover\:bg-slate-800:hover) {
     background-color: rgb(var(--text-primary)) !important;
     color: rgb(var(--bg-secondary)) !important;
 }
 
-:is(.bk-newsletter, .bk-page-manager) :is(.text-gray-900, .text-gray-800, .text-gray-700) {
+:is(.bk-themed-surface, .bk-newsletter, .bk-page-manager) :is(.hover\:bg-gray-50:hover, .hover\:bg-gray-100:hover, .hover\:bg-gray-200:hover, .hover\:bg-slate-50:hover, .hover\:bg-slate-100:hover, .hover\:bg-slate-200:hover) {
+    background-color: rgb(var(--bg-tertiary)) !important;
+}
+
+:is(.bk-themed-surface, .bk-newsletter, .bk-page-manager) :is(.text-gray-900, .text-gray-800, .text-gray-700, .text-slate-950, .text-slate-900, .text-slate-800, .text-slate-700) {
     color: rgb(var(--text-primary)) !important;
 }
 
-:is(.bk-newsletter, .bk-page-manager) :is(.text-gray-600, .text-gray-500) {
+:is(.bk-themed-surface, .bk-newsletter, .bk-page-manager) :is(.text-gray-600, .text-gray-500, .text-slate-600, .text-slate-500) {
     color: rgb(var(--text-secondary)) !important;
 }
 
-:is(.bk-newsletter, .bk-page-manager) :is(.text-gray-400, .text-gray-300) {
+:is(.bk-themed-surface, .bk-newsletter, .bk-page-manager) :is(.text-gray-400, .text-gray-300, .text-slate-400, .text-slate-300, .text-slate-200) {
     color: rgb(var(--text-tertiary)) !important;
 }
 
-:is(.bk-newsletter, .bk-page-manager) :is(.text-blue-900, .text-blue-800, .text-blue-700, .text-blue-600, .text-purple-900, .text-purple-800, .text-purple-700, .text-purple-600, .text-indigo-600) {
+:is(.bk-themed-surface, .bk-newsletter, .bk-page-manager) :is(.text-blue-900, .text-blue-800, .text-blue-700, .text-blue-600, .text-blue-500, .text-blue-400, .text-purple-900, .text-purple-800, .text-purple-700, .text-purple-600, .text-purple-500, .text-purple-400, .text-indigo-900, .text-indigo-800, .text-indigo-700, .text-indigo-600, .text-indigo-500, .text-sky-600, .text-sky-500, .text-teal-800, .text-teal-700, .text-teal-600, .text-teal-500) {
     color: rgb(var(--accent-primary)) !important;
 }
 
-:is(.bk-newsletter, .bk-page-manager) :is(.hover\:text-blue-900:hover, .hover\:text-blue-800:hover, .hover\:text-purple-900:hover, .hover\:text-purple-800:hover, .hover\:text-gray-900:hover, .hover\:text-gray-700:hover, .hover\:text-gray-600:hover) {
+:is(.bk-themed-surface, .bk-newsletter, .bk-page-manager) :is(.hover\:text-blue-900:hover, .hover\:text-blue-800:hover, .hover\:text-blue-700:hover, .hover\:text-purple-900:hover, .hover\:text-purple-800:hover, .hover\:text-indigo-900:hover, .hover\:text-indigo-700:hover, .hover\:text-indigo-600:hover, .hover\:text-indigo-500:hover) {
+    color: rgb(var(--accent-secondary)) !important;
+}
+
+:is(.bk-themed-surface, .bk-newsletter, .bk-page-manager) :is(.hover\:text-gray-900:hover, .hover\:text-gray-700:hover, .hover\:text-gray-600:hover, .hover\:text-slate-900:hover, .hover\:text-slate-700:hover, .hover\:text-slate-600:hover) {
     color: rgb(var(--text-primary)) !important;
 }
 
-:is(.bk-newsletter, .bk-page-manager) :is(.border-gray-200, .border-gray-300, .border-blue-200, .border-blue-500) {
+:is(.bk-themed-surface, .bk-newsletter, .bk-page-manager) :is(.border-gray-100, .border-gray-200, .border-gray-300, .border-slate-100, .border-slate-200, .border-slate-300, .border-blue-200, .border-blue-300, .border-blue-500, .border-purple-200, .border-purple-300, .border-purple-500, .border-indigo-200, .border-indigo-300, .border-indigo-500, .border-indigo-600) {
     border-color: rgb(var(--border-primary)) !important;
 }
 
-:is(.bk-newsletter, .bk-page-manager) .divide-gray-200 > :not([hidden]) ~ :not([hidden]) {
+:is(.bk-themed-surface, .bk-newsletter, .bk-page-manager) .divide-gray-200 > :not([hidden]) ~ :not([hidden]),
+:is(.bk-themed-surface, .bk-newsletter, .bk-page-manager) .divide-slate-200 > :not([hidden]) ~ :not([hidden]) {
     border-color: rgb(var(--border-primary)) !important;
 }
 
-:is(.bk-newsletter, .bk-page-manager) :is(input:not([type="checkbox"]):not([type="radio"]), select, textarea) {
+:is(.bk-themed-surface, .bk-newsletter, .bk-page-manager) :is(.focus\:border-blue-500:focus, .focus\:border-indigo-500:focus, .focus\:border-indigo-300:focus, .focus\:border-purple-500:focus) {
+    border-color: rgb(var(--accent-primary)) !important;
+}
+
+:is(.bk-themed-surface, .bk-newsletter, .bk-page-manager) :is(.focus\:ring-blue-500:focus, .focus\:ring-indigo-500:focus, .focus\:ring-indigo-200:focus, .focus\:ring-purple-500:focus) {
+    --tw-ring-color: rgb(var(--accent-primary) / 0.32) !important;
+}
+
+:is(.bk-themed-surface, .bk-newsletter, .bk-page-manager) :is(input:not([type="checkbox"]):not([type="radio"]), select, textarea) {
     border-color: rgb(var(--border-secondary)) !important;
     background-color: rgb(var(--bg-secondary)) !important;
     color: rgb(var(--text-primary)) !important;
 }
 
-:is(.bk-newsletter, .bk-page-manager) :is(input:not([type="checkbox"]):not([type="radio"]), select, textarea)::placeholder {
+:is(.bk-themed-surface, .bk-newsletter, .bk-page-manager) :is(input:not([type="checkbox"]):not([type="radio"]), select, textarea)::placeholder {
     color: rgb(var(--text-tertiary)) !important;
 }
 
-:is(.bk-newsletter, .bk-page-manager) :is(input:not([type="checkbox"]):not([type="radio"]), select, textarea):focus {
+:is(.bk-themed-surface, .bk-newsletter, .bk-page-manager) :is(input:not([type="checkbox"]):not([type="radio"]), select, textarea):focus {
     border-color: rgb(var(--accent-primary)) !important;
     box-shadow: 0 0 0 4px rgb(var(--accent-primary) / 0.14) !important;
 }
 
-:is(.bk-newsletter, .bk-page-manager) :is(input[type="checkbox"], input[type="radio"]) {
+:is(.bk-themed-surface, .bk-newsletter, .bk-page-manager) :is(input[type="checkbox"], input[type="radio"]) {
     border-color: rgb(var(--border-secondary)) !important;
     background-color: rgb(var(--bg-secondary)) !important;
     color: rgb(var(--accent-primary)) !important;
 }
 
-:is(.bk-newsletter, .bk-page-manager) .shadow,
-:is(.bk-newsletter, .bk-page-manager) .shadow-sm,
-:is(.bk-newsletter, .bk-page-manager) .shadow-xl {
+:is(.bk-themed-surface, .bk-newsletter, .bk-page-manager) .shadow,
+:is(.bk-themed-surface, .bk-newsletter, .bk-page-manager) .shadow-sm,
+:is(.bk-themed-surface, .bk-newsletter, .bk-page-manager) .shadow-xl {
     box-shadow: 0 18px 45px rgb(15 23 42 / 0.08) !important;
 }
 
-.dark :is(.bk-newsletter, .bk-page-manager) :is(.bg-green-100, .bg-green-50) {
+.dark :is(.bk-themed-surface, .bk-newsletter, .bk-page-manager) :is(.bg-green-100, .bg-green-50) {
     background-color: rgb(20 83 45 / 0.35) !important;
 }
 
-.dark :is(.bk-newsletter, .bk-page-manager) :is(.text-green-800, .text-green-700, .text-green-600) {
+.dark :is(.bk-themed-surface, .bk-newsletter, .bk-page-manager) :is(.text-green-800, .text-green-700, .text-green-600) {
     color: rgb(134 239 172) !important;
 }
 
-.dark :is(.bk-newsletter, .bk-page-manager) :is(.bg-yellow-100, .bg-yellow-50) {
+.dark :is(.bk-themed-surface, .bk-newsletter, .bk-page-manager) :is(.bg-yellow-100, .bg-yellow-50) {
     background-color: rgb(113 63 18 / 0.38) !important;
 }
 
-.dark :is(.bk-newsletter, .bk-page-manager) :is(.text-yellow-800, .text-yellow-700, .text-yellow-600) {
+.dark :is(.bk-themed-surface, .bk-newsletter, .bk-page-manager) :is(.text-yellow-800, .text-yellow-700, .text-yellow-600) {
     color: rgb(253 224 71) !important;
 }
 
-.dark :is(.bk-newsletter, .bk-page-manager) :is(.bg-red-100, .bg-red-50) {
+.dark :is(.bk-themed-surface, .bk-newsletter, .bk-page-manager) :is(.bg-red-100, .bg-red-50) {
     background-color: rgb(127 29 29 / 0.36) !important;
 }
 
-.dark :is(.bk-newsletter, .bk-page-manager) :is(.text-red-800, .text-red-700, .text-red-600) {
+.dark :is(.bk-themed-surface, .bk-newsletter, .bk-page-manager) :is(.text-red-800, .text-red-700, .text-red-600) {
     color: rgb(252 165 165) !important;
 }
