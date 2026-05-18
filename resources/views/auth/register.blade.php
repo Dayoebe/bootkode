@@ -1,8 +1,40 @@
 <x-app-layout>
-    <div class="min-h-screen bg-white flex items-center justify-center p-4">
-        <div class="w-full max-w-2xl">
+    <div class="bk-auth-surface bk-edge-to-edge min-h-[calc(100svh-8rem)] px-4 py-8 sm:px-6 sm:py-10 lg:px-10">
+        <div class="mx-auto w-full max-w-3xl">
+            <div class="relative mb-8 overflow-hidden rounded-[8px] border border-slate-200 bg-slate-950 p-5 text-white shadow-2xl shadow-slate-950/10 sm:p-6">
+                <x-icon-field class="opacity-10" />
+                <div class="relative flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                    <div class="min-w-0">
+                        <span class="inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-1 text-xs font-black text-teal-100">
+                            <span class="h-1.5 w-1.5 rounded-full bg-teal-300"></span>
+                            New BootKode account
+                        </span>
+                        <h1 class="bk-display mt-3 text-2xl font-black leading-tight sm:text-3xl">Set up your learning workspace.</h1>
+                        <p class="mt-2 max-w-xl text-sm leading-6 text-slate-300">Create one profile for courses, mentorship, certificates, community, and career tools.</p>
+                    </div>
+                    <a href="{{ route('login') }}" class="inline-flex min-h-11 items-center justify-center gap-2 rounded-[8px] border border-white/15 bg-white/10 px-4 text-sm font-black text-white transition hover:bg-white/15">
+                        <i class="fas fa-right-to-bracket text-xs"></i>
+                        Sign in
+                    </a>
+                </div>
+                <div class="relative mt-5 grid gap-2 sm:grid-cols-3">
+                    @foreach ([
+                        ['label' => 'Learning path', 'icon' => 'fa-route', 'class' => 'bg-blue-500'],
+                        ['label' => 'Mentor access', 'icon' => 'fa-message', 'class' => 'bg-emerald-500'],
+                        ['label' => 'Certificate proof', 'icon' => 'fa-certificate', 'class' => 'bg-rose-500'],
+                    ] as $item)
+                        <div class="bk-signal-line rounded-[8px] border border-white/10 bg-white/10 p-3" style="--i: {{ $loop->index }}">
+                            <span class="grid h-9 w-9 place-items-center rounded-[8px] {{ $item['class'] }} text-white">
+                                <i class="fas {{ $item['icon'] }} text-sm"></i>
+                            </span>
+                            <p class="mt-2 text-sm font-black">{{ $item['label'] }}</p>
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+
             <!-- Progress Indicator -->
-            <div class="mb-12">
+            <div class="mb-8 rounded-[8px] border border-slate-200 bg-white p-4 shadow-lg shadow-slate-950/5">
                 <div class="flex items-center justify-between mb-8">
                     <div class="flex-1">
                         <div class="flex items-center">
@@ -50,7 +82,7 @@
             </div>
 
             <!-- Form Container -->
-            <div class="bg-white rounded-2xl shadow-lg overflow-hidden">
+            <div class="overflow-hidden rounded-[8px] border border-slate-200 bg-white shadow-2xl shadow-slate-950/10">
                 <!-- Header -->
                 <div class="px-8 py-10 border-b border-slate-100">
                     <h1 class="text-3xl font-bold text-slate-900 mb-2" id="form-title">Create Your Account</h1>
@@ -75,7 +107,6 @@
                                     value="{{ old('name') }}"
                                     placeholder="John Doe"
                                     required
-                                    autofocus
                                     autocomplete="name" />
                                 @error('name')
                                     <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
@@ -254,7 +285,7 @@
                             </div>
 
                             <!-- City and State Grid -->
-                            <div class="grid grid-cols-2 gap-4">
+                            <div class="grid gap-4 sm:grid-cols-2">
                                 <div>
                                     <label for="address_city" class="block text-sm font-semibold text-slate-900 mb-2">City</label>
                                     <input
@@ -285,7 +316,7 @@
                             </div>
 
                             <!-- Country and Postal Code Grid -->
-                            <div class="grid grid-cols-2 gap-4">
+                            <div class="grid gap-4 sm:grid-cols-2">
                                 <div>
                                     <label for="address_country" class="block text-sm font-semibold text-slate-900 mb-2">Country</label>
                                     <input
@@ -427,20 +458,23 @@
                             type="button"
                             id="prev-btn"
                             onclick="previousStep()"
-                            class="px-6 py-3 rounded-lg border border-slate-300 text-slate-900 font-semibold hover:bg-slate-50 transition-all duration-200 hidden">
+                            class="hidden inline-flex items-center gap-2 rounded-[8px] border border-slate-300 px-6 py-3 font-semibold text-slate-900 transition-all duration-200 hover:bg-slate-50">
+                            <i class="fas fa-arrow-left text-xs"></i>
                             Back
                         </button>
                         <button
                             type="button"
                             id="next-btn"
                             onclick="nextStep()"
-                            class="ml-auto px-6 py-3 rounded-lg bg-slate-900 text-white font-semibold hover:bg-slate-800 transition-all duration-200 hover:shadow-lg">
+                            class="ml-auto inline-flex items-center gap-2 rounded-[8px] bg-slate-900 px-6 py-3 font-semibold text-white transition-all duration-200 hover:bg-slate-800 hover:shadow-lg">
                             Continue
+                            <i class="fas fa-arrow-right text-xs"></i>
                         </button>
                         <button
                             type="submit"
                             id="submit-btn"
-                            class="ml-auto px-8 py-3 rounded-lg bg-slate-900 text-white font-semibold hover:bg-slate-800 transition-all duration-200 hover:shadow-lg hidden">
+                            class="ml-auto hidden inline-flex items-center gap-2 rounded-[8px] bg-slate-900 px-8 py-3 font-semibold text-white transition-all duration-200 hover:bg-slate-800 hover:shadow-lg">
+                            <i class="fas fa-user-plus text-xs"></i>
                             Create Account
                         </button>
                     </div>
