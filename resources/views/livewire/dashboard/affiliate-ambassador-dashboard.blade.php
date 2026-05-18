@@ -412,7 +412,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Earnings Chart
     const earningsData = @json($this->earningsAnalytics['daily_earnings'] ?? []);
-    if (earningsData.length > 0) {
+    if (window.bootkodeDashboardCharts?.shouldRender('earningsChart', earningsData, ['earnings', 'referrals'])) {
         const ctx = document.getElementById('earningsChart').getContext('2d');
         new Chart(ctx, {
             type: 'bar',

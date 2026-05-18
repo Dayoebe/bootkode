@@ -71,6 +71,7 @@
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @livewireStyles
+    @stack('styles')
 
     <script type="text/javascript" src="https://unpkg.com/trix@2.0.8/dist/trix.umd.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
@@ -163,6 +164,116 @@
     </div>
 
     @livewireScripts
+    <script>
+        window.bootkodeDashboardCharts = {
+            hasData(rows, keys) {
+                if (!Array.isArray(rows) || rows.length === 0) {
+                    return false;
+                }
+
+                return rows.some((row) => keys.some((key) => {
+                    const value = Number(row?.[key] ?? 0);
+
+                    return Number.isFinite(value) && value !== 0;
+                }));
+            },
+
+            hasDatasetData(chartData) {
+                const datasets = chartData?.datasets ?? [];
+
+                return Array.isArray(datasets) && datasets.some((dataset) => {
+                    const values = Array.isArray(dataset?.data) ? dataset.data : Object.values(dataset?.data ?? {});
+
+                    return values.some((value) => {
+                        const numericValue = Number(value ?? 0);
+
+                        return Number.isFinite(numericValue) && numericValue !== 0;
+                    });
+                });
+            },
+
+            showEmpty(canvasOrId, message = 'No chart data yet') {
+                const canvas = typeof canvasOrId === 'string' ? document.getElementById(canvasOrId) : canvasOrId;
+
+                if (!canvas) {
+                    return;
+                }
+
+                canvas.style.display = 'none';
+
+                const parent = canvas.parentElement;
+                if (!parent) {
+                    return;
+                }
+
+                parent.classList.add('relative');
+
+                let emptyState = parent.querySelector(`[data-chart-empty-for="${canvas.id}"]`);
+                if (!emptyState) {
+                    emptyState = document.createElement('div');
+                    emptyState.dataset.chartEmptyFor = canvas.id;
+                    emptyState.className = 'flex h-full min-h-[160px] flex-col items-center justify-center rounded-lg border border-dashed border-themed-primary bg-themed-tertiary px-4 py-6 text-center text-sm text-themed-secondary';
+                    parent.appendChild(emptyState);
+                }
+
+                emptyState.innerHTML = `
+                    <i class="fas fa-chart-line mb-3 text-2xl text-themed-tertiary"></i>
+                    <span>${message}</span>
+                `;
+            },
+
+            shouldRender(canvasId, rows, keys) {
+                const canvas = document.getElementById(canvasId);
+
+                if (!canvas) {
+                    return false;
+                }
+
+                if (!window.Chart) {
+                    this.showEmpty(canvas, 'Chart library could not load');
+
+                    return false;
+                }
+
+                if (!this.hasData(rows, keys)) {
+                    this.showEmpty(canvas);
+
+                    return false;
+                }
+
+                canvas.style.display = '';
+                canvas.parentElement?.querySelector(`[data-chart-empty-for="${canvas.id}"]`)?.remove();
+
+                return true;
+            },
+
+            shouldRenderDataset(canvasId, chartData) {
+                const canvas = document.getElementById(canvasId);
+
+                if (!canvas) {
+                    return false;
+                }
+
+                if (!window.Chart) {
+                    this.showEmpty(canvas, 'Chart library could not load');
+
+                    return false;
+                }
+
+                if (!this.hasDatasetData(chartData)) {
+                    this.showEmpty(canvas);
+
+                    return false;
+                }
+
+                canvas.style.display = '';
+                canvas.parentElement?.querySelector(`[data-chart-empty-for="${canvas.id}"]`)?.remove();
+
+                return true;
+            }
+        };
+    </script>
+    @stack('scripts')
     <script>
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {

@@ -448,7 +448,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Enrollment Trends Chart
     const enrollmentData = @json($this->studentAnalytics['enrollment_trends']);
-    if (enrollmentData.length > 0) {
+    if (window.bootkodeDashboardCharts?.shouldRender('enrollmentTrendsChart', enrollmentData, ['enrollments'])) {
         const ctx1 = document.getElementById('enrollmentTrendsChart').getContext('2d');
         new Chart(ctx1, {
             type: 'line',
@@ -496,7 +496,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Earnings Chart
     const earningsData = @json($this->earningsOverview['daily_earnings']);
-    if (earningsData.length > 0) {
+    if (window.bootkodeDashboardCharts?.shouldRender('earningsChart', earningsData, ['earnings'])) {
         const ctx2 = document.getElementById('earningsChart').getContext('2d');
         new Chart(ctx2, {
             type: 'bar',

@@ -501,6 +501,11 @@ class AffiliateAmbassadorDashboard extends Component
         $this->dispatch('notify', type: 'success', message: 'Copied to clipboard!');
     }
 
+    public function loadAllData()
+    {
+        $this->dispatch('dashboard-updated');
+    }
+
     public function render()
     {
         return view('livewire.dashboard.affiliate-ambassador-dashboard');

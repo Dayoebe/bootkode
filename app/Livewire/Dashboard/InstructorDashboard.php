@@ -499,6 +499,11 @@ private function getDailyEarnings(User $instructor, $date)
         $this->dispatch('notify', type: 'success', message: 'Certificate rejected.');
     }
 
+    public function loadAllData()
+    {
+        $this->dispatch('dashboard-updated');
+    }
+
     public function render()
     {
         return view('livewire.dashboard.instructor-dashboard');

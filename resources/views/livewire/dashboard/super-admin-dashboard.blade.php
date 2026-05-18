@@ -429,7 +429,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // User Growth Chart
     const userGrowthData = @json($this->userGrowthData ?? []);
-    if (userGrowthData.length > 0) {
+    if (window.bootkodeDashboardCharts?.shouldRender('userGrowthChart', userGrowthData, ['new_users', 'total_users'])) {
         const ctx1 = document.getElementById('userGrowthChart');
         if (ctx1) {
             new Chart(ctx1.getContext('2d'), {
@@ -477,6 +477,60 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
+    // Revenue Chart
+    const revenueData = @json($this->revenueAnalytics ?? []);
+    if (window.bootkodeDashboardCharts?.shouldRender('revenueChart', revenueData, ['revenue'])) {
+        const ctx2 = document.getElementById('revenueChart');
+        if (ctx2) {
+            new Chart(ctx2.getContext('2d'), {
+                type: 'bar',
+                data: {
+                    labels: revenueData.map(item => item.date),
+                    datasets: [{
+                        label: 'Revenue',
+                        data: revenueData.map(item => item.revenue),
+                        backgroundColor: colors.secondary + 'CC',
+                        borderColor: colors.secondary,
+                        borderWidth: 1,
+                        borderRadius: 4,
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return '₦' + Number(context.parsed.y || 0).toLocaleString();
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                color: colors.text,
+                                callback: function(value) {
+                                    return '₦' + Number(value || 0).toLocaleString();
+                                }
+                            },
+                            grid: { color: colors.grid }
+                        },
+                        x: {
+                            ticks: { color: colors.text },
+                            grid: { display: false }
+                        }
+                    }
+                }
+            });
+        }
+    }
+
     // Listen for theme changes and reload charts
     window.addEventListener('theme-changed', function() {
         setTimeout(() => {
@@ -490,4 +544,4 @@ setInterval(() => {
     @this.call('loadAllData');
 }, {{ $refreshInterval ?? 300000 }});
 </script>
-@endpush 
+@endpush

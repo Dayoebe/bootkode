@@ -532,7 +532,7 @@
 
             // Session Trends Chart
             const sessionData = @json($this->sessionAnalytics['session_trends']);
-            if (sessionData.length > 0) {
+            if (window.bootkodeDashboardCharts?.shouldRender('sessionTrendsChart', sessionData, ['sessions', 'avg_rating'])) {
                 const ctx = document.getElementById('sessionTrendsChart').getContext('2d');
                 new Chart(ctx, {
                     type: 'line',

@@ -492,6 +492,11 @@ class ContentEditorDashboard extends Component
         }
     }
 
+    public function loadAllData()
+    {
+        $this->dispatch('dashboard-updated');
+    }
+
     public function render()
     {
         return view('livewire.dashboard.content-editor-dashboard');

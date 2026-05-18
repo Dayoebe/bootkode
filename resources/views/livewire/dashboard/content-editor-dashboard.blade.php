@@ -550,7 +550,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Content Trends Chart
     const contentData = @json($this->contentAnalytics['content_trends']);
-    if (contentData.length > 0) {
+    if (window.bootkodeDashboardCharts?.shouldRender('contentTrendsChart', contentData, ['total_views', 'posts_created', 'engagement'])) {
         const ctx = document.getElementById('contentTrendsChart').getContext('2d');
         new Chart(ctx, {
             type: 'line',

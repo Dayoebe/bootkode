@@ -647,7 +647,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Student Growth Chart
     const studentGrowthData = @json($this->studentGrowthData);
-    if (studentGrowthData.length > 0) {
+    if (window.bootkodeDashboardCharts?.shouldRender('studentGrowthChart', studentGrowthData, ['new_students', 'total_students', 'enrollments'])) {
         const ctx1 = document.getElementById('studentGrowthChart').getContext('2d');
         new Chart(ctx1, {
             type: 'line',
@@ -712,7 +712,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Learning Progress Chart
     const learningProgressData = @json($this->learningAnalytics);
-    if (learningProgressData.length > 0) {
+    if (window.bootkodeDashboardCharts?.shouldRender('learningProgressChart', learningProgressData, ['completions', 'enrollments'])) {
         const ctx2 = document.getElementById('learningProgressChart').getContext('2d');
         new Chart(ctx2, {
             type: 'bar',

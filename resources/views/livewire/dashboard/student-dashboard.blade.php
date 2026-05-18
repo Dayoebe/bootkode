@@ -723,7 +723,7 @@
             
             // Study Activity Chart
             const studyData = @json($this->performanceAnalytics['study_activity']);
-            if (studyData.length > 0) {
+            if (window.bootkodeDashboardCharts?.shouldRender('studyActivityChart', studyData, ['activity'])) {
                 const ctx = document.getElementById('studyActivityChart');
                 if (ctx) {
                     new Chart(ctx.getContext('2d'), {
