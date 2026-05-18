@@ -14,14 +14,14 @@
             'label' => 'Home',
             'icon' => 'fas fa-home',
             'route' => 'dashboard',
-            'active' => $currentRoute === 'dashboard',
+            'active' => $currentRoute === 'dashboard' || str_ends_with($currentRoute, '.dashboard'),
             'badge' => $unreadNotificationCount
         ],
         [
             'label' => 'Courses',
-            'icon' => 'fas fa-book',
-            'route' => auth()->user()?->hasRole('student') ? 'student.enrolled-courses' : 'my-course',
-            'active' => in_array($currentRoute, ['student.enrolled-courses', 'my-course', 'all-course', 'courses.available'])
+            'icon' => 'fas fa-book-open',
+            'route' => $user?->hasRole('student') ? 'student.enrolled-courses' : 'my-course',
+            'active' => in_array($currentRoute, ['student.enrolled-courses', 'student.course-catalog', 'my-course', 'all-course', 'courses.available'])
         ],
         [
             'label' => 'Chat',
@@ -46,160 +46,106 @@
     ];
 @endphp
 
-<!-- Mobile Bottom Navigation -->
-<nav class="lg:hidden fixed bottom-0 left-0 right-0 bg-themed-secondary shadow-lg border-t border-themed-primary z-40 transition-colors duration-300">
-    <div class="flex items-center justify-around h-16 px-2">
+<nav class="fixed bottom-3 left-3 right-3 z-40 rounded-[8px] border border-themed-primary bg-themed-secondary/95 shadow-2xl shadow-slate-950/15 backdrop-blur-xl transition-colors duration-200 lg:hidden"
+    style="bottom: calc(0.75rem + env(safe-area-inset-bottom, 0px));"
+    aria-label="Mobile dashboard navigation">
+    <div class="grid h-[68px] grid-cols-5 gap-1 p-1">
         @foreach ($mobileMenuItems as $item)
             @if (isset($item['isMore']) && $item['isMore'])
-                <!-- More Menu Button -->
-                <div class="flex-1" x-data="{ moreMenuOpen: false }">
-                    <button 
+                <div x-data="{ moreMenuOpen: false }">
+                    <button
+                        type="button"
                         @click="moreMenuOpen = !moreMenuOpen"
-                        class="flex flex-col items-center justify-center w-full h-full p-2 rounded-lg transition-colors duration-200 {{ $item['active'] ? 'accent-themed-primary' : 'text-themed-secondary' }} hover:accent-themed-primary hover:bg-accent-themed-primary hover:bg-opacity-10">
-                        <i class="{{ $item['icon'] }} text-lg mb-1"></i>
-                        <span class="text-xs font-medium">{{ $item['label'] }}</span>
+                        class="flex h-full w-full flex-col items-center justify-center gap-1 rounded-[8px] text-themed-secondary transition hover:bg-themed-tertiary hover:text-themed-primary"
+                    >
+                        <i class="{{ $item['icon'] }} text-base"></i>
+                        <span class="max-w-full truncate text-[11px] font-black">{{ $item['label'] }}</span>
                     </button>
 
-                    <!-- More Menu Overlay -->
-                    <div 
-                        x-show="moreMenuOpen" 
+                    <div
+                        x-show="moreMenuOpen"
                         @click.away="moreMenuOpen = false"
-                        x-transition:enter="transition ease-out duration-200"
-                        x-transition:enter-start="opacity-0"
-                        x-transition:enter-end="opacity-100"
-                        x-transition:leave="transition ease-in duration-150"
-                        x-transition:leave-start="opacity-100"
-                        x-transition:leave-end="opacity-0"
-                        class="fixed inset-0 bg-gray-900 bg-opacity-50 dark:bg-opacity-70 z-50"
-                        style="display: none;">
-                        <div class="absolute bottom-16 left-0 right-0">
-                            <div class="bg-themed-secondary mx-4 rounded-t-xl shadow-xl border border-themed-primary max-h-96 overflow-y-auto transition-colors duration-300">
-                                <div class="p-4 border-b border-themed-primary transition-colors duration-300">
-                                    <div class="flex items-center justify-between">
-                                        <h3 class="text-lg font-semibold text-themed-primary transition-colors duration-300">Quick Access</h3>
-                                        <button 
-                                            @click="moreMenuOpen = false"
-                                            class="p-2 rounded-lg hover:bg-themed-tertiary transition-colors">
-                                            <i class="fas fa-times text-themed-tertiary"></i>
-                                        </button>
+                        x-transition.opacity
+                        class="fixed inset-0 z-50 bg-slate-950/55 backdrop-blur-sm"
+                        style="display: none;"
+                    >
+                        <div class="absolute bottom-24 left-3 right-3">
+                            <div class="overflow-hidden rounded-[8px] border border-themed-primary bg-themed-secondary shadow-2xl shadow-slate-950/20">
+                                <div class="flex items-center justify-between border-b border-themed-primary px-4 py-3">
+                                    <div>
+                                        <h3 class="text-base font-black text-themed-primary">Quick Access</h3>
+                                        <p class="text-xs font-semibold text-themed-tertiary">Open the next workspace area.</p>
                                     </div>
+                                    <button
+                                        type="button"
+                                        @click="moreMenuOpen = false"
+                                        class="grid h-10 w-10 place-items-center rounded-[8px] bg-themed-tertiary text-themed-secondary"
+                                        aria-label="Close quick access"
+                                    >
+                                        <i class="fas fa-times"></i>
+                                    </button>
                                 </div>
-                                
-                                <div class="p-2 space-y-1">
-                                    @if(auth()->user())
-                                        <!-- Quick Actions -->
-                                        <a href="{{ route('marketplace.browse') }}" 
-                                           class="flex items-center p-3 rounded-lg hover:bg-themed-tertiary transition-colors"
-                                           @click="moreMenuOpen = false">
-                                            <div class="w-10 h-10 bg-green-100 dark:bg-green-900/20 rounded-lg flex items-center justify-center mr-3 transition-colors duration-300">
-                                                <i class="fas fa-store text-green-600 dark:text-green-400"></i>
-                                            </div>
-                                            <div>
-                                                <p class="text-sm font-medium text-themed-primary transition-colors duration-300">Marketplace</p>
-                                                <p class="text-xs text-themed-secondary transition-colors duration-300">Browse courses & resources</p>
-                                            </div>
-                                        </a>
 
-                                        <a href="{{ route('student.certificates.index') }}" 
-                                           class="flex items-center p-3 rounded-lg hover:bg-themed-tertiary transition-colors"
-                                           @click="moreMenuOpen = false">
-                                            <div class="w-10 h-10 bg-purple-100 dark:bg-purple-900/20 rounded-lg flex items-center justify-center mr-3 transition-colors duration-300">
-                                                <i class="fas fa-certificate text-purple-600 dark:text-purple-400"></i>
-                                            </div>
-                                            <div>
-                                                <p class="text-sm font-medium text-themed-primary transition-colors duration-300">Certificates</p>
-                                                <p class="text-xs text-themed-secondary transition-colors duration-300">View your achievements</p>
-                                            </div>
-                                        </a>
+                                <div class="grid max-h-[60vh] gap-2 overflow-y-auto p-3">
+                                    @if($user)
+                                        @foreach ([
+                                            ['route' => 'marketplace.browse', 'icon' => 'fas fa-store', 'label' => 'Marketplace', 'copy' => 'Courses and resources', 'color' => 'text-teal-700'],
+                                            ['route' => 'student.certificates.index', 'icon' => 'fas fa-certificate', 'label' => 'Certificates', 'copy' => 'Proof and achievements', 'color' => 'text-amber-600'],
+                                            ['route' => 'search.job', 'icon' => 'fas fa-briefcase', 'label' => 'Job Search', 'copy' => 'Career opportunities', 'color' => 'text-sky-700'],
+                                            ['route' => 'help.support', 'icon' => 'fas fa-headset', 'label' => 'Help & Support', 'copy' => 'Tickets and answers', 'color' => 'text-rose-600'],
+                                            ['route' => 'settings', 'icon' => 'fas fa-cog', 'label' => 'Settings', 'copy' => 'Account preferences', 'color' => 'text-slate-600'],
+                                        ] as $quick)
+                                            <a href="{{ route($quick['route']) }}"
+                                                class="flex items-center gap-3 rounded-[8px] border border-themed-primary bg-themed-secondary px-3 py-3 transition hover:bg-themed-tertiary"
+                                                @click="moreMenuOpen = false"
+                                                wire:navigate>
+                                                <span class="grid h-11 w-11 shrink-0 place-items-center rounded-[8px] bg-themed-tertiary {{ $quick['color'] }}">
+                                                    <i class="{{ $quick['icon'] }}"></i>
+                                                </span>
+                                                <span class="min-w-0">
+                                                    <span class="block truncate text-sm font-black text-themed-primary">{{ $quick['label'] }}</span>
+                                                    <span class="block truncate text-xs font-semibold text-themed-tertiary">{{ $quick['copy'] }}</span>
+                                                </span>
+                                            </a>
+                                        @endforeach
 
-                                        <a href="{{ route('messages.index') }}"
-                                           class="flex items-center p-3 rounded-lg hover:bg-themed-tertiary transition-colors"
-                                           @click="moreMenuOpen = false">
-                                            <div class="w-10 h-10 bg-blue-100 dark:bg-blue-900/20 rounded-lg flex items-center justify-center mr-3 transition-colors duration-300">
-                                                <i class="fas fa-comments text-blue-600 dark:text-blue-400"></i>
-                                            </div>
-                                            <div>
-                                                <p class="text-sm font-medium text-themed-primary transition-colors duration-300">Messages</p>
-                                                <p class="text-xs text-themed-secondary transition-colors duration-300">Chat with instructors</p>
-                                            </div>
-                                        </a>
-
-                                        @if(auth()->user()->hasRole(['instructor', 'academy_admin', 'super_admin']))
-                                            <a href="{{ route('cbt.management') }}" 
-                                               class="flex items-center p-3 rounded-lg hover:bg-themed-tertiary transition-colors"
-                                               @click="moreMenuOpen = false">
-                                                <div class="w-10 h-10 bg-blue-100 dark:bg-blue-900/20 rounded-lg flex items-center justify-center mr-3 transition-colors duration-300">
-                                                    <i class="fas fa-laptop-code text-blue-600 dark:text-blue-400"></i>
-                                                </div>
-                                                <div>
-                                                    <p class="text-sm font-medium text-themed-primary transition-colors duration-300">CBT Management</p>
-                                                    <p class="text-xs text-themed-secondary transition-colors duration-300">Manage assessments</p>
-                                                </div>
+                                        @if($user->hasRole(['instructor', 'academy_admin', 'super_admin']))
+                                            <a href="{{ route('cbt.management') }}"
+                                                class="flex items-center gap-3 rounded-[8px] border border-themed-primary bg-themed-secondary px-3 py-3 transition hover:bg-themed-tertiary"
+                                                @click="moreMenuOpen = false"
+                                                wire:navigate>
+                                                <span class="grid h-11 w-11 shrink-0 place-items-center rounded-[8px] bg-themed-tertiary text-indigo-600">
+                                                    <i class="fas fa-laptop-code"></i>
+                                                </span>
+                                                <span class="min-w-0">
+                                                    <span class="block truncate text-sm font-black text-themed-primary">CBT Management</span>
+                                                    <span class="block truncate text-xs font-semibold text-themed-tertiary">Assessments and exams</span>
+                                                </span>
                                             </a>
                                         @endif
 
-                                        <a href="{{ route('search.job') }}" 
-                                           class="flex items-center p-3 rounded-lg hover:bg-themed-tertiary transition-colors"
-                                           @click="moreMenuOpen = false">
-                                            <div class="w-10 h-10 bg-orange-100 dark:bg-orange-900/20 rounded-lg flex items-center justify-center mr-3 transition-colors duration-300">
-                                                <i class="fas fa-briefcase text-orange-600 dark:text-orange-400"></i>
-                                            </div>
-                                            <div>
-                                                <p class="text-sm font-medium text-themed-primary transition-colors duration-300">Job Search</p>
-                                                <p class="text-xs text-themed-secondary transition-colors duration-300">Find career opportunities</p>
-                                            </div>
-                                        </a>
-
-                                        <a href="{{ route('help.support') }}" 
-                                           class="flex items-center p-3 rounded-lg hover:bg-themed-tertiary transition-colors"
-                                           @click="moreMenuOpen = false">
-                                            <div class="w-10 h-10 bg-red-100 dark:bg-red-900/20 rounded-lg flex items-center justify-center mr-3 transition-colors duration-300">
-                                                <i class="fas fa-headset text-red-600 dark:text-red-400"></i>
-                                            </div>
-                                            <div>
-                                                <p class="text-sm font-medium text-themed-primary transition-colors duration-300">Help & Support</p>
-                                                <p class="text-xs text-themed-secondary transition-colors duration-300">Get assistance</p>
-                                            </div>
-                                        </a>
-
-                                        <div class="border-t border-themed-primary my-2 transition-colors duration-300"></div>
-
-                                        <!-- Settings -->
-                                        <a href="{{ route('settings') }}" 
-                                           class="flex items-center p-3 rounded-lg hover:bg-themed-tertiary transition-colors"
-                                           @click="moreMenuOpen = false">
-                                            <div class="w-10 h-10 bg-themed-tertiary rounded-lg flex items-center justify-center mr-3 transition-colors duration-300">
-                                                <i class="fas fa-cog text-themed-secondary"></i>
-                                            </div>
-                                            <div>
-                                                <p class="text-sm font-medium text-themed-primary transition-colors duration-300">Settings</p>
-                                                <p class="text-xs text-themed-secondary transition-colors duration-300">Account preferences</p>
-                                            </div>
-                                        </a>
-
-                                        <!-- Full Menu -->
-                                        <button 
+                                        <button
+                                            type="button"
                                             @click="moreMenuOpen = false; toggleSidebar()"
-                                            class="flex items-center w-full p-3 rounded-lg hover:bg-themed-tertiary transition-colors">
-                                            <div class="w-10 h-10 bg-indigo-100 dark:bg-indigo-900/20 rounded-lg flex items-center justify-center mr-3 transition-colors duration-300">
-                                                <i class="fas fa-bars text-indigo-600 dark:text-indigo-400"></i>
-                                            </div>
-                                            <div class="text-left">
-                                                <p class="text-sm font-medium text-themed-primary transition-colors duration-300">Full Menu</p>
-                                                <p class="text-xs text-themed-secondary transition-colors duration-300">Access all features</p>
-                                            </div>
+                                            class="flex w-full items-center gap-3 rounded-[8px] border border-themed-primary bg-slate-950 px-3 py-3 text-left text-white"
+                                        >
+                                            <span class="grid h-11 w-11 shrink-0 place-items-center rounded-[8px] bg-white/10 text-teal-200">
+                                                <i class="fas fa-bars"></i>
+                                            </span>
+                                            <span>
+                                                <span class="block text-sm font-black">Full Menu</span>
+                                                <span class="block text-xs font-semibold text-slate-400">All platform tools</span>
+                                            </span>
                                         </button>
                                     @else
-                                        <a href="{{ route('login') }}" 
-                                           class="flex items-center p-3 rounded-lg hover:bg-themed-tertiary transition-colors"
-                                           @click="moreMenuOpen = false">
-                                            <div class="w-10 h-10 bg-blue-100 dark:bg-blue-900/20 rounded-lg flex items-center justify-center mr-3 transition-colors duration-300">
-                                                <i class="fas fa-sign-in-alt text-blue-600 dark:text-blue-400"></i>
-                                            </div>
-                                            <div>
-                                                <p class="text-sm font-medium text-themed-primary transition-colors duration-300">Login</p>
-                                                <p class="text-xs text-themed-secondary transition-colors duration-300">Access your account</p>
-                                            </div>
+                                        <a href="{{ route('login') }}" class="flex items-center gap-3 rounded-[8px] border border-themed-primary px-3 py-3">
+                                            <span class="grid h-11 w-11 place-items-center rounded-[8px] bg-themed-tertiary text-teal-700">
+                                                <i class="fas fa-sign-in-alt"></i>
+                                            </span>
+                                            <span>
+                                                <span class="block text-sm font-black text-themed-primary">Login</span>
+                                                <span class="block text-xs font-semibold text-themed-tertiary">Access your account</span>
+                                            </span>
                                         </a>
                                     @endif
                                 </div>
@@ -208,22 +154,19 @@
                     </div>
                 </div>
             @else
-                <!-- Regular Menu Item -->
-                <div class="flex-1">
-                    <a href="{{ $item['route'] === '#' ? '#' : route($item['route']) }}"
-                       class="flex flex-col items-center justify-center w-full h-full p-2 rounded-lg transition-all duration-200 {{ $item['active'] ? 'accent-themed-primary bg-accent-themed-primary bg-opacity-10' : 'text-themed-secondary' }} hover:accent-themed-primary hover:bg-accent-themed-primary hover:bg-opacity-10"
-                       wire:navigate>
-                        <div class="relative">
-                            <i class="{{ $item['icon'] }} text-lg mb-1"></i>
-                            @if(($item['badge'] ?? 0) > 0)
-                                <span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">
-                                    {{ $item['badge'] > 9 ? '9+' : $item['badge'] }}
-                                </span>
-                            @endif
-                        </div>
-                        <span class="text-xs font-medium">{{ $item['label'] }}</span>
-                    </a>
-                </div>
+                <a href="{{ $item['route'] === '#' ? '#' : route($item['route']) }}"
+                    class="flex min-w-0 flex-col items-center justify-center gap-1 rounded-[8px] transition {{ $item['active'] ? 'bg-slate-950 text-white shadow-lg shadow-slate-950/15' : 'text-themed-secondary hover:bg-themed-tertiary hover:text-themed-primary' }}"
+                    wire:navigate>
+                    <span class="relative">
+                        <i class="{{ $item['icon'] }} text-base"></i>
+                        @if(($item['badge'] ?? 0) > 0)
+                            <span class="absolute -right-2 -top-2 grid h-4 min-w-4 place-items-center rounded-full bg-rose-600 px-1 text-[9px] font-black leading-none text-white">
+                                {{ $item['badge'] > 9 ? '9+' : $item['badge'] }}
+                            </span>
+                        @endif
+                    </span>
+                    <span class="max-w-full truncate px-1 text-[11px] font-black">{{ $item['label'] }}</span>
+                </a>
             @endif
         @endforeach
     </div>

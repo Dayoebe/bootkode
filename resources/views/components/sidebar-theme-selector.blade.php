@@ -1,93 +1,60 @@
-<div x-data="{ 
-    theme: localStorage.getItem('theme') || 'light',
-    open: false,
-    setTheme(newTheme) {
-        this.theme = newTheme;
-        localStorage.setItem('theme', newTheme);
-        document.documentElement.className = newTheme;
-        this.open = false;
-        window.dispatchEvent(new CustomEvent('theme-changed', { detail: { theme: newTheme } }));
-    }
-}" 
-x-init="document.documentElement.className = theme"
-class="relative">
-    <!-- Theme Toggle Button -->
-    <button 
+<div
+    x-data="{
+        theme: localStorage.getItem('theme') || 'light',
+        open: false,
+        themes: ['light', 'dark', 'sepia', 'ocean', 'forest'],
+        applyTheme(value) {
+            this.themes.forEach((themeName) => document.documentElement.classList.remove(themeName));
+            document.documentElement.classList.add(value);
+        },
+        setTheme(value) {
+            this.theme = value;
+            localStorage.setItem('theme', value);
+            this.applyTheme(value);
+            this.open = false;
+            window.dispatchEvent(new CustomEvent('theme-changed', { detail: { theme: value } }));
+        }
+    }"
+    x-init="applyTheme(theme)"
+    class="relative"
+>
+    <button
+        type="button"
         @click="open = !open"
-        class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
-        aria-label="Toggle theme">
-        <i x-show="theme === 'light'" class="fas fa-sun text-yellow-500 text-sm"></i>
-        <i x-show="theme === 'dark'" class="fas fa-moon text-indigo-400 text-sm"></i>
-        <i x-show="theme === 'sepia'" class="fas fa-book text-amber-600 text-sm"></i>
-        <i x-show="theme === 'ocean'" class="fas fa-water text-cyan-500 text-sm"></i>
-        <i x-show="theme === 'forest'" class="fas fa-tree text-green-600 text-sm"></i>
+        class="grid h-10 w-10 place-items-center rounded-[8px] bg-white/10 text-slate-200 transition hover:bg-white/15"
+        aria-label="Toggle theme"
+    >
+        <i x-show="theme === 'light'" class="fas fa-sun text-amber-300 text-sm"></i>
+        <i x-show="theme === 'dark'" class="fas fa-moon text-sky-300 text-sm"></i>
+        <i x-show="theme === 'sepia'" class="fas fa-book text-amber-200 text-sm"></i>
+        <i x-show="theme === 'ocean'" class="fas fa-water text-cyan-300 text-sm"></i>
+        <i x-show="theme === 'forest'" class="fas fa-tree text-emerald-300 text-sm"></i>
     </button>
 
-    <!-- Dropdown Menu - Opens UPWARD -->
-    <div 
+    <div
         x-show="open"
         @click.away="open = false"
-        x-transition:enter="transition ease-out duration-200"
-        x-transition:enter-start="opacity-0 transform translate-y-2"
-        x-transition:enter-end="opacity-100 transform translate-y-0"
-        x-transition:leave="transition ease-in duration-150"
-        x-transition:leave-start="opacity-100 transform translate-y-0"
-        x-transition:leave-end="opacity-0 transform translate-y-2"
-        class="absolute bottom-full right-0 mb-2 w-48 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 py-2 z-50"
-        style="display: none;">
-        
-        <div class="px-3 py-2 border-b border-gray-200 dark:border-gray-700">
-            <p class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase">Theme</p>
-        </div>
-
-        <!-- Light Theme -->
-        <button 
-            @click="setTheme('light')"
-            class="w-full flex items-center px-3 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
-            :class="{ 'bg-gray-100 dark:bg-gray-700': theme === 'light' }">
-            <i class="fas fa-sun text-yellow-500 w-5"></i>
-            <span class="ml-3 text-sm text-gray-700 dark:text-gray-300">Light</span>
-            <i x-show="theme === 'light'" class="fas fa-check text-blue-600 dark:text-blue-400 ml-auto text-xs"></i>
-        </button>
-
-        <!-- Dark Theme -->
-        <button 
-            @click="setTheme('dark')"
-            class="w-full flex items-center px-3 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
-            :class="{ 'bg-gray-100 dark:bg-gray-700': theme === 'dark' }">
-            <i class="fas fa-moon text-indigo-400 w-5"></i>
-            <span class="ml-3 text-sm text-gray-700 dark:text-gray-300">Dark</span>
-            <i x-show="theme === 'dark'" class="fas fa-check text-blue-600 dark:text-blue-400 ml-auto text-xs"></i>
-        </button>
-
-        <!-- Sepia Theme -->
-        <button 
-            @click="setTheme('sepia')"
-            class="w-full flex items-center px-3 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
-            :class="{ 'bg-gray-100 dark:bg-gray-700': theme === 'sepia' }">
-            <i class="fas fa-book text-amber-600 w-5"></i>
-            <span class="ml-3 text-sm text-gray-700 dark:text-gray-300">Sepia</span>
-            <i x-show="theme === 'sepia'" class="fas fa-check text-blue-600 dark:text-blue-400 ml-auto text-xs"></i>
-        </button>
-
-        <!-- Ocean Theme -->
-        <button 
-            @click="setTheme('ocean')"
-            class="w-full flex items-center px-3 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
-            :class="{ 'bg-gray-100 dark:bg-gray-700': theme === 'ocean' }">
-            <i class="fas fa-water text-cyan-500 w-5"></i>
-            <span class="ml-3 text-sm text-gray-700 dark:text-gray-300">Ocean</span>
-            <i x-show="theme === 'ocean'" class="fas fa-check text-blue-600 dark:text-blue-400 ml-auto text-xs"></i>
-        </button>
-
-        <!-- Forest Theme -->
-        <button 
-            @click="setTheme('forest')"
-            class="w-full flex items-center px-3 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
-            :class="{ 'bg-gray-100 dark:bg-gray-700': theme === 'forest' }">
-            <i class="fas fa-tree text-green-600 w-5"></i>
-            <span class="ml-3 text-sm text-gray-700 dark:text-gray-300">Forest</span>
-            <i x-show="theme === 'forest'" class="fas fa-check text-blue-600 dark:text-blue-400 ml-auto text-xs"></i>
-        </button>
+        x-transition.origin.bottom.right
+        class="absolute bottom-full right-0 mb-2 w-48 overflow-hidden rounded-[8px] border border-white/10 bg-slate-900 p-2 shadow-2xl shadow-black/30"
+        style="display: none;"
+    >
+        @foreach ([
+            ['key' => 'light', 'label' => 'Light', 'icon' => 'fas fa-sun', 'color' => 'text-amber-300'],
+            ['key' => 'dark', 'label' => 'Dark', 'icon' => 'fas fa-moon', 'color' => 'text-sky-300'],
+            ['key' => 'sepia', 'label' => 'Sepia', 'icon' => 'fas fa-book', 'color' => 'text-amber-200'],
+            ['key' => 'ocean', 'label' => 'Ocean', 'icon' => 'fas fa-water', 'color' => 'text-cyan-300'],
+            ['key' => 'forest', 'label' => 'Forest', 'icon' => 'fas fa-tree', 'color' => 'text-emerald-300'],
+        ] as $item)
+            <button
+                type="button"
+                @click="setTheme('{{ $item['key'] }}')"
+                class="flex w-full items-center gap-3 rounded-[8px] px-3 py-2.5 text-left text-sm font-bold text-slate-300 transition hover:bg-white/10 hover:text-white"
+                :class="{ 'bg-white/10 text-white': theme === '{{ $item['key'] }}' }"
+            >
+                <i class="{{ $item['icon'] }} {{ $item['color'] }} w-5"></i>
+                <span>{{ $item['label'] }}</span>
+                <i x-show="theme === '{{ $item['key'] }}'" class="fas fa-check ml-auto text-xs text-teal-300"></i>
+            </button>
+        @endforeach
     </div>
 </div>

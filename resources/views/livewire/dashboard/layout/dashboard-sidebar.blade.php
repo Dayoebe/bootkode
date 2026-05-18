@@ -1,94 +1,133 @@
 <div>
-    <!-- Desktop Sidebar -->
-    <aside
-        class="bg-themed-secondary w-64 fixed left-0 top-0 bottom-0 overflow-y-auto overflow-x-hidden transition-transform duration-300 ease-in-out shadow-xl lg:translate-x-0 z-50"
-        :class="{ '-translate-x-full': !sidebarOpen, 'translate-x-0': sidebarOpen }"
-        x-show="sidebarOpen || window.innerWidth >= 1024"
-        wire:ignore.self>
+    @php
+        $user = Auth::user();
+        $userInitials = collect(explode(' ', $user?->name ?? 'User'))
+            ->filter()
+            ->map(fn ($part) => substr($part, 0, 1))
+            ->take(2)
+            ->implode('') ?: 'U';
+    @endphp
 
-        <!-- Logo/Header -->
-        <div class="sticky top-0 bg-themed-secondary z-10 p-4 border-b border-themed-primary shadow-sm transition-colors duration-300">
-            <div class="flex items-center justify-between">
-                <a href="{{ route('home') }}" class="flex items-center space-x-3" aria-label="BootKode Home">
-                    <div class="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-600 dark:from-blue-400 dark:to-purple-500 rounded-lg flex items-center justify-center transition-colors duration-300">
-                        <i class="fas fa-code text-white text-sm"></i>
-                    </div>
-                    <span class="text-xl font-bold text-themed-primary transition-colors duration-300">BootKode</span>
+    <aside
+        class="fixed bottom-0 left-0 top-0 z-50 flex w-72 flex-col overflow-hidden border-r border-white/10 bg-slate-950 text-white shadow-2xl shadow-slate-950/30 transition-transform duration-300 ease-out lg:translate-x-0"
+        :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full'"
+        wire:ignore.self
+    >
+        <x-icon-field class="opacity-[0.08]" />
+
+        <div class="relative border-b border-white/10 px-5 py-5">
+            <div class="flex items-center justify-between gap-3">
+                <a href="{{ route('home') }}" class="flex min-w-0 items-center gap-3" aria-label="BootKode Home">
+                    <span class="grid h-11 w-11 shrink-0 place-items-center rounded-[8px] bg-white text-slate-950 shadow-lg shadow-black/20">
+                        <i class="fas fa-code text-sm"></i>
+                    </span>
+                    <span class="min-w-0">
+                        <span class="block truncate text-lg font-black">BootKode</span>
+                        <span class="block truncate text-[11px] font-extrabold uppercase text-teal-200">Learning OS</span>
+                    </span>
                 </a>
-                <!-- Close button for mobile -->
-                <button @click="sidebarOpen = false"
-                    class="lg:hidden p-2 rounded-lg hover:bg-themed-tertiary transition-colors"
-                    aria-label="Close sidebar">
-                    <i class="fas fa-times text-themed-tertiary"></i>
+                <button
+                    @click="sidebarOpen = false"
+                    class="grid h-10 w-10 place-items-center rounded-[8px] text-slate-300 transition hover:bg-white/10 hover:text-white lg:hidden"
+                    aria-label="Close sidebar"
+                >
+                    <i class="fas fa-times"></i>
                 </button>
             </div>
-        </div>
 
-        <!-- Search Bar -->
-        <div class="p-4">
-            <div class="relative">
-                <input type="text" 
-                    placeholder="Search menu..." 
-                    x-data="{ searchTerm: '' }" 
-                    x-model="searchTerm"
-                    @input="$dispatch('menu-search', { term: searchTerm })"
-                    class="w-full p-3 pl-10 rounded-xl bg-themed-tertiary text-themed-primary placeholder-themed-tertiary focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 transition-all duration-200 border border-transparent focus:border-blue-200 dark:focus:border-blue-800"
-                    aria-label="Search navigation">
-                <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-themed-tertiary"></i>
+            <div class="mt-5 rounded-[8px] border border-white/10 bg-white/[0.06] p-3">
+                <div class="flex items-center gap-3">
+                    <span class="grid h-10 w-10 shrink-0 place-items-center rounded-[8px] border border-white/15 bg-teal-500 text-sm font-black text-white">
+                        {{ $userInitials }}
+                    </span>
+                    <div class="min-w-0">
+                        <p class="truncate text-sm font-black">{{ $user?->name ?? 'Guest' }}</p>
+                        <p class="truncate text-xs font-semibold text-slate-400">{{ ucfirst($user?->getRoleNames()->first() ?? 'User') }}</p>
+                    </div>
+                </div>
             </div>
         </div>
 
-        <!-- Menu Items -->
-        <nav class="px-4 pb-6 space-y-1 overflow-visible" role="navigation" x-data="{ searchTerm: '' }"
-            @menu-search.window="searchTerm = $event.detail.term">
-            @foreach ($menuItems as $index => $item)
-                <div x-data="{ 
-                    expanded: '{{ $activeLink }}' === '{{ $item['link_id'] ?? str()->slug($item['label']) }}',
-                    visible: true
-                }" 
-                x-show="visible"
-                x-effect="visible = searchTerm === '' || '{{ strtolower($item['label']) }}'.includes(searchTerm.toLowerCase())"
-                class="menu-item">
+        <div class="relative px-4 py-4">
+            <label class="relative block">
+                <span class="sr-only">Search menu</span>
+                <i class="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-sm text-slate-500"></i>
+                <input
+                    type="search"
+                    placeholder="Search menu"
+                    x-data="{ searchTerm: '' }"
+                    x-model="searchTerm"
+                    @input="$dispatch('menu-search', { term: searchTerm })"
+                    class="h-11 w-full rounded-[8px] border border-white/10 bg-white/[0.06] pl-9 pr-3 text-sm font-semibold text-white placeholder:text-slate-500 outline-none transition focus:border-teal-300 focus:bg-white/[0.09] focus:ring-4 focus:ring-teal-300/10"
+                    aria-label="Search navigation"
+                >
+            </label>
+        </div>
 
+        <nav
+            class="flex-1 space-y-1 overflow-y-auto px-4 pb-5"
+            role="navigation"
+            x-data="{ searchTerm: '' }"
+            @menu-search.window="searchTerm = $event.detail.term"
+        >
+            @foreach ($menuItems as $item)
+                @php
+                    $itemLinkId = $item['link_id'] ?? str($item['label'])->slug()->toString();
+                    $hasActiveChild = collect($item['children'] ?? [])->contains(fn ($child) => $activeLink === ($child['link_id'] ?? str($child['label'])->slug()->toString()));
+                    $isExpanded = $activeLink === $itemLinkId || $hasActiveChild;
+                    $searchText = strtolower($item['label'] . ' ' . collect($item['children'] ?? [])->pluck('label')->implode(' '));
+                @endphp
+
+                <div
+                    x-data="{ expanded: @js($isExpanded), visible: true }"
+                    x-show="visible"
+                    x-effect="visible = searchTerm === '' || @js($searchText).includes(searchTerm.toLowerCase())"
+                    class="menu-item"
+                >
                     @if(isset($item['children']) && !empty($item['children']))
-                        <!-- Parent Menu Item with Children -->
-                        <button @click="expanded = !expanded"
-                            class="flex items-center justify-between w-full p-3 rounded-xl hover:bg-themed-tertiary transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 group relative"
-                            :class="{ 'bg-blue-50 dark:bg-blue-900/20': expanded }" 
-                            aria-expanded="expanded">
-                            <div class="flex items-center space-x-3 flex-1 min-w-0">
-                                <div class="w-8 h-8 flex items-center justify-center rounded-lg bg-themed-tertiary group-hover:bg-accent-themed-primary group-hover:bg-opacity-10 transition-colors duration-300 flex-shrink-0">
-                                    <i class="{{ $item['icon'] }} text-themed-secondary text-sm"></i>
-                                </div>
-                                <span class="font-medium text-themed-primary transition-colors duration-300 truncate">{{ $item['label'] }}</span>
-                            </div>
-                            <i class="fas fa-chevron-down text-themed-tertiary transition-transform duration-200 text-sm flex-shrink-0 ml-2"
-                                :class="{ 'rotate-180': expanded }"></i>
+                        <button
+                            @click="expanded = !expanded"
+                            class="group flex w-full items-center justify-between gap-3 rounded-[8px] px-3 py-2.5 text-left transition {{ $isExpanded ? 'bg-white text-slate-950 shadow-lg shadow-black/10' : 'text-slate-300 hover:bg-white/[0.08] hover:text-white' }}"
+                            :aria-expanded="expanded.toString()"
+                        >
+                            <span class="flex min-w-0 items-center gap-3">
+                                <span class="grid h-9 w-9 shrink-0 place-items-center rounded-[8px] {{ $isExpanded ? 'bg-slate-950 text-white' : 'bg-white/[0.08] text-teal-200 group-hover:bg-white/[0.12]' }}">
+                                    <i class="{{ $item['icon'] }} text-sm"></i>
+                                </span>
+                                <span class="min-w-0">
+                                    <span class="block truncate text-sm font-black">{{ $item['label'] }}</span>
+                                    <span class="{{ $isExpanded ? 'text-slate-500' : 'text-slate-500 group-hover:text-slate-400' }} block text-[11px] font-semibold">
+                                        {{ count($item['children']) }} tools
+                                    </span>
+                                </span>
+                            </span>
+                            <i class="fas fa-chevron-down shrink-0 text-[11px] transition-transform" :class="{ 'rotate-180': expanded }"></i>
                         </button>
 
-                        <!-- Sub Menu Items -->
-                        <ul x-show="expanded" 
-                            x-transition:enter="transition ease-out duration-200"
-                            x-transition:enter-start="opacity-0 transform scale-95"
-                            x-transition:enter-end="opacity-100 transform scale-100"
-                            x-transition:leave="transition ease-in duration-150"
-                            x-transition:leave-start="opacity-100 transform scale-100"
-                            x-transition:leave-end="opacity-0 transform scale-95" 
-                            class="ml-6 space-y-1 mt-2 pb-2 relative z-10 overflow-visible" 
-                            role="menu">
+                        <ul
+                            x-show="expanded"
+                            x-collapse
+                            class="ml-4 mt-1 space-y-1 border-l border-white/10 pl-3"
+                            role="menu"
+                        >
                             @foreach ($item['children'] as $child)
-                                <li role="menuitem" class="overflow-visible">
-                                    <a href="{{ $child['route_name'] === '#' ? '#' : route($child['route_name']) }}"
+                                @php
+                                    $childLinkId = $child['link_id'] ?? str($child['label'])->slug()->toString();
+                                    $isActiveChild = $activeLink === $childLinkId;
+                                @endphp
+                                <li role="menuitem">
+                                    <a
+                                        href="{{ $child['route_name'] === '#' ? '#' : route($child['route_name']) }}"
                                         @click="if (window.innerWidth < 1024) { sidebarOpen = false }"
-                                        class="flex items-center space-x-3 p-2.5 rounded-lg transition-all duration-200 group {{ $activeLink === ($child['link_id'] ?? str()->slug($child['label'])) ? 'bg-opacity-20' : 'hover:bg-opacity-10' }}"
-                                        :style="{ backgroundColor: '{{ $activeLink === ($child['link_id'] ?? str()->slug($child['label'])) ? 'rgba(var(--accent-primary), 0.2)' : 'transparent' }}' }"
-                                        wire:navigate>
-                                        <div class="w-6 h-6 flex items-center justify-center flex-shrink-0">
-                                            <i class="{{ $child['icon'] }} text-xs {{ $activeLink === ($child['link_id'] ?? str()->slug($child['label'])) ? 'accent-themed-primary' : 'text-themed-tertiary group-hover:accent-themed-primary' }} transition-colors duration-300"></i>
-                                        </div>
-                                        <span class="flex-1 text-sm font-medium transition-colors duration-300 {{ $activeLink === ($child['link_id'] ?? str()->slug($child['label'])) ? 'accent-themed-primary' : 'text-themed-secondary' }}">{{ $child['label'] }}</span>
+                                        class="group flex items-center gap-3 rounded-[8px] px-3 py-2.5 transition {{ $isActiveChild ? 'bg-teal-300 text-slate-950 shadow-sm' : 'text-slate-400 hover:bg-white/[0.08] hover:text-white' }}"
+                                        wire:navigate
+                                    >
+                                        <span class="grid h-7 w-7 shrink-0 place-items-center rounded-[8px] {{ $isActiveChild ? 'bg-slate-950/10 text-slate-950' : 'bg-white/[0.06] text-slate-500 group-hover:text-teal-200' }}">
+                                            <i class="{{ $child['icon'] }} text-xs"></i>
+                                        </span>
+                                        <span class="min-w-0 flex-1 truncate text-sm font-bold">{{ $child['label'] }}</span>
                                         @if (($child['badge_count'] ?? 0) > 0)
-                                            <span class="ml-auto rounded-full bg-red-500 px-2 py-0.5 text-[10px] font-semibold leading-none text-white">
+                                            <span class="rounded-full bg-rose-600 px-2 py-0.5 text-[10px] font-black leading-none text-white">
                                                 {{ $child['badge_count'] > 9 ? '9+' : $child['badge_count'] }}
                                             </span>
                                         @endif
@@ -97,17 +136,21 @@
                             @endforeach
                         </ul>
                     @else
-                        <!-- Single Menu Item -->
-                        <a href="{{ $item['route_name'] === '#' ? '#' : route($item['route_name']) }}"
+                        @php
+                            $isActiveItem = $activeLink === $itemLinkId;
+                        @endphp
+                        <a
+                            href="{{ $item['route_name'] === '#' ? '#' : route($item['route_name']) }}"
                             @click="if (window.innerWidth < 1024) { sidebarOpen = false }"
-                            class="flex items-center space-x-3 p-3 rounded-xl hover:bg-themed-tertiary transition-all duration-200 group {{ $activeLink === ($item['link_id'] ?? str()->slug($item['label'])) ? 'bg-accent-themed-primary bg-opacity-20 accent-themed-primary' : 'text-themed-secondary' }}"
-                            wire:navigate>
-                            <div class="w-8 h-8 flex items-center justify-center rounded-lg {{ $activeLink === ($item['link_id'] ?? str()->slug($item['label'])) ? 'bg-accent-themed-primary bg-opacity-30' : 'bg-themed-tertiary group-hover:bg-accent-themed-primary group-hover:bg-opacity-10' }} transition-colors duration-300 flex-shrink-0">
-                                <i class="{{ $item['icon'] }} text-sm {{ $activeLink === ($item['link_id'] ?? str()->slug($item['label'])) ? 'accent-themed-primary' : 'text-themed-secondary' }} transition-colors duration-300"></i>
-                            </div>
-                            <span class="flex-1 font-medium transition-colors duration-300 truncate">{{ $item['label'] }}</span>
+                            class="group flex items-center gap-3 rounded-[8px] px-3 py-2.5 transition {{ $isActiveItem ? 'bg-white text-slate-950 shadow-lg shadow-black/10' : 'text-slate-300 hover:bg-white/[0.08] hover:text-white' }}"
+                            wire:navigate
+                        >
+                            <span class="grid h-9 w-9 shrink-0 place-items-center rounded-[8px] {{ $isActiveItem ? 'bg-slate-950 text-white' : 'bg-white/[0.08] text-teal-200 group-hover:bg-white/[0.12]' }}">
+                                <i class="{{ $item['icon'] }} text-sm"></i>
+                            </span>
+                            <span class="min-w-0 flex-1 truncate text-sm font-black">{{ $item['label'] }}</span>
                             @if (($item['badge_count'] ?? 0) > 0)
-                                <span class="ml-auto rounded-full bg-red-500 px-2 py-0.5 text-[10px] font-semibold leading-none text-white">
+                                <span class="rounded-full bg-rose-600 px-2 py-0.5 text-[10px] font-black leading-none text-white">
                                     {{ $item['badge_count'] > 9 ? '9+' : $item['badge_count'] }}
                                 </span>
                             @endif
@@ -117,21 +160,11 @@
             @endforeach
         </nav>
 
-        <!-- Sidebar Footer -->
-        <div class="sticky bottom-0 bg-themed-secondary border-t border-themed-primary p-4 transition-colors duration-300">
-            <div class="flex items-center justify-between">
-                <div class="flex items-center space-x-3 flex-1 min-w-0">
-                    <img src="{{ Auth::user()?->profile_photo_url ?? asset('images/default-avatar.png') }}"
-                        alt="User avatar" 
-                        class="w-8 h-8 rounded-full border-2 border-themed-primary transition-colors duration-300 flex-shrink-0">
-                    <div class="flex-1 min-w-0">
-                        <p class="text-sm font-medium text-themed-primary truncate transition-colors duration-300">
-                            {{ Auth::user()?->name ?? 'Guest' }}
-                        </p>
-                        <p class="text-xs text-themed-secondary truncate transition-colors duration-300">
-                            {{ ucfirst(Auth::user()?->getRoleNames()->first() ?? 'User') }}
-                        </p>
-                    </div>
+        <div class="relative border-t border-white/10 p-4">
+            <div class="flex items-center justify-between gap-3 rounded-[8px] bg-white/[0.06] p-3">
+                <div class="min-w-0">
+                    <p class="text-xs font-black uppercase text-slate-500">Theme</p>
+                    <p class="text-sm font-bold text-slate-200">Workspace tone</p>
                 </div>
                 <x-sidebar-theme-selector />
             </div>
@@ -139,13 +172,6 @@
     </aside>
 
     <style>
-        /* Remove animation delays for simpler experience */
-        .menu-item {
-            opacity: 1;
-            transform: translateX(0);
-        }
-
-        /* Custom scrollbar - theme aware */
         aside::-webkit-scrollbar {
             width: 4px;
         }
@@ -155,77 +181,18 @@
         }
 
         aside::-webkit-scrollbar-thumb {
-            background: rgba(var(--text-tertiary), 0.3);
-            border-radius: 2px;
+            background: rgb(148 163 184 / 0.35);
+            border-radius: 999px;
         }
 
         aside::-webkit-scrollbar-thumb:hover {
-            background: rgba(var(--text-tertiary), 0.5);
+            background: rgb(148 163 184 / 0.55);
         }
 
-        /* Theme-aware placeholder */
-        .bg-themed-primary {
-            background-color: rgb(var(--bg-primary));
-        }
-        
-        .bg-themed-secondary {
-            background-color: rgb(var(--bg-secondary));
-        }
-        
-        .bg-themed-tertiary {
-            background-color: rgb(var(--bg-tertiary));
-        }
-        
-        .text-themed-primary {
-            color: rgb(var(--text-primary));
-        }
-        
-        .text-themed-secondary {
-            color: rgb(var(--text-secondary));
-        }
-        
-        .text-themed-tertiary {
-            color: rgb(var(--text-tertiary));
-        }
-        
-        .border-themed-primary {
-            border-color: rgb(var(--border-primary));
-        }
-        
-        .border-themed-secondary {
-            border-color: rgb(var(--border-secondary));
-        }
-        
-        .accent-themed-primary {
-            color: rgb(var(--accent-primary));
-        }
-        
-        .bg-accent-themed-primary {
-            background-color: rgb(var(--accent-primary));
-        }
-        
-        .bg-accent-themed-secondary {
-            background-color: rgb(var(--accent-secondary));
-        }
-
-        .placeholder-themed-tertiary::placeholder {
-            color: rgb(var(--text-tertiary));
-        }
-
-        /* Focus visible for accessibility */
         button:focus-visible,
         a:focus-visible {
-            outline: 2px solid rgb(var(--accent-primary));
+            outline: 2px solid rgb(94 234 212);
             outline-offset: 2px;
-        }
-
-        /* Ensure submenu items are always visible and not clipped */
-        nav > div {
-            overflow: visible;
-        }
-
-        .menu-item ul {
-            overflow: visible !important;
         }
     </style>
 </div>

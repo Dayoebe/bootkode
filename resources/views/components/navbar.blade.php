@@ -1,5 +1,14 @@
+@props([
+    'title' => null,
+    'description' => null,
+    'icon' => 'fas fa-gauge-high',
+])
+
 @php
     $user = Auth::user();
+    $routeName = request()->route()?->getName() ?? 'dashboard';
+    $pageTitle = $title ?: str($routeName)->replace(['.', '-', '_'], ' ')->title()->toString();
+    $pageDescription = $description ?: 'Focused workspace for your BootKode activity.';
     $unreadNotificationCount = $user?->unreadNotifications()?->count() ?? 0;
     $unreadChatCount = $user
         ? \App\Models\Messaging\DirectMessage::query()
@@ -8,215 +17,210 @@
             ->whereHas('conversation', fn($query) => $query->forParticipant($user))
             ->count()
         : 0;
+    $userInitials = collect(explode(' ', $user?->name ?? 'User'))
+        ->filter()
+        ->map(fn ($part) => substr($part, 0, 1))
+        ->take(2)
+        ->implode('') ?: 'U';
 @endphp
 
-<header
-    class="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700 sticky top-0 z-30 transition-colors duration-300">
-    <div class="flex items-center justify-between h-16 px-4 lg:px-6">
-        <!-- Left: Mobile Menu & Breadcrumbs -->
-        <div class="flex items-center space-x-4">
-            <!-- Mobile Hamburger -->
-            <button @click="toggleSidebar()"
-                class="lg:hidden p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500"
-                aria-label="Toggle sidebar">
-                <i class="fas fa-bars text-gray-600 dark:text-gray-300"></i>
+<header class="sticky top-0 z-30 border-b border-themed-primary bg-themed-secondary/90 backdrop-blur-xl transition-colors duration-200">
+    <div class="flex min-h-20 items-center justify-between gap-3 px-4 py-3 sm:px-6 lg:px-8">
+        <div class="flex min-w-0 items-center gap-3">
+            <button
+                @click="toggleSidebar()"
+                class="grid h-11 w-11 shrink-0 place-items-center rounded-[8px] border border-themed-primary bg-themed-secondary text-themed-primary shadow-sm transition hover:bg-themed-tertiary lg:hidden"
+                aria-label="Toggle sidebar"
+            >
+                <i class="fas fa-bars"></i>
             </button>
 
-            <!-- Breadcrumbs / Page Title -->
-            <div class="hidden sm:block">
-                <nav class="flex items-center space-x-2 text-sm" aria-label="Breadcrumb">
-                    <a href="{{ route('dashboard') }}"
-                        class="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 transition-colors">
-                        <i class="fas fa-home"></i>
-                    </a>
-                    <i class="fas fa-chevron-right text-gray-400 text-xs"></i>
-                    <span class="text-gray-900 dark:text-white font-medium capitalize">
-                        {{ request()->route()?->getName() === 'dashboard' ? 'Dashboard' : str_replace(['.', '-', '_'], ' ', request()->route()?->getName() ?? 'Page') }}
+            <div class="hidden h-11 w-11 shrink-0 place-items-center rounded-[8px] bg-slate-950 text-white shadow-sm sm:grid">
+                <i class="{{ $icon }} text-sm"></i>
+            </div>
+
+            <div class="min-w-0">
+                <div class="flex min-w-0 items-center gap-2">
+                    <h1 class="bk-display truncate text-base font-black text-themed-primary sm:text-xl">{{ $pageTitle }}</h1>
+                    <span class="hidden rounded-full bg-teal-50 px-2 py-0.5 text-[11px] font-black text-teal-700 dark:bg-teal-400/10 dark:text-teal-200 md:inline-flex">
+                        Live
                     </span>
-                </nav>
+                </div>
+                <p class="hidden max-w-xl truncate text-xs font-semibold text-themed-secondary sm:block">{{ $pageDescription }}</p>
             </div>
         </div>
 
-        <!-- Center: Search Bar (Desktop) -->
-        <div class="hidden md:flex flex-1 max-w-md mx-6">
-            <div class="relative w-full">
-                <input type="text" placeholder="Search courses, content, or users..."
-                    class="w-full pl-10 pr-4 py-2 rounded-xl bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
-                    x-data="{ searchQuery: '' }" x-model="searchQuery"
-                    @keydown.enter="console.log('Search:', searchQuery)">
-                <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
-            </div>
+        <div class="hidden min-w-0 flex-1 justify-center px-4 md:flex">
+            <label class="relative w-full max-w-lg">
+                <span class="sr-only">Search workspace</span>
+                <i class="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-sm text-themed-tertiary"></i>
+                <input
+                    type="search"
+                    placeholder="Search courses, people, certificates..."
+                    class="h-11 w-full rounded-[8px] border border-themed-primary bg-themed-tertiary/70 pl-9 pr-4 text-sm font-semibold text-themed-primary placeholder:text-themed-tertiary outline-none transition focus:border-teal-500 focus:bg-themed-secondary focus:ring-4 focus:ring-teal-500/10"
+                    x-data="{ searchQuery: '' }"
+                    x-model="searchQuery"
+                    @keydown.enter="console.log('Search:', searchQuery)"
+                >
+            </label>
         </div>
 
-        <!-- Right: Actions & User Menu -->
-        <div class="flex items-center space-x-3">
-            <!-- Quick Actions (Desktop) -->
-            <div class="hidden lg:flex items-center space-x-2">
-                <!-- Notifications -->
+        <div class="flex shrink-0 items-center gap-2">
+            <div class="hidden items-center gap-2 lg:flex">
                 <div class="relative" x-data="{ open: false }">
-                    <button @click="open = !open"
-                        class="relative p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        aria-label="Notifications">
-                        <i class="fas fa-bell text-gray-600 dark:text-gray-300"></i>
+                    <button
+                        @click="open = !open"
+                        class="relative grid h-11 w-11 place-items-center rounded-[8px] border border-themed-primary bg-themed-secondary text-themed-secondary transition hover:bg-themed-tertiary hover:text-themed-primary"
+                        aria-label="Notifications"
+                    >
+                        <i class="fas fa-bell"></i>
                         @if ($unreadNotificationCount > 0)
-                            <span
-                                class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                            <span class="absolute -right-1 -top-1 grid h-5 min-w-5 place-items-center rounded-full bg-rose-600 px-1 text-[10px] font-black text-white">
                                 {{ $unreadNotificationCount > 9 ? '9+' : $unreadNotificationCount }}
                             </span>
                         @endif
                     </button>
 
-                    <!-- Notifications Dropdown -->
-                    <div x-show="open" x-transition:enter="transition ease-out duration-200"
-                        x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100"
-                        x-transition:leave="transition ease-in duration-150"
-                        x-transition:leave-start="opacity-100 scale-100" x-transition:leave-end="opacity-0 scale-95"
+                    <div
+                        x-show="open"
+                        x-transition.origin.top.right
                         @click.away="open = false"
-                        class="absolute right-0 mt-2 w-80 bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 py-2 z-50"
-                        style="display: none;">
-                        <div class="px-4 py-2 border-b border-gray-200 dark:border-gray-700">
-                            <h3 class="text-sm font-semibold text-gray-900 dark:text-white">Notifications</h3>
+                        class="absolute right-0 mt-3 w-80 overflow-hidden rounded-[8px] border border-themed-primary bg-themed-secondary shadow-2xl shadow-slate-950/10"
+                        style="display: none;"
+                    >
+                        <div class="border-b border-themed-primary px-4 py-3">
+                            <h3 class="text-sm font-black text-themed-primary">Notifications</h3>
                         </div>
-                        <div class="max-h-64 overflow-y-auto">
+                        <div class="max-h-72 overflow-y-auto">
                             @if ($unreadNotificationCount > 0)
                                 @foreach ($user->unreadNotifications()->take(5)->get() as $notification)
                                     <a href="{{ $notification->data['action_url'] ?? route('notifications') }}"
-                                        class="block px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-700 border-b border-gray-100 dark:border-gray-600 last:border-0">
-                                        <p class="text-sm text-gray-900 dark:text-white">
-                                            {{ $notification->data['message'] ?? 'New notification' }}</p>
-                                        <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                                            {{ $notification->created_at->diffForHumans() }}</p>
+                                        class="block border-b border-themed-primary px-4 py-3 transition last:border-0 hover:bg-themed-tertiary">
+                                        <p class="text-sm font-semibold text-themed-primary">{{ $notification->data['message'] ?? 'New notification' }}</p>
+                                        <p class="mt-1 text-xs text-themed-tertiary">{{ $notification->created_at->diffForHumans() }}</p>
                                     </a>
                                 @endforeach
                             @else
-                                <div class="px-4 py-6 text-center">
-                                    <i class="fas fa-bell-slash text-gray-400 text-2xl mb-2"></i>
-                                    <p class="text-sm text-gray-500 dark:text-gray-400">No notifications</p>
+                                <div class="px-4 py-8 text-center">
+                                    <i class="fas fa-bell-slash text-2xl text-themed-tertiary"></i>
+                                    <p class="mt-2 text-sm font-semibold text-themed-secondary">No notifications</p>
                                 </div>
                             @endif
                         </div>
-                        @if ($unreadNotificationCount > 0)
-                            <div class="px-4 py-2 border-t border-gray-200 dark:border-gray-700">
-                                <a href="{{ route('notifications') }}"
-                                    class="text-sm text-blue-600 dark:text-blue-400 hover:underline">
-                                    View all notifications
-                                </a>
-                            </div>
-                        @endif
+                        <div class="border-t border-themed-primary px-4 py-3">
+                            <a href="{{ route('notifications') }}" class="text-sm font-black text-teal-700 hover:underline dark:text-teal-300">
+                                View notification center
+                            </a>
+                        </div>
                     </div>
                 </div>
 
                 <a href="{{ route('messages.index') }}"
-                    class="relative p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    class="relative grid h-11 w-11 place-items-center rounded-[8px] border border-themed-primary bg-themed-secondary text-themed-secondary transition hover:bg-themed-tertiary hover:text-themed-primary"
                     aria-label="Chat" wire:navigate>
-                    <i class="fas fa-comments text-gray-600 dark:text-gray-300"></i>
+                    <i class="fas fa-comments"></i>
                     @if ($unreadChatCount > 0)
-                        <span
-                            class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                        <span class="absolute -right-1 -top-1 grid h-5 min-w-5 place-items-center rounded-full bg-rose-600 px-1 text-[10px] font-black text-white">
                             {{ $unreadChatCount > 9 ? '9+' : $unreadChatCount }}
                         </span>
                     @endif
                 </a>
 
-                <!-- Quick Create -->
                 <div class="relative" x-data="{ open: false }">
-                    <button @click="open = !open"
-                        class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        aria-label="Quick actions">
-                        <i class="fas fa-plus text-gray-600 dark:text-gray-300"></i>
+                    <button
+                        @click="open = !open"
+                        class="grid h-11 w-11 place-items-center rounded-[8px] border border-themed-primary bg-themed-secondary text-themed-secondary transition hover:bg-themed-tertiary hover:text-themed-primary"
+                        aria-label="Quick actions"
+                    >
+                        <i class="fas fa-plus"></i>
                     </button>
 
-                    <!-- Quick Actions Dropdown -->
-                    <div x-show="open" x-transition:enter="transition ease-out duration-200"
-                        x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100"
+                    <div
+                        x-show="open"
+                        x-transition.origin.top.right
                         @click.away="open = false"
-                        class="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 py-2 z-50"
-                        style="display: none;">
+                        class="absolute right-0 mt-3 w-56 overflow-hidden rounded-[8px] border border-themed-primary bg-themed-secondary p-2 shadow-2xl shadow-slate-950/10"
+                        style="display: none;"
+                    >
                         @if($user && ($user->hasRole('instructor') || $user->hasRole('academy_admin') || $user->hasRole('super_admin')))
-                            <a href="{{ route('create.course') }}"
-                                class="flex items-center px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
-                                <i class="fas fa-book w-4 mr-3"></i>
+                            <a href="{{ route('create.course') }}" class="flex items-center gap-3 rounded-[8px] px-3 py-2.5 text-sm font-bold text-themed-secondary hover:bg-themed-tertiary hover:text-themed-primary">
+                                <i class="fas fa-book w-4 text-teal-700"></i>
                                 New Course
                             </a>
                         @endif
                         @if($user && ($user->hasRole('content_editor') || $user->hasRole('academy_admin') || $user->hasRole('super_admin')))
-                            <a href="{{ route('admin.blog.posts.create') }}"
-                                class="flex items-center px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
-                                <i class="fas fa-pen w-4 mr-3"></i>
+                            <a href="{{ route('admin.blog.posts.create') }}" class="flex items-center gap-3 rounded-[8px] px-3 py-2.5 text-sm font-bold text-themed-secondary hover:bg-themed-tertiary hover:text-themed-primary">
+                                <i class="fas fa-pen w-4 text-sky-700"></i>
                                 New Blog Post
                             </a>
                         @endif
-                        <a href="{{ route('feedback') }}"
-                            class="flex items-center px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
-                            <i class="fas fa-comment w-4 mr-3"></i>
+                        <a href="{{ route('feedback') }}" class="flex items-center gap-3 rounded-[8px] px-3 py-2.5 text-sm font-bold text-themed-secondary hover:bg-themed-tertiary hover:text-themed-primary">
+                            <i class="fas fa-comment w-4 text-amber-600"></i>
                             Send Feedback
                         </a>
                     </div>
                 </div>
             </div>
+
             <x-theme-selector />
-            <!-- Mobile Search Toggle -->
+
             <button
-                class="md:hidden p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500"
-                @click="$dispatch('toggle-mobile-search')" aria-label="Toggle search">
-                <i class="fas fa-search text-gray-600 dark:text-gray-300"></i>
+                class="grid h-11 w-11 place-items-center rounded-[8px] border border-themed-primary bg-themed-secondary text-themed-secondary transition hover:bg-themed-tertiary hover:text-themed-primary md:hidden"
+                @click="$dispatch('toggle-mobile-search')"
+                aria-label="Toggle search"
+            >
+                <i class="fas fa-search"></i>
             </button>
 
-            <!-- User Profile Dropdown -->
             <div class="relative" x-data="{ open: false }">
-                <button @click="open = !open"
-                    class="flex items-center space-x-2 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    aria-label="User menu">
-                    <img src="{{ $user?->profile_photo_url ?? asset('images/default-avatar.png') }}" alt="User avatar"
-                        class="w-8 h-8 rounded-full border-2 border-gray-200 dark:border-gray-600">
-                    <div class="hidden sm:block text-left">
-                        <p class="text-sm font-medium text-gray-900 dark:text-white">{{ $user?->name ?? 'Guest' }}</p>
-                        <p class="text-xs text-gray-500 dark:text-gray-400">
-                            {{ ucfirst($user?->getRoleNames()->first() ?? 'User') }}</p>
+                <button
+                    @click="open = !open"
+                    class="flex h-11 items-center gap-2 rounded-[8px] border border-themed-primary bg-themed-secondary px-2 text-themed-primary shadow-sm transition hover:bg-themed-tertiary"
+                    aria-label="User menu"
+                >
+                    <span class="grid h-8 w-8 shrink-0 place-items-center rounded-[8px] border border-themed-primary bg-teal-600 text-xs font-black text-white">
+                        {{ $userInitials }}
+                    </span>
+                    <div class="hidden min-w-0 text-left sm:block">
+                        <p class="max-w-32 truncate text-sm font-black">{{ $user?->name ?? 'Guest' }}</p>
+                        <p class="truncate text-[11px] font-semibold text-themed-tertiary">{{ ucfirst($user?->getRoleNames()->first() ?? 'User') }}</p>
                     </div>
-                    <i class="fas fa-chevron-down text-gray-400 text-xs hidden sm:block"></i>
+                    <i class="fas fa-chevron-down hidden text-[10px] text-themed-tertiary sm:block" :class="{ 'rotate-180': open }"></i>
                 </button>
 
-                <!-- User Menu Dropdown -->
-                <div x-show="open" x-transition:enter="transition ease-out duration-200"
-                    x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100"
-                    x-transition:leave="transition ease-in duration-150"
-                    x-transition:leave-start="opacity-100 scale-100" x-transition:leave-end="opacity-0 scale-95"
+                <div
+                    x-show="open"
+                    x-transition.origin.top.right
                     @click.away="open = false"
-                    class="absolute right-0 mt-2 w-56 bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 py-2 z-50"
-                    style="display: none;">
+                    class="absolute right-0 mt-3 w-64 overflow-hidden rounded-[8px] border border-themed-primary bg-themed-secondary p-2 shadow-2xl shadow-slate-950/10"
+                    style="display: none;"
+                >
                     @if ($user)
-                        <div class="px-4 py-3 border-b border-gray-200 dark:border-gray-700">
-                            <p class="text-sm font-medium text-gray-900 dark:text-white">{{ $user->name }}</p>
-                            <p class="text-xs text-gray-500 dark:text-gray-400">{{ $user->email }}</p>
+                        <div class="px-3 py-3">
+                            <p class="truncate text-sm font-black text-themed-primary">{{ $user->name }}</p>
+                            <p class="truncate text-xs font-semibold text-themed-tertiary">{{ $user->email }}</p>
                         </div>
 
-                        <a href="{{ route('profile.view') }}"
-                            class="flex items-center px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
-                            <i class="fas fa-user w-4 mr-3"></i>
+                        <a href="{{ route('profile.view') }}" class="flex items-center gap-3 rounded-[8px] px-3 py-2.5 text-sm font-bold text-themed-secondary hover:bg-themed-tertiary hover:text-themed-primary">
+                            <i class="fas fa-user w-4 text-teal-700"></i>
                             View Profile
                         </a>
 
-                        <a href="{{ route('settings') }}"
-                            class="flex items-center px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
-                            <i class="fas fa-cog w-4 mr-3"></i>
+                        <a href="{{ route('settings') }}" class="flex items-center gap-3 rounded-[8px] px-3 py-2.5 text-sm font-bold text-themed-secondary hover:bg-themed-tertiary hover:text-themed-primary">
+                            <i class="fas fa-cog w-4 text-sky-700"></i>
                             Settings
                         </a>
 
-                        <div class="border-t border-gray-200 dark:border-gray-700 my-1"></div>
-
-                        <form method="POST" action="{{ route('logout') }}">
+                        <form method="POST" action="{{ route('logout') }}" class="mt-2 border-t border-themed-primary pt-2">
                             @csrf
-                            <button type="submit"
-                                class="flex items-center w-full px-4 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors">
-                                <i class="fas fa-sign-out-alt w-4 mr-3"></i>
+                            <button type="submit" class="flex w-full items-center gap-3 rounded-[8px] px-3 py-2.5 text-left text-sm font-black text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-500/10">
+                                <i class="fas fa-sign-out-alt w-4"></i>
                                 Logout
                             </button>
                         </form>
                     @else
-                        <a href="{{ route('login') }}"
-                            class="flex items-center px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
-                            <i class="fas fa-sign-in-alt w-4 mr-3"></i>
+                        <a href="{{ route('login') }}" class="flex items-center gap-3 rounded-[8px] px-3 py-2.5 text-sm font-bold text-themed-secondary hover:bg-themed-tertiary hover:text-themed-primary">
+                            <i class="fas fa-sign-in-alt w-4"></i>
                             Login
                         </a>
                     @endif
@@ -225,24 +229,28 @@
         </div>
     </div>
 
-    <!-- Mobile Search Bar (Hidden by default) -->
-    <div x-data="{ mobileSearchOpen: false }" @toggle-mobile-search.window="mobileSearchOpen = !mobileSearchOpen"
-        x-show="mobileSearchOpen" x-transition:enter="transition ease-out duration-200"
-        x-transition:enter-start="opacity-0 transform -translate-y-2"
-        x-transition:enter-end="opacity-100 transform translate-y-0"
-        x-transition:leave="transition ease-in duration-150"
-        x-transition:leave-start="opacity-100 transform translate-y-0"
-        x-transition:leave-end="opacity-0 transform -translate-y-2"
-        class="md:hidden border-t border-gray-200 dark:border-gray-700 px-4 py-3" style="display: none;">
-        <div class="relative">
-            <input type="text" placeholder="Search courses, content, or users..." x-data="{ searchQuery: '' }"
-                x-model="searchQuery" @keydown.enter="console.log('Mobile Search:', searchQuery)"
-                class="w-full pl-10 pr-4 py-2 rounded-xl bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200">
-            <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
-            <button @click="mobileSearchOpen = false"
-                class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200">
+    <div
+        x-data="{ mobileSearchOpen: false }"
+        @toggle-mobile-search.window="mobileSearchOpen = !mobileSearchOpen"
+        x-show="mobileSearchOpen"
+        x-transition
+        class="border-t border-themed-primary px-4 py-3 md:hidden"
+        style="display: none;"
+    >
+        <label class="relative block">
+            <span class="sr-only">Search workspace</span>
+            <i class="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-sm text-themed-tertiary"></i>
+            <input
+                type="search"
+                placeholder="Search BootKode..."
+                x-data="{ searchQuery: '' }"
+                x-model="searchQuery"
+                @keydown.enter="console.log('Mobile Search:', searchQuery)"
+                class="h-11 w-full rounded-[8px] border border-themed-primary bg-themed-tertiary pl-9 pr-10 text-sm font-semibold text-themed-primary placeholder:text-themed-tertiary outline-none focus:border-teal-500 focus:ring-4 focus:ring-teal-500/10"
+            >
+            <button @click="mobileSearchOpen = false" class="absolute right-2 top-1/2 grid h-8 w-8 -translate-y-1/2 place-items-center rounded-[8px] text-themed-tertiary hover:bg-themed-secondary" aria-label="Close search">
                 <i class="fas fa-times"></i>
             </button>
-        </div>
+        </label>
     </div>
 </header>
