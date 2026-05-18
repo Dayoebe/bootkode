@@ -63,14 +63,17 @@
                                         <i class="{{ $notification->data['icon'] ?? 'fas fa-bell' }} text-indigo-600 dark:text-indigo-400"></i>
                                     </div>
                                 </div>
-                                <div class="flex-1">
-                                    <p
-                                        class="text-sm font-medium text-themed-primary {{ $notification->read_at ? 'opacity-75' : 'font-semibold' }}">
-                                        {{ $notification->data['message'] ?? 'No message' }}
-                                    </p>
-                                    <p class="text-xs text-themed-secondary">{{ $notification->created_at->diffForHumans() }}
-                                    </p>
-                                </div>
+                                <form method="POST" action="{{ route('notifications.open', $notification->id) }}" class="min-w-0 flex-1">
+                                    @csrf
+                                    <button type="submit" class="block w-full rounded-lg text-left transition hover:text-indigo-700 dark:hover:text-indigo-300">
+                                        <p
+                                            class="text-sm font-medium text-themed-primary {{ $notification->read_at ? 'opacity-75' : 'font-semibold' }}">
+                                            {{ $notification->data['message'] ?? 'No message' }}
+                                        </p>
+                                        <p class="text-xs text-themed-secondary">{{ $notification->created_at->diffForHumans() }}
+                                        </p>
+                                    </button>
+                                </form>
                                 <div class="flex items-center space-x-2">
                                     @if (!$notification->read_at)
                                         <button wire:click="markAsRead('{{ $notification->id }}')"
@@ -78,10 +81,13 @@
                                             <i class="fas fa-check"></i>
                                         </button>
                                     @endif
-                                    <a href="{{ $notification->data['action_url'] ?? '#' }}"
-                                        class="text-indigo-600 hover:text-indigo-800 dark:text-indigo-400 dark:hover:text-indigo-300 transition-colors p-2 rounded-lg hover:bg-indigo-100/50 dark:hover:bg-indigo-900/20">
-                                        <i class="fas fa-eye"></i>
-                                    </a>
+                                    <form method="POST" action="{{ route('notifications.open', $notification->id) }}">
+                                        @csrf
+                                        <button type="submit"
+                                            class="text-indigo-600 hover:text-indigo-800 dark:text-indigo-400 dark:hover:text-indigo-300 transition-colors p-2 rounded-lg hover:bg-indigo-100/50 dark:hover:bg-indigo-900/20">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                    </form>
                                     <button wire:click="delete('{{ $notification->id }}')"
                                         class="text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300 transition-colors p-2 rounded-lg hover:bg-red-100/50 dark:hover:bg-red-900/20">
                                         <i class="fas fa-trash"></i>

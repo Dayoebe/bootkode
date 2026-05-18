@@ -4,7 +4,9 @@ Alpine.plugin(collapse);
 import Alpine from 'alpinejs';
 import persist from '@alpinejs/persist';
 import collapse from '@alpinejs/collapse';
+import Chart from 'chart.js/auto';
 
+window.Chart = Chart;
 
 // window.Alpine = Alpine;
 // Alpine.start();

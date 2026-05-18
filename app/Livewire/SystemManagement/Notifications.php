@@ -53,9 +53,10 @@ class Notifications extends Component
 
     public function markAsRead($notificationId)
     {
-        $notification = Auth::user()->notifications()->findOrFail($notificationId);
+        $user = Auth::user();
+        $notification = $user->notifications()->findOrFail($notificationId);
         $notification->markAsRead();
-        $notification->user->logCustomActivity('Marked notification as read', ['notification_id' => $notificationId]);
+        $user->logCustomActivity('Marked notification as read', ['notification_id' => $notificationId]);
         $this->dispatch('notify', 'Notification marked as read!', 'success');
         $this->updateUnreadCount();
     }
@@ -70,9 +71,10 @@ class Notifications extends Component
 
     public function delete($notificationId)
     {
-        $notification = Auth::user()->notifications()->findOrFail($notificationId);
+        $user = Auth::user();
+        $notification = $user->notifications()->findOrFail($notificationId);
         $notification->delete();
-        $notification->user->logCustomActivity('Deleted notification', ['notification_id' => $notificationId]);
+        $user->logCustomActivity('Deleted notification', ['notification_id' => $notificationId]);
         $this->dispatch('notify', 'Notification deleted!', 'success');
         $this->updateUnreadCount();
     }
