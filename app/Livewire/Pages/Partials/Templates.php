@@ -4,7 +4,7 @@ namespace App\Livewire\Pages\Partials;
 
 use Livewire\Component;
 use Livewire\WithFileUploads;
-use Illuminate\Support\Facades\File;
+use App\Models\Content\Page;
 use Illuminate\Support\Facades\Storage;
 
 class Templates extends Component
@@ -47,7 +47,7 @@ class Templates extends Component
                 'features' => ['Responsive', 'SEO Optimized', 'Sidebar Support'],
                 'is_active' => true,
                 'is_custom' => false,
-                'usage_count' => \App\Models\Page::where('template', 'default')->count(),
+                'usage_count' => Page::where('template', 'default')->count(),
             ],
             [
                 'id' => 'landing',
@@ -58,7 +58,7 @@ class Templates extends Component
                 'features' => ['Hero Section', 'Call-to-Actions', 'Conversion Focused'],
                 'is_active' => true,
                 'is_custom' => false,
-                'usage_count' => \App\Models\Page::where('template', 'landing')->count(),
+                'usage_count' => Page::where('template', 'landing')->count(),
             ],
             [
                 'id' => 'blog',
@@ -69,7 +69,7 @@ class Templates extends Component
                 'features' => ['Reading Time', 'Social Sharing', 'Typography'],
                 'is_active' => true,
                 'is_custom' => false,
-                'usage_count' => \App\Models\Page::where('template', 'blog')->count(),
+                'usage_count' => Page::where('template', 'blog')->count(),
             ],
             [
                 'id' => 'full-width',
@@ -80,7 +80,7 @@ class Templates extends Component
                 'features' => ['Full Width', 'No Sidebars', 'Media Rich'],
                 'is_active' => true,
                 'is_custom' => false,
-                'usage_count' => \App\Models\Page::where('template', 'full-width')->count(),
+                'usage_count' => Page::where('template', 'full-width')->count(),
             ],
             [
                 'id' => 'minimal',
@@ -91,7 +91,7 @@ class Templates extends Component
                 'features' => ['Clean Design', 'Fast Loading', 'Distraction Free'],
                 'is_active' => true,
                 'is_custom' => false,
-                'usage_count' => \App\Models\Page::where('template', 'minimal')->count(),
+                'usage_count' => Page::where('template', 'minimal')->count(),
             ],
         ];
 
@@ -112,7 +112,7 @@ class Templates extends Component
                 if (Storage::exists($configPath)) {
                     $config = json_decode(Storage::get($configPath), true);
                     $config['is_custom'] = true;
-                    $config['usage_count'] = \App\Models\Page::where('template', $config['id'])->count();
+                    $config['usage_count'] = Page::where('template', $config['id'])->count();
                     $customTemplates[] = $config;
                 }
             }
@@ -238,7 +238,7 @@ class Templates extends Component
             }
 
             // Check if template is in use
-            $usageCount = \App\Models\Page::where('template', $templateId)->count();
+            $usageCount = Page::where('template', $templateId)->count();
             if ($usageCount > 0) {
                 throw new \Exception("Template is being used by {$usageCount} page(s)");
             }

@@ -1,8 +1,11 @@
-const CACHE_VERSION = 'bootkode-pwa-2026-05-15';
+const CACHE_VERSION = 'bootkode-pwa-2026-05-20-offline-learning';
 const STATIC_CACHE = `${CACHE_VERSION}-static`;
+const OFFLINE_PACK_CACHE = 'bootkode-offline-packs-v1';
 const OFFLINE_URL = '/offline.html';
 const CORE_ASSETS = [
   OFFLINE_URL,
+  '/offline-learning.html',
+  '/js/offline-learning.js',
   '/img/logo.png',
   '/icons/icon-192.png',
   '/icons/icon-512.png',
@@ -41,7 +44,15 @@ self.addEventListener('fetch', (event) => {
   if (request.mode === 'navigate') {
     event.respondWith(
       fetch(request)
-        .catch(() => caches.match(OFFLINE_URL))
+        .then((response) => {
+          if (response.ok && (requestUrl.pathname.startsWith('/course/') || requestUrl.pathname === '/offline-learning.html')) {
+            const copy = response.clone();
+            caches.open(OFFLINE_PACK_CACHE).then((cache) => cache.put(request, copy));
+          }
+
+          return response;
+        })
+        .catch(() => caches.match(request).then((cached) => cached || caches.match(OFFLINE_URL)))
     );
     return;
   }
@@ -54,11 +65,15 @@ self.addEventListener('fetch', (event) => {
     requestUrl.pathname.startsWith('/build/') ||
     requestUrl.pathname.startsWith('/img/') ||
     requestUrl.pathname.startsWith('/icons/') ||
+    requestUrl.pathname.startsWith('/js/') ||
+    requestUrl.pathname.startsWith('/storage/') ||
+    requestUrl.pathname.startsWith('/course/') ||
     requestUrl.pathname === '/manifest.webmanifest' ||
-    requestUrl.pathname === OFFLINE_URL
+    requestUrl.pathname === OFFLINE_URL ||
+    requestUrl.pathname === '/offline-learning.html'
   ) {
     event.respondWith(
-      caches.open(STATIC_CACHE).then((cache) => (
+      caches.open(requestUrl.pathname.startsWith('/course/') || requestUrl.pathname.startsWith('/storage/') ? OFFLINE_PACK_CACHE : STATIC_CACHE).then((cache) => (
         cache.match(request).then((cached) => {
           const fresh = fetch(request).then((response) => {
             if (response.ok) {
@@ -66,7 +81,7 @@ self.addEventListener('fetch', (event) => {
             }
 
             return response;
-          });
+          }).catch(() => cached);
 
           return cached || fresh;
         })
