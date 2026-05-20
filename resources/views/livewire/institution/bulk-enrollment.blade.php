@@ -273,6 +273,15 @@
                                 @endforeach
                             </select>
                             @error('selectedInstitution') <span class="text-red-500 dark:text-red-400 text-xs mt-1">{{ $message }}</span> @enderror
+                            @php $selectedUploadInstitution = $institutions->firstWhere('id', (int) $selectedInstitution); @endphp
+                            @if($selectedUploadInstitution)
+                                <div class="mt-2 rounded-md border border-blue-200 bg-blue-50 p-3 text-xs text-blue-800 dark:border-blue-800 dark:bg-blue-900/20 dark:text-blue-300">
+                                    License seats: {{ $selectedUploadInstitution->licenseLimitLabel() }}
+                                    @if($selectedUploadInstitution->license_type !== 'enterprise')
+                                        · {{ number_format($selectedUploadInstitution->remainingLicenseSeats()) }} remaining
+                                    @endif
+                                </div>
+                            @endif
                         </div>
 
                         <div>

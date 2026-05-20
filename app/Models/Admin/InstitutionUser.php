@@ -5,6 +5,7 @@ namespace App\Models\Admin;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Models\Core\Institution;
 use App\Models\Core\User;
 
 class InstitutionUser extends Model
@@ -66,6 +67,12 @@ class InstitutionUser extends Model
             // Update institution user count
             $institutionUser->institution->updateUserCount();
         });
+
+        static::updated(function ($institutionUser) {
+            if ($institutionUser->isDirty('status')) {
+                $institutionUser->institution->updateUserCount();
+            }
+        });
     }
 
     // Relationships
@@ -82,6 +89,13 @@ class InstitutionUser extends Model
     public function addedBy()
     {
         return $this->belongsTo(User::class, 'added_by');
+    }
+
+    public function cohorts()
+    {
+        return $this->belongsToMany(InstitutionCohort::class, 'institution_cohort_user', 'institution_user_id', 'institution_cohort_id')
+            ->withPivot(['assigned_by', 'joined_at'])
+            ->withTimestamps();
     }
 
     // Helper methods

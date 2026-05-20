@@ -109,14 +109,18 @@
                             </td>
                             <td class="px-6 py-4">
                                 <div class="text-sm text-gray-900 dark:text-white">
-                                    {{ number_format($institution->current_users) }} / {{ number_format($institution->max_users) }}
+                                    {{ $institution->licenseLimitLabel() }}
                                 </div>
                                 <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2 mt-1">
                                     <div class="bg-blue-600 dark:bg-blue-500 h-2 rounded-full transition-all duration-300" 
-                                         style="width: {{ $institution->getUserCapacityPercentage() }}%"></div>
+                                         style="width: {{ min(100, $institution->getUserCapacityPercentage()) }}%"></div>
                                 </div>
                                 <div class="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                                    {{ $institution->getUserCapacityPercentage() }}% capacity
+                                    @if($institution->license_type === 'enterprise')
+                                        Unlimited seats
+                                    @else
+                                        {{ $institution->getUserCapacityPercentage() }}% capacity · {{ number_format($institution->remainingLicenseSeats()) }} left
+                                    @endif
                                 </div>
                             </td>
                             <td class="px-6 py-4">
@@ -253,6 +257,7 @@
                         <div class="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg border border-blue-200 dark:border-blue-800">
                             <h4 class="font-medium text-blue-900 dark:text-blue-300">{{ $selectedInstitution->name }}</h4>
                             <p class="text-sm text-blue-700 dark:text-blue-400">Current: {{ $selectedInstitution->license_type_name }} ({{ number_format($selectedInstitution->max_users) }} users)</p>
+                            <p class="text-sm text-blue-700 dark:text-blue-400">Seats in use: {{ $selectedInstitution->licenseLimitLabel() }}</p>
                         </div>
 
                         <div>
@@ -270,6 +275,7 @@
                             <input type="number" wire:model="newMaxUsers" min="1" 
                                    class="mt-1 block w-full border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
                             @error('newMaxUsers') <span class="text-red-500 dark:text-red-400 text-xs mt-1">{{ $message }}</span> @enderror
+                            <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">This cannot be lower than the active and pending seats already in use.</p>
                         </div>
                     </div>
 

@@ -6,11 +6,14 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Str;
+use App\Models\Admin\InstitutionCohort;
+use App\Models\Admin\InstitutionInvitation;
 use App\Models\Admin\InstitutionUser;
 use App\Models\Admin\BulkEnrollmentBatch;
 use App\Models\Admin\InstitutionLicenseHistory;
+use App\Models\Learning\Course;
 use App\Models\Learning\CourseEnrollment;
-Use App\Models\Credentials\Certificate;
+use App\Models\Credentials\Certificate;
 
 
 class Institution extends Model
@@ -159,6 +162,16 @@ class Institution extends Model
         return $this->hasMany(InstitutionUser::class);
     }
 
+    public function invitations()
+    {
+        return $this->hasMany(InstitutionInvitation::class);
+    }
+
+    public function cohorts()
+    {
+        return $this->hasMany(InstitutionCohort::class);
+    }
+
     public function enrollments()
     {
         return $this->hasManyThrough(
@@ -290,6 +303,42 @@ class Institution extends Model
         return $this->current_users < $this->max_users;
     }
 
+    public function remainingLicenseSeats(): ?int
+    {
+        if ($this->license_type === 'enterprise') {
+            return null;
+        }
+
+        return max(0, (int) $this->max_users - (int) $this->current_users);
+    }
+
+    public function canAddUsers(int $quantity = 1): bool
+    {
+        if ($quantity <= 0 || $this->license_type === 'enterprise') {
+            return true;
+        }
+
+        return $quantity <= $this->remainingLicenseSeats();
+    }
+
+    public function ensureCanAddUsers(int $quantity = 1): void
+    {
+        if (! $this->canAddUsers($quantity)) {
+            $remaining = $this->remainingLicenseSeats();
+
+            throw new \RuntimeException("License limit reached for {$this->name}. {$remaining} seat(s) remaining.");
+        }
+    }
+
+    public function licenseLimitLabel(): string
+    {
+        if ($this->license_type === 'enterprise') {
+            return 'Unlimited';
+        }
+
+        return number_format((int) $this->current_users) . ' / ' . number_format((int) $this->max_users);
+    }
+
     public function getUserCapacityPercentage()
     {
         if ($this->license_type === 'enterprise' || $this->max_users == 0) {
@@ -302,7 +351,9 @@ class Institution extends Model
     public function updateUserCount()
     {
         $this->update([
-            'current_users' => $this->users()->count()
+            'current_users' => $this->users()
+                ->whereIn('status', ['active', 'pending'])
+                ->count()
         ]);
     }
 

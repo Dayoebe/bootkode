@@ -7,6 +7,8 @@ use App\Models\Core\User;
 use App\Models\Core\Institution;
 use App\Models\Admin\InstitutionUser;
 use App\Models\Admin\BulkEnrollmentBatch;
+use App\Models\Admin\InstitutionCohort;
+use App\Models\Admin\InstitutionInvitation;
 use App\Models\Learning\CourseEnrollment;
 use App\Models\Credentials\Certificate;
 use Illuminate\Support\Facades\Route;
@@ -29,6 +31,8 @@ class InstitutionPortal extends Component
         'total_revenue' => 0,
         'recent_enrollments' => 0,
         'certificates_issued' => 0,
+        'active_cohorts' => 0,
+        'pending_invitations' => 0,
     ];
 
     // Quick filters
@@ -50,6 +54,7 @@ class InstitutionPortal extends Component
             'institution.overview' => 'overview',
             'institution.partners' => 'partners',
             'institution.licenses' => 'licenses',
+            'institution.cohorts' => 'cohorts',
             'institution.bulk-enrollment' => 'bulk-enrollment',
             'institution.analytics' => 'analytics',
             'institution.whitelabel' => 'whitelabel',
@@ -90,20 +95,31 @@ class InstitutionPortal extends Component
             }
 
             // Basic institution stats
-            $this->stats['total_institutions'] = $institutionsQuery->count();
-            $this->stats['active_institutions'] = $institutionsQuery->where('status', 'active')->count();
-            $this->stats['pending_approvals'] = $institutionsQuery->where('status', 'pending')->count();
+            $this->stats['total_institutions'] = (clone $institutionsQuery)->count();
+            $this->stats['active_institutions'] = (clone $institutionsQuery)->where('status', 'active')->count();
+            $this->stats['pending_approvals'] = (clone $institutionsQuery)->where('status', 'pending')->count();
             
             // License expiry warnings (next 30 days)
-            $this->stats['expiring_licenses'] = $institutionsQuery
+            $this->stats['expiring_licenses'] = (clone $institutionsQuery)
                 ->where('status', 'active')
                 ->whereBetween('license_end_date', [now(), now()->addDays(30)])
                 ->count();
 
             // User stats
-            $institutionIds = $institutionsQuery->pluck('id');
+            $institutionIds = (clone $institutionsQuery)->pluck('id');
             $this->stats['total_users'] = InstitutionUser::whereIn('institution_id', $institutionIds)
                 ->where('status', 'active')
+                ->count();
+
+            $this->stats['active_cohorts'] = InstitutionCohort::whereIn('institution_id', $institutionIds)
+                ->where('status', 'active')
+                ->count();
+
+            $this->stats['pending_invitations'] = InstitutionInvitation::whereIn('institution_id', $institutionIds)
+                ->where('status', 'pending')
+                ->where(function ($query) {
+                    $query->whereNull('expires_at')->orWhere('expires_at', '>=', now());
+                })
                 ->count();
 
             // Revenue calculation (placeholder - integrate with your billing system)
@@ -130,6 +146,8 @@ class InstitutionPortal extends Component
                 'total_revenue' => 0,
                 'recent_enrollments' => 0,
                 'certificates_issued' => 0,
+                'active_cohorts' => 0,
+                'pending_invitations' => 0,
             ];
             
             \Log::warning('Institution Portal: Error loading statistics', [

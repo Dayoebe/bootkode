@@ -78,6 +78,18 @@
                                 @endif
                             </div>
                         </th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                            Type
+                        </th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                            Status
+                        </th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                            Seats
+                        </th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                            License
+                        </th>
                         <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors" 
                             wire:click="sortBy('created_at')">
                             <div class="flex items-center space-x-1">
@@ -153,6 +165,11 @@
                                 <div class="text-xs text-gray-500 dark:text-gray-400 mt-1">
                                     {{ $institution->getUserCapacityPercentage() }}% capacity
                                 </div>
+                                @if($institution->pending_invitations_count > 0)
+                                    <div class="text-xs text-blue-600 dark:text-blue-400 mt-1">
+                                        <i class="fas fa-envelope mr-1"></i>{{ $institution->pending_invitations_count }} pending invite{{ $institution->pending_invitations_count === 1 ? '' : 's' }}
+                                    </div>
+                                @endif
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
                                 <div class="text-sm font-medium text-gray-900 dark:text-white">{{ $institution->license_type_name }}</div>
@@ -182,6 +199,11 @@
                                             class="text-indigo-600 dark:text-indigo-400 hover:text-indigo-900 dark:hover:text-indigo-300 transition-colors"
                                             title="Edit">
                                         <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button wire:click="openInviteModal({{ $institution->id }})"
+                                            class="text-cyan-600 dark:text-cyan-400 hover:text-cyan-900 dark:hover:text-cyan-300 transition-colors"
+                                            title="Invite Admin">
+                                        <i class="fas fa-user-plus"></i>
                                     </button>
                                     
                                     @if($institution->isPending())
@@ -419,7 +441,7 @@
     <!-- View Modal -->
     @if($showViewModal && $selectedInstitution)
         <div class="fixed inset-0 bg-gray-600 dark:bg-black bg-opacity-50 dark:bg-opacity-70 overflow-y-auto h-full w-full z-50" wire:click="closeModals">
-            <div class="relative top-20 mx-auto p-5 border border-gray-200 dark:border-gray-700 w-11/12 md:w-2/3 lg:w-1/2 shadow-lg rounded-md bg-white dark:bg-gray-800" wire:click.stop>
+            <div class="relative top-20 mx-auto p-5 border border-gray-200 dark:border-gray-700 w-11/12 md:w-4/5 lg:w-3/4 shadow-lg rounded-md bg-white dark:bg-gray-800" wire:click.stop>
                 <div class="flex items-center justify-between pb-4 border-b border-gray-200 dark:border-gray-700">
                     <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Institution Details</h3>
                     <button wire:click="closeModals" class="text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300">
@@ -535,6 +557,55 @@
                         </div>
                     @endif
 
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 pt-4 border-t border-gray-200 dark:border-gray-700">
+                        <div>
+                            <div class="flex items-center justify-between mb-3">
+                                <h5 class="font-medium text-gray-900 dark:text-white">Institution Users</h5>
+                                <button wire:click="openInviteModal({{ $selectedInstitution->id }})"
+                                        class="inline-flex items-center rounded-md bg-cyan-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-cyan-700">
+                                    <i class="fas fa-user-plus mr-1"></i>Invite Admin
+                                </button>
+                            </div>
+                            <div class="max-h-48 overflow-y-auto rounded-md border border-gray-200 dark:border-gray-700">
+                                @forelse($selectedInstitution->users as $institutionUser)
+                                    <div class="flex items-center justify-between border-b border-gray-100 p-3 last:border-0 dark:border-gray-700">
+                                        <div>
+                                            <div class="text-sm font-medium text-gray-900 dark:text-white">{{ $institutionUser->user?->name ?? 'Unknown user' }}</div>
+                                            <div class="text-xs text-gray-500 dark:text-gray-400">{{ $institutionUser->user?->email }}</div>
+                                        </div>
+                                        <div class="text-right">
+                                            <div class="text-xs font-medium text-gray-700 dark:text-gray-300">{{ $institutionUser->role_name }}</div>
+                                            <div class="text-xs text-gray-500 dark:text-gray-400">{{ $institutionUser->status_name }}</div>
+                                        </div>
+                                    </div>
+                                @empty
+                                    <div class="p-3 text-sm text-gray-500 dark:text-gray-400">No users have been added yet.</div>
+                                @endforelse
+                            </div>
+                        </div>
+
+                        <div>
+                            <h5 class="font-medium text-gray-900 dark:text-white mb-3">Pending Invitations</h5>
+                            <div class="max-h-48 overflow-y-auto rounded-md border border-gray-200 dark:border-gray-700">
+                                @forelse($selectedInstitution->invitations->where('status', 'pending') as $invitation)
+                                    <div class="flex items-center justify-between border-b border-gray-100 p-3 last:border-0 dark:border-gray-700">
+                                        <div>
+                                            <div class="text-sm font-medium text-gray-900 dark:text-white">{{ $invitation->name ?: $invitation->email }}</div>
+                                            <div class="text-xs text-gray-500 dark:text-gray-400">{{ $invitation->email }} · {{ $invitation->role_name }}</div>
+                                            <div class="text-xs text-gray-400 dark:text-gray-500">Expires {{ $invitation->expires_at?->format('M d, Y') ?? 'without date' }}</div>
+                                        </div>
+                                        <button wire:click="revokeInvitation({{ $invitation->id }})"
+                                                class="text-xs font-medium text-red-600 hover:text-red-800 dark:text-red-400">
+                                            Revoke
+                                        </button>
+                                    </div>
+                                @empty
+                                    <div class="p-3 text-sm text-gray-500 dark:text-gray-400">No pending invitations.</div>
+                                @endforelse
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-4 pt-4 border-t border-gray-200 dark:border-gray-700">
                         <div class="text-center">
                             <div class="text-2xl font-bold text-gray-900 dark:text-white">{{ number_format($selectedInstitution->total_courses_accessed) }}</div>
@@ -552,6 +623,10 @@
                 </div>
 
                 <div class="flex items-center justify-end space-x-3 mt-8 pt-6 border-t border-gray-200 dark:border-gray-700">
+                    <button wire:click="openInviteModal({{ $selectedInstitution->id }})" 
+                            class="px-4 py-2 bg-cyan-600 hover:bg-cyan-700 text-white text-sm font-medium rounded-md transition-colors">
+                        <i class="fas fa-user-plus mr-2"></i>Invite Admin
+                    </button>
                     <button wire:click="openEditModal({{ $selectedInstitution->id }})" 
                             class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-md transition-colors">
                         <i class="fas fa-edit mr-2"></i>Edit Institution
@@ -561,6 +636,68 @@
                         Close
                     </button>
                 </div>
+            </div>
+        </div>
+    @endif
+
+    <!-- Invite Admin Modal -->
+    @if($showInviteModal && $selectedInstitution)
+        <div class="fixed inset-0 bg-gray-600 dark:bg-black bg-opacity-50 dark:bg-opacity-70 overflow-y-auto h-full w-full z-50" wire:click="closeModals">
+            <div class="relative top-20 mx-auto p-5 border border-gray-200 dark:border-gray-700 w-11/12 md:w-1/2 shadow-lg rounded-md bg-white dark:bg-gray-800" wire:click.stop>
+                <div class="flex items-center justify-between pb-4 border-b border-gray-200 dark:border-gray-700">
+                    <div>
+                        <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Invite Institution Admin</h3>
+                        <p class="text-sm text-gray-500 dark:text-gray-400">{{ $selectedInstitution->name }} · {{ $selectedInstitution->licenseLimitLabel() }} seats used</p>
+                    </div>
+                    <button wire:click="closeModals" class="text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300">
+                        <i class="fas fa-times text-xl"></i>
+                    </button>
+                </div>
+
+                <form wire:submit.prevent="sendInvitation" class="mt-6 space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Name</label>
+                        <input type="text" wire:model="inviteForm.name" class="mt-1 block w-full border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                        @error('inviteForm.name') <span class="text-red-500 dark:text-red-400 text-xs">{{ $message }}</span> @enderror
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Email *</label>
+                        <input type="email" wire:model="inviteForm.email" class="mt-1 block w-full border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                        @error('inviteForm.email') <span class="text-red-500 dark:text-red-400 text-xs">{{ $message }}</span> @enderror
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Portal Role *</label>
+                            <select wire:model="inviteForm.role" class="mt-1 block w-full border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                                <option value="admin">School Admin</option>
+                                <option value="instructor">Instructor</option>
+                                <option value="observer">Observer</option>
+                            </select>
+                            @error('inviteForm.role') <span class="text-red-500 dark:text-red-400 text-xs">{{ $message }}</span> @enderror
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Department</label>
+                            <input type="text" wire:model="inviteForm.department" class="mt-1 block w-full border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                        </div>
+                    </div>
+
+                    @if($selectedInstitution->license_type !== 'enterprise')
+                        <div class="rounded-md border border-blue-200 bg-blue-50 p-3 text-sm text-blue-800 dark:border-blue-800 dark:bg-blue-900/20 dark:text-blue-300">
+                            {{ number_format($selectedInstitution->remainingLicenseSeats()) }} seat{{ $selectedInstitution->remainingLicenseSeats() === 1 ? '' : 's' }} remaining on this license.
+                        </div>
+                    @endif
+
+                    <div class="flex items-center justify-end space-x-3 mt-8 pt-6 border-t border-gray-200 dark:border-gray-700">
+                        <button type="button" wire:click="closeModals" 
+                                class="px-4 py-2 bg-gray-300 dark:bg-gray-600 hover:bg-gray-400 dark:hover:bg-gray-500 text-gray-700 dark:text-white text-sm font-medium rounded-md transition-colors">
+                            Cancel
+                        </button>
+                        <button type="submit" 
+                                class="px-4 py-2 bg-cyan-600 hover:bg-cyan-700 text-white text-sm font-medium rounded-md transition-colors">
+                            <i class="fas fa-paper-plane mr-2"></i>Send Invitation
+                        </button>
+                    </div>
+                </form>
             </div>
         </div>
     @endif

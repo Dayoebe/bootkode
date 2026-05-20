@@ -4,6 +4,7 @@ namespace App\Models\Admin;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Core\Institution;
 use App\Models\Core\User;
 
 class InstitutionLicenseHistory extends Model

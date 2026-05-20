@@ -29,6 +29,10 @@
                             <div class="text-xs text-gray-500 dark:text-gray-400">Users</div>
                         </div>
                         <div class="text-center min-w-[80px] md:min-w-0">
+                            <div class="text-xl md:text-2xl font-bold text-cyan-600 dark:text-cyan-400">{{ number_format($stats['active_cohorts'] ?? 0) }}</div>
+                            <div class="text-xs text-gray-500 dark:text-gray-400">Cohorts</div>
+                        </div>
+                        <div class="text-center min-w-[80px] md:min-w-0">
                             <div class="text-xl md:text-2xl font-bold text-yellow-600 dark:text-yellow-400">{{ number_format($stats['pending_approvals']) }}</div>
                             <div class="text-xs text-gray-500 dark:text-gray-400">Pending</div>
                         </div>
@@ -80,6 +84,7 @@
                             'overview' => ['label' => 'Overview', 'icon' => 'fas fa-chart-line', 'full_label' => 'Dashboard Overview'],
                             'partners' => ['label' => 'Partners', 'icon' => 'fas fa-school', 'full_label' => 'Partner Institutions'],
                             'licenses' => ['label' => 'Licenses', 'icon' => 'fas fa-key', 'full_label' => 'License Management'],
+                            'cohorts' => ['label' => 'Cohorts', 'icon' => 'fas fa-layer-group', 'full_label' => 'Cohort Assignments'],
                             'bulk-enrollment' => ['label' => 'Bulk Enroll', 'icon' => 'fas fa-user-plus', 'full_label' => 'Bulk Enrollment'],
                             'analytics' => ['label' => 'Analytics', 'icon' => 'fas fa-chart-pie', 'full_label' => 'Institution Analytics'],
                             'whitelabel' => ['label' => 'Branding', 'icon' => 'fas fa-paint-roller', 'full_label' => 'White-label Settings'],
@@ -112,6 +117,11 @@
                                     {{ $stats['expiring_licenses'] }}
                                 </span>
                             @endif
+                            @if($tab === 'partners' && ($stats['pending_invitations'] ?? 0) > 0)
+                                <span class="ml-1 md:ml-2 bg-blue-500 text-white text-xs px-1 md:px-2 py-0.5 md:py-1 rounded-full">
+                                    {{ $stats['pending_invitations'] }}
+                                </span>
+                            @endif
                         </button>
                     @endforeach
                 </nav>
@@ -127,6 +137,8 @@
                     @livewire('institution.partner-institutions')
                 @elseif($activeTab === 'licenses')
                     @livewire('institution.license-management')
+                @elseif($activeTab === 'cohorts')
+                    @livewire('institution.cohort-management')
                 @elseif($activeTab === 'bulk-enrollment')
                     @livewire('institution.bulk-enrollment')
                 @elseif($activeTab === 'analytics')

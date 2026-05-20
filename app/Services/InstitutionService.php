@@ -5,13 +5,18 @@ namespace App\Services;
 use App\Models\Core\Institution;
 use App\Models\Core\User;
 use App\Models\Admin\BulkEnrollmentBatch;
+use App\Models\Admin\InstitutionCohort;
+use App\Models\Admin\InstitutionInvitation;
 use App\Models\Learning\CourseEnrollment;
 use App\Models\Admin\InstitutionUser;
+use App\Models\Learning\Course;
 use App\Jobs\ProcessBulkEnrollment;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Notification;
+use Illuminate\Support\Facades\Schema;
 use App\Notifications\InstitutionWelcome;
+use App\Notifications\InstitutionAdminInvitation;
 use App\Notifications\LicenseExpiring;
 use Illuminate\Support\Str;
 use App\Notifications\BulkEnrollmentCompleted;
@@ -116,10 +121,19 @@ class InstitutionService
      */
     public function processBulkEnrollment(Institution $institution, $filePath, array $courses, array $settings = []): BulkEnrollmentBatch
     {
+        [$absolutePath, $storedPath] = $this->normalizeEnrollmentFilePath($filePath);
+
+        if (! file_exists($absolutePath)) {
+            throw new \RuntimeException('CSV file not found.');
+        }
+
+        $institution->updateUserCount();
+        $institution->ensureCanAddUsers($this->countNewInstitutionUsersFromCsv($institution, $absolutePath));
+
         // Parse CSV to count total records
-        $handle = fopen($filePath, 'r');
+        $handle = fopen($absolutePath, 'r');
         $totalRecords = 0;
-        $header = fgetcsv($handle);
+        fgetcsv($handle);
         
         while (fgetcsv($handle)) {
             $totalRecords++;
@@ -130,7 +144,7 @@ class InstitutionService
         $batch = $institution->bulkEnrollments()->create([
             'name' => $settings['name'] ?? 'Bulk Enrollment ' . now()->format('M d, Y'),
             'description' => $settings['description'] ?? null,
-            'file_path' => $filePath,
+            'file_path' => $storedPath,
             'original_filename' => $settings['original_filename'] ?? 'upload.csv',
             'total_records' => $totalRecords,
             'courses' => $courses,
@@ -149,6 +163,9 @@ class InstitutionService
      */
     public function addUsersToInstitution(Institution $institution, array $userData): array
     {
+        $institution->updateUserCount();
+        $institution->ensureCanAddUsers($this->countNewInstitutionUsersFromRows($institution, $userData));
+
         $results = [
             'successful' => 0,
             'failed' => 0,
@@ -215,16 +232,17 @@ class InstitutionService
         foreach ($users as $userId) {
             foreach ($courseIds as $courseId) {
                 try {
-                    CourseEnrollment::updateOrCreate(
-                        [
-                            'user_id' => $userId,
-                            'course_id' => $courseId
-                        ],
-                        [
-                            'enrolled_at' => now(),
-                            'progress_percentage' => 0
-                        ]
+                    $enrollment = CourseEnrollment::firstOrCreate(
+                        ['user_id' => $userId, 'course_id' => $courseId],
+                        ['enrolled_at' => now(), 'progress_percentage' => 0, 'enrollment_type' => 'institution']
                     );
+
+                    if (! $enrollment->wasRecentlyCreated && ! $enrollment->enrollment_type) {
+                        $enrollment->update(['enrollment_type' => 'institution']);
+                    }
+
+                    $this->syncLegacyCourseEnrollment((int) $userId, (int) $courseId);
+
                     $results['successful']++;
                 } catch (\Exception $e) {
                     $results['failed']++;
@@ -240,12 +258,95 @@ class InstitutionService
         return $results;
     }
 
+    public function inviteInstitutionAdmin(Institution $institution, array $data): InstitutionInvitation
+    {
+        $role = $data['role'] ?? 'admin';
+        $email = strtolower(trim($data['email']));
+        $name = trim($data['name'] ?? '') ?: Str::before($email, '@');
+
+        return DB::transaction(function () use ($institution, $data, $role, $email, $name) {
+            $user = User::where('email', $email)->first();
+            $existingMember = $user
+                ? $institution->users()->where('user_id', $user->id)->withTrashed()->first()
+                : null;
+
+            if (! $existingMember || $existingMember->trashed()) {
+                $institution->updateUserCount();
+                $institution->ensureCanAddUsers();
+            }
+
+            $userRole = $this->mapInstitutionRoleToUserRole($role);
+
+            if (! $user) {
+                $user = User::create([
+                    'name' => $name,
+                    'email' => $email,
+                    'password' => bcrypt(Str::random(32)),
+                    'role' => $userRole,
+                    'email_verified_at' => now(),
+                ]);
+            } elseif ($this->shouldPromoteUserForInstitutionRole($user, $userRole)) {
+                $user->update(['role' => $userRole]);
+            }
+
+            $membershipIsAlreadyActive = $existingMember && ! $existingMember->trashed() && $existingMember->status === 'active';
+
+            $institutionUser = $institution->users()->withTrashed()->updateOrCreate(
+                ['user_id' => $user->id],
+                [
+                    'role' => $role,
+                    'department' => $data['department'] ?? null,
+                    'status' => $membershipIsAlreadyActive ? 'active' : 'pending',
+                    'joined_at' => $membershipIsAlreadyActive ? ($existingMember->joined_at ?? now()) : null,
+                    'left_at' => null,
+                    'added_by' => auth()->id(),
+                ]
+            );
+
+            if ($institutionUser->trashed()) {
+                $institutionUser->restore();
+            }
+
+            $invitation = InstitutionInvitation::create([
+                'institution_id' => $institution->id,
+                'user_id' => $user->id,
+                'name' => $name,
+                'email' => $email,
+                'role' => $role,
+                'department' => $data['department'] ?? null,
+                'invited_by' => auth()->id(),
+                'status' => $membershipIsAlreadyActive ? 'accepted' : 'pending',
+                'accepted_at' => $membershipIsAlreadyActive ? now() : null,
+                'accepted_user_id' => $membershipIsAlreadyActive ? $user->id : null,
+                'expires_at' => now()->addDays((int) ($data['expires_in_days'] ?? 14)),
+            ]);
+
+            if (! $membershipIsAlreadyActive) {
+                Notification::send($user, new InstitutionAdminInvitation($invitation));
+            }
+            $institution->updateUserCount();
+
+            return $invitation;
+        });
+    }
+
+    public function enrollCohortInAssignedCourses(InstitutionCohort $cohort): array
+    {
+        $courseIds = $cohort->courses()->pluck('courses.id')->all();
+        $userIds = $cohort->members()
+            ->where('institution_users.status', 'active')
+            ->pluck('institution_users.user_id')
+            ->all();
+
+        return $this->enrollUsersInCourses($cohort->institution, $courseIds, $userIds);
+    }
+
     /**
      * Generate institution analytics
      */
     public function generateAnalytics(Institution $institution): array
     {
-        $userIds = $institution->users()->pluck('user_id');
+        $userIds = $institution->users()->pluck('user_id')->all();
         
         return [
             'users' => [
@@ -438,5 +539,147 @@ class InstitutionService
                 ->count();
         }
         return $months;
+    }
+
+    public function syncLegacyCourseEnrollment(int $userId, int $courseId): void
+    {
+        if (! Schema::hasTable('course_user')) {
+            return;
+        }
+
+        $now = now();
+        $exists = DB::table('course_user')
+            ->where('user_id', $userId)
+            ->where('course_id', $courseId)
+            ->exists();
+
+        if ($exists) {
+            DB::table('course_user')
+                ->where('user_id', $userId)
+                ->where('course_id', $courseId)
+                ->update(['updated_at' => $now]);
+
+            return;
+        }
+
+        DB::table('course_user')->insert([
+            'user_id' => $userId,
+            'course_id' => $courseId,
+            'progress' => 0,
+            'last_accessed_at' => null,
+            'time_spent_minutes' => 0,
+            'created_at' => $now,
+            'updated_at' => $now,
+        ]);
+    }
+
+    private function normalizeEnrollmentFilePath(string $filePath): array
+    {
+        $storageRoot = storage_path('app') . DIRECTORY_SEPARATOR;
+
+        if (Str::startsWith($filePath, $storageRoot)) {
+            return [$filePath, Str::after($filePath, $storageRoot)];
+        }
+
+        if (Str::startsWith($filePath, DIRECTORY_SEPARATOR)) {
+            return [$filePath, $filePath];
+        }
+
+        return [storage_path('app/' . $filePath), $filePath];
+    }
+
+    private function countNewInstitutionUsersFromCsv(Institution $institution, string $absolutePath): int
+    {
+        $handle = fopen($absolutePath, 'r');
+        if (! $handle) {
+            throw new \RuntimeException('Could not open CSV file.');
+        }
+
+        $emails = [];
+
+        try {
+            $header = fgetcsv($handle);
+            if (! $header) {
+                return 0;
+            }
+
+            $header = array_map(fn ($value) => strtolower(trim($value)), $header);
+            $emailIndex = array_search('email', $header, true);
+
+            if ($emailIndex === false) {
+                return 0;
+            }
+
+            while (($row = fgetcsv($handle)) !== false) {
+                $email = strtolower(trim($row[$emailIndex] ?? ''));
+                if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                    $emails[$email] = true;
+                }
+            }
+        } finally {
+            fclose($handle);
+        }
+
+        return $this->countNewInstitutionUsersFromEmails($institution, array_keys($emails));
+    }
+
+    private function countNewInstitutionUsersFromRows(Institution $institution, array $rows): int
+    {
+        $emails = collect($rows)
+            ->pluck('email')
+            ->filter()
+            ->map(fn ($email) => strtolower(trim($email)))
+            ->unique()
+            ->values()
+            ->all();
+
+        return $this->countNewInstitutionUsersFromEmails($institution, $emails);
+    }
+
+    private function countNewInstitutionUsersFromEmails(Institution $institution, array $emails): int
+    {
+        if (empty($emails)) {
+            return 0;
+        }
+
+        $existingEmails = User::query()
+            ->whereIn('email', $emails)
+            ->whereHas('institutionMemberships', function ($query) use ($institution) {
+                $query->where('institution_id', $institution->id)
+                    ->whereIn('status', ['active', 'pending']);
+            })
+            ->pluck('email')
+            ->map(fn ($email) => strtolower($email))
+            ->all();
+
+        return collect($emails)
+            ->diff($existingEmails)
+            ->count();
+    }
+
+    private function mapInstitutionRoleToUserRole(string $role): string
+    {
+        return match ($role) {
+            'admin' => User::ROLE_ACADEMY_ADMIN,
+            'instructor' => User::ROLE_INSTRUCTOR,
+            default => User::ROLE_STUDENT,
+        };
+    }
+
+    private function shouldPromoteUserForInstitutionRole(User $user, string $role): bool
+    {
+        if ($user->isSuperAdmin()) {
+            return false;
+        }
+
+        if ($role === User::ROLE_ACADEMY_ADMIN) {
+            return ! $user->isAcademyAdmin();
+        }
+
+        if ($role === User::ROLE_INSTRUCTOR) {
+            return $user->isStudent();
+        }
+
+        return false;
     }
 }
