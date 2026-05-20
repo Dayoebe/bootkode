@@ -87,6 +87,7 @@
 
     {{-- ⚡ Livewire Styles --}}
     @livewireStyles
+    @stack('styles')
 
     {{-- 🧩 Mobile-friendly tweaks --}}
     <style>
@@ -165,6 +166,8 @@
     </script>
 
     {{-- 📱 Viewport Fix for Mobile Browsers --}}
+    @stack('scripts')
+
     <script>
         const setViewportHeight = () => {
             let vh = window.innerHeight * 0.01;

@@ -18,7 +18,8 @@ class CourseEnrollment extends Model
         'is_completed', 
         'completed_at',
         'enrollment_type',  // NEW
-        'amount_paid'       // NEW
+        'amount_paid',       // NEW
+        'bulk_batch_id'
     ];
 
     protected $casts = [
@@ -36,6 +37,11 @@ class CourseEnrollment extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function bulkBatch()
+    {
+        return $this->belongsTo(\App\Models\Admin\BulkEnrollmentBatch::class, 'bulk_batch_id');
     }
     
     /**

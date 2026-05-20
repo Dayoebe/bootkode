@@ -12,6 +12,15 @@
     $currentSectionProgress = $currentSection ? $this->calculateSectionProgress($currentSection) : 0;
     $nextLockedSection = $course->sections->first(fn($section) => !in_array($section->id, $unlockedSections, true));
     $progressKey = $course->id . '-' . $progressVersion . '-' . ($currentLesson?->id ?? 'none');
+    $offlinePack = $this->offlinePack;
+    $offlineEstimateMb = $this->estimateOfflinePackSizeMb();
+    $offlineTypes = [
+        'lessons' => ['label' => 'Lessons', 'icon' => 'fas fa-align-left'],
+        'documents' => ['label' => 'PDFs', 'icon' => 'fas fa-file-pdf'],
+        'images' => ['label' => 'Images', 'icon' => 'fas fa-image'],
+        'audio' => ['label' => 'Audio', 'icon' => 'fas fa-headphones'],
+        'video' => ['label' => 'Videos', 'icon' => 'fas fa-video'],
+    ];
 @endphp
 
 <div
@@ -129,6 +138,89 @@
                 </div>
             </section>
         @endif
+
+        <section
+            x-data="window.bootkodeOffline.panel({
+                slug: @js($course->slug),
+                manifestUrl: @js(route('offline-learning.manifest', $course->slug)),
+                storageLimitMb: @js($offlineStorageLimitMb),
+                types: @js($offlineContentTypes)
+            })"
+            class="overflow-hidden rounded-[1.5rem] border border-themed-primary bg-themed-secondary p-5 shadow-lg">
+            <div class="flex flex-col gap-5 xl:flex-row xl:items-start xl:justify-between">
+                <div class="min-w-0">
+                    <p class="text-xs font-semibold uppercase tracking-[0.18em] text-themed-secondary">Offline pack</p>
+                    <h2 class="mt-2 text-xl font-semibold text-themed-primary">Download this course for mobile learning</h2>
+                    <p class="mt-2 max-w-3xl text-sm leading-6 text-themed-secondary">
+                        Cache lesson text, course files, images, and audio on this device. Complete lessons in the offline reader and sync progress when the connection returns.
+                    </p>
+
+                    <div class="mt-4 grid gap-3 md:grid-cols-3">
+                        <div class="rounded-2xl border border-themed-secondary bg-themed-tertiary p-4">
+                            <p class="text-xs font-semibold uppercase tracking-[0.16em] text-themed-tertiary">Estimated Pack</p>
+                            <p class="mt-2 text-2xl font-semibold text-themed-primary">{{ number_format($offlinePack?->size_mb ?? $offlineEstimateMb, 2) }} MB</p>
+                        </div>
+                        <div class="rounded-2xl border border-themed-secondary bg-themed-tertiary p-4">
+                            <p class="text-xs font-semibold uppercase tracking-[0.16em] text-themed-tertiary">Last Download</p>
+                            <p class="mt-2 text-sm font-semibold text-themed-primary">{{ $offlinePack?->downloaded_at?->diffForHumans() ?? 'Not downloaded yet' }}</p>
+                        </div>
+                        <div class="rounded-2xl border border-themed-secondary bg-themed-tertiary p-4">
+                            <p class="text-xs font-semibold uppercase tracking-[0.16em] text-themed-tertiary">Last Sync</p>
+                            <p class="mt-2 text-sm font-semibold text-themed-primary">{{ $offlinePack?->last_synced_at?->diffForHumans() ?? 'Waiting for offline progress' }}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="w-full xl:max-w-md">
+                    <div class="rounded-[1.25rem] border border-themed-secondary bg-themed-tertiary p-4">
+                        <label class="block text-xs font-semibold uppercase tracking-[0.16em] text-themed-tertiary">Storage limit on this device</label>
+                        <div class="mt-2 flex items-center gap-2">
+                            <input type="number" min="50" max="5000" step="50" x-model.number="storageLimitMb"
+                                class="min-w-0 flex-1 rounded-lg border border-themed-secondary bg-themed-secondary px-3 py-2 text-sm text-themed-primary">
+                            <span class="text-sm font-semibold text-themed-secondary">MB</span>
+                        </div>
+
+                        <div class="mt-4 grid grid-cols-2 gap-2">
+                            @foreach($offlineTypes as $type => $meta)
+                                <button type="button" @click="toggleType(@js($type))"
+                                    class="rounded-lg border px-3 py-2 text-left text-xs font-semibold transition"
+                                    :class="selectedTypes.includes(@js($type)) ? 'border-emerald-500 bg-emerald-50 text-emerald-700 dark:bg-emerald-900/20 dark:text-emerald-300' : 'border-themed-secondary bg-themed-secondary text-themed-secondary'">
+                                    <i class="{{ $meta['icon'] }} mr-1"></i>{{ $meta['label'] }}
+                                </button>
+                            @endforeach
+                        </div>
+
+                        <div class="mt-4 grid gap-2 sm:grid-cols-2">
+                            <button type="button" @click="download" :disabled="downloading"
+                                class="inline-flex items-center justify-center gap-2 rounded-lg bg-accent-themed-primary px-4 py-2 text-sm font-semibold text-white transition hover:bg-accent-themed-secondary disabled:opacity-60">
+                                <i class="fas fa-download"></i>
+                                <span x-text="downloading ? 'Downloading' : (installed ? 'Refresh Pack' : 'Download Pack')"></span>
+                            </button>
+                            <button type="button" @click="open" x-show="installed"
+                                class="inline-flex items-center justify-center gap-2 rounded-lg border border-themed-secondary bg-themed-secondary px-4 py-2 text-sm font-semibold text-themed-primary">
+                                <i class="fas fa-book-reader"></i>
+                                Read Offline
+                            </button>
+                            <button type="button" @click="sync"
+                                class="inline-flex items-center justify-center gap-2 rounded-lg border border-themed-secondary bg-themed-secondary px-4 py-2 text-sm font-semibold text-themed-primary">
+                                <i class="fas fa-rotate"></i>
+                                Sync Progress
+                            </button>
+                            <button type="button" @click="remove" x-show="installed"
+                                class="inline-flex items-center justify-center gap-2 rounded-lg border border-red-200 bg-red-50 px-4 py-2 text-sm font-semibold text-red-700 dark:border-red-800 dark:bg-red-900/20 dark:text-red-300">
+                                <i class="fas fa-trash"></i>
+                                Remove
+                            </button>
+                        </div>
+
+                        <div class="mt-3 space-y-1 text-sm">
+                            <p class="font-medium text-themed-primary" x-text="status"></p>
+                            <p class="text-xs text-themed-secondary" x-text="progressText"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
 
         <section class="grid gap-4 sm:grid-cols-2 2xl:grid-cols-4">
             <div class="overflow-hidden rounded-[1.75rem] border border-themed-primary bg-themed-secondary p-5 shadow-lg">

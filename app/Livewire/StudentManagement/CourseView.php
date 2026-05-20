@@ -10,12 +10,16 @@ use App\Models\Learning\Lesson;
 use App\Models\Assessment\Assessment;
 use App\Models\Assessment\StudentAnswer;
 use App\Models\Learning\CourseEnrollment;
+use App\Models\Learning\DownloadableContent;
 use App\Models\Learning\LessonProgress;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 use App\Models\Credentials\Certificate;
 use App\Notifications\CourseCompletionCertificateReady;
 use App\Services\DirectMessagingService;
+use App\Services\OfflineLearningPackService;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Validation\ValidationException;
 use Livewire\Attributes\Layout;
@@ -39,22 +43,32 @@ class CourseView extends Component
     public bool $certificateEarned = false;
     public bool $shouldCelebrate = false;
     public int $progressVersion = 0;
+    public int $offlineStorageLimitMb = 500;
+    public array $offlineContentTypes = OfflineLearningPackService::DEFAULT_TYPES;
 
     public function mount($course)
     {
         $this->sectionCompletionThreshold = (int) config('course.section_completion_threshold', 80);
         $this->course = $this->resolveCourse($course);
 
-        if (
-            !CourseEnrollment::where('course_id', $this->course->id)
-                ->where('user_id', Auth::id())
-                ->exists()
-        ) {
+        if (! $this->ensureCourseEnrollment()) {
             abort(403, 'You are not enrolled in this course.');
         }
 
+        $this->loadOfflinePackPreferences();
         $this->refreshProgressState();
-        $preferredLesson = request()->boolean('continue') ? $this->lastViewedLesson : null;
+        $preferredLesson = null;
+        $requestedLessonId = (int) request()->query('lesson', 0);
+
+        if ($requestedLessonId > 0) {
+            $lessonData = $this->findLessonInCourse($requestedLessonId);
+            $preferredLesson = $lessonData['lesson'] ?? null;
+        }
+
+        if (!$preferredLesson && request()->boolean('continue')) {
+            $preferredLesson = $this->lastViewedLesson;
+        }
+
         $this->setInitialLesson($preferredLesson);
 
         if (session()->has('success')) {
@@ -69,6 +83,42 @@ class CourseView extends Component
             $this->shouldCelebrate = true;
             session()->forget('show_confetti');
         }
+    }
+
+    protected function loadOfflinePackPreferences(): void
+    {
+        $pack = DownloadableContent::where('user_id', Auth::id())
+            ->where('course_id', $this->course->id)
+            ->first();
+
+        if (! $pack) {
+            return;
+        }
+
+        $this->offlineStorageLimitMb = max(50, (int) ($pack->storage_limit_mb ?: 500));
+        $this->offlineContentTypes = $pack->content_types ?: OfflineLearningPackService::DEFAULT_TYPES;
+    }
+
+    public function getOfflinePackProperty(): ?DownloadableContent
+    {
+        return DownloadableContent::where('user_id', Auth::id())
+            ->where('course_id', $this->course->id)
+            ->first();
+    }
+
+    public function estimateOfflinePackSizeMb(): float
+    {
+        $bytes = 0;
+
+        foreach ($this->course->sections as $section) {
+            foreach ($section->lessons as $lesson) {
+                $bytes += strlen(strip_tags((string) ($lesson->content ?? $lesson->text_content ?? '')));
+                $bytes += (int) round(((float) ($lesson->size_mb ?? 0)) * 1024 * 1024);
+                $bytes += (int) round(((float) ($lesson->total_file_size ?? 0)) * 1024 * 1024);
+            }
+        }
+
+        return round($bytes / 1024 / 1024, 2);
     }
 
     protected function resolveCourse($course): Course
@@ -103,6 +153,39 @@ class CourseView extends Component
         }
 
         return $query->where('slug', $course)->firstOrFail();
+    }
+
+    private function ensureCourseEnrollment(): bool
+    {
+        if (CourseEnrollment::where('course_id', $this->course->id)->where('user_id', Auth::id())->exists()) {
+            return true;
+        }
+
+        if (! Schema::hasTable('course_user')) {
+            return false;
+        }
+
+        $legacyEnrollment = DB::table('course_user')
+            ->where('course_id', $this->course->id)
+            ->where('user_id', Auth::id())
+            ->first();
+
+        if (! $legacyEnrollment) {
+            return false;
+        }
+
+        $progress = (float) ($legacyEnrollment->progress ?? 0);
+
+        CourseEnrollment::create([
+            'course_id' => $this->course->id,
+            'user_id' => Auth::id(),
+            'enrolled_at' => $legacyEnrollment->created_at ?? now(),
+            'progress_percentage' => (int) round($progress),
+            'is_completed' => $progress >= 100 || filled($legacyEnrollment->completed_at ?? null),
+            'completed_at' => $legacyEnrollment->completed_at ?? null,
+        ]);
+
+        return true;
     }
 
     protected function refreshProgressState(): void
@@ -559,6 +642,17 @@ class CourseView extends Component
                     'progress_percentage' => $progress,
                     'updated_at' => now()
                 ]);
+
+            if (Schema::hasTable('course_user')) {
+                DB::table('course_user')
+                    ->where('course_id', $this->course->id)
+                    ->where('user_id', Auth::id())
+                    ->update([
+                        'progress' => $progress,
+                        'last_accessed_at' => now(),
+                        'updated_at' => now(),
+                    ]);
+            }
         } catch (\Exception $e) {
             \Log::error('Error updating course progress: ' . $e->getMessage());
         }
@@ -795,6 +889,18 @@ class CourseView extends Component
                     'completed_at' => now(),
                     'progress_percentage' => 100
                 ]);
+
+            if (Schema::hasTable('course_user')) {
+                DB::table('course_user')
+                    ->where('course_id', $this->course->id)
+                    ->where('user_id', Auth::id())
+                    ->update([
+                        'progress' => 100,
+                        'completed_at' => now(),
+                        'last_accessed_at' => now(),
+                        'updated_at' => now(),
+                    ]);
+            }
 
             $this->certificateEarned = true;
 

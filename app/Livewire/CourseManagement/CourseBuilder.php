@@ -28,6 +28,19 @@ class CourseBuilder extends Component
         $this->course = $course;
         $this->lastActivity = now()->timestamp;
         $this->lastCourseHash = $this->generateCourseHash();
+
+        $requestedLessonId = (int) request()->query('lesson', 0);
+        if ($requestedLessonId > 0) {
+            $requestedLesson = Lesson::query()
+                ->whereKey($requestedLessonId)
+                ->whereHas('section', fn ($query) => $query->where('course_id', $this->course->id))
+                ->first();
+
+            if ($requestedLesson) {
+                $this->selectLesson($requestedLesson->id);
+                return;
+            }
+        }
         
         // Auto-select first lesson if none is selected
         if (!$this->activeContentId && $this->course->sections->count() > 0) {

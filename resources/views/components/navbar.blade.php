@@ -51,18 +51,85 @@
         </div>
 
         <div class="hidden min-w-0 flex-1 justify-center px-4 md:flex">
-            <label class="relative w-full max-w-lg">
-                <span class="sr-only">Search workspace</span>
-                <i class="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-sm text-themed-tertiary"></i>
-                <input
-                    type="search"
-                    placeholder="Search courses, people, certificates..."
-                    class="h-11 w-full rounded-[8px] border border-themed-primary bg-themed-tertiary/70 pl-9 pr-4 text-sm font-semibold text-themed-primary placeholder:text-themed-tertiary outline-none transition focus:border-teal-500 focus:bg-themed-secondary focus:ring-4 focus:ring-teal-500/10"
-                    x-data="{ searchQuery: '' }"
-                    x-model="searchQuery"
-                    @keydown.enter="console.log('Search:', searchQuery)"
+            <form
+                class="relative w-full max-w-lg"
+                x-data="dashboardSearch({
+                    suggestUrl: @js(route('dashboard.search.suggest')),
+                    resultsUrl: @js(route('dashboard.search')),
+                })"
+                @submit.prevent="submit()"
+                @click.outside="close()"
+            >
+                <label class="relative block">
+                    <span class="sr-only">Search workspace</span>
+                    <i class="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-sm text-themed-tertiary"></i>
+                    <input
+                        type="search"
+                        placeholder="Search courses, lessons, users, certificates..."
+                        class="h-11 w-full rounded-[8px] border border-themed-primary bg-themed-tertiary/70 pl-9 pr-10 text-sm font-semibold text-themed-primary placeholder:text-themed-tertiary outline-none transition focus:border-teal-500 focus:bg-themed-secondary focus:ring-4 focus:ring-teal-500/10"
+                        x-model="query"
+                        @input.debounce.250ms="search()"
+                        @focus="search()"
+                        @keydown.escape.stop="close()"
+                        autocomplete="off"
+                    >
+                    <button type="submit" class="absolute right-2 top-1/2 grid h-7 w-7 -translate-y-1/2 place-items-center rounded-[8px] text-themed-tertiary transition hover:bg-themed-secondary hover:text-themed-primary" aria-label="Search">
+                        <i class="fas fa-arrow-right text-xs"></i>
+                    </button>
+                </label>
+
+                <div
+                    x-show="open"
+                    x-transition.origin.top
+                    class="absolute left-0 right-0 top-full z-50 mt-3 max-h-[28rem] overflow-y-auto rounded-[8px] border border-themed-primary bg-themed-secondary p-2 shadow-2xl shadow-slate-950/15"
+                    style="display: none;"
                 >
-            </label>
+                    <template x-if="loading">
+                        <div class="flex items-center gap-3 px-3 py-4 text-sm font-bold text-themed-secondary">
+                            <i class="fas fa-spinner animate-spin text-teal-600"></i>
+                            Searching...
+                        </div>
+                    </template>
+
+                    <template x-if="!loading && searched && total === 0">
+                        <div class="px-3 py-6 text-center">
+                            <i class="fas fa-search text-2xl text-themed-tertiary"></i>
+                            <p class="mt-2 text-sm font-black text-themed-primary">No results found</p>
+                            <p class="mt-1 text-xs font-semibold text-themed-secondary">Try a course, lesson, user, certificate, page, or post.</p>
+                        </div>
+                    </template>
+
+                    <template x-if="!loading && groups.length">
+                        <div class="space-y-2">
+                            <template x-for="group in groups" :key="group.type">
+                                <div>
+                                    <div class="flex items-center gap-2 px-2 py-1.5 text-[11px] font-black uppercase tracking-wide text-themed-tertiary">
+                                        <i :class="group.icon" class="text-teal-600"></i>
+                                        <span x-text="group.label"></span>
+                                    </div>
+                                    <template x-for="item in group.items" :key="item.url + item.title">
+                                        <a :href="item.url" class="flex min-w-0 gap-3 rounded-[8px] px-3 py-2.5 transition hover:bg-themed-tertiary">
+                                            <span class="grid h-9 w-9 shrink-0 place-items-center rounded-[8px] bg-teal-50 text-teal-700 dark:bg-teal-400/10 dark:text-teal-200">
+                                                <i :class="item.icon"></i>
+                                            </span>
+                                            <span class="min-w-0">
+                                                <span class="block truncate text-sm font-black text-themed-primary" x-text="item.title"></span>
+                                                <span class="mt-0.5 line-clamp-1 block text-xs font-semibold text-themed-secondary" x-text="item.description"></span>
+                                                <span class="mt-1 block truncate text-[11px] font-black uppercase tracking-wide text-themed-tertiary" x-text="item.meta"></span>
+                                            </span>
+                                        </a>
+                                    </template>
+                                </div>
+                            </template>
+
+                            <button type="submit" class="flex w-full items-center justify-center gap-2 rounded-[8px] border border-themed-primary px-3 py-2.5 text-sm font-black text-teal-700 transition hover:bg-themed-tertiary dark:text-teal-200">
+                                <i class="fas fa-search"></i>
+                                View all results
+                            </button>
+                        </div>
+                    </template>
+                </div>
+            </form>
         </div>
 
         <div class="flex shrink-0 items-center gap-2">
@@ -94,11 +161,15 @@
                         <div class="max-h-72 overflow-y-auto">
                             @if ($unreadNotificationCount > 0)
                                 @foreach ($user->unreadNotifications()->take(5)->get() as $notification)
-                                    <a href="{{ $notification->data['action_url'] ?? route('notifications') }}"
-                                        class="block border-b border-themed-primary px-4 py-3 transition last:border-0 hover:bg-themed-tertiary">
-                                        <p class="text-sm font-semibold text-themed-primary">{{ $notification->data['message'] ?? 'New notification' }}</p>
-                                        <p class="mt-1 text-xs text-themed-tertiary">{{ $notification->created_at->diffForHumans() }}</p>
-                                    </a>
+                                    <form method="POST" action="{{ route('notifications.open', $notification->id) }}"
+                                        class="border-b border-themed-primary last:border-0">
+                                        @csrf
+                                        <button type="submit"
+                                            class="block w-full px-4 py-3 text-left transition hover:bg-themed-tertiary">
+                                            <p class="text-sm font-semibold text-themed-primary">{{ $notification->data['message'] ?? 'New notification' }}</p>
+                                            <p class="mt-1 text-xs text-themed-tertiary">{{ $notification->created_at->diffForHumans() }}</p>
+                                        </button>
+                                    </form>
                                 @endforeach
                             @else
                                 <div class="px-4 py-8 text-center">
@@ -237,20 +308,171 @@
         class="border-t border-themed-primary px-4 py-3 md:hidden"
         style="display: none;"
     >
-        <label class="relative block">
-            <span class="sr-only">Search workspace</span>
-            <i class="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-sm text-themed-tertiary"></i>
-            <input
-                type="search"
-                placeholder="Search BootKode..."
-                x-data="{ searchQuery: '' }"
-                x-model="searchQuery"
-                @keydown.enter="console.log('Mobile Search:', searchQuery)"
-                class="h-11 w-full rounded-[8px] border border-themed-primary bg-themed-tertiary pl-9 pr-10 text-sm font-semibold text-themed-primary placeholder:text-themed-tertiary outline-none focus:border-teal-500 focus:ring-4 focus:ring-teal-500/10"
+        <form
+            class="relative"
+            x-data="dashboardSearch({
+                suggestUrl: @js(route('dashboard.search.suggest')),
+                resultsUrl: @js(route('dashboard.search')),
+            })"
+            @submit.prevent="submit()"
+            @click.outside="close()"
+        >
+            <label class="relative block">
+                <span class="sr-only">Search workspace</span>
+                <i class="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-sm text-themed-tertiary"></i>
+                <input
+                    type="search"
+                    placeholder="Search BootKode..."
+                    x-model="query"
+                    @input.debounce.250ms="search()"
+                    @focus="search()"
+                    @keydown.escape.stop="close()"
+                    class="h-11 w-full rounded-[8px] border border-themed-primary bg-themed-tertiary pl-9 pr-20 text-sm font-semibold text-themed-primary placeholder:text-themed-tertiary outline-none focus:border-teal-500 focus:ring-4 focus:ring-teal-500/10"
+                    autocomplete="off"
+                >
+                <button type="submit" class="absolute right-11 top-1/2 grid h-8 w-8 -translate-y-1/2 place-items-center rounded-[8px] text-themed-tertiary hover:bg-themed-secondary hover:text-themed-primary" aria-label="Search">
+                    <i class="fas fa-arrow-right text-xs"></i>
+                </button>
+                <button type="button" @click="mobileSearchOpen = false; close()" class="absolute right-2 top-1/2 grid h-8 w-8 -translate-y-1/2 place-items-center rounded-[8px] text-themed-tertiary hover:bg-themed-secondary" aria-label="Close search">
+                    <i class="fas fa-times"></i>
+                </button>
+            </label>
+
+            <div
+                x-show="open"
+                x-transition.origin.top
+                class="absolute left-0 right-0 top-full z-50 mt-3 max-h-[70vh] overflow-y-auto rounded-[8px] border border-themed-primary bg-themed-secondary p-2 shadow-2xl shadow-slate-950/15"
+                style="display: none;"
             >
-            <button @click="mobileSearchOpen = false" class="absolute right-2 top-1/2 grid h-8 w-8 -translate-y-1/2 place-items-center rounded-[8px] text-themed-tertiary hover:bg-themed-secondary" aria-label="Close search">
-                <i class="fas fa-times"></i>
-            </button>
-        </label>
+                <template x-if="loading">
+                    <div class="flex items-center gap-3 px-3 py-4 text-sm font-bold text-themed-secondary">
+                        <i class="fas fa-spinner animate-spin text-teal-600"></i>
+                        Searching...
+                    </div>
+                </template>
+
+                <template x-if="!loading && searched && total === 0">
+                    <div class="px-3 py-6 text-center">
+                        <i class="fas fa-search text-2xl text-themed-tertiary"></i>
+                        <p class="mt-2 text-sm font-black text-themed-primary">No results found</p>
+                        <p class="mt-1 text-xs font-semibold text-themed-secondary">Try a course, lesson, user, certificate, page, or post.</p>
+                    </div>
+                </template>
+
+                <template x-if="!loading && groups.length">
+                    <div class="space-y-2">
+                        <template x-for="group in groups" :key="group.type">
+                            <div>
+                                <div class="flex items-center gap-2 px-2 py-1.5 text-[11px] font-black uppercase tracking-wide text-themed-tertiary">
+                                    <i :class="group.icon" class="text-teal-600"></i>
+                                    <span x-text="group.label"></span>
+                                </div>
+                                <template x-for="item in group.items" :key="item.url + item.title">
+                                    <a :href="item.url" class="flex min-w-0 gap-3 rounded-[8px] px-3 py-2.5 transition hover:bg-themed-tertiary">
+                                        <span class="grid h-9 w-9 shrink-0 place-items-center rounded-[8px] bg-teal-50 text-teal-700 dark:bg-teal-400/10 dark:text-teal-200">
+                                            <i :class="item.icon"></i>
+                                        </span>
+                                        <span class="min-w-0">
+                                            <span class="block truncate text-sm font-black text-themed-primary" x-text="item.title"></span>
+                                            <span class="mt-0.5 line-clamp-1 block text-xs font-semibold text-themed-secondary" x-text="item.description"></span>
+                                            <span class="mt-1 block truncate text-[11px] font-black uppercase tracking-wide text-themed-tertiary" x-text="item.meta"></span>
+                                        </span>
+                                    </a>
+                                </template>
+                            </div>
+                        </template>
+
+                        <button type="submit" class="flex w-full items-center justify-center gap-2 rounded-[8px] border border-themed-primary px-3 py-2.5 text-sm font-black text-teal-700 transition hover:bg-themed-tertiary dark:text-teal-200">
+                            <i class="fas fa-search"></i>
+                            View all results
+                        </button>
+                    </div>
+                </template>
+            </div>
+        </form>
     </div>
 </header>
+
+@once
+    <script>
+        window.dashboardSearch = function (config) {
+            return {
+                query: '',
+                groups: [],
+                total: 0,
+                loading: false,
+                searched: false,
+                open: false,
+                abortController: null,
+
+                search() {
+                    const value = this.query.trim();
+
+                    if (!value) {
+                        this.reset();
+                        return;
+                    }
+
+                    this.open = true;
+                    this.searched = true;
+
+                    if (this.abortController) {
+                        this.abortController.abort();
+                    }
+
+                    this.abortController = new AbortController();
+                    const controller = this.abortController;
+                    this.loading = true;
+
+                    fetch(`${config.suggestUrl}?q=${encodeURIComponent(value)}`, {
+                        headers: {
+                            'Accept': 'application/json',
+                            'X-Requested-With': 'XMLHttpRequest',
+                        },
+                        signal: controller.signal,
+                    })
+                        .then((response) => response.ok ? response.json() : Promise.reject(response))
+                        .then((payload) => {
+                            this.groups = Array.isArray(payload.groups) ? payload.groups : [];
+                            this.total = Number(payload.total || 0);
+                            this.open = value === this.query.trim();
+                        })
+                        .catch((error) => {
+                            if (error.name !== 'AbortError') {
+                                this.groups = [];
+                                this.total = 0;
+                                this.open = true;
+                            }
+                        })
+                        .finally(() => {
+                            if (this.abortController === controller) {
+                                this.loading = false;
+                            }
+                        });
+                },
+
+                submit() {
+                    const value = this.query.trim();
+
+                    if (!value) {
+                        return;
+                    }
+
+                    window.location.href = `${config.resultsUrl}?q=${encodeURIComponent(value)}`;
+                },
+
+                close() {
+                    this.open = false;
+                },
+
+                reset() {
+                    this.groups = [];
+                    this.total = 0;
+                    this.loading = false;
+                    this.searched = false;
+                    this.open = false;
+                },
+            };
+        };
+    </script>
+@endonce

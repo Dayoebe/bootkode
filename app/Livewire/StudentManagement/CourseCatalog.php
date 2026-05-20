@@ -6,8 +6,10 @@ use Livewire\Component;
 use Livewire\WithPagination;
 use App\Models\Learning\Course;
 use App\Models\Learning\CourseCategory;
+use App\Models\Learning\CourseEnrollment;
 use App\Models\Career\Wishlist;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Livewire\Attributes\Layout;
 
 #[Layout('layouts.dashboard', ['title' => 'Course Catalog', 'description' => 'Browse and discover courses available for enrollment', 'icon' => 'fas fa-book-open', 'active' => 'student.course-catalog'])]
@@ -27,6 +29,9 @@ class CourseCatalog extends Component
     public $previewCourse = null;
 
     protected $listeners = ['closePreview'];
+    protected $queryString = [
+        'search' => ['except' => ''],
+    ];
 
     public function resetFilters()
     {
@@ -78,9 +83,34 @@ class CourseCatalog extends Component
     public function enroll($courseId)
     {
         $user = Auth::user();
-        
-        if (!$user->courses()->where('course_id', $courseId)->exists()) {
-            $user->courses()->attach($courseId, ['progress' => 0]);
+
+        $hasLearningPivot = $user->courses()->where('courses.id', $courseId)->exists();
+        $hasEnrollment = CourseEnrollment::where('course_id', $courseId)
+            ->where('user_id', $user->id)
+            ->exists();
+
+        if (!$hasLearningPivot || !$hasEnrollment) {
+            DB::transaction(function () use ($user, $courseId, $hasLearningPivot, $hasEnrollment) {
+                if (!$hasLearningPivot) {
+                    $user->courses()->syncWithoutDetaching([
+                        $courseId => [
+                            'progress' => 0,
+                            'last_accessed_at' => now(),
+                        ],
+                    ]);
+                }
+
+                if (!$hasEnrollment) {
+                    CourseEnrollment::create([
+                        'course_id' => $courseId,
+                        'user_id' => $user->id,
+                        'enrolled_at' => now(),
+                        'progress_percentage' => 0,
+                        'is_completed' => false,
+                    ]);
+                }
+            });
+
             $this->dispatch('notify', 'Successfully enrolled in course!');
             return $this->redirect(route('student.enrolled-courses'), navigate: true);
         }
