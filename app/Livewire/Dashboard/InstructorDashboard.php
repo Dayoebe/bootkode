@@ -45,8 +45,8 @@ class InstructorDashboard extends Component
     public function mount()
     {
         $user = Auth::user();
-        if (!$user->isInstructor()) {
-            redirect()->route($user->getDashboardRouteName());
+        if (!$user->canAccessDashboardRole(User::ROLE_INSTRUCTOR)) {
+            return $this->redirectRoute($user->getDashboardRouteName(), navigate: true);
         }
     }
 

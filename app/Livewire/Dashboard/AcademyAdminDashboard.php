@@ -52,7 +52,7 @@ class AcademyAdminDashboard extends Component
 
     public function mount()
     {
-        if (!Auth::user()->hasRole(User::ROLE_ACADEMY_ADMIN)) {
+        if (!Auth::user()->canAccessDashboardRole(User::ROLE_ACADEMY_ADMIN)) {
             abort(403, 'Unauthorized access to Academy Admin Dashboard.');
         }
 

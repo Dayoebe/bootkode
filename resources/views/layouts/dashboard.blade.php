@@ -67,6 +67,7 @@
     <link rel="icon" href="{{ asset('img/logo.png') }}" type="image/x-icon">
     <link rel="apple-touch-icon" href="{{ asset('icons/icon-192.png') }}">
     <link rel="manifest" href="{{ asset('manifest.webmanifest') }}">
+    <script src="{{ asset('js/offline-learning.js') }}"></script>
     <link rel="stylesheet" type="text/css" href="https://unpkg.com/trix@2.0.8/dist/trix.css">
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])

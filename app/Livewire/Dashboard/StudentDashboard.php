@@ -50,8 +50,8 @@ class StudentDashboard extends Component
     public function mount()
     {
         $user = Auth::user();
-        if (!$user->isStudent()) {
-            redirect()->route($user->getDashboardRouteName());
+        if (!$user->canAccessDashboardRole(User::ROLE_STUDENT)) {
+            return $this->redirectRoute($user->getDashboardRouteName(), navigate: true);
         }
     }
 

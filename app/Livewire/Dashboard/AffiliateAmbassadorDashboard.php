@@ -41,12 +41,12 @@ class AffiliateAmbassadorDashboard extends Component
     public function mount()
     {
         $user = Auth::user();
-        if (!$user->isAffiliateAmbassador()) {
-            redirect()->route($user->getDashboardRouteName());
+        if (!$user->canAccessDashboardRole(User::ROLE_AFFILIATE_AMBASSADOR)) {
+            return $this->redirectRoute($user->getDashboardRouteName(), navigate: true);
         }
 
-        // Ensure user has affiliate record
-        if (!$user->affiliate) {
+        // Ensure real affiliate ambassadors have an affiliate record.
+        if ($user->hasRole(User::ROLE_AFFILIATE_AMBASSADOR) && !$user->affiliate) {
             $user->applyForAffiliate();
         }
     }

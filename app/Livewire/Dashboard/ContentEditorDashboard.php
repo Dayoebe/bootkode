@@ -44,8 +44,8 @@ class ContentEditorDashboard extends Component
     public function mount()
     {
         $user = Auth::user();
-        if (!$user->isContentEditor()) {
-            redirect()->route($user->getDashboardRouteName());
+        if (!$user->canAccessDashboardRole(User::ROLE_CONTENT_EDITOR)) {
+            return $this->redirectRoute($user->getDashboardRouteName(), navigate: true);
         }
     }
 

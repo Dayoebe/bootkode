@@ -41,8 +41,34 @@ class DashboardSidebar extends Component
                 'messages.show' => 'messages',
             ];
             
-            $this->activeLink = $routeMap[$currentRouteName] ?? $this->determineActiveLinkFromRoute($currentRouteName);
+            $this->activeLink = $routeMap[$currentRouteName]
+                ?? $this->findLinkIdForRoute($currentRouteName)
+                ?? $this->determineActiveLinkFromRoute($currentRouteName);
         }
+    }
+
+    private function findLinkIdForRoute(string $routeName): ?string
+    {
+        return $this->findLinkIdInMenuItems(config('menu.items', []), $routeName);
+    }
+
+    private function findLinkIdInMenuItems(array $items, string $routeName): ?string
+    {
+        foreach ($items as $item) {
+            if (($item['route_name'] ?? null) === $routeName) {
+                return $item['link_id'] ?? str($item['label'] ?? $routeName)->slug()->toString();
+            }
+
+            if (! empty($item['children'])) {
+                $childLinkId = $this->findLinkIdInMenuItems($item['children'], $routeName);
+
+                if ($childLinkId) {
+                    return $childLinkId;
+                }
+            }
+        }
+
+        return null;
     }
 
     /**
