@@ -5,7 +5,9 @@ namespace App\Models\Admin;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use App\Models\Core\User; // UPDATED
+use App\Models\Core\Institution;
+use App\Models\Core\User;
+use App\Models\Learning\Course;
 use App\Models\Learning\CourseEnrollment;
 
 class BulkEnrollmentBatch extends Model
