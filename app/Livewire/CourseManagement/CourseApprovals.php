@@ -6,11 +6,10 @@ use Livewire\Component;
 use Livewire\WithPagination;
 use App\Models\Learning\Course;
 use App\Models\Learning\CourseRejection;
+use App\Services\CourseQualityService;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Rule;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Schema;
 
 #[Layout('layouts.dashboard', ['title' => 'Course Approvals', 'description' => 'Manage course approvals including approving and rejecting courses', 'icon' => 'fas fa-check-circle', 'active' => 'admin.course-approvals'])]
 class CourseApprovals extends Component
@@ -27,21 +26,18 @@ class CourseApprovals extends Component
 
     public function render()
     {
-        $currentPage = $this->getPage();
-        $cacheKey = 'course_approvals_paginated_' . md5($this->search . $currentPage);
-    
-        $courses = Cache::remember($cacheKey, 600, function () {
-            return Course::query()
-                ->where('is_approved', false)
-                ->where('is_published', false)
-                ->when($this->search, function ($query) {
-                    $query->where('title', 'like', '%' . $this->search . '%')
-                          ->orWhere('subtitle', 'like', '%' . $this->search . '%');
-                })
-                ->with('instructor')
-                ->orderBy('created_at', 'asc')
-                ->paginate(10);
-        });
+        $courses = Course::query()
+            ->where('is_approved', false)
+            ->where('is_published', false)
+            ->when($this->search, function ($query) {
+                $query->where(function ($nested) {
+                    $nested->where('title', 'like', '%' . $this->search . '%')
+                        ->orWhere('subtitle', 'like', '%' . $this->search . '%');
+                });
+            })
+            ->with(['instructor', 'latestQualityCheck'])
+            ->orderBy('created_at', 'asc')
+            ->paginate(10);
     
         return view('livewire.course-management.course-approvals', [
             'courses' => $courses,
@@ -57,12 +53,26 @@ class CourseApprovals extends Component
     
         try {
             $course = Course::findOrFail($this->currentCourseId);
+            app(CourseQualityService::class)->scanAndPersist($course, Auth::user(), false);
+            $course->refresh();
+
+            if (! $course->quality_review_due_at) {
+                app(CourseQualityService::class)->markReviewed($course, Auth::user());
+                $course->refresh();
+            }
+
+            if (! $course->quality_approval_ready) {
+                $this->isApproveModalOpen = false;
+                $this->flashMessage('Course cannot be approved yet. Fix the QA issues in Course Quality Control first.', 'error');
+                return;
+            }
+
             $course->update([
                 'is_approved' => true,
                 'is_published' => true,
+                'published_at' => $course->published_at ?: now(),
             ]);
     
-            $this->clearCache();
             $this->flashMessage('Course approved successfully.');
             $this->isApproveModalOpen = false;
             $this->resetPage();
@@ -94,7 +104,6 @@ class CourseApprovals extends Component
                 'reason' => strip_tags($this->rejectionReason),
             ]);
     
-            $this->clearCache();
             $this->flashMessage('Course rejected successfully.');
             $this->isRejectModalOpen = false;
             $this->rejectionReason = '';
@@ -148,10 +157,6 @@ class CourseApprovals extends Component
 
     private function clearCache()
     {
-        foreach (range(1, 10) as $page) {
-            Cache::forget('course_approvals_paginated_' . md5($this->search . $page));
-            Cache::forget('course_approvals_paginated_' . md5('' . $page));
-        }
     }
     
     public function previewCourse(Course $course)

@@ -33,6 +33,13 @@
                                     <i class="fas fa-tag mr-2"></i>
                                     {{ $course->category->name ?? 'Uncategorized' }}
                                 </span>
+                                @if($course->quality_label_text)
+                                    <span
+                                        class="inline-flex items-center px-3 py-1 rounded-full text-sm font-semibold ml-2 {{ $course->quality_label_class }}">
+                                        <i class="fas fa-shield-check mr-2"></i>
+                                        {{ $course->quality_label_text }}
+                                    </span>
+                                @endif
                             </div>
 
                             <!-- Course Title -->

@@ -101,7 +101,7 @@
                                 </th>
                                 <th scope="col"
                                     class="px-6 py-4 text-left text-xs font-bold text-themed-primary uppercase tracking-wider transition-colors duration-300">
-                                    Status
+                                    Quality
                                 </th>
                                 <th scope="col"
                                     class="px-6 py-4 text-left text-xs font-bold text-themed-primary uppercase tracking-wider transition-colors duration-300">
@@ -120,18 +120,50 @@
                                 </td>
                             </tr>
                             @foreach ($courses as $index => $course)
+                                @php
+                                    $summary = $course->quality_summary ?? [];
+                                    $score = (int) ($course->quality_score ?? 0);
+                                @endphp
                                 <tr class="hover:bg-themed-tertiary transition-colors duration-200 animate__animated animate__fadeInUp"
                                     style="animation-delay: {{ $index * 0.05 }}s">
+                                    <td class="px-6 py-4">
+                                        <div class="max-w-sm">
+                                            <div class="font-bold text-themed-primary">{{ $course->title }}</div>
+                                            @if($course->subtitle)
+                                                <div class="text-sm text-themed-secondary mt-1">{{ \Illuminate\Support\Str::limit($course->subtitle, 80) }}</div>
+                                            @endif
+                                            <div class="flex flex-wrap gap-2 mt-2">
+                                                <span class="inline-flex items-center px-2 py-1 rounded text-xs font-semibold {{ $course->is_published ? 'bg-blue-100 text-blue-700' : 'bg-gray-100 text-gray-700' }}">
+                                                    {{ $course->is_published ? 'Published' : 'Unpublished' }}
+                                                </span>
+                                                @if($course->quality_label_text)
+                                                    <span class="inline-flex items-center px-2 py-1 rounded text-xs font-semibold {{ $course->quality_label_class }}">
+                                                        {{ $course->quality_label_text }}
+                                                    </span>
+                                                @endif
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="text-sm font-semibold text-themed-primary">{{ $course->instructor?->name ?? 'No instructor' }}</div>
+                                        <div class="text-xs text-themed-secondary">{{ $course->instructor?->email }}</div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-themed-secondary">
+                                        {{ $course->created_at?->format('M j, Y') }}
+                                        <div class="text-xs mt-1">{{ $course->created_at?->diffForHumans() }}</div>
+                                    </td>
                                     <td class="px-6 py-4 whitespace-nowrap">
                                         <span
                                             class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold transition-colors duration-300
-                                                    {{ $course->is_approved ? 'bg-green-100/50 text-green-800' : 'bg-yellow-100/50 text-yellow-800' }}">
-                                            @if($course->is_approved)
-                                                <i class="fas fa-check mr-1"></i> Approved
-                                            @else
-                                                <i class="fas fa-hourglass-half mr-1"></i> Pending
-                                            @endif
+                                                    {{ $score >= 70 ? 'bg-green-100/50 text-green-800' : ($score > 0 ? 'bg-orange-100/50 text-orange-800' : 'bg-gray-100/50 text-gray-800') }}">
+                                            <i class="fas fa-clipboard-check mr-1"></i> {{ $score }}%
                                         </span>
+                                        <div class="text-xs text-themed-secondary mt-2">
+                                            Media: {{ $summary['broken_media_count'] ?? 0 }} broken / Assessment: {{ $summary['assessment_coverage_percent'] ?? 0 }}%
+                                        </div>
+                                        @if(!$course->quality_last_checked_at)
+                                            <a href="{{ route('course-quality.control', ['search' => $course->title]) }}" class="text-xs text-accent-themed-primary hover:underline">Run QA check</a>
+                                        @endif
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                         <div class="flex items-center gap-2">
@@ -186,7 +218,7 @@
                     <h3 class="text-xl font-bold text-themed-primary mb-2 transition-colors duration-300">Confirm
                         Approval</h3>
                     <p class="text-themed-secondary text-sm transition-colors duration-300">
-                        Are you sure you want to approve this course? It will be published and accessible to users.
+                        Approval now runs a QA check first. Courses with broken media, weak assessment coverage, or low completeness must be fixed before they can go public.
                     </p>
                 </div>
 

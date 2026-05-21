@@ -7,6 +7,7 @@ use Livewire\WithPagination;
 use App\Models\Learning\Course;
 use App\Models\Learning\CourseCategory;
 use App\Models\Core\User;
+use App\Services\CourseQualityService;
 use Livewire\Attributes\On;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
@@ -171,7 +172,23 @@ class AllCourses extends Component
     public function togglePublished(Course $course)
     {
         try {
+            if (! $course->is_published) {
+                $this->ensureCourseIsQualityReady($course);
+                $course->refresh();
+
+                if (! $course->is_approved || ! $course->quality_approval_ready) {
+                    $this->dispatch('notify', [
+                        'message' => 'Run Course Quality Control and fix QA issues before publishing.',
+                        'type' => 'error'
+                    ]);
+                    return;
+                }
+            }
+
             $course->is_published = !$course->is_published;
+            if ($course->is_published && ! $course->published_at) {
+                $course->published_at = now();
+            }
             $course->save();
 
             $status = $course->is_published ? 'published' : 'unpublished';
@@ -201,6 +218,19 @@ class AllCourses extends Component
     public function toggleApproved(Course $course)
     {
         try {
+            if (! $course->is_approved) {
+                $this->ensureCourseIsQualityReady($course);
+                $course->refresh();
+
+                if (! $course->quality_approval_ready) {
+                    $this->dispatch('notify', [
+                        'message' => 'Course needs QA fixes before approval.',
+                        'type' => 'error'
+                    ]);
+                    return;
+                }
+            }
+
             $course->is_approved = !$course->is_approved;
             $course->save();
 
@@ -266,13 +296,31 @@ public function editCourse(Course $course)
     public function confirmBulkPublish()
     {
         try {
-            $count = Course::whereIn('id', $this->selectedCourses)
+            $count = 0;
+            $skipped = 0;
+            $courses = Course::whereIn('id', $this->selectedCourses)
                 ->where(fn($q) => Auth::user()->hasRole('instructor') ? $q->where('instructor_id', Auth::id()) : $q)
-                ->update(['is_published' => true]);
+                ->get();
+
+            foreach ($courses as $course) {
+                $this->ensureCourseIsQualityReady($course);
+                $course->refresh();
+
+                if (! $course->is_approved || ! $course->quality_approval_ready) {
+                    $skipped++;
+                    continue;
+                }
+
+                $course->update([
+                    'is_published' => true,
+                    'published_at' => $course->published_at ?: now(),
+                ]);
+                $count++;
+            }
 
             $this->updateStatistics();
             $this->dispatch('notify', [
-                'message' => "{$count} courses have been published!",
+                'message' => "{$count} courses published. {$skipped} skipped for QA fixes.",
                 'type' => 'success'
             ]);
 
@@ -292,11 +340,25 @@ public function editCourse(Course $course)
     public function bulkApprove()
     {
         try {
-            $count = Course::whereIn('id', $this->selectedCourses)->update(['is_approved' => true]);
+            $count = 0;
+            $skipped = 0;
+
+            Course::whereIn('id', $this->selectedCourses)->get()->each(function (Course $course) use (&$count, &$skipped) {
+                $this->ensureCourseIsQualityReady($course);
+                $course->refresh();
+
+                if (! $course->quality_approval_ready) {
+                    $skipped++;
+                    return;
+                }
+
+                $course->update(['is_approved' => true]);
+                $count++;
+            });
 
             $this->updateStatistics();
             $this->dispatch('notify', [
-                'message' => "{$count} courses have been approved!",
+                'message' => "{$count} courses approved. {$skipped} skipped for QA fixes.",
                 'type' => 'success'
             ]);
             $this->resetBulkActions();
@@ -377,6 +439,18 @@ public function editCourse(Course $course)
     {
         $this->selectedCourses = [];
         $this->selectAll = false;
+    }
+
+    private function ensureCourseIsQualityReady(Course $course): void
+    {
+        if (! $course->quality_last_checked_at) {
+            app(CourseQualityService::class)->scanAndPersist($course, Auth::user(), false);
+            $course->refresh();
+        }
+
+        if (! $course->quality_review_due_at) {
+            app(CourseQualityService::class)->markReviewed($course, Auth::user());
+        }
     }
 
     /**

@@ -26,6 +26,11 @@
                     <span class="rounded-full border border-themed-secondary bg-themed-tertiary px-3 py-1 text-themed-secondary capitalize">
                         {{ $course->difficulty_level ?: 'Self paced' }}
                     </span>
+                    @if($course->quality_label_text)
+                        <span class="rounded-full border border-themed-secondary px-3 py-1 {{ $course->quality_label_class }}">
+                            <i class="fas fa-shield-check mr-1"></i>{{ $course->quality_label_text }}
+                        </span>
+                    @endif
                     <span class="rounded-full border border-transparent px-3 py-1 text-white"
                         style="background: linear-gradient(135deg, rgb(var(--accent-primary)), rgb(var(--accent-secondary)));">
                         {{ $course->formatted_duration }}

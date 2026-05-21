@@ -318,9 +318,10 @@ class CourseForm extends Component
 
             $data['instructor_id'] = Auth::id();
 
-            // Approval
-            $user = Auth::user();
-            $data['is_approved'] = $user->hasRole('super_admin') || $user->hasRole('academy_admin');
+            // Editorial QA now controls approval. New courses stay pending until
+            // content, assessments, media, and review dates pass quality control.
+            $data['is_approved'] = false;
+            $data['is_published'] = false;
 
             // Sanitize description
             if (!empty($data['description'])) {
@@ -334,7 +335,7 @@ class CourseForm extends Component
 
             // Publishing dates
             $now = now();
-            if (!$isDraft) {
+            if (!$isDraft && $data['is_published']) {
                 if (isset($data['scheduled_publish_at']) && $now->gt($data['scheduled_publish_at'])) {
                     $data['published_at'] = $data['scheduled_publish_at'];
                 } elseif ($data['is_published'] && !isset($data['scheduled_publish_at'])) {

@@ -112,6 +112,11 @@
                             <span class="bg-accent-themed-primary text-white text-xs px-3 py-1.5 rounded-full shadow">
                                 {{ $course->category->name ?? 'Uncategorized' }}
                             </span>
+                            @if($course->quality_label_text)
+                                <span class="text-xs px-3 py-1.5 rounded-full shadow font-semibold {{ $course->quality_label_class }}">
+                                    <i class="fas fa-shield-check mr-1"></i>{{ $course->quality_label_text }}
+                                </span>
+                            @endif
                             <span class="bg-themed-tertiary text-themed-primary text-xs px-3 py-1.5 rounded-full shadow">
                                 {{ ucfirst($course->difficulty_level) }}
                             </span>
@@ -289,6 +294,14 @@
                                             <i class="fas fa-star ml-1 text-sm"></i>
                                         </span>
                                     </div>
+                                    @if($previewCourse->quality_label_text)
+                                        <div class="flex justify-between items-center">
+                                            <span class="text-themed-secondary">Quality:</span>
+                                            <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold {{ $previewCourse->quality_label_class }}">
+                                                <i class="fas fa-shield-check mr-1"></i>{{ $previewCourse->quality_label_text }}
+                                            </span>
+                                        </div>
+                                    @endif
                                 </div>
                             </div>
 
