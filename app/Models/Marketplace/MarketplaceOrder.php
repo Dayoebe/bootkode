@@ -182,6 +182,7 @@ class MarketplaceOrder extends Model
 
         // Process vendor payment
         $this->processVendorPayment();
+        app(\App\Services\CommercialReadinessService::class)->issueInvoiceForOrder($this->fresh(['customer', 'item']));
     }
 
     public function complete($deliveryDetails = [])

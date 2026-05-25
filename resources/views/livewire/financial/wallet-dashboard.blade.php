@@ -4,6 +4,9 @@
     <div class="mb-8">
         <h1 class="text-3xl font-bold text-gray-900">My Wallet</h1>
         <p class="text-gray-600">Manage your funds and track transactions</p>
+        <a href="{{ route('billing.documents') }}" class="mt-3 inline-flex rounded-lg border border-gray-300 px-3 py-2 text-sm font-semibold text-gray-700 hover:border-blue-400 hover:text-blue-700">
+            <i class="fas fa-receipt mr-2"></i>Receipts & invoices
+        </a>
     </div>
 
     <!-- Wallet Balance Cards -->

@@ -2,6 +2,8 @@
 // PaystackTransaction.php
 namespace App\Models\Marketplace;
 
+use App\Models\Commerce\CommercialDocument;
+use App\Models\Commerce\RefundRequest;
 use Illuminate\Database\Eloquent\Model;
 
 class PaystackTransaction extends Model
@@ -36,10 +38,21 @@ class PaystackTransaction extends Model
 
     const TYPE_WALLET_FUNDING = 'wallet_funding';
     const TYPE_WITHDRAWAL = 'withdrawal';
+    const TYPE_REFUND = 'refund';
 
     public function transactionable()
     {
         return $this->morphTo();
+    }
+
+    public function commercialDocuments()
+    {
+        return $this->hasMany(CommercialDocument::class);
+    }
+
+    public function refundRequests()
+    {
+        return $this->hasMany(RefundRequest::class);
     }
 
     public function isSuccessful(): bool

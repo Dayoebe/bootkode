@@ -146,6 +146,16 @@ class WalletService
                 'status' => Withdrawal::STATUS_PENDING
             ]);
 
+            app(CommercialReadinessService::class)->recordPayoutAudit(
+                $withdrawal,
+                'withdrawal_requested',
+                null,
+                Withdrawal::STATUS_PENDING,
+                $instructor,
+                ['bank_code' => $bankDetails['bank_code']],
+                'Instructor requested a payout.'
+            );
+
             DB::commit();
 
             return [
@@ -181,20 +191,52 @@ class WalletService
             }
 
             // Approve withdrawal
+            $previousStatus = $withdrawal->status;
             $withdrawal->approve($admin->id);
+
+            app(CommercialReadinessService::class)->recordPayoutAudit(
+                $withdrawal->fresh(),
+                'withdrawal_approved',
+                $previousStatus,
+                Withdrawal::STATUS_APPROVED,
+                $admin,
+                [],
+                'Admin approved payout for transfer processing.'
+            );
 
             // Initiate Paystack transfer
             $transferResult = $this->paystackService->initiateTransfer($withdrawal);
 
             if (!$transferResult['success']) {
                 // If transfer fails, reject the withdrawal
+                $failedFrom = $withdrawal->status;
                 $withdrawal->update(['status' => Withdrawal::STATUS_FAILED]);
+
+                app(CommercialReadinessService::class)->recordPayoutAudit(
+                    $withdrawal->fresh(),
+                    'withdrawal_transfer_failed',
+                    $failedFrom,
+                    Withdrawal::STATUS_FAILED,
+                    $admin,
+                    ['paystack_result' => $transferResult],
+                    $transferResult['message'] ?? 'Transfer initiation failed.'
+                );
                 
                 return [
                     'success' => false,
                     'message' => $transferResult['message']
                 ];
             }
+
+            app(CommercialReadinessService::class)->recordPayoutAudit(
+                $withdrawal->fresh(),
+                'withdrawal_transfer_started',
+                Withdrawal::STATUS_APPROVED,
+                Withdrawal::STATUS_PROCESSING,
+                $admin,
+                ['transfer_code' => $transferResult['transfer_code'] ?? null],
+                'Paystack transfer was initiated.'
+            );
 
             DB::commit();
 

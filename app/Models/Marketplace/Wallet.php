@@ -48,7 +48,7 @@ class Wallet extends Model
     // Credit wallet balance
     public function credit(float $amount, string $category, string $description, $transactionable = null, array $metadata = []): WalletTransaction
     {
-        $balanceBefore = $this->balance;
+        $balanceBefore = (float) ($this->balance ?? 0);
         $balanceAfter = $balanceBefore + $amount;
 
         $this->update([
@@ -79,11 +79,12 @@ class Wallet extends Model
     // Debit wallet balance
     public function debit(float $amount, string $category, string $description, $transactionable = null, array $metadata = []): WalletTransaction
     {
-        if ($this->balance < $amount) {
+        $balanceBefore = (float) ($this->balance ?? 0);
+
+        if ($balanceBefore < $amount) {
             throw new \Exception('Insufficient wallet balance');
         }
 
-        $balanceBefore = $this->balance;
         $balanceAfter = $balanceBefore - $amount;
 
         $this->update([

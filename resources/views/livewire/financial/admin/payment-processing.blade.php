@@ -5,6 +5,9 @@
         <div class="mb-8">
             <h1 class="text-3xl font-bold text-gray-700">Payment Processing Center</h1>
             <p class="text-gray-600">Manage payments, withdrawals, and financial operations</p>
+            <a href="{{ route('admin.commercial.readiness') }}" class="mt-3 inline-flex rounded-lg border border-gray-300 px-3 py-2 text-sm font-semibold text-gray-700 hover:border-blue-400 hover:text-blue-700">
+                <i class="fas fa-file-invoice-dollar mr-2"></i>Commercial readiness
+            </a>
         </div>
 
         <!-- Statistics Cards -->

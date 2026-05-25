@@ -6,6 +6,7 @@ namespace App\Livewire\Financial\Admin\Partials;
 use Livewire\Component;
 use Livewire\WithPagination;
 use App\Models\Marketplace\PaystackTransaction;
+use App\Services\CommercialReadinessService;
 use App\Services\PaystackService;
 use Carbon\Carbon;
 
@@ -159,22 +160,18 @@ class PaymentTransactions extends Component
         try {
             $transaction = PaystackTransaction::findOrFail($this->refundTransactionId);
 
-            // Create refund transaction record
-            PaystackTransaction::create([
-                'reference' => 'RF_' . time() . '_' . uniqid(),
-                'amount' => $this->refundAmount,
-                'currency' => $transaction->currency,
-                'status' => 'success',
-                'customer_email' => $transaction->customer_email,
-                'customer_name' => $transaction->customer_name,
-                'transaction_type' => 'refund',
-                'transactionable_type' => $transaction->transactionable_type,
-                'transactionable_id' => $transaction->transactionable_id,
-                'paid_at' => now(),
-                'gateway_response' => 'Manual refund: ' . $this->refundReason
-            ]);
+            $result = app(CommercialReadinessService::class)->processRefund(
+                $transaction,
+                (float) $this->refundAmount,
+                $this->refundReason,
+                auth()->user()
+            );
 
-            session()->flash('success', 'Refund processed successfully');
+            if ($result['success']) {
+                session()->flash('success', $result['message']);
+            } else {
+                session()->flash('error', $result['message']);
+            }
 
         } catch (\Exception $e) {
             session()->flash('error', 'Refund processing error: ' . $e->getMessage());
@@ -293,11 +290,11 @@ class PaymentTransactions extends Component
         $query = $this->getTransactionQuery();
         
         return [
-            'total_transactions' => $query->count(),
-            'successful_transactions' => $query->where('status', 'success')->count(),
-            'pending_transactions' => $query->where('status', 'pending')->count(),
-            'failed_transactions' => $query->where('status', 'failed')->count(),
-            'total_amount' => $query->where('status', 'success')->sum('amount'),
+            'total_transactions' => (clone $query)->count(),
+            'successful_transactions' => (clone $query)->where('status', 'success')->count(),
+            'pending_transactions' => (clone $query)->where('status', 'pending')->count(),
+            'failed_transactions' => (clone $query)->where('status', 'failed')->count(),
+            'total_amount' => (clone $query)->where('status', 'success')->sum('amount'),
         ];
     }
 

@@ -4,6 +4,10 @@
     <div class="mb-8">
         <h1 class="text-3xl font-bold text-gray-900">Financial Dashboard</h1>
         <p class="text-gray-600">Monitor platform revenue, withdrawals, and financial health</p>
+        <div class="mt-3 flex flex-wrap gap-2">
+            <a href="{{ route('admin.revenue.reports') }}" class="inline-flex rounded-lg border border-gray-300 px-3 py-2 text-sm font-semibold text-gray-700 hover:border-blue-400 hover:text-blue-700">Revenue reports</a>
+            <a href="{{ route('admin.commercial.readiness') }}" class="inline-flex rounded-lg border border-gray-300 px-3 py-2 text-sm font-semibold text-gray-700 hover:border-blue-400 hover:text-blue-700">Commercial readiness</a>
+        </div>
     </div>
 
     <!-- Tab Navigation -->

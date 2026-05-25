@@ -129,6 +129,58 @@ class PaystackService
     }
 
     /**
+     * Initiate a Paystack refund for a successful transaction.
+     */
+    public function initiateRefund(PaystackTransaction $transaction, float $amount, string $reason): array
+    {
+        if (!$this->secretKey) {
+            return [
+                'success' => false,
+                'message' => 'Paystack secret key is not configured',
+            ];
+        }
+
+        try {
+            $payload = [
+                'transaction' => $transaction->paystack_reference ?: $transaction->reference,
+                'amount' => (int) round($amount * 100),
+                'currency' => $transaction->currency ?: 'NGN',
+                'customer_note' => $reason,
+                'merchant_note' => 'BootKode refund for ' . $transaction->reference,
+            ];
+
+            $response = Http::withHeaders([
+                'Authorization' => 'Bearer ' . $this->secretKey,
+                'Content-Type' => 'application/json',
+            ])->post($this->baseUrl . '/refund', $payload);
+
+            if ($response->successful()) {
+                return [
+                    'success' => true,
+                    'data' => $response->json('data') ?? $response->json(),
+                ];
+            }
+
+            return [
+                'success' => false,
+                'message' => $response->json('message') ?? 'Paystack refund initiation failed',
+                'data' => $response->json(),
+            ];
+        } catch (\Exception $e) {
+            Log::error('Paystack refund error: ' . $e->getMessage(), [
+                'transaction_id' => $transaction->id,
+                'reference' => $transaction->reference,
+                'amount' => $amount,
+            ]);
+
+            return [
+                'success' => false,
+                'message' => 'An error occurred while initiating refund',
+            ];
+        }
+    }
+
+    /**
      * Process wallet funding after successful payment
      */
     public function processWalletFunding(string $reference): array
@@ -177,6 +229,8 @@ class PaystackService
                 $paystackTransaction,
                 ['paystack_reference' => $verification['data']['reference']]
             );
+
+            app(CommercialReadinessService::class)->issueReceiptForTransaction($paystackTransaction->fresh());
 
             return [
                 'success' => true,

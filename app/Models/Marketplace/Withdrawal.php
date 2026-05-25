@@ -115,6 +115,8 @@ class Withdrawal extends Model
             return false;
         }
 
+        $previousStatus = $this->status;
+
         // Refund the amount back to wallet
         $this->wallet->credit(
             $this->amount,
@@ -123,10 +125,24 @@ class Withdrawal extends Model
             $this
         );
 
-        return $this->update([
+        $updated = $this->update([
             'status' => self::STATUS_REJECTED,
             'failure_reason' => $reason
         ]);
+
+        if ($updated) {
+            app(\App\Services\CommercialReadinessService::class)->recordPayoutAudit(
+                $this->fresh(),
+                'withdrawal_rejected',
+                $previousStatus,
+                self::STATUS_REJECTED,
+                auth()->user(),
+                [],
+                $reason
+            );
+        }
+
+        return $updated;
     }
 
     // Get status color for UI
