@@ -1,7 +1,6 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use Ifsnop\Mysqldump\Mysqldump;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\CertificateVerificationController;
 use App\Livewire\Affiliate;
@@ -579,48 +578,6 @@ Route::prefix('admin/pages')->middleware(['auth', 'verified'])->group(function (
     // Route::delete('/media/{media}', [\App\Http\Controllers\MediaController::class, 'delete'])->name('pages.delete-media');
     Route::post('/track-view/{slug}', [PageController::class, 'trackView'])->name('pages.track-view');
 });
-
-
-
-
-
-
-
-
-
-
-
-// use Ifsnop\Mysqldump\Mysqldump;
-
-Route::get('/export-db', function () {
-    $file = storage_path('app/backup.sql');
-
-    $dump = new Mysqldump(
-        'mysql:host=' . env('DB_HOST') . ';dbname=' . env('DB_DATABASE'),
-        env('DB_USERNAME'),
-        env('DB_PASSWORD')
-    );
-
-    $dump->start($file);
-
-    return response()->download($file);
-});
-
-
-Route::get('/test-cloudinary', function () {
-    try {
-        $c = new \Cloudinary\Cloudinary();
-        return $c->uploadApi()->upload('https://upload.wikimedia.org/wikipedia/commons/a/ae/Olympic_flag.jpg', [
-            'public_id' => 'olympic_flag_test_' . time(),
-            'folder' => 'tests'
-        ]);
-        return "Cloudinary working!";
-    } catch (\Exception $e) {
-        return "Error: " . $e->getMessage();
-    }
-});
-
-
 
 
 

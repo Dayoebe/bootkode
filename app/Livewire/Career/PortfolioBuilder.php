@@ -579,8 +579,50 @@ class PortfolioBuilder extends Component
 
     public function exportPortfolio()
     {
-        // This would generate a PDF or export data
-        session()->flash('message', 'Portfolio export feature coming soon!');
+        $projects = Auth::user()
+            ->portfolios()
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        if ($projects->isEmpty()) {
+            session()->flash('error', 'No portfolio projects found to export.');
+            return null;
+        }
+
+        $filename = 'portfolio_projects_' . now()->format('Y_m_d_His') . '.csv';
+
+        return response()->streamDownload(function () use ($projects) {
+            $handle = fopen('php://output', 'w');
+            fputcsv($handle, [
+                'Title',
+                'Category',
+                'Status',
+                'Technologies',
+                'Project URL',
+                'Client',
+                'Start Date',
+                'End Date',
+                'Views',
+                'Created At',
+            ]);
+
+            foreach ($projects as $project) {
+                fputcsv($handle, [
+                    $project->title,
+                    $project->category_label,
+                    $project->status_label,
+                    $project->technologies,
+                    $project->project_url,
+                    $project->client_name,
+                    optional($project->start_date)->toDateString(),
+                    optional($project->end_date)->toDateString(),
+                    $project->views_count,
+                    optional($project->created_at)->toDateTimeString(),
+                ]);
+            }
+
+            fclose($handle);
+        }, $filename, ['Content-Type' => 'text/csv']);
     }
 
     public function resetForm()

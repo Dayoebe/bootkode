@@ -12,6 +12,7 @@ use App\Models\Core\User;
 use App\Models\Learning\Course;
 use App\Models\Learning\CourseEnrollment;
 use App\Models\Admin\InstitutionUser;
+use App\Services\InstitutionService;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Notification;
@@ -72,7 +73,9 @@ class ProcessBulkEnrollment implements ShouldQueue
 
     protected function processCsvFile(): array
     {
-        $filePath = storage_path('app/' . $this->batch->file_path);
+        $filePath = str_starts_with($this->batch->file_path, DIRECTORY_SEPARATOR)
+            ? $this->batch->file_path
+            : storage_path('app/' . $this->batch->file_path);
         
         if (!file_exists($filePath)) {
             throw new \Exception('CSV file not found');
@@ -171,7 +174,9 @@ class ProcessBulkEnrollment implements ShouldQueue
                     'password' => bcrypt(\Str::random(16)), // Temporary password
                     'role' => $userData['role'] ?? User::ROLE_STUDENT,
                     'phone_number' => $userData['phone'] ?? null,
-                    'department' => $userData['department'] ?? null
+                    'metadata' => array_filter([
+                        'institution_department' => $userData['department'] ?? null,
+                    ]),
                 ]);
 
                 // Send welcome email
@@ -179,11 +184,19 @@ class ProcessBulkEnrollment implements ShouldQueue
             }
 
             // Add user to institution if not already added
-            InstitutionUser::updateOrCreate(
-                [
-                    'institution_id' => $this->batch->institution_id,
-                    'user_id' => $user->id
-                ],
+            $existingMembership = InstitutionUser::withTrashed()
+                ->where('institution_id', $this->batch->institution_id)
+                ->where('user_id', $user->id)
+                ->first();
+
+            if (! $existingMembership || $existingMembership->trashed()) {
+                $institution = $this->batch->institution()->first();
+                $institution->updateUserCount();
+                $institution->ensureCanAddUsers();
+            }
+
+            $institutionUser = InstitutionUser::withTrashed()->updateOrCreate(
+                ['institution_id' => $this->batch->institution_id, 'user_id' => $user->id],
                 [
                     'role' => $userData['institution_role'] ?? 'student',
                     'department' => $userData['department'] ?? null,
@@ -193,19 +206,30 @@ class ProcessBulkEnrollment implements ShouldQueue
                 ]
             );
 
+            if ($institutionUser->trashed()) {
+                $institutionUser->restore();
+            }
+
             // Enroll user in courses
             foreach ($courses as $course) {
-                CourseEnrollment::updateOrCreate(
-                    [
-                        'user_id' => $user->id,
-                        'course_id' => $course->id
-                    ],
+                $enrollment = CourseEnrollment::firstOrCreate(
+                    ['user_id' => $user->id, 'course_id' => $course->id],
                     [
                         'enrolled_at' => now(),
                         'progress_percentage' => 0,
-                        'bulk_batch_id' => $this->batch->id
+                        'bulk_batch_id' => $this->batch->id,
+                        'enrollment_type' => 'institution'
                     ]
                 );
+
+                if (! $enrollment->wasRecentlyCreated && ! $enrollment->bulk_batch_id) {
+                    $enrollment->update([
+                        'bulk_batch_id' => $this->batch->id,
+                        'enrollment_type' => $enrollment->enrollment_type ?: 'institution',
+                    ]);
+                }
+
+                app(InstitutionService::class)->syncLegacyCourseEnrollment($user->id, $course->id);
             }
         });
     }

@@ -1171,13 +1171,6 @@ class ResumeBuilder extends Component
         );
     }
 
-    // Import Methods
-    public function importFromLinkedIn()
-    {
-        // This would integrate with LinkedIn API
-        session()->flash('info', 'LinkedIn import feature coming soon!');
-    }
-
     public function importFromJSON()
     {
         $this->validate(['documentUpload' => 'required|file|mimes:json|max:2048']);

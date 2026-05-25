@@ -10,6 +10,7 @@ use Illuminate\Queue\SerializesModels;
 use App\Models\Admin\NewsletterCampaign;
 use App\Models\Admin\NewsletterInteraction; // Add this import
 use App\Mail\NewsletterMail;
+use App\Services\ObservabilityService;
 use Illuminate\Support\Facades\Mail;
 
 class SendNewsletterBatch implements ShouldQueue
@@ -56,6 +57,18 @@ public function handle()
                 'error' => $e->getMessage(),
                 'campaign_id' => $this->campaign->id
             ]);
+
+            app(ObservabilityService::class)->recordMailFailure(
+                'Newsletter email failed',
+                $e->getMessage(),
+                [
+                    'campaign_id' => $this->campaign->id,
+                    'campaign_name' => $this->campaign->name,
+                    'subscriber_id' => $send->subscriber->id,
+                    'subscriber_email' => $send->subscriber->email,
+                    'interaction_id' => $send->id,
+                ]
+            );
         }
     }
 
