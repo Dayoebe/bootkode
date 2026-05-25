@@ -67,6 +67,8 @@ Route::middleware(['auth'])->prefix('affiliate')->name('affiliate.')->group(func
 // User Wallet Routes
 Route::middleware(['auth'])->group(function () {
     Route::get('/wallet', App\Livewire\Financial\WalletDashboard::class)->name('wallet.index');
+    Route::get('/billing/documents', App\Livewire\Financial\BillingDocuments::class)->name('billing.documents');
+    Route::get('/billing/documents/{commercialDocument}', [App\Http\Controllers\CommercialDocumentController::class, 'show'])->name('commercial.documents.show');
     Route::get('/withdrawals', App\Livewire\Financial\WithdrawalManager::class)->name('withdrawals.index');
     Route::get('/instructor/earnings', App\Livewire\Financial\InstructorEarnings::class)->name('instructor.earnings');
     Route::get('/transactions/history', App\Livewire\Financial\TransactionHistory::class)->name('transactions.history');
@@ -77,6 +79,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/admin/financial', App\Livewire\Financial\Admin\FinancialDashboard::class)->name('admin.financial.dashboard');
     Route::get('/admin/payments/processing', App\Livewire\Financial\Admin\PaymentProcessing::class)->name('admin.payments.processing');
     Route::get('/admin/revenue/reports', App\Livewire\Financial\Admin\RevenueReports::class)->name('admin.revenue.reports');
+    Route::get('/admin/commercial-readiness', App\Livewire\Financial\Admin\CommercialReadiness::class)->name('admin.commercial.readiness');
     Route::get('/admin/financial/settings', App\Livewire\Financial\Admin\FinancialSettings::class)->name('admin.financial.settings');
     Route::get('/admin/paystack/settings', App\Livewire\Financial\Admin\PaystackSettings::class)->name('admin.paystack.settings');
     Route::get('/admin/payments', \App\Livewire\Financial\Admin\PaymentProcessing::class)->name('admin.payments');
@@ -84,14 +87,18 @@ Route::middleware(['auth'])->group(function () {
 });
 
 
+Route::get('/institution/invitations/{token}/accept', [\App\Http\Controllers\InstitutionInvitationController::class, 'accept'])
+    ->name('institution.invitations.accept');
+
 // Institution Portal Routes
-Route::prefix('institution')->name('institution.')->group(function () {
+Route::middleware(['auth', 'verified'])->prefix('institution')->name('institution.')->group(function () {
 
     // Main portal dashboard
     Route::get('/portal', App\Livewire\Institution\InstitutionPortal::class)->name('portal');
     Route::get('/overview', App\Livewire\Institution\InstitutionPortal::class)->name('overview');
     Route::get('/partners', App\Livewire\Institution\InstitutionPortal::class)->name('partners');
     Route::get('/licenses', App\Livewire\Institution\InstitutionPortal::class)->name('licenses');
+    Route::get('/cohorts', App\Livewire\Institution\InstitutionPortal::class)->name('cohorts');
     Route::get('/bulk-enrollment', App\Livewire\Institution\InstitutionPortal::class)->name('bulk-enrollment');
     Route::get('/analytics', App\Livewire\Institution\InstitutionPortal::class)->name('analytics');
     Route::get('/whitelabel', App\Livewire\Institution\InstitutionPortal::class)->name('whitelabel');
@@ -207,6 +214,7 @@ Route::middleware(['auth', 'verified'])->prefix('mentorship')->name('mentorship.
     Route::get('/', \App\Livewire\Mentorship\MentorshipHub::class)->name('hub');
     Route::get('/find', \App\Livewire\Mentorship\FindMentor::class)->name('find');
     Route::get('/my-mentorships', \App\Livewire\Mentorship\MyMentorships::class)->name('my-mentorships');
+    Route::get('/operations', \App\Livewire\Mentorship\Sessions::class)->name('operations');
     Route::get('/sessions', \App\Livewire\Mentorship\Sessions::class)->name('sessions');
     Route::get('/code-reviews', \App\Livewire\Mentorship\CodeReviews::class)->name('code-reviews');
 
@@ -258,6 +266,9 @@ Route::get('/messages/{conversation}', \App\Livewire\Messaging\DirectMessages::c
 // =============================================================================
 
 Route::middleware(['auth', 'verified'])->prefix('dashboard')->name('')->group(function () {
+    Route::get('/search', \App\Livewire\Dashboard\GlobalSearch::class)->name('dashboard.search');
+    Route::get('/search/suggest', [\App\Http\Controllers\DashboardSearchController::class, 'suggest'])->name('dashboard.search.suggest');
+
     Route::get('/profile', \App\Livewire\UserManagement\Profile::class)->name('profile.view');
     Route::get('/profile/edit', function () {
         return redirect()->route('profile.view', ['mode' => 'edit']);
@@ -277,9 +288,14 @@ Route::middleware(['auth', 'verified'])->prefix('dashboard')->name('')->group(fu
 
 Route::middleware(['auth', 'verified'])->group(function () {
     // Student Dashboard Features
+    Route::get('/learner-journey', \App\Livewire\StudentManagement\LearnerJourney::class)->name('learner.journey');
+    Route::get('/ai-learning-coach', \App\Livewire\StudentManagement\AiLearningCoach::class)->name('ai.learning.coach');
     Route::get('/enrolled-courses', \App\Livewire\StudentManagement\EnrolledCourses::class)->name('student.enrolled-courses');
     Route::get('/course-catalog', \App\Livewire\StudentManagement\CourseCatalog::class)->name('student.course-catalog');
     Route::get('/learning-analytics', \App\Livewire\StudentManagement\LearningAnalytics::class)->name('student.learning-analytics');
+    Route::get('/offline-learning', \App\Livewire\StudentManagement\OfflineLearningLibrary::class)->name('student.offline-learning');
+    Route::get('/offline-learning/packs/{course:slug}/manifest', [\App\Http\Controllers\OfflineLearningController::class, 'manifest'])->name('offline-learning.manifest');
+    Route::post('/offline-learning/packs/{course:slug}/sync', [\App\Http\Controllers\OfflineLearningController::class, 'sync'])->name('offline-learning.sync');
     Route::get('/saved-resources', \App\Livewire\StudentManagement\SavedResources::class)->name('student.saved-resources');
     Route::get('/course/{course:slug}', \App\Livewire\StudentManagement\CourseView::class)->name('course.view');
     Route::get('/course-reviews/analytics/{courseId?}', \App\Livewire\CourseManagement\ReviewAnalytics::class)->name('review-analytics');
@@ -324,6 +340,7 @@ Route::middleware(['auth', 'verified'])->prefix('dashboard/courses')->name('')->
     Route::get('/{course}/edit', \App\Livewire\CourseManagement\EditCourse::class)->name('edit_course');
     Route::get('/{course}/builder', \App\Livewire\CourseManagement\CourseBuilder::class)->name('course-builder');
     Route::get('/reviews', \App\Livewire\CourseManagement\CourseReviews::class)->name('course-reviews');
+    Route::get('/quality-control', \App\Livewire\CourseManagement\CourseQualityControl::class)->name('course-quality.control');
     Route::get('/{course}/preview', \App\Livewire\CourseManagement\CoursePreview::class)->name('courses.preview');
     Route::get('/approvals', \App\Livewire\CourseManagement\CourseApprovals::class)->name('course-approvals');
     Route::get('/available', \App\Livewire\CourseManagement\AvailableCourses::class)->name('courses.available');
@@ -343,8 +360,10 @@ Route::middleware(['auth', 'verified'])->prefix('dashboard')->name('')->group(fu
     // Settings & Configuration
     Route::get('/settings', \App\Livewire\SystemManagement\Settings::class)->name('settings');
     Route::get('/notifications', \App\Livewire\SystemManagement\Notifications::class)->name('notifications');
+    Route::post('/notifications/{notification}/open', \App\Http\Controllers\NotificationOpenController::class)->name('notifications.open');
     Route::get('/system-status', \App\Livewire\SystemManagement\SystemStatus::class)->name('system-status');
     Route::get('/system-status-management', \App\Livewire\SystemManagement\SystemStatusManagement::class)->name('system-status.management');
+    Route::get('/production-observability', \App\Livewire\SystemManagement\ProductionObservability::class)->name('production.observability');
 
     // Support System
     Route::get('/help-support', \App\Livewire\SystemManagement\HelpSupport::class)->name('help.support');

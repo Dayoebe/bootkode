@@ -1,4 +1,4 @@
-<div class="px-4 sm:px-6 lg:px-8 py-8">
+<div class="px-4 sm:px-6 lg:px-8 py-8" x-data="{ activeTab: @entangle('activeTab') }">
     <!-- Header -->
     <div class="bg-gradient-to-r from-gray-800 to-gray-700 p-6 rounded-2xl shadow-xl text-white mb-8 animate__animated animate__fadeIn">
         <h1 class="text-3xl font-bold text-white">
@@ -8,7 +8,7 @@
     </div>
 
     <!-- Tabs -->
-    <div x-data="{ activeTab: @entangle('activeTab') }" class="mb-8">
+    <div class="mb-8">
         <nav class="border-b border-themed-primary flex space-x-8" aria-label="Tabs">
             <button @click="activeTab = 'profile'"
                     :class="{ 'border-blue-500 text-accent-themed-primary': activeTab === 'profile', 'border-transparent text-themed-secondary hover:text-themed-primary hover:border-themed-primary': activeTab !== 'profile' }"

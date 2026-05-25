@@ -129,12 +129,12 @@
                             <div class="flex-1">
                                 <div class="flex items-center gap-3 mb-2 flex-wrap">
                                     <h3 class="text-lg font-semibold text-themed-primary">{{ $incident->title }}</h3>
-                                    
+
                                     <!-- Status Badge -->
                                     <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
-                                        @if($incident->status === 'active') bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-300
+                                        @if(!$incident->resolved_at) bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-300
                                         @else bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300 @endif">
-                                        {{ ucfirst($incident->status) }}
+                                        {{ $incident->resolved_at ? 'Resolved' : ucfirst($incident->status) }}
                                     </span>
 
                                     <!-- Severity Badge -->
@@ -162,7 +162,7 @@
 
                             <!-- Status Icon -->
                             <div class="flex-shrink-0 ml-4">
-                                @if($incident->status === 'active')
+                                @if(!$incident->resolved_at)
                                     <div class="inline-flex items-center justify-center h-10 w-10 rounded-full bg-red-100 dark:bg-red-900/30">
                                         <i class="fas fa-exclamation-circle text-red-600 dark:text-red-400"></i>
                                     </div>
@@ -302,7 +302,7 @@
                 </div>
                 <div class="ml-4">
                     <p class="text-sm text-themed-secondary">Operational Services</p>
-                    <p class="text-2xl font-bold text-themed-primary">{{ count($services) }}</p>
+                    <p class="text-2xl font-bold text-themed-primary">{{ $operationalServicesCount }}</p>
                 </div>
             </div>
         </div>
@@ -314,7 +314,7 @@
                 </div>
                 <div class="ml-4">
                     <p class="text-sm text-themed-secondary">Active Incidents</p>
-                    <p class="text-2xl font-bold text-themed-primary">{{ $incidents->where('status', 'active')->count() }}</p>
+                    <p class="text-2xl font-bold text-themed-primary">{{ $activeIncidentsCount }}</p>
                 </div>
             </div>
         </div>

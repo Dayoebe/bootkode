@@ -78,9 +78,20 @@ class Settings extends Component
 
     public function saveProfile()
     {
-        $this->validateOnly([
-            'name', 'email', 'bio', 'profile_picture', 'social_links.twitter',
-            'social_links.linkedin', 'social_links.github'
+        $this->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'email' => [
+                'required',
+                'string',
+                'email',
+                'max:255',
+                Rule::unique('users', 'email')->ignore(Auth::id()),
+            ],
+            'bio' => ['nullable', 'string', 'max:1000'],
+            'profile_picture' => ['nullable', 'image', 'max:2048'],
+            'social_links.twitter' => ['nullable', 'url', 'max:255'],
+            'social_links.linkedin' => ['nullable', 'url', 'max:255'],
+            'social_links.github' => ['nullable', 'url', 'max:255'],
         ]);
 
         $user = Auth::user();
@@ -104,9 +115,9 @@ class Settings extends Component
 
     public function saveNotificationPreferences()
     {
-        $this->validateOnly([
-            'receive_course_updates',
-            'receive_certificate_notifications'
+        $this->validate([
+            'receive_course_updates' => ['boolean'],
+            'receive_certificate_notifications' => ['boolean'],
         ]);
 
         $user = Auth::user();
@@ -121,10 +132,10 @@ class Settings extends Component
 
     public function savePassword()
     {
-        $this->validateOnly([
-            'current_password',
-            'new_password',
-            'new_password_confirmation'
+        $this->validate([
+            'current_password' => ['required', 'current_password'],
+            'new_password' => ['required', 'string', 'min:8', 'confirmed'],
+            'new_password_confirmation' => ['required', 'string', 'min:8'],
         ]);
 
         $user = Auth::user();

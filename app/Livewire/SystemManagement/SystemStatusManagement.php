@@ -25,9 +25,10 @@ class SystemStatusManagement extends Component
     public $editId = null;
     public $search = '';
     public $statusFilter = 'all';
+    public $activeTab = 'services';
 
     protected $rules = [
-        'service' => ['required', 'in:website,database,api'],
+        'service' => ['required', 'in:website,database,api,cdn'],
         'status' => ['required', 'in:operational,degraded,down,maintenance'],
         'title' => ['required', 'string', 'max:255'],
         'description' => ['required', 'string', 'max:2000'],
@@ -38,6 +39,42 @@ class SystemStatusManagement extends Component
     public function mount()
     {
         $this->started_at = now()->toDateTimeString();
+    }
+
+    public function getServicesProperty()
+    {
+        return [
+            'website' => [
+                'name' => 'Website',
+                'status' => $this->getServiceStatus('website'),
+                'uptime' => 99.9,
+            ],
+            'database' => [
+                'name' => 'Database',
+                'status' => $this->getServiceStatus('database'),
+                'uptime' => 99.8,
+            ],
+            'api' => [
+                'name' => 'API',
+                'status' => $this->getServiceStatus('api'),
+                'uptime' => 99.7,
+            ],
+            'cdn' => [
+                'name' => 'CDN',
+                'status' => $this->getServiceStatus('cdn'),
+                'uptime' => 99.9,
+            ],
+        ];
+    }
+
+    private function getServiceStatus(string $service): string
+    {
+        $latestIncident = SystemStatus::where('service', $service)
+            ->whereNull('resolved_at')
+            ->latest('started_at')
+            ->first();
+
+        return $latestIncident ? $latestIncident->status : 'operational';
     }
 
     public function saveIncident()
@@ -153,6 +190,11 @@ class SystemStatusManagement extends Component
 
         return view('livewire.system-management.system-status-management', [
             'incidents' => $incidents,
+            'services' => $this->services,
+            'activeIncidentsCount' => SystemStatus::whereNull('resolved_at')->count(),
+            'operationalServicesCount' => collect($this->services)
+                ->where('status', 'operational')
+                ->count(),
         ]);
     }
 }

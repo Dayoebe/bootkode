@@ -47,6 +47,8 @@ return [
         'org' => env('OPENAI_ORG'),
         'project' => env('OPENAI_PROJECT'),
         'base_url' => env('OPENAI_BASE_URL', 'https://api.openai.com'),
+        'model' => env('OPENAI_MODEL', 'gpt-4o-mini'),
+        'timeout' => env('OPENAI_TIMEOUT', 15),
     ],
     'google' => [
         'client_id' => env('GOOGLE_CLIENT_ID'),

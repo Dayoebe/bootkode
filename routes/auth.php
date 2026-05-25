@@ -10,6 +10,7 @@ use App\Livewire\Pages\Home;
 
 // Public Home Page
 Route::get('/', Home::class)->name('home');
+Route::get('/pricing', \App\Livewire\Pages\Pricing::class)->name('pricing');
 Route::get('/dashboard-redirect', DashboardController::class)
     ->middleware(['auth', 'verified']) 
     ->name('dashboard.redirect');
