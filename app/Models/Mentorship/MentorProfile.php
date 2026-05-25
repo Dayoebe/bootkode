@@ -5,6 +5,7 @@ namespace App\Models\Mentorship;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Casts\Attribute;
+use Carbon\CarbonInterface;
 use App\Models\Core\User;
 class MentorProfile extends Model
 {
@@ -128,6 +129,51 @@ class MentorProfile extends Model
     public function canAcceptMentees()
     {
         return $this->is_available && $this->current_mentees < $this->max_mentees;
+    }
+
+    public function normalizedAvailabilitySchedule(): array
+    {
+        return collect($this->availability_schedule ?? [])
+            ->map(function ($slot) {
+                return [
+                    'day' => strtolower((string) ($slot['day'] ?? '')),
+                    'start' => (string) ($slot['start'] ?? ''),
+                    'end' => (string) ($slot['end'] ?? ''),
+                ];
+            })
+            ->filter(fn ($slot) => $slot['day'] && $slot['start'] && $slot['end'] && $slot['start'] < $slot['end'])
+            ->values()
+            ->all();
+    }
+
+    public function isAvailableForSlot(CarbonInterface $start, int $durationMinutes): bool
+    {
+        if (! $this->is_available) {
+            return false;
+        }
+
+        $schedule = $this->normalizedAvailabilitySchedule();
+        if (empty($schedule)) {
+            return true;
+        }
+
+        $day = strtolower($start->format('l'));
+        $slotStart = $start->format('H:i');
+        $slotEnd = $start->copy()->addMinutes($durationMinutes)->format('H:i');
+
+        return collect($schedule)->contains(function ($slot) use ($day, $slotStart, $slotEnd) {
+            return $slot['day'] === $day
+                && $slot['start'] <= $slotStart
+                && $slot['end'] >= $slotEnd;
+        });
+    }
+
+    public function availabilitySummary(): array
+    {
+        return collect($this->normalizedAvailabilitySchedule())
+            ->groupBy('day')
+            ->map(fn ($slots) => $slots->map(fn ($slot) => "{$slot['start']} - {$slot['end']}")->implode(', '))
+            ->all();
     }
 
     public function scopeAvailable($query)

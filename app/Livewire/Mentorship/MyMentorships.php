@@ -21,6 +21,9 @@ class MyMentorships extends Component
 
     public $statusFilter = '';
     public $roleView = 'all'; // all, as_mentor, as_mentee
+    public bool $showGoalsModal = false;
+    public ?int $editingGoalsMentorshipId = null;
+    public array $goalInputs = [''];
 
     protected $queryString = [
         'statusFilter' => ['except' => ''],
@@ -124,6 +127,91 @@ class MyMentorships extends Component
         $this->dispatch('mentorship-updated');
     }
 
+    public function editGoals(int $mentorshipId): void
+    {
+        $mentorship = $this->findUserMentorship($mentorshipId);
+
+        if (! $mentorship) {
+            session()->flash('error', 'Invalid mentorship.');
+            return;
+        }
+
+        $this->editingGoalsMentorshipId = $mentorship->id;
+        $this->goalInputs = array_values($mentorship->goals ?? ['']);
+        $this->goalInputs = $this->goalInputs ?: [''];
+        $this->showGoalsModal = true;
+    }
+
+    public function addGoal(): void
+    {
+        $this->goalInputs[] = '';
+    }
+
+    public function removeGoal(int $index): void
+    {
+        unset($this->goalInputs[$index]);
+        $this->goalInputs = array_values($this->goalInputs ?: ['']);
+    }
+
+    public function saveGoals(): void
+    {
+        $this->validate([
+            'goalInputs' => 'required|array|min:1|max:12',
+            'goalInputs.*' => 'nullable|string|max:255',
+        ]);
+
+        $mentorship = $this->findUserMentorship((int) $this->editingGoalsMentorshipId);
+
+        if (! $mentorship) {
+            session()->flash('error', 'Invalid mentorship.');
+            return;
+        }
+
+        $goals = array_values(array_filter($this->goalInputs));
+        $metadata = $mentorship->metadata ?? [];
+        $existingProgress = data_get($metadata, 'goal_progress', []);
+        $trimmedProgress = [];
+
+        foreach ($goals as $index => $goal) {
+            $trimmedProgress[$index] = $existingProgress[$index] ?? ['completed' => false];
+        }
+
+        data_set($metadata, 'goal_progress', $trimmedProgress);
+
+        $mentorship->update([
+            'goals' => $goals,
+            'metadata' => $metadata,
+        ]);
+
+        $this->showGoalsModal = false;
+        $this->editingGoalsMentorshipId = null;
+        $this->goalInputs = [''];
+
+        session()->flash('message', 'Learner goals updated.');
+        $this->dispatch('mentorship-updated');
+    }
+
+    public function toggleGoal(int $mentorshipId, int $goalIndex): void
+    {
+        $mentorship = $this->findUserMentorship($mentorshipId);
+
+        if (! $mentorship) {
+            session()->flash('error', 'Invalid mentorship.');
+            return;
+        }
+
+        $current = (bool) data_get($mentorship->metadata ?? [], "goal_progress.{$goalIndex}.completed", false);
+        $mentorship->markGoal($goalIndex, ! $current);
+        $this->dispatch('mentorship-updated');
+    }
+
+    public function closeGoalsModal(): void
+    {
+        $this->showGoalsModal = false;
+        $this->editingGoalsMentorshipId = null;
+        $this->goalInputs = [''];
+    }
+
     #[On('mentorship-updated')]
     public function refreshList()
     {
@@ -159,5 +247,14 @@ class MyMentorships extends Component
         return view('livewire.mentorship.my-mentorships', [
             'mentorships' => $mentorships
         ]);
+    }
+
+    private function findUserMentorship(int $mentorshipId): ?Mentorship
+    {
+        $user = Auth::user();
+
+        return Mentorship::whereKey($mentorshipId)
+            ->where(fn($q) => $q->where('mentor_id', $user->id)->orWhere('mentee_id', $user->id))
+            ->first();
     }
 }

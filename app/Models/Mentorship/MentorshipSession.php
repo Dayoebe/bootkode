@@ -5,6 +5,9 @@ namespace App\Models\Mentorship;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Models\Marketplace\Wallet;
+use App\Models\Marketplace\WalletTransaction;
+use Illuminate\Support\Facades\DB;
 
 class MentorshipSession extends Model
 {
@@ -82,15 +85,70 @@ class MentorshipSession extends Model
     {
         $duration = $this->started_at ? $this->started_at->diffInMinutes(now()) : 0;
 
-        $this->update([
-            'status' => self::STATUS_COMPLETED,
-            'ended_at' => now(),
-            'duration_minutes' => $duration
+        return $this->completeWithOperations([
+            'duration_minutes' => $duration ?: ($this->duration_minutes ?? 60),
         ]);
+    }
 
-        // Update mentor stats
-        $this->mentorship->mentor->mentorProfile?->increment('total_sessions');
+    public function completeWithOperations(array $data = []): self
+    {
+        return DB::transaction(function () use ($data) {
+            $wasCompleted = $this->status === self::STATUS_COMPLETED;
 
-        return $this;
+            $this->update([
+                'status' => self::STATUS_COMPLETED,
+                'started_at' => $this->started_at ?? ($data['started_at'] ?? now()),
+                'ended_at' => $data['ended_at'] ?? now(),
+                'duration_minutes' => $data['duration_minutes'] ?? $this->duration_minutes ?? 60,
+                'session_notes' => $data['session_notes'] ?? $this->session_notes,
+                'action_items' => $data['action_items'] ?? $this->action_items,
+                'mentor_feedback' => $data['mentor_feedback'] ?? $this->mentor_feedback,
+                'mentee_feedback' => $data['mentee_feedback'] ?? $this->mentee_feedback,
+                'mentor_rating' => $data['mentor_rating'] ?? $this->mentor_rating,
+                'mentee_rating' => $data['mentee_rating'] ?? $this->mentee_rating,
+                'metadata' => array_merge($this->metadata ?? [], $data['metadata'] ?? []),
+            ]);
+
+            if (! $wasCompleted) {
+                $this->mentorship->mentor->mentorProfile?->increment('total_sessions');
+            }
+
+            $this->payoutMentorIfNeeded();
+
+            return $this->refresh();
+        });
+    }
+
+    public function payoutMentorIfNeeded(): ?WalletTransaction
+    {
+        if (! $this->is_billable || (float) $this->session_cost <= 0 || $this->payment_status === 'paid') {
+            return null;
+        }
+
+        $wallet = Wallet::getOrCreateWallet($this->mentorship->mentor_id, Wallet::TYPE_INSTRUCTOR);
+
+        $transaction = $wallet->credit(
+            (float) $this->session_cost,
+            WalletTransaction::CATEGORY_INSTRUCTOR_EARNING,
+            "Mentorship session payout: {$this->title}",
+            $this,
+            [
+                'mentorship_id' => $this->mentorship_id,
+                'session_id' => $this->id,
+                'mentee_id' => $this->mentorship->mentee_id,
+                'mentor_id' => $this->mentorship->mentor_id,
+            ]
+        );
+
+        $metadata = $this->metadata ?? [];
+        data_set($metadata, 'payout.transaction_id', $transaction->id);
+        data_set($metadata, 'payout.paid_at', now()->toIso8601String());
+
+        $this->forceFill([
+            'payment_status' => 'paid',
+            'metadata' => $metadata,
+        ])->save();
+
+        return $transaction;
     }
 }

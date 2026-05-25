@@ -3,7 +3,7 @@
 namespace App\Livewire\Mentorship;
 
 use Livewire\Component;
-// use App\Models\Mentorship\MentorProfile;
+use App\Models\Mentorship\MentorProfile as MentorProfileModel;
 use App\Models\Mentorship\MentorshipReview;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\Layout;
@@ -121,7 +121,7 @@ class MentorProfile extends Component
         ]);
 
         // Create pending mentor profile
-        $profile = MentorProfile::create([
+        $profile = MentorProfileModel::create([
             'user_id' => Auth::id(),
             'bio' => $this->applicationMessage,
             'is_verified' => false,
@@ -177,7 +177,7 @@ class MentorProfile extends Component
             session()->flash('message', 'Profile updated successfully!');
         } else {
             $profileData['user_id'] = Auth::id();
-            MentorProfile::create($profileData);
+            MentorProfileModel::create($profileData);
             session()->flash('message', 'Profile created successfully!');
         }
 

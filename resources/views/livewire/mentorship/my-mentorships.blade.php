@@ -107,16 +107,34 @@
                             </div>
 
                             <!-- Goals -->
-                            @if($mentorship->goals && count($mentorship->goals) > 0)
-                                <div class="mb-4">
-                                    <h4 class="font-medium text-themed-primary mb-2 transition-colors duration-300">Goals:</h4>
-                                    <ul class="list-disc list-inside text-sm text-themed-secondary space-y-1 transition-colors duration-300">
-                                        @foreach($mentorship->goals as $goal)
-                                            <li>{{ $goal }}</li>
-                                        @endforeach
-                                    </ul>
+                            <div class="mb-4 rounded-lg border border-themed-primary bg-themed-primary p-4">
+                                <div class="flex items-center justify-between gap-3 mb-3">
+                                    <div>
+                                        <h4 class="font-medium text-themed-primary transition-colors duration-300">Learner goals</h4>
+                                        <p class="text-xs text-themed-secondary">{{ $mentorship->goal_completion_percentage }}% complete</p>
+                                    </div>
+                                    <button type="button" wire:click="editGoals({{ $mentorship->id }})"
+                                        class="rounded-lg border border-themed-secondary px-3 py-2 text-xs font-semibold text-themed-primary hover:border-accent-themed-primary">
+                                        <i class="fas fa-bullseye mr-1"></i>Manage
+                                    </button>
                                 </div>
-                            @endif
+
+                                @if($mentorship->goals_with_progress && count($mentorship->goals_with_progress) > 0)
+                                    <div class="space-y-2">
+                                        @foreach($mentorship->goals_with_progress as $goal)
+                                            <button type="button" wire:click="toggleGoal({{ $mentorship->id }}, {{ $goal['index'] }})"
+                                                class="flex w-full items-start gap-3 rounded-lg border border-themed-primary bg-themed-secondary px-3 py-2 text-left hover:border-accent-themed-primary">
+                                                <span class="mt-0.5 grid h-5 w-5 shrink-0 place-items-center rounded-full {{ $goal['completed'] ? 'bg-green-600 text-white' : 'bg-themed-tertiary text-themed-secondary' }}">
+                                                    <i class="fas {{ $goal['completed'] ? 'fa-check' : 'fa-circle' }} text-[10px]"></i>
+                                                </span>
+                                                <span class="{{ $goal['completed'] ? 'line-through text-themed-tertiary' : 'text-themed-secondary' }} text-sm">{{ $goal['text'] }}</span>
+                                            </button>
+                                        @endforeach
+                                    </div>
+                                @else
+                                    <p class="text-sm text-themed-secondary">No learner goals have been defined yet.</p>
+                                @endif
+                            </div>
 
                             <!-- Progress Bar (for active mentorships) -->
                             @if($mentorship->isActive() && $mentorship->duration_weeks)
@@ -234,6 +252,50 @@
             </div>
         @endif
     </div>
+
+    @if($showGoalsModal)
+        <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4">
+            <div class="w-full max-w-2xl rounded-lg border border-themed-primary bg-themed-secondary shadow-xl">
+                <div class="flex items-center justify-between border-b border-themed-primary p-5">
+                    <h2 class="text-xl font-bold text-themed-primary">Manage learner goals</h2>
+                    <button type="button" wire:click="closeGoalsModal" class="grid h-9 w-9 place-items-center rounded-lg bg-themed-tertiary text-themed-secondary">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+
+                <form wire:submit.prevent="saveGoals" class="space-y-4 p-5">
+                    @foreach($goalInputs as $index => $goal)
+                        <div class="flex gap-2">
+                            <input type="text" wire:model="goalInputs.{{ $index }}"
+                                class="flex-1 rounded-lg border border-themed-primary bg-themed-primary px-3 py-2 text-themed-primary focus:outline-none focus:ring-2 focus:ring-accent-themed-primary"
+                                placeholder="Learner goal">
+                            <button type="button" wire:click="removeGoal({{ $index }})"
+                                class="grid h-10 w-10 place-items-center rounded-lg bg-red-600 text-white">
+                                <i class="fas fa-minus"></i>
+                            </button>
+                        </div>
+                    @endforeach
+
+                    <button type="button" wire:click="addGoal"
+                        class="inline-flex items-center gap-2 rounded-lg border border-themed-primary px-3 py-2 text-sm font-medium text-themed-primary">
+                        <i class="fas fa-plus"></i>
+                        Add goal
+                    </button>
+
+                    <div class="flex justify-end gap-3 border-t border-themed-primary pt-5">
+                        <button type="button" wire:click="closeGoalsModal"
+                            class="rounded-lg border border-themed-primary px-4 py-2 text-sm font-medium text-themed-primary hover:bg-themed-tertiary">
+                            Cancel
+                        </button>
+                        <button type="submit"
+                            class="rounded-lg bg-accent-primary px-4 py-2 text-sm font-semibold text-white hover:bg-accent-secondary">
+                            Save goals
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    @endif
 
     <!-- Loading Indicator -->
     <div wire:loading class="fixed inset-0 bg-black bg-opacity-25 dark:bg-opacity-50 flex items-center justify-center z-50">

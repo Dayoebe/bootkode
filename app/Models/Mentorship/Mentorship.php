@@ -55,6 +55,8 @@ class Mentorship extends Model
         'status_label',
         'status_color',
         'progress_percentage',
+        'goal_completion_percentage',
+        'goals_with_progress',
         'duration_formatted',
         'is_active',
         'next_session'
@@ -144,6 +146,28 @@ class Mentorship extends Model
         return $this;
     }
 
+    public function markGoal(int $index, bool $completed = true): self
+    {
+        $goals = collect($this->goals ?? [])->values();
+
+        if (! $goals->has($index)) {
+            return $this;
+        }
+
+        $metadata = $this->metadata ?? [];
+        $goalProgress = data_get($metadata, 'goal_progress', []);
+        $goalProgress[$index] = [
+            'completed' => $completed,
+            'updated_at' => now()->toIso8601String(),
+        ];
+
+        data_set($metadata, 'goal_progress', $goalProgress);
+
+        $this->forceFill(['metadata' => $metadata])->save();
+
+        return $this->refresh();
+    }
+
     // Accessors
     public function statusLabelAttribute(): Attribute
     {
@@ -177,26 +201,76 @@ class Mentorship extends Model
     {
         return Attribute::make(
             get: function () {
-                if (!$this->isActive() || !$this->duration_weeks) {
-                    return 0;
-                }
-
-                $startDate = $this->started_at;
-                if (!$startDate) return 0;
-                
-                $endDate = $startDate->copy()->addWeeks($this->duration_weeks);
-                $now = now();
-
-                if ($now >= $endDate) {
+                if ($this->isCompleted()) {
                     return 100;
                 }
 
-                $totalDays = $startDate->diffInDays($endDate);
-                if ($totalDays === 0) return 0;
-                
-                $passedDays = $startDate->diffInDays($now);
+                if (!$this->isActive()) {
+                    return 0;
+                }
 
-                return min(100, round(($passedDays / $totalDays) * 100));
+                $timeProgress = 0;
+                if ($this->duration_weeks && $this->started_at) {
+                    $startDate = $this->started_at;
+                    $endDate = $startDate->copy()->addWeeks($this->duration_weeks);
+                    $now = now();
+
+                    if ($now >= $endDate) {
+                        $timeProgress = 100;
+                    } else {
+                        $totalDays = max(1, $startDate->diffInDays($endDate));
+                        $passedDays = max(0, $startDate->diffInDays($now));
+                        $timeProgress = min(100, round(($passedDays / $totalDays) * 100));
+                    }
+                }
+
+                $targetSessions = max(1, (int) ($this->duration_weeks ?: 4));
+                $completedSessions = $this->sessions()
+                    ->where('status', MentorshipSession::STATUS_COMPLETED)
+                    ->count();
+                $sessionProgress = min(100, round(($completedSessions / $targetSessions) * 100));
+
+                return (int) round(($timeProgress * 0.25) + ($sessionProgress * 0.45) + ($this->goal_completion_percentage * 0.30));
+            }
+        );
+    }
+
+    public function goalCompletionPercentageAttribute(): Attribute
+    {
+        return Attribute::make(
+            get: function () {
+                $goals = collect($this->goals ?? [])->filter()->values();
+
+                if ($goals->isEmpty()) {
+                    return 0;
+                }
+
+                $goalProgress = data_get($this->metadata ?? [], 'goal_progress', []);
+                $completed = $goals
+                    ->keys()
+                    ->filter(fn ($index) => (bool) data_get($goalProgress, "{$index}.completed", false))
+                    ->count();
+
+                return (int) round(($completed / $goals->count()) * 100);
+            }
+        );
+    }
+
+    public function goalsWithProgressAttribute(): Attribute
+    {
+        return Attribute::make(
+            get: function () {
+                $goalProgress = data_get($this->metadata ?? [], 'goal_progress', []);
+
+                return collect($this->goals ?? [])
+                    ->values()
+                    ->map(fn ($goal, $index) => [
+                        'index' => $index,
+                        'text' => $goal,
+                        'completed' => (bool) data_get($goalProgress, "{$index}.completed", false),
+                        'updated_at' => data_get($goalProgress, "{$index}.updated_at"),
+                    ])
+                    ->all();
             }
         );
     }

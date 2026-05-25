@@ -232,20 +232,15 @@ class MentorshipActions extends Component
             'menteeRating' => 'nullable|numeric|min:1|max:5'
         ]);
 
-        $this->currentSession->update([
-            'status' => MentorshipSession::STATUS_COMPLETED,
-            'ended_at' => now(),
+        $this->currentSession->completeWithOperations([
+            'duration_minutes' => $this->duration,
             'session_notes' => $this->sessionNotes,
             'action_items' => array_filter($this->actionItems),
             'mentor_feedback' => $this->mentorFeedback,
             'mentee_feedback' => $this->menteeFeedback,
             'mentor_rating' => $this->mentorRating,
             'mentee_rating' => $this->menteeRating,
-            'actual_duration_minutes' => $this->duration
         ]);
-
-        // Update mentor profile stats
-        $this->currentSession->mentorship->mentor->mentorProfile?->increment('total_sessions');
 
         // Handle file uploads if any
         if ($this->attachments) {

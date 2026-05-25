@@ -39,14 +39,21 @@
                         </div>
                     </div>
 
-                    <div class="mb-4">
-                        <h4 class="font-medium text-themed-primary mb-2 transition-colors duration-300">Goals:</h4>
-                        <ul
-                            class="list-disc list-inside text-sm text-themed-secondary space-y-1 transition-colors duration-300">
-                            @foreach($mentorship->goals ?? [] as $goal)
-                                <li>{{ $goal }}</li>
-                            @endforeach
-                        </ul>
+                    <div class="mb-4 rounded-lg border border-themed-primary bg-themed-primary p-3">
+                        <div class="flex items-center justify-between mb-2">
+                            <h4 class="font-medium text-themed-primary transition-colors duration-300">Goals</h4>
+                            <span class="text-xs text-themed-secondary">{{ $mentorship->goal_completion_percentage }}% complete</span>
+                        </div>
+                        <div class="space-y-2">
+                            @forelse($mentorship->goals_with_progress ?? [] as $goal)
+                                <div class="flex items-center gap-2 text-sm {{ $goal['completed'] ? 'text-themed-tertiary line-through' : 'text-themed-secondary' }}">
+                                    <i class="fas {{ $goal['completed'] ? 'fa-check-circle text-green-600' : 'fa-circle text-themed-tertiary' }}"></i>
+                                    <span>{{ $goal['text'] }}</span>
+                                </div>
+                            @empty
+                                <p class="text-sm text-themed-secondary">No learner goals yet.</p>
+                            @endforelse
+                        </div>
                     </div>
 
                     @if($mentorship->isActive())
@@ -82,6 +89,10 @@
                                     Reject
                                 </button>
                             @elseif($mentorship->isActive())
+                                <a href="{{ route('mentorship.sessions') }}"
+                                    class="bg-themed-tertiary hover:bg-themed-secondary text-themed-primary px-4 py-2 rounded-lg text-sm transition-colors border border-themed-primary">
+                                    Operations
+                                </a>
                                 <button wire:click="completeMentorship({{ $mentorship->id }})"
                                     class="bg-accent-primary hover:bg-accent-secondary text-white px-4 py-2 rounded-lg text-sm transition-colors">
                                     Complete
