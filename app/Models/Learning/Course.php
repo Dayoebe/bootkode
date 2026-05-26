@@ -51,6 +51,16 @@ class Course extends Model
         'views_count',
         'likes_count',
         'average_rating',
+        'quality_score',
+        'quality_status',
+        'quality_public_label',
+        'quality_public_label_enabled',
+        'quality_summary',
+        'quality_issues',
+        'quality_last_checked_at',
+        'quality_reviewed_at',
+        'quality_review_due_at',
+        'quality_checked_by',
         'is_paid',
         'currency',
         'materials_included',
@@ -77,6 +87,13 @@ class Course extends Model
         'external_links' => 'array',
         'price' => 'decimal:2',
         'average_rating' => 'decimal:2',
+        'quality_score' => 'integer',
+        'quality_public_label_enabled' => 'boolean',
+        'quality_summary' => 'array',
+        'quality_issues' => 'array',
+        'quality_last_checked_at' => 'datetime',
+        'quality_reviewed_at' => 'datetime',
+        'quality_review_due_at' => 'datetime',
         'materials_included' => 'array',
         'tags' => 'array',
     ];
@@ -137,6 +154,16 @@ class Course extends Model
     public function rejections()
     {
         return $this->hasMany(\App\Models\Admin\CourseRejection::class); // UPDATED
+    }
+
+    public function qualityChecks()
+    {
+        return $this->hasMany(CourseQualityCheck::class)->latest('checked_at');
+    }
+
+    public function latestQualityCheck()
+    {
+        return $this->hasOne(CourseQualityCheck::class)->latestOfMany('checked_at');
     }
 
 
@@ -342,6 +369,47 @@ class Course extends Model
         }
 
         return $minutes . 'm';
+    }
+
+    public function getQualityLabelTextAttribute(): ?string
+    {
+        if (!$this->quality_public_label_enabled) {
+            return null;
+        }
+
+        return $this->quality_public_label ?: match ($this->quality_status) {
+            'verified' => 'Editor verified',
+            'ready' => 'Quality checked',
+            'needs_work' => 'Editorial review',
+            'stale' => 'Review due',
+            default => null,
+        };
+    }
+
+    public function getQualityLabelClassAttribute(): string
+    {
+        return match ($this->quality_status) {
+            'verified' => 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300',
+            'ready' => 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300',
+            'stale' => 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300',
+            'needs_work' => 'bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-300',
+            default => 'bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300',
+        };
+    }
+
+    public function getQualityApprovalReadyAttribute(): bool
+    {
+        $summary = $this->quality_summary ?? [];
+
+        return $this->quality_score >= 70
+            && ($summary['broken_media_count'] ?? 0) === 0
+            && ($summary['assessment_coverage_percent'] ?? 0) >= 50
+            && !in_array($this->quality_status, ['needs_work', 'stale', 'not_checked'], true);
+    }
+
+    public function getQualityReviewIsDueAttribute(): bool
+    {
+        return !$this->quality_review_due_at || $this->quality_review_due_at->isPast();
     }
     /**
      * Get instructor response rate

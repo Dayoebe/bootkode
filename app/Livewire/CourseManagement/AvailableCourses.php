@@ -60,7 +60,7 @@ class AvailableCourses extends Component
         try {
             $user = Auth::user();
             $wallet = Wallet::getOrCreateWallet($user->id);
-            $this->walletBalance = $wallet->balance;
+            $this->walletBalance = (float) ($wallet->balance ?? 0);
             Log::info('Wallet balance loaded', ['balance' => $this->walletBalance]);
         } catch (\Exception $e) {
             Log::error('Failed to load wallet balance', ['error' => $e->getMessage()]);

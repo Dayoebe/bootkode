@@ -6,6 +6,7 @@ use Livewire\Component;
 use Livewire\WithFileUploads;
 use App\Models\Learning\Course;
 use App\Models\Learning\CourseCategory;
+use App\Services\CourseQualityService;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Livewire\Attributes\Layout;
@@ -394,6 +395,32 @@ class EditCourse extends Component
 
             // Update course
             $this->course->update($data);
+            $this->course->refresh();
+
+            if (!$isDraft && ($this->course->is_approved || $this->course->is_published)) {
+                app(CourseQualityService::class)->scanAndPersist($this->course, Auth::user(), false);
+                $this->course->refresh();
+
+                if (! $this->course->quality_review_due_at) {
+                    app(CourseQualityService::class)->markReviewed($this->course, Auth::user());
+                    $this->course->refresh();
+                }
+
+                if (! $this->course->quality_approval_ready) {
+                    $this->course->update([
+                        'is_approved' => false,
+                        'is_published' => false,
+                    ]);
+
+                    $this->is_approved = false;
+                    $this->is_published = false;
+
+                    $this->dispatch('notify', [
+                        'message' => 'Course saved, but approval/publishing was held because QA issues still need fixing.',
+                        'type' => 'error'
+                    ]);
+                }
+            }
 
             // Reset flags
             $this->thumbnail = null;

@@ -212,14 +212,6 @@ class CourseCategories extends Component
     }
 
     /**
-     * Suggest AI-generated category name/description.
-     */
-    public function suggestAiContent()
-    {
-        $this->dispatch('notify', ['message' => 'AI suggestion coming soon!', 'type' => 'info']);
-    }
-
-    /**
      * Centralized flash message handler.
      */
     private function flashMessage(string $message, string $type = 'success')
