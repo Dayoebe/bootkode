@@ -1,12 +1,20 @@
-Alpine.plugin(persist);
-Alpine.plugin(collapse);
-
 import Alpine from 'alpinejs';
 import persist from '@alpinejs/persist';
 import collapse from '@alpinejs/collapse';
 import Chart from 'chart.js/auto';
+import 'trix';
+import 'trix/dist/trix.css';
+import EditorJS from '@editorjs/editorjs';
+import Header from '@editorjs/header';
+import List from '@editorjs/list';
+
+Alpine.plugin(persist);
+Alpine.plugin(collapse);
 
 window.Chart = Chart;
+window.EditorJS = EditorJS;
+window.EditorJSHeader = Header;
+window.EditorJSList = List;
 
 // window.Alpine = Alpine;
 // Alpine.start();

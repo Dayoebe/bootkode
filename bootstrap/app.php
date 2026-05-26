@@ -11,8 +11,16 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        //
+        $middleware->web(append: [
+            \App\Http\Middleware\RecordProductionObservability::class,
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
-        //
+        $exceptions->report(function (\Throwable $exception): void {
+            try {
+                app(\App\Services\ObservabilityService::class)->recordException($exception, request());
+            } catch (\Throwable) {
+                //
+            }
+        });
     })->create();
