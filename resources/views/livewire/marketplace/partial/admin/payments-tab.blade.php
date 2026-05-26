@@ -203,18 +203,11 @@
                                 <div class="text-right">
                                     <div class="text-2xl font-bold text-gray-900">
                                         ₦{{ number_format($withdrawal->amount ?? 0, 0) }}</div>
-                                    <div class="mt-2 flex space-x-2">
-                                        <button onclick="alert('Withdrawal approval system will be implemented')"
-                                            class="inline-flex items-center px-4 py-2 bg-green-600 text-white text-sm rounded-lg hover:bg-green-700 transition-colors">
-                                            <i class="fas fa-check mr-2"></i>
-                                            Approve
-                                        </button>
-                                        <button onclick="alert('Withdrawal rejection system will be implemented')"
-                                            class="inline-flex items-center px-4 py-2 bg-red-600 text-white text-sm rounded-lg hover:bg-red-700 transition-colors">
-                                            <i class="fas fa-times mr-2"></i>
-                                            Decline
-                                        </button>
-                                    </div>
+                                    <a href="{{ route('admin.payments.processing') }}"
+                                        class="mt-2 inline-flex items-center px-4 py-2 bg-blue-600 text-white text-sm rounded-lg hover:bg-blue-700 transition-colors">
+                                        <i class="fas fa-credit-card mr-2"></i>
+                                        Review in payment processing
+                                    </a>
                                 </div>
                             </div>
                         </div>

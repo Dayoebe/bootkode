@@ -14,7 +14,6 @@ class PaymentReports extends Component
 {
     public $reportDateRange = 'month';
     public $reportFormat = 'csv';
-    public $reportDetails = 'summary';
     public $customStartDate = '';
     public $customEndDate = '';
 
@@ -178,11 +177,6 @@ class PaymentReports extends Component
         return $this->downloadReport('cash_flow', $cashFlow);
     }
 
-    public function scheduleReport()
-    {
-        session()->flash('info', 'Report scheduling feature will be available in the next update');
-    }
-
     private function getDateRangeForReports(): array
     {
         switch ($this->reportDateRange) {
@@ -211,19 +205,13 @@ class PaymentReports extends Component
     private function downloadReport(string $type, array $data)
     {
         $filename = $type . '_report_' . now()->format('Y_m_d_H_i_s');
-        
-        switch ($this->reportFormat) {
-            case 'pdf':
-                session()->flash('info', 'PDF generation will be implemented with a PDF library');
-                break;
-            case 'excel':
-                session()->flash('info', 'Excel generation will be implemented with Laravel Excel');
-                break;
-            case 'csv':
-                return $this->generateCSVReport($filename, $data);
-            default:
-                session()->flash('error', 'Unsupported report format');
+
+        if ($this->reportFormat !== 'csv') {
+            session()->flash('error', 'Unsupported report format');
+            return null;
         }
+
+        return $this->generateCSVReport($filename, $data);
     }
 
     private function generateCSVReport(string $filename, array $data)
@@ -275,40 +263,8 @@ class PaymentReports extends Component
         return response()->stream($callback, 200, $headers);
     }
 
-    private function getRecentReports()
-    {
-        // This would typically come from a reports table in your database
-        return collect([
-            [
-                'name' => 'Daily Transactions - ' . now()->format('M d, Y'),
-                'type' => 'daily_transactions',
-                'generated_at' => now()->subHours(2),
-                'status' => 'completed',
-                'size' => '2.4 MB'
-            ],
-            [
-                'name' => 'Payment Summary - ' . now()->subDays(1)->format('M d, Y'),
-                'type' => 'payment_summary',
-                'generated_at' => now()->subDays(1),
-                'status' => 'completed',
-                'size' => '1.8 MB'
-            ],
-            [
-                'name' => 'Revenue Analysis - ' . now()->format('F Y'),
-                'type' => 'revenue_analysis',
-                'generated_at' => now()->subDays(3),
-                'status' => 'completed',
-                'size' => '3.2 MB'
-            ],
-        ]);
-    }
-
     public function render()
     {
-        $recentReports = $this->getRecentReports();
-
-        return view('livewire.financial.admin.partials.payment-reports', [
-            'recentReports' => $recentReports,
-        ]);
+        return view('livewire.financial.admin.partials.payment-reports');
     }
 }

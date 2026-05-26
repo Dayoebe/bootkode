@@ -39,6 +39,8 @@ class MarketplaceAdmin extends Component
     public $selectedItems = [];
     public $bulkAction = '';
     public $selectAll = false;
+    public $selectedMarketplaceItem = null;
+    public $showItemDetailsModal = false;
     
     // Orders Management
     public $orderStatus = '';
@@ -802,18 +804,20 @@ public function deleteItem($itemId)
     $this->loadDashboardStats();
 }
 
-public function editItem($itemId)
-{
-    // This could redirect to an edit page or open a modal
-    session()->flash('info', 'Edit functionality will redirect to item edit page.');
-    // You can implement: return redirect()->route('admin.items.edit', $itemId);
-}
-
 public function viewItemDetails($itemId)
 {
-    // This could open a detailed view modal or redirect
-    session()->flash('info', 'Item details view coming soon.');
-    // You can implement detailed item view here
+    $this->selectedMarketplaceItem = MarketplaceItem::with(['vendor', 'approver'])
+        ->withCount('orders')
+        ->withSum(['orders as paid_revenue' => fn ($query) => $query->where('payment_status', 'paid')], 'total_amount')
+        ->findOrFail($itemId);
+
+    $this->showItemDetailsModal = true;
+}
+
+public function closeItemDetails(): void
+{
+    $this->showItemDetailsModal = false;
+    $this->selectedMarketplaceItem = null;
 }
 
 // === BULK ACTIONS FOR ITEMS ===

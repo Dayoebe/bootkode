@@ -102,7 +102,7 @@ class TransactionHistory extends Component
     public function exportTransactions()
     {
         $this->validate([
-            'exportFormat' => 'required|in:csv,pdf,excel',
+            'exportFormat' => 'required|in:csv',
             'exportDateFrom' => 'required|date',
             'exportDateTo' => 'required|date|after_or_equal:exportDateFrom'
         ]);
@@ -133,15 +133,7 @@ class TransactionHistory extends Component
             return;
         }
 
-        // Generate export file based on format
-        switch ($this->exportFormat) {
-            case 'csv':
-                return $this->exportToCsv($transactions);
-            case 'pdf':
-                return $this->exportToPdf($transactions);
-            case 'excel':
-                return $this->exportToExcel($transactions);
-        }
+        return $this->exportToCsv($transactions);
     }
 
     private function exportToCsv($transactions)
@@ -181,20 +173,6 @@ class TransactionHistory extends Component
 
         $this->closeExportModal();
         return response()->stream($callback, 200, $headers);
-    }
-
-    private function exportToPdf($transactions)
-    {
-        // You would integrate with a PDF library like DomPDF
-        session()->flash('info', 'PDF export feature coming soon');
-        $this->closeExportModal();
-    }
-
-    private function exportToExcel($transactions)
-    {
-        // You would integrate with Laravel Excel
-        session()->flash('info', 'Excel export feature coming soon');
-        $this->closeExportModal();
     }
 
     private function getTransactionQuery()

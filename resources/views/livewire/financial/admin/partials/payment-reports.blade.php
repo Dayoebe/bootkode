@@ -110,7 +110,7 @@
     <!-- Report Configuration -->
     <div class="bg-white rounded-lg shadow-sm p-6 mb-6">
         <h4 class="font-medium text-gray-900 mb-4">Report Configuration</h4>
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1">Date Range</label>
                 <select wire:model="reportDateRange" class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
@@ -127,22 +127,7 @@
                 <label class="block text-sm font-medium text-gray-700 mb-1">Format</label>
                 <select wire:model="reportFormat" class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
                     <option value="csv">CSV</option>
-                    <option value="pdf">PDF (Coming Soon)</option>
-                    <option value="excel">Excel (Coming Soon)</option>
                 </select>
-            </div>
-            <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">Include</label>
-                <select wire:model="reportDetails" class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
-                    <option value="summary">Summary Only</option>
-                    <option value="detailed">Detailed</option>
-                    <option value="complete">Complete with Charts</option>
-                </select>
-            </div>
-            <div class="flex items-end">
-                <button wire:click="scheduleReport" class="w-full bg-gray-600 text-white px-4 py-2 rounded-md hover:bg-gray-700 transition-colors">
-                    Schedule Report
-                </button>
             </div>
         </div>
 
@@ -160,38 +145,4 @@
         @endif
     </div>
 
-    <!-- Recent Reports -->
-    <div class="bg-white rounded-lg shadow-sm">
-        <div class="p-6 border-b border-gray-200">
-            <h4 class="font-medium text-gray-900">Recent Reports</h4>
-        </div>
-        <div class="divide-y divide-gray-200">
-            @foreach($recentReports as $report)
-                <div class="p-4 flex items-center justify-between hover:bg-gray-50 transition-colors">
-                    <div class="flex items-center">
-                        <div class="flex-shrink-0">
-                            <svg class="h-8 w-8 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-                            </svg>
-                        </div>
-                        <div class="ml-4">
-                            <p class="text-sm font-medium text-gray-900">{{ $report['name'] }}</p>
-                            <p class="text-sm text-gray-500">{{ \Carbon\Carbon::parse($report['generated_at'])->diffForHumans() }} • {{ $report['size'] }}</p>
-                        </div>
-                    </div>
-                    <div class="flex items-center space-x-2">
-                        <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">
-                            {{ ucfirst($report['status']) }}
-                        </span>
-                        <button class="text-blue-600 hover:text-blue-900 text-sm transition-colors">Download</button>
-                        <button class="text-gray-400 hover:text-gray-600" title="Delete Report">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
-                            </svg>
-                        </button>
-                    </div>
-                </div>
-            @endforeach
-        </div>
-    </div>
 </div>

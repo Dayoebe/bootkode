@@ -21,10 +21,6 @@
                 class="{{ $selectedTab === 'withdrawals' ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300' }} whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm">
                 Withdrawals
             </button>
-            <button wire:click="setTab('analytics')"
-                class="{{ $selectedTab === 'analytics' ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300' }} whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm">
-                Analytics
-            </button>
         </nav>
     </div>
 
@@ -215,14 +211,6 @@
                     </div>
                 @endif
             </div>
-        </div>
-    @endif
-
-    @if($selectedTab === 'analytics')
-        <!-- Analytics Tab Content -->
-        <div class="bg-white rounded-xl shadow-lg p-6">
-            <h3 class="text-lg font-semibold text-gray-900 mb-4">Financial Analytics</h3>
-            <p class="text-gray-600">Analytics features coming soon...</p>
         </div>
     @endif
 

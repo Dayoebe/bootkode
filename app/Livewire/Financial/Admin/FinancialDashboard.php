@@ -29,7 +29,9 @@ class FinancialDashboard extends Component
 
     public function setTab($tab)
     {
-        $this->selectedTab = $tab;
+        if (in_array($tab, ['overview', 'withdrawals'], true)) {
+            $this->selectedTab = $tab;
+        }
     }
 
     public function approveWithdrawal($withdrawalId)

@@ -175,8 +175,6 @@
                                 <label class="block text-sm font-medium text-gray-700">Format</label>
                                 <select wire:model="exportFormat" class="mt-1 w-full rounded-md border-gray-300">
                                     <option value="csv">CSV</option>
-                                    <option value="excel">Excel</option>
-                                    <option value="pdf">PDF</option>
                                 </select>
                             </div>
                             <div class="grid grid-cols-2 gap-4">
