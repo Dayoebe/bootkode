@@ -135,36 +135,6 @@
     {{-- ⚡ Livewire Scripts --}}
     @livewireScripts
 
-    {{-- 🧠 Lazy-load External Libraries --}}
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const loadScript = (src, async = true) => {
-                const s = document.createElement('script');
-                s.src = src;
-                s.async = async;
-                document.body.appendChild(s);
-            };
-
-            // Load Trix only if editor is present
-            if (document.querySelector('trix-editor')) {
-                loadScript('https://unpkg.com/trix@2.0.8/dist/trix.umd.min.js');
-            }
-
-            // Load Editor.js only if editor container exists
-            if (document.querySelector('#editorjs')) {
-                loadScript('https://cdn.jsdelivr.net/npm/@editorjs/editorjs@latest');
-                loadScript('https://cdn.jsdelivr.net/npm/@editorjs/header@latest');
-                loadScript('https://cdn.jsdelivr.net/npm/@editorjs/list@latest');
-                loadScript('https://cdn.jsdelivr.net/npm/@editorjs/image@latest');
-            }
-
-            // Load Chart.js if chart canvas is found
-            if (document.querySelector('#chart') || document.querySelector('.chartjs')) {
-                loadScript('https://cdn.jsdelivr.net/npm/chart.js');
-            }
-        });
-    </script>
-
     {{-- 📱 Viewport Fix for Mobile Browsers --}}
     @stack('scripts')
 

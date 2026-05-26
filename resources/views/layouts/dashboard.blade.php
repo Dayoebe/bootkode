@@ -68,13 +68,11 @@
     <link rel="apple-touch-icon" href="{{ asset('icons/icon-192.png') }}">
     <link rel="manifest" href="{{ asset('manifest.webmanifest') }}">
     <script src="{{ asset('js/offline-learning.js') }}"></script>
-    <link rel="stylesheet" type="text/css" href="https://unpkg.com/trix@2.0.8/dist/trix.css">
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @livewireStyles
     @stack('styles')
 
-    <script type="text/javascript" src="https://unpkg.com/trix@2.0.8/dist/trix.umd.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 
     <script>

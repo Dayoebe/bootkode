@@ -8,6 +8,7 @@
     $navItems = [
         ['label' => 'Home', 'href' => url('/'), 'icon' => 'fa-house', 'active' => request()->is('/')],
         ['label' => $coursesLabel, 'href' => $coursesUrl, 'icon' => 'fa-book-open', 'active' => request()->routeIs('student.course-catalog')],
+        ['label' => 'Pricing', 'href' => route('pricing'), 'icon' => 'fa-tags', 'active' => request()->routeIs('pricing')],
         ['label' => 'Marketplace', 'href' => route('marketplace.browse'), 'icon' => 'fa-store', 'active' => request()->routeIs('marketplace.*')],
         ['label' => 'Blog', 'href' => route('blog.index'), 'icon' => 'fa-newspaper', 'active' => request()->routeIs('blog.*')],
         ['label' => 'About', 'href' => route('about'), 'icon' => 'fa-circle-info', 'active' => request()->routeIs('about')],

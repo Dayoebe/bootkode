@@ -47,6 +47,7 @@
                     <h3 class="text-xs font-black uppercase tracking-[0.16em] text-slate-400">Learn</h3>
                     <ul class="mt-4 space-y-3 text-sm font-semibold text-slate-600">
                         <li><a href="{{ $courseUrl }}" class="hover:text-teal-700">Courses</a></li>
+                        <li><a href="{{ route('pricing') }}" class="hover:text-teal-700">Pricing</a></li>
                         <li><a href="{{ route('guideline') }}" class="hover:text-teal-700">Guidelines</a></li>
                         <li><a href="{{ route('certificate.verify') }}" class="hover:text-teal-700">Verify certificate</a></li>
                     </ul>
@@ -56,6 +57,7 @@
                     <h3 class="text-xs font-black uppercase tracking-[0.16em] text-slate-400">Platform</h3>
                     <ul class="mt-4 space-y-3 text-sm font-semibold text-slate-600">
                         <li><a href="{{ route('marketplace.browse') }}" class="hover:text-teal-700">Marketplace</a></li>
+                        <li><a href="{{ route('pricing') }}" class="hover:text-teal-700">Packages</a></li>
                         <li><a href="{{ route('blog.index') }}" class="hover:text-teal-700">Blog</a></li>
                         <li><a href="{{ route('statistics') }}" class="hover:text-teal-700">Statistics</a></li>
                     </ul>
