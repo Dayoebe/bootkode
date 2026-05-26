@@ -143,7 +143,8 @@
         overflow-wrap: break-word;
     }
 
-    .bk-public-app [x-cloak] {
+    .bk-public-app [x-cloak],
+    .bk-dashboard-app [x-cloak] {
         display: none !important;
     }
 

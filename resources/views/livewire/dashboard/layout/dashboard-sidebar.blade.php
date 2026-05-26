@@ -1,4 +1,18 @@
-<div>
+<div
+    x-data="{
+        menuSearch: '',
+        menuMatches(text) {
+            const term = this.menuSearch.trim().toLowerCase();
+
+            return term === '' || text.includes(term);
+        },
+        resetMenuSearch() {
+            this.menuSearch = '';
+        }
+    }"
+    x-on:livewire:navigated.window="resetMenuSearch()"
+    x-on:keydown.escape.window="resetMenuSearch()"
+>
     @php
         $user = Auth::user();
         $userInitials = collect(explode(' ', $user?->name ?? 'User'))
@@ -23,7 +37,7 @@
                     </span>
                     <span class="min-w-0">
                         <span class="block truncate text-lg font-black">BootKode</span>
-                        <span class="block truncate text-[11px] font-extrabold uppercase text-teal-200">Learning OS</span>
+                        <span class="block truncate text-[11px] font-extrabold uppercase text-teal-200">Academy</span>
                     </span>
                 </a>
                 <button
@@ -53,22 +67,30 @@
                 <span class="sr-only">Search menu</span>
                 <i class="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-sm text-slate-500"></i>
                 <input
+                    x-ref="menuSearchInput"
+                    x-model.debounce.100ms="menuSearch"
+                    @search="menuSearch = $event.target.value"
                     type="search"
                     placeholder="Search menu"
-                    x-data="{ searchTerm: '' }"
-                    x-model="searchTerm"
-                    @input="$dispatch('menu-search', { term: searchTerm })"
-                    class="h-11 w-full rounded-[8px] border border-white/10 bg-white/[0.06] pl-9 pr-3 text-sm font-semibold text-white placeholder:text-slate-500 outline-none transition focus:border-teal-300 focus:bg-white/[0.09] focus:ring-4 focus:ring-teal-300/10"
+                    class="h-11 w-full rounded-[8px] border border-white/10 bg-white/[0.06] pl-9 pr-10 text-sm font-semibold text-white placeholder:text-slate-500 outline-none transition focus:border-teal-300 focus:bg-white/[0.09] focus:ring-4 focus:ring-teal-300/10"
                     aria-label="Search navigation"
                 >
+                <button
+                    type="button"
+                    x-show="menuSearch.trim() !== ''"
+                    x-cloak
+                    @click="resetMenuSearch(); $refs.menuSearchInput.focus()"
+                    class="absolute right-2 top-1/2 grid h-7 w-7 -translate-y-1/2 place-items-center rounded-[8px] text-slate-400 transition hover:bg-white/10 hover:text-white"
+                    aria-label="Clear menu search"
+                >
+                    <i class="fas fa-times text-xs"></i>
+                </button>
             </label>
         </div>
 
         <nav
             class="flex-1 space-y-1 overflow-y-auto px-4 pb-5"
             role="navigation"
-            x-data="{ searchTerm: '' }"
-            @menu-search.window="searchTerm = $event.detail.term"
         >
             @foreach ($menuItems as $item)
                 @php
@@ -79,9 +101,9 @@
                 @endphp
 
                 <div
-                    x-data="{ expanded: @js($isExpanded), visible: true }"
-                    x-show="visible"
-                    x-effect="visible = searchTerm === '' || @js($searchText).includes(searchTerm.toLowerCase())"
+                    x-data="{ expanded: @js($isExpanded) }"
+                    x-show="menuMatches(@js($searchText))"
+                    x-cloak
                     class="menu-item"
                 >
                     @if(isset($item['children']) && !empty($item['children']))
@@ -118,7 +140,7 @@
                                 <li role="menuitem">
                                     <a
                                         href="{{ $child['route_name'] === '#' ? '#' : route($child['route_name']) }}"
-                                        @click="if (window.innerWidth < 1024) { sidebarOpen = false }"
+                                        @click="resetMenuSearch(); if (window.innerWidth < 1024) { sidebarOpen = false }"
                                         class="group flex items-center gap-3 rounded-[8px] px-3 py-2.5 transition {{ $isActiveChild ? 'bg-teal-300 text-slate-950 shadow-sm' : 'text-slate-400 hover:bg-white/[0.08] hover:text-white' }}"
                                         wire:navigate
                                     >
@@ -141,7 +163,7 @@
                         @endphp
                         <a
                             href="{{ $item['route_name'] === '#' ? '#' : route($item['route_name']) }}"
-                            @click="if (window.innerWidth < 1024) { sidebarOpen = false }"
+                            @click="resetMenuSearch(); if (window.innerWidth < 1024) { sidebarOpen = false }"
                             class="group flex items-center gap-3 rounded-[8px] px-3 py-2.5 transition {{ $isActiveItem ? 'bg-white text-slate-950 shadow-lg shadow-black/10' : 'text-slate-300 hover:bg-white/[0.08] hover:text-white' }}"
                             wire:navigate
                         >

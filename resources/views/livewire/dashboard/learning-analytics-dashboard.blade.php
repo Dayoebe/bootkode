@@ -574,6 +574,9 @@
                 if (!ctx) return;
                 
                 const chartData = @json($chartData);
+                if (!window.bootkodeDashboardCharts?.shouldRenderDataset('analyticsChart', chartData)) {
+                    return;
+                }
                 
                 this.chart = new Chart(ctx, {
                     type: 'line',
@@ -619,10 +622,22 @@
             },
             
             updateChart() {
+                const newData = @json($chartData);
+
+                if (!window.bootkodeDashboardCharts?.shouldRenderDataset('analyticsChart', newData)) {
+                    if (this.chart) {
+                        this.chart.destroy();
+                        this.chart = null;
+                    }
+
+                    return;
+                }
+
                 if (this.chart) {
-                    const newData = @json($chartData);
                     this.chart.data = newData;
                     this.chart.update('active');
+                } else {
+                    this.initChart();
                 }
             },
             
