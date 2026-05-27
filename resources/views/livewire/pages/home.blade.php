@@ -70,6 +70,9 @@
                     <a href="{{ $courseUrl }}" class="bk-secondary-btn border-white/30 bg-white/10 text-white hover:bg-white/15">
                         Browse courses
                     </a>
+                    <a href="{{ route('pricing') }}" class="bk-secondary-btn border-white/30 bg-white/10 text-white hover:bg-white/15">
+                        View pricing
+                    </a>
                 </div>
 
                 <div class="mt-8 grid max-w-xl grid-cols-3 gap-2 sm:gap-3">

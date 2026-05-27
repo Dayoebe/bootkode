@@ -1,4 +1,4 @@
-<div class="w-full min-h-screen bg-gray-50 overflow-x-hidden">
+<div class="bk-themed-surface bk-page-manager w-full min-h-screen bg-themed-primary overflow-x-hidden transition-colors duration-200">
     <!-- Header Section -->
     <div class="bg-white shadow-sm border-b border-gray-200">
         <div class="px-4 sm:px-6 lg:px-8">
