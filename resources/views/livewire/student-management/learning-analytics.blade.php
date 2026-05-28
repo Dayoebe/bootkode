@@ -526,7 +526,6 @@
 @endpush
 
 @push('scripts')
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
         // Define chartComponent BEFORE Alpine.js initializes
         document.addEventListener('alpine:init', () => {
