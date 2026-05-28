@@ -26,6 +26,7 @@ class Profile extends Component
     public $githubProfile = '';
     public $portfolioUrl = '';
     public $isAvailable = true;
+    public $availabilitySlots = [];
     
     public $showProfileModal = false;
 
@@ -36,7 +37,11 @@ class Profile extends Component
         'yearsExperience' => 'required|integer|min:0|max:50',
         'maxMentees' => 'required|integer|min:1|max:20',
         'timezone' => 'required|string',
-        'mentoringApproach' => 'required|string|min:50|max:1000'
+        'mentoringApproach' => 'required|string|min:50|max:1000',
+        'availabilitySlots' => 'nullable|array|max:21',
+        'availabilitySlots.*.day' => 'required_with:availabilitySlots|string',
+        'availabilitySlots.*.start' => 'required_with:availabilitySlots|date_format:H:i',
+        'availabilitySlots.*.end' => 'required_with:availabilitySlots|date_format:H:i',
     ];
 
     public function mount()
@@ -65,6 +70,7 @@ class Profile extends Component
             $this->githubProfile = $profile->github_profile ?? '';
             $this->portfolioUrl = $profile->portfolio_url ?? '';
             $this->isAvailable = $profile->is_available;
+            $this->availabilitySlots = $profile->normalizedAvailabilitySchedule() ?: $this->defaultAvailabilitySlots();
         } else {
             $this->initializeArrays();
         }
@@ -76,6 +82,7 @@ class Profile extends Component
         if (empty($this->skills)) $this->skills = [''];
         $this->timezone = $this->timezone ?: 'UTC';
         $this->experienceLevel = $this->experienceLevel ?: 'mid';
+        $this->availabilitySlots = $this->availabilitySlots ?: $this->defaultAvailabilitySlots();
     }
 
     public function editProfile()
@@ -102,7 +109,8 @@ class Profile extends Component
             'linkedin_profile' => $this->linkedinProfile,
             'github_profile' => $this->githubProfile,
             'portfolio_url' => $this->portfolioUrl,
-            'is_available' => $this->isAvailable
+            'is_available' => $this->isAvailable,
+            'availability_schedule' => $this->cleanAvailabilitySlots(),
         ];
 
         if ($this->profileId) {
@@ -148,6 +156,45 @@ class Profile extends Component
         } else {
             $this->communicationPreferences[] = $preference;
         }
+    }
+
+    public function addAvailabilitySlot()
+    {
+        $this->availabilitySlots[] = [
+            'day' => 'monday',
+            'start' => '09:00',
+            'end' => '17:00',
+        ];
+    }
+
+    public function removeAvailabilitySlot($index)
+    {
+        unset($this->availabilitySlots[$index]);
+        $this->availabilitySlots = array_values($this->availabilitySlots ?: []);
+    }
+
+    private function cleanAvailabilitySlots(): array
+    {
+        return collect($this->availabilitySlots)
+            ->map(fn ($slot) => [
+                'day' => strtolower((string) ($slot['day'] ?? '')),
+                'start' => (string) ($slot['start'] ?? ''),
+                'end' => (string) ($slot['end'] ?? ''),
+            ])
+            ->filter(fn ($slot) => $slot['day'] && $slot['start'] && $slot['end'] && $slot['start'] < $slot['end'])
+            ->values()
+            ->all();
+    }
+
+    private function defaultAvailabilitySlots(): array
+    {
+        return [
+            ['day' => 'monday', 'start' => '09:00', 'end' => '17:00'],
+            ['day' => 'tuesday', 'start' => '09:00', 'end' => '17:00'],
+            ['day' => 'wednesday', 'start' => '09:00', 'end' => '17:00'],
+            ['day' => 'thursday', 'start' => '09:00', 'end' => '17:00'],
+            ['day' => 'friday', 'start' => '09:00', 'end' => '17:00'],
+        ];
     }
 
     public function closeModal()

@@ -92,6 +92,23 @@
                     </p>
                 </div>
 
+                <div class="md:col-span-2">
+                    <h4 class="font-semibold text-themed-primary mb-3 transition-colors duration-300">Weekly Booking Hours</h4>
+                    @php $availabilitySummary = auth()->user()->mentorProfile?->availabilitySummary() ?? []; @endphp
+                    @if($availabilitySummary)
+                        <div class="grid md:grid-cols-2 gap-2">
+                            @foreach($availabilitySummary as $day => $hours)
+                                <div class="flex items-center justify-between rounded-lg border border-themed-primary bg-themed-primary px-3 py-2 text-sm">
+                                    <span class="font-medium text-themed-primary">{{ ucfirst($day) }}</span>
+                                    <span class="text-themed-secondary">{{ $hours }}</span>
+                                </div>
+                            @endforeach
+                        </div>
+                    @else
+                        <p class="text-sm text-themed-secondary">No strict weekly hours set. Sessions can be booked whenever there is no conflict.</p>
+                    @endif
+                </div>
+
                 <div>
                     <h4 class="font-semibold text-themed-primary mb-3 transition-colors duration-300">Pricing</h4>
                     <p class="text-themed-secondary transition-colors duration-300">
@@ -368,6 +385,38 @@
                                 <span class="ml-2 text-sm text-themed-primary transition-colors duration-300">Available for New Mentees</span>
                             </label>
                         </div>
+                    </div>
+
+                    <div>
+                        <div class="flex items-center justify-between mb-3">
+                            <label class="block text-sm font-medium text-themed-primary transition-colors duration-300">Weekly Availability</label>
+                            <button type="button" wire:click="addAvailabilitySlot"
+                                class="inline-flex items-center gap-2 rounded-lg bg-accent-primary px-3 py-2 text-sm font-medium text-white hover:bg-accent-secondary">
+                                <i class="fas fa-plus"></i>
+                                Add slot
+                            </button>
+                        </div>
+                        <div class="space-y-3">
+                            @foreach($availabilitySlots as $index => $slot)
+                                <div class="grid grid-cols-1 md:grid-cols-[1fr_1fr_1fr_auto] gap-3 rounded-lg border border-themed-primary bg-themed-primary p-3">
+                                    <select wire:model="availabilitySlots.{{ $index }}.day"
+                                        class="rounded-lg border border-themed-primary bg-themed-secondary px-3 py-2 text-themed-primary focus:ring-2 focus:ring-accent-primary">
+                                        @foreach(['monday','tuesday','wednesday','thursday','friday','saturday','sunday'] as $day)
+                                            <option value="{{ $day }}">{{ ucfirst($day) }}</option>
+                                        @endforeach
+                                    </select>
+                                    <input type="time" wire:model="availabilitySlots.{{ $index }}.start"
+                                        class="rounded-lg border border-themed-primary bg-themed-secondary px-3 py-2 text-themed-primary focus:ring-2 focus:ring-accent-primary">
+                                    <input type="time" wire:model="availabilitySlots.{{ $index }}.end"
+                                        class="rounded-lg border border-themed-primary bg-themed-secondary px-3 py-2 text-themed-primary focus:ring-2 focus:ring-accent-primary">
+                                    <button type="button" wire:click="removeAvailabilitySlot({{ $index }})"
+                                        class="grid h-10 w-10 place-items-center rounded-lg bg-red-600 text-white hover:bg-red-700">
+                                        <i class="fas fa-minus"></i>
+                                    </button>
+                                </div>
+                            @endforeach
+                        </div>
+                        <p class="mt-2 text-xs text-themed-secondary">Bookings will be blocked outside these hours. Leave no slots to allow any free time.</p>
                     </div>
 
                     <!-- Form Actions -->
