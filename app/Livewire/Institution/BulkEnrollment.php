@@ -76,7 +76,7 @@ class BulkEnrollment extends Component
             // Process bulk enrollment
             $batch = app(InstitutionService::class)->processBulkEnrollment(
                 $institution,
-                storage_path('app/' . $filePath),
+                $filePath,
                 $this->selectedCourses,
                 [
                     'name' => $this->batchName,

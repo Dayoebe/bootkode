@@ -61,9 +61,25 @@ class LicenseManagement extends Component
     public function openUpgradeModal($institutionId)
     {
         $this->selectedInstitution = Institution::findOrFail($institutionId);
+        $this->selectedInstitution->updateUserCount();
         $this->newLicenseType = $this->selectedInstitution->license_type;
         $this->newMaxUsers = $this->selectedInstitution->max_users;
         $this->showUpgradeModal = true;
+    }
+
+    public function updatedNewLicenseType()
+    {
+        if ($this->newLicenseType === 'custom') {
+            return;
+        }
+
+        $this->newMaxUsers = match($this->newLicenseType) {
+            'basic' => 100,
+            'standard' => 500,
+            'premium' => 1000,
+            'enterprise' => 999999,
+            default => $this->newMaxUsers,
+        };
     }
 
     public function closeModals()
@@ -82,6 +98,8 @@ class LicenseManagement extends Component
         ]);
 
         try {
+            $oldEndDate = $this->selectedInstitution->license_end_date;
+
             $this->selectedInstitution->update([
                 'license_end_date' => $this->newEndDate,
                 'status' => 'active'
@@ -90,7 +108,7 @@ class LicenseManagement extends Component
             // Log the renewal
             $this->selectedInstitution->licenseHistory()->create([
                 'action' => 'renewed',
-                'old_values' => ['license_end_date' => $this->selectedInstitution->getOriginal('license_end_date')],
+                'old_values' => ['license_end_date' => $oldEndDate?->toDateString()],
                 'new_values' => ['license_end_date' => $this->newEndDate],
                 'reason' => $this->renewalReason,
                 'performed_by' => auth()->id(),
@@ -113,6 +131,12 @@ class LicenseManagement extends Component
         ]);
 
         try {
+            $this->selectedInstitution->updateUserCount();
+
+            if ($this->newLicenseType !== 'enterprise' && (int) $this->newMaxUsers < (int) $this->selectedInstitution->current_users) {
+                throw new \RuntimeException('The new license limit is below the institution seats already in use.');
+            }
+
             $oldValues = [
                 'license_type' => $this->selectedInstitution->license_type,
                 'max_users' => $this->selectedInstitution->max_users

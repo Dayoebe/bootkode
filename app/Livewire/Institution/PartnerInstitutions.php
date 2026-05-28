@@ -7,6 +7,7 @@ use Livewire\WithPagination;
 use Livewire\WithFileUploads;
 use App\Models\Core\Institution;
 use App\Models\Core\User;
+use App\Models\Admin\InstitutionInvitation;
 use Illuminate\Support\Str;
 use App\Services\InstitutionService;
 use Illuminate\Support\Facades\Storage;
@@ -28,6 +29,7 @@ class PartnerInstitutions extends Component
     public $showEditModal = false;
     public $showViewModal = false;
     public $showDeleteModal = false;
+    public $showInviteModal = false;
     public $selectedInstitution = null;
 
     // Form data
@@ -54,6 +56,14 @@ class PartnerInstitutions extends Component
     
     public $logo;
     public $existingLogo = '';
+
+    public $inviteForm = [
+        'institution_id' => '',
+        'name' => '',
+        'email' => '',
+        'role' => 'admin',
+        'department' => '',
+    ];
 
     protected $rules = [
         'form.name' => 'required|string|max:255',
@@ -138,7 +148,7 @@ class PartnerInstitutions extends Component
 
     public function openViewModal($institutionId)
     {
-        $this->selectedInstitution = Institution::with(['adminUser', 'users', 'creator'])
+        $this->selectedInstitution = Institution::with(['adminUser', 'users.user', 'creator', 'invitations.invitee'])
             ->findOrFail($institutionId);
         $this->showViewModal = true;
     }
@@ -155,8 +165,10 @@ class PartnerInstitutions extends Component
         $this->showEditModal = false;
         $this->showViewModal = false;
         $this->showDeleteModal = false;
+        $this->showInviteModal = false;
         $this->selectedInstitution = null;
         $this->resetForm();
+        $this->resetInviteForm();
         $this->resetValidation();
     }
 
@@ -259,6 +271,58 @@ class PartnerInstitutions extends Component
         }
     }
 
+    public function openInviteModal($institutionId)
+    {
+        $this->selectedInstitution = Institution::findOrFail($institutionId);
+        $this->inviteForm = [
+            'institution_id' => (string) $this->selectedInstitution->id,
+            'name' => '',
+            'email' => '',
+            'role' => 'admin',
+            'department' => '',
+        ];
+        $this->showViewModal = false;
+        $this->showInviteModal = true;
+    }
+
+    public function sendInvitation()
+    {
+        $this->validate([
+            'inviteForm.institution_id' => 'required|exists:institutions,id',
+            'inviteForm.name' => 'nullable|string|max:255',
+            'inviteForm.email' => 'required|email|max:255',
+            'inviteForm.role' => 'required|in:admin,instructor,student,observer',
+            'inviteForm.department' => 'nullable|string|max:255',
+        ]);
+
+        try {
+            $institution = Institution::findOrFail($this->inviteForm['institution_id']);
+            app(InstitutionService::class)->inviteInstitutionAdmin($institution, $this->inviteForm);
+
+            session()->flash('message', 'Institution invitation sent successfully!');
+            $this->closeModals();
+        } catch (\Exception $e) {
+            session()->flash('error', $e->getMessage());
+        }
+    }
+
+    public function revokeInvitation($invitationId)
+    {
+        try {
+            $invitation = InstitutionInvitation::findOrFail($invitationId);
+            $invitation->revoke();
+            $invitation->institution?->updateUserCount();
+
+            session()->flash('message', 'Invitation revoked successfully!');
+            if ($this->showViewModal && $this->selectedInstitution) {
+                $this->selectedInstitution = Institution::with(['adminUser', 'users.user', 'creator', 'invitations.invitee'])
+                    ->find($this->selectedInstitution->id);
+            }
+        } catch (\Exception $e) {
+            session()->flash('error', 'Failed to revoke invitation: ' . $e->getMessage());
+        }
+    }
+
     public function approve($institutionId)
     {
         try {
@@ -355,6 +419,17 @@ class PartnerInstitutions extends Component
         $this->existingLogo = '';
     }
 
+    private function resetInviteForm()
+    {
+        $this->inviteForm = [
+            'institution_id' => '',
+            'name' => '',
+            'email' => '',
+            'role' => 'admin',
+            'department' => '',
+        ];
+    }
+
     private function fillForm($institution)
     {
         $this->form = [
@@ -385,7 +460,13 @@ class PartnerInstitutions extends Component
     {
         $query = Institution::with(['adminUser', 'users'])
             ->withCount(['users as active_users_count' => function($q) {
-                $q->where('status', 'active');
+                $q->whereIn('status', ['active', 'pending']);
+            }])
+            ->withCount(['invitations as pending_invitations_count' => function($q) {
+                $q->where('status', 'pending')
+                    ->where(function ($inner) {
+                        $inner->whereNull('expires_at')->orWhere('expires_at', '>=', now());
+                    });
             }]);
 
         // Apply search
