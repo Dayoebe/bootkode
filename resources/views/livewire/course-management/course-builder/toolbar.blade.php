@@ -53,10 +53,6 @@
                             class="px-3 py-1 bg-red-600 text-white rounded text-sm hover:bg-red-700 transition-colors">
                         Keep My Changes
                     </button>
-                    <button @click="resolveConflict('merge')" 
-                            class="px-3 py-1 bg-yellow-600 text-white rounded text-sm hover:bg-yellow-700 transition-colors">
-                        Review & Merge
-                    </button>
                     <button @click="resolveConflict('reload')" 
                             class="px-3 py-1 bg-gray-600 text-white rounded text-sm hover:bg-gray-700 transition-colors">
                         Reload Course
@@ -498,10 +494,6 @@
                             // Reload course data
                             await this.$wire.call('refreshCourse');
                             this.showNotification('Course data reloaded', 'info');
-                            break;
-                        case 'merge':
-                            // Show merge interface (implement as needed)
-                            this.showNotification('Merge functionality coming soon', 'info');
                             break;
                     }
                 },

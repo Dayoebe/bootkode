@@ -171,7 +171,7 @@ return new class extends Migration
             $table->unsignedInteger('max_attempts')->nullable();
             $table->boolean('shuffle_questions')->default(false);
             $table->boolean('shuffle_options')->default(false);
-            $table->text('instructions')->nullable()->after('shuffle_options');
+            $table->text('instructions')->nullable();
 
             $table->timestamps();
             $table->softDeletes();
