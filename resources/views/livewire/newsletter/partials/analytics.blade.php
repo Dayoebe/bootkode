@@ -153,33 +153,56 @@
 </div>
 
 <script>
-document.addEventListener('livewire:navigated', function () {
+function renderNewsletterAnalyticsCharts() {
     @if($subscriberGrowth->count() > 0)
         const ctx = document.getElementById('subscriberGrowthChart')?.getContext('2d');
-        if (ctx) {
-            new Chart(ctx, {
+        if (ctx && window.Chart) {
+            window.bootkodeNewsletterCharts ??= {};
+            window.bootkodeNewsletterCharts.subscriberGrowthChart?.destroy();
+
+            const theme = getComputedStyle(document.documentElement);
+            const accent = `rgb(${theme.getPropertyValue('--accent-primary').trim() || '59 130 246'})`;
+            const accentSoft = `rgb(${theme.getPropertyValue('--accent-primary').trim() || '59 130 246'} / 0.14)`;
+            const text = `rgb(${theme.getPropertyValue('--text-secondary').trim() || '107 114 128'})`;
+            const grid = `rgb(${theme.getPropertyValue('--border-primary').trim() || '229 231 235'} / 0.7)`;
+
+            window.bootkodeNewsletterCharts.subscriberGrowthChart = new Chart(ctx, {
                 type: 'line',
                 data: {
                     labels: @json($subscriberGrowth->pluck('date')),
                     datasets: [{
                         label: 'New Subscribers',
                         data: @json($subscriberGrowth->pluck('count')),
-                        borderColor: 'rgb(59, 130, 246)',
-                        backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                        borderColor: accent,
+                        backgroundColor: accentSoft,
                         tension: 0.1
                     }]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            labels: { color: text }
+                        }
+                    },
                     scales: {
                         y: {
-                            beginAtZero: true
+                            beginAtZero: true,
+                            ticks: { color: text },
+                            grid: { color: grid }
+                        },
+                        x: {
+                            ticks: { color: text },
+                            grid: { color: grid }
                         }
                     }
                 }
             });
         }
     @endif
-});
+}
+
+renderNewsletterAnalyticsCharts();
+document.addEventListener('livewire:navigated', renderNewsletterAnalyticsCharts);
 </script>

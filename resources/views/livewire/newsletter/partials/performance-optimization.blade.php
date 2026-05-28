@@ -477,7 +477,34 @@
 <!-- ... existing code ... -->
 
 <script>
-    document.addEventListener('livewire:navigated', function () {
+    function renderNewsletterPerformanceCharts() {
+        window.bootkodeNewsletterCharts ??= {};
+
+        const theme = getComputedStyle(document.documentElement);
+        const themeRgb = (name, fallback, alpha = null) => {
+            const value = theme.getPropertyValue(name).trim() || fallback;
+
+            return alpha === null ? `rgb(${value})` : `rgb(${value} / ${alpha})`;
+        };
+        const chartColors = {
+            accent: themeRgb('--accent-primary', '59 130 246'),
+            accentSoft: themeRgb('--accent-primary', '59 130 246', 0.14),
+            secondary: themeRgb('--accent-secondary', '34 197 94'),
+            secondarySoft: themeRgb('--accent-secondary', '34 197 94', 0.14),
+            text: themeRgb('--text-secondary', '107 114 128'),
+            grid: themeRgb('--border-primary', '229 231 235', 0.7),
+            danger: 'rgb(239 68 68)',
+            dangerSoft: 'rgb(239 68 68 / 0.14)',
+        };
+        const renderNewsletterChart = (key, context, config) => {
+            if (!context || !window.Chart) {
+                return;
+            }
+
+            window.bootkodeNewsletterCharts[key]?.destroy();
+            window.bootkodeNewsletterCharts[key] = new Chart(context, config);
+        };
+
         // Hourly Chart
         @if($activeSection === 'send-time' && $sendTimeAnalysis['hourly_stats']->count() > 0)
             const hourlyCtx = document.getElementById('hourlyChart')?.getContext('2d');
@@ -485,34 +512,44 @@
                 const hourlyLabels = @json($sendTimeAnalysis['hourly_stats']->pluck('hour'));
                 const hourlyData = @json($sendTimeAnalysis['hourly_stats']->pluck('avg_' . $selectedMetric));
                 
-                new Chart(hourlyCtx, {
+                renderNewsletterChart('hourlyChart', hourlyCtx, {
                     type: 'line',
                     data: {
                         labels: hourlyLabels,
                         datasets: [{
                             label: '{{ ucwords(str_replace("_", " ", $selectedMetric)) }}',
                             data: hourlyData,
-                            borderColor: 'rgb(59, 130, 246)',
-                            backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                            borderColor: chartColors.accent,
+                            backgroundColor: chartColors.accentSoft,
                             tension: 0.1
                         }]
                     },
                     options: {
                         responsive: true,
                         maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                labels: { color: chartColors.text }
+                            }
+                        },
                         scales: {
                             y: {
                                 beginAtZero: true,
+                                grid: { color: chartColors.grid },
                                 ticks: {
+                                    color: chartColors.text,
                                     callback: function(value) {
                                         return value + '%';
                                     }
                                 }
                             },
                             x: {
+                                ticks: { color: chartColors.text },
+                                grid: { color: chartColors.grid },
                                 title: {
                                     display: true,
-                                    text: 'Hour of Day'
+                                    text: 'Hour of Day',
+                                    color: chartColors.text
                                 }
                             }
                         }
@@ -535,29 +572,40 @@
                 }));
                 const dailyData = @json($sendTimeAnalysis['daily_stats']->pluck('avg_' . $selectedMetric));
                 
-                new Chart(dailyCtx, {
+                renderNewsletterChart('dailyChart', dailyCtx, {
                     type: 'bar',
                     data: {
                         labels: dailyLabels,
                         datasets: [{
                             label: '{{ ucwords(str_replace("_", " ", $selectedMetric)) }}',
                             data: dailyData,
-                            backgroundColor: 'rgba(34, 197, 94, 0.8)',
-                            borderColor: 'rgb(34, 197, 94)',
+                            backgroundColor: chartColors.secondary,
+                            borderColor: chartColors.secondary,
                             borderWidth: 1
                         }]
                     },
                     options: {
                         responsive: true,
                         maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                labels: { color: chartColors.text }
+                            }
+                        },
                         scales: {
                             y: {
                                 beginAtZero: true,
+                                grid: { color: chartColors.grid },
                                 ticks: {
+                                    color: chartColors.text,
                                     callback: function(value) {
                                         return value + '%';
                                     }
                                 }
+                            },
+                            x: {
+                                ticks: { color: chartColors.text },
+                                grid: { color: chartColors.grid }
                             }
                         }
                     }
@@ -573,7 +621,7 @@
                 const newSubscribersData = @json($listHealth['growth_data']->pluck('new_subscribers'));
                 const unsubscribesData = @json($listHealth['growth_data']->pluck('unsubscribes'));
                 
-                new Chart(growthCtx, {
+                renderNewsletterChart('growthChart', growthCtx, {
                     type: 'line',
                     data: {
                         labels: growthLabels,
@@ -581,15 +629,15 @@
                             {
                                 label: 'New Subscribers',
                                 data: newSubscribersData,
-                                borderColor: 'rgb(34, 197, 94)',
-                                backgroundColor: 'rgba(34, 197, 94, 0.1)',
+                                borderColor: chartColors.secondary,
+                                backgroundColor: chartColors.secondarySoft,
                                 tension: 0.1
                             },
                             {
                                 label: 'Unsubscribes',
                                 data: unsubscribesData,
-                                borderColor: 'rgb(239, 68, 68)',
-                                backgroundColor: 'rgba(239, 68, 68, 0.1)',
+                                borderColor: chartColors.danger,
+                                backgroundColor: chartColors.dangerSoft,
                                 tension: 0.1
                             }
                         ]
@@ -597,15 +645,28 @@
                     options: {
                         responsive: true,
                         maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                labels: { color: chartColors.text }
+                            }
+                        },
                         scales: {
                             y: {
-                                beginAtZero: true
+                                beginAtZero: true,
+                                ticks: { color: chartColors.text },
+                                grid: { color: chartColors.grid }
+                            },
+                            x: {
+                                ticks: { color: chartColors.text },
+                                grid: { color: chartColors.grid }
                             }
                         }
                     }
                 });
             }
         @endif
-    });
+    }
+
+    renderNewsletterPerformanceCharts();
+    document.addEventListener('livewire:navigated', renderNewsletterPerformanceCharts);
     </script>
-    

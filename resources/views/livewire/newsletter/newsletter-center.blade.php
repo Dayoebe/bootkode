@@ -1,5 +1,5 @@
 {{-- UPDATED: newsletter-center.blade.php --}}
-<div class="w-full min-h-screen bg-gray-50 overflow-x-hidden">
+<div class="bk-themed-surface bk-newsletter w-full min-h-screen bg-themed-primary overflow-x-hidden transition-colors duration-200">
     <div class="w-full mx-auto px-4 sm:px-6 lg:px-8">
         <!-- Header Section -->
         <div class="bg-white shadow-sm border-b border-gray-200">

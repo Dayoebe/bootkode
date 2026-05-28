@@ -125,6 +125,21 @@ public function markAsFailed($errorMessage = null)
         'error_message' => $errorMessage,
     ]);
 }
+
+public function markAsBounced()
+{
+    $data = $this->data ?? [];
+    $data['bounced_at'] = now()->toIso8601String();
+
+    $this->update([
+        'status' => self::STATUS_FAILED,
+        'data' => $data,
+    ]);
+
+    $this->subscriber?->update([
+        'status' => NewsletterSubscriber::STATUS_BOUNCED,
+    ]);
+}
  
     // Scopes
     public function scopeByType($query, $type)
@@ -138,4 +153,3 @@ public function markAsFailed($errorMessage = null)
             ->where('status', self::STATUS_PENDING);
     }
 }
-
