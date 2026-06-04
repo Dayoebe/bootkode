@@ -33,6 +33,10 @@ class VideoLibrary extends Component
 
     protected $paginationTheme = 'tailwind';
 
+    protected $queryString = [
+        'search' => ['except' => ''],
+    ];
+
     protected $rules = [
         'title' => 'required|string|max:255',
         'description' => 'nullable|string|max:1000',
