@@ -263,12 +263,6 @@
                                             </button>
                                         @endif
 
-                                        <!-- Edit/Modify -->
-                                        <button wire:click="editItem({{ $item->id }})"
-                                            class="text-indigo-600 hover:text-indigo-900 p-1" title="Edit Item">
-                                            <i class="fas fa-edit"></i>
-                                        </button>
-
                                         <!-- Delete -->
                                         <button wire:click="deleteItem({{ $item->id }})"
                                             onclick="confirm('Permanently delete this item?') || event.stopImmediatePropagation()"
@@ -300,6 +294,85 @@
                     Marketplace items will appear here.
                 @endif
             </p>
+        </div>
+    @endif
+
+    @if($showItemDetailsModal && $selectedMarketplaceItem)
+        <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-4 py-6">
+            <div class="w-full max-w-3xl overflow-hidden rounded-lg bg-white shadow-xl">
+                <div class="flex items-start justify-between border-b border-gray-200 px-6 py-4">
+                    <div>
+                        <h3 class="text-lg font-semibold text-gray-900">{{ $selectedMarketplaceItem->title }}</h3>
+                        <p class="mt-1 text-sm text-gray-500">
+                            {{ $selectedMarketplaceItem->type_name }} by {{ $selectedMarketplaceItem->vendor?->name ?? 'Unknown vendor' }}
+                        </p>
+                    </div>
+                    <button type="button" wire:click="closeItemDetails" class="text-gray-400 hover:text-gray-600">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+
+                <div class="max-h-[70vh] overflow-y-auto px-6 py-5">
+                    <div class="grid grid-cols-1 gap-4 md:grid-cols-4">
+                        <div class="rounded-lg border border-gray-200 p-4">
+                            <p class="text-xs font-semibold uppercase text-gray-500">Status</p>
+                            <p class="mt-1 font-semibold text-gray-900">{{ $selectedMarketplaceItem->status_name }}</p>
+                        </div>
+                        <div class="rounded-lg border border-gray-200 p-4">
+                            <p class="text-xs font-semibold uppercase text-gray-500">Price</p>
+                            <p class="mt-1 font-semibold text-gray-900">{{ $selectedMarketplaceItem->getFormattedPrice() }}</p>
+                        </div>
+                        <div class="rounded-lg border border-gray-200 p-4">
+                            <p class="text-xs font-semibold uppercase text-gray-500">Orders</p>
+                            <p class="mt-1 font-semibold text-gray-900">{{ number_format($selectedMarketplaceItem->orders_count ?? 0) }}</p>
+                        </div>
+                        <div class="rounded-lg border border-gray-200 p-4">
+                            <p class="text-xs font-semibold uppercase text-gray-500">Paid Revenue</p>
+                            <p class="mt-1 font-semibold text-gray-900">₦{{ number_format((float) ($selectedMarketplaceItem->paid_revenue ?? 0), 2) }}</p>
+                        </div>
+                    </div>
+
+                    <div class="mt-5 grid grid-cols-1 gap-5 md:grid-cols-2">
+                        <div>
+                            <p class="text-sm font-semibold text-gray-900">Description</p>
+                            <p class="mt-2 whitespace-pre-line text-sm leading-6 text-gray-600">{{ $selectedMarketplaceItem->description ?: $selectedMarketplaceItem->short_description ?: 'No description provided.' }}</p>
+                        </div>
+                        <div class="space-y-3">
+                            <div>
+                                <p class="text-sm font-semibold text-gray-900">Approval</p>
+                                <p class="mt-1 text-sm text-gray-600">
+                                    {{ $selectedMarketplaceItem->approved_at ? $selectedMarketplaceItem->approved_at->format('M d, Y H:i') : 'Not approved yet' }}
+                                    @if($selectedMarketplaceItem->approver)
+                                        by {{ $selectedMarketplaceItem->approver->name }}
+                                    @endif
+                                </p>
+                            </div>
+                            @if($selectedMarketplaceItem->rejection_reason)
+                                <div>
+                                    <p class="text-sm font-semibold text-gray-900">Review Note</p>
+                                    <p class="mt-1 text-sm text-gray-600">{{ $selectedMarketplaceItem->rejection_reason }}</p>
+                                </div>
+                            @endif
+                            <div>
+                                <p class="text-sm font-semibold text-gray-900">Tags</p>
+                                <div class="mt-2 flex flex-wrap gap-2">
+                                    @forelse((array) ($selectedMarketplaceItem->tags ?? []) as $tag)
+                                        <span class="rounded-full bg-gray-100 px-2.5 py-1 text-xs font-medium text-gray-700">{{ $tag }}</span>
+                                    @empty
+                                        <span class="text-sm text-gray-500">No tags</span>
+                                    @endforelse
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex justify-end border-t border-gray-200 px-6 py-4">
+                    <button type="button" wire:click="closeItemDetails" class="rounded-lg border border-gray-300 px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50">
+                        Close
+                    </button>
+                </div>
+            </div>
         </div>
     @endif
 </div>

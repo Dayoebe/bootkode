@@ -3,6 +3,8 @@
 namespace App\Livewire\Pages\Partials;
 
 use Livewire\Component;
+use App\Models\Content\Page;
+use App\Models\Content\PageMedia;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Artisan;
 
@@ -312,8 +314,8 @@ class Settings extends Component
         return [
             'php_version' => PHP_VERSION,
             'laravel_version' => app()->version(),
-            'total_pages' => \App\Models\Page::count(),
-            'total_media' => \App\Models\Content\PageMedia::count(),
+            'total_pages' => Page::count(),
+            'total_media' => PageMedia::count(),
             'cache_driver' => config('cache.default'),
             'queue_driver' => config('queue.default'),
             'storage_disk' => config('filesystems.default'),

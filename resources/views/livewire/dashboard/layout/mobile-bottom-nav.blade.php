@@ -31,10 +31,10 @@
             'badge' => $unreadChatCount
         ],
         [
-            'label' => 'Community',
-            'icon' => 'fas fa-users',
-            'route' => 'community.center',
-            'active' => str_contains($currentRoute, 'community.')
+            'label' => 'Journey',
+            'icon' => 'fas fa-route',
+            'route' => 'learner.journey',
+            'active' => $currentRoute === 'learner.journey'
         ],
         [
             'label' => 'More',
@@ -89,6 +89,7 @@
                                 <div class="grid max-h-[60vh] gap-2 overflow-y-auto p-3">
                                     @if($user)
                                         @foreach ([
+                                            ['route' => 'community.center', 'icon' => 'fas fa-users', 'label' => 'Community', 'copy' => 'Forums and study groups', 'color' => 'text-indigo-600'],
                                             ['route' => 'marketplace.browse', 'icon' => 'fas fa-store', 'label' => 'Marketplace', 'copy' => 'Courses and resources', 'color' => 'text-teal-700'],
                                             ['route' => 'student.certificates.index', 'icon' => 'fas fa-certificate', 'label' => 'Certificates', 'copy' => 'Proof and achievements', 'color' => 'text-amber-600'],
                                             ['route' => 'search.job', 'icon' => 'fas fa-briefcase', 'label' => 'Job Search', 'copy' => 'Career opportunities', 'color' => 'text-sky-700'],

@@ -256,7 +256,14 @@ class ObservabilityService
             return [];
         }
 
+        clearstatcache(true, $logFile);
+
         $size = filesize($logFile);
+
+        if (! is_int($size) || $size <= 0) {
+            return [];
+        }
+
         $handle = fopen($logFile, 'rb');
 
         if (! $handle) {
@@ -264,9 +271,18 @@ class ObservabilityService
         }
 
         $bytes = min($size, 1024 * 1024);
-        fseek($handle, -$bytes, SEEK_END);
-        $chunk = fread($handle, $bytes);
-        fclose($handle);
+
+        try {
+            if ($bytes < $size) {
+                fseek($handle, -$bytes, SEEK_END);
+            } else {
+                rewind($handle);
+            }
+
+            $chunk = fread($handle, $bytes);
+        } finally {
+            fclose($handle);
+        }
 
         return collect(explode("\n", (string) $chunk))
             ->filter(fn ($line) => str_contains($line, '.ERROR:') || str_contains($line, '.CRITICAL:') || str_contains($line, '.ALERT:') || str_contains($line, '.EMERGENCY:') || str_contains($line, '.WARNING:'))

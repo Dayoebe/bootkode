@@ -54,7 +54,7 @@
                             <input 
                                 type="text" 
                                 id="title"
-                                wire:model.blur="title"
+                                wire:model.live.debounce.300ms="title"
                                 class="mt-1 block w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-indigo-500 focus:border-indigo-500"
                                 placeholder="Enter your page title..."
                             >
@@ -63,7 +63,19 @@
 
                         <!-- Slug -->
                         <div class="md:col-span-2">
-                            <label for="slug" class="block text-sm font-medium text-gray-700">URL Slug</label>
+                            <div class="flex items-center justify-between gap-3">
+                                <label for="slug" class="block text-sm font-medium text-gray-700">URL Slug</label>
+                                @if($slugManuallyEdited)
+                                    <button
+                                        type="button"
+                                        wire:click="syncSlugFromTitle"
+                                        class="inline-flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-xs font-semibold text-gray-700 transition-colors hover:bg-gray-50"
+                                    >
+                                        <i class="fas fa-rotate"></i>
+                                        Sync from title
+                                    </button>
+                                @endif
+                            </div>
                             <div class="mt-1 flex rounded-lg shadow-sm">
                                 <span class="inline-flex items-center px-3 rounded-l-lg border border-r-0 border-gray-300 bg-gray-50 text-gray-500 text-sm">
                                     {{ url('/') }}/
@@ -71,13 +83,13 @@
                                 <input 
                                     type="text" 
                                     id="slug"
-                                    wire:model.blur="slug"
+                                    wire:model.live.debounce.300ms="slug"
                                     class="flex-1 min-w-0 block w-full px-3 py-2 rounded-none rounded-r-lg border border-gray-300 focus:ring-indigo-500 focus:border-indigo-500"
                                     placeholder="page-url-slug"
                                 >
                             </div>
                             @error('slug') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
-                            <p class="text-sm text-gray-500 mt-1">Leave empty to auto-generate from title</p>
+                            <p class="text-sm text-gray-500 mt-1">Auto-generated from title.</p>
                         </div>
 
                         <!-- Status -->

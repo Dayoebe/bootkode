@@ -53,6 +53,8 @@ class CreatePage extends Component
     public $seoAnalysisData = [];
     public $autoSave = true;
     public $lastSaved = null;
+    public $slugManuallyEdited = false;
+    public $lastGeneratedSlug = '';
 
     protected $rules = [
         'title' => 'required|string|max:255',
@@ -131,6 +133,8 @@ class CreatePage extends Component
             $this->settings = $page->settings ?: [];
             $this->custom_css = $page->custom_css ?: [];
             $this->custom_js = $page->custom_js ?: [];
+            $this->slugManuallyEdited = true;
+            $this->lastGeneratedSlug = $page->slug;
             
         } catch (\Exception $e) {
             $this->dispatch('notify', [
@@ -188,9 +192,10 @@ class CreatePage extends Component
     // Form Field Updates
     public function updatedTitle()
     {
-        if (empty($this->slug) || !$this->isEditing) {
+        if (! $this->slugManuallyEdited) {
             $this->generateSlug();
         }
+
         $this->generateMetaTitle();
         $this->triggerAutoSave();
     }
@@ -205,12 +210,20 @@ class CreatePage extends Component
     public function updatedSlug()
     {
         $this->slug = Str::slug($this->slug);
+        $this->slugManuallyEdited = filled($this->slug) && $this->slug !== $this->lastGeneratedSlug;
     }
 
     // Auto-generation Methods
     public function generateSlug()
     {
         $this->slug = $this->generateUniqueSlug($this->title, $this->editingPageId);
+        $this->lastGeneratedSlug = $this->slug;
+    }
+
+    public function syncSlugFromTitle()
+    {
+        $this->slugManuallyEdited = false;
+        $this->generateSlug();
     }
 
     public function generateUniqueSlug($title, $excludeId = null)
@@ -530,6 +543,8 @@ class CreatePage extends Component
     private function initializeDefaults()
     {
         $this->published_at = now()->format('Y-m-d\TH:i');
+        $this->slugManuallyEdited = false;
+        $this->lastGeneratedSlug = '';
         
         $this->page_blocks = [];
         

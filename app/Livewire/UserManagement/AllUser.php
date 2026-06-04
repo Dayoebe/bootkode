@@ -22,6 +22,16 @@ class AllUser extends Component
     public $lastLoginStart = '';
     public $lastLoginEnd = '';
 
+    protected $queryString = [
+        'search' => ['except' => ''],
+        'roleFilter' => ['except' => ''],
+    ];
+
+    public function updatingSearch()
+    {
+        $this->resetPage();
+    }
+
     public function sortBy($field)
     {
         if ($this->sortField === $field) {

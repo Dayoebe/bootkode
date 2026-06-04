@@ -115,13 +115,13 @@ class Wallet extends Model
     // Check if wallet has sufficient balance
     public function hasSufficientBalance(float $amount): bool
     {
-        return $this->balance >= $amount;
+        return (float) ($this->balance ?? 0) >= $amount;
     }
 
     // Get formatted balance
     public function getFormattedBalanceAttribute(): string
     {
-        return '₦' . number_format($this->balance, 2);
+        return '₦' . number_format((float) ($this->balance ?? 0), 2);
     }
 
     // Static method to get or create wallet
@@ -129,7 +129,12 @@ class Wallet extends Model
     {
         return static::firstOrCreate(
             ['user_id' => $userId, 'wallet_type' => $walletType],
-            ['currency' => 'NGN', 'is_active' => true]
+            [
+                'balance' => 0,
+                'pending_balance' => 0,
+                'currency' => 'NGN',
+                'is_active' => true,
+            ]
         );
     }
 }

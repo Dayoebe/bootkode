@@ -241,6 +241,23 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasMany(\App\Models\Learning\CourseEnrollment::class);
     }
 
+    public function institutionMemberships()
+    {
+        return $this->hasMany(\App\Models\Admin\InstitutionUser::class);
+    }
+
+    public function institutions()
+    {
+        return $this->belongsToMany(\App\Models\Core\Institution::class, 'institution_users')
+            ->withPivot(['role', 'department', 'employee_id', 'status', 'joined_at'])
+            ->withTimestamps();
+    }
+
+    public function institutionInvitations()
+    {
+        return $this->hasMany(\App\Models\Admin\InstitutionInvitation::class);
+    }
+
     public function studentDirectConversations()
     {
         return $this->hasMany(\App\Models\Messaging\DirectConversation::class, 'student_id');
@@ -420,19 +437,34 @@ class User extends Authenticatable implements MustVerifyEmail
     // MENTORSHIP & INTERVIEWS
     // ============================================
 
+    public function mentorProfile()
+    {
+        return $this->hasOne(\App\Models\Mentorship\MentorProfile::class);
+    }
+
+    public function mentorshipsAsMentor()
+    {
+        return $this->hasMany(\App\Models\Mentorship\Mentorship::class, 'mentor_id');
+    }
+
+    public function mentorshipsAsMentee()
+    {
+        return $this->hasMany(\App\Models\Mentorship\Mentorship::class, 'mentee_id');
+    }
+
     public function mockInterviews()
     {
-        return $this->hasMany(\App\Models\Mentorship\Mentorship\MockInterview::class);
+        return $this->hasMany(\App\Models\Mentorship\MockInterview::class);
     }
 
     public function interviewQuestions()
     {
-        return $this->hasMany(\App\Models\Mentorship\Mentorship\InterviewQuestion::class, 'created_by');
+        return $this->hasMany(\App\Models\Mentorship\InterviewQuestion::class, 'created_by');
     }
 
     public function questionSets()
     {
-        return $this->hasMany(\App\Models\Mentorship\Mentorship\InterviewQuestionSet::class, 'created_by');
+        return $this->hasMany(\App\Models\Mentorship\InterviewQuestionSet::class, 'created_by');
     }
 
     // ============================================
@@ -827,6 +859,11 @@ class User extends Authenticatable implements MustVerifyEmail
             self::ROLE_AFFILIATE_AMBASSADOR => 'affiliate_ambassador.dashboard',
             default => 'student.dashboard',
         };
+    }
+
+    public function canAccessDashboardRole(string $role): bool
+    {
+        return $this->hasRole(self::ROLE_SUPER_ADMIN) || $this->hasRole($role);
     }
 
     public function getFullAddressAttribute()
