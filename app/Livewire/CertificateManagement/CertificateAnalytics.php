@@ -240,13 +240,42 @@ class CertificateAnalytics extends Component
 
     public function exportReport()
     {
-        // This would generate and download a CSV/Excel report
-        // Implementation depends on your export library (e.g., Laravel Excel)
-        
-        $this->dispatch('notify', [
-            'message' => 'Export functionality will be implemented based on your export library.',
-            'type' => 'info'
-        ]);
+        $filename = 'certificate_analytics_' . now()->format('Y_m_d_His') . '.csv';
+
+        return response()->streamDownload(function () {
+            $handle = fopen('php://output', 'w');
+            fputcsv($handle, ['Metric', 'Value']);
+            fputcsv($handle, ['Date Range', $this->dateRange === 'all' ? 'All time' : 'Last ' . $this->dateRange . ' days']);
+            fputcsv($handle, ['Total Certificates', $this->totalCertificates]);
+            fputcsv($handle, ['Approved Certificates', $this->approvedCertificates]);
+            fputcsv($handle, ['Pending Certificates', $this->pendingCertificates]);
+            fputcsv($handle, ['This Month Certificates', $this->thisMonthCertificates]);
+            fputcsv($handle, ['Approval Rate', $this->approvalRate . '%']);
+            fputcsv($handle, []);
+
+            fputcsv($handle, ['Top Courses']);
+            fputcsv($handle, ['Course', 'Certificates']);
+            foreach ($this->topCourses as $course) {
+                fputcsv($handle, [
+                    data_get($course, 'course.title', 'Unknown course'),
+                    data_get($course, 'certificate_count', 0),
+                ]);
+            }
+
+            fputcsv($handle, []);
+            fputcsv($handle, ['Recent Activity']);
+            fputcsv($handle, ['User', 'Action', 'Course', 'Date']);
+            foreach ($this->recentActivity as $activity) {
+                fputcsv($handle, [
+                    data_get($activity, 'user_name', 'Unknown user'),
+                    data_get($activity, 'action_text', 'Certificate activity'),
+                    data_get($activity, 'course_title', 'Unknown course'),
+                    data_get($activity, 'created_at') ? Carbon::parse(data_get($activity, 'created_at'))->toDateTimeString() : '',
+                ]);
+            }
+
+            fclose($handle);
+        }, $filename, ['Content-Type' => 'text/csv']);
     }
 
     public function render()
