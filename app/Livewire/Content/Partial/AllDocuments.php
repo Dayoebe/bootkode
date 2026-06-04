@@ -22,6 +22,10 @@ class AllDocuments extends Component
 
     protected $paginationTheme = 'tailwind';
 
+    protected $queryString = [
+        'search' => ['except' => ''],
+    ];
+
     public function updatingSearch()
     {
         $this->resetPage();
