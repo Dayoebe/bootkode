@@ -8,44 +8,44 @@
     $courseUrl = auth()->check() ? route('student.course-catalog') : route('register');
 @endphp
 
-<footer class="bk-public-footer border-t border-slate-200 bg-white">
+<footer class="bk-public-footer border-t border-white/10 bg-[#050f22] text-white">
     <div class="bk-shell py-12 sm:py-14">
         <div class="grid gap-10 lg:grid-cols-[1.25fr_2fr_1fr] lg:items-start">
             <div>
                 <a href="{{ url('/') }}" class="inline-flex items-center gap-3">
-                    <span class="grid h-11 w-11 place-items-center rounded-[8px] bg-slate-950 text-white">
+                    <span class="grid h-11 w-11 place-items-center rounded-xl bg-white text-[#07152d]">
                         <i class="fas fa-code text-sm"></i>
                     </span>
                     <span>
-                        <span class="block text-lg font-black text-slate-950">BootKode</span>
-                        <span class="text-xs font-bold uppercase tracking-[0.18em] text-teal-700">Academy</span>
+                        <span class="block text-lg font-black text-white">BootKode</span>
+                        <span class="text-xs font-bold uppercase tracking-[0.18em] text-[#8fe388]">Academy</span>
                     </span>
                 </a>
 
-                <p class="mt-4 max-w-sm text-sm leading-6 text-slate-600">
+                <p class="mt-4 max-w-sm text-sm leading-6 text-slate-400">
                     Africa-ready tech education with structured roadmaps, mentorship, verified certificates, and career-focused project evidence.
                 </p>
 
                 <div class="mt-5 grid grid-cols-3 gap-2">
-                    <div class="rounded-[8px] bg-slate-50 p-3">
-                        <p class="text-lg font-black text-slate-950">{{ number_format($courseCount) }}</p>
-                        <p class="text-[11px] font-semibold text-slate-500">Courses</p>
+                    <div class="rounded-xl bg-white/5 p-3">
+                        <p class="text-lg font-black text-white">{{ number_format($courseCount) }}</p>
+                        <p class="text-[11px] font-semibold text-slate-400">Courses</p>
                     </div>
-                    <div class="rounded-[8px] bg-slate-50 p-3">
-                        <p class="text-lg font-black text-slate-950">{{ number_format($lessonCount) }}</p>
-                        <p class="text-[11px] font-semibold text-slate-500">Lessons</p>
+                    <div class="rounded-xl bg-white/5 p-3">
+                        <p class="text-lg font-black text-white">{{ number_format($lessonCount) }}</p>
+                        <p class="text-[11px] font-semibold text-slate-400">Lessons</p>
                     </div>
-                    <div class="rounded-[8px] bg-slate-50 p-3">
-                        <p class="text-lg font-black text-slate-950">{{ number_format($categoryCount) }}</p>
-                        <p class="text-[11px] font-semibold text-slate-500">Tracks</p>
+                    <div class="rounded-xl bg-white/5 p-3">
+                        <p class="text-lg font-black text-white">{{ number_format($categoryCount) }}</p>
+                        <p class="text-[11px] font-semibold text-slate-400">Tracks</p>
                     </div>
                 </div>
             </div>
 
             <div class="grid grid-cols-2 gap-6 sm:grid-cols-4">
                 <div>
-                    <h3 class="text-xs font-black uppercase tracking-[0.16em] text-slate-400">Learn</h3>
-                    <ul class="mt-4 space-y-3 text-sm font-semibold text-slate-600">
+                    <h3 class="text-xs font-black uppercase tracking-[0.16em] text-slate-500">Learn</h3>
+                    <ul class="mt-4 space-y-3 text-sm font-semibold text-slate-300">
                         <li><a href="{{ $courseUrl }}" class="hover:text-teal-700">Courses</a></li>
                         <li><a href="{{ route('pricing') }}" class="hover:text-teal-700">Pricing</a></li>
                         <li><a href="{{ route('guideline') }}" class="hover:text-teal-700">Guidelines</a></li>
@@ -54,8 +54,8 @@
                 </div>
 
                 <div>
-                    <h3 class="text-xs font-black uppercase tracking-[0.16em] text-slate-400">Platform</h3>
-                    <ul class="mt-4 space-y-3 text-sm font-semibold text-slate-600">
+                    <h3 class="text-xs font-black uppercase tracking-[0.16em] text-slate-500">Platform</h3>
+                    <ul class="mt-4 space-y-3 text-sm font-semibold text-slate-300">
                         <li><a href="{{ route('marketplace.browse') }}" class="hover:text-teal-700">Marketplace</a></li>
                         <li><a href="{{ route('pricing') }}" class="hover:text-teal-700">Packages</a></li>
                         <li><a href="{{ route('blog.index') }}" class="hover:text-teal-700">Blog</a></li>
@@ -64,8 +64,8 @@
                 </div>
 
                 <div>
-                    <h3 class="text-xs font-black uppercase tracking-[0.16em] text-slate-400">Company</h3>
-                    <ul class="mt-4 space-y-3 text-sm font-semibold text-slate-600">
+                    <h3 class="text-xs font-black uppercase tracking-[0.16em] text-slate-500">Company</h3>
+                    <ul class="mt-4 space-y-3 text-sm font-semibold text-slate-300">
                         <li><a href="{{ route('about') }}" class="hover:text-teal-700">About</a></li>
                         <li><a href="{{ route('contact') }}" class="hover:text-teal-700">Contact</a></li>
                         @auth
@@ -77,8 +77,8 @@
                 </div>
 
                 <div>
-                    <h3 class="text-xs font-black uppercase tracking-[0.16em] text-slate-400">Contact</h3>
-                    <ul class="mt-4 space-y-3 text-sm font-semibold text-slate-600">
+                    <h3 class="text-xs font-black uppercase tracking-[0.16em] text-slate-500">Contact</h3>
+                    <ul class="mt-4 space-y-3 text-sm font-semibold text-slate-300">
                         <li><a href="mailto:oyetoke.ebenezer@gmail.com" class="hover:text-teal-700">Email support</a></li>
                         <li><a href="tel:+2349030036438" class="hover:text-teal-700">Call BootKode</a></li>
                         <li><a href="{{ route('contact') }}" class="hover:text-teal-700">Send message</a></li>
@@ -86,8 +86,8 @@
                 </div>
             </div>
 
-            <div class="rounded-[8px] bg-slate-950 p-5 text-white">
-                <p class="text-xs font-black uppercase tracking-[0.16em] text-teal-200">Stay close</p>
+            <div class="rounded-2xl border border-white/10 bg-white/5 p-5 text-white">
+                <p class="text-xs font-black uppercase tracking-[0.16em] text-[#8fe388]">Stay close</p>
                 <h3 class="mt-2 text-xl font-black leading-tight">Get course updates and practical learning notes.</h3>
                 <form action="{{ route('newsletter.subscribe') }}" method="POST" class="mt-5 space-y-3">
                     @csrf
@@ -114,9 +114,9 @@
             </div>
         @endif
 
-        <div class="mt-10 flex flex-col gap-3 border-t border-slate-200 pt-6 text-sm text-slate-500 sm:flex-row sm:items-center sm:justify-between">
+        <div class="mt-10 flex flex-col gap-3 border-t border-white/10 pt-6 text-sm text-slate-500 sm:flex-row sm:items-center sm:justify-between">
             <p>© {{ now()->year }} BootKode. All rights reserved.</p>
-            <p class="font-semibold text-slate-600">Code. Certify. Conquer.</p>
+            <p class="font-semibold text-slate-400">Code. Certify. Conquer.</p>
         </div>
     </div>
 </footer>
