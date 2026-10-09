@@ -62,7 +62,7 @@
             </div>
         </div>
 
-        <div class="relative px-4 py-4">
+        <div class="relative px-4 pb-3 pt-4">
             <label class="relative block">
                 <span class="sr-only">Search menu</span>
                 <i class="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-sm text-slate-500"></i>
@@ -88,9 +88,15 @@
             </label>
         </div>
 
+        <div class="relative flex items-center justify-between px-5 pb-2">
+            <p class="text-[10px] font-black uppercase tracking-[0.16em] text-slate-500">Workspace navigation</p>
+            <span class="rounded-full bg-white/[0.08] px-2 py-1 text-[10px] font-black text-slate-400">{{ count($menuItems) }} sections</span>
+        </div>
+
         <nav
-            class="flex-1 space-y-1 overflow-y-auto px-4 pb-5"
+            class="min-h-0 flex-1 space-y-1 overflow-y-auto overscroll-contain px-4 pb-6"
             role="navigation"
+            aria-label="Workspace navigation"
         >
             @foreach ($menuItems as $item)
                 @php
@@ -182,11 +188,29 @@
             @endforeach
         </nav>
 
-        <div class="relative border-t border-white/10 p-4">
-            <div class="flex items-center justify-between gap-3 rounded-[8px] bg-white/[0.06] p-3">
+        <div class="relative shrink-0 border-t border-white/10 bg-slate-950 p-4">
+            <div class="grid grid-cols-3 gap-2">
+                <a href="{{ route('home') }}" class="flex min-h-14 flex-col items-center justify-center gap-1 rounded-[8px] bg-white/[0.06] text-[10px] font-bold text-slate-300 transition hover:bg-white/[0.1] hover:text-white" title="View public website">
+                    <i class="fas fa-globe text-sm text-teal-200"></i>
+                    Website
+                </a>
+                <a href="{{ route('help.support') }}" class="flex min-h-14 flex-col items-center justify-center gap-1 rounded-[8px] bg-white/[0.06] text-[10px] font-bold text-slate-300 transition hover:bg-white/[0.1] hover:text-white" title="Help and support" wire:navigate>
+                    <i class="fas fa-circle-question text-sm text-sky-200"></i>
+                    Help
+                </a>
+                <form method="POST" action="{{ route('logout') }}">
+                    @csrf
+                    <button type="submit" class="flex min-h-14 w-full flex-col items-center justify-center gap-1 rounded-[8px] bg-white/[0.06] text-[10px] font-bold text-slate-300 transition hover:bg-rose-500/15 hover:text-rose-200" title="Log out">
+                        <i class="fas fa-arrow-right-from-bracket text-sm"></i>
+                        Log out
+                    </button>
+                </form>
+            </div>
+
+            <div class="mt-2 flex items-center justify-between gap-3 rounded-[8px] bg-white/[0.06] p-3">
                 <div class="min-w-0">
-                    <p class="text-xs font-black uppercase text-slate-500">Theme</p>
-                    <p class="text-sm font-bold text-slate-200">Workspace tone</p>
+                    <p class="text-[10px] font-black uppercase tracking-[0.12em] text-slate-500">Appearance</p>
+                    <p class="text-xs font-bold text-slate-200">Choose workspace theme</p>
                 </div>
                 <x-sidebar-theme-selector />
             </div>
@@ -194,20 +218,20 @@
     </aside>
 
     <style>
-        aside::-webkit-scrollbar {
-            width: 4px;
+        aside nav::-webkit-scrollbar {
+            width: 6px;
         }
 
-        aside::-webkit-scrollbar-track {
+        aside nav::-webkit-scrollbar-track {
             background: transparent;
         }
 
-        aside::-webkit-scrollbar-thumb {
+        aside nav::-webkit-scrollbar-thumb {
             background: rgb(148 163 184 / 0.35);
             border-radius: 999px;
         }
 
-        aside::-webkit-scrollbar-thumb:hover {
+        aside nav::-webkit-scrollbar-thumb:hover {
             background: rgb(148 163 184 / 0.55);
         }
 
