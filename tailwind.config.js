@@ -8,13 +8,19 @@ module.exports = {
   ],
   theme: {
     extend: {
+      colors: {
+        brand: { DEFAULT: 'rgb(var(--accent-primary) / <alpha-value>)', ink: '#0f172a', mint: '#8fe388' },
+        surface: { DEFAULT: 'rgb(var(--bg-secondary) / <alpha-value>)', muted: 'rgb(var(--bg-primary) / <alpha-value>)' },
+        content: { DEFAULT: 'rgb(var(--text-primary) / <alpha-value>)', muted: 'rgb(var(--text-secondary) / <alpha-value>)' },
+        line: 'rgb(var(--border-primary) / <alpha-value>)',
+      },
       fontFamily: {
-        sans: ['Outfit', 'sans-serif'], // Outfit is now default font
+        sans: ['Manrope', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+        display: ['Sora', 'Manrope', 'sans-serif'],
       },
     },
   },
   plugins: [
-    require('tailwindcss-email-variants'),
     require('@tailwindcss/typography'),
   ],
 };

@@ -1,8 +1,11 @@
+@import "./tokens.css";
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
+    :root,
     .light {
         --bg-primary: 246 248 251;
         --bg-secondary: 255 255 255;
@@ -288,7 +291,7 @@
         background: rgb(255 255 255 / 0.96);
         padding: 0.35rem;
         box-shadow: 0 24px 60px rgb(15 23 42 / 0.18);
-        backdrop-filter: blur(18px);
+
     }
 
     .bk-mobile-tabbar a {
@@ -438,16 +441,16 @@
     .bk-dashboard-panel {
         border: 1px solid rgb(var(--border-primary));
         border-radius: 8px;
-        background: rgb(var(--bg-secondary) / 0.94);
+        background: rgb(var(--bg-secondary));
         box-shadow: 0 18px 45px rgb(15 23 42 / 0.08);
     }
 
     .bk-dashboard-glass {
         border: 1px solid rgb(var(--border-primary));
         border-radius: 8px;
-        background: rgb(var(--bg-secondary) / 0.86);
+        background: rgb(var(--bg-secondary));
         box-shadow: 0 18px 45px rgb(15 23 42 / 0.07);
-        backdrop-filter: blur(18px);
+
     }
 
     .bk-dashboard-btn {
@@ -551,7 +554,7 @@
         width: 2.45rem;
         opacity: 0.78;
         box-shadow: 0 16px 34px rgb(15 23 42 / 0.22);
-        animation: bk-icon-orbit 8s ease-in-out infinite;
+
         animation-delay: calc(var(--i, 0) * 130ms);
         transform: translate(-50%, -50%);
     }
@@ -569,25 +572,25 @@
     }
 
     .bk-lab-screen {
-        animation: bk-float-soft 6s ease-in-out infinite;
+
     }
 
     .bk-floating-card {
-        animation: bk-float-soft 5s ease-in-out infinite reverse;
+
     }
 
     .bk-pop-card {
-        animation: bk-card-pop 4.4s ease-in-out infinite;
+
         animation-delay: calc(var(--i, 0) * 180ms);
     }
 
     .bk-bounce-pill {
-        animation: bk-bounce-soft 3.5s ease-in-out infinite;
+
         animation-delay: calc(var(--i, 0) * 160ms);
     }
 
     .bk-signal-line {
-        animation: bk-signal-rise 4.8s ease-in-out infinite;
+
         animation-delay: calc(var(--i, 0) * 120ms);
     }
 
@@ -599,63 +602,7 @@
         transform: translateY(-4px);
     }
 
-    .bk-no-gradient {
-        background-image: none !important;
-    }
 
-    .bk-public-app [class*="bg-gradient-to-"],
-    .bk-dashboard-app [class*="bg-gradient-to-"] {
-        background-image: none !important;
-    }
-
-    .bk-public-app [class*="from-red"],
-    .bk-dashboard-app [class*="from-red"] { background-color: #ef4444 !important; }
-    .bk-public-app [class*="from-orange"],
-    .bk-dashboard-app [class*="from-orange"] { background-color: #f97316 !important; }
-    .bk-public-app [class*="from-amber"],
-    .bk-dashboard-app [class*="from-amber"] { background-color: #f59e0b !important; }
-    .bk-public-app [class*="from-yellow"],
-    .bk-dashboard-app [class*="from-yellow"] { background-color: #facc15 !important; }
-    .bk-public-app [class*="from-lime"],
-    .bk-dashboard-app [class*="from-lime"] { background-color: #84cc16 !important; }
-    .bk-public-app [class*="from-green"],
-    .bk-dashboard-app [class*="from-green"] { background-color: #22c55e !important; }
-    .bk-public-app [class*="from-emerald"],
-    .bk-dashboard-app [class*="from-emerald"] { background-color: #10b981 !important; }
-    .bk-public-app [class*="from-teal"],
-    .bk-dashboard-app [class*="from-teal"] { background-color: #14b8a6 !important; }
-    .bk-public-app [class*="from-cyan"],
-    .bk-dashboard-app [class*="from-cyan"] { background-color: #06b6d4 !important; }
-    .bk-public-app [class*="from-sky"],
-    .bk-dashboard-app [class*="from-sky"] { background-color: #0ea5e9 !important; }
-    .bk-public-app [class*="from-blue"],
-    .bk-dashboard-app [class*="from-blue"] { background-color: #3b82f6 !important; }
-    .bk-public-app [class*="from-indigo"],
-    .bk-dashboard-app [class*="from-indigo"] { background-color: #6366f1 !important; }
-    .bk-public-app [class*="from-violet"],
-    .bk-dashboard-app [class*="from-violet"] { background-color: #8b5cf6 !important; }
-    .bk-public-app [class*="from-purple"],
-    .bk-dashboard-app [class*="from-purple"] { background-color: #a855f7 !important; }
-    .bk-public-app [class*="from-fuchsia"],
-    .bk-dashboard-app [class*="from-fuchsia"] { background-color: #d946ef !important; }
-    .bk-public-app [class*="from-pink"],
-    .bk-dashboard-app [class*="from-pink"] { background-color: #ec4899 !important; }
-    .bk-public-app [class*="from-rose"],
-    .bk-dashboard-app [class*="from-rose"] { background-color: #f43f5e !important; }
-    .bk-public-app [class*="from-slate"],
-    .bk-dashboard-app [class*="from-slate"] { background-color: #64748b !important; }
-    .bk-public-app [class*="from-gray"],
-    .bk-dashboard-app [class*="from-gray"] { background-color: #6b7280 !important; }
-    .bk-public-app [class*="from-zinc"],
-    .bk-dashboard-app [class*="from-zinc"] { background-color: #71717a !important; }
-    .bk-public-app [class*="from-neutral"],
-    .bk-dashboard-app [class*="from-neutral"] { background-color: #737373 !important; }
-    .bk-public-app [class*="from-stone"],
-    .bk-dashboard-app [class*="from-stone"] { background-color: #78716c !important; }
-    .bk-public-app [class*="from-accent"],
-    .bk-dashboard-app [class*="from-accent"] { background-color: rgb(var(--accent-primary)) !important; }
-    .bk-public-app [class*="from-themed"],
-    .bk-dashboard-app [class*="from-themed"] { background-color: rgb(var(--bg-tertiary)) !important; }
 }
 
 @keyframes bk-float-soft {
