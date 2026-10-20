@@ -133,14 +133,14 @@
                                 <span class="grid h-9 w-9 shrink-0 place-items-center rounded-[8px] {{ $isExpanded ? 'bg-slate-950 text-white' : 'bg-white/[0.08] text-teal-200 group-hover:bg-white/[0.12]' }}">
                                     <i class="{{ $item['icon'] }} text-sm"></i>
                                 </span>
-                                <span class="min-w-0 lg:hidden" :class="{ 'lg:block': !sidebarCollapsed }">
+                                <span class="min-w-0" :class="{ 'lg:!hidden': sidebarCollapsed }">
                                     <span class="block truncate text-sm font-black">{{ $item['label'] }}</span>
                                     <span class="{{ $isExpanded ? 'text-slate-500' : 'text-slate-500 group-hover:text-slate-400' }} block text-[11px] font-semibold">
                                         {{ count($item['children']) }} tools
                                     </span>
                                 </span>
                             </span>
-                            <i class="fas fa-chevron-down shrink-0 text-[11px] transition-transform lg:hidden" :class="{ 'rotate-180': expanded, 'lg:block': !sidebarCollapsed }"></i>
+                            <i class="fas fa-chevron-down shrink-0 text-[11px] transition-transform" :class="{ 'rotate-180': expanded, 'lg:!hidden': sidebarCollapsed }"></i>
                         </button>
 
                         <ul
@@ -188,9 +188,9 @@
                             <span class="grid h-9 w-9 shrink-0 place-items-center rounded-[8px] {{ $isActiveItem ? 'bg-slate-950 text-white' : 'bg-white/[0.08] text-teal-200 group-hover:bg-white/[0.12]' }}">
                                 <i class="{{ $item['icon'] }} text-sm"></i>
                             </span>
-                            <span class="min-w-0 flex-1 truncate text-sm font-black lg:hidden" :class="{ 'lg:block': !sidebarCollapsed }">{{ $item['label'] }}</span>
+                            <span class="min-w-0 flex-1 truncate text-sm font-black" :class="{ 'lg:!hidden': sidebarCollapsed }">{{ $item['label'] }}</span>
                             @if (($item['badge_count'] ?? 0) > 0)
-                                <span class="rounded-full bg-rose-600 px-2 py-0.5 text-[10px] font-black leading-none text-white lg:hidden" :class="{ 'lg:inline-flex': !sidebarCollapsed }">
+                                <span class="rounded-full bg-rose-600 px-2 py-0.5 text-[10px] font-black leading-none text-white" :class="{ 'lg:!hidden': sidebarCollapsed }">
                                     {{ $item['badge_count'] > 9 ? '9+' : $item['badge_count'] }}
                                 </span>
                             @endif
