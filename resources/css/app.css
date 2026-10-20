@@ -379,6 +379,54 @@
         color: rgb(var(--accent-secondary));
     }
 
+    .text-accent-themed-primary {
+        color: rgb(var(--accent-primary));
+    }
+
+    .text-accent-themed-secondary {
+        color: rgb(var(--accent-secondary));
+    }
+
+    .border-accent-themed-primary {
+        border-color: rgb(var(--accent-primary));
+    }
+
+    .border-accent-themed-secondary {
+        border-color: rgb(var(--accent-secondary));
+    }
+
+    .bg-accent-themed-primary\/10 {
+        background-color: rgb(var(--accent-primary) / 0.1);
+    }
+
+    .bg-accent-themed-primary\/20 {
+        background-color: rgb(var(--accent-primary) / 0.2);
+    }
+
+    .ring-accent-themed-primary\/20 {
+        --tw-ring-color: rgb(var(--accent-primary) / 0.2);
+    }
+
+    .hover\:text-accent-themed-primary:hover {
+        color: rgb(var(--accent-primary));
+    }
+
+    .hover\:text-accent-themed-secondary:hover {
+        color: rgb(var(--accent-secondary));
+    }
+
+    .hover\:border-accent-themed-primary:hover {
+        border-color: rgb(var(--accent-primary));
+    }
+
+    .focus\:border-accent-themed-primary:focus {
+        border-color: rgb(var(--accent-primary));
+    }
+
+    .focus\:ring-accent-themed-primary:focus {
+        --tw-ring-color: rgb(var(--accent-primary));
+    }
+
     .bg-accent-themed-primary {
         background-color: rgb(var(--accent-primary));
     }

@@ -1,41 +1,43 @@
-<div class="space-y-6">
-    <section class="bg-themed-secondary border border-themed-primary rounded-xl p-5 md:p-6 transition-colors duration-300">
-        <div class="flex flex-col xl:flex-row xl:items-center xl:justify-between gap-6">
+<div class="w-full min-w-0 space-y-6">
+    <section class="relative overflow-hidden rounded-lg bg-slate-950 p-5 text-white shadow-xl shadow-slate-900/10 md:p-7">
+        <div class="pointer-events-none absolute -right-16 -top-24 h-64 w-64 rounded-full bg-teal-400/10 blur-3xl"></div>
+        <div class="pointer-events-none absolute -bottom-28 left-1/3 h-56 w-56 rounded-full bg-sky-400/10 blur-3xl"></div>
+        <div class="relative flex flex-col gap-6 xl:flex-row xl:items-center xl:justify-between">
             <div class="max-w-3xl">
-                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-accent-themed-primary/10 text-accent-themed-primary text-xs font-semibold mb-3">
+                <div class="mb-4 inline-flex items-center gap-2 rounded-full border border-teal-300/20 bg-teal-300/10 px-3 py-1 text-xs font-bold uppercase tracking-[0.14em] text-teal-100">
                     <i class="fas fa-route"></i>
                     Guided learner journey
                 </div>
-                <h1 class="text-2xl md:text-3xl font-bold text-themed-primary">From learning goal to career support</h1>
-                <p class="mt-2 text-themed-secondary">
+                <h1 class="bk-display text-2xl font-black leading-tight md:text-4xl">From learning goal to career-ready evidence.</h1>
+                <p class="mt-3 max-w-2xl text-sm leading-6 text-slate-300 md:text-base">
                     Follow one clear path: choose a goal, enroll, learn, submit work, get reviewed, earn a certificate, and move into career tools.
                 </p>
             </div>
 
-            <div class="w-full xl:w-80 bg-themed-primary border border-themed-secondary rounded-lg p-4">
+            <div class="w-full rounded-lg border border-white/10 bg-white/[0.07] p-4 backdrop-blur-sm xl:w-96">
                 <div class="flex items-center justify-between text-sm mb-2">
-                    <span class="font-semibold text-themed-primary">Journey progress</span>
-                    <span class="text-accent-themed-primary font-bold">{{ $journeyProgress }}%</span>
+                    <span class="font-semibold text-slate-200">Journey progress</span>
+                    <span class="font-black text-teal-200">{{ $journeyProgress }}%</span>
                 </div>
-                <div class="w-full h-2.5 rounded-full bg-themed-tertiary overflow-hidden">
-                    <div class="h-2.5 rounded-full bg-accent-themed-primary transition-all duration-500" style="width: {{ $journeyProgress }}%"></div>
+                <div class="h-2.5 w-full overflow-hidden rounded-full bg-white/10">
+                    <div class="h-2.5 rounded-full bg-teal-300 transition-all duration-500" style="width: {{ $journeyProgress }}%"></div>
                 </div>
-                <div class="mt-3 text-xs text-themed-tertiary">{{ $completedSteps }} of {{ count($steps) }} steps completed</div>
+                <div class="mt-3 text-xs font-medium text-slate-400">{{ $completedSteps }} of {{ count($steps) }} steps completed</div>
                 @if ($nextStep)
-                    <div class="mt-4 flex items-start gap-3">
-                        <div class="w-9 h-9 rounded-lg bg-accent-themed-primary/10 text-accent-themed-primary flex items-center justify-center shrink-0">
+                    <div class="mt-4 flex items-start gap-3 border-t border-white/10 pt-4">
+                        <div class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-teal-300 text-slate-950">
                             <i class="{{ $nextStep['icon'] }}"></i>
                         </div>
                         <div class="min-w-0">
-                            <p class="text-xs uppercase tracking-wide text-themed-tertiary font-semibold">Next step</p>
-                            <p class="font-semibold text-themed-primary">{{ $nextStep['label'] }}</p>
+                            <p class="text-xs font-bold uppercase tracking-wide text-slate-400">Next step</p>
+                            <p class="font-semibold text-white">{{ $nextStep['label'] }}</p>
                             @if ($nextStep['route'])
-                                <a href="{{ $nextStep['route'] }}" wire:navigate class="inline-flex items-center gap-2 mt-2 text-sm text-accent-themed-primary hover:text-accent-themed-secondary font-medium">
+                                <a href="{{ $nextStep['route'] }}" wire:navigate class="mt-2 inline-flex items-center gap-2 text-sm font-bold text-teal-200 hover:text-white">
                                     {{ $nextStep['action'] }}
                                     <i class="fas fa-arrow-right text-xs"></i>
                                 </a>
                             @else
-                                <a href="#goal-options" class="inline-flex items-center gap-2 mt-2 text-sm text-accent-themed-primary hover:text-accent-themed-secondary font-medium">
+                                <a href="#goal-options" class="mt-2 inline-flex items-center gap-2 text-sm font-bold text-teal-200 hover:text-white">
                                     {{ $nextStep['action'] }}
                                     <i class="fas fa-arrow-right text-xs"></i>
                                 </a>
@@ -47,7 +49,7 @@
         </div>
     </section>
 
-    <section id="goal-options" class="space-y-4">
+    <section id="goal-options" class="space-y-4 rounded-lg border border-themed-primary bg-themed-secondary p-5 shadow-sm md:p-6">
         <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-3">
             <div>
                 <h2 class="text-xl font-bold text-themed-primary">Choose Your Goal</h2>
@@ -90,8 +92,8 @@
         </div>
     </section>
 
-    <section class="grid grid-cols-1 xl:grid-cols-3 gap-6">
-        <div class="xl:col-span-2 space-y-4">
+    <section class="grid grid-cols-1 gap-6 xl:grid-cols-3">
+        <div class="space-y-4 rounded-lg border border-themed-primary bg-themed-secondary p-5 shadow-sm md:p-6 xl:col-span-2">
             <div>
                 <h2 class="text-xl font-bold text-themed-primary">Your Path</h2>
                 <p class="text-themed-secondary text-sm">Each step opens the exact place where the learner should act next.</p>
