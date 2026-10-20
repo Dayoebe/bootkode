@@ -16,7 +16,7 @@
             </div>
             <div class="flex flex-wrap gap-2">
                 <span class="rounded-full border border-themed-primary px-3 py-2 text-xs font-semibold text-themed-secondary">
-                    {{ $aiProviderReady ? 'OpenAI enabled' : 'Local course-context AI' }}
+                    {{ $aiProviderReady ? 'BootKode AI enabled' : 'AI setup required' }}
                 </span>
                 <button type="button" wire:click="refreshProfile"
                     class="rounded-lg border border-themed-primary px-4 py-2 text-sm font-semibold text-themed-primary transition hover:border-accent-primary hover:text-accent-primary">
@@ -143,7 +143,8 @@
     @if($activeTab === 'tutor')
         <div class="grid gap-6 xl:grid-cols-[minmax(0,1fr)_420px]">
             <div class="rounded-xl border border-themed-primary bg-themed-secondary p-5 shadow-sm">
-                <h3 class="text-lg font-semibold text-themed-primary">Ask The AI Tutor</h3>
+                <h3 class="text-lg font-semibold text-themed-primary">Open the AI Coding Mentor</h3>
+                <p class="mt-2 text-sm text-themed-secondary">Continue in the private, persistent mentor workspace with conversation history and authorized course context.</p>
                 <form wire:submit.prevent="askTutor" class="mt-4 space-y-4">
                     <select wire:model="selectedCourseId"
                         class="w-full rounded-lg border border-themed-primary bg-themed-secondary px-4 py-3 text-sm text-themed-primary">
@@ -157,7 +158,7 @@
                         placeholder="Ask about a lesson, error, concept, project, assessment, or what to learn next."></textarea>
                     @error('question') <p class="text-sm text-red-500">{{ $message }}</p> @enderror
                     <button type="submit" class="rounded-lg bg-accent-primary px-4 py-3 text-sm font-semibold text-white transition hover:bg-accent-secondary">
-                        <i class="fas fa-paper-plane mr-2"></i>Ask Tutor
+                        <i class="fas fa-arrow-right mr-2"></i>Open Coding Mentor
                     </button>
                 </form>
             </div>

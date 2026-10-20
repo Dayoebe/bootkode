@@ -95,6 +95,7 @@ return [
             'children' => [
                 ['label' => 'Learner Journey', 'icon' => 'fas fa-route', 'route_name' => 'learner.journey', 'roles' => [User::ROLE_STUDENT, User::ROLE_INSTRUCTOR, User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN], 'link_id' => 'learner.journey'],
                 ['label' => 'AI Learning Coach', 'icon' => 'fas fa-robot', 'route_name' => 'ai.learning.coach', 'roles' => [User::ROLE_STUDENT, User::ROLE_INSTRUCTOR, User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN], 'link_id' => 'ai.learning.coach'],
+                ['label' => 'AI Coding Mentor', 'icon' => 'fas fa-code', 'route_name' => 'ai.coding-mentor', 'roles' => [User::ROLE_STUDENT, User::ROLE_INSTRUCTOR, User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN], 'link_id' => 'ai.coding-mentor'],
                 ['label' => 'My Courses', 'icon' => 'fas fa-book', 'route_name' => ('student.enrolled-courses'), 'roles' => [User::ROLE_STUDENT], 'component' => 'enrolled-courses', 'link_id' => 'student.enrolled-courses',],
                 ['label' => 'Offline Learning', 'icon' => 'fas fa-mobile-screen-button', 'route_name' => 'student.offline-learning', 'roles' => [User::ROLE_STUDENT, User::ROLE_INSTRUCTOR, User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN], 'link_id' => 'student.offline-learning'],
                 ['label' => 'Course Catalog', 'icon' => 'fas fa-book-open', 'route_name' => ('student.course-catalog'), 'roles' => [User::ROLE_STUDENT, User::ROLE_INSTRUCTOR, User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN],],

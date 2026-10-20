@@ -1,0 +1,64 @@
+<?php
+
+namespace App\Services\Ai;
+
+use App\Contracts\AiProvider;
+use App\Data\AiResponse;
+use App\Exceptions\AiProviderException;
+use Illuminate\Http\Client\ConnectionException;
+use Illuminate\Support\Facades\Http;
+
+class OpenAiCompatibleProvider implements AiProvider
+{
+    public function __construct(private readonly array $configuration) {}
+
+    public function isConfigured(): bool
+    {
+        return filled($this->configuration['key'] ?? null)
+            && filled($this->configuration['model'] ?? null)
+            && filled($this->configuration['base_url'] ?? null);
+    }
+
+    public function chat(array $messages, array $options = []): AiResponse
+    {
+        if (! $this->isConfigured()) {
+            throw new AiProviderException('The AI provider is not configured.', 'not_configured');
+        }
+
+        try {
+            $response = Http::withToken($this->configuration['key'])
+                ->acceptJson()
+                ->timeout(max(1, (int) config('bootkode_ai.timeout', 30)))
+                ->retry(max(0, (int) config('bootkode_ai.retries', 1)), 250, throw: false)
+                ->post(rtrim($this->configuration['base_url'], '/').'/chat/completions', [
+                    'model' => $this->configuration['model'],
+                    'messages' => $messages,
+                    'temperature' => $options['temperature'] ?? 0.3,
+                    'max_tokens' => $options['max_tokens'] ?? 900,
+                ]);
+        } catch (ConnectionException) {
+            throw new AiProviderException('The AI provider could not be reached. Please try again later.', 'unavailable');
+        }
+
+        if ($response->status() === 429) {
+            throw new AiProviderException('The AI provider is busy. Please try again shortly.', 'rate_limited');
+        }
+
+        if (! $response->successful()) {
+            throw new AiProviderException('The AI provider could not complete this request.', 'provider_error');
+        }
+
+        $content = trim((string) data_get($response->json(), 'choices.0.message.content'));
+
+        if ($content === '') {
+            throw new AiProviderException('The AI provider returned an invalid response.', 'invalid_response');
+        }
+
+        return new AiResponse(
+            content: $content,
+            promptTokens: data_get($response->json(), 'usage.prompt_tokens'),
+            completionTokens: data_get($response->json(), 'usage.completion_tokens'),
+            requestId: $response->header('x-request-id'),
+        );
+    }
+}

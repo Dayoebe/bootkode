@@ -13,7 +13,6 @@ use App\Models\Mentorship\CodeReview;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
@@ -83,40 +82,6 @@ class LearningAiService
         ])->save();
 
         return $profile;
-    }
-
-    public function askTutor(User $user, string $question, ?int $courseId = null): AiTutorMessage
-    {
-        $question = trim(Str::limit(strip_tags($question), 1200, ''));
-        $context = $this->contextSnippets($user, $question, $courseId);
-        $answer = $this->localTutorAnswer($user, $question, $context);
-        $source = 'local_context';
-
-        if (! empty($context) && config('services.openai.key')) {
-            try {
-                $remoteAnswer = $this->openAiTutorAnswer($question, $context);
-
-                if ($remoteAnswer) {
-                    $answer = $remoteAnswer;
-                    $source = 'openai';
-                }
-            } catch (Throwable $exception) {
-                report($exception);
-            }
-        }
-
-        return AiTutorMessage::create([
-            'user_id' => $user->id,
-            'course_id' => $courseId,
-            'question' => $question,
-            'answer' => $answer,
-            'source' => $source,
-            'context' => $context,
-            'metadata' => [
-                'context_count' => count($context),
-                'answered_at' => now()->toIso8601String(),
-            ],
-        ]);
     }
 
     public function recentTutorMessages(User $user, int $limit = 8)
@@ -224,7 +189,7 @@ class LearningAiService
             ->latest('submitted_at')
             ->limit(200)
             ->get()
-            ->groupBy(fn (StudentAnswer $answer) => $answer->assessment_id . ':' . $answer->attempt_number)
+            ->groupBy(fn (StudentAnswer $answer) => $answer->assessment_id.':'.$answer->attempt_number)
             ->map(function (Collection $answers) {
                 $assessment = $answers->first()->assessment;
                 $maxPoints = max(1, (float) $answers->sum(fn ($answer) => (float) ($answer->question?->points ?? 1)));
@@ -287,7 +252,7 @@ class LearningAiService
         }
 
         foreach ($signals['assessment_attempts'] as $attempt) {
-            $text = trim(($attempt['assessment_title'] ?? '') . ' ' . collect($attempt['missed_questions'] ?? [])->pluck('question')->implode(' '));
+            $text = trim(($attempt['assessment_title'] ?? '').' '.collect($attempt['missed_questions'] ?? [])->pluck('question')->implode(' '));
             $matched = $this->matchingSkills($text);
 
             foreach ($matched as $key) {
@@ -328,7 +293,7 @@ class LearningAiService
         if (count($signals['certificates'] ?? []) > 0) {
             $scores['career_readiness']['score'] += 18;
             $scores['project_delivery']['score'] += 10;
-            $scores['career_readiness']['evidence'][] = count($signals['certificates']) . ' certificate signal(s).';
+            $scores['career_readiness']['evidence'][] = count($signals['certificates']).' certificate signal(s).';
         }
 
         if (($signals['portfolio_count'] ?? 0) > 0) {
@@ -418,7 +383,7 @@ class LearningAiService
                     'instructor' => $course->instructor?->name,
                     'score' => min(100, $score),
                     'reason' => $gapMatches->isNotEmpty()
-                        ? 'Targets ' . $gapMatches->map(fn ($key) => self::SKILLS[$key]['label'])->implode(', ')
+                        ? 'Targets '.$gapMatches->map(fn ($key) => self::SKILLS[$key]['label'])->implode(', ')
                         : 'Broadens your current learning path.',
                     'url' => $this->routeOr('#', 'courses.preview', ['course' => $course->id]),
                 ];
@@ -522,7 +487,7 @@ class LearningAiService
         return array_values(array_slice($steps, 0, 8));
     }
 
-    private function contextSnippets(User $user, string $question, ?int $courseId = null): array
+    public function tutorContext(User $user, string $question, ?int $courseId = null): array
     {
         if (! Schema::hasTable('lessons')) {
             return [];
@@ -556,14 +521,16 @@ class LearningAiService
 
         if ($courseId) {
             $query->where('courses.id', $courseId);
-        } elseif (! $user->isSuperAdmin() && ! $user->isAcademyAdmin() && ! $user->isInstructor()) {
+        }
+
+        if (! $user->isSuperAdmin() && ! $user->isAcademyAdmin() && ! $user->isInstructor()) {
             $query->whereIn('courses.id', $enrolledCourseIds);
         }
 
         if ($terms->isNotEmpty()) {
             $query->where(function ($builder) use ($terms) {
                 foreach ($terms as $term) {
-                    $like = '%' . addcslashes($term, '\\%_') . '%';
+                    $like = '%'.addcslashes($term, '\\%_').'%';
                     $builder->orWhere('lessons.title', 'like', $like)
                         ->orWhere('lessons.description', 'like', $like)
                         ->orWhere('lessons.content', 'like', $like)
@@ -586,59 +553,6 @@ class LearningAiService
             ])
             ->values()
             ->all();
-    }
-
-    private function localTutorAnswer(User $user, string $question, array $context): string
-    {
-        if (empty($context)) {
-            return "I could not find a matching lesson in your available course content yet. Rephrase the question with the course topic, or enroll in a related course so I can answer from BootKode lesson material.";
-        }
-
-        $primary = $context[0];
-        $answer = "Based on {$primary['course_title']} / {$primary['lesson_title']}, focus on this idea first: {$primary['excerpt']}";
-
-        if (count($context) > 1) {
-            $answer .= "\n\nRelated places to check: " . collect($context)->skip(1)->take(3)
-                ->map(fn ($item) => "{$item['course_title']} - {$item['lesson_title']}")
-                ->implode('; ') . '.';
-        }
-
-        $answer .= "\n\nPractical next step: write a tiny example, run it, then compare it against the lesson explanation. If it still fails, ask again with the exact error or code snippet.";
-
-        return $answer;
-    }
-
-    private function openAiTutorAnswer(string $question, array $context): ?string
-    {
-        $baseUrl = rtrim((string) config('services.openai.base_url', 'https://api.openai.com'), '/');
-        $model = (string) config('services.openai.model', 'gpt-4o-mini');
-        $contextText = collect($context)
-            ->map(fn ($item, $index) => ($index + 1) . ". {$item['course_title']} / {$item['lesson_title']}: {$item['excerpt']}")
-            ->implode("\n");
-
-        $response = Http::withToken(config('services.openai.key'))
-            ->timeout((int) config('services.openai.timeout', 15))
-            ->post($baseUrl . '/v1/chat/completions', [
-                'model' => $model,
-                'messages' => [
-                    [
-                        'role' => 'system',
-                        'content' => 'You are BootKode AI Tutor. Answer from the provided course context. Be practical, concise, and do not invent unavailable course material.',
-                    ],
-                    [
-                        'role' => 'user',
-                        'content' => "Course context:\n{$contextText}\n\nLearner question: {$question}",
-                    ],
-                ],
-                'temperature' => 0.35,
-                'max_tokens' => 650,
-            ]);
-
-        if (! $response->successful()) {
-            return null;
-        }
-
-        return trim((string) data_get($response->json(), 'choices.0.message.content')) ?: null;
     }
 
     private function matchingSkills(string $text): array

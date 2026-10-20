@@ -3,6 +3,7 @@
 namespace App\Livewire\StudentManagement;
 
 use App\Models\Learning\CourseEnrollment;
+use App\Services\Ai\AiManager;
 use App\Services\LearningAiService;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\Layout;
@@ -17,8 +18,11 @@ use Livewire\Component;
 class AiLearningCoach extends Component
 {
     public string $activeTab = 'diagnosis';
+
     public string $goal = '';
+
     public string $question = '';
+
     public string $selectedCourseId = '';
 
     public function mount(): void
@@ -53,31 +57,9 @@ class AiLearningCoach extends Component
         session()->flash('message', 'Goal saved and your adaptive path was recalculated.');
     }
 
-    public function askTutor(): void
+    public function askTutor()
     {
-        $rules = [
-            'question' => 'required|string|min:5|max:1200',
-        ];
-
-        if ($this->selectedCourseId !== '') {
-            $rules['selectedCourseId'] = 'integer|exists:courses,id';
-        }
-
-        $this->validate($rules);
-
-        $courseId = $this->selectedCourseId !== '' ? (int) $this->selectedCourseId : null;
-
-        $ai = app(LearningAiService::class);
-        $message = $ai->askTutor(
-            Auth::user(),
-            $this->question,
-            $courseId
-        );
-
-        $this->question = '';
-        $this->activeTab = 'tutor';
-        session()->flash('message', 'AI tutor answered from the available course context.');
-        $this->dispatch('ai-tutor-answered', messageId: $message->id);
+        return redirect()->route('ai.coding-mentor');
     }
 
     public function render()
@@ -102,7 +84,7 @@ class AiLearningCoach extends Component
             'signals' => $profile->signals ?? [],
             'tutorMessages' => $ai->recentTutorMessages($user),
             'enrolledCourses' => $enrolledCourses,
-            'aiProviderReady' => (bool) config('services.openai.key'),
+            'aiProviderReady' => app(AiManager::class)->status()['ready'],
         ]);
     }
 }

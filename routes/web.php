@@ -289,6 +289,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Student Dashboard Features
     Route::get('/learner-journey', \App\Livewire\StudentManagement\LearnerJourney::class)->name('learner.journey');
     Route::get('/ai-learning-coach', \App\Livewire\StudentManagement\AiLearningCoach::class)->name('ai.learning.coach');
+    Route::get('/bootkode-ai/mentor', \App\Livewire\Ai\CodingMentor::class)->name('ai.coding-mentor');
     Route::get('/enrolled-courses', \App\Livewire\StudentManagement\EnrolledCourses::class)->name('student.enrolled-courses');
     Route::get('/course-catalog', \App\Livewire\StudentManagement\CourseCatalog::class)->name('student.course-catalog');
     Route::get('/learning-analytics', \App\Livewire\StudentManagement\LearningAnalytics::class)->name('student.learning-analytics');

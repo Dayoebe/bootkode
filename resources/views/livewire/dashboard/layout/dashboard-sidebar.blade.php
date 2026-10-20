@@ -23,19 +23,19 @@
     @endphp
 
     <aside
-        class="fixed bottom-0 left-0 top-0 z-50 flex w-72 flex-col overflow-hidden border-r border-white/10 bg-slate-950 text-white shadow-2xl shadow-slate-950/30 transition-transform duration-300 ease-out lg:translate-x-0"
-        :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full'"
+        class="fixed bottom-0 left-0 top-0 z-50 flex w-72 flex-col overflow-hidden border-r border-white/10 bg-slate-950 text-white shadow-2xl shadow-slate-950/30 transition-[width,transform] duration-300 ease-out lg:translate-x-0"
+        x-bind:class="{ 'lg:w-20': sidebarCollapsed, 'lg:w-72': !sidebarCollapsed, 'translate-x-0': sidebarOpen, '-translate-x-full': !sidebarOpen }"
         wire:ignore.self
     >
         <x-icon-field class="opacity-[0.08]" />
 
-        <div class="relative border-b border-white/10 px-5 py-5">
-            <div class="flex items-center justify-between gap-3">
-                <a href="{{ route('home') }}" class="flex min-w-0 items-center gap-3" aria-label="BootKode Home">
+        <div class="relative border-b border-white/10 px-4 py-5">
+            <div class="flex items-center justify-between gap-3" :class="{ 'lg:justify-center': sidebarCollapsed }">
+                <a href="{{ route('home') }}" x-show="!sidebarCollapsed || window.innerWidth < 1024" class="flex min-w-0 items-center gap-3" aria-label="BootKode Home">
                     <span class="grid h-11 w-11 shrink-0 place-items-center rounded-[8px] bg-white text-slate-950 shadow-lg shadow-black/20">
                         <i class="fas fa-code text-sm"></i>
                     </span>
-                    <span class="min-w-0">
+                    <span class="min-w-0 lg:hidden" :class="{ 'lg:block': !sidebarCollapsed }">
                         <span class="block truncate text-lg font-black">BootKode</span>
                         <span class="block truncate text-[11px] font-extrabold uppercase text-teal-200">Academy</span>
                     </span>
@@ -47,9 +47,18 @@
                 >
                     <i class="fas fa-times"></i>
                 </button>
+                <button
+                    type="button"
+                    @click="toggleSidebarCollapse()"
+                    class="hidden h-9 w-9 shrink-0 place-items-center rounded-[8px] text-slate-400 transition hover:bg-white/10 hover:text-white lg:grid"
+                    :aria-label="sidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar'"
+                    :title="sidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar'"
+                >
+                    <i class="fas text-xs" :class="sidebarCollapsed ? 'fa-angles-right' : 'fa-angles-left'"></i>
+                </button>
             </div>
 
-            <div class="mt-5 rounded-[8px] border border-white/10 bg-white/[0.06] p-3">
+            <div class="mt-5 rounded-[8px] border border-white/10 bg-white/[0.06] p-3 lg:hidden" :class="{ 'lg:block': !sidebarCollapsed }">
                 <div class="flex items-center gap-3">
                     <span class="grid h-10 w-10 shrink-0 place-items-center rounded-[8px] border border-white/15 bg-teal-500 text-sm font-black text-white">
                         {{ $userInitials }}
@@ -62,7 +71,7 @@
             </div>
         </div>
 
-        <div class="relative px-4 pb-3 pt-4">
+        <div class="relative px-4 pb-3 pt-4 lg:hidden" :class="{ 'lg:block': !sidebarCollapsed }">
             <label class="relative block">
                 <span class="sr-only">Search menu</span>
                 <i class="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-sm text-slate-500"></i>
@@ -88,7 +97,7 @@
             </label>
         </div>
 
-        <div class="relative flex items-center justify-between px-5 pb-2">
+        <div class="relative flex items-center justify-between px-5 pb-2 lg:hidden" :class="{ 'lg:flex': !sidebarCollapsed }">
             <p class="text-[10px] font-black uppercase tracking-[0.16em] text-slate-500">Workspace navigation</p>
             <span class="rounded-full bg-white/[0.08] px-2 py-1 text-[10px] font-black text-slate-400">{{ count($menuItems) }} sections</span>
         </div>
@@ -111,29 +120,31 @@
                     x-show="menuMatches(@js($searchText))"
                     x-cloak
                     class="menu-item"
+                    :title="sidebarCollapsed ? @js($item['label']) : ''"
                 >
                     @if(isset($item['children']) && !empty($item['children']))
                         <button
-                            @click="expanded = !expanded"
+                            @click="sidebarCollapsed && window.innerWidth >= 1024 ? toggleSidebarCollapse() : expanded = !expanded"
                             class="group flex w-full items-center justify-between gap-3 rounded-[8px] px-3 py-2.5 text-left transition {{ $isExpanded ? 'bg-white text-slate-950 shadow-lg shadow-black/10' : 'text-slate-300 hover:bg-white/[0.08] hover:text-white' }}"
+                            :class="{ 'lg:justify-center lg:px-1.5': sidebarCollapsed }"
                             :aria-expanded="expanded.toString()"
                         >
                             <span class="flex min-w-0 items-center gap-3">
                                 <span class="grid h-9 w-9 shrink-0 place-items-center rounded-[8px] {{ $isExpanded ? 'bg-slate-950 text-white' : 'bg-white/[0.08] text-teal-200 group-hover:bg-white/[0.12]' }}">
                                     <i class="{{ $item['icon'] }} text-sm"></i>
                                 </span>
-                                <span class="min-w-0">
+                                <span class="min-w-0 lg:hidden" :class="{ 'lg:block': !sidebarCollapsed }">
                                     <span class="block truncate text-sm font-black">{{ $item['label'] }}</span>
                                     <span class="{{ $isExpanded ? 'text-slate-500' : 'text-slate-500 group-hover:text-slate-400' }} block text-[11px] font-semibold">
                                         {{ count($item['children']) }} tools
                                     </span>
                                 </span>
                             </span>
-                            <i class="fas fa-chevron-down shrink-0 text-[11px] transition-transform" :class="{ 'rotate-180': expanded }"></i>
+                            <i class="fas fa-chevron-down shrink-0 text-[11px] transition-transform lg:hidden" :class="{ 'rotate-180': expanded, 'lg:block': !sidebarCollapsed }"></i>
                         </button>
 
                         <ul
-                            x-show="expanded"
+                            x-show="expanded && (!sidebarCollapsed || window.innerWidth < 1024)"
                             x-collapse
                             class="ml-4 mt-1 space-y-1 border-l border-white/10 pl-3"
                             role="menu"
@@ -171,14 +182,15 @@
                             href="{{ $item['route_name'] === '#' ? '#' : route($item['route_name']) }}"
                             @click="resetMenuSearch(); if (window.innerWidth < 1024) { sidebarOpen = false }"
                             class="group flex items-center gap-3 rounded-[8px] px-3 py-2.5 transition {{ $isActiveItem ? 'bg-white text-slate-950 shadow-lg shadow-black/10' : 'text-slate-300 hover:bg-white/[0.08] hover:text-white' }}"
+                            :class="{ 'lg:justify-center lg:px-1.5': sidebarCollapsed }"
                             wire:navigate
                         >
                             <span class="grid h-9 w-9 shrink-0 place-items-center rounded-[8px] {{ $isActiveItem ? 'bg-slate-950 text-white' : 'bg-white/[0.08] text-teal-200 group-hover:bg-white/[0.12]' }}">
                                 <i class="{{ $item['icon'] }} text-sm"></i>
                             </span>
-                            <span class="min-w-0 flex-1 truncate text-sm font-black">{{ $item['label'] }}</span>
+                            <span class="min-w-0 flex-1 truncate text-sm font-black lg:hidden" :class="{ 'lg:block': !sidebarCollapsed }">{{ $item['label'] }}</span>
                             @if (($item['badge_count'] ?? 0) > 0)
-                                <span class="rounded-full bg-rose-600 px-2 py-0.5 text-[10px] font-black leading-none text-white">
+                                <span class="rounded-full bg-rose-600 px-2 py-0.5 text-[10px] font-black leading-none text-white lg:hidden" :class="{ 'lg:inline-flex': !sidebarCollapsed }">
                                     {{ $item['badge_count'] > 9 ? '9+' : $item['badge_count'] }}
                                 </span>
                             @endif
@@ -188,26 +200,26 @@
             @endforeach
         </nav>
 
-        <div class="relative shrink-0 border-t border-white/10 bg-slate-950 p-4">
-            <div class="grid grid-cols-3 gap-2">
+        <div class="relative shrink-0 border-t border-white/10 bg-slate-950 p-4" :class="{ 'lg:px-3': sidebarCollapsed }">
+            <div class="grid grid-cols-3 gap-2" :class="{ 'lg:grid-cols-1': sidebarCollapsed }">
                 <a href="{{ route('home') }}" class="flex min-h-14 flex-col items-center justify-center gap-1 rounded-[8px] bg-white/[0.06] text-[10px] font-bold text-slate-300 transition hover:bg-white/[0.1] hover:text-white" title="View public website">
                     <i class="fas fa-globe text-sm text-teal-200"></i>
-                    Website
+                    <span class="lg:hidden" :class="{ 'lg:inline': !sidebarCollapsed }">Website</span>
                 </a>
                 <a href="{{ route('help.support') }}" class="flex min-h-14 flex-col items-center justify-center gap-1 rounded-[8px] bg-white/[0.06] text-[10px] font-bold text-slate-300 transition hover:bg-white/[0.1] hover:text-white" title="Help and support" wire:navigate>
                     <i class="fas fa-circle-question text-sm text-sky-200"></i>
-                    Help
+                    <span class="lg:hidden" :class="{ 'lg:inline': !sidebarCollapsed }">Help</span>
                 </a>
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf
                     <button type="submit" class="flex min-h-14 w-full flex-col items-center justify-center gap-1 rounded-[8px] bg-white/[0.06] text-[10px] font-bold text-slate-300 transition hover:bg-rose-500/15 hover:text-rose-200" title="Log out">
                         <i class="fas fa-arrow-right-from-bracket text-sm"></i>
-                        Log out
+                        <span class="lg:hidden" :class="{ 'lg:inline': !sidebarCollapsed }">Log out</span>
                     </button>
                 </form>
             </div>
 
-            <div class="mt-2 flex items-center justify-between gap-3 rounded-[8px] bg-white/[0.06] p-3">
+            <div class="mt-2 flex items-center justify-between gap-3 rounded-[8px] bg-white/[0.06] p-3 lg:hidden" :class="{ 'lg:flex': !sidebarCollapsed }">
                 <div class="min-w-0">
                     <p class="text-[10px] font-black uppercase tracking-[0.12em] text-slate-500">Appearance</p>
                     <p class="text-xs font-bold text-slate-200">Choose workspace theme</p>

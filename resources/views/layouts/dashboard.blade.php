@@ -3,6 +3,7 @@
     x-data="{
         theme: localStorage.getItem('theme') || 'light',
         sidebarOpen: false,
+        sidebarCollapsed: localStorage.getItem('sidebar-collapsed') === 'true',
         themes: ['light', 'dark', 'sepia', 'ocean', 'forest'],
         applyTheme(value) {
             this.themes.forEach((themeName) => document.documentElement.classList.remove(themeName));
@@ -15,6 +16,10 @@
         },
         toggleSidebar() {
             this.sidebarOpen = !this.sidebarOpen;
+        },
+        toggleSidebarCollapse() {
+            this.sidebarCollapsed = !this.sidebarCollapsed;
+            localStorage.setItem('sidebar-collapsed', this.sidebarCollapsed.toString());
         }
     }"
     x-init="applyTheme(theme)"
@@ -113,7 +118,10 @@
             style="display: none;"
         ></div>
 
-        <div class="flex min-h-screen min-w-0 flex-col transition-all duration-300 lg:pl-72">
+        <div
+            class="flex min-h-screen min-w-0 flex-col transition-[padding] duration-300"
+            :class="sidebarCollapsed ? 'lg:pl-20' : 'lg:pl-72'"
+        >
             <x-navbar :title="$pageTitle" :description="$pageDescription" :icon="$pageIcon" />
 
             <main class="flex-1 px-4 pb-24 pt-4 sm:px-6 lg:px-8 lg:pb-8 lg:pt-6">
