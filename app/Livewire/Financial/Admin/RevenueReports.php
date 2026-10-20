@@ -11,6 +11,8 @@ use Livewire\Attributes\Layout;
 
 class RevenueReports extends Component
 {
+    use \App\Livewire\Concerns\AuthorizesFinancialAdministration;
+
     public string $dateFrom = '';
     public string $dateTo = '';
 

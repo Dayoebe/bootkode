@@ -18,6 +18,8 @@ use Livewire\Component;
 ])]
 class CommercialReadiness extends Component
 {
+    use \App\Livewire\Concerns\AuthorizesFinancialAdministration;
+
     public string $activeTab = 'overview';
     public string $dateFrom = '';
     public string $dateTo = '';

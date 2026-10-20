@@ -10,6 +10,8 @@ use Livewire\Attributes\Layout;
 #[Layout('layouts.dashboard')]
 class FinancialSettings extends Component
 {
+    use \App\Livewire\Concerns\AuthorizesFinancialAdministration;
+
     public $commissionRate = 20;
     public $minimumWithdrawal = 1000;
     public $maximumWithdrawal = 500000;

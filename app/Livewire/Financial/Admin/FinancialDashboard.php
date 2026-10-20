@@ -13,6 +13,8 @@ use Livewire\Attributes\Layout;
 #[Layout('layouts.dashboard')]
 class FinancialDashboard extends Component
 {
+    use \App\Livewire\Concerns\AuthorizesFinancialAdministration;
+
     use WithPagination;
 
     public $selectedTab = 'overview';

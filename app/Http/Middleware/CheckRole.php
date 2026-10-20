@@ -17,7 +17,7 @@ class CheckRole
         }
 
         // Check if user has any of the required roles
-        if (!in_array($user->role, $roles)) {
+        if (!$user->hasAnyRole($roles)) {
             abort(403, 'You do not have permission to access this page.');
         }
 

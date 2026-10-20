@@ -12,6 +12,7 @@ class AppServiceProvider extends ServiceProvider
 {
     public function boot()
     {
+        \Livewire\Livewire::addPersistentMiddleware([\App\Http\Middleware\CheckRole::class]);
         Queue::failing(function (JobFailed $event): void {
             app(ObservabilityService::class)->recordFailedJob($event);
         });

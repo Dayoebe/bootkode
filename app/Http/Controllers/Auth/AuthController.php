@@ -151,7 +151,7 @@ class AuthController extends Controller
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'role' => $request->role ?? User::ROLE_STUDENT, // Default to student if not provided
+            'role' => User::ROLE_STUDENT,
             'date_of_birth' => $request->date_of_birth,
             'phone_number' => $request->phone_number,
             'bio' => $request->bio,
@@ -218,15 +218,7 @@ class AuthController extends Controller
     {
         return [
             'string',
-            'in:' . implode(',', [
-                User::ROLE_STUDENT,
-                User::ROLE_INSTRUCTOR,
-                User::ROLE_MENTOR,
-                User::ROLE_CONTENT_EDITOR,
-                User::ROLE_AFFILIATE_AMBASSADOR,
-                User::ROLE_ACADEMY_ADMIN,
-                User::ROLE_SUPER_ADMIN,
-            ])
+            'in:' . User::ROLE_STUDENT,
         ];
     }
 

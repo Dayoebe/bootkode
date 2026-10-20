@@ -63,6 +63,9 @@ Route::middleware(['auth'])->prefix('affiliate')->name('affiliate.')->group(func
 });
 
 
+// The gateway authenticates with HMAC, not a browser session.
+Route::post('/webhook/paystack', [App\Http\Controllers\FinancialController::class, 'paystackWebhook'])->name('paystack.webhook');
+
 // User Wallet Routes
 Route::middleware(['auth'])->group(function () {
     Route::get('/wallet', App\Livewire\Financial\WalletDashboard::class)->name('wallet.index');
@@ -75,14 +78,14 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/paystack/callback', [App\Http\Controllers\FinancialController::class, 'paystackCallback'])->name('paystack.callback');
     Route::get('/api/banks', [App\Http\Controllers\FinancialController::class, 'getBanks'])->name('api.banks');
     Route::post('/api/resolve-account', [App\Http\Controllers\FinancialController::class, 'resolveAccount'])->name('api.resolve-account');
-    Route::get('/admin/financial', App\Livewire\Financial\Admin\FinancialDashboard::class)->name('admin.financial.dashboard');
-    Route::get('/admin/payments/processing', App\Livewire\Financial\Admin\PaymentProcessing::class)->name('admin.payments.processing');
-    Route::get('/admin/revenue/reports', App\Livewire\Financial\Admin\RevenueReports::class)->name('admin.revenue.reports');
-    Route::get('/admin/commercial-readiness', App\Livewire\Financial\Admin\CommercialReadiness::class)->name('admin.commercial.readiness');
-    Route::get('/admin/financial/settings', App\Livewire\Financial\Admin\FinancialSettings::class)->name('admin.financial.settings');
-    Route::get('/admin/paystack/settings', App\Livewire\Financial\Admin\PaystackSettings::class)->name('admin.paystack.settings');
-    Route::get('/admin/payments', \App\Livewire\Financial\Admin\PaymentProcessing::class)->name('admin.payments');
-    Route::post('/webhook/paystack', [App\Http\Controllers\FinancialController::class, 'paystackWebhook'])->name('paystack.webhook');
+    Route::get('/admin/financial', App\Livewire\Financial\Admin\FinancialDashboard::class)->name('admin.financial.dashboard')->middleware(\App\Http\Middleware\CheckRole::class . ':super_admin,academy_admin');
+    Route::get('/admin/payments/processing', App\Livewire\Financial\Admin\PaymentProcessing::class)->name('admin.payments.processing')->middleware(\App\Http\Middleware\CheckRole::class . ':super_admin,academy_admin');
+    Route::get('/admin/revenue/reports', App\Livewire\Financial\Admin\RevenueReports::class)->name('admin.revenue.reports')->middleware(\App\Http\Middleware\CheckRole::class . ':super_admin,academy_admin');
+    Route::get('/admin/commercial-readiness', App\Livewire\Financial\Admin\CommercialReadiness::class)->name('admin.commercial.readiness')->middleware(\App\Http\Middleware\CheckRole::class . ':super_admin,academy_admin');
+    Route::get('/admin/financial/settings', App\Livewire\Financial\Admin\FinancialSettings::class)->name('admin.financial.settings')->middleware(\App\Http\Middleware\CheckRole::class . ':super_admin,academy_admin');
+    Route::get('/admin/paystack/settings', App\Livewire\Financial\Admin\PaystackSettings::class)->name('admin.paystack.settings')->middleware(\App\Http\Middleware\CheckRole::class . ':super_admin,academy_admin');
+    Route::get('/admin/payments', \App\Livewire\Financial\Admin\PaymentProcessing::class)->name('admin.payments')->middleware(\App\Http\Middleware\CheckRole::class . ':super_admin,academy_admin');
+
 });
 
 
@@ -190,8 +193,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
 });
 
 // CBT Routes - Removed role restrictions
-Route::get('/cbt/management', \App\Livewire\Cbt\CbtManagement::class)->name('cbt.management');
-Route::get('/cbt/results', \App\Livewire\Cbt\CbtViewer::class)->name('cbt.viewer');
+Route::get('/cbt/management', \App\Livewire\Cbt\CbtManagement::class)->name('cbt.management')->middleware(['auth', 'verified', \App\Http\Middleware\CheckRole::class . ':super_admin,academy_admin,instructor']);
+Route::get('/cbt/results', \App\Livewire\Cbt\CbtViewer::class)->name('cbt.viewer')->middleware(['auth', 'verified']);
 Route::middleware(['auth', 'verified'])->group(function () {
     // CBT Exam Routes
     Route::get('/cbt/exams', App\Livewire\Cbt\CbtExamSelection::class)->name('cbt.exams');
@@ -204,7 +207,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/cbt/exam/{assessmentId?}', App\Livewire\Cbt\CbtExam::class)->name('cbt.exam');
 
     // CBT Management (now available to all authenticated users)
-    Route::get('/cbt/manage', App\Livewire\Cbt\CbtManagement::class)->name('cbt.manage');
+    Route::get('/cbt/manage', App\Livewire\Cbt\CbtManagement::class)->name('cbt.manage')->middleware(['auth', 'verified', \App\Http\Middleware\CheckRole::class . ':super_admin,academy_admin,instructor']);
 });
 
 

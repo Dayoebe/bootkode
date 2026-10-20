@@ -61,6 +61,11 @@ class CbtManagement extends Component
         'correct_answers' => 'required|array|min:1',
     ];
 
+    public function boot(): void
+    {
+        abort_unless(auth()->user()?->hasAnyRole(['super_admin', 'academy_admin', 'instructor']), 403);
+    }
+
     public function mount()
     {
         $this->resetForm();

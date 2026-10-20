@@ -14,6 +14,8 @@ use Carbon\Carbon;
 #[Layout('layouts.dashboard')]
 class PaymentProcessing extends Component
 {
+    use \App\Livewire\Concerns\AuthorizesFinancialAdministration;
+
     public $selectedTab = 'overview';
     
     private PaystackService $paystackService;
