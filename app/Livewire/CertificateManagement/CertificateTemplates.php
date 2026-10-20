@@ -11,6 +11,8 @@ use Livewire\Attributes\Title;
 #[Title('Certificate Templates')]
 class CertificateTemplates extends Component
 {
+    use \App\Livewire\Concerns\AuthorizesCertificateAdministration;
+
     public $templates = [];
     public $selectedTemplate = null;
     public $showPreview = false;

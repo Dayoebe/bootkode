@@ -268,7 +268,7 @@ class CertificateService
             round(($completedLessons / $totalLessons) * 100) : 0;
 
         $requiredCompletion = config('certificate.required_completion_percentage', 100);
-        $canRequest = $completionPercentage >= $requiredCompletion;
+        $canRequest = $totalLessons > 0 && $completionPercentage >= $requiredCompletion;
 
         return [
             'can_request' => $canRequest,

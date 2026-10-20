@@ -6,7 +6,7 @@ use App\Models\Learning\Course;
 use App\Models\Learning\Section;
 use App\Models\Learning\Lesson;
 use App\Models\Assessment\Assessment;
-use App\Models\Core\UserProgress;
+use App\Models\Assessment\UserProgress;
 use Illuminate\Support\Facades\Auth;
 
 class ProgressService
@@ -16,6 +16,7 @@ class ProgressService
      */
     public function completeLesson(Course $course, Lesson $lesson)
     {
+        $this->authorizeProgress($course, $lesson->section);
         UserProgress::updateOrCreate(
             [
                 'user_id' => Auth::id(),
@@ -28,7 +29,7 @@ class ProgressService
             ]
         );
 
-        $this->checkAndUnlockNextSection($course, $lesson->section);
+
     }
 
     /**
@@ -36,6 +37,7 @@ class ProgressService
      */
     public function completeAssessment(Course $course, Assessment $assessment, bool $passed)
     {
+        $this->authorizeProgress($course, $assessment->section);
         UserProgress::updateOrCreate(
             [
                 'user_id' => Auth::id(),
@@ -48,35 +50,15 @@ class ProgressService
             ]
         );
 
-        if ($passed) {
-            $this->checkAndUnlockNextSection($course, $assessment->section);
-        }
+
     }
 
-    /**
-     * Check if the section is completed and unlock the next section.
-     */
-    protected function checkAndUnlockNextSection(Course $course, Section $currentSection)
+    private function authorizeProgress(Course $course, ?Section $section): void
     {
-        $sectionLessons = $currentSection->lessons()->pluck('id')->toArray();
-        $sectionAssessments = $currentSection->assessments()->pluck('id')->toArray();
-        $completedLessons = UserProgress::where('user_id', Auth::id())
-            ->where('course_id', $course->id)
-            ->whereIn('lesson_id', $sectionLessons)
-            ->where('is_completed', true)
-            ->count();
-        $completedAssessments = UserProgress::where('user_id', Auth::id())
-            ->where('course_id', $course->id)
-            ->whereIn('assessment_id', $sectionAssessments)
-            ->where('is_completed', true)
-            ->count();
-
-        if ($completedLessons === count($sectionLessons) && $completedAssessments === count($sectionAssessments)) {
-            $nextSection = $course->sections()->where('order', '>', $currentSection->order)->first();
-            if ($nextSection) {
-                $nextSection->update(['is_locked' => false]);
-            }
-        }
+        abort_unless(Auth::check() && $section && $section->course_id === $course->id, 403);
+        abort_unless(Auth::user()->enrollments()->where('course_id', $course->id)->exists()
+            || Auth::user()->courses()->where('courses.id', $course->id)->exists(), 403);
+        abort_unless($this->canAccessSection($course, $section), 403);
     }
 
     /**
@@ -84,14 +66,14 @@ class ProgressService
      */
     public function canAccessSection(Course $course, Section $section): bool
     {
+        if (!Auth::check() || $section->course_id !== $course->id) return false;
         if (!$section->is_locked) {
             return true;
         }
 
-        $previousSection = $course->sections()->where('order', '<', $section->order)->orderBy('order', 'desc')->first();
-        if (!$previousSection) {
-            return true; // First section is always accessible
-        }
+        $previousSections = $course->sections()->where('order', '<', $section->order)->orderBy('order')->get();
+        foreach ($previousSections as $previousSection) {
+
 
         $previousLessons = $previousSection->lessons()->pluck('id')->toArray();
         $previousAssessments = $previousSection->assessments()->pluck('id')->toArray();
@@ -106,6 +88,8 @@ class ProgressService
             ->where('is_completed', true)
             ->count();
 
-        return $completedLessons === count($previousLessons) && $completedAssessments === count($previousAssessments);
+        if ($completedLessons !== count($previousLessons) || $completedAssessments !== count($previousAssessments)) return false;
+        }
+        return true;
     }
 }

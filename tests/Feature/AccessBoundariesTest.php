@@ -38,6 +38,7 @@ class AccessBoundariesTest extends TestCase
         $this->actingAs(User::factory()->create());
         Livewire::test(PaystackSettings::class)->assertForbidden();
         Livewire::test(CbtManagement::class)->assertForbidden();
+        Livewire::test(\App\Livewire\CertificateManagement\CertificateManagement::class)->assertForbidden();
     }
 
     public function test_cbt_routes_require_a_login(): void
