@@ -2,12 +2,12 @@
 <div>
     <!-- Statistics Cards -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-        <div class="bg-white rounded-lg shadow p-6 border-l-4 border-yellow-500">
+        <div class="bg-themed-secondary rounded-lg shadow p-6 border-l-4 border-yellow-500">
             <div class="flex items-center justify-between">
                 <div>
-                    <p class="text-sm text-gray-600">Pending Withdrawals</p>
+                    <p class="text-sm text-themed-secondary">Pending Withdrawals</p>
                     <p class="text-2xl font-bold text-yellow-600">{{ $stats['pending_count'] }}</p>
-                    <p class="text-sm text-gray-500">₦{{ number_format($stats['pending_amount'], 2) }}</p>
+                    <p class="text-sm text-themed-secondary">₦{{ number_format($stats['pending_amount'], 2) }}</p>
                 </div>
                 <div class="bg-yellow-100 p-3 rounded-lg">
                     <svg class="w-6 h-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -17,12 +17,12 @@
             </div>
         </div>
 
-        <div class="bg-white rounded-lg shadow p-6 border-l-4 border-blue-500">
+        <div class="bg-themed-secondary rounded-lg shadow p-6 border-l-4 border-blue-500">
             <div class="flex items-center justify-between">
                 <div>
-                    <p class="text-sm text-gray-600">Processing</p>
+                    <p class="text-sm text-themed-secondary">Processing</p>
                     <p class="text-2xl font-bold text-blue-600">{{ $stats['processing_count'] }}</p>
-                    <p class="text-sm text-gray-500">₦{{ number_format($stats['processing_amount'], 2) }}</p>
+                    <p class="text-sm text-themed-secondary">₦{{ number_format($stats['processing_amount'], 2) }}</p>
                 </div>
                 <div class="bg-blue-100 p-3 rounded-lg">
                     <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -32,12 +32,12 @@
             </div>
         </div>
 
-        <div class="bg-white rounded-lg shadow p-6 border-l-4 border-green-500">
+        <div class="bg-themed-secondary rounded-lg shadow p-6 border-l-4 border-green-500">
             <div class="flex items-center justify-between">
                 <div>
-                    <p class="text-sm text-gray-600">Completed Today</p>
+                    <p class="text-sm text-themed-secondary">Completed Today</p>
                     <p class="text-2xl font-bold text-green-600">{{ $stats['completed_today'] }}</p>
-                    <p class="text-sm text-gray-500">₦{{ number_format($stats['completed_today_amount'], 2) }}</p>
+                    <p class="text-sm text-themed-secondary">₦{{ number_format($stats['completed_today_amount'], 2) }}</p>
                 </div>
                 <div class="bg-green-100 p-3 rounded-lg">
                     <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -49,14 +49,14 @@
     </div>
 
     <!-- Filters -->
-    <div class="bg-white rounded-lg shadow-sm p-6 mb-6">
+    <div class="bg-themed-secondary rounded-lg shadow-sm p-6 mb-6">
         <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
             <div>
                 <input wire:model.debounce.300ms="search" type="text" placeholder="Search withdrawals..."
-                       class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                       class="w-full rounded-md border-themed-secondary shadow-sm focus:border-blue-500 focus:ring-blue-500">
             </div>
             <div>
-                <select wire:model="statusFilter" class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                <select wire:model="statusFilter" class="w-full rounded-md border-themed-secondary shadow-sm focus:border-blue-500 focus:ring-blue-500">
                     <option value="all">All Status</option>
                     <option value="pending">Pending</option>
                     <option value="approved">Approved</option>
@@ -67,55 +67,55 @@
                 </select>
             </div>
             <div>
-                <input wire:model="dateFrom" type="date" class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                <input wire:model="dateFrom" type="date" class="w-full rounded-md border-themed-secondary shadow-sm focus:border-blue-500 focus:ring-blue-500">
             </div>
             <div>
-                <input wire:model="dateTo" type="date" class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                <input wire:model="dateTo" type="date" class="w-full rounded-md border-themed-secondary shadow-sm focus:border-blue-500 focus:ring-blue-500">
             </div>
         </div>
     </div>
 
     <!-- Withdrawals Table -->
-    <div class="bg-white rounded-lg shadow-sm overflow-hidden">
+    <div class="bg-themed-secondary rounded-lg shadow-sm overflow-hidden">
         @if($withdrawals->count() > 0)
             <div class="overflow-x-auto">
-                <table class="min-w-full divide-y divide-gray-200">
-                    <thead class="bg-gray-50">
+                <table class="min-w-full divide-y divide-themed-primary">
+                    <thead class="bg-themed-tertiary">
                         <tr>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Instructor</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Amount</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Bank Details</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Requested</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-themed-secondary uppercase tracking-wider">Instructor</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-themed-secondary uppercase tracking-wider">Amount</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-themed-secondary uppercase tracking-wider">Bank Details</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-themed-secondary uppercase tracking-wider">Requested</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-themed-secondary uppercase tracking-wider">Status</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-themed-secondary uppercase tracking-wider">Actions</th>
                         </tr>
                     </thead>
-                    <tbody class="bg-white divide-y divide-gray-200">
+                    <tbody class="bg-themed-secondary divide-y divide-themed-primary">
                         @foreach($withdrawals as $withdrawal)
                             <tr class="hover:bg-gray-50 transition-colors">
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <div class="flex items-center">
-                                        <img class="h-10 w-10 rounded-full" 
-                                             src="{{ $withdrawal->user->profile_picture ?? 'https://ui-avatars.com/api/?name=' . urlencode($withdrawal->user->name) }}" 
+                                        <img class="h-10 w-10 rounded-full"
+                                             src="{{ $withdrawal->user->profile_picture ?? 'https://ui-avatars.com/api/?name=' . urlencode($withdrawal->user->name) }}"
                                              alt="">
                                         <div class="ml-4">
-                                            <div class="text-sm font-medium text-gray-900">{{ $withdrawal->user->name }}</div>
-                                            <div class="text-sm text-gray-500">{{ $withdrawal->user->email }}</div>
+                                            <div class="text-sm font-medium text-themed-primary">{{ $withdrawal->user->name }}</div>
+                                            <div class="text-sm text-themed-secondary">{{ $withdrawal->user->email }}</div>
                                         </div>
                                     </div>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
-                                    <div class="text-sm font-semibold text-gray-900">₦{{ number_format($withdrawal->amount, 2) }}</div>
-                                    <div class="text-xs text-gray-500">{{ $withdrawal->withdrawal_id }}</div>
+                                    <div class="text-sm font-semibold text-themed-primary">₦{{ number_format($withdrawal->amount, 2) }}</div>
+                                    <div class="text-xs text-themed-secondary">{{ $withdrawal->withdrawal_id }}</div>
                                 </td>
                                 <td class="px-6 py-4">
-                                    <div class="text-sm text-gray-900">
+                                    <div class="text-sm text-themed-primary">
                                         <p class="font-medium">{{ $withdrawal->account_name }}</p>
-                                        <p class="text-gray-500">{{ $withdrawal->account_number }}</p>
+                                        <p class="text-themed-secondary">{{ $withdrawal->account_number }}</p>
                                         <p class="text-xs text-gray-400">{{ $withdrawal->bank_code }}</p>
                                     </div>
                                 </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-themed-secondary">
                                     {{ $withdrawal->requested_at->format('M d, Y') }}
                                     <br>
                                     <span class="text-xs">{{ $withdrawal->requested_at->format('H:i') }}</span>
@@ -142,12 +142,12 @@
                                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                     @if($withdrawal->status === 'pending')
                                         <div class="flex space-x-2">
-                                            <button wire:click="approveWithdrawal({{ $withdrawal->id }})" 
+                                            <button wire:click="approveWithdrawal({{ $withdrawal->id }})"
                                                     class="text-green-600 hover:text-green-900 transition-colors"
                                                     onclick="return confirm('Are you sure you want to approve this withdrawal?')">
                                                 Approve
                                             </button>
-                                            <button wire:click="rejectWithdrawal({{ $withdrawal->id }})" 
+                                            <button wire:click="rejectWithdrawal({{ $withdrawal->id }})"
                                                     class="text-red-600 hover:text-red-900 transition-colors"
                                                     onclick="return confirm('Are you sure you want to reject this withdrawal?')">
                                                 Reject
@@ -158,7 +158,7 @@
                                     @elseif($withdrawal->status === 'completed')
                                         <span class="text-green-600 text-sm">✓ Completed</span>
                                     @else
-                                        <span class="text-gray-500 text-sm">{{ ucfirst($withdrawal->status) }}</span>
+                                        <span class="text-themed-secondary text-sm">{{ ucfirst($withdrawal->status) }}</span>
                                     @endif
                                 </td>
                             </tr>
@@ -166,9 +166,9 @@
                     </tbody>
                 </table>
             </div>
-            
+
             <!-- Pagination -->
-            <div class="px-6 py-4 border-t border-gray-200">
+            <div class="px-6 py-4 border-t border-themed-primary">
                 {{ $withdrawals->links() }}
             </div>
         @else
@@ -176,8 +176,8 @@
                 <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path>
                 </svg>
-                <h3 class="mt-2 text-sm font-medium text-gray-900">No withdrawals found</h3>
-                <p class="mt-1 text-sm text-gray-500">Try adjusting your filters to see more results.</p>
+                <h3 class="mt-2 text-sm font-medium text-themed-primary">No withdrawals found</h3>
+                <p class="mt-1 text-sm text-themed-secondary">Try adjusting your filters to see more results.</p>
             </div>
         @endif
     </div>

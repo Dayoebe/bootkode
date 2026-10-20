@@ -11,7 +11,7 @@
         </div>
     @endif
 
-    <div class="rounded-xl border border-themed-primary bg-themed-secondary p-6 shadow-sm">
+    <div class="rounded-lg border border-themed-primary bg-themed-secondary p-6 shadow-sm">
         <div class="flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-between">
             <div>
                 <p class="text-sm font-semibold uppercase tracking-wide text-accent-primary">Commercial readiness</p>
@@ -56,7 +56,7 @@
         </div>
     </div>
 
-    <div class="rounded-xl border border-themed-primary bg-themed-secondary p-2 shadow-sm">
+    <div class="rounded-lg border border-themed-primary bg-themed-secondary p-2 shadow-sm">
         <div class="grid gap-2 md:grid-cols-5">
             @foreach([
                 'overview' => ['Overview', 'fa-chart-line'],
@@ -75,7 +75,7 @@
 
     @if($activeTab === 'overview')
         <div class="grid gap-6 xl:grid-cols-[1fr_360px]">
-            <div class="rounded-xl border border-themed-primary bg-themed-secondary p-5 shadow-sm">
+            <div class="rounded-lg border border-themed-primary bg-themed-secondary p-5 shadow-sm">
                 <div class="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
                     <div>
                         <h2 class="text-lg font-semibold text-themed-primary">Revenue report</h2>
@@ -112,7 +112,7 @@
                 </div>
             </div>
 
-            <div class="rounded-xl border border-themed-primary bg-themed-secondary p-5 shadow-sm">
+            <div class="rounded-lg border border-themed-primary bg-themed-secondary p-5 shadow-sm">
                 <h2 class="text-lg font-semibold text-themed-primary">Document coverage</h2>
                 <div class="mt-4 space-y-3">
                     @foreach(['receipt' => 'Receipts', 'invoice' => 'Invoices', 'credit_note' => 'Credit notes'] as $type => $label)
@@ -130,7 +130,7 @@
     @endif
 
     @if($activeTab === 'documents')
-        <div class="rounded-xl border border-themed-primary bg-themed-secondary p-5 shadow-sm">
+        <div class="rounded-lg border border-themed-primary bg-themed-secondary p-5 shadow-sm">
             <h2 class="text-lg font-semibold text-themed-primary">Recent receipts, invoices, and credit notes</h2>
             <div class="mt-5 overflow-x-auto">
                 <table class="min-w-full divide-y divide-themed-primary text-sm">
@@ -166,7 +166,7 @@
 
     @if($activeTab === 'refunds')
         <div class="grid gap-6 xl:grid-cols-[420px_1fr]">
-            <form wire:submit.prevent="processRefund" class="rounded-xl border border-themed-primary bg-themed-secondary p-5 shadow-sm">
+            <form wire:submit.prevent="processRefund" class="rounded-lg border border-themed-primary bg-themed-secondary p-5 shadow-sm">
                 <h2 class="text-lg font-semibold text-themed-primary">Process refund</h2>
                 <div class="mt-4 space-y-4">
                     <select wire:model.live="refundTransactionId" class="w-full rounded-lg border border-themed-primary bg-themed-secondary px-3 py-3 text-sm text-themed-primary">
@@ -189,7 +189,7 @@
                 </div>
             </form>
 
-            <div class="rounded-xl border border-themed-primary bg-themed-secondary p-5 shadow-sm">
+            <div class="rounded-lg border border-themed-primary bg-themed-secondary p-5 shadow-sm">
                 <h2 class="text-lg font-semibold text-themed-primary">Recent refund requests</h2>
                 <div class="mt-5 space-y-3">
                     @forelse($refunds as $refund)
@@ -212,7 +212,7 @@
     @endif
 
     @if($activeTab === 'payouts')
-        <div class="rounded-xl border border-themed-primary bg-themed-secondary p-5 shadow-sm">
+        <div class="rounded-lg border border-themed-primary bg-themed-secondary p-5 shadow-sm">
             <h2 class="text-lg font-semibold text-themed-primary">Payout audit trail</h2>
             <div class="mt-5 space-y-3">
                 @forelse($payoutAudits as $audit)
@@ -244,7 +244,7 @@
     @endif
 
     @if($activeTab === 'packages')
-        <div class="rounded-xl border border-themed-primary bg-themed-secondary p-5 shadow-sm">
+        <div class="rounded-lg border border-themed-primary bg-themed-secondary p-5 shadow-sm">
             <div class="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
                 <div>
                     <h2 class="text-lg font-semibold text-themed-primary">Public pricing packages</h2>

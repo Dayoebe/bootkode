@@ -1,5 +1,5 @@
 <div class="space-y-6 p-4 sm:p-6 lg:p-8">
-    <div class="rounded-xl border border-themed-primary bg-themed-secondary p-6 shadow-sm">
+    <div class="rounded-lg border border-themed-primary bg-themed-secondary p-6 shadow-sm">
         <div class="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
             <div>
                 <p class="text-sm font-semibold uppercase tracking-wide text-accent-primary">Revenue reports</p>
@@ -38,7 +38,7 @@
     </div>
 
     <div class="grid gap-6 xl:grid-cols-[1fr_420px]">
-        <div class="rounded-xl border border-themed-primary bg-themed-secondary p-5 shadow-sm">
+        <div class="rounded-lg border border-themed-primary bg-themed-secondary p-5 shadow-sm">
             <h2 class="text-lg font-semibold text-themed-primary">Daily movement</h2>
             <div class="mt-5 overflow-x-auto">
                 <table class="min-w-full divide-y divide-themed-primary text-sm">
@@ -68,7 +68,7 @@
             </div>
         </div>
 
-        <div class="rounded-xl border border-themed-primary bg-themed-secondary p-5 shadow-sm">
+        <div class="rounded-lg border border-themed-primary bg-themed-secondary p-5 shadow-sm">
             <h2 class="text-lg font-semibold text-themed-primary">Operating split</h2>
             <div class="mt-4 space-y-3">
                 @foreach([

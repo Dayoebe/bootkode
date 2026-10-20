@@ -1,24 +1,27 @@
 <!-- resources/views/livewire/financial/admin-financial-dashboard.blade.php -->
-<div class=" px-4 sm:px-6 lg:px-8 py-8">
+<div class="space-y-6">
     <!-- Header -->
     <div class="mb-8">
-        <h1 class="text-3xl font-bold text-gray-900">Financial Dashboard</h1>
-        <p class="text-gray-600">Monitor platform revenue, withdrawals, and financial health</p>
+        <h1 class="text-2xl font-bold text-themed-primary">Financial Dashboard</h1>
+        <p class="text-themed-secondary">Monitor platform revenue, withdrawals, and financial health</p>
         <div class="mt-3 flex flex-wrap gap-2">
-            <a href="{{ route('admin.revenue.reports') }}" class="inline-flex rounded-lg border border-gray-300 px-3 py-2 text-sm font-semibold text-gray-700 hover:border-blue-400 hover:text-blue-700">Revenue reports</a>
-            <a href="{{ route('admin.commercial.readiness') }}" class="inline-flex rounded-lg border border-gray-300 px-3 py-2 text-sm font-semibold text-gray-700 hover:border-blue-400 hover:text-blue-700">Commercial readiness</a>
+            <a href="{{ route('admin.revenue.reports') }}" class="inline-flex rounded-lg border border-themed-secondary px-3 py-2 text-sm font-semibold text-themed-primary hover:border-blue-400 hover:text-blue-700">Revenue reports</a>
+            <a href="{{ route('admin.commercial.readiness') }}" class="inline-flex rounded-lg border border-themed-secondary px-3 py-2 text-sm font-semibold text-themed-primary hover:border-blue-400 hover:text-blue-700">Commercial readiness</a>
         </div>
     </div>
 
+    @if($financialUnavailable ?? false)
+        <x-ui.empty-state title="Financial data is unavailable" description="The report could not be loaded. Try again shortly or contact platform support."><x-secondary-button wire:click="$refresh">Try again</x-secondary-button></x-ui.empty-state>
+    @else
     <!-- Tab Navigation -->
-    <div class="border-b border-gray-200 mb-8">
+    <div class="border-b border-themed-primary mb-8">
         <nav class="-mb-px flex space-x-8">
             <button wire:click="setTab('overview')"
-                class="{{ $selectedTab === 'overview' ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300' }} whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm">
+                class="{{ $selectedTab === 'overview' ? 'border-blue-500 text-blue-600' : 'border-transparent text-themed-secondary hover:text-gray-700 hover:border-gray-300' }} whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm">
                 Overview
             </button>
             <button wire:click="setTab('withdrawals')"
-                class="{{ $selectedTab === 'withdrawals' ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300' }} whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm">
+                class="{{ $selectedTab === 'withdrawals' ? 'border-blue-500 text-blue-600' : 'border-transparent text-themed-secondary hover:text-gray-700 hover:border-gray-300' }} whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm">
                 Withdrawals
             </button>
         </nav>
@@ -27,11 +30,11 @@
     @if($selectedTab === 'overview')
         <!-- Revenue Overview Cards -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-            <div class="bg-white rounded-xl shadow-lg p-6 border-l-4 border-green-500">
+            <div class="bg-themed-secondary rounded-lg shadow-sm p-6 border-l-4 border-green-500">
                 <div class="flex items-center justify-between">
                     <div>
-                        <p class="text-sm text-gray-600">Total Revenue</p>
-                        <p class="text-2xl font-bold text-gray-900">
+                        <p class="text-sm text-themed-secondary">Total Revenue</p>
+                        <p class="text-2xl font-bold text-themed-primary">
                             {{ isset($revenueAnalytics['formatted']['total_course_sales']) ? $revenueAnalytics['formatted']['total_course_sales'] : '₦0.00' }}
                         </p>
                     </div>
@@ -45,11 +48,11 @@
                 </div>
             </div>
 
-            <div class="bg-white rounded-xl shadow-lg p-6 border-l-4 border-blue-500">
+            <div class="bg-themed-secondary rounded-lg shadow-sm p-6 border-l-4 border-blue-500">
                 <div class="flex items-center justify-between">
                     <div>
-                        <p class="text-sm text-gray-600">Platform Commission</p>
-                        <p class="text-2xl font-bold text-gray-900">
+                        <p class="text-sm text-themed-secondary">Platform Commission</p>
+                        <p class="text-2xl font-bold text-themed-primary">
                             {{ isset($revenueAnalytics['formatted']['platform_commission']) ? $revenueAnalytics['formatted']['platform_commission'] : '₦0.00' }}
                         </p>
                     </div>
@@ -63,11 +66,11 @@
                 </div>
             </div>
 
-            <div class="bg-white rounded-xl shadow-lg p-6 border-l-4 border-purple-500">
+            <div class="bg-themed-secondary rounded-lg shadow-sm p-6 border-l-4 border-purple-500">
                 <div class="flex items-center justify-between">
                     <div>
-                        <p class="text-sm text-gray-600">Instructor Earnings</p>
-                        <p class="text-2xl font-bold text-gray-900">
+                        <p class="text-sm text-themed-secondary">Instructor Earnings</p>
+                        <p class="text-2xl font-bold text-themed-primary">
                             {{ isset($revenueAnalytics['formatted']['instructor_earnings']) ? $revenueAnalytics['formatted']['instructor_earnings'] : '₦0.00' }}
                         </p>
                     </div>
@@ -81,11 +84,11 @@
                 </div>
             </div>
 
-            <div class="bg-white rounded-xl shadow-lg p-6 border-l-4 border-yellow-500">
+            <div class="bg-themed-secondary rounded-lg shadow-sm p-6 border-l-4 border-yellow-500">
                 <div class="flex items-center justify-between">
                     <div>
-                        <p class="text-sm text-gray-600">Pending Withdrawals</p>
-                        <p class="text-2xl font-bold text-gray-900">
+                        <p class="text-sm text-themed-secondary">Pending Withdrawals</p>
+                        <p class="text-2xl font-bold text-themed-primary">
                             {{ isset($revenueAnalytics['formatted']['pending_withdrawals']) ? $revenueAnalytics['formatted']['pending_withdrawals'] : '₦0.00' }}
                         </p>
                     </div>
@@ -101,27 +104,27 @@
 
         <!-- Paystack Balance -->
         @if(isset($paystackBalance['success']) && $paystackBalance['success'])
-            <div class="bg-white rounded-xl shadow-lg p-6 mb-8">
-                <h3 class="text-lg font-semibold text-gray-900 mb-4">Paystack Account Balance</h3>
+            <div class="bg-themed-secondary rounded-lg shadow-sm p-6 mb-8">
+                <h3 class="text-lg font-semibold text-themed-primary mb-4">Paystack Account Balance</h3>
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                     @if(isset($paystackBalance['balances']) && is_array($paystackBalance['balances']))
                         @foreach($paystackBalance['balances'] as $balance)
-                            <div class="bg-gray-50 rounded-lg p-4">
-                                <p class="text-sm text-gray-600">{{ strtoupper($balance['currency'] ?? 'NGN') }}</p>
-                                <p class="text-xl font-bold text-gray-900">₦{{ number_format(($balance['balance'] ?? 0) / 100, 2) }}</p>
+                            <div class="bg-themed-tertiary rounded-lg p-4">
+                                <p class="text-sm text-themed-secondary">{{ strtoupper($balance['currency'] ?? 'NGN') }}</p>
+                                <p class="text-xl font-bold text-themed-primary">₦{{ number_format(($balance['balance'] ?? 0) / 100, 2) }}</p>
                             </div>
                         @endforeach
                     @else
-                        <div class="bg-gray-50 rounded-lg p-4">
-                            <p class="text-sm text-gray-600">NGN</p>
-                            <p class="text-xl font-bold text-gray-900">₦0.00</p>
+                        <div class="bg-themed-tertiary rounded-lg p-4">
+                            <p class="text-sm text-themed-secondary">NGN</p>
+                            <p class="text-xl font-bold text-themed-primary">₦0.00</p>
                         </div>
                     @endif
                 </div>
             </div>
         @else
-            <div class="bg-white rounded-xl shadow-lg p-6 mb-8">
-                <h3 class="text-lg font-semibold text-gray-900 mb-4">Paystack Account Balance</h3>
+            <div class="bg-themed-secondary rounded-lg shadow-sm p-6 mb-8">
+                <h3 class="text-lg font-semibold text-themed-primary mb-4">Paystack Account Balance</h3>
                 <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
                     <p class="text-yellow-800 text-sm">Unable to fetch Paystack balance at this time.</p>
                 </div>
@@ -131,28 +134,28 @@
 
     @if($selectedTab === 'withdrawals')
         <!-- Pending Withdrawals -->
-        <div class="bg-white rounded-xl shadow-lg">
-            <div class="p-6 border-b border-gray-200">
-                <h3 class="text-lg font-semibold text-gray-900">Pending Withdrawal Requests</h3>
+        <div class="bg-themed-secondary rounded-lg shadow-sm">
+            <div class="p-6 border-b border-themed-primary">
+                <h3 class="text-lg font-semibold text-themed-primary">Pending Withdrawal Requests</h3>
             </div>
             <div class="overflow-x-auto">
                 @if(isset($pendingWithdrawals) && $pendingWithdrawals->count() > 0)
-                    <table class="min-w-full divide-y divide-gray-200">
-                        <thead class="bg-gray-50">
+                    <table class="min-w-full divide-y divide-themed-primary">
+                        <thead class="bg-themed-tertiary">
                             <tr>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                <th class="px-6 py-3 text-left text-xs font-medium text-themed-secondary uppercase tracking-wider">
                                     Instructor</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                <th class="px-6 py-3 text-left text-xs font-medium text-themed-secondary uppercase tracking-wider">
                                     Amount</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Bank
+                                <th class="px-6 py-3 text-left text-xs font-medium text-themed-secondary uppercase tracking-wider">Bank
                                     Details</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                <th class="px-6 py-3 text-left text-xs font-medium text-themed-secondary uppercase tracking-wider">
                                     Requested</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                <th class="px-6 py-3 text-left text-xs font-medium text-themed-secondary uppercase tracking-wider">
                                     Actions</th>
                             </tr>
                         </thead>
-                        <tbody class="bg-white divide-y divide-gray-200">
+                        <tbody class="bg-themed-secondary divide-y divide-themed-primary">
                             @foreach($pendingWithdrawals as $withdrawal)
                                 <tr>
                                     <td class="px-6 py-4 whitespace-nowrap">
@@ -163,21 +166,21 @@
                                                     alt="">
                                             </div>
                                             <div class="ml-4">
-                                                <div class="text-sm font-medium text-gray-900">{{ $withdrawal->user->name ?? 'Unknown User' }}</div>
-                                                <div class="text-sm text-gray-500">{{ $withdrawal->user->email ?? 'No email' }}</div>
+                                                <div class="text-sm font-medium text-themed-primary">{{ $withdrawal->user->name ?? 'Unknown User' }}</div>
+                                                <div class="text-sm text-themed-secondary">{{ $withdrawal->user->email ?? 'No email' }}</div>
                                             </div>
                                         </div>
                                     </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-semibold text-gray-900">
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-semibold text-themed-primary">
                                         {{ $withdrawal->formatted_amount ?? '₦0.00' }}
                                     </td>
-                                    <td class="px-6 py-4 text-sm text-gray-900">
+                                    <td class="px-6 py-4 text-sm text-themed-primary">
                                         <div>
                                             <p class="font-medium">{{ $withdrawal->account_name ?? 'N/A' }}</p>
-                                            <p class="text-gray-500">{{ $withdrawal->account_number ?? 'N/A' }}</p>
+                                            <p class="text-themed-secondary">{{ $withdrawal->account_number ?? 'N/A' }}</p>
                                         </div>
                                     </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-themed-secondary">
                                         {{ $withdrawal->requested_at ? $withdrawal->requested_at->format('M d, Y') : 'N/A' }}
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2">
@@ -196,7 +199,7 @@
                             @endforeach
                         </tbody>
                     </table>
-                    <div class="px-6 py-4 border-t border-gray-200">
+                    <div class="px-6 py-4 border-t border-themed-primary">
                         {{ $pendingWithdrawals->links() }}
                     </div>
                 @else
@@ -206,8 +209,8 @@
                                 d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4">
                             </path>
                         </svg>
-                        <h3 class="mt-2 text-sm font-medium text-gray-900">No pending withdrawals</h3>
-                        <p class="mt-1 text-sm text-gray-500">All withdrawal requests have been processed.</p>
+                        <h3 class="mt-2 text-sm font-medium text-themed-primary">No pending withdrawals</h3>
+                        <p class="mt-1 text-sm text-themed-secondary">All withdrawal requests have been processed.</p>
                     </div>
                 @endif
             </div>
@@ -217,15 +220,16 @@
     <!-- Flash Messages -->
     @if (session()->has('success'))
         <div x-data="{ show: true }" x-init="setTimeout(() => show = false, 5000)" x-show="show"
-            class="fixed top-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-50">
+            class="fixed top-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-sm z-50">
             {{ session('success') }}
         </div>
     @endif
 
     @if (session()->has('error'))
         <div x-data="{ show: true }" x-init="setTimeout(() => show = false, 5000)" x-show="show"
-            class="fixed top-4 right-4 bg-red-500 text-white px-6 py-3 rounded-lg shadow-lg z-50">
+            class="fixed top-4 right-4 bg-red-500 text-white px-6 py-3 rounded-lg shadow-sm z-50">
             {{ session('error') }}
         </div>
+    @endif
     @endif
 </div>
