@@ -5,11 +5,8 @@
         <!-- Header Section -->
         <div
             class="relative bg-themed-secondary backdrop-blur-sm rounded-2xl lg:rounded-3xl shadow-lg lg:shadow-2xl border border-themed-primary overflow-hidden mb-6 lg:mb-8 transition-colors duration-300">
-            <!-- Background Pattern -->
-            <div class="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg width=" 60" height="60" viewBox="0 0 60 60"
-                xmlns="http://www.w3.org/2000/svg" %3E%3Cg fill="none" fill-rule="evenodd" %3E%3Cg fill="%23000000"
-                fill-opacity="0.05" %3E%3Ccircle cx="30" cy="30" r="2" /%3E%3C/g%3E%3C/g%3E%3C/svg%3E')] opacity-50">
-            </div>
+            <!-- Shared decorative field keeps the component markup valid during Livewire navigation. -->
+            <x-icon-field class="opacity-[0.035]" />
 
             <div class="relative z-10 p-6 lg:p-8">
                 <div class="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6 lg:gap-8">
