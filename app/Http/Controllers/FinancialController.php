@@ -33,6 +33,10 @@ class FinancialController extends Controller
                 ->with('error', 'Invalid payment reference');
         }
 
+        $payment = PaystackTransaction::where('reference', $reference)->first();
+        abort_unless($payment?->transactionable instanceof \App\Models\Marketplace\Wallet
+            && $payment->transactionable->user_id === $request->user()->id, 403);
+
         $result = $this->paystackService->processWalletFunding($reference);
 
         if ($result['success']) {
@@ -52,7 +56,11 @@ class FinancialController extends Controller
         // Verify webhook signature
         $signature = $request->header('x-paystack-signature');
         $payload = $request->getContent();
-        $expectedSignature = hash_hmac('sha512', $payload, config('services.paystack.secret_key'));
+        $secret = (string) config('services.paystack.secret_key');
+        if ($secret === '') {
+            return response('Payment gateway is not configured', 503);
+        }
+        $expectedSignature = hash_hmac('sha512', $payload, $secret);
 
         if (!hash_equals((string) $signature, $expectedSignature)) {
             Log::warning('Invalid Paystack webhook signature');
@@ -62,7 +70,6 @@ class FinancialController extends Controller
                 'Paystack webhook was rejected because the signature did not match.',
                 [
                     'ip' => $request->ip(),
-                    'payload_preview' => str($payload)->limit(500)->toString(),
                 ],
                 \App\Models\System\ObservabilityEvent::SEVERITY_WARNING
             );
@@ -78,7 +85,7 @@ class FinancialController extends Controller
                 'paystack',
                 'Paystack webhook missing event name',
                 'A Paystack webhook arrived without an event field.',
-                ['payload' => $data]
+                ['event' => $event]
             );
 
             return response('Missing event', 422);
@@ -102,7 +109,7 @@ class FinancialController extends Controller
             return response('OK', 200);
 
         } catch (\Exception $e) {
-            Log::error('Paystack webhook error: ' . $e->getMessage(), ['data' => $data]);
+            Log::error('Paystack webhook processing failed', ['event' => $event, 'exception' => $e::class]);
             app(ObservabilityService::class)->recordWebhookFailure(
                 'paystack',
                 'Paystack webhook processing failed',
@@ -123,7 +130,10 @@ class FinancialController extends Controller
     private function handleChargeSuccess($data)
     {
         $reference = $data['reference'];
-        $this->paystackService->processWalletFunding($reference);
+        $result = $this->paystackService->processWalletFunding($reference);
+        if (!$result['success']) {
+            throw new \RuntimeException('Wallet funding could not be processed.');
+        }
     }
 
     private function handleTransferSuccess($data)

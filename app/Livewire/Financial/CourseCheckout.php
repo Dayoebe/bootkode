@@ -7,6 +7,7 @@ use Livewire\Component;
 use App\Models\Learning\Course;
 use App\Services\WalletService;
 
+#[\Livewire\Attributes\Layout('layouts.dashboard', ['title' => 'Course checkout'])]
 class CourseCheckout extends Component
 {
     public Course $course;
@@ -21,6 +22,7 @@ class CourseCheckout extends Component
 
     public function mount(Course $course)
     {
+        abort_unless($course->is_published && $course->is_approved, 404);
         $this->course = $course;
     }
 

@@ -69,7 +69,7 @@ class CourseCatalog extends Component
 
     public function showPreview($courseId)
     {
-        $this->previewCourse = Course::with(['instructor', 'category', 'sections.lessons'])
+        $this->previewCourse = Course::where('is_published', true)->where('is_approved', true)->with(['instructor', 'category', 'sections.lessons'])
             ->withAvg('reviews', 'rating')
             ->withCount('enrollments')
             ->findOrFail($courseId);
@@ -82,40 +82,16 @@ class CourseCatalog extends Component
 
     public function enroll($courseId)
     {
-        $user = Auth::user();
-
-        $hasLearningPivot = $user->courses()->where('courses.id', $courseId)->exists();
-        $hasEnrollment = CourseEnrollment::where('course_id', $courseId)
-            ->where('user_id', $user->id)
-            ->exists();
-
-        if (!$hasLearningPivot || !$hasEnrollment) {
-            DB::transaction(function () use ($user, $courseId, $hasLearningPivot, $hasEnrollment) {
-                if (!$hasLearningPivot) {
-                    $user->courses()->syncWithoutDetaching([
-                        $courseId => [
-                            'progress' => 0,
-                            'last_accessed_at' => now(),
-                        ],
-                    ]);
-                }
-
-                if (!$hasEnrollment) {
-                    CourseEnrollment::create([
-                        'course_id' => $courseId,
-                        'user_id' => $user->id,
-                        'enrolled_at' => now(),
-                        'progress_percentage' => 0,
-                        'is_completed' => false,
-                    ]);
-                }
-            });
-
-            $this->dispatch('notify', 'Successfully enrolled in course!');
-            return $this->redirect(route('student.enrolled-courses'), navigate: true);
+        abort_unless(Auth::check() && Auth::user()->hasVerifiedEmail(), 403);
+        $course = Course::where('is_published', true)->where('is_approved', true)->findOrFail($courseId);
+        if ((float) $course->price > 0) {
+            return $this->redirectRoute('course.checkout', ['course' => $course->id]);
         }
-        
-        $this->dispatch('notify', 'You are already enrolled in this course!', 'info');
+        $result = app(\App\Services\WalletService::class)->purchaseCourse(Auth::user(), $course);
+        if ($result['success']) {
+            return $this->redirectRoute('course.view', ['course' => $course->slug]);
+        }
+        $this->addError('enrollment', $result['message']);
     }
 
     public function getCourses()

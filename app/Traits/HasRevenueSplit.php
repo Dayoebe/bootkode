@@ -1,7 +1,7 @@
 <?php
 namespace App\Traits;
 
-use App\Models\RevenueSplit;
+use App\Models\Marketplace\RevenueSplit;
 use App\Models\Core\User;
 use App\Models\Marketplace\Wallet;
 use App\Models\Marketplace\WalletTransaction;

@@ -52,47 +52,45 @@ class WalletService
      */
     public function purchaseCourse(User $student, Course $course): array
     {
-        DB::beginTransaction();
-        
         try {
-            $studentWallet = $student->getOrCreateWallet();
-
-            if (!$studentWallet->hasSufficientBalance($course->price)) {
-                return [
-                    'success' => false,
-                    'message' => 'Insufficient wallet balance'
-                ];
-            }
-
-            // Process the purchase with revenue split
-            $splitAmounts = $course->processPurchase($student, $studentWallet);
-
-            // Enroll student in course (assuming you have this relationship)
-            if (method_exists($student, 'courses')) {
-                $student->courses()->attach($course->id, [
-                    'enrolled_at' => now(),
-                    'payment_method' => 'wallet',
-                    'amount_paid' => $course->price
+            return DB::transaction(function () use ($student, $course) {
+                // Serialize enrollments for this learner, including the first enrollment.
+                User::whereKey($student->id)->lockForUpdate()->firstOrFail();
+                $course = Course::whereKey($course->id)->where('is_published', true)
+                    ->where('is_approved', true)->lockForUpdate()->firstOrFail();
+                $existing = $student->enrollments()->where('course_id', $course->id)->exists()
+                    || $student->courses()->where('courses.id', $course->id)->exists();
+                if ($existing) {
+                    return ['success' => true, 'message' => 'You are already enrolled in this course'];
+                }
+                if ((float) $course->price < 0) {
+                    throw new \DomainException('Invalid course price');
+                }
+                $wallet = $student->getOrCreateWallet();
+                $wallet = Wallet::whereKey($wallet->id)->lockForUpdate()->firstOrFail();
+                if (!$wallet->is_active || $wallet->currency !== 'NGN') {
+                    throw new \DomainException('Wallet is unavailable');
+                }
+                if (!$wallet->hasSufficientBalance((float) $course->price)) {
+                    return ['success' => false, 'message' => 'Insufficient wallet balance'];
+                }
+                $splitAmounts = (float) $course->price > 0 ? $course->processPurchase($student, $wallet) : [];
+                $student->courses()->syncWithoutDetaching([
+                    $course->id => ['progress' => 0, 'last_accessed_at' => now()],
                 ]);
-            }
+                $student->enrollments()->create([
+                    'course_id' => $course->id, 'enrolled_at' => now(),
+                    'progress_percentage' => 0, 'is_completed' => false,
+                    'enrollment_type' => (float) $course->price > 0 ? 'paid' : 'free',
+                    'amount_paid' => $course->price,
+                ]);
 
-            DB::commit();
-
-            return [
-                'success' => true,
-                'message' => 'Course purchased successfully',
-                'split_amounts' => $splitAmounts,
-                'remaining_balance' => $studentWallet->fresh()->balance
-            ];
-
-        } catch (\Exception $e) {
-            DB::rollBack();
-            Log::error('Course purchase error: ' . $e->getMessage());
-            
-            return [
-                'success' => false,
-                'message' => $e->getMessage()
-            ];
+                return ['success' => true, 'message' => 'Course enrollment completed',
+                    'split_amounts' => $splitAmounts, 'remaining_balance' => (float) $wallet->fresh()->balance];
+            });
+        } catch (\Throwable $e) {
+            Log::error('Course purchase failed', ['exception' => $e::class]);
+            return ['success' => false, 'message' => 'Unable to enroll. Please try again or contact support.'];
         }
     }
 
@@ -101,10 +99,13 @@ class WalletService
      */
     public function requestWithdrawal(User $instructor, float $amount, array $bankDetails): array
     {
-        DB::beginTransaction();
-        
         try {
+            return DB::transaction(function () use ($instructor, $amount, $bankDetails) {
+            if (!is_finite($amount) || $amount <= 0) {
+                throw new \InvalidArgumentException('Withdrawal amount must be positive.');
+            }
             $instructorWallet = $instructor->getOrCreateInstructorWallet();
+            $instructorWallet = Wallet::whereKey($instructorWallet->id)->lockForUpdate()->firstOrFail();
 
             if (!$instructorWallet->hasSufficientBalance($amount)) {
                 return [
@@ -156,7 +157,6 @@ class WalletService
                 'Instructor requested a payout.'
             );
 
-            DB::commit();
 
             return [
                 'success' => true,
@@ -164,8 +164,8 @@ class WalletService
                 'withdrawal' => $withdrawal
             ];
 
-        } catch (\Exception $e) {
-            DB::rollBack();
+            });
+        } catch (\Throwable $e) {
             Log::error('Withdrawal request error: ' . $e->getMessage());
             
             return [
@@ -180,9 +180,10 @@ class WalletService
      */
     public function processWithdrawal(Withdrawal $withdrawal, User $admin): array
     {
-        DB::beginTransaction();
-        
         try {
+            return DB::transaction(function () use ($withdrawal, $admin) {
+            abort_unless($admin->hasAnyRole([User::ROLE_SUPER_ADMIN, User::ROLE_ACADEMY_ADMIN]), 403);
+            $withdrawal = Withdrawal::whereKey($withdrawal->id)->lockForUpdate()->firstOrFail();
             if (!$withdrawal->canBeApproved()) {
                 return [
                     'success' => false,
@@ -238,7 +239,6 @@ class WalletService
                 'Paystack transfer was initiated.'
             );
 
-            DB::commit();
 
             return [
                 'success' => true,
@@ -246,8 +246,8 @@ class WalletService
                 'transfer_code' => $transferResult['transfer_code']
             ];
 
-        } catch (\Exception $e) {
-            DB::rollBack();
+            });
+        } catch (\Throwable $e) {
             Log::error('Withdrawal processing error: ' . $e->getMessage());
             
             return [

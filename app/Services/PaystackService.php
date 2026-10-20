@@ -27,12 +27,16 @@ class PaystackService
      */
     public function initializeWalletFunding(array $data): array
     {
+        if (!is_finite((float) $data['amount']) || (float) $data['amount'] <= 0 || !$this->secretKey) {
+            return ['success' => false, 'message' => 'Payment setup or amount is invalid'];
+        }
+
         try {
             $reference = 'WF_' . time() . '_' . uniqid();
 
             $payload = [
                 'email' => $data['email'],
-                'amount' => $data['amount'] * 100, // Convert to kobo
+                'amount' => (int) round($data['amount'] * 100), // Convert to kobo
                 'reference' => $reference,
                 'currency' => 'NGN',
                 'callback_url' => route('paystack.callback'),
@@ -187,65 +191,44 @@ class PaystackService
     {
         try {
             $verification = $this->verifyTransaction($reference);
-
-            if (!$verification['success'] || $verification['status'] !== 'success') {
-                return [
-                    'success' => false,
-                    'message' => 'Payment verification failed'
-                ];
+            if (!($verification['success'] ?? false) || ($verification['status'] ?? '') !== 'success') {
+                return ['success' => false, 'message' => 'Payment verification failed'];
             }
 
-            $paystackTransaction = PaystackTransaction::where('reference', $reference)->first();
+            return \Illuminate\Support\Facades\DB::transaction(function () use ($reference, $verification) {
+                $payment = PaystackTransaction::where('reference', $reference)->lockForUpdate()->first();
+                if (!$payment || $payment->transaction_type !== PaystackTransaction::TYPE_WALLET_FUNDING) {
+                    return ['success' => false, 'message' => 'Wallet funding record not found'];
+                }
+                $data = $verification['data'];
+                if (($data['reference'] ?? null) !== $payment->reference
+                    || ($data['currency'] ?? null) !== $payment->currency
+                    || (int) ($data['amount'] ?? 0) !== (int) round((float) $payment->amount * 100)
+                    || (float) $payment->amount <= 0) {
+                    return ['success' => false, 'message' => 'Payment details do not match the funding request'];
+                }
+                $wallet = $payment->transactionable;
+                if (!$wallet instanceof Wallet || $wallet->currency !== $payment->currency) {
+                    return ['success' => false, 'message' => 'Invalid funding destination'];
+                }
+                if ($payment->isSuccessful()) {
+                    return ['success' => true, 'message' => 'Transaction already processed',
+                        'amount' => (float) $payment->amount, 'new_balance' => (float) $wallet->fresh()->balance];
+                }
+                $movement = $wallet->credit((float) $payment->amount, 'funding', 'Wallet funded via Paystack', $payment,
+                    ['paystack_reference' => $data['reference']]);
+                $payment->update(['status' => PaystackTransaction::STATUS_SUCCESS,
+                    'paystack_reference' => $data['reference'], 'paystack_response' => $data,
+                    'paid_at' => $verification['paid_at']]);
+                app(CommercialReadinessService::class)->issueReceiptForTransaction($payment->fresh());
 
-            if (!$paystackTransaction) {
-                return [
-                    'success' => false,
-                    'message' => 'Transaction record not found'
-                ];
-            }
-
-            // Prevent double processing
-            if ($paystackTransaction->status === PaystackTransaction::STATUS_SUCCESS) {
-                return [
-                    'success' => true,
-                    'message' => 'Transaction already processed'
-                ];
-            }
-
-            // Update transaction status
-            $paystackTransaction->update([
-                'status' => PaystackTransaction::STATUS_SUCCESS,
-                'paystack_reference' => $verification['data']['reference'],
-                'paystack_response' => $verification['data'],
-                'paid_at' => $verification['paid_at']
-            ]);
-
-            // Credit user wallet
-            $wallet = $paystackTransaction->transactionable;
-            $fundingTransaction = $wallet->credit(
-                $verification['amount'],
-                'funding',
-                'Wallet funded via Paystack',
-                $paystackTransaction,
-                ['paystack_reference' => $verification['data']['reference']]
-            );
-
-            app(CommercialReadinessService::class)->issueReceiptForTransaction($paystackTransaction->fresh());
-
-            return [
-                'success' => true,
-                'message' => 'Wallet funded successfully',
-                'amount' => $verification['amount'],
-                'new_balance' => $wallet->fresh()->balance,
-                'transaction' => $fundingTransaction
-            ];
-
-        } catch (\Exception $e) {
-            Log::error('Wallet funding processing error: ' . $e->getMessage());
-            return [
-                'success' => false,
-                'message' => 'An error occurred while processing payment'
-            ];
+                return ['success' => true, 'message' => 'Wallet funded successfully',
+                    'amount' => (float) $payment->amount, 'new_balance' => (float) $wallet->fresh()->balance,
+                    'transaction' => $movement];
+            });
+        } catch (\Throwable $e) {
+            Log::error('Wallet funding processing failed', ['exception' => $e::class]);
+            return ['success' => false, 'message' => 'An error occurred while processing payment'];
         }
     }
     /**
