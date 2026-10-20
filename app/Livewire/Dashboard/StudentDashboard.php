@@ -57,6 +57,7 @@ class StudentDashboard extends Component
 
     public function updateTimeframe($timeframe)
     {
+        abort_unless(in_array($timeframe, ['7days', '30days'], true), 422);
         $this->selectedTimeframe = $timeframe;
     }
 
@@ -252,12 +253,14 @@ class StudentDashboard extends Component
         
         // Daily study activity
         $studyActivity = [];
+        $dailyMinutes = LearningSession::where('user_id', $user->id)
+            ->where('started_at', '>=', now()->subDays($days - 1)->startOfDay())
+            ->whereNotNull('ended_at')
+            ->selectRaw('DATE(started_at) as study_date, SUM(duration_minutes) as minutes')
+            ->groupByRaw('DATE(started_at)')->pluck('minutes', 'study_date');
         for ($i = $days - 1; $i >= 0; $i--) {
             $date = now()->subDays($i);
-            $activity = LearningSession::where('user_id', $user->id)
-                ->whereDate('started_at', $date)
-                ->whereNotNull('ended_at')
-                ->sum('duration_minutes');
+            $activity = (float) ($dailyMinutes[$date->toDateString()] ?? 0);
             
             $studyActivity[] = [
                 'date' => $date->format('M j'),

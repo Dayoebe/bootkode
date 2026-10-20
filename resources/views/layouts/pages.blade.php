@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="h-full bg-slate-50">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="light h-full bg-slate-50">
 
 <head>
     <meta charset="utf-8">
@@ -86,12 +86,15 @@
         }
     </style>
 
+    @livewireStyles
     @yield('styles')
 </head>
 
 <body class="bk-public-app font-sans antialiased text-slate-900 bg-slate-50 flex flex-col min-h-screen w-full overflow-x-hidden">
+    <a class="bk-skip-link" href="#main-content">Skip to content</a>
+
     <x-header />
-    <main class="flex-grow w-full">
+    <main id="main-content" tabindex="-1" class="flex-grow w-full">
         <div class="w-full px-4 py-5 sm:px-6 sm:py-7 md:px-8 lg:px-10 xl:px-12 2xl:px-16">
             @yield('content')
         </div>
@@ -99,14 +102,6 @@
     <x-footer />
 
     <script>
-        // Prevent zoom on input focus on iOS
-        document.addEventListener('DOMContentLoaded', function () {
-            if (/iPad|iPhone|iPod/.test(navigator.userAgent)) {
-                const viewportMeta = document.querySelector('meta[name="viewport"]');
-                viewportMeta.content = 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no';
-            }
-        });
-
         // Add viewport height CSS custom property for mobile browsers
         function setViewportHeight() {
             let vh = window.innerHeight * 0.01;
@@ -117,6 +112,7 @@
         window.addEventListener('orientationchange', setViewportHeight);
     </script>
 
+    @livewireScripts
     @yield('scripts')
 </body>
 

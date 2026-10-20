@@ -29,6 +29,7 @@
         <div class="flex min-w-0 items-center gap-3">
             <button
                 @click="toggleSidebar()"
+                :aria-expanded="sidebarOpen.toString()" aria-controls="dashboard-navigation"
                 class="grid h-11 w-11 shrink-0 place-items-center rounded-[8px] border border-themed-primary bg-themed-secondary text-themed-primary shadow-sm transition hover:bg-themed-tertiary lg:hidden"
                 aria-label="Toggle sidebar"
             >

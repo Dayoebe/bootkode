@@ -166,6 +166,8 @@
 </head>
 
 <body class="bk-public-app font-sans antialiased bg-slate-50 text-slate-900">
+    <a class="bk-skip-link" href="#main-content">Skip to content</a>
+
     <!-- Google Tag Manager (noscript) -->
 <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TJ23X96Z"
     height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>

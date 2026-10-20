@@ -22,6 +22,8 @@
             localStorage.setItem('sidebar-collapsed', this.sidebarCollapsed.toString());
         }
     }"
+    @keydown.escape.window="sidebarOpen = false"
+    @resize.window="if (window.innerWidth >= 1024) sidebarOpen = false"
     x-init="applyTheme(theme)"
     x-bind:class="theme"
 >
@@ -74,7 +76,7 @@
     <link rel="manifest" href="{{ asset('manifest.webmanifest') }}">
     <script src="{{ asset('js/offline-learning.js') }}"></script>
 
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    @vite(['resources/css/app.css', 'resources/js/app.js', 'resources/js/dashboard.js', 'resources/js/notifications.js'])
     @livewireStyles
     @stack('styles')
 
@@ -100,6 +102,8 @@
 </head>
 
 <body class="bk-dashboard-app min-h-screen antialiased bg-themed-primary text-themed-primary transition-colors duration-200">
+    <a class="bk-skip-link" href="#main-content">Skip to content</a>
+
     <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TJ23X96Z"
         height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
@@ -108,7 +112,9 @@
     @endif
 
     <div class="min-h-screen bg-themed-primary">
-        @livewire('dashboard-sidebar')
+        <div id="dashboard-navigation" x-trap.inert.noscroll="sidebarOpen">
+            @livewire('dashboard-sidebar')
+        </div>
 
         <div
             x-show="sidebarOpen"
@@ -124,42 +130,8 @@
         >
             <x-navbar :title="$pageTitle" :description="$pageDescription" :icon="$pageIcon" />
 
-            <main class="flex-1 px-4 pb-24 pt-4 sm:px-6 lg:px-8 lg:pb-8 lg:pt-6">
-                @if($user && $showDashboardWelcome)
-                    <section class="relative mb-6 overflow-hidden rounded-[8px] border border-slate-900/10 bg-slate-950 text-white shadow-xl shadow-slate-900/10">
-                        <x-icon-field class="opacity-10" />
-                        <div class="relative grid gap-5 p-5 sm:p-6 lg:grid-cols-[1fr_auto] lg:items-center">
-                            <div class="min-w-0">
-                                <div class="flex flex-wrap items-center gap-2">
-                                    <span class="inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-1 text-xs font-extrabold text-teal-100">
-                                        <span class="h-1.5 w-1.5 rounded-full bg-teal-300"></span>
-                                        {{ $roleLabel }} workspace
-                                    </span>
-                                    <span class="inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-1 text-xs font-extrabold text-sky-100">
-                                        <i class="fas fa-calendar-day text-[11px]"></i>
-                                        {{ now()->format('M j, Y') }}
-                                    </span>
-                                </div>
-                                <h1 class="bk-display mt-3 text-2xl font-black leading-tight sm:text-3xl">
-                                    Welcome back, {{ $user->name }}.
-                                </h1>
-                                <p class="mt-2 max-w-2xl text-sm leading-6 text-slate-300">
-                                    Continue learning, review activity, and jump into the tools that move your BootKode work forward.
-                                </p>
-                            </div>
-                            <div class="grid gap-2 sm:grid-cols-2 lg:w-80">
-                                <a href="{{ route('student.course-catalog') }}" class="bk-dashboard-btn bg-white text-slate-950 hover:bg-slate-100">
-                                    <i class="fas fa-book-open text-teal-700"></i>
-                                    Courses
-                                </a>
-                                <a href="{{ route('messages.index') }}" class="bk-dashboard-btn border border-white/15 bg-white/10 text-white hover:bg-white/15">
-                                    <i class="fas fa-message text-sky-200"></i>
-                                    Messages
-                                </a>
-                            </div>
-                        </div>
-                    </section>
-                @endif
+            <main id="main-content" tabindex="-1" class="flex-1 px-4 pb-24 pt-4 sm:px-6 lg:px-8 lg:pb-8 lg:pt-6">
+                <x-ui.flash />
 
                 <div class="w-full min-w-0">
                     {{ $slot }}
