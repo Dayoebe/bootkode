@@ -144,7 +144,7 @@ class AuthController extends Controller
             'skills' => ['nullable', 'string', 'max:255'],
             'occupation' => ['nullable', 'string', 'max:255'],
             'education_level' => ['nullable', 'string', 'max:255'],
-            'terms' => ['nullable', 'accepted'],
+            'terms' => ['required', 'accepted'],
         ]);
     
         $userData = [

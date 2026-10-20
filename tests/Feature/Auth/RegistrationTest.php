@@ -18,14 +18,21 @@ class RegistrationTest extends TestCase
 
     public function test_new_users_can_register(): void
     {
+        \Spatie\Permission\Models\Role::findOrCreate('student', 'web');
+        \Illuminate\Support\Facades\Notification::fake();
         $response = $this->post('/register', [
             'name' => 'Test User',
             'email' => 'test@example.com',
             'password' => 'password',
             'password_confirmation' => 'password',
+            'terms' => '1',
         ]);
 
+        $response->assertSessionHasNoErrors();
         $this->assertAuthenticated();
-        $response->assertRedirect(route('dashboard', absolute: false));
+        $this->assertSame('student', auth()->user()->role);
+        $this->assertTrue(auth()->user()->hasRole('student'));
+        $this->assertFalse(auth()->user()->hasVerifiedEmail());
+        $response->assertRedirect(route('student.dashboard', absolute: false));
     }
 }

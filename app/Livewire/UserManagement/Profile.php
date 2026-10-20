@@ -430,12 +430,14 @@ class Profile extends Component
             }
         }
 
+        $emailChanged = $this->user->email !== $this->email;
+        if ($emailChanged) {
+            $updateData['email_verified_at'] = null;
+        }
         $this->user->update($updateData);
 
         // Handle email verification if email changed
-        if ($this->user->email !== $this->email) {
-            $this->user->email_verified_at = null;
-            $this->user->save();
+        if ($emailChanged) {
             $this->user->sendEmailVerificationNotification();
         }
 
