@@ -18,8 +18,7 @@ trait HasRevenueSplit
     {
         return $this->revenueSplit ?: $this->revenueSplit()->create([
             'instructor_id' => $this->instructor_id,
-            'instructor_percentage' => 80.00,
-            'platform_percentage' => 20.00,
+            ...RevenueSplit::getDefaultSplit(),
             'is_active' => true
         ]);
     }

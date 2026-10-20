@@ -153,4 +153,28 @@ class FinancialIntegrityTest extends TestCase
         }
         $this->assertDatabaseCount('course_enrollments', 0);
     }
+
+    public function test_callback_cannot_process_another_users_funding_reference(): void
+    {
+        $this->funding();
+        Http::preventStrayRequests();
+        $this->actingAs(User::factory()->create())->get('/paystack/callback?reference=funding-fixture')->assertForbidden();
+        $this->assertDatabaseCount('wallet_transactions', 0);
+        Http::assertNothingSent();
+    }
+
+    public function test_rejecting_a_withdrawal_with_stale_models_refunds_only_once(): void
+    {
+        $user = User::factory()->create();
+        $wallet = $user->getOrCreateInstructorWallet();
+        $withdrawal = \App\Models\Marketplace\Withdrawal::create([
+            'user_id' => $user->id, 'wallet_id' => $wallet->id, 'amount' => 1000,
+            'bank_code' => 'fixture', 'account_number' => '0000000000', 'account_name' => 'Fixture', 'status' => 'pending',
+        ]);
+        $stale = $withdrawal->fresh();
+        $this->assertTrue($withdrawal->reject('Fixture rejection'));
+        $this->assertFalse($stale->reject('Repeated rejection'));
+        $this->assertSame('1000.00', $wallet->fresh()->balance);
+        $this->assertDatabaseCount('wallet_transactions', 1);
+    }
 }

@@ -76,7 +76,7 @@ class WithdrawalManager extends Component
     public function requestWithdrawal()
     {
         $this->validate([
-            'amount' => 'required|numeric|min:1000|max:500000',
+            'amount' => ['required', 'numeric', 'min:'.config('financial.minimum_withdrawal'), 'max:'.config('financial.maximum_withdrawal')],
             'bankCode' => 'required|string',
             'accountNumber' => 'required|string|size:10',
             'accountName' => 'required|string|min:3'

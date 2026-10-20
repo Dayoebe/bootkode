@@ -111,38 +111,19 @@ class Withdrawal extends Model
     // Reject withdrawal
     public function reject(string $reason): bool
     {
-        if (!$this->canBeApproved()) {
-            return false;
-        }
-
-        $previousStatus = $this->status;
-
-        // Refund the amount back to wallet
-        $this->wallet->credit(
-            $this->amount,
-            WalletTransaction::CATEGORY_REFUND,
-            'Withdrawal request rejected: ' . $reason,
-            $this
-        );
-
-        $updated = $this->update([
-            'status' => self::STATUS_REJECTED,
-            'failure_reason' => $reason
-        ]);
-
-        if ($updated) {
+        return \Illuminate\Support\Facades\DB::transaction(function () use ($reason) {
+            $withdrawal = static::whereKey($this->id)->lockForUpdate()->firstOrFail();
+            if (!$withdrawal->canBeApproved()) return false;
+            $withdrawal->wallet->credit((float) $withdrawal->amount, WalletTransaction::CATEGORY_REFUND,
+                'Withdrawal request rejected: ' . $reason, $withdrawal);
+            $withdrawal->update(['status' => self::STATUS_REJECTED, 'failure_reason' => $reason]);
             app(\App\Services\CommercialReadinessService::class)->recordPayoutAudit(
-                $this->fresh(),
-                'withdrawal_rejected',
-                $previousStatus,
-                self::STATUS_REJECTED,
-                auth()->user(),
-                [],
-                $reason
+                $withdrawal, 'withdrawal_rejected', self::STATUS_PENDING, self::STATUS_REJECTED,
+                auth()->user(), [], $reason
             );
-        }
-
-        return $updated;
+            $this->setRawAttributes($withdrawal->getAttributes(), true);
+            return true;
+        });
     }
 
     // Get status color for UI

@@ -1,30 +1,22 @@
 <?php
 
-
-// app/Livewire/Financial/Admin/FinancialSettings.php
 namespace App\Livewire\Financial\Admin;
 
-use Livewire\Component;
+use App\Livewire\Concerns\AuthorizesFinancialAdministration;
 use Livewire\Attributes\Layout;
+use Livewire\Component;
 
-#[Layout('layouts.dashboard')]
+#[Layout('layouts.dashboard', ['title' => 'Financial rules'])]
 class FinancialSettings extends Component
 {
-    use \App\Livewire\Concerns\AuthorizesFinancialAdministration;
+    use AuthorizesFinancialAdministration;
 
-    public $commissionRate = 20;
-    public $minimumWithdrawal = 1000;
-    public $maximumWithdrawal = 500000;
-    public $autoApproveWithdrawals = false;
-    
-    public function save()
-    {
-        // Save settings logic
-        session()->flash('success', 'Settings saved successfully');
-    }
-    
     public function render()
     {
-        return view('livewire.financial.admin.financial-settings');
+        return view('livewire.financial.admin.financial-settings', [
+            'minimumWithdrawal' => config('financial.minimum_withdrawal'),
+            'maximumWithdrawal' => config('financial.maximum_withdrawal'),
+            'platformPercentage' => 100 - config('financial.default_instructor_percentage'),
+        ]);
     }
 }

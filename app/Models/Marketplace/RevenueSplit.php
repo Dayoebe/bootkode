@@ -50,8 +50,8 @@ class RevenueSplit extends Model
     public static function getDefaultSplit(): array
     {
         return [
-            'instructor_percentage' => 80.00,
-            'platform_percentage' => 20.00
+            'instructor_percentage' => (float) config('financial.default_instructor_percentage', 80),
+            'platform_percentage' => 100 - (float) config('financial.default_instructor_percentage', 80)
         ];
     }
 }

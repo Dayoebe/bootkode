@@ -26,6 +26,7 @@ class FinancialController extends Controller
      */
     public function paystackCallback(Request $request)
     {
+        $request->validate(['reference' => 'nullable|string|max:255']);
         $reference = $request->query('reference');
         
         if (!$reference) {

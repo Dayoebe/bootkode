@@ -101,6 +101,9 @@ class PaystackService
      */
     public function verifyTransaction(string $reference): array
     {
+        if (!$this->secretKey) {
+            return ['success' => false, 'message' => 'Payment gateway setup is required'];
+        }
         try {
             $response = Http::withHeaders([
                 'Authorization' => 'Bearer ' . $this->secretKey,
@@ -236,6 +239,9 @@ class PaystackService
      */
     public function createTransferRecipient(array $data): array
     {
+        if (!$this->secretKey) {
+            return ['success' => false, 'message' => 'Payment gateway setup is required'];
+        }
         try {
             $payload = [
                 'type' => 'nuban',
@@ -279,6 +285,9 @@ class PaystackService
      */
     public function initiateTransfer(Withdrawal $withdrawal): array
     {
+        if (!$this->secretKey) {
+            return ['success' => false, 'message' => 'Payment gateway setup is required'];
+        }
         try {
             // First, create or get recipient
             $recipientData = [
@@ -382,6 +391,9 @@ class PaystackService
      */
     public function getBalance(): array
     {
+        if (!$this->secretKey) {
+            return ['success' => false, 'message' => 'Payment gateway setup is required'];
+        }
         try {
             $response = Http::withHeaders([
                 'Authorization' => 'Bearer ' . $this->secretKey,
@@ -415,6 +427,9 @@ class PaystackService
      */
     public function getBanks(): array
     {
+        if (!$this->secretKey) {
+            return ['success' => false, 'message' => 'Payment gateway setup is required'];
+        }
         try {
             $response = Http::withHeaders([
                 'Authorization' => 'Bearer ' . $this->secretKey,
@@ -446,6 +461,9 @@ class PaystackService
      */
     public function resolveAccountNumber(string $accountNumber, string $bankCode): array
     {
+        if (!$this->secretKey) {
+            return ['success' => false, 'message' => 'Payment gateway setup is required'];
+        }
         try {
             $response = Http::withHeaders([
                 'Authorization' => 'Bearer ' . $this->secretKey,
@@ -478,7 +496,7 @@ class PaystackService
      */
     public function getPublicKey(): string
     {
-        return $this->publicKey;
+        return (string) $this->publicKey;
     }
     public function createRefund($paystackReference, $amount, $currency = 'NGN')
     {
