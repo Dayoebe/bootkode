@@ -97,8 +97,7 @@ class CourseCatalog extends Component
     public function getCourses()
     {
         return Course::query()
-            ->where('is_published', true)
-            ->where('is_approved', true)
+            ->publiclyAvailable()
             ->with(['category', 'instructor'])
             ->withCount(['sections', 'enrollments as enrollments_count'])
             ->withAvg('reviews as reviews_avg_rating', 'rating')

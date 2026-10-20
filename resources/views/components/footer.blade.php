@@ -1,12 +1,4 @@
-@php
-    $courseCount = \App\Models\Learning\Course::query()->where('is_published', true)->where('is_approved', true)->count();
-    $lessonCount = \App\Models\Learning\Lesson::query()
-        ->whereHas('section.course', fn ($query) => $query->where('is_published', true)->where('is_approved', true))
-        ->count();
-    $categoryCount = \App\Models\Learning\CourseCategory::query()->has('courses')->count();
-
-    $courseUrl = auth()->check() ? route('student.course-catalog') : route('register');
-@endphp
+@php($courseUrl = route('courses.index'))
 
 <footer class="bk-public-footer border-t border-white/10 bg-[#050f22] text-white">
     <div class="bk-shell py-12 sm:py-14">
@@ -26,20 +18,22 @@
                     Africa-ready tech education with structured roadmaps, mentorship, verified certificates, and career-focused project evidence.
                 </p>
 
+                @if($publicCatalogStats['courses'] > 0)
                 <div class="mt-5 grid grid-cols-3 gap-2">
                     <div class="rounded-xl bg-white/5 p-3">
-                        <p class="text-lg font-black text-white">{{ number_format($courseCount) }}</p>
+                        <p class="text-lg font-black text-white">{{ number_format($publicCatalogStats['courses']) }}</p>
                         <p class="text-[11px] font-semibold text-slate-400">Courses</p>
                     </div>
                     <div class="rounded-xl bg-white/5 p-3">
-                        <p class="text-lg font-black text-white">{{ number_format($lessonCount) }}</p>
+                        <p class="text-lg font-black text-white">{{ number_format($publicCatalogStats['lessons']) }}</p>
                         <p class="text-[11px] font-semibold text-slate-400">Lessons</p>
                     </div>
                     <div class="rounded-xl bg-white/5 p-3">
-                        <p class="text-lg font-black text-white">{{ number_format($categoryCount) }}</p>
+                        <p class="text-lg font-black text-white">{{ number_format($publicCatalogStats['tracks']) }}</p>
                         <p class="text-[11px] font-semibold text-slate-400">Tracks</p>
                     </div>
                 </div>
+                @endif
             </div>
 
             <div class="grid grid-cols-2 gap-6 sm:grid-cols-4">

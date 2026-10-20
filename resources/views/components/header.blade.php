@@ -1,6 +1,6 @@
 @php
     $user = auth()->user();
-    $coursesUrl = $user ? route('student.course-catalog') : route('register');
+    $coursesUrl = route('courses.index');
     $accountUrl = $user ? route($user->getDashboardRouteName()) : route('login');
     $primaryCtaUrl = $user ? route($user->getDashboardRouteName()) : route('register');
 
@@ -21,7 +21,7 @@
     ];
     $mobileTabs = [
         ['label' => 'Home', 'href' => url('/'), 'icon' => 'fa-house', 'active' => request()->is('/')],
-        ['label' => 'Learn', 'href' => $coursesUrl, 'icon' => 'fa-book-open', 'active' => request()->routeIs('student.course-catalog')],
+        ['label' => 'Learn', 'href' => $coursesUrl, 'icon' => 'fa-book-open', 'active' => request()->routeIs('courses.*', 'student.course-catalog')],
         ['label' => 'Market', 'href' => route('marketplace.browse'), 'icon' => 'fa-store', 'active' => request()->routeIs('marketplace.*')],
         ['label' => 'Pricing', 'href' => route('pricing'), 'icon' => 'fa-tags', 'active' => request()->routeIs('pricing')],
     ];
@@ -37,7 +37,7 @@
             <span class="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-[#07152d] text-[#8fe388] shadow-sm"><i class="fas fa-code text-sm"></i></span>
             <span class="min-w-0">
                 <span class="block text-base font-black tracking-tight text-slate-950 sm:text-lg">BootKode</span>
-                <span class="hidden text-[10px] font-extrabold uppercase tracking-[0.18em] text-teal-700 sm:block">Learn · Build · Advance</span>
+                <span class="hidden text-[10px] font-extrabold uppercase tracking-[0.18em] text-teal-700 sm:block">Learn. Build. Grow.</span>
             </span>
         </a>
 
@@ -122,9 +122,9 @@
 
     <div x-cloak x-show="mobileOpen" class="fixed inset-0 z-50 lg:hidden">
         <div class="absolute inset-0 bg-slate-950/50 backdrop-blur-sm" x-transition.opacity @click="mobileOpen = false"></div>
-        <aside class="absolute right-0 top-0 flex h-full w-[min(94vw,420px)] flex-col overflow-y-auto bg-white shadow-2xl" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="translate-x-full" x-transition:enter-end="translate-x-0" x-transition:leave="transition ease-in duration-150" x-transition:leave-start="translate-x-0" x-transition:leave-end="translate-x-full">
+        <aside x-trap.inert.noscroll="mobileOpen" role="dialog" aria-modal="true" aria-label="Navigation" tabindex="-1" class="absolute right-0 top-0 flex h-full w-[min(94vw,420px)] flex-col overflow-y-auto bg-white shadow-2xl" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="translate-x-full" x-transition:enter-end="translate-x-0" x-transition:leave="transition ease-in duration-150" x-transition:leave-start="translate-x-0" x-transition:leave-end="translate-x-full">
             <div class="sticky top-0 z-10 flex items-center justify-between border-b border-slate-200 bg-white/95 px-5 py-4 backdrop-blur">
-                <a href="{{ url('/') }}" class="flex items-center gap-3"><span class="grid h-10 w-10 place-items-center rounded-xl bg-[#07152d] text-[#8fe388]"><i class="fas fa-code"></i></span><span><span class="block font-black text-slate-950">BootKode</span><span class="block text-[10px] font-bold uppercase tracking-[0.16em] text-teal-700">Learn · Build · Advance</span></span></a>
+                <a href="{{ url('/') }}" class="flex items-center gap-3"><span class="grid h-10 w-10 place-items-center rounded-xl bg-[#07152d] text-[#8fe388]"><i class="fas fa-code"></i></span><span><span class="block font-black text-slate-950">BootKode</span><span class="block text-[10px] font-bold uppercase tracking-[0.16em] text-teal-700">Learn. Build. Grow.</span></span></a>
                 <button type="button" class="grid h-10 w-10 place-items-center rounded-full bg-slate-100 text-slate-700" @click="mobileOpen = false" aria-label="Close navigation"><i class="fas fa-xmark"></i></button>
             </div>
 

@@ -56,8 +56,7 @@ class WalletService
             return DB::transaction(function () use ($student, $course) {
                 // Serialize enrollments for this learner, including the first enrollment.
                 User::whereKey($student->id)->lockForUpdate()->firstOrFail();
-                $course = Course::whereKey($course->id)->where('is_published', true)
-                    ->where('is_approved', true)->lockForUpdate()->firstOrFail();
+                $course = Course::whereKey($course->id)->publiclyAvailable()->lockForUpdate()->firstOrFail();
                 $existing = $student->enrollments()->where('course_id', $course->id)->exists()
                     || $student->courses()->where('courses.id', $course->id)->exists();
                 if ($existing) {
@@ -101,8 +100,8 @@ class WalletService
     {
         try {
             return DB::transaction(function () use ($instructor, $amount, $bankDetails) {
-            if (!is_finite($amount) || $amount <= 0) {
-                throw new \InvalidArgumentException('Withdrawal amount must be positive.');
+            if (!is_finite($amount) || $amount < config('financial.minimum_withdrawal') || $amount > config('financial.maximum_withdrawal')) {
+                throw new \InvalidArgumentException('Withdrawal amount is outside the permitted limits.');
             }
             $instructorWallet = $instructor->getOrCreateInstructorWallet();
             $instructorWallet = Wallet::whereKey($instructorWallet->id)->lockForUpdate()->firstOrFail();
