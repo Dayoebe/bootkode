@@ -161,7 +161,7 @@
                     </section>
                 @endif
 
-                <div class="min-w-0">
+                <div class="w-full min-w-0">
                     {{ $slot }}
                 </div>
             </main>

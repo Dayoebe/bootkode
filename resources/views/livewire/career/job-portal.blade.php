@@ -1,7 +1,7 @@
 <div class="min-h-screen bg-themed-primary">
     <!-- Hero Section -->
     <div class="bg-themed-secondary shadow-lg border-b border-themed-primary">
-        <div class="container mx-auto px-6 py-16">
+        <div class="w-full py-16">
             <div class="text-center mb-12">
                 <h1 class="text-5xl font-bold text-themed-primary mb-4">Find Your Dream Job</h1>
                 <p class="text-xl text-themed-secondary max-w-2xl mx-auto">Discover opportunities that match your skills and
@@ -62,7 +62,7 @@
 
     <!-- Flash Messages -->
     @if (session('message'))
-        <div class="container mx-auto px-6 pt-4">
+        <div class="w-full pt-4">
             <div class="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-lg relative animate-fade-in">
                 <span class="block sm:inline">{{ session('message') }}</span>
             </div>
@@ -70,7 +70,7 @@
     @endif
 
     @if (session('error'))
-        <div class="container mx-auto px-6 pt-4">
+        <div class="w-full pt-4">
             <div class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg relative animate-fade-in">
                 <span class="block sm:inline">{{ session('error') }}</span>
             </div>

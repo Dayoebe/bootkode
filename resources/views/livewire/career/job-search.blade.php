@@ -1,7 +1,7 @@
 <div class="min-h-screen bg-themed-primary">
     <!-- Header Section with Enhanced Search -->
     <div class="bg-themed-secondary shadow-lg border-b border-themed-primary">
-        <div class="container mx-auto px-6 py-8">
+        <div class="w-full py-8">
             <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between mb-6">
                 <div>
                     <h1 class="text-4xl font-bold text-themed-primary mb-2">Find Your Dream Job</h1>
@@ -154,7 +154,7 @@
 
     <!-- Flash Messages -->
     @if (session('success'))
-        <div class="container mx-auto px-6 pt-4">
+        <div class="w-full pt-4">
             <div class="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-lg" role="alert">
                 <span class="block sm:inline">{{ session('success') }}</span>
             </div>
@@ -162,7 +162,7 @@
     @endif
 
     @if (session('error'))
-        <div class="container mx-auto px-6 pt-4">
+        <div class="w-full pt-4">
             <div class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg" role="alert">
                 <span class="block sm:inline">{{ session('error') }}</span>
             </div>
@@ -170,7 +170,7 @@
     @endif
 
     <!-- Main Content Area -->
-    <div class="container mx-auto px-6 py-8">
+    <div class="w-full py-8">
         <!-- Controls Bar -->
         <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-6">
             <div class="flex items-center space-x-4 mb-4 sm:mb-0">

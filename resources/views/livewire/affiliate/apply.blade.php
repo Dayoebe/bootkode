@@ -1,6 +1,6 @@
 
 {{-- resources/views/livewire/affiliate/apply.blade.php --}}
-<div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+<div class="w-full min-w-0 py-8">
     <div class="bg-white rounded-xl shadow-lg p-8">
         <div class="text-center mb-8">
             <i class="fas fa-share-alt text-6xl text-blue-600 mb-4"></i>

@@ -5,7 +5,7 @@
 @endphp
 
 <div
-    class="mx-auto max-w-7xl"
+    class="w-full min-w-0"
     wire:poll.2000ms="pollMessages"
     x-data="{
         conversationsOpen: false,

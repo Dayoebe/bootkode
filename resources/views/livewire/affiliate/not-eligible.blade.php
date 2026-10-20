@@ -1,6 +1,6 @@
 
 {{-- resources/views/livewire/affiliate/not-eligible.blade.php --}}
-<div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+<div class="w-full min-w-0 py-8">
     <div class="bg-white rounded-xl shadow-lg p-8 text-center">
         <i class="fas fa-user-times text-6xl text-red-600 mb-6"></i>
         <h1 class="text-3xl font-bold text-gray-900 mb-4">Affiliate Program Not Available</h1>

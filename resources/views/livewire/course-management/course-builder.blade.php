@@ -7,7 +7,7 @@
         </div>
     </div>
 
-    <div class="container mx-auto px-4 py-6 max-w-full">
+    <div class="w-full min-w-0 py-6">
         <!-- Toolbar -->
         <livewire:course-management.course-builder.toolbar :course="$course" wire:key="toolbar-{{ $course->id }}" />
 

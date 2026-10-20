@@ -1,7 +1,7 @@
 <div x-data="summaryReview()" x-init="init()"
     class="summary-review-component min-h-screen bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-gray-900 dark:to-gray-800 p-4 md:p-6">
 
-    <div class="max-w-7xl mx-auto">
+    <div class="w-full min-w-0">
         {{-- Header --}}
         <div
             class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6 md:p-8 mb-6 animate__animated animate__fadeInDown">

@@ -9,7 +9,7 @@
 
     <!-- Flash Messages -->
     @if (session('message'))
-        <div class="container mx-auto px-6 pt-4">
+        <div class="w-full px-6 pt-4">
             <div class="bg-green-50 dark:bg-green-900/30 border border-green-200 dark:border-green-700 text-green-700 dark:text-green-300 px-4 py-3 rounded-lg animate-fade-in">
                 {{ session('message') }}
             </div>
@@ -17,7 +17,7 @@
     @endif
 
     @if (session('error'))
-        <div class="container mx-auto px-6 pt-4">
+        <div class="w-full px-6 pt-4">
             <div class="bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-700 text-red-700 dark:text-red-300 px-4 py-3 rounded-lg animate-fade-in">
                 {{ session('error') }}
             </div>
