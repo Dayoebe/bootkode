@@ -95,7 +95,7 @@ class CertificateRequest extends Component
                 ], [
                 'status' => Certificate::STATUS_REQUESTED,
                 'requested_at' => now(),
-                'completion_date' => $completionDate,
+                'completed_at' => $completionDate,
                 'grade' => $grade,
                 'credits' => $this->course->credits ?? null,
                 'metadata' => [

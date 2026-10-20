@@ -1,11 +1,12 @@
 <?php
 
 // Withdrawal.php
+
 namespace App\Models\Marketplace;
 
+use App\Models\Core\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use App\Models\Core\User;
 
 class Withdrawal extends Model
 {
@@ -26,7 +27,7 @@ class Withdrawal extends Model
         'requested_at',
         'approved_at',
         'processed_at',
-        'completed_at'
+        'completed_at',
     ];
 
     protected $casts = [
@@ -34,25 +35,30 @@ class Withdrawal extends Model
         'requested_at' => 'datetime',
         'approved_at' => 'datetime',
         'processed_at' => 'datetime',
-        'completed_at' => 'datetime'
+        'completed_at' => 'datetime',
     ];
 
     const STATUS_PENDING = 'pending';
+
     const STATUS_APPROVED = 'approved';
+
     const STATUS_PROCESSING = 'processing';
+
     const STATUS_COMPLETED = 'completed';
+
     const STATUS_FAILED = 'failed';
+
     const STATUS_REJECTED = 'rejected';
 
     protected static function boot()
     {
         parent::boot();
-        
+
         static::creating(function ($withdrawal) {
-            if (!$withdrawal->withdrawal_id) {
+            if (! $withdrawal->withdrawal_id) {
                 $withdrawal->withdrawal_id = \Str::uuid();
             }
-            if (!$withdrawal->requested_at) {
+            if (! $withdrawal->requested_at) {
                 $withdrawal->requested_at = now();
             }
         });
@@ -97,14 +103,14 @@ class Withdrawal extends Model
     // Approve withdrawal
     public function approve(int $approverId): bool
     {
-        if (!$this->canBeApproved()) {
+        if (! $this->canBeApproved()) {
             return false;
         }
 
         return $this->update([
             'status' => self::STATUS_APPROVED,
             'approved_by' => $approverId,
-            'approved_at' => now()
+            'approved_at' => now(),
         ]);
     }
 
@@ -113,15 +119,18 @@ class Withdrawal extends Model
     {
         return \Illuminate\Support\Facades\DB::transaction(function () use ($reason) {
             $withdrawal = static::whereKey($this->id)->lockForUpdate()->firstOrFail();
-            if (!$withdrawal->canBeApproved()) return false;
+            if (! $withdrawal->canBeApproved()) {
+                return false;
+            }
             $withdrawal->wallet->credit((float) $withdrawal->amount, WalletTransaction::CATEGORY_REFUND,
-                'Withdrawal request rejected: ' . $reason, $withdrawal);
+                'Withdrawal request rejected: '.$reason, $withdrawal);
             $withdrawal->update(['status' => self::STATUS_REJECTED, 'failure_reason' => $reason]);
             app(\App\Services\CommercialReadinessService::class)->recordPayoutAudit(
                 $withdrawal, 'withdrawal_rejected', self::STATUS_PENDING, self::STATUS_REJECTED,
                 auth()->user(), [], $reason
             );
             $this->setRawAttributes($withdrawal->getAttributes(), true);
+
             return true;
         });
     }
@@ -143,6 +152,6 @@ class Withdrawal extends Model
     // Get formatted amount
     public function getFormattedAmountAttribute(): string
     {
-        return '₦' . number_format($this->amount, 2);
+        return '₦'.number_format($this->amount, 2);
     }
 }

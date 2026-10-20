@@ -42,7 +42,7 @@
 
             <div class="min-w-0">
                 <div class="flex min-w-0 items-center gap-2">
-                    <h1 class="bk-display truncate text-base font-black text-themed-primary sm:text-xl">{{ $pageTitle }}</h1>
+                    <p class="bk-display truncate text-base font-black text-themed-primary sm:text-xl">{{ $pageTitle }}</p>
                     <span class="hidden rounded-full bg-teal-50 px-2 py-0.5 text-[11px] font-black text-teal-700 dark:bg-teal-400/10 dark:text-teal-200 md:inline-flex">
                         Live
                     </span>

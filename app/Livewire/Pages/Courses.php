@@ -22,7 +22,9 @@ class Courses extends Component
 
     public function updated($property): void
     {
-        if (in_array($property, ['search', 'category'], true)) $this->resetPage();
+        if (in_array($property, ['search', 'category'], true)) {
+            $this->resetPage();
+        }
     }
 
     public function resetFilters(): void

@@ -1,6 +1,9 @@
 <!-- Single root div for the entire component -->
 <div class="min-h-screen bg-themed-primary p-4 transition-colors duration-300">
-    <div x-data="{ activeTab: @entangle('activeTab') }">
+    <div
+        wire:key="profile-mode-{{ $isEditing ? 'edit' : 'view' }}"
+        x-data="{ activeTab: @js($activeTab) }"
+    >
 
         <!-- Header Section -->
         <div
@@ -132,7 +135,7 @@
                 @endphp
                 <div class="flex flex-wrap gap-2">
                     @foreach ($tabs as $key => $tab)
-                        <button @click="activeTab = '{{ $key }}'" :class="{
+                        <button type="button" @click="activeTab = '{{ $key }}'" :class="{
                                     'bg-tab-active shadow-lg': activeTab === '{{ $key }}',
                                     'text-themed-secondary hover:text-themed-primary hover:bg-themed-tertiary': activeTab !== '{{ $key }}'
                                 }"

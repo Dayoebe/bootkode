@@ -88,7 +88,7 @@
             <h3 class="text-lg font-semibold text-themed-primary">Failed Transactions</h3>
             <div class="flex space-x-2">
                 <button wire:click="retryAllFailedPayments"
-                        class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 text-sm transition-colors">
+                        class="bk-button bk-button-primary   px-4 py-2 rounded-md  text-sm transition-colors">
                     Retry All
                 </button>
                 <button wire:click="exportFailedTransactions"

@@ -97,7 +97,7 @@
 
     <!-- Withdrawal Form Modal -->
     @if($showWithdrawalForm)
-        <div class="fixed inset-0 z-50 overflow-y-auto">
+        <div class="fixed inset-0 z-50 overflow-y-auto" x-data="{}" x-trap.inert.noscroll="true" role="dialog" aria-modal="true" aria-label="Request withdrawal" @keydown.escape.window="$wire.closeWithdrawalForm()">
             <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
                 <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" wire:click="closeWithdrawalForm"></div>
 
@@ -180,7 +180,7 @@
                             </div>
                         </div>
                         <div class="bg-themed-tertiary px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
-                            <button type="submit" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-green-600 text-base font-medium text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 sm:ml-3 sm:w-auto sm:text-sm">
+                            <button type="submit" class="bk-button bk-button-primary w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2  text-base font-medium   focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 sm:ml-3 sm:w-auto sm:text-sm">
                                 Submit Request
                             </button>
                             <button type="button" wire:click="closeWithdrawalForm" class="mt-3 w-full inline-flex justify-center rounded-md border border-themed-secondary shadow-sm px-4 py-2 bg-themed-secondary text-base font-medium text-themed-primary hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">

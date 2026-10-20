@@ -2,10 +2,10 @@
 
 namespace App\Models\Marketplace;
 
+use App\Models\Core\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use App\Models\Core\User;
 
 class Wallet extends Model
 {
@@ -16,18 +16,20 @@ class Wallet extends Model
         'pending_balance',
         'currency',
         'is_active',
-        'last_activity'
+        'last_activity',
     ];
 
     protected $casts = [
         'balance' => 'decimal:2',
         'pending_balance' => 'decimal:2',
         'is_active' => 'boolean',
-        'last_activity' => 'datetime'
+        'last_activity' => 'datetime',
     ];
 
     const TYPE_USER = 'user';
+
     const TYPE_INSTRUCTOR = 'instructor';
+
     const TYPE_PLATFORM = 'platform';
 
     public function user(): BelongsTo
@@ -57,13 +59,13 @@ class Wallet extends Model
 
     private function recordMovement(float $amount, string $type, string $category, string $description, $transactionable, array $metadata): WalletTransaction
     {
-        if (!is_finite($amount) || $amount <= 0 || round($amount * 100) < 1) {
+        if (! is_finite($amount) || $amount <= 0 || round($amount * 100) < 1) {
             throw new \InvalidArgumentException('Wallet amount must be positive.');
         }
 
         return \Illuminate\Support\Facades\DB::transaction(function () use ($amount, $type, $category, $description, $transactionable, $metadata) {
             $wallet = static::whereKey($this->getKey())->lockForUpdate()->firstOrFail();
-            if (!$wallet->is_active) {
+            if (! $wallet->is_active) {
                 throw new \DomainException('Wallet is inactive.');
             }
             // Compare integer minor units, including for callers holding a stale model.
@@ -97,7 +99,7 @@ class Wallet extends Model
     // Get formatted balance
     public function getFormattedBalanceAttribute(): string
     {
-        return '₦' . number_format((float) ($this->balance ?? 0), 2);
+        return '₦'.number_format((float) ($this->balance ?? 0), 2);
     }
 
     // Static method to get or create wallet

@@ -43,7 +43,7 @@
                 <div
                     class="bg-themed-secondary rounded-lg border border-themed-primary hover:border-accent-themed-primary transition-colors overflow-hidden">
                     <div class="relative">
-                        <img src="{{ asset('storage/' . ($course->thumbnail ?? 'images/default-course.png')) }}" alt="{{ $course->title }}"
+                        <img src="{{ $course->thumbnail_url }}" alt="{{ $course->title }}"
                             class="w-full h-40 object-cover">
                         <span class="absolute top-2 left-2 bg-accent-themed-primary text-white text-xs px-2 py-1 rounded">
                             {{ $course->category->name ?? 'Uncategorized' }}

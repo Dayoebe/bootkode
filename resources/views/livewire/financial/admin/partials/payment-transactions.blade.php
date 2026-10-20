@@ -43,7 +43,7 @@
                     <option value="mark_failed">Mark as Failed</option>
                 </select>
                 <button wire:click="processBulkAction"
-                        class="bg-blue-600 text-white px-3 py-1 rounded text-sm hover:bg-blue-700 transition-colors">
+                        class="bk-button bk-button-primary   px-3 py-1 rounded text-sm  transition-colors">
                     Apply
                 </button>
             </div>

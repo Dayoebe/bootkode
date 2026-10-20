@@ -29,6 +29,7 @@ class FinancialIntegrityTest extends TestCase
             'transactionable_type' => $wallet->getMorphClass(), 'transactionable_id' => $wallet->id,
         ]);
         config(['services.paystack.secret_key' => 'sk_test_fixture']);
+
         return [$wallet, $payment];
     }
 

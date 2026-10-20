@@ -25,7 +25,7 @@
                 </div>
             </div>
             <div class="mt-4">
-                <button wire:click="openFundingModal" class="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors">
+                <button wire:click="openFundingModal" class="bk-button bk-button-primary w-full   py-2 px-4 rounded-lg  transition-colors">
                     Fund Wallet
                 </button>
             </div>
@@ -45,7 +45,7 @@
                 </div>
             </div>
             <div class="mt-4">
-                <a href="{{ route('withdrawals.index') }}" class="w-full bg-green-600 text-white py-2 px-4 rounded-lg hover:bg-green-700 transition-colors inline-block text-center">
+                <a href="{{ route('withdrawals.index') }}" class="bk-button bk-button-primary w-full   py-2 px-4 rounded-lg  transition-colors inline-block text-center">
                     Request Withdrawal
                 </a>
             </div>
@@ -124,12 +124,12 @@
 
     <!-- Fund Wallet Modal -->
     @if($showFundingModal)
-        <div class="fixed inset-0 z-50 overflow-y-auto" x-data="{ show: @entangle('showFundingModal') }">
+        <div class="fixed inset-0 z-50 overflow-y-auto" x-data="{}" x-trap.inert.noscroll="true" role="dialog" aria-modal="true" aria-label="Fund your wallet" @keydown.escape.window="$wire.closeFundingModal()">
             <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
                 <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" wire:click="closeFundingModal"></div>
 
                 <div class="inline-block align-bottom bg-themed-secondary rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
-                    <form wire:submit.prevent="fundWallet">
+                    <form wire:submit.prevent="fundWallet" wire:loading.attr="aria-busy">
                         <div class="bg-themed-secondary px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
                             <div class="sm:flex sm:items-start">
                                 <div class="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-blue-100 sm:mx-0 sm:h-10 sm:w-10">
@@ -164,7 +164,7 @@
                             </div>
                         </div>
                         <div class="bg-themed-tertiary px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
-                            <button type="submit" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-600 text-base font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:ml-3 sm:w-auto sm:text-sm">
+                            <button type="submit" class="bk-button bk-button-primary w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2  text-base font-medium   focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:ml-3 sm:w-auto sm:text-sm">
                                 Continue to Payment
                             </button>
                             <button type="button" wire:click="closeFundingModal" class="mt-3 w-full inline-flex justify-center rounded-md border border-themed-secondary shadow-sm px-4 py-2 bg-themed-secondary text-base font-medium text-themed-primary hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">

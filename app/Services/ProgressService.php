@@ -2,11 +2,11 @@
 
 namespace App\Services;
 
-use App\Models\Learning\Course;
-use App\Models\Learning\Section;
-use App\Models\Learning\Lesson;
 use App\Models\Assessment\Assessment;
 use App\Models\Assessment\UserProgress;
+use App\Models\Learning\Course;
+use App\Models\Learning\Lesson;
+use App\Models\Learning\Section;
 use Illuminate\Support\Facades\Auth;
 
 class ProgressService
@@ -29,7 +29,6 @@ class ProgressService
             ]
         );
 
-
     }
 
     /**
@@ -50,7 +49,6 @@ class ProgressService
             ]
         );
 
-
     }
 
     private function authorizeProgress(Course $course, ?Section $section): void
@@ -66,30 +64,34 @@ class ProgressService
      */
     public function canAccessSection(Course $course, Section $section): bool
     {
-        if (!Auth::check() || $section->course_id !== $course->id) return false;
-        if (!$section->is_locked) {
+        if (! Auth::check() || $section->course_id !== $course->id) {
+            return false;
+        }
+        if (! $section->is_locked) {
             return true;
         }
 
         $previousSections = $course->sections()->where('order', '<', $section->order)->orderBy('order')->get();
         foreach ($previousSections as $previousSection) {
 
+            $previousLessons = $previousSection->lessons()->pluck('id')->toArray();
+            $previousAssessments = $previousSection->assessments()->pluck('id')->toArray();
+            $completedLessons = UserProgress::where('user_id', Auth::id())
+                ->where('course_id', $course->id)
+                ->whereIn('lesson_id', $previousLessons)
+                ->where('is_completed', true)
+                ->count();
+            $completedAssessments = UserProgress::where('user_id', Auth::id())
+                ->where('course_id', $course->id)
+                ->whereIn('assessment_id', $previousAssessments)
+                ->where('is_completed', true)
+                ->count();
 
-        $previousLessons = $previousSection->lessons()->pluck('id')->toArray();
-        $previousAssessments = $previousSection->assessments()->pluck('id')->toArray();
-        $completedLessons = UserProgress::where('user_id', Auth::id())
-            ->where('course_id', $course->id)
-            ->whereIn('lesson_id', $previousLessons)
-            ->where('is_completed', true)
-            ->count();
-        $completedAssessments = UserProgress::where('user_id', Auth::id())
-            ->where('course_id', $course->id)
-            ->whereIn('assessment_id', $previousAssessments)
-            ->where('is_completed', true)
-            ->count();
-
-        if ($completedLessons !== count($previousLessons) || $completedAssessments !== count($previousAssessments)) return false;
+            if ($completedLessons !== count($previousLessons) || $completedAssessments !== count($previousAssessments)) {
+                return false;
+            }
         }
+
         return true;
     }
 }

@@ -26,6 +26,7 @@ class LearningIntegrityTest extends TestCase
         $next = Section::create(['course_id' => $course->id, 'title' => 'Next', 'order' => 2, 'is_locked' => true]);
         $lesson = Lesson::withoutEvents(fn () => Lesson::create(['section_id' => $first->id, 'title' => 'Practice', 'slug' => 'practice-fixture']));
         $user->courses()->attach($course->id);
+
         return [$user, $course, $next, $lesson];
     }
 
@@ -75,5 +76,33 @@ class LearningIntegrityTest extends TestCase
             ->set('canRequestCertificate', true)->set('completionPercentage', 100)
             ->call('requestCertificate')->assertSet('canRequestCertificate', false);
         $this->assertDatabaseCount('certificates', 0);
+    }
+
+    public function test_completed_learner_can_request_one_certificate_with_server_calculated_details(): void
+    {
+        [$user, $course, , $lesson] = $this->fixture();
+        \Illuminate\Support\Facades\Notification::fake();
+        $user->completedLessons()->attach($lesson->id, ['completed_at' => now()]);
+        \Livewire\Livewire::actingAs($user)->test(\App\Livewire\CertificateManagement\CertificateRequest::class, ['courseId' => $course->id])
+            ->call('requestCertificate')->call('requestCertificate');
+        $this->assertDatabaseCount('certificates', 1);
+        $certificate = \App\Models\Credentials\Certificate::first();
+        $this->assertSame('requested', $certificate->status);
+        $this->assertSame($user->id, $certificate->user_id);
+        $this->assertNotNull($certificate->requested_at);
+        $this->assertNotNull($certificate->completed_at);
+        $this->assertNotEmpty($certificate->verification_code);
+    }
+
+    public function test_certificate_number_search_stays_scoped_to_the_current_learner(): void
+    {
+        [$user, $course] = $this->fixture();
+        $other = User::factory()->create();
+        $certificate = \App\Models\Credentials\Certificate::create([
+            'user_id' => $other->id, 'course_id' => $course->id, 'status' => 'approved',
+            'certificate_number' => 'PRIVATE-CERTIFICATE-FIXTURE',
+        ]);
+        \Livewire\Livewire::actingAs($user)->test(\App\Livewire\CertificateManagement\StudentCertificates::class)
+            ->set('searchTerm', $certificate->certificate_number)->assertDontSee($certificate->certificate_number);
     }
 }
