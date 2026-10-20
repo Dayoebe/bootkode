@@ -99,61 +99,58 @@
                 <p class="text-themed-secondary text-sm">Each step opens the exact place where the learner should act next.</p>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="relative mt-5 space-y-3 before:absolute before:bottom-8 before:left-5 before:top-8 before:w-px before:bg-themed-secondary">
                 @foreach ($steps as $index => $step)
-                    <div class="@class([
-                        'bg-themed-secondary border rounded-lg p-4 transition-colors duration-300',
-                        'border-green-500/50' => $step['status'] === 'complete',
-                        'border-accent-themed-primary shadow-sm' => $step['status'] === 'next',
-                        'border-themed-primary' => $step['status'] === 'open',
+                    <article class="@class([
+                        'relative grid min-w-0 gap-4 rounded-lg border p-4 pl-16 transition md:grid-cols-[minmax(0,1fr)_11rem] md:items-center md:pl-16',
+                        'border-green-500/40 bg-green-500/[0.04]' => $step['status'] === 'complete',
+                        'border-accent-themed-primary bg-accent-themed-primary/10 shadow-sm ring-1 ring-accent-themed-primary/20' => $step['status'] === 'next',
+                        'border-themed-primary bg-themed-primary' => $step['status'] === 'open',
                     ])">
-                        <div class="flex items-start justify-between gap-3">
-                            <div class="flex items-start gap-3 min-w-0">
-                                <div class="@class([
-                                    'w-10 h-10 rounded-lg flex items-center justify-center shrink-0',
-                                    'bg-green-500 text-white' => $step['status'] === 'complete',
-                                    'bg-accent-themed-primary text-white' => $step['status'] === 'next',
-                                    'bg-themed-tertiary text-themed-secondary' => $step['status'] === 'open',
-                                ])">
-                                    @if ($step['status'] === 'complete')
-                                        <i class="fas fa-check"></i>
-                                    @else
-                                        <i class="{{ $step['icon'] }}"></i>
-                                    @endif
-                                </div>
-                                <div class="min-w-0">
-                                    <div class="flex items-center gap-2">
-                                        <span class="text-xs font-bold text-themed-tertiary">{{ str_pad($index + 1, 2, '0', STR_PAD_LEFT) }}</span>
-                                        <h3 class="font-semibold text-themed-primary">{{ $step['label'] }}</h3>
-                                    </div>
-                                    <p class="text-sm text-themed-secondary mt-1">{{ $step['copy'] }}</p>
-                                </div>
-                            </div>
-                            <span class="@class([
-                                'text-xs px-2 py-1 rounded-full shrink-0 font-semibold',
-                                'bg-green-500/10 text-green-600' => $step['status'] === 'complete',
-                                'bg-accent-themed-primary/10 text-accent-themed-primary' => $step['status'] === 'next',
-                                'bg-themed-tertiary text-themed-tertiary' => $step['status'] === 'open',
-                            ])">
-                                {{ $step['status'] === 'complete' ? 'Done' : ($step['status'] === 'next' ? 'Next' : 'Open') }}
-                            </span>
+                        <div class="@class([
+                            'absolute left-0 top-4 z-10 flex h-10 w-10 items-center justify-center rounded-lg text-sm shadow-sm',
+                            'bg-green-500 text-white' => $step['status'] === 'complete',
+                            'bg-accent-themed-primary text-white' => $step['status'] === 'next',
+                            'border border-themed-secondary bg-themed-secondary text-themed-secondary' => $step['status'] === 'open',
+                        ])">
+                            @if ($step['status'] === 'complete')
+                                <i class="fas fa-check"></i>
+                            @else
+                                <i class="{{ $step['icon'] }}"></i>
+                            @endif
                         </div>
 
-                        <div class="mt-4 flex items-center justify-between gap-3">
-                            <span class="text-xs text-themed-tertiary">{{ $step['metric'] }}</span>
+                        <div class="min-w-0">
+                            <div class="flex flex-wrap items-center gap-2">
+                                <span class="text-[10px] font-black uppercase tracking-[0.14em] text-themed-tertiary">Step {{ str_pad($index + 1, 2, '0', STR_PAD_LEFT) }}</span>
+                                <span class="@class([
+                                    'rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide',
+                                    'bg-green-500/10 text-green-600' => $step['status'] === 'complete',
+                                    'bg-accent-themed-primary/20 text-accent-themed-primary' => $step['status'] === 'next',
+                                    'bg-themed-tertiary text-themed-tertiary' => $step['status'] === 'open',
+                                ])">
+                                    {{ $step['status'] === 'complete' ? 'Completed' : ($step['status'] === 'next' ? 'Do this next' : 'Upcoming') }}
+                                </span>
+                            </div>
+                            <h3 class="mt-1 font-bold text-themed-primary">{{ $step['label'] }}</h3>
+                            <p class="mt-1 text-sm leading-6 text-themed-secondary">{{ $step['copy'] }}</p>
+                            <p class="mt-2 text-xs font-semibold text-themed-tertiary"><i class="fas fa-chart-simple mr-1.5"></i>{{ $step['metric'] }}</p>
+                        </div>
+
+                        <div class="md:text-right">
                             @if ($step['route'])
-                                <a href="{{ $step['route'] }}" wire:navigate class="inline-flex items-center gap-2 px-3 py-2 rounded-lg bg-themed-primary border border-themed-secondary text-themed-primary hover:border-accent-themed-primary text-sm font-medium transition-colors">
+                                <a href="{{ $step['route'] }}" wire:navigate class="inline-flex w-full items-center justify-center gap-2 rounded-lg border border-themed-secondary bg-themed-secondary px-3 py-2.5 text-sm font-bold text-themed-primary transition hover:border-accent-themed-primary md:w-auto">
                                     {{ $step['action'] }}
                                     <i class="fas fa-arrow-right text-xs"></i>
                                 </a>
                             @else
-                                <a href="#goal-options" class="inline-flex items-center gap-2 px-3 py-2 rounded-lg bg-themed-primary border border-themed-secondary text-themed-primary hover:border-accent-themed-primary text-sm font-medium transition-colors">
+                                <a href="#goal-options" class="inline-flex w-full items-center justify-center gap-2 rounded-lg border border-themed-secondary bg-themed-secondary px-3 py-2.5 text-sm font-bold text-themed-primary transition hover:border-accent-themed-primary md:w-auto">
                                     {{ $step['action'] }}
                                     <i class="fas fa-arrow-right text-xs"></i>
                                 </a>
                             @endif
                         </div>
-                    </div>
+                    </article>
                 @endforeach
             </div>
         </div>
