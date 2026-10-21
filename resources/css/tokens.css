@@ -1,5 +1,11 @@
 @layer base {
     :root {
+        --bk-font-body: "Manrope", ui-sans-serif, system-ui, sans-serif;
+        --bk-font-display: "Sora", "Manrope", ui-sans-serif, system-ui, sans-serif;
+        --bk-text-body: 1rem;
+        --bk-leading-body: 1.6;
+        --bk-text-small: 0.875rem;
+        --bk-page-title: clamp(1.5rem, 2.3vw, 2.25rem);
         --bk-ink: 15 23 42;
         --bk-mint: 143 227 136;
         --bk-action: 15 118 110;
@@ -30,7 +36,7 @@
         --bk-warning: 253 224 71;
     }
 
-    body { line-height: 1.6; }
+    body { font-size: var(--bk-text-body); line-height: var(--bk-leading-body); }
     [x-cloak] { display: none !important; }
     :where(a, button, input, select, textarea, summary, [tabindex]):focus-visible {
         outline: 3px solid rgb(var(--accent-primary, 15 118 110));

@@ -117,13 +117,13 @@
     }
 
     .bk-public-app {
-        font-family: "Manrope", "Outfit", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        font-family: var(--bk-font-body);
     }
 
     .bk-dashboard-app,
     .bk-dashboard-app body,
     body.bk-dashboard-app {
-        font-family: "Manrope", "Outfit", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        font-family: var(--bk-font-body);
         background: rgb(var(--bg-primary));
         color: rgb(var(--text-primary));
     }
@@ -136,7 +136,7 @@
     .bk-dashboard-app h2,
     .bk-dashboard-app h3,
     .bk-dashboard-app .bk-display {
-        font-family: "Sora", "Manrope", ui-sans-serif, system-ui, sans-serif;
+        font-family: var(--bk-font-display);
         max-width: 100%;
         overflow-wrap: break-word;
     }
@@ -156,7 +156,7 @@
 
 @layer components {
     .bk-shell {
-        width: min(1240px, calc(100% - 2rem));
+        width: min(var(--bk-content-width), calc(100% - 2rem));
         margin-inline: auto;
     }
 
@@ -442,14 +442,14 @@
         border: 1px solid rgb(var(--border-primary));
         border-radius: 8px;
         background: rgb(var(--bg-secondary));
-        box-shadow: 0 18px 45px rgb(15 23 42 / 0.08);
+        box-shadow: var(--bk-panel-shadow);
     }
 
     .bk-dashboard-glass {
         border: 1px solid rgb(var(--border-primary));
         border-radius: 8px;
         background: rgb(var(--bg-secondary));
-        box-shadow: 0 18px 45px rgb(15 23 42 / 0.07);
+        box-shadow: var(--bk-panel-shadow);
 
     }
 
@@ -471,8 +471,8 @@
     }
 
     .bk-dashboard-primary {
-        background: rgb(var(--text-primary));
-        color: rgb(var(--bg-secondary));
+        background: rgb(var(--bk-action));
+        color: rgb(var(--bk-action-text));
         box-shadow: 0 14px 24px rgb(15 23 42 / 0.14);
     }
 

@@ -43,7 +43,7 @@
 
                                         <!-- Progress bar -->
                                         <div class="w-full bg-themed-tertiary rounded-full h-2 mt-2 transition-colors duration-300">
-                                            <div class="bg-gradient-to-r from-blue-500 to-purple-500 h-2 rounded-full transition-all duration-300" style="width: {{ $progress['progress'] }}%"></div>
+                                            <div class="bg-brand h-2 rounded-full transition-all duration-300" style="width: {{ $progress['progress'] }}%"></div>
                                         </div>
 
                                         <div class="flex items-center justify-between mt-2">
@@ -54,12 +54,12 @@
                                         </div>
 
                                         @if($progress['next_lesson'])
-                                            <div class="mt-3 flex items-center justify-between">
+                                            <div class="mt-3 flex flex-col items-start gap-3 sm:flex-row sm:items-center sm:justify-between">
                                                 <p class="text-sm text-themed-primary transition-colors duration-300">
                                                     <i class="fas fa-play-circle text-blue-500 mr-1"></i>
                                                     Next: {{ $progress['next_lesson']['title'] }}
                                                 </p>
-                                                <a href="{{ route('course.view', ['course' => $progress['slug']]) }}" class="text-sm bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 text-white px-4 py-1 rounded-md transition-colors">
+                                                <a href="{{ route('course.view', ['course' => $progress['slug']]) }}" class="bk-button bk-button-primary shrink-0">
                                                     Continue
                                                 </a>
                                             </div>
@@ -71,7 +71,7 @@
                             <div class="text-center py-12">
                                 <i class="fas fa-book-open text-themed-tertiary text-4xl mb-3"></i>
                                 <p class="text-themed-secondary mb-4 transition-colors duration-300">No active courses</p>
-                                <a href="{{ route('student.course-catalog') }}" class="inline-block bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 text-white px-6 py-2 rounded-lg transition-colors">
+                                <a href="{{ route('student.course-catalog') }}" class="bk-button bk-button-primary">
                                     Browse Courses
                                 </a>
                             </div>

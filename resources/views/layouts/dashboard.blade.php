@@ -80,7 +80,7 @@
     @livewireStyles
     @stack('styles')
 
-    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr" defer></script>
 
     <script>
         window.MathJax = {
