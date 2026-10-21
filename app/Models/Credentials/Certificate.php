@@ -142,6 +142,10 @@ public function approve(int $approverId = null): self
         'approved_at' => now(),
         'issued_by' => $approverId ?? auth()->id(), // Use issued_by instead of approved_by
         'issued_date' => now(),
+        // Capture only at issuance. Later edits/deletion must not restyle this record.
+        'metadata' => array_merge($this->metadata ?? [], [
+            'template_snapshot' => app(CertificateService::class)->defaultTemplateSnapshot(),
+        ]),
     ]);
 
     // Generate assets

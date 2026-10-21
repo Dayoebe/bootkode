@@ -3,6 +3,11 @@
 namespace App\Services;
 
 use App\Models\Credentials\Certificate;
+use App\Models\Credentials\CertificateTemplate;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
+use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Log;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -14,6 +19,80 @@ use Endroid\QrCode\Color\Color;
 
 class CertificateService
 {
+    public function saveTemplate(array $attributes, ?int $id = null, bool $makeDefault = false): CertificateTemplate
+    {
+        abort_unless(auth()->user()?->hasAnyRole(['super_admin', 'academy_admin']), 403);
+        abort_if($makeDefault && !auth()->user()->hasRole('super_admin'), 403);
+
+        $data = Validator::make($attributes, [
+            'name' => ['required', 'string', 'min:3', 'max:100'],
+            'description' => ['nullable', 'string', 'max:255'],
+            'settings' => ['required', 'array:backgroundColor,borderColor,textColor,accentColor,headerFont,bodyFont'],
+            'settings.backgroundColor' => ['required', 'regex:/^#(?:[a-f0-9]{3}|[a-f0-9]{6})$/iD'],
+            'settings.borderColor' => ['required', 'regex:/^#(?:[a-f0-9]{3}|[a-f0-9]{6})$/iD'],
+            'settings.textColor' => ['required', 'regex:/^#(?:[a-f0-9]{3}|[a-f0-9]{6})$/iD'],
+            'settings.accentColor' => ['required', 'regex:/^#(?:[a-f0-9]{3}|[a-f0-9]{6})$/iD'],
+            'settings.headerFont' => ['required', Rule::in(CertificateTemplate::FONTS)],
+            'settings.bodyFont' => ['required', Rule::in(CertificateTemplate::FONTS)],
+        ])->validate();
+
+        return DB::transaction(function () use ($data, $id, $makeDefault) {
+            $templates = CertificateTemplate::orderBy('id')->lockForUpdate()->get();
+            $template = $id === null ? new CertificateTemplate : $templates->find($id);
+            abort_unless($template, 404);
+            $template->fill($data);
+            if (!$template->exists) {
+                $template->created_by = auth()->id();
+            }
+            if ($makeDefault) {
+                $previous = CertificateTemplate::where('default_slot', 1);
+                if ($template->exists) {
+                    $previous->whereKeyNot($template->id);
+                }
+                $previous->update(['default_slot' => null]);
+                $template->default_slot = 1;
+            }
+            $template->save();
+
+            return $template;
+        });
+    }
+
+    public function setDefaultTemplate(int $id): void
+    {
+        abort_unless(auth()->user()?->hasRole('super_admin'), 403);
+        DB::transaction(function () use ($id) {
+            $templates = CertificateTemplate::orderBy('id')->lockForUpdate()->get();
+            $template = $templates->find($id);
+            abort_unless($template, 404);
+            CertificateTemplate::where('default_slot', 1)->whereKeyNot($id)->update(['default_slot' => null]);
+            $template->forceFill(['default_slot' => 1])->save();
+        });
+    }
+
+    public function deleteTemplate(int $id): void
+    {
+        abort_unless(auth()->user()?->hasAnyRole(['super_admin', 'academy_admin']), 403);
+        DB::transaction(function () use ($id) {
+            $template = CertificateTemplate::lockForUpdate()->findOrFail($id);
+            if ($template->is_default) {
+                throw ValidationException::withMessages(['template' => 'Choose another default before deleting this template.']);
+            }
+            $template->delete();
+        });
+    }
+
+    public function defaultTemplateSnapshot(): ?array
+    {
+        $template = CertificateTemplate::where('default_slot', 1)->first();
+
+        return $template ? [
+            'id' => $template->id,
+            'name' => $template->name,
+            'settings' => CertificateTemplate::safeSettings($template->settings),
+        ] : null;
+    }
+
     /**
      * Generate all certificate assets (QR code and PDF)
      */

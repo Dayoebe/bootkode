@@ -2,7 +2,8 @@
     'name',
     'show' => false,
     'maxWidth' => '2xl',
-    'label' => null
+    'label' => null,
+    'model' => null,
 ])
 
 @php
@@ -16,7 +17,7 @@ $maxWidth = [
 @endphp
 
 <div
-    x-data="{ show: @js($show) }"
+    x-data="{ show: @if($model) $wire.entangle(@js($model)).live @else @js($show) @endif }"
     x-trap.inert.noscroll="show"
     role="dialog"
     aria-modal="true"
