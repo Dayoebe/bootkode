@@ -54,6 +54,8 @@ Public course discovery is `/courses`; public course summaries are `/courses/{sl
 
 Configure Paystack keys through server environment variables. The administration screen exposes setup state, never secret values. `/webhook/paystack` is a public HMAC-authenticated endpoint; browser callback URLs alone never authorize credit. Funding checks gateway reference, amount, currency and status before an atomic ledger update. Test with sandbox credentials and signed delivery. See Paystack's [webhook guidance](https://paystack.com/docs/payments/webhooks/) and [verification guidance](https://paystack.com/docs/payments/verify-payments/).
 
+Marketplace wallet settlement requires an active NGN customer/vendor/platform wallet. Set server-side `MARKETPLACE_PLATFORM_USER_ID` to the designated super-administrator account; otherwise the first super administrator owns the platform wallet. Wallet checkout refuses missing ownership/currency/funding evidence and rolls back failed invoice or payout writes. Scout defaults to local collection search when Algolia credentials are absent; an explicitly configured driver still needs its real setup.
+
 Financial limits are in `config/financial.php`; existing course-specific splits remain authoritative. The former Financial Settings form did not persist settings; its replacement shows the current applied rules.
 
 ## Release limits

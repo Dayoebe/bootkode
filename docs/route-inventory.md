@@ -1,6 +1,6 @@
 # Route inventory
 
-Generated from `php artisan route:list --json` on 20 October 2026 before changes. Middleware and component checks together determine access; route existence is not proof of functional completion.
+Generated from `php artisan route:list --json` on 21 October 2026 after the institutional, marketplace and mentorship continuation. Middleware and component checks together determine access; route existence is not proof of functional completion.
 
 | Method | URI | Name | Handler | Middleware |
 |---|---|---|---|---|
@@ -17,18 +17,18 @@ Generated from `php artisan route:list --json` on 20 October 2026 before changes
 | GET / HEAD | admin/blog/posts/{post}/edit | admin.blog.posts.edit | App\Livewire\Blog\AdminBlogPostForm | web, Illuminate\Auth\Middleware\Authenticate, Illuminate\Auth\Middleware\EnsureEmailIsVerified |
 | GET / HEAD | admin/blog/seo | admin.blog.seo | App\Livewire\Blog\AdminBlogSettings | web, Illuminate\Auth\Middleware\Authenticate, Illuminate\Auth\Middleware\EnsureEmailIsVerified |
 | GET / HEAD | admin/blog/settings | admin.blog.settings | App\Livewire\Blog\AdminBlogSettings | web, Illuminate\Auth\Middleware\Authenticate, Illuminate\Auth\Middleware\EnsureEmailIsVerified |
-| GET / HEAD | admin/certificates | admin.certificates.manage | App\Livewire\CertificateManagement\CertificateManagement | web, Illuminate\Auth\Middleware\Authenticate, Illuminate\Auth\Middleware\EnsureEmailIsVerified |
-| GET / HEAD | admin/certificates/analytics | admin.certificates.analytics | App\Livewire\CertificateManagement\CertificateAnalytics | web, Illuminate\Auth\Middleware\Authenticate, Illuminate\Auth\Middleware\EnsureEmailIsVerified |
-| POST | admin/certificates/bulk-approve | admin.certificates.bulk.approve | Closure | web, Illuminate\Auth\Middleware\Authenticate, Illuminate\Auth\Middleware\EnsureEmailIsVerified |
-| GET / HEAD | admin/certificates/templates | admin.certificates.templates | App\Livewire\CertificateManagement\CertificateTemplates | web, Illuminate\Auth\Middleware\Authenticate, Illuminate\Auth\Middleware\EnsureEmailIsVerified |
-| POST | admin/certificates/{certificate}/approve | admin.certificates.approve | Closure | web, Illuminate\Auth\Middleware\Authenticate, Illuminate\Auth\Middleware\EnsureEmailIsVerified |
-| POST | admin/certificates/{certificate}/reject | admin.certificates.reject | Closure | web, Illuminate\Auth\Middleware\Authenticate, Illuminate\Auth\Middleware\EnsureEmailIsVerified |
-| POST | admin/certificates/{certificate}/revoke | admin.certificates.revoke | Closure | web, Illuminate\Auth\Middleware\Authenticate, Illuminate\Auth\Middleware\EnsureEmailIsVerified |
-| GET / HEAD | admin/commercial-readiness | admin.commercial.readiness | App\Livewire\Financial\Admin\CommercialReadiness | web, Illuminate\Auth\Middleware\Authenticate |
-| GET / HEAD | admin/financial | admin.financial.dashboard | App\Livewire\Financial\Admin\FinancialDashboard | web, Illuminate\Auth\Middleware\Authenticate |
-| GET / HEAD | admin/financial/settings | admin.financial.settings | App\Livewire\Financial\Admin\FinancialSettings | web, Illuminate\Auth\Middleware\Authenticate |
+| GET / HEAD | admin/certificates | admin.certificates.manage | App\Livewire\CertificateManagement\CertificateManagement | web, Illuminate\Auth\Middleware\Authenticate, Illuminate\Auth\Middleware\EnsureEmailIsVerified, App\Http\Middleware\CheckRole:super_admin,academy_admin,instructor |
+| GET / HEAD | admin/certificates/analytics | admin.certificates.analytics | App\Livewire\CertificateManagement\CertificateAnalytics | web, Illuminate\Auth\Middleware\Authenticate, Illuminate\Auth\Middleware\EnsureEmailIsVerified, App\Http\Middleware\CheckRole:super_admin,academy_admin,instructor |
+| POST | admin/certificates/bulk-approve | admin.certificates.bulk.approve | Closure | web, Illuminate\Auth\Middleware\Authenticate, Illuminate\Auth\Middleware\EnsureEmailIsVerified, App\Http\Middleware\CheckRole:super_admin,academy_admin,instructor |
+| GET / HEAD | admin/certificates/templates | admin.certificates.templates | App\Livewire\CertificateManagement\CertificateTemplates | web, Illuminate\Auth\Middleware\Authenticate, Illuminate\Auth\Middleware\EnsureEmailIsVerified, App\Http\Middleware\CheckRole:super_admin,academy_admin,instructor |
+| POST | admin/certificates/{certificate}/approve | admin.certificates.approve | Closure | web, Illuminate\Auth\Middleware\Authenticate, Illuminate\Auth\Middleware\EnsureEmailIsVerified, App\Http\Middleware\CheckRole:super_admin,academy_admin,instructor |
+| POST | admin/certificates/{certificate}/reject | admin.certificates.reject | Closure | web, Illuminate\Auth\Middleware\Authenticate, Illuminate\Auth\Middleware\EnsureEmailIsVerified, App\Http\Middleware\CheckRole:super_admin,academy_admin,instructor |
+| POST | admin/certificates/{certificate}/revoke | admin.certificates.revoke | Closure | web, Illuminate\Auth\Middleware\Authenticate, Illuminate\Auth\Middleware\EnsureEmailIsVerified, App\Http\Middleware\CheckRole:super_admin,academy_admin,instructor |
+| GET / HEAD | admin/commercial-readiness | admin.commercial.readiness | App\Livewire\Financial\Admin\CommercialReadiness | web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\CheckRole:super_admin,academy_admin |
+| GET / HEAD | admin/financial | admin.financial.dashboard | App\Livewire\Financial\Admin\FinancialDashboard | web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\CheckRole:super_admin,academy_admin |
+| GET / HEAD | admin/financial/settings | admin.financial.settings | App\Livewire\Financial\Admin\FinancialSettings | web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\CheckRole:super_admin,academy_admin |
 | GET / HEAD | admin/interview | admin.interview | App\Livewire\Career\AdminMockInterview | web, Illuminate\Auth\Middleware\Authenticate |
-| GET / HEAD | admin/job | admin.job | App\Livewire\Career\JobManagement | web, Illuminate\Auth\Middleware\Authenticate |
+| GET / HEAD | admin/job | admin.job | App\Livewire\Career\JobManagement | web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\CheckRole:super_admin,academy_admin |
 | GET / HEAD | admin/pages | pages.index | App\Livewire\Pages\PageManager | web, Illuminate\Auth\Middleware\Authenticate, Illuminate\Auth\Middleware\EnsureEmailIsVerified |
 | GET / HEAD | admin/pages/analytics | pages.analytics | App\Livewire\Pages\PageManager | web, Illuminate\Auth\Middleware\Authenticate, Illuminate\Auth\Middleware\EnsureEmailIsVerified |
 | GET / HEAD | admin/pages/create | pages.create | App\Livewire\Pages\PageManager | web, Illuminate\Auth\Middleware\Authenticate, Illuminate\Auth\Middleware\EnsureEmailIsVerified |
@@ -37,10 +37,10 @@ Generated from `php artisan route:list --json` on 20 October 2026 before changes
 | GET / HEAD | admin/pages/settings | pages.settings | App\Livewire\Pages\PageManager | web, Illuminate\Auth\Middleware\Authenticate, Illuminate\Auth\Middleware\EnsureEmailIsVerified |
 | GET / HEAD | admin/pages/templates | pages.templates | App\Livewire\Pages\PageManager | web, Illuminate\Auth\Middleware\Authenticate, Illuminate\Auth\Middleware\EnsureEmailIsVerified |
 | POST | admin/pages/track-view/{slug} | pages.track-view | App\Http\Controllers\PageController@trackView | web, Illuminate\Auth\Middleware\Authenticate, Illuminate\Auth\Middleware\EnsureEmailIsVerified |
-| GET / HEAD | admin/payments | admin.payments | App\Livewire\Financial\Admin\PaymentProcessing | web, Illuminate\Auth\Middleware\Authenticate |
-| GET / HEAD | admin/payments/processing | admin.payments.processing | App\Livewire\Financial\Admin\PaymentProcessing | web, Illuminate\Auth\Middleware\Authenticate |
-| GET / HEAD | admin/paystack/settings | admin.paystack.settings | App\Livewire\Financial\Admin\PaystackSettings | web, Illuminate\Auth\Middleware\Authenticate |
-| GET / HEAD | admin/revenue/reports | admin.revenue.reports | App\Livewire\Financial\Admin\RevenueReports | web, Illuminate\Auth\Middleware\Authenticate |
+| GET / HEAD | admin/payments | admin.payments | App\Livewire\Financial\Admin\PaymentProcessing | web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\CheckRole:super_admin,academy_admin |
+| GET / HEAD | admin/payments/processing | admin.payments.processing | App\Livewire\Financial\Admin\PaymentProcessing | web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\CheckRole:super_admin,academy_admin |
+| GET / HEAD | admin/paystack/settings | admin.paystack.settings | App\Livewire\Financial\Admin\PaystackSettings | web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\CheckRole:super_admin,academy_admin |
+| GET / HEAD | admin/revenue/reports | admin.revenue.reports | App\Livewire\Financial\Admin\RevenueReports | web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\CheckRole:super_admin,academy_admin |
 | GET / HEAD | affiliate-ambassador/dashboard | affiliate_ambassador.dashboard | App\Livewire\Dashboard\AffiliateAmbassadorDashboard | web, Illuminate\Auth\Middleware\Authenticate, Illuminate\Auth\Middleware\EnsureEmailIsVerified |
 | GET / HEAD | affiliate/analytics | affiliate.analytics | App\Livewire\Affiliate\Analytics | web, Illuminate\Auth\Middleware\Authenticate |
 | GET / HEAD | affiliate/api/validate-referral/{code} | affiliate.api.validate-referral | Closure | web, Illuminate\Auth\Middleware\Authenticate |
@@ -78,9 +78,9 @@ Generated from `php artisan route:list --json` on 20 October 2026 before changes
 | GET / HEAD | cbt/exam/{assessmentId}/summary | cbt.exam.summary | App\Livewire\Cbt\CbtExamInterface@summary | web, Illuminate\Auth\Middleware\Authenticate, Illuminate\Auth\Middleware\EnsureEmailIsVerified |
 | GET / HEAD | cbt/exam/{assessment}/take | cbt.exam.take | App\Livewire\Cbt\CbtExamInterface | web, Illuminate\Auth\Middleware\Authenticate, Illuminate\Auth\Middleware\EnsureEmailIsVerified |
 | GET / HEAD | cbt/exams | cbt.exams | App\Livewire\Cbt\CbtExamSelection | web, Illuminate\Auth\Middleware\Authenticate, Illuminate\Auth\Middleware\EnsureEmailIsVerified |
-| GET / HEAD | cbt/manage | cbt.manage | App\Livewire\Cbt\CbtManagement | web, Illuminate\Auth\Middleware\Authenticate, Illuminate\Auth\Middleware\EnsureEmailIsVerified |
-| GET / HEAD | cbt/management | cbt.management | App\Livewire\Cbt\CbtManagement | web |
-| GET / HEAD | cbt/results | cbt.viewer | App\Livewire\Cbt\CbtViewer | web |
+| GET / HEAD | cbt/manage | cbt.manage | App\Livewire\Cbt\CbtManagement | web, Illuminate\Auth\Middleware\Authenticate, Illuminate\Auth\Middleware\EnsureEmailIsVerified, App\Http\Middleware\CheckRole:super_admin,academy_admin,instructor |
+| GET / HEAD | cbt/management | cbt.management | App\Livewire\Cbt\CbtManagement | web, Illuminate\Auth\Middleware\Authenticate, Illuminate\Auth\Middleware\EnsureEmailIsVerified, App\Http\Middleware\CheckRole:super_admin,academy_admin,instructor |
+| GET / HEAD | cbt/results | cbt.viewer | App\Livewire\Cbt\CbtViewer | web, Illuminate\Auth\Middleware\Authenticate, Illuminate\Auth\Middleware\EnsureEmailIsVerified |
 | GET / HEAD | certificate/download/{verificationCode} | certificate.download | App\Http\Controllers\CertificateVerificationController@download | web |
 | GET / HEAD | certificate/qr/{verificationCode} | certificate.qr | App\Http\Controllers\CertificateVerificationController@qrCode | web |
 | GET / HEAD | certificate/verify | certificate.verify | App\Http\Controllers\CertificateVerificationController@index | web |
@@ -92,7 +92,7 @@ Generated from `php artisan route:list --json` on 20 October 2026 before changes
 | GET / HEAD | community/feedback | community.feedback | App\Livewire\Community\CommunityCenter | web, Illuminate\Auth\Middleware\Authenticate |
 | GET / HEAD | community/forums | community.forums | App\Livewire\Community\CommunityCenter | web, Illuminate\Auth\Middleware\Authenticate |
 | GET / HEAD | community/live-events | community.live-events | App\Livewire\Community\CommunityCenter | web, Illuminate\Auth\Middleware\Authenticate |
-| GET / HEAD | community/moderation | community.moderation | App\Livewire\Community\CommunityCenter | web, Illuminate\Auth\Middleware\Authenticate |
+| GET / HEAD | community/moderation | community.moderation | App\Livewire\Community\CommunityCenter | web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\CheckRole:super_admin,academy_admin |
 | GET / HEAD | community/study-groups | community.study-groups | App\Livewire\Community\CommunityCenter | web, Illuminate\Auth\Middleware\Authenticate |
 | GET / HEAD | confirm-password | password.confirm | App\Http\Controllers\Auth\AuthController@showConfirmPasswordForm | web, Illuminate\Auth\Middleware\Authenticate |
 | POST | confirm-password |  | App\Http\Controllers\Auth\AuthController@confirmPassword | web, Illuminate\Auth\Middleware\Authenticate |
@@ -122,6 +122,8 @@ Generated from `php artisan route:list --json` on 20 October 2026 before changes
 | GET / HEAD | course-management/my-courses | my-course | App\Livewire\CourseManagement\UserCourses | web, Illuminate\Auth\Middleware\Authenticate, Illuminate\Auth\Middleware\EnsureEmailIsVerified |
 | GET / HEAD | course-reviews/analytics/{courseId?} | review-analytics | App\Livewire\CourseManagement\ReviewAnalytics | web, Illuminate\Auth\Middleware\Authenticate, Illuminate\Auth\Middleware\EnsureEmailIsVerified |
 | GET / HEAD | course/{course} | course.view | App\Livewire\StudentManagement\CourseView | web, Illuminate\Auth\Middleware\Authenticate, Illuminate\Auth\Middleware\EnsureEmailIsVerified |
+| GET / HEAD | courses | courses.index | App\Livewire\Pages\Courses | web |
+| GET / HEAD | courses/{course} | courses.show | App\Livewire\Pages\CourseDetails | web |
 | GET / HEAD | courses/{course}/checkout | course.checkout | App\Livewire\Financial\CourseCheckout | web, Illuminate\Auth\Middleware\Authenticate |
 | GET / HEAD | dashboard | dashboard | App\Http\Controllers\DashboardController@__invoke | web, Illuminate\Auth\Middleware\Authenticate, Illuminate\Auth\Middleware\EnsureEmailIsVerified |
 | GET / HEAD | dashboard-redirect | dashboard.redirect | App\Http\Controllers\DashboardController | web, Illuminate\Auth\Middleware\Authenticate, Illuminate\Auth\Middleware\EnsureEmailIsVerified |
@@ -179,21 +181,23 @@ Generated from `php artisan route:list --json` on 20 October 2026 before changes
 | GET / HEAD | gamification/leaderboard | gamification.leaderboard | App\Http\Controllers\GamificationController@leaderboard | web, Illuminate\Auth\Middleware\Authenticate, Illuminate\Auth\Middleware\EnsureEmailIsVerified |
 | GET / HEAD | gamification/store | gamification.store | App\Http\Controllers\GamificationController@store | web, Illuminate\Auth\Middleware\Authenticate, Illuminate\Auth\Middleware\EnsureEmailIsVerified |
 | POST | gamification/store/purchase/{itemId} | gamification.store.purchase | App\Http\Controllers\GamificationController@purchaseItem | web, Illuminate\Auth\Middleware\Authenticate, Illuminate\Auth\Middleware\EnsureEmailIsVerified |
-| GET / HEAD | institution/analytics | institution.analytics | App\Livewire\Institution\InstitutionPortal | web, Illuminate\Auth\Middleware\Authenticate, Illuminate\Auth\Middleware\EnsureEmailIsVerified |
-| GET / HEAD | institution/bulk-enrollment | institution.bulk-enrollment | App\Livewire\Institution\InstitutionPortal | web, Illuminate\Auth\Middleware\Authenticate, Illuminate\Auth\Middleware\EnsureEmailIsVerified |
-| GET / HEAD | institution/cohorts | institution.cohorts | App\Livewire\Institution\InstitutionPortal | web, Illuminate\Auth\Middleware\Authenticate, Illuminate\Auth\Middleware\EnsureEmailIsVerified |
+| GET / HEAD | institution/analytics | institution.analytics | App\Livewire\Institution\InstitutionPortal | web, Illuminate\Auth\Middleware\Authenticate, Illuminate\Auth\Middleware\EnsureEmailIsVerified, App\Http\Middleware\CheckRole:super_admin,academy_admin |
+| GET / HEAD | institution/bulk-enrollment | institution.bulk-enrollment | App\Livewire\Institution\InstitutionPortal | web, Illuminate\Auth\Middleware\Authenticate, Illuminate\Auth\Middleware\EnsureEmailIsVerified, App\Http\Middleware\CheckRole:super_admin,academy_admin |
+| GET / HEAD | institution/cohorts | institution.cohorts | App\Livewire\Institution\InstitutionPortal | web, Illuminate\Auth\Middleware\Authenticate, Illuminate\Auth\Middleware\EnsureEmailIsVerified, App\Http\Middleware\CheckRole:super_admin,academy_admin |
 | GET / HEAD | institution/invitations/{token}/accept | institution.invitations.accept | App\Http\Controllers\InstitutionInvitationController@accept | web |
-| GET / HEAD | institution/licenses | institution.licenses | App\Livewire\Institution\InstitutionPortal | web, Illuminate\Auth\Middleware\Authenticate, Illuminate\Auth\Middleware\EnsureEmailIsVerified |
-| GET / HEAD | institution/overview | institution.overview | App\Livewire\Institution\InstitutionPortal | web, Illuminate\Auth\Middleware\Authenticate, Illuminate\Auth\Middleware\EnsureEmailIsVerified |
-| GET / HEAD | institution/partners | institution.partners | App\Livewire\Institution\InstitutionPortal | web, Illuminate\Auth\Middleware\Authenticate, Illuminate\Auth\Middleware\EnsureEmailIsVerified |
+| POST | institution/invitations/{token}/accept | institution.invitations.confirm | App\Http\Controllers\InstitutionInvitationController@confirm | web, Illuminate\Auth\Middleware\Authenticate |
+| GET / HEAD | institution/licenses | institution.licenses | App\Livewire\Institution\InstitutionPortal | web, Illuminate\Auth\Middleware\Authenticate, Illuminate\Auth\Middleware\EnsureEmailIsVerified, App\Http\Middleware\CheckRole:super_admin,academy_admin |
+| GET / HEAD | institution/overview | institution.overview | App\Livewire\Institution\InstitutionPortal | web, Illuminate\Auth\Middleware\Authenticate, Illuminate\Auth\Middleware\EnsureEmailIsVerified, App\Http\Middleware\CheckRole:super_admin,academy_admin |
+| GET / HEAD | institution/partners | institution.partners | App\Livewire\Institution\InstitutionPortal | web, Illuminate\Auth\Middleware\Authenticate, Illuminate\Auth\Middleware\EnsureEmailIsVerified, App\Http\Middleware\CheckRole:super_admin,academy_admin |
 | GET / HEAD | institution/portal | institution.portal | App\Livewire\Institution\InstitutionPortal | web, Illuminate\Auth\Middleware\Authenticate, Illuminate\Auth\Middleware\EnsureEmailIsVerified |
-| GET / HEAD | institution/whitelabel | institution.whitelabel | App\Livewire\Institution\InstitutionPortal | web, Illuminate\Auth\Middleware\Authenticate, Illuminate\Auth\Middleware\EnsureEmailIsVerified |
+| GET / HEAD | institution/whitelabel | institution.whitelabel | App\Livewire\Institution\InstitutionPortal | web, Illuminate\Auth\Middleware\Authenticate, Illuminate\Auth\Middleware\EnsureEmailIsVerified, App\Http\Middleware\CheckRole:super_admin,academy_admin |
 | GET / HEAD | instructor/dashboard | instructor.dashboard | App\Livewire\Dashboard\InstructorDashboard | web, Illuminate\Auth\Middleware\Authenticate, Illuminate\Auth\Middleware\EnsureEmailIsVerified |
 | GET / HEAD | instructor/earnings | instructor.earnings | App\Livewire\Financial\InstructorEarnings | web, Illuminate\Auth\Middleware\Authenticate |
 | GET / HEAD | interview/user | user.interview | App\Livewire\Career\UserMockInterview | web, Illuminate\Auth\Middleware\Authenticate |
 | GET / HEAD | interview/{interview}/results | interview.results | App\Livewire\Career\InterviewResults | web, Illuminate\Auth\Middleware\Authenticate |
 | GET / HEAD | interview/{interview}/take | interview.take | App\Livewire\Career\StudentInterviewTaker | web, Illuminate\Auth\Middleware\Authenticate |
 | GET / HEAD | job | user.job | App\Livewire\Career\JobPortal | web, Illuminate\Auth\Middleware\Authenticate |
+| GET / HEAD | job-applications/{jobApplication}/resume | job-applications.resume | App\Http\Controllers\JobApplicationResumeController | web, Illuminate\Auth\Middleware\Authenticate |
 | GET / HEAD | learner-journey | learner.journey | App\Livewire\StudentManagement\LearnerJourney | web, Illuminate\Auth\Middleware\Authenticate, Illuminate\Auth\Middleware\EnsureEmailIsVerified |
 | GET / HEAD | learning-analytics | student.learning-analytics | App\Livewire\StudentManagement\LearningAnalytics | web, Illuminate\Auth\Middleware\Authenticate, Illuminate\Auth\Middleware\EnsureEmailIsVerified |
 | GET / HEAD | livewire/livewire.js |  | Livewire\Mechanisms\FrontendAssets\FrontendAssets@returnJavaScriptAsFile |  |
@@ -205,11 +209,11 @@ Generated from `php artisan route:list --json` on 20 October 2026 before changes
 | POST | login |  | App\Http\Controllers\Auth\AuthController@login | web, Illuminate\Auth\Middleware\RedirectIfAuthenticated |
 | POST | logout | logout | App\Http\Controllers\Auth\AuthController@logout | web, Illuminate\Auth\Middleware\Authenticate |
 | GET / HEAD | marketplace | marketplace.browse | App\Livewire\Marketplace\PublicMarketplace | web |
-| GET / HEAD | marketplace/admin/analytics | marketplace.analytics | App\Livewire\Marketplace\MarketplaceCenter | web, Illuminate\Auth\Middleware\Authenticate, Illuminate\Auth\Middleware\EnsureEmailIsVerified |
-| GET / HEAD | marketplace/admin/orders | marketplace.orders | App\Livewire\Marketplace\MarketplaceCenter | web, Illuminate\Auth\Middleware\Authenticate, Illuminate\Auth\Middleware\EnsureEmailIsVerified |
-| GET / HEAD | marketplace/admin/payments | marketplace.payments | App\Livewire\Marketplace\MarketplaceCenter | web, Illuminate\Auth\Middleware\Authenticate, Illuminate\Auth\Middleware\EnsureEmailIsVerified |
-| GET / HEAD | marketplace/admin/settings | marketplace.settings | App\Livewire\Marketplace\MarketplaceCenter | web, Illuminate\Auth\Middleware\Authenticate, Illuminate\Auth\Middleware\EnsureEmailIsVerified |
-| GET / HEAD | marketplace/admin/vendors | marketplace.vendor.applications | App\Livewire\Marketplace\MarketplaceCenter | web, Illuminate\Auth\Middleware\Authenticate, Illuminate\Auth\Middleware\EnsureEmailIsVerified |
+| GET / HEAD | marketplace/admin/analytics | marketplace.analytics | App\Livewire\Marketplace\MarketplaceCenter | web, Illuminate\Auth\Middleware\Authenticate, Illuminate\Auth\Middleware\EnsureEmailIsVerified, App\Http\Middleware\CheckRole:super_admin,academy_admin |
+| GET / HEAD | marketplace/admin/orders | marketplace.orders | App\Livewire\Marketplace\MarketplaceCenter | web, Illuminate\Auth\Middleware\Authenticate, Illuminate\Auth\Middleware\EnsureEmailIsVerified, App\Http\Middleware\CheckRole:super_admin,academy_admin |
+| GET / HEAD | marketplace/admin/payments | marketplace.payments | App\Livewire\Marketplace\MarketplaceCenter | web, Illuminate\Auth\Middleware\Authenticate, Illuminate\Auth\Middleware\EnsureEmailIsVerified, App\Http\Middleware\CheckRole:super_admin,academy_admin |
+| GET / HEAD | marketplace/admin/settings | marketplace.settings | App\Livewire\Marketplace\MarketplaceCenter | web, Illuminate\Auth\Middleware\Authenticate, Illuminate\Auth\Middleware\EnsureEmailIsVerified, App\Http\Middleware\CheckRole:super_admin,academy_admin |
+| GET / HEAD | marketplace/admin/vendors | marketplace.vendor.applications | App\Livewire\Marketplace\MarketplaceCenter | web, Illuminate\Auth\Middleware\Authenticate, Illuminate\Auth\Middleware\EnsureEmailIsVerified, App\Http\Middleware\CheckRole:super_admin,academy_admin |
 | GET / HEAD | marketplace/cart | marketplace.cart | App\Livewire\Marketplace\MarketplaceCenter | web, Illuminate\Auth\Middleware\Authenticate, Illuminate\Auth\Middleware\EnsureEmailIsVerified |
 | GET / HEAD | marketplace/categories | marketplace.categories | App\Livewire\Marketplace\PublicMarketplace | web |
 | GET / HEAD | marketplace/category/{slug} | marketplace.category.show | Closure | web |
@@ -219,11 +223,12 @@ Generated from `php artisan route:list --json` on 20 October 2026 before changes
 | GET / HEAD | marketplace/item/{slug} | marketplace.item.public | App\Livewire\Marketplace\MarketplaceCenter | web, Illuminate\Auth\Middleware\Authenticate, Illuminate\Auth\Middleware\EnsureEmailIsVerified |
 | GET / HEAD | marketplace/my-listings | marketplace.seller.listings | App\Livewire\Marketplace\MarketplaceCenter | web, Illuminate\Auth\Middleware\Authenticate, Illuminate\Auth\Middleware\EnsureEmailIsVerified |
 | GET / HEAD | marketplace/my-purchases | marketplace.purchases | App\Livewire\Marketplace\MarketplaceCenter | web, Illuminate\Auth\Middleware\Authenticate, Illuminate\Auth\Middleware\EnsureEmailIsVerified |
+| GET / HEAD | marketplace/orders/{order}/download/{file?} | marketplace.order.download | App\Http\Controllers\MarketplaceDownloadController | web, Illuminate\Auth\Middleware\Authenticate, Illuminate\Auth\Middleware\EnsureEmailIsVerified |
 | GET / HEAD | marketplace/payment/failed | marketplace.payment.failed | Closure | web |
 | GET / HEAD | marketplace/payment/success | marketplace.payment.success | Closure | web |
 | GET / HEAD | marketplace/product/{slug} | marketplace.product.show | Closure | web |
-| GET / HEAD | marketplace/promotions | marketplace.promotions | App\Livewire\Marketplace\MarketplaceCenter | web, Illuminate\Auth\Middleware\Authenticate, Illuminate\Auth\Middleware\EnsureEmailIsVerified |
-| GET / HEAD | marketplace/reviews | marketplace.reviews | App\Livewire\Marketplace\MarketplaceCenter | web, Illuminate\Auth\Middleware\Authenticate, Illuminate\Auth\Middleware\EnsureEmailIsVerified |
+| GET / HEAD | marketplace/promotions | marketplace.promotions | App\Livewire\Marketplace\MarketplaceCenter | web, Illuminate\Auth\Middleware\Authenticate, Illuminate\Auth\Middleware\EnsureEmailIsVerified, App\Http\Middleware\CheckRole:super_admin,academy_admin,content_editor |
+| GET / HEAD | marketplace/reviews | marketplace.reviews | App\Livewire\Marketplace\MarketplaceCenter | web, Illuminate\Auth\Middleware\Authenticate, Illuminate\Auth\Middleware\EnsureEmailIsVerified, App\Http\Middleware\CheckRole:super_admin,academy_admin,content_editor |
 | GET / HEAD | marketplace/sell | marketplace.sell | App\Livewire\Marketplace\MarketplaceCenter | web, Illuminate\Auth\Middleware\Authenticate, Illuminate\Auth\Middleware\EnsureEmailIsVerified |
 | GET / HEAD | marketplace/seller/create | marketplace.seller.create | App\Livewire\Marketplace\MarketplaceCenter | web, Illuminate\Auth\Middleware\Authenticate, Illuminate\Auth\Middleware\EnsureEmailIsVerified |
 | GET / HEAD | marketplace/vendor/dashboard | marketplace.vendor.dashboard | App\Livewire\Marketplace\MarketplaceCenter | web, Illuminate\Auth\Middleware\Authenticate, Illuminate\Auth\Middleware\EnsureEmailIsVerified |
@@ -234,7 +239,7 @@ Generated from `php artisan route:list --json` on 20 October 2026 before changes
 | GET / HEAD | mentorship/code-reviews | mentorship.code-reviews | App\Livewire\Mentorship\CodeReviews | web, Illuminate\Auth\Middleware\Authenticate, Illuminate\Auth\Middleware\EnsureEmailIsVerified |
 | GET / HEAD | mentorship/dashboard | mentorship.dashboard | App\Livewire\Mentorship\MentorDashboard | web, Illuminate\Auth\Middleware\Authenticate, Illuminate\Auth\Middleware\EnsureEmailIsVerified |
 | GET / HEAD | mentorship/find | mentorship.find | App\Livewire\Mentorship\FindMentor | web, Illuminate\Auth\Middleware\Authenticate, Illuminate\Auth\Middleware\EnsureEmailIsVerified |
-| GET / HEAD | mentorship/management | mentorship.management | App\Livewire\Mentorship\MentorManagement | web, Illuminate\Auth\Middleware\Authenticate, Illuminate\Auth\Middleware\EnsureEmailIsVerified |
+| GET / HEAD | mentorship/management | mentorship.management | App\Livewire\Mentorship\MentorManagement | web, Illuminate\Auth\Middleware\Authenticate, Illuminate\Auth\Middleware\EnsureEmailIsVerified, App\Http\Middleware\CheckRole:super_admin,academy_admin |
 | GET / HEAD | mentorship/my-mentorships | mentorship.my-mentorships | App\Livewire\Mentorship\MyMentorships | web, Illuminate\Auth\Middleware\Authenticate, Illuminate\Auth\Middleware\EnsureEmailIsVerified |
 | GET / HEAD | mentorship/operations | mentorship.operations | App\Livewire\Mentorship\Sessions | web, Illuminate\Auth\Middleware\Authenticate, Illuminate\Auth\Middleware\EnsureEmailIsVerified |
 | GET / HEAD | mentorship/profile | mentorship.profile | App\Livewire\Mentorship\MentorProfile | web, Illuminate\Auth\Middleware\Authenticate, Illuminate\Auth\Middleware\EnsureEmailIsVerified |
@@ -274,13 +279,6 @@ Generated from `php artisan route:list --json` on 20 October 2026 before changes
 | GET / HEAD | verify-email | verification.notice | App\Http\Controllers\Auth\EmailVerificationController@showVerificationPrompt | web, Illuminate\Auth\Middleware\Authenticate |
 | GET / HEAD | verify-email/{id}/{hash} | verification.verify | App\Http\Controllers\Auth\EmailVerificationController@verifyEmail | web, Illuminate\Auth\Middleware\Authenticate, Illuminate\Routing\Middleware\ValidateSignature, Illuminate\Routing\Middleware\ThrottleRequests:6,1 |
 | GET / HEAD | wallet | wallet.index | App\Livewire\Financial\WalletDashboard | web, Illuminate\Auth\Middleware\Authenticate |
-| POST | webhook/paystack | paystack.webhook | App\Http\Controllers\FinancialController@paystackWebhook | web, Illuminate\Auth\Middleware\Authenticate |
+| POST | webhook/paystack | paystack.webhook | App\Http\Controllers\FinancialController@paystackWebhook | web |
 | GET / HEAD | withdrawals | withdrawals.index | App\Livewire\Financial\WithdrawalManager | web, Illuminate\Auth\Middleware\Authenticate |
 | GET / HEAD | {slug} | page.show | App\Http\Controllers\PageController@show | web |
-
-## Operational continuation, 21 October 2026
-
-- `GET /job-applications/{jobApplication}/resume`, `job-applications.resume`: authenticated applicant or academy/super administrator; private new files, guarded legacy-path compatibility.
-- `GET /admin/job`, `admin.job`: academy/super administrator middleware plus request-time Livewire guard.
-- `GET /community/moderation`, `community.moderation`: academy/super administrator middleware plus action/read guards inside the shared component.
-- Existing community routes now initialize their corresponding tab; URLs and route names are retained.

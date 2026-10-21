@@ -85,3 +85,18 @@ A follow-up against the original scope found feasible implementation gaps beyond
 | Career/community views | Oversized/colored headers, unbounded tabs, untrapped dialogs, dynamic color classes and duplicate feedback patterns | Shared page headers/feedback, semantic tab states, bounded navigation, labelled forms and focus/Escape handling |
 
 Job alerts and moderator replies still lack backing delivery workflows. Their actions now state that availability truthfully rather than announcing a nonexistent successful operation; they are not new completed integrations. Verification evidence is recorded in `verification.md`.
+
+## Institutional, marketplace and mentorship continuation, 21 October 2026
+
+| Location | Confirmed defect | Resulting behavior |
+|---|---|---|
+| Institution components/invitations | Cross-institution operations were mount/menu guarded; school administrator creation granted a global academy role; invitation GET authenticated recipients | Request-time platform guards, scoped membership portal, student global role for new members, signed-in recipient review and explicit locked POST acceptance |
+| Institution enrollment | Public form selections could bypass canonical course availability and cohort membership scope | Services/jobs recheck available courses; assignments validate active membership in the actual institution |
+| Marketplace payments/refunds | Wallet checkout/payout/refund paths duplicated writes or could credit without matching funding; independently rounded splits could create a kobo | Shared locked/atomic payment evidence, replay protection, exact minor-unit split, currency checks, recovered payout reversal and invoice rollback |
+| Marketplace discovery/files | Ungrouped order search could escape ownership; public models carried paid file paths and unapproved reviews; download reported success without a file | Grouped ownership predicates, approved reviews only, hidden file payloads, actual paid-owner downloads and explicit missing-file feedback |
+| Vendor listing uploads | Image/file controls accepted uploads but save discarded them; JSON categories shadowed the pivot relation | Validated persisted uploads, private paid files, cleanup on failed save, retained files on edit and explicit pivot reads |
+| Mentorship | Legacy actions trusted unrelated IDs; non-student hub queries exposed others' data; payout could create money without a payer debit | Requeried participant/mentor authorization, scoped hub reads, paired locked wallet transfers and rollback/replay coverage |
+| Mentor profile and existing records | Misnamed appended accessors/UTF-8 star count crashed real profile serialization; missing dates crashed populated pages; rates displayed USD beside NGN settlement | Valid accessors, clamped numeric star counts, explicit unrecorded dates, consistent NGN labels |
+| Domain interfaces | Duplicate/missing primary headings, mobile business/settings overflow, untrapped dialogs and dead resource links | Shared root headings/feedback, bounded navigation, focus/Escape handling and explicit unpublished resource state |
+
+No schema migration or working-database mutation is required for this continuation. Operational acceptance is representative, not a claim that all legacy actions, white-label delivery, institution billing or provider integrations are complete. Current checks and precise limits are recorded in `verification.md`.

@@ -149,3 +149,63 @@ This is further implementation, not certification of the complete original reque
 - `docs: distinguish operational fixes from whole-product acceptance`
 
 Final remote SHA verification is reported in the handoff after the ordinary feature-branch push. No merge or deployment is performed.
+
+## Institution, marketplace and mentorship continuation, 21 October 2026
+
+This continuation implements additional domain boundaries and interfaces; the complete original product request remains open for the domains and integrations listed below.
+
+### Resulting behavior
+
+- Institution operations enforce platform administration on each HTTP/Livewire request. A school administrator receives an active institution membership, not a global academy role. New accounts remain unverified students until the real verification flow completes. Invitation GET requires sign-in and reviews only; CSRF-protected POST checks recipient identity, pending/expiry state and capacity under locks. Wrong-account, revoked, expired and replayed invitations are rejected. Existing global roles are not silently demoted. The school administrator portal reads only their own active administrative memberships; cross-institution operations remain with platform staff.
+- Cohort assignments validate active membership in the selected institution. Enrollment services and CSV jobs recheck canonical course availability; CSV role values cannot grant global staff privileges. Working institution, invitation, enrollment and certificate records are preserved.
+- Marketplace wallet checkout resolves the session cart, published items, prices and commission on the server. Customer/wallet/order locks, matching debit evidence, minor-unit splits, matching settlement currency, payout replay protection and invoice persistence bind the operation. Full wallet refunds reverse actual credited wallets before restoring customer funds and invoice state; failed recovery rolls everything back. Card payment and partial/external refund settlement are not manufactured by this boundary.
+- Seller tools follow existing seller eligibility on every request. Nested platform/content operations retain their respective role gates. Named marketplace destinations now open the corresponding cart, listings, drafts, business orders/withdrawals, administration, reviews or settings section. Ownership searches group their OR clauses beneath the customer/vendor predicate.
+- Paid files use private storage and actual paid-customer downloads. Listing images/files now persist, category reads use the pivot relation despite the retained JSON column, failed saves clean up new uploads, and editing metadata preserves existing files. Soft-deleted purchased items retain download compatibility. Public models hide file paths; public review queries include approved reviews only, and selected products recheck publication after Livewire hydration. Cached featured products also recheck publication. Internal administration notes are excluded from customer purchases.
+- Mentorship actions requery actual participants and mentor permissions. Paid completion transfers existing NGN funds from the mentee to mentor atomically, records paired ledger IDs and prevents repeated payments/session counters. Insufficient funds roll back completion. Verification remains inside grouped mentor search conditions. Mentor-only parent/nested components enforce roles on each request.
+- Real mentor profiles serialize valid accessors/star counts, and historical missing dates render as unrecorded. Rates display NGN consistently. Root headers/feedback and bounded mobile navigation extend to the three domains; nested mentoring panels keep secondary headings. Profile controls open the actual editor. Unpublished mentoring resources have no dead download links. Action feedback in shopping/sessions remains visible through subsequent Livewire refreshes instead of depending on a transient session flash.
+
+### Automated evidence
+
+| Check | Actual result |
+|---|---|
+| Full `php artisan test` | **123 passed, 514 assertions**, no skips, 47.46 seconds |
+| `npm run build` | Pass, 6.21 seconds; CSS 279.11 KB, public JS 0.92 KB, dashboard JS 412.39 KB; existing PostCSS `from` warning remains |
+| `php artisan view:cache` | Pass |
+| `php artisan route:cache`, then `php artisan route:clear` | Pass |
+| Changed/new PHP syntax | **53 files passed** |
+| `git diff --check` | Pass |
+
+New regression cases cover invitation ownership/expiry/replay/no automatic login or global promotion, institution membership scope/course eligibility, nested administrator/seller/mentor access, canonical checkout prices, atomic invoice rollback, replay-safe payment and refund reversal, insufficient refund recovery, exact small-amount splits, currency mismatch rollback, customer search isolation, internal-note privacy, paid-owner private downloads after soft deletion, upload persistence/edit retention, public review/publication scope, mentorship privacy, unfunded rollback, stale completion replay, real profile/editor rendering, missing dates, verified search and persistent action feedback.
+
+Automated tests use guarded `bootkode_test`; browser fixtures use separate `bootkode_browser_test`. No schema migration or working-database mutation was needed for this continuation. Previous migration/backups remain historical evidence, not newly performed operations.
+
+### Browser and ledger evidence
+
+Completed Chrome records cover **100 distinct role/page/viewport combinations** across learner discovery/purchases/mentorship, platform institution/marketplace/mentor administration, the scoped institution-member portal, and mentor profile/resources/sessions/selling. Widths are 390, 768, 1024 and 1440px. Affected samples were repeated after fixes; learner seller pages sampled before the eligibility guard are excluded and replaced with authorized mentor samples. All accepted samples reached the requested path with one primary heading, no recorded JavaScript exception/error page and no document overflow.
+
+The final action run passed **23 checks**: five dialog keyboard checks, six marketplace-system tabs, six mentor-dashboard tabs, three business views, cart add/checkout and mentor completion. Together with the 14 institution/marketplace root-tab transitions, this supplies **37 interaction checks**. Each sampled dialog moved/trapped focus, dismissed on Escape and returned to the originating action. The first focus-return probe incorrectly depended on a temporary DOM data attribute removed by Livewire; the final probe uses the actual action identity. Earlier failed/partial probes are excluded from pass counts.
+
+Two isolated fixture runs independently persisted one paid ₦100 marketplace order and a paid mentorship session with paired ₦100 debit/credit. Each learner balance moved from ₦1,000 to ₦800. The final run also visibly retained both success confirmations. Populated cart, customer purchases and vendor orders were repeated at 390px after fixing layouts that empty-state sampling had missed. Six further populated mobile/desktop screenshots were captured and reviewed. Screenshot review then identified undefined mentoring color utilities that left controls/metrics unreadable; these were replaced with shared button/surface styles and received a fresh build and visual check.
+
+The final mentoring style check repeated **12 mobile/desktop page samples** with no overflow, error page, duplicate heading or recorded JavaScript exception. The representative primary control measured 45.6px tall with sampled foreground/background contrast of 5.47:1 in light mode and 6.21:1 in dark mode. These limited measurements do not certify all controls or themes.
+
+One larger browser process stopped when workstation resources were exhausted; completed records were preserved and missing checks resumed in fresh, smaller runs. External analytics, fonts/icons, avatars, datepicker and MathJax requests were blocked for this review. Missing CDN icon glyphs in screenshots are excluded from visual acceptance; external assets, datepicker/math behavior, screen-reader use and an exhaustive WCAG audit are not certified. Local artifacts remain ignored under `storage/app/coherence-qa`.
+
+### Remaining scope and release gates
+
+The earlier dependency audits were reviewed: **8 npm findings (5 high, 3 moderate)** and **62 Composer advisories across 19 packages** remain under the retained major constraints. Dependencies were unchanged in this continuation; these are recorded audit results, not a new advisory feed scan. No suppression, forced upgrade, deployment or real provider charge was used.
+
+Actual gateway settlement/transfers/refunds, OAuth, outbound mail and live AI still need independent acceptance. Institution billing/white-label delivery, unpublished mentor resources, job alerts/moderator replies and other legacy integrations remain incomplete. Historical public paid files, résumés and mentorship attachments require a backed-up private-storage migration before claiming historical-file privacy. New legacy mentorship attachments use private storage, but a complete attachment delivery workflow is not certified here. Previously over-granted institution global roles require an administrator review; no existing role was automatically removed.
+
+Affiliates, messaging/support, instructor authoring and other legacy domains still require action-level and interaction acceptance. This continuation is substantial additional implementation, not whole-product completion. The updated route inventory records current contracts. No working-database record was created or modified for review.
+
+Known synthetic domain users were removed from the browser test database (remaining: 0). Only the owned port-8011 QA server and headless browser were stopped; the original port-8000 application remains running and returned HTTP 200. No environment file, provider credential, private fixture or browser artifact is included in the commits.
+
+### Domain continuation commits
+
+- `a3cd24a2 fix(institutions): scope membership and secure invitation acceptance`
+- `cf18fc97 fix(marketplace): bind orders to atomic wallet settlement and private delivery`
+- `657dec87 fix(mentorship): enforce participant scope and funded session completion`
+- `dcf2cdec build(ui): compile institutional and mentoring interface updates`
+
+The documentation commit records this evidence and remaining scope. The exact pushed HEAD and remote comparison are reported in the handoff after ordinary feature-branch transport; no merge or deployment is performed.

@@ -33,3 +33,11 @@ Avoid gradients/glass/oversized cards as the default pattern. Do not override Ta
 Career/community/template management use the shared page heading and escaped `ui.flash` feedback (including the existing `message` session key). Tabs use explicit semantic accent utilities and bounded horizontal scrolling. The shared modal accepts an optional `model` property to entangle a Livewire boolean; focus trapping, Escape and return remain shared behavior. Existing community/job dialogs use the same Livewire-owned Alpine focus behavior. Community form labels connect to inputs and error descriptions.
 
 Certificate print styling is an intentional document-specific exception to interface tokens. Saved designs accept literal hex colors and the renderer's DejaVu font families, never custom CSS, HTML or remote font URLs. Previews use an isolated sandboxed document and visibly state that no credential has been issued.
+
+## Institutional, marketplace and mentorship surfaces
+
+Root marketplace/institution/mentorship pages use the shared page header, factual definition-list metrics and escaped live feedback. Nested marketplace panels own secondary headings; standalone mentor profile/code-review pages provide their own primary heading. Business and management navigation scroll within their container on small screens. Existing institution and mentorship dialogs use the Livewire-owned Alpine focus plugin, modal semantics, Escape dismissal and focus return. No additional Alpine runtime or modal dependency is introduced. Rate labels use the actual NGN wallet currency. A resource without published content displays its unavailable state instead of a placeholder link.
+
+Legacy interior cards and forms still contain older utilities; root consistency and representative keyboard/layout acceptance do not constitute complete visual or screen-reader acceptance of every legacy interior state.
+
+Mentoring primary controls use the shared `bk-button` / `bk-button-primary` foreground/background pair. Undefined legacy accent utilities were replaced with semantic utilities, and mentoring overview/analytics metric cards use bounded surfaces rather than bright gradients. Shopping/session feedback can pass persistent locked component messages into `ui.flash`; session-backed calls retain the existing component API.
