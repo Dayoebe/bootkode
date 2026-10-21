@@ -68,3 +68,20 @@ Route/template inspection spans the product; not every one of hundreds of operat
 ## Implementation outcome
 
 The shared design system, public discovery, account flow, learner shell, finance surfaces and critical access/payment/credential/privacy boundaries were implemented. See `verification.md` for current evidence and outstanding release gates. This is not certification of every legacy domain screen or external integration.
+
+## Operational continuation, 21 October 2026
+
+A follow-up against the original scope found feasible implementation gaps beyond the first core-journey delivery:
+
+| Location | Verified defect | Implemented repair |
+|---|---|---|
+| `CertificateTemplates` and its view | Sample cards; save/update/delete/default only announced success, preview ignored selected settings | Persisted designs, service-side administration checks, validated styles/fonts, actual isolated preview, default uniqueness and issuance snapshots |
+| Career migrations | `job_applications.job_id` and `job_saves.job_id` reference the queue `jobs` table | Forward migration preflights unmatched rows before correcting both references to `job_portal`; no records removed |
+| `Career/JobManagement` | Any authenticated account could open the route/component and mutate jobs or inspect applicants | Persistent role middleware and request-time component guard; action and sorting validation |
+| `Career/JobPortal` | Detail model eagerly carried applications; direct actions accepted unavailable jobs; submission referenced component constants instead of model constants; creation/counter were separate | Published job resolution, restricted poster fields, no applicant relation in discovery, shared atomic application service, retry protection and stale availability checks |
+| Job résumés | New applications stored uploaded résumés on the public disk | Private local uploads and authenticated applicant/admin downloads; old paths retain compatibility. Existing public files require a separately backed-up asset migration before assuming historical-file privacy |
+| `CommunityCenter` | Moderation methods/data relied on hidden UI; learners could request other feedback, block accounts or remove discussions; submissions invented a score of 100 | Server-side administration guards, protected administrator/self account actions, explicit pending submissions with no grade and preservation of reviewed submissions |
+| Community code challenge modal | Opening an existing challenge displayed the creation form | Existing challenges open a submission form; creation remains separate |
+| Career/community views | Oversized/colored headers, unbounded tabs, untrapped dialogs, dynamic color classes and duplicate feedback patterns | Shared page headers/feedback, semantic tab states, bounded navigation, labelled forms and focus/Escape handling |
+
+Job alerts and moderator replies still lack backing delivery workflows. Their actions now state that availability truthfully rather than announcing a nonexistent successful operation; they are not new completed integrations. Verification evidence is recorded in `verification.md`.

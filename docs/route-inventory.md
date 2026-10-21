@@ -277,3 +277,10 @@ Generated from `php artisan route:list --json` on 20 October 2026 before changes
 | POST | webhook/paystack | paystack.webhook | App\Http\Controllers\FinancialController@paystackWebhook | web, Illuminate\Auth\Middleware\Authenticate |
 | GET / HEAD | withdrawals | withdrawals.index | App\Livewire\Financial\WithdrawalManager | web, Illuminate\Auth\Middleware\Authenticate |
 | GET / HEAD | {slug} | page.show | App\Http\Controllers\PageController@show | web |
+
+## Operational continuation, 21 October 2026
+
+- `GET /job-applications/{jobApplication}/resume`, `job-applications.resume`: authenticated applicant or academy/super administrator; private new files, guarded legacy-path compatibility.
+- `GET /admin/job`, `admin.job`: academy/super administrator middleware plus request-time Livewire guard.
+- `GET /community/moderation`, `community.moderation`: academy/super administrator middleware plus action/read guards inside the shared component.
+- Existing community routes now initialize their corresponding tab; URLs and route names are retained.

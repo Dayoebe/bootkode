@@ -97,3 +97,55 @@ On 21 October 2026, `637eb3c27db90da6fc135529bee09bc02bf5b94b` was pushed to `Da
 The working tree retains only the independently edited footer tagline. Synthetic browser fixtures were removed (remaining fixture users: 0). The original application server remains available; the owned QA server and browser are stopped. No environment file, payment credential, user record dump or test artifact was committed.
 
 Additional documentation commits: `637eb3c2 docs: record verification evidence and release gates`, followed by `docs: record GitHub delivery verification`.
+
+## Further implementation and verification, 21 October 2026
+
+The first handoff did not finish all feasible work in the original request. This continuation closes additional concrete defects rather than treating the first core-journey delivery as the whole product.
+
+### Resulting behavior
+
+- Certificate templates now persist, edit, preview, delete and switch defaults. Administrator checks run at the service/component boundaries, styles/fonts are validated, and only super administrators assign defaults. An issuance snapshot in existing certificate metadata preserves each approved design after later edits, default changes or template deletion. Historical certificates retain the old rendering and codes/files. Preview content is explicitly unissued and isolated in a sandboxed iframe.
+- Both career foreign keys incorrectly referenced the queue `jobs` table. A forward compatibility migration checks all affected records before changing either relation to `job_portal`. The test suite verifies real career applications/saves and refusal to discard unmatched records.
+- Career administration now checks roles on HTTP and Livewire requests. Discovery carries no other applicants or private poster email. Applications re-resolve eligibility, reject closed/private/external-method submissions, and create the record/counter atomically with retry protection. Failed persistence rolls back the record and removes a new upload.
+- New résumés are stored privately with applicant/admin download checks. Historical public paths retain compatibility; moving any historical public assets remains an explicit backup/migration task. Both affected working career tables were empty at inspection.
+- Job-detail save/apply buttons call actual supported actions. Email/phone/external applications use validated destinations; unsupported URL schemes are rejected. Quick apply opens the real form rather than fabricating a cover letter or attachment.
+- Community moderation reads/mutations check administrator access. Forging a tab cannot reveal private feedback/users; account actions protect self and higher-privilege accounts. Named community routes open their corresponding tabs.
+- Code solutions remain pending with no invented grade. Existing reviewed submissions cannot have their scores cleared by resubmission. The real solve button opens a submission form; a missing difficulty/points metadata record now renders safely without fabricated values.
+- Shared headings, feedback, bounded tab navigation, labelled community forms, confirmations and dialog focus/Escape behavior extend to these operational routes. Job alerts and moderator replies truthfully state their unavailable delivery workflows.
+
+### Final checks
+
+| Check | Actual result |
+|---|---|
+| `php artisan test` on the final continuation source | **88 passed, 374 assertions**, no skips, 46.23 seconds |
+| Focused operational tests before the last browser-discovered fix | 26 passed, 136 assertions |
+| Final community/link focused checks | 7 passed, 53 assertions; includes nullable challenge metadata and the real submission form |
+| `npm run build` | Pass, 5.94 seconds; CSS 280.86 KB, public JS 0.92 KB, dashboard JS 412.39 KB; existing PostCSS `from` warning remains |
+| `php artisan view:cache` | Pass |
+| `php artisan route:cache`, then `php artisan route:clear` | Pass |
+| Changed/new PHP syntax | 18 files passed |
+| `git diff --check` | Pass |
+
+Browser evidence adds **20 page/viewport samples**: learner careers/community and administrator templates/jobs/moderation at 390, 768, 1024 and 1440px. Every sample reached its requested path, had one primary heading, and had no document-width overflow, recorded JavaScript exception or error page. Sixteen additional tab transitions covered community, learner careers, job administration and moderation; code submission and Escape were also exercised. A separate **seven-check follow-up** verified template focus trapping, Escape/focus return to Create template, actual browser save/edit/preview, and the job-detail save/apply controls at 390px. Preview and editor remain mutually exclusive. Screenshots of the sampled mobile/desktop pages were visually reviewed.
+
+The initial template-editor timing probes ran before the asynchronous dialog opened; those probes are not accepted as focus evidence. The explicit wait-for-open follow-up confirmed trapping and focus return. Earlier harness interruptions (Node WebSocket flag, snapshot selection and resource timeouts) are also excluded from pass counts. Browser interaction exposed the nullable challenge metadata crash; it was repaired and covered by regression tests before the final full run.
+
+The owned browser was reduced to a single tab after the workstation exhausted memory/swap. External analytics, avatar, icon/font, datepicker and MathJax requests were blocked for the representative layout review; this run does not certify those services/assets. Existing earlier browser evidence remains historical evidence, not a new certification of all legacy routes.
+
+Browser data used a separate `bootkode_browser_test` database; automated tests used `bootkode_test`. Both satisfy the test-database guard. No fixture was added to the working database. The two existing career tables were backed up under ignored `storage/app/db-restore` before migration; their counts stayed 0. `CHECK TABLE` returned OK for both and `certificate_templates`, and both foreign-key targets now read `job_portal`. No historical certificate data was rewritten by the new template-table migration. Both migrations have been applied locally. Synthetic browser users/designs were removed; remaining review users: 0. The owned QA server/browser were stopped and the original port-8000 server was preserved.
+
+During the continuation, independent user commits `85b6c338` (password visibility) and `fb5df279` (footer tagline) appeared on the feature branch. They were preserved without history rewriting. The earlier statement about an uncommitted footer described the first handoff; it is superseded by these subsequent commits.
+
+### Scope still outstanding
+
+This is further implementation, not certification of the complete original request. Dependency release gates, real external-provider acceptance and approved legal content remain. Institutions, marketplace, mentorship and other legacy operations still need their own action/ownership and interaction acceptance. Job-alert delivery and moderator-response delivery have not been built. Historical public résumé files, if imported from another environment, must be backed up and moved before treating them as private. No merge/deployment, production financial transaction, exhaustive screen-reader/WCAG certification or complete legacy-domain acceptance is claimed.
+
+### Continuation commit inventory
+
+- `b85b3b3b fix(certificates): persist designs and preserve issued snapshots`
+- `8fd112cf fix(career): secure applications and repair job relationships`
+- `df95c344 fix(community): enforce moderation access and real solution submission`
+- `build(ui): compile shared operational interface styles`
+- `docs: distinguish operational fixes from whole-product acceptance`
+
+Final remote SHA verification is reported in the handoff after the ordinary feature-branch push. No merge or deployment is performed.

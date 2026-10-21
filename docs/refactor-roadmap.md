@@ -20,3 +20,9 @@ Large domain components (CourseView, ResumeBuilder, LearningAnalytics, Gamificat
 Stages 1–7 have concrete implementations and core-journey regression coverage. Stage 8 includes the root engineering standard, setup documentation and granular feature-branch history; final verification and remote state are recorded in `verification.md`.
 
 Release gates remain: dependency advisories under the retained major versions, real provider sandbox acceptance, organisation-approved legal content and broader acceptance of legacy career/community/institution/marketplace operations. Shared styling applies to those routes, but they are not all individually certified. The large components listed above were retained to preserve functionality rather than split without domain coverage.
+
+## Further operational work, 21 October 2026
+
+The first delivery did not exhaust feasible work. The continuation implements certificate-template persistence/rendering, career foreign-key repair/application integrity/private new résumés, and community authorization/ungraded solution submission. Shared operational headers, feedback, navigation and dialogs extend into those routes. See the continuation evidence in `verification.md`; these changes do not certify every legacy module.
+
+Still distinguish implementation work from integration gates: job-alert delivery and moderator-response delivery are unavailable and no longer report fake success. Historical public résumé files require a backed-up private-storage migration; new uploads already use private storage. Institution, marketplace, mentorship and other legacy workflows require their own action/ownership and interaction acceptance before the whole-product request can be called complete.

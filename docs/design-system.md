@@ -27,3 +27,9 @@ Prefer props for variants and slots for content. Keep static UI in Blade and ser
 Provide skip links, visible focus, semantic landmarks, labelled icon controls and text alongside statuses. Respect reduced motion globally; remove ambient decorative animation. Mobile drawers must close on Escape and return focus. Tables scroll within an explicitly bounded container rather than causing page overflow. Grids collapse at Tailwind's established 640/768/1024/1280 breakpoints; verify 390/768/1024/1440 widths. Do not hide overflow merely to conceal a broken layout.
 
 Avoid gradients/glass/oversized cards as the default pattern. Do not override Tailwind color names by substring selectors. Migrate repeated patterns through shared classes/components rather than adding another layer of `!important` rules. Context-specific exam/certificate print layouts remain deliberate exceptions.
+
+## Operational forms and previews
+
+Career/community/template management use the shared page heading and escaped `ui.flash` feedback (including the existing `message` session key). Tabs use explicit semantic accent utilities and bounded horizontal scrolling. The shared modal accepts an optional `model` property to entangle a Livewire boolean; focus trapping, Escape and return remain shared behavior. Existing community/job dialogs use the same Livewire-owned Alpine focus behavior. Community form labels connect to inputs and error descriptions.
+
+Certificate print styling is an intentional document-specific exception to interface tokens. Saved designs accept literal hex colors and the renderer's DejaVu font families, never custom CSS, HTML or remote font URLs. Previews use an isolated sandboxed document and visibly state that no credential has been issued.
