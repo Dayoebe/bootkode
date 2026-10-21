@@ -23,6 +23,8 @@ Public discovery only reads published, approved courses. Learning content still 
 
 ## Operational boundaries
 
-MariaDB `bootkode_recovered` contains existing data and is not disposable. Tests use an explicitly dedicated database. Never run fresh/reset migrations against the working database. Schema changes require forward migrations. Provider credentials remain in environment/configuration, never Livewire public properties. Receipt, payout, newsletter and AI integrations need independent staging verification.
+MariaDB `bootkode_recovered` contains existing data and is not disposable. Tests use an explicitly dedicated database. Never run fresh/reset migrations against the working database. Schema changes require forward migrations. The certificate compatibility migration widens status storage, adds missing workflow fields and copies historical verification tokens/file paths only when the new fields are empty. The working database was backed up and the migration was validated on the dedicated test database before local application.
+
+Provider credentials remain in environment/configuration, never Livewire public properties. Receipt, payout, newsletter and AI integrations need independent staging verification.
 
 See `product-audit.md`, `design-system.md`, `refactor-roadmap.md` and `verification.md` for decisions and evidence.

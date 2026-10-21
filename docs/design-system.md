@@ -4,7 +4,7 @@ Learn. Build. Grow. Education comes first; use factual course content, clear nex
 
 ## Identity and tokens
 
-Keep the established navy/teal identity and existing Sora headings / Manrope body fonts (system fallbacks, Google Fonts `display=swap`). Navy `#0f172a` anchors navigation and primary emphasis; teal `#0f766e` is the light-theme action color; mint `#8fe388` is reserved for emphasis on navy. White/slate surfaces separate content. Success, warning and danger convey meaning with accompanying text/icons. The logo remains unchanged.
+Keep the established navy/teal identity and existing Sora headings / Manrope body fonts (system fallbacks, Google Fonts `display=swap`). Navy `#0f172a` anchors navigation and primary emphasis; teal `#0f766e` is the light-theme action color; mint `#8fe388` is reserved for emphasis on navy. White/slate surfaces separate content. Success, warning and danger convey meaning with accompanying text/icons. The logo remains unchanged. Its older violet/blue monogram is not a usable full-interface palette; the restrained navy/teal already established in the product provides accessible action and surface pairs without recoloring the asset.
 
 `resources/css/tokens.css` is the authoritative shared token file. `app.css` retains existing theme RGB variables for light, dark, sepia, ocean and forest compatibility. Tailwind 3 config exposes semantic RGB colors; do not migrate to Tailwind 4 syntax. Semantic action foregrounds must be paired with their backgrounds, particularly in dark mode.
 

@@ -1,0 +1,9 @@
+# Unify BootKode journeys and secure learning and payment boundaries
+
+BootKode's discovery, account, learning and finance screens used competing patterns, while several sensitive actions depended on menu visibility or client state. This change establishes shared theme tokens and accessible Blade controls, adds public published-course discovery, simplifies account forms, prioritizes continue-learning and standardizes finance surfaces.
+
+Registration now rejects privileged roles. Administrative Livewire requests enforce access; course enrollment cannot bypass paid checkout; wallet funding and refunds are atomic and replay-safe. Credential requests recalculate eligibility, learner search stays scoped, and a forward-only migration aligns the existing certificate workflow while preserving historical tokens/files. PDF rendering retains remote/PHP restrictions, and private course HTML is no longer implicitly cached. Existing domain workflows and records are retained.
+
+Validation: `php artisan test` passed 61 tests/227 assertions; final credential checks passed 8 tests/30 assertions. Production build, Blade/route compilation, platform requirements, PHP syntax and diff checks passed. Chrome reviewed 52 page/viewport combinations plus menu/sidebar/theme/notification behavior and a 44px mobile action follow-up. Public JavaScript is 0.92 KB, with charts/editors moved to a separate 412.39 KB dashboard entry.
+
+Keep this PR in draft pending release gates: 8 npm advisories and 62 PHP advisories remain under the retained major constraints; Composer blocks a compatible Laravel 11 update. Real payment/provider sandbox acceptance, approved legal content and broader operational acceptance remain outstanding. No production deployment or real financial transaction is claimed. See `docs/verification.md` for precise evidence and limitations.

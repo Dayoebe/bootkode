@@ -5,7 +5,7 @@ Audit started 20 October 2026. This is a large existing product: 273 baseline ro
 ## Baseline and safety
 
 - Branch started at `d034cad3` on `main`; work uses `refactor/bootkode-product-coherence`.
-- Pre-existing changes: sidebar collapse markup, local profile tabs, `ProfileTabMarkupTest`, compiled CSS and manifest. Preserve and exclude those source/test changes from overhaul commits.
+- Pre-existing changes: sidebar collapse markup, local profile tabs, `ProfileTabMarkupTest`, compiled CSS and manifest. Those changes were preserved. During the work, commit `9d4892fa` appeared on the feature branch and included the original source/test edits along with accumulated implementation; it was retained without rewriting history.
 - Runtime PHP 8.4.26; locked Laravel 11.46.1, Livewire 3.6.4, Tailwind 3.4.17, Alpine 3.14.9, Vite 7.0.6. Tailwind 4 plugins are listed but the active PostCSS pipeline uses Tailwind 3. No major upgrade planned.
 - Baseline `npm run build`: passes; stale Browserslist, PostCSS `from`, and 1.13 MB JavaScript chunk warnings.
 - Baseline `/` HTTP: 200. Local MariaDB recovered database has all 37 migrations applied. Automated tests use `bootkode_test`, never the recovered database.
@@ -28,6 +28,9 @@ Audit started 20 October 2026. This is a large existing product: 273 baseline ro
 | Medium | `app.css`, shared components | Five theme palettes, primitive Breeze buttons, random bright legacy colors, gradient substring overrides with `!important`. | Semantic tokens, compatible primitives, explicit shared classes, remove substring color remapping. |
 | Medium | dashboard layout/student view | Duplicate welcome headings, eight metric tiles before learning, decorative animated backgrounds. | Prioritize continue-learning and restrained page headers. |
 | Medium | JavaScript entry | Imports separate Alpine alongside Livewire Alpine; eager editors/scanner/chart; unguarded Livewire access on offline events; alert feedback. | Use Livewire-owned Alpine and consistent status feedback; isolate dependencies where contracts permit. |
+| High | certificate model, migration and learner search | Existing workflow fields were absent from the schema; ungrouped certificate-number search could escape learner scoping. | Forward compatibility migration, historical token/file preservation and ownership regression tests. |
+| High | `ManualPages/Statistics` | Unused public Livewire properties carried private names/revenue and simulated activity despite aggregate-only rendering. | Only compute the factual aggregates actually displayed; scope course data to public records. |
+| High | dependencies | Baseline audits identify vulnerable PHP and JavaScript dependency trees. | Compatible npm updates and unused package removal; retain unresolved advisories as release blockers. |
 | Medium | `CoursePolicy`, auth provider | Policy methods are mostly scaffold denials; policy registration is incomplete. | Preserve existing feature-level checks; document ownership boundaries before broad policy changes. |
 | Medium | `tests`, `database/factories` | Missing namespaced UserFactory; starter tests reference removed profile contracts and old redirects. | Restore real factory and align tests to supported routes without weakening behavioral checks. |
 
@@ -61,3 +64,7 @@ See `route-inventory.md` for exact URLs, names, handlers, and middleware. Status
 ## Inspection limitations
 
 Route/template inspection spans the product; not every one of hundreds of operational screens has been manually exercised. Browser checks, covered workflows, integration limitations and unresolved issues must be named in the final verification report. No customer data or paid provider transactions should be created to manufacture evidence.
+
+## Implementation outcome
+
+The shared design system, public discovery, account flow, learner shell, finance surfaces and critical access/payment/credential/privacy boundaries were implemented. See `verification.md` for current evidence and outstanding release gates. This is not certification of every legacy domain screen or external integration.
