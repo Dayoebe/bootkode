@@ -63,7 +63,7 @@ class MarketplaceController extends Controller
             if ($request->hasFile('files')) {
                 foreach ($request->file('files') as $file) {
                     $filesPaths[] = [
-                        'path' => $file->store('marketplace/files', 'public'),
+                        'path' => $file->store('private/marketplace/files', 'local'),
                         'name' => $file->getClientOriginalName(),
                         'size' => $file->getSize(),
                         'type' => $file->getMimeType(),
@@ -148,19 +148,7 @@ class MarketplaceController extends Controller
             ], 400);
         }
 
-        // Delete associated files
-        if ($item->thumbnail) {
-            Storage::disk('public')->delete($item->thumbnail);
-        }
-
-        foreach ($item->images ?? [] as $image) {
-            Storage::disk('public')->delete($image['path']);
-        }
-
-        foreach ($item->files ?? [] as $file) {
-            Storage::disk('public')->delete($file['path']);
-        }
-
+        // Preserve assets while the listing is soft deleted.
         $item->delete();
 
         return response()->json([
@@ -270,6 +258,7 @@ class MarketplaceController extends Controller
         }
 
         session()->put('marketplace_cart', $cart);
+        session()->forget('marketplace_checkout_key');
 
         return response()->json([
             'success' => true,
@@ -283,6 +272,7 @@ class MarketplaceController extends Controller
         $cart = session()->get('marketplace_cart', []);
         unset($cart[$item->id]);
         session()->put('marketplace_cart', $cart);
+        session()->forget('marketplace_checkout_key');
 
         return response()->json([
             'success' => true,
@@ -294,111 +284,21 @@ class MarketplaceController extends Controller
     public function checkout(Request $request)
     {
         $validated = $request->validate([
-            'payment_method' => 'required|in:wallet,paystack',
-            'items' => 'required|array|min:1',
-            'items.*.item_id' => 'required|exists:marketplace_items,id',
+            'payment_method' => 'required|in:wallet', 'items' => 'required|array|min:1|max:30',
+            'items.*.item_id' => 'required|integer|exists:marketplace_items,id',
+            'items.*.quantity' => 'sometimes|integer|min:1|max:10',
         ]);
-
+        $key = session('marketplace_checkout_key');
+        if (!$key) {
+            $key = (string) \Illuminate\Support\Str::uuid();
+            session()->put('marketplace_checkout_key', $key);
+        }
         try {
-            DB::beginTransaction();
-
-            $orders = [];
-            $totalAmount = 0;
-
-            foreach ($validated['items'] as $itemData) {
-                $item = MarketplaceItem::findOrFail($itemData['item_id']);
-
-                if (!$item->isPublished()) {
-                    throw new \Exception("Item '{$item->title}' is not available for purchase.");
-                }
-
-                // Check for existing ownership
-                $existingOrder = MarketplaceOrder::where('customer_id', auth()->id())
-                    ->where('item_id', $item->id)
-                    ->where('payment_status', MarketplaceOrder::PAYMENT_STATUS_PAID)
-                    ->exists();
-
-                if ($existingOrder) {
-                    throw new \Exception("You already own '{$item->title}'.");
-                }
-
-                $orderTotal = $item->getEffectivePrice();
-                $totalAmount += $orderTotal;
-
-                $orders[] = MarketplaceOrder::create([
-                    'customer_id' => auth()->id(),
-                    'vendor_id' => $item->vendor_id,
-                    'item_id' => $item->id,
-                    'item_price' => $item->price,
-                    'discount_amount' => $item->hasDiscount() ? ($item->price - $item->discount_price) : 0,
-                    'total_amount' => $orderTotal,
-                    'status' => MarketplaceOrder::STATUS_PENDING,
-                    'payment_status' => MarketplaceOrder::PAYMENT_STATUS_UNPAID,
-                    'customer_details' => [
-                        'name' => auth()->user()->name,
-                        'email' => auth()->user()->email,
-                    ],
-                ]);
-            }
-
-            // Process payment
-            if ($validated['payment_method'] === 'wallet') {
-                $wallet = Wallet::getOrCreateWallet(auth()->id());
-                
-                if (!$wallet->hasSufficientBalance($totalAmount)) {
-                    throw new \Exception('Insufficient wallet balance.');
-                }
-
-                // Debit customer wallet
-                $wallet->debit(
-                    $totalAmount,
-                    WalletTransaction::CATEGORY_COURSE_PURCHASE,
-                    'Marketplace purchase: ' . count($orders) . ' item(s)',
-                    null,
-                    ['order_ids' => collect($orders)->pluck('id')->toArray()]
-                );
-
-                // Mark orders as paid
-                foreach ($orders as $order) {
-                    $order->markAsPaid(['method' => 'wallet']);
-                    $order->confirm();
-                    
-                    // Auto-complete digital items
-                    if ($order->item->is_digital) {
-                        $order->complete(['auto_completed' => true]);
-                    }
-                }
-
-                // Clear cart
-                session()->forget('marketplace_cart');
-
-                DB::commit();
-
-                return response()->json([
-                    'success' => true,
-                    'message' => 'Purchase completed successfully!',
-                    'orders' => collect($orders)->pluck('order_number'),
-                    'redirect' => route('marketplace.purchases'),
-                ]);
-
-            } else {
-                // Handle Paystack payment (implement according to your payment service)
-                DB::commit();
-                
-                return response()->json([
-                    'success' => true,
-                    'message' => 'Redirecting to payment gateway...',
-                    'payment_url' => $this->initiatePaystackPayment($orders, $totalAmount),
-                ]);
-            }
-
-        } catch (\Exception $e) {
-            DB::rollBack();
-            
-            return response()->json([
-                'success' => false,
-                'message' => $e->getMessage(),
-            ], 400);
+            $orders = app(\App\Services\MarketplaceService::class)->checkoutWallet($request->user(), $validated['items'], $key);
+            session()->forget('marketplace_cart');
+            return response()->json(['success' => true, 'orders' => collect($orders)->pluck('order_number'), 'redirect' => route('marketplace.purchases')]);
+        } catch (\Throwable $exception) {
+            return response()->json(['success' => false, 'message' => $exception instanceof \DomainException ? $exception->getMessage() : 'The purchase could not be completed.'], 422);
         }
     }
 
@@ -445,7 +345,11 @@ class MarketplaceController extends Controller
 
         $refundAmount = $validated['amount'] ?? $order->total_amount;
         
-        $order->refund($refundAmount, $validated['reason']);
+        try {
+            $order->refund($refundAmount, $validated['reason']);
+        } catch (\DomainException $exception) {
+            return response()->json(['success' => false, 'message' => $exception->getMessage()], 422);
+        }
 
         return response()->json([
             'success' => true,
@@ -458,7 +362,7 @@ class MarketplaceController extends Controller
     {
         $item = MarketplaceItem::where('slug', $slug)
             ->published()
-            ->with(['vendor', 'reviews.user'])
+            ->with(['vendor', 'reviews' => fn ($query) => $query->approved()->with('user:id,name')])
             ->firstOrFail();
 
         $item->incrementViews();

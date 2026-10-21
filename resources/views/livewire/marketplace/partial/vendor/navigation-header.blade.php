@@ -1,9 +1,9 @@
 {{-- resources/views/livewire/marketplace/vendor/partials/navigation-header.blade.php --}}
-<div class="bg-gradient-to-r from-purple-600 to-indigo-600 rounded-lg shadow-lg text-white p-6">
+<div class="rounded-lg border border-line bg-surface shadow-sm text-content p-6">
     <div class="flex flex-col lg:flex-row lg:items-center justify-between space-y-4 lg:space-y-0">
         <!-- Header Info -->
         <div>
-            <h1 class="text-2xl font-bold">
+            <h2 class="text-2xl font-bold">
                 @if($currentView === 'create')
                     {{ $editingItemId ? 'Edit Item' : 'Create New Listing' }}
                 @elseif($currentView === 'analytics')
@@ -11,8 +11,8 @@
                 @else
                     My Marketplace
                 @endif
-            </h1>
-            <p class="text-purple-100 mt-1">
+            </h2>
+            <p class="text-content-muted mt-1">
                 @if($currentView === 'create')
                     {{ $editingItemId ? 'Update your marketplace item' : 'Add a new item to the marketplace' }}
                 @elseif($currentView === 'analytics')
@@ -25,32 +25,32 @@
 
         <!-- Quick Stats -->
         @if($currentView !== 'create')
-            <div class="flex items-center space-x-6">
+            <div class="grid grid-cols-2 gap-4 sm:grid-cols-4">
                 <div class="text-center">
                     <div class="text-2xl font-bold">{{ $analyticsData['total_items'] ?? 0 }}</div>
-                    <div class="text-sm text-purple-200">Total Items</div>
+                    <div class="text-sm text-content-muted">Total Items</div>
                 </div>
                 <div class="text-center">
                     <div class="text-2xl font-bold">{{ $analyticsData['published_items'] ?? 0 }}</div>
-                    <div class="text-sm text-purple-200">Published</div>
+                    <div class="text-sm text-content-muted">Published</div>
                 </div>
                 <div class="text-center">
                     <div class="text-2xl font-bold">₦{{ number_format($analyticsData['total_revenue'] ?? 0, 0) }}</div>
-                    <div class="text-sm text-purple-200">Total Earned</div>
+                    <div class="text-sm text-content-muted">Total Earned</div>
                 </div>
                 <div class="text-center">
                     <div class="text-2xl font-bold">{{ $analyticsData['total_sales'] ?? 0 }}</div>
-                    <div class="text-sm text-purple-200">Sales</div>
+                    <div class="text-sm text-content-muted">Sales</div>
                 </div>
             </div>
         @endif
     </div>
 
     <!-- Navigation Tabs -->
-    <div class="mt-6 border-t border-purple-400 pt-4">
+    <div class="mt-6 border-t border-line pt-4">
         <nav class="flex space-x-1 overflow-x-auto">
             <button wire:click="showListings" 
-                    class="px-4 py-2 rounded-lg font-medium text-sm whitespace-nowrap transition-colors {{ $currentView === 'listings' ? 'bg-white/20 text-white' : 'text-purple-200 hover:text-white hover:bg-white/10' }} flex items-center">
+                    class="min-h-11 px-4 py-2 rounded-lg font-medium text-sm whitespace-nowrap transition-colors {{ $currentView === 'listings' ? 'bk-button-primary' : 'text-content-muted hover:text-brand hover:bg-surface-muted' }} flex items-center">
                 <i class="fas fa-list-alt mr-2"></i>
                 My Listings
                 @if(isset($analyticsData['draft_items']) && $analyticsData['draft_items'] > 0)
@@ -59,20 +59,20 @@
             </button>
             
             <button wire:click="showCreate" 
-                    class="px-4 py-2 rounded-lg font-medium text-sm whitespace-nowrap transition-colors {{ $currentView === 'create' ? 'bg-white/20 text-white' : 'text-purple-200 hover:text-white hover:bg-white/10' }} flex items-center">
+                    class="min-h-11 px-4 py-2 rounded-lg font-medium text-sm whitespace-nowrap transition-colors {{ $currentView === 'create' ? 'bk-button-primary' : 'text-content-muted hover:text-brand hover:bg-surface-muted' }} flex items-center">
                 <i class="fas fa-{{ $editingItemId ? 'edit' : 'plus' }} mr-2"></i>
                 {{ $editingItemId ? 'Edit Item' : 'Create New' }}
             </button>
 
             <button wire:click="showAnalytics" 
-                    class="px-4 py-2 rounded-lg font-medium text-sm whitespace-nowrap transition-colors {{ $currentView === 'analytics' ? 'bg-white/20 text-white' : 'text-purple-200 hover:text-white hover:bg-white/10' }} flex items-center">
+                    class="min-h-11 px-4 py-2 rounded-lg font-medium text-sm whitespace-nowrap transition-colors {{ $currentView === 'analytics' ? 'bk-button-primary' : 'text-content-muted hover:text-brand hover:bg-surface-muted' }} flex items-center">
                 <i class="fas fa-chart-line mr-2"></i>
                 Analytics
             </button>
 
             @if($currentView === 'create' && $editingItemId)
                 <button wire:click="showCreate" 
-                        class="px-4 py-2 rounded-lg font-medium text-sm whitespace-nowrap transition-colors text-purple-200 hover:text-white hover:bg-white/10 flex items-center">
+                        class="min-h-11 px-4 py-2 rounded-lg font-medium text-sm whitespace-nowrap transition-colors text-content-muted hover:text-brand hover:bg-surface-muted flex items-center">
                     <i class="fas fa-times mr-2"></i>
                     Cancel Edit
                 </button>

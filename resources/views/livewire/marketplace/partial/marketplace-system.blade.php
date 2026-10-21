@@ -57,17 +57,17 @@
     <!-- Tab Navigation -->
     <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 transition-colors duration-300">
         <div class="border-b border-gray-200 dark:border-gray-700">
-            <nav class="flex space-x-8 px-6" aria-label="Tabs">
+            <nav class="flex max-w-full gap-6 overflow-x-auto px-6" aria-label="Management sections">
                 <button wire:click="$set('activeTab', 'overview')" 
-                        class="py-4 px-1 border-b-2 font-medium text-sm transition-colors duration-300 {{ $activeTab === 'overview' ? 'border-blue-500 text-blue-600 dark:text-blue-400' : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-gray-600' }}">
+                        class="min-h-11 shrink-0 py-4 px-1 border-b-2 font-medium text-sm transition-colors duration-300 {{ $activeTab === 'overview' ? 'border-blue-500 text-blue-600 dark:text-blue-400' : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-gray-600' }}">
                     <i class="fas fa-chart-bar mr-2"></i>Overview
                 </button>
                 <button wire:click="$set('activeTab', 'analytics')" 
-                        class="py-4 px-1 border-b-2 font-medium text-sm transition-colors duration-300 {{ $activeTab === 'analytics' ? 'border-blue-500 text-blue-600 dark:text-blue-400' : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-gray-600' }}">
+                        class="min-h-11 shrink-0 py-4 px-1 border-b-2 font-medium text-sm transition-colors duration-300 {{ $activeTab === 'analytics' ? 'border-blue-500 text-blue-600 dark:text-blue-400' : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-gray-600' }}">
                     <i class="fas fa-chart-line mr-2"></i>Analytics
                 </button>
                 <button wire:click="$set('activeTab', 'items')" 
-                        class="py-4 px-1 border-b-2 font-medium text-sm transition-colors duration-300 {{ $activeTab === 'items' ? 'border-blue-500 text-blue-600 dark:text-blue-400' : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-gray-600' }}">
+                        class="min-h-11 shrink-0 py-4 px-1 border-b-2 font-medium text-sm transition-colors duration-300 {{ $activeTab === 'items' ? 'border-blue-500 text-blue-600 dark:text-blue-400' : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-gray-600' }}">
                     <i class="fas fa-box mr-2"></i>Items Management
                     @if(($stats['pending_items'] ?? 0) > 0)
                         <span class="ml-2 inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-300">
@@ -76,7 +76,7 @@
                     @endif
                 </button>
                 <button wire:click="$set('activeTab', 'orders')" 
-                        class="py-4 px-1 border-b-2 font-medium text-sm transition-colors duration-300 {{ $activeTab === 'orders' ? 'border-blue-500 text-blue-600 dark:text-blue-400' : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-gray-600' }}">
+                        class="min-h-11 shrink-0 py-4 px-1 border-b-2 font-medium text-sm transition-colors duration-300 {{ $activeTab === 'orders' ? 'border-blue-500 text-blue-600 dark:text-blue-400' : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-gray-600' }}">
                     <i class="fas fa-shopping-cart mr-2"></i>Orders
                     @if(($stats['pending_orders'] ?? 0) > 0)
                         <span class="ml-2 inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-300">
@@ -85,11 +85,11 @@
                     @endif
                 </button>
                 <button wire:click="$set('activeTab', 'vendors')" 
-                        class="py-4 px-1 border-b-2 font-medium text-sm transition-colors duration-300 {{ $activeTab === 'vendors' ? 'border-blue-500 text-blue-600 dark:text-blue-400' : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-gray-600' }}">
+                        class="min-h-11 shrink-0 py-4 px-1 border-b-2 font-medium text-sm transition-colors duration-300 {{ $activeTab === 'vendors' ? 'border-blue-500 text-blue-600 dark:text-blue-400' : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-gray-600' }}">
                     <i class="fas fa-users mr-2"></i>Vendors
                 </button>
                 <button wire:click="$set('activeTab', 'settings')" 
-                        class="py-4 px-1 border-b-2 font-medium text-sm transition-colors duration-300 {{ $activeTab === 'settings' ? 'border-blue-500 text-blue-600 dark:text-blue-400' : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-gray-600' }}">
+                        class="min-h-11 shrink-0 py-4 px-1 border-b-2 font-medium text-sm transition-colors duration-300 {{ $activeTab === 'settings' ? 'border-blue-500 text-blue-600 dark:text-blue-400' : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-gray-600' }}">
                     <i class="fas fa-cogs mr-2"></i>Settings
                 </button>
             </nav>
@@ -97,7 +97,7 @@
 
         <!-- Content Area with Loading Animation -->
         <div class="px-6 py-6 overflow-x-auto" wire:loading.class="opacity-50 pointer-events-none">
-            <div class="animate__animated animate__fadeIn w-full min-w-0">
+            <div class="w-full min-w-0">
                 @if($activeTab === 'overview')
                     @include('livewire.marketplace.partial.system.overview-tab')
                 @elseif($activeTab === 'analytics')

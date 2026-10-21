@@ -77,7 +77,7 @@
                             <div class="mt-6 grid gap-3 sm:grid-cols-2">
                                 @foreach($selectedProduct->files as $file)
                                     <div class="rounded-2xl bg-slate-50 p-4 text-sm font-bold text-slate-700">
-                                        <i class="fas fa-file mr-2 text-teal-700"></i>{{ $file['name'] }}
+                                        <i class="fas fa-file mr-2 text-teal-700"></i>{{ $file['name'] ?? 'Downloadable file' }}
                                     </div>
                                 @endforeach
                             </div>

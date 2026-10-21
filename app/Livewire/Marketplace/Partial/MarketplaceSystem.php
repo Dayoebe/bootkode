@@ -13,6 +13,8 @@ use Illuminate\Support\Facades\Cache;
 
 class MarketplaceSystem extends Component
 {
+    use \App\Livewire\Concerns\AuthorizesPlatformAdministration;
+
     public $activeTab = 'overview';
     
     // Settings Properties
@@ -77,6 +79,11 @@ class MarketplaceSystem extends Component
 
     public function mount()
     {
+        $this->activeTab = match (request()->route()?->getName()) {
+            'marketplace.analytics' => 'analytics',
+            'marketplace.settings' => 'settings',
+            default => 'overview',
+        };
         $this->loadSettings();
     }
 
@@ -237,7 +244,9 @@ class MarketplaceSystem extends Component
 
     public function updateOrderStatus($orderId, $status)
     {
+        abort_unless(in_array($status, ['confirmed', 'processing', 'completed', 'cancelled'], true), 422);
         $order = MarketplaceOrder::findOrFail($orderId);
+        abort_unless($order->isPaid(), 422);
         $oldStatus = $order->status;
         
         $order->update(['status' => $status]);
@@ -253,7 +262,12 @@ class MarketplaceSystem extends Component
     public function refundOrder($orderId)
     {
         $order = MarketplaceOrder::findOrFail($orderId);
-        $order->refund(null, 'Refunded by admin');
+        try {
+            $order->refund(null, 'Refunded by admin');
+        } catch (\DomainException $exception) {
+            session()->flash('error', $exception->getMessage());
+            return;
+        }
         
         session()->flash('message', 'Order refunded successfully!');
         $this->dispatch('orderStatusChanged');

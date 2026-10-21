@@ -103,7 +103,7 @@ class MarketplaceOrder extends Model
 
     public function item()
     {
-        return $this->belongsTo(MarketplaceItem::class, 'item_id');
+        return $this->belongsTo(MarketplaceItem::class, 'item_id')->withTrashed();
     }
 
     public function walletTransactions()
@@ -123,8 +123,10 @@ class MarketplaceOrder extends Model
 
     public function calculateCommissions()
     {
-        $this->platform_commission = ($this->total_amount * $this->platform_commission_rate) / 100;
-        $this->vendor_earning = $this->total_amount - $this->platform_commission;
+        $totalMinor = (int) round((float) $this->total_amount * 100);
+        $commissionMinor = (int) round($totalMinor * (float) $this->platform_commission_rate / 100);
+        $this->platform_commission = $commissionMinor / 100;
+        $this->vendor_earning = ($totalMinor - $commissionMinor) / 100;
     }
 
     // Status Methods
@@ -174,15 +176,7 @@ class MarketplaceOrder extends Model
 
     public function markAsPaid($paymentDetails = [])
     {
-        $this->update([
-            'payment_status' => self::PAYMENT_STATUS_PAID,
-            'paid_at' => now(),
-            'payment_details' => $paymentDetails,
-        ]);
-
-        // Process vendor payment
-        $this->processVendorPayment();
-        app(\App\Services\CommercialReadinessService::class)->issueInvoiceForOrder($this->fresh(['customer', 'item']));
+        app(\App\Services\MarketplaceService::class)->settleWalletOrder($this, $paymentDetails);
     }
 
     public function complete($deliveryDetails = [])
@@ -206,59 +200,17 @@ class MarketplaceOrder extends Model
 
     public function refund($amount = null, $reason = null)
     {
-        $refundAmount = $amount ?? $this->total_amount;
-        
-        $this->update([
-            'status' => self::STATUS_REFUNDED,
-            'payment_status' => self::PAYMENT_STATUS_REFUNDED,
-            'admin_notes' => $reason,
-        ]);
-
-        // Process refund to customer wallet
-        $this->processRefund($refundAmount, $reason);
+        app(\App\Services\MarketplaceService::class)->refundOrder($this, $amount, $reason);
     }
 
-    // Payment Processing
     public function processVendorPayment()
     {
-        if (!$this->isPaid()) {
-            return false;
-        }
-
-        // Credit vendor wallet
-        $vendorWallet = Wallet::getOrCreateWallet($this->vendor_id, Wallet::TYPE_INSTRUCTOR);
-        $vendorWallet->credit(
-            $this->vendor_earning,
-            WalletTransaction::CATEGORY_INSTRUCTOR_EARNING,
-            "Marketplace sale: {$this->item->title}",
-            $this,
-            ['order_number' => $this->order_number]
-        );
-
-        // Credit platform wallet
-        $platformWallet = Wallet::getOrCreateWallet(1, Wallet::TYPE_PLATFORM); // Assuming platform user ID is 1
-        $platformWallet->credit(
-            $this->platform_commission,
-            'platform_commission',
-            "Platform commission: {$this->item->title}",
-            $this,
-            ['order_number' => $this->order_number]
-        );
-
-        return true;
+        return app(\App\Services\MarketplaceService::class)->payoutOrder($this);
     }
 
     public function processRefund($amount, $reason = null)
     {
-        // Credit customer wallet
-        $customerWallet = Wallet::getOrCreateWallet($this->customer_id);
-        $customerWallet->credit(
-            $amount,
-            WalletTransaction::CATEGORY_REFUND,
-            "Refund for order: {$this->order_number}",
-            $this,
-            ['reason' => $reason]
-        );
+        $this->refund($amount, $reason);
     }
 
     // Scopes

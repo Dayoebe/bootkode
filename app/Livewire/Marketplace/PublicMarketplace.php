@@ -142,7 +142,7 @@ class PublicMarketplace extends Component
     public function viewProduct($productId)
     {
         $this->selectedProduct = MarketplaceItem::published()
-            ->with(['vendor', 'itemCategories', 'reviews.user']) // Changed to itemCategories
+            ->with(['vendor', 'itemCategories', 'reviews' => fn ($query) => $query->approved()->with('user:id,name')]) // Changed to itemCategories
             ->findOrFail($productId);
         
         // Increment view count
@@ -156,7 +156,7 @@ class PublicMarketplace extends Component
     {
         $product = MarketplaceItem::published()
             ->where('slug', $slug)
-            ->with(['vendor', 'categories', 'reviews.user'])
+            ->with(['vendor', 'categories', 'reviews' => fn ($query) => $query->approved()->with('user:id,name')])
             ->first();
             
         if ($product) {
@@ -343,6 +343,13 @@ class PublicMarketplace extends Component
 
     public function render()
     {
+        // Recheck publication and review scope after Livewire rehydrates the selected model.
+        if ($this->selectedProduct) {
+            $this->selectedProduct = MarketplaceItem::published()->with(['vendor', 'itemCategories',
+                'reviews' => fn ($query) => $query->approved()->with('user:id,name')])->findOrFail($this->selectedProduct->id);
+        }
+        $this->featuredItems = MarketplaceItem::published()->whereKey(collect($this->featuredItems)->pluck('id'))
+            ->with(['vendor', 'itemCategories'])->get();
         $items = collect();
         $stats = $this->getMarketplaceStats();
         

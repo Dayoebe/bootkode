@@ -1,12 +1,13 @@
 {{-- resources/views/livewire/marketplace/partial/marketplace-shopping.blade.php --}}
 <div class="space-y-6">
+    <x-ui.flash :messages="$feedback" />
     
     <!-- Internal Navigation Tabs -->
     <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4 transition-colors duration-300">
-        <div class="flex items-center justify-between">
-            <nav class="flex space-x-4">
+        <div class="flex min-w-0 flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <nav aria-label="Purchases and cart" class="flex max-w-full gap-2 overflow-x-auto">
                 <button wire:click="showCart" 
-                        class="{{ $currentView === 'cart' ? 'bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300 border-blue-200 dark:border-blue-700' : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white' }} px-4 py-2 rounded-lg border transition-colors duration-300 flex items-center">
+                        class="{{ $currentView === 'cart' ? 'bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300 border-blue-200 dark:border-blue-700' : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white' }} min-h-11 shrink-0 px-4 py-2 rounded-lg border transition-colors duration-300 flex items-center">
                     <i class="fas fa-shopping-cart mr-2"></i>
                     Shopping Cart
                     @if(count($cartItems ?? []) > 0)
@@ -17,7 +18,7 @@
                 </button>
                 
                 <button wire:click="showPurchases" 
-                        class="{{ $currentView === 'purchases' ? 'bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300 border-blue-200 dark:border-blue-700' : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white' }} px-4 py-2 rounded-lg border transition-colors duration-300 flex items-center">
+                        class="{{ $currentView === 'purchases' ? 'bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300 border-blue-200 dark:border-blue-700' : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white' }} min-h-11 shrink-0 px-4 py-2 rounded-lg border transition-colors duration-300 flex items-center">
                     <i class="fas fa-shopping-bag mr-2"></i>
                     My Purchases
                 </button>
@@ -54,7 +55,7 @@
                         <div class="divide-y divide-gray-200 dark:divide-gray-700">
                             @foreach($cartItems as $index => $cartItem)
                                 <div class="p-6">
-                                    <div class="flex items-start space-x-4">
+                                    <div class="flex flex-col gap-4 sm:flex-row">
                                         @if($cartItem['item']->getPrimaryImage())
                                             <img src="{{ asset('storage/' . $cartItem['item']->getPrimaryImage()) }}" 
                                                  alt="{{ $cartItem['item']->title }}" 
@@ -82,19 +83,19 @@
                                                 @endif
                                             </div>
                                             
-                                            <div class="flex items-center justify-between mt-4">
-                                                <div class="flex items-center space-x-4">
+                                            <div class="mt-4 flex flex-wrap items-center justify-between gap-3">
+                                                <div class="flex flex-wrap items-center gap-3">
                                                     <!-- Quantity Controls -->
                                                     <div class="flex items-center space-x-2">
                                                         <label class="text-sm text-gray-600 dark:text-gray-400">Qty:</label>
                                                         <div class="flex items-center border border-gray-300 dark:border-gray-600 rounded transition-colors duration-300">
                                                             <button wire:click="updateCartQuantity({{ $cartItem['item']->id }}, {{ $cartItem['quantity'] - 1 }})"
-                                                                    class="px-2 py-1 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 transition-colors duration-300">
+                                                                    aria-label="Decrease quantity" class="min-h-11 min-w-11 px-2 py-1 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 transition-colors duration-300">
                                                                 <i class="fas fa-minus text-xs"></i>
                                                             </button>
                                                             <span class="px-3 py-1 text-sm text-gray-900 dark:text-white">{{ $cartItem['quantity'] }}</span>
                                                             <button wire:click="updateCartQuantity({{ $cartItem['item']->id }}, {{ $cartItem['quantity'] + 1 }})"
-                                                                    class="px-2 py-1 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 transition-colors duration-300">
+                                                                    aria-label="Increase quantity" class="min-h-11 min-w-11 px-2 py-1 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 transition-colors duration-300">
                                                                 <i class="fas fa-plus text-xs"></i>
                                                             </button>
                                                         </div>
@@ -341,7 +342,7 @@
                     <div class="divide-y divide-gray-200 dark:divide-gray-700">
                         @foreach($orders as $order)
                             <div class="p-6 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-300">
-                                <div class="flex items-start space-x-4">
+                                <div class="flex flex-col gap-4 sm:flex-row">
                                     <!-- Item Image -->
                                     <div class="flex-shrink-0">
                                         @if($order->item->getPrimaryImage())
@@ -357,12 +358,12 @@
                                     
                                     <!-- Order Details -->
                                     <div class="flex-1 min-w-0">
-                                        <div class="flex items-start justify-between">
+                                        <div class="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                                             <div class="flex-1">
                                                 <h3 class="text-lg font-medium text-gray-900 dark:text-white hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-300">
                                                     {{ $order->item->title }}
                                                 </h3>
-                                                <div class="mt-1 flex items-center space-x-4 text-sm text-gray-500 dark:text-gray-400">
+                                                <div class="mt-1 flex flex-wrap items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
                                                     <span class="flex items-center">
                                                         <i class="fas fa-hashtag mr-1"></i>
                                                         {{ $order->order_number }}
@@ -383,7 +384,7 @@
                                             </div>
                                             
                                             <!-- Price and Status -->
-                                            <div class="text-right ml-4">
+                                            <div class="text-left sm:ml-4 sm:text-right">
                                                 <p class="text-lg font-semibold text-gray-900 dark:text-white">
                                                     {{ $order->formatted_total }}
                                                 </p>
@@ -404,7 +405,7 @@
                                         <div class="mt-4 flex flex-wrap items-center gap-2">
                                             @if($order->isPaid() && $order->item->is_digital)
                                                 <button wire:click="downloadItem({{ $order->id }})"
-                                                        class="inline-flex items-center px-3 py-1.5 bg-green-600 dark:bg-green-500 text-white text-sm rounded-lg hover:bg-green-700 dark:hover:bg-green-600 transition-colors duration-300">
+                                                        class="inline-flex min-h-11 items-center px-3 py-1.5 bg-green-600 dark:bg-green-500 text-white text-sm rounded-lg hover:bg-green-700 dark:hover:bg-green-600 transition-colors duration-300">
                                                     <i class="fas fa-download mr-1"></i>
                                                     Download
                                                 </button>
@@ -412,7 +413,7 @@
                                             
                                             @if($order->isPaid() && $order->isCompleted())
                                                 <a href="{{ route('marketplace.item.public', $order->item->slug) }}" 
-                                                   class="inline-flex items-center px-3 py-1.5 bg-blue-600 dark:bg-blue-500 text-white text-sm rounded-lg hover:bg-blue-700 dark:hover:bg-blue-600 transition-colors duration-300">
+                                                   class="inline-flex min-h-11 items-center px-3 py-1.5 bg-blue-600 dark:bg-blue-500 text-white text-sm rounded-lg hover:bg-blue-700 dark:hover:bg-blue-600 transition-colors duration-300">
                                                     <i class="fas fa-star mr-1"></i>
                                                     Review
                                                 </a>
@@ -421,20 +422,20 @@
                                             @if($order->isPaid() && !$order->isRefunded() && !$order->isCancelled())
                                                 <button wire:click="requestRefund({{ $order->id }})"
                                                         onclick="confirm('Are you sure you want to request a refund? This action cannot be undone.') || event.stopImmediatePropagation()"
-                                                        class="inline-flex items-center px-3 py-1.5 bg-orange-600 dark:bg-orange-500 text-white text-sm rounded-lg hover:bg-orange-700 dark:hover:bg-orange-600 transition-colors duration-300">
+                                                        class="inline-flex min-h-11 items-center px-3 py-1.5 bg-orange-600 dark:bg-orange-500 text-white text-sm rounded-lg hover:bg-orange-700 dark:hover:bg-orange-600 transition-colors duration-300">
                                                     <i class="fas fa-undo mr-1"></i>
                                                     Request Refund
                                                 </button>
                                             @endif
                                             
                                             <button wire:click="reorderItem({{ $order->id }})"
-                                                    class="inline-flex items-center px-3 py-1.5 bg-blue-600 dark:bg-blue-500 text-white text-sm rounded-lg hover:bg-blue-700 dark:hover:bg-blue-600 transition-colors duration-300">
+                                                    class="inline-flex min-h-11 items-center px-3 py-1.5 bg-blue-600 dark:bg-blue-500 text-white text-sm rounded-lg hover:bg-blue-700 dark:hover:bg-blue-600 transition-colors duration-300">
                                                 <i class="fas fa-redo mr-1"></i>
                                                 Reorder
                                             </button>
                                             
                                             <a href="{{ route('marketplace.item.public', $order->item->slug) }}" 
-                                               class="inline-flex items-center px-3 py-1.5 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 text-sm rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-300">
+                                               class="inline-flex min-h-11 items-center px-3 py-1.5 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 text-sm rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-300">
                                                 <i class="fas fa-eye mr-1"></i>
                                                 View Item
                                             </a>
@@ -461,15 +462,7 @@
                                                         {{ $order->vendor_notes }}
                                                     </p>
                                                 @endif
-                                                @if($order->admin_notes)
-                                                    <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">
-                                                        <span class="font-medium flex items-center text-gray-900 dark:text-white">
-                                                            <i class="fas fa-shield-alt mr-1"></i>
-                                                            Admin notes:
-                                                        </span> 
-                                                        {{ $order->admin_notes }}
-                                                    </p>
-                                                @endif
+
                                             </div>
                                         @endif
                                         

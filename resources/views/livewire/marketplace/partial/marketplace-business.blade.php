@@ -3,16 +3,16 @@
     
     <!-- Internal Navigation Tabs -->
     <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
-        <div class="flex items-center justify-between">
-            <nav class="flex space-x-4">
+        <div class="flex min-w-0 flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+            <nav aria-label="Business sections" class="flex min-w-0 max-w-full gap-2 overflow-x-auto">
                 <button wire:click="showDashboard" 
-                        class="{{ $currentView === 'dashboard' ? 'bg-blue-100 text-blue-700 border-blue-200' : 'text-gray-600 hover:text-gray-900' }} px-4 py-2 rounded-lg border transition-colors flex items-center">
+                        class="{{ $currentView === 'dashboard' ? 'bg-blue-100 text-blue-700 border-blue-200' : 'text-gray-600 hover:text-gray-900' }} min-h-11 shrink-0 px-4 py-2 rounded-lg border transition-colors flex items-center">
                     <i class="fas fa-chart-line mr-2"></i>
                     Dashboard
                 </button>
                 
                 <button wire:click="showOrders" 
-                        class="{{ $currentView === 'orders' ? 'bg-purple-100 text-purple-700 border-purple-200' : 'text-gray-600 hover:text-gray-900' }} px-4 py-2 rounded-lg border transition-colors flex items-center">
+                        class="{{ $currentView === 'orders' ? 'bg-purple-100 text-purple-700 border-purple-200' : 'text-gray-600 hover:text-gray-900' }} min-h-11 shrink-0 px-4 py-2 rounded-lg border transition-colors flex items-center">
                     <i class="fas fa-box mr-2"></i>
                     Orders
                     @isset($orderStats)
@@ -25,7 +25,7 @@
                 </button>
                 
                 <button wire:click="showWithdrawals" 
-                        class="{{ $currentView === 'withdrawals' ? 'bg-green-100 text-green-700 border-green-200' : 'text-gray-600 hover:text-gray-900' }} px-4 py-2 rounded-lg border transition-colors flex items-center">
+                        class="{{ $currentView === 'withdrawals' ? 'bg-green-100 text-green-700 border-green-200' : 'text-gray-600 hover:text-gray-900' }} min-h-11 shrink-0 px-4 py-2 rounded-lg border transition-colors flex items-center">
                     <i class="fas fa-money-bill-wave mr-2"></i>
                     Withdrawals
                 </button>
@@ -44,7 +44,7 @@
         <!-- Stats Overview -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-                <div class="flex items-center">
+                <div class="flex flex-wrap items-center gap-1">
                     <div class="flex-shrink-0">
                         <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
                             <i class="fas fa-list-alt text-blue-600 text-lg"></i>
@@ -59,7 +59,7 @@
             </div>
 
             <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-                <div class="flex items-center">
+                <div class="flex flex-wrap items-center gap-1">
                     <div class="flex-shrink-0">
                         <div class="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
                             <i class="fas fa-shopping-cart text-purple-600 text-lg"></i>
@@ -74,7 +74,7 @@
             </div>
 
             <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-                <div class="flex items-center">
+                <div class="flex flex-wrap items-center gap-1">
                     <div class="flex-shrink-0">
                         <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
                             <i class="fas fa-money-bill-wave text-green-600 text-lg"></i>
@@ -89,7 +89,7 @@
             </div>
 
             <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-                <div class="flex items-center">
+                <div class="flex flex-wrap items-center gap-1">
                     <div class="flex-shrink-0">
                         <div class="w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center">
                             <i class="fas fa-calendar-month text-orange-600 text-lg"></i>
@@ -323,7 +323,7 @@
                 <div class="divide-y divide-gray-200">
                     @foreach($orders as $order)
                         <div class="p-6 hover:bg-gray-50 transition-colors">
-                            <div class="flex items-start space-x-4">
+                            <div class="flex flex-col gap-4 sm:flex-row">
                                 <!-- Item Image -->
                                 <div class="flex-shrink-0">
                                     @if($order->item->getPrimaryImage())
@@ -338,7 +338,7 @@
 
                                 <!-- Order Details -->
                                 <div class="flex-1 min-w-0">
-                                    <div class="flex items-start justify-between">
+                                    <div class="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                                         <div class="flex-1">
                                             <h3 class="text-lg font-medium text-gray-900">
                                                 {{ $order->item->title }}
@@ -348,35 +348,35 @@
                                                 Order #{{ $order->order_number }}
                                             </p>
                                             <div class="mt-2 space-y-1 text-sm text-gray-500">
-                                                <p class="flex items-center">
+                                                <p class="flex flex-wrap items-center gap-1">
                                                     <i class="fas fa-user mr-2 w-4"></i>
                                                     <span class="font-medium">Customer:</span> 
-                                                    <span class="ml-1">{{ $order->customer->name }} ({{ $order->customer->email }})</span>
+                                                    <span class="ml-1 break-words [overflow-wrap:anywhere]">{{ $order->customer->name }} ({{ $order->customer->email }})</span>
                                                 </p>
-                                                <p class="flex items-center">
+                                                <p class="flex flex-wrap items-center gap-1">
                                                     <i class="fas fa-calendar mr-2 w-4"></i>
                                                     <span class="font-medium">Ordered:</span> 
-                                                    <span class="ml-1">{{ $order->created_at->format('M d, Y \a\t g:i A') }}</span>
+                                                    <span class="ml-1 break-words [overflow-wrap:anywhere]">{{ $order->created_at->format('M d, Y \a\t g:i A') }}</span>
                                                 </p>
                                                 @if($order->isPaid())
-                                                    <p class="flex items-center">
+                                                    <p class="flex flex-wrap items-center gap-1">
                                                         <i class="fas fa-check-circle mr-2 w-4 text-green-500"></i>
                                                         <span class="font-medium">Paid:</span> 
-                                                        <span class="ml-1">{{ $order->paid_at->format('M d, Y \a\t g:i A') }}</span>
+                                                        <span class="ml-1 break-words [overflow-wrap:anywhere]">{{ $order->paid_at?->format('M d, Y \a\t g:i A') ?? 'Date not recorded' }}</span>
                                                     </p>
                                                 @endif
                                                 @if($order->isCompleted())
-                                                    <p class="flex items-center">
+                                                    <p class="flex flex-wrap items-center gap-1">
                                                         <i class="fas fa-flag-checkered mr-2 w-4 text-blue-500"></i>
                                                         <span class="font-medium">Completed:</span> 
-                                                        <span class="ml-1">{{ $order->completed_at->format('M d, Y \a\t g:i A') }}</span>
+                                                        <span class="ml-1 break-words [overflow-wrap:anywhere]">{{ $order->completed_at?->format('M d, Y \a\t g:i A') ?? 'Date not recorded' }}</span>
                                                     </p>
                                                 @endif
                                             </div>
                                         </div>
 
                                         <!-- Order Value and Status -->
-                                        <div class="text-right ml-4">
+                                        <div class="text-left sm:ml-4 sm:text-right">
                                             <div class="space-y-2">
                                                 <div>
                                                     <p class="text-lg font-semibold text-gray-900">{{ $order->formatted_total }}</p>

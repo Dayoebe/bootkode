@@ -11,6 +11,8 @@ use Illuminate\Support\Facades\DB;
 
 class MarketplaceShopping extends Component
 {
+    use \App\Livewire\Concerns\HasActionFeedback;
+
     use WithPagination;
 
     // Internal navigation state
@@ -33,12 +35,17 @@ class MarketplaceShopping extends Component
         'search' => ['except' => ''],
     ];
 
+    public function boot(): void
+    {
+        abort_unless(auth()->check(), 403);
+    }
+
     public function mount()
     {
         $this->loadCart();
         
         // Set initial view based on cart contents
-        if (empty($this->cartItems)) {
+        if (request()->route()?->getName() === 'marketplace.purchases' || empty($this->cartItems)) {
             $this->currentView = 'purchases';
         }
     }
@@ -76,7 +83,9 @@ class MarketplaceShopping extends Component
 
     public function addToCart($itemId, $quantity = 1)
     {
+        abort_unless(filter_var($quantity, FILTER_VALIDATE_INT) !== false && $quantity >= 1 && $quantity <= 10, 422);
         $item = MarketplaceItem::published()->findOrFail($itemId);
+        abort_if($item->vendor_id === auth()->id(), 422);
         
         $cart = session()->get('marketplace_cart', []);
         
@@ -92,13 +101,15 @@ class MarketplaceShopping extends Component
         }
         
         session()->put('marketplace_cart', $cart);
+        session()->forget('marketplace_checkout_key');
         $this->loadCart();
         
-        session()->flash('message', "Added {$item->title} to cart!");
+        $this->flashFeedback('message', "Added {$item->title} to cart!");
     }
 
     public function updateCartQuantity($itemId, $quantity)
     {
+        abort_unless(filter_var($quantity, FILTER_VALIDATE_INT) !== false && $quantity >= 0 && $quantity <= 10, 422);
         if ($quantity <= 0) {
             $this->removeFromCart($itemId);
             return;
@@ -108,6 +119,7 @@ class MarketplaceShopping extends Component
         if (isset($cart[$itemId])) {
             $cart[$itemId]['quantity'] = $quantity;
             session()->put('marketplace_cart', $cart);
+        session()->forget('marketplace_checkout_key');
             $this->loadCart();
         }
     }
@@ -127,16 +139,17 @@ class MarketplaceShopping extends Component
         
         unset($cart[$itemId]);
         session()->put('marketplace_cart', $cart);
+        session()->forget('marketplace_checkout_key');
         
         $this->loadCart();
-        session()->flash('message', "Removed {$itemTitle} from cart!");
+        $this->flashFeedback('message', "Removed {$itemTitle} from cart!");
     }
 
     public function clearCart()
     {
         session()->forget('marketplace_cart');
         $this->cartItems = [];
-        session()->flash('message', 'Cart cleared!');
+        $this->flashFeedback('message', 'Cart cleared!');
     }
 
     public function getCartTotal()
@@ -154,84 +167,27 @@ class MarketplaceShopping extends Component
     // Checkout methods
     public function checkout()
     {
-        if (empty($this->cartItems)) {
-            session()->flash('error', 'Your cart is empty.');
+        $this->validate(['paymentMethod' => 'required|in:wallet', 'customerNotes' => 'nullable|string|max:2000']);
+        $rows = session('marketplace_cart', []);
+        if (!$rows) {
+            $this->flashFeedback('error', 'Your cart is empty.');
             return;
         }
-
-        $total = $this->getCartTotal();
-
-        if ($this->paymentMethod === 'wallet') {
-            $wallet = Wallet::getOrCreateWallet(auth()->id());
-            
-            if (!$wallet->hasSufficientBalance($total)) {
-                session()->flash('error', 'Insufficient wallet balance. Please fund your wallet first.');
-                return;
-            }
+        $key = session('marketplace_checkout_key');
+        if (!$key) {
+            $key = (string) \Illuminate\Support\Str::uuid();
+            session()->put('marketplace_checkout_key', $key);
         }
-
         try {
-            DB::beginTransaction();
-
-            $orders = [];
-            foreach ($this->cartItems as $cartItem) {
-                $item = $cartItem['item'];
-                $quantity = $cartItem['quantity'];
-                
-                for ($i = 0; $i < $quantity; $i++) {
-                    $order = MarketplaceOrder::create([
-                        'customer_id' => auth()->id(),
-                        'vendor_id' => $item->vendor_id,
-                        'item_id' => $item->id,
-                        'status' => MarketplaceOrder::STATUS_PENDING,
-                        'payment_status' => MarketplaceOrder::PAYMENT_STATUS_UNPAID,
-                        'item_price' => $item->price,
-                        'discount_amount' => $item->price - $item->getEffectivePrice(),
-                        'total_amount' => $item->getEffectivePrice(),
-                        'currency' => 'NGN',
-                        'platform_commission_rate' => 20, // 20% platform commission
-                        'payment_method' => $this->paymentMethod,
-                        'customer_notes' => $this->customerNotes,
-                    ]);
-                    
-                    $orders[] = $order;
-                }
-            }
-
-            // Process payment
-            if ($this->paymentMethod === 'wallet') {
-                foreach ($orders as $order) {
-                    $wallet = Wallet::getOrCreateWallet(auth()->id());
-                    $wallet->debit(
-                        $order->total_amount,
-                        'course_purchase',
-                        "Purchase: {$order->item->title}",
-                        $order
-                    );
-                    
-                    $order->markAsPaid([
-                        'payment_method' => 'wallet',
-                        'wallet_transaction_id' => $wallet->transactions()->latest()->first()->id,
-                    ]);
-                }
-            } else {
-                // For card payments, redirect to Paystack
-                // This would be handled differently in real implementation
-                session()->flash('info', 'Redirecting to payment gateway...');
-            }
-
-            // Clear cart
+            app(\App\Services\MarketplaceService::class)->checkoutWallet(auth()->user(), array_values($rows), $key, $this->customerNotes);
             session()->forget('marketplace_cart');
             $this->cartItems = [];
-
-            DB::commit();
-
-            session()->flash('message', 'Purchase completed successfully!');
+            $this->flashFeedback('message', 'Wallet purchase completed. Your invoice is available in billing documents.');
             $this->showPurchases();
-
-        } catch (\Exception $e) {
-            DB::rollBack();
-            session()->flash('error', 'Purchase failed: ' . $e->getMessage());
+        } catch (\Throwable $exception) {
+            \Log::warning('Marketplace checkout failed', ['exception' => get_class($exception)]);
+            $this->flashFeedback('error', $exception instanceof \DomainException ? $exception->getMessage() : 'Purchase could not be completed. Please review your cart and try again.');
+            $this->loadCart();
         }
     }
 
@@ -258,19 +214,15 @@ class MarketplaceShopping extends Component
             ->findOrFail($orderId);
 
         if (!$order->isPaid() || !$order->item->is_digital) {
-            session()->flash('error', 'This item is not available for download.');
+            $this->flashFeedback('error', 'This item is not available for download.');
             return;
         }
 
-        // In a real implementation, this would serve the actual file
-        // For now, we'll just show a success message
-        session()->flash('message', 'Download started for: ' . $order->item->title);
-        
-        // Log the download
-        activity()
-            ->causedBy(auth()->user())
-            ->performedOn($order->item)
-            ->log('Downloaded purchased item');
+        if (empty($order->item->files)) {
+            $this->flashFeedback('error', 'The vendor has not attached a downloadable file to this item.');
+            return;
+        }
+        return redirect()->route('marketplace.order.download', $order);
     }
 
     public function requestRefund($orderId)
@@ -278,12 +230,12 @@ class MarketplaceShopping extends Component
         $order = MarketplaceOrder::byCustomer(auth()->id())->findOrFail($orderId);
         
         if (!$order->isPaid()) {
-            session()->flash('error', 'Cannot request refund for unpaid order.');
+            $this->flashFeedback('error', 'Cannot request refund for unpaid order.');
             return;
         }
 
         if ($order->isRefunded()) {
-            session()->flash('error', 'This order has already been refunded.');
+            $this->flashFeedback('error', 'This order has already been refunded.');
             return;
         }
 
@@ -294,7 +246,7 @@ class MarketplaceShopping extends Component
             'admin_notes' => 'Refund requested by customer on ' . now()->format('Y-m-d H:i:s'),
         ]);
 
-        session()->flash('message', 'Refund request submitted for review.');
+        $this->flashFeedback('message', 'Refund request submitted for review.');
     }
 
     public function reorderItem($orderId)
@@ -304,7 +256,7 @@ class MarketplaceShopping extends Component
             ->findOrFail($orderId);
 
         if (!$order->item->isPublished()) {
-            session()->flash('error', 'This item is no longer available.');
+            $this->flashFeedback('error', 'This item is no longer available.');
             return;
         }
 
@@ -334,9 +286,11 @@ class MarketplaceShopping extends Component
                     $query->whereHas('item', fn($q) => $q->byType($this->type));
                 })
                 ->when($this->search, function ($query) {
-                    $query->whereHas('item', function ($q) {
-                        $q->where('title', 'like', '%' . $this->search . '%');
-                    })->orWhere('order_number', 'like', '%' . $this->search . '%');
+                    $query->where(function ($owned) {
+                        $owned->whereHas('item', function ($q) {
+                            $q->where('title', 'like', '%' . $this->search . '%');
+                        })->orWhere('order_number', 'like', '%' . $this->search . '%');
+                    });
                 })
                 ->latest()
                 ->paginate(10);

@@ -143,6 +143,7 @@ class MarketplaceBrowse extends Component
     // Category management methods
     public function openCreateCategoryForm()
     {
+        abort_unless(auth()->user()?->hasAnyRole(['super_admin', 'academy_admin']), 403);
         $this->resetCategoryForm();
         $this->showCreateCategoryForm = true;
     }
@@ -155,6 +156,7 @@ class MarketplaceBrowse extends Component
 
     public function openEditCategoryForm($categoryId)
     {
+        abort_unless(auth()->user()?->hasAnyRole(['super_admin', 'academy_admin']), 403);
         $category = MarketplaceCategory::findOrFail($categoryId);
         
         $this->editingCategory = $category;
@@ -177,6 +179,7 @@ class MarketplaceBrowse extends Component
 
     public function createCategory()
     {
+        abort_unless(auth()->user()?->hasAnyRole(['super_admin', 'academy_admin']), 403);
         $this->validate($this->categoryRules);
 
         MarketplaceCategory::create([
@@ -195,6 +198,7 @@ class MarketplaceBrowse extends Component
 
     public function updateCategory()
     {
+        abort_unless(auth()->user()?->hasAnyRole(['super_admin', 'academy_admin']), 403);
         $this->validate($this->categoryRules);
 
         if ($this->editingCategory) {
@@ -214,6 +218,7 @@ class MarketplaceBrowse extends Component
 
     public function toggleCategoryActive($categoryId)
     {
+        abort_unless(auth()->user()?->hasAnyRole(['super_admin', 'academy_admin']), 403);
         $category = MarketplaceCategory::findOrFail($categoryId);
         $category->update(['is_active' => !$category->is_active]);
         
@@ -223,6 +228,7 @@ class MarketplaceBrowse extends Component
 
     public function toggleCategoryFeatured($categoryId)
     {
+        abort_unless(auth()->user()?->hasAnyRole(['super_admin', 'academy_admin']), 403);
         $category = MarketplaceCategory::findOrFail($categoryId);
         $category->update(['is_featured' => !$category->is_featured]);
         
@@ -232,6 +238,7 @@ class MarketplaceBrowse extends Component
 
     public function deleteCategory($categoryId)
     {
+        abort_unless(auth()->user()?->hasAnyRole(['super_admin', 'academy_admin']), 403);
         $category = MarketplaceCategory::findOrFail($categoryId);
         
         if ($category->items()->count() > 0) {

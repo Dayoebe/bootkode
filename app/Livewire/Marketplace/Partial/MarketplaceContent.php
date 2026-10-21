@@ -14,6 +14,12 @@ use Carbon\Carbon;
 
 class MarketplaceContent extends Component
 {
+    public function boot(): void
+    {
+        abort_unless(auth()->user()?->hasAnyRole(['super_admin', 'academy_admin', 'content_editor']), 403);
+    }
+
+
     use WithPagination;
 
     // Main Tab Management
@@ -75,6 +81,10 @@ class MarketplaceContent extends Component
 
     public function mount()
     {
+        $this->activeTab = match (request()->route()?->getName()) {
+            'marketplace.reviews' => 'reviews',
+            default => 'promotions',
+        };
         $this->loadStats();
     }
 

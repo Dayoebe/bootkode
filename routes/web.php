@@ -407,10 +407,11 @@ Route::get('/marketplace/instructor/{id}', function ($id) {
 // AUTHENTICATED ROUTES - Dashboard Access
 Route::middleware(['auth', 'verified'])->group(function () {
     // GENERAL USER ROUTES (Students, Everyone)
+    Route::get('/marketplace/orders/{order}/download/{file?}', \App\Http\Controllers\MarketplaceDownloadController::class)->whereNumber('file')->name('marketplace.order.download');
     Route::get('/marketplace/cart', App\Livewire\Marketplace\MarketplaceCenter::class)->name('marketplace.cart');
     Route::get('/marketplace/checkout', App\Livewire\Marketplace\MarketplaceCenter::class)->name('marketplace.checkout');
     Route::get('/marketplace/my-purchases', App\Livewire\Marketplace\MarketplaceCenter::class)->name('marketplace.purchases');
-    Route::get('/marketplace/reviews', App\Livewire\Marketplace\MarketplaceCenter::class)->name('marketplace.reviews');
+    Route::get('/marketplace/reviews', App\Livewire\Marketplace\MarketplaceCenter::class)->name('marketplace.reviews')->middleware(\App\Http\Middleware\CheckRole::class . ':super_admin,academy_admin,content_editor');
     Route::get('/marketplace/item/{slug}', App\Livewire\Marketplace\MarketplaceCenter::class)->name('marketplace.item.public');
 
     // VENDOR ROUTES (Instructors, Academy Admin, Super Admin)
@@ -423,20 +424,20 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/marketplace/vendor/withdrawals', App\Livewire\Marketplace\MarketplaceCenter::class)->name('marketplace.vendor.withdrawals');
 
     // ADMIN ROUTES (Academy Admin, Super Admin)
-    Route::get('/marketplace/admin/vendors', App\Livewire\Marketplace\MarketplaceCenter::class)->name('marketplace.vendor.applications');
-    Route::get('/marketplace/admin/orders', App\Livewire\Marketplace\MarketplaceCenter::class)->name('marketplace.orders');
-    Route::get('/marketplace/admin/payments', App\Livewire\Marketplace\MarketplaceCenter::class)->name('marketplace.payments');
-    Route::get('/marketplace/admin/analytics', App\Livewire\Marketplace\MarketplaceCenter::class)->name('marketplace.analytics');
-    Route::get('/marketplace/admin/settings', App\Livewire\Marketplace\MarketplaceCenter::class)->name('marketplace.settings');
+    Route::get('/marketplace/admin/vendors', App\Livewire\Marketplace\MarketplaceCenter::class)->name('marketplace.vendor.applications')->middleware(\App\Http\Middleware\CheckRole::class . ':super_admin,academy_admin');
+    Route::get('/marketplace/admin/orders', App\Livewire\Marketplace\MarketplaceCenter::class)->name('marketplace.orders')->middleware(\App\Http\Middleware\CheckRole::class . ':super_admin,academy_admin');
+    Route::get('/marketplace/admin/payments', App\Livewire\Marketplace\MarketplaceCenter::class)->name('marketplace.payments')->middleware(\App\Http\Middleware\CheckRole::class . ':super_admin,academy_admin');
+    Route::get('/marketplace/admin/analytics', App\Livewire\Marketplace\MarketplaceCenter::class)->name('marketplace.analytics')->middleware(\App\Http\Middleware\CheckRole::class . ':super_admin,academy_admin');
+    Route::get('/marketplace/admin/settings', App\Livewire\Marketplace\MarketplaceCenter::class)->name('marketplace.settings')->middleware(\App\Http\Middleware\CheckRole::class . ':super_admin,academy_admin');
 
     // CONTENT EDITOR + ADMIN ROUTES
-    Route::get('/marketplace/promotions', App\Livewire\Marketplace\MarketplaceCenter::class)->name('marketplace.promotions');
+    Route::get('/marketplace/promotions', App\Livewire\Marketplace\MarketplaceCenter::class)->name('marketplace.promotions')->middleware(\App\Http\Middleware\CheckRole::class . ':super_admin,academy_admin,content_editor');
 });
 
 // PAYMENT CALLBACKS (Public, no auth)
 // Route::post('/marketplace/payment/callback', [App\Http\Controllers\PaymentController::class, 'marketplaceCallback'])->name('marketplace.payment.callback');
 Route::get('/marketplace/payment/success', function () {
-    return redirect()->route('marketplace.purchases')->with('success', 'Payment completed successfully!');
+    return redirect()->route('marketplace.purchases')->with('info', 'Check your purchases for the verified payment status.');
 })->name('marketplace.payment.success');
 Route::get('/marketplace/payment/failed', function () {
     return redirect()->route('marketplace.checkout')->with('error', 'Payment failed. Please try again.');
