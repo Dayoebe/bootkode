@@ -1,15 +1,5 @@
 <div class="space-y-6">
-    @if (session('message'))
-        <div class="rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-green-700 dark:border-green-800 dark:bg-green-900/30 dark:text-green-300">
-            {{ session('message') }}
-        </div>
-    @endif
-
-    @if (session('error'))
-        <div class="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-red-700 dark:border-red-800 dark:bg-red-900/30 dark:text-red-300">
-            {{ session('error') }}
-        </div>
-    @endif
+    <x-ui.flash :messages="$feedback" />
 
     <section class="rounded-lg border border-themed-primary bg-themed-secondary p-5 md:p-6">
         <div class="flex flex-col gap-5 xl:flex-row xl:items-center xl:justify-between">
@@ -18,7 +8,7 @@
                     <i class="fas fa-calendar-check"></i>
                     Mentorship operations
                 </div>
-                <h1 class="text-2xl font-bold text-themed-primary md:text-3xl">Scheduling, notes, payouts, and progress</h1>
+                <h{{ $embedded ? 2 : 1 }} class="text-2xl font-bold text-themed-primary md:text-3xl">Scheduling, notes, payouts, and progress</h{{ $embedded ? 2 : 1 }}>
                 <p class="mt-2 max-w-3xl text-themed-secondary">
                     Book sessions from active mentorships, enforce mentor availability, capture notes after each meeting, and credit billable mentor payouts.
                 </p>
@@ -202,11 +192,11 @@
     </section>
 
     @if ($showSessionModal)
-        <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4">
+        <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4" x-data="{ dialogOpen: true }" x-trap.inert.noscroll="dialogOpen" x-on:keydown.escape.window="dialogOpen = false; $wire.closeModal()" role="dialog" aria-modal="true" aria-label="Sessions dialog" tabindex="-1">
             <div class="max-h-[90vh] w-full max-w-3xl overflow-y-auto rounded-lg border border-themed-primary bg-themed-secondary shadow-xl">
                 <div class="flex items-center justify-between border-b border-themed-primary p-5">
                     <h2 class="text-xl font-bold text-themed-primary">{{ $editingSessionId ? 'Edit session' : 'Book session' }}</h2>
-                    <button type="button" wire:click="closeModal" class="grid h-9 w-9 place-items-center rounded-lg bg-themed-tertiary text-themed-secondary">
+                    <button aria-label="Close dialog" type="button" wire:click="closeModal" class="grid h-9 w-9 place-items-center rounded-lg bg-themed-tertiary text-themed-secondary">
                         <i class="fas fa-times"></i>
                     </button>
                 </div>
@@ -313,14 +303,14 @@
     @endif
 
     @if ($showCompletionModal && $selectedSession)
-        <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4">
+        <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4" x-data="{ dialogOpen: true }" x-trap.inert.noscroll="dialogOpen" x-on:keydown.escape.window="dialogOpen = false; $wire.closeModal()" role="dialog" aria-modal="true" aria-label="Sessions dialog" tabindex="-1">
             <div class="max-h-[90vh] w-full max-w-3xl overflow-y-auto rounded-lg border border-themed-primary bg-themed-secondary shadow-xl">
                 <div class="flex items-center justify-between border-b border-themed-primary p-5">
                     <div>
                         <h2 class="text-xl font-bold text-themed-primary">Complete session</h2>
                         <p class="text-sm text-themed-secondary">{{ $selectedSession->title }}</p>
                     </div>
-                    <button type="button" wire:click="closeModal" class="grid h-9 w-9 place-items-center rounded-lg bg-themed-tertiary text-themed-secondary">
+                    <button aria-label="Close dialog" type="button" wire:click="closeModal" class="grid h-9 w-9 place-items-center rounded-lg bg-themed-tertiary text-themed-secondary">
                         <i class="fas fa-times"></i>
                     </button>
                 </div>
@@ -421,11 +411,11 @@
     @endif
 
     @if ($showDetailsModal && $selectedSession)
-        <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4">
+        <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4" x-data="{ dialogOpen: true }" x-trap.inert.noscroll="dialogOpen" x-on:keydown.escape.window="dialogOpen = false; $wire.closeModal()" role="dialog" aria-modal="true" aria-label="Sessions dialog" tabindex="-1">
             <div class="max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-lg border border-themed-primary bg-themed-secondary shadow-xl">
                 <div class="flex items-center justify-between border-b border-themed-primary p-5">
                     <h2 class="text-xl font-bold text-themed-primary">Session details</h2>
-                    <button type="button" wire:click="closeModal" class="grid h-9 w-9 place-items-center rounded-lg bg-themed-tertiary text-themed-secondary">
+                    <button aria-label="Close dialog" type="button" wire:click="closeModal" class="grid h-9 w-9 place-items-center rounded-lg bg-themed-tertiary text-themed-secondary">
                         <i class="fas fa-times"></i>
                     </button>
                 </div>

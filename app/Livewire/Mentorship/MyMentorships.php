@@ -17,6 +17,8 @@ use Livewire\Attributes\On;
 ])]
 class MyMentorships extends Component
 {
+    use \App\Livewire\Concerns\RequiresAuthenticatedAccount;
+
     use WithPagination;
 
     public $statusFilter = '';

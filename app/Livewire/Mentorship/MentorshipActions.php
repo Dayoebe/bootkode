@@ -18,6 +18,8 @@ use Livewire\Attributes\Layout;
 
 class MentorshipActions extends Component
 {
+    use \App\Livewire\Concerns\RequiresAuthenticatedAccount;
+
     use WithFileUploads;
 
     // Session Management
@@ -105,6 +107,30 @@ class MentorshipActions extends Component
         'reviewText.min' => 'Please provide detailed feedback (at least 20 characters)'
     ];
 
+    private function authorizedMentorship($id): Mentorship
+    {
+        return Mentorship::whereKey($id)->when(!auth()->user()->hasAnyRole(['super_admin', 'academy_admin']),
+            fn ($query) => $query->where(fn ($owned) => $owned->where('mentor_id', Auth::id())->orWhere('mentee_id', Auth::id())))->firstOrFail();
+    }
+
+    private function authorizedSession($id, bool $operate = false): MentorshipSession
+    {
+        $session = MentorshipSession::findOrFail($id);
+        $mentorship = $this->authorizedMentorship($session->mentorship_id);
+        abort_if($operate && $mentorship->mentor_id !== Auth::id() && !auth()->user()->hasAnyRole(['super_admin', 'academy_admin']), 403);
+
+        return $session;
+    }
+
+    private function authorizedReview($id, bool $grade = false): CodeReview
+    {
+        $review = CodeReview::findOrFail($id);
+        $mentorship = $this->authorizedMentorship($review->mentorship_id);
+        abort_if($grade && $mentorship->mentor_id !== Auth::id() && !auth()->user()->hasAnyRole(['super_admin', 'academy_admin']), 403);
+
+        return $review;
+    }
+
     public function mount()
     {
         $this->initializeArrays();
@@ -123,7 +149,7 @@ class MentorshipActions extends Component
     // Session Management Methods
     public function createSession($mentorshipId)
     {
-        $this->selectedMentorship = Mentorship::find($mentorshipId);
+        $this->selectedMentorship = $this->authorizedMentorship($mentorshipId);
         
         if (!$this->selectedMentorship || !$this->selectedMentorship->isActive()) {
             session()->flash('error', 'Cannot create session for inactive mentorship.');
@@ -137,7 +163,7 @@ class MentorshipActions extends Component
 
     public function editSession($sessionId)
     {
-        $session = MentorshipSession::find($sessionId);
+        $session = $this->authorizedSession($sessionId);
         
         if (!$session || !$this->canManageSession($session)) {
             session()->flash('error', 'You cannot edit this session.');
@@ -151,7 +177,7 @@ class MentorshipActions extends Component
 
     public function viewSession($sessionId)
     {
-        $this->currentSession = MentorshipSession::with(['mentorship.mentor', 'mentorship.mentee'])->find($sessionId);
+        $this->currentSession = $this->authorizedSession($sessionId)->load(['mentorship.mentor', 'mentorship.mentee']);
         
         if (!$this->currentSession) {
             session()->flash('error', 'Session not found.');
@@ -164,7 +190,7 @@ class MentorshipActions extends Component
 
     public function completeSession($sessionId)
     {
-        $session = MentorshipSession::find($sessionId);
+        $session = $this->authorizedSession($sessionId);
         
         if (!$session || !$this->canManageSession($session)) {
             session()->flash('error', 'You cannot complete this session.');
@@ -179,6 +205,13 @@ class MentorshipActions extends Component
 
     public function submitSession()
     {
+        abort_unless(in_array($this->modalType, ['create', 'edit'], true), 422);
+        if ($this->modalType === 'edit') {
+            $existing = $this->authorizedSession($this->sessionId);
+            abort_unless($existing->status === MentorshipSession::STATUS_SCHEDULED, 422);
+            $this->selectedMentorship = $existing->mentorship;
+        }
+        $this->selectedMentorship = $this->authorizedMentorship($this->selectedMentorship?->id);
         $this->validate([
             'sessionTitle' => 'required|string|max:255',
             'sessionDescription' => 'required|string|min:20',
@@ -213,7 +246,7 @@ class MentorshipActions extends Component
             
             session()->flash('message', 'Session scheduled successfully!');
         } else {
-            $session = MentorshipSession::find($this->sessionId);
+            $session = $this->authorizedSession($this->sessionId);
             $session->update($sessionData);
             
             session()->flash('message', 'Session updated successfully!');
@@ -226,13 +259,15 @@ class MentorshipActions extends Component
 
     public function submitSessionCompletion()
     {
+        $this->currentSession = $this->authorizedSession($this->currentSession?->id, operate: true);
         $this->validate([
             'sessionNotes' => 'required|string|min:20',
             'mentorRating' => 'nullable|numeric|min:1|max:5',
             'menteeRating' => 'nullable|numeric|min:1|max:5'
         ]);
 
-        $this->currentSession->completeWithOperations([
+        try {
+            $this->currentSession->completeWithOperations([
             'duration_minutes' => $this->duration,
             'session_notes' => $this->sessionNotes,
             'action_items' => array_filter($this->actionItems),
@@ -241,12 +276,16 @@ class MentorshipActions extends Component
             'mentor_rating' => $this->mentorRating,
             'mentee_rating' => $this->menteeRating,
         ]);
+        } catch (\DomainException $exception) {
+            session()->flash('error', $exception->getMessage());
+            return;
+        }
 
         // Handle file uploads if any
         if ($this->attachments) {
             $attachmentPaths = [];
             foreach ($this->attachments as $attachment) {
-                $path = $attachment->store('mentorship/sessions/' . $this->currentSession->id, 'public');
+                $path = $attachment->store('private/mentorship/sessions/' . $this->currentSession->id, 'local');
                 $attachmentPaths[] = [
                     'name' => $attachment->getClientOriginalName(),
                     'path' => $path,
@@ -266,7 +305,7 @@ class MentorshipActions extends Component
     // Code Review Methods
     public function createCodeReview($mentorshipId)
     {
-        $this->selectedMentorship = Mentorship::find($mentorshipId);
+        $this->selectedMentorship = $this->authorizedMentorship($mentorshipId);
         
         if (!$this->selectedMentorship || !$this->selectedMentorship->isActive()) {
             session()->flash('error', 'Cannot create code review for inactive mentorship.');
@@ -280,7 +319,7 @@ class MentorshipActions extends Component
 
     public function editCodeReview($reviewId)
     {
-        $review = CodeReview::find($reviewId);
+        $review = $this->authorizedReview($reviewId);
         
         if (!$review || !$this->canManageCodeReview($review)) {
             session()->flash('error', 'You cannot edit this code review.');
@@ -294,13 +333,8 @@ class MentorshipActions extends Component
 
     public function viewCodeReview($reviewId)
     {
-        $this->currentCodeReview = CodeReview::with([
-            'mentorship.mentor', 
-            'mentorship.mentee', 
-            'requester', 
-            'reviewer'
-        ])->find($reviewId);
-        
+        $this->currentCodeReview = $this->authorizedReview($reviewId)->load(['mentorship.mentor', 'mentorship.mentee', 'requester', 'reviewer']);
+
         if (!$this->currentCodeReview) {
             session()->flash('error', 'Code review not found.');
             return;
@@ -312,7 +346,7 @@ class MentorshipActions extends Component
 
     public function startCodeReview($reviewId)
     {
-        $review = CodeReview::find($reviewId);
+        $review = $this->authorizedReview($reviewId);
         
         if (!$review || !$this->canReviewCode($review)) {
             session()->flash('error', 'You cannot start this code review.');
@@ -328,6 +362,7 @@ class MentorshipActions extends Component
 
     public function submitCodeReview()
     {
+        $this->selectedMentorship = $this->authorizedMentorship($this->selectedMentorship?->id);
         $this->validate([
             'reviewTitle' => 'required|string|max:255',
             'reviewDescription' => 'required|string|min:20',
@@ -364,7 +399,7 @@ class MentorshipActions extends Component
             
             session()->flash('message', 'Code review requested successfully!');
         } else {
-            $review = CodeReview::find($this->reviewId);
+            $review = $this->authorizedReview($this->reviewId);
             $review->update($reviewData);
             
             session()->flash('message', 'Code review updated successfully!');
@@ -377,6 +412,7 @@ class MentorshipActions extends Component
 
     public function submitCodeReviewFeedback()
     {
+        $this->currentCodeReview = $this->authorizedReview($this->currentCodeReview?->id, grade: true);
         $this->validate([
             'reviewFeedback' => 'required|string|min:50',
             'codeQualityScore' => 'nullable|numeric|min:1|max:10'
@@ -406,7 +442,7 @@ class MentorshipActions extends Component
     // Review & Rating Methods
     public function createReview($mentorshipId, $type = 'mentorship')
     {
-        $this->selectedMentorship = Mentorship::find($mentorshipId);
+        $this->selectedMentorship = $this->authorizedMentorship($mentorshipId);
         $this->modalType = $type;
         $this->resetReviewForm();
         $this->showReviewModal = true;
@@ -414,6 +450,7 @@ class MentorshipActions extends Component
 
     public function submitReview()
     {
+        $this->selectedMentorship = $this->authorizedMentorship($this->selectedMentorship?->id);
         $this->validate([
             'overallRating' => 'required|numeric|min:1|max:5',
             'reviewText' => 'required|string|min:20|max:2000'

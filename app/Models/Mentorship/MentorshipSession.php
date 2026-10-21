@@ -93,6 +93,9 @@ class MentorshipSession extends Model
     public function completeWithOperations(array $data = []): self
     {
         return DB::transaction(function () use ($data) {
+            $locked = static::lockForUpdate()->findOrFail($this->id);
+            $this->setRawAttributes($locked->getAttributes(), true);
+            abort_unless(in_array($this->status, [self::STATUS_SCHEDULED, self::STATUS_IN_PROGRESS, self::STATUS_COMPLETED], true), 422);
             $wasCompleted = $this->status === self::STATUS_COMPLETED;
 
             $this->update([
@@ -121,34 +124,29 @@ class MentorshipSession extends Model
 
     public function payoutMentorIfNeeded(): ?WalletTransaction
     {
-        if (! $this->is_billable || (float) $this->session_cost <= 0 || $this->payment_status === 'paid') {
-            return null;
-        }
+        return DB::transaction(function () {
+            $session = static::with('mentorship')->lockForUpdate()->findOrFail($this->id);
+            if (!$session->is_billable || (float) $session->session_cost <= 0 || $session->payment_status === 'paid') {
+                return null;
+            }
+            abort_unless($session->status === self::STATUS_COMPLETED && $session->mentorship->is_paid, 422);
+            $payer = Wallet::getOrCreateWallet($session->mentorship->mentee_id);
+            $payee = Wallet::getOrCreateWallet($session->mentorship->mentor_id, Wallet::TYPE_INSTRUCTOR);
+            if ($payer->currency !== 'NGN' || $payee->currency !== 'NGN' || $payer->user_id === $payee->user_id) {
+                throw new \DomainException('Mentorship payment requires separate NGN wallets.');
+            }
+            $debit = $payer->debit((float) $session->session_cost, WalletTransaction::CATEGORY_COURSE_PURCHASE,
+                'Agreed mentorship session: '.$session->title, $session);
+            $credit = $payee->credit((float) $session->session_cost, WalletTransaction::CATEGORY_INSTRUCTOR_EARNING,
+                'Mentorship session: '.$session->title, $session);
+            $metadata = $session->metadata ?? [];
+            data_set($metadata, 'payment.transaction_id', $debit->id);
+            data_set($metadata, 'payout.transaction_id', $credit->id);
+            data_set($metadata, 'payout.paid_at', now()->toIso8601String());
+            $session->update(['payment_status' => 'paid', 'metadata' => $metadata]);
+            $this->setRawAttributes($session->getAttributes(), true);
 
-        $wallet = Wallet::getOrCreateWallet($this->mentorship->mentor_id, Wallet::TYPE_INSTRUCTOR);
-
-        $transaction = $wallet->credit(
-            (float) $this->session_cost,
-            WalletTransaction::CATEGORY_INSTRUCTOR_EARNING,
-            "Mentorship session payout: {$this->title}",
-            $this,
-            [
-                'mentorship_id' => $this->mentorship_id,
-                'session_id' => $this->id,
-                'mentee_id' => $this->mentorship->mentee_id,
-                'mentor_id' => $this->mentorship->mentor_id,
-            ]
-        );
-
-        $metadata = $this->metadata ?? [];
-        data_set($metadata, 'payout.transaction_id', $transaction->id);
-        data_set($metadata, 'payout.paid_at', now()->toIso8601String());
-
-        $this->forceFill([
-            'payment_status' => 'paid',
-            'metadata' => $metadata,
-        ])->save();
-
-        return $transaction;
+            return $credit;
+        });
     }
 }

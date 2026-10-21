@@ -11,6 +11,8 @@ use Illuminate\Support\Facades\Auth;
 
 class Overview extends Component
 {
+    use \App\Livewire\Concerns\AuthorizesMentoring;
+
     public $performanceMetrics = [];
     public $pendingRequestsList = [];
     public $upcomingSessionsList = [];
@@ -174,12 +176,12 @@ class Overview extends Component
 
     public function editProfile()
     {
-        $this->dispatch('open-profile-modal');
+        return redirect()->route('mentorship.profile');
     }
 
     public function applyToBecomeMentor()
     {
-        $this->dispatch('open-application-modal');
+        return redirect()->route('mentorship.profile');
     }
 
     public function render()

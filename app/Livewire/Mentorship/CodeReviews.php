@@ -20,6 +20,11 @@ use Livewire\WithPagination;
 ])]
 class CodeReviews extends Component
 {
+    use \App\Livewire\Concerns\RequiresAuthenticatedAccount;
+
+    #[\Livewire\Attributes\Locked]
+    public bool $embedded = false;
+
     use WithPagination;
 
     public string $statusFilter = '';

@@ -17,6 +17,8 @@ use Livewire\Attributes\Layout;
 ])]
 class FindMentor extends Component
 {
+    use \App\Livewire\Concerns\RequiresAuthenticatedAccount;
+
     use WithPagination;
 
     public $searchTerm = '';
@@ -72,14 +74,14 @@ class FindMentor extends Component
 
     public function selectMentor($mentorId)
     {
-        $this->selectedMentor = MentorProfile::with('user')->find($mentorId);
+        $this->selectedMentor = MentorProfile::with('user')->where('is_verified', true)->where('is_available', true)->where('user_id', '!=', Auth::id())->findOrFail($mentorId);
         $this->showMentorModal = true;
     }
 
     public function requestMentorship($mentorId = null)
     {
         if ($mentorId) {
-            $this->selectedMentor = MentorProfile::with('user')->find($mentorId);
+            $this->selectedMentor = MentorProfile::with('user')->where('is_verified', true)->where('is_available', true)->where('user_id', '!=', Auth::id())->findOrFail($mentorId);
         }
         
         $this->showRequestModal = true;
@@ -88,6 +90,7 @@ class FindMentor extends Component
 
     public function submitMentorshipRequest()
     {
+        $this->selectedMentor = MentorProfile::where('is_verified', true)->where('is_available', true)->where('user_id', '!=', Auth::id())->findOrFail($this->selectedMentor?->id);
         $this->validate();
 
         // Check if already has active/pending mentorship with this mentor
@@ -171,10 +174,11 @@ class FindMentor extends Component
 
         // Apply filters
         if ($this->searchTerm) {
-            $query->whereHas('user', function($q) {
-                $q->where('name', 'like', '%' . $this->searchTerm . '%');
-            })->orWhereJsonContains('specializations', $this->searchTerm)
-              ->orWhereJsonContains('skills', $this->searchTerm);
+            $query->where(function ($matching) {
+                $matching->whereHas('user', fn ($user) => $user->where('name', 'like', '%' . $this->searchTerm . '%'))
+                    ->orWhereJsonContains('specializations', $this->searchTerm)
+                    ->orWhereJsonContains('skills', $this->searchTerm);
+            });
         }
 
         if ($this->availabilityFilter === 'available') {

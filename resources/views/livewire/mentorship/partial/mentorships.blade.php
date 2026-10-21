@@ -3,7 +3,7 @@
         <h2 class="text-2xl font-bold text-themed-primary transition-colors duration-300">My Mentees</h2>
         <div class="flex items-center space-x-4">
             <select wire:model.live="statusFilter"
-                class="px-4 py-2 border border-themed-primary rounded-lg focus:ring-2 focus:ring-accent-primary focus:border-transparent bg-themed-secondary text-themed-primary transition-colors duration-300">
+                class="px-4 py-2 border border-themed-primary rounded-lg focus:ring-2 focus:ring-brand focus:border-transparent bg-themed-secondary text-themed-primary transition-colors duration-300">
                 <option value="">All Status</option>
                 <option value="pending">Pending</option>
                 <option value="active">Active</option>
@@ -19,7 +19,7 @@
                     <div class="flex items-center justify-between mb-4">
                         <div class="flex items-center space-x-4">
                             <div
-                                class="w-12 h-12 bg-gradient-to-br from-accent-primary to-accent-secondary rounded-full flex items-center justify-center text-white font-bold">
+                                class="w-12 h-12 bg-brand rounded-full flex items-center justify-center text-white dark:text-brand-ink font-bold">
                                 {{ substr($mentorship->mentee->name, 0, 1) }}
                             </div>
                             <div>
@@ -64,7 +64,7 @@
                                     class="text-sm text-themed-secondary transition-colors duration-300">{{ $mentorship->progress_percentage }}%</span>
                             </div>
                             <div class="w-full bg-themed-tertiary rounded-full h-2 transition-colors duration-300">
-                                <div class="bg-accent-primary h-2 rounded-full transition-colors duration-300"
+                                <div class="bg-brand h-2 rounded-full transition-colors duration-300"
                                     style="width: {{ $mentorship->progress_percentage }}%"></div>
                             </div>
                         </div>
@@ -94,7 +94,7 @@
                                     Operations
                                 </a>
                                 <button wire:click="completeMentorship({{ $mentorship->id }})"
-                                    class="bg-accent-primary hover:bg-accent-secondary text-white px-4 py-2 rounded-lg text-sm transition-colors">
+                                    class="bk-button bk-button-primary   px-4 py-2 rounded-lg text-sm transition-colors">
                                     Complete
                                 </button>
                             @endif

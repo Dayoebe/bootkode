@@ -18,6 +18,10 @@ use Livewire\Attributes\Layout;
 ])]
 class MentorManagement extends Component
 {
+    use \App\Livewire\Concerns\RequiresAuthenticatedAccount;
+
+    use \App\Livewire\Concerns\AuthorizesPlatformAdministration;
+
     use WithPagination;
 
     public $activeTab = 'pending';

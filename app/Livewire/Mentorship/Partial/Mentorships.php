@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\Auth;
 
 class Mentorships extends Component
 {
+    use \App\Livewire\Concerns\AuthorizesMentoring;
+
     use WithPagination;
 
     public $statusFilter = '';

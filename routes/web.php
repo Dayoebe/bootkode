@@ -229,7 +229,7 @@ Route::middleware(['auth', 'verified'])->prefix('mentorship')->name('mentorship.
     });
 
     Route::middleware(['auth', 'verified'])->group(function () {
-        Route::get('/management', \App\Livewire\Mentorship\MentorManagement::class)->name('management');
+        Route::get('/management', \App\Livewire\Mentorship\MentorManagement::class)->name('management')->middleware(\App\Http\Middleware\CheckRole::class . ':super_admin,academy_admin');
     });
 });
 

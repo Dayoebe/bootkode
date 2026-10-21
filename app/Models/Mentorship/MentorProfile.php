@@ -62,9 +62,7 @@ class MentorProfile extends Model
     protected $appends = [
         'experience_label',
         'availability_status',
-        'rating_stars',
-        'success_rate',
-        'response_time'
+        'rating_stars'
     ];
 
     public function user()
@@ -82,7 +80,7 @@ class MentorProfile extends Model
         return $this->mentorships()->active();
     }
 
-    public function experienceLabelAttribute(): Attribute
+    public function experienceLabel(): Attribute
     {
         return Attribute::make(
             get: fn() => match ($this->experience_level) {
@@ -95,7 +93,7 @@ class MentorProfile extends Model
         );
     }
 
-    public function availabilityStatusAttribute(): Attribute
+    public function availabilityStatus(): Attribute
     {
         return Attribute::make(
             get: function () {
@@ -112,14 +110,15 @@ class MentorProfile extends Model
         );
     }
 
-    public function ratingStarsAttribute(): Attribute
+    public function ratingStars(): Attribute
     {
         return Attribute::make(
             get: function () {
-                $rating = $this->rating;
-                $stars = str_repeat('★', floor($rating));
+                $rating = max(0, min(5, (float) $this->rating));
+                $full = (int) floor($rating);
+                $stars = str_repeat('★', $full);
                 $halfStar = ($rating - floor($rating)) >= 0.5 ? '☆' : '';
-                $emptyStars = str_repeat('☆', 5 - strlen($stars) - strlen($halfStar));
+                $emptyStars = str_repeat('☆', max(0, 5 - $full - ($halfStar ? 1 : 0)));
                 
                 return $stars . $halfStar . $emptyStars;
             }

@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\Auth;
 
 class Profile extends Component
 {
+    use \App\Livewire\Concerns\AuthorizesMentoring;
+
     public $profileId = null;
     public $bio = '';
     public $specializations = [];

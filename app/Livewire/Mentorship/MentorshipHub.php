@@ -17,6 +17,8 @@ use Livewire\Attributes\Layout;
 ])]
 class MentorshipHub extends Component
 {
+    use \App\Livewire\Concerns\RequiresAuthenticatedAccount;
+
     // Dashboard stats
     public $activeMentorships = 0;
     public $completedMentorships = 0;
@@ -38,64 +40,17 @@ class MentorshipHub extends Component
     {
         $user = Auth::user();
         
-        // Load based on user role
-        if ($user->isStudent()) {
-            $this->loadStudentDashboard($user);
-        }
-        
-        if ($user->isMentor()) {
-            $this->loadMentorDashboard($user);
-        }
-        
+        $mine = Mentorship::where(fn ($query) => $query->where('mentor_id', $user->id)->orWhere('mentee_id', $user->id));
+        $this->activeMentorships = (clone $mine)->where('status', Mentorship::STATUS_ACTIVE)->count();
+        $this->completedMentorships = (clone $mine)->where('status', Mentorship::STATUS_COMPLETED)->count();
+        $ids = (clone $mine)->pluck('id');
+        $this->totalSessions = MentorshipSession::whereIn('mentorship_id', $ids)->where('status', MentorshipSession::STATUS_COMPLETED)->count();
+        $this->upcomingSessions = MentorshipSession::whereIn('mentorship_id', $ids)->where('status', MentorshipSession::STATUS_SCHEDULED)->where('scheduled_at', '>', now())->count();
+        $this->pendingCodeReviews = CodeReview::whereIn('mentorship_id', $ids)->where('status', CodeReview::STATUS_PENDING)->count();
+
         $this->loadUpcomingSessions($user);
         $this->loadRecentCodeReviews($user);
         $this->loadMyActiveMentorships($user);
-    }
-
-    private function loadStudentDashboard($user)
-    {
-        $this->activeMentorships = Mentorship::where('mentee_id', $user->id)
-            ->where('status', Mentorship::STATUS_ACTIVE)
-            ->count();
-            
-        $this->completedMentorships = Mentorship::where('mentee_id', $user->id)
-            ->where('status', Mentorship::STATUS_COMPLETED)
-            ->count();
-            
-        $this->totalSessions = MentorshipSession::whereHas('mentorship', function($q) use ($user) {
-            $q->where('mentee_id', $user->id);
-        })->where('status', MentorshipSession::STATUS_COMPLETED)->count();
-        
-        $this->upcomingSessions = MentorshipSession::whereHas('mentorship', function($q) use ($user) {
-            $q->where('mentee_id', $user->id)->where('status', Mentorship::STATUS_ACTIVE);
-        })->where('status', MentorshipSession::STATUS_SCHEDULED)
-          ->where('scheduled_at', '>', now())
-          ->count();
-          
-        $this->pendingCodeReviews = CodeReview::whereHas('mentorship', function($q) use ($user) {
-            $q->where('mentee_id', $user->id);
-        })->where('status', CodeReview::STATUS_PENDING)->count();
-    }
-
-    private function loadMentorDashboard($user)
-    {
-        $this->activeMentorships = Mentorship::where('mentor_id', $user->id)
-            ->where('status', Mentorship::STATUS_ACTIVE)
-            ->count();
-            
-        $this->totalSessions = MentorshipSession::whereHas('mentorship', function($q) use ($user) {
-            $q->where('mentor_id', $user->id);
-        })->where('status', MentorshipSession::STATUS_COMPLETED)->count();
-        
-        $this->upcomingSessions = MentorshipSession::whereHas('mentorship', function($q) use ($user) {
-            $q->where('mentor_id', $user->id)->where('status', Mentorship::STATUS_ACTIVE);
-        })->where('status', MentorshipSession::STATUS_SCHEDULED)
-          ->where('scheduled_at', '>', now())
-          ->count();
-        
-        $this->pendingCodeReviews = CodeReview::whereHas('mentorship', function($q) use ($user) {
-            $q->where('mentor_id', $user->id);
-        })->where('status', CodeReview::STATUS_PENDING)->count();
     }
 
     private function loadUpcomingSessions($user)
@@ -104,11 +59,7 @@ class MentorshipHub extends Component
             ->where('status', MentorshipSession::STATUS_SCHEDULED)
             ->where('scheduled_at', '>', now());
 
-        if ($user->isStudent()) {
-            $query->whereHas('mentorship', fn($q) => $q->where('mentee_id', $user->id));
-        } elseif ($user->isMentor()) {
-            $query->whereHas('mentorship', fn($q) => $q->where('mentor_id', $user->id));
-        }
+        $query->whereHas('mentorship', fn ($query) => $query->where(fn ($owned) => $owned->where('mentee_id', $user->id)->orWhere('mentor_id', $user->id)));
 
         $this->upcomingSessionsList = $query->orderBy('scheduled_at')->take(5)->get();
     }
@@ -117,11 +68,7 @@ class MentorshipHub extends Component
     {
         $query = CodeReview::with(['mentorship.mentor', 'mentorship.mentee', 'requester', 'reviewer']);
 
-        if ($user->isStudent()) {
-            $query->where('requested_by', $user->id);
-        } elseif ($user->isMentor()) {
-            $query->whereHas('mentorship', fn($q) => $q->where('mentor_id', $user->id));
-        }
+        $query->whereHas('mentorship', fn ($query) => $query->where(fn ($owned) => $owned->where('mentee_id', $user->id)->orWhere('mentor_id', $user->id)));
 
         $this->recentCodeReviews = $query->orderBy('requested_at', 'desc')->take(5)->get();
     }
@@ -131,11 +78,7 @@ class MentorshipHub extends Component
         $query = Mentorship::with(['mentor.mentorProfile', 'mentee'])
             ->where('status', Mentorship::STATUS_ACTIVE);
 
-        if ($user->isStudent()) {
-            $query->where('mentee_id', $user->id);
-        } elseif ($user->isMentor()) {
-            $query->where('mentor_id', $user->id);
-        }
+        $query->where(fn ($owned) => $owned->where('mentee_id', $user->id)->orWhere('mentor_id', $user->id));
 
         $this->myActiveMentorships = $query->orderBy('started_at', 'desc')->take(5)->get();
     }
