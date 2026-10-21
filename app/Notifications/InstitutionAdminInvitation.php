@@ -27,8 +27,9 @@ class InstitutionAdminInvitation extends Notification implements ShouldQueue
             ->subject('Invitation to manage ' . $this->invitation->institution->name)
             ->greeting('Hello ' . ($this->invitation->name ?: $notifiable->name) . ',')
             ->line('You have been invited as ' . $this->invitation->role_name . ' for ' . $this->invitation->institution->name . '.')
-            ->line('This invitation gives you access to the institution portal, learner management, cohorts, and reports for your school.')
-            ->action('Accept Invitation', route('institution.invitations.accept', $this->invitation->token))
+            ->line('This invitation adds an institution membership. Platform administration remains restricted to authorised platform staff.')
+            ->line('Sign in to your own account before accepting. If this is your first visit, use the password reset page to set your password.')
+            ->action('Review Invitation', route('institution.invitations.accept', $this->invitation->token))
             ->line('This invitation expires on ' . $this->invitation->expires_at->format('M d, Y') . '.');
     }
 

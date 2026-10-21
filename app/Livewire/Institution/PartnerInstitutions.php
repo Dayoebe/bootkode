@@ -14,6 +14,8 @@ use Illuminate\Support\Facades\Storage;
 
 class PartnerInstitutions extends Component
 {
+    use \App\Livewire\Concerns\AuthorizesPlatformAdministration;
+
     use WithPagination, WithFileUploads;
 
     // Filters and search
@@ -177,41 +179,7 @@ class PartnerInstitutions extends Component
         $this->validate();
 
         try {
-            // Handle logo upload
-            $logoPath = null;
-            if ($this->logo) {
-                $logoPath = $this->logo->store('institution-logos', 'public');
-            }
-
-            // Find or create admin user
-            $adminUser = User::where('email', $this->form['admin_email'])->first();
-            if (!$adminUser) {
-                $adminUser = User::create([
-                    'name' => explode('@', $this->form['admin_email'])[0],
-                    'email' => $this->form['admin_email'],
-                    'password' => bcrypt(Str::random(16)), // Temporary password
-                    'role' => User::ROLE_ACADEMY_ADMIN
-                ]);
-                
-                // Send welcome email with temporary password reset link
-                $adminUser->sendEmailVerificationNotification();
-            }
-
-            $institution = Institution::create(array_merge($this->form, [
-                'logo' => $logoPath,
-                'admin_user_id' => $adminUser->id,
-                'created_by' => auth()->id()
-            ]));
-
-            // Create admin user relationship
-            $institution->users()->create([
-                'user_id' => $adminUser->id,
-                'role' => 'admin',
-                'status' => 'active',
-                'added_by' => auth()->id()
-            ]);
-
-            app(InstitutionService::class)->sendWelcomeNotification($institution);
+            app(InstitutionService::class)->createInstitution($this->form, $this->logo);
 
             session()->flash('message', 'Institution created successfully!');
             $this->closeModals();
@@ -230,18 +198,7 @@ class PartnerInstitutions extends Component
         $this->validate($rules);
 
         try {
-            $updateData = $this->form;
-
-            // Handle logo upload
-            if ($this->logo) {
-                // Delete old logo
-                if ($this->selectedInstitution->logo) {
-                    Storage::disk('public')->delete($this->selectedInstitution->logo);
-                }
-                $updateData['logo'] = $this->logo->store('institution-logos', 'public');
-            }
-
-            $this->selectedInstitution->update($updateData);
+            app(InstitutionService::class)->updateInstitution($this->selectedInstitution, $this->form, $this->logo);
 
             session()->flash('message', 'Institution updated successfully!');
             $this->closeModals();
@@ -255,10 +212,7 @@ class PartnerInstitutions extends Component
     public function delete()
     {
         try {
-            // Delete logo file
-            if ($this->selectedInstitution->logo) {
-                Storage::disk('public')->delete($this->selectedInstitution->logo);
-            }
+            // Archiving preserves the logo alongside the soft-deleted institution.
 
             $this->selectedInstitution->delete();
 

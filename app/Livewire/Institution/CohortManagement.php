@@ -14,6 +14,8 @@ use Livewire\WithPagination;
 
 class CohortManagement extends Component
 {
+    use \App\Livewire\Concerns\AuthorizesPlatformAdministration;
+
     use WithPagination;
 
     public $search = '';
@@ -141,6 +143,14 @@ class CohortManagement extends Component
             return;
         }
 
+        $this->selectedCohort = InstitutionCohort::findOrFail($this->selectedCohort->id);
+        $this->validate([
+            'selectedMembers' => 'array',
+            'selectedMembers.*' => ['integer', \Illuminate\Validation\Rule::in($this->selectedCohort->institution->users()->where('status', 'active')->pluck('id')->all())],
+            'selectedCourses' => 'array',
+            'selectedCourses.*' => ['integer', \Illuminate\Validation\Rule::in(Course::publiclyAvailable()->pluck('id')->all())],
+            'assignmentDueDate' => 'nullable|date',
+        ]);
         $memberSync = collect($this->selectedMembers)
             ->mapWithKeys(fn ($id) => [
                 (int) $id => [
@@ -247,7 +257,7 @@ class CohortManagement extends Component
 
     public function getAvailableCoursesProperty()
     {
-        return Course::query()
+        return Course::publiclyAvailable()
             ->where('is_published', true)
             ->where('is_approved', true)
             ->orderBy('title')

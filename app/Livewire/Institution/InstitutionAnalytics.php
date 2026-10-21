@@ -11,6 +11,8 @@ use App\Services\InstitutionService;
 
 class InstitutionAnalytics extends Component
 {
+    use \App\Livewire\Concerns\AuthorizesPlatformAdministration;
+
     public $selectedInstitution = 'all';
     public $dateRange = '30';
     public $analyticsData = [];

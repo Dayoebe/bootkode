@@ -91,19 +91,21 @@ Route::middleware(['auth'])->group(function () {
 
 Route::get('/institution/invitations/{token}/accept', [\App\Http\Controllers\InstitutionInvitationController::class, 'accept'])
     ->name('institution.invitations.accept');
+Route::post('/institution/invitations/{token}/accept', [\App\Http\Controllers\InstitutionInvitationController::class, 'confirm'])
+    ->middleware('auth')->name('institution.invitations.confirm');
 
 // Institution Portal Routes
 Route::middleware(['auth', 'verified'])->prefix('institution')->name('institution.')->group(function () {
 
     // Main portal dashboard
     Route::get('/portal', App\Livewire\Institution\InstitutionPortal::class)->name('portal');
-    Route::get('/overview', App\Livewire\Institution\InstitutionPortal::class)->name('overview');
-    Route::get('/partners', App\Livewire\Institution\InstitutionPortal::class)->name('partners');
-    Route::get('/licenses', App\Livewire\Institution\InstitutionPortal::class)->name('licenses');
-    Route::get('/cohorts', App\Livewire\Institution\InstitutionPortal::class)->name('cohorts');
-    Route::get('/bulk-enrollment', App\Livewire\Institution\InstitutionPortal::class)->name('bulk-enrollment');
-    Route::get('/analytics', App\Livewire\Institution\InstitutionPortal::class)->name('analytics');
-    Route::get('/whitelabel', App\Livewire\Institution\InstitutionPortal::class)->name('whitelabel');
+    Route::get('/overview', App\Livewire\Institution\InstitutionPortal::class)->name('overview')->middleware(\App\Http\Middleware\CheckRole::class . ':super_admin,academy_admin');
+    Route::get('/partners', App\Livewire\Institution\InstitutionPortal::class)->name('partners')->middleware(\App\Http\Middleware\CheckRole::class . ':super_admin,academy_admin');
+    Route::get('/licenses', App\Livewire\Institution\InstitutionPortal::class)->name('licenses')->middleware(\App\Http\Middleware\CheckRole::class . ':super_admin,academy_admin');
+    Route::get('/cohorts', App\Livewire\Institution\InstitutionPortal::class)->name('cohorts')->middleware(\App\Http\Middleware\CheckRole::class . ':super_admin,academy_admin');
+    Route::get('/bulk-enrollment', App\Livewire\Institution\InstitutionPortal::class)->name('bulk-enrollment')->middleware(\App\Http\Middleware\CheckRole::class . ':super_admin,academy_admin');
+    Route::get('/analytics', App\Livewire\Institution\InstitutionPortal::class)->name('analytics')->middleware(\App\Http\Middleware\CheckRole::class . ':super_admin,academy_admin');
+    Route::get('/whitelabel', App\Livewire\Institution\InstitutionPortal::class)->name('whitelabel')->middleware(\App\Http\Middleware\CheckRole::class . ':super_admin,academy_admin');
 });
 
 

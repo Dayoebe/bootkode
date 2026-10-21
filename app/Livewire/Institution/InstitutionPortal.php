@@ -18,6 +18,7 @@ use Livewire\Attributes\Layout;
 
 class InstitutionPortal extends Component
 {
+
     public $activeTab = 'overview';
     public $user;
 
@@ -28,7 +29,7 @@ class InstitutionPortal extends Component
         'total_users' => 0,
         'pending_approvals' => 0,
         'expiring_licenses' => 0,
-        'total_revenue' => 0,
+        'total_revenue' => null,
         'recent_enrollments' => 0,
         'certificates_issued' => 0,
         'active_cohorts' => 0,
@@ -39,13 +40,28 @@ class InstitutionPortal extends Component
     public $selectedPeriod = '30';
     public $selectedInstitutionType = 'all';
 
+    protected function platformAdmin(): bool
+    {
+        return auth()->user()?->hasAnyRole(['super_admin', 'academy_admin']) ?? false;
+    }
+
+    protected function authorizePlatform(): void
+    {
+        abort_unless($this->platformAdmin(), 403);
+    }
+
+    public function boot(): void
+    {
+        abort_unless(auth()->check() && ($this->platformAdmin() || InstitutionUser::where('user_id', auth()->id())->where('status', 'active')->where('role', 'admin')->exists()), 403);
+    }
+
     public function mount()
     {
         $this->user = auth()->user();
 
         // Check permissions
-        if (!$this->user->isSuperAdmin() && !$this->user->isAcademyAdmin()) {
-            abort(403, 'Unauthorized access to Institution Portal');
+        if (!$this->platformAdmin()) {
+            return;
         }
 
         // Set active tab based on route
@@ -67,6 +83,8 @@ class InstitutionPortal extends Component
 
     public function setActiveTab($tab)
     {
+        $this->authorizePlatform();
+        abort_unless(in_array($tab, ['overview', 'partners', 'licenses', 'cohorts', 'bulk-enrollment', 'analytics', 'whitelabel'], true), 422);
         $this->activeTab = $tab;
         $this->loadStatistics();
     }
@@ -83,6 +101,8 @@ class InstitutionPortal extends Component
 
     protected function loadStatistics()
     {
+        $this->authorizePlatform();
+        $this->validate(['selectedPeriod' => 'in:7,30,90,365', 'selectedInstitutionType' => 'in:all,'.implode(',', array_keys(Institution::INSTITUTION_TYPES))]);
         try {
             $periodDays = (int) $this->selectedPeriod;
             $periodStart = now()->subDays($periodDays);
@@ -123,7 +143,7 @@ class InstitutionPortal extends Component
                 ->count();
 
             // Revenue calculation (placeholder - integrate with your billing system)
-            $this->stats['total_revenue'] = $this->stats['active_institutions'] * 100; // $100 per institution
+            $this->stats['total_revenue'] = null; // No verified institutional billing source is connected.
 
             // Recent enrollments
             $this->stats['recent_enrollments'] = CourseEnrollment::whereIn('user_id',
@@ -143,7 +163,7 @@ class InstitutionPortal extends Component
                 'total_users' => 0,
                 'pending_approvals' => 0,
                 'expiring_licenses' => 0,
-                'total_revenue' => 0,
+                'total_revenue' => null,
                 'recent_enrollments' => 0,
                 'certificates_issued' => 0,
                 'active_cohorts' => 0,
@@ -165,6 +185,7 @@ class InstitutionPortal extends Component
 
     public function getRecentActivities()
     {
+        $this->authorizePlatform();
         try {
             $activities = collect();
 
@@ -249,6 +270,7 @@ class InstitutionPortal extends Component
 
     public function getTopInstitutionsByUsers($limit = 5)
     {
+        $this->authorizePlatform();
         try {
             return Institution::withCount(['users' => function ($query) {
                 $query->where('status', 'active');
@@ -264,6 +286,7 @@ class InstitutionPortal extends Component
 
     public function getInstitutionTypeBreakdown()
     {
+        $this->authorizePlatform();
         try {
             return Institution::selectRaw('institution_type, COUNT(*) as count')
                 ->where('status', 'active')
@@ -281,6 +304,7 @@ class InstitutionPortal extends Component
 
     public function getLicenseStatusBreakdown()
     {
+        $this->authorizePlatform();
         try {
             $stats = [
                 'Active' => 0,
@@ -323,6 +347,7 @@ class InstitutionPortal extends Component
 
     public function getMonthlyGrowthData()
     {
+        $this->authorizePlatform();
         try {
             $months = [];
             $institutions = [];
@@ -359,14 +384,17 @@ class InstitutionPortal extends Component
 
     public function render()
     {
+        if (!$this->platformAdmin()) {
+            return view('livewire.institution.membership-portal', ['institutions' => Institution::whereHas('users', fn ($query) => $query->where('user_id', auth()->id())->where('role', 'admin')->where('status', 'active'))->get(['id', 'name', 'status', 'license_end_date'])]);
+        }
         return view('livewire.institution.institution-portal', [
             'user' => $this->user,
             'stats' => $this->stats,
-            'recentActivities' => $this->getRecentActivities(),
-            'topInstitutions' => $this->getTopInstitutionsByUsers(),
-            'institutionTypeBreakdown' => $this->getInstitutionTypeBreakdown(),
-            'licenseStatusBreakdown' => $this->getLicenseStatusBreakdown(),
-            'monthlyGrowthData' => $this->getMonthlyGrowthData(),
+            'recentActivities' => $this->activeTab === 'overview' ? $this->getRecentActivities() : collect(),
+            'topInstitutions' => $this->activeTab === 'overview' ? $this->getTopInstitutionsByUsers() : collect(),
+            'institutionTypeBreakdown' => $this->activeTab === 'overview' ? $this->getInstitutionTypeBreakdown() : collect(),
+            'licenseStatusBreakdown' => $this->activeTab === 'overview' ? $this->getLicenseStatusBreakdown() : collect(),
+            'monthlyGrowthData' => $this->activeTab === 'overview' ? $this->getMonthlyGrowthData() : ['months' => [], 'institutions' => [], 'users' => []],
             'institutionTypes' => Institution::INSTITUTION_TYPES
         ]);
     }

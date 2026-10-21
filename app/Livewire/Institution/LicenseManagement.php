@@ -9,6 +9,8 @@ use App\Services\InstitutionService;
 
 class LicenseManagement extends Component
 {
+    use \App\Livewire\Concerns\AuthorizesPlatformAdministration;
+
     use WithPagination;
 
     // Filters

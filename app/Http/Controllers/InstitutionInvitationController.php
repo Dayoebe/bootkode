@@ -3,36 +3,36 @@
 namespace App\Http\Controllers;
 
 use App\Models\Admin\InstitutionInvitation;
-use Illuminate\Http\RedirectResponse;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\Request;
 
 class InstitutionInvitationController extends Controller
 {
-    public function accept(string $token): RedirectResponse
+    public function accept(Request $request, string $token)
     {
-        $invitation = InstitutionInvitation::with(['institution', 'invitee'])
-            ->where('token', $token)
-            ->firstOrFail();
-
-        if (! $invitation->isPending()) {
-            $message = $invitation->status === 'accepted'
-                ? 'This invitation has already been accepted.'
-                : 'This invitation is no longer active.';
-
-            return redirect()->route('login')->with('status', $message);
+        if (!$request->user()) {
+            return redirect()->guest(route('login'));
         }
+        $invitation = $this->invitationFor($request, $token);
 
-        try {
-            $membership = $invitation->accept($invitation->invitee);
-            Auth::login($membership->user);
+        return view('institution.invitation', ['invitation' => $invitation]);
+    }
 
-            return redirect()
-                ->route('institution.portal')
-                ->with('message', 'Invitation accepted. You can now manage ' . $invitation->institution->name . '.');
-        } catch (\Throwable $e) {
-            return redirect()
-                ->route('login')
-                ->with('error', $e->getMessage());
-        }
+    public function confirm(Request $request, string $token)
+    {
+        abort_unless($request->user(), 403);
+        $invitation = $this->invitationFor($request, $token);
+        $invitation->accept($request->user());
+
+        return redirect()->route('dashboard')->with('message', 'Your institution membership is active.');
+    }
+
+    private function invitationFor(Request $request, string $token): InstitutionInvitation
+    {
+        $invitation = InstitutionInvitation::with('institution')->where('token', $token)->firstOrFail();
+        abort_unless((int) $invitation->user_id === (int) $request->user()->id
+            && strcasecmp($invitation->email, $request->user()->email) === 0, 403);
+        abort_unless($invitation->isPending(), 410, 'This invitation has expired or is no longer pending.');
+
+        return $invitation;
     }
 }
