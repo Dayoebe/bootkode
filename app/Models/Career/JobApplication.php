@@ -71,7 +71,7 @@ class JobApplication extends Model
     public function resumeUrl(): Attribute
     {
         return Attribute::make(
-            get: fn() => $this->resume_path ? Storage::url($this->resume_path) : null
+            get: fn() => $this->resume_path ? route('job-applications.resume', $this) : null
         );
     }
 

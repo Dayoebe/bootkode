@@ -1,73 +1,35 @@
 <div class="min-h-screen bg-themed-primary">
-    <!-- Header Section -->
-    <div class="bg-themed-secondary shadow-lg border-b border-themed-primary">
-        <div class="w-full py-8">
-            <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between">
-                <div class="mb-6 lg:mb-0">
-                    <h1 class="text-4xl font-bold text-themed-primary mb-2">Job Management</h1>
-                    <p class="text-xl text-themed-secondary">Manage job postings and track applications</p>
+    <div class="mx-auto max-w-7xl px-4 pt-6 sm:px-6">
+        <x-ui.page-header title="Job management" description="Manage current openings and review learner applications." />
+        <dl class="grid grid-cols-2 gap-4 lg:grid-cols-4">
+            @foreach(['Total jobs' => $jobStats['total'], 'Active jobs' => $jobStats['active'], 'Applications' => $applicationStats['total'], 'Premium jobs' => $jobStats['premium']] as $label => $value)
+                <div class="rounded-lg border border-line bg-surface p-4">
+                    <dt class="text-sm text-content-muted">{{ $label }}</dt>
+                    <dd class="mt-1 text-xl font-semibold text-content">{{ number_format($value) }}</dd>
                 </div>
-
-                <!-- Statistics Cards -->
-                <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
-                    <div class="bg-accent-themed-primary rounded-xl p-4 text-white text-center">
-                        <div class="text-2xl font-bold">{{ $jobStats['total'] ?? 0 }}</div>
-                        <div class="text-sm opacity-90">Total Jobs</div>
-                    </div>
-                    
-                    <div class="bg-green-600 rounded-xl p-4 text-white text-center">
-                        <div class="text-2xl font-bold">{{ $jobStats['active'] ?? 0 }}</div>
-                        <div class="text-sm opacity-90">Active</div>
-                    </div>
-                    
-                    <div class="bg-purple-600 rounded-xl p-4 text-white text-center">
-                        <div class="text-2xl font-bold">{{ $applicationStats['total'] ?? 0 }}</div>
-                        <div class="text-sm opacity-90">Applications</div>
-                    </div>
-                    
-                    <div class="bg-orange-600 rounded-xl p-4 text-white text-center">
-                        <div class="text-2xl font-bold">{{ $jobStats['premium'] ?? 0 }}</div>
-                        <div class="text-sm opacity-90">Premium</div>
-                    </div>
-                </div>
-            </div>
-        </div>
+            @endforeach
+        </dl>
     </div>
 
-    <!-- Flash Messages -->
-    @if (session('message'))
-        <div class="w-full pt-4">
-            <div class="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-lg relative animate-fade-in">
-                <span class="block sm:inline">{{ session('message') }}</span>
-            </div>
-        </div>
-    @endif
+    <div class="px-4 pt-4 sm:px-6"><x-ui.flash /></div>
 
-    @if (session('error'))
-        <div class="w-full pt-4">
-            <div class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg relative animate-fade-in">
-                <span class="block sm:inline">{{ session('error') }}</span>
-            </div>
-        </div>
-    @endif
-
-    <div class="px-6 py-8">
+    <div class="px-4 py-6 sm:px-6">
         <!-- Navigation Tabs -->
-        <div class="flex space-x-8 mb-8 border-b border-themed-primary">
+        <div class="flex gap-6 overflow-x-auto mb-6 border-b border-themed-primary">
             <button wire:click="$set('activeTab', 'overview')" 
-                class="pb-4 {{ $activeTab === 'overview' ? 'border-b-2 border-accent-themed-primary text-accent-themed-primary font-semibold' : 'text-themed-secondary hover:text-themed-primary' }}">
+                class="min-h-11 shrink-0 pb-3 {{ $activeTab === 'overview' ? 'border-b-2 border-accent-themed-primary text-accent-themed-primary font-semibold' : 'text-themed-secondary hover:text-themed-primary' }}">
                 Overview
             </button>
             <button wire:click="$set('activeTab', 'jobs')" 
-                class="pb-4 {{ $activeTab === 'jobs' ? 'border-b-2 border-accent-themed-primary text-accent-themed-primary font-semibold' : 'text-themed-secondary hover:text-themed-primary' }}">
+                class="min-h-11 shrink-0 pb-3 {{ $activeTab === 'jobs' ? 'border-b-2 border-accent-themed-primary text-accent-themed-primary font-semibold' : 'text-themed-secondary hover:text-themed-primary' }}">
                 All Jobs
             </button>
             <button wire:click="$set('activeTab', 'applications')" 
-                class="pb-4 {{ $activeTab === 'applications' ? 'border-b-2 border-accent-themed-primary text-accent-themed-primary font-semibold' : 'text-themed-secondary hover:text-themed-primary' }}">
+                class="min-h-11 shrink-0 pb-3 {{ $activeTab === 'applications' ? 'border-b-2 border-accent-themed-primary text-accent-themed-primary font-semibold' : 'text-themed-secondary hover:text-themed-primary' }}">
                 Applications
             </button>
             <button wire:click="$set('activeTab', 'analytics')" 
-                class="pb-4 {{ $activeTab === 'analytics' ? 'border-b-2 border-accent-themed-primary text-accent-themed-primary font-semibold' : 'text-themed-secondary hover:text-themed-primary' }}">
+                class="min-h-11 shrink-0 pb-3 {{ $activeTab === 'analytics' ? 'border-b-2 border-accent-themed-primary text-accent-themed-primary font-semibold' : 'text-themed-secondary hover:text-themed-primary' }}">
                 Analytics
             </button>
         </div>
@@ -519,7 +481,7 @@
 
     <!-- Job Form Modal -->
     @if($showForm)
-        <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50 overflow-y-auto">
+        <div role="dialog" aria-modal="true" aria-label="Job editor" x-data x-trap.inert.noscroll="true" x-on:keydown.escape.window="$wire.resetForm()" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50 overflow-y-auto">
             <div class="bg-themed-secondary rounded-2xl max-w-6xl w-full max-h-[90vh] overflow-hidden">
                 <div class="flex justify-between items-center p-6 border-b border-themed-primary bg-themed-tertiary">
                     <h2 class="text-2xl font-bold text-themed-primary">

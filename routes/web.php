@@ -232,11 +232,12 @@ Route::middleware(['auth', 'verified'])->prefix('mentorship')->name('mentorship.
 });
 
 Route::middleware('auth')->group(function () {
+    Route::get('/job-applications/{jobApplication}/resume', \App\Http\Controllers\JobApplicationResumeController::class)->name('job-applications.resume');
     Route::get('/search/job', \App\Livewire\Career\JobSearch::class)->name('search.job');
     Route::get('/portfolio', \App\Livewire\Career\PortfolioBuilder::class)->name('portfolio.show');
     Route::get('/resume/builder', \App\Livewire\Career\ResumeBuilder::class)->name('resume.builder');
     Route::get('/job', \App\Livewire\Career\JobPortal::class)->name('user.job');
-    Route::get('/admin/job', \App\Livewire\Career\JobManagement::class)->name('admin.job');
+    Route::get('/admin/job', \App\Livewire\Career\JobManagement::class)->name('admin.job')->middleware(\App\Http\Middleware\CheckRole::class . ':super_admin,academy_admin');
 });
 Route::middleware('auth')->group(function () {
     Route::get('/interview/user', \App\Livewire\Career\UserMockInterview::class)->name('user.interview');

@@ -197,6 +197,11 @@ class JobManagement extends Component
         'company_website' => 'nullable|url'
     ];
 
+    public function boot(): void
+    {
+        abort_unless(auth()->user()?->hasAnyRole(['super_admin', 'academy_admin']), 403);
+    }
+
     public function mount()
     {
         $this->loadCategories();
@@ -451,6 +456,7 @@ class JobManagement extends Component
 
     public function changeJobStatus($jobId, $status)
     {
+        abort_unless(in_array($status, [JobPortal::STATUS_DRAFT, JobPortal::STATUS_ACTIVE, JobPortal::STATUS_PAUSED, JobPortal::STATUS_EXPIRED, JobPortal::STATUS_FILLED, JobPortal::STATUS_CANCELLED], true), 422);
         $job = JobPortal::findOrFail($jobId);
         $job->update(['status' => $status]);
         
@@ -468,6 +474,7 @@ class JobManagement extends Component
 
     public function togglePremiumFeature($jobId, $feature)
     {
+        abort_unless(in_array($feature, JobPortal::PREMIUM_FEATURES, true), 422);
         $job = JobPortal::findOrFail($jobId);
         
         if ($job->hasPremiumFeature($feature)) {
@@ -493,6 +500,7 @@ class JobManagement extends Component
 
     public function updateApplicationStatus()
     {
+        $this->validate(['applicationStatus' => 'required|in:pending,reviewing,shortlisted,interviewed,offered,hired,rejected', 'applicationFeedback' => 'nullable|string|max:5000']);
         if ($this->selectedApplication) {
             $this->selectedApplication->update([
                 'status' => $this->applicationStatus,
@@ -515,6 +523,8 @@ class JobManagement extends Component
 
     public function bulkAction($action)
     {
+        abort_unless(in_array($action, ['activate', 'pause', 'delete', 'feature'], true), 422);
+        $this->validate(['selectedJobs' => 'array|max:100', 'selectedJobs.*' => 'integer|exists:job_portal,id']);
         if (empty($this->selectedJobs)) {
             session()->flash('error', 'Please select jobs first.');
             return;
@@ -650,7 +660,8 @@ class JobManagement extends Component
             $query->where('work_type', $this->filterWorkType);
         }
 
-        // Apply sorting
+        // Request-controlled sorting must remain inside the supported fields.
+        $this->validate(['sortBy' => 'in:created_at,title,company_name,views_count,applications_count', 'sortDirection' => 'in:asc,desc']);
         $query->orderBy($this->sortBy, $this->sortDirection);
 
         $jobs = $query->paginate(12);
