@@ -128,10 +128,10 @@ class CertificateService
 
             // Verify QR code exists before generating PDF
             if ($certificate->qr_code_path) {
-                $qrPath = storage_path('app/public/' . $certificate->qr_code_path);
-                if (!file_exists($qrPath)) {
+                $qrDisk = Storage::disk(config('certificate.storage.disk', 'public'));
+                if (!$qrDisk->exists($certificate->qr_code_path)) {
                     Log::warning('QR code file not found during PDF generation', [
-                        'expected_path' => $qrPath
+                        'expected_path' => $certificate->qr_code_path
                     ]);
                 }
             }
@@ -144,12 +144,12 @@ class CertificateService
                 ->setPaper('A4', 'landscape')
                 ->setOptions([
                     'isHtml5ParserEnabled' => true,
-                    'isRemoteEnabled' => true,
-                    'enable_php' => true,
+                    'isRemoteEnabled' => false,
+                    'enable_php' => false,
                     'dpi' => 150, // Higher DPI for better quality
                     'defaultFont' => 'DejaVu Sans',
                     'isFontSubsettingEnabled' => true,
-                    'isPhpEnabled' => true,
+                    'isPhpEnabled' => false,
                     'chroot' => storage_path('app/public'),
                     'debugPng' => false,
                     'debugKeepTemp' => false,

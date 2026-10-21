@@ -312,7 +312,7 @@
                                     </div>
                                     <div class="flex justify-between">
                                         <span class="text-themed-secondary">Completion:</span>
-                                        <span class="text-themed-primary">{{ $selectedCertificate->completion_date->format('M j, Y') }}</span>
+                                        <span class="text-themed-primary">{{ $selectedCertificate->completion_date?->format('M j, Y') ?? 'Not recorded' }}</span>
                                     </div>
                                 </div>
                             </div>

@@ -793,7 +793,7 @@
                     <div class="details-row">
                         <div class="detail-inline">
                             <span class="detail-label">Completed:</span> 
-                            <span class="detail-value">{{ $certificate->completion_date->format('F j, Y') }}</span>
+                            <span class="detail-value">{{ $certificate->completion_date?->format('F j, Y') ?? 'Not recorded' }}</span>
                         </div>
                         @if($certificate->credits)
                         <div class="detail-inline">
@@ -846,10 +846,10 @@
                                 @php
                                     $qrBase64 = null;
                                     if ($certificate->qr_code_path) {
-                                        $qrPath = storage_path('app/public/' . $certificate->qr_code_path);
-                                        if (file_exists($qrPath) && is_file($qrPath)) {
+                                        $qrDisk = \Illuminate\Support\Facades\Storage::disk(config('certificate.storage.disk', 'public'));
+                                        if ($qrDisk->exists($certificate->qr_code_path)) {
                                             try {
-                                                $qrBase64 = base64_encode(file_get_contents($qrPath));
+                                                $qrBase64 = base64_encode($qrDisk->get($certificate->qr_code_path));
                                             } catch (\Exception $e) {
                                                 \Log::error('QR Code embed error: ' . $e->getMessage());
                                             }

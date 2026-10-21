@@ -52,6 +52,16 @@ protected $casts = [
         return $this->belongsTo(Course::class);
     }
 
+    public function getCompletionDateAttribute()
+    {
+        return $this->completed_at;
+    }
+
+    public function getVerificationUrlAttribute($value)
+    {
+        return $value ?: ($this->verification_code ? route('certificate.verify.code', $this->verification_code) : null);
+    }
+
     public function approver()
     {
         return $this->belongsTo(User::class, 'issued_by');
@@ -216,7 +226,7 @@ public function approve(int $approverId = null): self
                 'student_name' => $this->user->name,
                 'course_title' => $this->course->title,
                 'instructor_name' => $this->course->instructor->name ?? 'N/A',
-                'completion_date' => $this->completion_date->format('F j, Y'),
+                'completion_date' => $this->completion_date?->format('F j, Y'),
                 'issued_date' => $this->issued_date?->format('F j, Y'),
                 'grade' => $this->grade ?? 'Pass',
                 'credits' => $this->credits,

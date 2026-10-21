@@ -10,7 +10,9 @@ return new class extends Migration
     public function up(): void
     {
         // Retain every existing status while supporting requested and rejected.
-        Schema::table('certificates', fn (Blueprint $table) => $table->string('status', 32)->default('pending')->change());
+        if (Schema::getColumnType('certificates', 'status') === 'enum') {
+            Schema::table('certificates', fn (Blueprint $table) => $table->string('status', 32)->default('pending')->change());
+        }
 
         foreach (['verification_code', 'verification_url', 'grade', 'certificate_template', 'qr_code_path', 'pdf_path'] as $column) {
             if (! Schema::hasColumn('certificates', $column)) {

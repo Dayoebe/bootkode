@@ -149,7 +149,7 @@
                                 @endif
                                 <div>
                                     <span class="text-themed-secondary">Completion Date:</span>
-                                    <span class="text-themed-primary ml-2">{{ $existingCertificate->completion_date->format('M j, Y') }}</span>
+                                    <span class="text-themed-primary ml-2">{{ $existingCertificate->completion_date?->format('M j, Y') ?? 'Not recorded' }}</span>
                                 </div>
                             </div>
                         </div>

@@ -105,4 +105,41 @@ class LearningIntegrityTest extends TestCase
         \Livewire\Livewire::actingAs($user)->test(\App\Livewire\CertificateManagement\StudentCertificates::class)
             ->set('searchTerm', $certificate->certificate_number)->assertDontSee($certificate->certificate_number);
     }
+
+    public function test_compatibility_migration_preserves_legacy_issued_tokens_and_files(): void
+    {
+        [$user, $course] = $this->fixture();
+        $certificate = \App\Models\Credentials\Certificate::create([
+            'user_id' => $user->id, 'course_id' => $course->id, 'status' => 'issued',
+        ]);
+        \Illuminate\Support\Facades\DB::table('certificates')->where('id', $certificate->id)->update([
+            'verification_code' => null, 'verification_token' => 'Legacy-Token-Fixture', 'verification_url' => null,
+            'certificate_file' => 'certificates/legacy-fixture.pdf', 'pdf_path' => null,
+        ]);
+        (require database_path('migrations/2026_10_20_010000_align_certificate_workflow_columns.php'))->up();
+        $certificate->refresh();
+        $this->assertSame('issued', $certificate->status);
+        $this->assertSame('Legacy-Token-Fixture', $certificate->verification_code);
+        $this->assertSame('certificates/legacy-fixture.pdf', $certificate->pdf_path);
+        $this->assertTrue($certificate->isActive());
+        $this->assertNull($certificate->getVerificationData()['certificate']['completion_date']);
+        $this->assertSame(route('certificate.verify.code', 'Legacy-Token-Fixture'), $certificate->verification_url);
+        $this->assertSame($certificate->id, \App\Models\Credentials\Certificate::findByVerificationCode('Legacy-Token-Fixture')->id);
+    }
+
+    public function test_certificate_assets_render_as_real_png_and_pdf_without_remote_execution(): void
+    {
+        [$user, $course] = $this->fixture();
+        \Illuminate\Support\Facades\Storage::fake('public');
+        $certificate = \App\Models\Credentials\Certificate::create([
+            'user_id' => $user->id, 'course_id' => $course->id, 'status' => 'approved',
+            'completed_at' => now(), 'approved_at' => now(), 'issued_date' => now(),
+        ]);
+        $this->assertTrue(app(CertificateService::class)->generateCertificateAssets($certificate));
+        $certificate->refresh();
+        $disk = \Illuminate\Support\Facades\Storage::disk('public');
+        $this->assertStringStartsWith('%PDF-', $disk->get($certificate->pdf_path));
+        $this->assertSame("\x89PNG\r\n\x1a\n", substr($disk->get($certificate->qr_code_path), 0, 8));
+        $this->assertGreaterThan(1000, $disk->size($certificate->pdf_path));
+    }
 }
