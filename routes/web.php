@@ -175,7 +175,7 @@ Route::middleware(['auth'])->prefix('community')->name('community.')->group(func
     Route::get('/code-challenges', App\Livewire\Community\CommunityCenter::class)->name('code-challenges');
     Route::get('/live-events', App\Livewire\Community\CommunityCenter::class)->name('live-events');
     Route::get('/feedback', App\Livewire\Community\CommunityCenter::class)->name('feedback');
-    Route::get('/moderation', App\Livewire\Community\CommunityCenter::class)->name('moderation');
+    Route::get('/moderation', App\Livewire\Community\CommunityCenter::class)->name('moderation')->middleware(\App\Http\Middleware\CheckRole::class . ':super_admin,academy_admin');
 });
 
 // Gamification routes

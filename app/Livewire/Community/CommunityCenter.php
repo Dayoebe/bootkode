@@ -112,8 +112,29 @@ class CommunityCenter extends Component
         'feedbackPriority' => 'in:low,medium,high',
     ];
 
+    public function boot(): void
+    {
+        abort_unless(auth()->check(), 403);
+    }
+
+    protected function authorizeModeration(): void
+    {
+        abort_unless(auth()->user()?->hasAnyRole(['super_admin', 'academy_admin']), 403);
+    }
+
     public function mount()
     {
+        $this->activeTab = match (request()->route()?->getName()) {
+            'community.study-groups' => 'study-groups',
+            'community.code-challenges' => 'code-challenges',
+            'community.live-events' => 'live-events',
+            'community.feedback' => 'feedback',
+            'community.moderation' => 'moderation',
+            default => 'forums',
+        };
+        if ($this->activeTab === 'moderation') {
+            $this->authorizeModeration();
+        }
         $this->loadCommunityStats();
     }
 
@@ -143,6 +164,10 @@ class CommunityCenter extends Component
      */
     public function setTab($tab)
     {
+        abort_unless(in_array($tab, ['forums', 'study-groups', 'code-challenges', 'live-events', 'feedback', 'moderation'], true), 422);
+        if ($tab === 'moderation') {
+            $this->authorizeModeration();
+        }
         $this->activeTab = $tab;
         $this->activeModal = null;
         $this->resetPage();
@@ -248,9 +273,11 @@ class CommunityCenter extends Component
     
 public function openCodeChallenge($challengeId)
 {
-    $this->selectedItem = ['id' => $challengeId];
+    $challenge = CommunityActivity::codeChallenges()->active()->findOrFail($challengeId);
+    $this->selectedItem = ['id' => $challenge->id];
+    $this->challengeTitle = $challenge->title;
+    $this->challengeDescription = $challenge->description;
     $this->activeModal = 'code-challenge';
-    $this->populateFormFromItem($this->selectedItem);
 }
 
     // ===== STUDY GROUP ACTIONS =====
@@ -324,6 +351,7 @@ public function openCodeChallenge($challengeId)
             'challengeTitle' => 'required|min:5|max:255',
             'challengeDescription' => 'required|min:20',
             'challengeDifficulty' => 'required|in:easy,medium,hard',
+            'challengePoints' => 'required|integer|min:10|max:1000',
         ]);
 
         try {
@@ -360,7 +388,13 @@ public function openCodeChallenge($challengeId)
         }
 
         try {
-            $challenge = CommunityActivity::findOrFail($this->selectedItem['id'] ?? null);
+            $challenge = CommunityActivity::codeChallenges()->active()->findOrFail($this->selectedItem['id'] ?? null);
+
+            $previous = ActivityParticipant::where('activity_id', $challenge->id)->where('user_id', auth()->id())->first();
+            if ($previous && ($previous->score !== null || $previous->status === 'completed')) {
+                session()->flash('error', 'This submission has already been reviewed.');
+                return;
+            }
 
             ActivityParticipant::updateOrCreate(
                 [
@@ -368,9 +402,9 @@ public function openCodeChallenge($challengeId)
                     'user_id' => auth()->id(),
                 ],
                 [
-                    'status' => 'completed',
-                    'completed_at' => now(),
-                    'score' => 100,
+                    'status' => 'pending',
+                    'completed_at' => null,
+                    'score' => null,
                     'submission_data' => [
                         'language' => $this->language,
                         'code' => $this->code,
@@ -531,12 +565,14 @@ public function openCodeChallenge($challengeId)
 
     public function setModerationTab($tab)
     {
+        $this->authorizeModeration();
         $this->moderationTab = $tab;
         $this->resetPage();
     }
 
     public function reviewReport($reportId)
     {
+        $this->authorizeModeration();
         try {
             $report = \App\Models\Community\CommunityReport::findOrFail($reportId);
             $report->update([
@@ -551,6 +587,7 @@ public function openCodeChallenge($challengeId)
 
     public function dismissReport($reportId)
     {
+        $this->authorizeModeration();
         try {
             $report = \App\Models\Community\CommunityReport::findOrFail($reportId);
             $report->dismiss('Dismissed by moderator');
@@ -562,6 +599,7 @@ public function openCodeChallenge($challengeId)
 
     public function assignFeedback($feedbackId)
     {
+        $this->authorizeModeration();
         try {
             $feedback = \App\Models\Community\CommunityFeedback::findOrFail($feedbackId);
             $feedback->update([
@@ -576,6 +614,7 @@ public function openCodeChallenge($challengeId)
 
     public function resolveFeedback($feedbackId)
     {
+        $this->authorizeModeration();
         try {
             $feedback = \App\Models\Community\CommunityFeedback::findOrFail($feedbackId);
             $feedback->update([
@@ -590,12 +629,13 @@ public function openCodeChallenge($challengeId)
 
     public function respondToFeedback($feedbackId)
     {
-        // This would typically open another modal for response
-        session()->flash('message', 'Response functionality would be implemented here.');
+        $this->authorizeModeration();
+        session()->flash('error', 'Feedback replies are not available yet. You can assign or resolve feedback here.');
     }
 
     public function unflagThread($threadId)
     {
+        $this->authorizeModeration();
         try {
             $thread = \App\Models\Community\ForumThread::findOrFail($threadId);
             $thread->update(['is_flagged' => false]);
@@ -607,6 +647,7 @@ public function openCodeChallenge($challengeId)
 
     public function removeThread($threadId)
     {
+        $this->authorizeModeration();
         try {
             $thread = \App\Models\Community\ForumThread::findOrFail($threadId);
             $thread->delete();
@@ -618,6 +659,10 @@ public function openCodeChallenge($challengeId)
 
     public function blockUser($userId)
     {
+        $this->authorizeModeration();
+        $target = User::findOrFail($userId);
+        abort_if($target->id === auth()->id(), 422, 'Use account settings for your own account.');
+        abort_if($target->hasRole('super_admin') && !auth()->user()->hasRole('super_admin'), 403);
         try {
             $user = \App\Models\Core\User::findOrFail($userId);
             $user->update(['is_active' => false]);
@@ -629,6 +674,10 @@ public function openCodeChallenge($challengeId)
 
     public function unblockUser($userId)
     {
+        $this->authorizeModeration();
+        $target = User::findOrFail($userId);
+        abort_if($target->id === auth()->id(), 422, 'Use account settings for your own account.');
+        abort_if($target->hasRole('super_admin') && !auth()->user()->hasRole('super_admin'), 403);
         try {
             $user = \App\Models\Core\User::findOrFail($userId);
             $user->update(['is_active' => true]);
@@ -642,6 +691,7 @@ public function openCodeChallenge($challengeId)
 
     public function getCommunityReports()
     {
+        $this->authorizeModeration();
         return \App\Models\Community\CommunityReport::with(['reporter', 'moderator'])
             ->when($this->reportStatusFilter, fn($q) => $q->where('status', $this->reportStatusFilter))
             ->orderBy('created_at', 'desc')
@@ -650,6 +700,7 @@ public function openCodeChallenge($challengeId)
 
     public function getFeedbackItems()
     {
+        $this->authorizeModeration();
         return \App\Models\Community\CommunityFeedback::with(['user', 'assignedTo'])
             ->when($this->feedbackStatusFilter, fn($q) => $q->where('status', $this->feedbackStatusFilter))
             ->orderBy('created_at', 'desc')
@@ -658,6 +709,7 @@ public function openCodeChallenge($challengeId)
 
     public function getFlaggedThreads()
     {
+        $this->authorizeModeration();
         return \App\Models\Community\ForumThread::with(['user'])
             ->where('is_flagged', true)
             ->orderBy('created_at', 'desc')
@@ -666,6 +718,7 @@ public function openCodeChallenge($challengeId)
 
     public function getManagedUsers()
     {
+        $this->authorizeModeration();
         return \App\Models\Core\User::when($this->userSearch, function ($q) {
             $q->where('name', 'like', "%{$this->userSearch}%")
                 ->orWhere('email', 'like', "%{$this->userSearch}%");
@@ -700,6 +753,7 @@ public function openCodeChallenge($challengeId)
 
     private function loadModerationData(&$data)
     {
+        $this->authorizeModeration();
         $data['moderationTab'] = $this->moderationTab;
         $data['pendingReports'] = \App\Models\Community\CommunityReport::where('status', 'pending')->count();
         $data['pendingFeedback'] = \App\Models\Community\CommunityFeedback::where('status', 'open')->count();

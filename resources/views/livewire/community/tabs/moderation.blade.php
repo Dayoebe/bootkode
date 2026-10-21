@@ -211,7 +211,7 @@
                             class="flex-1 bg-green-600 hover:bg-green-700 text-white px-3 py-2 rounded-lg text-sm font-medium transition-colors">
                             <i class="fas fa-check mr-1"></i>Approve
                         </button>
-                        <button wire:click="removeThread({{ $thread->id }})"
+                        <button wire:confirm="Remove this discussion and its replies?" wire:click="removeThread({{ $thread->id }})"
                             class="flex-1 bg-red-600 hover:bg-red-700 text-white px-3 py-2 rounded-lg text-sm font-medium transition-colors">
                             <i class="fas fa-trash mr-1"></i>Remove
                         </button>
@@ -260,12 +260,12 @@
 
                     <div class="flex gap-2">
                         @if($user->is_active)
-                            <button wire:click="blockUser({{ $user->id }})"
+                            <button wire:confirm="Block this account?" wire:click="blockUser({{ $user->id }})"
                                 class="flex-1 bg-red-600 hover:bg-red-700 text-white px-3 py-2 rounded-lg text-sm font-medium transition-colors">
                                 <i class="fas fa-ban mr-1"></i>Block User
                             </button>
                         @else
-                            <button wire:click="unblockUser({{ $user->id }})"
+                            <button wire:confirm="Restore this account?" wire:click="unblockUser({{ $user->id }})"
                                 class="flex-1 bg-green-600 hover:bg-green-700 text-white px-3 py-2 rounded-lg text-sm font-medium transition-colors">
                                 <i class="fas fa-check mr-1"></i>Unblock User
                             </button>
