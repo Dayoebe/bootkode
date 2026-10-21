@@ -110,7 +110,7 @@
 
         <div class="mt-10 flex flex-col gap-3 border-t border-white/10 pt-6 text-sm text-slate-500 sm:flex-row sm:items-center sm:justify-between">
             <p>© {{ now()->year }} BootKode. All rights reserved.</p>
-            <p class="font-semibold text-slate-400">Code. Certify. Conquer.</p>
+            <p class="font-semibold text-slate-400">Learn. Build. Grow.</p>
         </div>
     </div>
 </footer>
