@@ -89,3 +89,11 @@ Work uses `refactor/bootkode-product-coherence`, not `main`. The baseline is `d0
 
 
 A draft PR could not be opened through the connected GitHub app because it returned `UNAUTHORIZED` and requires reauthentication. Git transport is independent; no credential was extracted to work around that boundary. `docs/pull-request.md` contains the prepared review description. Reconnect GitHub or open the branch comparison to create the PR; no merge is authorized.
+
+## Verified GitHub delivery
+
+On 21 October 2026, `637eb3c27db90da6fc135529bee09bc02bf5b94b` was pushed to `Dayoebe/bootkode`, branch `refactor/bootkode-product-coherence`, and `git ls-remote --heads origin refactor/bootkode-product-coherence` returned that exact SHA. HTTPS push lacked credentials; the ordinary SSH push succeeded without changing the configured remote or force-pushing. This final delivery note is a subsequent documentation-only commit, whose pushed SHA is reported in the handoff.
+
+The working tree retains only the independently edited footer tagline. Synthetic browser fixtures were removed (remaining fixture users: 0). The original application server remains available; the owned QA server and browser are stopped. No environment file, payment credential, user record dump or test artifact was committed.
+
+Additional documentation commits: `637eb3c2 docs: record verification evidence and release gates`, followed by `docs: record GitHub delivery verification`.
