@@ -209,3 +209,46 @@ Known synthetic domain users were removed from the browser test database (remain
 - `dcf2cdec build(ui): compile institutional and mentoring interface updates`
 
 The documentation commit records this evidence and remaining scope. The exact pushed HEAD and remote comparison are reported in the handoff after ordinary feature-branch transport; no merge or deployment is performed.
+
+## Support, authoring and affiliate continuation — 22 October 2026
+
+This section supersedes the earlier lack of action-level acceptance for these domains. It adds implementation and evidence; it does not certify the whole product.
+
+### Automated and build checks
+
+- Final `php artisan test`: **154 passed, 651 assertions, 99.74s** on guarded `bootkode_test`.
+- Final `npm run build`: passed in **6.42s**; CSS **274.47 KB**, public JavaScript **0.92 KB**, dashboard JavaScript **416.67 KB**. The existing nonfatal PostCSS `from` warning remains.
+- `php artisan view:cache`, `php artisan route:cache` followed by `php artisan route:clear`, changed-PHP syntax checks (**65 files**) and `git diff --check`: passed. `node --check resources/js/dashboard.js` also passed.
+- Fresh `npm audit --json`: **8 findings (5 high, 3 moderate)**. Fresh `composer audit --format=json`: **62 advisories across 19 packages**. Neither dependencies nor advisory policy were changed. These remain release gates under the retained major constraints.
+
+New regression coverage checks private support/FAQ/feedback search, staff mount/action denials, real private upload and owner download, actual response persistence/status validation, participant-scoped message polling/sending, and forged private-course feedback selection. Authoring cases cover nested component role/ownership checks, cross-course mutations, publication eligibility, protected upload arguments, locked metadata, real document persistence, retained physical files, history-preserving course/lesson/account deletion, role retention and issued verification codes. Affiliate cases cover funded matching debit/split snapshots, exact small amounts, replay-safe credits/counters, configuration authority, banner publication, restricted API payloads, corrected relations/net course analytics and real overview report export. Marketplace regression checks named published product/vendor routes and unpublished 404 behavior.
+
+An intermediate account-deletion check caught normal logout recreating a deleted model by saving its remember token. The final code uses logout without token persistence after successful deletion; blocked removal retains authentication, avatar and learning records. Earlier failures and browser probes are excluded from final pass counts.
+
+### Browser and persistence checks
+
+Final accepted layout records cover **88 distinct role/page/viewport combinations**: learner (support, feedback, messages, course preview, marketplace detail), platform administrator (support/feedback/FAQ, affiliates, course listing/QA), instructor (create/edit/builder/listing/reviews/analytics), and affiliate (dashboard/tools/history/reports/analytics), at **390/768/1024/1440px**. Affected preview, builder, tools and analytics samples were repeated after fixes. Accepted samples reached their intended page with one primary heading, no recorded JavaScript exception/error page, and no document overflow.
+
+The final interaction records add **30 checks**: six learner support/message checks; four staff response/dialog checks; eight authoring/editor checks; eight affiliate tool/banner/clipboard/export checks; and four share-dialog/response-visibility/clipboard follow-ups. The final three sampled dialogs moved/trapped focus, dismissed on Escape and returned focus. Clipboard checks require visible feedback from the actual browser promise, including a truthful denied-access recovery state; no copied email was sent. A real SVG banner returned HTTP 200, and the downloaded overview CSV contains the actual synthetic course, learner, paid status and **₦6.00** commission.
+
+Browser-driven draft creation persisted a new draft and redirected into its builder. Creating a lesson initially exposed a dynamically mounted editor whose inline function never ran. Moving its behavior to `dashboard.js`, using standard Livewire property updates and cleaning up listeners fixed the observed failure. The final run created sections/lessons, switched content/media/settings/assessment tabs and saved real Trix content. Empty and populated fixture editor states were sampled; exhaustive question-type/editor acceptance remains outstanding.
+
+A separate guarded database read verified the actual submitted ticket, resolved support response, responded feedback, participant message and saved lesson content. The real test course purchase debited the learner from **₦1,000 to ₦900** and recorded **₦6** affiliate earnings from the original platform allocation. Replay/rollback/split boundaries have automated coverage; this is internal-wallet evidence, not external settlement.
+
+Screenshot review covered representative support, affiliate tools and course share-dialog states. Visual inspection found narrow controls missed by document-width measurements, and prompted the wrapping/input-width fixes. Analytics/fonts/icons/avatars/datepicker/MathJax/third-party QR requests were blocked for isolated review. Missing external icon glyphs, the QR service, outbound mail, all themes, screen readers and exhaustive WCAG acceptance are not certified. Browser artifacts and private fixtures remain ignored under `storage/app/coherence-qa`.
+
+### Data preservation and remaining work
+
+No working-database schema or records were changed; no migration was required. Browser records were created only in `bootkode_browser_test`. Known synthetic users, their dependent records, category and FAQ were removed afterward (**0 known fixture users remaining**). Only the owned 8011 QA server and 9222 headless browser were stopped. The existing 8000 application and 5173 development server were preserved; the application returned HTTP 200.
+
+New support/feedback attachments are private; historical public files still require a backed-up migration. Removing a lesson file reference deliberately preserves the physical asset. History-linked account deletion now requests support handling; a complete anonymization/archival workflow is separate work. Affiliate settings accurately show server configuration instead of claiming environment writes. Failed/legacy affiliate settlements require administrator review and are never represented as paid. Provider/OAuth/live-AI/mail acceptance, legal content, historical attachment migration, broader analytics/gamification/editor acceptance and the recorded dependency gates remain outstanding. No deployment or whole-product production-readiness claim is made.
+
+Continuation commits:
+
+- `c0d98c0f fix(support): protect private requests and connect response workflows`
+- `822ef5b8 fix(courses): secure authoring and preserve learning history`
+- `b7d8be31 fix(affiliates): settle verified commissions and restore real reporting`
+- `27b4540a fix(marketplace): mount published detail routes and align review access`
+- `b90f3277 build(ui): compile course editor and operational interface fixes`
+
+The documentation commit records the evidence and outstanding scope. Ordinary feature-branch push and exact remote HEAD comparison are reported in the handoff; no merge or deployment is performed.

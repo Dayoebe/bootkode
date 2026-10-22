@@ -63,3 +63,5 @@ Financial limits are in `config/financial.php`; existing course-specific splits 
 The dependency audit still reports advisories that cannot all be resolved within the current major-version constraints. Composer's security policy blocks the attempted Laravel 11-compatible update. Do not disable the advisory policy or use forced major updates as a workaround. See the verification report for exact counts and the required follow-up.
 
 There is no deployment claim. Merge/deployment, provider sandbox verification, legal documents and broader operational acceptance remain separate release requirements.
+
+The 22 October continuation adds guarded support/feedback responses and private new attachments, participant-scoped message updates, secured nested course authoring, historical record deletion protection and funded affiliate commission settlement. Affiliate defaults remain server configuration (`config/affiliate.php`); the UI does not claim to save environment settings. Real banner routes and clipboard confirmation replace broken/promotional placeholders. See `docs/verification.md` for current automated/browser evidence and release limitations.

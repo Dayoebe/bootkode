@@ -100,3 +100,17 @@ Job alerts and moderator replies still lack backing delivery workflows. Their ac
 | Domain interfaces | Duplicate/missing primary headings, mobile business/settings overflow, untrapped dialogs and dead resource links | Shared root headings/feedback, bounded navigation, focus/Escape handling and explicit unpublished resource state |
 
 No schema migration or working-database mutation is required for this continuation. Operational acceptance is representative, not a claim that all legacy actions, white-label delivery, institution billing or provider integrations are complete. Current checks and precise limits are recorded in `verification.md`.
+
+## Support, authoring and affiliate continuation, 22 October 2026
+
+| Area | Verified problem | Implemented change |
+|---|---|---|
+| Support and feedback | Unguarded staff components, leaking OR searches, public new attachments and disconnected response controls | Request-time staff/owner guards, grouped predicates, private uploads/authorized downloads and locked real response actions |
+| Direct messages | A forged active conversation ID could affect another thread's read state through polling | Participation is rechecked before read markers, incoming notices and last-seen updates |
+| Course authoring | Nested editors accepted unrelated lesson/assessment IDs; generic uploads accepted client-supplied validation arguments | Shared fresh course ownership guards, locked IDs/metadata, protected upload helper, scoped mutation queries and preserved array casts |
+| Historical learning | Course/account deletion could cascade through real enrollments, progress and issued verification records | Course-row locks and transactional history guards, model-aware bulk deletion, recoverable account refusal before logout/avatar cleanup |
+| Affiliates | Incorrect relations and commission writes without matching original purchase allocation | Locked funded debit matching, snapshot-based exact settlement, replay-safe counters and corrected net course analytics |
+| Affiliate tools | Nonexistent banner destinations, invented usage copy, simulated clipboard success and nonpersisting global settings | Real escaped SVG banners, factual templates, browser-confirmed clipboard feedback and explicit read-only server configuration |
+| Public marketplace routes | Detail/vendor/category closures did not mount the actual full-page component correctly | Named Livewire routes resolve real published items/vendors, with authenticated detail resolution and missing-item 404 |
+
+The browser also exposed a course share dialog outside its Alpine scope, tablet builder overflow and narrow affiliate controls. These received targeted shared-modal/layout fixes. See the verification report for final accepted samples and limits; legacy interior theme coverage is still incomplete. No working-database record or schema was changed.

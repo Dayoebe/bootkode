@@ -41,3 +41,7 @@ Root marketplace/institution/mentorship pages use the shared page header, factua
 Legacy interior cards and forms still contain older utilities; root consistency and representative keyboard/layout acceptance do not constitute complete visual or screen-reader acceptance of every legacy interior state.
 
 Mentoring primary controls use the shared `bk-button` / `bk-button-primary` foreground/background pair. Undefined legacy accent utilities were replaced with semantic utilities, and mentoring overview/analytics metric cards use bounded surfaces rather than bright gradients. Shopping/session feedback can pass persistent locked component messages into `ui.flash`; session-backed calls retain the existing component API.
+
+## Support and authoring continuation
+
+Help/support and staff response screens use the existing page header, panel, labels/errors, flash feedback and shared modal. Ticket history renders actual status and responses; no invented response-time promise appears. New attachment copy explains the real owner/support access boundary. Course sharing uses the shared modal instead of an out-of-scope Alpine variable, and its navigation is horizontally bounded. The course builder owns a primary heading, wraps tablet actions and reuses shared primary controls. Affiliate tool navigation and narrow input/action groups stay inside their containers; analytics filters wrap with explicit accessible names. These are targeted improvements, not complete visual acceptance of all legacy interiors/themes.

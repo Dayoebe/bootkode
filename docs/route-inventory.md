@@ -1,6 +1,6 @@
 # Route inventory
 
-Generated from `php artisan route:list --json` on 21 October 2026 after the institutional, marketplace and mentorship continuation. Middleware and component checks together determine access; route existence is not proof of functional completion.
+Generated from `php artisan route:list --json` on 22 October 2026 after the support, authoring and affiliate continuation. Middleware and component checks together determine access; route existence is not proof of functional completion.
 
 | Method | URI | Name | Handler | Middleware |
 |---|---|---|---|---|
@@ -42,6 +42,7 @@ Generated from `php artisan route:list --json` on 21 October 2026 after the inst
 | GET / HEAD | admin/paystack/settings | admin.paystack.settings | App\Livewire\Financial\Admin\PaystackSettings | web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\CheckRole:super_admin,academy_admin |
 | GET / HEAD | admin/revenue/reports | admin.revenue.reports | App\Livewire\Financial\Admin\RevenueReports | web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\CheckRole:super_admin,academy_admin |
 | GET / HEAD | affiliate-ambassador/dashboard | affiliate_ambassador.dashboard | App\Livewire\Dashboard\AffiliateAmbassadorDashboard | web, Illuminate\Auth\Middleware\Authenticate, Illuminate\Auth\Middleware\EnsureEmailIsVerified |
+| GET / HEAD | affiliate-banners/{size}/{code} | affiliate.banner | App\Http\Controllers\AffiliateBannerController | web |
 | GET / HEAD | affiliate/analytics | affiliate.analytics | App\Livewire\Affiliate\Analytics | web, Illuminate\Auth\Middleware\Authenticate |
 | GET / HEAD | affiliate/api/validate-referral/{code} | affiliate.api.validate-referral | Closure | web, Illuminate\Auth\Middleware\Authenticate |
 | GET / HEAD | affiliate/apply | affiliate.apply | App\Livewire\Affiliate\Apply | web, Illuminate\Auth\Middleware\Authenticate |
@@ -138,9 +139,10 @@ Generated from `php artisan route:list --json` on 21 October 2026 after the inst
 | GET / HEAD | dashboard/courses/{course}/builder | course-builder | App\Livewire\CourseManagement\CourseBuilder | web, Illuminate\Auth\Middleware\Authenticate, Illuminate\Auth\Middleware\EnsureEmailIsVerified |
 | GET / HEAD | dashboard/courses/{course}/edit | edit_course | App\Livewire\CourseManagement\EditCourse | web, Illuminate\Auth\Middleware\Authenticate, Illuminate\Auth\Middleware\EnsureEmailIsVerified |
 | GET / HEAD | dashboard/courses/{course}/preview | courses.preview | App\Livewire\CourseManagement\CoursePreview | web, Illuminate\Auth\Middleware\Authenticate, Illuminate\Auth\Middleware\EnsureEmailIsVerified |
-| GET / HEAD | dashboard/faq-management | faq.management | App\Livewire\SystemManagement\FaqManagement | web, Illuminate\Auth\Middleware\Authenticate, Illuminate\Auth\Middleware\EnsureEmailIsVerified |
+| GET / HEAD | dashboard/faq-management | faq.management | App\Livewire\SystemManagement\FaqManagement | web, Illuminate\Auth\Middleware\Authenticate, Illuminate\Auth\Middleware\EnsureEmailIsVerified, App\Http\Middleware\CheckRole:super_admin,academy_admin |
 | GET / HEAD | dashboard/feedback | feedback | App\Livewire\SystemManagement\Feedback | web, Illuminate\Auth\Middleware\Authenticate, Illuminate\Auth\Middleware\EnsureEmailIsVerified |
-| GET / HEAD | dashboard/feedback-management | feedback.management | App\Livewire\SystemManagement\FeedbackManagement | web, Illuminate\Auth\Middleware\Authenticate, Illuminate\Auth\Middleware\EnsureEmailIsVerified |
+| GET / HEAD | dashboard/feedback-management | feedback.management | App\Livewire\SystemManagement\FeedbackManagement | web, Illuminate\Auth\Middleware\Authenticate, Illuminate\Auth\Middleware\EnsureEmailIsVerified, App\Http\Middleware\CheckRole:super_admin,academy_admin |
+| GET / HEAD | dashboard/feedback/{feedback}/attachment | feedback.attachment | App\Http\Controllers\FeedbackAttachmentController | web, Illuminate\Auth\Middleware\Authenticate, Illuminate\Auth\Middleware\EnsureEmailIsVerified |
 | GET / HEAD | dashboard/help-support | help.support | App\Livewire\SystemManagement\HelpSupport | web, Illuminate\Auth\Middleware\Authenticate, Illuminate\Auth\Middleware\EnsureEmailIsVerified |
 | GET / HEAD | dashboard/language-localization | language.localization | App\Livewire\SystemManagement\LanguageLocalization | web, Illuminate\Auth\Middleware\Authenticate, Illuminate\Auth\Middleware\EnsureEmailIsVerified |
 | GET / HEAD | dashboard/learning-analytics | learning.analytics | App\Livewire\Dashboard\LearningAnalyticsDashboard | web, Illuminate\Auth\Middleware\Authenticate, Illuminate\Auth\Middleware\EnsureEmailIsVerified |
@@ -164,7 +166,8 @@ Generated from `php artisan route:list --json` on 21 October 2026 after the inst
 | GET / HEAD | dashboard/search | dashboard.search | App\Livewire\Dashboard\GlobalSearch | web, Illuminate\Auth\Middleware\Authenticate, Illuminate\Auth\Middleware\EnsureEmailIsVerified |
 | GET / HEAD | dashboard/search/suggest | dashboard.search.suggest | App\Http\Controllers\DashboardSearchController@suggest | web, Illuminate\Auth\Middleware\Authenticate, Illuminate\Auth\Middleware\EnsureEmailIsVerified |
 | GET / HEAD | dashboard/settings | settings | App\Livewire\SystemManagement\Settings | web, Illuminate\Auth\Middleware\Authenticate, Illuminate\Auth\Middleware\EnsureEmailIsVerified |
-| GET / HEAD | dashboard/support-tickets | support.tickets | App\Livewire\SystemManagement\SupportTicketManagement | web, Illuminate\Auth\Middleware\Authenticate, Illuminate\Auth\Middleware\EnsureEmailIsVerified |
+| GET / HEAD | dashboard/support-tickets | support.tickets | App\Livewire\SystemManagement\SupportTicketManagement | web, Illuminate\Auth\Middleware\Authenticate, Illuminate\Auth\Middleware\EnsureEmailIsVerified, App\Http\Middleware\CheckRole:super_admin,academy_admin |
+| GET / HEAD | dashboard/support-tickets/{ticket}/attachment | support.attachment | App\Http\Controllers\SupportAttachmentController | web, Illuminate\Auth\Middleware\Authenticate, Illuminate\Auth\Middleware\EnsureEmailIsVerified |
 | GET / HEAD | dashboard/system-status | system-status | App\Livewire\SystemManagement\SystemStatus | web, Illuminate\Auth\Middleware\Authenticate, Illuminate\Auth\Middleware\EnsureEmailIsVerified |
 | GET / HEAD | dashboard/system-status-management | system-status.management | App\Livewire\SystemManagement\SystemStatusManagement | web, Illuminate\Auth\Middleware\Authenticate, Illuminate\Auth\Middleware\EnsureEmailIsVerified |
 | GET / HEAD | dashboard/user | user-management | App\Livewire\UserManagement\UserManagement | web, Illuminate\Auth\Middleware\Authenticate, Illuminate\Auth\Middleware\EnsureEmailIsVerified |
@@ -216,17 +219,17 @@ Generated from `php artisan route:list --json` on 21 October 2026 after the inst
 | GET / HEAD | marketplace/admin/vendors | marketplace.vendor.applications | App\Livewire\Marketplace\MarketplaceCenter | web, Illuminate\Auth\Middleware\Authenticate, Illuminate\Auth\Middleware\EnsureEmailIsVerified, App\Http\Middleware\CheckRole:super_admin,academy_admin |
 | GET / HEAD | marketplace/cart | marketplace.cart | App\Livewire\Marketplace\MarketplaceCenter | web, Illuminate\Auth\Middleware\Authenticate, Illuminate\Auth\Middleware\EnsureEmailIsVerified |
 | GET / HEAD | marketplace/categories | marketplace.categories | App\Livewire\Marketplace\PublicMarketplace | web |
-| GET / HEAD | marketplace/category/{slug} | marketplace.category.show | Closure | web |
+| GET / HEAD | marketplace/category/{slug} | marketplace.category.show | App\Livewire\Marketplace\PublicMarketplace | web |
 | GET / HEAD | marketplace/checkout | marketplace.checkout | App\Livewire\Marketplace\MarketplaceCenter | web, Illuminate\Auth\Middleware\Authenticate, Illuminate\Auth\Middleware\EnsureEmailIsVerified |
 | GET / HEAD | marketplace/drafts | marketplace.seller.drafts | App\Livewire\Marketplace\MarketplaceCenter | web, Illuminate\Auth\Middleware\Authenticate, Illuminate\Auth\Middleware\EnsureEmailIsVerified |
-| GET / HEAD | marketplace/instructor/{id} | marketplace.instructor.show | Closure | web |
+| GET / HEAD | marketplace/instructor/{id} | marketplace.instructor.show | App\Livewire\Marketplace\PublicMarketplace | web |
 | GET / HEAD | marketplace/item/{slug} | marketplace.item.public | App\Livewire\Marketplace\MarketplaceCenter | web, Illuminate\Auth\Middleware\Authenticate, Illuminate\Auth\Middleware\EnsureEmailIsVerified |
 | GET / HEAD | marketplace/my-listings | marketplace.seller.listings | App\Livewire\Marketplace\MarketplaceCenter | web, Illuminate\Auth\Middleware\Authenticate, Illuminate\Auth\Middleware\EnsureEmailIsVerified |
 | GET / HEAD | marketplace/my-purchases | marketplace.purchases | App\Livewire\Marketplace\MarketplaceCenter | web, Illuminate\Auth\Middleware\Authenticate, Illuminate\Auth\Middleware\EnsureEmailIsVerified |
 | GET / HEAD | marketplace/orders/{order}/download/{file?} | marketplace.order.download | App\Http\Controllers\MarketplaceDownloadController | web, Illuminate\Auth\Middleware\Authenticate, Illuminate\Auth\Middleware\EnsureEmailIsVerified |
 | GET / HEAD | marketplace/payment/failed | marketplace.payment.failed | Closure | web |
 | GET / HEAD | marketplace/payment/success | marketplace.payment.success | Closure | web |
-| GET / HEAD | marketplace/product/{slug} | marketplace.product.show | Closure | web |
+| GET / HEAD | marketplace/product/{slug} | marketplace.product.show | App\Livewire\Marketplace\PublicMarketplace | web |
 | GET / HEAD | marketplace/promotions | marketplace.promotions | App\Livewire\Marketplace\MarketplaceCenter | web, Illuminate\Auth\Middleware\Authenticate, Illuminate\Auth\Middleware\EnsureEmailIsVerified, App\Http\Middleware\CheckRole:super_admin,academy_admin,content_editor |
 | GET / HEAD | marketplace/reviews | marketplace.reviews | App\Livewire\Marketplace\MarketplaceCenter | web, Illuminate\Auth\Middleware\Authenticate, Illuminate\Auth\Middleware\EnsureEmailIsVerified, App\Http\Middleware\CheckRole:super_admin,academy_admin,content_editor |
 | GET / HEAD | marketplace/sell | marketplace.sell | App\Livewire\Marketplace\MarketplaceCenter | web, Illuminate\Auth\Middleware\Authenticate, Illuminate\Auth\Middleware\EnsureEmailIsVerified |
