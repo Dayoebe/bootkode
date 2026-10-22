@@ -151,3 +151,16 @@ Matching, ordering and drag-and-drop now have complete authoring and learner con
 Authoring now preserves option positions and the literal option `0`, validates complete marking keys, stores arrays through the existing model casts, persists real attempt limits, and scopes copies/reorders to the actual lesson/assessment. Copying all questions is atomic and never copies learner history. Shared authoring screens and a contextual full workspace replace decorative format cards and nonfunctional switches. Three unreferenced assessment partials were removed after a repository reference search. Question statistics and legacy exact-key/manual-review helpers now match the supported rules.
 
 Native pointer dragging, labelled selection alternatives, sequence buttons and physical Enter-key activation were verified. A discovered focus loss after Livewire row moves is fixed through the existing dashboard entry, including instructor reordering. See verification.md for precise evidence. Formal mark correction, legacy reconciliation, richer project/file/peer-review delivery, remaining legacy editor acceptance and the prior provider/dependency/legal/accessibility gates remain separate work; the three new interaction formats are no longer unimplemented.
+
+## Recorded mark review continuation — 22 October 2026
+
+| Area | Confirmed gap | Implemented behavior |
+|---|---|---|
+| Review queue | Finalized submissions disappeared; changed marks were refused without a usable correction workflow | Scoped pending/requested/finalized filters; explicit bounded written-mark corrections retaining prior marks and result snapshots |
+| Correction integrity | No stale-decision, reason or correction replay boundary existed | Server-issued locked revision/operation context; user/attempt/answer locks; atomic current mark/result/history writes and exact replay handling |
+| Learner result review | Learners could read feedback but could not request reconsideration or inspect a correction | Owned requests from both existing result surfaces; one request per recorded mark version; persisted upheld/corrected decisions and safe correction history |
+| Mixed review display | Structured automatic responses could appear alongside manually reviewable answers | Automatic question types are consistently excluded from manual marking/correction controls |
+| Learning history | Changing a grade must not silently rewrite issued credentials or historical rewards/completions | Snapshot-based future eligibility changes; existing ledger, completion and credential records retained |
+| Focus after mutations | Publishing a correction or sending a request removes the submitting form | Dashboard-owned focus restoration to the updated response or correction control; shared dialog behavior retained |
+
+This extends existing attempt/answer records without a migration, historical regrade or working-database record write. It does not implement peer review, project-file delivery, external review notifications or reconciliation of legacy attempts without complete snapshots. Verification evidence and actual limits are recorded in verification.md.

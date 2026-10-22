@@ -396,3 +396,50 @@ Commits for this continuation:
 - `830e4199 build(ui): compile structured assessment controls and focus handling`
 
 The documentation commit records the accepted evidence and remaining gates. The handoff reports ordinary feature-branch push and exact remote HEAD verification; no merge or deployment is performed.
+
+## Recorded mark correction and learner reconsideration — 22 October 2026
+
+### Findings and implemented boundary
+
+Finalized written submissions disappeared from the review queue and the initial marking service correctly refused overwrites without providing a correction workflow. Learners could read feedback but had no owned request/history path. Structured automatic answers also appeared among manual-review controls. Inspection reused the existing assessment, attempt, answer and role/ownership boundaries; the unrelated project controller is only a legacy stub and was not used to create a parallel submission system.
+
+The existing review service now handles explicit corrections and owner-requested reconsideration for finalized written answers with complete original snapshots. It retains before/after marks, feedback, grader/time and full result snapshots; requires a reason; checks current course/platform authorization and non-self review; locks learner/attempt/answers; refuses stale decisions; and makes exact operation retries safe. Marks accept at most two decimal places, matching their persisted precision. A correction, published result, audit and any resolved request persist together. Automatic/pending/cross-attempt/unsupported historical records cannot use this path.
+
+Learners can request reconsideration from either existing result surface. One request is retained per answer correction version; exact retries do not reopen a decision. Reviewers can correct a mark or uphold it with a reason. Pending/requested/finalized queue filters use actual scoped records. Safe learner history omits keys, rubric guidance, reviewer identifiers, operation/revision data and full private result audits. Result headings refresh from the recorded snapshot when the component renders. Retained personal result requests remain owner-scoped after enrollment ends; this does not reopen lesson access.
+
+Corrections change future pass/progress/new-credential eligibility using original question marks and the original pass threshold. They do not award/claw back rewards, delete completion history, or change issued/revoked credentials, tokens or files. No schema migration, dependency, bulk reconciliation or working-record mutation is introduced. Decisions are visible in results; no external notification delivery is claimed.
+
+### Final automated and build evidence
+
+- Final `php artisan test`: **231 passed, 1,087 assertions, 273.25 seconds** on guarded `bootkode_test`. There are **16 new correction/review cases**, including snapshot bounds, precision, ownership/self-review, exact replay, stale decisions, owner requests, upheld/corrected history, atomic rollback, safe projection and issued-credential/completion/reward preservation.
+- Final `npm run build`: **passed in 5.86 seconds**. Public JavaScript remains **0.92 KB**; the dashboard entry is **418.00 KB**, app CSS **256.59 KB** and dashboard CSS **17.91 KB**. No additional runtime or dependency was added. The existing PostCSS `from` warning remains; the final build did not emit the earlier Browserslist warning.
+- **7 changed application/test PHP files** passed syntax checks; dashboard JavaScript passed `node --check`. Blade compilation, route cache/clear and `git diff --check` passed. Route inventory remains **284 routes**.
+- Fresh dependency audits remain **8 npm advisories (5 high, 3 moderate)** and **62 Composer advisories across 19 packages**. Advisories were not suppressed and no forced major upgrade was used.
+- Runtime verification used PHP **8.4.27**, Laravel **11.46.1**, Livewire **3.6.4**, Tailwind **3.4.19** and Vite **7.3.7**. The working application returned **HTTP 200** after final checks.
+
+### Authenticated browser acceptance
+
+Accepted Chrome evidence contains **44 distinct responsive state samples** at **390/768/1024/1440px** and **21 workflow checks**, with no unhandled browser exception, internal-error page or horizontal page overflow in those accepted samples. Samples cover owned recorded results, request disclosures, personal-result dialogs, pending/requested queues, review dialogs, correction forms, reasoned decisions, stale errors, corrected history and scrolled correction controls. Actual 390/1440 screenshots were inspected, including native field errors and publication controls.
+
+Native forms created two owner review requests without changing the original 70% result. The reviewer corrected one answer from 3 to 2 points (60%) and upheld the other request with an explanation. A second browser tab then changed the first mark from 2 to 1 point (50%); the stale first tab's attempted replacement was refused and Reload cleared its old correction context. Both learner result surfaces displayed 50%, both correction reasons and the recorded request decisions. Other instructors could not list these results; learners received 403 from the staff route. Invalid score errors remained associated with the score field and did not change the saved mark.
+
+Physical Enter opened the correction and focused its bounded score field. Cancel/publication returned focus to the correction control; request/decision replacement focused the corresponding response. Shift+Tab stayed inside the review dialog. Browser testing found that disabling the dialog opener during loading made Escape return focus to the body; the opener now retains focus with a loading opacity state, and the repeated physical Escape check returned to the correct row trigger.
+
+Early harness attempts read a slow server response before it settled and compared the decimal HTML bound `4.00` to the literal `4`; these are excluded from accepted evidence. Final checks await request completion and compare numeric bounds. External analytics, fonts, icons and avatar/CDN assets were blocked during browser QA. Interface screenshots therefore use fallbacks and contain unavailable external icons. This is targeted light-theme/Chrome interaction acceptance, not complete assistive-technology, every-theme or every-browser certification.
+
+### Persistence, cleanup and delivery
+
+Private browser-database evidence records two correction events, unchanged initial review history, final **50% / 5 of 10 points / not passed**, request decisions **corrected/upheld**, and **zero open requests**. The original passing-result reward remains **50 points with one quiz point transaction**. The separate submitted written exercise remains pending, and all three submitted answer records retained their original response text.
+
+Known fixture accounts **30–32** from the initial timing run were removed before the accepted run. Final fixture accounts **33–35**, their known course/lesson/assessment/question records and dependent session/answer/enrollment/reward/role links were removed from `bootkode_browser_test`. Explicit dependent-row checks returned zero. Private evidence stays in ignored QA storage. Only owned QA Chrome/server processes **23136/23131** were stopped after checking their command markers.
+
+Read-only counts and SHA-256 row fingerprints matched before/after for working users, courses, lessons, assessments, questions, attempts, answers, credentials, reward ledger and all **41 migration records**. No fixture account was present in `bootkode_recovered`. On resuming after the environment restart, neither development listener was running; Laravel **8000** and Vite **5173** were restored after checking port state. Final listeners were **10907/10935** and working HTTP was 200; QA ports 8011/9222 were closed.
+
+Code/build commits:
+
+- `54e8ef74 feat(assessment): retain mark corrections and review decisions`
+- `89dd7f5a build(ui): compile recorded-mark focus handling`
+
+The documentation commit records this evidence and the remaining limits. Delivery uses an ordinary feature-branch push followed by exact remote HEAD verification; it does not merge or deploy the application.
+
+Remaining feasible assessment work includes richer private project-file/peer-review delivery, exhaustive criteria-editor acceptance and backed-up reconciliation of legacy attempts/definitions without complete snapshots. Provider/OAuth/live-AI/mail acceptance, historical public-file migration, dependency/legal gates and broad accessibility/theme acceptance also remain open. Formal owner reconsideration and explicit correction history for supported finalized written attempts are now implemented; the whole-product request is not declared production-ready.

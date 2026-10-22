@@ -288,3 +288,5 @@ Generated from `php artisan route:list --json` on 22 October 2026 after the stru
 | POST | webhook/paystack | paystack.webhook | App\Http\Controllers\FinancialController@paystackWebhook | web |
 | GET / HEAD | withdrawals | withdrawals.index | App\Livewire\Financial\WithdrawalManager | web, Illuminate\Auth\Middleware\Authenticate |
 | GET / HEAD | {slug} | page.show | App\Http\Controllers\PageController@show | web |
+
+The 22 October recorded-mark continuation reuses the existing lesson workspace, personal result and assessment-review routes. The verified route count remains 284; no new public download or review endpoint is introduced in this phase.
