@@ -59,6 +59,19 @@ class ProfileTest extends TestCase
         $this->assertNotNull($user->fresh());
     }
 
+    public function test_blocked_account_deletion_preserves_authentication_avatar_and_learning_history(): void
+    {
+        $user = User::factory()->create(['profile_picture' => 'https://example.test/avatar.png']);
+        $course = \App\Models\Learning\Course::withoutEvents(fn () => \App\Models\Learning\Course::create(['instructor_id' => User::factory()->create()->id, 'title' => 'History fixture', 'slug' => 'history-fixture']));
+        $user->courses()->attach($course->id, ['progress' => 10]);
+        Livewire::actingAs($user)->test(Profile::class)
+            ->set('delete_password', 'password')->set('delete_confirmation', 'DELETE')
+            ->call('deleteAccount')->assertHasErrors('delete_confirmation');
+        $this->assertAuthenticatedAs($user);
+        $this->assertSame('https://example.test/avatar.png', $user->fresh()->profile_picture);
+        $this->assertDatabaseHas('course_user', ['user_id' => $user->id, 'course_id' => $course->id]);
+    }
+
     public function test_profile_update_rejects_another_users_email(): void
     {
         $user = User::factory()->create();

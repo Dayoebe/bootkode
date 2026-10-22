@@ -7,6 +7,8 @@ use Illuminate\Support\Str;
 
 class Lesson extends Model
 {
+    use \App\Traits\PreservesCourseHistory;
+
     protected $fillable = [
         'section_id',
         'title',

@@ -8,6 +8,7 @@
     </div>
 
     <div class="w-full min-w-0 py-6">
+        <x-ui.page-header title="Course builder" :description="$course->title" />
         <!-- Toolbar -->
         <livewire:course-management.course-builder.toolbar :course="$course" wire:key="toolbar-{{ $course->id }}" />
 

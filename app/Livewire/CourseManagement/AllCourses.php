@@ -20,6 +20,8 @@ use Livewire\Attributes\Computed;
 #[Layout('layouts.dashboard', ['title' => 'All Courses', 'description' => 'Manage all courses including creation, editing, and deletion', 'icon' => 'fas fa-book', 'active' => 'all-course'])]
 class AllCourses extends Component
 {
+    use \App\Livewire\Concerns\AuthorizesCourseAuthoring;
+
     use WithPagination;
 
     public $search = '';
@@ -57,7 +59,7 @@ class AllCourses extends Component
     {
         $user = Auth::user();
         $baseQuery = Course::query()
-            ->when(!$user->hasRole('super_admin'), fn($query) => $query->where('instructor_id', $user->id));
+            ->when(!$user->hasAnyRole(['super_admin', 'academy_admin']), fn($query) => $query->where('instructor_id', $user->id));
 
         $this->totalCourses = $baseQuery->count();
         $this->publishedCourses = (clone $baseQuery)->where('is_published', true)->count();
@@ -77,7 +79,7 @@ class AllCourses extends Component
         return Course::query()
         
             ->withCount(['instructor', 'category', 'enrollments'])
-            ->when(!$user->hasRole('super_admin'), fn($query) => $query->where('instructor_id', $user->id))
+            ->when(!$user->hasAnyRole(['super_admin', 'academy_admin']), fn($query) => $query->where('instructor_id', $user->id))
             ->when($this->search, fn($query) => $query->where(fn($q) => $q
                 ->where('title', 'like', '%' . $this->search . '%')
                 ->orWhere('description', 'like', '%' . $this->search . '%')))
@@ -171,6 +173,7 @@ class AllCourses extends Component
      */
     public function togglePublished(Course $course)
     {
+        app(\App\Services\CourseAuthoringAccess::class)->course($course->id);
         try {
             if (! $course->is_published) {
                 $this->ensureCourseIsQualityReady($course);
@@ -217,6 +220,7 @@ class AllCourses extends Component
      */
     public function toggleApproved(Course $course)
     {
+        abort_unless(auth()->user()->hasAnyRole(['super_admin', 'academy_admin']), 403);
         try {
             if (! $course->is_approved) {
                 $this->ensureCourseIsQualityReady($course);
@@ -254,6 +258,7 @@ class AllCourses extends Component
  */
 public function editCourse(Course $course)
 {
+        app(\App\Services\CourseAuthoringAccess::class)->course($course->id);
     // FIX: Pass the course model directly, not just the ID
     return $this->redirect(route('edit_course', $course));
 }
@@ -262,6 +267,7 @@ public function editCourse(Course $course)
      */
     public function deleteCourse(Course $course)
     {
+        app(\App\Services\CourseAuthoringAccess::class)->course($course->id);
         try {
             $course->delete();
             $this->updateStatistics();
@@ -273,7 +279,7 @@ public function editCourse(Course $course)
         } catch (\Exception $e) {
             \Log::error('Failed to delete course ID: ' . $course->id, ['error' => $e->getMessage()]);
             $this->dispatch('notify', [
-                'message' => 'Failed to delete course.',
+                'message' => $e instanceof \DomainException ? $e->getMessage() : 'Failed to delete course.',
                 'type' => 'error'
             ]);
         }
@@ -299,7 +305,7 @@ public function editCourse(Course $course)
             $count = 0;
             $skipped = 0;
             $courses = Course::whereIn('id', $this->selectedCourses)
-                ->where(fn($q) => Auth::user()->hasRole('instructor') ? $q->where('instructor_id', Auth::id()) : $q)
+                ->when(!Auth::user()->hasAnyRole(['super_admin', 'academy_admin']), fn ($query) => $query->where('instructor_id', Auth::id()))
                 ->get();
 
             foreach ($courses as $course) {
@@ -339,6 +345,7 @@ public function editCourse(Course $course)
      */
     public function bulkApprove()
     {
+        abort_unless(auth()->user()->hasAnyRole(['super_admin', 'academy_admin']), 403);
         try {
             $count = 0;
             $skipped = 0;
@@ -388,9 +395,12 @@ public function editCourse(Course $course)
     public function confirmBulkDelete()
     {
         try {
-            $count = Course::whereIn('id', $this->selectedCourses)
-                ->where(fn($q) => Auth::user()->hasRole('instructor') ? $q->where('instructor_id', Auth::id()) : $q)
-                ->delete();
+            $count = \Illuminate\Support\Facades\DB::transaction(function () {
+                $courses = Course::whereIn('id', $this->selectedCourses)
+                ->when(!Auth::user()->hasAnyRole(['super_admin', 'academy_admin']), fn ($query) => $query->where('instructor_id', Auth::id()))->get();
+                foreach ($courses as $course) $course->delete();
+                return $courses->count();
+            });
 
             $this->updateStatistics();
             $this->dispatch('notify', [
@@ -414,7 +424,7 @@ public function editCourse(Course $course)
     {
         try {
             $count = Course::whereIn('id', $this->selectedCourses)
-                ->where(fn($q) => Auth::user()->hasRole('instructor') ? $q->where('instructor_id', Auth::id()) : $q)
+                ->when(!Auth::user()->hasAnyRole(['super_admin', 'academy_admin']), fn ($query) => $query->where('instructor_id', Auth::id()))
                 ->update(['is_published' => false]);
 
             $this->updateStatistics();
@@ -472,6 +482,7 @@ public function editCourse(Course $course)
     }
     public function previewCourse(Course $course): void
     {
+        app(\App\Services\CourseAuthoringAccess::class)->course($course->id);
         $this->redirect(route('courses.preview', $course));
     }
 

@@ -102,6 +102,7 @@ class UserCourses extends Component
      */
     public function togglePublished(Course $course)
     {
+        app(\App\Services\CourseAuthoringAccess::class)->authorizeRole();
         // Ensure user owns this course
         if ($course->instructor_id !== Auth::id()) {
             $this->dispatch('notify', [
@@ -137,6 +138,7 @@ class UserCourses extends Component
      */
     public function editCourse(Course $course)
     {
+        app(\App\Services\CourseAuthoringAccess::class)->authorizeRole();
         // Ensure user owns this course
         if ($course->instructor_id !== Auth::id()) {
             $this->dispatch('notify', [
@@ -157,6 +159,7 @@ class UserCourses extends Component
      */
     public function previewCourse(Course $course)
     {
+        app(\App\Services\CourseAuthoringAccess::class)->authorizeRole();
         // Ensure user owns this course
         if ($course->instructor_id !== Auth::id()) {
             $this->dispatch('notify', [
@@ -177,6 +180,7 @@ class UserCourses extends Component
      */
     public function deleteCourse(Course $course)
     {
+        app(\App\Services\CourseAuthoringAccess::class)->authorizeRole();
         // Ensure user owns this course
         if ($course->instructor_id !== Auth::id()) {
             $this->dispatch('notify', [
@@ -197,7 +201,7 @@ class UserCourses extends Component
             ]);
         } catch (\Exception $e) {
             $this->dispatch('notify', [
-                'message' => 'Failed to delete course.',
+                'message' => $e instanceof \DomainException ? $e->getMessage() : 'Failed to delete course.',
                 'type' => 'error',
                 'icon' => 'fas fa-exclamation-triangle'
             ]);
@@ -209,6 +213,7 @@ class UserCourses extends Component
      */
     public function bulkPublish()
     {
+        app(\App\Services\CourseAuthoringAccess::class)->authorizeRole();
         try {
             $count = Course::whereIn('id', $this->selectedCourses)
                 ->where('instructor_id', Auth::id())
@@ -234,6 +239,7 @@ class UserCourses extends Component
      */
     public function bulkUnpublish()
     {
+        app(\App\Services\CourseAuthoringAccess::class)->authorizeRole();
         try {
             $count = Course::whereIn('id', $this->selectedCourses)
                 ->where('instructor_id', Auth::id())
@@ -259,10 +265,13 @@ class UserCourses extends Component
      */
     public function bulkDelete()
     {
+        app(\App\Services\CourseAuthoringAccess::class)->authorizeRole();
         try {
-            $count = Course::whereIn('id', $this->selectedCourses)
-                ->where('instructor_id', Auth::id())
-                ->delete();
+            $count = \Illuminate\Support\Facades\DB::transaction(function () {
+                $courses = Course::whereIn('id', $this->selectedCourses)->where('instructor_id', Auth::id())->get();
+                foreach ($courses as $course) $course->delete();
+                return $courses->count();
+            });
 
             $this->dispatch('notify', [
                 'message' => "{$count} courses have been deleted.",

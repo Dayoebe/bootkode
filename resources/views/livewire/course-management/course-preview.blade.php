@@ -2,8 +2,7 @@
     <div class="px-4 py-4 sm:px-6 sm:py-6 lg:px-8 lg:py-8" x-data="{
              activeTab: @entangle('activeTab'),
              showEnrollModal: @entangle('showEnrollModal'),
-             showReviewModal: @entangle('showReviewModal'),
-             showShareModal: false
+             showReviewModal: @entangle('showReviewModal')
          }">
 
         <!-- Hero Section -->
@@ -83,33 +82,33 @@
         <!-- Main Content Grid -->
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8">
             <!-- Left Column - Course Content -->
-            <div class="lg:col-span-2 space-y-6 sm:space-y-8 mb-3">
+            <div class="min-w-0 lg:col-span-2 space-y-6 sm:space-y-8 mb-3">
 
                 <!-- Navigation Tabs -->
                 <div
                     class="bg-themed-secondary rounded-xl sm:rounded-2xl shadow-lg border border-themed-primary p-2 transition-colors duration-300">
-                    <nav class="flex space-x-2" role="tablist">
+                    <nav class="flex max-w-full gap-2 overflow-x-auto" aria-label="Course information">
                         <button @click="activeTab = 'overview'"
                             :class="activeTab === 'overview' ? 'bg-accent-themed-primary text-white' : 'text-themed-secondary hover:text-themed-primary hover:bg-themed-tertiary'"
-                            class="flex-1 py-2 sm:py-3 px-3 sm:px-4 rounded-lg font-semibold text-sm sm:text-base transition-all duration-200 flex items-center justify-center">
+                            class="min-h-11 shrink-0 flex-1 py-2 sm:py-3 px-3 sm:px-4 rounded-lg font-semibold text-sm sm:text-base transition-all duration-200 flex items-center justify-center">
                             <i class="fas fa-info-circle mr-2"></i>
                             Overview
                         </button>
                         <button @click="activeTab = 'curriculum'"
                             :class="activeTab === 'curriculum' ? 'bg-accent-themed-primary text-white' : 'text-themed-secondary hover:text-themed-primary hover:bg-themed-tertiary'"
-                            class="flex-1 py-2 sm:py-3 px-3 sm:px-4 rounded-lg font-semibold text-sm sm:text-base transition-all duration-200 flex items-center justify-center">
+                            class="min-h-11 shrink-0 flex-1 py-2 sm:py-3 px-3 sm:px-4 rounded-lg font-semibold text-sm sm:text-base transition-all duration-200 flex items-center justify-center">
                             <i class="fas fa-list mr-2"></i>
                             Curriculum
                         </button>
                         <button @click="activeTab = 'reviews'"
                             :class="activeTab === 'reviews' ? 'bg-accent-themed-primary text-white' : 'text-themed-secondary hover:text-themed-primary hover:bg-themed-tertiary'"
-                            class="flex-1 py-2 sm:py-3 px-3 sm:px-4 rounded-lg font-semibold text-sm sm:text-base transition-all duration-200 flex items-center justify-center">
+                            class="min-h-11 shrink-0 flex-1 py-2 sm:py-3 px-3 sm:px-4 rounded-lg font-semibold text-sm sm:text-base transition-all duration-200 flex items-center justify-center">
                             <i class="fas fa-star mr-2"></i>
                             Reviews ({{ $totalReviews }})
                         </button>
                         <button @click="activeTab = 'instructor'"
                             :class="activeTab === 'instructor' ? 'bg-accent-themed-primary text-white' : 'text-themed-secondary hover:text-themed-primary hover:bg-themed-tertiary'"
-                            class="flex-1 py-2 sm:py-3 px-3 sm:px-4 rounded-lg font-semibold text-sm sm:text-base transition-all duration-200 flex items-center justify-center">
+                            class="min-h-11 shrink-0 flex-1 py-2 sm:py-3 px-3 sm:px-4 rounded-lg font-semibold text-sm sm:text-base transition-all duration-200 flex items-center justify-center">
                             <i class="fas fa-user-graduate mr-2"></i>
                             Instructor
                         </button>
@@ -642,7 +641,7 @@
                                 </button>
 
                                 <!-- Share Button -->
-                                <button @click="showShareModal = true"
+                                <button @click="$dispatch('open-modal', 'course-share')"
                                     class="flex-1 bg-themed-tertiary hover:bg-themed-primary border border-themed-primary text-themed-secondary hover:text-blue-500 font-semibold py-2 px-4 rounded-xl transition-all duration-300 flex items-center justify-center">
                                     <i class="fas fa-share-alt mr-2"></i>
                                     Share
@@ -709,24 +708,19 @@
         </div>
     </div>
     <!-- Share Modal -->
-    <div x-show="showShareModal" x-transition:enter="transition ease-out duration-300"
-        x-transition:enter-start="opacity-0 transform scale-95" x-transition:enter-end="opacity-100 transform scale-100"
-        x-transition:leave="transition ease-in duration-200" x-transition:leave-start="opacity-100 transform scale-100"
-        x-transition:leave-end="opacity-0 transform scale-95"
-        class="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4" x-cloak>
-
+    <x-modal name="course-share" maxWidth="md" label="Share this course">
         <div
             class="bg-themed-secondary rounded-2xl sm:rounded-3xl p-6 sm:p-8 max-w-md w-full shadow-2xl border border-themed-primary transition-colors duration-300">
             <div class="flex items-center justify-between mb-6">
                 <h3 class="text-xl font-bold text-themed-primary transition-colors duration-300">Share This Course</h3>
-                <button @click="showShareModal = false"
+                <button aria-label="Close share dialog" @click="$dispatch('close-modal', 'course-share')"
                     class="text-themed-secondary hover:text-themed-primary transition-colors duration-300">
                     <i class="fas fa-times text-xl"></i>
                 </button>
             </div>
 
             <!-- Share Options -->
-            <div class="grid grid-cols-4 gap-4 mb-6">
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6">
                 <button wire:click="shareCourse('twitter')"
                     class="bg-blue-400 hover:bg-blue-500 text-white p-4 rounded-xl transition-all duration-300 transform hover:scale-105 flex flex-col items-center">
                     <i class="fab fa-twitter text-xl mb-2"></i>
@@ -755,14 +749,14 @@
             <!-- Copy Link -->
             <div class="flex space-x-2">
                 <input type="text" value="{{ $shareUrl }}" readonly
-                    class="flex-1 bg-themed-tertiary border border-themed-primary rounded-xl px-4 py-3 text-themed-primary text-sm transition-colors duration-300">
-                <button onclick="navigator.clipboard.writeText('{{ $shareUrl }}')" @click="showShareModal = false"
-                    class="bg-accent-themed-primary hover:bg-accent-themed-secondary text-white px-4 py-3 rounded-xl transition-all duration-300 transform hover:scale-105">
+                    class="min-w-0 flex-1 bg-themed-tertiary border border-themed-primary rounded-xl px-4 py-3 text-themed-primary text-sm transition-colors duration-300">
+                <button onclick="navigator.clipboard.writeText('{{ $shareUrl }}')" @click="$dispatch('close-modal', 'course-share')"
+                    aria-label="Copy course link" class="bk-button bk-button-primary">
                     <i class="fas fa-copy"></i>
                 </button>
             </div>
         </div>
-    </div>
+    </x-modal>
 
 
 

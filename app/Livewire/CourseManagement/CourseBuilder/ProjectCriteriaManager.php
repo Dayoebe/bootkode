@@ -10,6 +10,9 @@ use Livewire\Component;
 
 class ProjectCriteriaManager extends Component
 {
+    use \App\Livewire\Concerns\AuthorizesCourseAuthoring;
+
+    #[\Livewire\Attributes\Locked]
     public $assessmentId;
     public $assessment;
     public $criteria = [];
@@ -53,6 +56,7 @@ class ProjectCriteriaManager extends Component
     public function mount($assessmentId)
     {
         $this->assessmentId = $assessmentId;
+        $this->authorizeAuthoringContext();
         $this->assessment = Assessment::findOrFail($assessmentId);
         $this->loadCriteria();
         
@@ -209,7 +213,7 @@ class ProjectCriteriaManager extends Component
         $this->validate();
 
         if ($this->editingCriteria) {
-            $criteria = Question::findOrFail($this->editingCriteria['id']);
+            $criteria = Question::where('assessment_id', $this->assessmentId)->findOrFail($this->editingCriteria['id']);
             
             $projectData = [
                 'criteria_type' => $this->criteriaType,
@@ -238,7 +242,7 @@ class ProjectCriteriaManager extends Component
 
     public function deleteCriteria($criteriaId)
     {
-        Question::findOrFail($criteriaId)->delete();
+        Question::where('assessment_id', $this->assessmentId)->findOrFail($criteriaId)->delete();
         $this->loadCriteria();
         
         session()->flash('success', 'Project criteria deleted successfully!');
@@ -246,7 +250,7 @@ class ProjectCriteriaManager extends Component
 
     public function duplicateCriteria($criteriaId)
     {
-        $originalCriteria = Question::findOrFail($criteriaId);
+        $originalCriteria = Question::where('assessment_id', $this->assessmentId)->findOrFail($criteriaId);
         $duplicatedCriteria = $originalCriteria->replicate();
         $duplicatedCriteria->question_text = $originalCriteria->question_text . ' (Copy)';
         $duplicatedCriteria->order = count($this->criteria) + 1;
@@ -259,7 +263,7 @@ class ProjectCriteriaManager extends Component
     public function reorderCriteria($orderedIds)
     {
         foreach ($orderedIds as $index => $id) {
-            Question::where('id', $id)->update(['order' => $index + 1]);
+            Question::where('assessment_id', $this->assessmentId)->where('id', $id)->update(['order' => $index + 1]);
         }
         
         $this->loadCriteria();

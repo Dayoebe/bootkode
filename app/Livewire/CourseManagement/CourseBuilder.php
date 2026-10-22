@@ -11,6 +11,8 @@ use Livewire\Attributes\On;
 #[Layout('layouts.dashboard')]
 class CourseBuilder extends Component
 {
+    use \App\Livewire\Concerns\AuthorizesCourseAuthoring;
+
     public Course $course;
     public $activeContentId = null;
     public $activeContentType = null;
@@ -26,6 +28,7 @@ class CourseBuilder extends Component
     public function mount(Course $course)
     {
         $this->course = $course;
+        $this->authorizeAuthoringContext();
         $this->lastActivity = now()->timestamp;
         $this->lastCourseHash = $this->generateCourseHash();
 
@@ -55,7 +58,7 @@ class CourseBuilder extends Component
     #[On('lesson-selected')]
     public function selectLesson($lessonId)
     {
-        $lesson = Lesson::find($lessonId);
+        $lesson = Lesson::whereHas('section', fn ($section) => $section->where('course_id', $this->course->id))->find($lessonId);
         if ($lesson) {
             $this->activeContentId = $lessonId;
             $this->activeContentType = 'lesson';
@@ -85,7 +88,7 @@ class CourseBuilder extends Component
         
         // If current lesson no longer exists, reset selection
         if ($this->activeContentId && $this->activeContentType === 'lesson') {
-            if (!Lesson::find($this->activeContentId)) {
+            if (!Lesson::whereHas('section', fn ($section) => $section->where('course_id', $this->course->id))->find($this->activeContentId)) {
                 $this->deselectLesson();
             }
         }

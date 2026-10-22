@@ -12,6 +12,8 @@ use App\Models\Learning\Lesson;
 
 class Assessment extends Model
 {
+    use \App\Traits\PreservesCourseHistory;
+
     use HasFactory, SoftDeletes;
 
     protected $fillable = [

@@ -11,8 +11,11 @@ use Mews\Purifier\Facades\Purifier;
 
 class LessonEditor extends Component
 {
+    use \App\Livewire\Concerns\AuthorizesCourseAuthoring;
+
     use WithFileUploads;
 
+    #[\Livewire\Attributes\Locked]
     public $lessonId;
     public $lesson;
     public $title = '';
@@ -32,10 +35,15 @@ class LessonEditor extends Component
     public $videoUpload;
 
     // Multiple file arrays
+    #[\Livewire\Attributes\Locked]
     public $images = [];
+    #[\Livewire\Attributes\Locked]
     public $documents = [];
+    #[\Livewire\Attributes\Locked]
     public $audios = [];
+    #[\Livewire\Attributes\Locked]
     public $videos = [];
+    #[\Livewire\Attributes\Locked]
     public $external_links = [];
 
     // External links form data
@@ -66,6 +74,7 @@ class LessonEditor extends Component
     public function mount($lessonId)
     {
         $this->lessonId = $lessonId;
+        $this->authorizeAuthoringContext();
         $this->loadLesson();
     }
 
@@ -228,7 +237,7 @@ class LessonEditor extends Component
         return $result;
     }
 
-    public function handleUpload($type, $fileProperty, $mimes, $maxSize, $storageFolder)
+    protected function handleUpload($type, $fileProperty, $mimes, $maxSize, $storageFolder)
     {
         $this->validate([
             $fileProperty => "required|mimes:{$mimes}|max:{$maxSize}",
@@ -311,7 +320,7 @@ class LessonEditor extends Component
     {
         $this->validate([
             'newLinkTitle' => 'required|string|max:255',
-            'newLinkUrl' => 'required|url'
+            'newLinkUrl' => 'required|url|starts_with:http://,https://'
         ]);
 
         $this->external_links[] = [
@@ -327,13 +336,11 @@ class LessonEditor extends Component
 
     public function removeFile($type, $index)
     {
+        abort_unless(in_array($type, ['images', 'documents', 'audios', 'videos', 'external_links'], true) && filter_var($index, FILTER_VALIDATE_INT) !== false && $index >= 0, 422);
+        $this->lesson->refresh();
+        $this->loadExistingFiles();
         if (isset($this->{$type}[$index])) {
-            $file = $this->{$type}[$index];
-
-            if (isset($file['path']) && Storage::disk('public')->exists($file['path'])) {
-                Storage::disk('public')->delete($file['path']);
-            }
-
+            // Remove this lesson's reference; shared and historical assets remain intact.
             array_splice($this->{$type}, $index, 1);
             $this->saveFiles();
         }
@@ -342,11 +349,11 @@ class LessonEditor extends Component
     protected function saveFiles()
     {
         $this->lesson->updateQuietly([
-            'images' => json_encode($this->images),
-            'documents' => json_encode($this->documents),
-            'audios' => json_encode($this->audios),
-            'videos' => json_encode($this->videos ?? []),
-            'external_links' => json_encode($this->external_links)
+            'images' => $this->images,
+            'documents' => $this->documents,
+            'audios' => $this->audios,
+            'videos' => $this->videos ?? [],
+            'external_links' => $this->external_links
         ]);
     }
 
@@ -374,11 +381,11 @@ class LessonEditor extends Component
             'scheduled_publish_at' => $this->scheduled_publish_at,
             'completion_time_type' => $this->completion_time_type,
             'difficulty_level' => $this->difficulty_level,
-            'images' => json_encode($this->images),
-            'documents' => json_encode($this->documents),
-            'audios' => json_encode($this->audios),
-            'videos' => json_encode($this->videos ?? []),
-            'external_links' => json_encode($this->external_links),
+            'images' => $this->images,
+            'documents' => $this->documents,
+            'audios' => $this->audios,
+            'videos' => $this->videos ?? [],
+            'external_links' => $this->external_links,
         ]);
 
         session()->flash('success', 'Lesson updated successfully!');

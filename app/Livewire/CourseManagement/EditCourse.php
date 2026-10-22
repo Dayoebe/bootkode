@@ -20,6 +20,8 @@ use Illuminate\Support\Facades\Storage;
 ])]
 class EditCourse extends Component
 {
+    use \App\Livewire\Concerns\AuthorizesCourseAuthoring;
+
     use WithFileUploads;
 
     public Course $course;
@@ -71,6 +73,7 @@ class EditCourse extends Component
     public function mount(Course $course)
     {
         $this->course = $course;
+        $this->authorizeAuthoringContext();
         $this->pageTitle = 'Edit Course: ' . Str::limit($course->title, 30);
         $this->categories = Cache::remember('course_categories', 3600, fn() => CourseCategory::orderBy('name')->get());
 
@@ -334,6 +337,7 @@ class EditCourse extends Component
 
     public function save($isDraft = false)
     {
+        $this->validate(['price' => 'nullable|numeric|min:0|max:999999', 'is_free' => 'boolean', 'is_premium' => 'boolean']);
         try {
             // Validate
             if (!$isDraft) {

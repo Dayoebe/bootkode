@@ -8,6 +8,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Question extends Model
 {
+    use \App\Traits\PreservesCourseHistory;
+
     use HasFactory, SoftDeletes;
 
     protected $fillable = [

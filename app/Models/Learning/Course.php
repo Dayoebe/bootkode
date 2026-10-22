@@ -11,6 +11,8 @@ use App\Models\Learning\CourseReview; // UPDATED
 
 class Course extends Model
 {
+    use \App\Traits\PreservesCourseHistory;
+
     use HasFactory, HasRevenueSplit; // Use the trait
 
     protected $fillable = [

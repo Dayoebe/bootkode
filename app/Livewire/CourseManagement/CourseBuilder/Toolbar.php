@@ -12,6 +12,8 @@ use Livewire\Attributes\On;
 
 class Toolbar extends Component
 {
+    use \App\Livewire\Concerns\AuthorizesCourseAuthoring;
+
     public Course $course;
     public $sectionCount;
     public $lessonCount;
@@ -27,6 +29,7 @@ class Toolbar extends Component
     public function mount(Course $course)
     {
         $this->course = $course;
+        $this->authorizeAuthoringContext();
         $this->updateCounts();
         $this->categories = Cache::remember('course_categories', 3600, fn() => CourseCategory::all());
         
@@ -51,6 +54,7 @@ class Toolbar extends Component
 
     public function togglePublished()
     {
+        abort_if(!$this->course->is_published && (!$this->course->is_approved || !$this->course->quality_approval_ready), 422, 'Approval and quality review are required before publication.');
         try {
             DB::beginTransaction();
 

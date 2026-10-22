@@ -10,6 +10,8 @@ use Illuminate\Support\Str;
 
 class CourseOutline extends Component
 {
+    use \App\Livewire\Concerns\AuthorizesCourseAuthoring;
+
     public Course $course;
     public $activeLessonId = null;
     public $activeSectionId = null;
@@ -50,7 +52,7 @@ class CourseOutline extends Component
     // Handle lesson selection updates from parent
     public function handleLessonSelected($lessonId)
     {
-        $lesson = Lesson::find($lessonId);
+        $lesson = Lesson::whereHas('section', fn ($section) => $section->where('course_id', $this->course->id))->find($lessonId);
         if ($lesson) {
             $this->activeLessonId = $lessonId;
             $this->activeSectionId = $lesson->section_id;
@@ -102,7 +104,7 @@ class CourseOutline extends Component
     public function startEditSection($sectionId)
     {
         $this->markAsEditing(true);
-        $section = Section::findOrFail($sectionId);
+        $section = Section::where('course_id', $this->course->id)->findOrFail($sectionId);
         $this->editingSectionId = $sectionId;
         $this->newSectionTitleEdit = $section->title;
     }
@@ -112,7 +114,7 @@ class CourseOutline extends Component
         $this->validateOnly('newSectionTitleEdit');
 
         try {
-            Section::findOrFail($this->editingSectionId)->update([
+            Section::where('course_id', $this->course->id)->findOrFail($this->editingSectionId)->update([
                 'title' => $this->newSectionTitleEdit
             ]);
 
@@ -138,7 +140,7 @@ class CourseOutline extends Component
         $this->markAsEditing(true);
 
         try {
-            $section = Section::findOrFail($sectionId);
+            $section = Section::where('course_id', $this->course->id)->findOrFail($sectionId);
             $this->expandedSections = array_diff($this->expandedSections, [$sectionId]);
             
             // If deleting active section, clear active lesson
@@ -178,7 +180,7 @@ class CourseOutline extends Component
         $this->markAsEditing(true);
 
         try {
-            $section = Section::with('course')->findOrFail($sectionId);
+            $section = Section::with('course')->where('course_id', $this->course->id)->findOrFail($sectionId);
             $lessonTitle = $this->newLessonTitles[$sectionId];
             
             // Generate proper slug with course prefix
@@ -293,7 +295,7 @@ class CourseOutline extends Component
     public function startEditLesson($lessonId)
     {
         $this->markAsEditing(true);
-        $lesson = Lesson::findOrFail($lessonId);
+        $lesson = Lesson::whereHas('section', fn ($section) => $section->where('course_id', $this->course->id))->findOrFail($lessonId);
         $this->editingLessonId = $lessonId;
         $this->newLessonTitleEdit = $lesson->title;
     }
@@ -303,7 +305,7 @@ class CourseOutline extends Component
         $this->validateOnly('newLessonTitleEdit');
 
         try {
-            Lesson::findOrFail($this->editingLessonId)->update([
+            Lesson::whereHas('section', fn ($section) => $section->where('course_id', $this->course->id))->findOrFail($this->editingLessonId)->update([
                 'title' => $this->newLessonTitleEdit,
             ]);
 
@@ -326,7 +328,7 @@ class CourseOutline extends Component
 
     public function selectLesson($lessonId)
     {
-        $lesson = Lesson::find($lessonId);
+        $lesson = Lesson::whereHas('section', fn ($section) => $section->where('course_id', $this->course->id))->find($lessonId);
         
         if (!$lesson) {
             $this->notify('Lesson not found', 'error');
@@ -362,7 +364,7 @@ class CourseOutline extends Component
                 $this->dispatch('lesson-deselected')->to('course-management.course-builder');
             }
             
-            Lesson::findOrFail($lessonId)->delete();
+            Lesson::whereHas('section', fn ($section) => $section->where('course_id', $this->course->id))->findOrFail($lessonId)->delete();
             $this->refreshCourse();
             $this->dispatchOutlineUpdated();
             $this->notify('Lesson deleted successfully!', 'success');

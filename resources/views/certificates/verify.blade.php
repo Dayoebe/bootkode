@@ -198,7 +198,7 @@
                                 </li>
                                 <li class="flex items-start">
                                     <i class="fas fa-check text-gray-500 mr-2 mt-0.5"></i>
-                                    The certificate was issued by Academy Learning Platform
+                                    The certificate was issued by {{ config('app.name') }}
                                 </li>
                             </ul>
                         </div>

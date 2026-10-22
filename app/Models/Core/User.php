@@ -98,6 +98,29 @@ class User extends Authenticatable implements MustVerifyEmail
         'show_phone_publicly' => 'boolean',
     ];
 
+    public function delete()
+    {
+        if (!$this->exists) return null;
+        return \Illuminate\Support\Facades\DB::transaction(function () {
+            static::whereKey($this->id)->lockForUpdate()->firstOrFail();
+            if (\App\Models\Credentials\Certificate::where('user_id', $this->id)->whereIn('status', ['issued', 'approved', 'revoked'])->exists()) {
+                throw new \DomainException('An issued credential is linked to this account. Contact support to arrange account removal while preserving verification records.');
+            }
+            foreach (['course_enrollments', 'course_user', 'lesson_user', 'lesson_progress', 'user_progress'] as $table) {
+                if (\Illuminate\Support\Facades\DB::table($table)->where('user_id', $this->id)->exists()) {
+                    throw new \DomainException('Learning history is linked to this account. Contact support to arrange account removal while preserving these records.');
+                }
+            }
+            if (\Illuminate\Support\Facades\DB::table('wallet_transactions')->whereIn('wallet_id', \Illuminate\Support\Facades\DB::table('wallets')->where('user_id', $this->id)->select('id'))->exists()) {
+                throw new \DomainException('Financial history is linked to this account. Contact support to arrange account removal while preserving these records.');
+            }
+            foreach (\App\Models\Learning\Course::where('instructor_id', $this->id)->lockForUpdate()->get(['id']) as $course) {
+                app(\App\Services\LearningHistoryGuard::class)->ensureRemovable((int) $course->id);
+            }
+            return parent::delete();
+        });
+    }
+
     protected static function booted()
     {
         static::created(function ($user) {
