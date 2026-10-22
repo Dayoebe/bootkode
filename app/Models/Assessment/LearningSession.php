@@ -13,6 +13,8 @@ class LearningSession extends Model
 {
     use HasFactory;
 
+    protected $hidden = ['metadata'];
+
     protected $fillable = [
         'user_id',
         'course_id',

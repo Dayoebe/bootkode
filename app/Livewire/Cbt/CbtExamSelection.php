@@ -10,12 +10,15 @@ use Livewire\Attributes\Layout;
 #[Layout('layouts.dashboard', ['title' => 'CBT Exams', 'description' => 'Select a CBT exam', 'icon' => 'fas fa-laptop-code'])]
 class CbtExamSelection extends Component
 {
+    use \App\Livewire\Concerns\RequiresAuthenticatedAccount;
+
     public function render()
     {
         // Get only standalone CBT assessments
         $availableAssessments = Assessment::where('type', 'quiz')
             ->whereNull('section_id')
             ->whereNull('lesson_id')
+            ->where(fn ($query) => $query->whereNull('course_id')->orWhereHas('course', fn ($course) => $course->where('instructor_id', Auth::id())->orWhereHas('enrollments', fn ($enrollment) => $enrollment->where('user_id', Auth::id()))->orWhereIn('courses.id', \Illuminate\Support\Facades\DB::table('course_user')->where('user_id', Auth::id())->select('course_id'))))
             ->with(['questions', 'course'])
             ->whereHas('questions') // Only show assessments that have questions
             ->get()
@@ -29,7 +32,8 @@ class CbtExamSelection extends Component
                 $assessment->attempts_count = $attemptCount;
                 
                 // Check if user can take the assessment
-                [$canTake, $message] = $assessment->canUserTakeAssessment(Auth::id());
+                app(\App\Services\CbtAttemptService::class)->authorize($assessment, Auth::user());
+        [$canTake, $message] = $assessment->canUserTakeAssessment(Auth::id());
                 $assessment->can_take = $canTake;
                 $assessment->attempt_message = $message;
                 
@@ -53,6 +57,7 @@ class CbtExamSelection extends Component
         }
 
         // Check if user can take the exam (attempts check)
+        app(\App\Services\CbtAttemptService::class)->authorize($assessment, Auth::user());
         [$canTake, $message] = $assessment->canUserTakeAssessment(Auth::id());
         
         if (!$canTake) {

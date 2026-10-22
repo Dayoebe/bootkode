@@ -168,6 +168,7 @@
     
     {{-- Main Exam Interface --}}
     <div class="min-h-screen flex flex-col bg-white dark:bg-gray-900">
+        <h1 class="break-words px-4 py-3 text-lg font-semibold text-content">{{ $assessment->title }}</h1>
         {{-- Top Navigation Bar --}}
         <div class="bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg z-20 flex-shrink-0">
             <div class="flex items-center justify-between px-4 md:px-6 py-4">
@@ -419,10 +420,10 @@
                                                    wire:click="saveAnswer({{ $question['id'] }}, {{ $optionIndex }})"
                                                    name="question_{{ $question['id'] }}" 
                                                    value="{{ $optionIndex }}"
-                                                   class="hidden peer"
+                                                   class="sr-only peer"
                                                    {{ isset($answers[$question['id']]) && $answers[$question['id']] == $optionIndex ? 'checked' : '' }}>
                                             
-                                            <div class="bg-white dark:bg-gray-800 border-2 rounded-2xl p-5 transition-all duration-200 border-gray-200 dark:border-gray-700 group-hover:border-blue-300"
+                                            <div class="peer-focus-visible:ring-2 peer-focus-visible:ring-brand bg-white dark:bg-gray-800 border-2 rounded-2xl p-5 transition-all duration-200 border-gray-200 dark:border-gray-700 group-hover:border-blue-300"
                                                  :class="{ 
                                                      'border-blue-500 bg-blue-50 dark:bg-blue-900/20 shadow-lg': {{ isset($answers[$question['id']]) && $answers[$question['id']] == $optionIndex ? 'true' : 'false' }}
                                                  }">
@@ -458,10 +459,10 @@
                                            wire:click="saveAnswer({{ $question['id'] }}, 0)"
                                            name="question_{{ $question['id'] }}" 
                                            value="0"
-                                           class="hidden peer"
+                                           class="sr-only peer"
                                            {{ isset($answers[$question['id']]) && $answers[$question['id']] == 0 ? 'checked' : '' }}>
                                     
-                                    <div class="bg-white dark:bg-gray-800 border-2 rounded-2xl p-6 transition-all duration-200 border-gray-200 dark:border-gray-700 group-hover:border-green-300"
+                                    <div class="peer-focus-visible:ring-2 peer-focus-visible:ring-brand bg-white dark:bg-gray-800 border-2 rounded-2xl p-6 transition-all duration-200 border-gray-200 dark:border-gray-700 group-hover:border-green-300"
                                          :class="{
                                              'border-green-500 bg-green-50 dark:bg-green-900/20 shadow-lg': {{ isset($answers[$question['id']]) && $answers[$question['id']] == 0 ? 'true' : 'false' }}
                                          }">
@@ -489,10 +490,10 @@
                                            wire:click="saveAnswer({{ $question['id'] }}, 1)"
                                            name="question_{{ $question['id'] }}" 
                                            value="1"
-                                           class="hidden peer"
+                                           class="sr-only peer"
                                            {{ isset($answers[$question['id']]) && $answers[$question['id']] == 1 ? 'checked' : '' }}>
                                     
-                                    <div class="bg-white dark:bg-gray-800 border-2 rounded-2xl p-6 transition-all duration-200 border-gray-200 dark:border-gray-700 group-hover:border-red-300"
+                                    <div class="peer-focus-visible:ring-2 peer-focus-visible:ring-brand bg-white dark:bg-gray-800 border-2 rounded-2xl p-6 transition-all duration-200 border-gray-200 dark:border-gray-700 group-hover:border-red-300"
                                          :class="{
                                              'border-red-500 bg-red-50 dark:bg-red-900/20 shadow-lg': {{ isset($answers[$question['id']]) && $answers[$question['id']] == 1 ? 'true' : 'false' }}
                                          }">
@@ -580,8 +581,7 @@
     @endif
 
     {{-- Submit Confirmation Modal --}}
-    @if($showSubmitModal)
-    <div class="fixed inset-0 bg-black bg-opacity-75 z-[110] flex items-center justify-center p-4">
+    <x-modal name="cbt-submit" model="showSubmitModal" maxWidth="md" label="Submit your exam">
         <div class="bg-white dark:bg-gray-800 rounded-3xl max-w-md w-full shadow-2xl">
             <div class="p-8">
                 <div class="w-20 h-20 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-full flex items-center justify-center mx-auto mb-6">
@@ -622,15 +622,14 @@
                             class="flex-1 px-6 py-4 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-xl font-semibold hover:bg-gray-200 dark:hover:bg-gray-600 transition-all">
                         <i class="fas fa-times mr-2"></i>Cancel
                     </button>
-                    <button wire:click="submitExam"
+                    <button wire:click="submitExam" wire:loading.attr="disabled"
                             class="flex-1 px-6 py-4 bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-xl font-bold hover:from-green-700 hover:to-emerald-700 transition-all shadow-lg">
                         <i class="fas fa-check mr-2"></i>Submit
                     </button>
                 </div>
             </div>
         </div>
-    </div>
-    @endif
+    </x-modal>
 </div>
 
 {{-- OPTIMIZED Alpine.js Components - Register BEFORE page render --}}

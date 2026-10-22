@@ -106,7 +106,7 @@ class User extends Authenticatable implements MustVerifyEmail
             if (\App\Models\Credentials\Certificate::where('user_id', $this->id)->whereIn('status', ['issued', 'approved', 'revoked'])->exists()) {
                 throw new \DomainException('An issued credential is linked to this account. Contact support to arrange account removal while preserving verification records.');
             }
-            foreach (['course_enrollments', 'course_user', 'lesson_user', 'lesson_progress', 'user_progress'] as $table) {
+            foreach (['course_enrollments', 'course_user', 'lesson_user', 'lesson_progress', 'user_progress', 'student_answers', 'learning_sessions'] as $table) {
                 if (\Illuminate\Support\Facades\DB::table($table)->where('user_id', $this->id)->exists()) {
                     throw new \DomainException('Learning history is linked to this account. Contact support to arrange account removal while preserving these records.');
                 }
