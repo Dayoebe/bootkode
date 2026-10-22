@@ -114,3 +114,17 @@ No schema migration or working-database mutation is required for this continuati
 | Public marketplace routes | Detail/vendor/category closures did not mount the actual full-page component correctly | Named Livewire routes resolve real published items/vendors, with authenticated detail resolution and missing-item 404 |
 
 The browser also exposed a course share dialog outside its Alpine scope, tablet builder overflow and narrow affiliate controls. These received targeted shared-modal/layout fixes. See the verification report for final accepted samples and limits; legacy interior theme coverage is still incomplete. No working-database record or schema was changed.
+
+## Learning rewards, analytics and CBT continuation — 22 October 2026
+
+| Finding | Implemented correction |
+|---|---|
+| Reward pages rendered raw partials/called nonexistent methods; games manufactured random successful scores | Real Livewire routes, actual ledger-backed rewards and explicit unpublished game states |
+| Stale/negative virtual currency operations, replayed daily/quest awards and incomplete store delivery | Positive locked mutations, persisted daily/quest evidence, atomic supported redemption and replay/rollback tests |
+| Duplicate analytics implementations accepted another user ID, referenced absent fields or estimated missing study time | One owner-scoped service/component, real enrollment/progress/session/grade sources, no invented duration or forecast |
+| Shared leaderboards cached full account models and private users | Explicit opt-in plus public-profile gating; current four-field projections and withdrawal checks |
+| Goal controls did not persist targets | Validated owner-only goals saved through the existing table, with a real activity CSV download |
+| CBT payloads contained answer keys and trusted client attempt state | Safe question projection, locked properties, persisted server attempts, owner/eligibility/deadline validation and saved answers |
+| Replayed or edited-question grading could change recorded outcomes | Atomic answer/result writes, replay-safe completion and private question snapshots; analytics prefer recorded result snapshots |
+
+This removes further feasible defects beyond the previous handoff. No existing data/schema was migrated or deleted in the working database. Games, unsupported reward delivery, achievement broadcasts and reviewed path generation remain explicitly unavailable rather than claiming fabricated success.

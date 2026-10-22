@@ -1,6 +1,6 @@
 # Route inventory
 
-Generated from `php artisan route:list --json` on 22 October 2026 after the support, authoring and affiliate continuation. Middleware and component checks together determine access; route existence is not proof of functional completion.
+Generated from `php artisan route:list --json` on 22 October 2026 after the recorded-learning/rewards/CBT continuation. Middleware and request-time component/service checks determine access; route existence is not proof of functional completion.
 
 | Method | URI | Name | Handler | Middleware |
 |---|---|---|---|---|
@@ -176,13 +176,13 @@ Generated from `php artisan route:list --json` on 22 October 2026 after the supp
 | GET / HEAD | enrolled-courses | student.enrolled-courses | App\Livewire\StudentManagement\EnrolledCourses | web, Illuminate\Auth\Middleware\Authenticate, Illuminate\Auth\Middleware\EnsureEmailIsVerified |
 | GET / HEAD | forgot-password | password.request | App\Http\Controllers\Auth\PasswordController@showForgotPasswordForm | web, Illuminate\Auth\Middleware\RedirectIfAuthenticated |
 | POST | forgot-password | password.email | App\Http\Controllers\Auth\PasswordController@sendResetLink | web, Illuminate\Auth\Middleware\RedirectIfAuthenticated |
-| GET / HEAD | gamification/badges | gamification.badges | App\Http\Controllers\GamificationController@badges | web, Illuminate\Auth\Middleware\Authenticate, Illuminate\Auth\Middleware\EnsureEmailIsVerified |
-| GET / HEAD | gamification/dashboard | gamification.dashboard | App\Http\Controllers\GamificationController@dashboard | web, Illuminate\Auth\Middleware\Authenticate, Illuminate\Auth\Middleware\EnsureEmailIsVerified |
-| GET / HEAD | gamification/games | gamification.games | App\Http\Controllers\GamificationController@games | web, Illuminate\Auth\Middleware\Authenticate, Illuminate\Auth\Middleware\EnsureEmailIsVerified |
+| GET / HEAD | gamification/badges | gamification.badges | App\Livewire\Gamification\GamificationDashboard | web, Illuminate\Auth\Middleware\Authenticate, Illuminate\Auth\Middleware\EnsureEmailIsVerified |
+| GET / HEAD | gamification/dashboard | gamification.dashboard | App\Livewire\Gamification\GamificationDashboard | web, Illuminate\Auth\Middleware\Authenticate, Illuminate\Auth\Middleware\EnsureEmailIsVerified |
+| GET / HEAD | gamification/games | gamification.games | App\Livewire\Gamification\GamificationDashboard | web, Illuminate\Auth\Middleware\Authenticate, Illuminate\Auth\Middleware\EnsureEmailIsVerified |
 | GET / HEAD | gamification/games/{gameId} | gamification.games.play | App\Http\Controllers\GamificationController@playGame | web, Illuminate\Auth\Middleware\Authenticate, Illuminate\Auth\Middleware\EnsureEmailIsVerified |
 | POST | gamification/items/{purchaseId}/toggle-equip | gamification.items.toggle-equip | App\Http\Controllers\GamificationController@toggleEquip | web, Illuminate\Auth\Middleware\Authenticate, Illuminate\Auth\Middleware\EnsureEmailIsVerified |
-| GET / HEAD | gamification/leaderboard | gamification.leaderboard | App\Http\Controllers\GamificationController@leaderboard | web, Illuminate\Auth\Middleware\Authenticate, Illuminate\Auth\Middleware\EnsureEmailIsVerified |
-| GET / HEAD | gamification/store | gamification.store | App\Http\Controllers\GamificationController@store | web, Illuminate\Auth\Middleware\Authenticate, Illuminate\Auth\Middleware\EnsureEmailIsVerified |
+| GET / HEAD | gamification/leaderboard | gamification.leaderboard | App\Livewire\Gamification\GamificationDashboard | web, Illuminate\Auth\Middleware\Authenticate, Illuminate\Auth\Middleware\EnsureEmailIsVerified |
+| GET / HEAD | gamification/store | gamification.store | App\Livewire\Gamification\GamificationDashboard | web, Illuminate\Auth\Middleware\Authenticate, Illuminate\Auth\Middleware\EnsureEmailIsVerified |
 | POST | gamification/store/purchase/{itemId} | gamification.store.purchase | App\Http\Controllers\GamificationController@purchaseItem | web, Illuminate\Auth\Middleware\Authenticate, Illuminate\Auth\Middleware\EnsureEmailIsVerified |
 | GET / HEAD | institution/analytics | institution.analytics | App\Livewire\Institution\InstitutionPortal | web, Illuminate\Auth\Middleware\Authenticate, Illuminate\Auth\Middleware\EnsureEmailIsVerified, App\Http\Middleware\CheckRole:super_admin,academy_admin |
 | GET / HEAD | institution/bulk-enrollment | institution.bulk-enrollment | App\Livewire\Institution\InstitutionPortal | web, Illuminate\Auth\Middleware\Authenticate, Illuminate\Auth\Middleware\EnsureEmailIsVerified, App\Http\Middleware\CheckRole:super_admin,academy_admin |

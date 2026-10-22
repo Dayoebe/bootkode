@@ -252,3 +252,42 @@ Continuation commits:
 - `b90f3277 build(ui): compile course editor and operational interface fixes`
 
 The documentation commit records the evidence and outstanding scope. Ordinary feature-branch push and exact remote HEAD comparison are reported in the handoff; no merge or deployment is performed.
+
+## Recorded learning, rewards and CBT — 22 October 2026
+
+Further inspection found actionable defects beyond the preceding handoff. This continuation implements and verifies those paths rather than treating all remaining work as external setup.
+
+### Final checks
+
+- `php artisan test`: **178 passed, 767 assertions, 95.88s**, using guarded `bootkode_test`.
+- `npm run build`: passed in **11.90s**. CSS is **270.27 KB**, public JavaScript **0.92 KB**, dashboard charts/editors **417.46 KB**. The existing nonfatal PostCSS `from` warning remains.
+- `php artisan view:cache`, `php artisan route:cache` followed by `php artisan route:clear`, `node --check resources/js/dashboard.js`, changed-PHP syntax checks (**20 files**) and `git diff --check`: passed.
+- Dependency files are unchanged. The fresh audit from the preceding same-day continuation was reviewed: **8 npm findings (5 high, 3 moderate)** and **62 Composer advisories across 19 packages**. These remain release gates; no suppression or major upgrade was applied.
+
+New automated cases cover daily reward replay across stale models/requests; negative/stale virtual balances; persisted quest completion and once-only rewards; consecutive streak/gem replay; lesson evidence; reward-store rollback/replay; opt-in/private leaderboard scope and withdrawal; deduplicated owned analytics; real goals/CSV; named reward routes; and truthful legacy service export/unavailable behavior. CBT cases cover course enrollment/access, answer-key exclusion, locked client metadata, persisted attempt reuse, duplicate submission, unstarted/cross-user/forged-answer denial, server expiry, saved answers surviving reload, maximum attempts, true/false grading, rollback, private grading snapshots and question edits after an attempt starts.
+
+### Browser and database evidence
+
+Accepted layouts cover **32 distinct learner/page/viewport combinations**: five reward pages, both historical personal analytics URLs and the CBT page at **390/768/1024/1440px**. The four CBT samples were repeated after removing a duplicate hidden warning heading; completed results also retained one primary heading. Accepted records had no document overflow, error page or recorded JavaScript exception. Pre-exam, active exam and result states received representative interaction/screenshot review; this does not certify every exam state at every width.
+
+The continuation supplies **22 accepted interaction checks**: 20 passing checks for daily claim/replay, all reward tabs, explicit leaderboard participation, supported redemption/replay, four chart periods, goal persistence, a real activity CSV, persisted exam start/answer, confirmation focus/Escape/return and analytics reading the completed grade; plus two passing follow-ups for completed result reload and exclusion of grading keys from the browser snapshot. One initial result probe expected the literal word “Passed” while the interface displayed “Congratulations!”; that failed probe is excluded. The later check verified the displayed 100% result and persisted completion. Tab trapping is supplied by the existing shared modal; the new exam probe explicitly verified focus, Escape and return.
+
+A separate guarded database read confirmed **60 points, 52 coins, 4 gems, one daily reward, one redemption, two saved goals (45 daily minutes / 8 weekly lessons), one answer row and a 100% recorded exam result**. Personal analytics independently read the same 100% result and one enrolled course. A private fixture with higher points remained excluded from the public leaderboard. The CSV contains recorded daily lesson counts and session minutes. No estimated study duration, random game score, fabricated badge or external payment was used.
+
+Both analytics URLs now use the same authorized implementation. Recorded CBT result snapshots take precedence over changed question definitions. Charts come from the existing dashboard bundle and were exercised through filter changes; a bounded data table supplies the same values. Screenshots of rewards, analytics and the exam were reviewed. Third-party analytics/fonts/icons/avatars/datepicker/MathJax/QR resources remained blocked in isolated review; external glyphs/services, all themes, screen readers and exhaustive WCAG acceptance are not certified.
+
+### Preservation and remaining limits
+
+No schema migration or verification record was written to the working database. Fixtures used only `bootkode_browser_test`; the three known synthetic users and dependent records, reward item and category were removed afterward (**0 known fixture users remaining**). Only the owned port-8011 QA server and port-9222 headless browser were stopped. Existing port-8000 and port-5173 processes remained; the application returned HTTP 200.
+
+Stored badges, scores, reward purchases, enrollments, attempts and financial history are preserved. Possible historical duplicate gamification rows are not automatically merged or deleted. The oldest row is canonical for these flows, and future writes serialize on the account. Course/account deletion also protects learning sessions and assessment answers. Standalone CBT retains its authenticated global contract; course-linked exams require enrollment, ownership or platform authority. The current CBT player supports multiple-choice and true/false auto-grading; other question types require a separate grading workflow and are refused before recording an attempt.
+
+No verified game implementation is published. Unsupported reward delivery, special-event awards, achievement broadcasting, reviewed learning-path generation and PDF analytics exports do not report fabricated success. Broader manual grading, historical attachment migration, provider/OAuth/live-AI/mail acceptance, legal content, dependency updates and exhaustive accessibility/theme acceptance remain outstanding. This continuation closes additional real defects; it is not a whole-product production-readiness claim.
+
+Commits:
+
+- `84e52d0a fix(learning): secure rewards and unify personal analytics`
+- `83f2d416 fix(cbt): persist authorized attempts and protect grading snapshots`
+- `7a243391 build(ui): compile recorded learning and exam interface updates`
+
+The documentation commit records these results. Ordinary branch push and exact remote HEAD verification are reported in the handoff; no merge or deployment was performed.
