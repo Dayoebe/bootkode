@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\Storage;
 
 class WhitelabelSettings extends Component
 {
+    use \App\Livewire\Concerns\AuthorizesPlatformAdministration;
+
     use WithPagination, WithFileUploads;
 
     public $selectedInstitution = null;

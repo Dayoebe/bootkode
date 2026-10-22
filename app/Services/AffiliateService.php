@@ -24,7 +24,7 @@ class AffiliateService
     /**
      * Register a new user with referral tracking
      */
-    public function registerWithReferral(array $userData, string $referralCode = null): User
+    public function registerWithReferral(array $userData, ?string $referralCode = null): User
     {
         DB::beginTransaction();
         
@@ -86,96 +86,50 @@ class AffiliateService
             ];
         }
 
-        DB::beginTransaction();
-        
         try {
-            $referral = $buyer->referralRecord;
-            
-            if (!$referral || !$referral->affiliate->isActive()) {
-                DB::rollBack();
-                return [
-                    'success' => false,
-                    'message' => 'Invalid or inactive affiliate'
-                ];
-            }
-
-            $affiliate = $referral->affiliate;
-            
-            // Calculate commission
-            $revenueSplit = $course->getOrCreateRevenueSplit();
-            $platformShare = ($coursePrice * $revenueSplit->platform_percentage) / 100; // 20% of course price
-            $commissionRate = $affiliate->commission_rate; // 30% by default
-            $commissionAmount = ($platformShare * $commissionRate) / 100; // 30% of platform's 20%
-
-            // Create referral transaction record
-            $referralTransaction = ReferralTransaction::create([
-                'referral_id' => $referral->id,
-                'course_id' => $course->id,
-                'wallet_transaction_id' => $purchaseTransaction->id,
-                'course_price' => $coursePrice,
-                'platform_share' => $platformShare,
-                'commission_rate' => $commissionRate,
-                'commission_amount' => $commissionAmount,
-                'status' => ReferralTransaction::STATUS_PENDING,
-                'metadata' => [
-                    'processed_at' => now(),
-                    'buyer_id' => $buyer->id,
-                    'course_title' => $course->title
-                ]
-            ]);
-
-            // Credit affiliate wallet
-            $affiliateWallet = $affiliate->user->getOrCreateWallet();
-            $affiliateWallet->credit(
-                $commissionAmount,
-                'referral_commission',
-                "Referral commission: {$buyer->name} purchased {$course->title}",
-                $referralTransaction,
-                [
-                    'referral_id' => $referral->id,
-                    'course_id' => $course->id,
-                    'buyer_id' => $buyer->id,
-                    'commission_rate' => $commissionRate
-                ]
-            );
-
-            // Mark commission as paid
-            $referralTransaction->markAsPaid();
-
-            // Update referral statistics
-            $referral->recordPurchase($coursePrice, $commissionAmount);
-
-            // Update affiliate total earnings
-            $affiliate->increment('total_earned', $commissionAmount);
-
-            DB::commit();
-
-            Log::info('Affiliate commission processed', [
-                'affiliate_id' => $affiliate->id,
-                'buyer_id' => $buyer->id,
-                'course_id' => $course->id,
-                'commission_amount' => $commissionAmount
-            ]);
-
-            return [
-                'success' => true,
-                'message' => 'Commission processed successfully',
-                'commission_paid' => $commissionAmount,
-                'affiliate_id' => $affiliate->id,
-                'referral_id' => $referral->id
-            ];
-
-        } catch (\Exception $e) {
-            DB::rollBack();
-            Log::error('Commission processing error: ' . $e->getMessage(), [
-                'buyer_id' => $buyer->id,
-                'course_id' => $course->id
-            ]);
-            
-            return [
-                'success' => false,
-                'message' => 'Failed to process commission: ' . $e->getMessage()
-            ];
+            return DB::transaction(function () use ($buyer, $course, $coursePrice, $purchaseTransaction) {
+                $debit = WalletTransaction::with('wallet')->lockForUpdate()->findOrFail($purchaseTransaction->id);
+                if ($debit->type !== 'debit' || $debit->status !== 'completed' || $debit->category !== WalletTransaction::CATEGORY_COURSE_PURCHASE
+                    || $debit->wallet->currency !== 'NGN' || (int) $debit->wallet->user_id !== (int) $buyer->id
+                    || $debit->transactionable_type !== $course->getMorphClass() || (int) $debit->transactionable_id !== (int) $course->id
+                    || (int) round((float) $debit->amount * 100) !== (int) round($coursePrice * 100)) {
+                    throw new \DomainException('A matching completed course debit is required.');
+                }
+                $existing = ReferralTransaction::where('wallet_transaction_id', $debit->id)->first();
+                if ($existing) {
+                    return ['success' => $existing->isPaid(), 'commission_paid' => (float) $existing->commission_amount, 'message' => 'Commission already recorded.'];
+                }
+                $referral = Referral::where('referred_user_id', $buyer->id)->whereHas('affiliate', fn ($query) => $query->where('user_id', $buyer->referred_by))->lockForUpdate()->first();
+                if (!$referral) throw new \DomainException('No matching referral exists.');
+                $affiliate = Affiliate::lockForUpdate()->findOrFail($referral->affiliate_id);
+                if (!$affiliate->isActive() || (int) $affiliate->user_id === (int) $buyer->id) throw new \DomainException('The referral is not eligible.');
+                $split = $debit->metadata['revenue_split'] ?? [];
+                if (!isset($split['platform_amount'], $split['instructor_amount'])) throw new \DomainException('Historical debit has no verified split snapshot.');
+                $platformMinor = (int) round((float) $split['platform_amount'] * 100);
+                $instructorMinor = (int) round((float) $split['instructor_amount'] * 100);
+                if ($platformMinor < 0 || $instructorMinor < 0 || $platformMinor + $instructorMinor !== (int) round((float) $debit->amount * 100)
+                    || (float) $affiliate->commission_rate < 0 || (float) $affiliate->commission_rate > 100) throw new \DomainException('Invalid commission allocation.');
+                $amount = round($platformMinor * (float) $affiliate->commission_rate / 100) / 100;
+                $transaction = ReferralTransaction::create([
+                    'referral_id' => $referral->id, 'course_id' => $course->id, 'wallet_transaction_id' => $debit->id,
+                    'course_price' => $debit->amount, 'platform_share' => $platformMinor / 100,
+                    'commission_rate' => $affiliate->commission_rate, 'commission_amount' => $amount,
+                    'status' => ReferralTransaction::STATUS_PENDING, 'metadata' => ['buyer_id' => $buyer->id, 'course_title' => $course->title],
+                ]);
+                if ($amount > 0) {
+                    $wallet = $affiliate->user->getOrCreateWallet();
+                    if ($wallet->currency !== $debit->wallet->currency) throw new \DomainException('Affiliate settlement currency does not match.');
+                    $credit = $wallet->credit($amount, 'referral_commission', 'Referral commission: '.$course->title, $transaction, ['course_id' => $course->id, 'buyer_id' => $buyer->id]);
+                    $transaction->update(['metadata' => array_merge($transaction->metadata ?? [], ['credit_transaction_id' => $credit->id])]);
+                }
+                $transaction->markAsPaid();
+                $referral->recordPurchase((float) $debit->amount, $amount);
+                $affiliate->increment('total_earned', $amount);
+                return ['success' => true, 'commission_paid' => $amount, 'affiliate_id' => $affiliate->id, 'referral_id' => $referral->id, 'message' => 'Commission recorded.'];
+            });
+        } catch (\Throwable $exception) {
+            Log::warning('Affiliate settlement refused', ['exception' => $exception::class, 'course_id' => $course->id]);
+            return ['success' => false, 'commission_paid' => 0, 'message' => 'Commission could not be settled; administrator review is required.'];
         }
     }
 
@@ -184,6 +138,8 @@ class AffiliateService
      */
     public function createAffiliate(User $user, float $commissionRate = 30.00): Affiliate
     {
+        abort_unless(auth()->user()?->hasAnyRole(['super_admin', 'academy_admin']), 403);
+        validator(['rate' => $commissionRate], ['rate' => 'numeric|between:0,100'])->validate();
         if ($user->affiliate) {
             return $user->affiliate;
         }
@@ -202,6 +158,7 @@ class AffiliateService
      */
     public function getAffiliateAnalytics(Affiliate $affiliate, int $days = 30): array
     {
+        $days = max(1, min(366, $days));
         $startDate = now()->subDays($days);
         
         // Commission trends
@@ -254,6 +211,7 @@ class AffiliateService
      */
     public function getSystemStats(int $days = 30): array
     {
+        $days = max(1, min(366, $days));
         $startDate = now()->subDays($days);
         
         return [
@@ -320,11 +278,7 @@ class AffiliateService
                 'whatsapp' => "https://wa.me/?text=" . urlencode("Check out BootKode: " . $referralLink)
             ],
             'email_template' => $this->generateEmailTemplate($affiliate),
-            'banner_images' => [
-                'large' => $baseUrl . '/affiliate-banners/large/' . $affiliate->referral_code,
-                'medium' => $baseUrl . '/affiliate-banners/medium/' . $affiliate->referral_code,
-                'small' => $baseUrl . '/affiliate-banners/small/' . $affiliate->referral_code
-            ]
+            'banner_images' => collect(['large', 'medium', 'small'])->mapWithKeys(fn ($size) => [$size => route('affiliate.banner', ['size' => $size, 'code' => $affiliate->referral_code])])->all()
         ];
     }
 
@@ -343,17 +297,7 @@ class AffiliateService
      */
     private function generateEmailTemplate(Affiliate $affiliate): string
     {
-        return "Hi there!\n\n" .
-               "I wanted to share something amazing with you - BootKode!\n\n" .
-               "It's a comprehensive coding education platform where you can learn programming from scratch or advance your existing skills.\n\n" .
-               "What I love about BootKode:\n" .
-               "✓ Expert instructors and industry professionals\n" .
-               "✓ Practical, hands-on courses\n" .
-               "✓ Flexible learning at your own pace\n" .
-               "✓ Real-world projects and certifications\n\n" .
-               "Use my referral link to get started: {$affiliate->referral_link}\n\n" .
-               "Trust me, if you're looking to level up your coding skills, this is the place to be!\n\n" .
-               "Best regards,\n" .
-               "{$affiliate->user->name}";
+        return "Hi there!\n\nExplore BootKode's published courses and practical technology resources.\n\n"
+            . "Learn. Build. Grow.\n\nMy referral link: {$affiliate->referral_link}\n\n{$affiliate->user->name}";
     }
 }

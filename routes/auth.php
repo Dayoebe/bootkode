@@ -8,6 +8,9 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\SocialAuthController; 
 use App\Livewire\Pages\Home;
 
+Route::get('/courses', \App\Livewire\Pages\Courses::class)->name('courses.index');
+Route::get('/courses/{course:slug}', \App\Livewire\Pages\CourseDetails::class)->name('courses.show');
+
 // Public Home Page
 Route::get('/', Home::class)->name('home');
 Route::get('/pricing', \App\Livewire\Pages\Pricing::class)->name('pricing');

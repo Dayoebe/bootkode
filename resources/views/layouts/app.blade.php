@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="h-full bg-slate-50">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="light h-full bg-slate-50">
 
 <head>
     <meta charset="utf-8">
@@ -30,8 +30,7 @@
 
     {{-- 🧠 Dynamic Title for SEO --}}
     <title>
-        {{ config('app.name', 'BootKode') }}
-        @hasSection('title') - @yield('title') @endif
+        {{ config('app.name', 'BootKode') }} — {{ $title ?? trim($__env->yieldContent('title', 'Learn. Build. Grow.')) }}
     </title>
 
     {{-- 🧭 SEO Meta Tags --}}
@@ -113,6 +112,8 @@
 </head>
 
 <body class="bk-public-app font-sans antialiased text-slate-900 bg-slate-50 flex flex-col min-h-screen w-full overflow-x-hidden">
+    <a class="bk-skip-link" href="#main-content">Skip to content</a>
+
 
 <!-- Google Tag Manager (noscript) -->
 <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TJ23X96Z"
@@ -123,7 +124,7 @@
     <x-header />
 
     {{-- 📄 Page Content --}}
-    <main class="flex-grow w-full">
+    <main id="main-content" tabindex="-1" class="flex-grow w-full">
         <div class="w-full px-4 py-5 sm:px-6 sm:py-7 md:px-8 lg:px-10 xl:px-12 2xl:px-16">
             {{ $slot }}
         </div>

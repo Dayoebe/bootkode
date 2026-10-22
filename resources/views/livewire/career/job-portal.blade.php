@@ -1,20 +1,16 @@
 <div class="min-h-screen bg-themed-primary">
     <!-- Hero Section -->
     <div class="bg-themed-secondary shadow-lg border-b border-themed-primary">
-        <div class="w-full py-16">
-            <div class="text-center mb-12">
-                <h1 class="text-5xl font-bold text-themed-primary mb-4">Find Your Dream Job</h1>
-                <p class="text-xl text-themed-secondary max-w-2xl mx-auto">Discover opportunities that match your skills and
-                    advance your career with top companies</p>
-            </div>
+        <div class="mx-auto max-w-7xl px-4 py-6 sm:px-6">
+            <x-ui.page-header title="Career opportunities" description="Explore current openings, save relevant roles, and track your applications." />
 
             <!-- Quick Search -->
             <div class="max-w-4xl mx-auto">
-                <div class="bg-themed-secondary rounded-2xl shadow-2xl p-6 border border-themed-primary">
+                <div class="bk-panel p-4 sm:p-6">
                     <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
                         <div class="md:col-span-2">
                             <div class="relative">
-                                <input wire:model.live.debounce.500ms="searchTerm" type="text"
+                                <input aria-label="Job title, keywords, or company" wire:model.live.debounce.500ms="searchTerm" type="text"
                                     placeholder="Job title, keywords, or company"
                                     class="w-full px-4 py-3 pl-12 border border-themed-primary rounded-xl focus:ring-2 focus:ring-accent-themed-primary focus:border-transparent bg-themed-secondary text-themed-primary placeholder-themed-tertiary">
                                 <svg class="absolute left-4 top-3.5 h-5 w-5 text-themed-secondary" fill="none"
@@ -25,7 +21,7 @@
                             </div>
                         </div>
                         <div>
-                            <input wire:model.live.debounce.500ms="filterLocation" type="text" placeholder="Location"
+                            <input aria-label="Job location" wire:model.live.debounce.500ms="filterLocation" type="text" placeholder="Location"
                                 class="w-full px-4 py-3 border border-themed-primary rounded-xl focus:ring-2 focus:ring-accent-themed-primary focus:border-transparent bg-themed-secondary text-themed-primary placeholder-themed-tertiary">
                         </div>
                         <div>
@@ -39,7 +35,7 @@
             </div>
 
             <!-- Quick Stats -->
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto mt-12">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto mt-6">
                 <div class="text-center">
                     <div class="text-3xl font-bold text-themed-primary">{{ number_format($jobStats['total_active'] ?? 0) }}</div>
                     <div class="text-themed-secondary">Active Jobs</div>
@@ -60,40 +56,25 @@
         </div>
     </div>
 
-    <!-- Flash Messages -->
-    @if (session('message'))
-        <div class="w-full pt-4">
-            <div class="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-lg relative animate-fade-in">
-                <span class="block sm:inline">{{ session('message') }}</span>
-            </div>
-        </div>
-    @endif
+    <div class="px-4 pt-4 sm:px-6"><x-ui.flash /></div>
 
-    @if (session('error'))
-        <div class="w-full pt-4">
-            <div class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg relative animate-fade-in">
-                <span class="block sm:inline">{{ session('error') }}</span>
-            </div>
-        </div>
-    @endif
-
-    <div class="px-6 py-8">
+    <div class="px-4 py-6 sm:px-6">
         <!-- Navigation Tabs -->
-        <div class="flex space-x-8 mb-8 border-b border-themed-primary">
+        <div class="flex gap-6 overflow-x-auto mb-6 border-b border-themed-primary">
             <button wire:click="$set('activeTab', 'browse')"
-                class="pb-4 {{ $activeTab === 'browse' ? 'border-b-2 border-accent-themed-primary text-accent-themed-primary font-semibold' : 'text-themed-secondary hover:text-themed-primary' }}">
+                class="min-h-11 shrink-0 pb-3 {{ $activeTab === 'browse' ? 'border-b-2 border-accent-themed-primary text-accent-themed-primary font-semibold' : 'text-themed-secondary hover:text-themed-primary' }}">
                 Browse Jobs
             </button>
             @auth
                 <button wire:click="$set('activeTab', 'applications')"
-                    class="pb-4 {{ $activeTab === 'applications' ? 'border-b-2 border-accent-themed-primary text-accent-themed-primary font-semibold' : 'text-themed-secondary hover:text-themed-primary' }}">
+                    class="min-h-11 shrink-0 pb-3 {{ $activeTab === 'applications' ? 'border-b-2 border-accent-themed-primary text-accent-themed-primary font-semibold' : 'text-themed-secondary hover:text-themed-primary' }}">
                     My Applications
                     @if(isset($jobStats['user_applications']) && $jobStats['user_applications'] > 0)
                         <span class="ml-2 bg-blue-100 text-blue-600 text-xs px-2 py-1 rounded-full">{{ $jobStats['user_applications'] }}</span>
                     @endif
                 </button>
                 <button wire:click="$set('activeTab', 'saved')"
-                    class="pb-4 {{ $activeTab === 'saved' ? 'border-b-2 border-accent-themed-primary text-accent-themed-primary font-semibold' : 'text-themed-secondary hover:text-themed-primary' }}">
+                    class="min-h-11 shrink-0 pb-3 {{ $activeTab === 'saved' ? 'border-b-2 border-accent-themed-primary text-accent-themed-primary font-semibold' : 'text-themed-secondary hover:text-themed-primary' }}">
                     Saved Jobs
                     @if(isset($jobStats['user_saved']) && $jobStats['user_saved'] > 0)
                         <span class="ml-2 bg-green-100 text-green-600 text-xs px-2 py-1 rounded-full">{{ $jobStats['user_saved'] }}</span>
@@ -178,10 +159,11 @@
                             <!-- Job Alert -->
                             @auth
                                 <div class="pt-4 border-t border-themed-primary">
-                                    <button wire:click="$set('showJobAlertModal', true)"
+                                    <button type="button" disabled aria-describedby="job-alert-availability"
                                         class="w-full bg-green-600 text-white px-4 py-3 rounded-lg hover:bg-green-700 transition-all font-medium text-sm">
-                                        Create Job Alert
+                                        Job alerts unavailable
                                     </button>
+                                    <p id="job-alert-availability" class="mt-2 text-sm text-themed-secondary">Use the filters to find current openings.</p>
                                 </div>
                             @endauth
                         </div>
@@ -323,22 +305,9 @@
                                             </button>
 
                                             @auth
-                                                @if($this->hasAppliedToJob($job->id))
-                                                    <button disabled
-                                                        class="flex-1 bg-themed-tertiary text-themed-secondary px-4 py-3 rounded-lg cursor-not-allowed font-medium">
-                                                        Applied
-                                                    </button>
-                                                @else
-                                                    <button wire:click="openApplicationModal({{ $job->id }})"
-                                                        class="flex-1 bg-green-600 text-white px-4 py-3 rounded-lg hover:bg-green-700 transition-colors font-medium">
-                                                        Apply Now
-                                                    </button>
-                                                @endif
+                                                <x-career.apply-action :job="$job" :applied="$this->hasAppliedToJob($job->id)" class="flex-1" />
                                             @else
-                                                <button onclick="window.location.href='{{ route('login') }}'"
-                                                    class="flex-1 bg-green-600 text-white px-4 py-3 rounded-lg hover:bg-green-700 transition-colors font-medium">
-                                                    Login to Apply
-                                                </button>
+                                                <a href="{{ route('login') }}" class="bk-button bk-button-primary flex-1">Login to apply</a>
                                             @endauth
                                         </div>
                                     </div>
@@ -446,12 +415,7 @@
                                         class="flex-1 bg-accent-themed-primary text-white px-3 py-2 rounded-lg hover:bg-accent-themed-secondary transition-colors text-sm">
                                         View
                                     </button>
-                                    @if(!$this->hasAppliedToJob($savedJob->job->id))
-                                        <button wire:click="openApplicationModal({{ $savedJob->job->id }})"
-                                            class="flex-1 bg-green-600 text-white px-3 py-2 rounded-lg hover:bg-green-700 transition-colors text-sm">
-                                            Apply
-                                        </button>
-                                    @endif
+                                    <x-career.apply-action :job="$savedJob->job" :applied="$this->hasAppliedToJob($savedJob->job->id)" class="flex-1" />
                                 </div>
                             </div>
                         @endforeach
@@ -475,7 +439,7 @@
 
     <!-- Job Details Modal -->
     @if($showJobDetails && $selectedJob)
-        <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50 overflow-y-auto">
+        <div role="dialog" aria-modal="true" aria-label="Job details" x-data x-trap.inert.noscroll="true" x-on:keydown.escape.window="$wire.closeJobDetails()" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50 overflow-y-auto">
             <div class="bg-themed-secondary rounded-2xl max-w-5xl w-full max-h-[90vh] overflow-hidden">
                 <div class="flex justify-between items-center p-6 border-b border-themed-primary bg-themed-tertiary">
                     <div class="flex items-center space-x-4">
@@ -582,29 +546,18 @@
 
                                 <!-- Quick Actions -->
                                 <div class="mt-8 space-y-3">
-                                    <button wire:click="saveJob({{ $selectedJob->id }})"
-                                        class="w-full flex items-center justify-center px-4 py-3 {{ $selectedJob['is_saved'] ? 'bg-red-100 text-red-700 border border-red-200' : 'bg-themed-secondary text-themed-primary border border-themed-primary' }} rounded-lg hover:bg-opacity-80 transition-all">
+                                    <button wire:click="toggleSaveJob({{ $selectedJob->id }})"
+                                        class="w-full flex items-center justify-center px-4 py-3 {{ $this->isJobSaved($selectedJob->id) ? 'bg-red-100 text-red-700 border border-red-200' : 'bg-themed-secondary text-themed-primary border border-themed-primary' }} rounded-lg hover:bg-opacity-80 transition-all">
                                         <svg class="w-5 h-5 mr-2"
-                                            fill="{{ $selectedJob['is_saved'] ? 'currentColor' : 'none' }}"
+                                            fill="{{ $this->isJobSaved($selectedJob->id) ? 'currentColor' : 'none' }}"
                                             stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                 d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
                                         </svg>
-                                        {{ $selectedJob['is_saved'] ? 'Remove from Saved' : 'Save Job' }}
+                                        {{ $this->isJobSaved($selectedJob->id) ? 'Remove from Saved' : 'Save Job' }}
                                     </button>
 
-                                    @if($selectedJob['is_applied'])
-                                        <button
-                                            class="w-full px-4 py-3 bg-green-100 text-green-700 border border-green-200 rounded-lg cursor-not-allowed">
-                                            ✓ Already Applied
-                                        </button>
-                                    @else
-                                        <a href="{{ $selectedJob->redirect_url }}" target="_blank"
-                                            wire:click="applyToJob({{ $selectedJob->id }})"
-                                            class="w-full block text-center px-4 py-3 bg-accent-themed-primary text-white rounded-lg hover:bg-accent-themed-secondary transition-all font-medium">
-                                            Apply Now
-                                        </a>
-                                    @endif
+                                    <x-career.apply-action :job="$selectedJob" :applied="$this->hasAppliedToJob($selectedJob->id)" class="w-full" />
                                 </div>
                             </div>
                         </div>
@@ -616,7 +569,7 @@
 
     <!-- Application Modal -->
     @if($showApplicationModal && $applicationJob)
-        <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+        <div role="dialog" aria-modal="true" aria-label="Apply for a job" x-data x-trap.inert.noscroll="true" x-on:keydown.escape.window="$wire.closeApplicationModal()" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
             <div class="bg-themed-secondary rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-hidden">
                 <div class="flex justify-between items-center p-6 border-b border-themed-primary bg-themed-tertiary">
                     <div>

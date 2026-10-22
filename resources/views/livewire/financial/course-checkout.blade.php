@@ -1,15 +1,15 @@
 
 <!-- resources/views/livewire/financial/course-checkout.blade.php -->
-<div class="bg-white rounded-lg shadow-lg p-6">
-    <h3 class="text-lg font-semibold text-gray-900 mb-4">Complete Your Purchase</h3>
-    
+<div class="bg-themed-secondary rounded-lg shadow-sm p-6">
+    <h1 class="text-2xl font-bold text-themed-primary mb-4">Review your enrollment</h1>
+
     <!-- Course Details -->
-    <div class="border-b border-gray-200 pb-4 mb-4">
+    <div class="border-b border-themed-primary pb-4 mb-4">
         <div class="flex items-center space-x-4">
-            <img src="{{ $course->thumbnail }}" alt="{{ $course->title }}" class="w-16 h-16 rounded-lg object-cover">
+            <img src="{{ $course->thumbnail_url }}" alt="{{ $course->title }}" class="w-16 h-16 rounded-lg object-cover">
             <div>
-                <h4 class="font-semibold text-gray-900">{{ $course->title }}</h4>
-                <p class="text-gray-600">{{ $course->instructor->name }}</p>
+                <h4 class="font-semibold text-themed-primary">{{ $course->title }}</h4>
+                <p class="text-themed-secondary">{{ $course->instructor->name }}</p>
                 <p class="text-xl font-bold text-green-600">{{ $formattedPrice }}</p>
             </div>
         </div>
@@ -17,11 +17,11 @@
 
     <!-- Payment Options -->
     <div class="mb-6">
-        <label class="block text-sm font-medium text-gray-700 mb-2">Payment Method</label>
+        <label class="block text-sm font-medium text-themed-primary mb-2">Payment Method</label>
         <div class="space-y-2">
             <label class="flex items-center">
-                <input type="radio" wire:model="paymentMethod" value="wallet" class="focus:ring-green-500 h-4 w-4 text-green-600 border-gray-300">
-                <span class="ml-2 block text-sm text-gray-900">
+                <input type="radio" wire:model="paymentMethod" value="wallet" class="focus:ring-green-500 h-4 w-4 text-green-600 border-themed-secondary">
+                <span class="ml-2 block text-sm text-themed-primary">
                     Wallet Balance ({{ $formattedBalance }})
                     @if($walletBalance < $course->price)
                         <span class="text-red-600 text-xs">- Insufficient Balance</span>
@@ -33,20 +33,21 @@
 
     <!-- Purchase Button -->
     <div class="flex justify-between items-center">
-        <div class="text-sm text-gray-600">
+        <div class="text-sm text-themed-secondary">
             @if($walletBalance >= $course->price)
                 <p class="text-green-600">✓ You have sufficient balance</p>
             @else
                 <p class="text-red-600">✗ Please fund your wallet first</p>
             @endif
         </div>
-        <button 
+        <button
             wire:click="purchaseCourse"
+            wire:loading.attr="disabled" wire:target="purchaseCourse"
             @if($walletBalance < $course->price) disabled @endif
-            class="bg-green-600 text-white px-6 py-2 rounded-lg font-semibold hover:bg-green-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
+            class="bk-button bk-button-primary"
         >
             @if($walletBalance >= $course->price)
-                Purchase Course
+                <span wire:loading.remove wire:target="purchaseCourse">{{ (float) $course->price > 0 ? 'Purchase course' : 'Enroll for free' }}</span><span wire:loading wire:target="purchaseCourse">Processing…</span>
             @else
                 Insufficient Balance
             @endif
@@ -55,7 +56,7 @@
 
     @if($walletBalance < $course->price)
         <div class="mt-4 p-4 bg-blue-50 rounded-lg">
-            <p class="text-blue-800 text-sm">Need to fund your wallet? 
+            <p class="text-blue-800 text-sm">Need to fund your wallet?
                 <a href="{{ route('wallet.index') }}" class="underline font-medium">Click here to add funds</a>
             </p>
         </div>

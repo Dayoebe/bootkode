@@ -1,5 +1,6 @@
 <?php
 return [
+    'platform_user_id' => env('MARKETPLACE_PLATFORM_USER_ID'),
     'commission_rate' => env('MARKETPLACE_COMMISSION_RATE', 20.0),
     'auto_approve_instructors' => env('MARKETPLACE_AUTO_APPROVE_INSTRUCTORS', true),
     'require_admin_approval' => env('MARKETPLACE_REQUIRE_ADMIN_APPROVAL', false),

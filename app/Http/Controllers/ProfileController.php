@@ -48,9 +48,14 @@ class ProfileController extends Controller
 
         $user = $request->user();
 
-        Auth::logout();
+        try {
+            $user->delete();
+        } catch (\DomainException $exception) {
+            return back()->withErrors(['password' => $exception->getMessage()], 'userDeletion');
+        }
 
-        $user->delete();
+        // Avoid persisting a remember token on the deleted model.
+        Auth::guard('web')->logoutCurrentDevice();
 
         $request->session()->invalidate();
         $request->session()->regenerateToken();

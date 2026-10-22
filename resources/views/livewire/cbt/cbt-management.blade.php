@@ -56,7 +56,7 @@
                                 </span>
                             </div>
                             <p class="text-sm text-themed-secondary mb-3">{{ Str::limit($assessment->description, 50) }}</p>
-                            
+
                             <div class="grid grid-cols-2 gap-2 mb-3 text-xs">
                                 <div>
                                     <span class="text-themed-tertiary">Course:</span>
@@ -861,7 +861,7 @@
                                     <tr class="hover:bg-themed-tertiary transition-colors">
                                         <td class="px-4 py-3 text-center">
                                             <span
-                                                class="inline-flex items-center justify-center w-8 h-8 rounded-full 
+                                                class="inline-flex items-center justify-center w-8 h-8 rounded-full
                                                 {{ $index < 3 ? 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-300 font-bold' : 'bg-themed-tertiary text-themed-primary' }}">
                                                 {{ $index + 1 }}
                                             </span>
@@ -880,7 +880,7 @@
                                         <td class="px-4 py-3 text-center">
                                             <span
                                                 class="font-bold text-lg {{ $participant['best_attempt']['passed'] ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400' }}">
-                                                {{ $participant['best_attempt']['percentage'] }}%
+                                                {{ ($participant['best_attempt']['pending_review'] ?? false) ? 'Pending review' : $participant['best_attempt']['percentage'].'%' }}
                                             </span>
                                             <div class="text-xs text-themed-secondary">
                                                 {{ $participant['best_attempt']['total_points'] }}/{{ $participant['best_attempt']['max_points'] }}
@@ -891,7 +891,7 @@
                                             <span
                                                 class="px-3 py-1 rounded-full text-sm font-medium
                                                 {{ $participant['best_attempt']['passed'] ? 'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300' : 'bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-300' }}">
-                                                {{ $participant['best_attempt']['passed'] ? 'PASSED' : 'FAILED' }}
+                                                {{ ($participant['best_attempt']['pending_review'] ?? false) ? 'PENDING REVIEW' : ($participant['best_attempt']['passed'] ? 'PASSED' : 'FAILED') }}
                                             </span>
                                         </td>
                                         <td class="px-4 py-3 text-center">
@@ -917,11 +917,7 @@
                                             <div class="pl-12">
                                                 <div class="flex justify-between items-center mb-3">
                                                     <h4 class="font-semibold text-themed-primary">All Attempts:</h4>
-                                                    <button wire:click="clearAllUserAttempts({{ $participant['user_id'] }})"
-                                                        wire:confirm="Are you sure you want to clear ALL attempts for {{ $participant['user']->name }}? This action cannot be undone."
-                                                        class="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded text-sm transition-colors flex items-center">
-                                                        <i class="fas fa-trash-alt mr-1"></i>Clear All Attempts
-                                                    </button>
+                                                    <p class="text-xs text-content-muted">Attempt history retained</p>
                                                 </div>
                                                 <div class="space-y-2">
                                                     @foreach($participant['attempts'] as $attempt)
@@ -934,7 +930,7 @@
                                                                 </span>
                                                                 <span
                                                                     class="font-semibold {{ $attempt['passed'] ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400' }}">
-                                                                    {{ $attempt['percentage'] }}%
+                                                                    {{ ($attempt['pending_review'] ?? false) ? 'Pending review' : $attempt['percentage'].'%' }}
                                                                 </span>
                                                                 <span class="text-themed-secondary text-sm">
                                                                     {{ $attempt['total_points'] }}/{{ $attempt['max_points'] }} points
@@ -943,13 +939,7 @@
                                                                     {{ $attempt['submitted_at']->format('M d, Y - H:i') }}
                                                                 </span>
                                                             </div>
-                                                            <button
-                                                                wire:click="clearAttempt({{ $participant['user_id'] }}, {{ $attempt['attempt_number'] }})"
-                                                                wire:confirm="Are you sure you want to clear attempt #{{ $attempt['attempt_number'] }} for {{ $participant['user']->name }}?"
-                                                                class="text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300 p-2 rounded hover:bg-red-50 dark:hover:bg-red-900/30 transition-colors"
-                                                                title="Clear this attempt">
-                                                                <i class="fas fa-times-circle"></i>
-                                                            </button>
+
                                                         </div>
                                                     @endforeach
                                                 </div>

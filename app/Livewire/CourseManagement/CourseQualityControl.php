@@ -29,7 +29,7 @@ class CourseQualityControl extends Component
         'statusFilter' => ['except' => 'all'],
     ];
 
-    public function mount(): void
+    public function boot(): void
     {
         abort_unless(Auth::user()?->hasAnyRole(['super_admin', 'academy_admin', 'content_editor']), 403);
     }

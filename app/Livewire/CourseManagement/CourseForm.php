@@ -17,6 +17,8 @@ use Livewire\Attributes\Layout;
 ])]
 class CourseForm extends Component
 {
+    use \App\Livewire\Concerns\AuthorizesCourseAuthoring;
+
     use WithFileUploads;
 
     public $categories = [];
@@ -279,16 +281,8 @@ class CourseForm extends Component
 
     public function save($isDraft = false)
     {
+        $this->validate(['price' => 'nullable|numeric|min:0|max:999999', 'is_free' => 'boolean', 'is_premium' => 'boolean']);
         try {
-            // Check scheduled submission
-            if (!$isDraft && $this->scheduled_publish_at && now()->lt($this->scheduled_publish_at)) {
-                $this->dispatch('notify', [
-                    'message' => 'Course scheduled for ' . $this->scheduled_publish_at->format('M d, Y'),
-                    'type' => 'info'
-                ]);
-                return;
-            }
-
             // Validate
             if (!$isDraft) {
                 $this->validate();

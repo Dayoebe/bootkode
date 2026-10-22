@@ -6,6 +6,8 @@ use Livewire\Component;
 use Livewire\WithFileUploads;
 use Livewire\WithPagination;
 use App\Models\Career\JobCategory;
+use App\Models\Career\JobPortal as Job;
+use App\Services\JobApplicationService;
 use App\Models\Career\JobApplication;
 use App\Models\Career\JobSave;
 use App\Models\Core\User;
@@ -92,6 +94,8 @@ class JobPortal extends Component
     protected $rules = [
         'coverLetter' => 'required|string|min:50|max:2000',
         'resume' => 'nullable|file|mimes:pdf,doc,docx|max:5120', // 5MB
+        'customResponses' => 'array|max:20',
+        'customResponses.*' => 'nullable|string|max:2000',
     ];
 
     protected $messages = [
@@ -154,7 +158,7 @@ class JobPortal extends Component
             $user = Auth::user();
             
             // Use the full model namespace instead of JobPortal (which refers to this Livewire component)
-            $this->recommendedJobs = \App\Models\Career\JobPortal::active()
+            $this->recommendedJobs = Job::active()
                 ->when($user->resume_profile ?? false, function ($query) use ($user) {
                     $profile = $user->resume_profile;
                     $userSkills = collect($profile->skills ?? [])->pluck('name')->toArray();
@@ -167,7 +171,7 @@ class JobPortal extends Component
                 ->get();
         } else {
             // Show popular jobs for guests
-            $this->recommendedJobs = \App\Models\Career\JobPortal::active()
+            $this->recommendedJobs = Job::active()
                 ->orderBy('views_count', 'desc')
                 ->limit(6)
                 ->get();
@@ -177,10 +181,10 @@ class JobPortal extends Component
     public function loadJobStats()
     {
         $this->jobStats = [
-            'total_active' => \App\Models\Career\JobPortal::active()->count(),
-            'new_this_week' => \App\Models\Career\JobPortal::active()->where('created_at', '>=', now()->subWeek())->count(),
-            'remote_jobs' => \App\Models\Career\JobPortal::active()->where('work_type', 'remote')->count(),
-            'premium_jobs' => \App\Models\Career\JobPortal::active()->where('is_premium', true)->count(),
+            'total_active' => Job::active()->count(),
+            'new_this_week' => Job::active()->where('created_at', '>=', now()->subWeek())->count(),
+            'remote_jobs' => Job::active()->where('work_type', 'remote')->count(),
+            'premium_jobs' => Job::active()->where('is_premium', true)->count(),
         ];
     
         if (Auth::check()) {
@@ -192,7 +196,7 @@ class JobPortal extends Component
 
     public function viewJob($jobId)
     {
-        $this->selectedJob = \App\Models\Career\JobPortal::with(['postedBy', 'applications'])->findOrFail($jobId);
+        $this->selectedJob = Job::active()->with('postedBy:id,name')->findOrFail($jobId);
         $this->selectedJob->incrementViews();
         $this->showJobDetails = true;
     }
@@ -209,7 +213,7 @@ class JobPortal extends Component
             return redirect()->route('login');
         }
     
-        $this->applicationJob = \App\Models\Career\JobPortal::findOrFail($jobId);
+        $this->applicationJob = $this->availableApplicationJob($jobId);
         
         // Check if already applied
         $existingApplication = JobApplication::where('job_id', $jobId)
@@ -228,6 +232,8 @@ class JobPortal extends Component
             }
         }
 
+        $this->showJobDetails = false;
+        $this->selectedJob = null;
         $this->showApplicationModal = true;
     }
 
@@ -237,53 +243,29 @@ class JobPortal extends Component
         $this->showApplicationModal = false;
     }
 
+    protected function availableApplicationJob($id)
+    {
+        abort_unless(is_numeric($id), 404);
+
+        return app(JobApplicationService::class)->availableJob((int) $id);
+    }
+
     public function submitApplication()
     {
+        abort_unless(Auth::check(), 403);
         $this->validate();
-
+        // Always resolve availability again: a modal may be stale or client-controlled.
+        $job = $this->availableApplicationJob($this->applicationJob?->id);
         try {
-            $applicationData = [
-                'job_id' => $this->applicationJob->id,
-                'user_id' => Auth::id(),
-                'cover_letter' => $this->coverLetter,
-                'custom_responses' => $this->customResponses,
-                'status' => JobPortal::APPLICATION_PENDING
-            ];
-
-            // Handle resume upload
-            if ($this->resume) {
-                $resumePath = $this->resume->store('resumes', 'public');
-                $applicationData['resume_path'] = $resumePath;
-            }
-
-            // Calculate match score
-            if (Auth::user()->resume_profile ?? false) {
-                $userProfile = [
-                    'skills' => collect(Auth::user()->resume_profile->skills ?? [])->pluck('name')->toArray(),
-                    'experience_level' => 'mid', // Default or from user profile
-                    'location' => Auth::user()->resume_profile->location ?? '',
-                    'industry' => Auth::user()->resume_profile->industry ?? ''
-                ];
-                
-                $matchScore = $this->applicationJob->calculateMatchScore($userProfile);
-                $applicationData['match_score'] = $matchScore;
-            }
-
-            JobApplication::create($applicationData);
-
-            // Update job application count
-            $this->applicationJob->increment('applications_count');
-
-            // Send notifications (implement as needed)
-            // $this->applicationJob->postedBy->notify(new NewJobApplication($application));
-
+            app(JobApplicationService::class)->submit(Auth::user(), $job->id,
+                $this->coverLetter, $this->customResponses, $this->resume);
             $this->closeApplicationModal();
             $this->loadUserData();
-            session()->flash('message', 'Application submitted successfully!');
-
+            $this->loadJobStats();
+            session()->flash('message', 'Application received. You can track it in My Applications.');
         } catch (\Exception $e) {
-            session()->flash('error', 'Failed to submit application: ' . $e->getMessage());
-            \Log::error('Job application error: ' . $e->getMessage());
+            \Log::error('Job application persistence failed', ['exception' => get_class($e)]);
+            session()->flash('error', 'The application could not be saved. Please try again.');
         }
     }
 
@@ -294,6 +276,7 @@ class JobPortal extends Component
             return;
         }
 
+        Job::active()->findOrFail($jobId);
         $existingSave = JobSave::where('job_id', $jobId)
             ->where('user_id', Auth::id())
             ->first();
@@ -350,55 +333,18 @@ class JobPortal extends Component
             return;
         }
 
-        // Job alert creation logic would go here
-        // For now, just show success message
-        $this->showJobAlertModal = false;
-        session()->flash('message', 'Job alert created successfully!');
-        $this->reset(['alertKeywords', 'alertLocation', 'alertCategory']);
+        session()->flash('error', 'Job alerts are not available yet. Use the job search filters to find current openings.');
     }
 
     public function quickApply($jobId)
     {
-        if (!Auth::check()) {
-            session()->flash('error', 'Please login to apply for jobs.');
-            return;
-        }
-
-        $job = JobPortal::findOrFail($jobId);
-        
-        // Check if already applied
-        if ($this->hasAppliedToJob($jobId)) {
-            session()->flash('error', 'You have already applied for this job.');
-            return;
-        }
-
-        // Quick apply using user's default resume and a generic cover letter
-        $user = Auth::user();
-        if (!($user->resume_profile ?? false)) {
-            session()->flash('error', 'Please complete your profile to use quick apply.');
-            return;
-        }
-
-        try {
-            JobApplication::create([
-                'job_id' => $jobId,
-                'user_id' => Auth::id(),
-                'cover_letter' => "I am interested in the {$job->title} position at {$job->company_name}. Please find my resume attached.",
-                'status' => JobPortal::APPLICATION_PENDING
-            ]);
-
-            $job->increment('applications_count');
-            $this->loadUserData();
-            session()->flash('message', 'Quick application submitted!');
-
-        } catch (\Exception $e) {
-            session()->flash('error', 'Failed to submit application.');
-        }
+        // Reuse the real application form so a cover letter and optional resume are explicit.
+        return $this->openApplicationModal($jobId);
     }
 
     public function render()
     {
-        $query = \App\Models\Career\JobPortal::active()->with(['postedBy']);
+        $query = Job::active()->with(['postedBy:id,name']);
 
 
         // Apply search

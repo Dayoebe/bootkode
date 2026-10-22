@@ -14,6 +14,8 @@ use Illuminate\Support\Facades\Cache;
 
 class MarketplaceAdmin extends Component
 {
+    use \App\Livewire\Concerns\AuthorizesPlatformAdministration;
+
     use WithPagination;
 
     // Main Tab Management
@@ -69,6 +71,12 @@ class MarketplaceAdmin extends Component
 
     public function mount()
     {
+        $this->activeTab = match (request()->route()?->getName()) {
+            'marketplace.vendor.applications' => 'vendors',
+            'marketplace.orders' => 'orders',
+            'marketplace.payments' => 'payments',
+            default => 'overview',
+        };
         $this->loadDashboardStats();
     }
 
@@ -481,84 +489,20 @@ class MarketplaceAdmin extends Component
 
     public function processRefund($orderId, $reason = null)
     {
-        $order = MarketplaceOrder::findOrFail($orderId);
-        
         try {
-            DB::beginTransaction();
-            
-            $refundReason = $reason ?? $this->refundReason ?? 'Admin refund';
-            
-            $order->update([
-                'status' => 'refunded',
-                'payment_status' => 'refunded',
-                'admin_notes' => $refundReason,
-            ]);
-
-            if (class_exists('App\Models\Marketplace\Wallet')) {
-                $customerWallet = Wallet::where('user_id', $order->customer_id)->first();
-                if ($customerWallet) {
-                    $customerWallet->increment('balance', $order->total_amount);
-                }
-            }
-            
-            DB::commit();
-            
+            app(\App\Services\MarketplaceService::class)->refundOrder(MarketplaceOrder::findOrFail($orderId), null, $reason ?: 'Administrator refund');
             $this->loadDashboardStats();
-            session()->flash('message', 'Refund processed successfully!');
-            
-            if ($this->showOrderModal) {
-                $this->closeOrderModal();
-            }
-            
-        } catch (\Exception $e) {
-            DB::rollBack();
-            session()->flash('error', 'Failed to process refund: ' . $e->getMessage());
+            session()->flash('message', 'Wallet refund completed.');
+        } catch (\Throwable $exception) {
+            session()->flash('error', 'Refund could not be completed. Check payment evidence and payout balances.');
         }
     }
 
-    // === PAYMENT METHODS ===
     public function processAutomaticPayouts()
     {
-        try {
-            $eligibleOrders = MarketplaceOrder::where('payment_status', 'paid')
-                ->where('created_at', '<=', now()->subDays(7))
-                ->whereDoesntHave('walletTransactions')
-                ->get();
-
-            $processedCount = 0;
-            
-            DB::beginTransaction();
-            
-            foreach ($eligibleOrders as $order) {
-                if (class_exists('App\Models\Marketplace\Wallet')) {
-                    $vendorWallet = Wallet::where('user_id', $order->vendor_id)->first();
-                    if (!$vendorWallet) {
-                        $vendorWallet = Wallet::create([
-                            'user_id' => $order->vendor_id,
-                            'type' => 'instructor',
-                            'balance' => 0
-                        ]);
-                    }
-                    
-                    $vendorWallet->increment('balance', $order->vendor_earning);
-                    $processedCount++;
-                }
-            }
-            
-            DB::commit();
-
-            $this->loadDashboardStats();
-            
-            if ($processedCount > 0) {
-                session()->flash('message', "Processed automatic payouts for {$processedCount} orders.");
-            } else {
-                session()->flash('info', 'No orders eligible for automatic payout at this time.');
-            }
-            
-        } catch (\Exception $e) {
-            DB::rollBack();
-            session()->flash('error', 'Automatic payout processing failed: ' . $e->getMessage());
-        }
+        $result = app(\App\Services\MarketplaceService::class)->processAutomaticPayouts();
+        $this->loadDashboardStats();
+        session()->flash('message', 'Payout processing finished: '.$result['processed'].' processed, '.$result['failed'].' need review.');
     }
 
     public function refreshStats()

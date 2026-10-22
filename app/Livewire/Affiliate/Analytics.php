@@ -13,6 +13,8 @@ use Livewire\Attributes\Layout;
 #[Layout('layouts.dashboard', ['title' => 'Affiliate Analytics'])]
 class Analytics extends Component
 {
+    use \App\Livewire\Concerns\RequiresAuthenticatedAccount;
+
     public $selectedPeriod = '30';
     public $chartType = 'commission';
 

@@ -36,6 +36,8 @@ class MarketplaceItem extends Model
         self::STATUS_SUSPENDED => 'Suspended',
     ];
 
+    protected $hidden = ['files'];
+
     protected $fillable = [
         'vendor_id',
         'title',
@@ -122,12 +124,12 @@ class MarketplaceItem extends Model
     // Add helper method to get category names
     public function getCategoryNames()
     {
-        return $this->categories->pluck('name')->toArray();
+        return $this->itemCategories->pluck('name')->toArray();
     }
     
     public function getCategoryColors()
     {
-        return $this->categories->pluck('color', 'name')->toArray();
+        return $this->itemCategories->pluck('color', 'name')->toArray();
     }
     // Relationships
 

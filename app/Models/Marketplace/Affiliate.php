@@ -62,9 +62,9 @@ class Affiliate extends Model
         return $this->hasMany(Referral::class);
     }
 
-    public function transactions(): HasMany
+    public function transactions(): \Illuminate\Database\Eloquent\Relations\HasManyThrough
     {
-        return $this->hasMany(ReferralTransaction::class, 'referral_id');
+        return $this->hasManyThrough(ReferralTransaction::class, Referral::class, 'affiliate_id', 'referral_id');
     }
 
     // Status methods

@@ -3,6 +3,11 @@
 namespace App\Services;
 
 use App\Models\Credentials\Certificate;
+use App\Models\Credentials\CertificateTemplate;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
+use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Log;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -14,6 +19,80 @@ use Endroid\QrCode\Color\Color;
 
 class CertificateService
 {
+    public function saveTemplate(array $attributes, ?int $id = null, bool $makeDefault = false): CertificateTemplate
+    {
+        abort_unless(auth()->user()?->hasAnyRole(['super_admin', 'academy_admin']), 403);
+        abort_if($makeDefault && !auth()->user()->hasRole('super_admin'), 403);
+
+        $data = Validator::make($attributes, [
+            'name' => ['required', 'string', 'min:3', 'max:100'],
+            'description' => ['nullable', 'string', 'max:255'],
+            'settings' => ['required', 'array:backgroundColor,borderColor,textColor,accentColor,headerFont,bodyFont'],
+            'settings.backgroundColor' => ['required', 'regex:/^#(?:[a-f0-9]{3}|[a-f0-9]{6})$/iD'],
+            'settings.borderColor' => ['required', 'regex:/^#(?:[a-f0-9]{3}|[a-f0-9]{6})$/iD'],
+            'settings.textColor' => ['required', 'regex:/^#(?:[a-f0-9]{3}|[a-f0-9]{6})$/iD'],
+            'settings.accentColor' => ['required', 'regex:/^#(?:[a-f0-9]{3}|[a-f0-9]{6})$/iD'],
+            'settings.headerFont' => ['required', Rule::in(CertificateTemplate::FONTS)],
+            'settings.bodyFont' => ['required', Rule::in(CertificateTemplate::FONTS)],
+        ])->validate();
+
+        return DB::transaction(function () use ($data, $id, $makeDefault) {
+            $templates = CertificateTemplate::orderBy('id')->lockForUpdate()->get();
+            $template = $id === null ? new CertificateTemplate : $templates->find($id);
+            abort_unless($template, 404);
+            $template->fill($data);
+            if (!$template->exists) {
+                $template->created_by = auth()->id();
+            }
+            if ($makeDefault) {
+                $previous = CertificateTemplate::where('default_slot', 1);
+                if ($template->exists) {
+                    $previous->whereKeyNot($template->id);
+                }
+                $previous->update(['default_slot' => null]);
+                $template->default_slot = 1;
+            }
+            $template->save();
+
+            return $template;
+        });
+    }
+
+    public function setDefaultTemplate(int $id): void
+    {
+        abort_unless(auth()->user()?->hasRole('super_admin'), 403);
+        DB::transaction(function () use ($id) {
+            $templates = CertificateTemplate::orderBy('id')->lockForUpdate()->get();
+            $template = $templates->find($id);
+            abort_unless($template, 404);
+            CertificateTemplate::where('default_slot', 1)->whereKeyNot($id)->update(['default_slot' => null]);
+            $template->forceFill(['default_slot' => 1])->save();
+        });
+    }
+
+    public function deleteTemplate(int $id): void
+    {
+        abort_unless(auth()->user()?->hasAnyRole(['super_admin', 'academy_admin']), 403);
+        DB::transaction(function () use ($id) {
+            $template = CertificateTemplate::lockForUpdate()->findOrFail($id);
+            if ($template->is_default) {
+                throw ValidationException::withMessages(['template' => 'Choose another default before deleting this template.']);
+            }
+            $template->delete();
+        });
+    }
+
+    public function defaultTemplateSnapshot(): ?array
+    {
+        $template = CertificateTemplate::where('default_slot', 1)->first();
+
+        return $template ? [
+            'id' => $template->id,
+            'name' => $template->name,
+            'settings' => CertificateTemplate::safeSettings($template->settings),
+        ] : null;
+    }
+
     /**
      * Generate all certificate assets (QR code and PDF)
      */
@@ -128,10 +207,10 @@ class CertificateService
 
             // Verify QR code exists before generating PDF
             if ($certificate->qr_code_path) {
-                $qrPath = storage_path('app/public/' . $certificate->qr_code_path);
-                if (!file_exists($qrPath)) {
+                $qrDisk = Storage::disk(config('certificate.storage.disk', 'public'));
+                if (!$qrDisk->exists($certificate->qr_code_path)) {
                     Log::warning('QR code file not found during PDF generation', [
-                        'expected_path' => $qrPath
+                        'expected_path' => $certificate->qr_code_path
                     ]);
                 }
             }
@@ -144,12 +223,12 @@ class CertificateService
                 ->setPaper('A4', 'landscape')
                 ->setOptions([
                     'isHtml5ParserEnabled' => true,
-                    'isRemoteEnabled' => true,
-                    'enable_php' => true,
+                    'isRemoteEnabled' => false,
+                    'enable_php' => false,
                     'dpi' => 150, // Higher DPI for better quality
                     'defaultFont' => 'DejaVu Sans',
                     'isFontSubsettingEnabled' => true,
-                    'isPhpEnabled' => true,
+                    'isPhpEnabled' => false,
                     'chroot' => storage_path('app/public'),
                     'debugPng' => false,
                     'debugKeepTemp' => false,
@@ -245,7 +324,7 @@ class CertificateService
             ->where('course_id', $courseId)
             ->first();
 
-        if (!$enrollment) {
+        if (!$enrollment && !\DB::table('course_enrollments')->where('user_id', $userId)->where('course_id', $courseId)->exists()) {
             return [
                 'can_request' => false,
                 'reason' => 'User is not enrolled in this course.',
@@ -268,11 +347,14 @@ class CertificateService
             round(($completedLessons / $totalLessons) * 100) : 0;
 
         $requiredCompletion = config('certificate.required_completion_percentage', 100);
-        $canRequest = $completionPercentage >= $requiredCompletion;
+        $assessmentsPassed = \App\Models\Assessment\Assessment::where(fn ($query) => $query->where('course_id', $courseId)
+            ->orWhereHas('lesson.section', fn ($section) => $section->where('course_id', $courseId)))
+            ->where(fn ($query) => $query->where('is_mandatory', true)->orWhereNotNull('lesson_id'))->get()->every(fn ($assessment) => $assessment->isPassedByStudent($userId));
+        $canRequest = $totalLessons > 0 && $completionPercentage >= $requiredCompletion && $assessmentsPassed;
 
         return [
             'can_request' => $canRequest,
-            'reason' => $canRequest ? '' : "Course completion is {$completionPercentage}%, but {$requiredCompletion}% is required.",
+            'reason' => $canRequest ? '' : (!$assessmentsPassed ? 'Pass every required assessment after instructor review before requesting a certificate.' : "Course completion is {$completionPercentage}%, but {$requiredCompletion}% is required."),
             'completion_percentage' => $completionPercentage,
             'completed_lessons' => $completedLessons,
             'total_lessons' => $totalLessons
@@ -345,7 +427,8 @@ class CertificateService
      */
     protected function getAssessmentResult($userId, $assessmentId): ?array
     {
-        return null;
+        $result = \App\Models\Assessment\Assessment::find($assessmentId)?->getStudentResults($userId);
+        return $result && !($result['pending_review'] ?? false) ? $result : null;
     }
 
     /**

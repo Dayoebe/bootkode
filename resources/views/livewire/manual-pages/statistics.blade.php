@@ -32,7 +32,7 @@
                 @foreach ($metricCards as $metric)
                     <article class="bk-card p-5">
                         <div class="flex items-start justify-between gap-4">
-                            <span class="{{ $metric['tone'] }} grid h-12 w-12 place-items-center rounded-2xl">
+                            <span class="{{ $metric['tone'] }} grid h-12 w-12 place-items-center rounded-lg">
                                 <i class="fas {{ $metric['icon'] }}"></i>
                             </span>
                             <span class="text-3xl font-black text-slate-950">{{ number_format($metric['value']) }}</span>
@@ -55,9 +55,9 @@
                         @foreach ([
                             ['label' => 'Published', 'value' => $course['total_published'] ?? 0],
                             ['label' => 'Free', 'value' => $course['free_courses'] ?? 0],
-                            ['label' => 'Premium', 'value' => $course['premium_courses'] ?? 0],
+                            ['label' => 'Paid', 'value' => $course['premium_courses'] ?? 0],
                         ] as $item)
-                            <div class="rounded-2xl bg-slate-50 p-4">
+                            <div class="rounded-lg bg-slate-50 p-4">
                                 <p class="text-2xl font-black text-slate-950">{{ number_format($item['value']) }}</p>
                                 <p class="mt-1 text-sm font-bold text-slate-600">{{ $item['label'] }}</p>
                             </div>
@@ -87,14 +87,14 @@
 
                 <div class="space-y-6">
                     <div class="bk-card p-5 sm:p-6">
-                        <span class="bk-eyebrow">Activity</span>
+                        <span class="bk-eyebrow">Account sign-ins</span>
                         <div class="mt-5 grid gap-3">
                             @foreach ([
                                 ['label' => 'Today', 'value' => $engagement['daily_active_users'] ?? 0],
                                 ['label' => 'This week', 'value' => $engagement['weekly_active_users'] ?? 0],
                                 ['label' => 'This month', 'value' => $engagement['monthly_active_users'] ?? 0],
                             ] as $item)
-                                <div class="flex items-center justify-between rounded-2xl bg-slate-50 px-4 py-3">
+                                <div class="flex items-center justify-between rounded-lg bg-slate-50 px-4 py-3">
                                     <span class="text-sm font-bold text-slate-600">{{ $item['label'] }}</span>
                                     <span class="text-xl font-black text-slate-950">{{ number_format($item['value']) }}</span>
                                 </div>
@@ -105,11 +105,11 @@
                     <div class="bk-card p-5 sm:p-6">
                         <span class="bk-eyebrow">Quality</span>
                         <div class="mt-5 space-y-3">
-                            <div class="rounded-2xl bg-slate-50 p-4">
+                            <div class="rounded-lg bg-slate-50 p-4">
                                 <p class="text-2xl font-black text-slate-950">{{ $overview['course_approval_rate'] ?? 0 }}%</p>
                                 <p class="text-sm font-bold text-slate-600">Course approval rate</p>
                             </div>
-                            <div class="rounded-2xl bg-slate-50 p-4">
+                            <div class="rounded-lg bg-slate-50 p-4">
                                 <p class="text-2xl font-black text-slate-950">{{ $overview['avg_completion_rate'] ?? 0 }}%</p>
                                 <p class="text-sm font-bold text-slate-600">Certificate to enrollment ratio</p>
                             </div>
@@ -123,13 +123,13 @@
                     <span class="bk-eyebrow">Trending courses</span>
                     <div class="mt-5 space-y-3">
                         @forelse ($trending as $item)
-                            <div class="flex items-center justify-between gap-4 rounded-2xl border border-slate-200 p-4">
+                            <div class="flex items-center justify-between gap-4 rounded-lg border border-slate-200 p-4">
                                 <div class="min-w-0">
                                     <h3 class="truncate font-black text-slate-950">{{ $item['title'] }}</h3>
                                     <p class="mt-1 text-sm text-slate-500">{{ $item['enrollments_count'] }} recent enrollments</p>
                                 </div>
                                 <span class="rounded-full bg-amber-50 px-3 py-1 text-sm font-black text-amber-700">
-                                    {{ $item['average_rating'] }}/5
+                                    {{ is_numeric($item['average_rating']) ? $item['average_rating'].'/5' : $item['average_rating'] }}
                                 </span>
                             </div>
                         @empty
@@ -140,11 +140,11 @@
 
                 <div class="bk-card p-5 sm:p-6">
                     <span class="bk-eyebrow">User growth</span>
-                    <div class="mt-5 grid grid-cols-6 items-end gap-2">
+                    <div class="mt-5 grid grid-cols-6 sm:grid-cols-12 items-end gap-2">
                         @foreach ($userGrowthData ?? [] as $point)
                             @php
                                 $maxUsers = max(1, collect($userGrowthData ?? [])->max('cumulative') ?? 1);
-                                $height = max(12, (($point['cumulative'] ?? 0) / $maxUsers) * 160);
+                                $height = max(0, (($point['cumulative'] ?? 0) / $maxUsers) * 160);
                             @endphp
                             <div class="flex min-h-[190px] flex-col items-center justify-end gap-2">
                                 <div class="w-full rounded-t-2xl bg-teal-700" style="height: {{ $height }}px;"></div>

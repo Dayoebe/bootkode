@@ -10,8 +10,18 @@ use Illuminate\Console\Scheduling\Schedule;
 
 class AppServiceProvider extends ServiceProvider
 {
+    public function register(): void
+    {
+        $this->app->scoped(\App\Services\PublicCatalogService::class);
+    }
+
     public function boot()
     {
+        \Livewire\Livewire::addPersistentMiddleware([\App\Http\Middleware\CheckRole::class]);
+        \Illuminate\Support\Facades\View::composer('components.footer', function ($view) {
+            $view->with('publicCatalogStats', app(\App\Services\PublicCatalogService::class)->statistics());
+        });
+
         Queue::failing(function (JobFailed $event): void {
             app(ObservabilityService::class)->recordFailedJob($event);
         });

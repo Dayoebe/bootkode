@@ -1,102 +1,57 @@
-<div class="min-h-screen bg-themed-primary transition-colors duration-300">
-    <!-- Header Section -->
-    <div class="bg-themed-secondary dark:shadow-lg border-b border-themed-primary transition-colors duration-300">
-        <div class="px-6 py-8">
-            <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between">
-                <div class="mb-6 lg:mb-0">
-                    <h1 class="text-4xl font-bold text-themed-primary mb-2 transition-colors duration-300">Mentorship Dashboard</h1>
-                    <p class="text-xl text-themed-secondary transition-colors duration-300">Connect, Learn, and Grow with Expert Mentors</p>
-                </div>
-
-                <!-- Quick Stats Dashboard -->
-                <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
-                    <div class="bg-gradient-to-br from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700 rounded-xl p-4 text-white text-center">
-                        <div class="text-2xl font-bold">{{ $activeMentorships }}</div>
-                        <div class="text-sm opacity-90">Active Mentorships</div>
-                    </div>
-
-                    <div class="bg-gradient-to-br from-green-500 to-green-600 dark:from-green-600 dark:to-green-700 rounded-xl p-4 text-white text-center">
-                        <div class="text-2xl font-bold">{{ $totalSessions }}</div>
-                        <div class="text-sm opacity-90">Total Sessions</div>
-                    </div>
-
-                    <div class="bg-gradient-to-br from-orange-500 to-orange-600 dark:from-orange-600 dark:to-orange-700 rounded-xl p-4 text-white text-center">
-                        <div class="text-2xl font-bold">{{ $upcomingSessions }}</div>
-                        <div class="text-sm opacity-90">Upcoming</div>
-                    </div>
-
-                    <div class="bg-gradient-to-br from-purple-500 to-purple-600 dark:from-purple-600 dark:to-purple-700 rounded-xl p-4 text-white text-center">
-                        <div class="text-2xl font-bold">{{ $pendingCodeReviews }}</div>
-                        <div class="text-sm opacity-90">Code Reviews</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Flash Messages -->
-    @if (session('message'))
-        <div class="w-full px-6 pt-4">
-            <div class="bg-green-50 dark:bg-green-900/30 border border-green-200 dark:border-green-700 text-green-700 dark:text-green-300 px-4 py-3 rounded-lg relative animate-fade-in">
-                <span class="block sm:inline">{{ session('message') }}</span>
-            </div>
-        </div>
-    @endif
-
-    @if (session('error'))
-        <div class="w-full px-6 pt-4">
-            <div class="bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-700 text-red-700 dark:text-red-300 px-4 py-3 rounded-lg relative animate-fade-in">
-                <span class="block sm:inline">{{ session('error') }}</span>
-            </div>
-        </div>
-    @endif
-
-    <div class="px-6 py-8">
+<div class="mx-auto max-w-7xl space-y-6 p-4 sm:p-6">
+    <x-ui.page-header title="Mentorship" description="Follow your learning relationships, sessions, and code reviews." />
+    <x-ui.flash />
+    <dl class="grid grid-cols-2 gap-4 lg:grid-cols-4">
+        @foreach(['Active mentorships' => $activeMentorships, 'Completed sessions' => $totalSessions, 'Upcoming sessions' => $upcomingSessions, 'Pending code reviews' => $pendingCodeReviews] as $label => $value)
+            <div class="rounded-lg border border-line bg-surface p-4"><dt class="text-sm text-content-muted">{{ $label }}</dt><dd class="mt-1 text-xl font-semibold text-content">{{ $value }}</dd></div>
+        @endforeach
+    </dl>
+    <div class="space-y-6">
         <!-- Quick Actions -->
         <div class="grid md:grid-cols-3 gap-6 mb-8">
             @if(auth()->user()->isStudent())
                 <a href="{{ route('mentorship.find') }}" 
-                   class="bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-700 dark:to-indigo-700 text-white p-6 rounded-xl hover:from-blue-700 hover:to-indigo-700 dark:hover:from-blue-800 dark:hover:to-indigo-800 transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-1">
+                   class="rounded-lg border border-line bg-surface p-6 text-content shadow-sm transition-colors hover:border-brand focus-visible:outline-brand">
                     <i class="fas fa-search text-2xl mb-3"></i>
                     <h3 class="text-lg font-semibold">Find New Mentor</h3>
-                    <p class="text-sm opacity-90">Discover expert mentors in your field</p>
+                    <p class="text-sm text-content-muted">Discover expert mentors in your field</p>
                 </a>
 
                 <a href="{{ route('mentorship.sessions') }}"
-                   class="bg-gradient-to-r from-green-600 to-emerald-600 dark:from-green-700 dark:to-emerald-700 text-white p-6 rounded-xl hover:from-green-700 hover:to-emerald-700 dark:hover:from-green-800 dark:hover:to-emerald-800 transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-1">
+                   class="rounded-lg border border-line bg-surface p-6 text-content shadow-sm transition-colors hover:border-brand focus-visible:outline-brand">
                     <i class="fas fa-calendar-plus text-2xl mb-3"></i>
                     <h3 class="text-lg font-semibold">Schedule Session</h3>
-                    <p class="text-sm opacity-90">Book time with your mentors</p>
+                    <p class="text-sm text-content-muted">Book time with your mentors</p>
                 </a>
 
                 <a href="{{ route('mentorship.code-reviews') }}"
-                   class="bg-gradient-to-r from-purple-600 to-pink-600 dark:from-purple-700 dark:to-pink-700 text-white p-6 rounded-xl hover:from-purple-700 hover:to-pink-700 dark:hover:from-purple-800 dark:hover:to-pink-800 transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-1">
+                   class="rounded-lg border border-line bg-surface p-6 text-content shadow-sm transition-colors hover:border-brand focus-visible:outline-brand">
                     <i class="fas fa-code text-2xl mb-3"></i>
                     <h3 class="text-lg font-semibold">Request Review</h3>
-                    <p class="text-sm opacity-90">Get your code professionally reviewed</p>
+                    <p class="text-sm text-content-muted">Get your code professionally reviewed</p>
                 </a>
             @endif
 
             @if(auth()->user()->isMentor())
                 <a href="{{ route('mentorship.dashboard') }}"
-                   class="bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-700 dark:to-indigo-700 text-white p-6 rounded-xl hover:from-blue-700 hover:to-indigo-700 dark:hover:from-blue-800 dark:hover:to-indigo-800 transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-1">
+                   class="rounded-lg border border-line bg-surface p-6 text-content shadow-sm transition-colors hover:border-brand focus-visible:outline-brand">
                     <i class="fas fa-chalkboard-teacher text-2xl mb-3"></i>
                     <h3 class="text-lg font-semibold">Mentor Dashboard</h3>
-                    <p class="text-sm opacity-90">Manage your mentees and sessions</p>
+                    <p class="text-sm text-content-muted">Manage your mentees and sessions</p>
                 </a>
 
                 <a href="{{ route('mentorship.sessions') }}"
-                   class="bg-gradient-to-r from-green-600 to-emerald-600 dark:from-green-700 dark:to-emerald-700 text-white p-6 rounded-xl hover:from-green-700 hover:to-emerald-700 dark:hover:from-green-800 dark:hover:to-emerald-800 transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-1">
+                   class="rounded-lg border border-line bg-surface p-6 text-content shadow-sm transition-colors hover:border-brand focus-visible:outline-brand">
                     <i class="fas fa-calendar text-2xl mb-3"></i>
                     <h3 class="text-lg font-semibold">My Sessions</h3>
-                    <p class="text-sm opacity-90">View and manage your sessions</p>
+                    <p class="text-sm text-content-muted">View and manage your sessions</p>
                 </a>
 
                 <a href="{{ route('mentorship.code-reviews') }}"
-                   class="bg-gradient-to-r from-purple-600 to-pink-600 dark:from-purple-700 dark:to-pink-700 text-white p-6 rounded-xl hover:from-purple-700 hover:to-pink-700 dark:hover:from-purple-800 dark:hover:to-pink-800 transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-1">
+                   class="rounded-lg border border-line bg-surface p-6 text-content shadow-sm transition-colors hover:border-brand focus-visible:outline-brand">
                     <i class="fas fa-code text-2xl mb-3"></i>
                     <h3 class="text-lg font-semibold">Code Reviews</h3>
-                    <p class="text-sm opacity-90">Pending code reviews</p>
+                    <p class="text-sm text-content-muted">Pending code reviews</p>
                 </a>
             @endif
         </div>
@@ -107,7 +62,7 @@
             <div class="bg-themed-secondary rounded-2xl shadow-lg p-6 border border-themed-primary transition-colors duration-300">
                 <div class="flex items-center justify-between mb-6">
                     <h3 class="text-xl font-bold text-themed-primary transition-colors duration-300">My Active Mentorships</h3>
-                    <a href="{{ route('mentorship.my-mentorships') }}" class="text-accent-primary hover:text-accent-secondary transition-colors">
+                    <a href="{{ route('mentorship.my-mentorships') }}" class="text-brand hover:text-brand transition-colors">
                         <i class="fas fa-arrow-right"></i>
                     </a>
                 </div>
@@ -126,12 +81,12 @@
                                             @endif
                                         </h4>
                                         <p class="text-sm text-themed-secondary mt-1 transition-colors duration-300">
-                                            Started {{ $mentorship->started_at->diffForHumans() }}
+                                            {{ $mentorship->started_at ? 'Started '.$mentorship->started_at->diffForHumans() : 'Start date not recorded' }}
                                         </p>
                                         @if($mentorship->duration_weeks)
                                             <div class="mt-2">
                                                 <div class="w-full bg-themed-tertiary rounded-full h-2">
-                                                    <div class="bg-accent-primary h-2 rounded-full transition-colors duration-300" 
+                                                    <div class="bg-brand h-2 rounded-full transition-colors duration-300"
                                                          style="width: {{ $mentorship->progress_percentage }}%"></div>
                                                 </div>
                                                 <p class="text-xs text-themed-tertiary mt-1 transition-colors duration-300">
@@ -140,7 +95,7 @@
                                             </div>
                                         @endif
                                     </div>
-                                    <div class="text-2xl text-accent-primary transition-colors duration-300">
+                                    <div class="text-2xl text-brand transition-colors duration-300">
                                         <i class="fas fa-handshake"></i>
                                     </div>
                                 </div>
@@ -159,7 +114,7 @@
             <div class="bg-themed-secondary rounded-2xl shadow-lg p-6 border border-themed-primary transition-colors duration-300">
                 <div class="flex items-center justify-between mb-6">
                     <h3 class="text-xl font-bold text-themed-primary transition-colors duration-300">Upcoming Sessions</h3>
-                    <a href="{{ route('mentorship.sessions') }}" class="text-accent-primary hover:text-accent-secondary transition-colors">
+                    <a href="{{ route('mentorship.sessions') }}" class="text-brand hover:text-brand transition-colors">
                         <i class="fas fa-arrow-right"></i>
                     </a>
                 </div>
@@ -178,7 +133,7 @@
                                                 with {{ $session->mentorship->mentee->name }}
                                             @endif
                                         </p>
-                                        <p class="text-xs text-accent-primary font-medium mt-2 transition-colors duration-300">
+                                        <p class="text-xs text-brand font-medium mt-2 transition-colors duration-300">
                                             {{ $session->scheduled_at->format('M j, Y g:i A') }}
                                         </p>
                                     </div>
@@ -202,7 +157,7 @@
             <div class="bg-themed-secondary rounded-2xl shadow-lg p-6 border border-themed-primary transition-colors duration-300 lg:col-span-2">
                 <div class="flex items-center justify-between mb-6">
                     <h3 class="text-xl font-bold text-themed-primary transition-colors duration-300">Recent Code Reviews</h3>
-                    <a href="{{ route('mentorship.code-reviews') }}" class="text-accent-primary hover:text-accent-secondary transition-colors">
+                    <a href="{{ route('mentorship.code-reviews') }}" class="text-brand hover:text-brand transition-colors">
                         <i class="fas fa-arrow-right"></i>
                     </a>
                 </div>
@@ -228,7 +183,7 @@
                                             </span>
                                         </div>
                                         <p class="text-xs text-themed-tertiary mt-2 transition-colors duration-300">
-                                            {{ $review->requested_at->diffForHumans() }}
+                                            {{ $review->requested_at?->diffForHumans() ?? 'Request date not recorded' }}
                                         </p>
                                     </div>
                                     <div class="text-2xl text-purple-500 dark:text-purple-400">
@@ -248,20 +203,4 @@
         </div>
     </div>
 
-    <style>
-        .animate-fade-in {
-            animation: fade-in 0.3s ease-out;
-        }
-
-        @keyframes fade-in {
-            from {
-                opacity: 0;
-                transform: translateY(-10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-    </style>
 </div>

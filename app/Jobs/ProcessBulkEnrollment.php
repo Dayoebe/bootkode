@@ -104,7 +104,10 @@ class ProcessBulkEnrollment implements ShouldQueue
 
             // Get course IDs to enroll users in
             $courseIds = $this->batch->courses ?? [];
-            $courses = Course::whereIn('id', $courseIds)->get()->keyBy('id');
+            $courses = Course::publiclyAvailable()->whereIn('id', $courseIds)->get()->keyBy('id');
+            if (count(array_unique($courseIds)) !== $courses->count()) {
+                throw new \DomainException('Selected courses are no longer available for enrollment.');
+            }
 
             // Process each row
             while (($row = fgetcsv($handle)) !== false) {
@@ -172,7 +175,7 @@ class ProcessBulkEnrollment implements ShouldQueue
                     'name' => $userData['name'] ?? explode('@', $userData['email'])[0],
                     'email' => $userData['email'],
                     'password' => bcrypt(\Str::random(16)), // Temporary password
-                    'role' => $userData['role'] ?? User::ROLE_STUDENT,
+                    'role' => User::ROLE_STUDENT,
                     'phone_number' => $userData['phone'] ?? null,
                     'metadata' => array_filter([
                         'institution_department' => $userData['department'] ?? null,

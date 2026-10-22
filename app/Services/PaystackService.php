@@ -1,18 +1,21 @@
 <?php
 
 // PaystackService.php
+
 namespace App\Services;
 
-use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\Log;
 use App\Models\Marketplace\PaystackTransaction;
 use App\Models\Marketplace\Wallet;
 use App\Models\Marketplace\Withdrawal;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 
 class PaystackService
 {
     private $secretKey;
+
     private $publicKey;
+
     private $baseUrl;
 
     public function __construct()
@@ -27,12 +30,16 @@ class PaystackService
      */
     public function initializeWalletFunding(array $data): array
     {
+        if (! is_finite((float) $data['amount']) || (float) $data['amount'] <= 0 || ! $this->secretKey) {
+            return ['success' => false, 'message' => 'Payment setup or amount is invalid'];
+        }
+
         try {
-            $reference = 'WF_' . time() . '_' . uniqid();
+            $reference = 'WF_'.time().'_'.uniqid();
 
             $payload = [
                 'email' => $data['email'],
-                'amount' => $data['amount'] * 100, // Convert to kobo
+                'amount' => (int) round($data['amount'] * 100), // Convert to kobo
                 'reference' => $reference,
                 'currency' => 'NGN',
                 'callback_url' => route('paystack.callback'),
@@ -43,16 +50,16 @@ class PaystackService
                         [
                             'display_name' => 'Purpose',
                             'variable_name' => 'purpose',
-                            'value' => 'Wallet Funding'
-                        ]
-                    ]
-                ]
+                            'value' => 'Wallet Funding',
+                        ],
+                    ],
+                ],
             ];
 
             $response = Http::withHeaders([
-                'Authorization' => 'Bearer ' . $this->secretKey,
+                'Authorization' => 'Bearer '.$this->secretKey,
                 'Content-Type' => 'application/json',
-            ])->post($this->baseUrl . '/transaction/initialize', $payload);
+            ])->post($this->baseUrl.'/transaction/initialize', $payload);
 
             if ($response->successful()) {
                 $responseData = $response->json();
@@ -68,26 +75,27 @@ class PaystackService
                     'customer_name' => $data['customer_name'] ?? null,
                     'transaction_type' => PaystackTransaction::TYPE_WALLET_FUNDING,
                     'transactionable_type' => Wallet::class,
-                    'transactionable_id' => $data['wallet_id']
+                    'transactionable_id' => $data['wallet_id'],
                 ]);
 
                 return [
                     'success' => true,
                     'data' => $responseData['data'],
-                    'reference' => $reference
+                    'reference' => $reference,
                 ];
             }
 
             return [
                 'success' => false,
-                'message' => $response->json()['message'] ?? 'Payment initialization failed'
+                'message' => $response->json()['message'] ?? 'Payment initialization failed',
             ];
 
         } catch (\Exception $e) {
-            Log::error('Paystack initialization error: ' . $e->getMessage());
+            Log::error('Paystack initialization error: '.$e->getMessage());
+
             return [
                 'success' => false,
-                'message' => 'An error occurred while initializing payment'
+                'message' => 'An error occurred while initializing payment',
             ];
         }
     }
@@ -97,10 +105,13 @@ class PaystackService
      */
     public function verifyTransaction(string $reference): array
     {
+        if (! $this->secretKey) {
+            return ['success' => false, 'message' => 'Payment gateway setup is required'];
+        }
         try {
             $response = Http::withHeaders([
-                'Authorization' => 'Bearer ' . $this->secretKey,
-            ])->get($this->baseUrl . "/transaction/verify/{$reference}");
+                'Authorization' => 'Bearer '.$this->secretKey,
+            ])->get($this->baseUrl."/transaction/verify/{$reference}");
 
             if ($response->successful()) {
                 $data = $response->json()['data'];
@@ -110,20 +121,21 @@ class PaystackService
                     'data' => $data,
                     'status' => $data['status'],
                     'amount' => $data['amount'] / 100, // Convert from kobo
-                    'paid_at' => $data['paid_at']
+                    'paid_at' => $data['paid_at'],
                 ];
             }
 
             return [
                 'success' => false,
-                'message' => 'Transaction verification failed'
+                'message' => 'Transaction verification failed',
             ];
 
         } catch (\Exception $e) {
-            Log::error('Paystack verification error: ' . $e->getMessage());
+            Log::error('Paystack verification error: '.$e->getMessage());
+
             return [
                 'success' => false,
-                'message' => 'An error occurred during verification'
+                'message' => 'An error occurred during verification',
             ];
         }
     }
@@ -133,7 +145,7 @@ class PaystackService
      */
     public function initiateRefund(PaystackTransaction $transaction, float $amount, string $reason): array
     {
-        if (!$this->secretKey) {
+        if (! $this->secretKey) {
             return [
                 'success' => false,
                 'message' => 'Paystack secret key is not configured',
@@ -146,13 +158,13 @@ class PaystackService
                 'amount' => (int) round($amount * 100),
                 'currency' => $transaction->currency ?: 'NGN',
                 'customer_note' => $reason,
-                'merchant_note' => 'BootKode refund for ' . $transaction->reference,
+                'merchant_note' => 'BootKode refund for '.$transaction->reference,
             ];
 
             $response = Http::withHeaders([
-                'Authorization' => 'Bearer ' . $this->secretKey,
+                'Authorization' => 'Bearer '.$this->secretKey,
                 'Content-Type' => 'application/json',
-            ])->post($this->baseUrl . '/refund', $payload);
+            ])->post($this->baseUrl.'/refund', $payload);
 
             if ($response->successful()) {
                 return [
@@ -167,7 +179,7 @@ class PaystackService
                 'data' => $response->json(),
             ];
         } catch (\Exception $e) {
-            Log::error('Paystack refund error: ' . $e->getMessage(), [
+            Log::error('Paystack refund error: '.$e->getMessage(), [
                 'transaction_id' => $transaction->id,
                 'reference' => $transaction->reference,
                 'amount' => $amount,
@@ -187,85 +199,69 @@ class PaystackService
     {
         try {
             $verification = $this->verifyTransaction($reference);
-
-            if (!$verification['success'] || $verification['status'] !== 'success') {
-                return [
-                    'success' => false,
-                    'message' => 'Payment verification failed'
-                ];
+            if (! ($verification['success'] ?? false) || ($verification['status'] ?? '') !== 'success') {
+                return ['success' => false, 'message' => 'Payment verification failed'];
             }
 
-            $paystackTransaction = PaystackTransaction::where('reference', $reference)->first();
+            return \Illuminate\Support\Facades\DB::transaction(function () use ($reference, $verification) {
+                $payment = PaystackTransaction::where('reference', $reference)->lockForUpdate()->first();
+                if (! $payment || $payment->transaction_type !== PaystackTransaction::TYPE_WALLET_FUNDING) {
+                    return ['success' => false, 'message' => 'Wallet funding record not found'];
+                }
+                $data = $verification['data'];
+                if (($data['reference'] ?? null) !== $payment->reference
+                    || ($data['currency'] ?? null) !== $payment->currency
+                    || (int) ($data['amount'] ?? 0) !== (int) round((float) $payment->amount * 100)
+                    || (float) $payment->amount <= 0) {
+                    return ['success' => false, 'message' => 'Payment details do not match the funding request'];
+                }
+                $wallet = $payment->transactionable;
+                if (! $wallet instanceof Wallet || $wallet->currency !== $payment->currency) {
+                    return ['success' => false, 'message' => 'Invalid funding destination'];
+                }
+                if ($payment->isSuccessful()) {
+                    return ['success' => true, 'message' => 'Transaction already processed',
+                        'amount' => (float) $payment->amount, 'new_balance' => (float) $wallet->fresh()->balance];
+                }
+                $movement = $wallet->credit((float) $payment->amount, 'funding', 'Wallet funded via Paystack', $payment,
+                    ['paystack_reference' => $data['reference']]);
+                $payment->update(['status' => PaystackTransaction::STATUS_SUCCESS,
+                    'paystack_reference' => $data['reference'], 'paystack_response' => $data,
+                    'paid_at' => $verification['paid_at']]);
+                app(CommercialReadinessService::class)->issueReceiptForTransaction($payment->fresh());
 
-            if (!$paystackTransaction) {
-                return [
-                    'success' => false,
-                    'message' => 'Transaction record not found'
-                ];
-            }
+                return ['success' => true, 'message' => 'Wallet funded successfully',
+                    'amount' => (float) $payment->amount, 'new_balance' => (float) $wallet->fresh()->balance,
+                    'transaction' => $movement];
+            });
+        } catch (\Throwable $e) {
+            Log::error('Wallet funding processing failed', ['exception' => $e::class]);
 
-            // Prevent double processing
-            if ($paystackTransaction->status === PaystackTransaction::STATUS_SUCCESS) {
-                return [
-                    'success' => true,
-                    'message' => 'Transaction already processed'
-                ];
-            }
-
-            // Update transaction status
-            $paystackTransaction->update([
-                'status' => PaystackTransaction::STATUS_SUCCESS,
-                'paystack_reference' => $verification['data']['reference'],
-                'paystack_response' => $verification['data'],
-                'paid_at' => $verification['paid_at']
-            ]);
-
-            // Credit user wallet
-            $wallet = $paystackTransaction->transactionable;
-            $fundingTransaction = $wallet->credit(
-                $verification['amount'],
-                'funding',
-                'Wallet funded via Paystack',
-                $paystackTransaction,
-                ['paystack_reference' => $verification['data']['reference']]
-            );
-
-            app(CommercialReadinessService::class)->issueReceiptForTransaction($paystackTransaction->fresh());
-
-            return [
-                'success' => true,
-                'message' => 'Wallet funded successfully',
-                'amount' => $verification['amount'],
-                'new_balance' => $wallet->fresh()->balance,
-                'transaction' => $fundingTransaction
-            ];
-
-        } catch (\Exception $e) {
-            Log::error('Wallet funding processing error: ' . $e->getMessage());
-            return [
-                'success' => false,
-                'message' => 'An error occurred while processing payment'
-            ];
+            return ['success' => false, 'message' => 'An error occurred while processing payment'];
         }
     }
+
     /**
      * Create transfer recipient for withdrawals
      */
     public function createTransferRecipient(array $data): array
     {
+        if (! $this->secretKey) {
+            return ['success' => false, 'message' => 'Payment gateway setup is required'];
+        }
         try {
             $payload = [
                 'type' => 'nuban',
                 'name' => $data['account_name'],
                 'account_number' => $data['account_number'],
                 'bank_code' => $data['bank_code'],
-                'currency' => 'NGN'
+                'currency' => 'NGN',
             ];
 
             $response = Http::withHeaders([
-                'Authorization' => 'Bearer ' . $this->secretKey,
+                'Authorization' => 'Bearer '.$this->secretKey,
                 'Content-Type' => 'application/json',
-            ])->post($this->baseUrl . '/transferrecipient', $payload);
+            ])->post($this->baseUrl.'/transferrecipient', $payload);
 
             if ($response->successful()) {
                 $data = $response->json()['data'];
@@ -273,20 +269,21 @@ class PaystackService
                 return [
                     'success' => true,
                     'recipient_code' => $data['recipient_code'],
-                    'data' => $data
+                    'data' => $data,
                 ];
             }
 
             return [
                 'success' => false,
-                'message' => $response->json()['message'] ?? 'Failed to create transfer recipient'
+                'message' => $response->json()['message'] ?? 'Failed to create transfer recipient',
             ];
 
         } catch (\Exception $e) {
-            Log::error('Create transfer recipient error: ' . $e->getMessage());
+            Log::error('Create transfer recipient error: '.$e->getMessage());
+
             return [
                 'success' => false,
-                'message' => 'An error occurred while creating recipient'
+                'message' => 'An error occurred while creating recipient',
             ];
         }
     }
@@ -296,23 +293,26 @@ class PaystackService
      */
     public function initiateTransfer(Withdrawal $withdrawal): array
     {
+        if (! $this->secretKey) {
+            return ['success' => false, 'message' => 'Payment gateway setup is required'];
+        }
         try {
             // First, create or get recipient
             $recipientData = [
                 'account_name' => $withdrawal->account_name,
                 'account_number' => $withdrawal->account_number,
-                'bank_code' => $withdrawal->bank_code
+                'bank_code' => $withdrawal->bank_code,
             ];
 
-            if (!$withdrawal->paystack_recipient_code) {
+            if (! $withdrawal->paystack_recipient_code) {
                 $recipient = $this->createTransferRecipient($recipientData);
 
-                if (!$recipient['success']) {
+                if (! $recipient['success']) {
                     return $recipient;
                 }
 
                 $withdrawal->update([
-                    'paystack_recipient_code' => $recipient['recipient_code']
+                    'paystack_recipient_code' => $recipient['recipient_code'],
                 ]);
             }
 
@@ -322,13 +322,13 @@ class PaystackService
                 'amount' => $withdrawal->amount * 100, // Convert to kobo
                 'recipient' => $withdrawal->paystack_recipient_code,
                 'reason' => "Instructor withdrawal - {$withdrawal->withdrawal_id}",
-                'reference' => 'WD_' . $withdrawal->withdrawal_id
+                'reference' => 'WD_'.$withdrawal->withdrawal_id,
             ];
 
             $response = Http::withHeaders([
-                'Authorization' => 'Bearer ' . $this->secretKey,
+                'Authorization' => 'Bearer '.$this->secretKey,
                 'Content-Type' => 'application/json',
-            ])->post($this->baseUrl . '/transfer', $payload);
+            ])->post($this->baseUrl.'/transfer', $payload);
 
             if ($response->successful()) {
                 $data = $response->json()['data'];
@@ -336,26 +336,27 @@ class PaystackService
                 $withdrawal->update([
                     'paystack_transfer_code' => $data['transfer_code'],
                     'status' => Withdrawal::STATUS_PROCESSING,
-                    'processed_at' => now()
+                    'processed_at' => now(),
                 ]);
 
                 return [
                     'success' => true,
                     'transfer_code' => $data['transfer_code'],
-                    'data' => $data
+                    'data' => $data,
                 ];
             }
 
             return [
                 'success' => false,
-                'message' => $response->json()['message'] ?? 'Transfer initiation failed'
+                'message' => $response->json()['message'] ?? 'Transfer initiation failed',
             ];
 
         } catch (\Exception $e) {
-            Log::error('Transfer initiation error: ' . $e->getMessage());
+            Log::error('Transfer initiation error: '.$e->getMessage());
+
             return [
                 'success' => false,
-                'message' => 'An error occurred while initiating transfer'
+                'message' => 'An error occurred while initiating transfer',
             ];
         }
     }
@@ -367,8 +368,8 @@ class PaystackService
     {
         try {
             $response = Http::withHeaders([
-                'Authorization' => 'Bearer ' . $this->secretKey,
-            ])->get($this->baseUrl . "/transfer/{$transferCode}");
+                'Authorization' => 'Bearer '.$this->secretKey,
+            ])->get($this->baseUrl."/transfer/{$transferCode}");
 
             if ($response->successful()) {
                 $data = $response->json()['data'];
@@ -376,20 +377,21 @@ class PaystackService
                 return [
                     'success' => true,
                     'status' => $data['status'],
-                    'data' => $data
+                    'data' => $data,
                 ];
             }
 
             return [
                 'success' => false,
-                'message' => 'Transfer verification failed'
+                'message' => 'Transfer verification failed',
             ];
 
         } catch (\Exception $e) {
-            Log::error('Transfer verification error: ' . $e->getMessage());
+            Log::error('Transfer verification error: '.$e->getMessage());
+
             return [
                 'success' => false,
-                'message' => 'An error occurred during verification'
+                'message' => 'An error occurred during verification',
             ];
         }
     }
@@ -399,30 +401,34 @@ class PaystackService
      */
     public function getBalance(): array
     {
+        if (! $this->secretKey) {
+            return ['success' => false, 'message' => 'Payment gateway setup is required'];
+        }
         try {
             $response = Http::withHeaders([
-                'Authorization' => 'Bearer ' . $this->secretKey,
-            ])->get($this->baseUrl . '/balance');
+                'Authorization' => 'Bearer '.$this->secretKey,
+            ])->get($this->baseUrl.'/balance');
 
             if ($response->successful()) {
                 $balances = $response->json()['data'];
 
                 return [
                     'success' => true,
-                    'balances' => $balances
+                    'balances' => $balances,
                 ];
             }
 
             return [
                 'success' => false,
-                'message' => 'Failed to fetch balance'
+                'message' => 'Failed to fetch balance',
             ];
 
         } catch (\Exception $e) {
-            Log::error('Balance fetch error: ' . $e->getMessage());
+            Log::error('Balance fetch error: '.$e->getMessage());
+
             return [
                 'success' => false,
-                'message' => 'An error occurred while fetching balance'
+                'message' => 'An error occurred while fetching balance',
             ];
         }
     }
@@ -432,28 +438,32 @@ class PaystackService
      */
     public function getBanks(): array
     {
+        if (! $this->secretKey) {
+            return ['success' => false, 'message' => 'Payment gateway setup is required'];
+        }
         try {
             $response = Http::withHeaders([
-                'Authorization' => 'Bearer ' . $this->secretKey,
-            ])->get($this->baseUrl . '/bank?currency=NGN');
+                'Authorization' => 'Bearer '.$this->secretKey,
+            ])->get($this->baseUrl.'/bank?currency=NGN');
 
             if ($response->successful()) {
                 return [
                     'success' => true,
-                    'banks' => $response->json()['data']
+                    'banks' => $response->json()['data'],
                 ];
             }
 
             return [
                 'success' => false,
-                'message' => 'Failed to fetch banks'
+                'message' => 'Failed to fetch banks',
             ];
 
         } catch (\Exception $e) {
-            Log::error('Banks fetch error: ' . $e->getMessage());
+            Log::error('Banks fetch error: '.$e->getMessage());
+
             return [
                 'success' => false,
-                'message' => 'An error occurred while fetching banks'
+                'message' => 'An error occurred while fetching banks',
             ];
         }
     }
@@ -463,29 +473,33 @@ class PaystackService
      */
     public function resolveAccountNumber(string $accountNumber, string $bankCode): array
     {
+        if (! $this->secretKey) {
+            return ['success' => false, 'message' => 'Payment gateway setup is required'];
+        }
         try {
             $response = Http::withHeaders([
-                'Authorization' => 'Bearer ' . $this->secretKey,
-            ])->get($this->baseUrl . "/bank/resolve?account_number={$accountNumber}&bank_code={$bankCode}");
+                'Authorization' => 'Bearer '.$this->secretKey,
+            ])->get($this->baseUrl."/bank/resolve?account_number={$accountNumber}&bank_code={$bankCode}");
 
             if ($response->successful()) {
                 return [
                     'success' => true,
                     'account_name' => $response->json()['data']['account_name'],
-                    'account_number' => $response->json()['data']['account_number']
+                    'account_number' => $response->json()['data']['account_number'],
                 ];
             }
 
             return [
                 'success' => false,
-                'message' => $response->json()['message'] ?? 'Account resolution failed'
+                'message' => $response->json()['message'] ?? 'Account resolution failed',
             ];
 
         } catch (\Exception $e) {
-            Log::error('Account resolution error: ' . $e->getMessage());
+            Log::error('Account resolution error: '.$e->getMessage());
+
             return [
                 'success' => false,
-                'message' => 'An error occurred while resolving account'
+                'message' => 'An error occurred while resolving account',
             ];
         }
     }
@@ -495,42 +509,43 @@ class PaystackService
      */
     public function getPublicKey(): string
     {
-        return $this->publicKey;
+        return (string) $this->publicKey;
     }
+
     public function createRefund($paystackReference, $amount, $currency = 'NGN')
     {
         try {
             $payload = [
                 'transaction' => $paystackReference,
                 'amount' => $amount * 100, // Convert to kobo
-                'currency' => $currency
+                'currency' => $currency,
             ];
 
             $response = Http::withHeaders([
-                'Authorization' => 'Bearer ' . $this->secretKey,
+                'Authorization' => 'Bearer '.$this->secretKey,
                 'Content-Type' => 'application/json',
-            ])->post($this->baseUrl . '/refund', $payload);
+            ])->post($this->baseUrl.'/refund', $payload);
 
             if ($response->successful()) {
                 return [
                     'success' => true,
                     'id' => $response->json()['data']['id'],
-                    'data' => $response->json()['data']
+                    'data' => $response->json()['data'],
                 ];
             }
 
             return [
                 'success' => false,
-                'message' => $response->json()['message'] ?? 'Refund creation failed'
+                'message' => $response->json()['message'] ?? 'Refund creation failed',
             ];
 
         } catch (\Exception $e) {
-            Log::error('Paystack refund error: ' . $e->getMessage());
+            Log::error('Paystack refund error: '.$e->getMessage());
+
             return [
                 'success' => false,
-                'message' => 'An error occurred while processing refund'
+                'message' => 'An error occurred while processing refund',
             ];
         }
     }
-
 }

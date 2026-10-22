@@ -2,17 +2,16 @@
     <!-- Welcome Section -->
     <div
         class="bg-themed-secondary rounded-2xl shadow-lg p-8 border border-themed-primary transition-colors duration-300">
-        <div class="flex items-center justify-between mb-6">
+        <div class="mb-6 flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-between">
             <div>
-                <h2 class="text-3xl font-bold text-themed-primary mb-2 transition-colors duration-300">Welcome Back,
-                    {{ auth()->user()->name }}!</h2>
+                <h2 class="text-2xl font-bold text-themed-primary mb-2 transition-colors duration-300">Mentoring activity</h2>
                 <p class="text-lg text-themed-secondary transition-colors duration-300">Your mentorship impact dashboard
                 </p>
             </div>
-            <div class="flex space-x-4">
+            <div class="flex flex-wrap gap-3">
                 @if($profileId)
                             <button wire:click="editProfile"
-                                class="bg-accent-primary hover:bg-accent-secondary text-white px-6 py-3 rounded-lg transition-colors">
+                                class="bk-button bk-button-primary   px-6 py-3 rounded-lg transition-colors">
                                 <i class="fas fa-edit mr-2"></i>Edit Profile
                             </button>
                             <button wire:click="toggleAvailability" class="px-6 py-3 rounded-lg transition-colors duration-300 {{ $isAvailable
@@ -24,7 +23,7 @@
                             </button>
                 @else
                     <button wire:click="applyToBecomeMentor"
-                        class="bg-accent-primary hover:bg-accent-secondary text-white px-6 py-3 rounded-lg transition-colors">
+                        class="bk-button bk-button-primary   px-6 py-3 rounded-lg transition-colors">
                         <i class="fas fa-user-plus mr-2"></i>Apply to Become Mentor
                     </button>
                 @endif
@@ -32,10 +31,10 @@
         </div>
         <!-- Performance Metrics Grid -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-            <div class="bg-gradient-to-br from-accent-primary to-accent-secondary rounded-xl p-6 text-white">
+            <div class="rounded-lg border border-line bg-surface p-4 text-content">
                 <div class="flex items-center justify-between">
                     <div>
-                        <p class="text-sm opacity-90">Sessions Conducted</p>
+                        <p class="text-sm text-content-muted">Sessions Conducted</p>
                         <p class="text-3xl font-bold">{{ $performanceMetrics['sessions_conducted'] ?? 0 }}</p>
                     </div>
                     <div class="text-3xl opacity-80">
@@ -45,10 +44,10 @@
             </div>
 
             <div
-                class="bg-gradient-to-br from-green-500 to-green-600 dark:from-green-600 dark:to-green-700 rounded-xl p-6 text-white">
+                class="rounded-lg border border-line bg-surface p-4 text-content">
                 <div class="flex items-center justify-between">
                     <div>
-                        <p class="text-sm opacity-90">Avg Session Rating</p>
+                        <p class="text-sm text-content-muted">Avg Session Rating</p>
                         <p class="text-3xl font-bold">
                             {{ number_format($performanceMetrics['average_session_rating'] ?? 0, 1) }}</p>
                     </div>
@@ -59,10 +58,10 @@
             </div>
 
             <div
-                class="bg-gradient-to-br from-purple-500 to-purple-600 dark:from-purple-600 dark:to-purple-700 rounded-xl p-6 text-white">
+                class="rounded-lg border border-line bg-surface p-4 text-content">
                 <div class="flex items-center justify-between">
                     <div>
-                        <p class="text-sm opacity-90">Code Reviews</p>
+                        <p class="text-sm text-content-muted">Code Reviews</p>
                         <p class="text-3xl font-bold">{{ $performanceMetrics['code_reviews_completed'] ?? 0 }}</p>
                     </div>
                     <div class="text-3xl opacity-80">
@@ -72,10 +71,10 @@
             </div>
 
             <div
-                class="bg-gradient-to-br from-orange-500 to-orange-600 dark:from-orange-600 dark:to-orange-700 rounded-xl p-6 text-white">
+                class="rounded-lg border border-line bg-surface p-4 text-content">
                 <div class="flex items-center justify-between">
                     <div>
-                        <p class="text-sm opacity-90">Response Time</p>
+                        <p class="text-sm text-content-muted">Response Time</p>
                         <p class="text-3xl font-bold">{{ $performanceMetrics['response_time_hours'] ?? 0 }}h</p>
                     </div>
                     <div class="text-3xl opacity-80">
@@ -129,7 +128,7 @@
             <div class="flex items-center justify-between mb-6">
                 <h3 class="text-xl font-bold text-themed-primary transition-colors duration-300">Upcoming Sessions</h3>
                 <button wire:click="$dispatch('change-tab', {tab: 'sessions'})"
-                    class="text-accent-primary hover:text-accent-secondary transition-colors">
+                    class="text-brand hover:text-brand transition-colors">
                     <i class="fas fa-arrow-right"></i>
                 </button>
             </div>
@@ -145,11 +144,11 @@
                                         {{ $session->title }}</h4>
                                     <p class="text-sm text-themed-secondary mt-1 transition-colors duration-300">with
                                         {{ $session->mentorship->mentee->name }}</p>
-                                    <p class="text-xs text-accent-primary font-medium mt-2 transition-colors duration-300">
+                                    <p class="text-xs text-brand font-medium mt-2 transition-colors duration-300">
                                         {{ $session->scheduled_at->format('M j, Y g:i A') }}
                                     </p>
                                 </div>
-                                <div class="text-2xl text-accent-primary transition-colors duration-300">
+                                <div class="text-2xl text-brand transition-colors duration-300">
                                     <i class="fas fa-{{ $session->type === 'code_review' ? 'code' : 'video' }}"></i>
                                 </div>
                             </div>
@@ -171,7 +170,7 @@
                 <h3 class="text-xl font-bold text-themed-primary transition-colors duration-300">Recent Code Reviews
                 </h3>
                 <button wire:click="$dispatch('change-tab', {tab: 'code-reviews'})"
-                    class="text-accent-primary hover:text-accent-secondary transition-colors">
+                    class="text-brand hover:text-brand transition-colors">
                     <i class="fas fa-arrow-right"></i>
                 </button>
             </div>

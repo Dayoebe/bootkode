@@ -19,6 +19,8 @@ use Livewire\Attributes\Layout;
 class HelpSupport extends Component
 {
     use WithPagination, WithFileUploads;
+    use \App\Livewire\Concerns\RequiresAuthenticatedAccount;
+    use \App\Livewire\Concerns\HasActionFeedback;
 
     public $activeTab = 'faqs';
     public $searchFaq = '';
@@ -54,13 +56,18 @@ class HelpSupport extends Component
         ];
 
         if ($this->attachment) {
-            $data['attachment'] = $this->attachment->store('support_ticket_attachments', 'public');
+            $data['attachment'] = $this->attachment->store('private/support-ticket-attachments', 'local');
         }
 
-        $ticket = SupportTicket::create($data);
+        try {
+            $ticket = SupportTicket::create($data);
+        } catch (\Throwable $exception) {
+            if (isset($data['attachment'])) \Illuminate\Support\Facades\Storage::disk('local')->delete($data['attachment']);
+            throw $exception;
+        }
 
         // Corrected dispatch method to use the Livewire 3 syntax
-        $this->dispatch('notify', 'New support ticket submitted: ' . $this->subject, 'success');
+        $this->flashFeedback('success', 'Your support ticket was submitted. Follow its status in My tickets.');
         $this->reset(['subject', 'description', 'attachment']);
         $this->activeTab = 'ticket_history';
     }
@@ -73,18 +80,17 @@ class HelpSupport extends Component
 
     public function render()
     {
+        $this->validate(['activeTab' => 'in:faqs,submit_ticket,ticket_history', 'ticketStatusFilter' => 'in:all,open,in_progress,resolved,closed', 'ticketSearch' => 'string|max:255', 'searchFaq' => 'string|max:255']);
         $faqs = Faq::where('is_published', true)
             ->when($this->searchFaq, function ($query) {
-                $query->where('question', 'like', '%' . $this->searchFaq . '%')
-                      ->orWhere('answer', 'like', '%' . $this->searchFaq . '%');
+                $query->where(fn ($matching) => $matching->where('question', 'like', '%' . $this->searchFaq . '%')->orWhere('answer', 'like', '%' . $this->searchFaq . '%'));
             })
             ->orderBy('order')
             ->get();
 
         $tickets = SupportTicket::where('user_id', Auth::id())
             ->when($this->ticketSearch, function ($query) {
-                $query->where('subject', 'like', '%' . $this->ticketSearch . '%')
-                      ->orWhere('description', 'like', '%' . $this->ticketSearch . '%');
+                $query->where(fn ($matching) => $matching->where('subject', 'like', '%' . $this->ticketSearch . '%')->orWhere('description', 'like', '%' . $this->ticketSearch . '%'));
             })
             ->when($this->ticketStatusFilter !== 'all', function ($query) {
                 $query->where('status', $this->ticketStatusFilter);

@@ -11,6 +11,8 @@ use Illuminate\Support\Facades\Auth;
 
 class Analytics extends Component
 {
+    use \App\Livewire\Concerns\AuthorizesMentoring;
+
     public $dateFilter = 'this_month';
     public $performanceMetrics = [];
     public $monthlyEarnings = 0;

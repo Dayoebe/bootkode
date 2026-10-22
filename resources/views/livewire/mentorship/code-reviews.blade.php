@@ -14,15 +14,15 @@
     <div class="rounded-xl border border-themed-primary bg-themed-secondary p-6 shadow-sm transition-colors duration-300">
         <div class="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
             <div>
-                <p class="text-sm font-semibold uppercase tracking-wide text-accent-primary">Mentorship workflow</p>
-                <h2 class="text-2xl font-bold text-themed-primary">Code Review Studio</h2>
+                <p class="text-sm font-semibold uppercase tracking-wide text-brand">Mentorship workflow</p>
+                <h{{ $embedded ? 2 : 1 }} class="text-2xl font-bold text-themed-primary">Code reviews</h{{ $embedded ? 2 : 1 }}>
                 <p class="mt-1 max-w-3xl text-sm text-themed-secondary">
                     Submit repositories or snippets, review against a rubric, track revisions, approve work, and keep certificate or project evidence attached.
                 </p>
             </div>
             <button type="button" wire:click="createReview"
                 @if($activeMentorships->isEmpty()) disabled @endif
-                class="inline-flex items-center justify-center gap-2 rounded-lg bg-accent-primary px-4 py-3 text-sm font-semibold text-white transition hover:bg-accent-secondary disabled:cursor-not-allowed disabled:opacity-50">
+                class="inline-flex items-center justify-center gap-2 rounded-lg bk-button bk-button-primary px-4 py-3 text-sm font-semibold transition disabled:cursor-not-allowed disabled:opacity-50">
                 <i class="fas fa-plus"></i>
                 Request Review
             </button>
@@ -58,14 +58,14 @@
 
     <div class="grid gap-6 xl:grid-cols-[minmax(0,1fr)_minmax(420px,0.95fr)]">
         <div class="rounded-xl border border-themed-primary bg-themed-secondary p-5 shadow-sm transition-colors duration-300">
-            <div class="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+            <div class="flex flex-col gap-3">
                 <h3 class="text-lg font-semibold text-themed-primary">Review Queue</h3>
-                <div class="grid gap-2 sm:grid-cols-3 lg:w-[680px]">
+                <div class="grid gap-2 sm:grid-cols-3 lg:w-full lg:max-w-[680px]">
                     <input type="search" wire:model.live.debounce.300ms="search"
-                        class="rounded-lg border border-themed-primary bg-themed-secondary px-3 py-2 text-sm text-themed-primary placeholder-themed-tertiary focus:border-accent-primary focus:ring-accent-primary"
+                        class="rounded-lg border border-themed-primary bg-themed-secondary px-3 py-2 text-sm text-themed-primary placeholder-themed-tertiary focus:border-brand focus:ring-brand"
                         placeholder="Search title, repo, learner">
                     <select wire:model.live="statusFilter"
-                        class="rounded-lg border border-themed-primary bg-themed-secondary px-3 py-2 text-sm text-themed-primary focus:border-accent-primary focus:ring-accent-primary">
+                        class="rounded-lg border border-themed-primary bg-themed-secondary px-3 py-2 text-sm text-themed-primary focus:border-brand focus:ring-brand">
                         <option value="">All statuses</option>
                         <option value="pending">Pending</option>
                         <option value="in_review">In review</option>
@@ -74,7 +74,7 @@
                         <option value="declined">Declined</option>
                     </select>
                     <select wire:model.live="priorityFilter"
-                        class="rounded-lg border border-themed-primary bg-themed-secondary px-3 py-2 text-sm text-themed-primary focus:border-accent-primary focus:ring-accent-primary">
+                        class="rounded-lg border border-themed-primary bg-themed-secondary px-3 py-2 text-sm text-themed-primary focus:border-brand focus:ring-brand">
                         <option value="">All priorities</option>
                         <option value="urgent">Urgent</option>
                         <option value="high">High</option>
@@ -98,7 +98,7 @@
                         $canStart = (auth()->user()->isSuperAdmin() || auth()->user()->isAcademyAdmin() || auth()->id() === $review->mentorship?->mentor_id) && $review->status === 'pending';
                     @endphp
 
-                    <div class="rounded-lg border p-4 transition {{ $isSelected ? 'border-accent-primary bg-accent-primary/5' : 'border-themed-primary bg-themed-secondary hover:border-accent-primary/60' }}">
+                    <div class="rounded-lg border p-4 transition {{ $isSelected ? 'border-brand bg-brand/5' : 'border-themed-primary bg-themed-secondary hover:border-brand/60' }}">
                         <div class="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
                             <div class="min-w-0">
                                 <div class="flex flex-wrap items-center gap-2">
@@ -115,7 +115,7 @@
                                     @endif
                                 </div>
                                 <button type="button" wire:click="selectReview({{ $review->id }})"
-                                    class="mt-2 block max-w-full truncate text-left text-lg font-semibold text-themed-primary hover:text-accent-primary">
+                                    class="mt-2 block max-w-full truncate text-left text-lg font-semibold text-themed-primary hover:text-brand">
                                     {{ $review->title }}
                                 </button>
                                 <p class="mt-1 line-clamp-2 text-sm text-themed-secondary">{{ $review->description }}</p>
@@ -128,7 +128,7 @@
                                 @if($review->technologies)
                                     <div class="mt-3 flex flex-wrap gap-2">
                                         @foreach(array_slice($review->technologies, 0, 5) as $tech)
-                                            <span class="rounded-md bg-accent-primary/10 px-2 py-1 text-xs font-medium text-accent-primary">{{ $tech }}</span>
+                                            <span class="rounded-md bg-brand/10 px-2 py-1 text-xs font-medium text-brand">{{ $tech }}</span>
                                         @endforeach
                                     </div>
                                 @endif
@@ -141,7 +141,7 @@
                                     </button>
                                 @endif
                                 <button type="button" wire:click="selectReview({{ $review->id }})"
-                                    class="rounded-lg border border-themed-primary px-3 py-2 text-xs font-semibold text-themed-primary transition hover:border-accent-primary hover:text-accent-primary">
+                                    class="rounded-lg border border-themed-primary px-3 py-2 text-xs font-semibold text-themed-primary transition hover:border-brand hover:text-brand">
                                     Open
                                 </button>
                             </div>
@@ -174,7 +174,7 @@
 
                 <div class="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
                     <div>
-                        <p class="text-sm font-semibold uppercase tracking-wide text-accent-primary">Review Workspace</p>
+                        <p class="text-sm font-semibold uppercase tracking-wide text-brand">Review Workspace</p>
                         <h3 class="text-xl font-bold text-themed-primary">{{ $selectedReview->title }}</h3>
                         <p class="mt-1 text-sm text-themed-secondary">
                             {{ $selectedReview->requester?->name ?? 'Learner' }} with {{ $selectedReview->mentorship?->mentor?->name ?? 'mentor' }}
@@ -182,7 +182,7 @@
                     </div>
                     <div class="text-left lg:text-right">
                         <p class="text-sm font-semibold text-themed-primary">{{ $approvalLabel }}</p>
-                        <p class="text-2xl font-bold text-accent-primary">
+                        <p class="text-2xl font-bold text-brand">
                             {{ $selectedReview->rubric_total_score !== null ? $selectedReview->rubric_total_score . '%' : 'No score' }}
                         </p>
                     </div>
@@ -192,7 +192,7 @@
                     <div class="rounded-lg border border-themed-primary p-4">
                         <p class="text-xs font-semibold uppercase text-themed-secondary">Repository</p>
                         @if($selectedReview->repository_url)
-                            <a href="{{ $selectedReview->repository_url }}" target="_blank" class="mt-1 block break-all text-sm font-semibold text-accent-primary hover:text-accent-secondary">
+                            <a href="{{ $selectedReview->repository_url }}" target="_blank" class="mt-1 block break-all text-sm font-semibold text-brand hover:text-brand">
                                 {{ $selectedReview->repository_url }}
                             </a>
                         @else
@@ -209,7 +209,7 @@
                         <p class="text-xs font-semibold uppercase text-themed-secondary">Review Need</p>
                         <p class="mt-1 text-sm text-themed-primary">{{ $selectedReview->learner_goal ?: $selectedReview->specific_questions ?: 'General review requested.' }}</p>
                         @if($selectedReview->pull_request_url)
-                            <a href="{{ $selectedReview->pull_request_url }}" target="_blank" class="mt-2 block break-all text-sm font-semibold text-accent-primary hover:text-accent-secondary">
+                            <a href="{{ $selectedReview->pull_request_url }}" target="_blank" class="mt-2 block break-all text-sm font-semibold text-brand hover:text-brand">
                                 Pull request
                             </a>
                         @endif
@@ -240,7 +240,7 @@
                         @if($selectedReview->certificate_evidence)
                             <p class="mt-2 text-sm text-themed-primary">{{ data_get($selectedReview->certificate_evidence, 'title', 'Certificate evidence') }}</p>
                             @if(data_get($selectedReview->certificate_evidence, 'url'))
-                                <a href="{{ data_get($selectedReview->certificate_evidence, 'url') }}" target="_blank" class="mt-1 block break-all text-sm text-accent-primary">Open evidence</a>
+                                <a href="{{ data_get($selectedReview->certificate_evidence, 'url') }}" target="_blank" class="mt-1 block break-all text-sm text-brand">Open evidence</a>
                             @endif
                             @if(data_get($selectedReview->certificate_evidence, 'notes'))
                                 <p class="mt-1 text-xs text-themed-secondary">{{ data_get($selectedReview->certificate_evidence, 'notes') }}</p>
@@ -254,7 +254,7 @@
                         @if($selectedReview->project_evidence)
                             <p class="mt-2 text-sm text-themed-primary">{{ data_get($selectedReview->project_evidence, 'title', 'Project evidence') }}</p>
                             @if(data_get($selectedReview->project_evidence, 'url'))
-                                <a href="{{ data_get($selectedReview->project_evidence, 'url') }}" target="_blank" class="mt-1 block break-all text-sm text-accent-primary">Open evidence</a>
+                                <a href="{{ data_get($selectedReview->project_evidence, 'url') }}" target="_blank" class="mt-1 block break-all text-sm text-brand">Open evidence</a>
                             @endif
                             @if(data_get($selectedReview->project_evidence, 'notes'))
                                 <p class="mt-1 text-xs text-themed-secondary">{{ data_get($selectedReview->project_evidence, 'notes') }}</p>
@@ -316,10 +316,10 @@
                     @if($selectedCanManage)
                         <form wire:submit.prevent="saveComment" class="mt-4">
                             <textarea wire:model="mentorComment" rows="3"
-                                class="w-full rounded-lg border border-themed-primary bg-themed-secondary px-3 py-2 text-sm text-themed-primary placeholder-themed-tertiary focus:border-accent-primary focus:ring-accent-primary"
+                                class="w-full rounded-lg border border-themed-primary bg-themed-secondary px-3 py-2 text-sm text-themed-primary placeholder-themed-tertiary focus:border-brand focus:ring-brand"
                                 placeholder="Add a comment or implementation note"></textarea>
                             @error('mentorComment') <p class="mt-1 text-xs text-red-500">{{ $message }}</p> @enderror
-                            <button type="submit" class="mt-2 rounded-lg border border-themed-primary px-3 py-2 text-xs font-semibold text-themed-primary hover:border-accent-primary hover:text-accent-primary">
+                            <button type="submit" class="mt-2 rounded-lg border border-themed-primary px-3 py-2 text-xs font-semibold text-themed-primary hover:border-brand hover:text-brand">
                                 Add Comment
                             </button>
                         </form>
@@ -330,7 +330,7 @@
                     <div class="mt-6 border-t border-themed-primary pt-5">
                         <div class="flex items-center justify-between">
                             <h4 class="text-base font-semibold text-themed-primary">Rubric Review</h4>
-                            <p class="text-sm font-semibold text-accent-primary">{{ \App\Models\Mentorship\CodeReview::calculateRubricTotal($rubricScores) }}%</p>
+                            <p class="text-sm font-semibold text-brand">{{ \App\Models\Mentorship\CodeReview::calculateRubricTotal($rubricScores) }}%</p>
                         </div>
 
                         <div class="mt-4 space-y-4">
@@ -342,10 +342,10 @@
                                             <p class="mt-1 text-xs text-themed-secondary">{{ $item['hint'] }}</p>
                                         </div>
                                         <input type="number" min="0" max="5" wire:model.live="rubricScores.{{ $key }}"
-                                            class="h-10 rounded-lg border border-themed-primary bg-themed-secondary px-3 text-sm text-themed-primary focus:border-accent-primary focus:ring-accent-primary">
+                                            class="h-10 rounded-lg border border-themed-primary bg-themed-secondary px-3 text-sm text-themed-primary focus:border-brand focus:ring-brand">
                                     </div>
                                     <textarea wire:model="rubricNotes.{{ $key }}" rows="2"
-                                        class="mt-3 w-full rounded-lg border border-themed-primary bg-themed-secondary px-3 py-2 text-sm text-themed-primary placeholder-themed-tertiary focus:border-accent-primary focus:ring-accent-primary"
+                                        class="mt-3 w-full rounded-lg border border-themed-primary bg-themed-secondary px-3 py-2 text-sm text-themed-primary placeholder-themed-tertiary focus:border-brand focus:ring-brand"
                                         placeholder="Rubric note"></textarea>
                                 </div>
                             @endforeach
@@ -354,7 +354,7 @@
                         <div class="mt-4">
                             <label class="text-sm font-semibold text-themed-primary">Summary Feedback</label>
                             <textarea wire:model="reviewFeedback" rows="5"
-                                class="mt-2 w-full rounded-lg border border-themed-primary bg-themed-secondary px-3 py-2 text-sm text-themed-primary placeholder-themed-tertiary focus:border-accent-primary focus:ring-accent-primary"
+                                class="mt-2 w-full rounded-lg border border-themed-primary bg-themed-secondary px-3 py-2 text-sm text-themed-primary placeholder-themed-tertiary focus:border-brand focus:ring-brand"
                                 placeholder="Detailed mentor feedback"></textarea>
                             @error('reviewFeedback') <p class="mt-1 text-xs text-red-500">{{ $message }}</p> @enderror
                         </div>
@@ -365,14 +365,14 @@
                                 @foreach($suggestions as $index => $suggestion)
                                     <div class="mt-2 flex">
                                         <input type="text" wire:model="suggestions.{{ $index }}"
-                                            class="min-w-0 flex-1 rounded-l-lg border border-themed-primary bg-themed-secondary px-3 py-2 text-sm text-themed-primary placeholder-themed-tertiary focus:border-accent-primary focus:ring-accent-primary"
+                                            class="min-w-0 flex-1 rounded-l-lg border border-themed-primary bg-themed-secondary px-3 py-2 text-sm text-themed-primary placeholder-themed-tertiary focus:border-brand focus:ring-brand"
                                             placeholder="Suggestion">
                                         <button type="button" wire:click="removeSuggestion({{ $index }})" class="rounded-r-lg bg-red-600 px-3 text-white">
                                             <i class="fas fa-minus"></i>
                                         </button>
                                     </div>
                                 @endforeach
-                                <button type="button" wire:click="addSuggestion" class="mt-2 rounded-lg border border-themed-primary px-3 py-2 text-xs font-semibold text-themed-primary hover:border-accent-primary">
+                                <button type="button" wire:click="addSuggestion" class="mt-2 rounded-lg border border-themed-primary px-3 py-2 text-xs font-semibold text-themed-primary hover:border-brand">
                                     Add Suggestion
                                 </button>
                             </div>
@@ -381,14 +381,14 @@
                                 @foreach($improvementAreas as $index => $area)
                                     <div class="mt-2 flex">
                                         <input type="text" wire:model="improvementAreas.{{ $index }}"
-                                            class="min-w-0 flex-1 rounded-l-lg border border-themed-primary bg-themed-secondary px-3 py-2 text-sm text-themed-primary placeholder-themed-tertiary focus:border-accent-primary focus:ring-accent-primary"
+                                            class="min-w-0 flex-1 rounded-l-lg border border-themed-primary bg-themed-secondary px-3 py-2 text-sm text-themed-primary placeholder-themed-tertiary focus:border-brand focus:ring-brand"
                                             placeholder="Area to improve">
                                         <button type="button" wire:click="removeImprovementArea({{ $index }})" class="rounded-r-lg bg-red-600 px-3 text-white">
                                             <i class="fas fa-minus"></i>
                                         </button>
                                     </div>
                                 @endforeach
-                                <button type="button" wire:click="addImprovementArea" class="mt-2 rounded-lg border border-themed-primary px-3 py-2 text-xs font-semibold text-themed-primary hover:border-accent-primary">
+                                <button type="button" wire:click="addImprovementArea" class="mt-2 rounded-lg border border-themed-primary px-3 py-2 text-xs font-semibold text-themed-primary hover:border-brand">
                                     Add Area
                                 </button>
                             </div>
@@ -412,7 +412,7 @@
                         <div class="mt-4">
                             <label class="text-sm font-semibold text-themed-primary">Approval Notes</label>
                             <textarea wire:model="approvalNotes" rows="3"
-                                class="mt-2 w-full rounded-lg border border-themed-primary bg-themed-secondary px-3 py-2 text-sm text-themed-primary placeholder-themed-tertiary focus:border-accent-primary focus:ring-accent-primary"
+                                class="mt-2 w-full rounded-lg border border-themed-primary bg-themed-secondary px-3 py-2 text-sm text-themed-primary placeholder-themed-tertiary focus:border-brand focus:ring-brand"
                                 placeholder="Decision notes"></textarea>
                         </div>
 
@@ -439,14 +439,14 @@
     </div>
 
     @if($showReviewModal)
-        <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+        <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4" x-data="{ dialogOpen: true }" x-trap.inert.noscroll="dialogOpen" x-on:keydown.escape.window="dialogOpen = false; $wire.closeModal()" role="dialog" aria-modal="true" aria-label="Code Reviews dialog" tabindex="-1">
             <div class="max-h-[92vh] w-full max-w-5xl overflow-y-auto rounded-xl border border-themed-primary bg-themed-secondary shadow-2xl">
                 <div class="sticky top-0 z-10 flex items-center justify-between border-b border-themed-primary bg-themed-secondary p-5">
                     <div>
                         <h3 class="text-xl font-bold text-themed-primary">Request Code Review</h3>
                         <p class="text-sm text-themed-secondary">Attach a repo, paste a snippet, or use both.</p>
                     </div>
-                    <button type="button" wire:click="closeModal" class="text-themed-secondary hover:text-themed-primary">
+                    <button aria-label="Close dialog" type="button" wire:click="closeModal" class="text-themed-secondary hover:text-themed-primary">
                         <i class="fas fa-times text-xl"></i>
                     </button>
                 </div>
@@ -504,7 +504,7 @@
                                 </button>
                             </div>
                         @endforeach
-                        <button type="button" wire:click="addTechnology" class="mt-2 rounded-lg border border-themed-primary px-3 py-2 text-xs font-semibold text-themed-primary hover:border-accent-primary">
+                        <button type="button" wire:click="addTechnology" class="mt-2 rounded-lg border border-themed-primary px-3 py-2 text-xs font-semibold text-themed-primary hover:border-brand">
                             Add Technology
                         </button>
                     </div>
@@ -570,7 +570,7 @@
 
                     <div class="flex justify-end gap-3 border-t border-themed-primary pt-5">
                         <button type="button" wire:click="closeModal" class="rounded-lg border border-themed-primary px-4 py-2 text-sm font-semibold text-themed-primary hover:bg-themed-tertiary">Cancel</button>
-                        <button type="submit" class="rounded-lg bg-accent-primary px-4 py-2 text-sm font-semibold text-white hover:bg-accent-secondary">Submit Review</button>
+                        <button type="submit" class="rounded-lg bk-button bk-button-primary px-4 py-2 text-sm font-semibold  ">Submit Review</button>
                     </div>
                 </form>
             </div>
@@ -578,11 +578,11 @@
     @endif
 
     @if($showRevisionModal)
-        <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+        <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4" x-data="{ dialogOpen: true }" x-trap.inert.noscroll="dialogOpen" x-on:keydown.escape.window="dialogOpen = false; $wire.closeModal()" role="dialog" aria-modal="true" aria-label="Code Reviews dialog" tabindex="-1">
             <div class="max-h-[92vh] w-full max-w-3xl overflow-y-auto rounded-xl border border-themed-primary bg-themed-secondary shadow-2xl">
                 <div class="flex items-center justify-between border-b border-themed-primary p-5">
                     <h3 class="text-xl font-bold text-themed-primary">Submit Revision</h3>
-                    <button type="button" wire:click="closeModal" class="text-themed-secondary hover:text-themed-primary">
+                    <button aria-label="Close dialog" type="button" wire:click="closeModal" class="text-themed-secondary hover:text-themed-primary">
                         <i class="fas fa-times text-xl"></i>
                     </button>
                 </div>

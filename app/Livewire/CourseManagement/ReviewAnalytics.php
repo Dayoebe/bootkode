@@ -16,6 +16,8 @@ use Livewire\Attributes\Layout;
 ])]
 class ReviewAnalytics extends Component
 {
+    use \App\Livewire\Concerns\AuthorizesCourseAuthoring;
+
     public $courseId = null;
     public $timeRange = 30; // days
     public $selectedMetric = 'rating';
@@ -27,6 +29,7 @@ class ReviewAnalytics extends Component
 
     public function render(ReviewAnalyticsService $analyticsService)
     {
+        $this->validate(['timeRange' => 'integer|between:1,366']);
         $user = Auth::user();
         
         // Get courses based on user role
@@ -43,7 +46,7 @@ class ReviewAnalytics extends Component
             $this->courseId = $courses->first()->id;
         }
 
-        $selectedCourse = $this->courseId ? Course::find($this->courseId) : null;
+        $selectedCourse = $this->courseId ? app(\App\Services\CourseAuthoringAccess::class)->course($this->courseId) : null;
         
         $data = [
             'courses' => $courses,

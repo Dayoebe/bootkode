@@ -10,6 +10,9 @@ use Livewire\Component;
 
 class QnaCriteriaManager extends Component
 {
+    use \App\Livewire\Concerns\AuthorizesCourseAuthoring;
+
+    #[\Livewire\Attributes\Locked]
     public $assessmentId;
     public $assessment;
     public $topics = [];
@@ -57,6 +60,7 @@ class QnaCriteriaManager extends Component
     public function mount($assessmentId)
     {
         $this->assessmentId = $assessmentId;
+        $this->authorizeAuthoringContext();
         $this->assessment = Assessment::findOrFail($assessmentId);
         $this->loadTopics();
         
@@ -273,7 +277,7 @@ class QnaCriteriaManager extends Component
         $this->validate();
 
         if ($this->editingTopic) {
-            $topic = Question::findOrFail($this->editingTopic['id']);
+            $topic = Question::where('assessment_id', $this->assessmentId)->findOrFail($this->editingTopic['id']);
             
             $qnaData = [
                 'topic_type' => $this->topicType,
@@ -304,7 +308,7 @@ class QnaCriteriaManager extends Component
 
     public function deleteTopic($topicId)
     {
-        Question::findOrFail($topicId)->delete();
+        Question::where('assessment_id', $this->assessmentId)->findOrFail($topicId)->delete();
         $this->loadTopics();
         
         session()->flash('success', 'Discussion topic deleted successfully!');
@@ -312,7 +316,7 @@ class QnaCriteriaManager extends Component
 
     public function duplicateTopic($topicId)
     {
-        $originalTopic = Question::findOrFail($topicId);
+        $originalTopic = Question::where('assessment_id', $this->assessmentId)->findOrFail($topicId);
         $duplicatedTopic = $originalTopic->replicate();
         $duplicatedTopic->question_text = $originalTopic->question_text . ' (Copy)';
         $duplicatedTopic->order = count($this->topics) + 1;
@@ -325,7 +329,7 @@ class QnaCriteriaManager extends Component
     public function reorderTopics($orderedIds)
     {
         foreach ($orderedIds as $index => $id) {
-            Question::where('id', $id)->update(['order' => $index + 1]);
+            Question::where('assessment_id', $this->assessmentId)->where('id', $id)->update(['order' => $index + 1]);
         }
         
         $this->loadTopics();

@@ -19,6 +19,8 @@ use Livewire\Attributes\On;
 ])]
 class MentorDashboard extends Component
 {
+    use \App\Livewire\Concerns\AuthorizesMentoring;
+
     public $activeTab = 'overview';
     public $profileId = null;
     public $isAvailable = true;
@@ -55,6 +57,7 @@ class MentorDashboard extends Component
     #[On('change-tab')]
     public function setActiveTab($tab)
     {
+        abort_unless(in_array($tab, ['overview', 'mentorships', 'sessions', 'code-reviews', 'profile', 'analytics'], true), 422);
         $this->activeTab = $tab;
     }
 

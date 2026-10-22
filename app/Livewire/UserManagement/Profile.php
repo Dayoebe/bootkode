@@ -266,7 +266,8 @@ class Profile extends Component
         ]);
 
         try {
-            $user = $this->user;
+            $user = Auth::user();
+            $user->delete();
             
             // Delete profile picture from Cloudinary if exists
             if ($user->profile_picture) {
@@ -276,12 +277,16 @@ class Profile extends Component
                 }
             }
             
-            Auth::logout();
-            $user->delete();
+            // The account no longer exists; normal logout would save a new remember token.
+            Auth::guard('web')->logoutCurrentDevice();
+            session()->invalidate();
+            session()->regenerateToken();
             
             session()->flash('message', 'Your account has been permanently deleted.');
             return redirect('/');
 
+        } catch (\DomainException $e) {
+            $this->addError('delete_confirmation', $e->getMessage());
         } catch (\Exception $e) {
             $this->dispatch('notify', 'Error deleting account: ' . $e->getMessage(), 'error');
         }
@@ -430,12 +435,14 @@ class Profile extends Component
             }
         }
 
+        $emailChanged = $this->user->email !== $this->email;
+        if ($emailChanged) {
+            $updateData['email_verified_at'] = null;
+        }
         $this->user->update($updateData);
 
         // Handle email verification if email changed
-        if ($this->user->email !== $this->email) {
-            $this->user->email_verified_at = null;
-            $this->user->save();
+        if ($emailChanged) {
             $this->user->sendEmailVerificationNotification();
         }
 

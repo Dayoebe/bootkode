@@ -54,140 +54,129 @@ class GamificationData extends Model
         return $this->hasMany(GamificationTransaction::class, 'user_id', 'user_id');
     }
 
-    // Level and Experience Methods
+    private function mutate(callable $callback)
+    {
+        return \Illuminate\Support\Facades\DB::transaction(function () use ($callback) {
+            User::whereKey($this->user_id)->lockForUpdate()->firstOrFail();
+            $fresh = static::whereKey($this->id)->lockForUpdate()->firstOrFail();
+            $this->setRawAttributes($fresh->getAttributes(), true);
+            return $callback();
+        });
+    }
+
+    private function requirePositive(int $amount): void
+    {
+        if ($amount <= 0) throw new \InvalidArgumentException('Reward amounts must be positive.');
+    }
+
     public function addExperience(int $xp, string $source = 'general')
     {
-        $this->experience_points += $xp;
-        $leveledUp = false;
-
-        while ($this->experience_points >= $this->experience_to_next_level) {
-            $this->experience_points -= $this->experience_to_next_level;
-            $this->level++;
-            $this->experience_to_next_level = $this->calculateNextLevelXP();
-            $leveledUp = true;
-
-            // Level up rewards
-            $this->addCoins($this->level * 10);
-            if ($this->level % 5 === 0) {
-                $this->addGems(5); // Bonus gems every 5 levels
+        $this->requirePositive($xp);
+        return $this->mutate(function () use ($xp, $source) {
+            $this->experience_points += $xp;
+            $this->experience_to_next_level = max(1, $this->experience_to_next_level);
+            $coins = $gems = 0;
+            $leveledUp = false;
+            while ($this->experience_points >= $this->experience_to_next_level) {
+                $this->experience_points -= $this->experience_to_next_level;
+                $this->level++;
+                $this->experience_to_next_level = $this->calculateNextLevelXP();
+                $coins += $this->level * 10;
+                if ($this->level % 5 === 0) $gems += 5;
+                $leveledUp = true;
             }
-        }
+            $this->save();
+            $this->logTransaction('earn', 'experience', $xp, $source, "Earned {$xp} XP from {$source}");
+            if ($coins) $this->addCoins($coins, 'level_up');
+            if ($gems) $this->addGems($gems, 'level_up');
+            return ['leveled_up' => $leveledUp, 'new_level' => $this->level];
+        });
+    }
 
-        $this->save();
-
-        // Log transaction
-        $this->logTransaction('earn', 'experience', $xp, $source, "Earned {$xp} XP from {$source}");
-
-        return ['leveled_up' => $leveledUp, 'new_level' => $this->level];
+    private function earn(string $field, int $amount, string $source)
+    {
+        $this->requirePositive($amount);
+        return $this->mutate(function () use ($field, $amount, $source) {
+            $this->{$field} += $amount;
+            $this->save();
+            $this->logTransaction('earn', $field, $amount, $source, "Earned {$amount} {$field} from {$source}");
+            return $this;
+        });
     }
 
     public function addPoints(int $points, string $source = 'general')
     {
-        $this->total_points += $points;
-        $this->save();
-        $this->logTransaction('earn', 'points', $points, $source, "Earned {$points} points from {$source}");
-        return $this;
+        return $this->earn('total_points', $points, $source);
     }
 
     public function addCoins(int $coins, string $source = 'general')
     {
-        $this->coins += $coins;
-        $this->save();
-        $this->logTransaction('earn', 'coins', $coins, $source, "Earned {$coins} coins from {$source}");
-        return $this;
+        return $this->earn('coins', $coins, $source);
     }
 
     public function addGems(int $gems, string $source = 'general')
     {
-        $this->gems += $gems;
-        $this->save();
-        $this->logTransaction('earn', 'gems', $gems, $source, "Earned {$gems} gems from {$source}");
-        return $this;
+        return $this->earn('gems', $gems, $source);
+    }
+
+    private function spend(string $field, int $amount, string $purpose): bool
+    {
+        $this->requirePositive($amount);
+        return $this->mutate(function () use ($field, $amount, $purpose) {
+            if ($this->{$field} < $amount) return false;
+            $this->{$field} -= $amount;
+            $this->save();
+            $this->logTransaction('spend', $field, $amount, $purpose, "Spent {$amount} {$field} on {$purpose}");
+            return true;
+        });
     }
 
     public function spendCoins(int $amount, string $purpose = 'purchase')
     {
-        if ($this->coins < $amount) {
-            return false;
-        }
-        $this->coins -= $amount;
-        $this->save();
-        $this->logTransaction('spend', 'coins', $amount, $purpose, "Spent {$amount} coins on {$purpose}");
-        return true;
+        return $this->spend('coins', $amount, $purpose);
     }
 
     public function spendGems(int $amount, string $purpose = 'purchase')
     {
-        if ($this->gems < $amount) {
-            return false;
-        }
-        $this->gems -= $amount;
-        $this->save();
-        $this->logTransaction('spend', 'gems', $amount, $purpose, "Spent {$amount} gems on {$purpose}");
-        return true;
+        return $this->spend('gems', $amount, $purpose);
     }
 
-    // Energy System
     public function updateEnergy()
     {
-        if (!$this->energy_last_updated) {
-            $this->energy_last_updated = now();
+        return $this->mutate(function () {
+            if (!$this->energy_last_updated) $this->energy_last_updated = now();
+            $units = max(0, (int) floor($this->energy_last_updated->diffInMinutes(now(), false) / 5));
+            $this->energy = min(100, max(0, $this->energy) + $units);
+            if ($this->energy >= 100) $this->energy_last_updated = now();
+            elseif ($units > 0) $this->energy_last_updated = $this->energy_last_updated->addMinutes($units * 5);
             $this->save();
-            return;
-        }
-
-        $minutesSinceUpdate = $this->energy_last_updated->diffInMinutes(now());
-        $energyToAdd = floor($minutesSinceUpdate / 5); // 1 energy per 5 minutes
-
-        if ($energyToAdd > 0) {
-            $this->energy = min(100, $this->energy + $energyToAdd);
-            $this->energy_last_updated = now();
-            $this->save();
-        }
+        });
     }
 
     public function useEnergy(int $amount = 1)
     {
-        $this->updateEnergy();
-        if ($this->energy >= $amount) {
+        $this->requirePositive($amount);
+        return $this->mutate(function () use ($amount) {
+            $this->updateEnergy();
+            if ($this->energy < $amount) return false;
             $this->energy -= $amount;
             $this->save();
             return true;
-        }
-        return false;
+        });
     }
 
-    // Streak Management
     public function updateStreak()
     {
-        $today = Carbon::today();
-        $lastActivity = $this->last_activity_date ? Carbon::parse($this->last_activity_date) : null;
-
-        if (!$lastActivity || $lastActivity->lt($today->copy()->subDay())) {
-            // Broke streak or first activity
-            if ($lastActivity && $lastActivity->eq($today->copy()->subDay())) {
-                // Consecutive day
-                $this->current_streak++;
-            } else {
-                // Reset streak
-                $this->current_streak = 1;
-            }
-        } elseif ($lastActivity->eq($today)) {
-            // Already active today
-            return;
-        }
-
-        $this->last_activity_date = $today;
-        $this->longest_streak = max($this->longest_streak, $this->current_streak);
-        $this->save();
-
-        // Streak rewards
-        if ($this->current_streak % 7 === 0) {
-            $this->addGems(2);
-        }
-        if ($this->current_streak % 30 === 0) {
-            $this->addGems(10);
-        }
+        return $this->mutate(function () {
+            $today = Carbon::today();
+            if ($this->last_activity_date && $this->last_activity_date->gte($today)) return;
+            $this->current_streak = $this->last_activity_date?->isYesterday() ? $this->current_streak + 1 : 1;
+            $this->longest_streak = max($this->longest_streak, $this->current_streak);
+            $this->last_activity_date = $today;
+            $this->save();
+            if ($this->current_streak % 7 === 0) $this->addGems(2, 'streak');
+            if ($this->current_streak % 30 === 0) $this->addGems(10, 'streak');
+        });
     }
 
     // Quest System
@@ -212,30 +201,26 @@ class GamificationData extends Model
 
     public function updateQuestProgress(string $questId, int $progress = 1)
     {
-        $quests = $this->daily_quests ?? [];
-
-        foreach ($quests as &$quest) {
-            if ($quest['id'] === $questId && $quest['progress'] < $quest['target']) {
+        $this->requirePositive($progress);
+        return $this->mutate(function () use ($questId, $progress) {
+            $quests = $this->daily_quests ?? [];
+            foreach ($quests as &$quest) {
+                if ($quest['id'] !== $questId || !empty($quest['completed'])) continue;
                 $quest['progress'] = min($quest['target'], $quest['progress'] + $progress);
-
-                // Check if quest completed
-                if ($quest['progress'] >= $quest['target'] && !isset($quest['completed'])) {
-                    $quest['completed'] = true;
-                    $quest['completed_at'] = now()->toISOString();
-
-                    // Award rewards
-                    $this->addCoins($quest['reward_coins'], 'daily_quest');
-                    $this->addExperience($quest['reward_xp'], 'daily_quest');
-
-                    return ['quest_completed' => true, 'quest' => $quest];
-                }
+                if ($quest['progress'] < $quest['target']) continue;
+                $quest['completed'] = true;
+                $quest['completed_at'] = now()->toISOString();
+                $completed = $quest;
             }
-        }
-
-        $this->daily_quests = $quests;
-        $this->save();
-
-        return ['quest_completed' => false];
+            unset($quest);
+            $this->daily_quests = $quests;
+            $this->save();
+            if (isset($completed)) {
+                if ($completed['reward_coins'] > 0) $this->addCoins($completed['reward_coins'], 'daily_quest');
+                if ($completed['reward_xp'] > 0) $this->addExperience($completed['reward_xp'], 'daily_quest');
+            }
+            return ['quest_completed' => isset($completed), 'quest' => $completed ?? null];
+        });
     }
 
     public function getProgressPercentageAttribute()
@@ -255,7 +240,7 @@ class GamificationData extends Model
         GamificationTransaction::create([
             'user_id' => $this->user_id,
             'transaction_type' => $type,
-            'currency_type' => $currency,
+            'currency_type' => $currency === 'total_points' ? 'points' : $currency,
             'amount' => $amount,
             'source' => $source,
             'description' => $description,

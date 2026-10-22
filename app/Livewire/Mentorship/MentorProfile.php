@@ -16,6 +16,8 @@ use Livewire\Attributes\Layout;
 ])]
 class MentorProfile extends Component
 {
+    use \App\Livewire\Concerns\AuthorizesMentoring;
+
     public $profileId = null;
     public $bio = '';
     public $specializations = [''];

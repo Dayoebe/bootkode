@@ -9,6 +9,9 @@ use Illuminate\Support\Str;
 
 class AssessmentManager extends Component
 {
+    use \App\Livewire\Concerns\AuthorizesCourseAuthoring;
+
+    #[\Livewire\Attributes\Locked]
     public $lessonId;
     public $lesson;
     public $assessments = [];
@@ -52,6 +55,7 @@ class AssessmentManager extends Component
     public function mount($lessonId)
     {
         $this->lessonId = $lessonId;
+        $this->authorizeAuthoringContext();
         $this->lesson = Lesson::findOrFail($lessonId);
         $this->loadAssessments();
     }
@@ -159,7 +163,7 @@ class AssessmentManager extends Component
 
     public function deleteAssessment($assessmentId)
     {
-        Assessment::findOrFail($assessmentId)->delete();
+        Assessment::where('lesson_id', $this->lessonId)->findOrFail($assessmentId)->delete();
         $this->loadAssessments();
         session()->flash('success', 'Assessment deleted successfully!');
     }
@@ -189,7 +193,7 @@ class AssessmentManager extends Component
         $this->validate();
 
         if ($this->selectedAssessment) {
-            $assessment = Assessment::findOrFail($this->selectedAssessment['id']);
+            $assessment = Assessment::where('lesson_id', $this->lessonId)->findOrFail($this->selectedAssessment['id']);
             $assessment->update([
                 'title' => $this->assessmentTitle,
                 'description' => $this->assessmentDescription,

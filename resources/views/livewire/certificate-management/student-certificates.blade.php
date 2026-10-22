@@ -165,7 +165,7 @@
                         </div>
                         <div class="flex justify-between">
                             <span class="text-themed-secondary">Completed:</span>
-                            <span class="text-themed-primary">{{ $certificate->completion_date->format('M j, Y') }}</span>
+                            <span class="text-themed-primary">{{ $certificate->completion_date?->format('M j, Y') ?? 'Not recorded' }}</span>
                         </div>
                         @if($certificate->approved_at)
                         <div class="flex justify-between">

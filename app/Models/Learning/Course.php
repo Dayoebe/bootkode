@@ -11,6 +11,8 @@ use App\Models\Learning\CourseReview; // UPDATED
 
 class Course extends Model
 {
+    use \App\Traits\PreservesCourseHistory;
+
     use HasFactory, HasRevenueSplit; // Use the trait
 
     protected $fillable = [
@@ -276,6 +278,20 @@ class Course extends Model
     public function isApproved()
     {
         return $this->is_approved;
+    }
+
+    public function scopePubliclyAvailable($query)
+    {
+        return $query->where('is_published', true)->where('is_approved', true)
+            ->where(fn ($q) => $q->whereNull('scheduled_publish_at')->orWhere('scheduled_publish_at', '<=', now()));
+    }
+
+    public function getThumbnailUrlAttribute(): string
+    {
+        $path = $this->thumbnail;
+        if (!$path) return asset('images/default-course.png');
+        if (preg_match('#^https?://#i', $path)) return $path;
+        return asset('storage/' . ltrim($path, '/'));
     }
 
     // Scopes

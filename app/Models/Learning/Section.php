@@ -6,6 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class Section extends Model
 {
+    use \App\Traits\PreservesCourseHistory;
+
+
     protected $fillable = ['course_id', 'title', 'description', 'order', 'type', 'is_locked'];
 
     public function course()

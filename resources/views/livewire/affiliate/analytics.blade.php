@@ -2,19 +2,19 @@
    <div class=" px-4 sm:px-6 lg:px-8 py-8">
     <!-- Header -->
     <div class="mb-8">
-        <div class="flex items-center justify-between">
+        <div class="flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-between">
             <div>
                 <h1 class="text-3xl font-bold text-gray-900">Performance Analytics</h1>
                 <p class="text-gray-600">Deep insights into your affiliate performance</p>
             </div>
-            <div class="flex items-center space-x-4">
-                <select wire:model.live="selectedPeriod" class="rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+            <div class="flex flex-wrap items-center gap-3">
+                <select aria-label="Analytics period" wire:model.live="selectedPeriod" class="rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
                     <option value="7">Last 7 days</option>
                     <option value="30">Last 30 days</option>
                     <option value="90">Last 90 days</option>
                     <option value="365">Last year</option>
                 </select>
-                <select wire:model.live="chartType" class="rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                <select aria-label="Analytics chart" wire:model.live="chartType" class="rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
                     <option value="commission">Commission Trends</option>
                     <option value="referrals">Referral Trends</option>
                 </select>

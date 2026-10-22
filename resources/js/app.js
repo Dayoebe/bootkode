@@ -1,41 +1,3 @@
-import Alpine from 'alpinejs';
-import persist from '@alpinejs/persist';
-import collapse from '@alpinejs/collapse';
-import Chart from 'chart.js/auto';
-import 'trix';
-import 'trix/dist/trix.css';
-import EditorJS from '@editorjs/editorjs';
-import Header from '@editorjs/header';
-import List from '@editorjs/list';
-
-Alpine.plugin(persist);
-Alpine.plugin(collapse);
-
-window.Chart = Chart;
-window.EditorJS = EditorJS;
-window.EditorJSHeader = Header;
-window.EditorJSList = List;
-
-// window.Alpine = Alpine;
-// Alpine.start();
-
-
-document.addEventListener('DOMContentLoaded', function() {
-    // Listen for bookmark events
-    Livewire.on('bookmarkUpdated', () => {
-        // You could update counters or other UI elements here
-        alert('Bookmark was updated');
-    });
-    
-    // For the login modal trigger
-    Livewire.on('show-login-modal', () => {
-        // Show your login modal
-        alert('Please login to save resources');
-        // Or trigger your auth modal component
-        // Livewire.emit('openModal', 'auth.login');
-    });
-});
-
 // Check online status
 function updateOnlineStatus() {
     const statusElement = document.getElementById('connection-status');
@@ -51,7 +13,7 @@ function updateOnlineStatus() {
         }
         
         // Show offline content notification
-        Livewire.dispatch('offline-mode-activated');
+        window.Livewire?.dispatch('offline-mode-activated');
     }
 }
 
@@ -60,18 +22,14 @@ window.addEventListener('offline', updateOnlineStatus);
 updateOnlineStatus();
 
 
-// Handle certificate downloads from Livewire events
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('livewire:initialized', () => {
+    Livewire.on('bookmarkUpdated', () => window.showNotification?.('Bookmark updated', 'success'));
+    Livewire.on('show-login-modal', () => window.showNotification?.('Sign in to save resources', 'info'));
     Livewire.on('download-certificate', (data) => {
-        // This will trigger the download method in the MyCertificates component
-        window.location.href = `/certificates/download/${data.certificateId}`;
+        const id = encodeURIComponent(data.certificateId);
+        window.location.href = `/certificates/download/${id}`;
     });
 });
-
-// QR Code Scanner
-import { Html5QrcodeScanner } from 'html5-qrcode';
-
-window.Html5QrcodeScanner = Html5QrcodeScanner;
 
 document.addEventListener('click', (e) => {
     if (e.target.closest('nav button, nav a') && 'vibrate' in navigator) {

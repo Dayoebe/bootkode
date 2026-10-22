@@ -193,11 +193,11 @@
 
     <!-- Renew License Modal -->
     @if($showRenewModal && $selectedInstitution)
-        <div class="fixed inset-0 bg-gray-600 dark:bg-black bg-opacity-50 dark:bg-opacity-70 overflow-y-auto h-full w-full z-50" wire:click="closeModals">
+        <div class="fixed inset-0 bg-gray-600 dark:bg-black bg-opacity-50 dark:bg-opacity-70 overflow-y-auto h-full w-full z-50" wire:click="closeModals" x-data="{ dialogOpen: true }" x-trap.inert.noscroll="dialogOpen" x-on:keydown.escape.window="dialogOpen = false; $wire.closeModals()" role="dialog" aria-modal="true" aria-label="License Management dialog" tabindex="-1">
             <div class="relative top-20 mx-auto p-5 border border-gray-200 dark:border-gray-700 w-11/12 md:w-1/2 shadow-lg rounded-md bg-white dark:bg-gray-800" wire:click.stop>
                 <div class="flex items-center justify-between pb-4 border-b border-gray-200 dark:border-gray-700">
                     <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Renew License</h3>
-                    <button wire:click="closeModals" class="text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300">
+                    <button aria-label="Close dialog" wire:click="closeModals" class="text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300">
                         <i class="fas fa-times text-xl"></i>
                     </button>
                 </div>
@@ -243,11 +243,11 @@
 
     <!-- Upgrade License Modal -->
     @if($showUpgradeModal && $selectedInstitution)
-        <div class="fixed inset-0 bg-gray-600 dark:bg-black bg-opacity-50 dark:bg-opacity-70 overflow-y-auto h-full w-full z-50" wire:click="closeModals">
+        <div class="fixed inset-0 bg-gray-600 dark:bg-black bg-opacity-50 dark:bg-opacity-70 overflow-y-auto h-full w-full z-50" wire:click="closeModals" x-data="{ dialogOpen: true }" x-trap.inert.noscroll="dialogOpen" x-on:keydown.escape.window="dialogOpen = false; $wire.closeModals()" role="dialog" aria-modal="true" aria-label="License Management dialog" tabindex="-1">
             <div class="relative top-20 mx-auto p-5 border border-gray-200 dark:border-gray-700 w-11/12 md:w-1/2 shadow-lg rounded-md bg-white dark:bg-gray-800" wire:click.stop>
                 <div class="flex items-center justify-between pb-4 border-b border-gray-200 dark:border-gray-700">
                     <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Upgrade License</h3>
-                    <button wire:click="closeModals" class="text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300">
+                    <button aria-label="Close dialog" wire:click="closeModals" class="text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300">
                         <i class="fas fa-times text-xl"></i>
                     </button>
                 </div>

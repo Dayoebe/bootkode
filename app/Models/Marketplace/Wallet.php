@@ -2,10 +2,10 @@
 
 namespace App\Models\Marketplace;
 
+use App\Models\Core\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use App\Models\Core\User;
 
 class Wallet extends Model
 {
@@ -16,18 +16,20 @@ class Wallet extends Model
         'pending_balance',
         'currency',
         'is_active',
-        'last_activity'
+        'last_activity',
     ];
 
     protected $casts = [
         'balance' => 'decimal:2',
         'pending_balance' => 'decimal:2',
         'is_active' => 'boolean',
-        'last_activity' => 'datetime'
+        'last_activity' => 'datetime',
     ];
 
     const TYPE_USER = 'user';
+
     const TYPE_INSTRUCTOR = 'instructor';
+
     const TYPE_PLATFORM = 'platform';
 
     public function user(): BelongsTo
@@ -45,71 +47,47 @@ class Wallet extends Model
         return $this->hasMany(Withdrawal::class);
     }
 
-    // Credit wallet balance
     public function credit(float $amount, string $category, string $description, $transactionable = null, array $metadata = []): WalletTransaction
     {
-        $balanceBefore = (float) ($this->balance ?? 0);
-        $balanceAfter = $balanceBefore + $amount;
-
-        $this->update([
-            'balance' => $balanceAfter,
-            'last_activity' => now()
-        ]);
-
-        $transactionData = [
-            'transaction_id' => \Str::uuid(),
-            'type' => 'credit',
-            'category' => $category,
-            'amount' => $amount,
-            'balance_before' => $balanceBefore,
-            'balance_after' => $balanceAfter,
-            'description' => $description,
-            'metadata' => $metadata,
-        ];
-
-        // Add polymorphic relationship if transactionable provided
-        if ($transactionable) {
-            $transactionData['transactionable_type'] = get_class($transactionable);
-            $transactionData['transactionable_id'] = $transactionable->id;
-        }
-
-        return $this->transactions()->create($transactionData);
+        return $this->recordMovement($amount, 'credit', $category, $description, $transactionable, $metadata);
     }
 
-    // Debit wallet balance
     public function debit(float $amount, string $category, string $description, $transactionable = null, array $metadata = []): WalletTransaction
     {
-        $balanceBefore = (float) ($this->balance ?? 0);
+        return $this->recordMovement($amount, 'debit', $category, $description, $transactionable, $metadata);
+    }
 
-        if ($balanceBefore < $amount) {
-            throw new \Exception('Insufficient wallet balance');
+    private function recordMovement(float $amount, string $type, string $category, string $description, $transactionable, array $metadata): WalletTransaction
+    {
+        if (! is_finite($amount) || $amount <= 0 || round($amount * 100) < 1) {
+            throw new \InvalidArgumentException('Wallet amount must be positive.');
         }
 
-        $balanceAfter = $balanceBefore - $amount;
+        return \Illuminate\Support\Facades\DB::transaction(function () use ($amount, $type, $category, $description, $transactionable, $metadata) {
+            $wallet = static::whereKey($this->getKey())->lockForUpdate()->firstOrFail();
+            if (! $wallet->is_active) {
+                throw new \DomainException('Wallet is inactive.');
+            }
+            // Compare integer minor units, including for callers holding a stale model.
+            $minorAmount = (int) round($amount * 100);
+            $before = (int) round((float) $wallet->balance * 100);
+            if ($type === 'debit' && $before < $minorAmount) {
+                throw new \DomainException('Insufficient wallet balance');
+            }
+            $after = $type === 'credit' ? $before + $minorAmount : $before - $minorAmount;
+            $wallet->update(['balance' => $after / 100, 'last_activity' => now()]);
+            $transaction = $wallet->transactions()->create([
+                'transaction_id' => (string) \Illuminate\Support\Str::uuid(),
+                'type' => $type, 'category' => $category, 'amount' => $minorAmount / 100,
+                'balance_before' => $before / 100, 'balance_after' => $after / 100,
+                'description' => $description, 'metadata' => $metadata,
+                'transactionable_type' => $transactionable?->getMorphClass(),
+                'transactionable_id' => $transactionable?->getKey(),
+            ]);
+            $this->setRawAttributes($wallet->getAttributes(), true);
 
-        $this->update([
-            'balance' => $balanceAfter,
-            'last_activity' => now()
-        ]);
-
-        $transactionData = [
-            'transaction_id' => \Str::uuid(),
-            'type' => 'debit',
-            'category' => $category,
-            'amount' => $amount,
-            'balance_before' => $balanceBefore,
-            'balance_after' => $balanceAfter,
-            'description' => $description,
-            'metadata' => $metadata,
-        ];
-
-        // Add polymorphic relationship if transactionable provided
-        if ($transactionable) {
-            $transactionData['transactionable_type'] = get_class($transactionable);
-            $transactionData['transactionable_id'] = $transactionable->id;
-        }
-
-        return $this->transactions()->create($transactionData);
+            return $transaction;
+        });
     }
 
     // Check if wallet has sufficient balance
@@ -121,7 +99,7 @@ class Wallet extends Model
     // Get formatted balance
     public function getFormattedBalanceAttribute(): string
     {
-        return '₦' . number_format((float) ($this->balance ?? 0), 2);
+        return '₦'.number_format((float) ($this->balance ?? 0), 2);
     }
 
     // Static method to get or create wallet

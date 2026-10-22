@@ -2,21 +2,18 @@
 
 namespace App\Livewire\Pages;
 
-use Livewire\Component;
-use Illuminate\Support\Facades\Auth;
-use PharIo\Manifest\Author;
+use App\Services\PublicCatalogService;
 use Livewire\Attributes\Layout;
+use Livewire\Component;
 
-#[Layout('layouts.app', ['title' => 'Home', 'description' => "Empowering Africa's youth with digital skills, mentorship & careers.", 'developer' => 'Bootkode', 'developer_url' => 'https://bootkode.com'])]
-
-
+#[Layout('layouts.app', ['title' => 'Learn. Build. Grow.', 'description' => 'Practical technology education for learners in Nigeria and beyond.'])]
 class Home extends Component
 {
-    /**
-     * Render the component view.
-     */
-    public function render()
+    public function render(PublicCatalogService $catalog)
     {
-        return view('livewire.pages.home');
+        return view('livewire.pages.home', [
+            'stats' => $catalog->statistics(),
+            'featuredCourses' => $catalog->courses()->latest('id')->limit(3)->get(),
+        ]);
     }
 }

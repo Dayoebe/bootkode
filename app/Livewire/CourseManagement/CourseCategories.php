@@ -13,6 +13,11 @@ use Illuminate\Support\Str;
 #[Layout('layouts.dashboard', ['title' => 'Course Categories', 'description' => 'Manage course categories including creation, editing, and deletion', 'icon' => 'fas fa-tags', 'active' => 'admin.course-categories'])]
 class CourseCategories extends Component
 {
+    public function boot(): void
+    {
+        abort_unless(auth()->user()?->hasAnyRole(['super_admin', 'academy_admin', 'content_editor']), 403);
+    }
+
     use WithPagination;
 
     #[Rule('required|string|max:255')]

@@ -13,6 +13,8 @@ use Illuminate\Support\Facades\DB;
 
 class MarketplaceVendor extends Component
 {
+    use \App\Livewire\Concerns\AuthorizesMarketplaceSelling;
+
     use WithPagination, WithFileUploads;
 
     // Internal navigation state
@@ -69,14 +71,24 @@ class MarketplaceVendor extends Component
         'thumbnail' => 'nullable|image|max:2048',
         'selectedCategories' => 'required|array|min:1',
         'selectedCategories.*' => 'exists:marketplace_categories,id',
-        'tags' => 'array',
+        'tags' => 'array|max:20',
+        'tags.*' => 'string|max:80',
+        'images' => 'array|max:10',
+        'images.*' => 'image|max:2048',
+        'files' => 'array|max:10',
+        'files.*' => 'file|max:10240',
+        'is_digital' => 'boolean',
+        'duration_minutes' => 'nullable|integer|min:1|max:525600',
+        'meta_title' => 'nullable|string|max:255',
+        'meta_description' => 'nullable|string|max:1000',
+        'keywords' => 'nullable|string|max:1000',
     ];
 
     public function mount()
     {
-        if (auth()->user()->marketplaceItems()->count() === 0) {
-            $this->currentView = 'create';
-        }
+        $route = request()->route()?->getName();
+        $this->currentView = in_array($route, ['marketplace.sell', 'marketplace.seller.create'], true) ? 'create' : 'listings';
+        if ($route === 'marketplace.seller.drafts') $this->status = MarketplaceItem::STATUS_DRAFT;
         $this->loadAnalytics();
     }
 
@@ -124,12 +136,10 @@ class MarketplaceVendor extends Component
         $this->keywords = $item->keywords ?? '';
         $this->duration_minutes = $item->duration_minutes;
         
-        // Safely get categories - handle null relationship
-        try {
-            $this->selectedCategories = $item->categories ? $item->categories->pluck('id')->toArray() : [];
-        } catch (\Exception $e) {
-            $this->selectedCategories = [];
-        }
+        $this->selectedCategories = $item->itemCategories()->pluck('marketplace_categories.id')->all();
+        $this->thumbnail = null;
+        $this->images = [];
+        $this->files = [];
         
         $this->currentView = 'create';
     }
@@ -191,50 +201,54 @@ class MarketplaceVendor extends Component
     {
         $this->validate();
 
-        $thumbnailPath = null;
-        if ($this->thumbnail) {
-            // Delete old thumbnail if editing
-            if ($this->editingItemId) {
-                $oldItem = $this->getItem($this->editingItemId);
-                if ($oldItem->thumbnail) {
-                    Storage::disk('public')->delete($oldItem->thumbnail);
-                }
+        // Resolve ownership before writing any uploaded file.
+        $existing = $this->editingItemId ? $this->getItem($this->editingItemId) : null;
+        abort_if($existing?->isApproved() && !auth()->user()->hasAnyRole(['super_admin', 'academy_admin']), 403);
+        $newPaths = [];
+        $oldThumbnail = $existing?->thumbnail;
+        try {
+            $thumbnailPath = $oldThumbnail;
+            if ($this->thumbnail) {
+                $thumbnailPath = $this->thumbnail->store('marketplace/thumbnails', 'public');
+                $newPaths[] = ['public', $thumbnailPath];
             }
-            $thumbnailPath = $this->thumbnail->store('marketplace/thumbnails', 'public');
+            $images = $existing?->images ?? [];
+            foreach ($this->images as $image) {
+                $path = $image->store('marketplace/images', 'public');
+                $newPaths[] = ['public', $path];
+                $images[] = ['path' => $path, 'name' => $image->getClientOriginalName()];
+            }
+            $files = $existing?->files ?? [];
+            foreach ($this->files as $file) {
+                $path = $file->store('private/marketplace/files', 'local');
+                $newPaths[] = ['local', $path];
+                $files[] = ['path' => $path, 'name' => $file->getClientOriginalName(), 'size' => $file->getSize()];
+            }
+            $itemData = [
+                'vendor_id' => auth()->id(), 'title' => $this->title, 'description' => $this->description,
+                'short_description' => $this->short_description, 'type' => $this->type, 'price' => $this->price,
+                'discount_price' => $this->discount_price, 'is_digital' => $this->is_digital, 'tags' => $this->tags,
+                'meta_title' => $this->meta_title ?: $this->title,
+                'meta_description' => $this->meta_description ?: $this->short_description, 'keywords' => $this->keywords,
+                'duration_minutes' => $this->duration_minutes, 'status' => MarketplaceItem::STATUS_DRAFT,
+                'thumbnail' => $thumbnailPath, 'images' => $images, 'files' => $files,
+            ];
+            $item = DB::transaction(function () use ($existing, $itemData) {
+                $item = $existing ?? new MarketplaceItem;
+                $item->fill($itemData)->save();
+                $item->categories()->sync($this->selectedCategories);
+                return $item;
+            });
+        } catch (\Throwable $exception) {
+            foreach ($newPaths as [$disk, $path]) {
+                Storage::disk($disk)->delete($path);
+            }
+            throw $exception;
         }
-
-        $itemData = [
-            'vendor_id' => auth()->id(),
-            'title' => $this->title,
-            'description' => $this->description,
-            'short_description' => $this->short_description,
-            'type' => $this->type,
-            'price' => $this->price,
-            'discount_price' => $this->discount_price,
-            'is_digital' => $this->is_digital,
-            'tags' => $this->tags,
-            'meta_title' => $this->meta_title ?: $this->title,
-            'meta_description' => $this->meta_description ?: $this->short_description,
-            'keywords' => $this->keywords,
-            'duration_minutes' => $this->duration_minutes,
-            'status' => MarketplaceItem::STATUS_DRAFT,
-        ];
-
-        if ($thumbnailPath) {
-            $itemData['thumbnail'] = $thumbnailPath;
+        if ($this->thumbnail && $oldThumbnail && $oldThumbnail !== $thumbnailPath) {
+            DB::afterCommit(fn () => Storage::disk('public')->delete($oldThumbnail));
         }
-
-        if ($this->editingItemId) {
-            $item = $this->getItem($this->editingItemId);
-            $item->update($itemData);
-            $message = 'Item updated successfully!';
-        } else {
-            $item = MarketplaceItem::create($itemData);
-            $message = 'Item created successfully!';
-        }
-
-        // Sync categories
-        $item->categories()->sync($this->selectedCategories);
+        $message = $existing ? 'Item updated successfully!' : 'Item created successfully!';
 
         session()->flash('message', $message);
         $this->showListings();
@@ -313,7 +327,7 @@ class MarketplaceVendor extends Component
         $newItem->save();
 
         // Copy categories
-        $newItem->categories()->sync($item->categories->pluck('id'));
+        $newItem->categories()->sync($item->itemCategories()->pluck('marketplace_categories.id'));
 
         session()->flash('message', 'Item duplicated successfully! You can now edit the copy.');
     }
@@ -419,7 +433,7 @@ class MarketplaceVendor extends Component
                         $newItem->slug = null;
                         $newItem->status = MarketplaceItem::STATUS_DRAFT;
                         $newItem->save();
-                        $newItem->categories()->sync($item->categories->pluck('id'));
+                        $newItem->categories()->sync($item->itemCategories()->pluck('marketplace_categories.id'));
                         $duplicated++;
                     }
                     session()->flash('message', "{$duplicated} items duplicated successfully.");

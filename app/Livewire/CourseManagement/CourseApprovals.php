@@ -14,6 +14,8 @@ use Illuminate\Support\Facades\Auth;
 #[Layout('layouts.dashboard', ['title' => 'Course Approvals', 'description' => 'Manage course approvals including approving and rejecting courses', 'icon' => 'fas fa-check-circle', 'active' => 'admin.course-approvals'])]
 class CourseApprovals extends Component
 {
+    use \App\Livewire\Concerns\AuthorizesPlatformAdministration;
+
     use WithPagination;
 
     public $search = '';

@@ -69,22 +69,7 @@ class GamificationController extends Controller
 
     public function playGame($gameId)
     {
-        $user = auth()->user();
-        $games = $this->gamificationService->getAvailableGames();
-        $game = collect($games)->firstWhere('id', $gameId);
-        
-        if (!$game) {
-            return redirect()->route('livewire.gamification.partial.gamification.games')->with('error', 'Game not found.');
-        }
-        
-        $energyStatus = $user->getEnergyStatus();
-        
-        if ($energyStatus['current'] < $game['energy_cost']) {
-            return redirect()->route('livewire.gamification.partial.gamification.games')
-                ->with('error', "Not enough energy! You need {$game['energy_cost']} energy to play this game.");
-        }
-        
-        return view('livewire.gamification.partial.gamification.games.' . $gameId, compact('game', 'energyStatus'));
+        abort(404, 'No server-verified game is published.');
     }
 
     public function purchaseItem(Request $request, $itemId)
@@ -125,9 +110,6 @@ class GamificationController extends Controller
         
         $result = $this->gamificationService->handleGameCompletion($user, $gameId, $score);
         
-        // Check for new achievements
-        $newBadges = $user->checkAllAchievements();
-        $result['new_badges'] = $newBadges;
         
         return response()->json($result);
     }
@@ -137,9 +119,6 @@ class GamificationController extends Controller
         $user = auth()->user();
         $result = $this->gamificationService->handleDailyLogin($user);
         
-        // Check for new achievements
-        $newBadges = $user->checkAllAchievements();
-        $result['new_badges'] = $newBadges;
         
         return response()->json($result);
     }

@@ -13,6 +13,8 @@ use Livewire\Attributes\Layout;
 #[Layout('layouts.dashboard')]
 class FinancialDashboard extends Component
 {
+    use \App\Livewire\Concerns\AuthorizesFinancialAdministration;
+
     use WithPagination;
 
     public $selectedTab = 'overview';
@@ -91,6 +93,7 @@ class FinancialDashboard extends Component
                 ->paginate(10);
 
             return view('livewire.financial.admin.financial-dashboard', [
+                'financialUnavailable' => false,
                 'revenueAnalytics' => $revenueAnalytics,
                 'paystackBalance' => $paystackBalance,
                 'pendingWithdrawals' => $pendingWithdrawals
@@ -104,6 +107,7 @@ class FinancialDashboard extends Component
 
             // Return a safe fallback
             return view('livewire.financial.admin.financial-dashboard', [
+                'financialUnavailable' => true,
                 'revenueAnalytics' => [
                     'total_course_sales' => 0,
                     'instructor_earnings' => 0,

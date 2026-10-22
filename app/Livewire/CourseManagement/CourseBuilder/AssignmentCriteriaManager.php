@@ -10,6 +10,9 @@ use Livewire\Component;
 
 class AssignmentCriteriaManager extends Component
 {
+    use \App\Livewire\Concerns\AuthorizesCourseAuthoring;
+
+    #[\Livewire\Attributes\Locked]
     public $assessmentId;
     public $assessment;
     public $questions = [];
@@ -59,6 +62,7 @@ class AssignmentCriteriaManager extends Component
     public function mount($assessmentId)
     {
         $this->assessmentId = $assessmentId;
+        $this->authorizeAuthoringContext();
         $this->assessment = Assessment::findOrFail($assessmentId);
         $this->loadQuestions();
         
@@ -241,7 +245,7 @@ class AssignmentCriteriaManager extends Component
         $this->validate();
 
         if ($this->editingQuestion) {
-            $question = Question::findOrFail($this->editingQuestion['id']);
+            $question = Question::where('assessment_id', $this->assessmentId)->findOrFail($this->editingQuestion['id']);
             
             $assignmentData = [
                 'assignment_type' => $this->questionType,
@@ -273,7 +277,7 @@ class AssignmentCriteriaManager extends Component
 
     public function deleteQuestion($questionId)
     {
-        Question::findOrFail($questionId)->delete();
+        Question::where('assessment_id', $this->assessmentId)->findOrFail($questionId)->delete();
         $this->loadQuestions();
         
         session()->flash('success', 'Assignment question deleted successfully!');
@@ -281,7 +285,7 @@ class AssignmentCriteriaManager extends Component
 
     public function duplicateQuestion($questionId)
     {
-        $originalQuestion = Question::findOrFail($questionId);
+        $originalQuestion = Question::where('assessment_id', $this->assessmentId)->findOrFail($questionId);
         $duplicatedQuestion = $originalQuestion->replicate();
         $duplicatedQuestion->question_text = $originalQuestion->question_text . ' (Copy)';
         $duplicatedQuestion->order = count($this->questions) + 1;
@@ -294,7 +298,7 @@ class AssignmentCriteriaManager extends Component
     public function reorderQuestions($orderedIds)
     {
         foreach ($orderedIds as $index => $id) {
-            Question::where('id', $id)->update(['order' => $index + 1]);
+            Question::where('assessment_id', $this->assessmentId)->where('id', $id)->update(['order' => $index + 1]);
         }
         
         $this->loadQuestions();

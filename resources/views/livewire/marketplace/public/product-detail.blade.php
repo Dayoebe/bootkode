@@ -96,7 +96,7 @@
                                         @foreach($selectedProduct->files as $file)
                                             <div class="flex items-center space-x-2 p-2 bg-gray-50 rounded">
                                                 <i class="fas fa-file text-gray-400"></i>
-                                                <span class="text-sm text-gray-700">{{ $file['name'] }}</span>
+                                                <span class="text-sm text-gray-700">{{ $file['name'] ?? 'Downloadable file' }}</span>
                                                 <span class="text-xs text-gray-500 ml-auto">
                                                     {{ number_format($file['size'] / 1024, 1) }}KB
                                                 </span>

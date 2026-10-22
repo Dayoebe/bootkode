@@ -10,6 +10,8 @@ use Livewire\Attributes\Layout;
 #[Layout('layouts.dashboard', ['title' => 'Affiliate Dashboard'])]
 class Dashboard extends Component
 {
+    use \App\Livewire\Concerns\RequiresAuthenticatedAccount;
+
     public $selectedPeriod = '30';
     
     private AffiliateService $affiliateService;

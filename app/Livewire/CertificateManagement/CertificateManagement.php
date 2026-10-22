@@ -15,6 +15,8 @@ use Livewire\Attributes\Title;
 #[Title('Certificate Management')]
 class CertificateManagement extends Component
 {
+    use \App\Livewire\Concerns\AuthorizesCertificateAdministration;
+
     use WithPagination;
 
     public $selectedCertificate;
@@ -99,6 +101,7 @@ class CertificateManagement extends Component
     {
         $this->selectedCertificate = Certificate::with(['user', 'course', 'approver', 'rejecter', 'revoker'])
             ->findOrFail($certificateId);
+        abort_unless($this->canManageCertificate($this->selectedCertificate), 403);
     }
 
     public function showApprovalModal($certificateId)

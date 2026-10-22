@@ -35,7 +35,6 @@ return [
             'link_id' => 'profile.view',
             'children' => [
                 ['label' => 'View Profile', 'icon' => 'fas fa-user', 'route_name' => 'profile.view', 'roles' => [], 'link_id' => 'profile.view',],
-                ['label' => 'Learning Analytics', 'icon' => 'fas fa-chart-line', 'route_name' => 'learning.analytics', 'roles' => [], 'link_id' => 'learning_analytics_dashboard'],
                 ['label' => 'Notifications', 'icon' => 'fas fa-bell', 'route_name' => 'notifications', 'roles' => [], 'link_id' => 'notifications',]
             ]
         ],
@@ -68,6 +67,7 @@ return [
                 ['label' => 'Create Course', 'icon' => 'fas fa-plus-circle', 'route_name' => ('create.course'), 'roles' => [User::ROLE_SUPER_ADMIN, User::ROLE_ACADEMY_ADMIN, User::ROLE_INSTRUCTOR], 'link_id' => 'create-course',],
                 ['label' => 'Course Builder', 'icon' => 'fas fa-puzzle-piece', 'route_name' => ('all-course'), 'roles' => [User::ROLE_INSTRUCTOR, User::ROLE_ACADEMY_ADMIN], 'link_id' => 'all-course'],
                 ['label' => 'Course Categories', 'icon' => 'fas fa-tags', 'route_name' => ('course-categories'), 'roles' => [User::ROLE_SUPER_ADMIN, User::ROLE_ACADEMY_ADMIN, User::ROLE_CONTENT_EDITOR], 'link_id' => 'course-categories',],
+                ['label' => 'Assessment Reviews', 'icon' => 'fas fa-clipboard-check', 'route_name' => 'assessment.reviews', 'roles' => [User::ROLE_INSTRUCTOR, User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN], 'link_id' => 'assessment.reviews'],
                 ['label' => 'Review Analytics', 'icon' => 'fas fa-chart-bar', 'route_name' => 'review-analytics', 'roles' => [User::ROLE_INSTRUCTOR, User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN], 'link_id' => 'review-analytics'],
                 ['label' => 'Course Reviews', 'icon' => 'fas fa-star', 'route_name' => ('course-reviews'), 'roles' => [User::ROLE_SUPER_ADMIN, User::ROLE_ACADEMY_ADMIN, User::ROLE_INSTRUCTOR], 'link_id' => 'course-reviews',],
                 ['label' => 'Quality Control', 'icon' => 'fas fa-clipboard-check', 'route_name' => 'course-quality.control', 'roles' => [User::ROLE_SUPER_ADMIN, User::ROLE_ACADEMY_ADMIN, User::ROLE_CONTENT_EDITOR], 'link_id' => 'course-quality.control'],
@@ -242,7 +242,7 @@ return [
                 ['label' => 'All Orders', 'icon' => 'fas fa-boxes', 'route_name' => 'marketplace.orders', 'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN], 'link_id' => 'marketplace.orders'],
                 ['label' => 'Payments & Payouts', 'icon' => 'fas fa-wallet', 'route_name' => 'marketplace.payments', 'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN], 'link_id' => 'marketplace.payments'],
                 ['label' => 'Promotions & Discounts', 'icon' => 'fas fa-bullhorn', 'route_name' => 'marketplace.promotions', 'roles' => [User::ROLE_CONTENT_EDITOR, User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN], 'link_id' => 'marketplace.promotions'],
-                ['label' => 'Reviews & Ratings', 'icon' => 'fas fa-star', 'route_name' => 'marketplace.reviews', 'roles' => [], 'link_id' => 'marketplace.reviews'],
+                ['label' => 'Reviews & Ratings', 'icon' => 'fas fa-star', 'route_name' => 'marketplace.reviews', 'roles' => [User::ROLE_SUPER_ADMIN, User::ROLE_ACADEMY_ADMIN, User::ROLE_CONTENT_EDITOR], 'link_id' => 'marketplace.reviews'],
                 ['label' => 'Marketplace Analytics', 'icon' => 'fas fa-chart-line', 'route_name' => 'marketplace.analytics', 'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN], 'link_id' => 'marketplace.analytics'],
                 ['label' => 'Marketplace Settings', 'icon' => 'fas fa-cog', 'route_name' => 'marketplace.settings', 'roles' => [User::ROLE_SUPER_ADMIN, User::ROLE_ACADEMY_ADMIN], 'link_id' => 'marketplace.settings'],
             ]
@@ -302,10 +302,10 @@ return [
             ]
         ],
         [
-            'label' => 'Gamification',
+            'label' => 'Learning rewards',
             'icon' => 'fas fa-gamepad',
             'route_name' => '#',
-            'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN],
+            'roles' => [],
             'link_id' => 'gamification',
             'children' => [
                 ['label' => 'Dashboard', 'icon' => 'fas fa-tachometer-alt', 'route_name' => 'gamification.dashboard', 'roles' => [], 'link_id' => 'gamification.dashboard'],
@@ -315,7 +315,6 @@ return [
                 ['label' => 'Rewards Store', 'icon' => 'fas fa-gift', 'route_name' => 'gamification.store', 'roles' => [], 'link_id' => 'gamification.store'],
                 // Play a specific game requires a gameId param; keep as a helper entry if you resolve the param when rendering:
                 // ['label' => 'Play Game', 'icon' => 'fas fa-play', 'route_name' => 'gamification.games.play', 'roles' => [], 'link_id' => 'gamification.games.play'],
-                ['label' => 'Achievement Settings', 'icon' => 'fas fa-cog', 'route_name' => '#', 'roles' => [], 'link_id' => 'gamification.settings'],
             ]
         ],
 

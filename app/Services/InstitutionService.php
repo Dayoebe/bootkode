@@ -28,6 +28,7 @@ class InstitutionService
      */
     public function createInstitution(array $data, $logoFile = null): Institution
     {
+        abort_unless(auth()->user()?->hasAnyRole(['super_admin', 'academy_admin']), 403);
         return DB::transaction(function () use ($data, $logoFile) {
             // Handle logo upload
             $logoPath = null;
@@ -42,7 +43,7 @@ class InstitutionService
                     'name' => explode('@', $data['admin_email'])[0],
                     'email' => $data['admin_email'],
                     'password' => bcrypt(Str::random(16)), // Temporary password
-                    'role' => User::ROLE_ACADEMY_ADMIN
+                    'role' => User::ROLE_STUDENT
                 ]);
                 
                 // Send welcome email
@@ -76,12 +77,14 @@ class InstitutionService
      */
     public function updateInstitution(Institution $institution, array $data, $logoFile = null): Institution
     {
+        abort_unless(auth()->user()?->hasAnyRole(['super_admin', 'academy_admin']), 403);
         return DB::transaction(function () use ($institution, $data, $logoFile) {
             // Handle logo upload
             if ($logoFile) {
                 // Delete old logo
                 if ($institution->logo) {
-                    Storage::disk('public')->delete($institution->logo);
+                    $previousLogo = $institution->logo;
+                    DB::afterCommit(fn () => Storage::disk('public')->delete($previousLogo));
                 }
                 $data['logo'] = $logoFile->store('institution-logos', 'public');
             }
@@ -94,7 +97,7 @@ class InstitutionService
                         'name' => explode('@', $data['admin_email'])[0],
                         'email' => $data['admin_email'],
                         'password' => bcrypt(\Str::random(16)),
-                        'role' => User::ROLE_ACADEMY_ADMIN
+                        'role' => User::ROLE_STUDENT
                     ]);
                 }
                 
@@ -121,6 +124,10 @@ class InstitutionService
      */
     public function processBulkEnrollment(Institution $institution, $filePath, array $courses, array $settings = []): BulkEnrollmentBatch
     {
+        abort_unless(auth()->user()?->hasAnyRole(['super_admin', 'academy_admin']), 403);
+        if (Course::publiclyAvailable()->whereIn('id', $courses)->count() !== count(array_unique($courses))) {
+            throw \Illuminate\Validation\ValidationException::withMessages(['selectedCourses' => 'Choose currently available courses.']);
+        }
         [$absolutePath, $storedPath] = $this->normalizeEnrollmentFilePath($filePath);
 
         if (! file_exists($absolutePath)) {
@@ -166,6 +173,7 @@ class InstitutionService
         $institution->updateUserCount();
         $institution->ensureCanAddUsers($this->countNewInstitutionUsersFromRows($institution, $userData));
 
+        abort_unless(auth()->user()?->hasAnyRole(['super_admin', 'academy_admin']), 403);
         $results = [
             'successful' => 0,
             'failed' => 0,
@@ -182,7 +190,7 @@ class InstitutionService
                             'name' => $data['name'] ?? explode('@', $data['email'])[0],
                             'email' => $data['email'],
                             'password' => bcrypt(\Str::random(16)),
-                            'role' => $data['role'] ?? User::ROLE_STUDENT
+                            'role' => User::ROLE_STUDENT
                         ]);
                     }
 
@@ -218,6 +226,11 @@ class InstitutionService
      */
     public function enrollUsersInCourses(Institution $institution, array $courseIds, array $userIds = null): array
     {
+        abort_unless(auth()->user()?->hasAnyRole(['super_admin', 'academy_admin']), 403);
+        $availableIds = Course::publiclyAvailable()->whereIn('id', $courseIds)->pluck('id')->all();
+        if (count(array_unique($courseIds)) !== count($availableIds)) {
+            throw \Illuminate\Validation\ValidationException::withMessages(['courses' => 'Choose currently available courses.']);
+        }
         $results = [
             'successful' => 0,
             'failed' => 0,
@@ -226,7 +239,7 @@ class InstitutionService
 
         // Get users to enroll
         $users = $userIds 
-            ? $institution->users()->whereIn('user_id', $userIds)->pluck('user_id')
+            ? $institution->users()->where('status', 'active')->whereIn('user_id', $userIds)->pluck('user_id')
             : $institution->users()->where('status', 'active')->pluck('user_id');
 
         foreach ($users as $userId) {
@@ -260,6 +273,8 @@ class InstitutionService
 
     public function inviteInstitutionAdmin(Institution $institution, array $data): InstitutionInvitation
     {
+        abort_unless(auth()->user()?->hasAnyRole(['super_admin', 'academy_admin']), 403);
+        \Illuminate\Support\Facades\Validator::make($data, ['email' => 'required|email', 'role' => 'sometimes|in:admin,instructor,student,observer', 'expires_in_days' => 'sometimes|integer|min:1|max:30'])->validate();
         $role = $data['role'] ?? 'admin';
         $email = strtolower(trim($data['email']));
         $name = trim($data['name'] ?? '') ?: Str::before($email, '@');
@@ -275,7 +290,7 @@ class InstitutionService
                 $institution->ensureCanAddUsers();
             }
 
-            $userRole = $this->mapInstitutionRoleToUserRole($role);
+            $userRole = User::ROLE_STUDENT;
 
             if (! $user) {
                 $user = User::create([
@@ -283,10 +298,7 @@ class InstitutionService
                     'email' => $email,
                     'password' => bcrypt(Str::random(32)),
                     'role' => $userRole,
-                    'email_verified_at' => now(),
                 ]);
-            } elseif ($this->shouldPromoteUserForInstitutionRole($user, $userRole)) {
-                $user->update(['role' => $userRole]);
             }
 
             $membershipIsAlreadyActive = $existingMember && ! $existingMember->trashed() && $existingMember->status === 'active';
@@ -657,29 +669,4 @@ class InstitutionService
             ->count();
     }
 
-    private function mapInstitutionRoleToUserRole(string $role): string
-    {
-        return match ($role) {
-            'admin' => User::ROLE_ACADEMY_ADMIN,
-            'instructor' => User::ROLE_INSTRUCTOR,
-            default => User::ROLE_STUDENT,
-        };
-    }
-
-    private function shouldPromoteUserForInstitutionRole(User $user, string $role): bool
-    {
-        if ($user->isSuperAdmin()) {
-            return false;
-        }
-
-        if ($role === User::ROLE_ACADEMY_ADMIN) {
-            return ! $user->isAcademyAdmin();
-        }
-
-        if ($role === User::ROLE_INSTRUCTOR) {
-            return $user->isStudent();
-        }
-
-        return false;
-    }
 }

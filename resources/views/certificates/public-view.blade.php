@@ -1,3 +1,8 @@
+@php
+    $snapshot = $certificate->metadata['template_snapshot']['settings'] ?? null;
+    $design = is_array($snapshot) ? \App\Models\Credentials\CertificateTemplate::safeSettings($snapshot) : [];
+    $isPreview = $isPreview ?? false;
+@endphp
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -5,12 +10,12 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Certificate - {{ $certificate->certificate_number }}</title>
-    
+
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Playfair+Display:wght@400;600;700&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
-    
+
     <style>
         * {
             margin: 0;
@@ -24,9 +29,9 @@
         }
 
         body {
-            font-family: 'Montserrat', -apple-system, BlinkMacSystemFont, sans-serif;
+            font-family: '{{ $design['bodyFont'] ?? 'Montserrat' }}', -apple-system, BlinkMacSystemFont, sans-serif;
             line-height: 1.4;
-            color: #1a1a1a;
+            color: {{ $design['textColor'] ?? '#1a1a1a' }};
             background: #ffffff;
             font-size: 14pt;
         }
@@ -40,7 +45,7 @@
             .certificate-wrapper {
                 box-shadow: 0 25px 80px rgba(0, 0, 0, 0.4);
                 border-radius: 4px;
-                overflow: hidden;
+                overflow: auto;
             }
             .action-buttons {
                 max-width: 297mm;
@@ -62,7 +67,7 @@
                 font-family: -apple-system, BlinkMacSystemFont, sans-serif;
             }
             .btn-print {
-                background: linear-gradient(135deg, #1a1a1a 0%, #3a3a3a 100%);
+                background: linear-gradient(135deg, {{ $design['textColor'] ?? '#1a1a1a' }} 0%, #3a3a3a 100%);
             }
             .btn-print:hover {
                 background: linear-gradient(135deg, #2a2a2a 0%, #4a4a4a 100%);
@@ -70,7 +75,7 @@
                 box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
             }
             .btn-download {
-                background: linear-gradient(135deg, #b8860b 0%, #daa520 100%);
+                background: linear-gradient(135deg, {{ $design['accentColor'] ?? '#b8860b' }} 0%, #daa520 100%);
             }
             .btn-download:hover {
                 background: linear-gradient(135deg, #daa520 0%, #ffd700 100%);
@@ -99,8 +104,8 @@
             width: 297mm;
             height: 210mm;
             position: relative;
-            background: linear-gradient(to bottom, #fdfdfb 0%, #f9f8f5 100%);
-            border: 12px solid #b8860b;
+            background: {{ $design['backgroundColor'] ?? 'linear-gradient(to bottom, #fdfdfb 0%, #f9f8f5 100%)' }};
+            border: 12px solid {{ $design['borderColor'] ?? '#b8860b' }};
             box-shadow: inset 0 0 0 2px #daa520;
             overflow: hidden;
         }
@@ -113,7 +118,7 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background-image: 
+            background-image:
                 radial-gradient(circle at 20% 30%, rgba(184, 134, 11, 0.15) 0%, transparent 40%),
                 radial-gradient(circle at 80% 70%, rgba(218, 165, 32, 0.15) 0%, transparent 40%),
                 radial-gradient(circle at 50% 50%, rgba(255, 215, 0, 0.08) 0%, transparent 50%),
@@ -130,7 +135,7 @@
             margin: 8px;
             padding: 12px 30px 10px 30px;
             height: calc(100% - 16px);
-            background: linear-gradient(to bottom, #ffffff 0%, #fefdfb 50%, #faf9f6 100%);
+            background: {{ $design['backgroundColor'] ?? 'linear-gradient(to bottom, #ffffff 0%, #fefdfb 50%, #faf9f6 100%)' }};
             position: relative;
             display: flex;
             flex-direction: column;
@@ -138,11 +143,11 @@
         }
 
         .gold-accent {
-            color: #b8860b;
+            color: {{ $design['accentColor'] ?? '#b8860b' }};
         }
 
         .shimmer {
-            background: linear-gradient(120deg, #b8860b 0%, #daa520 50%, #ffd700 75%, #daa520 100%);
+            background: linear-gradient(120deg, {{ $design['accentColor'] ?? '#b8860b' }} 0%, #daa520 50%, #ffd700 75%, #daa520 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
@@ -161,7 +166,7 @@
             text-align: center;
             z-index: 0;
             transform: rotate(-25deg);
-            font-family: 'Playfair Display', serif;
+            font-family: '{{ $design['headerFont'] ?? 'Playfair Display' }}', serif;
             letter-spacing: 10pt;
         }
 
@@ -170,7 +175,7 @@
             width: 60px;
             height: 60px;
             border-style: solid;
-            border-color: #b8860b;
+            border-color: {{ $design['accentColor'] ?? '#b8860b' }};
             opacity: 0.4;
         }
 
@@ -217,7 +222,7 @@
         }
 
         .ribbon-front {
-            background: linear-gradient(135deg, #b8860b 0%, #daa520 50%, #b8860b 100%);
+            background: linear-gradient(135deg, {{ $design['accentColor'] ?? '#b8860b' }} 0%, #daa520 50%, {{ $design['accentColor'] ?? '#b8860b' }} 100%);
             height: 70px;
             width: 80px;
             position: relative;
@@ -307,14 +312,14 @@
 
         .ribbon-left {
             left: 10px;
-            background: linear-gradient(to bottom, #b8860b 0%, #8b6914 100%);
+            background: linear-gradient(to bottom, {{ $design['accentColor'] ?? '#b8860b' }} 0%, #8b6914 100%);
             clip-path: polygon(0 0, 100% 0, 50% 100%);
             box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
         }
 
         .ribbon-right {
             right: 10px;
-            background: linear-gradient(to bottom, #b8860b 0%, #8b6914 100%);
+            background: linear-gradient(to bottom, {{ $design['accentColor'] ?? '#b8860b' }} 0%, #8b6914 100%);
             clip-path: polygon(0 0, 100% 0, 50% 100%);
             box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
         }
@@ -331,7 +336,7 @@
             width: 60px;
             height: 60px;
             margin: 0 auto 6px;
-            background: linear-gradient(135deg, #b8860b 0%, #daa520 50%, #b8860b 100%);
+            background: linear-gradient(135deg, {{ $design['accentColor'] ?? '#b8860b' }} 0%, #daa520 50%, {{ $design['accentColor'] ?? '#b8860b' }} 100%);
             border-radius: 50%;
             border: 3px solid #8b7355;
             box-shadow: 0 2px 8px rgba(184, 134, 11, 0.3), inset 0 1px 3px rgba(255, 255, 255, 0.3);
@@ -344,17 +349,17 @@
         .institution-name {
             font-size: 16pt;
             font-weight: 700;
-            color: #1a1a1a;
+            color: {{ $design['textColor'] ?? '#1a1a1a' }};
             letter-spacing: 4pt;
             text-transform: uppercase;
             margin-bottom: 4px;
-            font-family: 'Montserrat', sans-serif;
+            font-family: '{{ $design['bodyFont'] ?? 'Montserrat' }}', sans-serif;
         }
 
         .gold-divider {
             width: 100px;
             height: 3px;
-            background: linear-gradient(to right, transparent, #b8860b, #daa520, #b8860b, transparent);
+            background: linear-gradient(to right, transparent, {{ $design['accentColor'] ?? '#b8860b' }}, #daa520, {{ $design['accentColor'] ?? '#b8860b' }}, transparent);
             margin: 0 auto 3px;
             box-shadow: 0 1px 2px rgba(184, 134, 11, 0.3);
         }
@@ -365,7 +370,7 @@
             font-weight: 500;
             text-transform: uppercase;
             letter-spacing: 2pt;
-            font-family: 'Montserrat', sans-serif;
+            font-family: '{{ $design['bodyFont'] ?? 'Montserrat' }}', sans-serif;
         }
 
         .certificate-title {
@@ -379,12 +384,12 @@
         .certificate-title h1 {
             font-size: 44pt;
             font-weight: 300;
-            background: linear-gradient(135deg, #b8860b 0%, #daa520 40%, #ffd700 50%, #daa520 60%, #b8860b 100%);
+            background: linear-gradient(135deg, {{ $design['accentColor'] ?? '#b8860b' }} 0%, #daa520 40%, #ffd700 50%, #daa520 60%, {{ $design['accentColor'] ?? '#b8860b' }} 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
             margin-bottom: 3px;
-            font-family: 'Playfair Display', 'Garamond', serif;
+            font-family: '{{ $design['headerFont'] ?? 'Playfair Display' }}', 'Garamond', serif;
             letter-spacing: 6pt;
             text-shadow: 0 2px 4px rgba(184, 134, 11, 0.1);
         }
@@ -392,7 +397,7 @@
         .title-divider {
             width: 180px;
             height: 2px;
-            background: linear-gradient(to right, transparent, #b8860b 20%, #daa520 50%, #b8860b 80%, transparent);
+            background: linear-gradient(to right, transparent, {{ $design['accentColor'] ?? '#b8860b' }} 20%, #daa520 50%, {{ $design['accentColor'] ?? '#b8860b' }} 80%, transparent);
             margin: 0 auto 3px;
         }
 
@@ -400,7 +405,7 @@
             font-size: 14pt;
             color: #5a5a5a;
             font-style: italic;
-            font-family: 'Playfair Display', serif;
+            font-family: '{{ $design['headerFont'] ?? 'Playfair Display' }}', serif;
             font-weight: 400;
             letter-spacing: 1.5pt;
         }
@@ -418,19 +423,19 @@
             font-size: 10pt;
             color: #3a3a3a;
             margin-bottom: 5px;
-            font-family: 'Montserrat', sans-serif;
+            font-family: '{{ $design['bodyFont'] ?? 'Montserrat' }}', sans-serif;
             font-weight: 400;
         }
 
         .recipient-name {
             font-size: 32pt;
             font-weight: 400;
-            background: linear-gradient(135deg, #8b7355 0%, #b8860b 30%, #daa520 50%, #b8860b 70%, #8b7355 100%);
+            background: linear-gradient(135deg, #8b7355 0%, {{ $design['accentColor'] ?? '#b8860b' }} 30%, #daa520 50%, {{ $design['accentColor'] ?? '#b8860b' }} 70%, #8b7355 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
             margin: 6px 0;
-            border-bottom: 2px solid #b8860b;
+            border-bottom: 2px solid {{ $design['accentColor'] ?? '#b8860b' }};
             display: inline-block;
             padding: 0 20px 3px 20px;
             font-family: 'Great Vibes', cursive;
@@ -441,7 +446,7 @@
             margin: 6px auto;
             padding: 10px 18px;
             background: linear-gradient(135deg, #fefdfb 0%, #faf9f6 100%);
-            border-left: 4px solid #b8860b;
+            border-left: 4px solid {{ $design['accentColor'] ?? '#b8860b' }};
             border-right: 1px solid #daa520;
             max-width: 600px;
             box-shadow: 0 2px 8px rgba(184, 134, 11, 0.1);
@@ -450,9 +455,9 @@
         .course-title {
             font-size: 20pt;
             font-weight: 600;
-            color: #1a1a1a;
+            color: {{ $design['textColor'] ?? '#1a1a1a' }};
             margin-bottom: 4px;
-            font-family: 'Playfair Display', serif;
+            font-family: '{{ $design['headerFont'] ?? 'Playfair Display' }}', serif;
             line-height: 1.3;
             word-wrap: break-word;
         }
@@ -470,7 +475,7 @@
             font-weight: 400;
             color: #5a5a5a;
             margin-bottom: 4px;
-            font-family: 'Montserrat', sans-serif;
+            font-family: '{{ $design['bodyFont'] ?? 'Montserrat' }}', sans-serif;
             line-height: 1.3;
             word-wrap: break-word;
             font-style: italic;
@@ -478,7 +483,7 @@
 
         .grade-badge {
             display: inline-block;
-            background: linear-gradient(135deg, #b8860b 0%, #daa520 100%);
+            background: linear-gradient(135deg, {{ $design['accentColor'] ?? '#b8860b' }} 0%, #daa520 100%);
             color: #ffffff;
             padding: 6px 20px;
             border-radius: 20px;
@@ -486,7 +491,7 @@
             font-size: 11pt;
             margin-top: 5px;
             border: 2px solid #ffd700;
-            font-family: 'Montserrat', sans-serif;
+            font-family: '{{ $design['bodyFont'] ?? 'Montserrat' }}', sans-serif;
             box-shadow: 0 2px 6px rgba(184, 134, 11, 0.3);
             letter-spacing: 0.5pt;
         }
@@ -501,7 +506,7 @@
         .details-row {
             text-align: center;
             margin-bottom: 5px;
-            font-family: 'Montserrat', sans-serif;
+            font-family: '{{ $design['bodyFont'] ?? 'Montserrat' }}', sans-serif;
         }
 
         .detail-inline {
@@ -512,21 +517,21 @@
 
         .detail-label {
             font-weight: 600;
-            color: #b8860b;
+            color: {{ $design['accentColor'] ?? '#b8860b' }};
             text-transform: uppercase;
             letter-spacing: 1pt;
         }
 
         .detail-value {
             font-weight: 600;
-            color: #1a1a1a;
+            color: {{ $design['textColor'] ?? '#1a1a1a' }};
         }
 
         .signatures {
             width: 100%;
             margin-top: 5px;
             padding-top: 6px;
-            border-top: 2px solid #b8860b;
+            border-top: 2px solid {{ $design['accentColor'] ?? '#b8860b' }};
         }
 
         .signatures table {
@@ -543,30 +548,30 @@
 
         .signature-name {
             font-weight: 600;
-            color: #1a1a1a;
+            color: {{ $design['textColor'] ?? '#1a1a1a' }};
             font-size: 11pt;
             margin-bottom: 2px;
-            font-family: 'Montserrat', sans-serif;
+            font-family: '{{ $design['bodyFont'] ?? 'Montserrat' }}', sans-serif;
         }
 
         .signature-title {
             font-size: 8pt;
-            color: #b8860b;
+            color: {{ $design['accentColor'] ?? '#b8860b' }};
             text-transform: uppercase;
             letter-spacing: 1pt;
             font-weight: 500;
-            font-family: 'Montserrat', sans-serif;
+            font-family: '{{ $design['bodyFont'] ?? 'Montserrat' }}', sans-serif;
         }
 
         .verification-section {
             background: linear-gradient(135deg, #fefdfb 0%, #faf9f6 100%);
-            border: 2px solid #b8860b;
+            border: 2px solid {{ $design['accentColor'] ?? '#b8860b' }};
             border-radius: 4px;
             border-bottom: none;
             padding: 5px 8px;
             margin-top: auto;
-            max-height: 100px; 
-            overflow: hidden; 
+            max-height: 100px;
+            overflow: hidden;
             position: relative;
             z-index: 1;
             flex-shrink: 0;
@@ -590,11 +595,11 @@
         .verification-header {
             font-size: 11pt;
             font-weight: 700;
-            color: #1a1a1a;
+            color: {{ $design['textColor'] ?? '#1a1a1a' }};
             text-transform: uppercase;
             letter-spacing: 1pt;
             margin-bottom: 3px;
-            font-family: 'Montserrat', sans-serif;
+            font-family: '{{ $design['bodyFont'] ?? 'Montserrat' }}', sans-serif;
         }
 
         .verification-item {
@@ -602,7 +607,7 @@
             padding: 2px 5px;
             margin-bottom: 2px;
             font-size: 9pt;
-            font-family: 'Montserrat', sans-serif;
+            font-family: '{{ $design['bodyFont'] ?? 'Montserrat' }}', sans-serif;
             line-height: 1.3;
             border-left: 2px solid #daa520;
             max-height: 100px;
@@ -611,14 +616,14 @@
 
         .verification-label {
             font-weight: 600;
-            color: #b8860b;
+            color: {{ $design['accentColor'] ?? '#b8860b' }};
             text-transform: uppercase;
             letter-spacing: 0.5pt;
             display: inline;
         }
 
         .verification-value {
-            color: #1a1a1a;
+            color: {{ $design['textColor'] ?? '#1a1a1a' }};
             font-weight: 500;
             word-wrap: break-word;
         }
@@ -632,17 +637,17 @@
         .qr-section-title {
             font-size: 7.5pt;
             font-weight: 700;
-            color: #1a1a1a;
+            color: {{ $design['textColor'] ?? '#1a1a1a' }};
             text-transform: uppercase;
             letter-spacing: 0.5pt;
             margin-bottom: 4px;
-            font-family: 'Montserrat', sans-serif;
+            font-family: '{{ $design['bodyFont'] ?? 'Montserrat' }}', sans-serif;
         }
 
         .qr-code {
             width: 75px;
             height: 75px;
-            border: 3px solid #b8860b;
+            border: 3px solid {{ $design['accentColor'] ?? '#b8860b' }};
             background: #ffffff;
             padding: 2px;
             box-shadow: 0 2px 6px rgba(184, 134, 11, 0.2);
@@ -651,14 +656,14 @@
         .qr-placeholder {
             width: 75px;
             height: 75px;
-            border: 3px solid #b8860b;
+            border: 3px solid {{ $design['accentColor'] ?? '#b8860b' }};
             background: #ffffff;
             text-align: center;
             padding: 12px 4px;
             font-size: 6.5pt;
             color: #8b7355;
             line-height: 1.2;
-            font-family: 'Montserrat', sans-serif;
+            font-family: '{{ $design['bodyFont'] ?? 'Montserrat' }}', sans-serif;
             box-shadow: 0 2px 6px rgba(184, 134, 11, 0.2);
         }
 
@@ -673,7 +678,7 @@
             display: inline-block;
             width: 30px;
             height: 5px;
-            background: linear-gradient(to right, transparent, #b8860b, transparent);
+            background: linear-gradient(to right, transparent, {{ $design['accentColor'] ?? '#b8860b' }}, transparent);
             margin: 0 8px;
             vertical-align: middle;
         }
@@ -683,7 +688,7 @@
             color: #8b7355;
             text-transform: uppercase;
             letter-spacing: 1pt;
-            font-family: 'Montserrat', sans-serif;
+            font-family: '{{ $design['bodyFont'] ?? 'Montserrat' }}', sans-serif;
             font-weight: 500;
         }
 
@@ -693,13 +698,13 @@
             left: 0;
             right: 0;
             height: 8px;
-            background: linear-gradient(to right, 
-                transparent 0%, 
-                #b8860b 10%, 
-                #daa520 30%, 
-                #ffd700 50%, 
-                #daa520 70%, 
-                #b8860b 90%, 
+            background: linear-gradient(to right,
+                transparent 0%,
+                {{ $design['accentColor'] ?? '#b8860b' }} 10%,
+                #daa520 30%,
+                #ffd700 50%,
+                #daa520 70%,
+                {{ $design['accentColor'] ?? '#b8860b' }} 90%,
                 transparent 100%);
             opacity: 0.3;
         }
@@ -716,7 +721,7 @@
         }
     </style>
 
-    @if(!isset($isPdf) || !$isPdf)
+    @if((!isset($isPdf) || !$isPdf) && !$isPreview)
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -734,8 +739,8 @@
     @endif
 </head>
 <body>
-    
-    @if(!isset($isPdf) || !$isPdf)
+
+    @if((!isset($isPdf) || !$isPdf) && !$isPreview)
     <div class="action-buttons no-print">
         <button onclick="window.print()" class="btn btn-print">
             <i class="fas fa-print"></i> Print Certificate
@@ -749,11 +754,11 @@
     <div class="certificate-wrapper">
         <div class="certificate-container">
             <div class="inner-border">
-                
+
                 <div class="gold-border-accent"></div>
                 <div class="embossed-seal"></div>
-                
-                <div class="watermark">CERTIFIED</div>
+
+                <div class="watermark">{{ $isPreview ? 'DESIGN PREVIEW' : 'CERTIFIED' }}</div>
 
                 <div class="corner-ornament corner-tl"></div>
                 <div class="corner-ornament corner-tr"></div>
@@ -792,18 +797,18 @@
                 <div class="details-signatures-wrapper">
                     <div class="details-row">
                         <div class="detail-inline">
-                            <span class="detail-label">Completed:</span> 
-                            <span class="detail-value">{{ $certificate->completion_date->format('F j, Y') }}</span>
+                            <span class="detail-label">Completed:</span>
+                            <span class="detail-value">{{ $certificate->completion_date?->format('F j, Y') ?? 'Not recorded' }}</span>
                         </div>
                         @if($certificate->credits)
                         <div class="detail-inline">
-                            <span class="detail-label">Credits:</span> 
+                            <span class="detail-label">Credits:</span>
                             <span class="detail-value">{{ $certificate->credits }}</span>
                         </div>
                         @endif
                         <div class="detail-inline">
-                            <span class="detail-label">Issued:</span> 
-                            <span class="detail-value">{{ $certificate->issued_date->format('F j, Y') }}</span>
+                            <span class="detail-label">Issued:</span>
+                            <span class="detail-value">{{ $certificate->issued_date?->format('F j, Y') ?? ($isPreview ? 'Not issued' : 'Not recorded') }}</span>
                         </div>
                     </div>
 
@@ -846,10 +851,10 @@
                                 @php
                                     $qrBase64 = null;
                                     if ($certificate->qr_code_path) {
-                                        $qrPath = storage_path('app/public/' . $certificate->qr_code_path);
-                                        if (file_exists($qrPath) && is_file($qrPath)) {
+                                        $qrDisk = \Illuminate\Support\Facades\Storage::disk(config('certificate.storage.disk', 'public'));
+                                        if ($qrDisk->exists($certificate->qr_code_path)) {
                                             try {
-                                                $qrBase64 = base64_encode(file_get_contents($qrPath));
+                                                $qrBase64 = base64_encode($qrDisk->get($certificate->qr_code_path));
                                             } catch (\Exception $e) {
                                                 \Log::error('QR Code embed error: ' . $e->getMessage());
                                             }
@@ -861,11 +866,11 @@
                                     <img src="data:image/png;base64,{{ $qrBase64 }}" class="qr-code" alt="QR Code">
                                 @else
                                     <div class="qr-placeholder">
-                                        <div style="font-size: 16pt; color: #b8860b;">&#9733;</div>
+                                        <div style="font-size: 16pt; color: {{ $design['accentColor'] ?? '#b8860b' }};">&#9733;</div>
                                         <div>SCAN TO<br>VERIFY</div>
                                     </div>
                                 @endif
-                                
+
                             </td>
                         </tr>
                     </table>
@@ -873,15 +878,15 @@
 
                 <div class="footer">
                     <span class="footer-ornament"></span>
-                    <span style="color: #b8860b; font-size: 15pt;">&#10086;</span>
+                    <span style="color: {{ $design['accentColor'] ?? '#b8860b' }}; font-size: 15pt;">&#10086;</span>
                     <span class="footer-ornament"></span>
-                    <div class="footer-text">Authenticated & Verified</div>
+                    <div class="footer-text">{{ $isPreview ? 'Design preview only' : 'Authenticated & Verified' }}</div>
                 </div>
             </div>
         </div>
     </div>
 
-    @if(!isset($isPdf) || !$isPdf)
+    @if((!isset($isPdf) || !$isPdf) && !$isPreview)
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
     @endif
 </body>

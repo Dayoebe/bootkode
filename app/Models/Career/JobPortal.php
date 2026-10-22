@@ -631,6 +631,25 @@ class JobPortal extends Model
         );
     }
 
+    public function applicationDestination(): Attribute
+    {
+        return Attribute::make(get: function () {
+            if ($this->application_method === 'email' && filter_var($this->application_email, FILTER_VALIDATE_EMAIL)) {
+                return 'mailto:'.$this->application_email;
+            }
+            if ($this->application_method === 'phone' && preg_match('/^\+?[0-9 ()-]{5,30}$/D', $this->application_phone ?? '')) {
+                return 'tel:'.preg_replace('/[^+0-9]/', '', $this->application_phone);
+            }
+            if ($this->application_method === 'external_link'
+                && filter_var($this->application_url, FILTER_VALIDATE_URL)
+                && in_array(strtolower(parse_url($this->application_url, PHP_URL_SCHEME) ?? ''), ['https', 'http'], true)) {
+                return $this->application_url;
+            }
+
+            return null;
+        });
+    }
+
     public function companyLogoUrl(): Attribute
     {
         return Attribute::make(

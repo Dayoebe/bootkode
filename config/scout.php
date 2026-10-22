@@ -16,7 +16,7 @@ return [
     |
     */
 
-    'driver' => env('SCOUT_DRIVER', 'algolia'),
+    'driver' => env('SCOUT_DRIVER', env('ALGOLIA_APP_ID') && env('ALGOLIA_SECRET') ? 'algolia' : 'collection'),
 
     /*
     |--------------------------------------------------------------------------

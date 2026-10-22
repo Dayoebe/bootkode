@@ -122,11 +122,11 @@
 
     <!-- Edit Settings Modal -->
     @if($showEditModal && $selectedInstitution)
-        <div class="fixed inset-0 bg-gray-600 dark:bg-black bg-opacity-50 dark:bg-opacity-70 overflow-y-auto h-full w-full z-50" wire:click="closeModal">
+        <div class="fixed inset-0 bg-gray-600 dark:bg-black bg-opacity-50 dark:bg-opacity-70 overflow-y-auto h-full w-full z-50" wire:click="closeModal" x-data="{ dialogOpen: true }" x-trap.inert.noscroll="dialogOpen" x-on:keydown.escape.window="dialogOpen = false; $wire.closeModal()" role="dialog" aria-modal="true" aria-label="Whitelabel Settings dialog" tabindex="-1">
             <div class="relative top-10 mx-auto p-5 border border-gray-200 dark:border-gray-700 w-11/12 md:w-3/4 lg:w-2/3 shadow-lg rounded-md bg-white dark:bg-gray-800 max-h-screen overflow-y-auto" wire:click.stop>
                 <div class="flex items-center justify-between pb-4 border-b border-gray-200 dark:border-gray-700 sticky top-0 bg-white dark:bg-gray-800 z-10">
                     <h3 class="text-lg font-semibold text-gray-900 dark:text-white">White-label Settings - {{ $selectedInstitution->name }}</h3>
-                    <button wire:click="closeModal" class="text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300">
+                    <button aria-label="Close dialog" wire:click="closeModal" class="text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300">
                         <i class="fas fa-times text-xl"></i>
                     </button>
                 </div>

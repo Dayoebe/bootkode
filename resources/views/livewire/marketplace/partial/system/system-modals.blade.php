@@ -53,11 +53,11 @@
                         </div>
 
                         <!-- Categories -->
-                        @if($selectedItem->categories->count() > 0)
+                        @if($selectedItem->itemCategories->count() > 0)
                             <div class="mt-4">
                                 <p class="text-sm font-medium text-gray-700 mb-2">Categories:</p>
                                 <div class="flex flex-wrap gap-1">
-                                    @foreach($selectedItem->categories as $category)
+                                    @foreach($selectedItem->itemCategories as $category)
                                         <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-800">
                                             {{ $category->name }}
                                         </span>

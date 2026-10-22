@@ -16,6 +16,8 @@ use Livewire\Attributes\Title;
 #[Title('Certificate Analytics')]
 class CertificateAnalytics extends Component
 {
+    use \App\Livewire\Concerns\AuthorizesCertificateAdministration;
+
     public $dateRange = '30';
     public $selectedCourse = 'all';
 

@@ -1,177 +1,14 @@
-<div class="min-h-screen bg-themed-primary transition-colors duration-300 p-4 md:p-6">
-    <!-- Header Section -->
-    <div class="mb-8">
-        <div class="bg-themed-secondary rounded-2xl shadow-sm border border-themed-primary p-6 relative overflow-hidden transition-colors duration-300">
-            <!-- Background decoration -->
-            <div class="absolute top-0 right-0 w-32 h-32 bg-blue-100 dark:bg-blue-900/20 rounded-full -translate-y-8 translate-x-8 opacity-50 transition-colors duration-300"></div>
-
-            <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center space-y-4 lg:space-y-0 relative">
-                <div>
-                    <h1 class="text-3xl font-bold text-themed-primary flex items-center transition-colors duration-300">
-                        <i class="fas fa-graduation-cap text-blue-600 dark:text-blue-400 mr-3"></i>
-                        Welcome back, {{ auth()->user()->name }}!
-                    </h1>
-                    <p class="text-themed-secondary mt-1 transition-colors duration-300">Ready to continue your learning journey?</p>
-
-                    @if($this->quickStats['study_streak'] > 0)
-                        <div class="mt-3 inline-flex items-center bg-orange-100 dark:bg-orange-900/30 text-orange-800 dark:text-orange-300 px-3 py-1 rounded-full text-sm font-medium transition-colors duration-300">
-                            <i class="fas fa-fire mr-2"></i>
-                            {{ $this->quickStats['study_streak'] }} day study streak!
-                        </div>
-                    @endif
-                </div>
-
-                <div class="flex flex-wrap items-center gap-3">
-                    <!-- Level Badge -->
-                    <div class="bg-gradient-to-r from-purple-600 to-blue-600 dark:from-purple-500 dark:to-blue-500 text-white px-4 py-2 rounded-lg font-medium transition-all duration-300">
-                        <i class="fas fa-star mr-2"></i>
-                        Level {{ $this->quickStats['current_level'] }}
-                    </div>
-
-                    <!-- Points Badge -->
-                    <div class="bg-gradient-to-r from-yellow-500 to-orange-500 text-white px-4 py-2 rounded-lg font-medium transition-all duration-300">
-                        <i class="fas fa-coins mr-2"></i>
-                        {{ number_format($this->quickStats['total_points']) }} pts
-                    </div>
-
-                    <!-- Timeframe Selector -->
-                    <div class="flex bg-themed-tertiary rounded-lg p-1 transition-colors duration-300">
-                        @foreach(['7days' => '7d', '30days' => '30d'] as $value => $label)
-                            <button wire:click="updateTimeframe('{{ $value }}')"
-                                class="px-3 py-1 rounded-md text-sm font-medium transition-all duration-200 {{ $selectedTimeframe === $value ? 'bg-themed-secondary text-blue-600 dark:text-blue-400 shadow-sm' : 'text-themed-secondary hover:text-themed-primary' }}">
-                                {{ $label }}
-                            </button>
-                        @endforeach
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Quick Stats Grid -->
-    @if($showWidgets['quick_stats'])
-        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6 mb-8">
-            <!-- Enrolled Courses -->
-            <div class="bg-themed-secondary rounded-xl shadow-sm border border-themed-primary p-4 lg:p-6 hover:shadow-md dark:hover:shadow-xl transition-all duration-200">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <p class="text-sm text-themed-secondary font-medium transition-colors duration-300">Enrolled</p>
-                        <h3 class="text-2xl font-bold text-themed-primary mt-1 transition-colors duration-300">{{ $this->quickStats['enrolled_courses'] }}</h3>
-                        <p class="text-xs text-green-600 dark:text-green-400 font-medium transition-colors duration-300">{{ $this->quickStats['completed_courses'] }} completed</p>
-                    </div>
-                    <div class="bg-blue-100 dark:bg-blue-900/30 p-3 rounded-full transition-colors duration-300">
-                        <i class="fas fa-book text-blue-600 dark:text-blue-400 text-xl"></i>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Certificates -->
-            <div class="bg-themed-secondary rounded-xl shadow-sm border border-themed-primary p-4 lg:p-6 hover:shadow-md dark:hover:shadow-xl transition-all duration-200">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <p class="text-sm text-themed-secondary font-medium transition-colors duration-300">Certificates</p>
-                        <h3 class="text-2xl font-bold text-themed-primary mt-1 transition-colors duration-300">{{ $this->quickStats['certificates_earned'] }}</h3>
-                        <p class="text-xs text-purple-600 dark:text-purple-400 font-medium transition-colors duration-300">earned</p>
-                    </div>
-                    <div class="bg-purple-100 dark:bg-purple-900/30 p-3 rounded-full transition-colors duration-300">
-                        <i class="fas fa-certificate text-purple-600 dark:text-purple-400 text-xl"></i>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Average Score -->
-            <div class="bg-themed-secondary rounded-xl shadow-sm border border-themed-primary p-4 lg:p-6 hover:shadow-md dark:hover:shadow-xl transition-all duration-200">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <p class="text-sm text-themed-secondary font-medium transition-colors duration-300">Avg Score</p>
-                        <h3 class="text-2xl font-bold text-themed-primary mt-1 transition-colors duration-300">{{ number_format($this->quickStats['average_score'], 1) }}%</h3>
-                        <p class="text-xs text-yellow-600 dark:text-yellow-400 font-medium transition-colors duration-300">assessments</p>
-                    </div>
-                    <div class="bg-yellow-100 dark:bg-yellow-900/30 p-3 rounded-full transition-colors duration-300">
-                        <i class="fas fa-chart-line text-yellow-600 dark:text-yellow-400 text-xl"></i>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Study Time -->
-            <div class="bg-themed-secondary rounded-xl shadow-sm border border-themed-primary p-4 lg:p-6 hover:shadow-md dark:hover:shadow-xl transition-all duration-200">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <p class="text-sm text-themed-secondary font-medium transition-colors duration-300">Study Time</p>
-                        <h3 class="text-2xl font-bold text-themed-primary mt-1 transition-colors duration-300">{{ $this->quickStats['total_study_hours'] }}h</h3>
-                        <p class="text-xs text-green-600 dark:text-green-400 font-medium transition-colors duration-300">total</p>
-                    </div>
-                    <div class="bg-green-100 dark:bg-green-900/30 p-3 rounded-full transition-colors duration-300">
-                        <i class="fas fa-clock text-green-600 dark:text-green-400 text-xl"></i>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Achievements -->
-            <div class="bg-themed-secondary rounded-xl shadow-sm border border-themed-primary p-4 lg:p-6 hover:shadow-md dark:hover:shadow-xl transition-all duration-200">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <p class="text-sm text-themed-secondary font-medium transition-colors duration-300">Achievements</p>
-                        <h3 class="text-2xl font-bold text-themed-primary mt-1 transition-colors duration-300">{{ $this->quickStats['achievements_unlocked'] }}</h3>
-                        <p class="text-xs text-indigo-600 dark:text-indigo-400 font-medium transition-colors duration-300">unlocked</p>
-                    </div>
-                    <div class="bg-indigo-100 dark:bg-indigo-900/30 p-3 rounded-full transition-colors duration-300">
-                        <i class="fas fa-trophy text-indigo-600 dark:text-indigo-400 text-xl"></i>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Pending Tasks -->
-            <div class="bg-themed-secondary rounded-xl shadow-sm border border-themed-primary p-4 lg:p-6 hover:shadow-md dark:hover:shadow-xl transition-all duration-200">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <p class="text-sm text-themed-secondary font-medium transition-colors duration-300">Pending</p>
-                        <h3 class="text-2xl font-bold text-themed-primary mt-1 transition-colors duration-300">{{ $this->quickStats['pending_assessments'] }}</h3>
-                        <p class="text-xs text-red-600 dark:text-red-400 font-medium transition-colors duration-300">assessments</p>
-                    </div>
-                    <div class="bg-red-100 dark:bg-red-900/30 p-3 rounded-full transition-colors duration-300">
-                        <i class="fas fa-tasks text-red-600 dark:text-red-400 text-xl"></i>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Lessons Completed -->
-            <div class="bg-themed-secondary rounded-xl shadow-sm border border-themed-primary p-4 lg:p-6 hover:shadow-md dark:hover:shadow-xl transition-all duration-200">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <p class="text-sm text-themed-secondary font-medium transition-colors duration-300">Lessons</p>
-                        <h3 class="text-2xl font-bold text-themed-primary mt-1 transition-colors duration-300">{{ $this->quickStats['lessons_completed'] }}</h3>
-                        <p class="text-xs text-teal-600 dark:text-teal-400 font-medium transition-colors duration-300">completed</p>
-                    </div>
-                    <div class="bg-teal-100 dark:bg-teal-900/30 p-3 rounded-full transition-colors duration-300">
-                        <i class="fas fa-check-circle text-teal-600 dark:text-teal-400 text-xl"></i>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Wishlist -->
-            <div class="bg-themed-secondary rounded-xl shadow-sm border border-themed-primary p-4 lg:p-6 hover:shadow-md dark:hover:shadow-xl transition-all duration-200">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <p class="text-sm text-themed-secondary font-medium transition-colors duration-300">Wishlist</p>
-                        <h3 class="text-2xl font-bold text-themed-primary mt-1 transition-colors duration-300">{{ $this->quickStats['wishlist_count'] }}</h3>
-                        <p class="text-xs text-pink-600 dark:text-pink-400 font-medium transition-colors duration-300">courses saved</p>
-                    </div>
-                    <div class="bg-pink-100 dark:bg-pink-900/30 p-3 rounded-full transition-colors duration-300">
-                        <i class="fas fa-heart text-pink-600 dark:text-pink-400 text-xl"></i>
-                    </div>
-                </div>
-            </div>
-        </div>
-    @endif
-
+<div class="space-y-6">
+    <x-ui.page-header title="Your learning workspace" description="Continue your courses, review your progress and find your next useful step.">
+        <x-slot:actions><a href="{{ route('student.enrolled-courses') }}" class="bk-button bk-button-primary">My courses</a><a href="{{ route('student.course-catalog') }}" class="bk-button bk-button-secondary">Find a course</a></x-slot:actions>
+    </x-ui.page-header>
     <!-- Main Content Grid -->
     <div class="grid grid-cols-1 xl:grid-cols-3 gap-8">
         <!-- Left Column (2/3 width) -->
         <div class="xl:col-span-2 space-y-8">
             <!-- Learning Progress -->
             @if($showWidgets['learning_progress'])
-                <div class="bg-themed-secondary rounded-xl shadow-sm border border-themed-primary p-6 transition-colors duration-300">
+                <div class="bg-themed-secondary rounded-lg shadow-sm border border-themed-primary p-6 transition-colors duration-300">
                     <div class="flex items-center justify-between mb-6">
                         <h2 class="text-xl font-bold text-themed-primary transition-colors duration-300">Continue Learning</h2>
                         <a href="{{ route('student.enrolled-courses') }}" class="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 text-sm font-medium transition-colors duration-300">
@@ -206,7 +43,7 @@
 
                                         <!-- Progress bar -->
                                         <div class="w-full bg-themed-tertiary rounded-full h-2 mt-2 transition-colors duration-300">
-                                            <div class="bg-gradient-to-r from-blue-500 to-purple-500 h-2 rounded-full transition-all duration-300" style="width: {{ $progress['progress'] }}%"></div>
+                                            <div class="bg-brand h-2 rounded-full transition-all duration-300" style="width: {{ $progress['progress'] }}%"></div>
                                         </div>
 
                                         <div class="flex items-center justify-between mt-2">
@@ -217,12 +54,12 @@
                                         </div>
 
                                         @if($progress['next_lesson'])
-                                            <div class="mt-3 flex items-center justify-between">
+                                            <div class="mt-3 flex flex-col items-start gap-3 sm:flex-row sm:items-center sm:justify-between">
                                                 <p class="text-sm text-themed-primary transition-colors duration-300">
                                                     <i class="fas fa-play-circle text-blue-500 mr-1"></i>
                                                     Next: {{ $progress['next_lesson']['title'] }}
                                                 </p>
-                                                <a href="{{ route('course.view', ['course' => $progress['slug']]) }}" class="text-sm bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 text-white px-4 py-1 rounded-md transition-colors">
+                                                <a href="{{ route('course.view', ['course' => $progress['slug']]) }}" class="bk-button bk-button-primary shrink-0">
                                                     Continue
                                                 </a>
                                             </div>
@@ -234,7 +71,7 @@
                             <div class="text-center py-12">
                                 <i class="fas fa-book-open text-themed-tertiary text-4xl mb-3"></i>
                                 <p class="text-themed-secondary mb-4 transition-colors duration-300">No active courses</p>
-                                <a href="{{ route('student.course-catalog') }}" class="inline-block bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 text-white px-6 py-2 rounded-lg transition-colors">
+                                <a href="{{ route('student.course-catalog') }}" class="bk-button bk-button-primary">
                                     Browse Courses
                                 </a>
                             </div>
@@ -243,9 +80,127 @@
                 </div>
             @endif
 
+    <!-- Quick Stats Grid -->
+    @if($showWidgets['quick_stats'])
+        <div class="grid grid-cols-2 xl:grid-cols-4 gap-4 lg:gap-6 mb-8">
+            <!-- Enrolled Courses -->
+            <div class="bg-themed-secondary rounded-lg shadow-sm border border-themed-primary p-4 lg:p-6 hover:shadow-md dark:hover:shadow-xl transition-all duration-200">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm text-themed-secondary font-medium transition-colors duration-300">Enrolled</p>
+                        <h3 class="text-2xl font-bold text-themed-primary mt-1 transition-colors duration-300">{{ $this->quickStats['enrolled_courses'] }}</h3>
+                        <p class="text-xs text-green-600 dark:text-green-400 font-medium transition-colors duration-300">{{ $this->quickStats['completed_courses'] }} completed</p>
+                    </div>
+                    <div class="bg-blue-100 dark:bg-blue-900/30 p-3 rounded-full transition-colors duration-300">
+                        <i class="fas fa-book text-blue-600 dark:text-blue-400 text-xl"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Certificates -->
+            <div class="bg-themed-secondary rounded-lg shadow-sm border border-themed-primary p-4 lg:p-6 hover:shadow-md dark:hover:shadow-xl transition-all duration-200">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm text-themed-secondary font-medium transition-colors duration-300">Certificates</p>
+                        <h3 class="text-2xl font-bold text-themed-primary mt-1 transition-colors duration-300">{{ $this->quickStats['certificates_earned'] }}</h3>
+                        <p class="text-xs text-purple-600 dark:text-purple-400 font-medium transition-colors duration-300">earned</p>
+                    </div>
+                    <div class="bg-purple-100 dark:bg-purple-900/30 p-3 rounded-full transition-colors duration-300">
+                        <i class="fas fa-certificate text-purple-600 dark:text-purple-400 text-xl"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Average Score -->
+            <div class="bg-themed-secondary rounded-lg shadow-sm border border-themed-primary p-4 lg:p-6 hover:shadow-md dark:hover:shadow-xl transition-all duration-200">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm text-themed-secondary font-medium transition-colors duration-300">Avg Score</p>
+                        <h3 class="text-2xl font-bold text-themed-primary mt-1 transition-colors duration-300">{{ number_format($this->quickStats['average_score'], 1) }}%</h3>
+                        <p class="text-xs text-yellow-600 dark:text-yellow-400 font-medium transition-colors duration-300">assessments</p>
+                    </div>
+                    <div class="bg-yellow-100 dark:bg-yellow-900/30 p-3 rounded-full transition-colors duration-300">
+                        <i class="fas fa-chart-line text-yellow-600 dark:text-yellow-400 text-xl"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Study Time -->
+            <div class="bg-themed-secondary rounded-lg shadow-sm border border-themed-primary p-4 lg:p-6 hover:shadow-md dark:hover:shadow-xl transition-all duration-200">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm text-themed-secondary font-medium transition-colors duration-300">Study Time</p>
+                        <h3 class="text-2xl font-bold text-themed-primary mt-1 transition-colors duration-300">{{ $this->quickStats['total_study_hours'] }}h</h3>
+                        <p class="text-xs text-green-600 dark:text-green-400 font-medium transition-colors duration-300">total</p>
+                    </div>
+                    <div class="bg-green-100 dark:bg-green-900/30 p-3 rounded-full transition-colors duration-300">
+                        <i class="fas fa-clock text-green-600 dark:text-green-400 text-xl"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Achievements -->
+            <div class="bg-themed-secondary rounded-lg shadow-sm border border-themed-primary p-4 lg:p-6 hover:shadow-md dark:hover:shadow-xl transition-all duration-200">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm text-themed-secondary font-medium transition-colors duration-300">Achievements</p>
+                        <h3 class="text-2xl font-bold text-themed-primary mt-1 transition-colors duration-300">{{ $this->quickStats['achievements_unlocked'] }}</h3>
+                        <p class="text-xs text-indigo-600 dark:text-indigo-400 font-medium transition-colors duration-300">unlocked</p>
+                    </div>
+                    <div class="bg-indigo-100 dark:bg-indigo-900/30 p-3 rounded-full transition-colors duration-300">
+                        <i class="fas fa-trophy text-indigo-600 dark:text-indigo-400 text-xl"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pending Tasks -->
+            <div class="bg-themed-secondary rounded-lg shadow-sm border border-themed-primary p-4 lg:p-6 hover:shadow-md dark:hover:shadow-xl transition-all duration-200">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm text-themed-secondary font-medium transition-colors duration-300">Pending</p>
+                        <h3 class="text-2xl font-bold text-themed-primary mt-1 transition-colors duration-300">{{ $this->quickStats['pending_assessments'] }}</h3>
+                        <p class="text-xs text-red-600 dark:text-red-400 font-medium transition-colors duration-300">assessments</p>
+                    </div>
+                    <div class="bg-red-100 dark:bg-red-900/30 p-3 rounded-full transition-colors duration-300">
+                        <i class="fas fa-tasks text-red-600 dark:text-red-400 text-xl"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Lessons Completed -->
+            <div class="bg-themed-secondary rounded-lg shadow-sm border border-themed-primary p-4 lg:p-6 hover:shadow-md dark:hover:shadow-xl transition-all duration-200">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm text-themed-secondary font-medium transition-colors duration-300">Lessons</p>
+                        <h3 class="text-2xl font-bold text-themed-primary mt-1 transition-colors duration-300">{{ $this->quickStats['lessons_completed'] }}</h3>
+                        <p class="text-xs text-teal-600 dark:text-teal-400 font-medium transition-colors duration-300">completed</p>
+                    </div>
+                    <div class="bg-teal-100 dark:bg-teal-900/30 p-3 rounded-full transition-colors duration-300">
+                        <i class="fas fa-check-circle text-teal-600 dark:text-teal-400 text-xl"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Wishlist -->
+            <div class="bg-themed-secondary rounded-lg shadow-sm border border-themed-primary p-4 lg:p-6 hover:shadow-md dark:hover:shadow-xl transition-all duration-200">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm text-themed-secondary font-medium transition-colors duration-300">Wishlist</p>
+                        <h3 class="text-2xl font-bold text-themed-primary mt-1 transition-colors duration-300">{{ $this->quickStats['wishlist_count'] }}</h3>
+                        <p class="text-xs text-pink-600 dark:text-pink-400 font-medium transition-colors duration-300">courses saved</p>
+                    </div>
+                    <div class="bg-pink-100 dark:bg-pink-900/30 p-3 rounded-full transition-colors duration-300">
+                        <i class="fas fa-heart text-pink-600 dark:text-pink-400 text-xl"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    @endif
+
+
             <!-- Performance Analytics -->
             @if($showWidgets['performance_analytics'])
-                <div class="bg-themed-secondary rounded-xl shadow-sm border border-themed-primary p-6 transition-colors duration-300">
+                <div class="bg-themed-secondary rounded-lg shadow-sm border border-themed-primary p-6 transition-colors duration-300">
                     <h2 class="text-xl font-bold text-themed-primary mb-6 transition-colors duration-300">Study Activity</h2>
                     
                     <div class="mb-4 flex items-center justify-between">
@@ -263,7 +218,7 @@
                 </div>
 
                 <!-- Subject Performance -->
-                <div class="bg-themed-secondary rounded-xl shadow-sm border border-themed-primary p-6 transition-colors duration-300">
+                <div class="bg-themed-secondary rounded-lg shadow-sm border border-themed-primary p-6 transition-colors duration-300">
                     <h2 class="text-xl font-bold text-themed-primary mb-6 transition-colors duration-300">Performance by Subject Category</h2>
                     
                     <div class="space-y-4">
@@ -293,7 +248,7 @@
                 </div>
 
                 <!-- Weekly Goals Progress -->
-                <div class="bg-themed-secondary rounded-xl shadow-sm border border-themed-primary p-6 transition-colors duration-300">
+                <div class="bg-themed-secondary rounded-lg shadow-sm border border-themed-primary p-6 transition-colors duration-300">
                     <h2 class="text-xl font-bold text-themed-primary mb-6 transition-colors duration-300">Weekly Goals</h2>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -352,7 +307,7 @@
 
             <!-- Recent Reviews -->
             @if($showWidgets['recent_reviews'] && $this->recentReviews->isNotEmpty())
-                <div class="bg-themed-secondary rounded-xl shadow-sm border border-themed-primary p-6 transition-colors duration-300">
+                <div class="bg-themed-secondary rounded-lg shadow-sm border border-themed-primary p-6 transition-colors duration-300">
                     <div class="flex items-center justify-between mb-6">
                         <h2 class="text-xl font-bold text-themed-primary transition-colors duration-300">Your Recent Reviews</h2>
                         <a href="{{ route('course-reviews') }}" class="text-sm text-blue-600 dark:text-blue-400 hover:underline transition-colors duration-300">View All</a>
@@ -395,7 +350,7 @@
         <div class="space-y-8">
             <!-- Upcoming Tasks -->
             @if($showWidgets['upcoming_tasks'])
-                <div class="bg-themed-secondary rounded-xl shadow-sm border border-themed-primary p-6 transition-colors duration-300">
+                <div class="bg-themed-secondary rounded-lg shadow-sm border border-themed-primary p-6 transition-colors duration-300">
                     <h2 class="text-xl font-bold text-themed-primary mb-6 transition-colors duration-300">Upcoming Tasks</h2>
 
                     <div class="space-y-3">
@@ -446,7 +401,7 @@
 
             <!-- Recent Achievements -->
             @if($showWidgets['achievements'])
-                <div class="bg-themed-secondary rounded-xl shadow-sm border border-themed-primary p-6 transition-colors duration-300">
+                <div class="bg-themed-secondary rounded-lg shadow-sm border border-themed-primary p-6 transition-colors duration-300">
                     <div class="flex items-center justify-between mb-6">
                         <h2 class="text-xl font-bold text-themed-primary transition-colors duration-300">Recent Achievements</h2>
                         <a href="{{ route('gamification.badges') }}" class="text-sm text-blue-600 dark:text-blue-400 hover:underline transition-colors duration-300">View All</a>
@@ -485,7 +440,7 @@
 
             <!-- Announcements -->
             @if($showWidgets['announcements'])
-                <div class="bg-themed-secondary rounded-xl shadow-sm border border-themed-primary p-6 transition-colors duration-300">
+                <div class="bg-themed-secondary rounded-lg shadow-sm border border-themed-primary p-6 transition-colors duration-300">
                     <div class="flex items-center justify-between mb-6">
                         <h2 class="text-xl font-bold text-themed-primary transition-colors duration-300">Announcements</h2>
                         <a href="{{ route('announcements') }}" class="text-sm text-blue-600 dark:text-blue-400 hover:underline transition-colors duration-300">View All</a>
@@ -518,7 +473,7 @@
 
             <!-- Career Tools -->
             @if($showWidgets['career_tools'])
-                <div class="bg-themed-secondary rounded-xl shadow-sm border border-themed-primary p-6 transition-colors duration-300">
+                <div class="bg-themed-secondary rounded-lg shadow-sm border border-themed-primary p-6 transition-colors duration-300">
                     <h2 class="text-xl font-bold text-themed-primary mb-6 transition-colors duration-300">Career Tools</h2>
 
                     <div class="space-y-4">
@@ -604,7 +559,7 @@
 
             <!-- Mentorship Status -->
             @if($showWidgets['mentorship_status'] && ($this->mentorshipStatus['active_mentorships']->isNotEmpty() || $this->mentorshipStatus['pending_requests'] > 0))
-                <div class="bg-themed-secondary rounded-xl shadow-sm border border-themed-primary p-6 transition-colors duration-300">
+                <div class="bg-themed-secondary rounded-lg shadow-sm border border-themed-primary p-6 transition-colors duration-300">
                     <div class="flex items-center justify-between mb-6">
                         <h2 class="text-xl font-bold text-themed-primary transition-colors duration-300">Mentorship</h2>
                         <a href="{{ route('mentorship.hub') }}" class="text-sm text-blue-600 dark:text-blue-400 hover:underline transition-colors duration-300">View All</a>
@@ -653,7 +608,7 @@
 
             <!-- Wishlist Preview -->
             @if($showWidgets['wishlist_preview'] && $this->wishlistPreview->isNotEmpty())
-                <div class="bg-themed-secondary rounded-xl shadow-sm border border-themed-primary p-6 transition-colors duration-300">
+                <div class="bg-themed-secondary rounded-lg shadow-sm border border-themed-primary p-6 transition-colors duration-300">
                     <div class="flex items-center justify-between mb-6">
                         <h2 class="text-xl font-bold text-themed-primary transition-colors duration-300">Wishlist</h2>
                         <a href="{{ route('student.saved-resources') }}" class="text-sm text-blue-600 dark:text-blue-400 hover:underline transition-colors duration-300">View All</a>
@@ -691,7 +646,7 @@
             @endif
 
             <!-- System Status -->
-            <div class="bg-themed-secondary rounded-xl shadow-sm border border-themed-primary p-6 transition-colors duration-300">
+            <div class="bg-themed-secondary rounded-lg shadow-sm border border-themed-primary p-6 transition-colors duration-300">
                 <h2 class="text-lg font-bold text-themed-primary mb-4 transition-colors duration-300">System Status</h2>
 
                 <div class="flex items-center space-x-3">

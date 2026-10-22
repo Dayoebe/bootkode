@@ -32,10 +32,10 @@
             <div class="text-sm text-red-700 dark:text-red-400 transition-colors duration-300">Inactive</div>
         </div>
         <div
-            class="bg-accent-primary/20 rounded-xl shadow-lg p-4 border border-accent-primary/30 transition-colors duration-300">
-            <div class="text-2xl font-bold text-accent-primary transition-colors duration-300">
+            class="bg-brand/20 rounded-xl shadow-lg p-4 border border-brand/30 transition-colors duration-300">
+            <div class="text-2xl font-bold text-brand transition-colors duration-300">
                 {{ $stats['total_mentorships'] }}</div>
-            <div class="text-sm text-accent-primary/80 transition-colors duration-300">Mentorships</div>
+            <div class="text-sm text-brand/80 transition-colors duration-300">Mentorships</div>
         </div>
         <div
             class="bg-purple-100/50 dark:bg-purple-900/30 rounded-xl shadow-lg p-4 border border-purple-200/50 dark:border-purple-800 transition-colors duration-300">
@@ -50,19 +50,19 @@
         class="bg-themed-secondary rounded-xl shadow-lg p-2 mb-6 border border-themed-primary transition-colors duration-300">
         <div class="flex flex-wrap gap-2">
             <button wire:click="setActiveTab('pending')"
-                class="px-4 py-2 rounded-lg transition-colors duration-300 {{ $activeTab === 'pending' ? 'bg-accent-primary text-white' : 'text-themed-primary hover:bg-themed-tertiary' }}">
+                class="px-4 py-2 rounded-lg transition-colors duration-300 {{ $activeTab === 'pending' ? 'bk-button bk-button-primary ' : 'text-themed-primary hover:bg-themed-tertiary' }}">
                 Pending Applications
             </button>
             <button wire:click="setActiveTab('active')"
-                class="px-4 py-2 rounded-lg transition-colors duration-300 {{ $activeTab === 'active' ? 'bg-accent-primary text-white' : 'text-themed-primary hover:bg-themed-tertiary' }}">
+                class="px-4 py-2 rounded-lg transition-colors duration-300 {{ $activeTab === 'active' ? 'bk-button bk-button-primary ' : 'text-themed-primary hover:bg-themed-tertiary' }}">
                 Active Mentors
             </button>
             <button wire:click="setActiveTab('inactive')"
-                class="px-4 py-2 rounded-lg transition-colors duration-300 {{ $activeTab === 'inactive' ? 'bg-accent-primary text-white' : 'text-themed-primary hover:bg-themed-tertiary' }}">
+                class="px-4 py-2 rounded-lg transition-colors duration-300 {{ $activeTab === 'inactive' ? 'bk-button bk-button-primary ' : 'text-themed-primary hover:bg-themed-tertiary' }}">
                 Inactive Mentors
             </button>
             <button wire:click="setActiveTab('all')"
-                class="px-4 py-2 rounded-lg transition-colors duration-300 {{ $activeTab === 'all' ? 'bg-accent-primary text-white' : 'text-themed-primary hover:bg-themed-tertiary' }}">
+                class="px-4 py-2 rounded-lg transition-colors duration-300 {{ $activeTab === 'all' ? 'bk-button bk-button-primary ' : 'text-themed-primary hover:bg-themed-tertiary' }}">
                 All Mentors
             </button>
         </div>
@@ -73,9 +73,9 @@
         class="bg-themed-secondary rounded-xl shadow-lg p-4 mb-6 border border-themed-primary transition-colors duration-300">
         <div class="grid md:grid-cols-3 gap-4">
             <input wire:model.live.debounce.300ms="searchTerm" type="text" placeholder="Search mentors..."
-                class="px-4 py-2 border border-themed-primary rounded-lg bg-themed-secondary text-themed-primary placeholder-themed-tertiary focus:ring-2 focus:ring-accent-primary focus:border-transparent transition-colors duration-300">
+                class="px-4 py-2 border border-themed-primary rounded-lg bg-themed-secondary text-themed-primary placeholder-themed-tertiary focus:ring-2 focus:ring-brand focus:border-transparent transition-colors duration-300">
             <select wire:model.live="experienceFilter"
-                class="px-4 py-2 border border-themed-primary rounded-lg bg-themed-secondary text-themed-primary focus:ring-2 focus:ring-accent-primary focus:border-transparent transition-colors duration-300">
+                class="px-4 py-2 border border-themed-primary rounded-lg bg-themed-secondary text-themed-primary focus:ring-2 focus:ring-brand focus:border-transparent transition-colors duration-300">
                 <option value="">All Experience Levels</option>
                 <option value="junior">Junior</option>
                 <option value="mid">Mid Level</option>
@@ -93,7 +93,7 @@
                 <div class="flex items-center justify-between">
                     <div class="flex items-center space-x-4 flex-1">
                         <div
-                            class="w-12 h-12 bg-gradient-to-br from-accent-primary to-accent-secondary rounded-full flex items-center justify-center text-white font-bold">
+                            class="w-12 h-12 bg-brand rounded-full flex items-center justify-center text-white dark:text-brand-ink font-bold">
                             {{ substr($mentor->user->name, 0, 1) }}
                         </div>
                         <div class="flex-1">
@@ -103,7 +103,7 @@
                                 {{ $mentor->user->email }}</p>
                             <div class="flex items-center space-x-2 mt-1">
                                 <span
-                                    class="text-xs bg-accent-primary/20 text-accent-primary px-2 py-1 rounded border border-accent-primary/30 transition-colors duration-300">{{ $mentor->experience_label }}</span>
+                                    class="text-xs bg-brand/20 text-brand px-2 py-1 rounded border border-brand/30 transition-colors duration-300">{{ $mentor->experience_label }}</span>
                                 <span
                                     class="text-xs text-themed-secondary transition-colors duration-300">{{ $mentor->years_experience }}+
                                     years</span>
@@ -112,7 +112,7 @@
                     </div>
                     <div class="flex space-x-2">
                         <button wire:click="viewMentor({{ $mentor->id }})"
-                            class="px-4 py-2 bg-accent-primary hover:bg-accent-secondary text-white rounded-lg transition-colors">
+                            class="px-4 py-2 bk-button bk-button-primary   rounded-lg transition-colors">
                             <i class="fas fa-eye mr-1"></i>View
                         </button>
                         @if(!$mentor->is_verified)

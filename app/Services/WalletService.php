@@ -1,12 +1,13 @@
-<?php 
+<?php
 
 // WalletService.php - Business Logic Layer
+
 namespace App\Services;
 
 use App\Models\Core\User;
+use App\Models\Learning\Course;
 use App\Models\Marketplace\Wallet;
 use App\Models\Marketplace\WalletTransaction;
-use App\Models\Learning\Course;
 use App\Models\Marketplace\Withdrawal;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -33,16 +34,17 @@ class WalletService
                 'wallet_id' => $wallet->id,
                 'email' => $user->email,
                 'amount' => $amount,
-                'customer_name' => $user->name
+                'customer_name' => $user->name,
             ];
 
             return $this->paystackService->initializeWalletFunding($data);
 
         } catch (\Exception $e) {
-            Log::error('Wallet funding initiation error: ' . $e->getMessage());
+            Log::error('Wallet funding initiation error: '.$e->getMessage());
+
             return [
                 'success' => false,
-                'message' => 'Failed to initiate wallet funding'
+                'message' => 'Failed to initiate wallet funding',
             ];
         }
     }
@@ -52,47 +54,45 @@ class WalletService
      */
     public function purchaseCourse(User $student, Course $course): array
     {
-        DB::beginTransaction();
-        
         try {
-            $studentWallet = $student->getOrCreateWallet();
-
-            if (!$studentWallet->hasSufficientBalance($course->price)) {
-                return [
-                    'success' => false,
-                    'message' => 'Insufficient wallet balance'
-                ];
-            }
-
-            // Process the purchase with revenue split
-            $splitAmounts = $course->processPurchase($student, $studentWallet);
-
-            // Enroll student in course (assuming you have this relationship)
-            if (method_exists($student, 'courses')) {
-                $student->courses()->attach($course->id, [
-                    'enrolled_at' => now(),
-                    'payment_method' => 'wallet',
-                    'amount_paid' => $course->price
+            return DB::transaction(function () use ($student, $course) {
+                // Serialize enrollments for this learner, including the first enrollment.
+                User::whereKey($student->id)->lockForUpdate()->firstOrFail();
+                $course = Course::whereKey($course->id)->publiclyAvailable()->lockForUpdate()->firstOrFail();
+                $existing = $student->enrollments()->where('course_id', $course->id)->exists()
+                    || $student->courses()->where('courses.id', $course->id)->exists();
+                if ($existing) {
+                    return ['success' => true, 'message' => 'You are already enrolled in this course'];
+                }
+                if ((float) $course->price < 0) {
+                    throw new \DomainException('Invalid course price');
+                }
+                $wallet = $student->getOrCreateWallet();
+                $wallet = Wallet::whereKey($wallet->id)->lockForUpdate()->firstOrFail();
+                if (! $wallet->is_active || $wallet->currency !== 'NGN') {
+                    throw new \DomainException('Wallet is unavailable');
+                }
+                if (! $wallet->hasSufficientBalance((float) $course->price)) {
+                    return ['success' => false, 'message' => 'Insufficient wallet balance'];
+                }
+                $splitAmounts = (float) $course->price > 0 ? $course->processPurchase($student, $wallet) : [];
+                $student->courses()->syncWithoutDetaching([
+                    $course->id => ['progress' => 0, 'last_accessed_at' => now()],
                 ]);
-            }
+                $student->enrollments()->create([
+                    'course_id' => $course->id, 'enrolled_at' => now(),
+                    'progress_percentage' => 0, 'is_completed' => false,
+                    'enrollment_type' => (float) $course->price > 0 ? 'paid' : 'free',
+                    'amount_paid' => $course->price,
+                ]);
 
-            DB::commit();
+                return ['success' => true, 'message' => 'Course enrollment completed',
+                    'split_amounts' => $splitAmounts, 'remaining_balance' => (float) $wallet->fresh()->balance];
+            });
+        } catch (\Throwable $e) {
+            Log::error('Course purchase failed', ['exception' => $e::class]);
 
-            return [
-                'success' => true,
-                'message' => 'Course purchased successfully',
-                'split_amounts' => $splitAmounts,
-                'remaining_balance' => $studentWallet->fresh()->balance
-            ];
-
-        } catch (\Exception $e) {
-            DB::rollBack();
-            Log::error('Course purchase error: ' . $e->getMessage());
-            
-            return [
-                'success' => false,
-                'message' => $e->getMessage()
-            ];
+            return ['success' => false, 'message' => 'Unable to enroll. Please try again or contact support.'];
         }
     }
 
@@ -101,76 +101,77 @@ class WalletService
      */
     public function requestWithdrawal(User $instructor, float $amount, array $bankDetails): array
     {
-        DB::beginTransaction();
-        
         try {
-            $instructorWallet = $instructor->getOrCreateInstructorWallet();
+            return DB::transaction(function () use ($instructor, $amount, $bankDetails) {
+                if (! is_finite($amount) || $amount < config('financial.minimum_withdrawal') || $amount > config('financial.maximum_withdrawal')) {
+                    throw new \InvalidArgumentException('Withdrawal amount is outside the permitted limits.');
+                }
+                $instructorWallet = $instructor->getOrCreateInstructorWallet();
+                $instructorWallet = Wallet::whereKey($instructorWallet->id)->lockForUpdate()->firstOrFail();
 
-            if (!$instructorWallet->hasSufficientBalance($amount)) {
+                if (! $instructorWallet->hasSufficientBalance($amount)) {
+                    return [
+                        'success' => false,
+                        'message' => 'Insufficient balance for withdrawal',
+                    ];
+                }
+
+                // Resolve account details with Paystack
+                $accountResolution = $this->paystackService->resolveAccountNumber(
+                    $bankDetails['account_number'],
+                    $bankDetails['bank_code']
+                );
+
+                if (! $accountResolution['success']) {
+                    return [
+                        'success' => false,
+                        'message' => 'Invalid bank account details',
+                    ];
+                }
+
+                // Debit wallet (put amount in pending)
+                $instructorWallet->debit(
+                    $amount,
+                    WalletTransaction::CATEGORY_WITHDRAWAL,
+                    'Withdrawal request',
+                    null,
+                    ['status' => 'pending']
+                );
+
+                // Create withdrawal record
+                $withdrawal = Withdrawal::create([
+                    'user_id' => $instructor->id,
+                    'wallet_id' => $instructorWallet->id,
+                    'amount' => $amount,
+                    'bank_code' => $bankDetails['bank_code'],
+                    'account_number' => $bankDetails['account_number'],
+                    'account_name' => $accountResolution['account_name'],
+                    'status' => Withdrawal::STATUS_PENDING,
+                ]);
+
+                app(CommercialReadinessService::class)->recordPayoutAudit(
+                    $withdrawal,
+                    'withdrawal_requested',
+                    null,
+                    Withdrawal::STATUS_PENDING,
+                    $instructor,
+                    ['bank_code' => $bankDetails['bank_code']],
+                    'Instructor requested a payout.'
+                );
+
                 return [
-                    'success' => false,
-                    'message' => 'Insufficient balance for withdrawal'
+                    'success' => true,
+                    'message' => 'Withdrawal request submitted successfully',
+                    'withdrawal' => $withdrawal,
                 ];
-            }
 
-            // Resolve account details with Paystack
-            $accountResolution = $this->paystackService->resolveAccountNumber(
-                $bankDetails['account_number'],
-                $bankDetails['bank_code']
-            );
+            });
+        } catch (\Throwable $e) {
+            Log::error('Withdrawal request error: '.$e->getMessage());
 
-            if (!$accountResolution['success']) {
-                return [
-                    'success' => false,
-                    'message' => 'Invalid bank account details'
-                ];
-            }
-
-            // Debit wallet (put amount in pending)
-            $instructorWallet->debit(
-                $amount,
-                WalletTransaction::CATEGORY_WITHDRAWAL,
-                'Withdrawal request',
-                null,
-                ['status' => 'pending']
-            );
-
-            // Create withdrawal record
-            $withdrawal = Withdrawal::create([
-                'user_id' => $instructor->id,
-                'wallet_id' => $instructorWallet->id,
-                'amount' => $amount,
-                'bank_code' => $bankDetails['bank_code'],
-                'account_number' => $bankDetails['account_number'],
-                'account_name' => $accountResolution['account_name'],
-                'status' => Withdrawal::STATUS_PENDING
-            ]);
-
-            app(CommercialReadinessService::class)->recordPayoutAudit(
-                $withdrawal,
-                'withdrawal_requested',
-                null,
-                Withdrawal::STATUS_PENDING,
-                $instructor,
-                ['bank_code' => $bankDetails['bank_code']],
-                'Instructor requested a payout.'
-            );
-
-            DB::commit();
-
-            return [
-                'success' => true,
-                'message' => 'Withdrawal request submitted successfully',
-                'withdrawal' => $withdrawal
-            ];
-
-        } catch (\Exception $e) {
-            DB::rollBack();
-            Log::error('Withdrawal request error: ' . $e->getMessage());
-            
             return [
                 'success' => false,
-                'message' => 'Failed to process withdrawal request'
+                'message' => 'Failed to process withdrawal request',
             ];
         }
     }
@@ -180,79 +181,78 @@ class WalletService
      */
     public function processWithdrawal(Withdrawal $withdrawal, User $admin): array
     {
-        DB::beginTransaction();
-        
         try {
-            if (!$withdrawal->canBeApproved()) {
-                return [
-                    'success' => false,
-                    'message' => 'Withdrawal cannot be processed'
-                ];
-            }
+            return DB::transaction(function () use ($withdrawal, $admin) {
+                abort_unless($admin->hasAnyRole([User::ROLE_SUPER_ADMIN, User::ROLE_ACADEMY_ADMIN]), 403);
+                $withdrawal = Withdrawal::whereKey($withdrawal->id)->lockForUpdate()->firstOrFail();
+                if (! $withdrawal->canBeApproved()) {
+                    return [
+                        'success' => false,
+                        'message' => 'Withdrawal cannot be processed',
+                    ];
+                }
 
-            // Approve withdrawal
-            $previousStatus = $withdrawal->status;
-            $withdrawal->approve($admin->id);
-
-            app(CommercialReadinessService::class)->recordPayoutAudit(
-                $withdrawal->fresh(),
-                'withdrawal_approved',
-                $previousStatus,
-                Withdrawal::STATUS_APPROVED,
-                $admin,
-                [],
-                'Admin approved payout for transfer processing.'
-            );
-
-            // Initiate Paystack transfer
-            $transferResult = $this->paystackService->initiateTransfer($withdrawal);
-
-            if (!$transferResult['success']) {
-                // If transfer fails, reject the withdrawal
-                $failedFrom = $withdrawal->status;
-                $withdrawal->update(['status' => Withdrawal::STATUS_FAILED]);
+                // Approve withdrawal
+                $previousStatus = $withdrawal->status;
+                $withdrawal->approve($admin->id);
 
                 app(CommercialReadinessService::class)->recordPayoutAudit(
                     $withdrawal->fresh(),
-                    'withdrawal_transfer_failed',
-                    $failedFrom,
-                    Withdrawal::STATUS_FAILED,
+                    'withdrawal_approved',
+                    $previousStatus,
+                    Withdrawal::STATUS_APPROVED,
                     $admin,
-                    ['paystack_result' => $transferResult],
-                    $transferResult['message'] ?? 'Transfer initiation failed.'
+                    [],
+                    'Admin approved payout for transfer processing.'
                 );
-                
+
+                // Initiate Paystack transfer
+                $transferResult = $this->paystackService->initiateTransfer($withdrawal);
+
+                if (! $transferResult['success']) {
+                    // If transfer fails, reject the withdrawal
+                    $failedFrom = $withdrawal->status;
+                    $withdrawal->update(['status' => Withdrawal::STATUS_FAILED]);
+
+                    app(CommercialReadinessService::class)->recordPayoutAudit(
+                        $withdrawal->fresh(),
+                        'withdrawal_transfer_failed',
+                        $failedFrom,
+                        Withdrawal::STATUS_FAILED,
+                        $admin,
+                        ['paystack_result' => $transferResult],
+                        $transferResult['message'] ?? 'Transfer initiation failed.'
+                    );
+
+                    return [
+                        'success' => false,
+                        'message' => $transferResult['message'],
+                    ];
+                }
+
+                app(CommercialReadinessService::class)->recordPayoutAudit(
+                    $withdrawal->fresh(),
+                    'withdrawal_transfer_started',
+                    Withdrawal::STATUS_APPROVED,
+                    Withdrawal::STATUS_PROCESSING,
+                    $admin,
+                    ['transfer_code' => $transferResult['transfer_code'] ?? null],
+                    'Paystack transfer was initiated.'
+                );
+
                 return [
-                    'success' => false,
-                    'message' => $transferResult['message']
+                    'success' => true,
+                    'message' => 'Withdrawal processed successfully',
+                    'transfer_code' => $transferResult['transfer_code'],
                 ];
-            }
 
-            app(CommercialReadinessService::class)->recordPayoutAudit(
-                $withdrawal->fresh(),
-                'withdrawal_transfer_started',
-                Withdrawal::STATUS_APPROVED,
-                Withdrawal::STATUS_PROCESSING,
-                $admin,
-                ['transfer_code' => $transferResult['transfer_code'] ?? null],
-                'Paystack transfer was initiated.'
-            );
+            });
+        } catch (\Throwable $e) {
+            Log::error('Withdrawal processing error: '.$e->getMessage());
 
-            DB::commit();
-
-            return [
-                'success' => true,
-                'message' => 'Withdrawal processed successfully',
-                'transfer_code' => $transferResult['transfer_code']
-            ];
-
-        } catch (\Exception $e) {
-            DB::rollBack();
-            Log::error('Withdrawal processing error: ' . $e->getMessage());
-            
             return [
                 'success' => false,
-                'message' => 'Failed to process withdrawal'
+                'message' => 'Failed to process withdrawal',
             ];
         }
     }
@@ -294,38 +294,34 @@ class WalletService
             'total_balance' => $userBalance + $instructorBalance,
             'pending_withdrawals' => $pendingWithdrawals,
             'recent_transactions' => $recentTransactions,
-            'formatted_user_balance' => '₦' . number_format($userBalance, 2),
-            'formatted_instructor_balance' => '₦' . number_format($instructorBalance, 2),
-            'formatted_total_balance' => '₦' . number_format($userBalance + $instructorBalance, 2)
+            'formatted_user_balance' => '₦'.number_format($userBalance, 2),
+            'formatted_instructor_balance' => '₦'.number_format($instructorBalance, 2),
+            'formatted_total_balance' => '₦'.number_format($userBalance + $instructorBalance, 2),
         ];
     }
 
     /**
      * Get platform revenue analytics
      */
-    public function getRevenueAnalytics(\DatePeriod $period = null): array
+    public function getRevenueAnalytics(?\DatePeriod $period = null): array
     {
         $period = $period ?? new \DatePeriod(
             new \DateTime('-30 days'),
             new \DateInterval('P1D'),
-            new \DateTime()
+            new \DateTime
         );
 
         $startDate = $period->getStartDate();
         $endDate = $period->getEndDate();
 
-        // Total course sales
-        $courseSales = WalletTransaction::where('category', WalletTransaction::CATEGORY_COURSE_PURCHASE)
-            ->whereBetween('created_at', [$startDate, $endDate])
-            ->sum('amount');
-
-        // Instructor earnings
-        $instructorEarnings = WalletTransaction::where('category', WalletTransaction::CATEGORY_INSTRUCTOR_EARNING)
-            ->whereBetween('created_at', [$startDate, $endDate])
-            ->sum('amount');
-
-        // Platform commission (estimated as course sales - instructor earnings)
-        $platformCommission = $courseSales - $instructorEarnings;
+        $courseType = (new Course)->getMorphClass();
+        $courseSales = WalletTransaction::where('category', WalletTransaction::CATEGORY_COURSE_PURCHASE)->where('type', 'debit')->where('status', 'completed')
+            ->where('transactionable_type', $courseType)->whereBetween('created_at', [$startDate, $endDate])->sum('amount');
+        $instructorEarnings = WalletTransaction::where('category', WalletTransaction::CATEGORY_INSTRUCTOR_EARNING)->where('type', 'credit')->where('status', 'completed')
+            ->where('transactionable_type', $courseType)->whereBetween('created_at', [$startDate, $endDate])->sum('amount');
+        $affiliateCommissions = WalletTransaction::where('category', 'referral_commission')->where('type', 'credit')->where('status', 'completed')
+            ->whereBetween('created_at', [$startDate, $endDate])->sum('amount');
+        $platformCommission = $courseSales - $instructorEarnings - $affiliateCommissions;
 
         // Total withdrawals
         $totalWithdrawals = Withdrawal::where('status', Withdrawal::STATUS_COMPLETED)
@@ -343,12 +339,12 @@ class WalletService
             'total_withdrawals' => $totalWithdrawals,
             'pending_withdrawals' => $pendingWithdrawals,
             'formatted' => [
-                'total_course_sales' => '₦' . number_format($courseSales, 2),
-                'instructor_earnings' => '₦' . number_format($instructorEarnings, 2),
-                'platform_commission' => '₦' . number_format($platformCommission, 2),
-                'total_withdrawals' => '₦' . number_format($totalWithdrawals, 2),
-                'pending_withdrawals' => '₦' . number_format($pendingWithdrawals, 2)
-            ]
+                'total_course_sales' => '₦'.number_format($courseSales, 2),
+                'instructor_earnings' => '₦'.number_format($instructorEarnings, 2),
+                'platform_commission' => '₦'.number_format($platformCommission, 2),
+                'total_withdrawals' => '₦'.number_format($totalWithdrawals, 2),
+                'pending_withdrawals' => '₦'.number_format($pendingWithdrawals, 2),
+            ],
         ];
     }
 }

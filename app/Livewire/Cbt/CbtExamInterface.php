@@ -14,20 +14,42 @@ use Carbon\Carbon;
 #[Layout('layouts.exam', ['title' => 'CBT Exam', 'description' => 'Secure CBT exam interface'])]
 class CbtExamInterface extends Component
 {
+    use \App\Livewire\Concerns\RequiresAuthenticatedAccount;
+
+    #[\Livewire\Attributes\Locked]
+    public ?int $examSessionId = null;
+
+    public function boot(): void
+    {
+        if ($this->assessment) {
+            $assessment = $this->assessment instanceof Assessment ? $this->assessment : Assessment::findOrFail($this->assessment);
+            app(\App\Services\CbtAttemptService::class)->authorize($assessment, Auth::user());
+        }
+    }
+
+    #[\Livewire\Attributes\Locked]
     public $assessment;
+    #[\Livewire\Attributes\Locked]
     public $questions;
     public $currentQuestionIndex = 0;
     public $answers = [];
+    #[\Livewire\Attributes\Locked]
     public $timeRemaining;
+    #[\Livewire\Attributes\Locked]
     public $examStarted = false;
+    #[\Livewire\Attributes\Locked]
     public $examCompleted = false;
+    #[\Livewire\Attributes\Locked]
     public $results = null;
     public $flaggedQuestions = [];
+    #[\Livewire\Attributes\Locked]
     public $attemptNumber;
+    #[\Livewire\Attributes\Locked]
     public $startTime;
     public $securityViolations = [];
     public $showSubmitModal = false;
     public $isFullscreenForced = false;
+    #[\Livewire\Attributes\Locked]
     public $questionOrder = [];
     
     public $progressTracking = [
@@ -42,6 +64,7 @@ class CbtExamInterface extends Component
     public function mount($assessment)
     {
         $this->assessment = Assessment::with('questions')->findOrFail($assessment);
+        app(\App\Services\CbtAttemptService::class)->authorize($this->assessment, Auth::user());
         
         if (!$this->assessment || $this->assessment->questions->count() === 0) {
             session()->flash('error', 'Invalid assessment.');
@@ -50,6 +73,16 @@ class CbtExamInterface extends Component
 
         $this->loadQuestions();
         $this->initializeExam();
+        [$canTake] = $this->assessment->canUserTakeAssessment(Auth::id());
+        if (!$canTake) {
+            $previous = \App\Models\Assessment\LearningSession::where('user_id', Auth::id())->where('activity_type', 'assessment')
+                ->where('metadata->assessment_id', $this->assessment->id)->whereNotNull('ended_at')->latest('id')->first();
+            if ($previous && isset($previous->metadata['results'])) {
+                $this->examSessionId = $previous->id;
+                $this->results = $previous->metadata['results'];
+                $this->examStarted = $this->examCompleted = true;
+            }
+        }
     }
 
     public function render()
@@ -59,76 +92,8 @@ class CbtExamInterface extends Component
 
     protected function loadQuestions()
     {
-        $questionCollection = $this->assessment->questions;
-        
-        if ($this->assessment->shuffle_questions) {
-            $questionCollection = $questionCollection->shuffle();
-        }
-        
-        $this->questions = $questionCollection->map(function ($question) {
-            $q = $question->toArray();
-
-            // Format options
-            $q['options'] = is_string($q['options'] ?? null) 
-                ? json_decode($q['options'], true) ?? [] 
-                : ($q['options'] ?? []);
-
-            // Format correct answers
-            $correctAnswers = $q['correct_answers'] ?? $question->correct_answers;
-            if (is_string($correctAnswers)) {
-                $correctAnswers = json_decode($correctAnswers, true) ?? [$correctAnswers];
-            } elseif (!is_array($correctAnswers)) {
-                $correctAnswers = [$correctAnswers];
-            }
-            $q['original_correct_answers'] = array_map('intval', $correctAnswers);
-            
-            // Shuffle options if enabled
-            if ($this->assessment->shuffle_options && 
-                !empty($q['options']) && 
-                $q['question_type'] === 'multiple_choice') {
-                
-                $original = $q['options'];
-                $originalCorrect = $q['original_correct_answers'];
-                
-                // Create indexed array
-                $indexed = [];
-                foreach ($original as $idx => $text) {
-                    $indexed[] = ['orig_idx' => $idx, 'text' => $text];
-                }
-                
-                shuffle($indexed);
-                
-                // Build mappings
-                $newOptions = [];
-                $displayToOriginal = [];
-                $originalToDisplay = [];
-                
-                foreach ($indexed as $newIdx => $item) {
-                    $origIdx = $item['orig_idx'];
-                    $newOptions[$newIdx] = $item['text'];
-                    $displayToOriginal[$newIdx] = $origIdx; // NEW → ORIGINAL
-                    $originalToDisplay[$origIdx] = $newIdx; // ORIGINAL → NEW
-                }
-                
-                $q['options'] = $newOptions;
-                $q['display_to_original_map'] = $displayToOriginal;
-                $q['was_shuffled'] = true;
-                
-            } else {
-                $q['display_to_original_map'] = null;
-                $q['was_shuffled'] = false;
-            }
-
-            if ($q['question_type'] === 'true_false') {
-                $q['original_correct_answers'] = array_map('intval', $q['original_correct_answers']);
-            }
-
-            $q['points'] = floatval($q['points'] ?? 1);
-            return $q;
-            
-        })->values()->toArray();
-        
-        $this->questionOrder = collect($this->questions)->pluck('id')->toArray();
+        $this->questions = app(\App\Services\CbtAttemptService::class)->questions($this->assessment);
+        $this->questionOrder = collect($this->questions)->pluck('id')->all();
     }
 
     protected function initializeExam()
@@ -142,88 +107,23 @@ class CbtExamInterface extends Component
 
     public function saveAnswer($questionId, $answer)
     {
-        if ($answer === null || $answer === '' || $answer === 'null') {
-            $this->answers[$questionId] = null;
-            return;
-        }
-        $this->answers[$questionId] = (int)$answer; // Store displayed position
+        if ($this->examCompleted) return;
+        abort_unless($this->examStarted && $this->examSessionId, 422);
+        $value = in_array($answer, [null, '', 'null'], true) ? null : $answer;
+        app(\App\Services\CbtAttemptService::class)->saveAnswer(Auth::user(), $this->assessment, $this->examSessionId, (int) $questionId, $value);
+        $this->answers[$questionId] = $value;
     }
 
     public function submitExam()
     {
         if ($this->examCompleted) return;
+        abort_unless($this->examStarted && $this->examSessionId, 422, 'Start the exam before submitting.');
+        $this->results = app(\App\Services\CbtAttemptService::class)->submit(Auth::user(), $this->assessment, $this->examSessionId, $this->answers);
         $this->showSubmitModal = false;
-
-        try {
-            $timeSpent = $this->startTime ? abs($this->startTime->diffInSeconds(now(), false)) : 0;
-            $totalPoints = 0;
-            $correctAnswers = 0;
-            $answeredQuestions = 0;
-
-            foreach ($this->questions as $qData) {
-                $qId = $qData['id'];
-                $userDisplayAnswer = $this->answers[$qId] ?? null;
-
-                if ($userDisplayAnswer === null || $userDisplayAnswer === '') continue;
-                $answeredQuestions++;
-
-                // Map displayed answer to original
-                $userOriginalAnswer = $userDisplayAnswer;
-                if ($qData['was_shuffled'] && isset($qData['display_to_original_map'][$userDisplayAnswer])) {
-                    $userOriginalAnswer = $qData['display_to_original_map'][$userDisplayAnswer];
-                }
-
-                $examData = [
-                    'was_shuffled' => $qData['was_shuffled'],
-                    'user_displayed_answer' => $userDisplayAnswer,
-                    'user_original_answer' => $userOriginalAnswer,
-                    'display_to_original_map' => $qData['display_to_original_map'],
-                    'original_correct_answers' => $qData['original_correct_answers']
-                ];
-
-                // CRITICAL: Store ORIGINAL answer
-                $studentAnswer = StudentAnswer::create([
-                    'user_id' => Auth::id(),
-                    'assessment_id' => $this->assessment->id,
-                    'question_id' => $qId,
-                    'attempt_number' => $this->attemptNumber,
-                    'answer' => $userOriginalAnswer, // ← Store original position
-                    'time_spent_seconds' => $timeSpent,
-                    'submitted_at' => now(),
-                    'question_order' => $this->questionOrder,
-                    'exam_data' => $examData,
-                ]);
-
-                if ($studentAnswer->autoGrade()) {
-                    $studentAnswer->refresh();
-                    if ($studentAnswer->is_correct) $correctAnswers++;
-                    $totalPoints += $studentAnswer->points_earned ?? 0;
-                }
-            }
-
-            $maxPoints = collect($this->questions)->sum('points') ?: 100;
-            $percentage = $maxPoints > 0 ? round(($totalPoints / $maxPoints) * 100, 1) : 0;
-
-            $this->results = [
-                'total_questions' => count($this->questions),
-                'answered_questions' => $answeredQuestions,
-                'correct_answers' => $correctAnswers,
-                'total_points' => $totalPoints,
-                'max_points' => $maxPoints,
-                'percentage' => $percentage,
-                'passed' => $percentage >= $this->assessment->pass_percentage,
-                'attempt_number' => $this->attemptNumber,
-                'time_spent' => $timeSpent,
-            ];
-
-            $this->examCompleted = true;
-            $this->dispatch('examCompleted');
-            
-        } catch (\Exception $e) {
-            \Log::error('Submit failed: ' . $e->getMessage());
-            session()->flash('error', 'Failed to submit exam.');
-        }
+        $this->examCompleted = true;
+        $this->dispatch('examCompleted');
     }
+
     public function nextQuestion()
     {
         if ($this->currentQuestionIndex < count($this->questions) - 1) {
@@ -343,20 +243,21 @@ class CbtExamInterface extends Component
 
     public function startExam()
     {
-        try {
-            $this->examStarted = true;
-            $this->isFullscreenForced = true;
-            $this->startTime = Carbon::now();
-            $this->startQuestionTimer();
-            
-            $this->dispatch('startTimer');
-            $this->dispatch('markExamStarted');
-            
-        } catch (\Exception $e) {
-            session()->flash('error', 'Failed to start exam. Please try again.');
-        }
+        if ($this->examStarted || $this->examCompleted) return;
+        $session = app(\App\Services\CbtAttemptService::class)->start(Auth::user(), $this->assessment);
+        $this->examSessionId = $session->id;
+        $this->startTime = $session->started_at;
+        $this->attemptNumber = $session->metadata['attempt'];
+        $this->questions = $session->metadata['questions'];
+        $this->answers = $session->metadata['answers'] ?? array_fill_keys(collect($this->questions)->pluck('id')->all(), null);
+        $this->questionOrder = collect($this->questions)->pluck('id')->all();
+        $this->timeRemaining = max(0, $session->metadata['duration_seconds'] - (int) $session->started_at->diffInSeconds(now(), false));
+        $this->examStarted = true;
+        $this->isFullscreenForced = true;
+        $this->startQuestionTimer();
+        $this->dispatch('startTimer');
+        $this->dispatch('markExamStarted');
     }
-
 
     public function showSubmitConfirmation()
     {

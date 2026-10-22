@@ -2,13 +2,12 @@
 
 namespace App\Livewire\CertificateManagement;
 
-use Livewire\Component;
 use App\Models\Credentials\Certificate;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Storage;
-use Livewire\WithPagination;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
+use Livewire\Component;
+use Livewire\WithPagination;
 
 #[Layout('layouts.dashboard')]
 #[Title('My Certificates')]
@@ -17,8 +16,11 @@ class StudentCertificates extends Component
     use WithPagination;
 
     public $statusFilter = 'all';
+
     public $searchTerm = '';
+
     public $sortBy = 'created_at';
+
     public $sortDirection = 'desc';
 
     protected $queryString = [
@@ -37,28 +39,30 @@ class StudentCertificates extends Component
     {
         return Auth::user()->certificates()
             ->with(['course', 'course.instructor', 'approver', 'rejecter'])
-            ->when($this->statusFilter !== 'all', function($q) {
+            ->when($this->statusFilter !== 'all', function ($q) {
                 $q->where('status', $this->statusFilter);
             })
-            ->when($this->searchTerm, function($q) {
-                $q->whereHas('course', function($subq) {
-                    $subq->where('title', 'like', '%' . $this->searchTerm . '%');
-                })
-                ->orWhere('certificate_number', 'like', '%' . $this->searchTerm . '%');
+            ->when($this->searchTerm, function ($q) {
+                $q->where(function ($query) {
+                    $query->whereHas('course', function ($subq) {
+                        $subq->where('title', 'like', '%'.$this->searchTerm.'%');
+                    })
+                        ->orWhere('certificate_number', 'like', '%'.$this->searchTerm.'%');
+                });
             })
-            ->orderBy($this->sortBy, $this->sortDirection)
+            ->orderBy(in_array($this->sortBy, ['created_at', 'issued_date', 'certificate_number', 'status'], true) ? $this->sortBy : 'created_at', $this->sortDirection === 'asc' ? 'asc' : 'desc')
             ->paginate(12);
     }
 
     public function getStatsProperty()
     {
         $certificates = Auth::user()->certificates();
-        
+
         return [
-            'total' => $certificates->count(),
-            'approved' => $certificates->where('status', Certificate::STATUS_APPROVED)->count(),
-            'pending' => $certificates->where('status', Certificate::STATUS_REQUESTED)->count(),
-            'rejected' => $certificates->where('status', Certificate::STATUS_REJECTED)->count(),
+            'total' => (clone $certificates)->count(),
+            'approved' => (clone $certificates)->where('status', Certificate::STATUS_APPROVED)->count(),
+            'pending' => (clone $certificates)->where('status', Certificate::STATUS_REQUESTED)->count(),
+            'rejected' => (clone $certificates)->where('status', Certificate::STATUS_REJECTED)->count(),
         ];
     }
 
@@ -70,7 +74,7 @@ class StudentCertificates extends Component
             $this->sortBy = $field;
             $this->sortDirection = 'asc';
         }
-        
+
         $this->resetPage();
     }
 
@@ -90,11 +94,12 @@ class StudentCertificates extends Component
             ->where('status', Certificate::STATUS_APPROVED)
             ->first();
 
-        if (!$certificate || !$certificate->pdf_path) {
+        if (! $certificate || ! $certificate->pdf_path) {
             $this->dispatch('notify', [
                 'message' => 'Certificate not available for download.',
-                'type' => 'error'
+                'type' => 'error',
             ]);
+
             return;
         }
 
@@ -107,17 +112,19 @@ class StudentCertificates extends Component
             ->where('user_id', Auth::id())
             ->first();
 
-        if (!$certificate) {
+        if (! $certificate) {
             $this->dispatch('notify', [
                 'message' => 'Certificate not found.',
-                'type' => 'error'
+                'type' => 'error',
             ]);
+
             return;
         }
 
         // Use JavaScript dispatch to open in new tab
         $this->dispatch('openCertificate', url: route('certificate.view', $certificate->verification_code));
     }
+
     public function requestNewCertificate()
     {
         return redirect()->route('student.certificate.request');

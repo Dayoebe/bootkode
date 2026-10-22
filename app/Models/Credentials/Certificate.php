@@ -23,7 +23,7 @@ class Certificate extends Model
 // In your Certificate.php model
 protected $fillable = [
     'user_id', 'course_id', 'certificate_number', 'verification_code',
-    'status', 'approved_at', 'issued_by', // Use existing columns
+    'status', 'approved_at', 'issued_by', 'requested_at', // Use existing columns
     'rejected_at', 'rejected_by', 'rejection_reason',
     'revoked_at', 'revoked_by', 'revocation_reason',
     'issued_date', 'completed_at', 'grade', 'credits', // Use completed_at instead of completion_date
@@ -32,6 +32,8 @@ protected $fillable = [
 ];
 
 protected $casts = [
+    'requested_at' => 'datetime',
+    'rejected_at' => 'datetime',
     'approved_at' => 'datetime',
     'completed_at' => 'datetime', // Use completed_at
     'issued_date' => 'datetime',
@@ -50,9 +52,19 @@ protected $casts = [
         return $this->belongsTo(Course::class);
     }
 
+    public function getCompletionDateAttribute()
+    {
+        return $this->completed_at;
+    }
+
+    public function getVerificationUrlAttribute($value)
+    {
+        return $value ?: ($this->verification_code ? route('certificate.verify.code', $this->verification_code) : null);
+    }
+
     public function approver()
     {
-        return $this->belongsTo(User::class, 'approved_by');
+        return $this->belongsTo(User::class, 'issued_by');
     }
 
     public function rejecter()
@@ -110,7 +122,7 @@ protected $casts = [
     // ========== STATUS CHECKS ==========
     public function isRequested(): bool { return $this->status === self::STATUS_REQUESTED; }
     public function isPending(): bool { return $this->status === self::STATUS_PENDING; }
-    public function isApproved(): bool { return $this->status === self::STATUS_APPROVED; }
+    public function isApproved(): bool { return in_array($this->status, [self::STATUS_APPROVED, 'issued'], true); }
     public function isRejected(): bool { return $this->status === self::STATUS_REJECTED; }
     public function isRevoked(): bool { return $this->status === self::STATUS_REVOKED; }
     public function isActive(): bool { return $this->isApproved() && !$this->revoked_at; }
@@ -130,6 +142,10 @@ public function approve(int $approverId = null): self
         'approved_at' => now(),
         'issued_by' => $approverId ?? auth()->id(), // Use issued_by instead of approved_by
         'issued_date' => now(),
+        // Capture only at issuance. Later edits/deletion must not restyle this record.
+        'metadata' => array_merge($this->metadata ?? [], [
+            'template_snapshot' => app(CertificateService::class)->defaultTemplateSnapshot(),
+        ]),
     ]);
 
     // Generate assets
@@ -186,7 +202,11 @@ public function approve(int $approverId = null): self
     // ========== VERIFICATION ==========
     public static function findByVerificationCode(string $code): ?self
     {
-        return static::where('verification_code', strtoupper(trim($code)))->first();
+        return static::where(function ($query) use ($code) {
+            $query->where('verification_code', strtoupper(trim($code)))
+                ->orWhere('verification_code', trim($code))
+                ->orWhere('verification_token', trim($code));
+        })->first();
     }
 
     public function getVerificationData(): array
@@ -210,7 +230,7 @@ public function approve(int $approverId = null): self
                 'student_name' => $this->user->name,
                 'course_title' => $this->course->title,
                 'instructor_name' => $this->course->instructor->name ?? 'N/A',
-                'completion_date' => $this->completion_date->format('F j, Y'),
+                'completion_date' => $this->completion_date?->format('F j, Y'),
                 'issued_date' => $this->issued_date?->format('F j, Y'),
                 'grade' => $this->grade ?? 'Pass',
                 'credits' => $this->credits,
@@ -276,7 +296,7 @@ public function approve(int $approverId = null): self
 
     public function scopeApproved($query)
     {
-        return $query->where('status', self::STATUS_APPROVED);
+        return $query->whereIn('status', [self::STATUS_APPROVED, 'issued']);
     }
 
     public function scopeRequested($query)

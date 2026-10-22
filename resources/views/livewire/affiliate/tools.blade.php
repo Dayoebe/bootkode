@@ -1,28 +1,32 @@
 <div class=" px-4 sm:px-6 lg:px-8 py-8">
+    <x-ui.flash :messages="$feedback" />
     <!-- Header -->
     <div class="mb-8">
         <h1 class="text-3xl font-bold text-gray-900">Marketing Tools</h1>
         <p class="text-gray-600">Promotional materials and resources for your referrals</p>
     </div>
 
+    @if(!$affiliate->isActive())
+        <x-ui.empty-state title="Your affiliate account is not active" description="Staff activation is required before promotional links and banners are available." />
+    @else
     <!-- Tool Selector -->
     <div class="bg-white rounded-xl shadow-lg mb-8">
         <div class="border-b border-gray-200">
-            <nav class="-mb-px flex space-x-8 px-6">
+            <nav class="-mb-px flex max-w-full gap-6 overflow-x-auto px-6">
                 <button wire:click="setTool('links')" 
-                        class="py-4 px-1 border-b-2 font-medium text-sm {{ $selectedTool === 'links' ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300' }}">
+                        class="min-h-11 shrink-0 py-4 px-1 border-b-2 font-medium text-sm {{ $selectedTool === 'links' ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300' }}">
                     <i class="fas fa-link mr-2"></i> Referral Links
                 </button>
                 <button wire:click="setTool('banners')" 
-                        class="py-4 px-1 border-b-2 font-medium text-sm {{ $selectedTool === 'banners' ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300' }}">
+                        class="min-h-11 shrink-0 py-4 px-1 border-b-2 font-medium text-sm {{ $selectedTool === 'banners' ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300' }}">
                     <i class="fas fa-image mr-2"></i> Banner Images
                 </button>
                 <button wire:click="setTool('social')" 
-                        class="py-4 px-1 border-b-2 font-medium text-sm {{ $selectedTool === 'social' ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300' }}">
+                        class="min-h-11 shrink-0 py-4 px-1 border-b-2 font-medium text-sm {{ $selectedTool === 'social' ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300' }}">
                     <i class="fas fa-share-alt mr-2"></i> Social Media
                 </button>
                 <button wire:click="setTool('email')" 
-                        class="py-4 px-1 border-b-2 font-medium text-sm {{ $selectedTool === 'email' ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300' }}">
+                        class="min-h-11 shrink-0 py-4 px-1 border-b-2 font-medium text-sm {{ $selectedTool === 'email' ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300' }}">
                     <i class="fas fa-envelope mr-2"></i> Email Templates
                 </button>
             </nav>
@@ -38,11 +42,11 @@
                         <!-- Main Referral Link -->
                         <div class="bg-gray-50 rounded-lg p-4 mb-4">
                             <label class="block text-sm font-medium text-gray-700 mb-2">Main Referral Link</label>
-                            <div class="flex items-center space-x-3">
+                            <div class="flex flex-col gap-3 sm:flex-row sm:items-center">
                                 <input type="text" value="{{ $affiliate->referral_link }}" readonly 
-                                       class="flex-1 px-3 py-2 border border-gray-300 rounded-md bg-white text-sm">
+                                       class="min-w-0 flex-1 px-3 py-2 border border-gray-300 rounded-md bg-white text-sm">
                                 <button wire:click="copyToClipboard('{{ $affiliate->referral_link }}', 'main')" 
-                                        class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors">
+                                        class="bk-button bk-button-primary">
                                     @if($copiedText === 'main')
                                         <i class="fas fa-check"></i> Copied!
                                     @else
@@ -81,7 +85,7 @@
                             <div class="bg-gradient-to-r from-blue-600 to-purple-600 text-white p-6 rounded-lg mb-3">
                                 <div class="text-center">
                                     <h3 class="text-xl font-bold mb-2">Learn to Code with BootKode</h3>
-                                    <p class="text-sm">Join thousands of students • Use code: {{ $affiliate->referral_code }}</p>
+                                    <p class="text-sm">Learn. Build. Grow. • Referral: {{ $affiliate->referral_code }}</p>
                                 </div>
                             </div>
                             <button wire:click="copyToClipboard('{{ $marketingAssets['banner_images']['large'] }}', 'large-banner')" 
@@ -187,7 +191,7 @@
                             <pre class="whitespace-pre-wrap text-gray-700">{{ $marketingAssets['email_template'] }}</pre>
                         </div>
                         <div class="mt-3 flex space-x-3">
-                            <button wire:click="copyToClipboard('{{ addslashes($marketingAssets['email_template']) }}', 'email-template')" 
+                            <button wire:click="copyToClipboard(@js($marketingAssets['email_template']), 'email-template')"
                                     class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 text-sm">
                                 @if($copiedText === 'email-template') Copied! @else Copy Template @endif
                             </button>
@@ -220,7 +224,7 @@
             <div class="bg-white rounded-lg p-4">
                 <h4 class="font-medium text-gray-900 mb-2">High-Converting Strategies</h4>
                 <ul class="text-gray-700 space-y-1">
-                    <li>• Share success stories and testimonials</li>
+                    <li>• Share verified experiences with permission</li>
                     <li>• Create comparison content</li>
                     <li>• Offer additional value (bonuses)</li>
                     <li>• Follow up with prospects</li>
@@ -229,19 +233,18 @@
         </div>
     </div>
     
+    @script
     <script>
-    document.addEventListener('livewire:init', function() {
-        Livewire.on('clipboard-copy', (event) => {
-            navigator.clipboard.writeText(event.text).then(function() {
-                // Success notification would go here
-            });
+        $wire.on('clipboard-copy', async (event) => {
+            try { await navigator.clipboard.writeText(event.text); $wire.clipboardResult(event.type, true); }
+            catch { $wire.clipboardResult(event.type, false); }
         });
-
-        Livewire.on('custom-email-generated', (event) => {
-            // Handle custom email generation
-            navigator.clipboard.writeText(event.template);
+        $wire.on('custom-email-generated', async (event) => {
+            try { await navigator.clipboard.writeText(event.template); $wire.clipboardResult('email-template', true); }
+            catch { $wire.clipboardResult('email-template', false); }
         });
-    });
-</script>
+    </script>
+    @endscript
 
+    @endif
 </div>

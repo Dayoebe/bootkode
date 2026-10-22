@@ -1,12 +1,6 @@
 @php
     $primaryCtaUrl = auth()->check() ? route(auth()->user()->getDashboardRouteName()) : route('register');
-    $courseUrl = auth()->check() ? route('student.course-catalog') : route('register');
-    $stats = [
-        'courses' => \App\Models\Learning\Course::query()->where('is_published', true)->where('is_approved', true)->count(),
-        'lessons' => \App\Models\Learning\Lesson::query()->whereHas('section.course', fn ($query) => $query->where('is_published', true)->where('is_approved', true))->count(),
-        'tracks' => \App\Models\Learning\CourseCategory::query()->has('courses')->count(),
-    ];
-    $featuredCourses = \App\Models\Learning\Course::query()->with('category')->where('is_published', true)->where('is_approved', true)->latest('id')->take(3)->get();
+    $courseUrl = route('courses.index');
     $pathways = [
         ['number' => '01', 'title' => 'Choose your direction', 'copy' => 'Follow a structured learning path built around the skill and role you want to pursue.'],
         ['number' => '02', 'title' => 'Learn by building', 'copy' => 'Move through focused lessons, practical exercises, assessments, and portfolio-ready projects.'],
@@ -25,17 +19,12 @@
 
 <div class="bk-edge-to-edge overflow-hidden bg-[#f6f8fb]">
     <section class="relative isolate overflow-hidden bg-[#07152d] text-white">
-        <div class="absolute inset-0 -z-10 opacity-90" aria-hidden="true">
-            <div class="absolute -right-40 -top-64 h-[42rem] w-[42rem] rounded-full bg-cyan-400/15 blur-3xl"></div>
-            <div class="absolute -bottom-80 -left-56 h-[44rem] w-[44rem] rounded-full bg-indigo-500/20 blur-3xl"></div>
-            <div class="bk-hero-grid absolute inset-0 opacity-20"></div>
-        </div>
-        <div class="bk-shell grid min-h-[760px] gap-14 py-16 lg:grid-cols-[1.02fr_.98fr] lg:items-center lg:py-20">
+        <div class="bk-shell grid gap-12 py-16 lg:grid-cols-[1.02fr_.98fr] lg:items-center lg:py-20">
             <div class="max-w-3xl">
                 <div class="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-3 py-2 text-xs font-extrabold text-cyan-100 backdrop-blur">
                     <span class="h-2 w-2 rounded-full bg-[#8fe388]"></span>Technology education built around real progress
                 </div>
-                <h1 class="bk-display mt-7 text-[2.75rem] font-extrabold leading-[1.04] tracking-[-0.045em] text-white sm:text-6xl lg:text-[4.6rem]">
+                <h1 class="bk-display mt-7 text-4xl font-extrabold leading-[1.04] tracking-[-0.045em] text-white sm:text-6xl lg:text-6xl">
                     Build the skills.<br><span class="text-[#8fe388]">Prove the work.</span><br>Move forward.
                 </h1>
                 <p class="mt-7 max-w-2xl text-base font-medium leading-8 text-slate-300 sm:text-lg">BootKode brings structured courses, hands-on projects, mentorship, career tools, and verified credentials into one focused learning platform.</p>
@@ -51,35 +40,20 @@
                     <span class="inline-flex items-center gap-2"><i class="fas fa-check-circle text-[#8fe388]"></i> Verifiable credentials</span>
                 </div>
             </div>
-            <div class="relative mx-auto w-full max-w-[560px] lg:ml-auto">
-                <div class="absolute -inset-10 rounded-full bg-cyan-300/10 blur-3xl"></div>
-                <div class="relative overflow-hidden rounded-[2rem] border border-white/15 bg-white/[0.08] p-3 shadow-2xl shadow-black/30 backdrop-blur-xl sm:p-4">
-                    <div class="rounded-[1.45rem] bg-white p-5 text-slate-950 sm:p-6">
-                        <div class="flex items-center justify-between gap-4">
-                            <div><p class="text-xs font-black uppercase tracking-[0.16em] text-slate-400">Learning workspace</p><h2 class="mt-1 text-xl font-black">Your next milestone</h2></div>
-                            <span class="grid h-11 w-11 place-items-center rounded-2xl bg-[#eafbe8] text-emerald-700"><i class="fas fa-bolt"></i></span>
-                        </div>
-                        <div class="mt-6 rounded-2xl bg-[#07152d] p-5 text-white">
-                            <div class="flex items-center justify-between gap-4"><span class="rounded-full bg-white/10 px-3 py-1 text-[11px] font-extrabold text-cyan-100">CURRENT PATH</span><span class="text-xs font-bold text-slate-300">Module 4 of 8</span></div>
-                            <h3 class="mt-7 text-xl font-black">Build a production-ready web application</h3>
-                            <p class="mt-2 text-sm leading-6 text-slate-300">Continue from database design into application logic and testing.</p>
-                            <div class="mt-6 h-2 overflow-hidden rounded-full bg-white/10"><div class="h-full w-[52%] rounded-full bg-[#8fe388]"></div></div>
-                            <div class="mt-3 flex justify-between text-xs font-bold text-slate-300"><span>Progress</span><span>52%</span></div>
-                        </div>
-                        <div class="mt-4 grid grid-cols-2 gap-3">
-                            <div class="rounded-2xl border border-slate-200 p-4"><span class="grid h-9 w-9 place-items-center rounded-xl bg-cyan-50 text-cyan-700"><i class="fas fa-code text-sm"></i></span><p class="mt-4 text-xs font-bold text-slate-500">Next activity</p><p class="mt-1 text-sm font-black">Practical exercise</p></div>
-                            <div class="rounded-2xl border border-slate-200 p-4"><span class="grid h-9 w-9 place-items-center rounded-xl bg-violet-50 text-violet-700"><i class="fas fa-comments text-sm"></i></span><p class="mt-4 text-xs font-bold text-slate-500">Support</p><p class="mt-1 text-sm font-black">Mentor & community</p></div>
-                        </div>
-                    </div>
-                </div>
-                <div class="absolute -bottom-6 -left-3 hidden items-center gap-3 rounded-2xl border border-white/20 bg-white p-4 text-slate-950 shadow-2xl sm:flex">
-                    <span class="grid h-10 w-10 place-items-center rounded-xl bg-[#eafbe8] text-emerald-700"><i class="fas fa-certificate"></i></span>
-                    <span><span class="block text-xs font-bold text-slate-500">Completion matters</span><span class="block text-sm font-black">Evidence you can share</span></span>
-                </div>
-            </div>
+            <aside class="relative border-l border-white/20 pl-6 sm:pl-10">
+                <p class="text-xs font-bold uppercase tracking-[0.18em] text-brand-mint">Learn. Build. Grow.</p>
+                <h2 class="mt-6 text-2xl font-bold leading-snug sm:text-3xl">A practical place to start.<br>A clear way to keep going.</h2>
+                <ol class="mt-8 divide-y divide-white/15">
+                    @foreach([['01', 'Learn with structure', 'Choose a course and work through focused lessons.'], ['02', 'Put ideas into practice', 'Build understanding through exercises and assessments.'], ['03', 'Make progress visible', 'Return to your lessons, review your work and keep growing.']] as [$number, $heading, $copy])
+                        <li class="flex gap-5 py-5"><span class="pt-1 text-xs font-bold text-brand-mint">{{ $number }}</span><div><h3 class="font-bold">{{ $heading }}</h3><p class="mt-2 text-sm leading-6 text-slate-300">{{ $copy }}</p></div></li>
+                    @endforeach
+                </ol>
+                <a href="{{ route('guideline') }}" class="mt-6 inline-flex min-h-11 items-center gap-3 text-sm font-bold text-brand-mint">How learning works <span aria-hidden="true">→</span></a>
+            </aside>
         </div>
     </section>
 
+    @if($stats['courses'] > 0)
     <section class="border-b border-slate-200 bg-white">
         <div class="bk-shell grid grid-cols-3 divide-x divide-slate-200 py-7 sm:py-9">
             <div class="px-3 text-center sm:px-8"><p class="text-2xl font-black text-[#07152d] sm:text-3xl">{{ number_format($stats['courses']) }}</p><p class="mt-1 text-xs font-bold text-slate-500 sm:text-sm">Published courses</p></div>
@@ -88,6 +62,7 @@
         </div>
     </section>
 
+    @endif
     <section class="py-20 sm:py-24">
         <div class="bk-shell grid gap-8 lg:grid-cols-[.72fr_1.28fr] lg:gap-16">
             <div class="lg:sticky lg:top-28 lg:self-start">
@@ -109,7 +84,7 @@
     <section class="bg-white py-20 sm:py-24">
         <div class="bk-shell">
             <div class="max-w-3xl"><span class="text-xs font-black uppercase tracking-[0.18em] text-teal-700">One connected platform</span><h2 class="bk-display mt-4 text-3xl font-extrabold leading-tight tracking-[-0.035em] text-[#07152d] sm:text-5xl">The tools around the course matter too.</h2><p class="mt-5 text-base font-medium leading-7 text-slate-600">Learning works better when practice, support, progress, and career preparation live in the same place.</p></div>
-            <div class="mt-12 grid gap-px overflow-hidden rounded-[2rem] border border-slate-200 bg-slate-200 sm:grid-cols-2 lg:grid-cols-3">
+            <div class="mt-12 grid gap-px overflow-hidden rounded-lg border border-slate-200 bg-slate-200 sm:grid-cols-2 lg:grid-cols-3">
                 @foreach($capabilities as $capability)
                     <article class="group bg-white p-7 transition hover:bg-[#f7fbff] sm:p-8">
                         <span class="grid h-12 w-12 place-items-center rounded-2xl bg-[#eef4fa] text-[#0a5c76] transition group-hover:bg-[#07152d] group-hover:text-white"><i class="fas {{ $capability['icon'] }}"></i></span>
@@ -128,16 +103,9 @@
             </div>
             <div class="mt-10 grid gap-5 lg:grid-cols-3">
                 @forelse($featuredCourses as $course)
-                    <article class="group overflow-hidden rounded-[1.5rem] border border-slate-200 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-xl hover:shadow-slate-900/10">
-                        <div class="aspect-[16/10] overflow-hidden bg-slate-100"><img src="{{ $course->thumbnail ? asset('storage/' . $course->thumbnail) : asset('images/default-course.png') }}" alt="{{ $course->title }}" class="h-full w-full object-cover transition duration-500 group-hover:scale-105"></div>
-                        <div class="p-6">
-                            <div class="flex items-center justify-between gap-3 text-xs font-extrabold"><span class="rounded-full bg-teal-50 px-3 py-1 text-teal-800">{{ $course->category?->name ?? 'Course' }}</span><span class="text-slate-500">{{ $course->total_lessons }} lessons</span></div>
-                            <h3 class="mt-5 line-clamp-2 text-xl font-black leading-snug text-[#07152d]">{{ $course->title }}</h3><p class="mt-3 line-clamp-2 text-sm font-medium leading-6 text-slate-600">{{ \Illuminate\Support\Str::limit(strip_tags($course->description), 110) }}</p>
-                            <a href="{{ auth()->check() ? route('course.view', $course) : route('register') }}" class="mt-6 inline-flex items-center gap-2 text-sm font-black text-teal-700">{{ auth()->check() ? 'Open course' : 'Start learning' }} <i class="fas fa-arrow-right text-xs"></i></a>
-                        </div>
-                    </article>
+                    <x-course-card :course="$course" />
                 @empty
-                    <div class="rounded-[1.5rem] border border-dashed border-slate-300 bg-white p-8 text-sm font-semibold text-slate-600 lg:col-span-3">Published courses will appear here as they become available.</div>
+                    <div class="rounded-lg border border-dashed border-slate-300 bg-white p-8 text-sm font-semibold text-slate-600 lg:col-span-3">Published courses will appear here as they become available.</div>
                 @endforelse
             </div>
         </div>

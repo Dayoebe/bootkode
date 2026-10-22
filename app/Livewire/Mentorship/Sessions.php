@@ -20,6 +20,13 @@ use Livewire\WithPagination;
 ])]
 class Sessions extends Component
 {
+    use \App\Livewire\Concerns\HasActionFeedback;
+
+    use \App\Livewire\Concerns\RequiresAuthenticatedAccount;
+
+    #[\Livewire\Attributes\Locked]
+    public bool $embedded = false;
+
     use WithPagination;
 
     public string $dateFilter = 'upcoming';
@@ -68,7 +75,7 @@ class Sessions extends Component
             $mentorship = $this->findManageableMentorship($mentorshipId);
 
             if (! $mentorship || ! $mentorship->isActive()) {
-                session()->flash('error', 'Cannot schedule a session for this mentorship.');
+                $this->flashFeedback('error', 'Cannot schedule a session for this mentorship.');
                 return;
             }
 
@@ -88,7 +95,7 @@ class Sessions extends Component
         $session = $this->findManageableSession($sessionId);
 
         if (! $session || $session->status !== MentorshipSession::STATUS_SCHEDULED) {
-            session()->flash('error', 'Only scheduled sessions can be edited.');
+            $this->flashFeedback('error', 'Only scheduled sessions can be edited.');
             return;
         }
 
@@ -113,19 +120,19 @@ class Sessions extends Component
         $mentorship = $this->findManageableMentorship((int) $this->mentorshipId);
 
         if (! $mentorship || ! $mentorship->isActive()) {
-            session()->flash('error', 'Choose an active mentorship before scheduling.');
+            $this->flashFeedback('error', 'Choose an active mentorship before scheduling.');
             return;
         }
 
         $start = Carbon::parse($this->scheduledAt);
 
         if (! $this->mentorIsAvailable($mentorship, $start, $this->duration)) {
-            session()->flash('error', 'That time is outside the mentor availability window.');
+            $this->flashFeedback('error', 'That time is outside the mentor availability window.');
             return;
         }
 
         if ($this->hasSchedulingConflict($mentorship, $start, $this->duration, $this->editingSessionId)) {
-            session()->flash('error', 'That time conflicts with an existing mentorship session.');
+            $this->flashFeedback('error', 'That time conflicts with an existing mentorship session.');
             return;
         }
 
@@ -152,10 +159,10 @@ class Sessions extends Component
         if ($this->editingSessionId) {
             $session = $this->findManageableSession($this->editingSessionId);
             $session?->update($sessionData);
-            session()->flash('message', 'Session updated successfully.');
+            $this->flashFeedback('message', 'Session updated successfully.');
         } else {
             MentorshipSession::create($sessionData);
-            session()->flash('message', 'Session booked successfully.');
+            $this->flashFeedback('message', 'Session booked successfully.');
         }
 
         $this->closeModal();
@@ -167,7 +174,7 @@ class Sessions extends Component
         $session = $this->findViewableSession($sessionId);
 
         if (! $session) {
-            session()->flash('error', 'Session not found.');
+            $this->flashFeedback('error', 'Session not found.');
             return;
         }
 
@@ -180,12 +187,12 @@ class Sessions extends Component
         $session = $this->findOperableSession($sessionId);
 
         if (! $session || $session->status !== MentorshipSession::STATUS_SCHEDULED) {
-            session()->flash('error', 'This session cannot be started.');
+            $this->flashFeedback('error', 'This session cannot be started.');
             return;
         }
 
         $session->start();
-        session()->flash('message', 'Session marked as in progress.');
+        $this->flashFeedback('message', 'Session marked as in progress.');
         $this->dispatch('session-updated');
     }
 
@@ -194,7 +201,7 @@ class Sessions extends Component
         $session = $this->findOperableSession($sessionId);
 
         if (! $session || ! in_array($session->status, [MentorshipSession::STATUS_SCHEDULED, MentorshipSession::STATUS_IN_PROGRESS], true)) {
-            session()->flash('error', 'This session cannot be completed.');
+            $this->flashFeedback('error', 'This session cannot be completed.');
             return;
         }
 
@@ -226,11 +233,12 @@ class Sessions extends Component
         $session = $this->findOperableSession((int) $this->selectedSessionId);
 
         if (! $session) {
-            session()->flash('error', 'Session not found.');
+            $this->flashFeedback('error', 'Session not found.');
             return;
         }
 
-        $session->completeWithOperations([
+        try {
+            $session->completeWithOperations([
             'duration_minutes' => $this->actualDuration,
             'session_notes' => $this->sessionNotes,
             'action_items' => array_values(array_filter($this->actionItems)),
@@ -243,8 +251,12 @@ class Sessions extends Component
                 'completed_from' => 'mentorship_operations',
             ],
         ]);
+        } catch (\DomainException $exception) {
+            $this->flashFeedback('error', $exception->getMessage());
+            return;
+        }
 
-        session()->flash('message', $session->is_billable ? 'Session completed and mentor payout was credited.' : 'Session completed successfully.');
+        $this->flashFeedback('message', $session->is_billable ? 'Session completed and mentor payout was credited.' : 'Session completed successfully.');
         $this->closeModal();
         $this->dispatch('session-completed');
     }
@@ -254,12 +266,12 @@ class Sessions extends Component
         $session = $this->findOperableSession($sessionId);
 
         if (! $session || $session->status !== MentorshipSession::STATUS_COMPLETED) {
-            session()->flash('error', 'Only completed sessions can be paid out.');
+            $this->flashFeedback('error', 'Only completed sessions can be paid out.');
             return;
         }
 
         $transaction = $session->payoutMentorIfNeeded();
-        session()->flash('message', $transaction ? 'Mentor payout credited.' : 'No payout was needed for this session.');
+        $this->flashFeedback('message', $transaction ? 'Mentor payout credited.' : 'No payout was needed for this session.');
         $this->dispatch('session-updated');
     }
 
@@ -268,7 +280,7 @@ class Sessions extends Component
         $session = $this->findOperableSession($sessionId);
 
         if (! $session || $session->status !== MentorshipSession::STATUS_SCHEDULED) {
-            session()->flash('error', 'Only scheduled sessions can be cancelled.');
+            $this->flashFeedback('error', 'Only scheduled sessions can be cancelled.');
             return;
         }
 
@@ -281,7 +293,7 @@ class Sessions extends Component
             'metadata' => $metadata,
         ]);
 
-        session()->flash('message', 'Session cancelled.');
+        $this->flashFeedback('message', 'Session cancelled.');
         $this->dispatch('session-updated');
     }
 

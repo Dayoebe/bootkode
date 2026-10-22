@@ -165,7 +165,7 @@
             50% { opacity: 1; }
         }
 
-        .tab-switch-warning h1 {
+        .tab-switch-warning h2 {
             font-size: 3rem;
             font-weight: bold;
             margin-bottom: 1rem;
@@ -261,7 +261,7 @@
     {{-- Security Warning Overlay (Hidden by default, shown on tab switch) --}}
     <div id="tabSwitchWarning" class="tab-switch-warning" style="display: none;">
         <i class="fas fa-exclamation-triangle" style="font-size: 5rem; margin-bottom: 2rem;"></i>
-        <h1>⚠️ WARNING ⚠️</h1>
+        <h2>Exam notice</h2>
         <p>Tab switching detected!</p>
         <div class="violation-count" id="violationCount">0</div>
         <p>Violations recorded. Your exam may be flagged.</p>

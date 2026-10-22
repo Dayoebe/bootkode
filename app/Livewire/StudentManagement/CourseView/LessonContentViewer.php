@@ -13,13 +13,26 @@ use Livewire\Attributes\On;
 
 class LessonContentViewer extends Component
 {
+    use \App\Livewire\Concerns\RequiresAuthenticatedAccount;
+
+    public function boot(): void
+    {
+        if ($this->lesson) app(\App\Services\CbtAttemptService::class)->authorizeLesson(Auth::user(), $this->lesson);
+    }
+
+    #[\Livewire\Attributes\Locked]
     public $lesson;
+    #[\Livewire\Attributes\Locked]
     public $allLessons;
     public $currentIndex;
     public $isCompleted = false;
+    #[\Livewire\Attributes\Locked]
     public $completedLessons;
+    #[\Livewire\Attributes\Locked]
     public $unlockedSections;
+    #[\Livewire\Attributes\Locked]
     public $hasAssessments = false;
+    #[\Livewire\Attributes\Locked]
     public $allAssessmentsPassed = false;
 
     // Polling management
@@ -30,7 +43,9 @@ class LessonContentViewer extends Component
     public $isTransitioning = false;
 
     // NEW: Time tracking
+    #[\Livewire\Attributes\Locked]
     public $timeSpentSeconds = 0;
+    #[\Livewire\Attributes\Locked]
     public $lessonStartTime;
     public $estimatedTime;
     public $showTimeComparison = false;
@@ -38,6 +53,7 @@ class LessonContentViewer extends Component
     public function mount($lesson, $allLessons, $completedLessons = [], $unlockedSections = [])
     {
         $this->lesson = $lesson;
+        app(\App\Services\CbtAttemptService::class)->authorizeLesson(Auth::user(), $this->lesson);
 
         if (is_array($allLessons)) {
             $this->allLessons = collect($allLessons)->map(function ($lessonData) {
@@ -106,7 +122,7 @@ class LessonContentViewer extends Component
     public function updateTimeSpent()
     {
         if ($this->lessonStartTime) {
-            $elapsed = now()->diffInSeconds($this->lessonStartTime);
+            $elapsed = max(0, (int) $this->lessonStartTime->diffInSeconds(now(), false));
             $this->timeSpentSeconds += $elapsed;
             $this->lessonStartTime = now();
 
@@ -213,30 +229,7 @@ class LessonContentViewer extends Component
 
     protected function checkAllAssessmentsPassed($assessments)
     {
-        foreach ($assessments as $assessment) {
-            $latestAttempt = StudentAnswer::where('user_id', Auth::id())
-                ->where('assessment_id', $assessment->id)
-                ->orderBy('attempt_number', 'desc')
-                ->first();
-
-            if (!$latestAttempt) {
-                return false;
-            }
-
-            $totalPoints = StudentAnswer::where('user_id', Auth::id())
-                ->where('assessment_id', $assessment->id)
-                ->where('attempt_number', $latestAttempt->attempt_number)
-                ->sum('points_earned');
-
-            $maxPoints = $assessment->questions->sum('points');
-            $percentage = $maxPoints > 0 ? round(($totalPoints / $maxPoints) * 100, 1) : 0;
-
-            if ($percentage < $assessment->pass_percentage) {
-                return false;
-            }
-        }
-
-        return true;
+        return $assessments->every(fn ($assessment) => $assessment->isPassedByStudent(Auth::id()));
     }
 
     protected function getLessonAssessments()
@@ -308,6 +301,7 @@ class LessonContentViewer extends Component
 
     public function markAsCompleted()
     {
+        $this->checkAssessments();
         if ($this->hasAssessments && !$this->allAssessmentsPassed) {
             $this->dispatch('notify', [
                 'message' => 'You must pass all assessments in this lesson before marking it as complete.',

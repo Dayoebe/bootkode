@@ -13,6 +13,8 @@ use Illuminate\Support\Facades\Storage;
 
 class BulkEnrollment extends Component
 {
+    use \App\Livewire\Concerns\AuthorizesPlatformAdministration;
+
     use WithPagination, WithFileUploads;
 
     // Upload form
@@ -251,7 +253,7 @@ class BulkEnrollment extends Component
         return view('livewire.institution.bulk-enrollment', [
             'batches' => $batches,
             'institutions' => Institution::where('status', 'active')->get(),
-            'courses' => Course::where('is_published', true)->get(),
+            'courses' => Course::publiclyAvailable()->get(),
             'statuses' => BulkEnrollmentBatch::STATUSES
         ]);
     }

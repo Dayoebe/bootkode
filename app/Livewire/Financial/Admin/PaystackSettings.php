@@ -1,40 +1,24 @@
 <?php
 
-// app/Livewire/Financial/Admin/PaystackSettings.php
 namespace App\Livewire\Financial\Admin;
 
-use Livewire\Component;
+use App\Livewire\Concerns\AuthorizesFinancialAdministration;
 use Livewire\Attributes\Layout;
+use Livewire\Component;
 
-#[Layout('layouts.dashboard')]
+#[Layout('layouts.dashboard', ['title' => 'Payment configuration'])]
 class PaystackSettings extends Component
 {
-    public $publicKey = '';
-    public $secretKey = '';
-    public $webhookUrl = '';
-    public $testMode = true;
-    
-    public function mount()
-    {
-        $this->publicKey = config('services.paystack.public_key');
-        $this->secretKey = config('services.paystack.secret_key');
-        $this->webhookUrl = route('paystack.webhook');
-    }
-    
-    public function save()
-    {
-        // Save Paystack settings
-        session()->flash('success', 'Paystack settings updated successfully');
-    }
-    
-    public function testConnection()
-    {
-        // Test Paystack connection
-        session()->flash('info', 'Connection test completed');
-    }
-    
+    use AuthorizesFinancialAdministration;
+
     public function render()
     {
-        return view('livewire.financial.admin.paystack-settings');
+        $secret = (string) config('services.paystack.secret_key');
+
+        return view('livewire.financial.admin.paystack-settings', [
+            'configured' => filled($secret) && filled(config('services.paystack.public_key')),
+            'testMode' => str_starts_with($secret, 'sk_test_'),
+            'webhookUrl' => route('paystack.webhook'),
+        ]);
     }
 }

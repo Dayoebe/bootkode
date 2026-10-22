@@ -1,7 +1,7 @@
 <?php
 namespace App\Traits;
 
-use App\Models\RevenueSplit;
+use App\Models\Marketplace\RevenueSplit;
 use App\Models\Core\User;
 use App\Models\Marketplace\Wallet;
 use App\Models\Marketplace\WalletTransaction;
@@ -18,8 +18,7 @@ trait HasRevenueSplit
     {
         return $this->revenueSplit ?: $this->revenueSplit()->create([
             'instructor_id' => $this->instructor_id,
-            'instructor_percentage' => 80.00,
-            'platform_percentage' => 20.00,
+            ...RevenueSplit::getDefaultSplit(),
             'is_active' => true
         ]);
     }
@@ -38,12 +37,14 @@ trait HasRevenueSplit
             $this->price,
             WalletTransaction::CATEGORY_COURSE_PURCHASE,
             "Course purchase: {$this->title}",
-            $this
+            $this,
+            ['revenue_split' => $splitAmounts]
         );
 
         // Credit instructor wallet
         $instructorWallet = $this->instructor->getOrCreateInstructorWallet();
-        $instructorWallet->credit(
+        if ($instructorWallet->currency !== $studentWallet->currency) throw new \DomainException('Course settlement currencies must match.');
+        if ($splitAmounts['instructor_amount'] > 0) $instructorWallet->credit(
             $splitAmounts['instructor_amount'],
             WalletTransaction::CATEGORY_INSTRUCTOR_EARNING,
             "Course sale: {$this->title}",

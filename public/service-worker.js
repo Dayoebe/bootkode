@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'bootkode-pwa-2026-05-20-offline-learning';
+const CACHE_VERSION = 'bootkode-pwa-2026-10-20-private-navigation';
 const STATIC_CACHE = `${CACHE_VERSION}-static`;
 const OFFLINE_PACK_CACHE = 'bootkode-offline-packs-v1';
 const OFFLINE_URL = '/offline.html';
@@ -28,6 +28,15 @@ self.addEventListener('activate', (event) => {
           .filter((key) => key.startsWith('bootkode-pwa-') && key !== STATIC_CACHE)
           .map((key) => caches.delete(key))
       ))
+      .then(async () => {
+        const packCache = await caches.open(OFFLINE_PACK_CACHE);
+        for (const request of await packCache.keys()) {
+          const response = await packCache.match(request);
+          if (new URL(request.url).pathname.startsWith('/course/') && response?.headers.get('content-type')?.includes('text/html')) {
+            await packCache.delete(request);
+          }
+        }
+      })
       .then(() => self.clients.claim())
   );
 });
@@ -45,14 +54,16 @@ self.addEventListener('fetch', (event) => {
     event.respondWith(
       fetch(request)
         .then((response) => {
-          if (response.ok && (requestUrl.pathname.startsWith('/course/') || requestUrl.pathname === '/offline-learning.html')) {
+          if (response.ok && requestUrl.pathname === '/offline-learning.html') {
             const copy = response.clone();
             caches.open(OFFLINE_PACK_CACHE).then((cache) => cache.put(request, copy));
           }
 
           return response;
         })
-        .catch(() => caches.match(request).then((cached) => cached || caches.match(OFFLINE_URL)))
+        .catch(() => requestUrl.pathname.startsWith('/course/')
+          ? caches.match(OFFLINE_URL)
+          : caches.match(request).then((cached) => cached || caches.match(OFFLINE_URL)))
     );
     return;
   }
@@ -66,14 +77,12 @@ self.addEventListener('fetch', (event) => {
     requestUrl.pathname.startsWith('/img/') ||
     requestUrl.pathname.startsWith('/icons/') ||
     requestUrl.pathname.startsWith('/js/') ||
-    requestUrl.pathname.startsWith('/storage/') ||
-    requestUrl.pathname.startsWith('/course/') ||
     requestUrl.pathname === '/manifest.webmanifest' ||
     requestUrl.pathname === OFFLINE_URL ||
     requestUrl.pathname === '/offline-learning.html'
   ) {
     event.respondWith(
-      caches.open(requestUrl.pathname.startsWith('/course/') || requestUrl.pathname.startsWith('/storage/') ? OFFLINE_PACK_CACHE : STATIC_CACHE).then((cache) => (
+      caches.open(STATIC_CACHE).then((cache) => (
         cache.match(request).then((cached) => {
           const fresh = fetch(request).then((response) => {
             if (response.ok) {

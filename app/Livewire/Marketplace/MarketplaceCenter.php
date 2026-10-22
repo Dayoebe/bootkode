@@ -29,6 +29,25 @@ class MarketplaceCenter extends Component
         'total_earnings' => 0,
     ];
 
+    public function boot(): void
+    {
+        abort_unless(auth()->check(), 403);
+    }
+
+    protected function authorizeTab(string $tab): void
+    {
+        abort_unless(in_array($tab, ['browse', 'shopping', 'vendor', 'business', 'admin', 'content', 'system'], true), 422);
+        if (in_array($tab, ['vendor', 'business'], true)) {
+            abort_unless(auth()->user()->canManageCourses(), 403);
+        }
+        if ($tab === 'content') {
+            abort_unless(auth()->user()->hasAnyRole(['super_admin', 'academy_admin', 'content_editor']), 403);
+        }
+        if (in_array($tab, ['admin', 'system'], true)) {
+            abort_unless(auth()->user()->hasAnyRole(['super_admin', 'academy_admin']), 403);
+        }
+    }
+
     public function mount()
     {
         $this->user = auth()->user();
@@ -37,8 +56,8 @@ class MarketplaceCenter extends Component
         $currentRoute = Route::currentRouteName();
         $this->activeTab = match ($currentRoute) {
             'marketplace.browse', 'marketplace.categories', 'marketplace.product.show' => 'browse',
-            'marketplace.checkout', 'marketplace.purchases' => 'shopping',
-            'marketplace.seller.create', 'marketplace.seller.listings', 'marketplace.seller.drafts' => 'vendor',
+            'marketplace.cart', 'marketplace.checkout', 'marketplace.purchases' => 'shopping',
+            'marketplace.sell', 'marketplace.seller.create', 'marketplace.seller.listings', 'marketplace.seller.drafts' => 'vendor',
             'marketplace.vendor.dashboard', 'marketplace.vendor.orders', 'marketplace.vendor.withdrawals' => 'business',
             'marketplace.vendor.applications', 'marketplace.orders', 'marketplace.payments' => 'admin',
             'marketplace.promotions', 'marketplace.reviews' => 'content',
@@ -51,6 +70,7 @@ class MarketplaceCenter extends Component
 
     public function setActiveTab($tab)
     {
+        $this->authorizeTab($tab);
         $this->activeTab = $tab;
         $this->loadStatistics();
     }
@@ -89,6 +109,8 @@ class MarketplaceCenter extends Component
 
     public function render()
     {
+        $this->authorizeTab($this->activeTab);
+        $this->user = auth()->user();
         return view('livewire.marketplace.marketplace-center', [
             'user' => $this->user,
             'stats' => $this->stats,

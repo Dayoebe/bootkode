@@ -15,7 +15,10 @@ class UserProgress extends Model
         'lesson_id',
         'assessment_id',
         'is_completed',
+        'completed_at',
     ];
+
+    protected $casts = ['is_completed' => 'boolean', 'completed_at' => 'datetime'];
 
     public function user()
     {

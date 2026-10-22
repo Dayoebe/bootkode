@@ -1,31 +1,11 @@
-<!-- resources/views/livewire/financial/admin/financial-settings.blade.php -->
-<div class=" px-4 sm:px-6 lg:px-8 py-8">
-    <div class="mb-8">
-        <h1 class="text-3xl font-bold text-gray-900">Financial Settings</h1>
-        <p class="text-gray-600">Configure platform financial parameters</p>
-    </div>
-    
-    <div class="bg-white rounded-xl shadow-lg p-6">
-        <form wire:submit.prevent="save" class="space-y-6">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                    <label class="block text-sm font-medium text-gray-700">Commission Rate (%)</label>
-                    <input wire:model="commissionRate" type="number" min="0" max="100" class="mt-1 w-full rounded-md border-gray-300">
-                </div>
-                <div>
-                    <label class="block text-sm font-medium text-gray-700">Minimum Withdrawal (₦)</label>
-                    <input wire:model="minimumWithdrawal" type="number" min="100" class="mt-1 w-full rounded-md border-gray-300">
-                </div>
-            </div>
-            
-            <div class="flex items-center">
-                <input wire:model="autoApproveWithdrawals" type="checkbox" class="rounded border-gray-300">
-                <label class="ml-2 text-sm text-gray-700">Auto-approve withdrawals under ₦10,000</label>
-            </div>
-            
-            <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">
-                Save Settings
-            </button>
-        </form>
-    </div>
+<div class="space-y-6">
+    <x-ui.page-header title="Financial rules" description="The current rules used for course revenue and withdrawal requests." />
+    <x-ui.panel title="Current limits">
+        <dl class="grid gap-6 sm:grid-cols-3">
+            <div><dt class="text-sm text-content-muted">Default platform share</dt><dd class="mt-2 text-xl font-bold tabular-nums">{{ $platformPercentage }}%</dd></div>
+            <div><dt class="text-sm text-content-muted">Minimum withdrawal</dt><dd class="mt-2 text-xl font-bold tabular-nums">₦{{ number_format($minimumWithdrawal, 2) }}</dd></div>
+            <div><dt class="text-sm text-content-muted">Maximum withdrawal</dt><dd class="mt-2 text-xl font-bold tabular-nums">₦{{ number_format($maximumWithdrawal, 2) }}</dd></div>
+        </dl>
+        <p class="mt-6 text-sm leading-6 text-content-muted">Existing course-specific revenue splits are preserved. Withdrawals require administrator review.</p>
+    </x-ui.panel>
 </div>

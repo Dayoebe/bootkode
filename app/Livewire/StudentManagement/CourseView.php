@@ -30,15 +30,31 @@ use Livewire\Attributes\On;
 #[Title('Course View')]
 class CourseView extends Component
 {
+    use \App\Livewire\Concerns\RequiresAuthenticatedAccount;
+
+    public function boot(): void
+    {
+        if ($this->course instanceof Course) abort_unless(Auth::user()->enrollments()->where('course_id', $this->course->id)->exists()
+            || Auth::user()->courses()->where('courses.id', $this->course->id)->exists(), 403);
+    }
+
+    #[\Livewire\Attributes\Locked]
     public $course;
+    #[\Livewire\Attributes\Locked]
     public $currentLesson;
+    #[\Livewire\Attributes\Locked]
     public $currentSection;
+    #[\Livewire\Attributes\Locked]
     public $completedLessons = [];
+    #[\Livewire\Attributes\Locked]
     public $unlockedSections = [];
+    #[\Livewire\Attributes\Locked]
     public $sectionCompletionThreshold;
     public $reviewRating = 5;
     public $reviewComment = '';
+    #[\Livewire\Attributes\Locked]
     public $overallProgress = 0;
+    #[\Livewire\Attributes\Locked]
     public $lastViewedLesson = null;
     public bool $certificateEarned = false;
     public bool $shouldCelebrate = false;
@@ -400,6 +416,9 @@ class CourseView extends Component
     protected function completeLessonProgress(int $lessonId): bool
     {
         try {
+            $lesson = $this->course->allLessons()->findOrFail($lessonId);
+            app(\App\Services\CbtAttemptService::class)->authorizeLesson(Auth::user(), $lesson);
+            $this->refreshProgressState();
             if (in_array($lessonId, $this->completedLessons, true)) {
                 return true;
             }
@@ -423,6 +442,9 @@ class CourseView extends Component
                     $this->checkAndUnlockNextSection($lessonData['section']);
                 }
             }
+
+            $completedLesson = \App\Models\Learning\Lesson::findOrFail($lessonId);
+            app(\App\Services\GamificationService::class)->handleLessonCompletion(Auth::user(), $completedLesson);
 
             $this->checkAndAwardCertificate();
             $this->refreshProgressState();
@@ -696,38 +718,7 @@ class CourseView extends Component
 
     protected function canCompleteLessonWithoutAssessments($lessonId)
     {
-        $assessments = Assessment::where('lesson_id', $lessonId)->get();
-
-        if ($assessments->isEmpty()) {
-            return true; // No assessments, can complete
-        }
-
-        // Check if all assessments are passed
-        foreach ($assessments as $assessment) {
-            $latestAttempt = StudentAnswer::where('user_id', Auth::id())
-                ->where('assessment_id', $assessment->id)
-                ->orderBy('attempt_number', 'desc')
-                ->first();
-
-            if (!$latestAttempt) {
-                return false; // No attempt made
-            }
-
-            // Calculate score for the latest attempt
-            $totalPoints = StudentAnswer::where('user_id', Auth::id())
-                ->where('assessment_id', $assessment->id)
-                ->where('attempt_number', $latestAttempt->attempt_number)
-                ->sum('points_earned');
-
-            $maxPoints = $assessment->questions->sum('points');
-            $percentage = $maxPoints > 0 ? round(($totalPoints / $maxPoints) * 100, 1) : 0;
-
-            if ($percentage < $assessment->pass_percentage) {
-                return false; // Assessment not passed
-            }
-        }
-
-        return true; // All assessments passed
+        return Assessment::where('lesson_id', $lessonId)->get()->every(fn ($assessment) => $assessment->isPassedByStudent(Auth::id()));
     }
     /**
      * Get the last viewed lesson for "Continue Learning" feature
@@ -815,6 +806,8 @@ class CourseView extends Component
         if ($completedLessons < count($totalLessons)) {
             return false; // Not all lessons completed
         }
+
+        if (!app(\App\Services\CertificateService::class)->canRequestCertificate(Auth::id(), $this->course->id)['can_request']) return false;
 
         // Calculate completion percentage
         $completionPercentage = 100;

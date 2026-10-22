@@ -96,40 +96,31 @@ class InstitutionInvitation extends Model
 
     public function accept(?User $user = null): InstitutionUser
     {
-        $user ??= $this->invitee;
+        $user ??= auth()->user();
+        abort_unless($user, 403);
+        return \Illuminate\Support\Facades\DB::transaction(function () use ($user) {
+            $invitation = static::lockForUpdate()->findOrFail($this->id);
+            abort_unless((int) $invitation->user_id === (int) $user->id
+                && strcasecmp($invitation->email, $user->email) === 0, 403);
+            abort_unless($invitation->isPending(), 410, 'This invitation is no longer pending.');
+            $institution = Institution::lockForUpdate()->findOrFail($invitation->institution_id);
+            $membership = InstitutionUser::withTrashed()->where('institution_id', $institution->id)->where('user_id', $user->id)->first();
+            if (!$membership || $membership->trashed() || $membership->status !== 'active') {
+                $institution->updateUserCount();
+                $institution->ensureCanAddUsers();
+            }
+            $membership ??= new InstitutionUser(['institution_id' => $institution->id, 'user_id' => $user->id]);
+            if ($membership->trashed()) {
+                $membership->restore();
+            }
+            $membership->fill(['role' => $invitation->role, 'department' => $invitation->department,
+                'status' => 'active', 'joined_at' => now(), 'added_by' => $invitation->invited_by])->save();
+            $invitation->update(['status' => 'accepted', 'accepted_at' => now(), 'accepted_user_id' => $user->id]);
+            $institution->updateUserCount();
+            $this->refresh();
 
-        if (! $user) {
-            throw new \RuntimeException('This invitation is not attached to a user account.');
-        }
-
-        if ($this->isExpired()) {
-            $this->markExpired();
-            throw new \RuntimeException('This invitation has expired.');
-        }
-
-        $institutionUser = InstitutionUser::updateOrCreate(
-            [
-                'institution_id' => $this->institution_id,
-                'user_id' => $user->id,
-            ],
-            [
-                'role' => $this->role,
-                'department' => $this->department,
-                'status' => 'active',
-                'joined_at' => now(),
-                'added_by' => $this->invited_by,
-            ]
-        );
-
-        $this->update([
-            'status' => 'accepted',
-            'accepted_at' => now(),
-            'accepted_user_id' => $user->id,
-        ]);
-
-        $this->institution?->updateUserCount();
-
-        return $institutionUser;
+            return $membership;
+        });
     }
 
     public function revoke(): void

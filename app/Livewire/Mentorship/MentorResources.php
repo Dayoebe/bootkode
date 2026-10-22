@@ -15,8 +15,11 @@ use Livewire\Attributes\Layout;
 ])]
 class MentorResources extends Component
 {
+    use \App\Livewire\Concerns\AuthorizesMentoring;
+
     public $activeCategory = 'getting-started';
     
+    #[\Livewire\Attributes\Locked]
     public $resources = [
         'getting-started' => [
             'title' => 'Getting Started',
@@ -210,11 +213,13 @@ class MentorResources extends Component
 
     public function setActiveCategory($category)
     {
+        abort_unless(array_key_exists($category, $this->resources), 422);
         $this->activeCategory = $category;
     }
 
     public function render()
     {
+        abort_unless(array_key_exists($this->activeCategory, $this->resources), 422);
         return view('livewire.mentorship.mentor-resources');
     }
 }

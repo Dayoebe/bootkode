@@ -139,11 +139,11 @@
     </div>
 
     @if($showCohortModal)
-        <div class="fixed inset-0 z-50 h-full w-full overflow-y-auto bg-gray-600 bg-opacity-50 dark:bg-black dark:bg-opacity-70" wire:click="closeModals">
+        <div class="fixed inset-0 z-50 h-full w-full overflow-y-auto bg-gray-600 bg-opacity-50 dark:bg-black dark:bg-opacity-70" wire:click="closeModals" x-data="{ dialogOpen: true }" x-trap.inert.noscroll="dialogOpen" x-on:keydown.escape.window="dialogOpen = false; $wire.closeModals()" role="dialog" aria-modal="true" aria-label="Cohort Management dialog" tabindex="-1">
             <div class="relative top-16 mx-auto w-11/12 rounded-md border border-gray-200 bg-white p-5 shadow-lg dark:border-gray-700 dark:bg-gray-800 md:w-2/3 lg:w-1/2" wire:click.stop>
                 <div class="flex items-center justify-between border-b border-gray-200 pb-4 dark:border-gray-700">
                     <h3 class="text-lg font-semibold text-gray-900 dark:text-white">{{ $editingCohortId ? 'Edit Cohort' : 'New Cohort' }}</h3>
-                    <button wire:click="closeModals" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"><i class="fas fa-times text-xl"></i></button>
+                    <button aria-label="Close dialog" wire:click="closeModals" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"><i class="fas fa-times text-xl"></i></button>
                 </div>
 
                 <form wire:submit.prevent="saveCohort" class="mt-6 space-y-4">
@@ -194,14 +194,14 @@
     @endif
 
     @if($showManageModal && $selectedCohort)
-        <div class="fixed inset-0 z-50 h-full w-full overflow-y-auto bg-gray-600 bg-opacity-50 dark:bg-black dark:bg-opacity-70" wire:click="closeModals">
+        <div class="fixed inset-0 z-50 h-full w-full overflow-y-auto bg-gray-600 bg-opacity-50 dark:bg-black dark:bg-opacity-70" wire:click="closeModals" x-data="{ dialogOpen: true }" x-trap.inert.noscroll="dialogOpen" x-on:keydown.escape.window="dialogOpen = false; $wire.closeModals()" role="dialog" aria-modal="true" aria-label="Cohort Management dialog" tabindex="-1">
             <div class="relative top-10 mx-auto w-11/12 rounded-md border border-gray-200 bg-white p-5 shadow-lg dark:border-gray-700 dark:bg-gray-800 lg:w-4/5" wire:click.stop>
                 <div class="flex items-center justify-between border-b border-gray-200 pb-4 dark:border-gray-700">
                     <div>
                         <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Manage {{ $selectedCohort->name }}</h3>
                         <p class="text-sm text-gray-500 dark:text-gray-400">{{ $selectedCohort->institution->name }}</p>
                     </div>
-                    <button wire:click="closeModals" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"><i class="fas fa-times text-xl"></i></button>
+                    <button aria-label="Close dialog" wire:click="closeModals" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"><i class="fas fa-times text-xl"></i></button>
                 </div>
 
                 <div class="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-2">
@@ -254,11 +254,11 @@
     @endif
 
     @if($showReportModal && $selectedCohort)
-        <div class="fixed inset-0 z-50 h-full w-full overflow-y-auto bg-gray-600 bg-opacity-50 dark:bg-black dark:bg-opacity-70" wire:click="closeModals">
+        <div class="fixed inset-0 z-50 h-full w-full overflow-y-auto bg-gray-600 bg-opacity-50 dark:bg-black dark:bg-opacity-70" wire:click="closeModals" x-data="{ dialogOpen: true }" x-trap.inert.noscroll="dialogOpen" x-on:keydown.escape.window="dialogOpen = false; $wire.closeModals()" role="dialog" aria-modal="true" aria-label="Cohort Management dialog" tabindex="-1">
             <div class="relative top-10 mx-auto w-11/12 rounded-md border border-gray-200 bg-white p-5 shadow-lg dark:border-gray-700 dark:bg-gray-800 lg:w-4/5" wire:click.stop>
                 <div class="flex items-center justify-between border-b border-gray-200 pb-4 dark:border-gray-700">
                     <h3 class="text-lg font-semibold text-gray-900 dark:text-white">{{ $selectedCohort->name }} Report</h3>
-                    <button wire:click="closeModals" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"><i class="fas fa-times text-xl"></i></button>
+                    <button aria-label="Close dialog" wire:click="closeModals" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"><i class="fas fa-times text-xl"></i></button>
                 </div>
                 <div class="mt-6 overflow-x-auto">
                     <table class="min-w-full divide-y divide-gray-200 text-sm dark:divide-gray-700">

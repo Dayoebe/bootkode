@@ -7,7 +7,7 @@
             <div class="flex items-center justify-between">
                 <div>
                     <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Total Revenue</p>
-                    <p class="text-3xl font-bold text-green-600 dark:text-green-400">${{ number_format($stats['total_revenue']) }}</p>
+                    <p class="text-3xl font-bold text-green-600 dark:text-green-400">{{ $stats['total_revenue'] === null ? 'Not connected' : number_format($stats['total_revenue']) }}</p>
                     <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">{{ $selectedPeriod }} days</p>
                 </div>
                 <div class="bg-green-100 dark:bg-green-900/30 p-3 rounded-full">

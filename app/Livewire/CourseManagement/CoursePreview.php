@@ -54,8 +54,22 @@ class CoursePreview extends Component
     // Processing states
     public bool $isEnrolling = false;
 
+    public function boot(): void
+    {
+        abort_unless(auth()->check(), 403);
+        if (isset($this->course)) $this->authorizePreviewAccess($this->course);
+    }
+
+    protected function authorizePreviewAccess(Course $course): void
+    {
+        abort_unless(auth()->user()->hasAnyRole(['super_admin', 'academy_admin'])
+            || (int) $course->instructor_id === (int) auth()->id()
+            || Course::publiclyAvailable()->whereKey($course->id)->exists(), 403);
+    }
+
     public function mount(Course $course)
     {
+        $this->authorizePreviewAccess($course);
         Log::info('CoursePreview: Component mounted', ['course_id' => $course->id]);
 
         $this->course = $course->load([

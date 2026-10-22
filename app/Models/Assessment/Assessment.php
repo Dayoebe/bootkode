@@ -12,6 +12,8 @@ use App\Models\Learning\Lesson;
 
 class Assessment extends Model
 {
+    use \App\Traits\PreservesCourseHistory;
+
     use HasFactory, SoftDeletes;
 
     protected $fillable = [
@@ -213,6 +215,13 @@ class Assessment extends Model
             return null;
         }
 
+        $attempt = (int) ($answers->first()->attempt_number ?? 1);
+        $recorded = LearningSession::where('user_id', $userId)->where('activity_type', 'assessment')->where('metadata->assessment_id', $this->id)
+            ->where('metadata->attempt', $attempt)->whereNotNull('ended_at')->latest('id')->first();
+        if ($recorded && isset($recorded->metadata['results'])) {
+            return array_merge($recorded->metadata['results'], ['submitted_at' => $recorded->ended_at, 'answers' => $answers->keyBy('question_id')]);
+        }
+        $pending = $answers->contains(fn ($answer) => $answer->question && !in_array($answer->question->question_type, ['multiple_choice', 'true_false'], true) && !$answer->graded_at);
         $totalQuestions = $this->questions()->count();
         $correctAnswers = $answers->where('is_correct', true)->count();
         $totalPoints = $answers->sum('points_earned');
@@ -226,8 +235,9 @@ class Assessment extends Model
             'correct_answers' => $correctAnswers,
             'total_points' => $totalPoints,
             'max_points' => $maxPoints,
-            'percentage' => $percentage,
-            'passed' => $percentage >= $this->pass_percentage,
+            'percentage' => $pending ? null : $percentage,
+            'pending_review' => $pending,
+            'passed' => !$pending && is_numeric($this->pass_percentage) && $this->pass_percentage >= 1 && $this->pass_percentage <= 100 && $percentage >= $this->pass_percentage,
             'attempt_number' => $answers->first()->attempt_number ?? 1,
             'submitted_at' => $answers->first()->submitted_at ?? null,
             'answers' => $answers->keyBy('question_id')

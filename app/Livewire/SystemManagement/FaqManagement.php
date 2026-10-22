@@ -11,6 +11,7 @@ use Livewire\Attributes\Layout;
 class FaqManagement extends Component
 {
     use WithPagination;
+    use \App\Livewire\Concerns\AuthorizesPlatformAdministration;
 
     public $question = '';
     public $answer = '';

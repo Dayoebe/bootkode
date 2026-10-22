@@ -98,6 +98,29 @@ class User extends Authenticatable implements MustVerifyEmail
         'show_phone_publicly' => 'boolean',
     ];
 
+    public function delete()
+    {
+        if (!$this->exists) return null;
+        return \Illuminate\Support\Facades\DB::transaction(function () {
+            static::whereKey($this->id)->lockForUpdate()->firstOrFail();
+            if (\App\Models\Credentials\Certificate::where('user_id', $this->id)->whereIn('status', ['issued', 'approved', 'revoked'])->exists()) {
+                throw new \DomainException('An issued credential is linked to this account. Contact support to arrange account removal while preserving verification records.');
+            }
+            foreach (['course_enrollments', 'course_user', 'lesson_user', 'lesson_progress', 'user_progress', 'student_answers', 'learning_sessions'] as $table) {
+                if (\Illuminate\Support\Facades\DB::table($table)->where('user_id', $this->id)->exists()) {
+                    throw new \DomainException('Learning history is linked to this account. Contact support to arrange account removal while preserving these records.');
+                }
+            }
+            if (\Illuminate\Support\Facades\DB::table('wallet_transactions')->whereIn('wallet_id', \Illuminate\Support\Facades\DB::table('wallets')->where('user_id', $this->id)->select('id'))->exists()) {
+                throw new \DomainException('Financial history is linked to this account. Contact support to arrange account removal while preserving these records.');
+            }
+            foreach (\App\Models\Learning\Course::where('instructor_id', $this->id)->lockForUpdate()->get(['id']) as $course) {
+                app(\App\Services\LearningHistoryGuard::class)->ensureRemovable((int) $course->id);
+            }
+            return parent::delete();
+        });
+    }
+
     protected static function booted()
     {
         static::created(function ($user) {
@@ -493,15 +516,16 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function getOrCreateGamificationData()
     {
-        if (!$this->gamificationData) {
-            $data = $this->gamificationData()->create([
-                'last_quest_reset' => now()->startOfDay(),
-            ]);
-            $data->generateDailyQuests();
+        return \Illuminate\Support\Facades\DB::transaction(function () {
+            static::whereKey($this->id)->lockForUpdate()->firstOrFail();
+            $data = $this->gamificationData()->oldest('id')->lockForUpdate()->first();
+            if (!$data) {
+                $data = $this->gamificationData()->create(['last_quest_reset' => now()->startOfDay(), 'energy_last_updated' => now()]);
+                $data->generateDailyQuests();
+            }
+            $this->setRelation('gamificationData', $data);
             return $data;
-        }
-
-        return $this->gamificationData;
+        });
     }
 
     public function getLevel()
@@ -544,21 +568,14 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function spendCurrency($coins = 0, $gems = 0, $purpose = 'purchase')
     {
-        if (!$this->canAfford($coins, $gems)) {
-            return false;
-        }
-
-        $data = $this->getOrCreateGamificationData();
-
-        if ($coins > 0) {
-            $data->spendCoins($coins, $purpose);
-        }
-
-        if ($gems > 0) {
-            $data->spendGems($gems, $purpose);
-        }
-
-        return true;
+        if (!is_int($coins) || !is_int($gems) || $coins < 0 || $gems < 0) return false;
+        return \Illuminate\Support\Facades\DB::transaction(function () use ($coins, $gems, $purpose) {
+            $data = $this->getOrCreateGamificationData();
+            if ($data->coins < $coins || $data->gems < $gems) return false;
+            if ($coins > 0) $data->spendCoins($coins, $purpose);
+            if ($gems > 0) $data->spendGems($gems, $purpose);
+            return true;
+        });
     }
 
     public function getEquippedItems()
@@ -697,24 +714,20 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function applyForAffiliate(array $additionalData = []): ?\App\Models\Marketplace\Affiliate
     {
-        if (!$this->canBecomeAffiliate() || $this->affiliate) {
-            return null;
-        }
-
-        $isAutoApproved = $this->hasRole([self::ROLE_INSTRUCTOR, self::ROLE_SUPER_ADMIN]);
-
-        return \App\Models\Marketplace\Affiliate::create([
-            'user_id' => $this->id,
-            'commission_rate' => 30.00,
-            'status' => $isAutoApproved ? \App\Models\Marketplace\Affiliate::STATUS_ACTIVE : \App\Models\Marketplace\Affiliate::STATUS_INACTIVE,
-            'approved_at' => $isAutoApproved ? now() : null,
-            'approved_by' => $isAutoApproved ? $this->id : null,
-            'metadata' => array_merge([
-                'application_date' => now(),
-                'auto_approved' => $isAutoApproved,
-                'user_role' => $this->role
-            ], $additionalData)
-        ]);
+        return \Illuminate\Support\Facades\DB::transaction(function () use ($additionalData) {
+            static::whereKey($this->id)->lockForUpdate()->firstOrFail();
+            if (!$this->canBecomeAffiliate() || $this->affiliate()->exists()) return null;
+            $rate = (float) config('affiliate.default_commission_rate', 30);
+            if ($rate < 0 || $rate > 100) throw new \DomainException('Affiliate commission default is invalid.');
+            $isAutoApproved = $this->hasRole(self::ROLE_SUPER_ADMIN)
+                || ($this->hasRole(self::ROLE_INSTRUCTOR) && config('affiliate.auto_approve_instructors', true));
+            return \App\Models\Marketplace\Affiliate::create([
+                'user_id' => $this->id, 'commission_rate' => $rate,
+                'status' => $isAutoApproved ? \App\Models\Marketplace\Affiliate::STATUS_ACTIVE : \App\Models\Marketplace\Affiliate::STATUS_INACTIVE,
+                'approved_at' => $isAutoApproved ? now() : null, 'approved_by' => $isAutoApproved ? $this->id : null,
+                'metadata' => array_merge($additionalData, ['application_date' => now(), 'auto_approved' => $isAutoApproved, 'user_role' => $this->role]),
+            ]);
+        });
     }
 
     public function getAffiliateBalance(): float

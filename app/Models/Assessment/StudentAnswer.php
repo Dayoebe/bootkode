@@ -20,11 +20,13 @@ class StudentAnswer extends Model
         'time_spent_seconds',
         'submitted_at',
         'question_order',
+        'graded_by', 'graded_at', 'feedback',
         'exam_data'
     ];
 
     protected $casts = [
         'exam_data' => 'array',
+        'graded_at' => 'datetime',
         'submitted_at' => 'datetime',
         'question_order' => 'array'
     ];
@@ -33,10 +35,14 @@ class StudentAnswer extends Model
      * Auto-grade the answer
      * The answer is ALREADY in original position (mapped in CbtExamInterface)
      */
-    public function autoGrade()
+    public function autoGrade(?array $gradingSnapshot = null)
     {
         try {
             $question = $this->question;
+            if ($question && $gradingSnapshot) {
+                $question = clone $question;
+                $question->forceFill(\Illuminate\Support\Arr::only($gradingSnapshot, ['correct_answers', 'points', 'question_type']));
+            }
             $userAnswer = $this->answer; // Already in ORIGINAL position
 
             if (!$question) {
@@ -56,14 +62,6 @@ class StudentAnswer extends Model
             }
             $originalCorrectAnswers = array_map('intval', $originalCorrectAnswers);
 
-            \Log::info('Auto-grading', [
-                'question_id' => $question->id,
-                'question_type' => $question->question_type,
-                'user_answer' => $userAnswer,
-                'original_correct' => $originalCorrectAnswers,
-                'exam_data' => $this->exam_data
-            ]);
-
             // Grade based on question type
             if ($question->question_type === 'multiple_choice') {
                 $this->gradeMultipleChoice($question, $userAnswer, $originalCorrectAnswers);
@@ -75,12 +73,6 @@ class StudentAnswer extends Model
             }
 
             $this->save();
-
-            \Log::info('Grading result', [
-                'question_id' => $question->id,
-                'is_correct' => $this->is_correct,
-                'points_earned' => $this->points_earned
-            ]);
 
             return true;
 
@@ -101,15 +93,16 @@ class StudentAnswer extends Model
      */
     protected function gradeMultipleChoice($question, $userAnswer, $originalCorrectAnswers)
     {
-        // Simple comparison - userAnswer is already in original position
-        $this->is_correct = in_array((int) $userAnswer, $originalCorrectAnswers);
+        $selected = $userAnswer;
+        if (is_string($userAnswer)) {
+            $decoded = json_decode($userAnswer, true);
+            if (json_last_error() === JSON_ERROR_NONE && $decoded !== null) $selected = $decoded;
+        }
+        $selected = array_values(array_unique(array_map('intval', is_array($selected) ? $selected : [$selected])));
+        $expected = array_values(array_unique(array_map('intval', $originalCorrectAnswers)));
+        sort($selected); sort($expected);
+        $this->is_correct = $selected === $expected;
         $this->points_earned = $this->is_correct ? $question->points : 0;
-
-        \Log::debug('Multiple choice grading', [
-            'user_answer' => $userAnswer,
-            'correct_answers' => $originalCorrectAnswers,
-            'is_correct' => $this->is_correct
-        ]);
     }
 
     /**
@@ -123,11 +116,6 @@ class StudentAnswer extends Model
         $this->is_correct = $userAnswer === $correctAnswer;
         $this->points_earned = $this->is_correct ? $question->points : 0;
 
-        \Log::debug('True/false grading', [
-            'user_answer' => $userAnswer,
-            'correct_answer' => $correctAnswer,
-            'is_correct' => $this->is_correct
-        ]);
     }
 
     // Relationships

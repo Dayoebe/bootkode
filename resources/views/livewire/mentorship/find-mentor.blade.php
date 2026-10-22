@@ -30,7 +30,7 @@
             <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between mb-6">
                 <h2 class="text-2xl font-bold text-themed-primary mb-4 lg:mb-0 transition-colors duration-300">Browse Mentors</h2>
                 <div class="text-sm text-themed-secondary transition-colors duration-300">
-                    <span class="bg-accent-primary/10 text-accent-primary px-3 py-1 rounded-full border border-accent-primary/30">
+                    <span class="bg-brand/10 text-brand px-3 py-1 rounded-full border border-brand/30">
                         {{ $mentors->total() }} mentors available
                     </span>
                 </div>
@@ -41,7 +41,7 @@
                 <div class="relative">
                     <input wire:model.live.debounce.300ms="searchTerm" type="text"
                         placeholder="Search by name, skills, or specialization..."
-                        class="w-full pl-12 pr-4 py-4 border border-themed-primary rounded-xl focus:ring-2 focus:ring-accent-primary focus:border-transparent text-lg bg-themed-secondary text-themed-primary placeholder-themed-tertiary transition-colors duration-300">
+                        class="w-full pl-12 pr-4 py-4 border border-themed-primary rounded-xl focus:ring-2 focus:ring-brand focus:border-transparent text-lg bg-themed-secondary text-themed-primary placeholder-themed-tertiary transition-colors duration-300">
                     <div class="absolute left-4 top-1/2 transform -translate-y-1/2">
                         <i class="fas fa-search text-themed-tertiary transition-colors duration-300"></i>
                     </div>
@@ -51,7 +51,7 @@
             <!-- Filters -->
             <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
                 <select wire:model.live="experienceFilter"
-                    class="px-4 py-2 border border-themed-primary rounded-lg focus:ring-2 focus:ring-accent-primary focus:border-transparent bg-themed-secondary text-themed-primary transition-colors duration-300">
+                    class="px-4 py-2 border border-themed-primary rounded-lg focus:ring-2 focus:ring-brand focus:border-transparent bg-themed-secondary text-themed-primary transition-colors duration-300">
                     <option value="">All Experience</option>
                     <option value="junior">Junior Level</option>
                     <option value="mid">Mid Level</option>
@@ -60,13 +60,13 @@
                 </select>
 
                 <select wire:model.live="availabilityFilter"
-                    class="px-4 py-2 border border-themed-primary rounded-lg focus:ring-2 focus:ring-accent-primary focus:border-transparent bg-themed-secondary text-themed-primary transition-colors duration-300">
+                    class="px-4 py-2 border border-themed-primary rounded-lg focus:ring-2 focus:ring-brand focus:border-transparent bg-themed-secondary text-themed-primary transition-colors duration-300">
                     <option value="available">Available Now</option>
                     <option value="all">All Mentors</option>
                 </select>
 
                 <select wire:model.live="ratingFilter"
-                    class="px-4 py-2 border border-themed-primary rounded-lg focus:ring-2 focus:ring-accent-primary focus:border-transparent bg-themed-secondary text-themed-primary transition-colors duration-300">
+                    class="px-4 py-2 border border-themed-primary rounded-lg focus:ring-2 focus:ring-brand focus:border-transparent bg-themed-secondary text-themed-primary transition-colors duration-300">
                     <option value="">Any Rating</option>
                     <option value="4.5">4.5+ Stars</option>
                     <option value="4">4+ Stars</option>
@@ -74,7 +74,7 @@
                 </select>
 
                 <select wire:model.live="priceRangeFilter"
-                    class="px-4 py-2 border border-themed-primary rounded-lg focus:ring-2 focus:ring-accent-primary focus:border-transparent bg-themed-secondary text-themed-primary transition-colors duration-300">
+                    class="px-4 py-2 border border-themed-primary rounded-lg focus:ring-2 focus:ring-brand focus:border-transparent bg-themed-secondary text-themed-primary transition-colors duration-300">
                     <option value="">Any Price</option>
                     <option value="0-0">Free</option>
                     <option value="0-50">$0-50/hr</option>
@@ -83,7 +83,7 @@
                 </select>
 
                 <select wire:model.live="specializationFilter"
-                    class="px-4 py-2 border border-themed-primary rounded-lg focus:ring-2 focus:ring-accent-primary focus:border-transparent bg-themed-secondary text-themed-primary transition-colors duration-300">
+                    class="px-4 py-2 border border-themed-primary rounded-lg focus:ring-2 focus:ring-brand focus:border-transparent bg-themed-secondary text-themed-primary transition-colors duration-300">
                     <option value="">All Specializations</option>
                     <option value="Web Development">Web Development</option>
                     <option value="Mobile Development">Mobile Development</option>
@@ -94,11 +94,11 @@
 
                 <div class="flex items-center space-x-2">
                     <button wire:click="$set('viewMode', 'grid')"
-                        class="p-2 rounded-lg transition-colors duration-300 {{ $viewMode === 'grid' ? 'bg-accent-primary/20 text-accent-primary' : 'text-themed-tertiary hover:text-themed-secondary' }}">
+                        class="p-2 rounded-lg transition-colors duration-300 {{ $viewMode === 'grid' ? 'bg-brand/20 text-brand' : 'text-themed-tertiary hover:text-themed-secondary' }}">
                         <i class="fas fa-th"></i>
                     </button>
                     <button wire:click="$set('viewMode', 'list')"
-                        class="p-2 rounded-lg transition-colors duration-300 {{ $viewMode === 'list' ? 'bg-accent-primary/20 text-accent-primary' : 'text-themed-tertiary hover:text-themed-secondary' }}">
+                        class="p-2 rounded-lg transition-colors duration-300 {{ $viewMode === 'list' ? 'bg-brand/20 text-brand' : 'text-themed-tertiary hover:text-themed-secondary' }}">
                         <i class="fas fa-list"></i>
                     </button>
                 </div>
@@ -110,11 +110,11 @@
             @if($viewMode === 'grid')
                 <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
                     @foreach($mentors as $mentor)
-                        <div class="bg-themed-secondary rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden border border-themed-primary hover:border-accent-primary">
+                        <div class="bg-themed-secondary rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden border border-themed-primary hover:border-brand">
                             <!-- Mentor Card -->
                             <div class="p-6">
                                 <div class="flex items-center space-x-4 mb-4">
-                                    <div class="w-16 h-16 bg-gradient-to-br from-accent-primary to-accent-secondary rounded-full flex items-center justify-center text-white text-2xl font-bold">
+                                    <div class="w-16 h-16 bg-brand rounded-full flex items-center justify-center text-white dark:text-brand-ink text-2xl font-bold">
                                         {{ substr($mentor->user->name, 0, 1) }}
                                     </div>
                                     <div class="flex-1">
@@ -148,7 +148,7 @@
                                 <div class="mb-4">
                                     <div class="flex flex-wrap gap-1">
                                         @foreach(array_slice($mentor->specializations ?? [], 0, 3) as $spec)
-                                            <span class="bg-accent-primary/10 text-accent-primary text-xs px-2 py-1 rounded-full border border-accent-primary/30 transition-colors duration-300">
+                                            <span class="bg-brand/10 text-brand text-xs px-2 py-1 rounded-full border border-brand/30 transition-colors duration-300">
                                                 {{ $spec }}
                                             </span>
                                         @endforeach
@@ -165,7 +165,7 @@
                                     @if($mentor->offers_free_sessions)
                                         <span class="text-green-600 dark:text-green-400 font-semibold">Free Sessions Available</span>
                                     @else
-                                        <span class="text-themed-primary font-semibold transition-colors duration-300">${{ number_format($mentor->hourly_rate, 0) }}/hour</span>
+                                        <span class="text-themed-primary font-semibold transition-colors duration-300">₦{{ number_format($mentor->hourly_rate, 0) }}/hour</span>
                                     @endif
                                 </div>
 
@@ -179,7 +179,7 @@
                                 <!-- Actions -->
                                 <div class="space-y-2">
                                     <button wire:click="selectMentor({{ $mentor->id }})"
-                                        class="w-full bg-accent-primary hover:bg-accent-secondary text-white px-4 py-3 rounded-lg transition-colors font-semibold">
+                                        class="w-full bk-button bk-button-primary   px-4 py-3 rounded-lg transition-colors font-semibold">
                                         <i class="fas fa-user mr-2"></i>View Profile
                                     </button>
                                     @if($mentor->canAcceptMentees())
@@ -197,11 +197,11 @@
                 <!-- List View -->
                 <div class="space-y-4">
                     @foreach($mentors as $mentor)
-                        <div class="bg-themed-secondary rounded-xl shadow-md hover:shadow-lg transition-all duration-300 p-6 border border-themed-primary hover:border-accent-primary">
+                        <div class="bg-themed-secondary rounded-xl shadow-md hover:shadow-lg transition-all duration-300 p-6 border border-themed-primary hover:border-brand">
                             <div class="flex flex-col lg:flex-row lg:items-center">
                                 <!-- Mentor Info -->
                                 <div class="flex items-center space-x-4 mb-4 lg:mb-0 lg:flex-1">
-                                    <div class="w-12 h-12 bg-gradient-to-br from-accent-primary to-accent-secondary rounded-full flex items-center justify-center text-white font-bold">
+                                    <div class="w-12 h-12 bg-brand rounded-full flex items-center justify-center text-white dark:text-brand-ink font-bold">
                                         {{ substr($mentor->user->name, 0, 1) }}
                                     </div>
                                     <div class="flex-1">
@@ -226,7 +226,7 @@
                                 <div class="lg:flex-1 lg:mx-6 mb-4 lg:mb-0">
                                     <div class="flex flex-wrap gap-1">
                                         @foreach(array_slice($mentor->specializations ?? [], 0, 4) as $spec)
-                                            <span class="bg-accent-primary/10 text-accent-primary text-xs px-2 py-1 rounded-full border border-accent-primary/30 transition-colors duration-300">
+                                            <span class="bg-brand/10 text-brand text-xs px-2 py-1 rounded-full border border-brand/30 transition-colors duration-300">
                                                 {{ $spec }}
                                             </span>
                                         @endforeach
@@ -239,13 +239,13 @@
                                         @if($mentor->offers_free_sessions)
                                             <div class="text-green-600 dark:text-green-400 font-semibold">Free Sessions</div>
                                         @else
-                                            <div class="text-themed-primary font-semibold text-lg transition-colors duration-300">${{ number_format($mentor->hourly_rate, 0) }}/hr</div>
+                                            <div class="text-themed-primary font-semibold text-lg transition-colors duration-300">₦{{ number_format($mentor->hourly_rate, 0) }}/hr</div>
                                         @endif
                                         <div class="text-sm text-themed-secondary transition-colors duration-300">{{ $mentor->total_mentees }} mentees</div>
                                     </div>
                                     <div class="flex space-x-2">
                                         <button wire:click="selectMentor({{ $mentor->id }})"
-                                            class="bg-accent-primary hover:bg-accent-secondary text-white px-4 py-2 rounded-lg transition-colors text-sm">
+                                            class="bk-button bk-button-primary   px-4 py-2 rounded-lg transition-colors text-sm">
                                             <i class="fas fa-user mr-1"></i>View
                                         </button>
                                         @if($mentor->canAcceptMentees())
@@ -274,7 +274,7 @@
                 <h3 class="text-xl font-semibold text-themed-primary mb-2 transition-colors duration-300">No mentors found</h3>
                 <p class="text-themed-secondary mb-6 transition-colors duration-300">Try adjusting your search criteria or filters</p>
                 <button wire:click="$set('searchTerm', '')" wire:click="$set('experienceFilter', '')" wire:click="$set('ratingFilter', '')"
-                    class="bg-accent-primary hover:bg-accent-secondary text-white px-6 py-3 rounded-lg transition-colors">
+                    class="bk-button bk-button-primary   px-6 py-3 rounded-lg transition-colors">
                     <i class="fas fa-redo mr-2"></i>Clear Filters
                 </button>
             </div>
@@ -283,12 +283,12 @@
 
     <!-- Mentor Profile Modal -->
     @if($showMentorModal && $selectedMentor)
-        <div class="fixed inset-0 bg-black bg-opacity-50 dark:bg-opacity-75 z-50 flex items-center justify-center p-4">
+        <div class="fixed inset-0 bg-black bg-opacity-50 dark:bg-opacity-75 z-50 flex items-center justify-center p-4" x-data="{ dialogOpen: true }" x-trap.inert.noscroll="dialogOpen" x-on:keydown.escape.window="dialogOpen = false; $wire.closeModal()" role="dialog" aria-modal="true" aria-label="Find Mentor dialog" tabindex="-1">
             <div class="bg-themed-secondary rounded-xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto border border-themed-primary transition-colors duration-300">
                 <div class="p-6 border-b border-themed-primary transition-colors duration-300">
                     <div class="flex items-center justify-between">
                         <h3 class="text-2xl font-bold text-themed-primary transition-colors duration-300">Mentor Profile</h3>
-                        <button wire:click="closeModal" class="text-themed-secondary hover:text-themed-primary transition-colors">
+                        <button aria-label="Close dialog" wire:click="closeModal" class="text-themed-secondary hover:text-themed-primary transition-colors">
                             <i class="fas fa-times text-xl"></i>
                         </button>
                     </div>
@@ -297,7 +297,7 @@
                 <div class="p-6">
                     <!-- Profile Header -->
                     <div class="flex items-center space-x-6 mb-6">
-                        <div class="w-24 h-24 bg-gradient-to-br from-accent-primary to-accent-secondary rounded-full flex items-center justify-center text-white text-4xl font-bold">
+                        <div class="w-24 h-24 bg-brand rounded-full flex items-center justify-center text-white dark:text-brand-ink text-4xl font-bold">
                             {{ substr($selectedMentor->user->name, 0, 1) }}
                         </div>
                         <div class="flex-1">
@@ -326,7 +326,7 @@
                             <h5 class="font-semibold text-themed-primary mb-3 transition-colors duration-300">Specializations</h5>
                             <div class="flex flex-wrap gap-2">
                                 @foreach($selectedMentor->specializations ?? [] as $spec)
-                                    <span class="bg-accent-primary/10 text-accent-primary px-3 py-1 rounded-full text-sm border border-accent-primary/30 transition-colors duration-300">{{ $spec }}</span>
+                                    <span class="bg-brand/10 text-brand px-3 py-1 rounded-full text-sm border border-brand/30 transition-colors duration-300">{{ $spec }}</span>
                                 @endforeach
                             </div>
                         </div>
@@ -363,7 +363,7 @@
                                 @if($selectedMentor->offers_free_sessions)
                                     Free
                                 @else
-                                    ${{ number_format($selectedMentor->hourly_rate, 0) }}
+                                    ₦{{ number_format($selectedMentor->hourly_rate, 0) }}
                                 @endif
                             </div>
                             <div class="text-sm text-themed-secondary transition-colors duration-300">Per Hour</div>
@@ -390,19 +390,19 @@
 
     <!-- Request Mentorship Modal -->
     @if($showRequestModal && $selectedMentor)
-        <div class="fixed inset-0 bg-black bg-opacity-50 dark:bg-opacity-75 z-50 flex items-center justify-center p-4">
+        <div class="fixed inset-0 bg-black bg-opacity-50 dark:bg-opacity-75 z-50 flex items-center justify-center p-4" x-data="{ dialogOpen: true }" x-trap.inert.noscroll="dialogOpen" x-on:keydown.escape.window="dialogOpen = false; $wire.closeModal()" role="dialog" aria-modal="true" aria-label="Find Mentor dialog" tabindex="-1">
             <div class="bg-themed-secondary rounded-xl shadow-2xl max-w-3xl w-full max-h-[90vh] overflow-y-auto border border-themed-primary transition-colors duration-300">
                 <div class="p-6 border-b border-themed-primary transition-colors duration-300">
                     <div class="flex items-center justify-between">
                         <h3 class="text-2xl font-bold text-themed-primary transition-colors duration-300">Request Mentorship</h3>
-                        <button wire:click="closeModal" class="text-themed-secondary hover:text-themed-primary transition-colors">
+                        <button aria-label="Close dialog" wire:click="closeModal" class="text-themed-secondary hover:text-themed-primary transition-colors">
                             <i class="fas fa-times text-xl"></i>
                         </button>
                     </div>
                 </div>
 
                 <form wire:submit="submitMentorshipRequest" class="p-6 space-y-6">
-                    <div class="bg-accent-primary/10 border border-accent-primary/30 rounded-lg p-4 transition-colors duration-300">
+                    <div class="bg-brand/10 border border-brand/30 rounded-lg p-4 transition-colors duration-300">
                         <p class="text-sm text-themed-primary transition-colors duration-300">
                             <strong>Requesting mentorship from:</strong> {{ $selectedMentor->user->name }}
                         </p>
@@ -411,7 +411,7 @@
                     <div>
                         <label class="block text-sm font-medium text-themed-primary mb-2 transition-colors duration-300">Introduction Message *</label>
                         <textarea wire:model="requestMessage" rows="5"
-                            class="w-full px-4 py-3 border border-themed-primary rounded-lg focus:ring-2 focus:ring-accent-primary focus:border-transparent bg-themed-secondary text-themed-primary placeholder-themed-tertiary transition-colors duration-300"
+                            class="w-full px-4 py-3 border border-themed-primary rounded-lg focus:ring-2 focus:ring-brand focus:border-transparent bg-themed-secondary text-themed-primary placeholder-themed-tertiary transition-colors duration-300"
                             placeholder="Tell the mentor about yourself, why you're interested in their mentorship, and what you hope to achieve..."></textarea>
                         @error('requestMessage') <span class="text-red-500 dark:text-red-400 text-sm">{{ $message }}</span> @enderror
                     </div>
@@ -421,7 +421,7 @@
                         @foreach($goals as $index => $goal)
                             <div class="flex items-center space-x-2 mb-2">
                                 <input type="text" wire:model="goals.{{ $index }}"
-                                    class="flex-1 px-4 py-2 border border-themed-primary rounded-lg focus:ring-2 focus:ring-accent-primary focus:border-transparent bg-themed-secondary text-themed-primary placeholder-themed-tertiary transition-colors duration-300"
+                                    class="flex-1 px-4 py-2 border border-themed-primary rounded-lg focus:ring-2 focus:ring-brand focus:border-transparent bg-themed-secondary text-themed-primary placeholder-themed-tertiary transition-colors duration-300"
                                     placeholder="e.g., Learn advanced React patterns">
                                 @if(count($goals) > 1)
                                     <button type="button" wire:click="removeGoal({{ $index }})"
@@ -432,7 +432,7 @@
                             </div>
                         @endforeach
                         <button type="button" wire:click="addGoal"
-                            class="text-accent-primary hover:text-accent-secondary text-sm transition-colors">
+                            class="text-brand hover:text-brand text-sm transition-colors">
                             <i class="fas fa-plus mr-1"></i>Add Goal
                         </button>
                         @error('goals') <span class="text-red-500 dark:text-red-400 text-sm">{{ $message }}</span> @enderror
@@ -443,7 +443,7 @@
                         @foreach($expectations as $index => $expectation)
                             <div class="flex items-center space-x-2 mb-2">
                                 <input type="text" wire:model="expectations.{{ $index }}"
-                                    class="flex-1 px-4 py-2 border border-themed-primary rounded-lg focus:ring-2 focus:ring-accent-primary focus:border-transparent bg-themed-secondary text-themed-primary placeholder-themed-tertiary transition-colors duration-300"
+                                    class="flex-1 px-4 py-2 border border-themed-primary rounded-lg focus:ring-2 focus:ring-brand focus:border-transparent bg-themed-secondary text-themed-primary placeholder-themed-tertiary transition-colors duration-300"
                                     placeholder="e.g., Weekly code reviews">
                                 @if(count($expectations) > 1)
                                     <button type="button" wire:click="removeExpectation({{ $index }})"
@@ -454,7 +454,7 @@
                             </div>
                         @endforeach
                         <button type="button" wire:click="addExpectation"
-                            class="text-accent-primary hover:text-accent-secondary text-sm transition-colors">
+                            class="text-brand hover:text-brand text-sm transition-colors">
                             <i class="fas fa-plus mr-1"></i>Add Expectation
                         </button>
                         @error('expectations') <span class="text-red-500 dark:text-red-400 text-sm">{{ $message }}</span> @enderror
@@ -463,7 +463,7 @@
                     <div>
                         <label class="block text-sm font-medium text-themed-primary mb-2 transition-colors duration-300">Duration (weeks) *</label>
                         <input type="number" wire:model="durationWeeks" min="4" max="52"
-                            class="w-full px-4 py-2 border border-themed-primary rounded-lg focus:ring-2 focus:ring-accent-primary focus:border-transparent bg-themed-secondary text-themed-primary transition-colors duration-300">
+                            class="w-full px-4 py-2 border border-themed-primary rounded-lg focus:ring-2 focus:ring-brand focus:border-transparent bg-themed-secondary text-themed-primary transition-colors duration-300">
                         @error('durationWeeks') <span class="text-red-500 dark:text-red-400 text-sm">{{ $message }}</span> @enderror
                     </div>
 
@@ -473,7 +473,7 @@
                             Cancel
                         </button>
                         <button type="submit"
-                            class="px-6 py-3 bg-accent-primary hover:bg-accent-secondary text-white rounded-lg transition-colors">
+                            class="px-6 py-3 bk-button bk-button-primary   rounded-lg transition-colors">
                             <i class="fas fa-paper-plane mr-2"></i>Send Request
                         </button>
                     </div>
@@ -486,7 +486,7 @@
     <div wire:loading class="fixed inset-0 bg-black bg-opacity-25 dark:bg-opacity-50 flex items-center justify-center z-50">
         <div class="bg-themed-secondary rounded-lg p-6 shadow-xl border border-themed-primary transition-colors duration-300">
             <div class="flex items-center space-x-3">
-                <svg class="animate-spin h-6 w-6 text-accent-primary" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <svg class="animate-spin h-6 w-6 text-brand" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                     <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                     <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                 </svg>

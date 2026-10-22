@@ -2,12 +2,12 @@
     <!-- Search & Filters -->
     <div class="mb-6 flex gap-4 flex-wrap">
         <div class="flex-1 min-w-[250px] relative">
-            <input type="text" wire:model.live.debounce="search"
+            <input type="text" aria-label="Search challenges" wire:model.live.debounce="search"
                    class="w-full pl-10 pr-4 py-2 bg-themed-secondary border border-themed-primary text-themed-primary rounded-lg placeholder-themed-secondary focus:ring-2 focus:ring-orange-500 focus:border-transparent"
                    placeholder="Search challenges...">
             <i class="fas fa-search absolute left-3 top-2.5 text-themed-secondary"></i>
         </div>
-        <select wire:model.live="difficultyFilter"
+        <select aria-label="Challenge difficulty" wire:model.live="difficultyFilter"
                 class="bg-themed-secondary border border-themed-primary text-themed-primary rounded-lg px-3 py-2 focus:ring-2 focus:ring-orange-500 focus:border-transparent text-sm">
             <option value="all">All Levels</option>
             <option value="easy">Easy</option>
@@ -28,10 +28,8 @@
                 <!-- Header -->
                 <div class="flex items-start justify-between mb-3">
                     <h3 class="font-semibold text-themed-primary flex-1">{{ $challenge->title }}</h3>
-                    <span class="bg-{{ $challenge->metadata['difficulty'] === 'easy' ? 'green' : ($challenge->metadata['difficulty'] === 'medium' ? 'yellow' : 'red') }}-100/20 
-                               text-{{ $challenge->metadata['difficulty'] === 'easy' ? 'green' : ($challenge->metadata['difficulty'] === 'medium' ? 'yellow' : 'red') }}-400 
-                               px-2 py-1 rounded text-xs font-medium border border-{{ $challenge->metadata['difficulty'] === 'easy' ? 'green' : ($challenge->metadata['difficulty'] === 'medium' ? 'yellow' : 'red') }}-500/30">
-                        {{ ucfirst($challenge->metadata['difficulty'] ?? 'N/A') }}
+                    <span class="rounded border border-line bg-surface-muted px-2 py-1 text-xs font-medium text-content">
+                        {{ ucfirst($challenge->metadata['difficulty'] ?? 'Not recorded') }}
                     </span>
                 </div>
 
@@ -42,12 +40,12 @@
 
                 <!-- Points & Creator -->
                 <div class="flex items-center gap-2 text-xs text-themed-secondary mb-3 pb-3 border-b border-themed-primary flex-wrap">
-                    <span><i class="fas fa-trophy mr-1 text-orange-400"></i>{{ $challenge->metadata['points'] ?? 100 }} pts</span>
-                    <span><i class="fas fa-user mr-1"></i>{{ $challenge->creator->name }}</span>
+                    <span><i class="fas fa-trophy mr-1 text-orange-400"></i>{{ isset($challenge->metadata['points']) ? $challenge->metadata['points'].' pts' : 'Points not set' }}</span>
+                    <span><i class="fas fa-user mr-1"></i>{{ $challenge->creator->name ?? 'Not recorded' }}</span>
                 </div>
 
                 <!-- Solve Button -->
-                <button wire:click="openModal('code-challenge'); $set('selectedItem', { id: {{ $challenge->id }} })"
+                <button wire:click="openCodeChallenge({{ $challenge->id }})"
                         class="w-full bg-orange-600 hover:bg-orange-700 text-white rounded-lg py-2 font-medium transition-colors text-sm">
                     <i class="fas fa-code mr-1"></i>Solve
                 </button>

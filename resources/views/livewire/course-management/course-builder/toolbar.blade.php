@@ -66,7 +66,7 @@
         </div>
     </div>
 
-    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+    <div class="flex min-w-0 flex-col xl:flex-row xl:items-center xl:justify-between gap-4">
         <!-- Course Title and Status -->
         <div class="flex flex-col sm:flex-row sm:items-center gap-3">
             <div class="flex items-center gap-3">
@@ -109,7 +109,7 @@
         </div>
 
         <!-- Enhanced Actions -->
-        <div class="flex items-center gap-2">
+        <div class="flex flex-wrap items-center gap-2">
             <!-- Auto-save Toggle -->
             <button @click="toggleAutoSave()" :class="autoSaveEnabled ? 'bg-green-600' : 'bg-gray-400'"
                     class="px-3 py-2 text-white rounded-lg transition-colors duration-300 text-sm flex items-center gap-2"
@@ -119,16 +119,14 @@
             </button>
 
             <a href="{{ route('courses.preview', $course) }}" target="_blank"
-                class="px-4 py-2.5 bg-gradient-to-r from-purple-600 to-indigo-600 text-white rounded-lg hover:from-purple-700 hover:to-indigo-700 
-                transition-all duration-300 flex items-center shadow-lg hover:shadow-purple-500/20">
+                class="bk-button bk-button-primary">
                 <i class="fas fa-eye mr-2"></i>
                 Preview Course
             </a>
 
             <!-- Pricing Button with Loading State -->
             <button @click="openPricingModal()" :disabled="isPerformingAction" 
-                    class="px-4 py-2.5 bg-gradient-to-r from-purple-600 to-indigo-600 text-white rounded-lg hover:from-purple-700 hover:to-indigo-700 
-                    transition-all duration-300 flex items-center shadow-lg hover:shadow-purple-500/20 disabled:opacity-50 disabled:cursor-not-allowed">
+                    class="bk-button bk-button-primary disabled:opacity-50 disabled:cursor-not-allowed">
                 <i class="fas fa-tag mr-2" :class="{ 'fa-spinner fa-spin': isPerformingAction && actionType === 'pricing' }"></i>
                 Pricing
             </button>
@@ -183,14 +181,14 @@
 
     <!-- Enhanced Pricing Modal -->
     @if($showPricingModal)
-        <div class="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+        <div role="dialog" aria-modal="true" aria-label="Course pricing" tabindex="-1" x-trap.inert.noscroll="true" @keydown.escape.window="closePricingModal()" class="fixed inset-0 bg-black/70 flex items-center justify-center overflow-y-auto z-50 p-4">
             <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 max-w-md w-full mx-4 border border-gray-200 dark:border-gray-700 shadow-2xl transition-colors duration-300">
                 <div class="flex justify-between items-center mb-6 pb-4 border-b border-gray-200 dark:border-gray-700">
                     <h3 class="text-xl font-bold text-gray-800 dark:text-white flex items-center transition-colors duration-300">
                         <i class="fas fa-tag text-purple-600 dark:text-purple-400 mr-2"></i>
                         Course Pricing
                     </h3>
-                    <button @click="closePricingModal()"
+                    <button aria-label="Close pricing dialog" @click="closePricingModal()"
                         class="text-gray-500 dark:text-gray-400 hover:text-gray-800 dark:hover:text-white transition-colors p-1 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700">
                         <i class="fas fa-times text-lg"></i>
                     </button>

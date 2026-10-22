@@ -37,30 +37,14 @@ class CertificateRequest extends Component
 
     public function checkCertificateEligibility()
     {
-        $user = Auth::user();
-        
-        // Check if user is enrolled
-        $enrollment = $user->courses()->where('course_id', $this->course->id)->first();
-        if (!$enrollment) {
-            $this->canRequestCertificate = false;
-            return;
-        }
-
-        // Calculate completion percentage
-        $this->totalLessons = $this->course->allLessons()->count();
-        $this->completedLessons = $user->completedLessons()
-            ->whereIn('lesson_id', $this->course->allLessons()->pluck('id'))
-            ->count();
-        
-        $this->completionPercentage = $this->totalLessons > 0 ? 
-            round(($this->completedLessons / $this->totalLessons) * 100) : 0;
-
-        // Check course completion requirement (configurable, default 100%)
-        $requiredCompletion = config('certificate.required_completion_percentage', 100);
-        $this->canRequestCertificate = $this->completionPercentage >= $requiredCompletion;
-
-        // Get course progress from pivot table if available
-        $this->courseProgress = $enrollment->pivot->progress ?? $this->completionPercentage;
+        abort_unless(Auth::check() && $this->course instanceof Course, 403);
+        $eligibility = app(\App\Services\CertificateService::class)
+            ->canRequestCertificate(Auth::id(), $this->course->id);
+        $this->canRequestCertificate = $eligibility['can_request'];
+        $this->completionPercentage = $eligibility['completion_percentage'];
+        $this->completedLessons = $eligibility['completed_lessons'];
+        $this->totalLessons = $eligibility['total_lessons'];
+        $this->courseProgress = $this->completionPercentage;
     }
 
     public function checkExistingCertificate()
@@ -72,6 +56,8 @@ class CertificateRequest extends Component
 
     public function requestCertificate()
     {
+        $this->checkCertificateEligibility();
+        $this->checkExistingCertificate();
         if (!$this->canRequestCertificate) {
             $this->dispatch('notify', [
                 'message' => 'You must complete the course before requesting a certificate.',
@@ -102,12 +88,14 @@ class CertificateRequest extends Component
             // Calculate grade based on assessments if available
             $grade = $this->calculateCourseGrade();
 
-            $certificate = Certificate::create([
-                'user_id' => Auth::id(),
-                'course_id' => $this->course->id,
+            $certificate = \Illuminate\Support\Facades\DB::transaction(function () use ($completionDate, $grade) {
+                \App\Models\Core\User::whereKey(Auth::id())->lockForUpdate()->firstOrFail();
+                return Certificate::firstOrCreate([
+                    'user_id' => Auth::id(), 'course_id' => $this->course->id,
+                ], [
                 'status' => Certificate::STATUS_REQUESTED,
                 'requested_at' => now(),
-                'completion_date' => $completionDate,
+                'completed_at' => $completionDate,
                 'grade' => $grade,
                 'credits' => $this->course->credits ?? null,
                 'metadata' => [
@@ -115,7 +103,8 @@ class CertificateRequest extends Component
                     'total_lessons' => $this->totalLessons,
                     'completed_lessons' => $this->completedLessons,
                 ]
-            ]);
+                ]);
+            });
 
             $this->existingCertificate = $certificate;
 
@@ -148,7 +137,7 @@ class CertificateRequest extends Component
         $totalPossible = 0;
         $assessmentCount = 0;
 
-        foreach ($assessments->get() as $assessment) {
+        foreach ($assessments as $assessment) {
             $studentResults = $assessment->getStudentResults(Auth::id());
             
             if ($studentResults && $studentResults['passed']) {

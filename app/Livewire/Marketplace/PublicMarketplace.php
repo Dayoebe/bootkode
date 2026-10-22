@@ -64,8 +64,9 @@ class PublicMarketplace extends Component
         'searchUpdated' => 'updateSearch',
     ];
 
-    public function mount($slug = null, $type = null)
+    public function mount($slug = null, $type = null, $id = null)
     {
+        if ($type === 'vendor' && $id) $this->viewVendor((int) $id);
         // Handle direct URL navigation
         if ($slug && $type) {
             switch ($type) {
@@ -76,7 +77,7 @@ class PublicMarketplace extends Component
                     $this->viewCategoryBySlug($slug);
                     break;
                 case 'vendor':
-                    $this->viewVendorBySlug($slug);
+                    $this->viewVendor((int) $slug);
                     break;
             }
         }
@@ -142,7 +143,7 @@ class PublicMarketplace extends Component
     public function viewProduct($productId)
     {
         $this->selectedProduct = MarketplaceItem::published()
-            ->with(['vendor', 'itemCategories', 'reviews.user']) // Changed to itemCategories
+            ->with(['vendor', 'itemCategories', 'reviews' => fn ($query) => $query->approved()->with('user:id,name')]) // Changed to itemCategories
             ->findOrFail($productId);
         
         // Increment view count
@@ -156,8 +157,8 @@ class PublicMarketplace extends Component
     {
         $product = MarketplaceItem::published()
             ->where('slug', $slug)
-            ->with(['vendor', 'categories', 'reviews.user'])
-            ->first();
+            ->with(['vendor', 'itemCategories', 'reviews' => fn ($query) => $query->approved()->with('user:id,name')])
+            ->firstOrFail();
             
         if ($product) {
             $this->selectedProduct = $product;
@@ -176,7 +177,7 @@ class PublicMarketplace extends Component
 
     public function viewCategoryBySlug($slug)
     {
-        $category = MarketplaceCategory::active()->where('slug', $slug)->first();
+        $category = MarketplaceCategory::active()->where('slug', $slug)->firstOrFail();
         if ($category) {
             $this->viewCategory($category->id);
         }
@@ -343,6 +344,13 @@ class PublicMarketplace extends Component
 
     public function render()
     {
+        // Recheck publication and review scope after Livewire rehydrates the selected model.
+        if ($this->selectedProduct) {
+            $this->selectedProduct = MarketplaceItem::published()->with(['vendor', 'itemCategories',
+                'reviews' => fn ($query) => $query->approved()->with('user:id,name')])->findOrFail($this->selectedProduct->id);
+        }
+        $this->featuredItems = MarketplaceItem::published()->whereKey(collect($this->featuredItems)->pluck('id'))
+            ->with(['vendor', 'itemCategories'])->get();
         $items = collect();
         $stats = $this->getMarketplaceStats();
         

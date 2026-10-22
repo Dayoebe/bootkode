@@ -14,6 +14,8 @@ use Illuminate\Support\Facades\DB;
 
 class MarketplaceBusiness extends Component
 {
+    use \App\Livewire\Concerns\AuthorizesMarketplaceSelling;
+
     use WithPagination;
 
     // Internal navigation state
@@ -49,7 +51,11 @@ class MarketplaceBusiness extends Component
 
     public function mount()
     {
-        $this->loadBanks();
+        $this->currentView = match (request()->route()?->getName()) {
+            'marketplace.vendor.orders' => 'orders',
+            'marketplace.vendor.withdrawals' => 'withdrawals',
+            default => 'dashboard',
+        };
     }
 
     // Navigation methods
@@ -302,6 +308,7 @@ class MarketplaceBusiness extends Component
             return;
         }
 
+        $this->loadBanks();
         $this->withdrawalAmount = '';
         $this->selectedBankId = '';
         $this->showWithdrawalModal = true;
@@ -318,52 +325,12 @@ class MarketplaceBusiness extends Component
     public function requestWithdrawal()
     {
         $this->validate();
-        
-        $balance = $this->getAvailableBalance();
-        
-        if ($this->withdrawalAmount > $balance) {
-            session()->flash('error', 'Insufficient balance for withdrawal.');
-            return;
-        }
-
-        try {
-            DB::beginTransaction();
-
-            $user = auth()->user();
-            $selectedBank = collect($this->availableBanks)->firstWhere('code', $this->selectedBankId);
-
-            if (!$selectedBank) {
-                throw new \Exception('Invalid bank selected.');
-            }
-
-            // Create withdrawal record
-            $withdrawal = Withdrawal::create([
-                'user_id' => $user->id,
-                'amount' => $this->withdrawalAmount,
-                'bank_code' => $selectedBank['code'],
-                'bank_name' => $selectedBank['name'],
-                'account_number' => $user->account_number,
-                'account_name' => $user->account_name,
-                'status' => Withdrawal::STATUS_PENDING,
-            ]);
-
-            // Debit from instructor wallet
-            $instructorWallet = $user->getOrCreateInstructorWallet();
-            $instructorWallet->debit(
-                $this->withdrawalAmount,
-                'withdrawal_request',
-                "Withdrawal request #{$withdrawal->id}",
-                $withdrawal
-            );
-
-            DB::commit();
-
-            session()->flash('message', 'Withdrawal request submitted successfully! You will receive payment within 1-3 business days.');
+        $result = app(\App\Services\WalletService::class)->requestWithdrawal(auth()->user(), (float) $this->withdrawalAmount, [
+            'bank_code' => $this->selectedBankId, 'account_number' => auth()->user()->account_number,
+        ]);
+        session()->flash($result['success'] ? 'message' : 'error', $result['message']);
+        if ($result['success']) {
             $this->closeWithdrawalModal();
-
-        } catch (\Exception $e) {
-            DB::rollBack();
-            session()->flash('error', 'Failed to process withdrawal request: ' . $e->getMessage());
         }
     }
 
@@ -389,13 +356,15 @@ class MarketplaceBusiness extends Component
                     ->with(['customer', 'item'])
                     ->when($this->orderStatus, fn($query) => $query->byStatus($this->orderStatus))
                     ->when($this->orderSearch, function ($query) {
-                        $query->whereHas('customer', function ($q) {
+                        $query->where(function ($owned) {
+                        $owned->whereHas('customer', function ($q) {
                             $q->where('name', 'like', '%' . $this->orderSearch . '%')
                               ->orWhere('email', 'like', '%' . $this->orderSearch . '%');
                         })->orWhere('order_number', 'like', '%' . $this->orderSearch . '%')
                           ->orWhereHas('item', function ($q) {
                               $q->where('title', 'like', '%' . $this->orderSearch . '%');
                           });
+                        });
                     })
                     ->latest()
                     ->paginate(10);

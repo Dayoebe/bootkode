@@ -12,6 +12,8 @@ use Illuminate\Support\Facades\Auth;
 #[Layout('layouts.dashboard', ['title' => 'Course Reviews', 'description' => 'Manage course reviews including viewing and responding to student feedback', 'icon' => 'fas fa-star', 'active' => 'course-reviews'])]
 class CourseReviews extends Component
 {
+    use \App\Livewire\Concerns\AuthorizesCourseAuthoring;
+
     use WithPagination;
 
     public $search = '';
