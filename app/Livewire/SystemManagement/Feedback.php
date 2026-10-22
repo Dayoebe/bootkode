@@ -19,6 +19,7 @@ use Livewire\Attributes\Layout;
 class Feedback extends Component
 {
     use WithPagination, WithFileUploads;
+    use \App\Livewire\Concerns\RequiresAuthenticatedAccount;
 
     public $activeTab = 'submit_feedback';
     public $category = 'general';
@@ -38,7 +39,9 @@ class Feedback extends Component
     {
         return [
             'category' => ['required', 'in:general,course,platform'],
-            'course_id' => ['nullable', 'required_if:category,course', 'exists:courses,id'],
+            'course_id' => ['nullable', 'required_if:category,course', function ($attribute, $value, $fail) {
+                if (!Course::publiclyAvailable()->whereKey($value)->exists()) $fail('Choose an available course.');
+            }],
             'message' => ['required', 'string', 'max:2000'],
             'rating' => ['required', 'integer', 'min:1', 'max:5'],
             'attachment' => ['nullable', 'file', 'mimes:jpg,png,pdf', 'max:2048'],
@@ -64,12 +67,17 @@ class Feedback extends Component
         ];
 
         if ($this->attachment) {
-            $data['attachment'] = $this->attachment->store('feedback_attachments', 'public');
+            $data['attachment'] = $this->attachment->store('private/feedback-attachments', 'local');
         }
 
-        $feedback = FeedbackModel::create($data);
+        try {
+            $feedback = FeedbackModel::create($data);
+        } catch (\Throwable $exception) {
+            if (isset($data['attachment'])) \Illuminate\Support\Facades\Storage::disk('local')->delete($data['attachment']);
+            throw $exception;
+        }
 
-        Auth::user()->logCustomActivity('Submitted feedback: ' . $this->message, ['feedback_id' => $feedback->id]);
+        Auth::user()->logCustomActivity('Submitted feedback', ['feedback_id' => $feedback->id]);
         $this->dispatch('notify', ['type' => 'success', 'message' => 'Feedback submitted successfully!']);
         $this->reset(['category', 'course_id', 'message', 'rating', 'attachment']);
         $this->activeTab = 'my_feedback';
@@ -79,10 +87,7 @@ class Feedback extends Component
     {
         $feedbacks = FeedbackModel::where('user_id', Auth::id())
             ->when($this->search, function ($query) {
-                $query->where('message', 'like', '%' . $this->search . '%')
-                      ->orWhereHas('course', function ($q) {
-                          $q->where('title', 'like', '%' . $this->search . '%');
-                      });
+                $query->where(fn ($matching) => $matching->where('message', 'like', '%' . $this->search . '%')->orWhereHas('course', fn ($course) => $course->where('title', 'like', '%' . $this->search . '%')));
             })
             ->when($this->statusFilter !== 'all', function ($query) {
                 $query->where('status', $this->statusFilter);
@@ -93,7 +98,7 @@ class Feedback extends Component
 
         return view('livewire.system-management.feedback', [
             'feedbacks' => $feedbacks,
-            'courses' => Course::where('is_published', true)->where('is_approved', true)->get(),
+            'courses' => Course::publiclyAvailable()->get(),
         ]);
     }
 }

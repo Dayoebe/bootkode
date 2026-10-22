@@ -4,86 +4,58 @@ namespace App\Livewire\SystemManagement;
 
 use App\Models\Community\Feedback;
 use App\Notifications\FeedbackResponseNotification;
-use Illuminate\Support\Facades\Auth;
+use Livewire\Attributes\Layout;
 use Livewire\Component;
 use Livewire\WithPagination;
-use Livewire\Attributes\Layout;
 
-#[Layout('layouts.dashboard', ['title' => 'Feedback Management', 'description' => 'Manage user feedback', 'icon' => 'fas fa-comment-dots', 'active' => 'feedback.management'])]
+#[Layout('layouts.dashboard', ['title' => 'Feedback management', 'active' => 'feedback.management'])]
 class FeedbackManagement extends Component
 {
     use WithPagination;
+    use \App\Livewire\Concerns\AuthorizesPlatformAdministration;
+    use \App\Livewire\Concerns\HasActionFeedback;
 
-    public $search = '';
-    public $statusFilter = 'open';
-    public $response = '';
-    public $selectedFeedbackId = null;
+    public string $search = '';
+    public string $statusFilter = 'open';
+    public string $response = '';
+    public ?int $selectedFeedbackId = null;
+    public bool $showResponseModal = false;
 
-    public function respond($feedbackId)
+    public function openFeedback(int $id): void
     {
-        if (!Auth::user()->hasAnyRole(['super_admin', 'academy_admin'])) {
-            $this->dispatch('notify', 'Unauthorized!', 'error');
-            return;
-        }
-    
-        $this->validate([
-            'response' => ['required', 'string', 'max:2000'],
-        ]);
-    
-        $feedback = Feedback::findOrFail($feedbackId);
-        $feedback->update([
-            'status' => 'responded',
-            'response' => $this->response,
-            'responded_by' => Auth::user()->id,
-            'responded_at' => now(),
-        ]);
-        $feedback->user->notify(new \App\Livewire\Component\Notifications\FeedbackResponseNotification($feedback));
-
-        Livewire::dispatch('notify', 'Your feedback has been responded to!', 'success');
-
-        // $feedback->user->notify(new \App\Notifications\FeedbackResponseNotification($feedback));
-        // $this->dispatch('notify', 'Feedback responded successfully!', 'success');
-        $this->dispatchTo('notifications', 'notify', [
-            'message' => 'New response to your feedback: ' . Str::limit($feedback->message, 30),
-            'type' => 'success'
-        ]);
-    
-        $this->reset(['response', 'selectedFeedbackId']);
+        $feedback = Feedback::findOrFail($id);
+        $this->selectedFeedbackId = $feedback->id;
+        $this->response = $feedback->response ?? '';
+        $this->showResponseModal = true;
     }
 
-    public function close($feedbackId)
+    public function respond(?int $feedbackId = null): void
     {
-        if (!Auth::user()->hasAnyRole(['super_admin', 'academy_admin'])) {
-            $this->dispatch('notify', 'Unauthorized!', 'error');
-            return;
-        }
+        $id = $feedbackId ?? $this->selectedFeedbackId;
+        $this->validate(['response' => 'required|string|min:5|max:2000']);
+        \Illuminate\Support\Facades\DB::transaction(function () use ($id) {
+            $feedback = Feedback::lockForUpdate()->findOrFail($id);
+            $feedback->update(['status' => 'responded', 'response' => $this->response, 'responded_by' => auth()->id(), 'responded_at' => now()]);
+            \Illuminate\Support\Facades\DB::afterCommit(fn () => $feedback->user?->notify(new FeedbackResponseNotification($feedback)));
+        });
+        $this->flashFeedback('success', 'Response saved. Notification requested for the account owner.');
+        $this->reset(['response', 'selectedFeedbackId', 'showResponseModal']);
+    }
 
-        $feedback = Feedback::findOrFail($feedbackId);
-        $feedback->update(['status' => 'closed']);
-        Auth::user()->logCustomActivity('Closed feedback', ['feedback_id' => $feedbackId]);
-        $this->dispatch('notify', 'Feedback closed successfully!', 'success');
+    public function close($id): void
+    {
+        Feedback::findOrFail($id)->update(['status' => 'closed']);
+        $this->flashFeedback('success', 'Feedback closed.');
     }
 
     public function render()
     {
-        $feedbacks = Feedback::with(['user', 'course'])
-            ->when($this->search, function ($query) {
-                $query->where('message', 'like', '%' . $this->search . '%')
-                      ->orWhereHas('user', function ($q) {
-                          $q->where('name', 'like', '%' . $this->search . '%');
-                      })
-                      ->orWhereHas('course', function ($q) {
-                          $q->where('title', 'like', '%' . $this->search . '%');
-                      });
-            })
-            ->when($this->statusFilter, function ($query) {
-                $query->where('status', $this->statusFilter);
-            })
-            ->orderBy('created_at', 'desc')
-            ->paginate(10);
-
+        $this->validate(['statusFilter' => 'in:all,open,responded,closed', 'search' => 'string|max:255']);
         return view('livewire.system-management.feedback-management', [
-            'feedbacks' => $feedbacks,
+            'selectedFeedback' => $this->selectedFeedbackId ? Feedback::find($this->selectedFeedbackId) : null,
+            'feedbacks' => Feedback::with(['user', 'course'])
+                ->when($this->search !== '', fn ($query) => $query->where(fn ($matching) => $matching->where('message', 'like', '%'.$this->search.'%')->orWhereHas('user', fn ($user) => $user->where('name', 'like', '%'.$this->search.'%'))->orWhereHas('course', fn ($course) => $course->where('title', 'like', '%'.$this->search.'%'))))
+                ->when($this->statusFilter !== 'all', fn ($query) => $query->where('status', $this->statusFilter))->latest()->paginate(10),
         ]);
     }
 }

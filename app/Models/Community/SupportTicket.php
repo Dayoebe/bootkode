@@ -39,6 +39,6 @@ class SupportTicket extends Model
     // Accessor for attachment URL
     public function getAttachmentUrlAttribute()
     {
-        return $this->attachment ? asset('storage/' . $this->attachment) : null;
+        return $this->attachment ? route('support.attachment', $this) : null;
     }
 }

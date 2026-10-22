@@ -373,12 +373,14 @@ Route::middleware(['auth', 'verified'])->prefix('dashboard')->name('')->group(fu
 
     // Support System
     Route::get('/help-support', \App\Livewire\SystemManagement\HelpSupport::class)->name('help.support');
-    Route::get('/support-tickets', \App\Livewire\SystemManagement\SupportTicketManagement::class)->name('support.tickets');
-    Route::get('/faq-management', \App\Livewire\SystemManagement\FaqManagement::class)->name('faq.management');
+    Route::get('/support-tickets', \App\Livewire\SystemManagement\SupportTicketManagement::class)->name('support.tickets')->middleware(\App\Http\Middleware\CheckRole::class . ':super_admin,academy_admin');
+    Route::get('/support-tickets/{ticket}/attachment', \App\Http\Controllers\SupportAttachmentController::class)->name('support.attachment');
+    Route::get('/faq-management', \App\Livewire\SystemManagement\FaqManagement::class)->name('faq.management')->middleware(\App\Http\Middleware\CheckRole::class . ':super_admin,academy_admin');
 
     // Feedback System
     Route::get('/feedback', \App\Livewire\SystemManagement\Feedback::class)->name('feedback');
-    Route::get('/feedback-management', \App\Livewire\SystemManagement\FeedbackManagement::class)->name('feedback.management');
+    Route::get('/feedback/{feedback}/attachment', \App\Http\Controllers\FeedbackAttachmentController::class)->name('feedback.attachment');
+    Route::get('/feedback-management', \App\Livewire\SystemManagement\FeedbackManagement::class)->name('feedback.management')->middleware(\App\Http\Middleware\CheckRole::class . ':super_admin,academy_admin');
 
     // Announcements
     Route::get('/announcements', \App\Livewire\SystemManagement\Announcements::class)->name('announcements');

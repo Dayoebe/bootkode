@@ -47,6 +47,6 @@ class Feedback extends Model
 
     public function getAttachmentUrlAttribute()
     {
-        return $this->attachment ? asset('storage/' . $this->attachment) : null;
+        return $this->attachment ? route('feedback.attachment', $this) : null;
     }
 }

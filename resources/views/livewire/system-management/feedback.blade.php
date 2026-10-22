@@ -117,7 +117,7 @@
                                     <label for="attachment" class="cursor-pointer">
                                         <span class="text-sm font-medium text-rose-600 dark:text-rose-400 hover:text-rose-700 dark:hover:text-rose-300">Upload a file</span>
                                     </label>
-                                    <input wire:model="attachment" type="file" id="attachment" class="hidden" accept="image/*,.pdf,.doc,.docx">
+                                    <input wire:model="attachment" type="file" id="attachment" class="hidden" accept="image/jpeg,image/png,application/pdf">
                                     <p class="text-xs text-themed-secondary mt-1">or drag and drop (PNG, JPG, PDF up to 2MB)</p>
                                     @if ($attachment)
                                         <div class="mt-3 text-sm text-green-600 dark:text-green-400 bg-green-100/30 dark:bg-green-900/20 rounded-lg p-2 flex items-center">

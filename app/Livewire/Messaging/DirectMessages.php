@@ -19,6 +19,7 @@ use Livewire\Component;
 #[Title('Messages')]
 class DirectMessages extends Component
 {
+    use \App\Livewire\Concerns\RequiresAuthenticatedAccount;
     public ?int $activeConversationId = null;
     public string $messageBody = '';
     public string $search = '';
@@ -228,7 +229,7 @@ class DirectMessages extends Component
 
     private function markActiveConversationRead(): void
     {
-        if (!$this->activeConversationId) {
+        if (!$this->activeConversationId || !$this->activeConversation) {
             return;
         }
 
@@ -241,7 +242,7 @@ class DirectMessages extends Component
 
     private function dispatchIncomingMessageNotice(): void
     {
-        if (!$this->activeConversationId) {
+        if (!$this->activeConversationId || !$this->activeConversation) {
             $this->lastSeenMessageId = 0;
             return;
         }
@@ -274,7 +275,7 @@ class DirectMessages extends Component
 
     private function syncLastSeenMessageId(): void
     {
-        if (!$this->activeConversationId) {
+        if (!$this->activeConversationId || !$this->activeConversation) {
             $this->lastSeenMessageId = 0;
             return;
         }
