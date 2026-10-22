@@ -35,6 +35,12 @@ git diff --check
 
 Browser QA needs a persistent session driver such as `file`; the test suite's `array` session driver deliberately does not persist between browser requests. Create temporary fixtures only in a test database.
 
+## Lesson assessments and review
+
+Learners can open the assessment workspace from a lesson. Written submissions remain pending until the course owner or platform reviewer marks every written answer in **Course Management → Assessment Reviews**. Personal **Assessment results** shows retained attempts, published grades and feedback. Draft answers and deadlines persist across reloads; grading keys stay server-side. Unsupported interaction formats are explicitly unavailable. Legacy written records without attempt snapshots require a separate records review.
+
+The session-clock compatibility migration removes an implicit MariaDB timestamp update rule. Back up the affected table before applying forward changes to an existing database; see the verification report for the local application and preservation evidence.
+
 ## Architecture and design
 
 - [Product audit and real feature inventory](docs/product-audit.md)

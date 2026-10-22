@@ -44,3 +44,10 @@ Remaining work includes exhaustive editor/question-type and analytics/gamificati
 Implemented recorded learning analytics consolidation, persisted goals/exports, private consented leaderboards, positive/replay-safe reward accounting and the real supported energy-redemption boundary. Removed speculative gamification helper implementations that referenced missing fields/methods; retained public service contracts with recorded-data implementations or explicit unavailable results. CBT now has persisted authorized attempts, server deadlines, saved answers, private grading snapshots, atomic grading and reward replay protection. See verification.md for exact checks.
 
 Remaining scope includes complete manual/question-type grading workflows, published verified games and unsupported reward delivery, achievement broadcast integration, reviewed path generation, historical gamification duplicate reconciliation and the prior provider/dependency/legal/accessibility/historical-file gates. No claim of exhaustive acceptance or whole-product production readiness follows from these additional samples.
+
+
+## Further assessment work — 22 October 2026
+
+Implemented the secured lesson assessment/reviewer vertical slice using existing attempt and answer records, owner-scoped CBT management, private owned results, recorded-grade progress/certificate boundaries, exact-set multiple selection and a forward fix for MariaDB's mutable session start timestamp. This supersedes the earlier statement that all manual grading was unimplemented. The supported written formats now have a real review queue; the exact acceptance evidence and remaining limits are in verification.md.
+
+Remaining assessment work includes matching/ordering/drag-drop interaction, formal mark correction/appeal history, backed-up reconciliation of legacy written attempts without snapshots and broader instructor-editor accessibility/format acceptance. Historical clock values are preserved, not reconstructed. Provider/dependency/legal/historical-file gates and exhaustive product acceptance remain open; branch delivery is not a production release.

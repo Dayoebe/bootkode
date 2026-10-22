@@ -49,3 +49,8 @@ Help/support and staff response screens use the existing page header, panel, lab
 ## Learning analytics and rewards
 
 The rewards and analytics surfaces use shared headers, panels, form primitives, bounded navigation and factual definition-list metrics. The reward balance copy distinguishes virtual coins/gems from the NGN wallet. Analytics displays recorded data and missing-result states, with labelled filters, persistent goal feedback, accessible chart descriptions and a bounded data-table alternative. Charts use existing theme variables and disable animation. The CBT submission dialog reuses the shared modal; answer radios remain keyboard-accessible with visible peer focus rings, and hidden warning content no longer owns a primary heading. Exam layouts remain a deliberate focused-workflow exception to the standard dashboard surface.
+
+
+## Lesson assessment and review surfaces
+
+Lesson assessment workspaces and personal results use shared page headers, panels, buttons and status regions. The embedded component owns an h2; its full workspace owns the page h1. Choice labels are touch-accessible, multiple selection has explicit exact-set guidance, written responses have labelled limits and autosave feedback, and pending/final results use text status instead of an invented percentage. Only server-accepted results publish a pass. Instructor score fields expose original bounds and associated errors; feedback is plain text. Submission, instructor review and personal results reuse the shared trapped dialog with Escape/focus-return behavior. Legacy CBT authoring interiors retain their existing styling; these changes do not certify every editor/theme.

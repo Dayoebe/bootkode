@@ -291,3 +291,60 @@ Commits:
 - `7a243391 build(ui): compile recorded learning and exam interface updates`
 
 The documentation commit records these results. Ordinary branch push and exact remote HEAD verification are reported in the handoff; no merge or deployment was performed.
+
+## Written assessment, owned results and immutable exam-clock continuation — 22 October 2026
+
+### Findings and implementation
+
+The lesson player used a second grading path that exposed answer keys, accepted unrelated assessment IDs, ignored attempt limits and deleted historical answers. Written work could appear scored without a reviewer. CBT management exposed other instructors' resources and participant records, and its clear actions removed real grades. Personal result views loaded unrelated definitions, recalculated historical scores from edited questions and had a broken named summary handler.
+
+The embedded lesson panel and new `lesson.assessments` workspace now use `CbtAttemptService`. Drafts survive reload, the server owns the attempt/deadline, answer shapes/ownership/length are validated and completed submissions replay their recorded result. Multiple selection requires the exact correct set. Written submissions stay pending without a published percentage/pass until all written answers are marked. Missing pass-mark configuration cannot start an attempt or turn a legacy zero score into a pass. Unsupported interaction formats are refused before recording a new attempt.
+
+The new Assessment Reviews queue resolves actual course ownership/platform authority, rejects self-grading and unrelated answers, and bounds marks by the private original rubric. Marks, reviewer/time/feedback, private audit log, final result and eligible rewards commit together. Partial review stays pending; an identical replay returns the recorded result and a changed mark requires formal correction. New lesson progress, lesson rewards and certificate eligibility read actual reviewed results. Parent and nested lesson requests recheck enrollment, publication, course membership and recorded section progress. Historical issued credentials and completion records are not revoked.
+
+Owned result pages retain attempt history, original question/option snapshots, the learner's submitted responses, recorded marks and instructor feedback while excluding grading keys. The shared response projection prevents later question edits from changing what the learner sees. Instructor CBT CRUD, ordering, course choices and participant data are scoped; standalone attempts also prevent deletion of their assessments/questions. The historical summary URL now mounts the owned result component.
+
+### Final automated and build evidence
+
+- `php artisan test`: **197 passed, 865 assertions, 166.46 seconds**; the full guarded MySQL suite includes **19 new assessment regression cases**.
+- `npm run build`: passed in **14.20 seconds**; application CSS **256.83 KB**, dashboard CSS **17.91 KB**.
+- `php artisan view:cache`, `php artisan route:cache` followed by `php artisan route:clear`: passed.
+- `php -l` on **19 changed/new PHP files** and `git diff --check`: passed.
+- `php artisan route:list --json`: **283 registered contracts** recorded in the updated inventory.
+
+Production build, Blade cache, route cache/clear, changed-PHP syntax and `git diff --check` passed. Public JavaScript remains 0.92 KB and dashboard JavaScript 417.46 KB. The shared semantic navy/teal tokens, Sora/Manrope typography, existing Blade controls and trapped dialogs are reused; no dependency or framework migration was added. Build warnings about Browserslist data and a PostCSS `from` option remain pre-existing limitations, not suppressed findings.
+
+The new assessment cases cover pending results/rewards/progress/certificate denial; cross-course and revoked enrollment requests; unpublished/locked lesson access; malformed and oversized responses; private question payloads/locked metadata; authorized bounded partial/final review; self/other-instructor/unrelated-answer denial; immutable marks and idempotent review; full rollback on reward failure; saved drafts/maximum attempts/multiple selection; owned summary routes; instructor CRUD scope/history retention; original response snapshots and keys; missing pass configuration; and immutable clocks across saving, expiry and grading. Existing CBT, financial, ownership and learning cases remain enabled.
+
+Fresh dependency audits were reviewed: `npm audit --json` reports **8 findings (5 high, 3 moderate)**; `composer audit --format=json` reports **62 advisories across 19 packages**. Dependency manifests/locks are unchanged. No advisory suppression or forced major upgrade was used.
+
+### Browser and database evidence
+
+Accepted checks cover **32 distinct page/state/viewport samples at 390/768/1024/1440px**, plus **23 workflow/privacy/dialog checks**. The layouts include the lesson assessment list, active written workspace, instructor queue, CBT management, personal result list, embedded course lesson, written response result and selected-choice result dialog. Four repeated queue samples are excluded from the distinct count. Accepted samples have one primary heading, bounded document width, no error page and no recorded JavaScript exception. Screenshots of the learner/reviewer/embedded/result states were inspected.
+
+Native text input saved both written responses; a reload resumed them. Native checkboxes recorded an exact-set passing result. The owning instructor marked real responses through the form; partial review remained pending and final review published 70% with feedback. Learner results and personal analytics read the same records. Submission and instructor-review dialogs were checked for focus, Escape and return. Other instructors could not discover the managed CBT fixture or queue data; direct forbidden-action behavior is additionally covered by automated tests. Final response-card review verified the original selected options and written responses at all four widths without private rubric data.
+
+A separate guarded database read confirmed three actual graded attempts (70%, 100%, 70%), five answer rows, real reviewer/feedback audit entries and two quiz-point transactions totaling **100 points**. Passing the same assessment twice did not duplicate its reward. Analytics counted three complete graded attempts with an 80% average. This was the interactive cohort; the later response-layout cohort used the actual services to prepare its fixtures and is not counted as another native marking-flow exercise.
+
+Initial harness selector/regular-expression probes and an incomplete fixture seed were corrected and excluded from accepted evidence. The full suite also exposed an initial aggregation variable error and a route-parameter boot guard error; both were fixed before the final passing run. Third-party analytics/fonts/icons/avatars/datepicker/MathJax/QR assets were blocked in isolated browser review. External glyph/services, every editor/theme, screen readers and exhaustive WCAG acceptance are not certified.
+
+### Migration and preservation evidence
+
+Database inspection found `learning_sessions.started_at` had an implicit MariaDB `ON UPDATE CURRENT_TIMESTAMP` rule in the working and dedicated databases. Saving answers or grading could overwrite the start with database current time, resetting the deadline and producing misleading duration values. Forward migration `2026_10_22_020000_preserve_learning_session_start_time` changes only the column definition to an explicit `DEFAULT CURRENT_TIMESTAMP` without automatic updates.
+
+The generated SQL was inspected with `migrate --pretend`; the migration ran in `bootkode_test` and `bootkode_browser_test` first. Private schema/full-row backups were then retained under `storage/app/private/backups` with mode 0600. The browser table's two existing rows matched their pre-migration backup field-for-field. The working `bootkode_recovered` table contained **0 rows**, was backed up before the isolated forward migration, and still contained 0 afterward. The affected records were unchanged; no fresh/reset command or fixture insertion ran on that database.
+
+A subsequent real browser attempt kept its original **11:28:54 UTC** start through autosave, submission at **11:28:59 UTC** and final grading at **11:29:07 UTC**. Its recorded elapsed time was five seconds and its configured deadline survived reload. The automated time-advance case also verifies expiry uses the original clock and late answers cannot replace saved responses. The migration preserves historical values; it cannot reconstruct timestamps already overwritten before the fix, and rollback deliberately does not restore the unsafe rule.
+
+### Cleanup and remaining scope
+
+All known synthetic accounts, courses, lessons, sections, assessments, answers, sessions and polymorphic role links from these review cohorts were removed from the dedicated browser database. Cleanup explicitly handles the lesson foreign key's `SET NULL` behavior rather than assuming a course delete removes lessons. The private backups remain retained. Only owned QA processes were stopped; normal application/development listeners were preserved and the application returned HTTP 200.
+
+New attempts support multiple choice, true/false and reviewed text responses for short-answer/essay/fill-blank/assignment/project/Q&A questions. Matching/ordering/drag-drop interaction, formal correction/appeal history and backed-up reconciliation of legacy written answers without attempt snapshots remain outstanding. The queue does not invent attempt sessions for legacy data, regrade issued credentials, reconstruct historical clocks or claim outbound mail delivery. Prior provider/OAuth/live-AI/mail, historical public-file migration, legal, dependency and exhaustive accessibility/theme gates remain open. This continuation is not a whole-product production-readiness claim.
+
+Commits for this continuation:
+
+- `53709a2d feat(assessment): add authorized reviews and retain attempt history`
+- `48b0b212 build(ui): compile assessment workspace and result surfaces`
+
+The documentation commit records the accepted evidence and remaining gates. The handoff reports ordinary branch push and exact remote HEAD verification; no merge or deployment is performed.
