@@ -40,6 +40,7 @@ class GamificationService
             $enrolled = $user->enrollments()->where('course_id', $courseId)->exists() || $user->courses()->where('courses.id', $courseId)->exists();
             $completed = $user->completedLessons()->where('lessons.id', $lesson->id)->wherePivotNotNull('completed_at')->exists()
                 || DB::table('user_progress')->where('user_id', $user->id)->where('course_id', $courseId)->where('lesson_id', $lesson->id)->where('is_completed', true)->whereNotNull('completed_at')->exists();
+            if (!$lesson->assessments()->get()->every(fn ($assessment) => $assessment->isPassedByStudent($user->id))) return ['success' => false, 'message' => 'A passing reviewed assessment result is required.'];
             if (!$enrolled || !$completed) return ['success' => false, 'message' => 'Verified enrollment and completion are required.'];
             if ($this->rewardRecorded($user, 'lesson_completion', 'lesson_id', $lesson->id)) return ['success' => true, 'already_awarded' => true];
             $data->updateStreak();
@@ -77,7 +78,7 @@ class GamificationService
                     $possible += max(0, (float) $question->points);
                     $earned += min(max(0, (float) $answer->points_earned), max(0, (float) $question->points));
                 }
-                if ($possible <= 0 || $earned / $possible * 100 < (float) $assessment->pass_percentage) return ['success' => false, 'message' => 'A recorded passing result is required.'];
+                if (!$assessment->isPassedByStudent($user->id) || $possible <= 0 || $earned / $possible * 100 < (float) $assessment->pass_percentage) return ['success' => false, 'message' => 'A recorded passing result is required.'];
             }
             if ($this->rewardRecorded($user, 'quiz_completion', 'assessment_id', $assessment->id)) return ['success' => true, 'already_awarded' => true];
             $data->addPoints(self::POINTS_QUIZ_COMPLETION, 'quiz_completion');

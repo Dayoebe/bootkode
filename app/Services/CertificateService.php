@@ -324,7 +324,7 @@ class CertificateService
             ->where('course_id', $courseId)
             ->first();
 
-        if (!$enrollment) {
+        if (!$enrollment && !\DB::table('course_enrollments')->where('user_id', $userId)->where('course_id', $courseId)->exists()) {
             return [
                 'can_request' => false,
                 'reason' => 'User is not enrolled in this course.',
@@ -347,11 +347,14 @@ class CertificateService
             round(($completedLessons / $totalLessons) * 100) : 0;
 
         $requiredCompletion = config('certificate.required_completion_percentage', 100);
-        $canRequest = $totalLessons > 0 && $completionPercentage >= $requiredCompletion;
+        $assessmentsPassed = \App\Models\Assessment\Assessment::where(fn ($query) => $query->where('course_id', $courseId)
+            ->orWhereHas('lesson.section', fn ($section) => $section->where('course_id', $courseId)))
+            ->where(fn ($query) => $query->where('is_mandatory', true)->orWhereNotNull('lesson_id'))->get()->every(fn ($assessment) => $assessment->isPassedByStudent($userId));
+        $canRequest = $totalLessons > 0 && $completionPercentage >= $requiredCompletion && $assessmentsPassed;
 
         return [
             'can_request' => $canRequest,
-            'reason' => $canRequest ? '' : "Course completion is {$completionPercentage}%, but {$requiredCompletion}% is required.",
+            'reason' => $canRequest ? '' : (!$assessmentsPassed ? 'Pass every required assessment after instructor review before requesting a certificate.' : "Course completion is {$completionPercentage}%, but {$requiredCompletion}% is required."),
             'completion_percentage' => $completionPercentage,
             'completed_lessons' => $completedLessons,
             'total_lessons' => $totalLessons
@@ -424,7 +427,8 @@ class CertificateService
      */
     protected function getAssessmentResult($userId, $assessmentId): ?array
     {
-        return null;
+        $result = \App\Models\Assessment\Assessment::find($assessmentId)?->getStudentResults($userId);
+        return $result && !($result['pending_review'] ?? false) ? $result : null;
     }
 
     /**

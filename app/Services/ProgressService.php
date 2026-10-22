@@ -17,6 +17,7 @@ class ProgressService
     public function completeLesson(Course $course, Lesson $lesson)
     {
         $this->authorizeProgress($course, $lesson->section);
+        abort_unless($lesson->assessments()->get()->every(fn ($assessment) => $assessment->isPassedByStudent(Auth::id())), 422, 'Pass the lesson assessments after instructor review first.');
         UserProgress::updateOrCreate(
             [
                 'user_id' => Auth::id(),
@@ -37,7 +38,8 @@ class ProgressService
      */
     public function completeAssessment(Course $course, Assessment $assessment, bool $passed)
     {
-        $this->authorizeProgress($course, $assessment->section);
+        $this->authorizeProgress($course, $assessment->section ?? $assessment->lesson?->section);
+        $passed = $assessment->isPassedByStudent(Auth::id());
         UserProgress::updateOrCreate(
             [
                 'user_id' => Auth::id(),

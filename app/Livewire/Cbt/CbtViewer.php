@@ -2,108 +2,73 @@
 
 namespace App\Livewire\Cbt;
 
-use Livewire\Component;
 use App\Models\Assessment\Assessment;
-use App\Models\Assessment\StudentAnswer;
-use Illuminate\Support\Facades\Auth;
-use Livewire\WithPagination;
 use Livewire\Attributes\Layout;
+use Livewire\Attributes\Locked;
+use Livewire\Component;
+use Livewire\WithPagination;
 
-#[Layout('layouts.dashboard', ['title' => 'View CBT Exam', 'description' => 'View CBT exams', 'icon' => 'fas fa-microphone-alt'])]
+#[Layout('layouts.dashboard', ['title' => 'Assessment results'])]
 class CbtViewer extends Component
 {
     use WithPagination;
+    use \App\Livewire\Concerns\RequiresAuthenticatedAccount;
 
-    public $selectedAssessment = null;
-    public $selectedAttempt = null;
-    public $viewDetails = false;
+    #[Locked] public ?int $selectedAssessment = null;
+    #[Locked] public ?array $selectedAttempt = null;
+    public bool $viewDetails = false;
 
-    public function render()
+    public function boot(): void
     {
-        // Get ONLY standalone CBT assessments where user has attempted
-        $userAssessments = Assessment::where('type', 'quiz')
-            ->whereNull('section_id')
-            ->whereNull('lesson_id')
-            ->whereHas('studentAnswers', function($query) {
-                $query->where('user_id', Auth::id())
-                      ->whereNotNull('submitted_at');
-            })
-            ->with(['studentAnswers' => function($query) {
-                $query->where('user_id', Auth::id())
-                      ->whereNotNull('submitted_at')
-                      ->with('question');
-            }, 'questions'])
-            ->paginate(10);
-
-        return view('livewire.cbt.cbt-viewer', compact('userAssessments'));
+        if ($this->selectedAssessment) $this->ownedAssessment($this->selectedAssessment);
     }
 
-    public function viewAssessmentDetails($assessmentId)
+    public function mount($assessmentId = null): void
     {
-        $this->selectedAssessment = Assessment::with([
-            'studentAnswers' => function($query) {
-                $query->where('user_id', Auth::id())
-                      ->whereNotNull('submitted_at')
-                      ->with('question')
-                      ->orderBy('attempt_number', 'desc');
-            },
-            'questions'
-        ])->findOrFail($assessmentId);
+        if ($assessmentId) $this->viewAssessmentDetails((int) $assessmentId);
+    }
 
+    private function ownedAssessment(int $id): Assessment
+    {
+        $assessment = Assessment::whereHas('studentAnswers', fn ($answers) => $answers->where('user_id', auth()->id())->whereNotNull('submitted_at'))->find($id);
+        abort_unless($assessment, 404);
+        return $assessment;
+    }
+
+    public function viewAssessmentDetails(int $assessmentId): void
+    {
+        $this->ownedAssessment($assessmentId);
+        $this->selectedAssessment = $assessmentId;
+        $this->selectedAttempt = null;
         $this->viewDetails = true;
     }
 
-    public function viewAttemptDetails($attemptNumber)
+    public function viewAttemptDetails(int $attemptNumber): void
     {
-        $this->selectedAttempt = $this->selectedAssessment->getStudentResults(Auth::id(), $attemptNumber);
-
-        if (!$this->selectedAttempt) {
-            session()->flash('error', 'No results found for this attempt.');
-        }
+        abort_unless($this->selectedAssessment, 422);
+        $results = $this->ownedAssessment($this->selectedAssessment)->getStudentResults(auth()->id(), $attemptNumber);
+        abort_unless($results, 404);
+        $this->selectedAttempt = \Illuminate\Support\Arr::except($results, ['answers']);
     }
 
-    public function closeDetails()
+    public function closeDetails(): void
     {
-        $this->viewDetails = false;
-        $this->selectedAssessment = null;
-        $this->selectedAttempt = null;
+        $this->reset('viewDetails', 'selectedAssessment', 'selectedAttempt');
     }
 
-    /**
-     * Better attempt aggregation with proper grouping
-     */
-    public function getAttemptsForAssessment($assessment)
+    public function getAttemptsForAssessment(Assessment $assessment)
     {
-        $attempts = $assessment->studentAnswers
-            ->where('user_id', Auth::id())
-            ->whereNotNull('submitted_at')
-            ->groupBy('attempt_number')
-            ->map(function($answers, $attemptNumber) use ($assessment) {
-                // Calculate totals for this attempt
-                $totalPoints = $answers->sum('points_earned');
-                $correctAnswersCount = $answers->where('is_correct', true)->count();
-                
-                // Get max possible points
-                $maxPoints = $assessment->questions->sum('points') ?: $assessment->max_score ?: 100;
-                
-                // Calculate percentage
-                $percentage = $maxPoints > 0 ? round(($totalPoints / $maxPoints) * 100, 1) : 0;
-                $passed = $percentage >= $assessment->pass_percentage;
+        $assessment = $this->ownedAssessment($assessment->id);
+        return $assessment->studentAnswers()->where('user_id', auth()->id())->whereNotNull('submitted_at')->distinct()->orderByDesc('attempt_number')->pluck('attempt_number')
+            ->map(fn ($number) => \Illuminate\Support\Arr::except($assessment->getStudentResults(auth()->id(), $number), ['answers']));
+    }
 
-                return [
-                    'attempt_number' => $attemptNumber,
-                    'total_points' => $totalPoints,
-                    'max_points' => $maxPoints,
-                    'percentage' => $percentage,
-                    'passed' => $passed,
-                    'submitted_at' => $answers->first()->submitted_at,
-                    'answers_count' => $answers->count(),
-                    'correct_answers' => $correctAnswersCount
-                ];
-            })
-            ->sortByDesc('attempt_number')
-            ->values();
-
-        return $attempts;
+    public function render()
+    {
+        $userAssessments = Assessment::whereHas('studentAnswers', fn ($answers) => $answers->where('user_id', auth()->id())->whereNotNull('submitted_at'))->latest()->paginate(10);
+        $assessment = $this->selectedAssessment ? $this->ownedAssessment($this->selectedAssessment) : null;
+        $attempts = $assessment ? $this->getAttemptsForAssessment($assessment) : collect();
+        $responses = $assessment && $this->selectedAttempt ? app(\App\Services\AssessmentResultService::class)->responses($assessment, auth()->user(), $this->selectedAttempt['attempt_number']) : [];
+        return view('livewire.cbt.cbt-viewer', compact('userAssessments', 'assessment', 'attempts', 'responses'));
     }
 }

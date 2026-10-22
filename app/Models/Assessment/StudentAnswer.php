@@ -20,11 +20,13 @@ class StudentAnswer extends Model
         'time_spent_seconds',
         'submitted_at',
         'question_order',
+        'graded_by', 'graded_at', 'feedback',
         'exam_data'
     ];
 
     protected $casts = [
         'exam_data' => 'array',
+        'graded_at' => 'datetime',
         'submitted_at' => 'datetime',
         'question_order' => 'array'
     ];
@@ -91,10 +93,16 @@ class StudentAnswer extends Model
      */
     protected function gradeMultipleChoice($question, $userAnswer, $originalCorrectAnswers)
     {
-        // Simple comparison - userAnswer is already in original position
-        $this->is_correct = in_array((int) $userAnswer, $originalCorrectAnswers);
+        $selected = $userAnswer;
+        if (is_string($userAnswer)) {
+            $decoded = json_decode($userAnswer, true);
+            if (json_last_error() === JSON_ERROR_NONE && $decoded !== null) $selected = $decoded;
+        }
+        $selected = array_values(array_unique(array_map('intval', is_array($selected) ? $selected : [$selected])));
+        $expected = array_values(array_unique(array_map('intval', $originalCorrectAnswers)));
+        sort($selected); sort($expected);
+        $this->is_correct = $selected === $expected;
         $this->points_earned = $this->is_correct ? $question->points : 0;
-
     }
 
     /**

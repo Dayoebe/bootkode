@@ -23,6 +23,8 @@ class CbtExam extends Component
                 return redirect()->route('cbt.exams');
             }
 
+            app(\App\Services\CbtAttemptService::class)->authorize($assessment, Auth::user());
+
             if ($assessment->questions->count() === 0) {
                 session()->flash('error', 'This assessment has no questions.');
                 return redirect()->route('cbt.exams');

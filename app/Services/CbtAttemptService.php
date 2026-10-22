@@ -13,8 +13,13 @@ class CbtAttemptService
     public function authorize(Assessment $assessment, User $user): void
     {
         $assessment->refresh();
-        if (!$assessment->course_id) return; // Existing standalone CBT contract.
-        $course = $assessment->course;
+        $parentCourse = $assessment->lesson?->section?->course ?? $assessment->section?->course;
+        if ($parentCourse && $assessment->course_id) abort_unless((int) $parentCourse->id === (int) $assessment->course_id, 403);
+        if (!$assessment->course_id && !$parentCourse) {
+            abort_unless($assessment->type === 'quiz' && !$assessment->lesson_id && !$assessment->section_id, 403);
+            return; // Existing standalone CBT contract.
+        }
+        $course = $assessment->course ?? $parentCourse;
         abort_unless($course, 404);
         abort_unless($user->hasAnyRole(['super_admin', 'academy_admin']) || (int) $course->instructor_id === (int) $user->id
             || $user->enrollments()->where('course_id', $course->id)->exists() || $user->courses()->where('courses.id', $course->id)->exists(), 403);
@@ -30,32 +35,75 @@ class CbtAttemptService
             if ($question->question_type === 'true_false') $options = ['True', 'False'];
             $indexed = collect($options ?? [])->map(fn ($text, $index) => ['index' => $index, 'text' => $text]);
             if ($assessment->shuffle_options && $question->question_type === 'multiple_choice') $indexed = $indexed->shuffle();
+            $correct = $question->correct_answers;
+            if (is_string($correct)) $correct = json_decode($correct, true);
             return array_merge($question->only(['id', 'question_text', 'question_type', 'points', 'time_limit']), [
                 'options' => $indexed->pluck('text')->values()->all(),
                 'display_to_original_map' => $indexed->pluck('index')->values()->all(),
                 'was_shuffled' => (bool) $assessment->shuffle_options,
+                'allows_multiple' => $question->question_type === 'multiple_choice' && count(is_array($correct) ? $correct : []) > 1,
             ]);
         })->values()->all();
     }
 
-    public function start(User $user, Assessment $assessment): LearningSession
+    public function start(User $user, Assessment $assessment, bool $allowWritten = false): LearningSession
     {
-        return DB::transaction(function () use ($user, $assessment) {
+        return DB::transaction(function () use ($user, $assessment, $allowWritten) {
             User::whereKey($user->id)->lockForUpdate()->firstOrFail();
+            Assessment::whereKey($assessment->id)->lockForUpdate()->firstOrFail();
             $this->authorize($assessment, $user);
+            if ($assessment->lesson) $this->authorizeLesson($user, $assessment->lesson);
             $active = LearningSession::where('user_id', $user->id)->where('activity_type', 'assessment')->where('metadata->assessment_id', $assessment->id)->whereNull('ended_at')->lockForUpdate()->latest('id')->first();
-            if ($active) return $active;
+            if ($active) {
+                abort_if(!$allowWritten && ($active->metadata['allow_written'] ?? false), 422, 'Resume this attempt from the lesson assessments page.');
+                return $active;
+            }
+            abort_if(LearningSession::where('user_id', $user->id)->where('activity_type', 'assessment')->where('metadata->assessment_id', $assessment->id)->where('metadata->results->pending_review', true)->exists(), 403, 'Your submitted attempt is awaiting instructor review.');
             [$eligible, $message] = $assessment->canUserTakeAssessment($user->id);
             abort_unless($eligible, 403, $message);
+            abort_unless(is_numeric($assessment->pass_percentage) && $assessment->pass_percentage >= 1 && $assessment->pass_percentage <= 100, 422, 'Your instructor must configure a pass mark before this assessment can start.');
             $assessment->load(['questions' => fn ($query) => $query->lockForUpdate()]);
             $questions = $this->questions($assessment);
             abort_unless(count($questions) > 0, 422, 'No assessment questions are available.');
-            abort_if(collect($questions)->contains(fn ($question) => !in_array($question['question_type'], ['multiple_choice', 'true_false'], true)), 422, 'This exam requires a grading workflow that is not available in the CBT player.');
+            $supported = $allowWritten ? ['multiple_choice', 'true_false', 'short_answer', 'essay', 'fill_blank', 'assignment_question', 'project_criteria', 'qna_topic'] : ['multiple_choice', 'true_false'];
+            abort_if(collect($questions)->contains(fn ($question) => !in_array($question['question_type'], $supported, true) || (!$allowWritten && $question['allows_multiple'])), 422, 'This question format requires a different assessment workflow.');
             return LearningSession::create(['user_id' => $user->id, 'course_id' => $assessment->course_id, 'activity_type' => 'assessment', 'started_at' => now(),
-                'metadata' => ['assessment_id' => $assessment->id, 'attempt' => $assessment->getNextAttemptNumber($user->id), 'questions' => $questions,
-                    'grading' => $assessment->questions->mapWithKeys(fn ($question) => [$question->id => $question->only(['correct_answers', 'points', 'question_type'])])->all(),
+                'metadata' => ['assessment_id' => $assessment->id, 'attempt' => $assessment->getNextAttemptNumber($user->id), 'questions' => $questions, 'allow_written' => $allowWritten, 'pass_percentage' => (float) $assessment->pass_percentage,
+                    'grading' => $assessment->questions->mapWithKeys(fn ($question) => [$question->id => $question->only(['correct_answers', 'points', 'question_type', 'explanation'])])->all(),
                     'duration_seconds' => max(60, (int) $assessment->estimated_duration_minutes * 60)]]);
         });
+    }
+
+    public function authorizeLesson(User $user, \App\Models\Learning\Lesson $lesson): void
+    {
+        $lesson->refresh()->load('section.course');
+        $course = $lesson->section?->course;
+        abort_unless($course, 404);
+        if ($user->hasAnyRole(['super_admin', 'academy_admin']) || (int) $course->instructor_id === (int) $user->id) return;
+        abort_unless(\App\Models\Learning\Lesson::published()->whereKey($lesson->id)->exists(), 403);
+        abort_unless($user->enrollments()->where('course_id', $course->id)->exists() || $user->courses()->where('courses.id', $course->id)->exists(), 403);
+        $threshold = min(100, max(1, (int) config('course.section_completion_threshold', 80)));
+        foreach ($course->sections()->where('order', '<', $lesson->section->order)->get() as $previous) {
+            $ids = $previous->lessons()->published()->pluck('id');
+            if ($ids->isEmpty()) continue;
+            $completed = DB::table('lesson_user')->where('user_id', $user->id)->whereIn('lesson_id', $ids)->whereNotNull('completed_at')->pluck('lesson_id')
+                ->merge(DB::table('user_progress')->where('user_id', $user->id)->where('course_id', $course->id)->whereIn('lesson_id', $ids)->where('is_completed', true)->whereNotNull('completed_at')->pluck('lesson_id'))->unique()->count();
+            abort_unless($completed >= (int) ceil($ids->count() * $threshold / 100), 403, 'Complete the previous section before opening this lesson.');
+        }
+    }
+
+    private function validateAnswer(array $question, $value, bool $allowWritten): void
+    {
+        if ($value === null || $value === '') return;
+        if (in_array($question['question_type'], ['multiple_choice', 'true_false'], true)) {
+            $values = is_array($value) ? $value : [$value];
+            foreach ($values as $index) abort_unless(is_int($index) || is_string($index), 422, 'Choose valid options.');
+            abort_unless(count($values) > 0 && count($values) <= count($question['display_to_original_map']) && count(array_unique($values)) === count($values), 422, 'Choose valid options.');
+            abort_if(count($values) > 1 && (!$allowWritten || empty($question['allows_multiple'])), 422, 'Choose one answer.');
+            foreach ($values as $index) abort_unless(filter_var($index, FILTER_VALIDATE_INT) !== false && array_key_exists((int) $index, $question['display_to_original_map']), 422, 'Choose a valid answer.');
+        } else {
+            abort_unless($allowWritten && is_string($value) && mb_strlen($value) <= 10000, 422, 'Write an answer of up to 10,000 characters.');
+        }
     }
 
     public function saveAnswer(User $user, Assessment $assessment, int $sessionId, int $questionId, $value): void
@@ -63,11 +111,13 @@ class CbtAttemptService
         DB::transaction(function () use ($user, $assessment, $sessionId, $questionId, $value) {
             User::whereKey($user->id)->lockForUpdate()->firstOrFail();
             $this->authorize($assessment, $user);
-            $session = LearningSession::where('user_id', $user->id)->whereNull('ended_at')->lockForUpdate()->findOrFail($sessionId);
+            if ($assessment->lesson) $this->authorizeLesson($user, $assessment->lesson);
+            $session = LearningSession::where('user_id', $user->id)->where('activity_type', 'assessment')->whereNull('ended_at')->lockForUpdate()->findOrFail($sessionId);
             abort_unless((int) ($session->metadata['assessment_id'] ?? 0) === (int) $assessment->id, 403);
             abort_if($session->started_at->diffInSeconds(now(), false) > $session->metadata['duration_seconds'] + 5, 422, 'The answer deadline has passed.');
             $question = collect($session->metadata['questions'])->firstWhere('id', $questionId);
-            abort_unless($question && ($value === null || (filter_var($value, FILTER_VALIDATE_INT) !== false && array_key_exists((int) $value, $question['display_to_original_map']))), 422);
+            abort_unless($question, 422);
+            $this->validateAnswer($question, $value, (bool) ($session->metadata['allow_written'] ?? false));
             $answers = $session->metadata['answers'] ?? [];
             $answers[$questionId] = $value;
             $session->update(['metadata' => array_merge($session->metadata, ['answers' => $answers])]);
@@ -79,6 +129,7 @@ class CbtAttemptService
         return DB::transaction(function () use ($user, $assessment, $sessionId, $answers) {
             User::whereKey($user->id)->lockForUpdate()->firstOrFail();
             $this->authorize($assessment, $user);
+            if ($assessment->lesson) $this->authorizeLesson($user, $assessment->lesson);
             $session = LearningSession::where('user_id', $user->id)->where('activity_type', 'assessment')->lockForUpdate()->findOrFail($sessionId);
             abort_unless((int) ($session->metadata['assessment_id'] ?? 0) === (int) $assessment->id, 403);
             if ($session->ended_at) return $session->metadata['results'];
@@ -89,27 +140,34 @@ class CbtAttemptService
             $expired = $elapsed > $session->metadata['duration_seconds'] + 5;
             if ($expired) $answers = $session->metadata['answers'] ?? [];
             $earned = $possible = $correct = $answered = 0;
+            $pendingReview = false;
             foreach ($questions as $snapshot) {
                 $question = $assessment->questions()->findOrFail($snapshot['id']);
                 $value = $answers[$question->id] ?? null;
+                $this->validateAnswer($snapshot, $value, (bool) ($session->metadata['allow_written'] ?? false));
+                $manual = !in_array($snapshot['question_type'], ['multiple_choice', 'true_false'], true);
                 if ($value !== null && $value !== '') {
-                    abort_unless(filter_var($value, FILTER_VALIDATE_INT) !== false && array_key_exists((int) $value, $snapshot['display_to_original_map']), 422, 'Choose a valid answer.');
-                    $value = (string) $snapshot['display_to_original_map'][(int) $value];
+                    if (!$manual) {
+                        $mapped = collect(is_array($value) ? $value : [$value])->map(fn ($index) => (int) $snapshot['display_to_original_map'][(int) $index])->all();
+                        $value = count($mapped) === 1 ? (string) $mapped[0] : json_encode($mapped);
+                    }
                     $answered++;
                 } else $value = null;
                 $answer = StudentAnswer::create(['user_id' => $user->id, 'assessment_id' => $assessment->id, 'question_id' => $question->id,
                     'attempt_number' => $session->metadata['attempt'], 'answer' => $value, 'time_spent_seconds' => min($elapsed, $session->metadata['duration_seconds']), 'submitted_at' => now(),
                     'question_order' => $ids, 'exam_data' => ['was_shuffled' => $snapshot['was_shuffled']]]);
-                $grading = $session->metadata['grading'][$question->id] ?? $question->only(['correct_answers', 'points', 'question_type']);
-                if ($value !== null && !$answer->autoGrade($grading)) throw new \RuntimeException('Grading failed; no attempt was recorded.');
+                $grading = $session->metadata['grading'][$question->id] ?? $question->only(['correct_answers', 'points', 'question_type', 'explanation']);
+                if (!$manual && $value !== null && !$answer->autoGrade($grading)) throw new \RuntimeException('Grading failed; no attempt was recorded.');
+                if (!$manual) $answer->forceFill(['graded_at' => now()])->save();
+                $pendingReview = $pendingReview || $manual;
                 $answer->refresh();
                 $earned += (float) $answer->points_earned;
                 $possible += max(0, (float) $grading['points']);
                 if ($answer->is_correct) $correct++;
             }
             $percentage = $possible > 0 ? round($earned / $possible * 100, 1) : 0;
-            $results = ['total_questions' => count($questions), 'answered_questions' => $answered, 'correct_answers' => $correct, 'total_points' => $earned, 'max_points' => $possible,
-                'percentage' => $percentage, 'passed' => $percentage >= (float) $assessment->pass_percentage, 'attempt_number' => $session->metadata['attempt'], 'time_spent' => min($elapsed, $session->metadata['duration_seconds']), 'expired' => $expired];
+            $results = ['total_questions' => count($questions), 'answered_questions' => $answered, 'correct_answers' => $correct, 'total_points' => !empty($pendingReview) ? null : $earned, 'max_points' => $possible,
+                'percentage' => !empty($pendingReview) ? null : $percentage, 'passed' => empty($pendingReview) && $percentage >= (float) ($session->metadata['pass_percentage'] ?? $assessment->pass_percentage), 'pending_review' => !empty($pendingReview), 'attempt_number' => $session->metadata['attempt'], 'time_spent' => min($elapsed, $session->metadata['duration_seconds']), 'expired' => $expired];
             $session->update(['ended_at' => now(), 'duration_minutes' => (int) floor(min($elapsed, $session->metadata['duration_seconds']) / 60), 'metadata' => array_merge($session->metadata, ['results' => $results])]);
             app(GamificationService::class)->handleQuizCompletion($user, $assessment);
             return $results;

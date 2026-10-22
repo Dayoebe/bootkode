@@ -196,14 +196,17 @@ Route::middleware(['auth', 'verified'])->group(function () {
     });
 });
 
-// CBT Routes - Removed role restrictions
+Route::get('/learning/lessons/{lesson}/assessments', \App\Livewire\StudentManagement\CourseView\StudentAssessmentTaker::class)->defaults('standalone', true)->name('lesson.assessments')->middleware(['auth', 'verified']);
+Route::get('/course-management/assessment-reviews', \App\Livewire\CourseManagement\AssessmentReviewQueue::class)->name('assessment.reviews')->middleware(['auth', 'verified', \App\Http\Middleware\CheckRole::class . ':super_admin,academy_admin,instructor']);
+
+// CBT routes
 Route::get('/cbt/management', \App\Livewire\Cbt\CbtManagement::class)->name('cbt.management')->middleware(['auth', 'verified', \App\Http\Middleware\CheckRole::class . ':super_admin,academy_admin,instructor']);
 Route::get('/cbt/results', \App\Livewire\Cbt\CbtViewer::class)->name('cbt.viewer')->middleware(['auth', 'verified']);
 Route::middleware(['auth', 'verified'])->group(function () {
     // CBT Exam Routes
     Route::get('/cbt/exams', App\Livewire\Cbt\CbtExamSelection::class)->name('cbt.exams');
     Route::get('/cbt/exam/{assessment}/take', App\Livewire\Cbt\CbtExamInterface::class)->name('cbt.exam.take');
-    Route::get('/cbt/exam/{assessmentId}/summary', [CbtExamInterface::class, 'summary'])
+    Route::get('/cbt/exam/{assessmentId}/summary', \App\Livewire\Cbt\CbtViewer::class)
     ->name('cbt.exam.summary');
 
     // /exam/{assessmentId}
