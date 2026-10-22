@@ -398,15 +398,9 @@ Route::middleware(['auth', 'verified'])->prefix('dashboard')->name('')->group(fu
 // =============================================================================
 Route::get('/marketplace', App\Livewire\Marketplace\PublicMarketplace::class)->name('marketplace.browse');
 Route::get('/marketplace/categories', App\Livewire\Marketplace\PublicMarketplace::class)->name('marketplace.categories');
-Route::get('/marketplace/product/{slug}', function ($slug) {
-    return app(App\Livewire\Marketplace\PublicMarketplace::class, ['slug' => $slug, 'type' => 'product']);
-})->name('marketplace.product.show');
-Route::get('/marketplace/category/{slug}', function ($slug) {
-    return app(App\Livewire\Marketplace\PublicMarketplace::class, ['slug' => $slug, 'type' => 'category']);
-})->name('marketplace.category.show');
-Route::get('/marketplace/instructor/{id}', function ($id) {
-    return app(App\Livewire\Marketplace\PublicMarketplace::class, ['slug' => $id, 'type' => 'vendor']);
-})->name('marketplace.instructor.show');
+Route::get('/marketplace/product/{slug}', App\Livewire\Marketplace\PublicMarketplace::class)->defaults('type', 'product')->name('marketplace.product.show');
+Route::get('/marketplace/category/{slug}', App\Livewire\Marketplace\PublicMarketplace::class)->defaults('type', 'category')->name('marketplace.category.show');
+Route::get('/marketplace/instructor/{id}', App\Livewire\Marketplace\PublicMarketplace::class)->defaults('type', 'vendor')->name('marketplace.instructor.show');
 
 // AUTHENTICATED ROUTES - Dashboard Access
 Route::middleware(['auth', 'verified'])->group(function () {

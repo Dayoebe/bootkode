@@ -415,7 +415,7 @@
                                                 <a href="{{ route('marketplace.item.public', $order->item->slug) }}" 
                                                    class="inline-flex min-h-11 items-center px-3 py-1.5 bg-blue-600 dark:bg-blue-500 text-white text-sm rounded-lg hover:bg-blue-700 dark:hover:bg-blue-600 transition-colors duration-300">
                                                     <i class="fas fa-star mr-1"></i>
-                                                    Review
+                                                    View reviews
                                                 </a>
                                             @endif
                                             

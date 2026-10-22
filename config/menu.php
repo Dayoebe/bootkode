@@ -242,7 +242,7 @@ return [
                 ['label' => 'All Orders', 'icon' => 'fas fa-boxes', 'route_name' => 'marketplace.orders', 'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN], 'link_id' => 'marketplace.orders'],
                 ['label' => 'Payments & Payouts', 'icon' => 'fas fa-wallet', 'route_name' => 'marketplace.payments', 'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN], 'link_id' => 'marketplace.payments'],
                 ['label' => 'Promotions & Discounts', 'icon' => 'fas fa-bullhorn', 'route_name' => 'marketplace.promotions', 'roles' => [User::ROLE_CONTENT_EDITOR, User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN], 'link_id' => 'marketplace.promotions'],
-                ['label' => 'Reviews & Ratings', 'icon' => 'fas fa-star', 'route_name' => 'marketplace.reviews', 'roles' => [], 'link_id' => 'marketplace.reviews'],
+                ['label' => 'Reviews & Ratings', 'icon' => 'fas fa-star', 'route_name' => 'marketplace.reviews', 'roles' => [User::ROLE_SUPER_ADMIN, User::ROLE_ACADEMY_ADMIN, User::ROLE_CONTENT_EDITOR], 'link_id' => 'marketplace.reviews'],
                 ['label' => 'Marketplace Analytics', 'icon' => 'fas fa-chart-line', 'route_name' => 'marketplace.analytics', 'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN], 'link_id' => 'marketplace.analytics'],
                 ['label' => 'Marketplace Settings', 'icon' => 'fas fa-cog', 'route_name' => 'marketplace.settings', 'roles' => [User::ROLE_SUPER_ADMIN, User::ROLE_ACADEMY_ADMIN], 'link_id' => 'marketplace.settings'],
             ]

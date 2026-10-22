@@ -253,8 +253,11 @@ class MarketplaceBrowse extends Component
     // Helper methods
     private function setInitialView()
     {
-        // You can set logic here based on route parameters if needed
-        // For now, defaults to 'browse'
+        $slug = request()->route('slug');
+        if (request()->route()?->getName() === 'marketplace.item.public' && $slug) {
+            $this->selectedItemId = MarketplaceItem::published()->where('slug', $slug)->firstOrFail()->id;
+            $this->currentView = 'product-details';
+        }
     }
 
     private function resetCategoryForm()

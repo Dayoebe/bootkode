@@ -254,4 +254,14 @@ class MarketplaceIntegrityTest extends TestCase
             ->assertDontSee('PRIVATE internal administration note')->assertSee('Customer supplied note');
     }
 
+    public function test_named_product_routes_render_the_actual_product(): void
+    {
+        [, $vendor, $customer, $item] = $this->fixture();
+        $this->get(route('marketplace.product.show', $item->slug))->assertOk()->assertSee($item->title);
+        $this->get(route('marketplace.instructor.show', $vendor->id))->assertOk();
+        $this->actingAs($customer)->get(route('marketplace.item.public', $item->slug))->assertOk()->assertSee($item->title);
+        $item->update(['status' => MarketplaceItem::STATUS_DRAFT]);
+        $this->get(route('marketplace.product.show', $item->slug))->assertNotFound();
+    }
+
 }
