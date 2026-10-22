@@ -11,6 +11,8 @@ use Livewire\Attributes\Layout;
 #[Layout('layouts.dashboard', ['title' => 'Affiliate Commission History'])]
 class CommissionHistory extends Component
 {
+    use \App\Livewire\Concerns\RequiresAuthenticatedAccount;
+
     use WithPagination;
 
     public $search = '';
@@ -57,6 +59,7 @@ class CommissionHistory extends Component
     {
         $user = auth()->user();
 
+        $this->validate(['sortBy' => 'in:created_at,commission_amount,course_price,status', 'sortDirection' => 'in:asc,desc', 'statusFilter' => 'in:all,pending,paid,cancelled']);
         $query = ReferralTransaction::query()
             ->whereHas('referral', function($q) use ($user) {
                 $q->where('affiliate_id', $user->affiliate->id);
@@ -65,11 +68,9 @@ class CommissionHistory extends Component
 
         // Apply filters
         if ($this->search) {
-            $query->whereHas('course', function($q) {
-                $q->where('title', 'like', '%' . $this->search . '%');
-            })->orWhereHas('referral.referredUser', function($q) {
-                $q->where('name', 'like', '%' . $this->search . '%')
-                  ->orWhere('email', 'like', '%' . $this->search . '%');
+            $query->where(function ($matching) {
+                $matching->whereHas('course', fn ($course) => $course->where('title', 'like', '%'.$this->search.'%'))
+                    ->orWhereHas('referral.referredUser', fn ($user) => $user->where(fn ($details) => $details->where('name', 'like', '%'.$this->search.'%')->orWhere('email', 'like', '%'.$this->search.'%')));
             });
         }
 

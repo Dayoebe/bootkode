@@ -12,6 +12,8 @@ use Livewire\Attributes\Layout;
 #[Layout('layouts.dashboard', ['title' => 'Affiliate Commission Report'])]
 class CommissionReports extends Component
 {
+    use \App\Livewire\Concerns\RequiresAuthenticatedAccount;
+
     public $reportType = 'overview';
     public $dateFrom = '';
     public $dateTo = '';
@@ -54,13 +56,13 @@ class CommissionReports extends Component
                     'commissions' => ['Date', 'Course', 'Student', 'Commission', 'Status'],
                     'referrals' => ['Date', 'Referred User', 'Email', 'Total Spent', 'Total Commission', 'Status'],
                     'performance' => ['Period', 'Referrals', 'Sales', 'Commission', 'Conversion Rate'],
-                    default => ['Date', 'Description', 'Amount']
+                    default => ['Date', 'Course', 'Student', 'Commission', 'Status']
                 };
                 
                 fputcsv($handle, $headers);
                 
                 foreach ($data as $row) {
-                    fputcsv($handle, $row);
+                    fputcsv($handle, array_map(fn ($value) => is_string($value) && preg_match('/^[=+@\-\t\r]/', $value) ? "'".$value : $value, $row));
                 }
                 
                 fclose($handle);
@@ -70,17 +72,19 @@ class CommissionReports extends Component
 
     private function getReportData()
     {
+        $this->validate(['reportType' => 'in:overview,commissions,referrals,performance', 'exportFormat' => 'in:csv', 'dateFrom' => 'required|date', 'dateTo' => 'required|date|after_or_equal:dateFrom']);
+        if (Carbon::parse($this->dateFrom)->diffInDays(Carbon::parse($this->dateTo)) > 366) throw \Illuminate\Validation\ValidationException::withMessages(['dateTo' => 'Choose a report period of up to 366 days.']);
         $user = auth()->user();
         $affiliate = $user->affiliate;
         
         $startDate = Carbon::parse($this->dateFrom);
-        $endDate = Carbon::parse($this->dateTo);
+        $endDate = Carbon::parse($this->dateTo)->endOfDay();
 
         return match($this->reportType) {
             'commissions' => $this->getCommissionData($affiliate->id, $startDate, $endDate),
             'referrals' => $this->getReferralData($affiliate->id, $startDate, $endDate),
             'performance' => $this->getPerformanceData($affiliate->id, $startDate, $endDate),
-            default => []
+            default => $this->getCommissionData($affiliate->id, $startDate, $endDate)
         };
     }
 
@@ -131,28 +135,30 @@ class CommissionReports extends Component
         
         while ($current->lte($endDate)) {
             $weekEnd = $current->copy()->endOfWeek();
+            $rangeStart = $current->max($startDate);
+            $rangeEnd = $weekEnd->min($endDate);
             
             $referrals = Referral::where('affiliate_id', $affiliateId)
-                ->whereBetween('created_at', [$current, $weekEnd])
+                ->whereBetween('created_at', [$rangeStart, $rangeEnd])
                 ->count();
                 
             $commissions = ReferralTransaction::whereHas('referral', function($q) use ($affiliateId) {
                     $q->where('affiliate_id', $affiliateId);
                 })
                 ->where('status', ReferralTransaction::STATUS_PAID)
-                ->whereBetween('paid_at', [$current, $weekEnd])
+                ->whereBetween('paid_at', [$rangeStart, $rangeEnd])
                 ->sum('commission_amount');
                 
             $sales = ReferralTransaction::whereHas('referral', function($q) use ($affiliateId) {
                     $q->where('affiliate_id', $affiliateId);
                 })
-                ->whereBetween('created_at', [$current, $weekEnd])
+                ->whereBetween('created_at', [$rangeStart, $rangeEnd])
                 ->count();
                 
             $conversionRate = $referrals > 0 ? round(($sales / $referrals) * 100, 2) : 0;
             
             $weeks[] = [
-                $current->format('M d') . ' - ' . $weekEnd->format('M d'),
+                $rangeStart->format('M d') . ' - ' . $rangeEnd->format('M d'),
                 $referrals,
                 $sales,
                 '₦' . number_format($commissions, 2),
@@ -170,7 +176,7 @@ class CommissionReports extends Component
         $user = auth()->user();
         $affiliate = $user->affiliate;
         $startDate = Carbon::parse($this->dateFrom);
-        $endDate = Carbon::parse($this->dateTo);
+        $endDate = Carbon::parse($this->dateTo)->endOfDay();
 
         // Get report data for display
         $reportData = $this->getReportData();

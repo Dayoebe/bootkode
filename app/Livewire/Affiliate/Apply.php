@@ -7,6 +7,8 @@ use Livewire\Attributes\Layout;
 #[Layout('layouts.dashboard', ['title' => 'Apply for Affiliate Program'])]
 class Apply extends Component
 {
+    use \App\Livewire\Concerns\RequiresAuthenticatedAccount;
+
     public function mount()
     {
         $user = auth()->user();

@@ -9,6 +9,10 @@ use Livewire\Attributes\Layout;
 #[Layout('layouts.dashboard', ['title' => 'Affiliate tools'])]
 class Tools extends Component
 {
+    use \App\Livewire\Concerns\RequiresAuthenticatedAccount;
+
+    use \App\Livewire\Concerns\HasActionFeedback;
+
     public $selectedTool = 'links';
     public $customMessage = '';
     public $copiedText = '';
@@ -31,16 +35,23 @@ class Tools extends Component
 
     public function setTool($tool)
     {
+        abort_unless(in_array($tool, ['links', 'banners', 'social', 'email'], true), 422);
         $this->selectedTool = $tool;
     }
 
     public function copyToClipboard($text, $type)
     {
-        $this->copiedText = $type;
-        $this->dispatch('clipboard-copy', text: $text);
+        abort_unless(auth()->user()->affiliate?->isActive(), 403);
+        $this->dispatch('clipboard-copy', text: $text, type: $type);
         
         // Reset after 3 seconds
         $this->js("setTimeout(() => { \$wire.copiedText = ''; }, 3000)");
+    }
+
+    public function clipboardResult(string $type, bool $success): void
+    {
+        $this->copiedText = $success ? $type : '';
+        $this->flashFeedback($success ? 'success' : 'error', $success ? 'Copied to clipboard.' : 'Clipboard access was denied. Select and copy the text manually.');
     }
 
     public function generateCustomEmail()
@@ -50,9 +61,11 @@ class Tools extends Component
             return;
         }
 
+        abort_unless($user->affiliate?->isActive(), 403);
+        $this->validate(['customMessage' => 'string|max:2000']);
         $template = "Hi there!\n\n" .
-                   ($this->customMessage ?: "I wanted to share something amazing with you - BootKode!") . "\n\n" .
-                   "It's a comprehensive coding education platform where you can learn programming from scratch or advance your existing skills.\n\n" .
+                   ($this->customMessage ?: "Explore practical technology learning with BootKode.") . "\n\n" .
+                   "Explore the published courses and resources. Learn. Build. Grow.\n\n" .
                    "Use my referral link to get started: {$user->affiliate->referral_link}\n\n" .
                    "Best regards,\n{$user->name}";
 

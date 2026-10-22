@@ -36,8 +36,15 @@ class RevenueSplit extends Model
     // Calculate split amounts
     public function calculateSplit(float $amount): array
     {
-        $instructorAmount = ($amount * $this->instructor_percentage) / 100;
-        $platformAmount = ($amount * $this->platform_percentage) / 100;
+        if (!is_finite($amount) || $amount < 0 || !$this->is_active
+            || (float) $this->instructor_percentage < 0 || (float) $this->platform_percentage < 0
+            || abs((float) $this->instructor_percentage + (float) $this->platform_percentage - 100) > 0.001) {
+            throw new \DomainException('Course revenue split is invalid.');
+        }
+        $totalMinor = (int) round($amount * 100);
+        $instructorMinor = (int) round($totalMinor * (float) $this->instructor_percentage / 100);
+        $instructorAmount = $instructorMinor / 100;
+        $platformAmount = ($totalMinor - $instructorMinor) / 100;
 
         return [
             'instructor_amount' => round($instructorAmount, 2),

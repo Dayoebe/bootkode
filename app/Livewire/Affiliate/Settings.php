@@ -20,6 +20,11 @@ class Settings extends Component
     public $bulkAction = '';
     public $selectedAffiliates = [];
 
+    public function boot(): void
+    {
+        abort_unless(auth()->user()?->hasRole('super_admin'), 403);
+    }
+
     public function mount()
     {
         // Load current settings
@@ -35,11 +40,12 @@ class Settings extends Component
             'minimumWithdrawal' => 'required|numeric|min:100'
         ]);
 
-        session()->flash('success', 'Global settings updated successfully');
+        session()->flash('info', 'Global defaults are managed in server configuration. This form does not save them.');
     }
 
     public function updateAffiliateStatus($affiliateId, $status)
     {
+        validator(['status' => $status], ['status' => 'required|in:active,inactive,suspended'])->validate();
         $affiliate = Affiliate::findOrFail($affiliateId);
         $affiliate->update(['status' => $status]);
         
@@ -48,6 +54,7 @@ class Settings extends Component
 
     public function updateCommissionRate($affiliateId, $rate)
     {
+        validator(['rate' => $rate], ['rate' => 'required|numeric|between:0,100'])->validate();
         $affiliate = Affiliate::findOrFail($affiliateId);
         $affiliate->update(['commission_rate' => $rate]);
         
@@ -61,6 +68,7 @@ class Settings extends Component
             return;
         }
 
+        $this->validate(['bulkAction' => 'required|in:activate,deactivate,suspend', 'selectedAffiliates' => 'array|max:100', 'selectedAffiliates.*' => 'integer|exists:affiliates,id']);
         $count = 0;
         foreach ($this->selectedAffiliates as $affiliateId) {
             $affiliate = Affiliate::find($affiliateId);

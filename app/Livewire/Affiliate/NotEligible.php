@@ -9,6 +9,8 @@ use Livewire\Attributes\Layout;
 #[Layout('layouts.dashboard', ['title' => 'Affiliate Program - Not Eligible'])]
 class NotEligible extends Component
 {
+    use \App\Livewire\Concerns\RequiresAuthenticatedAccount;
+
     public function render()
     {
         $user = auth()->user();

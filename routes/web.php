@@ -45,6 +45,8 @@ Route::prefix('newsletter')->name('newsletter.')->group(function () {
 
 
 // Affiliate Routes
+Route::get('/affiliate-banners/{size}/{code}', \App\Http\Controllers\AffiliateBannerController::class)->name('affiliate.banner');
+
 Route::middleware(['auth'])->prefix('affiliate')->name('affiliate.')->group(function () {
     Route::get('/dashboard', \App\Livewire\Affiliate\Dashboard::class)->name('dashboard');
     Route::get('/tools', \App\Livewire\Affiliate\Tools::class)->name('tools');
@@ -58,7 +60,7 @@ Route::middleware(['auth'])->prefix('affiliate')->name('affiliate.')->group(func
     // API endpoint for referral code validation
     Route::get('/api/validate-referral/{code}', function ($code) {
         $service = app(\App\Services\AffiliateService::class);
-        return response()->json($service->validateReferralCode($code));
+        return response()->json(\Illuminate\Support\Arr::only($service->validateReferralCode($code), ['valid', 'message', 'referrer_name']));
     })->name('api.validate-referral');
 });
 

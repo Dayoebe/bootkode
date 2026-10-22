@@ -720,24 +720,20 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function applyForAffiliate(array $additionalData = []): ?\App\Models\Marketplace\Affiliate
     {
-        if (!$this->canBecomeAffiliate() || $this->affiliate) {
-            return null;
-        }
-
-        $isAutoApproved = $this->hasRole([self::ROLE_INSTRUCTOR, self::ROLE_SUPER_ADMIN]);
-
-        return \App\Models\Marketplace\Affiliate::create([
-            'user_id' => $this->id,
-            'commission_rate' => 30.00,
-            'status' => $isAutoApproved ? \App\Models\Marketplace\Affiliate::STATUS_ACTIVE : \App\Models\Marketplace\Affiliate::STATUS_INACTIVE,
-            'approved_at' => $isAutoApproved ? now() : null,
-            'approved_by' => $isAutoApproved ? $this->id : null,
-            'metadata' => array_merge([
-                'application_date' => now(),
-                'auto_approved' => $isAutoApproved,
-                'user_role' => $this->role
-            ], $additionalData)
-        ]);
+        return \Illuminate\Support\Facades\DB::transaction(function () use ($additionalData) {
+            static::whereKey($this->id)->lockForUpdate()->firstOrFail();
+            if (!$this->canBecomeAffiliate() || $this->affiliate()->exists()) return null;
+            $rate = (float) config('affiliate.default_commission_rate', 30);
+            if ($rate < 0 || $rate > 100) throw new \DomainException('Affiliate commission default is invalid.');
+            $isAutoApproved = $this->hasRole(self::ROLE_SUPER_ADMIN)
+                || ($this->hasRole(self::ROLE_INSTRUCTOR) && config('affiliate.auto_approve_instructors', true));
+            return \App\Models\Marketplace\Affiliate::create([
+                'user_id' => $this->id, 'commission_rate' => $rate,
+                'status' => $isAutoApproved ? \App\Models\Marketplace\Affiliate::STATUS_ACTIVE : \App\Models\Marketplace\Affiliate::STATUS_INACTIVE,
+                'approved_at' => $isAutoApproved ? now() : null, 'approved_by' => $isAutoApproved ? $this->id : null,
+                'metadata' => array_merge($additionalData, ['application_date' => now(), 'auto_approved' => $isAutoApproved, 'user_role' => $this->role]),
+            ]);
+        });
     }
 
     public function getAffiliateBalance(): float

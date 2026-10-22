@@ -60,35 +60,8 @@
     <!-- Global Settings -->
     <div class="bg-white rounded-xl shadow-lg p-6 mb-8">
         <h3 class="text-lg font-semibold text-gray-900 mb-4">Global Settings</h3>
-        <form wire:submit.prevent="saveGlobalSettings">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Default Commission Rate (%)</label>
-                    <input type="number" wire:model="globalCommissionRate" step="0.01" min="0" max="100"
-                           class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
-                    @error('globalCommissionRate') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
-                </div>
-
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Minimum Withdrawal (₦)</label>
-                    <input type="number" wire:model="minimumWithdrawal" step="0.01" min="100"
-                           class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
-                    @error('minimumWithdrawal') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
-                </div>
-
-                <div class="flex items-center">
-                    <input type="checkbox" wire:model="autoApproveInstructors" id="autoApprove"
-                           class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
-                    <label for="autoApprove" class="ml-2 block text-sm text-gray-900">Auto-approve Instructors</label>
-                </div>
-            </div>
-
-            <div class="mt-6">
-                <button type="submit" class="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors">
-                    Save Settings
-                </button>
-            </div>
-        </form>
+        <p class="mb-4 text-sm text-content-muted">Global defaults come from server configuration. Account-specific commission rates can be managed below.</p>
+        <dl class="grid gap-4 sm:grid-cols-3"><div><dt class="text-sm text-content-muted">Default commission</dt><dd class="font-semibold text-content">{{ $globalCommissionRate }}% of the platform share</dd></div><div><dt class="text-sm text-content-muted">Minimum withdrawal</dt><dd class="font-semibold text-content">₦{{ number_format($minimumWithdrawal, 2) }}</dd></div><div><dt class="text-sm text-content-muted">Automatic instructor approval</dt><dd class="font-semibold text-content">{{ $autoApproveInstructors ? 'Enabled' : 'Disabled' }}</dd></div></dl>
     </div>
 
     <!-- Affiliate Management -->

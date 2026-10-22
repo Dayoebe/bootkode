@@ -37,12 +37,14 @@ trait HasRevenueSplit
             $this->price,
             WalletTransaction::CATEGORY_COURSE_PURCHASE,
             "Course purchase: {$this->title}",
-            $this
+            $this,
+            ['revenue_split' => $splitAmounts]
         );
 
         // Credit instructor wallet
         $instructorWallet = $this->instructor->getOrCreateInstructorWallet();
-        $instructorWallet->credit(
+        if ($instructorWallet->currency !== $studentWallet->currency) throw new \DomainException('Course settlement currencies must match.');
+        if ($splitAmounts['instructor_amount'] > 0) $instructorWallet->credit(
             $splitAmounts['instructor_amount'],
             WalletTransaction::CATEGORY_INSTRUCTOR_EARNING,
             "Course sale: {$this->title}",

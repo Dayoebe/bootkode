@@ -37,7 +37,7 @@ class ReferralTransaction extends Model
     // Relationships
     public function referral(): BelongsTo
     {
-        return $this->belongsTo(Affiliate::class, 'affiliate_id'); 
+        return $this->belongsTo(Referral::class, 'referral_id');
     }
 
     public function course(): BelongsTo

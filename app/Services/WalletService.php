@@ -314,18 +314,14 @@ class WalletService
         $startDate = $period->getStartDate();
         $endDate = $period->getEndDate();
 
-        // Total course sales
-        $courseSales = WalletTransaction::where('category', WalletTransaction::CATEGORY_COURSE_PURCHASE)
-            ->whereBetween('created_at', [$startDate, $endDate])
-            ->sum('amount');
-
-        // Instructor earnings
-        $instructorEarnings = WalletTransaction::where('category', WalletTransaction::CATEGORY_INSTRUCTOR_EARNING)
-            ->whereBetween('created_at', [$startDate, $endDate])
-            ->sum('amount');
-
-        // Platform commission (estimated as course sales - instructor earnings)
-        $platformCommission = $courseSales - $instructorEarnings;
+        $courseType = (new Course)->getMorphClass();
+        $courseSales = WalletTransaction::where('category', WalletTransaction::CATEGORY_COURSE_PURCHASE)->where('type', 'debit')->where('status', 'completed')
+            ->where('transactionable_type', $courseType)->whereBetween('created_at', [$startDate, $endDate])->sum('amount');
+        $instructorEarnings = WalletTransaction::where('category', WalletTransaction::CATEGORY_INSTRUCTOR_EARNING)->where('type', 'credit')->where('status', 'completed')
+            ->where('transactionable_type', $courseType)->whereBetween('created_at', [$startDate, $endDate])->sum('amount');
+        $affiliateCommissions = WalletTransaction::where('category', 'referral_commission')->where('type', 'credit')->where('status', 'completed')
+            ->whereBetween('created_at', [$startDate, $endDate])->sum('amount');
+        $platformCommission = $courseSales - $instructorEarnings - $affiliateCommissions;
 
         // Total withdrawals
         $totalWithdrawals = Withdrawal::where('status', Withdrawal::STATUS_COMPLETED)
