@@ -4,8 +4,6 @@ namespace App\Livewire\CourseManagement\CourseBuilder;
 
 use App\Models\Assessment\Question;
 use App\Models\Assessment\Assessment;
-use Illuminate\Contracts\Support\Arrayable;
-use Illuminate\Support\Collection;
 use Livewire\Component;
 
 class AssignmentCriteriaManager extends Component
@@ -15,8 +13,10 @@ class AssignmentCriteriaManager extends Component
     #[\Livewire\Attributes\Locked]
     public $assessmentId;
     public $assessment;
+    #[\Livewire\Attributes\Locked]
     public $questions = [];
     public $showCreateForm = false;
+    #[\Livewire\Attributes\Locked]
     public $editingQuestion = null;
     
     // Question form fields
@@ -47,7 +47,7 @@ class AssignmentCriteriaManager extends Component
         return [
             'questionText' => 'required|string|max:1000',
             'questionType' => 'required|in:essay,short_answer,analysis,reflection,research',
-            'points' => 'required|numeric|min:1|max:100',
+            'points' => 'required|numeric|decimal:0,2|min:1|max:100',
             'explanation' => 'nullable|string|max:500',
             'isRequired' => 'boolean',
             'wordLimit' => 'nullable|integer|min:10|max:10000',
@@ -55,7 +55,14 @@ class AssignmentCriteriaManager extends Component
             'sampleAnswer' => 'nullable|string|max:2000',
             'gradingNotes' => 'nullable|string|max:1000',
             'allowFileUpload' => 'boolean',
-            'maxFileSize' => 'nullable|integer|min:1|max:100',
+            'maxFileSize' => 'required|integer|min:1|max:100',
+            'fileTypes' => 'array|max:30',
+            'fileTypes.*' => ['required', 'string', \Illuminate\Validation\Rule::in(app(\App\Services\AssessmentSubmissionService::class)->extensions())],
+            'rubricCriteria' => 'required|array|min:1|max:20',
+            'rubricCriteria.*' => 'array:name,weight,description',
+            'rubricCriteria.*.name' => 'required|string|max:100',
+            'rubricCriteria.*.weight' => 'required|integer|min:1|max:100',
+            'rubricCriteria.*.description' => 'nullable|string|max:1000',
         ];
     }
 
@@ -64,6 +71,7 @@ class AssignmentCriteriaManager extends Component
         $this->assessmentId = $assessmentId;
         $this->authorizeAuthoringContext();
         $this->assessment = Assessment::findOrFail($assessmentId);
+        abort_unless($this->assessment->type === 'assignment', 403);
         $this->loadQuestions();
         
         // Initialize default rubric criteria
@@ -77,7 +85,7 @@ class AssignmentCriteriaManager extends Component
 
     public function loadQuestions()
     {
-        $this->questions = Question::where('assessment_id', $this->assessmentId)
+        $this->questions = Question::where('assessment_id', $this->assessmentId)->where('question_type', 'assignment_question')
             ->orderBy('order')
             ->get()
             ->toArray();
@@ -93,9 +101,12 @@ class AssignmentCriteriaManager extends Component
 
     public function selectQuestionType($type)
     {
+        abort_unless(in_array($type, ['essay', 'short_answer', 'analysis', 'reflection', 'research'], true), 422);
         $this->questionType = $type;
         $this->adjustDefaultsForType();
     }
+
+    public function updatedQuestionType($type): void { $this->selectQuestionType($type); }
 
     protected function adjustDefaultsForType()
     {
@@ -144,7 +155,7 @@ class AssignmentCriteriaManager extends Component
 
     public function createQuestion()
     {
-        $this->validate();
+        $this->validateRubric();
 
         $questionData = [
             'assessment_id' => $this->assessmentId,
@@ -169,9 +180,9 @@ class AssignmentCriteriaManager extends Component
             'max_file_size' => $this->maxFileSize,
         ];
 
-        $questionData['options'] = json_encode($assignmentData);
+        $questionData['options'] = $assignmentData;
 
-        Question::create($questionData);
+        app(\App\Services\AssessmentAuthoringService::class)->saveCriteria((int) $this->assessmentId, 'assignment_question', $questionData);
 
         $this->loadQuestions();
         $this->resetForm();
@@ -182,7 +193,7 @@ class AssignmentCriteriaManager extends Component
 
     public function editQuestion($questionId)
     {
-        $question = collect($this->questions)->firstWhere('id', $questionId);
+        $question = Question::where('assessment_id', $this->assessmentId)->where('question_type', 'assignment_question')->findOrFail($questionId)->toArray();
         if ($question) {
             $this->editingQuestion = $question;
             $this->fillFormFromQuestion($question);
@@ -211,41 +222,31 @@ class AssignmentCriteriaManager extends Component
 
     protected function normalizeToArray($value, array $default = []): array
     {
-        if (is_array($value)) {
-            return $value;
+        return app(\App\Services\StructuredQuestionService::class)->array($value);
+    }
+
+    protected function prepareForValidation($attributes)
+    {
+        if (is_array($attributes['fileTypes'] ?? null) && collect($attributes['fileTypes'])->every(fn ($value) => is_string($value))) {
+            $attributes['fileTypes'] = $this->fileTypes = app(\App\Services\AssessmentSubmissionService::class)->normalizeExtensions($attributes['fileTypes']);
         }
+        return $attributes;
+    }
 
-        if ($value instanceof Collection) {
-            return $value->values()->all();
+    private function validateRubric(): void
+    {
+        $this->validate();
+        if (array_sum(array_column($this->rubricCriteria, 'weight')) !== 100) {
+            throw \Illuminate\Validation\ValidationException::withMessages(['rubricCriteria' => 'Rubric weights must total 100%.']);
         }
-
-        if ($value instanceof Arrayable) {
-            $arrayValue = $value->toArray();
-
-            return is_array($arrayValue) ? $arrayValue : $default;
-        }
-
-        if ($value instanceof \JsonSerializable) {
-            $jsonValue = $value->jsonSerialize();
-
-            return is_array($jsonValue) ? $jsonValue : $default;
-        }
-
-        if (is_string($value)) {
-            $decoded = json_decode($value, true);
-
-            return is_array($decoded) ? $decoded : $default;
-        }
-
-        return $default;
     }
 
     public function updateQuestion()
     {
-        $this->validate();
+        $this->validateRubric();
 
         if ($this->editingQuestion) {
-            $question = Question::where('assessment_id', $this->assessmentId)->findOrFail($this->editingQuestion['id']);
+            $question = Question::where('assessment_id', $this->assessmentId)->where('question_type', 'assignment_question')->findOrFail($this->editingQuestion['id']);
             
             $assignmentData = [
                 'assignment_type' => $this->questionType,
@@ -258,14 +259,14 @@ class AssignmentCriteriaManager extends Component
                 'max_file_size' => $this->maxFileSize,
             ];
 
-            $question->update([
+            app(\App\Services\AssessmentAuthoringService::class)->saveCriteria((int) $this->assessmentId, 'assignment_question', [
                 'question_text' => $this->questionText,
                 'points' => $this->points,
                 'explanation' => $this->explanation,
                 'is_required' => $this->isRequired,
                 'time_limit' => $this->timeLimit,
-                'options' => json_encode($assignmentData),
-            ]);
+                'options' => $assignmentData,
+            ], $question->id);
 
             $this->loadQuestions();
             $this->resetForm();
@@ -277,7 +278,7 @@ class AssignmentCriteriaManager extends Component
 
     public function deleteQuestion($questionId)
     {
-        Question::where('assessment_id', $this->assessmentId)->findOrFail($questionId)->delete();
+        Question::where('assessment_id', $this->assessmentId)->where('question_type', 'assignment_question')->findOrFail($questionId)->delete();
         $this->loadQuestions();
         
         session()->flash('success', 'Assignment question deleted successfully!');
@@ -285,11 +286,8 @@ class AssignmentCriteriaManager extends Component
 
     public function duplicateQuestion($questionId)
     {
-        $originalQuestion = Question::where('assessment_id', $this->assessmentId)->findOrFail($questionId);
-        $duplicatedQuestion = $originalQuestion->replicate();
-        $duplicatedQuestion->question_text = $originalQuestion->question_text . ' (Copy)';
-        $duplicatedQuestion->order = count($this->questions) + 1;
-        $duplicatedQuestion->save();
+        $originalQuestion = Question::where('assessment_id', $this->assessmentId)->where('question_type', 'assignment_question')->findOrFail($questionId);
+        app(\App\Services\AssessmentAuthoringService::class)->duplicateQuestion((int) $this->assessmentId, (int) $questionId);
 
         $this->loadQuestions();
         session()->flash('success', 'Assignment question duplicated successfully!');
@@ -300,6 +298,14 @@ class AssignmentCriteriaManager extends Component
         app(\App\Services\AssessmentAuthoringService::class)->reorderQuestions((int) $this->assessmentId, $orderedIds);
 
         $this->loadQuestions();
+    }
+
+    public function moveQuestion(int $id, int $direction): void
+    {
+        Question::where('assessment_id', $this->assessmentId)->where('question_type', 'assignment_question')->findOrFail($id);
+        app(\App\Services\AssessmentAuthoringService::class)->moveQuestion((int) $this->assessmentId, $id, $direction);
+        $this->loadQuestions();
+        $this->dispatch('bootkode-list-moved', list: 'assignment-questions-'.$this->assessmentId, item: $id, direction: $direction > 0 ? 'down' : 'up');
     }
 
     protected function resetForm()
@@ -327,6 +333,6 @@ class AssignmentCriteriaManager extends Component
 
     public function render()
     {
-        return view('livewire.course-management.course-builder.assignment-criteria-manager');
+        return view('livewire.course-management.course-builder.assignment-criteria-manager', ['serverLimitKb' => app(\App\Services\AssessmentSubmissionService::class)->serverLimitKb(), 'supportedExtensions' => app(\App\Services\AssessmentSubmissionService::class)->extensions()]);
     }
 }

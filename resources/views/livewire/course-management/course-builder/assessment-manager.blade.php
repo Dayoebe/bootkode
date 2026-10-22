@@ -17,7 +17,7 @@
             </form>
         </x-ui.panel>
     @elseif($activeView === 'questions' && $selectedAssessment)
-        <x-ui.panel :title="$selectedAssessment['title']"><p class="text-content-muted">Configure questions or criteria. Marking keys and guidance stay private; existing attempts keep their original questions and marking rules. Projects, assignments and Q&A use written responses for review in this workspace.</p></x-ui.panel>
+        <x-ui.panel :title="$selectedAssessment['title']"><p class="text-content-muted">Configure questions or criteria. Marking keys and grading notes stay private; existing attempts retain their original requirements. Projects and assignments support configured private files alongside written responses. Submitted work requires instructor review.</p></x-ui.panel>
         @if($selectedAssessment['type'] === 'quiz')
             @livewire('course-management.course-builder.question-manager', ['assessmentId' => $selectedAssessment['id']], key('question-manager-'.$selectedAssessment['id']))
         @elseif($selectedAssessment['type'] === 'project')

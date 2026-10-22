@@ -63,4 +63,35 @@ class AssessmentAuthoringService
             return $copy;
         });
     }
+
+    public function moveQuestion(int $assessmentId, int $questionId, int $direction): void
+    {
+        abort_unless(in_array($direction, [-1, 1], true), 422);
+        $assessment = app(CourseAuthoringAccess::class)->assessment($assessmentId);
+        DB::transaction(function () use ($assessment, $questionId, $direction) {
+            Assessment::whereKey($assessment->id)->lockForUpdate()->firstOrFail();
+            $ids = $assessment->questions()->orderBy('order')->orderBy('id')->pluck('id')->all();
+            $position = array_search($questionId, $ids, true);
+            abort_if($position === false, 404);
+            if (!isset($ids[$position + $direction])) return;
+            [$ids[$position], $ids[$position + $direction]] = [$ids[$position + $direction], $ids[$position]];
+            $this->reorderQuestions($assessment->id, $ids);
+        });
+    }
+
+    public function saveCriteria(int $assessmentId, string $type, array $attributes, ?int $questionId = null): Question
+    {
+        $assessment = app(CourseAuthoringAccess::class)->assessment($assessmentId);
+        abort_unless(($type === 'project_criteria' && $assessment->type === 'project') || ($type === 'assignment_question' && $assessment->type === 'assignment'), 422);
+        return DB::transaction(function () use ($assessment, $type, $attributes, $questionId) {
+            Assessment::whereKey($assessment->id)->lockForUpdate()->firstOrFail();
+            $question = $questionId ? $assessment->questions()->where('question_type', $type)->findOrFail($questionId) : new Question;
+            $question->fill(\Illuminate\Support\Arr::only($attributes, ['question_text', 'points', 'explanation', 'is_required', 'time_limit', 'options']));
+            $question->assessment_id = $assessment->id; $question->question_type = $type;
+            if (!$question->exists) $question->order = (int) $assessment->questions()->max('order') + 1;
+            app(AssessmentSubmissionService::class)->definition($question);
+            $question->save();
+            return $question;
+        });
+    }
 }

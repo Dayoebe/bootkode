@@ -248,7 +248,7 @@ class CbtExamInterface extends Component
         $this->examSessionId = $session->id;
         $this->startTime = $session->started_at;
         $this->attemptNumber = $session->metadata['attempt'];
-        $this->questions = $session->metadata['questions'];
+        $this->questions = app(\App\Services\CbtAttemptService::class)->publicQuestions($session);
         $this->answers = $session->metadata['answers'] ?? array_fill_keys(collect($this->questions)->pluck('id')->all(), null);
         $this->questionOrder = collect($this->questions)->pluck('id')->all();
         $this->timeRemaining = max(0, $session->metadata['duration_seconds'] - (int) $session->started_at->diffInSeconds(now(), false));

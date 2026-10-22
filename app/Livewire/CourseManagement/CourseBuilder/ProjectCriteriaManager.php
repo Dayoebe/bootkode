@@ -2,293 +2,137 @@
 
 namespace App\Livewire\CourseManagement\CourseBuilder;
 
-use App\Models\Assessment\Question;
 use App\Models\Assessment\Assessment;
-use Illuminate\Contracts\Support\Arrayable;
-use Illuminate\Support\Collection;
+use App\Models\Assessment\Question;
+use App\Services\AssessmentAuthoringService;
+use App\Services\AssessmentSubmissionService;
+use Livewire\Attributes\Locked;
 use Livewire\Component;
 
 class ProjectCriteriaManager extends Component
 {
     use \App\Livewire\Concerns\AuthorizesCourseAuthoring;
 
-    #[\Livewire\Attributes\Locked]
-    public $assessmentId;
-    public $assessment;
-    public $criteria = [];
+    #[Locked] public $assessmentId;
+    #[Locked] public $assessment;
+    #[Locked] public $criteria = [];
+    #[Locked] public $editingCriteria = null;
     public $showCreateForm = false;
-    public $editingCriteria = null;
-    
-    // Criteria form fields
     public $criteriaTitle = '';
     public $criteriaDescription = '';
     public $criteriaType = 'deliverable';
     public $points = 10;
     public $isRequired = true;
     public $rubricLevels = [];
-    
-    // File requirements
     public $fileTypes = [];
-    public $maxFileSize = 10; // MB
+    public $maxFileSize = 10;
     public $minFiles = 1;
     public $maxFiles = 5;
-    
-    protected $listeners = [
-        'criteriaCreated' => 'loadCriteria',
-        'criteriaUpdated' => 'loadCriteria',
-        'criteriaDeleted' => 'loadCriteria',
-    ];
+    protected $listeners = ['criteriaCreated' => 'loadCriteria', 'criteriaUpdated' => 'loadCriteria', 'criteriaDeleted' => 'loadCriteria'];
 
-    protected function rules()
+    protected function rules(): array
     {
-        return [
-            'criteriaTitle' => 'required|string|max:255',
-            'criteriaDescription' => 'required|string|max:1000',
-            'criteriaType' => 'required|in:deliverable,rubric,presentation,documentation',
-            'points' => 'required|numeric|min:1|max:100',
-            'isRequired' => 'boolean',
-            'maxFileSize' => 'nullable|integer|min:1|max:100',
-            'minFiles' => 'nullable|integer|min:0|max:20',
-            'maxFiles' => 'nullable|integer|min:1|max:20',
-        ];
+        $rules = ['criteriaTitle' => 'required|string|max:255', 'criteriaDescription' => 'required|string|max:1000',
+            'criteriaType' => 'required|in:deliverable,rubric,presentation,documentation', 'points' => 'required|numeric|decimal:0,2|min:1|max:100',
+            'isRequired' => 'boolean', 'maxFileSize' => 'required|integer|min:1|max:100',
+            'minFiles' => 'required|integer|min:0|max:20', 'maxFiles' => 'required|integer|min:1|max:20|gte:minFiles',
+            'fileTypes' => 'array|max:30', 'fileTypes.*' => ['required', 'string', \Illuminate\Validation\Rule::in(app(AssessmentSubmissionService::class)->extensions())]];
+        if ($this->criteriaType === 'rubric') $rules = array_merge($rules, ['rubricLevels' => 'required|array|min:2|max:10',
+            'rubricLevels.*' => 'array:name,description,points', 'rubricLevels.*.name' => 'required|string|max:100',
+            'rubricLevels.*.description' => 'nullable|string|max:1000', 'rubricLevels.*.points' => 'required|numeric|decimal:0,2|min:0|lte:points']);
+        return $rules;
     }
 
-    public function mount($assessmentId)
+    protected function prepareForValidation($attributes)
+    {
+        if (is_array($attributes['fileTypes'] ?? null) && collect($attributes['fileTypes'])->every(fn ($value) => is_string($value))) {
+            $attributes['fileTypes'] = $this->fileTypes = app(AssessmentSubmissionService::class)->normalizeExtensions($attributes['fileTypes']);
+        }
+        return $attributes;
+    }
+
+    public function mount($assessmentId): void
     {
         $this->assessmentId = $assessmentId;
         $this->authorizeAuthoringContext();
         $this->assessment = Assessment::findOrFail($assessmentId);
-        $this->loadCriteria();
-        
-        // Initialize rubric levels
-        $this->rubricLevels = [
-            ['name' => 'Excellent', 'description' => '', 'points' => 10],
-            ['name' => 'Good', 'description' => '', 'points' => 8],
-            ['name' => 'Satisfactory', 'description' => '', 'points' => 6],
-            ['name' => 'Needs Improvement', 'description' => '', 'points' => 4],
-        ];
+        abort_unless($this->assessment->type === 'project', 403);
+        $this->resetForm(); $this->loadCriteria();
     }
 
-    public function loadCriteria()
+    private function query()
     {
-        $this->criteria = Question::where('assessment_id', $this->assessmentId)
-            ->orderBy('order')
-            ->get()
-            ->toArray();
+        return Question::where('assessment_id', $this->assessmentId)->where('question_type', 'project_criteria');
     }
 
-    public function toggleCreateForm()
-    {
-        $this->showCreateForm = !$this->showCreateForm;
-        if (!$this->showCreateForm) {
-            $this->resetForm();
-        }
-    }
+    public function loadCriteria(): void { $this->criteria = $this->query()->orderBy('order')->orderBy('id')->get()->toArray(); }
+    public function toggleCreateForm(): void { $this->showCreateForm = !$this->showCreateForm; if (!$this->showCreateForm) $this->resetForm(); }
+    public function selectCriteriaType($type): void { abort_unless(in_array($type, ['deliverable', 'rubric', 'presentation', 'documentation'], true), 422); $this->criteriaType = $type; }
+    public function addRubricLevel(): void { if (count($this->rubricLevels) < 10) $this->rubricLevels[] = ['name' => '', 'description' => '', 'points' => 0]; }
+    public function removeRubricLevel(int $index): void { if (count($this->rubricLevels) > 2 && isset($this->rubricLevels[$index])) array_splice($this->rubricLevels, $index, 1); }
+    public function addFileType(): void { if (count($this->fileTypes) < 30) $this->fileTypes[] = ''; }
+    public function removeFileType(int $index): void { if (isset($this->fileTypes[$index])) array_splice($this->fileTypes, $index, 1); }
 
-    public function selectCriteriaType($type)
-    {
-        $this->criteriaType = $type;
-    }
-
-    public function addRubricLevel()
-    {
-        $this->rubricLevels[] = [
-            'name' => '',
-            'description' => '',
-            'points' => 0
-        ];
-    }
-
-    public function removeRubricLevel($index)
-    {
-        if (count($this->rubricLevels) > 2) {
-            array_splice($this->rubricLevels, $index, 1);
-        }
-    }
-
-    public function addFileType()
-    {
-        $this->fileTypes[] = '';
-    }
-
-    public function removeFileType($index)
-    {
-        array_splice($this->fileTypes, $index, 1);
-    }
-
-    public function createCriteria()
+    private function payload(): array
     {
         $this->validate();
-
-        $criteriaData = [
-            'assessment_id' => $this->assessmentId,
-            'question_text' => $this->criteriaTitle,
-            'question_type' => 'project_criteria',
-            'points' => $this->points,
-            'explanation' => $this->criteriaDescription,
-            'is_required' => $this->isRequired,
-            'order' => count($this->criteria) + 1,
-        ];
-
-        // Store project-specific data in options
-        $projectData = [
-            'criteria_type' => $this->criteriaType,
-            'file_types' => array_filter($this->fileTypes),
-            'max_file_size' => $this->maxFileSize,
-            'min_files' => $this->minFiles,
-            'max_files' => $this->maxFiles,
-            'rubric_levels' => $this->rubricLevels
-        ];
-
-        $criteriaData['options'] = json_encode($projectData);
-
-        Question::create($criteriaData);
-
-        $this->loadCriteria();
-        $this->resetForm();
-        $this->showCreateForm = false;
-        
-        session()->flash('success', 'Project criteria created successfully!');
+        return ['question_text' => $this->criteriaTitle, 'points' => $this->points, 'explanation' => $this->criteriaDescription, 'is_required' => $this->isRequired,
+            'options' => ['criteria_type' => $this->criteriaType, 'file_types' => $this->fileTypes, 'max_file_size' => $this->maxFileSize,
+                'min_files' => $this->minFiles, 'max_files' => $this->maxFiles, 'rubric_levels' => $this->criteriaType === 'rubric' ? $this->rubricLevels : []]];
     }
 
-    public function editCriteria($criteriaId)
+    public function createCriteria(): void
     {
-        $criteria = collect($this->criteria)->firstWhere('id', $criteriaId);
-        if ($criteria) {
-            $this->editingCriteria = $criteria;
-            $this->fillFormFromCriteria($criteria);
-            $this->showCreateForm = true;
-        }
+        app(AssessmentAuthoringService::class)->saveCriteria((int) $this->assessmentId, 'project_criteria', $this->payload());
+        $this->loadCriteria(); $this->resetForm(); $this->showCreateForm = false;
+        session()->flash('success', 'Project criterion created.');
     }
 
-    protected function fillFormFromCriteria($criteria)
+    public function editCriteria(int $criteriaId): void
     {
-        $this->criteriaTitle = $criteria['question_text'];
-        $this->criteriaDescription = $criteria['explanation'] ?? '';
-        $this->points = $criteria['points'];
-        $this->isRequired = $criteria['is_required'] ?? true;
-
-        $projectData = $this->normalizeToArray($criteria['options']);
-        $this->criteriaType = $projectData['criteria_type'] ?? 'deliverable';
-        $this->fileTypes = $projectData['file_types'] ?? [];
-        $this->maxFileSize = $projectData['max_file_size'] ?? 10;
-        $this->minFiles = $projectData['min_files'] ?? 1;
-        $this->maxFiles = $projectData['max_files'] ?? 5;
-        $this->rubricLevels = $projectData['rubric_levels'] ?? $this->rubricLevels;
+        $item = $this->query()->findOrFail($criteriaId);
+        $this->editingCriteria = $item->toArray();
+        $data = app(\App\Services\StructuredQuestionService::class)->array($item->options);
+        $this->criteriaTitle = $item->question_text; $this->criteriaDescription = $item->explanation ?? '';
+        $this->points = $item->points; $this->isRequired = $item->is_required;
+        $this->criteriaType = $data['criteria_type'] ?? 'deliverable'; $this->fileTypes = $data['file_types'] ?? [];
+        $this->maxFileSize = $data['max_file_size'] ?? 10; $this->minFiles = $data['min_files'] ?? 1; $this->maxFiles = $data['max_files'] ?? 5;
+        $this->rubricLevels = ($data['rubric_levels'] ?? []) ?: $this->defaultLevels();
+        $this->resetValidation(); $this->showCreateForm = true;
     }
 
-    protected function normalizeToArray($value, array $default = []): array
+    public function updateCriteria(): void
     {
-        if (is_array($value)) {
-            return $value;
-        }
-
-        if ($value instanceof Collection) {
-            return $value->values()->all();
-        }
-
-        if ($value instanceof Arrayable) {
-            $arrayValue = $value->toArray();
-
-            return is_array($arrayValue) ? $arrayValue : $default;
-        }
-
-        if ($value instanceof \JsonSerializable) {
-            $jsonValue = $value->jsonSerialize();
-
-            return is_array($jsonValue) ? $jsonValue : $default;
-        }
-
-        if (is_string($value)) {
-            $decoded = json_decode($value, true);
-
-            return is_array($decoded) ? $decoded : $default;
-        }
-
-        return $default;
+        abort_unless($this->editingCriteria, 422);
+        app(AssessmentAuthoringService::class)->saveCriteria((int) $this->assessmentId, 'project_criteria', $this->payload(), $this->editingCriteria['id']);
+        $this->loadCriteria(); $this->resetForm(); $this->showCreateForm = false;
+        session()->flash('success', 'Project criterion updated. Existing attempts retain their original requirements.');
     }
 
-    public function updateCriteria()
+    public function deleteCriteria(int $criteriaId): void { $this->query()->findOrFail($criteriaId)->delete(); $this->loadCriteria(); session()->flash('success', 'Project criterion deleted.'); }
+    public function duplicateCriteria(int $criteriaId): void { $this->query()->findOrFail($criteriaId); app(AssessmentAuthoringService::class)->duplicateQuestion((int) $this->assessmentId, $criteriaId); $this->loadCriteria(); session()->flash('success', 'Project criterion copied.'); }
+    public function reorderCriteria(array $ids): void { app(AssessmentAuthoringService::class)->reorderQuestions((int) $this->assessmentId, $ids); $this->loadCriteria(); }
+    public function moveCriteria(int $id, int $direction): void
     {
-        $this->validate();
-
-        if ($this->editingCriteria) {
-            $criteria = Question::where('assessment_id', $this->assessmentId)->findOrFail($this->editingCriteria['id']);
-            
-            $projectData = [
-                'criteria_type' => $this->criteriaType,
-                'file_types' => array_filter($this->fileTypes),
-                'max_file_size' => $this->maxFileSize,
-                'min_files' => $this->minFiles,
-                'max_files' => $this->maxFiles,
-                'rubric_levels' => $this->rubricLevels
-            ];
-
-            $criteria->update([
-                'question_text' => $this->criteriaTitle,
-                'explanation' => $this->criteriaDescription,
-                'points' => $this->points,
-                'is_required' => $this->isRequired,
-                'options' => json_encode($projectData)
-            ]);
-
-            $this->loadCriteria();
-            $this->resetForm();
-            $this->showCreateForm = false;
-            
-            session()->flash('success', 'Project criteria updated successfully!');
-        }
+        $this->query()->findOrFail($id);
+        app(AssessmentAuthoringService::class)->moveQuestion((int) $this->assessmentId, $id, $direction); $this->loadCriteria();
+        $this->dispatch('bootkode-list-moved', list: 'project-criteria-'.$this->assessmentId, item: $id, direction: $direction > 0 ? 'down' : 'up');
     }
 
-    public function deleteCriteria($criteriaId)
+    private function defaultLevels(): array
     {
-        Question::where('assessment_id', $this->assessmentId)->findOrFail($criteriaId)->delete();
-        $this->loadCriteria();
-        
-        session()->flash('success', 'Project criteria deleted successfully!');
+        return [['name' => 'Excellent', 'description' => '', 'points' => 10], ['name' => 'Good', 'description' => '', 'points' => 8],
+            ['name' => 'Satisfactory', 'description' => '', 'points' => 6], ['name' => 'Needs improvement', 'description' => '', 'points' => 4]];
     }
 
-    public function duplicateCriteria($criteriaId)
+    protected function resetForm(): void
     {
-        $originalCriteria = Question::where('assessment_id', $this->assessmentId)->findOrFail($criteriaId);
-        $duplicatedCriteria = $originalCriteria->replicate();
-        $duplicatedCriteria->question_text = $originalCriteria->question_text . ' (Copy)';
-        $duplicatedCriteria->order = count($this->criteria) + 1;
-        $duplicatedCriteria->save();
-
-        $this->loadCriteria();
-        session()->flash('success', 'Project criteria duplicated successfully!');
-    }
-
-    public function reorderCriteria($orderedIds)
-    {
-        app(\App\Services\AssessmentAuthoringService::class)->reorderQuestions((int) $this->assessmentId, $orderedIds);
-
-        $this->loadCriteria();
-    }
-
-    protected function resetForm()
-    {
-        $this->criteriaTitle = '';
-        $this->criteriaDescription = '';
-        $this->criteriaType = 'deliverable';
-        $this->points = 10;
-        $this->isRequired = true;
-        $this->fileTypes = [];
-        $this->maxFileSize = 10;
-        $this->minFiles = 1;
-        $this->maxFiles = 5;
-        $this->rubricLevels = [
-            ['name' => 'Excellent', 'description' => '', 'points' => 10],
-            ['name' => 'Good', 'description' => '', 'points' => 8],
-            ['name' => 'Satisfactory', 'description' => '', 'points' => 6],
-            ['name' => 'Needs Improvement', 'description' => '', 'points' => 4],
-        ];
-        $this->editingCriteria = null;
+        $this->reset('criteriaTitle', 'criteriaDescription', 'criteriaType', 'points', 'isRequired', 'fileTypes', 'maxFileSize', 'minFiles', 'maxFiles', 'editingCriteria');
+        $this->rubricLevels = $this->defaultLevels(); $this->resetValidation();
     }
 
     public function render()
     {
-        return view('livewire.course-management.course-builder.project-criteria-manager');
+        return view('livewire.course-management.course-builder.project-criteria-manager', ['serverLimitKb' => app(AssessmentSubmissionService::class)->serverLimitKb(), 'supportedExtensions' => app(AssessmentSubmissionService::class)->extensions()]);
     }
 }

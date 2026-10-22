@@ -6,6 +6,7 @@
         <a class="bk-button bk-button-secondary" href="{{ route('lesson.assessments', $lesson) }}">Open assessment workspace</a>
     @endif
     <p role="status" aria-live="polite" class="text-sm text-content-muted">{{ $message }}</p>
+    <x-input-error :messages="$errors->get('submission')" role="alert" />
     @if($results)
         <x-ui.panel title="Recorded result">
             <p class="text-xl font-semibold text-content">{{ ($results['pending_review'] ?? false) ? 'Pending instructor review' : ($results['passed'] ? 'Passed' : 'Not passed') }}</p>
@@ -30,9 +31,15 @@
                         @elseif(in_array($question['question_type'], ['matching', 'ordering', 'drag_drop']))
                             @include('livewire.student-management.course-view.structured-question')
                         @else
+                            @if(in_array($question['question_type'], ['project_criteria', 'assignment_question']) && !isset($question['submission']))<p class="mb-3 text-sm text-content-muted">This older attempt retains its original written-response format. File upload permissions are not inferred from later question changes.</p>@endif
+                            @if(!empty($question['instructions']))<p class="mb-3 whitespace-pre-wrap break-words text-content-muted">{{ $question['instructions'] }}</p>@endif
                             <label class="sr-only" for="response-{{ $question['id'] }}">Your answer to question {{ $index + 1 }}</label>
-                            <textarea id="response-{{ $question['id'] }}" wire:model.live.debounce.700ms="answers.{{ $question['id'] }}" maxlength="10000" rows="6" class="w-full rounded-lg border-line bg-surface text-content focus:ring-brand" aria-describedby="response-help-{{ $question['id'] }}"></textarea>
-                            <p id="response-help-{{ $question['id'] }}" class="text-sm text-content-muted">Up to 10,000 characters. Your instructor will review this answer.</p>
+                            <textarea id="response-{{ $question['id'] }}" wire:model.live.debounce.700ms="answers.{{ $question['id'] }}" maxlength="10000" rows="6" class="w-full rounded-lg border-line bg-surface text-content focus:ring-brand" aria-describedby="response-help-{{ $question['id'] }} response-error-{{ $question['id'] }}" aria-invalid="{{ $errors->has('answers.'.$question['id']) ? 'true' : 'false' }}"></textarea>
+                            <p id="response-help-{{ $question['id'] }}" class="text-sm text-content-muted">Up to 10,000 characters.@if($question['submission']['word_limit'] ?? null) Recorded word limit: {{ $question['submission']['word_limit'] }}.@endif Your instructor will review this response.@if($question['submission']['required'] ?? false) A response is required.@endif</p>
+                            <x-input-error id="response-error-{{ $question['id'] }}" :messages="$errors->get('answers.'.$question['id'])" />
+                            @if($question['submission']['enabled'] ?? false)
+                                @include('livewire.student-management.course-view.submission-files')
+                            @endif
                         @endif
                     </fieldset>
                 @endforeach

@@ -39,9 +39,10 @@ class AssessmentResultService
                         return $display !== false && isset($options[$display]) ? strip_tags((string) $options[$display]) : 'Selected option '.((int) $index + 1);
                     })->implode('; ');
                 }
-                return ['id' => $answer->id, 'question' => strip_tags($question['question_text']), 'response' => $value ?? 'No answer submitted.',
+                $files = $session ? app(AssessmentSubmissionService::class)->projectedFiles($session, $answer->question_id) : [];
+                return ['id' => $answer->id, 'question' => strip_tags($question['question_text']), 'response' => $value ?? ($files ? 'No written response.' : 'No answer submitted.'),
                     'points' => $answer->points_earned, 'max_points' => $question['points'], 'pending_review' => !$automatic && !$answer->graded_at,
-                    'feedback' => $answer->feedback,
+                    'feedback' => $answer->feedback, 'files' => $files,
                     'corrections' => collect($session?->metadata['mark_corrections'] ?? [])->where('answer_id', $answer->id)->map(fn ($event) => [
                         'before_points' => $event['before']['points'], 'after_points' => $event['after']['points'],
                         'reason' => $event['reason'], 'at' => $event['at'],

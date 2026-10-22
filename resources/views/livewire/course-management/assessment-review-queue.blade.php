@@ -35,7 +35,42 @@
                     @continue(in_array($question['question_type'], ['multiple_choice', 'true_false', ...\App\Services\StructuredQuestionService::TYPES]) || !$answer)
                     <section id="mark-section-{{ $answer->id }}" tabindex="-1" wire:key="mark-{{ $answer->id }}" class="space-y-3 rounded-lg border border-line p-4">
                         <h3 class="break-words font-semibold text-content">{{ strip_tags($question['question_text']) }}</h3>
-                        <p class="whitespace-pre-wrap break-words text-content">{{ $answer->answer ?? 'No answer submitted.' }}</p>
+                        <p class="whitespace-pre-wrap break-words text-content">{{ $answer->answer ?? 'No written response.' }}</p>
+                        @include('livewire.cbt.partials.submitted-files', ['files' => app(\App\Services\AssessmentSubmissionService::class)->projectedFiles($review, $answer->question_id)])
+                        @php($originalRules = $review->metadata['grading'][$question['id']]['submission_rules'] ?? [])
+                        @if($originalRules['enabled'] ?? false)
+                            <p class="text-sm text-content-muted">Original file requirements: {{ $originalRules['min_files'] }}–{{ $originalRules['max_files'] }} files; up to {{ number_format($originalRules['max_kb'] / 1024, 2) }} MiB each; {{ implode(', ', $originalRules['extensions']) }}.</p>
+                        @endif
+                        @if($originalRules['word_limit'] ?? null)
+                            <p class="text-sm text-content-muted">Original written word limit: {{ $originalRules['word_limit'] }}.</p>
+                        @endif
+                        @php($criteria = $review->metadata['grading'][$question['id']]['criteria'] ?? [])
+                        @foreach(['sample_answer' => 'Private sample answer', 'grading_notes' => 'Private grading notes'] as $field => $label)
+                            @if(is_string($criteria[$field] ?? null) && trim($criteria[$field]) !== '')<details class="text-sm text-content-muted"><summary class="cursor-pointer py-3">{{ $label }}</summary><p class="whitespace-pre-wrap break-words">{{ strip_tags($criteria[$field]) }}</p></details>@endif
+                        @endforeach
+                        @foreach(['rubric_criteria' => 'Private grading rubric', 'rubric_levels' => 'Private grading levels'] as $field => $label)
+                            @php($rows = collect(is_array($criteria[$field] ?? null) ? $criteria[$field] : [])->filter(fn ($row) => is_array($row) && is_string($row['name'] ?? null)))
+                            @if($rows->isNotEmpty())
+                                <details class="text-sm text-content-muted">
+                                    <summary class="cursor-pointer py-3">{{ $label }}</summary>
+                                    <ul class="space-y-3">
+                                        @foreach($rows as $row)
+                                            <li>
+                                                <p class="font-semibold">
+                                                    {{ $row['name'] }}
+                                                    @if(is_numeric($row['weight'] ?? null))
+                                                        · {{ $row['weight'] }}%
+                                                    @elseif(is_numeric($row['points'] ?? null))
+                                                        · {{ $row['points'] }} points
+                                                    @endif
+                                                </p>
+                                                @if(is_string($row['description'] ?? null))<p class="whitespace-pre-wrap break-words">{{ strip_tags($row['description']) }}</p>@endif
+                                            </li>
+                                        @endforeach
+                                    </ul>
+                                </details>
+                            @endif
+                        @endforeach
                         @if(!empty($review->metadata['grading'][$question['id']]['explanation']))<details class="text-sm text-content-muted"><summary class="cursor-pointer py-3">Instructor guidance</summary><p class="whitespace-pre-wrap break-words">{{ strip_tags($review->metadata['grading'][$question['id']]['explanation']) }}</p></details>@endif
                         @php($reference = app(\App\Services\StructuredQuestionService::class)->array($review->metadata['grading'][$question['id']]['correct_answers'] ?? []))
                         @if($reference && collect($reference)->every(fn ($value) => is_scalar($value)))<details class="text-sm text-content-muted"><summary class="cursor-pointer py-3">Private reference answer</summary><p class="whitespace-pre-wrap break-words">{{ implode('; ', array_map('strval', $reference)) }}</p></details>@endif

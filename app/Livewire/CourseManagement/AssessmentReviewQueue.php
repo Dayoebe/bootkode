@@ -148,7 +148,10 @@ class AssessmentReviewQueue extends Component
             return;
         }
         $this->message = $results['pending_review'] ? 'Mark saved. Other written answers still need review.' : 'Review complete. The final result and feedback are now available to the learner.';
-        if (!$results['pending_review']) $this->showReview = false;
+        if (!$results['pending_review']) {
+            $this->showReview = false;
+            $this->dispatch('bootkode-assessment-focus', id: 'review-status');
+        }
     }
 
     public function render()
