@@ -13,6 +13,7 @@ class CbtViewer extends Component
 {
     use WithPagination;
     use \App\Livewire\Concerns\RequiresAuthenticatedAccount;
+    use \App\Livewire\Concerns\RequestsAssessmentMarkReview;
 
     #[Locked] public ?int $selectedAssessment = null;
     #[Locked] public ?array $selectedAttempt = null;
@@ -35,6 +36,11 @@ class CbtViewer extends Component
         return $assessment;
     }
 
+    protected function markReviewContext(): array
+    {
+        return [$this->selectedAssessment ? $this->ownedAssessment($this->selectedAssessment) : null, $this->selectedAttempt['attempt_number'] ?? null];
+    }
+
     public function viewAssessmentDetails(int $assessmentId): void
     {
         $this->ownedAssessment($assessmentId);
@@ -45,6 +51,7 @@ class CbtViewer extends Component
 
     public function viewAttemptDetails(int $attemptNumber): void
     {
+        $this->reset('reviewReasons', 'reviewMessage');
         abort_unless($this->selectedAssessment, 422);
         $results = $this->ownedAssessment($this->selectedAssessment)->getStudentResults(auth()->id(), $attemptNumber);
         abort_unless($results, 404);
@@ -53,7 +60,7 @@ class CbtViewer extends Component
 
     public function closeDetails(): void
     {
-        $this->reset('viewDetails', 'selectedAssessment', 'selectedAttempt');
+        $this->reset('viewDetails', 'selectedAssessment', 'selectedAttempt', 'reviewReasons', 'reviewMessage');
     }
 
     public function getAttemptsForAssessment(Assessment $assessment)
@@ -67,6 +74,9 @@ class CbtViewer extends Component
     {
         $userAssessments = Assessment::whereHas('studentAnswers', fn ($answers) => $answers->where('user_id', auth()->id())->whereNotNull('submitted_at'))->latest()->paginate(10);
         $assessment = $this->selectedAssessment ? $this->ownedAssessment($this->selectedAssessment) : null;
+        if ($assessment && $this->selectedAttempt) {
+            $this->selectedAttempt = \Illuminate\Support\Arr::except($assessment->getStudentResults(auth()->id(), $this->selectedAttempt['attempt_number']), ['answers']);
+        }
         $attempts = $assessment ? $this->getAttemptsForAssessment($assessment) : collect();
         $responses = $assessment && $this->selectedAttempt ? app(\App\Services\AssessmentResultService::class)->responses($assessment, auth()->user(), $this->selectedAttempt['attempt_number']) : [];
         return view('livewire.cbt.cbt-viewer', compact('userAssessments', 'assessment', 'attempts', 'responses'));

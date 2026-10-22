@@ -14,6 +14,7 @@ use Livewire\Component;
 class StudentAssessmentTaker extends Component
 {
     use \App\Livewire\Concerns\RequiresAuthenticatedAccount;
+    use \App\Livewire\Concerns\RequestsAssessmentMarkReview;
 
     #[Locked] public Lesson $lesson;
     #[Locked] public bool $standalone = false;
@@ -43,6 +44,11 @@ class StudentAssessmentTaker extends Component
         $assessment = $this->lesson->assessments()->find($id);
         abort_unless($assessment, 404);
         return $assessment;
+    }
+
+    protected function markReviewContext(): array
+    {
+        return [$this->assessmentId ? $this->assessment($this->assessmentId) : null, $this->results['attempt_number'] ?? null];
     }
 
     public function startAssessment(int $id): void
@@ -109,6 +115,7 @@ class StudentAssessmentTaker extends Component
 
     public function showAssessmentResults(int $id): void
     {
+        $this->reset('reviewReasons', 'reviewMessage');
         $assessment = $this->assessment($id);
         $result = $assessment->getStudentResults(auth()->id());
         abort_unless($result, 404);
@@ -120,7 +127,7 @@ class StudentAssessmentTaker extends Component
 
     public function backToAssessmentList(): void
     {
-        $this->reset('assessmentId', 'examSessionId', 'questions', 'answers', 'results', 'deadline', 'showSubmitModal');
+        $this->reset('assessmentId', 'examSessionId', 'questions', 'answers', 'results', 'deadline', 'showSubmitModal', 'reviewReasons', 'reviewMessage');
     }
 
     public function clearPreviousAttempts(int $id): void
@@ -131,6 +138,9 @@ class StudentAssessmentTaker extends Component
 
     public function render()
     {
+        if ($this->assessmentId && $this->results) {
+            $this->results = \Illuminate\Support\Arr::except($this->assessment($this->assessmentId)->getStudentResults(auth()->id(), $this->results['attempt_number']), ['answers', 'submitted_at']);
+        }
         $assessments = $this->lesson->assessments()->orderBy('order')->get();
         $statuses = $assessments->mapWithKeys(fn ($assessment) => [$assessment->id => $assessment->getStudentResults(auth()->id())]);
         $activeIds = LearningSession::where('user_id', auth()->id())->where('activity_type', 'assessment')->whereNull('ended_at')->get()->pluck('metadata.assessment_id')->all();

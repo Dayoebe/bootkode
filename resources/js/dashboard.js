@@ -5,6 +5,11 @@ import 'trix/dist/trix.css';
 // Dashboard charts and the existing course/blog editors share this entry point.
 window.Chart = Chart;
 
+// Retain focus when a recorded-mark action replaces its own form or control.
+window.addEventListener('bootkode-assessment-focus', (event) => {
+    requestAnimationFrame(() => document.getElementById(event.detail?.id)?.focus());
+});
+
 // Available before Livewire mounts a newly selected lesson editor.
 window.lessonEditorManager = function () {
     return {

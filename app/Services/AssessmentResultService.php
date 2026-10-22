@@ -41,7 +41,18 @@ class AssessmentResultService
                 }
                 return ['id' => $answer->id, 'question' => strip_tags($question['question_text']), 'response' => $value ?? 'No answer submitted.',
                     'points' => $answer->points_earned, 'max_points' => $question['points'], 'pending_review' => !$automatic && !$answer->graded_at,
-                    'feedback' => $answer->feedback];
+                    'feedback' => $answer->feedback,
+                    'corrections' => collect($session?->metadata['mark_corrections'] ?? [])->where('answer_id', $answer->id)->map(fn ($event) => [
+                        'before_points' => $event['before']['points'], 'after_points' => $event['after']['points'],
+                        'reason' => $event['reason'], 'at' => $event['at'],
+                    ])->values()->all(),
+                    'mark_reviews' => collect($session?->metadata['mark_reviews'] ?? [])->where('answer_id', $answer->id)->map(fn ($request) =>
+                        \Illuminate\Support\Arr::only($request, ['reason', 'status', 'requested_at', 'decision', 'resolved_at']))->values()->all(),
+                    'can_request_review' => !$automatic && (bool) $answer->graded_at && $session && !($session->metadata['results']['pending_review'] ?? true)
+                        && isset($session->metadata['grading'][$answer->question_id], $session->metadata['pass_percentage'])
+                        && !collect($session->metadata['mark_reviews'] ?? [])->contains(fn ($request) => (int) $request['answer_id'] === (int) $answer->id
+                            && (int) $request['mark_version'] === collect($session->metadata['mark_corrections'] ?? [])->where('answer_id', $answer->id)->count()),
+                ];
             })->all();
     }
 }
