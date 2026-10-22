@@ -35,7 +35,6 @@ return [
             'link_id' => 'profile.view',
             'children' => [
                 ['label' => 'View Profile', 'icon' => 'fas fa-user', 'route_name' => 'profile.view', 'roles' => [], 'link_id' => 'profile.view',],
-                ['label' => 'Learning Analytics', 'icon' => 'fas fa-chart-line', 'route_name' => 'learning.analytics', 'roles' => [], 'link_id' => 'learning_analytics_dashboard'],
                 ['label' => 'Notifications', 'icon' => 'fas fa-bell', 'route_name' => 'notifications', 'roles' => [], 'link_id' => 'notifications',]
             ]
         ],
@@ -302,10 +301,10 @@ return [
             ]
         ],
         [
-            'label' => 'Gamification',
+            'label' => 'Learning rewards',
             'icon' => 'fas fa-gamepad',
             'route_name' => '#',
-            'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN],
+            'roles' => [],
             'link_id' => 'gamification',
             'children' => [
                 ['label' => 'Dashboard', 'icon' => 'fas fa-tachometer-alt', 'route_name' => 'gamification.dashboard', 'roles' => [], 'link_id' => 'gamification.dashboard'],
@@ -315,7 +314,6 @@ return [
                 ['label' => 'Rewards Store', 'icon' => 'fas fa-gift', 'route_name' => 'gamification.store', 'roles' => [], 'link_id' => 'gamification.store'],
                 // Play a specific game requires a gameId param; keep as a helper entry if you resolve the param when rendering:
                 // ['label' => 'Play Game', 'icon' => 'fas fa-play', 'route_name' => 'gamification.games.play', 'roles' => [], 'link_id' => 'gamification.games.play'],
-                ['label' => 'Achievement Settings', 'icon' => 'fas fa-cog', 'route_name' => '#', 'roles' => [], 'link_id' => 'gamification.settings'],
             ]
         ],
 

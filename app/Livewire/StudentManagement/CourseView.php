@@ -424,6 +424,9 @@ class CourseView extends Component
                 }
             }
 
+            $completedLesson = \App\Models\Learning\Lesson::findOrFail($lessonId);
+            app(\App\Services\GamificationService::class)->handleLessonCompletion(Auth::user(), $completedLesson);
+
             $this->checkAndAwardCertificate();
             $this->refreshProgressState();
             $this->dispatch('progress-updated');

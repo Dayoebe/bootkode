@@ -516,15 +516,16 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function getOrCreateGamificationData()
     {
-        if (!$this->gamificationData) {
-            $data = $this->gamificationData()->create([
-                'last_quest_reset' => now()->startOfDay(),
-            ]);
-            $data->generateDailyQuests();
+        return \Illuminate\Support\Facades\DB::transaction(function () {
+            static::whereKey($this->id)->lockForUpdate()->firstOrFail();
+            $data = $this->gamificationData()->oldest('id')->lockForUpdate()->first();
+            if (!$data) {
+                $data = $this->gamificationData()->create(['last_quest_reset' => now()->startOfDay(), 'energy_last_updated' => now()]);
+                $data->generateDailyQuests();
+            }
+            $this->setRelation('gamificationData', $data);
             return $data;
-        }
-
-        return $this->gamificationData;
+        });
     }
 
     public function getLevel()
@@ -567,21 +568,14 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function spendCurrency($coins = 0, $gems = 0, $purpose = 'purchase')
     {
-        if (!$this->canAfford($coins, $gems)) {
-            return false;
-        }
-
-        $data = $this->getOrCreateGamificationData();
-
-        if ($coins > 0) {
-            $data->spendCoins($coins, $purpose);
-        }
-
-        if ($gems > 0) {
-            $data->spendGems($gems, $purpose);
-        }
-
-        return true;
+        if (!is_int($coins) || !is_int($gems) || $coins < 0 || $gems < 0) return false;
+        return \Illuminate\Support\Facades\DB::transaction(function () use ($coins, $gems, $purpose) {
+            $data = $this->getOrCreateGamificationData();
+            if ($data->coins < $coins || $data->gems < $gems) return false;
+            if ($coins > 0) $data->spendCoins($coins, $purpose);
+            if ($gems > 0) $data->spendGems($gems, $purpose);
+            return true;
+        });
     }
 
     public function getEquippedItems()

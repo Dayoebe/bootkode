@@ -28,6 +28,7 @@ class ProgressService
                 'completed_at' => now(),
             ]
         );
+        app(GamificationService::class)->handleLessonCompletion(Auth::user(), $lesson);
 
     }
 

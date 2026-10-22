@@ -185,11 +185,11 @@ Route::middleware(['auth'])->prefix('community')->name('community.')->group(func
 // Gamification routes
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::prefix('gamification')->name('gamification.')->group(function () {
-        Route::get('/dashboard', [\App\Http\Controllers\GamificationController::class, 'dashboard'])->name('dashboard');
-        Route::get('/badges', [\App\Http\Controllers\GamificationController::class, 'badges'])->name('badges');
-        Route::get('/leaderboard', [\App\Http\Controllers\GamificationController::class, 'leaderboard'])->name('leaderboard');
-        Route::get('/store', [\App\Http\Controllers\GamificationController::class, 'store'])->name('store');
-        Route::get('/games', [\App\Http\Controllers\GamificationController::class, 'games'])->name('games');
+        Route::get('/dashboard', \App\Livewire\Gamification\GamificationDashboard::class)->defaults('activeTab', 'overview')->name('dashboard');
+        Route::get('/badges', \App\Livewire\Gamification\GamificationDashboard::class)->defaults('activeTab', 'badges')->name('badges');
+        Route::get('/leaderboard', \App\Livewire\Gamification\GamificationDashboard::class)->defaults('activeTab', 'leaderboard')->name('leaderboard');
+        Route::get('/store', \App\Livewire\Gamification\GamificationDashboard::class)->defaults('activeTab', 'store')->name('store');
+        Route::get('/games', \App\Livewire\Gamification\GamificationDashboard::class)->defaults('activeTab', 'games')->name('games');
         Route::get('/games/{gameId}', [\App\Http\Controllers\GamificationController::class, 'playGame'])->name('games.play');
         Route::post('/store/purchase/{itemId}', [\App\Http\Controllers\GamificationController::class, 'purchaseItem'])->name('store.purchase');
         Route::post('/items/{purchaseId}/toggle-equip', [\App\Http\Controllers\GamificationController::class, 'toggleEquip'])->name('items.toggle-equip');

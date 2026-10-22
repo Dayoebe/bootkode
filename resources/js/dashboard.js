@@ -238,3 +238,28 @@ window.lessonEditorManager = function () {
         }
     };
 };
+
+window.learningActivityChart = function (activity) {
+    let chart;
+    return {
+        init() {
+            this.$nextTick(() => {
+                const style = getComputedStyle(document.documentElement);
+                const accent = `rgb(${style.getPropertyValue('--accent-primary').trim()})`;
+                const ink = `rgb(${style.getPropertyValue('--text-secondary').trim()})`;
+                chart = new Chart(this.$refs.canvas, {
+                    type: 'line',
+                    data: { labels: activity.map(day => day.date), datasets: [
+                        { label: 'Completed lessons', data: activity.map(day => day.lessons), borderColor: accent, yAxisID: 'lessons' },
+                        { label: 'Recorded session minutes', data: activity.map(day => day.minutes), borderColor: ink, yAxisID: 'minutes' },
+                    ] },
+                    options: { responsive: true, maintainAspectRatio: false, animation: false,
+                        plugins: { legend: { labels: { color: ink } } },
+                        scales: { x: { ticks: { color: ink, maxTicksLimit: 7 } }, lessons: { min: 0, ticks: { precision: 0, color: ink } }, minutes: { min: 0, position: 'right', ticks: { color: ink }, grid: { drawOnChartArea: false } } },
+                    },
+                });
+            });
+        },
+        destroy() { chart?.destroy(); },
+    };
+};
