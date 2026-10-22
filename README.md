@@ -37,7 +37,7 @@ Browser QA needs a persistent session driver such as `file`; the test suite's `a
 
 ## Lesson assessments and review
 
-Learners can open the assessment workspace from a lesson. Written submissions remain pending until the course owner or platform reviewer marks every written answer in **Course Management → Assessment Reviews**. Personal **Assessment results** shows retained attempts, published grades and feedback. Draft answers and deadlines persist across reloads; grading keys stay server-side. Unsupported interaction formats are explicitly unavailable. Legacy written records without attempt snapshots require a separate records review.
+Learners can open the assessment workspace from a lesson. Written submissions remain pending until the course owner or platform reviewer marks every written answer in **Course Management → Assessment Reviews**. Personal **Assessment results** shows retained attempts, published grades and feedback. Draft answers and deadlines persist across reloads; grading keys stay server-side. Instructors can open the contextual assessment authoring workspace from a course lesson. Lesson quizzes support matching, ordering and drag-and-drop with labelled keyboard alternatives; malformed legacy definitions require instructor setup. Legacy written records without attempt snapshots require a separate records review.
 
 The session-clock compatibility migration removes an implicit MariaDB timestamp update rule. Back up the affected table before applying forward changes to an existing database; see the verification report for the local application and preservation evidence.
 

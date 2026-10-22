@@ -348,3 +348,51 @@ Commits for this continuation:
 - `48b0b212 build(ui): compile assessment workspace and result surfaces`
 
 The documentation commit records the accepted evidence and remaining gates. The handoff reports ordinary branch push and exact remote HEAD verification; no merge or deployment is performed.
+
+## Structured questions, scoped authoring and keyboard focus — 22 October 2026
+
+### Findings and delivered behavior
+
+The next inspection found matching questions could be saved with no usable pairs; multiple-choice writes double-encoded JSON and filtered blank options without preserving marking indices; maximum-attempt controls were not saved; and assessment copying/reordering used unscoped IDs. Question statistics recursed through their own accessor. Legacy correctness helpers sorted sequence answers and attempted automatic written-answer marking. The new keyboard check also found focus falling back to the page when Livewire moved a row.
+
+The lesson authoring workspace now provides complete matching, ordering and drag-and-drop forms. Choices retain their indices, including the literal option `0`. Complete unique structured items and valid private keys are required, arrays serialize through model casts once, and maximum attempts persist through the existing field. The contextual named authoring route reuses the same lesson manager. Copies and exact-list reorders resolve actual owned lesson/assessment records; copying all questions is atomic and copies no learner history. Loaded identifiers/definitions are locked in Livewire. Three unused assessment partials were removed after a repository reference search.
+
+Learners use labelled matching lists, native draggable choices backed by those same lists, and sequence buttons with explicit save. Public structured projections omit the original-index permutation; it remains in private attempt grading metadata. Draft positions survive reload and deadline handling. Submission maps to original positions and awards exact credit; incomplete/repeated/wrong matches receive zero, invalid sequences are rejected, and untouched controls do not invent answered questions. Mixed written work still requires manual review. Original question/target/choice labels and marks remain stable after edits. Authorized reviewers can also read the private written reference answer.
+
+The legacy model helpers now enforce exact sets/sequences and refuse automatic marking of written work rather than reporting unconfigured partial credit. No existing answer or credential is automatically regraded. Statistics read actual counts without recursive accessor calls. A small handler in the existing dashboard JavaScript restores focus to the moved learner/author item after Livewire changes the DOM; no new Alpine runtime, sorting dependency or component system is introduced.
+
+### Final automated/build evidence
+
+- `php artisan test`: **215 passed, 979 assertions, 100.31 seconds**. The full guarded MySQL suite includes **18 new structured-question/authoring regression cases**.
+- `npm run build`: passed in **7.84 seconds**. Application CSS **256.59 KB**, dashboard CSS **17.91 KB**, public JavaScript **0.92 KB**, dashboard JavaScript **417.87 KB**.
+- `php artisan view:cache`, `php artisan route:cache` followed by `php artisan route:clear`: passed.
+- `php -l` on **16 changed/new PHP files**, `node --check resources/js/dashboard.js`, and `git diff --check`: passed.
+- `php artisan route:list --json`: **284 contracts** recorded in the updated inventory.
+- Fresh `npm audit --json`: **8 findings (5 high, 3 moderate)**. Fresh `composer audit --format=json`: **62 advisories across 19 packages**. No dependency manifest/lock changes, suppression or forced major upgrade was applied. Existing Browserslist/PostCSS build warnings remain.
+
+New cases cover every structured format, private permutation exclusion, exact grading and reward replay; incomplete/repeated/invalid/nested answers; saved positions and server expiry; immutable edited definitions/results; malformed legacy setup; untouched controls; sequence movement; atomic submission/copy rollback; author create/edit/copy and array persistence; option removal/zero/index integrity; attempt-setting persistence; cross-lesson copy/reorder denial; locked client definitions; exact ordering/statistics; custom boolean labels/private reference scope; and legacy helper consistency. Existing authorization, financial, learning and manual-grading tests remain enabled.
+
+### Browser and database evidence
+
+Accepted browser evidence covers **28 distinct state/viewport samples** and **21 workflow checks**, with no accepted error page, document overflow or recorded JavaScript exception. The seven states at 390/768/1024/1440px are the author list, assessment form, matching form, ordering form, drag/drop form, active learner workspace and learner result. Screenshots of mobile/desktop authoring, matching, sequence/drop controls and original response results were inspected.
+
+Native assessment submission saved a one-attempt quiz. Native question forms saved all three structured definitions, edits survived a full remount, and copies/reorders persisted. A different instructor's actual authoring request returned 403. Learner controls saved matching selections and arranged the sequence; Chrome's pointer drag interception and native drop dispatch moved the selected choice onto its target. The drop alternative remained labelled and usable after reload. Submission recorded a real **100%, 9/9** result with original submitted-response text; repeated submission did not duplicate rows/reward. The shared confirmation dialog retained Escape/focus-return behavior.
+
+Physical Enter-key activation was verified for learner sequence moves, question moves and assessment moves. Each final check confirmed both changed order and focus remaining on the moved item's enabled control after the DOM update. Initial probes that assumed every partial array serialized as a JavaScript array, or sent an incomplete keyboard event, were corrected and excluded. Semantic position comparison now verifies partial selections and a sequence resume with the same attempt ID. The actual focus regression found during that investigation was fixed before final acceptance.
+
+A separate guarded database read confirmed **three graded answer rows, one 100% completed attempt, one saved active attempt, 50 quiz points and one quiz-point transaction**. Two browser-authored assessments retained a 12-minute duration and one-attempt limit, with four questions each and **zero learner answer rows**. The second is a real atomic copy of the first; copied history is not fabricated. The active attempt was used only to verify saved partial positions/keyboard behavior and received no grade or reward.
+
+Third-party analytics/fonts/icons/avatars/datepicker/MathJax/QR assets were blocked in isolated review. These samples do not certify external glyph/services, all legacy criteria/editor/theme states, screen readers or exhaustive WCAG conformance. The separate focused standalone CBT player retains its existing supported-format contract; structured questions run in the lesson workspace.
+
+### Preservation, cleanup and remaining work
+
+No migration or compatibility conversion ran in this continuation. The working `bootkode_recovered` database remained at **41 migration records**, with **0 known structured fixture accounts/courses**. All temporary accounts, both lessons, owned copied assessments/questions, answer/session/reward data and polymorphic role links were removed from `bootkode_browser_test`; the guarded cleanup reported **0 known fixture accounts/dependencies remaining**. Only owned port-8011/9222 QA processes were stopped. Normal port-8000/5173 listeners were preserved and the application returned HTTP 200.
+
+Malformed legacy structured definitions require explicit instructor setup; no undocumented old shape is guessed or bulk rewritten. Formal mark correction/appeal history, backed-up legacy reconciliation, richer project-file/peer-review delivery and exhaustive acceptance of other criteria editors remain open. Existing provider/OAuth/live-AI/mail, historical public-file migration, dependency, legal and broad accessibility/theme gates remain. Matching/ordering/drag-drop are now implemented for lesson quizzes and are not part of that unsupported-format backlog. No whole-product production-readiness, merge or deployment claim follows from this continuation.
+
+Commits for this continuation:
+
+- `32de09c9 feat(assessment): deliver structured questions and scoped authoring`
+- `830e4199 build(ui): compile structured assessment controls and focus handling`
+
+The documentation commit records the accepted evidence and remaining gates. The handoff reports ordinary feature-branch push and exact remote HEAD verification; no merge or deployment is performed.

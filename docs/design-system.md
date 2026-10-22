@@ -54,3 +54,9 @@ The rewards and analytics surfaces use shared headers, panels, form primitives, 
 ## Lesson assessment and review surfaces
 
 Lesson assessment workspaces and personal results use shared page headers, panels, buttons and status regions. The embedded component owns an h2; its full workspace owns the page h1. Choice labels are touch-accessible, multiple selection has explicit exact-set guidance, written responses have labelled limits and autosave feedback, and pending/final results use text status instead of an invented percentage. Only server-accepted results publish a pass. Instructor score fields expose original bounds and associated errors; feedback is plain text. Submission, instructor review and personal results reuse the shared trapped dialog with Escape/focus-return behavior. Legacy CBT authoring interiors retain their existing styling; these changes do not certify every editor/theme.
+
+## Structured question authoring and interaction
+
+The lesson assessment authoring workspace reuses the existing tokens, page header, panels, controls, feedback and labelled errors. Its embedded form owns a secondary heading; the full workspace owns the page heading. Format selection is a labelled native control; complete pairs and ordered items replace decorative unsupported-format cards. Author actions wrap at small widths and do not depend on a third-party sorting library.
+
+Matching uses labelled selection lists. Drag-and-drop adds bounded draggable choices to the same lists, with explicit keyboard alternatives. Ordering uses touch-sized Move up/Move down buttons plus explicit save. Learner, question and assessment moves preserve focus on the moved item; when a direction becomes unavailable, focus moves to its other enabled control. Existing navy/teal and Sora/Manrope conventions remain unchanged. This is targeted acceptance of these states, not certification of every legacy criteria editor/theme or assistive technology.

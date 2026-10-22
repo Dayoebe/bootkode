@@ -1,6 +1,6 @@
 # Route inventory
 
-Generated from `php artisan route:list --json` on 22 October 2026 after the written-assessment/reviewer continuation. Middleware and request-time component/service checks determine access; route existence is not proof of functional completion.
+Generated from `php artisan route:list --json` on 22 October 2026 after the structured-question/authoring continuation. Middleware and request-time component/service checks determine access; route existence is not proof of functional completion.
 
 | Method | URI | Name | Handler | Middleware |
 |---|---|---|---|---|
@@ -121,6 +121,7 @@ Generated from `php artisan route:list --json` on 22 October 2026 after the writ
 | GET / HEAD | course-categories | course-categories | App\Livewire\CourseManagement\CourseCategories | web, Illuminate\Auth\Middleware\Authenticate, Illuminate\Auth\Middleware\EnsureEmailIsVerified |
 | GET / HEAD | course-management/all-courses | all-course | App\Livewire\CourseManagement\AllCourses | web, Illuminate\Auth\Middleware\Authenticate, Illuminate\Auth\Middleware\EnsureEmailIsVerified |
 | GET / HEAD | course-management/assessment-reviews | assessment.reviews | App\Livewire\CourseManagement\AssessmentReviewQueue | web, Illuminate\Auth\Middleware\Authenticate, Illuminate\Auth\Middleware\EnsureEmailIsVerified, App\Http\Middleware\CheckRole:super_admin,academy_admin,instructor |
+| GET / HEAD | course-management/lessons/{lessonId}/assessments | lesson.assessments.manage | App\Livewire\CourseManagement\CourseBuilder\AssessmentManager | web, Illuminate\Auth\Middleware\Authenticate, Illuminate\Auth\Middleware\EnsureEmailIsVerified, App\Http\Middleware\CheckRole:super_admin,academy_admin,instructor |
 | GET / HEAD | course-management/my-courses | my-course | App\Livewire\CourseManagement\UserCourses | web, Illuminate\Auth\Middleware\Authenticate, Illuminate\Auth\Middleware\EnsureEmailIsVerified |
 | GET / HEAD | course-reviews/analytics/{courseId?} | review-analytics | App\Livewire\CourseManagement\ReviewAnalytics | web, Illuminate\Auth\Middleware\Authenticate, Illuminate\Auth\Middleware\EnsureEmailIsVerified |
 | GET / HEAD | course/{course} | course.view | App\Livewire\StudentManagement\CourseView | web, Illuminate\Auth\Middleware\Authenticate, Illuminate\Auth\Middleware\EnsureEmailIsVerified |
