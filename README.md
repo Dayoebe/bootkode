@@ -41,6 +41,8 @@ Learners can open the assessment workspace from a lesson. Written submissions re
 
 Finalized written marks support explicit corrections with retained before/after history. Learners can request reconsideration from either existing result screen; course owners/platform reviewers can correct or uphold the mark with a reason. **Assessment Reviews** filters pending, requested-review and finalized submissions. Stale decisions and changed replays are refused. Corrections update future eligibility while retaining existing rewards, completions and issued credentials. This workflow uses existing private attempt metadata and needs no new migration; unsupported historical attempts require a separate records review. Decisions are visible in results; no external notification delivery is claimed.
 
+Project deliverables and file-enabled assignments support private saved draft attachments and instructor marking. Files keep the original requirements and become immutable on submission; authorized learners/reviewers download through verified private routes. Upload limits follow the strictest original instructor, Livewire and PHP configuration (currently 2 MiB locally). Sample answers, rubrics and grading notes remain private, including resumed attempts. Legacy attempts without upload rules keep their original text-only contract.
+
 The session-clock compatibility migration removes an implicit MariaDB timestamp update rule. Back up the affected table before applying forward changes to an existing database; see the verification report for the local application and preservation evidence.
 
 ## Architecture and design

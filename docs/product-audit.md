@@ -164,3 +164,16 @@ Native pointer dragging, labelled selection alternatives, sequence buttons and p
 | Focus after mutations | Publishing a correction or sending a request removes the submitting form | Dashboard-owned focus restoration to the updated response or correction control; shared dialog behavior retained |
 
 This extends existing attempt/answer records without a migration, historical regrade or working-database record write. It does not implement peer review, project-file delivery, external review notifications or reconciliation of legacy attempts without complete snapshots. Verification evidence and actual limits are recorded in verification.md.
+
+
+## Private submission continuation — 22 October 2026
+
+| Area | Confirmed gap | Implemented behavior |
+|---|---|---|
+| Project/assignment delivery | Upload requirements existed only as authoring metadata | Private saved draft attachments, frozen constraints, required-work validation, immutable submitted files and actual manual marking |
+| Private grading guidance | Manual-question option metadata could expose sample answers, rubrics and grading notes, including resumed attempts | Explicit safe instructions/limit projection for every manual format and sanitation of retained public snapshots |
+| File ownership/integrity | No saved learner-file boundary existed | Active-attempt locks, fresh ownership/deadline checks, real MIME/extension/size checks, private storage and owner/reviewer-only hash-verified attachment downloads |
+| Authoring | Legacy forms used inconsistent palettes and stored metadata without complete scoped rules | Shared native forms, locked scoped actions, normalized object casts, validated counts/weights and atomic copy/move |
+| Binary response integrity | A leading newline in affiliate configuration prefixed and truncated downloads | Remove only the leading byte; all 24 configuration files must produce no output |
+
+This supersedes the prior project-file backlog for configured lesson projects/assignments. It adds no schema migration, dependency, automatic file execution/grading or working-record mutation. Q&A/peer-review participation, unsupported legacy reconciliation, external review notifications and broader editor/theme/provider/dependency/legal acceptance remain separate work. Evidence is in verification.md.

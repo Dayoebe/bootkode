@@ -1,6 +1,6 @@
 # Route inventory
 
-Generated from `php artisan route:list --json` on 22 October 2026 after the structured-question/authoring continuation. Middleware and request-time component/service checks determine access; route existence is not proof of functional completion.
+Generated from `php artisan route:list --json` on 22 October 2026 after the private project/assignment submission continuation. Middleware and request-time component/service checks determine access; route existence is not proof of functional completion.
 
 | Method | URI | Name | Handler | Middleware |
 |---|---|---|---|---|
@@ -205,6 +205,7 @@ Generated from `php artisan route:list --json` on 22 October 2026 after the stru
 | GET / HEAD | job-applications/{jobApplication}/resume | job-applications.resume | App\Http\Controllers\JobApplicationResumeController | web, Illuminate\Auth\Middleware\Authenticate |
 | GET / HEAD | learner-journey | learner.journey | App\Livewire\StudentManagement\LearnerJourney | web, Illuminate\Auth\Middleware\Authenticate, Illuminate\Auth\Middleware\EnsureEmailIsVerified |
 | GET / HEAD | learning-analytics | student.learning-analytics | App\Livewire\StudentManagement\LearningAnalytics | web, Illuminate\Auth\Middleware\Authenticate, Illuminate\Auth\Middleware\EnsureEmailIsVerified |
+| GET / HEAD | learning/attempts/{session}/files/{file} | assessment.submission-file | App\Http\Controllers\AssessmentSubmissionFileController | web, Illuminate\Auth\Middleware\Authenticate, Illuminate\Auth\Middleware\EnsureEmailIsVerified |
 | GET / HEAD | learning/lessons/{lesson}/assessments | lesson.assessments | App\Livewire\StudentManagement\CourseView\StudentAssessmentTaker | web, Illuminate\Auth\Middleware\Authenticate, Illuminate\Auth\Middleware\EnsureEmailIsVerified |
 | GET / HEAD | livewire/livewire.js | — | Livewire\Mechanisms\FrontendAssets\FrontendAssets@returnJavaScriptAsFile |  |
 | GET / HEAD | livewire/livewire.min.js.map | — | Livewire\Mechanisms\FrontendAssets\FrontendAssets@maps |  |
