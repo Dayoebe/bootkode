@@ -262,10 +262,8 @@ class ProjectCriteriaManager extends Component
 
     public function reorderCriteria($orderedIds)
     {
-        foreach ($orderedIds as $index => $id) {
-            Question::where('assessment_id', $this->assessmentId)->where('id', $id)->update(['order' => $index + 1]);
-        }
-        
+        app(\App\Services\AssessmentAuthoringService::class)->reorderQuestions((int) $this->assessmentId, $orderedIds);
+
         $this->loadCriteria();
     }
 

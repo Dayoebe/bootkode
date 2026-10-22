@@ -35,7 +35,7 @@ class AssessmentReviewService
             abort_unless($session->ended_at && isset($metadata['results']), 422, 'The attempt must be submitted first.');
             $answer = StudentAnswer::where('user_id', $learner->id)->where('assessment_id', $assessment->id)->where('attempt_number', $metadata['attempt'])->lockForUpdate()->findOrFail($answerId);
             $snapshot = $metadata['grading'][$answer->question_id] ?? null;
-            abort_unless($snapshot && !in_array($snapshot['question_type'], ['multiple_choice', 'true_false'], true), 422, 'This answer does not require manual grading.');
+            abort_unless($snapshot && !in_array($snapshot['question_type'], ['multiple_choice', 'true_false', ...StructuredQuestionService::TYPES], true), 422, 'This answer does not require manual grading.');
             validator(['points' => $points], ['points' => 'numeric|between:0,'.(float) $snapshot['points']])->validate();
             if ($answer->graded_at) {
                 abort_unless((float) $answer->points_earned === (float) $points && ($answer->feedback ?? '') === $feedback, 409, 'This mark is already recorded. A formal correction is required.');

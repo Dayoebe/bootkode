@@ -7,15 +7,21 @@ use App\Models\Learning\Lesson;
 use Livewire\Component;
 use Illuminate\Support\Str;
 
+#[\Livewire\Attributes\Layout('layouts.dashboard', ['title' => 'Lesson assessment authoring'])]
 class AssessmentManager extends Component
 {
     use \App\Livewire\Concerns\AuthorizesCourseAuthoring;
 
     #[\Livewire\Attributes\Locked]
     public $lessonId;
+    #[\Livewire\Attributes\Locked]
     public $lesson;
+    #[\Livewire\Attributes\Locked]
     public $assessments = [];
+    #[\Livewire\Attributes\Locked]
     public $selectedAssessment = null;
+    #[\Livewire\Attributes\Locked]
+    public bool $standalone = false;
     public $activeView = 'list'; // list, create, edit, questions
     
     // Assessment creation form
@@ -24,7 +30,7 @@ class AssessmentManager extends Component
     public $assessmentTitle = '';
     public $assessmentDescription = '';
     public $passPercentage = 70;
-    public $timeLimit = null;
+    public $timeLimit = 20;
     public $isMandatory = false;
     public $allowMultipleAttempts = true;
     public $showResultsImmediately = true;
@@ -44,7 +50,7 @@ class AssessmentManager extends Component
         'assessmentDescription' => 'nullable|string|max:1000',
         'assessmentType' => 'required|in:quiz,project,assignment,qna',
         'passPercentage' => 'required|integer|min:1|max:100',
-        'timeLimit' => 'nullable|integer|min:1',
+        'timeLimit' => 'required|integer|min:1|max:240',
         'isMandatory' => 'boolean',
         'allowMultipleAttempts' => 'boolean',
         'showResultsImmediately' => 'boolean',
@@ -52,9 +58,10 @@ class AssessmentManager extends Component
         'weight' => 'required|numeric|min:0.1|max:10',
     ];
 
-    public function mount($lessonId)
+    public function mount($lessonId, bool $standalone = false)
     {
         $this->lessonId = $lessonId;
+        $this->standalone = $standalone;
         $this->authorizeAuthoringContext();
         $this->lesson = Lesson::findOrFail($lessonId);
         $this->loadAssessments();
@@ -81,6 +88,8 @@ class AssessmentManager extends Component
 
     public function createAssessment()
     {
+        $this->authorizeAuthoringContext();
+        $this->lesson = app(\App\Services\CourseAuthoringAccess::class)->lesson($this->lessonId);
         $this->validate();
 
         $assessment = Assessment::create([
@@ -95,6 +104,7 @@ class AssessmentManager extends Component
             'estimated_duration_minutes' => $this->timeLimit,
             'is_mandatory' => $this->isMandatory,
             'weight' => $this->weight,
+            'max_attempts' => $this->allowMultipleAttempts ? $this->maxAttempts : 1,
             'max_score' => 100, // Default, will be calculated based on questions
             'order' => count($this->assessments) + 1,
         ]);
@@ -110,8 +120,7 @@ class AssessmentManager extends Component
 
     public function editAssessment($assessmentId)
     {
-        $this->selectedAssessment = collect($this->assessments)
-            ->firstWhere('id', $assessmentId);
+        $this->selectedAssessment = Assessment::where('lesson_id', $this->lessonId)->with('questions')->findOrFail($assessmentId)->toArray();
         
         if ($this->selectedAssessment) {
             $this->activeView = 'edit';
@@ -121,8 +130,7 @@ class AssessmentManager extends Component
 
     public function manageQuestions($assessmentId)
     {
-        $this->selectedAssessment = collect($this->assessments)
-            ->firstWhere('id', $assessmentId);
+        $this->selectedAssessment = Assessment::where('lesson_id', $this->lessonId)->with('questions')->findOrFail($assessmentId)->toArray();
         
         if ($this->selectedAssessment) {
             $this->activeView = 'questions';
@@ -163,7 +171,8 @@ class AssessmentManager extends Component
 
     public function deleteAssessment($assessmentId)
     {
-        Assessment::where('lesson_id', $this->lessonId)->findOrFail($assessmentId)->delete();
+        try { Assessment::where('lesson_id', $this->lessonId)->findOrFail($assessmentId)->delete(); }
+        catch (\DomainException $exception) { session()->flash('error', $exception->getMessage()); return; }
         $this->loadAssessments();
         session()->flash('success', 'Assessment deleted successfully!');
     }
@@ -185,11 +194,15 @@ class AssessmentManager extends Component
             $this->timeLimit = $this->selectedAssessment['estimated_duration_minutes'];
             $this->isMandatory = $this->selectedAssessment['is_mandatory'];
             $this->weight = $this->selectedAssessment['weight'] ?? 1;
+            $this->maxAttempts = $this->selectedAssessment['max_attempts'];
+            $this->allowMultipleAttempts = $this->maxAttempts === null || $this->maxAttempts > 1;
         }
     }
 
     public function updateAssessment()
     {
+        $this->authorizeAuthoringContext();
+        $this->lesson = app(\App\Services\CourseAuthoringAccess::class)->lesson($this->lessonId);
         $this->validate();
 
         if ($this->selectedAssessment) {
@@ -202,6 +215,7 @@ class AssessmentManager extends Component
                 'estimated_duration_minutes' => $this->timeLimit,
                 'is_mandatory' => $this->isMandatory,
                 'weight' => $this->weight,
+                'max_attempts' => $this->allowMultipleAttempts ? $this->maxAttempts : 1,
             ]);
 
             $this->loadAssessments();
@@ -217,7 +231,7 @@ class AssessmentManager extends Component
         $this->assessmentDescription = '';
         $this->assessmentType = 'quiz';
         $this->passPercentage = 70;
-        $this->timeLimit = null;
+        $this->timeLimit = 20;
         $this->isMandatory = false;
         $this->allowMultipleAttempts = true;
         $this->showResultsImmediately = true;
@@ -232,33 +246,26 @@ class AssessmentManager extends Component
 
     public function duplicateAssessment($assessmentId)
     {
-        $originalAssessment = Assessment::with('questions')->findOrFail($assessmentId);
-        
-        $duplicatedAssessment = $originalAssessment->replicate();
-        $duplicatedAssessment->title = $originalAssessment->title . ' (Copy)';
-        $duplicatedAssessment->order = count($this->assessments) + 1;
-        $duplicatedAssessment->save();
-
-        // Duplicate questions for any assessment type that has them
-        if ($this->canManageQuestions($originalAssessment->type)) {
-            foreach ($originalAssessment->questions as $question) {
-                $duplicatedQuestion = $question->replicate();
-                $duplicatedQuestion->assessment_id = $duplicatedAssessment->id;
-                $duplicatedQuestion->save();
-            }
-        }
-
+        app(\App\Services\AssessmentAuthoringService::class)->duplicateAssessment((int) $this->lessonId, (int) $assessmentId);
         $this->loadAssessments();
-        session()->flash('success', 'Assessment duplicated successfully!');
+        session()->flash('success', 'Assessment and questions duplicated. No learner attempts were copied.');
     }
 
-    public function reorderAssessments($orderedIds)
+    public function reorderAssessments(array $orderedIds)
     {
-        foreach ($orderedIds as $index => $id) {
-            Assessment::where('id', $id)->update(['order' => $index + 1]);
-        }
-        
+        app(\App\Services\AssessmentAuthoringService::class)->reorderAssessments((int) $this->lessonId, $orderedIds);
         $this->loadAssessments();
+    }
+
+    public function moveAssessment(int $id, int $direction): void
+    {
+        abort_unless(in_array($direction, [-1, 1], true), 422);
+        $ids = Assessment::where('lesson_id', $this->lessonId)->orderBy('order')->pluck('id')->all();
+        $index = array_search($id, $ids, true);
+        abort_unless($index !== false && isset($ids[$index + $direction]), 422);
+        [$ids[$index], $ids[$index + $direction]] = [$ids[$index + $direction], $ids[$index]];
+        $this->reorderAssessments($ids);
+        $this->dispatch('bootkode-list-moved', list: 'author-assessments-'.$this->lessonId, item: $id, direction: $direction > 0 ? 'down' : 'up');
     }
 
     public function render()

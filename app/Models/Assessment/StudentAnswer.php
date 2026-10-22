@@ -67,6 +67,9 @@ class StudentAnswer extends Model
                 $this->gradeMultipleChoice($question, $userAnswer, $originalCorrectAnswers);
             } elseif ($question->question_type === 'true_false') {
                 $this->gradeTrueFalse($question, $userAnswer, $originalCorrectAnswers);
+            } elseif (in_array($question->question_type, \App\Services\StructuredQuestionService::TYPES, true)) {
+                $this->is_correct = app(\App\Services\StructuredQuestionService::class)->grade($userAnswer, $originalCorrectAnswers);
+                $this->points_earned = $this->is_correct ? $question->points : 0;
             } else {
                 $this->is_correct = false;
                 $this->points_earned = 0;

@@ -1,119 +1,36 @@
-<div class="space-y-6">
-    <!-- Success Message -->
-    @if (session()->has('success'))
-        <div class="bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300 border border-green-200 dark:border-green-700 p-4 rounded-lg animate__animated animate__fadeIn transition-colors duration-300">
-            {{ session('success') }}
-        </div>
-    @endif
-
-    <!-- Navigation Breadcrumb -->
-    <div class="flex items-center text-sm text-gray-600 dark:text-gray-400 mb-4 transition-colors duration-300">
-        <span>Assessment Manager</span>
-        @if ($activeView !== 'list')
-            <i class="fas fa-chevron-right mx-2"></i>
-            @if ($activeView === 'create')
-                <span class="text-blue-600 dark:text-blue-400">Create Assessment</span>
-            @elseif ($activeView === 'edit')
-                <span class="text-yellow-600 dark:text-yellow-400">Edit Assessment</span>
-            @elseif ($activeView === 'questions')
-                <span class="text-purple-600 dark:text-purple-400">Manage Questions</span>
-            @endif
+<div data-move-list="author-assessments-{{ $lessonId }}" class="space-y-6 {{ $standalone ? 'mx-auto max-w-6xl p-4 sm:p-6' : '' }}">
+    @if($standalone)<x-ui.page-header title="Lesson assessment authoring" :description="$lesson->title" />@else<h2 class="text-xl font-semibold text-content">Lesson assessment authoring</h2><a class="bk-button bk-button-secondary" href="{{ route('lesson.assessments.manage', ['lessonId' => $lessonId]) }}">Open assessment authoring workspace</a>@endif
+    <x-ui.flash />
+    @if($activeView !== 'list')<x-secondary-button wire:click="backToList">Back to lesson assessments</x-secondary-button>@endif
+    @if(in_array($activeView, ['create', 'edit']))
+        <x-ui.panel :title="$activeView === 'edit' ? 'Edit assessment' : 'Create assessment'">
+            <form wire:submit="{{ $activeView === 'edit' ? 'updateAssessment' : 'createAssessment' }}" class="space-y-5">
+                @if($errors->any())<div role="alert" class="rounded-lg border border-line p-4 text-content"><p class="font-semibold">Check the assessment fields.</p><ul class="list-inside list-disc">@foreach($errors->all() as $error)<li>{{ $error }}</li>@endforeach</ul></div>@endif
+                <div><x-input-label for="assessment-type" value="Assessment type" /><select id="assessment-type" wire:model="assessmentType" class="min-h-11 w-full rounded-lg border-line bg-surface text-content">@foreach(['quiz' => 'Quiz', 'project' => 'Project', 'assignment' => 'Assignment', 'qna' => 'Q&A'] as $type => $label)<option value="{{ $type }}">{{ $label }}</option>@endforeach</select></div>
+                <div><x-input-label for="assessment-title" value="Assessment title" /><x-text-input id="assessment-title" wire:model="assessmentTitle" maxlength="255" class="w-full" aria-describedby="assessment-title-error" /><x-input-error id="assessment-title-error" :messages="$errors->get('assessmentTitle')" /></div>
+                <div><x-input-label for="assessment-description" value="Instructions for learners" /><textarea id="assessment-description" wire:model="assessmentDescription" maxlength="1000" rows="4" class="w-full rounded-lg border border-line bg-surface text-content focus:ring-brand" aria-describedby="assessment-description-error"></textarea><x-input-error id="assessment-description-error" :messages="$errors->get('assessmentDescription')" /></div>
+                <div class="grid gap-4 sm:grid-cols-2"><div><x-input-label for="assessment-pass" value="Pass mark (%)" /><x-text-input id="assessment-pass" type="number" min="1" max="100" wire:model="passPercentage" class="w-full" aria-describedby="assessment-pass-error" /><x-input-error id="assessment-pass-error" :messages="$errors->get('passPercentage')" /></div><div><x-input-label for="assessment-duration" value="Attempt duration (minutes)" /><x-text-input id="assessment-duration" type="number" min="1" max="240" wire:model="timeLimit" class="w-full" aria-describedby="assessment-duration-error" /><x-input-error id="assessment-duration-error" :messages="$errors->get('timeLimit')" /></div></div>
+                <label class="flex min-h-11 items-center gap-3 text-content"><input type="checkbox" wire:model.live="allowMultipleAttempts" /><span>Allow more than one attempt</span></label>
+                @if($allowMultipleAttempts)<div><x-input-label for="assessment-attempts" value="Maximum attempts (leave blank for unlimited)" /><x-text-input id="assessment-attempts" type="number" min="1" max="10" wire:model="maxAttempts" class="w-full" aria-describedby="assessment-attempts-error" /><x-input-error id="assessment-attempts-error" :messages="$errors->get('maxAttempts')" /></div>@else<p class="text-sm text-content-muted">Learners can submit one attempt. Existing attempts count toward this limit.</p>@endif
+                <p class="text-sm text-content-muted">Choice and structured questions receive automatic results. Written responses publish a final grade after instructor review. Lesson assessments must be passed before the lesson is complete.</p>
+                <div class="flex flex-wrap gap-3"><x-primary-button wire:loading.attr="disabled">{{ $activeView === 'edit' ? 'Save assessment' : 'Create assessment' }}</x-primary-button><x-secondary-button wire:click="backToList">Cancel</x-secondary-button></div>
+            </form>
+        </x-ui.panel>
+    @elseif($activeView === 'questions' && $selectedAssessment)
+        <x-ui.panel :title="$selectedAssessment['title']"><p class="text-content-muted">Configure questions or criteria. Marking keys and guidance stay private; existing attempts keep their original questions and marking rules. Projects, assignments and Q&A use written responses for review in this workspace.</p></x-ui.panel>
+        @if($selectedAssessment['type'] === 'quiz')
+            @livewire('course-management.course-builder.question-manager', ['assessmentId' => $selectedAssessment['id']], key('question-manager-'.$selectedAssessment['id']))
+        @elseif($selectedAssessment['type'] === 'project')
+            @livewire('course-management.course-builder.project-criteria-manager', ['assessmentId' => $selectedAssessment['id']], key('project-manager-'.$selectedAssessment['id']))
+        @elseif($selectedAssessment['type'] === 'assignment')
+            @livewire('course-management.course-builder.assignment-criteria-manager', ['assessmentId' => $selectedAssessment['id']], key('assignment-manager-'.$selectedAssessment['id']))
+        @elseif($selectedAssessment['type'] === 'qna')
+            @livewire('course-management.course-builder.qna-criteria-manager', ['assessmentId' => $selectedAssessment['id']], key('qna-manager-'.$selectedAssessment['id']))
         @endif
-    </div>
-
-    <!-- Main Content Area -->
-    <div class="bg-themed-secondary dark:bg-gray-800 rounded-lg border border-themed-primary dark:border-gray-700 overflow-hidden transition-colors duration-300">
-        <!-- Header -->
-        <div class="bg-themed-tertiary dark:bg-gray-900 px-6 py-4 border-b border-themed-primary dark:border-gray-700 transition-colors duration-300">
-            <div class="flex items-center justify-between">
-                <div class="flex items-center gap-3">
-                    @if ($activeView === 'list')
-                        <h3 class="text-lg font-medium text-gray-800 dark:text-white transition-colors duration-300">Lesson Assessments</h3>
-                        <span class="px-2 py-1 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 text-sm rounded-full border border-themed-primary transition-colors duration-300">
-                            {{ count($assessments) }} assessments
-                        </span>
-                    @else
-                        <button wire:click="backToList" 
-                                class="text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-white transition-colors duration-300">
-                            <i class="fas fa-arrow-left mr-2"></i>
-                        </button>
-                        <h3 class="text-lg font-medium text-gray-800 dark:text-white transition-colors duration-300">
-                            @if ($activeView === 'create')
-                                Create New Assessment
-                            @elseif ($activeView === 'edit')
-                                Edit Assessment
-                            @elseif ($activeView === 'questions')
-                                Manage Questions
-                            @endif
-                        </h3>
-                    @endif
-                </div>
-                
-                @if ($activeView === 'list')
-                    <button wire:click="toggleCreateForm"
-                            class="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition-colors duration-300">
-                        <i class="fas fa-plus mr-2"></i>
-                        Add Assessment
-                    </button>
-                @endif
-            </div>
-        </div>
-
-        <!-- Content Area -->
-        <div class="p-6">
-            @if ($activeView === 'list')
-                @include('livewire.course-management.course-builder.assessment.list')
-            @elseif ($activeView === 'create' || $activeView === 'edit')
-                @include('livewire.course-management.course-builder.assessment.form')
-            @elseif ($activeView === 'questions')
-                @include('livewire.course-management.course-builder.assessment.questions')
-            @endif
-        </div>
-    </div>
-
-    <!-- Assessment Tips -->
-    <div class="bg-blue-50 dark:bg-blue-900/30 border border-blue-200 dark:border-blue-700 rounded-lg p-4 transition-colors duration-300">
-        <h4 class="text-blue-800 dark:text-blue-300 font-medium mb-2">
-            <i class="fas fa-info-circle mr-2"></i>Assessment Guidelines
-        </h4>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-blue-700 dark:text-blue-200 text-sm">
-            <div>
-                <p class="font-medium mb-1">Quiz Assessments</p>
-                <ul class="space-y-1 text-xs">
-                    <li>• Best for knowledge retention and concept checks</li>
-                    <li>• Support multiple question types (MCQ, T/F, Fill-in)</li>
-                    <li>• Automatic grading and instant feedback</li>
-                </ul>
-            </div>
-            <div>
-                <p class="font-medium mb-1">Project Assessments</p>
-                <ul class="space-y-1 text-xs">
-                    <li>• Ideal for hands-on skill application</li>
-                    <li>• File uploads and peer review options</li>
-                    <li>• Rubric-based evaluation</li>
-                </ul>
-            </div>
-        </div>
-    </div>
+    @else
+        <div class="flex flex-wrap items-center justify-between gap-3"><p class="text-content-muted">Manage the assessments for this lesson. Learner history is retained.</p><x-primary-button wire:click="toggleCreateForm">Add assessment</x-primary-button></div>
+        @forelse($assessments as $index => $assessment)
+            <x-ui.panel :title="$assessment['title']"><p class="break-words text-content-muted">{{ strip_tags($assessment['description'] ?? '') }}</p><p class="my-3 text-sm text-content-muted">{{ ucfirst($assessment['type']) }} · {{ count($assessment['questions']) }} questions or criteria · {{ $assessment['max_attempts'] ?? 'Unlimited' }} attempts</p><div class="flex flex-wrap gap-2"><x-secondary-button wire:click="manageQuestions({{ $assessment['id'] }})">Manage questions</x-secondary-button><x-secondary-button wire:click="editAssessment({{ $assessment['id'] }})">Edit assessment</x-secondary-button><x-secondary-button wire:click="duplicateAssessment({{ $assessment['id'] }})">Duplicate assessment</x-secondary-button><x-secondary-button data-move-key="{{ $assessment['id'] }}" data-move-direction="up" wire:click="moveAssessment({{ $assessment['id'] }}, -1)" :disabled="$index === 0">Move assessment {{ $index + 1 }} up</x-secondary-button><x-secondary-button data-move-key="{{ $assessment['id'] }}" data-move-direction="down" wire:click="moveAssessment({{ $assessment['id'] }}, 1)" :disabled="$index === count($assessments) - 1">Move assessment {{ $index + 1 }} down</x-secondary-button><x-danger-button wire:click="deleteAssessment({{ $assessment['id'] }})" wire:confirm="Delete this assessment? Recorded learning history prevents deletion.">Delete assessment</x-danger-button></div></x-ui.panel>
+        @empty<x-ui.empty-state title="No assessments yet" description="Create an assessment, then add complete questions or criteria." />@endforelse
+    @endif
 </div>
-
-@push('styles')
-<style>
-    .animate__fadeIn {
-        animation: fadeIn 0.3s ease-in-out;
-    }
-    
-    @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(10px); }
-        to { opacity: 1; transform: translateY(0); }
-    }
-    
-    .sortable-item {
-        transition: transform 0.2s ease;
-    }
-    
-    .sortable-item:hover {
-        transform: translateY(-2px);
-    }
-</style>
-@endpush

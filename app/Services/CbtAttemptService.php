@@ -27,12 +27,25 @@ class CbtAttemptService
 
     public function questions(Assessment $assessment): array
     {
+        return $this->prepareQuestions($assessment)['questions'];
+    }
+
+    private function prepareQuestions(Assessment $assessment): array
+    {
         $questions = $assessment->relationLoaded('questions') ? $assessment->questions : $assessment->questions()->get();
         if ($assessment->shuffle_questions) $questions = $questions->shuffle();
-        return $questions->map(function ($question) use ($assessment) {
+        $grading = [];
+        $projected = $questions->map(function ($question) use ($assessment, &$grading) {
+            $grading[$question->id] = $question->only(['correct_answers', 'points', 'question_type', 'explanation']);
+            if (in_array($question->question_type, StructuredQuestionService::TYPES, true)) {
+                $projection = app(StructuredQuestionService::class)->project($question);
+                $grading[$question->id]['option_map'] = $projection['mapping'];
+                unset($projection['mapping']);
+                return array_merge($question->only(['id', 'question_text', 'question_type', 'points', 'time_limit']), $projection, ['was_shuffled' => true, 'allows_multiple' => false]);
+            }
             $options = $question->options;
             if (is_string($options)) $options = json_decode($options, true);
-            if ($question->question_type === 'true_false') $options = ['True', 'False'];
+            if ($question->question_type === 'true_false' && (!is_array($options) || count($options) !== 2)) $options = ['True', 'False'];
             $indexed = collect($options ?? [])->map(fn ($text, $index) => ['index' => $index, 'text' => $text]);
             if ($assessment->shuffle_options && $question->question_type === 'multiple_choice') $indexed = $indexed->shuffle();
             $correct = $question->correct_answers;
@@ -44,6 +57,7 @@ class CbtAttemptService
                 'allows_multiple' => $question->question_type === 'multiple_choice' && count(is_array($correct) ? $correct : []) > 1,
             ]);
         })->values()->all();
+        return ['questions' => $projected, 'grading' => $grading];
     }
 
     public function start(User $user, Assessment $assessment, bool $allowWritten = false): LearningSession
@@ -63,13 +77,14 @@ class CbtAttemptService
             abort_unless($eligible, 403, $message);
             abort_unless(is_numeric($assessment->pass_percentage) && $assessment->pass_percentage >= 1 && $assessment->pass_percentage <= 100, 422, 'Your instructor must configure a pass mark before this assessment can start.');
             $assessment->load(['questions' => fn ($query) => $query->lockForUpdate()]);
-            $questions = $this->questions($assessment);
+            $prepared = $this->prepareQuestions($assessment);
+            $questions = $prepared['questions'];
             abort_unless(count($questions) > 0, 422, 'No assessment questions are available.');
-            $supported = $allowWritten ? ['multiple_choice', 'true_false', 'short_answer', 'essay', 'fill_blank', 'assignment_question', 'project_criteria', 'qna_topic'] : ['multiple_choice', 'true_false'];
+            $supported = $allowWritten ? ['multiple_choice', 'true_false', 'short_answer', 'essay', 'fill_blank', 'assignment_question', 'project_criteria', 'qna_topic', ...StructuredQuestionService::TYPES] : ['multiple_choice', 'true_false'];
             abort_if(collect($questions)->contains(fn ($question) => !in_array($question['question_type'], $supported, true) || (!$allowWritten && $question['allows_multiple'])), 422, 'This question format requires a different assessment workflow.');
             return LearningSession::create(['user_id' => $user->id, 'course_id' => $assessment->course_id, 'activity_type' => 'assessment', 'started_at' => now(),
                 'metadata' => ['assessment_id' => $assessment->id, 'attempt' => $assessment->getNextAttemptNumber($user->id), 'questions' => $questions, 'allow_written' => $allowWritten, 'pass_percentage' => (float) $assessment->pass_percentage,
-                    'grading' => $assessment->questions->mapWithKeys(fn ($question) => [$question->id => $question->only(['correct_answers', 'points', 'question_type', 'explanation'])])->all(),
+                    'grading' => $prepared['grading'],
                     'duration_seconds' => max(60, (int) $assessment->estimated_duration_minutes * 60)]]);
         });
     }
@@ -95,7 +110,10 @@ class CbtAttemptService
     private function validateAnswer(array $question, $value, bool $allowWritten): void
     {
         if ($value === null || $value === '') return;
-        if (in_array($question['question_type'], ['multiple_choice', 'true_false'], true)) {
+        if (in_array($question['question_type'], StructuredQuestionService::TYPES, true)) {
+            abort_unless($allowWritten, 422);
+            app(StructuredQuestionService::class)->validate($question, $value);
+        } elseif (in_array($question['question_type'], ['multiple_choice', 'true_false'], true)) {
             $values = is_array($value) ? $value : [$value];
             foreach ($values as $index) abort_unless(is_int($index) || is_string($index), 422, 'Choose valid options.');
             abort_unless(count($values) > 0 && count($values) <= count($question['display_to_original_map']) && count(array_unique($values)) === count($values), 422, 'Choose valid options.');
@@ -145,9 +163,12 @@ class CbtAttemptService
                 $question = $assessment->questions()->findOrFail($snapshot['id']);
                 $value = $answers[$question->id] ?? null;
                 $this->validateAnswer($snapshot, $value, (bool) ($session->metadata['allow_written'] ?? false));
-                $manual = !in_array($snapshot['question_type'], ['multiple_choice', 'true_false'], true);
-                if ($value !== null && $value !== '') {
-                    if (!$manual) {
+                $grading = $session->metadata['grading'][$question->id] ?? $question->only(['correct_answers', 'points', 'question_type', 'explanation']);
+                $structured = in_array($snapshot['question_type'], StructuredQuestionService::TYPES, true);
+                $manual = !in_array($snapshot['question_type'], ['multiple_choice', 'true_false', ...StructuredQuestionService::TYPES], true);
+                if ($value !== null && $value !== '' && $value !== []) {
+                    if ($structured) $value = json_encode(app(StructuredQuestionService::class)->mapAnswer($snapshot, $grading, $value));
+                    elseif (!$manual) {
                         $mapped = collect(is_array($value) ? $value : [$value])->map(fn ($index) => (int) $snapshot['display_to_original_map'][(int) $index])->all();
                         $value = count($mapped) === 1 ? (string) $mapped[0] : json_encode($mapped);
                     }
@@ -156,7 +177,6 @@ class CbtAttemptService
                 $answer = StudentAnswer::create(['user_id' => $user->id, 'assessment_id' => $assessment->id, 'question_id' => $question->id,
                     'attempt_number' => $session->metadata['attempt'], 'answer' => $value, 'time_spent_seconds' => min($elapsed, $session->metadata['duration_seconds']), 'submitted_at' => now(),
                     'question_order' => $ids, 'exam_data' => ['was_shuffled' => $snapshot['was_shuffled']]]);
-                $grading = $session->metadata['grading'][$question->id] ?? $question->only(['correct_answers', 'points', 'question_type', 'explanation']);
                 if (!$manual && $value !== null && !$answer->autoGrade($grading)) throw new \RuntimeException('Grading failed; no attempt was recorded.');
                 if (!$manual) $answer->forceFill(['graded_at' => now()])->save();
                 $pendingReview = $pendingReview || $manual;

@@ -40,9 +40,11 @@ class CbtAnswer extends Model
     {
         $question = $this->question;
         
-        if (!$question) {
+        if (!$question || !in_array($question->question_type, ['multiple_choice', 'true_false', ...\App\Services\StructuredQuestionService::TYPES], true)) {
             return false;
         }
+
+        if (in_array($question->question_type, \App\Services\StructuredQuestionService::TYPES, true) && (app(\App\Services\StructuredQuestionService::class)->array($question->options)['version'] ?? null) !== 1) return false;
 
         $userAnswer = $this->selected_answer ?? $this->text_answer;
         $this->is_correct = $question->isCorrectAnswer($userAnswer);

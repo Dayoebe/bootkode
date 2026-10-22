@@ -22,6 +22,8 @@
                         <h3 class="break-words font-semibold text-content">{{ strip_tags($question['question_text']) }}</h3>
                         <p class="whitespace-pre-wrap break-words text-content">{{ $answer->answer ?? 'No answer submitted.' }}</p>
                         @if(!empty($review->metadata['grading'][$question['id']]['explanation']))<details class="text-sm text-content-muted"><summary class="cursor-pointer py-2">Instructor guidance</summary><p class="whitespace-pre-wrap break-words">{{ strip_tags($review->metadata['grading'][$question['id']]['explanation']) }}</p></details>@endif
+                        @php($reference = app(\App\Services\StructuredQuestionService::class)->array($review->metadata['grading'][$question['id']]['correct_answers'] ?? []))
+                        @if($reference && collect($reference)->every(fn ($value) => is_scalar($value)))<details class="text-sm text-content-muted"><summary class="cursor-pointer py-2">Private reference answer</summary><p class="whitespace-pre-wrap break-words">{{ implode('; ', array_map('strval', $reference)) }}</p></details>@endif
                         @if($answer->graded_at)<p class="text-content">Recorded mark: {{ $answer->points_earned }} / {{ $question['points'] }}.</p><p class="whitespace-pre-wrap break-words text-content-muted">{{ $answer->feedback }}</p>
                         @else
                             <form wire:submit="grade({{ $answer->id }})" class="space-y-3">

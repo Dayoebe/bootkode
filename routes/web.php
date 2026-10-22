@@ -196,6 +196,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     });
 });
 
+Route::get('/course-management/lessons/{lessonId}/assessments', \App\Livewire\CourseManagement\CourseBuilder\AssessmentManager::class)->defaults('standalone', true)->name('lesson.assessments.manage')->middleware(['auth', 'verified', \App\Http\Middleware\CheckRole::class . ':super_admin,academy_admin,instructor']);
 Route::get('/learning/lessons/{lesson}/assessments', \App\Livewire\StudentManagement\CourseView\StudentAssessmentTaker::class)->defaults('standalone', true)->name('lesson.assessments')->middleware(['auth', 'verified']);
 Route::get('/course-management/assessment-reviews', \App\Livewire\CourseManagement\AssessmentReviewQueue::class)->name('assessment.reviews')->middleware(['auth', 'verified', \App\Http\Middleware\CheckRole::class . ':super_admin,academy_admin,instructor']);
 

@@ -52,7 +52,7 @@ class StudentAssessmentTaker extends Component
         $this->assessmentId = $id;
         $this->examSessionId = $session->id;
         $this->questions = $session->metadata['questions'];
-        $this->answers = array_replace(collect($this->questions)->mapWithKeys(fn ($question) => [$question['id'] => $question['allows_multiple'] ? [] : null])->all(), $session->metadata['answers'] ?? []);
+        $this->answers = array_replace(collect($this->questions)->mapWithKeys(fn ($question) => [$question['id'] => (in_array($question['question_type'], ['matching', 'ordering', 'drag_drop']) || $question['allows_multiple'] ? [] : null)])->all(), $session->metadata['answers'] ?? []);
         $this->deadline = $session->started_at->addSeconds($session->metadata['duration_seconds'])->toISOString();
         $this->results = null;
         $this->message = 'Attempt started. Saved answers survive a page reload; use Resume to continue.';
@@ -69,6 +69,31 @@ class StudentAssessmentTaker extends Component
         if ($value === []) $value = null;
         app(CbtAttemptService::class)->saveAnswer(auth()->user(), $this->assessment($this->assessmentId), $this->examSessionId, $questionId, $value);
         $this->message = 'Answer saved.';
+    }
+
+    public function moveOrderingItem(int $questionId, int $position, int $direction): void
+    {
+        abort_unless($this->assessmentId && $this->examSessionId && !$this->results && in_array($direction, [-1, 1], true), 422);
+        $question = collect($this->questions)->firstWhere('id', $questionId);
+        abort_unless($question && $question['question_type'] === 'ordering', 422);
+        $order = !empty($this->answers[$questionId]) ? $this->answers[$questionId] : range(0, count($question['options']) - 1);
+        app(\App\Services\StructuredQuestionService::class)->validate($question, $order);
+        abort_unless(isset($order[$position]) && isset($order[$position + $direction]), 422);
+        [$order[$position], $order[$position + $direction]] = [$order[$position + $direction], $order[$position]];
+        $this->answers[$questionId] = $order;
+        $this->saveOrdering($questionId);
+        $this->dispatch('bootkode-list-moved', list: 'student-order-'.$questionId, item: $order[$position + $direction], direction: $direction > 0 ? 'down' : 'up');
+    }
+
+    public function saveOrdering(int $questionId): void
+    {
+        abort_unless($this->assessmentId && $this->examSessionId && !$this->results, 422);
+        $question = collect($this->questions)->firstWhere('id', $questionId);
+        abort_unless($question && $question['question_type'] === 'ordering', 422);
+        $order = !empty($this->answers[$questionId]) ? $this->answers[$questionId] : range(0, count($question['options']) - 1);
+        app(CbtAttemptService::class)->saveAnswer(auth()->user(), $this->assessment($this->assessmentId), $this->examSessionId, $questionId, $order);
+        $this->answers[$questionId] = $order;
+        $this->message = 'Sequence saved.';
     }
 
     public function submitAssessment(): void

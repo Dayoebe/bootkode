@@ -263,3 +263,16 @@ window.learningActivityChart = function (activity) {
         destroy() { chart?.destroy(); },
     };
 };
+
+// Livewire can replace a moved row; keep keyboard focus on that item's control.
+window.addEventListener('bootkode-list-moved', (event) => {
+    const { list, item, direction } = event.detail;
+    requestAnimationFrame(() => {
+        const root = [...document.querySelectorAll('[data-move-list]')]
+            .find(element => element.dataset.moveList === String(list));
+        if (!root) return;
+        const controls = [...root.querySelectorAll('button[data-move-key]')]
+            .filter(button => button.dataset.moveKey === String(item) && !button.disabled);
+        (controls.find(button => button.dataset.moveDirection === direction) ?? controls[0])?.focus();
+    });
+});
