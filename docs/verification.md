@@ -511,3 +511,5 @@ Branch: `feat/bootkode-dashboard-redesign`. The exact route inventory is 223 aut
 - Browser data used bootkode_redesign_ui_test; final suites used bootkode_dashboard_continuation_test. An inconsistent bootkode_test migration ledger was left intact. No working-database migrations or fixtures. Isolated fresh download hit GitHub DNS timeout; copied installed dependencies passed install dry-run/version checks.
 
 This supersedes the initial redesign failure/dependency counts. It does not certify every parameterized/conditional page, provider/gateway delivery, upload/editor edge case or full assistive-technology/contrast behavior. Details and reproducible limits: dashboard-redesign/continuation-report.md and dependency-maintenance.md.
+
+Final delivery: local commits 1250b93d (compatible dependency security), 0cbd0869 (workspace repairs/recorded analytics), f0e6b3a6 (release assets/evidence). `GIT_TERMINAL_PROMPT=0 git push -u origin feat/bootkode-dashboard-redesign` exited 128: `fatal: could not read Username for 'https://github.com': terminal prompts disabled`. No push/PR/deployment success is claimed. The remote and authentication configuration remain unchanged.

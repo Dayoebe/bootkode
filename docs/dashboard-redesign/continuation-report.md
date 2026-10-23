@@ -32,7 +32,7 @@ Compatible Composer maintenance reduces advisories from 62/19 packages to **5/2 
 
 The original content import/generation work, routes, configuration, documentation and authoring CSS remain uncommitted user work. Its revision test received a local fresh-HTTP-factory fixture correction; its original assertions remain intact. Release assets and Composer classmaps come from isolated committed application source.
 
-Local delivery uses Conventional Commits on feat/bootkode-dashboard-redesign. HTTPS push remains dependent on Git authentication; verification.md records the final attempt. No pull request, deployment or external provider acceptance is implied.
+Local delivery uses Conventional Commits on feat/bootkode-dashboard-redesign. The final ordinary push failed: `fatal: could not read Username for 'https://github.com': terminal prompts disabled`. All changes remain on the local feature branch; verification.md records the attempt. No pull request, deployment or external provider acceptance is implied.
 
 ![Interview analytics at 390px, with controlled test records](evidence/interview-analytics-390.png)
 
