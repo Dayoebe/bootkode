@@ -42,7 +42,7 @@
                 <div class="text-3xl font-bold text-brand">
                     {{ number_format($this->statistics['totalUsers']) }}
                 </div>
-                <div class="text-sm text-themed-secondary">Active Users</div>
+                <div class="text-sm text-themed-secondary">Interview Participants</div>
             </div>
         </div>
 
@@ -121,7 +121,7 @@
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div class="text-center">
                 <div class="text-2xl font-bold text-brand">{{ $this->statistics['totalUsers'] }}</div>
-                <div class="text-sm text-themed-secondary">Active Users</div>
+                <div class="text-sm text-themed-secondary">Interview Participants</div>
             </div>
             <div class="text-center">
                 <div class="text-2xl font-bold text-green-600">

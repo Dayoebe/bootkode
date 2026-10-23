@@ -1,17 +1,11 @@
 <div>
     <!-- Session Creation/Edit Modal -->
     @if($showSessionModal)
-        <div class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4 transition-colors duration-300" x-trap.inert.noscroll="true" role="dialog" aria-modal="true" aria-label="@if($modalType === &#x27;create&#x27;)
-                                Schedule New Session
-                            @elseif($modalType === &#x27;edit&#x27;)
-                                Edit Session
-                            @else
-                                Session Details
-                            @endif" tabindex="-1" x-data="{}" @keydown.escape.stop="$wire.set(&#x27;showSessionModal&#x27;, false)">
+        <div class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4 transition-colors duration-300" x-trap.inert.noscroll="true" role="dialog" aria-modal="true" aria-labelledby="mentorship-session-title" tabindex="-1" x-data="{}" @keydown.escape.stop="$wire.set(&#x27;showSessionModal&#x27;, false)">
             <div class="bg-themed-secondary rounded-lg shadow-sm max-w-3xl w-full max-h-[90vh] overflow-y-auto border border-themed-primary transition-colors duration-300">
                 <div class="p-6 border-b border-themed-primary transition-colors duration-300">
                     <div class="flex items-center justify-between">
-                        <h3 class="text-xl font-bold text-themed-primary transition-colors duration-300">
+                        <h3 id="mentorship-session-title" class="text-xl font-bold text-themed-primary transition-colors duration-300">
                             @if($modalType === 'create')
                                 Schedule New Session
                             @elseif($modalType === 'edit')
@@ -324,17 +318,11 @@
 
     <!-- Code Review Modal -->
     @if($showCodeReviewModal)
-        <div class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4 transition-colors duration-300" x-trap.inert.noscroll="true" role="dialog" aria-modal="true" aria-label="@if($modalType === &#x27;create&#x27;)
-                                Request Code Review
-                            @elseif($modalType === &#x27;edit&#x27;)
-                                Edit Code Review
-                            @else
-                                Code Review Details
-                            @endif" tabindex="-1" x-data="{}" @keydown.escape.stop="$wire.set(&#x27;showCodeReviewModal&#x27;, false)">
+        <div class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4 transition-colors duration-300" x-trap.inert.noscroll="true" role="dialog" aria-modal="true" aria-labelledby="mentorship-code-review-title" tabindex="-1" x-data="{}" @keydown.escape.stop="$wire.set(&#x27;showCodeReviewModal&#x27;, false)">
             <div class="bg-themed-secondary rounded-lg shadow-sm max-w-4xl w-full max-h-[90vh] overflow-y-auto border border-themed-primary transition-colors duration-300">
                 <div class="p-6 border-b border-themed-primary transition-colors duration-300">
                     <div class="flex items-center justify-between">
-                        <h3 class="text-xl font-bold text-themed-primary transition-colors duration-300">
+                        <h3 id="mentorship-code-review-title" class="text-xl font-bold text-themed-primary transition-colors duration-300">
                             @if($modalType === 'create')
                                 Request Code Review
                             @elseif($modalType === 'edit')

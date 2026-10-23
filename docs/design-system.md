@@ -81,3 +81,8 @@ The shared shell now uses a flat theme-aware surface, a 256px sidebar and an 80p
 `resources/css/dashboard.css` contains scoped layout/component rules and extends the same tokens through the `app.css` entry. `--bk-workspace-width` caps content at 1440px. `ui.table` gives tables a labelled keyboard-scrollable region; semantic column headers retain all data. Legacy forced color-remapping rules were removed after migrating their callers. Action backgrounds pair with `action.foreground`; no new UI framework or Alpine runtime is installed. Existing Font Awesome 6.5.2 is locally hosted with its licence for authenticated layouts. The unused global Flatpickr request was removed.
 
 The feature migration standardizes panel radius/shadow, headings, filter names, icon-control names and focus/Escape behavior on existing dialogs. Admin quick actions reuse the shared modal. Public pages, printed credentials/resumes, focused CBT exams and unrouted game prototypes retain their deliberate layouts. Refer to `dashboard-redesign/page-checklist.md` and `verification.md` for state-specific acceptance and limits.
+
+
+## Release continuation — 23 October 2026
+
+Blog and résumé forms now bound narrow columns, wrap actions and share semantic Trix surfaces/toolbar rules. Interview navigation scrolls within its labelled region; analytics controls wrap. System-status panels share their Alpine scope, and mentorship dialogs reference their visible headings. Résumé export closes on Escape and returns focus. Uncollected satisfaction and unscored results use explicit text; reporting never generates random outcomes. Chart animation is disabled and trend data has a keyboard-accessible table alternative. See dashboard-redesign/continuation-report.md for checked states and limits.

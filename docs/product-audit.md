@@ -185,3 +185,8 @@ Inventory: 286 total routes; 223 authenticated, including 208 GET routes. Seven 
 Addressed: competing hardcoded surface palettes and forced CSS remapping; oversized/decorative headers; inconsistent shapes/shadows; inaccessible wide tables and unnamed filters; duplicated mobile More navigation; learner-only shortcuts for staff; missing current-page semantics; missing dialog focus/Escape handling; a misleading always-live navbar badge; and the exposed user directory found by access testing. No fabricated records or commercial outcomes were added.
 
 The remaining integration limits, dependency advisories, import revision failure and exact browser coverage are recorded in verification.md. The in-progress Course Content Studio and its backend/routes remain the user's uncommitted work; the shared shell integrates without claiming that feature as delivered in this redesign.
+
+
+## Release continuation — 23 October 2026
+
+Expanded browser acceptance repaired blog/résumé/interview overflow, invalid affiliate support links, system-status tab scope, interview model namespaces and the learner dashboard crash after résumé creation. Random/hardcoded interview metrics were replaced with recorded aggregates and explicit unavailable states. Final working-tree suite: 275 passed / 1,426 assertions; isolated branch: 262 passed / 1,347 assertions. Browser evidence now records 306 checks across 112 routes with no unresolved issues in those states. Composer advisories fell to 5 across 2 packages; 8 npm vulnerabilities remain. Integration/assistive-technology acceptance and authenticated Git delivery remain release work. Details: dashboard-redesign/continuation-report.md.

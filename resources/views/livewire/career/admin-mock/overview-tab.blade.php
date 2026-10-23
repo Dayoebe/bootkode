@@ -70,7 +70,7 @@
                 </div>
                 <div class="ml-5 w-0 flex-1">
                     <dl>
-                        <dt class="text-sm font-medium truncate text-themed-secondary">Active Users</dt>
+                        <dt class="text-sm font-medium truncate text-themed-secondary">Interview Participants</dt>
                         <dd class="text-lg font-medium text-themed-primary">{{ number_format($this->statistics['totalUsers']) }}</dd>
                     </dl>
                 </div>

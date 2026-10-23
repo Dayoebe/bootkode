@@ -82,3 +82,8 @@ Remaining assessment work includes real Q&A/peer-review participation beyond con
 - [ ] Push feature commits when HTTPS Git credentials are available.
 
 Detailed exceptions and state coverage live in dashboard-redesign/page-checklist.md. External payment/AI delivery still requires configured providers; visual changes do not certify an external transaction or generated response.
+
+
+## Release continuation — 23 October 2026
+
+Completed: compatible dependency security maintenance; 45 additional workspace routes at 390/768/1024/1440px; authoring/résumé/interview/system-status/eligibility repairs; recorded interview analytics; isolated release suite/build/classmaps. The import revision fixture now resets its HTTP factory while retaining conflict/draft assertions; that correction remains with the user's untracked feature. Remaining: Laravel/JWT major-version security decisions, Tailwind 3 dependency advisories, configured provider acceptance, conditional/assistive-technology coverage and Git authentication for ordinary push. See dashboard-redesign/continuation-report.md; no forced upgrades or suppressed advisories.

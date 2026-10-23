@@ -2,6 +2,8 @@
 
 23 October 2026 · `feat/bootkode-dashboard-redesign`
 
+Continuation acceptance supersedes the original blockers below: **275 working-tree tests pass; 262 branch-only tests pass; 306 browser checks cover 112 routes**. Composer findings are now 5 entries across 2 packages. See [continuation report](continuation-report.md) and [dependency maintenance](dependency-maintenance.md).
+
 ## Result and original problems
 
 The authenticated application now shares a consistent responsive workspace and the existing navy/teal, Manrope/Sora design system. The audit found competing palettes/forced CSS overrides, inconsistent panel/header/form patterns, oversized decoration, duplicated mobile navigation, unnamed controls, inaccessible dialog wrappers and wide mobile layouts. Direct access testing also exposed an unguarded user directory.
@@ -51,7 +53,7 @@ Implementation introduced a sidebar event-directive collision and later malforme
 
 The commits separate inventory, shell, workspace migration, access protection, scope preservation, responsive/accessibility repairs and isolated assets. The final chat response lists their hashes; `git log --oneline f21e1575..feat/bootkode-dashboard-redesign` reproduces the complete series, including this report's own documentation commit.
 
-Before deployment: resolve the independent importer failure and dependency advisories, finish provider-specific acceptance where configured, and authenticate Git to push this branch. A pull request/deployment was not created.
+Before deployment: resolve the remaining dependency advisories, finish provider-specific acceptance where configured, and authenticate Git to push this branch. The importer fixture failure is resolved locally as recorded in the continuation report. A pull request/deployment was not created.
 
 Screenshots below use controlled fixtures from the dedicated test database; they are visual evidence, not product claims or real learner outcomes.
 

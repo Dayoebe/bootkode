@@ -122,3 +122,8 @@ The design foundation stays in tokens.css/app.css/Tailwind 3; dashboard.css is a
 The route audit exposed an unguarded AllUser directory. Its component now checks super-admin/academy-admin roles in boot on initial and subsequent Livewire requests, protecting listing, CSV exports and activity/stat methods together. Tests cover direct learner requests, direct component mounting and role revocation.
 
 See dashboard-redesign/route-inventory.md for route contracts, page-checklist.md for view coverage, and implementation-plan.md for delivery boundaries. Uncommitted course-content pipeline work is preserved separately.
+
+
+## Release continuation — 23 October 2026
+
+Interview workspaces resolve the existing Mentorship models; staff access is checked in component boot on every request. Reporting aggregates completed scores, completion counts, repeat participants and recorded planned duration. The existing résumé completion accessor supplies learner dashboard data. Chart lifecycle and theme handling stay in dashboard.js with the existing Chart.js dependency; Blade exposes a bounded data alternative. No reporting writes marks or changes eligibility. Compatible dependency maintenance retains Laravel 11 / Livewire 3 / Tailwind 3. See dashboard-redesign/continuation-report.md for acceptance and remaining integration limits.
