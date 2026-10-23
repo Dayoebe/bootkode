@@ -6,7 +6,7 @@
     @if (session('error'))
         <div class="mb-4 p-3 sm:p-4 bg-red-100 border border-red-200 text-red-700 rounded-lg   transition-colors duration-300">
             <div class="flex items-center">
-                <i class="fas fa-exclamation-circle mr-2 flex-shrink-0" aria-hidden="true"></i>
+                <i aria-hidden="true" class="fas fa-exclamation-circle mr-2 flex-shrink-0"></i>
                 <span class="text-sm sm:text-base">{{ session('error') }}</span>
             </div>
         </div>
@@ -15,7 +15,7 @@
     <!-- Loading Spinner -->
     <div wire:loading class="fixed inset-0 bg-themed-primary bg-opacity-50 flex items-center justify-center z-50 transition-colors duration-300">
         <div class="bg-themed-secondary p-6 rounded-lg shadow-sm border border-themed-primary transition-colors duration-300">
-            <i class="fas fa-spinner fa-spin text-brand text-3xl mb-2 block mx-auto" aria-hidden="true"></i>
+            <i aria-hidden="true" class="fas fa-spinner fa-spin text-brand text-3xl mb-2 block mx-auto"></i>
             <p class="text-themed-primary text-sm">Loading users...</p>
         </div>
     </div>
@@ -42,7 +42,7 @@
                 <input wire:model.live.debounce.300ms="search" type="text" id="search-input" placeholder="Search by name or email..."
                     class="w-full p-3 pl-10 pr-4 border border-themed-primary rounded-lg focus:outline-none focus:ring-2 focus:ring-brand bg-themed-secondary text-themed-primary placeholder-themed-tertiary transition-all duration-200 text-sm">
                 <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <i class="fas fa-search text-themed-secondary text-sm" aria-hidden="true"></i>
+                    <i aria-hidden="true" class="fas fa-search text-themed-secondary text-sm"></i>
                 </div>
             </div>
         </div>
@@ -58,7 +58,7 @@
                     @endforeach
                 </select>
                 <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-                    <i class="fas fa-chevron-down text-themed-secondary text-sm" aria-hidden="true"></i>
+                    <i aria-hidden="true" class="fas fa-chevron-down text-themed-secondary text-sm"></i>
                 </div>
             </div>
         </div>
@@ -87,7 +87,7 @@
                     <option value="50">50 per page</option>
                 </select>
                 <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-                    <i class="fas fa-chevron-down text-themed-secondary text-sm" aria-hidden="true"></i>
+                    <i aria-hidden="true" class="fas fa-chevron-down text-themed-secondary text-sm"></i>
                 </div>
             </div>
         </div>
@@ -97,7 +97,7 @@
             <label class="block text-sm font-medium text-themed-primary mb-2 transition-colors duration-300">&nbsp;</label>
             <button wire:click="exportCsv" wire:loading.attr="disabled"
                 class="w-full px-4 py-3 bg-green-500 hover:bg-green-600 text-white rounded-lg font-medium transition-all duration-300 text-sm shadow-sm hover:shadow-green-500/25 disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap">
-                <i class="fas fa-download mr-2" aria-hidden="true"></i>
+                <i aria-hidden="true" class="fas fa-download mr-2"></i>
                 <span wire:loading.remove>Export CSV</span>
                 <span wire:loading>Exporting...</span>
             </button>
@@ -107,7 +107,7 @@
     <!-- Statistics Chart -->
     <div class="mb-6 bg-themed-secondary p-4 sm:p-6 rounded-lg border border-themed-primary  transition-colors duration-300">
         <h3 class="text-lg font-bold text-themed-primary mb-4 flex items-center">
-            <i class="fas fa-chart-bar mr-2 text-brand" aria-hidden="true"></i>
+            <i aria-hidden="true" class="fas fa-chart-bar mr-2 text-brand"></i>
             Users by Role
         </h3>
         <div class="w-full h-48 sm:h-64">
@@ -125,9 +125,9 @@
                             <div class="flex items-center">
                                 Name
                                 @if ($sortField === 'name')
-                                    <i class="fas fa-sort-{{ $sortDirection === 'asc' ? 'up' : 'down' }} ml-1" aria-hidden="true"></i>
+                                    <i aria-hidden="true" class="fas fa-sort-{{ $sortDirection === 'asc' ? 'up' : 'down' }} ml-1"></i>
                                 @else
-                                    <i class="fas fa-sort ml-1 opacity-50" aria-hidden="true"></i>
+                                    <i aria-hidden="true" class="fas fa-sort ml-1 opacity-50"></i>
                                 @endif
                             </div>
                         </th>
@@ -135,9 +135,9 @@
                             <div class="flex items-center">
                                 Email
                                 @if ($sortField === 'email')
-                                    <i class="fas fa-sort-{{ $sortDirection === 'asc' ? 'up' : 'down' }} ml-1" aria-hidden="true"></i>
+                                    <i aria-hidden="true" class="fas fa-sort-{{ $sortDirection === 'asc' ? 'up' : 'down' }} ml-1"></i>
                                 @else
-                                    <i class="fas fa-sort ml-1 opacity-50" aria-hidden="true"></i>
+                                    <i aria-hidden="true" class="fas fa-sort ml-1 opacity-50"></i>
                                 @endif
                             </div>
                         </th>
@@ -150,9 +150,9 @@
                             <div class="flex items-center">
                                 Last Login
                                 @if ($sortField === 'last_login_at')
-                                    <i class="fas fa-sort-{{ $sortDirection === 'asc' ? 'up' : 'down' }} ml-1" aria-hidden="true"></i>
+                                    <i aria-hidden="true" class="fas fa-sort-{{ $sortDirection === 'asc' ? 'up' : 'down' }} ml-1"></i>
                                 @else
-                                    <i class="fas fa-sort ml-1 opacity-50" aria-hidden="true"></i>
+                                    <i aria-hidden="true" class="fas fa-sort ml-1 opacity-50"></i>
                                 @endif
                             </div>
                         </th>
@@ -189,7 +189,7 @@
                                 </span>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
-                                <i class="fas fa-check-circle {{ $user->email_verified_at ? 'text-green-500' : 'text-red-500' }}" aria-hidden="true"></i>
+                                <i aria-hidden="true" class="fas fa-check-circle {{ $user->email_verified_at ? 'text-green-500' : 'text-red-500' }}"></i>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
                                 <div class="text-sm text-themed-primary">{{ $user->enrollments_count }}</div>
@@ -206,18 +206,18 @@
                                 </div>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
-                                <i class="fas fa-circle {{ $user->is_active ? 'text-green-500' : 'text-red-500' }}" aria-hidden="true"></i>
+                                <i aria-hidden="true" class="fas fa-circle {{ $user->is_active ? 'text-green-500' : 'text-red-500' }}"></i>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-right">
                                 <div class="flex items-center justify-end gap-1 flex-wrap">
                                     @can('edit-users')
                                         <a href="{{ route('profile.edit', $user->id) }}" class="inline-flex items-center gap-1 px-3 py-2 text-xs bg-brand/10 text-brand border border-brand/20 rounded-lg hover:bg-brand/20 transition-colors duration-200 whitespace-nowrap">
-                                            <i class="fas fa-edit" aria-hidden="true"></i><span class="hidden sm:inline">Edit</span>
+                                            <i aria-hidden="true" class="fas fa-edit"></i><span class="hidden sm:inline">Edit</span>
                                         </a>
                                     @endcan
                                     @can('view-user-activity')
                                         <button wire:click="viewUser({{ $user->id }})" class="inline-flex items-center gap-1 px-3 py-2 text-xs bg-themed-tertiary text-themed-primary border border-themed-primary rounded-lg hover:bg-themed-primary/10 transition-colors duration-200 whitespace-nowrap">
-                                            <i class="fas fa-eye" aria-hidden="true"></i><span class="hidden sm:inline">View</span>
+                                            <i aria-hidden="true" class="fas fa-eye"></i><span class="hidden sm:inline">View</span>
                                         </button>
                                     @endcan
                                 </div>
@@ -228,7 +228,7 @@
                             <td colspan="10" class="px-6 py-12 text-center">
                                 <div class="flex flex-col items-center">
                                     <div class="w-16 h-16 bg-themed-tertiary rounded-full flex items-center justify-center mb-4 transition-colors duration-300">
-                                        <i class="fas fa-users text-themed-secondary text-2xl" aria-hidden="true"></i>
+                                        <i aria-hidden="true" class="fas fa-users text-themed-secondary text-2xl"></i>
                                     </div>
                                     <h3 class="text-sm font-medium text-themed-primary transition-colors duration-300">No users found</h3>
                                     <p class="text-sm text-themed-secondary transition-colors duration-300 mt-1">Try adjusting your search filters</p>
@@ -264,7 +264,7 @@
                             <p class="text-themed-secondary text-xs truncate">{{ $user->email }}</p>
                         </div>
                     </div>
-                    <i class="fas fa-circle {{ $user->is_active ? 'text-green-500' : 'text-red-500' }} text-sm flex-shrink-0 ml-2" aria-hidden="true"></i>
+                    <i aria-hidden="true" class="fas fa-circle {{ $user->is_active ? 'text-green-500' : 'text-red-500' }} text-sm flex-shrink-0 ml-2"></i>
                 </div>
 
                 <!-- Info Grid -->
@@ -277,7 +277,7 @@
                     </div>
                     <div>
                         <p class="text-xs text-themed-secondary mb-1">Verified</p>
-                        <i class="fas fa-check-circle {{ $user->email_verified_at ? 'text-green-500' : 'text-red-500' }} text-sm" aria-hidden="true"></i>
+                        <i aria-hidden="true" class="fas fa-check-circle {{ $user->email_verified_at ? 'text-green-500' : 'text-red-500' }} text-sm"></i>
                     </div>
                     <div>
                         <p class="text-xs text-themed-secondary">Courses: <span class="text-themed-primary font-bold">{{ $user->enrollments_count }}</span></p>
@@ -298,12 +298,12 @@
                 <div class="flex gap-2">
                     @can('edit-users')
                         <a href="{{ route('user.edit', $user->id) }}" class="flex-1 text-xs px-3 py-2 bg-action text-action-foreground rounded-lg hover:bg-action/90 transition-colors duration-200 font-medium text-center">
-                            <i class="fas fa-edit mr-1" aria-hidden="true"></i>Edit
+                            <i aria-hidden="true" class="fas fa-edit mr-1"></i>Edit
                         </a>
                     @endcan
                     @can('view-user-activity')
                         <button wire:click="viewUser({{ $user->id }})" class="flex-1 text-xs px-3 py-2 bg-themed-tertiary text-themed-primary border border-themed-primary rounded-lg hover:bg-themed-primary/10 transition-colors duration-200 font-medium">
-                            <i class="fas fa-eye mr-1" aria-hidden="true"></i>View
+                            <i aria-hidden="true" class="fas fa-eye mr-1"></i>View
                         </button>
                     @endcan
                 </div>
@@ -311,7 +311,7 @@
         @empty
             <div class="bg-themed-secondary rounded-lg border border-themed-primary p-8 text-center">
                 <div class="w-16 h-16 bg-themed-tertiary rounded-full flex items-center justify-center mx-auto mb-4 transition-colors duration-300">
-                    <i class="fas fa-users text-themed-secondary text-2xl" aria-hidden="true"></i>
+                    <i aria-hidden="true" class="fas fa-users text-themed-secondary text-2xl"></i>
                 </div>
                 <h3 class="text-sm font-medium text-themed-primary transition-colors duration-300">No users found</h3>
                 <p class="text-sm text-themed-secondary transition-colors duration-300 mt-1">Try adjusting your search filters</p>

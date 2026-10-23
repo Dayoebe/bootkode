@@ -16,12 +16,12 @@
                  :class="getNotificationClasses(notification.type)">
                 <div class="flex items-center justify-between">
                     <div class="flex items-center">
-                        <i :class="getNotificationIcon(notification.type)" class="mr-3"></i>
+                        <i aria-hidden="true" :class="getNotificationIcon(notification.type)" class="mr-3"></i>
                         <span class="flex-1" x-text="notification.message"></span>
                     </div>
                     <button @click="dismissNotification(notification.id)"
                             class="ml-4 text-white hover:text-gray-200 transition-colors p-1 rounded-full hover:bg-white/10" aria-label="Close">
-                        <i class="fas fa-times" aria-hidden="true"></i>
+                        <i aria-hidden="true" class="fas fa-times"></i>
                     </button>
                 </div>
                 <!-- Progress bar for actions in progress -->
@@ -42,7 +42,7 @@
          x-transition:enter-end="opacity-100 transform translate-y-0"
          class="mb-4 p-4 bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-700 rounded-lg">
         <div class="flex items-start gap-3">
-            <i class="fas fa-exclamation-triangle text-red-600 dark:text-red-400 mt-1" aria-hidden="true"></i>
+            <i aria-hidden="true" class="fas fa-exclamation-triangle text-red-600 dark:text-red-400 mt-1"></i>
             <div class="flex-1">
                 <h4 class="font-medium text-red-800 dark:text-red-200 mb-1">Course Data Conflict</h4>
                 <p class="text-sm text-red-700 dark:text-red-300 mb-3">
@@ -61,7 +61,7 @@
             </div>
             <button @click="showConflictWarning = false"
                     class="text-red-600 dark:text-red-400 hover:text-red-800 dark:hover:text-red-200" aria-label="Close">
-                <i class="fas fa-times" aria-hidden="true"></i>
+                <i aria-hidden="true" class="fas fa-times"></i>
             </button>
         </div>
     </div>
@@ -71,7 +71,7 @@
         <div class="flex flex-col sm:flex-row sm:items-center gap-3">
             <div class="flex items-center gap-3">
                 <div class="bg-action dark:bg-action p-2 rounded-lg">
-                    <i class="fas fa-book-open text-action-foreground" aria-hidden="true"></i>
+                    <i aria-hidden="true" class="fas fa-book-open text-action-foreground"></i>
                 </div>
                 <h2 class="text-xl sm:text-2xl font-bold text-content dark:text-white truncate max-w-[180px] sm:max-w-[280px] transition-colors duration-300">
                     {{ $course->title ?? 'Untitled Course' }}
@@ -92,7 +92,7 @@
                     {{ $course->is_free ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300 border-green-200 dark:border-green-700' :
     ($course->is_premium ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300 border-yellow-200 dark:border-yellow-700' :
         'bg-blue-100 text-brand dark:bg-action/30 dark:text-brand border-brand dark:border-blue-700') }} transition-colors duration-300">
-                    <i class="fas {{ $course->is_free ? 'fa-gift' : ($course->is_premium ? 'fa-crown' : 'fa-dollar-sign') }} mr-2" aria-hidden="true"></i>
+                    <i aria-hidden="true" class="fas {{ $course->is_free ? 'fa-gift' : ($course->is_premium ? 'fa-crown' : 'fa-dollar-sign') }} mr-2"></i>
                     {{ $course->formatted_price }}
                 </span>
 
@@ -102,7 +102,7 @@
                       :class="saveStatus === 'saving' ? 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300 border-blue-200 dark:border-blue-700' :
                               saveStatus === 'error' ? 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300 border-red-200 dark:border-red-700' :
                               'bg-gray-100 text-gray-800 dark:bg-gray-900/30 dark:text-gray-300 border-gray-200 dark:border-gray-700'">
-                    <i class="mr-2" :class="saveStatus === 'saving' ? 'fas fa-spinner fa-spin' : 'fas fa-exclamation-triangle'" aria-hidden="true"></i>
+                    <i aria-hidden="true" class="mr-2" :class="saveStatus === 'saving' ? 'fas fa-spinner fa-spin' : 'fas fa-exclamation-triangle'"></i>
                     <span x-text="saveStatus === 'saving' ? 'Saving...' : saveStatus === 'error' ? 'Save Failed' : 'Unsaved'"></span>
                 </span>
             </div>
@@ -114,20 +114,20 @@
             <button @click="toggleAutoSave()" :class="autoSaveEnabled ? 'bg-green-600' : 'bg-gray-400'"
                     class="px-3 py-2 text-white rounded-lg transition-colors duration-300 text-sm flex items-center gap-2"
                     :title="autoSaveEnabled ? 'Auto-save enabled' : 'Auto-save disabled'">
-                <i class="fas fa-bolt" aria-hidden="true"></i>
+                <i aria-hidden="true" class="fas fa-bolt"></i>
                 <span class="hidden sm:inline">Auto</span>
             </button>
 
             <a href="{{ route('courses.preview', $course) }}" target="_blank"
                 class="bk-button bk-button-primary">
-                <i class="fas fa-eye mr-2" aria-hidden="true"></i>
+                <i aria-hidden="true" class="fas fa-eye mr-2"></i>
                 Preview Course
             </a>
 
             <!-- Pricing Button with Loading State -->
             <button @click="openPricingModal()" :disabled="isPerformingAction"
                     class="bk-button bk-button-primary disabled:opacity-50 disabled:cursor-not-allowed">
-                <i class="fas fa-tag mr-2" :class="{ 'fa-spinner fa-spin': isPerformingAction && actionType === 'pricing' }" aria-hidden="true"></i>
+                <i aria-hidden="true" class="fas fa-tag mr-2" :class="{ 'fa-spinner fa-spin': isPerformingAction && actionType === 'pricing' }"></i>
                 Pricing
             </button>
 
@@ -139,14 +139,14 @@
 
                 <template x-if="!isPerformingAction || actionType !== 'publish'">
                     <div class="flex items-center">
-                        <i class="mr-2" :class="course.is_published ? 'fas fa-eye-slash' : 'fas fa-eye'" aria-hidden="true"></i>
+                        <i aria-hidden="true" class="mr-2" :class="course.is_published ? 'fas fa-eye-slash' : 'fas fa-eye'"></i>
                         <span x-text="course.is_published ? 'Unpublish' : 'Publish'"></span>
                     </div>
                 </template>
 
                 <template x-if="isPerformingAction && actionType === 'publish'">
                     <div class="flex items-center">
-                        <i class="fas fa-spinner fa-spin mr-2" aria-hidden="true"></i>
+                        <i aria-hidden="true" class="fas fa-spinner fa-spin mr-2"></i>
                         <span x-text="'Processing...'"></span>
                     </div>
                 </template>
@@ -159,7 +159,7 @@
         <div class="bg-surface-muted dark:bg-gray-700 p-4 rounded-lg flex items-center space-x-3 border border-line dark:border-gray-600 hover:border-brand dark:hover:border-brand transition-all duration-300"
             wire:key="sections-count-{{ $sectionCount }}" wire:transition>
             <div class="bg-brand/10 dark:bg-action/30 p-3 rounded-lg">
-                <i class="fas fa-folder-open text-brand dark:text-brand text-lg" aria-hidden="true"></i>
+                <i aria-hidden="true" class="fas fa-folder-open text-brand dark:text-brand text-lg"></i>
             </div>
             <div>
                 <span class="text-content-muted dark:text-content-muted text-xs uppercase tracking-wider transition-colors duration-300">Sections</span>
@@ -170,7 +170,7 @@
         <div class="bg-surface-muted dark:bg-gray-700 p-4 rounded-lg flex items-center space-x-3 border border-line dark:border-gray-600 hover:border-green-300 dark:hover:border-green-500 transition-all duration-300"
             wire:key="lessons-count-{{ $lessonCount }}" wire:transition>
             <div class="bg-green-100 dark:bg-green-900/30 p-3 rounded-lg">
-                <i class="fas fa-book text-green-600 dark:text-green-400 text-lg" aria-hidden="true"></i>
+                <i aria-hidden="true" class="fas fa-book text-green-600 dark:text-green-400 text-lg"></i>
             </div>
             <div>
                 <span class="text-content-muted dark:text-content-muted text-xs uppercase tracking-wider transition-colors duration-300">Lessons</span>
@@ -185,12 +185,12 @@
             <div class="bg-surface dark:bg-gray-800 rounded-lg p-6 max-w-md w-full mx-4 border border-line dark:border-gray-700 shadow-sm transition-colors duration-300">
                 <div class="flex justify-between items-center mb-6 pb-4 border-b border-line dark:border-gray-700">
                     <h3 class="text-xl font-bold text-content dark:text-white flex items-center transition-colors duration-300">
-                        <i class="fas fa-tag text-brand dark:text-brand mr-2" aria-hidden="true"></i>
+                        <i aria-hidden="true" class="fas fa-tag text-brand dark:text-brand mr-2"></i>
                         Course Pricing
                     </h3>
                     <button aria-label="Close pricing dialog" @click="closePricingModal()"
                         class="text-content-muted dark:text-content-muted hover:text-content dark:hover:text-white transition-colors p-1 rounded-full hover:bg-surface-muted dark:hover:bg-gray-700">
-                        <i class="fas fa-times text-lg" aria-hidden="true"></i>
+                        <i aria-hidden="true" class="fas fa-times text-lg"></i>
                     </button>
                 </div>
 
@@ -205,7 +205,7 @@
                     <div class="flex items-center justify-between p-3 bg-surface-muted dark:bg-gray-700 rounded-lg transition-colors duration-300">
                         <div class="flex items-center">
                             <div class="bg-green-100 dark:bg-green-900/30 p-2 rounded-lg mr-3">
-                                <i class="fas fa-gift text-green-600 dark:text-green-400" aria-hidden="true"></i>
+                                <i aria-hidden="true" class="fas fa-gift text-green-600 dark:text-green-400"></i>
                             </div>
                             <div>
                                 <label for="modal_is_free"
@@ -228,7 +228,7 @@
                     <div x-show="!$wire.is_free" class="flex items-center justify-between p-3 bg-surface-muted dark:bg-gray-700 rounded-lg transition-colors duration-300">
                         <div class="flex items-center">
                             <div class="bg-yellow-100 dark:bg-yellow-900/30 p-2 rounded-lg mr-3">
-                                <i class="fas fa-crown text-yellow-600 dark:text-yellow-400" aria-hidden="true"></i>
+                                <i aria-hidden="true" class="fas fa-crown text-yellow-600 dark:text-yellow-400"></i>
                             </div>
                             <div>
                                 <label for="modal_is_premium"
@@ -259,7 +259,7 @@
                         </div>
                         @error('price')
                             <span class="text-red-600 dark:text-red-400 text-sm mt-1 flex items-center transition-colors duration-300">
-                                <i class="fas fa-exclamation-circle mr-1" aria-hidden="true"></i> {{ $message }}
+                                <i aria-hidden="true" class="fas fa-exclamation-circle mr-1"></i> {{ $message }}
                             </span>
                         @enderror
                     </div>
@@ -274,10 +274,10 @@
                             class="flex-1 px-4 py-2.5 bg-brand-ink
                             text-white rounded-lg transition-all duration-300 disabled:opacity-50 flex items-center justify-center">
                             <span x-show="!isPerformingAction || actionType !== 'pricing'" class="flex items-center">
-                                <i class="fas fa-check-circle mr-2" aria-hidden="true"></i> Update
+                                <i aria-hidden="true" class="fas fa-check-circle mr-2"></i> Update
                             </span>
                             <span x-show="isPerformingAction && actionType === 'pricing'" class="flex items-center">
-                                <i class="fas fa-spinner fa-spin mr-2" aria-hidden="true"></i> Updating...
+                                <i aria-hidden="true" class="fas fa-spinner fa-spin mr-2"></i> Updating...
                             </span>
                         </button>
                     </div>

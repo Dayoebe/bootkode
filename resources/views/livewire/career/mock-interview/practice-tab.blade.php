@@ -43,7 +43,7 @@
         <div class="text-center">
             <button wire:click="startQuickPractice"
                 class="bg-green-600 hover:bg-green-700 text-white px-8 py-4 rounded-lg transition-colors font-semibold text-lg shadow-sm">
-                <i class="fas fa-play mr-2" aria-hidden="true"></i> Start Practice Session
+                <i aria-hidden="true" class="fas fa-play mr-2"></i> Start Practice Session
             </button>
         </div>
     </div>
@@ -117,7 +117,7 @@
 
         <div class="mt-6 p-4 bg-brand/10 border border-brand/20 rounded-lg">
             <p class="text-sm text-themed-secondary">
-                <i class="fas fa-info-circle mr-2 text-brand" aria-hidden="true"></i>
+                <i aria-hidden="true" class="fas fa-info-circle mr-2 text-brand"></i>
                 These are sample questions. Your actual practice session will include
                 @php
                     $questionCount = match($difficulty_level) {

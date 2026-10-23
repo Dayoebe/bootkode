@@ -2,7 +2,7 @@
     <!-- Header -->
     <div class="bg-brand-ink   p-6 rounded-lg shadow-sm text-white mb-8">
         <h1 class=" font-bold flex items-center bk-page-title">
-            <i class="fas fa-bell mr-3" aria-hidden="true"></i>
+            <i aria-hidden="true" class="fas fa-bell mr-3"></i>
             Notification Preferences
         </h1>
         <p class="text-brand mt-2">Control how and when you receive notifications from the platform</p>
@@ -13,7 +13,7 @@
         <div class="bg-themed-secondary rounded-lg shadow-sm border border-themed-primary overflow-hidden">
             <div class="px-6 py-4 border-b border-themed-primary flex items-center justify-between">
                 <div class="flex items-center">
-                    <i class="fas fa-envelope text-brand dark:text-brand mr-3 text-lg" aria-hidden="true"></i>
+                    <i aria-hidden="true" class="fas fa-envelope text-brand dark:text-brand mr-3 text-lg"></i>
                     <div>
                         <h3 class="text-lg font-semibold text-themed-primary">Email Notifications</h3>
                         <p class="text-sm text-themed-secondary">Choose which emails you'd like to receive</p>
@@ -156,8 +156,8 @@
                 <div class="mt-6 flex justify-end">
                     <button type="submit" wire:loading.attr="disabled"
                         class="bg-action hover:bg-action dark:bg-action dark:hover:bg-action text-action-foreground px-6 py-2 rounded-lg transition-colors duration-200 font-medium">
-                        <span wire:loading.remove><i class="fas fa-save mr-2" aria-hidden="true"></i>Save Email Settings</span>
-                        <span wire:loading><i class="fas fa-circle-notch fa-spin mr-2" aria-hidden="true"></i>Saving...</span>
+                        <span wire:loading.remove><i aria-hidden="true" class="fas fa-save mr-2"></i>Save Email Settings</span>
+                        <span wire:loading><i aria-hidden="true" class="fas fa-circle-notch fa-spin mr-2"></i>Saving...</span>
                     </button>
                 </div>
             </form>
@@ -167,7 +167,7 @@
         <div class="bg-themed-secondary rounded-lg shadow-sm border border-themed-primary overflow-hidden">
             <div class="px-6 py-4 border-b border-themed-primary flex items-center justify-between">
                 <div class="flex items-center">
-                    <i class="fas fa-mobile-alt text-green-600 dark:text-green-400 mr-3 text-lg" aria-hidden="true"></i>
+                    <i aria-hidden="true" class="fas fa-mobile-alt text-green-600 dark:text-green-400 mr-3 text-lg"></i>
                     <div>
                         <h3 class="text-lg font-semibold text-themed-primary">Push Notifications</h3>
                         <p class="text-sm text-themed-secondary">Browser and mobile push notifications</p>
@@ -268,8 +268,8 @@
                 <div class="mt-6 flex justify-end">
                     <button type="submit" wire:loading.attr="disabled"
                         class="bg-green-600 hover:bg-green-700 dark:bg-green-700 dark:hover:bg-green-800 text-white px-6 py-2 rounded-lg transition-colors duration-200 font-medium">
-                        <span wire:loading.remove><i class="fas fa-save mr-2" aria-hidden="true"></i>Save Push Settings</span>
-                        <span wire:loading><i class="fas fa-circle-notch fa-spin mr-2" aria-hidden="true"></i>Saving...</span>
+                        <span wire:loading.remove><i aria-hidden="true" class="fas fa-save mr-2"></i>Save Push Settings</span>
+                        <span wire:loading><i aria-hidden="true" class="fas fa-circle-notch fa-spin mr-2"></i>Saving...</span>
                     </button>
                 </div>
             </form>
@@ -279,7 +279,7 @@
         <div class="bg-themed-secondary rounded-lg shadow-sm border border-themed-primary overflow-hidden">
             <div class="px-6 py-4 border-b border-themed-primary">
                 <div class="flex items-center">
-                    <i class="fas fa-clock text-orange-600 dark:text-orange-400 mr-3 text-lg" aria-hidden="true"></i>
+                    <i aria-hidden="true" class="fas fa-clock text-orange-600 dark:text-orange-400 mr-3 text-lg"></i>
                     <div>
                         <h3 class="text-lg font-semibold text-themed-primary">Frequency & Timing</h3>
                         <p class="text-sm text-themed-secondary">Control when and how often you receive notifications</p>
@@ -352,8 +352,8 @@
                 <div class="mt-6 flex justify-end">
                     <button type="submit" wire:loading.attr="disabled"
                         class="bg-orange-600 hover:bg-orange-700 dark:bg-orange-700 dark:hover:bg-orange-800 text-white px-6 py-2 rounded-lg transition-colors duration-200 font-medium">
-                        <span wire:loading.remove><i class="fas fa-save mr-2" aria-hidden="true"></i>Save Frequency Settings</span>
-                        <span wire:loading><i class="fas fa-circle-notch fa-spin mr-2" aria-hidden="true"></i>Saving...</span>
+                        <span wire:loading.remove><i aria-hidden="true" class="fas fa-save mr-2"></i>Save Frequency Settings</span>
+                        <span wire:loading><i aria-hidden="true" class="fas fa-circle-notch fa-spin mr-2"></i>Saving...</span>
                     </button>
                 </div>
             </form>
@@ -363,7 +363,7 @@
         <div class="bg-themed-secondary rounded-lg shadow-sm border border-themed-primary overflow-hidden">
             <div class="px-6 py-4 border-b border-themed-primary">
                 <div class="flex items-center">
-                    <i class="fas fa-info-circle text-themed-secondary mr-3 text-lg" aria-hidden="true"></i>
+                    <i aria-hidden="true" class="fas fa-info-circle text-themed-secondary mr-3 text-lg"></i>
                     <div>
                         <h3 class="text-lg font-semibold text-themed-primary">Current Settings Summary</h3>
                         <p class="text-sm text-themed-secondary">Overview of your notification preferences</p>
@@ -376,7 +376,7 @@
                     <!-- Email Summary -->
                     <div class="bg-brand/10 dark:bg-action/20 p-4 rounded-lg border border-brand dark:border-brand">
                         <h4 class="font-medium text-brand dark:text-brand mb-2 flex items-center">
-                            <i class="fas fa-envelope mr-2" aria-hidden="true"></i>
+                            <i aria-hidden="true" class="fas fa-envelope mr-2"></i>
                             Email Notifications
                         </h4>
                         <div class="text-sm text-brand dark:text-brand space-y-1">
@@ -390,7 +390,7 @@
                     <!-- Push Summary -->
                     <div class="bg-green-100/30 dark:bg-green-900/20 p-4 rounded-lg border border-green-200 dark:border-green-800">
                         <h4 class="font-medium text-green-900 dark:text-green-100 mb-2 flex items-center">
-                            <i class="fas fa-mobile-alt mr-2" aria-hidden="true"></i>
+                            <i aria-hidden="true" class="fas fa-mobile-alt mr-2"></i>
                             Push Notifications
                         </h4>
                         <div class="text-sm text-green-800 dark:text-green-200 space-y-1">
@@ -404,7 +404,7 @@
                     <!-- Timing Summary -->
                     <div class="bg-orange-100/30 dark:bg-orange-900/20 p-4 rounded-lg border border-orange-200 dark:border-orange-800">
                         <h4 class="font-medium text-orange-900 dark:text-orange-100 mb-2 flex items-center">
-                            <i class="fas fa-clock mr-2" aria-hidden="true"></i>
+                            <i aria-hidden="true" class="fas fa-clock mr-2"></i>
                             Timing Settings
                         </h4>
                         <div class="text-sm text-orange-800 dark:text-orange-200 space-y-1">
@@ -421,19 +421,19 @@
                     <div class="flex flex-wrap gap-3">
                         <button wire:click="enableAllEmail"
                             class="px-4 py-2 bg-brand/10 dark:bg-action/30 text-brand dark:text-brand rounded-lg hover:bg-indigo-200 dark:hover:bg-action/50 transition-colors text-sm font-medium">
-                            <i class="fas fa-check-circle mr-2" aria-hidden="true"></i>Enable All Email
+                            <i aria-hidden="true" class="fas fa-check-circle mr-2"></i>Enable All Email
                         </button>
                         <button wire:click="enableAllPush"
                             class="px-4 py-2 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 rounded-lg hover:bg-green-200 dark:hover:bg-green-900/50 transition-colors text-sm font-medium">
-                            <i class="fas fa-check-circle mr-2" aria-hidden="true"></i>Enable All Push
+                            <i aria-hidden="true" class="fas fa-check-circle mr-2"></i>Enable All Push
                         </button>
                         <button wire:click="disableAllEmail"
                             class="px-4 py-2 bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300 rounded-lg hover:bg-red-200 dark:hover:bg-red-900/50 transition-colors text-sm font-medium">
-                            <i class="fas fa-times-circle mr-2" aria-hidden="true"></i>Disable All Email
+                            <i aria-hidden="true" class="fas fa-times-circle mr-2"></i>Disable All Email
                         </button>
                         <button wire:click="disableAllPush"
                             class="px-4 py-2 bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300 rounded-lg hover:bg-red-200 dark:hover:bg-red-900/50 transition-colors text-sm font-medium">
-                            <i class="fas fa-times-circle mr-2" aria-hidden="true"></i>Disable All Push
+                            <i aria-hidden="true" class="fas fa-times-circle mr-2"></i>Disable All Push
                         </button>
                     </div>
                 </div>

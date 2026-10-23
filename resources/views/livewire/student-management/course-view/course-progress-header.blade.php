@@ -23,7 +23,7 @@
                     </span>
                     @if($course->quality_label_text)
                         <span class="rounded-full border border-themed-secondary px-3 py-1 {{ $course->quality_label_class }}">
-                            <i class="fas fa-shield-check mr-1" aria-hidden="true"></i>{{ $course->quality_label_text }}
+                            <i aria-hidden="true" class="fas fa-shield-check mr-1"></i>{{ $course->quality_label_text }}
                         </span>
                     @endif
                     <span class="rounded-full border border-transparent px-3 py-1 text-white"
@@ -42,20 +42,20 @@
 
                 <div class="mt-6 flex flex-wrap items-center gap-3 text-sm text-themed-secondary">
                     <span class="inline-flex items-center gap-2 rounded-full border border-themed-secondary bg-themed-tertiary px-4 py-2">
-                        <i class="fas fa-user-graduate accent-themed-primary" aria-hidden="true"></i>
+                        <i aria-hidden="true" class="fas fa-user-graduate accent-themed-primary"></i>
                         {{ $course->instructor->name ?? 'Bootkode Instructor' }}
                     </span>
                     <span class="inline-flex items-center gap-2 rounded-full border border-themed-secondary bg-themed-tertiary px-4 py-2">
-                        <i class="fas fa-layer-group accent-themed-primary" aria-hidden="true"></i>
+                        <i aria-hidden="true" class="fas fa-layer-group accent-themed-primary"></i>
                         {{ $course->sections->count() }} sections
                     </span>
                     <span class="inline-flex items-center gap-2 rounded-full border border-themed-secondary bg-themed-tertiary px-4 py-2">
-                        <i class="fas fa-book-open accent-themed-primary" aria-hidden="true"></i>
+                        <i aria-hidden="true" class="fas fa-book-open accent-themed-primary"></i>
                         {{ $stats['total'] }} lessons
                     </span>
                     @if ($currentSection)
                         <span class="inline-flex items-center gap-2 rounded-full border border-themed-secondary bg-themed-tertiary px-4 py-2">
-                            <i class="fas fa-location-arrow accent-themed-primary" aria-hidden="true"></i>
+                            <i aria-hidden="true" class="fas fa-location-arrow accent-themed-primary"></i>
                             Current focus: {{ $currentSection->title }}
                         </span>
                     @endif

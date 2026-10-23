@@ -8,7 +8,7 @@
             <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
                 <div class="flex items-center gap-4">
                     <div class="bg-brand-ink   p-4 rounded-lg shadow-sm">
-                        <i class="fas fa-tags text-white text-2xl" aria-hidden="true"></i>
+                        <i aria-hidden="true" class="fas fa-tags text-white text-2xl"></i>
                     </div>
                     <div>
                         <h1 class="  font-bold text-themed-primary transition-colors duration-300 bk-page-title">
@@ -23,13 +23,13 @@
                 <div class="flex flex-col sm:flex-row gap-3">
                     <button wire:click="create"
                             class="inline-flex items-center justify-center gap-2 bg-green-500 hover:bg-green-600 text-white px-6 py-3 rounded-lg font-semibold transition-all duration-300 transform  shadow-sm">
-                        <i class="fas fa-plus-circle" aria-hidden="true"></i>
+                        <i aria-hidden="true" class="fas fa-plus-circle"></i>
                         <span>Create Category</span>
                     </button>
 
                     <button wire:click="suggestAiContent"
                             class="inline-flex items-center justify-center gap-2 bg-action hover:bg-action text-action-foreground px-6 py-3 rounded-lg font-semibold transition-all duration-300 transform  shadow-sm">
-                        <i class="fas fa-wand-magic-sparkles" aria-hidden="true"></i>
+                        <i aria-hidden="true" class="fas fa-wand-magic-sparkles"></i>
                         <span>AI Suggest</span>
                     </button>
                 </div>
@@ -40,7 +40,7 @@
         <div class="bg-themed-secondary rounded-lg shadow-sm border border-themed-primary p-6 transition-colors duration-300">
             <div class="flex items-center justify-between mb-4">
                 <h3 class="text-lg font-bold text-themed-primary flex items-center gap-2 transition-colors duration-300">
-                    <i class="fas fa-search text-brand" aria-hidden="true"></i>
+                    <i aria-hidden="true" class="fas fa-search text-brand"></i>
                     Search Categories
                 </h3>
             </div>
@@ -51,10 +51,10 @@
                        class="w-full pl-10 pr-10 py-3 bg-themed-tertiary border-2 border-themed-primary rounded-lg text-themed-primary placeholder-themed-secondary focus:border-brand focus:ring-2 focus:ring-brand/30 transition-all duration-300"
                        aria-label="Search categories">
                 <div class="absolute left-3 top-1/2 -translate-y-1/2 text-themed-secondary transition-colors duration-300">
-                    <i class="fas fa-search" aria-hidden="true"></i>
+                    <i aria-hidden="true" class="fas fa-search"></i>
                 </div>
                 <div wire:loading wire:target="search" class="absolute right-3 top-1/2 -translate-y-1/2">
-                    <i class="fas fa-spinner animate-spin text-brand" aria-hidden="true"></i>
+                    <i aria-hidden="true" class="fas fa-spinner animate-spin text-brand"></i>
                 </div>
             </div>
         </div>
@@ -64,7 +64,7 @@
             <div class="bg-green-100/50 border border-green-400 text-green-700 px-6 py-4 rounded-lg transition-colors duration-300  "
                  role="alert">
                 <div class="flex items-center gap-2">
-                    <i class="fas fa-check-circle text-lg" aria-hidden="true"></i>
+                    <i aria-hidden="true" class="fas fa-check-circle text-lg"></i>
                     <span class="font-medium">{{ session('message') }}</span>
                 </div>
             </div>
@@ -73,7 +73,7 @@
             <div class="bg-red-100/50 border border-red-400 text-red-700 px-6 py-4 rounded-lg transition-colors duration-300  "
                  role="alert">
                 <div class="flex items-center gap-2">
-                    <i class="fas fa-exclamation-circle text-lg" aria-hidden="true"></i>
+                    <i aria-hidden="true" class="fas fa-exclamation-circle text-lg"></i>
                     <span class="font-medium">{{ session('error') }}</span>
                 </div>
             </div>
@@ -107,7 +107,7 @@
                         <tr wire:loading wire:target="search, $refresh">
                             <td colspan="5" class="px-6 py-8 text-center text-sm text-themed-secondary transition-colors duration-300">
                                 <div class="flex items-center justify-center gap-2">
-                                    <i class="fas fa-circle-notch fa-spin" aria-hidden="true"></i>
+                                    <i aria-hidden="true" class="fas fa-circle-notch fa-spin"></i>
                                     <span>Loading...</span>
                                 </div>
                             </td>
@@ -117,7 +117,7 @@
                                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-themed-primary transition-colors duration-300">
                                     <div class="flex items-center gap-3">
                                         <div class="w-10 h-10 bg-surface-muted   rounded-lg flex items-center justify-center shadow-sm">
-                                            <i class="fas fa-tag text-brand" aria-hidden="true"></i>
+                                            <i aria-hidden="true" class="fas fa-tag text-brand"></i>
                                         </div>
                                         <span class="font-semibold">{{ $category->name }}</span>
                                     </div>
@@ -140,12 +140,12 @@
                                         <button wire:click="edit({{ $category->id }})"
                                                 class="p-2 rounded-lg text-brand hover:bg-brand/10 transition-all duration-300 transform "
                                                 title="Edit {{ $category->name }}">
-                                            <i class="fas fa-edit" aria-hidden="true"></i>
+                                            <i aria-hidden="true" class="fas fa-edit"></i>
                                         </button>
                                         <button wire:click="confirmDelete({{ $category->id }})"
                                                 class="p-2 rounded-lg text-red-600 hover:bg-red-100/50 transition-all duration-300 transform "
                                                 title="Delete {{ $category->name }}">
-                                            <i class="fas fa-trash-alt" aria-hidden="true"></i>
+                                            <i aria-hidden="true" class="fas fa-trash-alt"></i>
                                         </button>
                                     </div>
                                 </td>
@@ -155,7 +155,7 @@
                                 <td colspan="5" class="px-6 py-16 text-center">
                                     <div class="flex flex-col items-center">
                                         <div class="w-20 h-20 bg-themed-tertiary rounded-full flex items-center justify-center mb-4 transition-colors duration-300 border border-themed-primary">
-                                            <i class="fas fa-tags text-themed-secondary text-3xl" aria-hidden="true"></i>
+                                            <i aria-hidden="true" class="fas fa-tags text-themed-secondary text-3xl"></i>
                                         </div>
                                         <h3 class="text-lg font-bold text-themed-primary mb-2 transition-colors duration-300">No categories found</h3>
                                         <p class="text-themed-secondary mb-6 transition-colors duration-300">
@@ -164,7 +164,7 @@
                                         @if(!$search)
                                             <button wire:click="create"
                                                     class="inline-flex items-center gap-2 bg-action hover:bg-action text-action-foreground px-6 py-3 rounded-lg font-semibold transition-all duration-300 transform ">
-                                                <i class="fas fa-plus" aria-hidden="true"></i>
+                                                <i aria-hidden="true" class="fas fa-plus"></i>
                                                 Create First Category
                                             </button>
                                         @endif
@@ -205,7 +205,7 @@
 
                 <div class="text-center mb-6">
                     <div class="w-16 h-16 bg-brand/10 rounded-full flex items-center justify-center mx-auto mb-4 transition-colors duration-300">
-                        <i class="fas {{ $categoryId ? 'fa-edit' : 'fa-plus' }} text-brand text-2xl" aria-hidden="true"></i>
+                        <i aria-hidden="true" class="fas {{ $categoryId ? 'fa-edit' : 'fa-plus' }} text-brand text-2xl"></i>
                     </div>
                     <h3 class="text-xl font-bold text-themed-primary mb-2 transition-colors duration-300">
                         {{ $categoryId ? 'Edit Category' : 'Create New Category' }}
@@ -226,7 +226,7 @@
                                x-ref="nameInput">
                         @error('name')
                             <p class="mt-2 text-sm text-red-500 flex items-center gap-1">
-                                <i class="fas fa-exclamation-circle" aria-hidden="true"></i>
+                                <i aria-hidden="true" class="fas fa-exclamation-circle"></i>
                                 {{ $message }}
                             </p>
                         @enderror
@@ -246,7 +246,7 @@
                         </div>
                         @error('description')
                             <p class="mt-2 text-sm text-red-500 flex items-center gap-1">
-                                <i class="fas fa-exclamation-circle" aria-hidden="true"></i>
+                                <i aria-hidden="true" class="fas fa-exclamation-circle"></i>
                                 {{ $message }}
                             </p>
                         @enderror
@@ -261,7 +261,7 @@
                                 class="flex-1 bg-action hover:bg-action text-action-foreground font-bold py-3 px-6 rounded-lg transition-all duration-300 disabled:opacity-50 transform ">
                             <span wire:loading.remove wire:target="store">{{ $categoryId ? 'Update' : 'Create' }}</span>
                             <span wire:loading wire:target="store" class="flex items-center justify-center gap-2">
-                                <i class="fas fa-spinner fa-spin" aria-hidden="true"></i>
+                                <i aria-hidden="true" class="fas fa-spinner fa-spin"></i>
                                 {{ $categoryId ? 'Updating...' : 'Creating...' }}
                             </span>
                         </button>
@@ -291,7 +291,7 @@
 
                 <div class="text-center mb-6">
                     <div class="w-16 h-16 bg-red-100/50 rounded-full flex items-center justify-center mx-auto mb-4 transition-colors duration-300">
-                        <i class="fas fa-exclamation-triangle text-red-600 text-2xl" aria-hidden="true"></i>
+                        <i aria-hidden="true" class="fas fa-exclamation-triangle text-red-600 text-2xl"></i>
                     </div>
                     <h3 class="text-xl font-bold text-themed-primary mb-2 transition-colors duration-300">Confirm Deletion</h3>
                     <p class="text-themed-secondary text-sm transition-colors duration-300">

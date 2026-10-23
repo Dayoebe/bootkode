@@ -11,12 +11,12 @@
             <div class="flex items-center space-x-4">
                 <button wire:click="startNewTemplate"
                         class="bg-action text-action-foreground px-4 py-2 rounded-lg hover:bg-action transition-colors">
-                    <i class="fas fa-plus mr-2" aria-hidden="true"></i>Create Template
+                    <i aria-hidden="true" class="fas fa-plus mr-2"></i>Create Template
                 </button>
 
                 <button wire:click="$set('showImportTemplate', true)"
                         class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors">
-                    <i class="fas fa-upload mr-2" aria-hidden="true"></i>Import Template
+                    <i aria-hidden="true" class="fas fa-upload mr-2"></i>Import Template
                 </button>
             </div>
         </div>
@@ -35,7 +35,7 @@
                     <div class="border border-line rounded-lg overflow-hidden  transition-shadow">
                         <div class="aspect-video bg-surface-muted   flex items-center justify-center">
                             <div class="text-center">
-                                <i class="fas fa-eye text-content-muted text-3xl mb-2" aria-hidden="true"></i>
+                                <i aria-hidden="true" class="fas fa-eye text-content-muted text-3xl mb-2"></i>
                                 <p class="text-sm text-content-muted">Preview Available</p>
                             </div>
                         </div>
@@ -71,11 +71,11 @@
                             <div class="flex space-x-2">
                                 <button wire:click="previewTemplate('{{ $template['id'] }}')"
                                         class="flex-1 text-sm px-3 py-2 bg-brand/10 text-brand rounded hover:bg-indigo-200 transition-colors">
-                                    <i class="fas fa-eye mr-1" aria-hidden="true"></i>Preview
+                                    <i aria-hidden="true" class="fas fa-eye mr-1"></i>Preview
                                 </button>
                                 <button wire:click="duplicateTemplate('{{ $template['id'] }}')"
                                         class="flex-1 text-sm px-3 py-2 border border-line text-content rounded hover:bg-surface-muted transition-colors">
-                                    <i class="fas fa-copy mr-1" aria-hidden="true"></i>Duplicate
+                                    <i aria-hidden="true" class="fas fa-copy mr-1"></i>Duplicate
                                 </button>
                             </div>
                         </div>
@@ -99,7 +99,7 @@
                         <div class="border border-line rounded-lg overflow-hidden  transition-shadow">
                             <div class="aspect-video bg-surface-muted   flex items-center justify-center">
                                 <div class="text-center">
-                                    <i class="fas fa-code text-brand text-3xl mb-2" aria-hidden="true"></i>
+                                    <i aria-hidden="true" class="fas fa-code text-brand text-3xl mb-2"></i>
                                     <p class="text-sm text-brand">Custom Template</p>
                                 </div>
                             </div>
@@ -134,33 +134,33 @@
                                 <div class="flex space-x-2">
                                     <button wire:click="editTemplate('{{ $template['id'] }}')"
                                             class="flex-1 text-sm px-3 py-2 bg-brand/10 text-brand rounded hover:bg-purple-200 transition-colors">
-                                        <i class="fas fa-edit mr-1" aria-hidden="true"></i>Edit
+                                        <i aria-hidden="true" class="fas fa-edit mr-1"></i>Edit
                                     </button>
                                     <button wire:click="previewTemplate('{{ $template['id'] }}')"
                                             class="text-sm px-3 py-2 border border-line text-content rounded hover:bg-surface-muted transition-colors" aria-label="Preview template">
-                                        <i class="fas fa-eye" aria-hidden="true"></i>
+                                        <i aria-hidden="true" class="fas fa-eye"></i>
                                     </button>
                                     <div x-data="{ open: false }" class="relative">
                                         <button @click="open = !open"
                                                 class="text-sm px-3 py-2 border border-line text-content rounded hover:bg-surface-muted transition-colors" aria-label="More actions">
-                                            <i class="fas fa-ellipsis-h" aria-hidden="true"></i>
+                                            <i aria-hidden="true" class="fas fa-ellipsis-h"></i>
                                         </button>
                                         <div x-show="open" @click.away="open = false"
                                              class="absolute right-0 mt-2 w-48 rounded-md shadow-sm bg-surface ring-1 ring-black ring-opacity-5 z-50">
                                             <div class="py-1">
                                                 <button wire:click="duplicateTemplate('{{ $template['id'] }}')"
                                                         class="flex items-center w-full text-left px-4 py-2 text-sm text-content hover:bg-surface-muted">
-                                                    <i class="fas fa-copy w-4 mr-3" aria-hidden="true"></i>Duplicate
+                                                    <i aria-hidden="true" class="fas fa-copy w-4 mr-3"></i>Duplicate
                                                 </button>
                                                 <button wire:click="exportTemplate('{{ $template['id'] }}')"
                                                         class="flex items-center w-full text-left px-4 py-2 text-sm text-content hover:bg-surface-muted">
-                                                    <i class="fas fa-download w-4 mr-3" aria-hidden="true"></i>Export
+                                                    <i aria-hidden="true" class="fas fa-download w-4 mr-3"></i>Export
                                                 </button>
                                                 <div class="border-t border-line"></div>
                                                 <button wire:click="deleteTemplate('{{ $template['id'] }}')"
                                                         wire:confirm="Are you sure you want to delete this template?"
                                                         class="flex items-center w-full text-left px-4 py-2 text-sm text-red-700 hover:bg-red-50">
-                                                    <i class="fas fa-trash w-4 mr-3" aria-hidden="true"></i>Delete
+                                                    <i aria-hidden="true" class="fas fa-trash w-4 mr-3"></i>Delete
                                                 </button>
                                             </div>
                                         </div>
@@ -185,7 +185,7 @@
                         </h3>
                         <button wire:click="$set('showTemplateEditor', false)"
                                 class="text-content-muted hover:text-content-muted" aria-label="Close">
-                            <i class="fas fa-times" aria-hidden="true"></i>
+                            <i aria-hidden="true" class="fas fa-times"></i>
                         </button>
                     </div>
                 </div>
@@ -285,7 +285,7 @@
                         <h3 class="text-lg font-medium text-content">Import Template</h3>
                         <button wire:click="$set('showImportTemplate', false)"
                                 class="text-content-muted hover:text-content-muted" aria-label="Close">
-                            <i class="fas fa-times" aria-hidden="true"></i>
+                            <i aria-hidden="true" class="fas fa-times"></i>
                         </button>
                     </div>
                 </div>
@@ -300,14 +300,14 @@
                                    id="template_import">
 
                             <label for="template_import" class="cursor-pointer">
-                                <i class="fas fa-upload text-content-muted text-4xl mb-4" aria-hidden="true"></i>
+                                <i aria-hidden="true" class="fas fa-upload text-content-muted text-4xl mb-4"></i>
                                 <p class="text-lg text-content-muted mb-2">Upload Template Package</p>
                                 <p class="text-sm text-content-muted">ZIP files only, max 10MB</p>
                             </label>
 
                             @if($importFile)
                                 <div class="mt-4 text-sm text-green-600">
-                                    <i class="fas fa-check-circle mr-2" aria-hidden="true"></i>
+                                    <i aria-hidden="true" class="fas fa-check-circle mr-2"></i>
                                     File selected: {{ $importFile->getClientOriginalName() }}
                                 </div>
                             @endif
@@ -344,7 +344,7 @@
                         <h3 class="text-lg font-medium text-content">{{ $selectedTemplate['name'] }} Preview</h3>
                         <button wire:click="$set('selectedTemplate', null)"
                                 class="text-content-muted hover:text-content-muted" aria-label="Close">
-                            <i class="fas fa-times" aria-hidden="true"></i>
+                            <i aria-hidden="true" class="fas fa-times"></i>
                         </button>
                     </div>
                 </div>
@@ -374,13 +374,13 @@
                     <div class="bg-surface border-2 border-line rounded-lg" style="height: 500px;">
                         <div class="flex items-center justify-center h-full">
                             <div class="text-center">
-                                <i class="fas fa-browser text-gray-300 text-6xl mb-4" aria-hidden="true"></i>
+                                <i aria-hidden="true" class="fas fa-browser text-gray-300 text-6xl mb-4"></i>
                                 <p class="text-content-muted text-lg mb-2">Template Preview</p>
                                 <p class="text-content-muted text-sm">Live preview would be shown here</p>
                                 @if($templatePreview)
                                     <a href="{{ $templatePreview }}" target="_blank"
                                        class="inline-flex items-center mt-4 text-brand hover:text-brand">
-                                        <i class="fas fa-external-link-alt mr-2" aria-hidden="true"></i>
+                                        <i aria-hidden="true" class="fas fa-external-link-alt mr-2"></i>
                                         Open in New Tab
                                     </a>
                                 @endif
@@ -397,12 +397,12 @@
                         @if(!$selectedTemplate['is_custom'])
                             <button wire:click="duplicateTemplate('{{ $selectedTemplate['id'] }}')"
                                     class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700">
-                                <i class="fas fa-copy mr-2" aria-hidden="true"></i>Duplicate
+                                <i aria-hidden="true" class="fas fa-copy mr-2"></i>Duplicate
                             </button>
                         @else
                             <button wire:click="editTemplate('{{ $selectedTemplate['id'] }}')"
                                     class="px-4 py-2 bg-action text-action-foreground rounded-lg hover:bg-action">
-                                <i class="fas fa-edit mr-2" aria-hidden="true"></i>Edit
+                                <i aria-hidden="true" class="fas fa-edit mr-2"></i>Edit
                             </button>
                         @endif
                         <button wire:click="$set('selectedTemplate', null)"

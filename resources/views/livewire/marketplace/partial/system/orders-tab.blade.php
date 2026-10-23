@@ -11,7 +11,7 @@
                            placeholder="Search by order number or item name..."
                            class="w-full pl-10 pr-4 py-2 border border-line rounded-lg focus:ring-brand/30 focus:border-brand">
                     <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                        <i class="fas fa-search text-content-muted" aria-hidden="true"></i>
+                        <i aria-hidden="true" class="fas fa-search text-content-muted"></i>
                     </div>
                 </div>
             </div>
@@ -35,7 +35,7 @@
                 </select>
 
                 <button wire:click="$set('searchTerm', '')" class="px-3 py-2 text-content-muted hover:text-content">
-                    <i class="fas fa-times" aria-hidden="true"></i> Clear
+                    <i aria-hidden="true" class="fas fa-times"></i> Clear
                 </button>
             </div>
         </div>
@@ -46,7 +46,7 @@
         <div class="bg-surface rounded-lg border border-line p-6">
             <div class="flex items-center">
                 <div class="p-2 bg-yellow-100 rounded-lg">
-                    <i class="fas fa-clock text-yellow-600" aria-hidden="true"></i>
+                    <i aria-hidden="true" class="fas fa-clock text-yellow-600"></i>
                 </div>
                 <div class="ml-4">
                     <p class="text-sm text-content-muted">Pending Orders</p>
@@ -58,7 +58,7 @@
         <div class="bg-surface rounded-lg border border-line p-6">
             <div class="flex items-center">
                 <div class="p-2 bg-brand/10 rounded-lg">
-                    <i class="fas fa-sync text-brand" aria-hidden="true"></i>
+                    <i aria-hidden="true" class="fas fa-sync text-brand"></i>
                 </div>
                 <div class="ml-4">
                     <p class="text-sm text-content-muted">Processing</p>
@@ -70,7 +70,7 @@
         <div class="bg-surface rounded-lg border border-line p-6">
             <div class="flex items-center">
                 <div class="p-2 bg-green-100 rounded-lg">
-                    <i class="fas fa-check text-green-600" aria-hidden="true"></i>
+                    <i aria-hidden="true" class="fas fa-check text-green-600"></i>
                 </div>
                 <div class="ml-4">
                     <p class="text-sm text-content-muted">Completed</p>
@@ -82,7 +82,7 @@
         <div class="bg-surface rounded-lg border border-line p-6">
             <div class="flex items-center">
                 <div class="p-2 bg-red-100 rounded-lg">
-                    <i class="fas fa-exclamation-triangle text-red-600" aria-hidden="true"></i>
+                    <i aria-hidden="true" class="fas fa-exclamation-triangle text-red-600"></i>
                 </div>
                 <div class="ml-4">
                     <p class="text-sm text-content-muted">Issues</p>
@@ -165,19 +165,19 @@
                                     <button wire:click="viewOrder({{ $order->id }})"
                                             class="text-brand hover:text-brand"
                                             title="View Details">
-                                        <i class="fas fa-eye" aria-hidden="true"></i>
+                                        <i aria-hidden="true" class="fas fa-eye"></i>
                                     </button>
 
                                     @if($order->isPending())
                                         <button wire:click="updateOrderStatus({{ $order->id }}, 'confirmed')"
                                                 class="text-green-600 hover:text-green-900"
                                                 title="Confirm Order">
-                                            <i class="fas fa-check" aria-hidden="true"></i>
+                                            <i aria-hidden="true" class="fas fa-check"></i>
                                         </button>
                                         <button wire:click="updateOrderStatus({{ $order->id }}, 'cancelled')"
                                                 class="text-red-600 hover:text-red-900"
                                                 title="Cancel Order">
-                                            <i class="fas fa-times" aria-hidden="true"></i>
+                                            <i aria-hidden="true" class="fas fa-times"></i>
                                         </button>
                                     @endif
 
@@ -185,7 +185,7 @@
                                         <button wire:click="updateOrderStatus({{ $order->id }}, 'completed')"
                                                 class="text-brand hover:text-brand"
                                                 title="Mark as Completed">
-                                            <i class="fas fa-check-double" aria-hidden="true"></i>
+                                            <i aria-hidden="true" class="fas fa-check-double"></i>
                                         </button>
                                     @endif
 
@@ -193,25 +193,25 @@
                                         <button wire:click="refundOrder({{ $order->id }})"
                                                 class="text-orange-600 hover:text-orange-900"
                                                 title="Process Refund">
-                                            <i class="fas fa-undo" aria-hidden="true"></i>
+                                            <i aria-hidden="true" class="fas fa-undo"></i>
                                         </button>
                                     @endif
 
                                     <div class="relative" x-data="{ open: false }">
                                         <button @click="open = !open" class="text-content-muted hover:text-content-muted" aria-label="More actions">
-                                            <i class="fas fa-ellipsis-v" aria-hidden="true"></i>
+                                            <i aria-hidden="true" class="fas fa-ellipsis-v"></i>
                                         </button>
                                         <div x-show="open" @click.away="open = false"
                                              class="absolute right-0 mt-2 w-48 bg-surface rounded-md shadow-sm z-10 border border-line">
                                             <div class="py-1">
                                                 <a href="#" class="block px-4 py-2 text-sm text-content hover:bg-surface-muted">
-                                                    <i class="fas fa-file-invoice mr-2" aria-hidden="true"></i>View Invoice
+                                                    <i aria-hidden="true" class="fas fa-file-invoice mr-2"></i>View Invoice
                                                 </a>
                                                 <a href="#" class="block px-4 py-2 text-sm text-content hover:bg-surface-muted">
-                                                    <i class="fas fa-envelope mr-2" aria-hidden="true"></i>Send Email
+                                                    <i aria-hidden="true" class="fas fa-envelope mr-2"></i>Send Email
                                                 </a>
                                                 <a href="#" class="block px-4 py-2 text-sm text-content hover:bg-surface-muted">
-                                                    <i class="fas fa-history mr-2" aria-hidden="true"></i>View History
+                                                    <i aria-hidden="true" class="fas fa-history mr-2"></i>View History
                                                 </a>
                                             </div>
                                         </div>
@@ -223,7 +223,7 @@
                         <tr>
                             <td colspan="8" class="px-6 py-8 text-center">
                                 <div class="text-content-muted">
-                                    <i class="fas fa-shopping-cart text-4xl mb-4" aria-hidden="true"></i>
+                                    <i aria-hidden="true" class="fas fa-shopping-cart text-4xl mb-4"></i>
                                     <p class="text-lg font-medium">No orders found</p>
                                     <p class="text-sm">Try adjusting your search or filter criteria</p>
                                 </div>
@@ -273,10 +273,10 @@
             <h4 class="text-sm font-medium text-content">Export Orders</h4>
             <div class="flex space-x-2">
                 <button class="px-3 py-1 text-sm bg-green-100 text-green-800 rounded hover:bg-green-200">
-                    <i class="fas fa-file-excel mr-1" aria-hidden="true"></i>Export to Excel
+                    <i aria-hidden="true" class="fas fa-file-excel mr-1"></i>Export to Excel
                 </button>
                 <button class="px-3 py-1 text-sm bg-brand/10 text-brand rounded hover:bg-blue-200">
-                    <i class="fas fa-file-csv mr-1" aria-hidden="true"></i>Export to CSV
+                    <i aria-hidden="true" class="fas fa-file-csv mr-1"></i>Export to CSV
                 </button>
             </div>
         </div>

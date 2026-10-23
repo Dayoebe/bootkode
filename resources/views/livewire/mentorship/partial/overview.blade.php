@@ -12,19 +12,19 @@
                 @if($profileId)
                             <button wire:click="editProfile"
                                 class="bk-button bk-button-primary   px-6 py-3 rounded-lg transition-colors">
-                                <i class="fas fa-edit mr-2" aria-hidden="true"></i>Edit Profile
+                                <i aria-hidden="true" class="fas fa-edit mr-2"></i>Edit Profile
                             </button>
                             <button wire:click="toggleAvailability" class="px-6 py-3 rounded-lg transition-colors duration-300 {{ $isAvailable
                     ? 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300 hover:bg-red-200 dark:hover:bg-red-900/50'
                     : 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 hover:bg-green-200 dark:hover:bg-green-900/50'
                                     }}">
-                                <i class="fas fa-{{ $isAvailable ? 'pause' : 'play' }} mr-2" aria-hidden="true"></i>
+                                <i aria-hidden="true" class="fas fa-{{ $isAvailable ? 'pause' : 'play' }} mr-2"></i>
                                 {{ $isAvailable ? 'Go Unavailable' : 'Go Available' }}
                             </button>
                 @else
                     <button wire:click="applyToBecomeMentor"
                         class="bk-button bk-button-primary   px-6 py-3 rounded-lg transition-colors">
-                        <i class="fas fa-user-plus mr-2" aria-hidden="true"></i>Apply to Become Mentor
+                        <i aria-hidden="true" class="fas fa-user-plus mr-2"></i>Apply to Become Mentor
                     </button>
                 @endif
             </div>
@@ -38,7 +38,7 @@
                         <p class="text-3xl font-bold">{{ $performanceMetrics['sessions_conducted'] ?? 0 }}</p>
                     </div>
                     <div class="text-3xl opacity-80">
-                        <i class="fas fa-calendar-check" aria-hidden="true"></i>
+                        <i aria-hidden="true" class="fas fa-calendar-check"></i>
                     </div>
                 </div>
             </div>
@@ -52,7 +52,7 @@
                             {{ number_format($performanceMetrics['average_session_rating'] ?? 0, 1) }}</p>
                     </div>
                     <div class="text-3xl opacity-80">
-                        <i class="fas fa-star" aria-hidden="true"></i>
+                        <i aria-hidden="true" class="fas fa-star"></i>
                     </div>
                 </div>
             </div>
@@ -65,7 +65,7 @@
                         <p class="text-3xl font-bold">{{ $performanceMetrics['code_reviews_completed'] ?? 0 }}</p>
                     </div>
                     <div class="text-3xl opacity-80">
-                        <i class="fas fa-code" aria-hidden="true"></i>
+                        <i aria-hidden="true" class="fas fa-code"></i>
                     </div>
                 </div>
             </div>
@@ -78,7 +78,7 @@
                         <p class="text-3xl font-bold">{{ $performanceMetrics['response_time_hours'] ?? 0 }}h</p>
                     </div>
                     <div class="text-3xl opacity-80">
-                        <i class="fas fa-clock" aria-hidden="true"></i>
+                        <i aria-hidden="true" class="fas fa-clock"></i>
                     </div>
                 </div>
             </div>
@@ -89,7 +89,7 @@
             <div
                 class="bg-yellow-100/50 dark:bg-yellow-900/30 border border-yellow-200/50 dark:border-yellow-800 rounded-lg p-6 mb-6 transition-colors duration-300">
                 <h3 class="text-lg font-semibold text-yellow-800 dark:text-yellow-300 mb-4 transition-colors duration-300">
-                    <i class="fas fa-bell mr-2" aria-hidden="true"></i>Pending Mentorship Requests ({{ count($pendingRequestsList) }})
+                    <i aria-hidden="true" class="fas fa-bell mr-2"></i>Pending Mentorship Requests ({{ count($pendingRequestsList) }})
                 </h3>
                 <div class="space-y-3">
                     @foreach($pendingRequestsList as $request)
@@ -129,7 +129,7 @@
                 <h3 class="text-xl font-bold text-themed-primary transition-colors duration-300">Upcoming Sessions</h3>
                 <button wire:click="$dispatch('change-tab', {tab: 'sessions'})"
                     class="text-brand hover:text-brand transition-colors">
-                    <i class="fas fa-arrow-right" aria-hidden="true"></i>
+                    <i aria-hidden="true" class="fas fa-arrow-right"></i>
                 </button>
             </div>
 
@@ -149,7 +149,7 @@
                                     </p>
                                 </div>
                                 <div class="text-2xl text-brand transition-colors duration-300">
-                                    <i class="fas fa-{{ $session->type === 'code_review' ? 'code' : 'video' }}" aria-hidden="true"></i>
+                                    <i aria-hidden="true" class="fas fa-{{ $session->type === 'code_review' ? 'code' : 'video' }}"></i>
                                 </div>
                             </div>
                         </div>
@@ -157,7 +157,7 @@
                 </div>
             @else
                 <div class="text-center py-8 text-themed-secondary transition-colors duration-300">
-                    <i class="fas fa-calendar-times text-4xl mb-3" aria-hidden="true"></i>
+                    <i aria-hidden="true" class="fas fa-calendar-times text-4xl mb-3"></i>
                     <p>No upcoming sessions scheduled</p>
                 </div>
             @endif
@@ -171,7 +171,7 @@
                 </h3>
                 <button wire:click="$dispatch('change-tab', {tab: 'code-reviews'})"
                     class="text-brand hover:text-brand transition-colors">
-                    <i class="fas fa-arrow-right" aria-hidden="true"></i>
+                    <i aria-hidden="true" class="fas fa-arrow-right"></i>
                 </button>
             </div>
 
@@ -201,7 +201,7 @@
                                     </p>
                                 </div>
                                 <div class="text-2xl text-brand dark:text-brand">
-                                    <i class="fas fa-code-branch" aria-hidden="true"></i>
+                                    <i aria-hidden="true" class="fas fa-code-branch"></i>
                                 </div>
                             </div>
                         </div>
@@ -209,7 +209,7 @@
                 </div>
             @else
                 <div class="text-center py-8 text-themed-secondary transition-colors duration-300">
-                    <i class="fas fa-code text-4xl mb-3" aria-hidden="true"></i>
+                    <i aria-hidden="true" class="fas fa-code text-4xl mb-3"></i>
                     <p>No code reviews yet</p>
                 </div>
             @endif

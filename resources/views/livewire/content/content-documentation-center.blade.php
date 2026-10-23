@@ -5,7 +5,7 @@
             <div class="flex flex-col md:flex-row justify-between items-start md:items-center py-4 md:py-6 space-y-4 md:space-y-0">
                 <div class="flex items-center space-x-4">
                     <div class="bg-action dark:bg-action p-3 rounded-lg  ">
-                        <i class="fas fa-edit text-action-foreground text-xl" aria-hidden="true"></i>
+                        <i aria-hidden="true" class="fas fa-edit text-action-foreground text-xl"></i>
                     </div>
                     <div class=" ">
                         <h1 class="  font-bold text-content dark:text-white bk-page-title">Content & Documentation Management</h1>
@@ -36,7 +36,7 @@
                         class="p-2 text-content-muted dark:text-content-muted hover:text-content dark:hover:text-gray-300 rounded-full hover:bg-surface-muted dark:hover:bg-gray-700 transition-all duration-200"
                         title="Refresh Statistics"
                      aria-label="Refresh Statistics">
-                        <i class="fas fa-sync-alt" aria-hidden="true"></i>
+                        <i aria-hidden="true" class="fas fa-sync-alt"></i>
                     </button>
                 </div>
             </div>
@@ -67,7 +67,7 @@
                         }} whitespace-nowrap py-2 md:py-3 px-3 md:px-4 border-b-2 font-medium text-xs md:text-sm flex items-center rounded-t-lg transition-all duration-200"
                         title="{{ $tabData['full_label'] }}"
                     >
-                        <i class="{{ $tabData['icon'] }} mr-1 md:mr-2"></i>
+                        <i aria-hidden="true" class="{{ $tabData['icon'] }} mr-1 md:mr-2"></i>
                         <span class="hidden sm:inline">{{ $tabData['label'] }}</span>
 
                         @if($activeTab === $tab)
@@ -131,7 +131,7 @@
              x-transition:leave="animate__animated animate__slideOutRight"
              class="fixed top-4 right-4 bg-green-500 dark:bg-green-600 text-white px-4 py-2 md:px-6 md:py-3 rounded-lg shadow-sm z-50 max-w-xs md:max-w-md">
             <div class="flex items-center">
-                <i class="fas fa-check-circle mr-2" aria-hidden="true"></i>
+                <i aria-hidden="true" class="fas fa-check-circle mr-2"></i>
                 <span class="text-sm">{{ session('message') }}</span>
             </div>
         </div>
@@ -143,7 +143,7 @@
              x-transition:leave="animate__animated animate__slideOutRight"
              class="fixed top-4 right-4 bg-red-500 dark:bg-red-600 text-white px-4 py-2 md:px-6 md:py-3 rounded-lg shadow-sm z-50 max-w-xs md:max-w-md">
             <div class="flex items-center">
-                <i class="fas fa-exclamation-circle mr-2" aria-hidden="true"></i>
+                <i aria-hidden="true" class="fas fa-exclamation-circle mr-2"></i>
                 <span class="text-sm">{{ session('error') }}</span>
             </div>
         </div>
@@ -155,7 +155,7 @@
              x-transition:leave="animate__animated animate__slideOutRight"
              class="fixed top-4 right-4 bg-yellow-500 dark:bg-yellow-600 text-white px-4 py-2 md:px-6 md:py-3 rounded-lg shadow-sm z-50 max-w-xs md:max-w-md">
             <div class="flex items-center">
-                <i class="fas fa-exclamation-triangle mr-2" aria-hidden="true"></i>
+                <i aria-hidden="true" class="fas fa-exclamation-triangle mr-2"></i>
                 <span class="text-sm">{{ session('warning') }}</span>
             </div>
         </div>

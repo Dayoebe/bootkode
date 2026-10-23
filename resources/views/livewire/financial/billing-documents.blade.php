@@ -21,7 +21,7 @@
                 </p>
             </div>
             <button type="button" wire:click="generateReceipts" class="rounded-lg bg-action px-4 py-3 text-sm font-semibold text-action-foreground hover:bg-action/90">
-                <i class="fas fa-rotate mr-2" aria-hidden="true"></i>Update Receipts
+                <i aria-hidden="true" class="fas fa-rotate mr-2"></i>Update Receipts
             </button>
         </div>
 
@@ -59,7 +59,7 @@
                     @empty
                         <tr>
                             <td colspan="5" class="py-12 text-center">
-                                <i class="fas fa-receipt text-4xl text-themed-tertiary" aria-hidden="true"></i>
+                                <i aria-hidden="true" class="fas fa-receipt text-4xl text-themed-tertiary"></i>
                                 <h2 class="mt-3 text-lg font-semibold text-themed-primary">No billing documents yet</h2>
                                 <p class="mt-1 text-sm text-themed-secondary">Successful payments will generate receipts here.</p>
                             </td>

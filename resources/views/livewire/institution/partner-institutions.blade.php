@@ -8,12 +8,12 @@
         <div class="flex flex-wrap gap-2">
             <button wire:click="export"
                     class="inline-flex items-center px-4 py-2 bg-green-600 hover:bg-green-700 text-white text-sm font-medium rounded-md transition-colors">
-                <i class="fas fa-download mr-2" aria-hidden="true"></i>
+                <i aria-hidden="true" class="fas fa-download mr-2"></i>
                 Export
             </button>
             <button wire:click="openCreateModal"
                     class="inline-flex items-center px-4 py-2 bg-action hover:bg-action text-action-foreground text-sm font-medium rounded-md transition-colors">
-                <i class="fas fa-plus mr-2" aria-hidden="true"></i>
+                <i aria-hidden="true" class="fas fa-plus mr-2"></i>
                 Add Institution
             </button>
         </div>
@@ -28,7 +28,7 @@
                     <input aria-label="Search institutions" type="text" wire:model.live.debounce.300ms="search"
                            placeholder="Search institutions..."
                            class="w-full pl-10 pr-4 py-2 border border-line dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-md focus:ring-brand/30 focus:border-brand">
-                    <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-content-muted dark:text-content-muted" aria-hidden="true"></i>
+                    <i aria-hidden="true" class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-content-muted dark:text-content-muted"></i>
                 </div>
             </div>
             <div>
@@ -72,9 +72,9 @@
                             <div class="flex items-center space-x-1">
                                 <span>Institution</span>
                                 @if($sortBy === 'name')
-                                    <i class="fas fa-sort-{{ $sortDirection === 'asc' ? 'up' : 'down' }} text-brand dark:text-brand" aria-hidden="true"></i>
+                                    <i aria-hidden="true" class="fas fa-sort-{{ $sortDirection === 'asc' ? 'up' : 'down' }} text-brand dark:text-brand"></i>
                                 @else
-                                    <i class="fas fa-sort text-gray-300 dark:text-content-muted" aria-hidden="true"></i>
+                                    <i aria-hidden="true" class="fas fa-sort text-gray-300 dark:text-content-muted"></i>
                                 @endif
                             </div>
                         </th>
@@ -95,9 +95,9 @@
                             <div class="flex items-center space-x-1">
                                 <span>Created</span>
                                 @if($sortBy === 'created_at')
-                                    <i class="fas fa-sort-{{ $sortDirection === 'asc' ? 'up' : 'down' }} text-brand dark:text-brand" aria-hidden="true"></i>
+                                    <i aria-hidden="true" class="fas fa-sort-{{ $sortDirection === 'asc' ? 'up' : 'down' }} text-brand dark:text-brand"></i>
                                 @else
-                                    <i class="fas fa-sort text-gray-300 dark:text-content-muted" aria-hidden="true"></i>
+                                    <i aria-hidden="true" class="fas fa-sort text-gray-300 dark:text-content-muted"></i>
                                 @endif
                             </div>
                         </th>
@@ -129,7 +129,7 @@
                                         </div>
                                         @if($institution->city)
                                             <div class="text-xs text-content-muted dark:text-content-muted">
-                                                <i class="fas fa-map-marker-alt mr-1" aria-hidden="true"></i>{{ $institution->city }}
+                                                <i aria-hidden="true" class="fas fa-map-marker-alt mr-1"></i>{{ $institution->city }}
                                             </div>
                                         @endif
                                     </div>
@@ -167,7 +167,7 @@
                                 </div>
                                 @if($institution->pending_invitations_count > 0)
                                     <div class="text-xs text-brand dark:text-brand mt-1">
-                                        <i class="fas fa-envelope mr-1" aria-hidden="true"></i>{{ $institution->pending_invitations_count }} pending invite{{ $institution->pending_invitations_count === 1 ? '' : 's' }}
+                                        <i aria-hidden="true" class="fas fa-envelope mr-1"></i>{{ $institution->pending_invitations_count }} pending invite{{ $institution->pending_invitations_count === 1 ? '' : 's' }}
                                     </div>
                                 @endif
                             </td>
@@ -179,7 +179,7 @@
                                     </div>
                                     @if($institution->isNearExpiry())
                                         <div class="text-xs text-red-600 dark:text-red-400">
-                                            <i class="fas fa-exclamation-triangle mr-1" aria-hidden="true"></i>
+                                            <i aria-hidden="true" class="fas fa-exclamation-triangle mr-1"></i>
                                             {{ $institution->getDaysUntilExpiry() }} days left
                                         </div>
                                     @endif
@@ -193,24 +193,24 @@
                                     <button wire:click="openViewModal({{ $institution->id }})"
                                             class="text-brand dark:text-brand hover:text-brand dark:hover:text-brand transition-colors"
                                             title="View Details">
-                                        <i class="fas fa-eye" aria-hidden="true"></i>
+                                        <i aria-hidden="true" class="fas fa-eye"></i>
                                     </button>
                                     <button wire:click="openEditModal({{ $institution->id }})"
                                             class="text-brand dark:text-brand hover:text-brand dark:hover:text-brand transition-colors"
                                             title="Edit">
-                                        <i class="fas fa-edit" aria-hidden="true"></i>
+                                        <i aria-hidden="true" class="fas fa-edit"></i>
                                     </button>
                                     <button wire:click="openInviteModal({{ $institution->id }})"
                                             class="text-brand dark:text-brand hover:text-brand dark:hover:text-brand transition-colors"
                                             title="Invite Admin">
-                                        <i class="fas fa-user-plus" aria-hidden="true"></i>
+                                        <i aria-hidden="true" class="fas fa-user-plus"></i>
                                     </button>
 
                                     @if($institution->isPending())
                                         <button wire:click="approve({{ $institution->id }})"
                                                 class="text-green-600 dark:text-green-400 hover:text-green-900 dark:hover:text-green-300 transition-colors"
                                                 title="Approve">
-                                            <i class="fas fa-check" aria-hidden="true"></i>
+                                            <i aria-hidden="true" class="fas fa-check"></i>
                                         </button>
                                     @endif
 
@@ -218,7 +218,7 @@
                                         <button wire:click="suspend({{ $institution->id }})"
                                                 class="text-yellow-600 dark:text-yellow-400 hover:text-yellow-900 dark:hover:text-yellow-300 transition-colors"
                                                 title="Suspend">
-                                            <i class="fas fa-pause" aria-hidden="true"></i>
+                                            <i aria-hidden="true" class="fas fa-pause"></i>
                                         </button>
                                     @endif
 
@@ -226,14 +226,14 @@
                                         <button wire:click="unsuspend({{ $institution->id }})"
                                                 class="text-green-600 dark:text-green-400 hover:text-green-900 dark:hover:text-green-300 transition-colors"
                                                 title="Unsuspend">
-                                            <i class="fas fa-play" aria-hidden="true"></i>
+                                            <i aria-hidden="true" class="fas fa-play"></i>
                                         </button>
                                     @endif
 
                                     <button wire:click="openDeleteModal({{ $institution->id }})"
                                             class="text-red-600 dark:text-red-400 hover:text-red-900 dark:hover:text-red-300 transition-colors"
                                             title="Delete">
-                                        <i class="fas fa-trash" aria-hidden="true"></i>
+                                        <i aria-hidden="true" class="fas fa-trash"></i>
                                     </button>
                                 </div>
                             </td>
@@ -242,12 +242,12 @@
                         <tr>
                             <td colspan="7" class="px-6 py-12 text-center">
                                 <div class="flex flex-col items-center">
-                                    <i class="fas fa-university text-4xl text-gray-300 dark:text-content-muted mb-4" aria-hidden="true"></i>
+                                    <i aria-hidden="true" class="fas fa-university text-4xl text-gray-300 dark:text-content-muted mb-4"></i>
                                     <h3 class="text-lg font-medium text-content dark:text-white mb-2">No institutions found</h3>
                                     <p class="text-sm text-content-muted dark:text-content-muted mb-4">Get started by adding your first partner institution.</p>
                                     <button wire:click="openCreateModal"
                                             class="inline-flex items-center px-4 py-2 bg-action hover:bg-action text-action-foreground text-sm font-medium rounded-md transition-colors">
-                                        <i class="fas fa-plus mr-2" aria-hidden="true"></i>
+                                        <i aria-hidden="true" class="fas fa-plus mr-2"></i>
                                         Add Institution
                                     </button>
                                 </div>
@@ -275,7 +275,7 @@
                         {{ $showCreateModal ? 'Add New Institution' : 'Edit Institution' }}
                     </h3>
                     <button aria-label="Close dialog" wire:click="closeModals" class="text-content-muted dark:text-content-muted hover:text-content-muted dark:hover:text-gray-300">
-                        <i class="fas fa-times text-xl" aria-hidden="true"></i>
+                        <i aria-hidden="true" class="fas fa-times text-xl"></i>
                     </button>
                 </div>
 
@@ -445,7 +445,7 @@
                 <div class="flex items-center justify-between pb-4 border-b border-line dark:border-gray-700">
                     <h3 class="text-lg font-semibold text-content dark:text-white">Institution Details</h3>
                     <button aria-label="Close dialog" wire:click="closeModals" class="text-content-muted dark:text-content-muted hover:text-content-muted dark:hover:text-gray-300">
-                        <i class="fas fa-times text-xl" aria-hidden="true"></i>
+                        <i aria-hidden="true" class="fas fa-times text-xl"></i>
                     </button>
                 </div>
 
@@ -467,7 +467,7 @@
                                 </span>
                                 @if($selectedInstitution->website)
                                     <a href="{{ $selectedInstitution->website }}" target="_blank" class="text-brand dark:text-brand hover:text-brand dark:hover:text-brand text-sm">
-                                        <i class="fas fa-external-link-alt mr-1" aria-hidden="true"></i>Website
+                                        <i aria-hidden="true" class="fas fa-external-link-alt mr-1"></i>Website
                                     </a>
                                 @endif
                             </div>
@@ -479,18 +479,18 @@
                             <h5 class="font-medium text-content dark:text-white">Contact Information</h5>
                             <div class="space-y-2">
                                 <div class="flex items-center text-sm">
-                                    <i class="fas fa-envelope w-4 text-content-muted dark:text-content-muted mr-3" aria-hidden="true"></i>
+                                    <i aria-hidden="true" class="fas fa-envelope w-4 text-content-muted dark:text-content-muted mr-3"></i>
                                     <span class="text-content dark:text-gray-300">{{ $selectedInstitution->email }}</span>
                                 </div>
                                 @if($selectedInstitution->phone)
                                     <div class="flex items-center text-sm">
-                                        <i class="fas fa-phone w-4 text-content-muted dark:text-content-muted mr-3" aria-hidden="true"></i>
+                                        <i aria-hidden="true" class="fas fa-phone w-4 text-content-muted dark:text-content-muted mr-3"></i>
                                         <span class="text-content dark:text-gray-300">{{ $selectedInstitution->phone }}</span>
                                     </div>
                                 @endif
                                 @if($selectedInstitution->full_address)
                                     <div class="flex items-start text-sm">
-                                        <i class="fas fa-map-marker-alt w-4 text-content-muted dark:text-content-muted mr-3 mt-0.5" aria-hidden="true"></i>
+                                        <i aria-hidden="true" class="fas fa-map-marker-alt w-4 text-content-muted dark:text-content-muted mr-3 mt-0.5"></i>
                                         <span class="text-content dark:text-gray-300">{{ $selectedInstitution->full_address }}</span>
                                     </div>
                                 @endif
@@ -501,7 +501,7 @@
                                     <h5 class="font-medium text-content dark:text-white mb-2">Administrator</h5>
                                     <div class="flex items-center space-x-3">
                                         <div class="w-8 h-8 bg-gray-200 dark:bg-gray-700 rounded-full flex items-center justify-center">
-                                            <i class="fas fa-user text-content-muted dark:text-content-muted" aria-hidden="true"></i>
+                                            <i aria-hidden="true" class="fas fa-user text-content-muted dark:text-content-muted"></i>
                                         </div>
                                         <div>
                                             <div class="text-sm font-medium text-content dark:text-white">{{ $selectedInstitution->adminUser->name }}</div>
@@ -540,7 +540,7 @@
                                         </div>
                                         @if($selectedInstitution->isNearExpiry())
                                             <div class="text-xs text-red-600 dark:text-red-400">
-                                                <i class="fas fa-exclamation-triangle mr-1" aria-hidden="true"></i>
+                                                <i aria-hidden="true" class="fas fa-exclamation-triangle mr-1"></i>
                                                 Expires in {{ $selectedInstitution->getDaysUntilExpiry() }} days
                                             </div>
                                         @endif
@@ -563,7 +563,7 @@
                                 <h5 class="font-medium text-content dark:text-white">Institution Users</h5>
                                 <button wire:click="openInviteModal({{ $selectedInstitution->id }})"
                                         class="inline-flex items-center rounded-md bg-action px-3 py-1.5 text-xs font-medium text-action-foreground hover:bg-action">
-                                    <i class="fas fa-user-plus mr-1" aria-hidden="true"></i>Invite Admin
+                                    <i aria-hidden="true" class="fas fa-user-plus mr-1"></i>Invite Admin
                                 </button>
                             </div>
                             <div class="max-h-48 overflow-y-auto rounded-md border border-line dark:border-gray-700">
@@ -625,11 +625,11 @@
                 <div class="flex items-center justify-end space-x-3 mt-8 pt-6 border-t border-line dark:border-gray-700">
                     <button wire:click="openInviteModal({{ $selectedInstitution->id }})"
                             class="px-4 py-2 bg-action hover:bg-action text-action-foreground text-sm font-medium rounded-md transition-colors">
-                        <i class="fas fa-user-plus mr-2" aria-hidden="true"></i>Invite Admin
+                        <i aria-hidden="true" class="fas fa-user-plus mr-2"></i>Invite Admin
                     </button>
                     <button wire:click="openEditModal({{ $selectedInstitution->id }})"
                             class="px-4 py-2 bg-action hover:bg-action text-action-foreground text-sm font-medium rounded-md transition-colors">
-                        <i class="fas fa-edit mr-2" aria-hidden="true"></i>Edit Institution
+                        <i aria-hidden="true" class="fas fa-edit mr-2"></i>Edit Institution
                     </button>
                     <button wire:click="closeModals"
                             class="px-4 py-2 bg-gray-300 dark:bg-gray-600 hover:bg-gray-400 dark:hover:bg-gray-500 text-content dark:text-white text-sm font-medium rounded-md transition-colors">
@@ -650,7 +650,7 @@
                         <p class="text-sm text-content-muted dark:text-content-muted">{{ $selectedInstitution->name }} · {{ $selectedInstitution->licenseLimitLabel() }} seats used</p>
                     </div>
                     <button aria-label="Close dialog" wire:click="closeModals" class="text-content-muted dark:text-content-muted hover:text-content-muted dark:hover:text-gray-300">
-                        <i class="fas fa-times text-xl" aria-hidden="true"></i>
+                        <i aria-hidden="true" class="fas fa-times text-xl"></i>
                     </button>
                 </div>
 
@@ -694,7 +694,7 @@
                         </button>
                         <button type="submit"
                                 class="px-4 py-2 bg-action hover:bg-action text-action-foreground text-sm font-medium rounded-md transition-colors">
-                            <i class="fas fa-paper-plane mr-2" aria-hidden="true"></i>Send Invitation
+                            <i aria-hidden="true" class="fas fa-paper-plane mr-2"></i>Send Invitation
                         </button>
                     </div>
                 </form>
@@ -708,7 +708,7 @@
             <div class="relative top-1/2 transform -translate-y-1/2 mx-auto p-5 border border-line dark:border-gray-700 w-96 shadow-sm rounded-md bg-surface dark:bg-gray-800" wire:click.stop>
                 <div class="text-center">
                     <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-red-100 dark:bg-red-900/30">
-                        <i class="fas fa-exclamation-triangle text-red-600 dark:text-red-400" aria-hidden="true"></i>
+                        <i aria-hidden="true" class="fas fa-exclamation-triangle text-red-600 dark:text-red-400"></i>
                     </div>
                     <h3 class="text-lg font-medium text-content dark:text-white mt-4">Delete Institution</h3>
                     <div class="mt-2 px-7 py-3">

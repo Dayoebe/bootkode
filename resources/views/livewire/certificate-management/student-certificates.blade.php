@@ -10,12 +10,12 @@
             <div class="flex flex-col sm:flex-row gap-4">
                 <a href="{{ route('student.course-catalog') }}"
                    class="px-6 py-3 bg-themed-tertiary hover:bg-action/90 text-themed-primary rounded-lg font-semibold transition-colors flex items-center">
-                    <i class="fas fa-book mr-2" aria-hidden="true"></i>
+                    <i aria-hidden="true" class="fas fa-book mr-2"></i>
                     Browse Courses
                 </a>
                 <a href="{{ route('student.certificate.request') }}"
                    class="px-6 py-3 bg-action hover:bg-action/90 text-action-foreground rounded-lg font-semibold transition-colors flex items-center">
-                    <i class="fas fa-plus mr-2" aria-hidden="true"></i>
+                    <i aria-hidden="true" class="fas fa-plus mr-2"></i>
                     Request Certificate
                 </a>
             </div>
@@ -25,7 +25,7 @@
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
             <div class="bg-brand-ink   rounded-lg p-6 text-white">
                 <div class="flex items-center">
-                    <i class="fas fa-check-circle text-3xl mr-4" aria-hidden="true"></i>
+                    <i aria-hidden="true" class="fas fa-check-circle text-3xl mr-4"></i>
                     <div>
                         <div class="text-2xl font-bold">{{ $stats['approved'] }}</div>
                         <div class="text-sm opacity-90">Approved</div>
@@ -35,7 +35,7 @@
 
             <div class="bg-brand-ink   rounded-lg p-6 text-white">
                 <div class="flex items-center">
-                    <i class="fas fa-clock text-3xl mr-4" aria-hidden="true"></i>
+                    <i aria-hidden="true" class="fas fa-clock text-3xl mr-4"></i>
                     <div>
                         <div class="text-2xl font-bold">{{ $stats['pending'] }}</div>
                         <div class="text-sm opacity-90">Pending</div>
@@ -45,7 +45,7 @@
 
             <div class="bg-brand-ink   rounded-lg p-6 text-white">
                 <div class="flex items-center">
-                    <i class="fas fa-times-circle text-3xl mr-4" aria-hidden="true"></i>
+                    <i aria-hidden="true" class="fas fa-times-circle text-3xl mr-4"></i>
                     <div>
                         <div class="text-2xl font-bold">{{ $stats['rejected'] }}</div>
                         <div class="text-sm opacity-90">Rejected</div>
@@ -55,7 +55,7 @@
 
             <div class="bg-brand-ink   rounded-lg p-6 text-white">
                 <div class="flex items-center">
-                    <i class="fas fa-certificate text-3xl mr-4" aria-hidden="true"></i>
+                    <i aria-hidden="true" class="fas fa-certificate text-3xl mr-4"></i>
                     <div>
                         <div class="text-2xl font-bold">{{ $stats['total'] }}</div>
                         <div class="text-sm opacity-90">Total</div>
@@ -86,7 +86,7 @@
                         <input aria-label="Course name, certificate #" type="text" wire:model.live.debounce.300ms="searchTerm"
                                placeholder="Course name, certificate #..."
                                class="w-full bg-themed-tertiary border border-themed-primary rounded-lg pl-10 pr-3 py-2 text-themed-primary focus:ring-2 focus:ring-brand transition-colors duration-300">
-                        <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-themed-secondary" aria-hidden="true"></i>
+                        <i aria-hidden="true" class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-themed-secondary"></i>
                     </div>
                 </div>
 
@@ -113,7 +113,7 @@
 
             <div class="flex justify-between items-center mt-4">
                 <button wire:click="clearFilters" class="text-brand hover:text-accent-themed-secondary text-sm transition-colors">
-                    <i class="fas fa-times mr-1" aria-hidden="true"></i> Clear Filters
+                    <i aria-hidden="true" class="fas fa-times mr-1"></i> Clear Filters
                 </button>
 
                 <div class="text-themed-secondary text-sm">
@@ -135,10 +135,10 @@
                             @elseif($certificate->status === 'rejected') bg-red-900 text-red-300
                             @elseif($certificate->status === 'revoked') bg-gray-700 text-gray-300
                             @else bg-action text-brand @endif">
-                            <i class="fas fa-{{ $certificate->status === 'approved' ? 'check-circle' :
+                            <i aria-hidden="true" class="fas fa-{{ $certificate->status === 'approved' ? 'check-circle' :
                                 ($certificate->status === 'requested' ? 'clock' :
                                 ($certificate->status === 'rejected' ? 'times-circle' :
-                                ($certificate->status === 'revoked' ? 'ban' : 'certificate'))) }} mr-1.5" aria-hidden="true"></i>
+                                ($certificate->status === 'revoked' ? 'ban' : 'certificate'))) }} mr-1.5"></i>
                             {{ ucfirst(str_replace('_', ' ', $certificate->status)) }}
                         </span>
 
@@ -188,12 +188,12 @@
                                 @if($certificate->pdf_path)
                                 <button wire:click="downloadCertificate({{ $certificate->id }})"
                                        class="flex-1 bg-green-600 hover:bg-green-700 text-white text-center py-2 px-3 rounded-lg text-sm transition-colors flex items-center justify-center">
-                                    <i class="fas fa-download mr-1" aria-hidden="true"></i>Download
+                                    <i aria-hidden="true" class="fas fa-download mr-1"></i>Download
                                 </button>
                                 @endif
                                 <button wire:click="viewCertificate({{ $certificate->id }})"
                                        class="flex-1 bg-action hover:bg-action/90 text-action-foreground text-center py-2 px-3 rounded-lg text-sm transition-colors flex items-center justify-center">
-                                    <i class="fas fa-eye mr-1" aria-hidden="true"></i>View
+                                    <i aria-hidden="true" class="fas fa-eye mr-1"></i>View
                                 </button>
                             </div>
                             @if($certificate->verification_code)
@@ -208,17 +208,17 @@
                             @endif
                         @elseif($certificate->status === 'requested')
                             <div class="bg-yellow-900/30 border border-yellow-500 rounded-lg p-3 text-center">
-                                <i class="fas fa-clock text-yellow-400 mr-2" aria-hidden="true"></i>
+                                <i aria-hidden="true" class="fas fa-clock text-yellow-400 mr-2"></i>
                                 <span class="text-yellow-300 text-sm">Pending Review</span>
                             </div>
                         @elseif($certificate->status === 'rejected')
                             <div class="bg-red-900/30 border border-red-500 rounded-lg p-3 text-center">
-                                <i class="fas fa-times-circle text-red-400 mr-2" aria-hidden="true"></i>
+                                <i aria-hidden="true" class="fas fa-times-circle text-red-400 mr-2"></i>
                                 <span class="text-red-300 text-sm">Request Rejected</span>
                             </div>
                         @elseif($certificate->status === 'revoked')
                             <div class="bg-themed-tertiary border border-themed-primary rounded-lg p-3 text-center">
-                                <i class="fas fa-ban text-themed-secondary mr-2" aria-hidden="true"></i>
+                                <i aria-hidden="true" class="fas fa-ban text-themed-secondary mr-2"></i>
                                 <span class="text-themed-secondary text-sm">Certificate Revoked</span>
                             </div>
                         @endif
@@ -254,28 +254,28 @@
             <div class="bg-themed-secondary rounded-lg p-12 text-center border border-themed-primary">
                 @if($statusFilter !== 'all' || $searchTerm)
                     <!-- No results for filters -->
-                    <i class="fas fa-search text-6xl text-themed-tertiary mb-6" aria-hidden="true"></i>
+                    <i aria-hidden="true" class="fas fa-search text-6xl text-themed-tertiary mb-6"></i>
                     <h3 class="text-xl font-semibold text-themed-primary mb-4">No certificates found</h3>
                     <p class="text-themed-secondary mb-8">No certificates match your current filters. Try adjusting your search criteria.</p>
                     <button wire:click="clearFilters"
                            class="inline-flex items-center px-6 py-3 bg-action hover:bg-action/90 text-action-foreground rounded-lg font-semibold transition-colors">
-                        <i class="fas fa-times mr-2" aria-hidden="true"></i>
+                        <i aria-hidden="true" class="fas fa-times mr-2"></i>
                         Clear Filters
                     </button>
                 @else
                     <!-- No certificates at all -->
-                    <i class="fas fa-certificate text-6xl text-themed-tertiary mb-6" aria-hidden="true"></i>
+                    <i aria-hidden="true" class="fas fa-certificate text-6xl text-themed-tertiary mb-6"></i>
                     <h3 class="text-xl font-semibold text-themed-primary mb-4">No Certificates Yet</h3>
                     <p class="text-themed-secondary mb-8">Complete courses to earn certificates and showcase your achievements.</p>
                     <div class="flex flex-col sm:flex-row gap-4 justify-center">
                         <a href="{{ route('student.course-catalog') }}"
                            class="inline-flex items-center px-6 py-3 bg-action hover:bg-action/90 text-action-foreground rounded-lg font-semibold transition-colors">
-                            <i class="fas fa-book mr-2" aria-hidden="true"></i>
+                            <i aria-hidden="true" class="fas fa-book mr-2"></i>
                             Explore Courses
                         </a>
                         <a href="{{ route('student.enrolled-courses') }}"
                            class="inline-flex items-center px-6 py-3 bg-themed-tertiary hover:bg-themed-primary text-themed-primary rounded-lg font-semibold transition-colors">
-                            <i class="fas fa-graduation-cap mr-2" aria-hidden="true"></i>
+                            <i aria-hidden="true" class="fas fa-graduation-cap mr-2"></i>
                             My Enrolled Courses
                         </a>
                     </div>
@@ -287,7 +287,7 @@
     <!-- Loading Overlay -->
     <div wire:loading class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
         <div class="bg-themed-secondary rounded-lg p-8 flex items-center">
-            <i class="fas fa-spinner fa-spin text-brand text-2xl mr-4" aria-hidden="true"></i>
+            <i aria-hidden="true" class="fas fa-spinner fa-spin text-brand text-2xl mr-4"></i>
             <span class="text-themed-primary font-medium">Loading certificates...</span>
         </div>
     </div>

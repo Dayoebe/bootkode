@@ -8,7 +8,7 @@
             <nav aria-label="Purchases and cart" class="flex max-w-full gap-2 overflow-x-auto">
                 <button wire:click="showCart"
                         class="{{ $currentView === 'cart' ? 'bg-blue-100 dark:bg-action text-brand dark:text-brand border-brand dark:border-blue-700' : 'text-gray-600 dark:text-content-muted hover:text-content dark:hover:text-white' }} min-h-11 shrink-0 px-4 py-2 rounded-lg border transition-colors duration-300 flex items-center">
-                    <i class="fas fa-shopping-cart mr-2" aria-hidden="true"></i>
+                    <i aria-hidden="true" class="fas fa-shopping-cart mr-2"></i>
                     Shopping Cart
                     @if(count($cartItems ?? []) > 0)
                         <span class="ml-2 bg-action dark:bg-action text-action-foreground text-xs px-2 py-1 rounded-full">
@@ -19,7 +19,7 @@
 
                 <button wire:click="showPurchases"
                         class="{{ $currentView === 'purchases' ? 'bg-blue-100 dark:bg-action text-brand dark:text-brand border-brand dark:border-blue-700' : 'text-gray-600 dark:text-content-muted hover:text-content dark:hover:text-white' }} min-h-11 shrink-0 px-4 py-2 rounded-lg border transition-colors duration-300 flex items-center">
-                    <i class="fas fa-shopping-bag mr-2" aria-hidden="true"></i>
+                    <i aria-hidden="true" class="fas fa-shopping-bag mr-2"></i>
                     My Purchases
                 </button>
             </nav>
@@ -30,7 +30,7 @@
                     <button wire:click="clearCart"
                             onclick="confirm('Are you sure you want to clear your cart?') || event.stopImmediatePropagation()"
                             class="text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 text-sm px-3 py-1 border border-red-200 dark:border-red-800 rounded hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors duration-300">
-                        <i class="fas fa-trash mr-1" aria-hidden="true"></i>
+                        <i aria-hidden="true" class="fas fa-trash mr-1"></i>
                         Clear Cart
                     </button>
                 </div>
@@ -47,7 +47,7 @@
                     <div class="bg-surface dark:bg-gray-800 rounded-lg shadow-sm border border-line dark:border-gray-700 transition-colors duration-300">
                         <div class="p-6 border-b border-line dark:border-gray-700">
                             <h3 class="text-lg font-medium text-content dark:text-white flex items-center transition-colors duration-300">
-                                <i class="fas fa-shopping-cart mr-2 text-brand dark:text-brand" aria-hidden="true"></i>
+                                <i aria-hidden="true" class="fas fa-shopping-cart mr-2 text-brand dark:text-brand"></i>
                                 Items ({{ $cartItemCount }})
                             </h3>
                         </div>
@@ -62,7 +62,7 @@
                                                  class="w-20 h-20 object-cover rounded-lg">
                                         @else
                                             <div class="w-20 h-20 bg-surface-muted dark:bg-gray-700 rounded-lg flex items-center justify-center transition-colors duration-300">
-                                                <i class="fas fa-image text-content-muted dark:text-content-muted" aria-hidden="true"></i>
+                                                <i aria-hidden="true" class="fas fa-image text-content-muted dark:text-content-muted"></i>
                                             </div>
                                         @endif
 
@@ -91,12 +91,12 @@
                                                         <div class="flex items-center border border-line dark:border-gray-600 rounded transition-colors duration-300">
                                                             <button wire:click="updateCartQuantity({{ $cartItem['item']->id }}, {{ $cartItem['quantity'] - 1 }})"
                                                                     aria-label="Decrease quantity" class="min-h-11 min-w-11 px-2 py-1 text-content-muted dark:text-content-muted hover:text-content dark:hover:text-gray-300 transition-colors duration-300">
-                                                                <i class="fas fa-minus text-xs" aria-hidden="true"></i>
+                                                                <i aria-hidden="true" class="fas fa-minus text-xs"></i>
                                                             </button>
                                                             <span class="px-3 py-1 text-sm text-content dark:text-white">{{ $cartItem['quantity'] }}</span>
                                                             <button wire:click="updateCartQuantity({{ $cartItem['item']->id }}, {{ $cartItem['quantity'] + 1 }})"
                                                                     aria-label="Increase quantity" class="min-h-11 min-w-11 px-2 py-1 text-content-muted dark:text-content-muted hover:text-content dark:hover:text-gray-300 transition-colors duration-300">
-                                                                <i class="fas fa-plus text-xs" aria-hidden="true"></i>
+                                                                <i aria-hidden="true" class="fas fa-plus text-xs"></i>
                                                             </button>
                                                         </div>
                                                     </div>
@@ -122,7 +122,7 @@
 
                                                 <button wire:click="removeFromCart({{ $cartItem['item']->id }})"
                                                         class="text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 text-sm px-3 py-1 border border-red-200 dark:border-red-800 rounded hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors duration-300">
-                                                    <i class="fas fa-trash mr-1" aria-hidden="true"></i>
+                                                    <i aria-hidden="true" class="fas fa-trash mr-1"></i>
                                                     Remove
                                                 </button>
                                             </div>
@@ -138,7 +138,7 @@
                 <div class="lg:col-span-1">
                     <div class="bg-surface dark:bg-gray-800 rounded-lg shadow-sm border border-line dark:border-gray-700 p-6 sticky top-6 transition-colors duration-300">
                         <h3 class="text-lg font-medium text-content dark:text-white mb-4 flex items-center transition-colors duration-300">
-                            <i class="fas fa-receipt mr-2 text-green-600 dark:text-green-400" aria-hidden="true"></i>
+                            <i aria-hidden="true" class="fas fa-receipt mr-2 text-green-600 dark:text-green-400"></i>
                             Order Summary
                         </h3>
 
@@ -179,14 +179,14 @@
                                     <div class="flex-1">
                                         <div class="flex items-center justify-between">
                                             <span class="font-medium flex items-center text-content dark:text-white">
-                                                <i class="fas fa-wallet mr-2 text-brand dark:text-brand" aria-hidden="true"></i>
+                                                <i aria-hidden="true" class="fas fa-wallet mr-2 text-brand dark:text-brand"></i>
                                                 Wallet
                                             </span>
                                         </div>
                                         <p class="text-sm text-content-muted dark:text-content-muted">Balance: ₦{{ number_format($walletBalance, 2) }}</p>
                                         @if($walletBalance < $cartTotal)
                                             <p class="text-xs text-red-600 dark:text-red-400 mt-1 flex items-center">
-                                                <i class="fas fa-exclamation-triangle mr-1" aria-hidden="true"></i>
+                                                <i aria-hidden="true" class="fas fa-exclamation-triangle mr-1"></i>
                                                 Insufficient balance
                                             </p>
                                         @endif
@@ -200,7 +200,7 @@
                                            class="mr-3 text-brand focus:ring-brand/30">
                                     <div class="flex-1">
                                         <span class="font-medium flex items-center text-content dark:text-white">
-                                            <i class="fas fa-credit-card mr-2 text-brand dark:text-brand" aria-hidden="true"></i>
+                                            <i aria-hidden="true" class="fas fa-credit-card mr-2 text-brand dark:text-brand"></i>
                                             Card Payment
                                         </span>
                                         <p class="text-sm text-content-muted dark:text-content-muted">Pay with debit/credit card via Paystack</p>
@@ -225,7 +225,7 @@
                         <button wire:click="checkout"
                                 @if($paymentMethod === 'wallet' && $walletBalance < $cartTotal) disabled @endif
                                 class="w-full mt-6 px-4 py-3 bg-action dark:bg-action text-action-foreground rounded-lg hover:bg-action dark:hover:bg-action transition-colors duration-300 disabled:bg-gray-300 dark:disabled:bg-gray-700 disabled:cursor-not-allowed flex items-center justify-center">
-                            <i class="fas fa-lock mr-2" aria-hidden="true"></i>
+                            <i aria-hidden="true" class="fas fa-lock mr-2"></i>
                             Complete Purchase
                             <span class="ml-2 font-bold">₦{{ number_format($cartTotal, 2) }}</span>
                         </button>
@@ -233,7 +233,7 @@
                         @if($paymentMethod === 'wallet' && $walletBalance < $cartTotal)
                             <div class="mt-4 p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg transition-colors duration-300">
                                 <p class="text-sm text-red-700 dark:text-red-400 text-center flex items-center justify-center">
-                                    <i class="fas fa-info-circle mr-2" aria-hidden="true"></i>
+                                    <i aria-hidden="true" class="fas fa-info-circle mr-2"></i>
                                     Please fund your wallet to complete this purchase
                                 </p>
                                 <a href="{{ route('wallet.index') }}"
@@ -244,7 +244,7 @@
                         @endif
 
                         <p class="text-xs text-content-muted dark:text-content-muted mt-3 text-center">
-                            <i class="fas fa-shield-alt mr-1" aria-hidden="true"></i>
+                            <i aria-hidden="true" class="fas fa-shield-alt mr-1"></i>
                             Secured by SSL encryption
                         </p>
                     </div>
@@ -254,19 +254,19 @@
             <!-- Empty Cart -->
             <div class="bg-surface dark:bg-gray-800 rounded-lg shadow-sm border border-line dark:border-gray-700 transition-colors duration-300">
                 <div class="text-center py-16">
-                    <i class="fas fa-shopping-cart text-gray-300 dark:text-content-muted text-6xl mb-4" aria-hidden="true"></i>
+                    <i aria-hidden="true" class="fas fa-shopping-cart text-gray-300 dark:text-content-muted text-6xl mb-4"></i>
                     <h3 class="text-xl font-medium text-content dark:text-white mb-2 transition-colors duration-300">Your cart is empty</h3>
                     <p class="text-content-muted dark:text-content-muted mb-8 transition-colors duration-300">Browse our marketplace to find great courses, resources, and services.</p>
                     <div class="space-y-3">
                         <a href="{{ route('marketplace.browse') }}"
                            class="inline-flex items-center px-6 py-3 bg-action dark:bg-action text-action-foreground rounded-lg hover:bg-action dark:hover:bg-action transition-colors duration-300">
-                            <i class="fas fa-search mr-2" aria-hidden="true"></i>
+                            <i aria-hidden="true" class="fas fa-search mr-2"></i>
                             Browse Marketplace
                         </a>
                         <br>
                         <button wire:click="showPurchases"
                                 class="inline-flex items-center px-4 py-2 border border-line dark:border-gray-600 text-content dark:text-gray-300 rounded-lg hover:bg-surface-muted dark:hover:bg-gray-700 transition-colors duration-300">
-                            <i class="fas fa-shopping-bag mr-2" aria-hidden="true"></i>
+                            <i aria-hidden="true" class="fas fa-shopping-bag mr-2"></i>
                             View My Purchases
                         </button>
                     </div>
@@ -281,7 +281,7 @@
             <div class="flex flex-col md:flex-row md:items-center justify-between space-y-4 md:space-y-0">
                 <div>
                     <h2 class="text-xl font-bold text-content dark:text-white flex items-center transition-colors duration-300">
-                        <i class="fas fa-shopping-bag mr-2 text-brand dark:text-brand" aria-hidden="true"></i>
+                        <i aria-hidden="true" class="fas fa-shopping-bag mr-2 text-brand dark:text-brand"></i>
                         My Purchases
                     </h2>
                     <p class="text-content-muted dark:text-content-muted transition-colors duration-300">Track your orders and access purchased items</p>
@@ -294,10 +294,10 @@
                                type="text"
                                placeholder="Search purchases..."
                                class="w-64 pl-10 pr-4 py-2 border border-line dark:border-gray-600 bg-surface dark:bg-gray-700 text-content dark:text-white rounded-lg focus:ring-brand/30 focus:border-brand transition-colors duration-300">
-                        <i class="fas fa-search absolute left-3 top-3 text-content-muted dark:text-content-muted" aria-hidden="true"></i>
+                        <i aria-hidden="true" class="fas fa-search absolute left-3 top-3 text-content-muted dark:text-content-muted"></i>
                         @if($search)
                             <button wire:click="$set('search', '')" class="absolute right-3 top-3 text-content-muted dark:text-content-muted hover:text-content-muted dark:hover:text-content-muted" aria-label="Close">
-                                <i class="fas fa-times" aria-hidden="true"></i>
+                                <i aria-hidden="true" class="fas fa-times"></i>
                             </button>
                         @endif
                     </div>
@@ -328,7 +328,7 @@
                 @if($status || $type || $search)
                     <button wire:click="$set('status', ''); $set('type', ''); $set('search', '')"
                             class="px-3 py-2 bg-surface-muted dark:bg-gray-700 text-content dark:text-gray-300 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors duration-300">
-                        <i class="fas fa-times mr-1" aria-hidden="true"></i>
+                        <i aria-hidden="true" class="fas fa-times mr-1"></i>
                         Clear Filters
                     </button>
                 @endif
@@ -351,7 +351,7 @@
                                                  class="w-20 h-20 object-cover rounded-lg border border-line dark:border-gray-700">
                                         @else
                                             <div class="w-20 h-20 bg-surface-muted dark:bg-gray-700 rounded-lg flex items-center justify-center border border-line dark:border-gray-700 transition-colors duration-300">
-                                                <i class="fas fa-image text-content-muted dark:text-content-muted" aria-hidden="true"></i>
+                                                <i aria-hidden="true" class="fas fa-image text-content-muted dark:text-content-muted"></i>
                                             </div>
                                         @endif
                                     </div>
@@ -365,15 +365,15 @@
                                                 </h3>
                                                 <div class="mt-1 flex flex-wrap items-center gap-2 text-sm text-content-muted dark:text-content-muted">
                                                     <span class="flex items-center">
-                                                        <i class="fas fa-hashtag mr-1" aria-hidden="true"></i>
+                                                        <i aria-hidden="true" class="fas fa-hashtag mr-1"></i>
                                                         {{ $order->order_number }}
                                                     </span>
                                                     <span class="flex items-center">
-                                                        <i class="fas fa-user mr-1" aria-hidden="true"></i>
+                                                        <i aria-hidden="true" class="fas fa-user mr-1"></i>
                                                         {{ $order->vendor->name }}
                                                     </span>
                                                     <span class="flex items-center">
-                                                        <i class="fas fa-calendar mr-1" aria-hidden="true"></i>
+                                                        <i aria-hidden="true" class="fas fa-calendar mr-1"></i>
                                                         {{ $order->created_at->format('M d, Y') }}
                                                     </span>
                                                 </div>
@@ -390,11 +390,11 @@
                                                 </p>
                                                 <div class="flex flex-col space-y-1 mt-1">
                                                     <span class="inline-flex items-center px-2 py-1 bg-{{ $order->status_color }}-100 dark:bg-{{ $order->status_color }}-900 text-{{ $order->status_color }}-800 dark:text-{{ $order->status_color }}-300 text-xs font-medium rounded-full">
-                                                        <i class="fas fa-{{ $order->status === 'completed' ? 'check' : ($order->status === 'pending' ? 'clock' : 'times') }} mr-1" aria-hidden="true"></i>
+                                                        <i aria-hidden="true" class="fas fa-{{ $order->status === 'completed' ? 'check' : ($order->status === 'pending' ? 'clock' : 'times') }} mr-1"></i>
                                                         {{ ucfirst($order->status) }}
                                                     </span>
                                                     <span class="inline-flex items-center px-2 py-1 bg-{{ $order->payment_status_color }}-100 dark:bg-{{ $order->payment_status_color }}-900 text-{{ $order->payment_status_color }}-800 dark:text-{{ $order->payment_status_color }}-300 text-xs font-medium rounded-full">
-                                                        <i class="fas fa-{{ $order->payment_status === 'paid' ? 'check-circle' : 'clock' }} mr-1" aria-hidden="true"></i>
+                                                        <i aria-hidden="true" class="fas fa-{{ $order->payment_status === 'paid' ? 'check-circle' : 'clock' }} mr-1"></i>
                                                         {{ ucfirst(str_replace('_', ' ', $order->payment_status)) }}
                                                     </span>
                                                 </div>
@@ -406,7 +406,7 @@
                                             @if($order->isPaid() && $order->item->is_digital)
                                                 <button wire:click="downloadItem({{ $order->id }})"
                                                         class="inline-flex min-h-11 items-center px-3 py-1.5 bg-green-600 dark:bg-green-500 text-white text-sm rounded-lg hover:bg-green-700 dark:hover:bg-green-600 transition-colors duration-300">
-                                                    <i class="fas fa-download mr-1" aria-hidden="true"></i>
+                                                    <i aria-hidden="true" class="fas fa-download mr-1"></i>
                                                     Download
                                                 </button>
                                             @endif
@@ -414,7 +414,7 @@
                                             @if($order->isPaid() && $order->isCompleted())
                                                 <a href="{{ route('marketplace.item.public', $order->item->slug) }}"
                                                    class="inline-flex min-h-11 items-center px-3 py-1.5 bg-action dark:bg-action text-action-foreground text-sm rounded-lg hover:bg-action dark:hover:bg-action transition-colors duration-300">
-                                                    <i class="fas fa-star mr-1" aria-hidden="true"></i>
+                                                    <i aria-hidden="true" class="fas fa-star mr-1"></i>
                                                     View reviews
                                                 </a>
                                             @endif
@@ -423,20 +423,20 @@
                                                 <button wire:click="requestRefund({{ $order->id }})"
                                                         onclick="confirm('Are you sure you want to request a refund? This action cannot be undone.') || event.stopImmediatePropagation()"
                                                         class="inline-flex min-h-11 items-center px-3 py-1.5 bg-orange-600 dark:bg-orange-500 text-white text-sm rounded-lg hover:bg-orange-700 dark:hover:bg-orange-600 transition-colors duration-300">
-                                                    <i class="fas fa-undo mr-1" aria-hidden="true"></i>
+                                                    <i aria-hidden="true" class="fas fa-undo mr-1"></i>
                                                     Request Refund
                                                 </button>
                                             @endif
 
                                             <button wire:click="reorderItem({{ $order->id }})"
                                                     class="inline-flex min-h-11 items-center px-3 py-1.5 bg-action dark:bg-action text-action-foreground text-sm rounded-lg hover:bg-action dark:hover:bg-action transition-colors duration-300">
-                                                <i class="fas fa-redo mr-1" aria-hidden="true"></i>
+                                                <i aria-hidden="true" class="fas fa-redo mr-1"></i>
                                                 Reorder
                                             </button>
 
                                             <a href="{{ route('marketplace.item.public', $order->item->slug) }}"
                                                class="inline-flex min-h-11 items-center px-3 py-1.5 border border-line dark:border-gray-600 text-content dark:text-gray-300 text-sm rounded-lg hover:bg-surface-muted dark:hover:bg-gray-700 transition-colors duration-300">
-                                                <i class="fas fa-eye mr-1" aria-hidden="true"></i>
+                                                <i aria-hidden="true" class="fas fa-eye mr-1"></i>
                                                 View Item
                                             </a>
                                         </div>
@@ -447,7 +447,7 @@
                                                 @if($order->customer_notes)
                                                     <p class="text-sm text-content-muted dark:text-content-muted">
                                                         <span class="font-medium flex items-center text-content dark:text-white">
-                                                            <i class="fas fa-user mr-1" aria-hidden="true"></i>
+                                                            <i aria-hidden="true" class="fas fa-user mr-1"></i>
                                                             Your notes:
                                                         </span>
                                                         {{ $order->customer_notes }}
@@ -456,7 +456,7 @@
                                                 @if($order->vendor_notes)
                                                     <p class="text-sm text-content-muted dark:text-content-muted mt-1">
                                                         <span class="font-medium flex items-center text-content dark:text-white">
-                                                            <i class="fas fa-store mr-1" aria-hidden="true"></i>
+                                                            <i aria-hidden="true" class="fas fa-store mr-1"></i>
                                                             Vendor notes:
                                                         </span>
                                                         {{ $order->vendor_notes }}
@@ -470,7 +470,7 @@
                                         @if($order->is_delivered && $order->delivered_at)
                                             <div class="mt-3 p-3 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg transition-colors duration-300">
                                                 <p class="text-sm text-green-800 dark:text-green-400 flex items-center">
-                                                    <i class="fas fa-check-circle mr-2" aria-hidden="true"></i>
+                                                    <i aria-hidden="true" class="fas fa-check-circle mr-2"></i>
                                                     <span class="font-medium">Delivered on {{ $order->delivered_at->format('M d, Y \a\t g:i A') }}</span>
                                                 </p>
                                                 @if($order->delivery_details && isset($order->delivery_details['notes']))
@@ -491,7 +491,7 @@
                 @else
                     <!-- Empty State -->
                     <div class="text-center py-16">
-                        <i class="fas fa-shopping-bag text-gray-300 dark:text-content-muted text-6xl mb-4" aria-hidden="true"></i>
+                        <i aria-hidden="true" class="fas fa-shopping-bag text-gray-300 dark:text-content-muted text-6xl mb-4"></i>
                         <h3 class="text-xl font-medium text-content dark:text-white mb-2 transition-colors duration-300">
                             @if($search || $status || $type)
                                 No matching purchases found
@@ -511,7 +511,7 @@
                             @if($search || $status || $type)
                                 <button wire:click="$set('status', ''); $set('type', ''); $set('search', '')"
                                         class="inline-flex items-center px-6 py-3 bg-action dark:bg-action text-action-foreground rounded-lg hover:bg-action dark:hover:bg-action transition-colors duration-300">
-                                    <i class="fas fa-times mr-2" aria-hidden="true"></i>
+                                    <i aria-hidden="true" class="fas fa-times mr-2"></i>
                                     Clear Filters
                                 </button>
                                 <br>
@@ -519,7 +519,7 @@
 
                             <a href="{{ route('marketplace.browse') }}"
                                class="inline-flex items-center px-6 py-3 bg-action dark:bg-action text-action-foreground rounded-lg hover:bg-action dark:hover:bg-action transition-colors duration-300">
-                                <i class="fas fa-search mr-2" aria-hidden="true"></i>
+                                <i aria-hidden="true" class="fas fa-search mr-2"></i>
                                 Browse Marketplace
                             </a>
 
@@ -527,7 +527,7 @@
                                 <br>
                                 <button wire:click="showCart"
                                         class="inline-flex items-center px-4 py-2 border border-line dark:border-gray-600 text-content dark:text-gray-300 rounded-lg hover:bg-surface-muted dark:hover:bg-gray-700 transition-colors duration-300">
-                                    <i class="fas fa-shopping-cart mr-2" aria-hidden="true"></i>
+                                    <i aria-hidden="true" class="fas fa-shopping-cart mr-2"></i>
                                     View Shopping Cart
                                 </button>
                             @endif

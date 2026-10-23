@@ -3,13 +3,13 @@
     <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 sm:gap-0 mb-4 sm:mb-6">
         <div class="w-full sm:w-auto">
             <h1 class="  font-bold text-themed-primary flex items-center bk-page-title">
-                <i class="fas fa-cog mr-2" aria-hidden="true"></i>CBT Management
+                <i aria-hidden="true" class="fas fa-cog mr-2"></i>CBT Management
             </h1>
             <p class="text-sm sm:text-base text-themed-secondary">Create and manage CBT assessments and questions</p>
         </div>
         <button wire:click="$set('showCreateModal', true)"
             class="w-full sm:w-auto bg-action hover:bg-action/90 text-action-foreground px-3 sm:px-4 py-2 rounded-lg flex items-center justify-center transition-colors text-sm sm:text-base">
-            <i class="fas fa-plus mr-2" aria-hidden="true"></i>Create CBT Assessment
+            <i aria-hidden="true" class="fas fa-plus mr-2"></i>Create CBT Assessment
         </button>
     </div>
 
@@ -17,10 +17,10 @@
     @if (session()->has('message'))
         <div class="bg-green-100 dark:bg-green-900/30 border border-green-400 dark:border-green-600 text-green-700 dark:text-green-300 px-4 py-3 rounded mb-6 " role="alert">
             <div class="flex items-center">
-                <i class="fas fa-check-circle mr-2" aria-hidden="true"></i>
+                <i aria-hidden="true" class="fas fa-check-circle mr-2"></i>
                 <span>{{ session('message') }}</span>
                 <button type="button" class="ml-auto text-green-700 dark:text-green-300 hover:text-green-900 dark:hover:text-green-100" onclick="this.parentElement.parentElement.remove()" aria-label="Close">
-                    <i class="fas fa-times" aria-hidden="true"></i>
+                    <i aria-hidden="true" class="fas fa-times"></i>
                 </button>
             </div>
         </div>
@@ -29,10 +29,10 @@
     @if (session()->has('error'))
         <div class="bg-red-100 dark:bg-red-900/30 border border-red-400 dark:border-red-600 text-red-700 dark:text-red-300 px-4 py-3 rounded mb-6" role="alert">
             <div class="flex items-center">
-                <i class="fas fa-exclamation-circle mr-2" aria-hidden="true"></i>
+                <i aria-hidden="true" class="fas fa-exclamation-circle mr-2"></i>
                 <span>{{ session('error') }}</span>
                 <button type="button" class="ml-auto text-red-700 dark:text-red-300 hover:text-red-900 dark:hover:text-red-100" onclick="this.parentElement.parentElement.remove()" aria-label="Close">
-                    <i class="fas fa-times" aria-hidden="true"></i>
+                    <i aria-hidden="true" class="fas fa-times"></i>
                 </button>
             </div>
         </div>
@@ -69,7 +69,7 @@
                                 @if($assessment->shuffle_questions)
                                 <div class="col-span-2">
                                     <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-brand/10 dark:bg-action/30 text-brand dark:text-brand">
-                                        <i class="fas fa-random mr-1" aria-hidden="true"></i>Questions Shuffled
+                                        <i aria-hidden="true" class="fas fa-random mr-1"></i>Questions Shuffled
                                     </span>
                                 </div>
                                 @endif
@@ -79,23 +79,23 @@
                                 <button wire:click="viewParticipants({{ $assessment->id }})"
                                     class="text-brand hover:text-brand p-2 rounded-lg hover:bg-themed-secondary transition-colors"
                                     title="View Participants">
-                                    <i class="fas fa-users" aria-hidden="true"></i>
+                                    <i aria-hidden="true" class="fas fa-users"></i>
                                 </button>
                                 <button wire:click="manageQuestions({{ $assessment->id }})"
                                     class="text-brand hover:text-accent-themed-secondary p-2 rounded-lg hover:bg-themed-secondary transition-colors"
                                     title="Manage Questions">
-                                    <i class="fas fa-question-circle" aria-hidden="true"></i>
+                                    <i aria-hidden="true" class="fas fa-question-circle"></i>
                                 </button>
                                 <button wire:click="editAssessment({{ $assessment->id }})"
                                     class="text-themed-secondary hover:text-themed-primary p-2 rounded-lg hover:bg-themed-secondary transition-colors"
                                     title="Edit">
-                                    <i class="fas fa-edit" aria-hidden="true"></i>
+                                    <i aria-hidden="true" class="fas fa-edit"></i>
                                 </button>
                                 <button wire:click="deleteAssessment({{ $assessment->id }})"
                                     wire:confirm="Are you sure you want to delete this assessment?"
                                     class="text-red-600 dark:text-red-400 hover:text-red-900 dark:hover:text-red-300 p-2 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/30 transition-colors"
                                     title="Delete">
-                                    <i class="fas fa-trash" aria-hidden="true"></i>
+                                    <i aria-hidden="true" class="fas fa-trash"></i>
                                 </button>
                             </div>
                         </div>
@@ -140,7 +140,7 @@
                                             </span>
                                             @if($assessment->shuffle_questions)
                                             <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-brand/10 dark:bg-action/30 text-brand dark:text-brand">
-                                                <i class="fas fa-random mr-1" aria-hidden="true"></i>Shuffled
+                                                <i aria-hidden="true" class="fas fa-random mr-1"></i>Shuffled
                                             </span>
                                             @endif
                                         </div>
@@ -150,23 +150,23 @@
                                             <button wire:click="viewParticipants({{ $assessment->id }})"
                                                 class="text-brand dark:text-brand hover:text-brand dark:hover:text-brand p-2 rounded-lg hover:bg-themed-tertiary transition-colors"
                                                 title="View Participants">
-                                                <i class="fas fa-users" aria-hidden="true"></i>
+                                                <i aria-hidden="true" class="fas fa-users"></i>
                                             </button>
                                             <button wire:click="manageQuestions({{ $assessment->id }})"
                                                 class="text-brand hover:text-accent-themed-secondary p-2 rounded-lg hover:bg-themed-tertiary transition-colors"
                                                 title="Manage Questions">
-                                                <i class="fas fa-question-circle" aria-hidden="true"></i>
+                                                <i aria-hidden="true" class="fas fa-question-circle"></i>
                                             </button>
                                             <button wire:click="editAssessment({{ $assessment->id }})"
                                                 class="text-themed-secondary hover:text-themed-primary p-2 rounded-lg hover:bg-themed-tertiary transition-colors"
                                                 title="Edit">
-                                                <i class="fas fa-edit" aria-hidden="true"></i>
+                                                <i aria-hidden="true" class="fas fa-edit"></i>
                                             </button>
                                             <button wire:click="deleteAssessment({{ $assessment->id }})"
                                                 wire:confirm="Are you sure you want to delete this assessment?"
                                                 class="text-red-600 dark:text-red-400 hover:text-red-900 dark:hover:text-red-300 p-2 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/30 transition-colors"
                                                 title="Delete">
-                                                <i class="fas fa-trash" aria-hidden="true"></i>
+                                                <i aria-hidden="true" class="fas fa-trash"></i>
                                             </button>
                                         </div>
                                     </td>
@@ -180,7 +180,7 @@
                 </div>
             @else
                 <div class="text-center py-8 sm:py-12">
-                    <i class="fas fa-clipboard-list text-5xl sm:text-6xl text-themed-tertiary mb-4" aria-hidden="true"></i>
+                    <i aria-hidden="true" class="fas fa-clipboard-list text-5xl sm:text-6xl text-themed-tertiary mb-4"></i>
                     <h5 class="text-lg sm:text-xl font-semibold text-themed-secondary mb-2">No CBT Assessments Yet</h5>
                     <p class="text-sm sm:text-base text-themed-tertiary">Create your first CBT assessment to get started.</p>
                 </div>
@@ -195,10 +195,10 @@
         <div class="relative top-4 sm:top-20 mx-2 sm:mx-auto p-4 sm:p-5 border w-auto sm:w-11/12 max-w-4xl shadow-sm rounded-lg bg-themed-secondary border-themed-primary @if($showCreateModal) animate-fade-in-down @endif">
             <div class="border-b border-themed-secondary pb-3 sm:pb-4 mb-3 sm:mb-4">
                 <h5 class="text-lg sm:text-xl font-semibold text-themed-primary flex items-center pr-8">
-                    <i class="fas fa-plus mr-2" aria-hidden="true"></i>Create CBT Assessment
+                    <i aria-hidden="true" class="fas fa-plus mr-2"></i>Create CBT Assessment
                 </h5>
                 <button type="button" class="absolute top-3 sm:top-4 right-3 sm:right-4 text-themed-tertiary hover:text-themed-secondary" wire:click="closeModals" aria-label="Close">
-                    <i class="fas fa-times text-lg sm:text-xl" aria-hidden="true"></i>
+                    <i aria-hidden="true" class="fas fa-times text-lg sm:text-xl"></i>
                 </button>
             </div>
             <div>
@@ -254,7 +254,7 @@
                     <!-- NEW: Shuffle Settings -->
                     <div class="bg-themed-tertiary rounded-lg p-4 mb-4 sm:mb-6 border border-themed-secondary">
                         <h6 class="text-sm font-semibold text-themed-primary mb-3 flex items-center">
-                            <i class="fas fa-random mr-2 text-brand" aria-hidden="true"></i>
+                            <i aria-hidden="true" class="fas fa-random mr-2 text-brand"></i>
                             Anti-Cheating Settings (UTME Style)
                         </h6>
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -285,7 +285,7 @@
                     <div class="flex flex-col-reverse sm:flex-row justify-end gap-2 sm:gap-3 pt-3 sm:pt-4 border-t border-themed-secondary">
                         <button type="button" class="w-full sm:w-auto px-3 sm:px-4 py-2 text-sm sm:text-base bg-themed-tertiary text-themed-primary rounded-lg hover:bg-themed-secondary transition-colors border border-themed-secondary" wire:click="closeModals">Cancel</button>
                         <button type="submit" class="w-full sm:w-auto px-3 sm:px-4 py-2 text-sm sm:text-base bg-action text-action-foreground rounded-lg hover:bg-action/90 transition-colors flex items-center justify-center">
-                            <i class="fas fa-save mr-2" aria-hidden="true"></i>Create Assessment
+                            <i aria-hidden="true" class="fas fa-save mr-2"></i>Create Assessment
                         </button>
                     </div>
                 </form>
@@ -300,12 +300,12 @@
             class="relative top-4 sm:top-20 mx-2 sm:mx-auto p-4 sm:p-5 border w-auto sm:w-11/12 max-w-4xl shadow-sm rounded-lg bg-themed-secondary border-themed-primary @if($showEditModal) animate-fade-in-down @endif">
             <div class="border-b border-themed-secondary pb-3 sm:pb-4 mb-3 sm:mb-4">
                 <h5 class="text-lg sm:text-xl font-semibold text-themed-primary flex items-center pr-8">
-                    <i class="fas fa-edit mr-2" aria-hidden="true"></i>Edit CBT Assessment
+                    <i aria-hidden="true" class="fas fa-edit mr-2"></i>Edit CBT Assessment
                 </h5>
                 <button type="button"
                     class="absolute top-3 sm:top-4 right-3 sm:right-4 text-themed-tertiary hover:text-themed-secondary"
                     wire:click="closeModals" aria-label="Close">
-                    <i class="fas fa-times text-lg sm:text-xl" aria-hidden="true"></i>
+                    <i aria-hidden="true" class="fas fa-times text-lg sm:text-xl"></i>
                 </button>
             </div>
             <div>
@@ -392,7 +392,7 @@
                      <!-- NEW: Shuffle Settings -->
                      <div class="bg-themed-tertiary rounded-lg p-4 mb-4 sm:mb-6 border border-themed-secondary">
                         <h6 class="text-sm font-semibold text-themed-primary mb-3 flex items-center">
-                            <i class="fas fa-random mr-2 text-brand" aria-hidden="true"></i>
+                            <i aria-hidden="true" class="fas fa-random mr-2 text-brand"></i>
                             Anti-Cheating Settings (UTME Style)
                         </h6>
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -427,7 +427,7 @@
                             wire:click="closeModals">Cancel</button>
                         <button type="submit"
                             class="w-full sm:w-auto px-3 sm:px-4 py-2 text-sm sm:text-base bg-action text-action-foreground rounded-lg hover:bg-action/90 transition-colors flex items-center justify-center">
-                            <i class="fas fa-save mr-2" aria-hidden="true"></i>Update Assessment
+                            <i aria-hidden="true" class="fas fa-save mr-2"></i>Update Assessment
                         </button>
                     </div>
                 </form>
@@ -443,12 +443,12 @@
                 class="relative top-10 mx-auto p-5 border w-11/12 max-w-7xl shadow-sm rounded-lg bg-themed-secondary border-themed-primary animate-fade-in-up">
                 <div class="border-b border-themed-secondary pb-4 mb-4">
                     <h5 class="text-xl font-semibold text-themed-primary flex items-center">
-                        <i class="fas fa-question-circle mr-2" aria-hidden="true"></i>
+                        <i aria-hidden="true" class="fas fa-question-circle mr-2"></i>
                         Manage Questions - {{ $selectedAssessment->title }}
                     </h5>
                     <button type="button" class="absolute top-4 right-4 text-themed-tertiary hover:text-themed-secondary"
                         wire:click="closeModals" aria-label="Close">
-                        <i class="fas fa-times text-xl" aria-hidden="true"></i>
+                        <i aria-hidden="true" class="fas fa-times text-xl"></i>
                     </button>
                 </div>
 
@@ -532,7 +532,7 @@
                                                 <button type="button" onclick="toggleOptionPreview({{ $index }})"
                                                     class="bg-themed-tertiary border border-l-0 border-themed-secondary rounded-r-lg px-3 py-2 hover:bg-themed-secondary transition-colors"
                                                     title="Toggle Preview" aria-label="Toggle Preview">
-                                                    <i class="fas fa-eye text-themed-secondary" aria-hidden="true"></i>
+                                                    <i aria-hidden="true" class="fas fa-eye text-themed-secondary"></i>
                                                 </button>
                                             </div>
 
@@ -597,7 +597,7 @@
 
                             <button type="submit"
                                 class="w-full bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors flex items-center justify-center">
-                                <i class="fas fa-plus mr-2" aria-hidden="true"></i>Add Question
+                                <i aria-hidden="true" class="fas fa-plus mr-2"></i>Add Question
                             </button>
                         </form>
                     </div>
@@ -615,7 +615,7 @@
                                             <!-- Drag Handle -->
                                             <div
                                                 class="drag-handle cursor-move mr-3 text-themed-tertiary hover:text-themed-primary pt-1">
-                                                <i class="fas fa-grip-vertical text-lg" aria-hidden="true"></i>
+                                                <i aria-hidden="true" class="fas fa-grip-vertical text-lg"></i>
                                             </div>
 
                                             <!-- Question Content -->
@@ -632,7 +632,7 @@
                                                                 <span class="font-medium mr-2">{{ chr(65 + $index) }}.</span>
                                                                 <span class="math-content flex-1">{!! Str::limit($option, 50) !!}</span>
                                                                 @if(in_array($index, $question->correct_answers ?? []))
-                                                                    <i class="fas fa-check text-green-600 ml-2" aria-hidden="true"></i>
+                                                                    <i aria-hidden="true" class="fas fa-check text-green-600 ml-2"></i>
                                                                 @endif
                                                             </div>
                                                         @endforeach
@@ -661,13 +661,13 @@
                                                 <button wire:click="editQuestion({{ $question->id }})"
                                                     class="text-brand hover:text-brand p-2 rounded-lg hover:bg-brand/10 dark:hover:bg-action/30 transition-colors"
                                                     title="Edit Question">
-                                                    <i class="fas fa-edit" aria-hidden="true"></i>
+                                                    <i aria-hidden="true" class="fas fa-edit"></i>
                                                 </button>
                                                 <button wire:click="deleteQuestion({{ $question->id }})"
                                                     wire:confirm="Are you sure you want to delete this question?"
                                                     class="text-red-600 hover:text-red-800 p-2 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/30 transition-colors"
                                                     title="Delete">
-                                                    <i class="fas fa-trash" aria-hidden="true"></i>
+                                                    <i aria-hidden="true" class="fas fa-trash"></i>
                                                 </button>
                                             </div>
                                         </div>
@@ -676,7 +676,7 @@
                             </div>
                         @else
                             <div class="text-center py-8 border-2 border-dashed border-themed-secondary rounded-lg">
-                                <i class="fas fa-question text-4xl text-themed-tertiary mb-3" aria-hidden="true"></i>
+                                <i aria-hidden="true" class="fas fa-question text-4xl text-themed-tertiary mb-3"></i>
                                 <p class="text-themed-secondary">No questions added yet</p>
                             </div>
                         @endif
@@ -694,7 +694,7 @@
                     <h3 class="text-xl font-bold text-themed-primary">Edit Question</h3>
                     <button type="button" class="absolute top-4 right-4 text-themed-tertiary hover:text-themed-secondary"
                         wire:click="closeModals" aria-label="Close">
-                        <i class="fas fa-times text-xl" aria-hidden="true"></i>
+                        <i aria-hidden="true" class="fas fa-times text-xl"></i>
                     </button>
                 </div>
 
@@ -807,7 +807,7 @@
                                 Cancel
                             </button>
                             <button type="submit" class="px-4 py-2 bg-action text-action-foreground rounded-lg hover:bg-action">
-                                <i class="fas fa-save mr-2" aria-hidden="true"></i>Update Question
+                                <i aria-hidden="true" class="fas fa-save mr-2"></i>Update Question
                             </button>
                         </div>
                     </form>
@@ -823,11 +823,11 @@
                 x-data="{ expandedUser: null }">
                 <div class="p-6 border-b border-themed-secondary flex justify-between items-center">
                     <h3 class="text-xl font-bold text-themed-primary">
-                        <i class="fas fa-users mr-2" aria-hidden="true"></i>
+                        <i aria-hidden="true" class="fas fa-users mr-2"></i>
                         Participants - {{ $selectedAssessment->title }}
                     </h3>
                     <button type="button" wire:click="closeModals" class="text-themed-tertiary hover:text-themed-secondary" aria-label="Close">
-                        <i class="fas fa-times text-xl" aria-hidden="true"></i>
+                        <i aria-hidden="true" class="fas fa-times text-xl"></i>
                     </button>
                 </div>
 
@@ -898,8 +898,8 @@
                                             <button
                                                 @click="expandedUser = expandedUser === {{ $participant['user_id'] }} ? null : {{ $participant['user_id'] }}"
                                                 class="text-brand hover:text-brand dark:text-brand dark:hover:text-brand px-3 py-1 rounded hover:bg-brand/10 dark:hover:bg-action/30 transition-colors">
-                                                <i class="fas"
-                                                    :class="expandedUser === {{ $participant['user_id'] }} ? 'fa-eye-slash' : 'fa-eye'" aria-hidden="true"></i>
+                                                <i aria-hidden="true" class="fas"
+                                                    :class="expandedUser === {{ $participant['user_id'] }} ? 'fa-eye-slash' : 'fa-eye'"></i>
                                                 <span
                                                     x-text="expandedUser === {{ $participant['user_id'] }} ? 'Hide' : 'View All'"></span>
                                             </button>
@@ -951,7 +951,7 @@
                         </table></x-ui.table>
                     @else
                         <div class="text-center py-12">
-                            <i class="fas fa-users text-6xl text-themed-tertiary mb-4" aria-hidden="true"></i>
+                            <i aria-hidden="true" class="fas fa-users text-6xl text-themed-tertiary mb-4"></i>
                             <h5 class="text-xl text-themed-secondary mb-2">No Participants Yet</h5>
                             <p class="text-themed-tertiary">No students have taken this assessment yet.</p>
                         </div>

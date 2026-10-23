@@ -8,20 +8,20 @@
         <div class="flex items-center justify-between">
             <div class="flex items-center gap-3">
                 <div class="flex h-9 w-9 items-center justify-center rounded-lg border border-themed-secondary bg-themed-tertiary">
-                    <i class="fas fa-star text-sm accent-themed-primary" aria-hidden="true"></i>
+                    <i aria-hidden="true" class="fas fa-star text-sm accent-themed-primary"></i>
                 </div>
                 <div>
                     <h2 class="text-base font-semibold text-themed-primary">Learner Reviews</h2>
                     <p class="text-xs text-themed-secondary">
                         {{ $totalReviews }} {{ Str::plural('review', $totalReviews) }} •
-                        {{ number_format($averageRating, 1) }} <i class="fas fa-star text-yellow-400 text-xs" aria-hidden="true"></i>
+                        {{ number_format($averageRating, 1) }} <i aria-hidden="true" class="fas fa-star text-yellow-400 text-xs"></i>
                     </p>
                 </div>
             </div>
             <button @click="$wire.toggleCollapse()"
                     class="rounded-lg border border-themed-secondary bg-themed-tertiary px-3 py-2 text-themed-tertiary transition-colors duration-300 hover:text-themed-primary">
-                <i class="fas fa-chevron-down text-lg transform transition-transform"
-                   :class="{ 'rotate-180': !isCollapsed }" aria-hidden="true"></i>
+                <i aria-hidden="true" class="fas fa-chevron-down text-lg transform transition-transform"
+                   :class="{ 'rotate-180': !isCollapsed }"></i>
             </button>
         </div>
     </div>
@@ -39,7 +39,7 @@
                     <div class="flex items-center justify-between">
                         <div class="flex items-center gap-4">
                             <div class="w-12 h-12 bg-action rounded-full flex items-center justify-center">
-                                <i class="fas fa-star text-action-foreground text-xl" aria-hidden="true"></i>
+                                <i aria-hidden="true" class="fas fa-star text-action-foreground text-xl"></i>
                             </div>
                             <div>
                                 <h3 class="font-bold text-themed-primary text-lg">
@@ -60,7 +60,7 @@
                         </div>
                         <button wire:click="toggleReviewForm"
                                 class="bg-action hover:bg-action/90 text-action-foreground px-6 py-3 rounded-lg font-semibold transition-all duration-300 flex items-center gap-2 shadow-sm hover:shadow-sm">
-                            <i class="fas fa-{{ $showReviewForm ? 'times' : 'star' }}" aria-hidden="true"></i>
+                            <i aria-hidden="true" class="fas fa-{{ $showReviewForm ? 'times' : 'star' }}"></i>
                             {{ $editingReview ? 'Edit Review' : ($showReviewForm ? 'Cancel' : 'Write Review') }}
                         </button>
                     </div>
@@ -71,7 +71,7 @@
                                 <span class="font-semibold text-themed-primary">Your rating:</span>
                                 <div class="flex">
                                     @for($i = 1; $i <= 5; $i++)
-                                        <i class="fas fa-star text-yellow-400 {{ $editingReview->rating >= $i ? '' : 'opacity-30' }}" aria-hidden="true"></i>
+                                        <i aria-hidden="true" class="fas fa-star text-yellow-400 {{ $editingReview->rating >= $i ? '' : 'opacity-30' }}"></i>
                                     @endfor
                                 </div>
                             </div>
@@ -81,7 +81,7 @@
                             <button wire:click="deleteReview({{ $editingReview->id }})"
                                     onclick="return confirm('Are you sure you want to delete your review?')"
                                     class="text-red-600 hover:text-red-700 text-sm transition-colors duration-300">
-                                <i class="fas fa-trash mr-1" aria-hidden="true"></i>Delete
+                                <i aria-hidden="true" class="fas fa-trash mr-1"></i>Delete
                             </button>
                         </div>
                     @endif
@@ -89,12 +89,12 @@
             @endif
         @else
             <div class="bg-brand/20 rounded-lg p-6 text-center border border-brand/30 transition-colors duration-300">
-                <i class="fas fa-star text-brand text-3xl mb-3" aria-hidden="true"></i>
+                <i aria-hidden="true" class="fas fa-star text-brand text-3xl mb-3"></i>
                 <h3 class="font-bold text-themed-primary text-lg mb-2">Want to share your experience?</h3>
                 <p class="text-themed-secondary mb-4">Login to review this course and help other students</p>
                 <a href="{{ route('login') }}"
                    class="bg-action hover:bg-action/90 text-action-foreground px-6 py-3 rounded-lg font-semibold transition-all duration-300 inline-flex items-center gap-2 shadow-sm hover:shadow-sm">
-                    <i class="fas fa-sign-in-alt" aria-hidden="true"></i>
+                    <i aria-hidden="true" class="fas fa-sign-in-alt"></i>
                     Login to Review
                 </a>
             </div>
@@ -118,7 +118,7 @@
                                 <button type="button"
                                         wire:click="$set('rating', {{ $i }})"
                                         class="text-3xl transition-all duration-200 transform ">
-                                    <i class="fas fa-star {{ $rating >= $i ? 'text-yellow-400' : 'text-themed-tertiary' }}" aria-hidden="true"></i>
+                                    <i aria-hidden="true" class="fas fa-star {{ $rating >= $i ? 'text-yellow-400' : 'text-themed-tertiary' }}"></i>
                                 </button>
                             @endfor
                         </div>
@@ -159,7 +159,7 @@
                                 {{ $editingReview ? 'Update Review' : 'Submit Review' }}
                             </span>
                             <span wire:loading wire:target="submitReview">
-                                <i class="fas fa-spinner fa-spin" aria-hidden="true"></i> Submitting...
+                                <i aria-hidden="true" class="fas fa-spinner fa-spin"></i> Submitting...
                             </span>
                         </button>
                     </div>
@@ -179,7 +179,7 @@
                         <div>
                             <div class="flex items-center">
                                 @for($i = 1; $i <= 5; $i++)
-                                    <i class="fas fa-star text-yellow-400 {{ $averageRating >= $i ? '' : ($averageRating >= $i - 0.5 ? 'opacity-50' : 'opacity-20') }}" aria-hidden="true"></i>
+                                    <i aria-hidden="true" class="fas fa-star text-yellow-400 {{ $averageRating >= $i ? '' : ($averageRating >= $i - 0.5 ? 'opacity-50' : 'opacity-20') }}"></i>
                                 @endfor
                             </div>
                             <p class="text-sm text-themed-secondary mt-1">
@@ -256,14 +256,14 @@
                                 <div class="flex items-center gap-2 mt-1">
                                     <div class="flex">
                                         @for($i = 1; $i <= 5; $i++)
-                                            <i class="fas fa-star text-sm {{ $review->rating >= $i ? 'text-yellow-400' : 'text-themed-tertiary' }}" aria-hidden="true"></i>
+                                            <i aria-hidden="true" class="fas fa-star text-sm {{ $review->rating >= $i ? 'text-yellow-400' : 'text-themed-tertiary' }}"></i>
                                         @endfor
                                     </div>
                                     <span class="text-sm text-themed-tertiary">{{ $review->created_at->diffForHumans() }}</span>
                                     @if($review->isVerified())
                                         <span class="px-2 py-0.5 bg-green-500/20 text-green-400 text-xs font-semibold rounded-full flex items-center gap-1 border border-green-500/30"
                                               title="Completed the course">
-                                            <i class="fas fa-check-circle" aria-hidden="true"></i> Verified
+                                            <i aria-hidden="true" class="fas fa-check-circle"></i> Verified
                                         </span>
                                     @endif
                                 </div>
@@ -275,7 +275,7 @@
                             <button wire:click="toggleReviewForm"
                                     class="text-themed-tertiary hover:text-brand transition-colors duration-300"
                                     title="Edit your review" aria-label="Edit your review">
-                                <i class="fas fa-edit" aria-hidden="true"></i>
+                                <i aria-hidden="true" class="fas fa-edit"></i>
                             </button>
                         @endif
                     </div>
@@ -287,7 +287,7 @@
                     @if($review->instructor_reply)
                         <div class="mt-4 pl-4 border-l-4 border-brand bg-brand/10 p-4 rounded-r-lg">
                             <div class="flex items-center gap-2 mb-2">
-                                <i class="fas fa-reply text-brand" aria-hidden="true"></i>
+                                <i aria-hidden="true" class="fas fa-reply text-brand"></i>
                                 <span class="font-semibold text-themed-primary">Instructor Response</span>
                                 <span class="text-xs text-themed-tertiary">{{ $review->replied_at->diffForHumans() }}</span>
                             </div>
@@ -297,7 +297,7 @@
                 </div>
             @empty
                 <div class="text-center py-12 bg-themed-tertiary rounded-lg border border-themed-secondary transition-colors duration-300">
-                    <i class="fas fa-comments text-4xl text-themed-tertiary mb-3" aria-hidden="true"></i>
+                    <i aria-hidden="true" class="fas fa-comments text-4xl text-themed-tertiary mb-3"></i>
                     <p class="text-themed-secondary">
                         {{ $searchQuery || $filterRating ? 'No reviews match your filters' : 'No reviews yet. Be the first to review this course!' }}
                     </p>

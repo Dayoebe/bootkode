@@ -7,7 +7,7 @@
                 <div>
                     <h1 class="  font-bold text-themed-primary flex items-center gap-3 transition-colors duration-300 bk-page-title">
                         <div class="bg-brand/10 p-3 rounded-lg">
-                            <i class="fas fa-book-open text-brand text-xl" aria-hidden="true"></i>
+                            <i aria-hidden="true" class="fas fa-book-open text-brand text-xl"></i>
                         </div>
                         My Courses
                     </h1>
@@ -19,7 +19,7 @@
                 <div class="flex gap-3">
                     <a href="{{ route('create.course') }}"
                         class="inline-flex items-center justify-center gap-2 bg-action hover:bg-action/90 text-action-foreground px-6 py-3 rounded-lg font-semibold transition-all duration-300 transform  shadow-sm">
-                        <i class="fas fa-plus" aria-hidden="true"></i>
+                        <i aria-hidden="true" class="fas fa-plus"></i>
                         <span>New Course</span>
                     </a>
                 </div>
@@ -36,7 +36,7 @@
                         <p class="text-3xl font-bold text-themed-primary transition-colors duration-300">{{ $courses->total() }}</p>
                     </div>
                     <div class="bg-brand/10 p-4 rounded-lg transition-colors duration-300">
-                        <i class="fas fa-book text-brand text-2xl" aria-hidden="true"></i>
+                        <i aria-hidden="true" class="fas fa-book text-brand text-2xl"></i>
                     </div>
                 </div>
             </div>
@@ -49,7 +49,7 @@
                         <p class="text-3xl font-bold text-themed-primary transition-colors duration-300">{{ $totalEnrollments }}</p>
                     </div>
                     <div class="bg-green-500/10 p-4 rounded-lg transition-colors duration-300">
-                        <i class="fas fa-users text-green-600 text-2xl" aria-hidden="true"></i>
+                        <i aria-hidden="true" class="fas fa-users text-green-600 text-2xl"></i>
                     </div>
                 </div>
             </div>
@@ -62,7 +62,7 @@
                         <p class="text-3xl font-bold text-themed-primary transition-colors duration-300">{{ $publishedCount }} / {{ $courses->total() }}</p>
                     </div>
                     <div class="bg-action/10 p-4 rounded-lg transition-colors duration-300">
-                        <i class="fas fa-globe text-brand text-2xl" aria-hidden="true"></i>
+                        <i aria-hidden="true" class="fas fa-globe text-brand text-2xl"></i>
                     </div>
                 </div>
             </div>
@@ -75,12 +75,12 @@
                 <div class="flex gap-2">
                     <button wire:click="resetFilters"
                         class="text-sm text-brand hover:text-accent-themed-secondary font-medium flex items-center gap-2 transition-colors duration-300">
-                        <i class="fas fa-redo-alt" aria-hidden="true"></i>
+                        <i aria-hidden="true" class="fas fa-redo-alt"></i>
                         Clear Filters
                     </button>
                     <button wire:click="$toggle('viewMode')"
                         class="text-sm bg-themed-tertiary hover:bg-themed-primary text-themed-primary px-3 py-1 rounded-lg font-medium flex items-center gap-2 transition-all duration-300 border border-themed-primary">
-                        <i class="fas fa-{{ $viewMode === 'grid' ? 'list' : 'th-large' }}" aria-hidden="true"></i>
+                        <i aria-hidden="true" class="fas fa-{{ $viewMode === 'grid' ? 'list' : 'th-large' }}"></i>
                         {{ $viewMode === 'grid' ? 'List' : 'Grid' }}
                     </button>
                 </div>
@@ -92,7 +92,7 @@
                     <input aria-label="Search courses" type="text" wire:model.live.debounce.300ms="search" placeholder="Search courses..."
                         class="w-full pl-10 pr-4 py-3 bg-themed-tertiary border-2 border-themed-primary rounded-lg text-themed-primary placeholder-themed-secondary focus:border-brand focus:ring-2 focus:ring-brand/20 transition-all duration-300">
                     <div class="absolute left-3 top-1/2 -translate-y-1/2 text-themed-secondary transition-colors duration-300">
-                        <i class="fas fa-search" aria-hidden="true"></i>
+                        <i aria-hidden="true" class="fas fa-search"></i>
                     </div>
                 </div>
 
@@ -130,17 +130,17 @@
         <div class="flex flex-wrap gap-3" x-data="{ selectedCourses: @entangle('selectedCourses') }">
             <button wire:click="bulkPublish" x-bind:disabled="!selectedCourses.length"
                 class="inline-flex items-center gap-2 bg-brand/10 hover:bg-brand/20 text-brand disabled:opacity-50 disabled:cursor-not-allowed px-4 py-2 rounded-lg font-medium transition-all duration-300 transform ">
-                <i class="fas fa-globe" aria-hidden="true"></i>
+                <i aria-hidden="true" class="fas fa-globe"></i>
                 Publish Selected
             </button>
             <button wire:click="bulkUnpublish" x-bind:disabled="!selectedCourses.length"
                 class="inline-flex items-center gap-2 bg-themed-tertiary hover:bg-themed-secondary text-themed-primary disabled:opacity-50 disabled:cursor-not-allowed px-4 py-2 rounded-lg font-medium border border-themed-primary transition-all duration-300 transform ">
-                <i class="fas fa-eye-slash" aria-hidden="true"></i>
+                <i aria-hidden="true" class="fas fa-eye-slash"></i>
                 Unpublish Selected
             </button>
             <button wire:click="bulkDelete" wire:confirm="Are you sure you want to delete selected courses?" x-bind:disabled="!selectedCourses.length"
                 class="inline-flex items-center gap-2 bg-red-100/50 hover:bg-red-200/50 text-red-600 disabled:opacity-50 disabled:cursor-not-allowed px-4 py-2 rounded-lg font-medium transition-all duration-300 transform ">
-                <i class="fas fa-trash-alt" aria-hidden="true"></i>
+                <i aria-hidden="true" class="fas fa-trash-alt"></i>
                 Delete Selected
             </button>
         </div>
@@ -149,13 +149,13 @@
         @if ($courses->isEmpty())
             <div class="text-center py-16 bg-themed-secondary rounded-lg shadow-sm border border-themed-primary transition-colors duration-300">
                 <div class="bg-brand/10 w-24 h-24 rounded-full flex items-center justify-center mx-auto mb-6 transition-colors duration-300">
-                    <i class="fas fa-book-open text-4xl text-brand" aria-hidden="true"></i>
+                    <i aria-hidden="true" class="fas fa-book-open text-4xl text-brand"></i>
                 </div>
                 <h3 class="text-xl font-bold text-themed-primary mb-2 transition-colors duration-300">No courses yet</h3>
                 <p class="text-themed-secondary mb-6 transition-colors duration-300">Start by creating your first course to share your knowledge.</p>
                 <a href="{{ route('create.course') }}"
                     class="inline-flex items-center gap-2 bg-action hover:bg-action/90 text-action-foreground px-6 py-3 rounded-lg font-semibold transition-all duration-300 transform ">
-                    <i class="fas fa-plus" aria-hidden="true"></i>
+                    <i aria-hidden="true" class="fas fa-plus"></i>
                     Create Your First Course
                 </a>
             </div>
@@ -174,7 +174,7 @@
                                         class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
                                 @else
                                     <div class="w-full h-full flex items-center justify-center">
-                                        <i class="fas fa-book-open text-white text-4xl opacity-60" aria-hidden="true"></i>
+                                        <i aria-hidden="true" class="fas fa-book-open text-white text-4xl opacity-60"></i>
                                     </div>
                                 @endif
 
@@ -186,7 +186,7 @@
 
                                 <!-- Enrollment Badge -->
                                 <div class="absolute bottom-3 left-3 bg-black/70 text-white text-xs px-3 py-1 rounded-full font-semibold ">
-                                    <i class="fas fa-users mr-1" aria-hidden="true"></i> {{ $course->enrollments_count }}
+                                    <i aria-hidden="true" class="fas fa-users mr-1"></i> {{ $course->enrollments_count }}
                                 </div>
                             </div>
 
@@ -236,7 +236,7 @@
                                         <a href="{{ route('course-builder', $course) }}"
                                             class="flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold bg-brand/10 text-brand hover:bg-brand/20 transition-all duration-300"
                                             title="Build Course">
-                                            <i class="fas fa-cogs" aria-hidden="true"></i>
+                                            <i aria-hidden="true" class="fas fa-cogs"></i>
                                             <span>Build</span>
                                         </a>
 
@@ -244,7 +244,7 @@
                                         <button wire:click="editCourse({{ $course->id }})"
                                             class="flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold bg-brand/10 text-brand hover:bg-blue-200/50 transition-all duration-300"
                                             title="Edit Course">
-                                            <i class="fas fa-edit" aria-hidden="true"></i>
+                                            <i aria-hidden="true" class="fas fa-edit"></i>
                                             <span>Edit</span>
                                         </button>
 
@@ -252,7 +252,7 @@
                                         <button wire:click="previewCourse({{ $course->id }})"
                                             class="flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold bg-brand/10 text-brand hover:bg-purple-200/50 transition-all duration-300"
                                             title="Preview Course">
-                                            <i class="fas fa-eye" aria-hidden="true"></i>
+                                            <i aria-hidden="true" class="fas fa-eye"></i>
                                             <span>Preview</span>
                                         </button>
 
@@ -261,7 +261,7 @@
                                             class="flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold transition-all duration-300
                                                 {{ $course->is_published ? 'bg-green-100/50 text-green-700 hover:bg-green-200/50' : 'bg-gray-100/50 text-content hover:bg-gray-200/50' }}"
                                             title="{{ $course->is_published ? 'Unpublish' : 'Publish' }}">
-                                            <i class="fas fa-{{ $course->is_published ? 'eye' : 'eye-slash' }}" aria-hidden="true"></i>
+                                            <i aria-hidden="true" class="fas fa-{{ $course->is_published ? 'eye' : 'eye-slash' }}"></i>
                                             <span>{{ $course->is_published ? 'Unpublish' : 'Publish' }}</span>
                                         </button>
                                     </div>
@@ -271,7 +271,7 @@
                                         wire:confirm="Are you sure you want to delete this course?"
                                         class="w-full flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold bg-red-100/50 text-red-700 hover:bg-red-200/50 transition-all duration-300"
                                         title="Delete Course">
-                                        <i class="fas fa-trash-alt" aria-hidden="true"></i>
+                                        <i aria-hidden="true" class="fas fa-trash-alt"></i>
                                         <span>Delete Course</span>
                                     </button>
                                 </div>
@@ -296,7 +296,7 @@
                                         <img src="{{ asset('storage/' . $course->thumbnail) }}" alt="{{ $course->title }}" class="w-full h-full object-cover">
                                     @else
                                         <div class="w-full h-full flex items-center justify-center">
-                                            <i class="fas fa-book-open text-white text-2xl opacity-60" aria-hidden="true"></i>
+                                            <i aria-hidden="true" class="fas fa-book-open text-white text-2xl opacity-60"></i>
                                         </div>
                                     @endif
                                 </div>
@@ -323,8 +323,8 @@
                                     </div>
 
                                     <div class="flex items-center gap-4 text-sm text-themed-secondary">
-                                        <span><i class="fas fa-users mr-1" aria-hidden="true"></i> {{ $course->enrollments_count }} students</span>
-                                        <span><i class="fas fa-chart-line mr-1" aria-hidden="true"></i> {{ $course->completion_percentage ?? 0 }}% complete</span>
+                                        <span><i aria-hidden="true" class="fas fa-users mr-1"></i> {{ $course->enrollments_count }} students</span>
+                                        <span><i aria-hidden="true" class="fas fa-chart-line mr-1"></i> {{ $course->completion_percentage ?? 0 }}% complete</span>
                                     </div>
                                 </div>
 
@@ -333,17 +333,17 @@
                                     <div class="flex gap-2">
                                         <a href="{{ route('course-builder', $course) }}"
                                             class="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold bg-brand/10 text-brand hover:bg-brand/20 transition-all duration-300">
-                                            <i class="fas fa-cogs" aria-hidden="true"></i>
+                                            <i aria-hidden="true" class="fas fa-cogs"></i>
                                             Build
                                         </a>
                                         <button wire:click="editCourse({{ $course->id }})"
                                             class="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold bg-brand/10 text-brand hover:bg-blue-200/50 transition-all duration-300">
-                                            <i class="fas fa-edit" aria-hidden="true"></i>
+                                            <i aria-hidden="true" class="fas fa-edit"></i>
                                             Edit
                                         </button>
                                         <button wire:click="previewCourse({{ $course->id }})"
                                             class="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold bg-brand/10 text-brand hover:bg-purple-200/50 transition-all duration-300">
-                                            <i class="fas fa-eye" aria-hidden="true"></i>
+                                            <i aria-hidden="true" class="fas fa-eye"></i>
                                             Preview
                                         </button>
                                     </div>
@@ -351,13 +351,13 @@
                                         <button wire:click="togglePublished({{ $course->id }})"
                                             class="flex-1 inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold transition-all duration-300
                                                 {{ $course->is_published ? 'bg-green-100/50 text-green-700 hover:bg-green-200/50' : 'bg-gray-100/50 text-content hover:bg-gray-200/50' }}">
-                                            <i class="fas fa-{{ $course->is_published ? 'eye' : 'eye-slash' }}" aria-hidden="true"></i>
+                                            <i aria-hidden="true" class="fas fa-{{ $course->is_published ? 'eye' : 'eye-slash' }}"></i>
                                             {{ $course->is_published ? 'Unpublish' : 'Publish' }}
                                         </button>
                                         <button wire:click="deleteCourse({{ $course->id }})"
                                             wire:confirm="Are you sure you want to delete this course?"
                                             class="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold bg-red-100/50 text-red-700 hover:bg-red-200/50 transition-all duration-300">
-                                            <i class="fas fa-trash-alt" aria-hidden="true"></i>
+                                            <i aria-hidden="true" class="fas fa-trash-alt"></i>
                                             Delete
                                         </button>
                                     </div>

@@ -11,7 +11,7 @@
                            placeholder="Search items by title or description..."
                            class="w-full pl-10 pr-4 py-2 border border-line rounded-lg focus:ring-brand/30 focus:border-brand">
                     <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                        <i class="fas fa-search text-content-muted" aria-hidden="true"></i>
+                        <i aria-hidden="true" class="fas fa-search text-content-muted"></i>
                     </div>
                 </div>
             </div>
@@ -41,7 +41,7 @@
                 </select>
 
                 <button wire:click="$set('searchTerm', '')" class="px-3 py-2 text-content-muted hover:text-content">
-                    <i class="fas fa-times" aria-hidden="true"></i> Clear
+                    <i aria-hidden="true" class="fas fa-times"></i> Clear
                 </button>
             </div>
         </div>
@@ -60,27 +60,27 @@
                         <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-content-muted uppercase tracking-wider">
                             <button wire:click="$set('sortBy', 'title')" class="flex items-center space-x-1 hover:text-content">
                                 <span>Item</span>
-                                <i class="fas fa-sort text-xs" aria-hidden="true"></i>
+                                <i aria-hidden="true" class="fas fa-sort text-xs"></i>
                             </button>
                         </th>
                         <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-content-muted uppercase tracking-wider">Vendor</th>
                         <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-content-muted uppercase tracking-wider">
                             <button wire:click="$set('sortBy', 'type')" class="flex items-center space-x-1 hover:text-content">
                                 <span>Type</span>
-                                <i class="fas fa-sort text-xs" aria-hidden="true"></i>
+                                <i aria-hidden="true" class="fas fa-sort text-xs"></i>
                             </button>
                         </th>
                         <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-content-muted uppercase tracking-wider">
                             <button wire:click="$set('sortBy', 'price')" class="flex items-center space-x-1 hover:text-content">
                                 <span>Price</span>
-                                <i class="fas fa-sort text-xs" aria-hidden="true"></i>
+                                <i aria-hidden="true" class="fas fa-sort text-xs"></i>
                             </button>
                         </th>
                         <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-content-muted uppercase tracking-wider">Status</th>
                         <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-content-muted uppercase tracking-wider">
                             <button wire:click="$set('sortBy', 'created_at')" class="flex items-center space-x-1 hover:text-content">
                                 <span>Created</span>
-                                <i class="fas fa-sort text-xs" aria-hidden="true"></i>
+                                <i aria-hidden="true" class="fas fa-sort text-xs"></i>
                             </button>
                         </th>
                         <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-content-muted uppercase tracking-wider">Actions</th>
@@ -139,7 +139,7 @@
                                 </span>
                                 @if($item->isRejected() && $item->rejection_reason)
                                     <div class="text-xs text-red-600 mt-1" title="{{ $item->rejection_reason }}">
-                                        <i class="fas fa-exclamation-triangle mr-1" aria-hidden="true"></i>
+                                        <i aria-hidden="true" class="fas fa-exclamation-triangle mr-1"></i>
                                         {{ Str::limit($item->rejection_reason, 30) }}
                                     </div>
                                 @endif
@@ -153,19 +153,19 @@
                                     <button wire:click="viewItem({{ $item->id }})"
                                             class="text-brand hover:text-brand"
                                             title="View Details">
-                                        <i class="fas fa-eye" aria-hidden="true"></i>
+                                        <i aria-hidden="true" class="fas fa-eye"></i>
                                     </button>
 
                                     @if($item->isPending())
                                         <button wire:click="approveItem({{ $item->id }})"
                                                 class="text-green-600 hover:text-green-900"
                                                 title="Approve Item">
-                                            <i class="fas fa-check" aria-hidden="true"></i>
+                                            <i aria-hidden="true" class="fas fa-check"></i>
                                         </button>
                                         <button wire:click="viewItem({{ $item->id }})"
                                                 class="text-red-600 hover:text-red-900"
                                                 title="Reject Item">
-                                            <i class="fas fa-times" aria-hidden="true"></i>
+                                            <i aria-hidden="true" class="fas fa-times"></i>
                                         </button>
                                     @endif
 
@@ -173,25 +173,25 @@
                                         <button wire:click="suspendItem({{ $item->id }})"
                                                 class="text-orange-600 hover:text-orange-900"
                                                 title="Suspend Item">
-                                            <i class="fas fa-pause" aria-hidden="true"></i>
+                                            <i aria-hidden="true" class="fas fa-pause"></i>
                                         </button>
                                     @endif
 
                                     <div class="relative" x-data="{ open: false }">
                                         <button @click="open = !open" class="text-content-muted hover:text-content-muted" aria-label="More actions">
-                                            <i class="fas fa-ellipsis-v" aria-hidden="true"></i>
+                                            <i aria-hidden="true" class="fas fa-ellipsis-v"></i>
                                         </button>
                                         <div x-show="open" @click.away="open = false"
                                              class="absolute right-0 mt-2 w-48 bg-surface rounded-md shadow-sm z-10 border border-line">
                                             <div class="py-1">
                                                 <a href="#" class="block px-4 py-2 text-sm text-content hover:bg-surface-muted">
-                                                    <i class="fas fa-edit mr-2" aria-hidden="true"></i>Edit Item
+                                                    <i aria-hidden="true" class="fas fa-edit mr-2"></i>Edit Item
                                                 </a>
                                                 <a href="#" class="block px-4 py-2 text-sm text-content hover:bg-surface-muted">
-                                                    <i class="fas fa-chart-bar mr-2" aria-hidden="true"></i>View Analytics
+                                                    <i aria-hidden="true" class="fas fa-chart-bar mr-2"></i>View Analytics
                                                 </a>
                                                 <a href="#" class="block px-4 py-2 text-sm text-content hover:bg-surface-muted">
-                                                    <i class="fas fa-history mr-2" aria-hidden="true"></i>View History
+                                                    <i aria-hidden="true" class="fas fa-history mr-2"></i>View History
                                                 </a>
                                             </div>
                                         </div>
@@ -203,7 +203,7 @@
                         <tr>
                             <td colspan="7" class="px-6 py-8 text-center">
                                 <div class="text-content-muted">
-                                    <i class="fas fa-box-open text-4xl mb-4" aria-hidden="true"></i>
+                                    <i aria-hidden="true" class="fas fa-box-open text-4xl mb-4"></i>
                                     <p class="text-lg font-medium">No items found</p>
                                     <p class="text-sm">Try adjusting your search or filter criteria</p>
                                 </div>
@@ -229,13 +229,13 @@
                 <h4 class="text-sm font-medium text-content">Bulk Actions</h4>
                 <div class="flex space-x-2">
                     <button class="px-3 py-1 text-sm bg-green-100 text-green-800 rounded hover:bg-green-200">
-                        <i class="fas fa-check mr-1" aria-hidden="true"></i>Approve Selected
+                        <i aria-hidden="true" class="fas fa-check mr-1"></i>Approve Selected
                     </button>
                     <button class="px-3 py-1 text-sm bg-red-100 text-red-800 rounded hover:bg-red-200">
-                        <i class="fas fa-times mr-1" aria-hidden="true"></i>Reject Selected
+                        <i aria-hidden="true" class="fas fa-times mr-1"></i>Reject Selected
                     </button>
                     <button class="px-3 py-1 text-sm bg-orange-100 text-orange-800 rounded hover:bg-orange-200">
-                        <i class="fas fa-pause mr-1" aria-hidden="true"></i>Suspend Selected
+                        <i aria-hidden="true" class="fas fa-pause mr-1"></i>Suspend Selected
                     </button>
                 </div>
             </div>

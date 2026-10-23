@@ -15,7 +15,7 @@
                     <p class="text-2xl font-bold text-content">₦{{ number_format($totalCommissions, 2) }}</p>
                 </div>
                 <div class="bg-green-100 p-3 rounded-lg">
-                    <i class="fas fa-coins text-green-600 text-xl" aria-hidden="true"></i>
+                    <i aria-hidden="true" class="fas fa-coins text-green-600 text-xl"></i>
                 </div>
             </div>
         </div>
@@ -27,7 +27,7 @@
                     <p class="text-2xl font-bold text-content">₦{{ number_format($pendingCommissions, 2) }}</p>
                 </div>
                 <div class="bg-yellow-100 p-3 rounded-lg">
-                    <i class="fas fa-clock text-yellow-600 text-xl" aria-hidden="true"></i>
+                    <i aria-hidden="true" class="fas fa-clock text-yellow-600 text-xl"></i>
                 </div>
             </div>
         </div>
@@ -65,7 +65,7 @@
 
             <div class="flex items-end">
                 <button wire:click="$refresh" class="w-full px-4 py-2 bg-action text-action-foreground rounded-md hover:bg-action transition-colors">
-                    <i class="fas fa-sync-alt mr-2" aria-hidden="true"></i> Refresh
+                    <i aria-hidden="true" class="fas fa-sync-alt mr-2"></i> Refresh
                 </button>
             </div>
         </div>
@@ -85,7 +85,7 @@
                             <th scope="col" wire:click="sortBy('created_at')" class="px-6 py-3 text-left text-xs font-medium text-content-muted uppercase tracking-wider cursor-pointer hover:bg-surface-muted">
                                 Date
                                 @if($sortBy === 'created_at')
-                                    <i class="fas fa-sort-{{ $sortDirection === 'asc' ? 'up' : 'down' }} ml-1" aria-hidden="true"></i>
+                                    <i aria-hidden="true" class="fas fa-sort-{{ $sortDirection === 'asc' ? 'up' : 'down' }} ml-1"></i>
                                 @endif
                             </th>
                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-content-muted uppercase tracking-wider">Course</th>
@@ -93,13 +93,13 @@
                             <th scope="col" wire:click="sortBy('commission_amount')" class="px-6 py-3 text-left text-xs font-medium text-content-muted uppercase tracking-wider cursor-pointer hover:bg-surface-muted">
                                 Commission
                                 @if($sortBy === 'commission_amount')
-                                    <i class="fas fa-sort-{{ $sortDirection === 'asc' ? 'up' : 'down' }} ml-1" aria-hidden="true"></i>
+                                    <i aria-hidden="true" class="fas fa-sort-{{ $sortDirection === 'asc' ? 'up' : 'down' }} ml-1"></i>
                                 @endif
                             </th>
                             <th scope="col" wire:click="sortBy('status')" class="px-6 py-3 text-left text-xs font-medium text-content-muted uppercase tracking-wider cursor-pointer hover:bg-surface-muted">
                                 Status
                                 @if($sortBy === 'status')
-                                    <i class="fas fa-sort-{{ $sortDirection === 'asc' ? 'up' : 'down' }} ml-1" aria-hidden="true"></i>
+                                    <i aria-hidden="true" class="fas fa-sort-{{ $sortDirection === 'asc' ? 'up' : 'down' }} ml-1"></i>
                                 @endif
                             </th>
                         </tr>
@@ -145,7 +145,7 @@
             </div>
         @else
             <div class="px-6 py-12 text-center">
-                <i class="fas fa-receipt text-6xl text-content-muted mb-4" aria-hidden="true"></i>
+                <i aria-hidden="true" class="fas fa-receipt text-6xl text-content-muted mb-4"></i>
                 <h3 class="text-lg font-medium text-content mb-2">No transactions found</h3>
                 <p class="text-content-muted">
                     @if($search || $statusFilter !== 'all' || $dateRange !== 'all')

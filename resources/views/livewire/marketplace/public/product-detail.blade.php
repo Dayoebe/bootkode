@@ -3,13 +3,13 @@
     <div class=" px-4 sm:px-6 lg:px-8">
         <!-- Breadcrumb -->
         <button wire:click="backToBrowse" class="hover:text-brand transition-colors">Home</button>
-        <i class="fas fa-chevron-right text-xs" aria-hidden="true"></i>
+        <i aria-hidden="true" class="fas fa-chevron-right text-xs"></i>
         @if($selectedProduct->itemCategories && $selectedProduct->itemCategories->count() > 0)
             <button wire:click="viewCategory({{ $selectedProduct->itemCategories->first()->id }})"
                     class="hover:text-brand transition-colors">
                 {{ $selectedProduct->itemCategories->first()->name }}
             </button>
-            <i class="fas fa-chevron-right text-xs" aria-hidden="true"></i>
+            <i aria-hidden="true" class="fas fa-chevron-right text-xs"></i>
         @endif
         <span class="text-content font-medium">{{ Str::limit($selectedProduct->title, 40) }}</span>
     </nav>
@@ -26,7 +26,7 @@
                                  class="w-full h-full object-cover">
                         @else
                             <div class="w-full h-full flex items-center justify-center bg-brand/10">
-                                <i class="fas fa-book text-brand text-6xl" aria-hidden="true"></i>
+                                <i aria-hidden="true" class="fas fa-book text-brand text-6xl"></i>
                             </div>
                         @endif
                     </div>
@@ -82,7 +82,7 @@
                             @if($selectedProduct->duration_minutes)
                                 <div class="mt-6 p-4 bg-surface-muted rounded-lg">
                                     <div class="flex items-center space-x-2">
-                                        <i class="fas fa-clock text-brand" aria-hidden="true"></i>
+                                        <i aria-hidden="true" class="fas fa-clock text-brand"></i>
                                         <span class="font-medium text-content">Duration:</span>
                                         <span class="text-content">{{ $selectedProduct->getFormattedDuration() }}</span>
                                     </div>
@@ -95,7 +95,7 @@
                                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
                                         @foreach($selectedProduct->files as $file)
                                             <div class="flex items-center space-x-2 p-2 bg-surface-muted rounded">
-                                                <i class="fas fa-file text-content-muted" aria-hidden="true"></i>
+                                                <i aria-hidden="true" class="fas fa-file text-content-muted"></i>
                                                 <span class="text-sm text-content">{{ $file['name'] ?? 'Downloadable file' }}</span>
                                                 <span class="text-xs text-content-muted ml-auto">
                                                     {{ number_format($file['size'] / 1024, 1) }}KB
@@ -126,7 +126,7 @@
                                                     </div>
                                                     <div class="flex items-center space-x-1 mt-1">
                                                         @for($i = 1; $i <= 5; $i++)
-                                                            <i class="fas fa-star text-sm {{ $i <= $review->rating ? 'text-yellow-400' : 'text-gray-300' }}" aria-hidden="true"></i>
+                                                            <i aria-hidden="true" class="fas fa-star text-sm {{ $i <= $review->rating ? 'text-yellow-400' : 'text-gray-300' }}"></i>
                                                         @endfor
                                                     </div>
                                                     @if($review->title)
@@ -211,7 +211,7 @@
                                 <span class="text-lg text-content-muted line-through">{{ $selectedProduct->getFormattedOriginalPrice() }}</span>
                             </div>
                             <div class="inline-flex items-center px-2 py-1 bg-red-100 text-red-800 text-sm font-medium rounded">
-                                <i class="fas fa-tag mr-1" aria-hidden="true"></i>
+                                <i aria-hidden="true" class="fas fa-tag mr-1"></i>
                                 {{ $selectedProduct->getDiscountPercentage() }}% OFF
                             </div>
                         @else
@@ -222,12 +222,12 @@
                     <!-- Product Type & Categories -->
                     <div class="mb-6 space-y-2">
                         <div class="flex items-center space-x-2">
-                            <i class="fas fa-cube text-content-muted" aria-hidden="true"></i>
+                            <i aria-hidden="true" class="fas fa-cube text-content-muted"></i>
                             <span class="text-sm text-content">Type: {{ $selectedProduct->type_name }}</span>
                         </div>
                         @if($selectedProduct->itemCategories->count() > 0)
                             <div class="flex items-center space-x-2">
-                                <i class="fas fa-tags text-content-muted" aria-hidden="true"></i>
+                                <i aria-hidden="true" class="fas fa-tags text-content-muted"></i>
                                 <div class="flex flex-wrap gap-1">
                                     @foreach($selectedProduct->itemCategories as $category)
                                         <span class="text-xs bg-brand/10 text-brand px-2 py-1 rounded">
@@ -244,16 +244,16 @@
                         @guest
                             <button wire:click="requireLogin('purchase')"
                                     class="w-full bg-action text-action-foreground px-6 py-3 rounded-lg hover:bg-action transition-colors font-semibold">
-                                <i class="fas fa-shopping-cart mr-2" aria-hidden="true"></i>Buy Now
+                                <i aria-hidden="true" class="fas fa-shopping-cart mr-2"></i>Buy Now
                             </button>
                             <button wire:click="requireLogin('wishlist')"
                                     class="w-full border border-brand text-brand px-6 py-2 rounded-lg hover:bg-brand/10 transition-colors font-medium">
-                                <i class="fas fa-heart mr-2" aria-hidden="true"></i>Add to Wishlist
+                                <i aria-hidden="true" class="fas fa-heart mr-2"></i>Add to Wishlist
                             </button>
                         @else
                             <a href="{{ route('marketplace.browse') }}"
                                class="w-full bg-action text-action-foreground px-6 py-3 rounded-lg hover:bg-action transition-colors font-semibold text-center block">
-                                <i class="fas fa-shopping-cart mr-2" aria-hidden="true"></i>Buy Now
+                                <i aria-hidden="true" class="fas fa-shopping-cart mr-2"></i>Buy Now
                             </a>
                         @endguest
                     </div>
@@ -275,7 +275,7 @@
                                 <span class="text-content-muted">Rating</span>
                                 <div class="flex items-center space-x-1">
                                     @for($i = 1; $i <= 5; $i++)
-                                        <i class="fas fa-star text-xs {{ $i <= $selectedProduct->average_rating ? 'text-yellow-400' : 'text-gray-300' }}" aria-hidden="true"></i>
+                                        <i aria-hidden="true" class="fas fa-star text-xs {{ $i <= $selectedProduct->average_rating ? 'text-yellow-400' : 'text-gray-300' }}"></i>
                                     @endfor
                                     <span class="font-medium text-content ml-1">{{ number_format($selectedProduct->average_rating, 1) }}</span>
                                 </div>
@@ -292,16 +292,16 @@
                         <p class="text-sm text-content-muted mb-3">Share this product:</p>
                         <div class="flex space-x-2">
                             <button class="p-2 bg-action text-action-foreground rounded hover:bg-action transition-colors">
-                                <i class="fab fa-facebook-f text-sm" aria-hidden="true"></i>
+                                <i aria-hidden="true" class="fab fa-facebook-f text-sm"></i>
                             </button>
                             <button class="p-2 bg-blue-400 text-action-foreground rounded hover:bg-action transition-colors">
-                                <i class="fab fa-twitter text-sm" aria-hidden="true"></i>
+                                <i aria-hidden="true" class="fab fa-twitter text-sm"></i>
                             </button>
                             <button class="p-2 bg-action text-action-foreground rounded hover:bg-action transition-colors">
-                                <i class="fab fa-linkedin-in text-sm" aria-hidden="true"></i>
+                                <i aria-hidden="true" class="fab fa-linkedin-in text-sm"></i>
                             </button>
                             <button class="p-2 bg-gray-600 text-white rounded hover:bg-gray-700 transition-colors">
-                                <i class="fas fa-link text-sm" aria-hidden="true"></i>
+                                <i aria-hidden="true" class="fas fa-link text-sm"></i>
                             </button>
                         </div>
                     </div>
@@ -354,7 +354,7 @@
                                      class="w-full h-full object-cover  transition-transform duration-200">
                             @else
                                 <div class="w-full h-full flex items-center justify-center bg-brand/10">
-                                    <i class="fas fa-book text-brand text-2xl" aria-hidden="true"></i>
+                                    <i aria-hidden="true" class="fas fa-book text-brand text-2xl"></i>
                                 </div>
                             @endif
                         </div>

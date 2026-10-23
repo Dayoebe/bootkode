@@ -3,14 +3,14 @@
     {{-- Error/Success Messages --}}
     @if (session()->has('message'))
         <div class="mb-6 bg-green-50 border border-green-200 text-green-800 px-4 py-3 rounded-lg">
-            <i class="fas fa-check-circle mr-2" aria-hidden="true"></i>
+            <i aria-hidden="true" class="fas fa-check-circle mr-2"></i>
             {{ session('message') }}
         </div>
     @endif
 
     @if (session()->has('error'))
         <div class="mb-6 bg-red-50 border border-red-200 text-red-800 px-4 py-3 rounded-lg">
-            <i class="fas fa-exclamation-circle mr-2" aria-hidden="true"></i>
+            <i aria-hidden="true" class="fas fa-exclamation-circle mr-2"></i>
             {{ session('error') }}
         </div>
     @endif
@@ -26,7 +26,7 @@
         </div>
         <a href="{{ route('admin.blog.posts.index') }}"
             class="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors">
-            <i class="fas fa-arrow-left mr-2" aria-hidden="true"></i>
+            <i aria-hidden="true" class="fas fa-arrow-left mr-2"></i>
             Back to Posts
         </a>
     </div>
@@ -55,7 +55,7 @@
                                 </label>
                                 <button type="button" wire:click="generateSlug"
                                     class="text-sm text-brand hover:text-brand font-medium">
-                                    <i class="fas fa-sync mr-1" aria-hidden="true"></i>
+                                    <i aria-hidden="true" class="fas fa-sync mr-1"></i>
                                     Generate from title
                                 </button>
                             </div>
@@ -63,7 +63,7 @@
                                 class="w-full px-4 py-2 border border-line rounded-lg focus:ring-2 focus:ring-brand/30 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                                 placeholder="post-slug-url" required>
                             <p class="text-sm text-content-muted mt-1">
-                                <i class="fas fa-info-circle mr-1" aria-hidden="true"></i>
+                                <i aria-hidden="true" class="fas fa-info-circle mr-1"></i>
                                 URL: {{ url('/blog') }}/{{ $slug ?: 'your-slug' }}
                             </p>
                             @error('slug')<span class="text-red-500 text-sm mt-1 block">{{ $message }}</span>@enderror
@@ -96,7 +96,7 @@
                         class="w-full px-4 py-2 border border-line rounded-lg focus:ring-2 focus:ring-brand/30 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                         placeholder="Brief description of your post..."></textarea>
                     <p class="text-sm text-content-muted mt-2">
-                        <i class="fas fa-lightbulb mr-1" aria-hidden="true"></i>
+                        <i aria-hidden="true" class="fas fa-lightbulb mr-1"></i>
                         Leave empty to auto-generate from content (first 200 characters).
                     </p>
                     @error('excerpt')<span class="text-red-500 text-sm mt-1 block">{{ $message }}</span>@enderror
@@ -107,10 +107,10 @@
                     <button type="button" wire:click="$toggle('showSeoSection')"
                         class="w-full flex items-center justify-between p-6 text-left hover:bg-surface-muted dark:hover:bg-gray-700 transition-colors">
                         <span class="text-lg font-medium text-content dark:text-white">
-                            <i class="fas fa-search mr-2 text-green-500" aria-hidden="true"></i>
+                            <i aria-hidden="true" class="fas fa-search mr-2 text-green-500"></i>
                             SEO Settings
                         </span>
-                        <i class="fas fa-chevron-{{ $showSeoSection ? 'up' : 'down' }} text-content-muted" aria-hidden="true"></i>
+                        <i aria-hidden="true" class="fas fa-chevron-{{ $showSeoSection ? 'up' : 'down' }} text-content-muted"></i>
                     </button>
 
                     @if($showSeoSection)
@@ -148,7 +148,7 @@
                                             {{ $keyword }}
                                             <button type="button" wire:click="removeKeyword({{ $index }})"
                                                 class="ml-2 text-brand hover:text-brand" aria-label="Close">
-                                                <i class="fas fa-times" aria-hidden="true"></i>
+                                                <i aria-hidden="true" class="fas fa-times"></i>
                                             </button>
                                         </span>
                                     @endforeach
@@ -159,7 +159,7 @@
                                         placeholder="Add keyword...">
                                     <button type="button" wire:click="addKeyword"
                                         class="px-4 py-2 bg-action text-action-foreground rounded-r-lg hover:bg-action" aria-label="Add keyword">
-                                        <i class="fas fa-plus" aria-hidden="true"></i>
+                                        <i aria-hidden="true" class="fas fa-plus"></i>
                                     </button>
                                 </div>
                             </div>
@@ -173,7 +173,7 @@
                 {{-- Publish Settings --}}
                 <div class="bg-surface dark:bg-gray-800 rounded-lg shadow-sm p-6">
                     <h3 class="text-lg font-medium text-content dark:text-white mb-4">
-                        <i class="fas fa-paper-plane text-brand mr-2" aria-hidden="true"></i>
+                        <i aria-hidden="true" class="fas fa-paper-plane text-brand mr-2"></i>
                         Publish Settings
                     </h3>
 
@@ -195,7 +195,7 @@
                             <div
                                 class="bg-yellow-50 dark:bg-yellow-900 border border-yellow-200 dark:border-yellow-700 rounded-lg p-4">
                                 <label class="block text-sm font-medium text-yellow-800 dark:text-yellow-200 mb-2">
-                                    <i class="fas fa-calendar-alt mr-1" aria-hidden="true"></i>
+                                    <i aria-hidden="true" class="fas fa-calendar-alt mr-1"></i>
                                     Schedule Publish Date & Time <span class="text-red-500">*</span>
                                 </label>
                                 <input aria-label="Published at" type="datetime-local" wire:model="published_at"
@@ -211,7 +211,7 @@
                                 <input type="checkbox" wire:model="is_featured" id="is_featured"
                                     class="rounded border-line text-brand focus:ring-brand/30">
                                 <label for="is_featured" class="ml-2 text-sm text-content dark:text-gray-300">
-                                    <i class="fas fa-star text-yellow-500 mr-1" aria-hidden="true"></i>
+                                    <i aria-hidden="true" class="fas fa-star text-yellow-500 mr-1"></i>
                                     Featured Post
                                 </label>
                             </div>
@@ -220,7 +220,7 @@
                                 <input type="checkbox" wire:model="allow_comments" id="allow_comments"
                                     class="rounded border-line text-brand focus:ring-brand/30">
                                 <label for="allow_comments" class="ml-2 text-sm text-content dark:text-gray-300">
-                                    <i class="fas fa-comments text-brand mr-1" aria-hidden="true"></i>
+                                    <i aria-hidden="true" class="fas fa-comments text-brand mr-1"></i>
                                     Allow Comments
                                 </label>
                             </div>
@@ -232,7 +232,7 @@
 {{-- Multiple Categories --}}
 <div class="bg-surface dark:bg-gray-800 rounded-lg shadow-sm p-6">
     <h3 class="text-lg font-medium text-content dark:text-white mb-4">
-        <i class="fas fa-folder text-brand mr-2" aria-hidden="true"></i>
+        <i aria-hidden="true" class="fas fa-folder text-brand mr-2"></i>
         Categories & Tags
     </h3>
 
@@ -253,7 +253,7 @@
                             @if($selectedCategory)
                                 <span class="px-3 py-1 text-sm rounded-full flex items-center"
                                       style="background-color: {{ $selectedCategory->color }}20; color: {{ $selectedCategory->color }}; border: 1px solid {{ $selectedCategory->color }}40;">
-                                    <i class="fas fa-folder mr-1" aria-hidden="true"></i>
+                                    <i aria-hidden="true" class="fas fa-folder mr-1"></i>
                                     {{ $selectedCategory->name }}
                                     @if($index === 0)
                                         <span class="ml-2 px-1.5 py-0.5 bg-white/50 rounded text-xs">Primary</span>
@@ -261,14 +261,14 @@
                                     <button type="button"
                                             wire:click="removeCategory({{ $index }})"
                                             class="ml-2 hover:text-red-500" aria-label="Close">
-                                        <i class="fas fa-times" aria-hidden="true"></i>
+                                        <i aria-hidden="true" class="fas fa-times"></i>
                                     </button>
                                 </span>
                             @endif
                         @endforeach
                     </div>
                     <p class="text-xs text-content-muted mt-2">
-                        <i class="fas fa-info-circle mr-1" aria-hidden="true"></i>
+                        <i aria-hidden="true" class="fas fa-info-circle mr-1"></i>
                         The first category is the primary category for URL routing.
                     </p>
                 </div>
@@ -287,7 +287,7 @@
 
             @if(count($categories) === 0)
                 <p class="text-sm text-content-muted mt-2">
-                    <i class="fas fa-info-circle mr-1" aria-hidden="true"></i>
+                    <i aria-hidden="true" class="fas fa-info-circle mr-1"></i>
                     No categories available. <a href="{{ route('admin.blog.categories.index') }}" class="text-brand hover:underline">Create categories first</a>.
                 </p>
             @endif
@@ -305,7 +305,7 @@
                         #{{ $tag }}
                         <button type="button" wire:click="removeTag({{ $index }})"
                             class="ml-2 text-content-muted hover:text-content" aria-label="Close">
-                            <i class="fas fa-times" aria-hidden="true"></i>
+                            <i aria-hidden="true" class="fas fa-times"></i>
                         </button>
                     </span>
                 @endforeach
@@ -316,7 +316,7 @@
                     placeholder="Add tag...">
                 <button type="button" wire:click="addTag"
                     class="px-4 py-2 bg-gray-600 text-white rounded-r-lg hover:bg-gray-700" aria-label="Add tag">
-                    <i class="fas fa-plus" aria-hidden="true"></i>
+                    <i aria-hidden="true" class="fas fa-plus"></i>
                 </button>
             </div>
         </div>
@@ -326,7 +326,7 @@
                 {{-- Featured Image --}}
                 <div class="bg-surface dark:bg-gray-800 rounded-lg shadow-sm p-6">
                     <h3 class="text-lg font-medium text-content dark:text-white mb-4">
-                        <i class="fas fa-image text-green-500 mr-2" aria-hidden="true"></i>
+                        <i aria-hidden="true" class="fas fa-image text-green-500 mr-2"></i>
                         Featured Image
                     </h3>
 
@@ -339,12 +339,12 @@
                                     class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30 transition-opacity rounded-lg flex items-center justify-center">
                                     <button type="button" wire:click="toggleRemoveImage"
                                         class="bg-red-500 text-white p-2 rounded-full hover:bg-red-600 transition-colors opacity-0 group-hover:opacity-100" aria-label="Toggle remove image">
-                                        <i class="fas fa-trash text-sm" aria-hidden="true"></i>
+                                        <i aria-hidden="true" class="fas fa-trash text-sm"></i>
                                     </button>
                                 </div>
                             </div>
                             <p class="text-sm text-green-600 mt-2">
-                                <i class="fas fa-check-circle mr-1" aria-hidden="true"></i>
+                                <i aria-hidden="true" class="fas fa-check-circle mr-1"></i>
                                 Current featured image
                             </p>
                         </div>
@@ -354,12 +354,12 @@
                         <div class="bg-red-50 border border-red-200 rounded-lg p-4 mb-4">
                             <div class="flex items-center justify-between">
                                 <p class="text-sm text-red-800">
-                                    <i class="fas fa-exclamation-triangle mr-1" aria-hidden="true"></i>
+                                    <i aria-hidden="true" class="fas fa-exclamation-triangle mr-1"></i>
                                     Image will be removed when you save.
                                 </p>
                                 <button type="button" wire:click="toggleRemoveImage"
                                     class="text-sm text-red-600 hover:text-red-800 font-medium">
-                                    <i class="fas fa-undo mr-1" aria-hidden="true"></i>
+                                    <i aria-hidden="true" class="fas fa-undo mr-1"></i>
                                     Keep
                                 </button>
                             </div>
@@ -372,14 +372,14 @@
                                 <img src="{{ $featured_image->temporaryUrl() }}" alt="Preview"
                                     class="w-full h-48 object-cover rounded-lg">
                                 <p class="text-sm text-brand mt-2">
-                                    <i class="fas fa-upload mr-1" aria-hidden="true"></i>
+                                    <i aria-hidden="true" class="fas fa-upload mr-1"></i>
                                     New image
                                 </p>
                             @endif
                         </div>
                         <div class="mb-4" wire:loading wire:target="featured_image">
                             <div class="w-full h-48 bg-gray-200 rounded-lg flex items-center justify-center">
-                                <i class="fas fa-spinner fa-spin text-3xl text-content-muted" aria-hidden="true"></i>
+                                <i aria-hidden="true" class="fas fa-spinner fa-spin text-3xl text-content-muted"></i>
                             </div>
                             <p class="text-sm text-brand mt-2">Uploading...</p>
                         </div>
@@ -403,11 +403,11 @@
                             class="w-full px-4 py-3 bg-action text-action-foreground rounded-lg hover:bg-action transition-colors font-medium"
                             wire:loading.attr="disabled">
                             <span wire:loading.remove wire:target="save">
-                                <i class="fas fa-save mr-2" aria-hidden="true"></i>
+                                <i aria-hidden="true" class="fas fa-save mr-2"></i>
                                 {{ $isEdit ? 'Update Post' : 'Create Post' }}
                             </span>
                             <span wire:loading wire:target="save">
-                                <i class="fas fa-spinner fa-spin mr-2" aria-hidden="true"></i>
+                                <i aria-hidden="true" class="fas fa-spinner fa-spin mr-2"></i>
                                 Saving...
                             </span>
                         </button>
@@ -416,11 +416,11 @@
                             class="w-full px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors"
                             wire:loading.attr="disabled">
                             <span wire:loading.remove wire:target="saveDraft">
-                                <i class="fas fa-file-alt mr-2" aria-hidden="true"></i>
+                                <i aria-hidden="true" class="fas fa-file-alt mr-2"></i>
                                 Save as Draft
                             </span>
                             <span wire:loading wire:target="saveDraft">
-                                <i class="fas fa-spinner fa-spin mr-2" aria-hidden="true"></i>
+                                <i aria-hidden="true" class="fas fa-spinner fa-spin mr-2"></i>
                                 Saving...
                             </span>
                         </button>
@@ -430,11 +430,11 @@
                                 class="w-full px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
                                 wire:loading.attr="disabled">
                                 <span wire:loading.remove wire:target="publish">
-                                    <i class="fas fa-globe mr-2" aria-hidden="true"></i>
+                                    <i aria-hidden="true" class="fas fa-globe mr-2"></i>
                                     Publish Now
                                 </span>
                                 <span wire:loading wire:target="publish">
-                                    <i class="fas fa-spinner fa-spin mr-2" aria-hidden="true"></i>
+                                    <i aria-hidden="true" class="fas fa-spinner fa-spin mr-2"></i>
                                     Publishing...
                                 </span>
                             </button>
@@ -443,7 +443,7 @@
                         @if($isEdit && $post && $post->slug)
                             <a href="{{ route('blog.show', $post->slug) }}" target="_blank"
                                 class="w-full px-4 py-2 bg-action text-action-foreground rounded-lg hover:bg-action transition-colors text-center block">
-                                <i class="fas fa-external-link-alt mr-2" aria-hidden="true"></i>
+                                <i aria-hidden="true" class="fas fa-external-link-alt mr-2"></i>
                                 Preview Post
                             </a>
                         @endif

@@ -5,7 +5,7 @@
         <div class="relative">
             <input aria-label="Search orders" wire:model.live.debounce.300ms="search" type="text" placeholder="Search orders..."
                 class="w-64 pl-10 pr-4 py-2 border border-line rounded-lg focus:ring-brand/30 focus:border-brand">
-            <i class="fas fa-search absolute left-3 top-3 text-content-muted" aria-hidden="true"></i>
+            <i aria-hidden="true" class="fas fa-search absolute left-3 top-3 text-content-muted"></i>
         </div>
 
         <select aria-label="Order status" wire:model.live="orderStatus"
@@ -144,19 +144,19 @@
                                     <div class="flex items-center gap-2 justify-end">
                                         <button wire:click="viewOrder({{ $order->id }})"
                                             class="text-brand hover:text-brand" title="View Details">
-                                            <i class="fas fa-eye" aria-hidden="true"></i>
+                                            <i aria-hidden="true" class="fas fa-eye"></i>
                                         </button>
                                         @if($order->status === 'pending')
                                             <button wire:click="confirmOrder({{ $order->id }})"
                                                 class="text-green-600 hover:text-green-900" title="Confirm">
-                                                <i class="fas fa-check" aria-hidden="true"></i>
+                                                <i aria-hidden="true" class="fas fa-check"></i>
                                             </button>
                                         @endif
                                         @if($order->status !== 'refunded' && $order->payment_status === 'paid')
                                             <button wire:click="processRefund({{ $order->id }})"
                                                 onclick="confirm('Process refund for this order?') || event.stopImmediatePropagation()"
                                                 class="text-red-600 hover:text-red-900" title="Process Refund">
-                                                <i class="fas fa-undo" aria-hidden="true"></i>
+                                                <i aria-hidden="true" class="fas fa-undo"></i>
                                             </button>
                                         @endif
                                     </div>
@@ -173,7 +173,7 @@
         </div>
     @else
         <div class="text-center py-12 bg-surface rounded-lg border border-line">
-            <i class="fas fa-clipboard-list text-gray-300 text-6xl mb-4" aria-hidden="true"></i>
+            <i aria-hidden="true" class="fas fa-clipboard-list text-gray-300 text-6xl mb-4"></i>
             <h3 class="text-lg font-medium text-content mb-2">No orders found</h3>
             <p class="text-content-muted">
                 @if($orderStatus)

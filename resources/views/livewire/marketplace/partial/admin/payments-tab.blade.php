@@ -7,7 +7,7 @@
                 <input aria-label="Search transactions" wire:model.live.debounce.300ms="transactionSearch" type="text"
                     placeholder="Search transactions..."
                     class="w-64 pl-10 pr-4 py-2 border border-line rounded-lg focus:ring-brand/30 focus:border-brand">
-                <i class="fas fa-search absolute left-3 top-3 text-content-muted" aria-hidden="true"></i>
+                <i aria-hidden="true" class="fas fa-search absolute left-3 top-3 text-content-muted"></i>
             </div>
 
             <select aria-label="Transaction status" wire:model.live="transactionStatus"
@@ -25,7 +25,7 @@
         <div class="flex gap-2">
             <button wire:click="processAutomaticPayouts"
                 class="inline-flex items-center px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors">
-                <i class="fas fa-play mr-2" aria-hidden="true"></i>
+                <i aria-hidden="true" class="fas fa-play mr-2"></i>
                 Process Auto Payouts
             </button>
         </div>
@@ -162,7 +162,7 @@
                 </div>
             @else
                 <div class="bg-surface rounded-lg border border-line p-8 text-center">
-                    <i class="fas fa-credit-card text-gray-300 text-4xl mb-4" aria-hidden="true"></i>
+                    <i aria-hidden="true" class="fas fa-credit-card text-gray-300 text-4xl mb-4"></i>
                     <h3 class="text-lg font-medium text-content mb-2">No transactions found</h3>
                     <p class="text-content-muted">Transaction data will appear here when available.</p>
                 </div>
@@ -191,10 +191,10 @@
                                         </h3>
                                         <p class="text-sm text-content-muted">{{ $withdrawal->user->email ?? 'N/A' }}</p>
                                         <div class="mt-1 flex items-center space-x-4 text-sm text-content-muted">
-                                            <span><i
-                                                    class="fas fa-calendar mr-1" aria-hidden="true"></i>{{ $withdrawal->created_at->format('M d, Y') }}</span>
-                                            <span><i
-                                                    class="fas fa-wallet mr-1" aria-hidden="true"></i>{{ ucfirst($withdrawal->method ?? 'bank') }}
+                                            <span><i aria-hidden="true"
+                                                    class="fas fa-calendar mr-1"></i>{{ $withdrawal->created_at->format('M d, Y') }}</span>
+                                            <span><i aria-hidden="true"
+                                                    class="fas fa-wallet mr-1"></i>{{ ucfirst($withdrawal->method ?? 'bank') }}
                                                 Transfer</span>
                                         </div>
                                     </div>
@@ -205,7 +205,7 @@
                                         ₦{{ number_format($withdrawal->amount ?? 0, 0) }}</div>
                                     <a href="{{ route('admin.payments.processing') }}"
                                         class="mt-2 inline-flex items-center px-4 py-2 bg-action text-action-foreground text-sm rounded-lg hover:bg-action transition-colors">
-                                        <i class="fas fa-credit-card mr-2" aria-hidden="true"></i>
+                                        <i aria-hidden="true" class="fas fa-credit-card mr-2"></i>
                                         Review in payment processing
                                     </a>
                                 </div>
@@ -218,7 +218,7 @@
                 </div>
             @else
                 <div class="bg-surface rounded-lg border border-line p-8 text-center">
-                    <i class="fas fa-university text-gray-300 text-4xl mb-4" aria-hidden="true"></i>
+                    <i aria-hidden="true" class="fas fa-university text-gray-300 text-4xl mb-4"></i>
                     <h3 class="text-lg font-medium text-content mb-2">No withdrawal requests</h3>
                     <p class="text-content-muted">Vendor withdrawal requests will appear here when submitted.</p>
                 </div>

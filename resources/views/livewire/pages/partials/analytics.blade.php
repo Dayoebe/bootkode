@@ -21,12 +21,12 @@
                 <div class="flex space-x-2">
                     <button wire:click="loadAnalyticsData"
                             class="bg-action text-action-foreground px-4 py-2 rounded-lg hover:bg-action transition-colors text-sm">
-                        <i class="fas fa-refresh mr-2" aria-hidden="true"></i>Refresh
+                        <i aria-hidden="true" class="fas fa-refresh mr-2"></i>Refresh
                     </button>
 
                     <button wire:click="exportAnalytics"
                             class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors text-sm">
-                        <i class="fas fa-download mr-2" aria-hidden="true"></i>Export
+                        <i aria-hidden="true" class="fas fa-download mr-2"></i>Export
                     </button>
                 </div>
             </div>
@@ -40,7 +40,7 @@
             <div class="flex items-center">
                 <div class="flex-shrink-0">
                     <div class="w-10 h-10 bg-brand/10 rounded-lg flex items-center justify-center">
-                        <i class="fas fa-eye text-brand text-lg" aria-hidden="true"></i>
+                        <i aria-hidden="true" class="fas fa-eye text-brand text-lg"></i>
                     </div>
                 </div>
                 <div class="ml-4">
@@ -49,7 +49,7 @@
                         {{ number_format($analyticsData['total_views'] ?? 0) }}
                     </div>
                     <div class="text-sm text-green-600 mt-1">
-                        <i class="fas fa-arrow-up text-xs" aria-hidden="true"></i> +12.5% from last period
+                        <i aria-hidden="true" class="fas fa-arrow-up text-xs"></i> +12.5% from last period
                     </div>
                 </div>
             </div>
@@ -60,7 +60,7 @@
             <div class="flex items-center">
                 <div class="flex-shrink-0">
                     <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
-                        <i class="fas fa-users text-green-600 text-lg" aria-hidden="true"></i>
+                        <i aria-hidden="true" class="fas fa-users text-green-600 text-lg"></i>
                     </div>
                 </div>
                 <div class="ml-4">
@@ -69,7 +69,7 @@
                         {{ number_format($analyticsData['unique_visitors'] ?? 0) }}
                     </div>
                     <div class="text-sm text-green-600 mt-1">
-                        <i class="fas fa-arrow-up text-xs" aria-hidden="true"></i> +8.3% from last period
+                        <i aria-hidden="true" class="fas fa-arrow-up text-xs"></i> +8.3% from last period
                     </div>
                 </div>
             </div>
@@ -80,7 +80,7 @@
             <div class="flex items-center">
                 <div class="flex-shrink-0">
                     <div class="w-10 h-10 bg-yellow-100 rounded-lg flex items-center justify-center">
-                        <i class="fas fa-clock text-yellow-600 text-lg" aria-hidden="true"></i>
+                        <i aria-hidden="true" class="fas fa-clock text-yellow-600 text-lg"></i>
                     </div>
                 </div>
                 <div class="ml-4">
@@ -89,7 +89,7 @@
                         {{ $analyticsData['avg_session_duration'] ?? '0:00' }}
                     </div>
                     <div class="text-sm text-red-600 mt-1">
-                        <i class="fas fa-arrow-down text-xs" aria-hidden="true"></i> -2.1% from last period
+                        <i aria-hidden="true" class="fas fa-arrow-down text-xs"></i> -2.1% from last period
                     </div>
                 </div>
             </div>
@@ -100,7 +100,7 @@
             <div class="flex items-center">
                 <div class="flex-shrink-0">
                     <div class="w-10 h-10 bg-red-100 rounded-lg flex items-center justify-center">
-                        <i class="fas fa-percentage text-red-600 text-lg" aria-hidden="true"></i>
+                        <i aria-hidden="true" class="fas fa-percentage text-red-600 text-lg"></i>
                     </div>
                 </div>
                 <div class="ml-4">
@@ -109,7 +109,7 @@
                         {{ $analyticsData['bounce_rate'] ?? '0%' }}
                     </div>
                     <div class="text-sm text-green-600 mt-1">
-                        <i class="fas fa-arrow-down text-xs" aria-hidden="true"></i> -5.2% from last period
+                        <i aria-hidden="true" class="fas fa-arrow-down text-xs"></i> -5.2% from last period
                     </div>
                 </div>
             </div>
@@ -130,7 +130,7 @@
 
             <div class="h-64 flex items-center justify-center bg-surface-muted rounded-lg">
                 <div class="text-center">
-                    <i class="fas fa-chart-line text-content-muted text-4xl mb-4" aria-hidden="true"></i>
+                    <i aria-hidden="true" class="fas fa-chart-line text-content-muted text-4xl mb-4"></i>
                     <p class="text-content-muted">Interactive chart will be rendered here</p>
                     <p class="text-sm text-content-muted mt-2">Integration with Chart.js or similar library</p>
                 </div>
@@ -175,7 +175,7 @@
             <div class="flex items-center justify-between">
                 <h3 class="text-lg font-semibold text-content">Top Performing Pages</h3>
                 <button class="text-sm text-brand hover:text-brand font-medium">
-                    View All <i class="fas fa-arrow-right ml-1" aria-hidden="true"></i>
+                    View All <i aria-hidden="true" class="fas fa-arrow-right ml-1"></i>
                 </button>
             </div>
         </div>
@@ -225,17 +225,17 @@
                             <td class="px-6 py-4 text-right text-sm font-medium">
                                 <button wire:click="viewPageDetails({{ $page['id'] }})"
                                         class="text-brand hover:text-brand mr-3" aria-label="View page details">
-                                    <i class="fas fa-eye" aria-hidden="true"></i>
+                                    <i aria-hidden="true" class="fas fa-eye"></i>
                                 </button>
                                 <button class="text-content-muted hover:text-content-muted">
-                                    <i class="fas fa-chart-bar" aria-hidden="true"></i>
+                                    <i aria-hidden="true" class="fas fa-chart-bar"></i>
                                 </button>
                             </td>
                         </tr>
                     @empty
                         <tr>
                             <td colspan="7" class="px-6 py-12 text-center text-content-muted">
-                                <i class="fas fa-chart-line text-gray-300 text-4xl mb-4" aria-hidden="true"></i>
+                                <i aria-hidden="true" class="fas fa-chart-line text-gray-300 text-4xl mb-4"></i>
                                 <p>No page data available yet</p>
                                 <p class="text-sm mt-1">Create some pages to see analytics</p>
                             </td>
@@ -253,7 +253,7 @@
             <div class="flex items-center justify-between mb-6">
                 <h3 class="text-lg font-semibold text-content">Recent Activity</h3>
                 <button class="text-sm text-content-muted hover:text-content">
-                    <i class="fas fa-external-link-alt" aria-hidden="true"></i>
+                    <i aria-hidden="true" class="fas fa-external-link-alt"></i>
                 </button>
             </div>
 
@@ -265,7 +265,7 @@
                                 <img class="h-8 w-8 rounded-full" src="{{ $activity['user_avatar'] }}" alt="{{ $activity['user_name'] }}">
                             @else
                                 <div class="h-8 w-8 rounded-full bg-gray-300 flex items-center justify-center">
-                                    <i class="fas fa-user text-content-muted text-xs" aria-hidden="true"></i>
+                                    <i aria-hidden="true" class="fas fa-user text-content-muted text-xs"></i>
                                 </div>
                             @endif
                         </div>
@@ -294,7 +294,7 @@
                     </div>
                 @empty
                     <div class="text-center py-8">
-                        <i class="fas fa-history text-gray-300 text-3xl mb-3" aria-hidden="true"></i>
+                        <i aria-hidden="true" class="fas fa-history text-gray-300 text-3xl mb-3"></i>
                         <p class="text-content-muted">No recent activity</p>
                     </div>
                 @endforelse
@@ -312,10 +312,10 @@
                     @foreach(($analyticsData['device_breakdown'] ?? []) as $device => $percentage)
                         <div class="flex items-center justify-between">
                             <div class="flex items-center">
-                                <i class="fas fa-{{
+                                <i aria-hidden="true" class="fas fa-{{
                                     $device === 'Desktop' ? 'desktop' :
                                     ($device === 'Mobile' ? 'mobile-alt' : 'tablet-alt')
-                                }} text-content-muted w-4 mr-3" aria-hidden="true"></i>
+                                }} text-content-muted w-4 mr-3"></i>
                                 <span class="text-sm text-content">{{ $device }}</span>
                             </div>
                             <div class="flex items-center">

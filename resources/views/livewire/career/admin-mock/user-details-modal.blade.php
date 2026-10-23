@@ -1,5 +1,5 @@
 @if($showUserModal && $selectedUser)
-    <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50" wire:key="user-modal-{{ $selectedUser- x-trap.inert.noscroll="true" role="dialog" aria-modal="true" aria-label="User modal" tabindex="-1" x-data="{}" @keydown.escape.stop="$wire.set(&#x27;showUserModal&#x27;, false)">id }}">
+    <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50" wire:key="user-modal-{{ $selectedUser->id }}" x-data="{}" x-trap.inert.noscroll="true" role="dialog" aria-modal="true" aria-label="User details" tabindex="-1" @keydown.escape.stop="$wire.set('showUserModal', false)">
         <div class="rounded-lg max-w-4xl w-full max-h-[90vh] overflow-hidden bg-themed-secondary border border-themed-primary">
             <div class="px-6 py-4 border-b border-themed-primary bg-themed-tertiary flex items-center justify-between">
                 <h3 class="text-lg font-medium text-themed-primary">User Details - {{ $selectedUser->name }}</h3>

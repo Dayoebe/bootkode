@@ -11,7 +11,7 @@
                 wire:click="openCreateModal"
                 class="bg-action dark:bg-action text-action-foreground px-4 py-2 rounded-lg hover:bg-action dark:hover:bg-action transition-colors flex items-center space-x-2"
             >
-                <i class="fas fa-plus" aria-hidden="true"></i>
+                <i aria-hidden="true" class="fas fa-plus"></i>
                 <span>Add New Video</span>
             </button>
         </div>
@@ -66,14 +66,14 @@
                         <img src="{{ $video->thumbnail_url }}" alt="{{ $video->title }}" class="w-full h-full object-cover">
                     @else
                         <div class="flex items-center justify-center h-full">
-                            <i class="fas fa-video text-6xl text-content-muted dark:text-content-muted" aria-hidden="true"></i>
+                            <i aria-hidden="true" class="fas fa-video text-6xl text-content-muted dark:text-content-muted"></i>
                         </div>
                     @endif
 
                     <!-- Video Type Badge -->
                     <div class="absolute top-2 left-2">
                         <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-black bg-opacity-75 text-white">
-                            <i class="fas {{ $video->video_type === 'youtube' ? 'fa-youtube' : ($video->video_type === 'vimeo' ? 'fa-vimeo' : 'fa-video') }} mr-1" aria-hidden="true"></i>
+                            <i aria-hidden="true" class="fas {{ $video->video_type === 'youtube' ? 'fa-youtube' : ($video->video_type === 'vimeo' ? 'fa-vimeo' : 'fa-video') }} mr-1"></i>
                             {{ $videoTypes[$video->video_type] ?? $video->video_type }}
                         </span>
                     </div>
@@ -91,15 +91,15 @@
                     <div class="absolute top-2 right-2">
                         <div class="relative inline-block text-left">
                             <button type="button" class="p-1 bg-black bg-opacity-50 text-white rounded-full hover:bg-opacity-75" onclick="toggleVideoDropdown({{ $video->id }})">
-                                <i class="fas fa-ellipsis-v" aria-hidden="true"></i>
+                                <i aria-hidden="true" class="fas fa-ellipsis-v"></i>
                             </button>
                             <div id="video-dropdown-{{ $video->id }}" class="hidden absolute right-0 z-10 mt-2 w-48 bg-surface dark:bg-gray-800 rounded-md shadow-sm ring-1 ring-black ring-opacity-5 dark:ring-gray-700">
                                 <div class="py-1">
                                     <button wire:click="openEditModal({{ $video->id }})" class="w-full text-left px-4 py-2 text-sm text-content dark:text-gray-300 hover:bg-surface-muted dark:hover:bg-gray-700 flex items-center">
-                                        <i class="fas fa-edit mr-2" aria-hidden="true"></i> Edit
+                                        <i aria-hidden="true" class="fas fa-edit mr-2"></i> Edit
                                     </button>
                                     <button wire:click="openDeleteModal({{ $video->id }})" class="w-full text-left px-4 py-2 text-sm text-red-700 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 flex items-center">
-                                        <i class="fas fa-trash mr-2" aria-hidden="true"></i> Delete
+                                        <i aria-hidden="true" class="fas fa-trash mr-2"></i> Delete
                                     </button>
                                 </div>
                             </div>
@@ -126,7 +126,7 @@
 
                                 @if(!$video->is_public)
                                     <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-surface-muted dark:bg-gray-700 text-content dark:text-gray-300">
-                                        <i class="fas fa-lock mr-1" aria-hidden="true"></i> Private
+                                        <i aria-hidden="true" class="fas fa-lock mr-1"></i> Private
                                     </span>
                                 @endif
                             </div>
@@ -141,13 +141,13 @@
                         <div class="flex items-center space-x-4">
                             @if($video->views_count > 0)
                                 <span class="flex items-center">
-                                    <i class="fas fa-eye mr-1" aria-hidden="true"></i>
+                                    <i aria-hidden="true" class="fas fa-eye mr-1"></i>
                                     {{ $video->views_count }}
                                 </span>
                             @endif
                             @if($video->likes_count > 0)
                                 <span class="flex items-center">
-                                    <i class="fas fa-thumbs-up mr-1" aria-hidden="true"></i>
+                                    <i aria-hidden="true" class="fas fa-thumbs-up mr-1"></i>
                                     {{ $video->likes_count }}
                                 </span>
                             @endif
@@ -161,7 +161,7 @@
                     <!-- Course Info -->
                     @if($video->course)
                         <div class="flex items-center text-sm text-content-muted dark:text-content-muted mb-3">
-                            <i class="fas fa-book mr-2" aria-hidden="true"></i>
+                            <i aria-hidden="true" class="fas fa-book mr-2"></i>
                             <span>{{ $video->course->title }}</span>
                         </div>
                     @endif
@@ -180,12 +180,12 @@
                     <!-- Footer -->
                     <div class="flex items-center justify-between pt-3 border-t border-line dark:border-gray-700 text-sm text-content-muted dark:text-content-muted">
                         <div class="flex items-center">
-                            <i class="fas fa-user mr-1" aria-hidden="true"></i>
+                            <i aria-hidden="true" class="fas fa-user mr-1"></i>
                             <span>{{ $video->uploader->name ?? 'Unknown' }}</span>
                         </div>
 
                         <a href="{{ $video->video_url }}" target="_blank" class="text-brand dark:text-brand hover:text-brand dark:hover:text-brand font-medium">
-                            <i class="fas fa-external-link-alt mr-1" aria-hidden="true"></i>
+                            <i aria-hidden="true" class="fas fa-external-link-alt mr-1"></i>
                             Watch
                         </a>
                     </div>
@@ -194,7 +194,7 @@
         @empty
             <div class="col-span-full">
                 <div class="text-center py-12">
-                    <i class="fas fa-video text-6xl text-gray-300 dark:text-content-muted mb-4" aria-hidden="true"></i>
+                    <i aria-hidden="true" class="fas fa-video text-6xl text-gray-300 dark:text-content-muted mb-4"></i>
                     <h3 class="text-lg font-medium text-content dark:text-white mb-2">No videos found</h3>
                     <p class="text-content-muted dark:text-content-muted mb-4">
                         @if($search || $selectedCategory || $selectedCourse)
@@ -226,7 +226,7 @@
                     <div class="flex justify-between items-center mb-6">
                         <h3 class="text-lg font-semibold text-content dark:text-white">Add New Video</h3>
                         <button wire:click="closeCreateModal" class="text-content-muted dark:text-content-muted hover:text-content-muted dark:hover:text-gray-300" aria-label="Close">
-                            <i class="fas fa-times" aria-hidden="true"></i>
+                            <i aria-hidden="true" class="fas fa-times"></i>
                         </button>
                     </div>
 
@@ -322,7 +322,7 @@
                     <div class="flex justify-between items-center mb-6">
                         <h3 class="text-lg font-semibold text-content dark:text-white">Edit Video</h3>
                         <button wire:click="closeEditModal" class="text-content-muted dark:text-content-muted hover:text-content-muted dark:hover:text-gray-300" aria-label="Close">
-                            <i class="fas fa-times" aria-hidden="true"></i>
+                            <i aria-hidden="true" class="fas fa-times"></i>
                         </button>
                     </div>
 
@@ -418,7 +418,7 @@
                 <div class="p-6">
                     <div class="flex items-center mb-4">
                         <div class="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-red-100 dark:bg-red-900/30">
-                            <i class="fas fa-exclamation-triangle text-red-600 dark:text-red-400" aria-hidden="true"></i>
+                            <i aria-hidden="true" class="fas fa-exclamation-triangle text-red-600 dark:text-red-400"></i>
                         </div>
                     </div>
                     <div class="text-center">

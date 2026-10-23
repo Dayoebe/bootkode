@@ -11,18 +11,18 @@
             <div class="flex items-center space-x-4">
                 <button wire:click="$set('showMediaUpload', true)"
                         class="bg-action text-action-foreground px-4 py-2 rounded-lg hover:bg-action transition-colors">
-                    <i class="fas fa-cloud-upload-alt mr-2" aria-hidden="true"></i>Upload Files
+                    <i aria-hidden="true" class="fas fa-cloud-upload-alt mr-2"></i>Upload Files
                 </button>
 
                 <button wire:click="optimizeAllImages"
                         class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors">
-                    <i class="fas fa-compress-alt mr-2" aria-hidden="true"></i>Optimize All
+                    <i aria-hidden="true" class="fas fa-compress-alt mr-2"></i>Optimize All
                 </button>
 
                 <button wire:click="cleanupUnusedMedia"
                         wire:confirm="Are you sure you want to delete all unused media files?"
                         class="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-colors">
-                    <i class="fas fa-trash mr-2" aria-hidden="true"></i>Cleanup
+                    <i aria-hidden="true" class="fas fa-trash mr-2"></i>Cleanup
                 </button>
             </div>
         </div>
@@ -67,7 +67,7 @@
                            placeholder="Search media files..."
                            class="pl-10 pr-4 py-2 border border-line rounded-lg focus:ring-brand/30 focus:border-brand">
                     <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                        <i class="fas fa-search text-content-muted" aria-hidden="true"></i>
+                        <i aria-hidden="true" class="fas fa-search text-content-muted"></i>
                     </div>
                 </div>
 
@@ -89,11 +89,11 @@
                 <div class="flex items-center bg-surface-muted rounded-lg p-1">
                     <button wire:click="$set('viewMode', 'grid')"
                             class="{{ $viewMode === 'grid' ? 'bg-white shadow-sm' : '' }} p-2 rounded-md transition-colors">
-                        <i class="fas fa-th text-content-muted" aria-hidden="true"></i>
+                        <i aria-hidden="true" class="fas fa-th text-content-muted"></i>
                     </button>
                     <button wire:click="$set('viewMode', 'list')"
                             class="{{ $viewMode === 'list' ? 'bg-white shadow-sm' : '' }} p-2 rounded-md transition-colors">
-                        <i class="fas fa-list text-content-muted" aria-hidden="true"></i>
+                        <i aria-hidden="true" class="fas fa-list text-content-muted"></i>
                     </button>
                 </div>
 
@@ -156,7 +156,7 @@
                                      class="w-full h-full object-cover">
                             @else
                                 <div class="w-full h-full flex items-center justify-center">
-                                    <i class="{{ $media->getIconClass() }} text-4xl"></i>
+                                    <i aria-hidden="true" class="{{ $media->getIconClass() }} text-4xl"></i>
                                 </div>
                             @endif
                         </div>
@@ -172,12 +172,12 @@
 
                             @if($media->pages()->count() > 0)
                                 <p class="text-xs text-green-600">
-                                    <i class="fas fa-link text-xs mr-1" aria-hidden="true"></i>
+                                    <i aria-hidden="true" class="fas fa-link text-xs mr-1"></i>
                                     Used in {{ $media->pages()->count() }} page(s)
                                 </p>
                             @else
                                 <p class="text-xs text-content-muted">
-                                    <i class="fas fa-unlink text-xs mr-1" aria-hidden="true"></i>
+                                    <i aria-hidden="true" class="fas fa-unlink text-xs mr-1"></i>
                                     Not used
                                 </p>
                             @endif
@@ -187,19 +187,19 @@
                         <div class="flex items-center justify-between mt-3">
                             <button wire:click="editMedia({{ $media->id }})"
                                     class="text-brand hover:text-brand text-xs">
-                                <i class="fas fa-edit mr-1" aria-hidden="true"></i>Edit
+                                <i aria-hidden="true" class="fas fa-edit mr-1"></i>Edit
                             </button>
 
                             <div class="flex space-x-1">
                                 <a href="{{ $media->getUrl() }}"
                                    target="_blank"
                                    class="text-content-muted hover:text-content-muted text-xs">
-                                    <i class="fas fa-external-link-alt" aria-hidden="true"></i>
+                                    <i aria-hidden="true" class="fas fa-external-link-alt"></i>
                                 </a>
                                 <button wire:click="deleteMedia({{ $media->id }})"
                                         wire:confirm="Are you sure you want to delete this file?"
                                         class="text-red-400 hover:text-red-600 text-xs">
-                                    <i class="fas fa-trash" aria-hidden="true"></i>
+                                    <i aria-hidden="true" class="fas fa-trash"></i>
                                 </button>
                             </div>
                         </div>
@@ -208,7 +208,7 @@
             @empty
                 <div class="col-span-full">
                     <div class="text-center py-12">
-                        <i class="fas fa-photo-video text-gray-300 text-6xl mb-4" aria-hidden="true"></i>
+                        <i aria-hidden="true" class="fas fa-photo-video text-gray-300 text-6xl mb-4"></i>
                         <h3 class="text-lg font-medium text-content mb-2">No media files found</h3>
                         <p class="text-content-muted mb-6">Upload your first media file to get started</p>
                         <button wire:click="$set('showMediaUpload', true)"
@@ -239,7 +239,7 @@
                                 wire:click="sortBy('original_name')">
                                 Name
                                 @if($sortBy === 'original_name')
-                                    <i class="ml-1 fas fa-sort-{{ $sortDirection === 'asc' ? 'up' : 'down' }}" aria-hidden="true"></i>
+                                    <i aria-hidden="true" class="ml-1 fas fa-sort-{{ $sortDirection === 'asc' ? 'up' : 'down' }}"></i>
                                 @endif
                             </th>
                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-content-muted uppercase tracking-wider">
@@ -249,7 +249,7 @@
                                 wire:click="sortBy('file_size')">
                                 Size
                                 @if($sortBy === 'file_size')
-                                    <i class="ml-1 fas fa-sort-{{ $sortDirection === 'asc' ? 'up' : 'down' }}" aria-hidden="true"></i>
+                                    <i aria-hidden="true" class="ml-1 fas fa-sort-{{ $sortDirection === 'asc' ? 'up' : 'down' }}"></i>
                                 @endif
                             </th>
                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-content-muted uppercase tracking-wider">
@@ -259,7 +259,7 @@
                                 wire:click="sortBy('created_at')">
                                 Date
                                 @if($sortBy === 'created_at')
-                                    <i class="ml-1 fas fa-sort-{{ $sortDirection === 'asc' ? 'up' : 'down' }}" aria-hidden="true"></i>
+                                    <i aria-hidden="true" class="ml-1 fas fa-sort-{{ $sortDirection === 'asc' ? 'up' : 'down' }}"></i>
                                 @endif
                             </th>
                             <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-content-muted uppercase tracking-wider">
@@ -284,7 +284,7 @@
                                                  class="w-full h-full object-cover">
                                         @else
                                             <div class="w-full h-full flex items-center justify-center">
-                                                <i class="{{ $media->getIconClass() }} text-lg"></i>
+                                                <i aria-hidden="true" class="{{ $media->getIconClass() }} text-lg"></i>
                                             </div>
                                         @endif
                                     </div>
@@ -306,12 +306,12 @@
                                 <td class="px-6 py-4 text-sm">
                                     @if($media->pages()->count() > 0)
                                         <span class="text-green-600">
-                                            <i class="fas fa-link mr-1" aria-hidden="true"></i>
+                                            <i aria-hidden="true" class="fas fa-link mr-1"></i>
                                             {{ $media->pages()->count() }} page(s)
                                         </span>
                                     @else
                                         <span class="text-content-muted">
-                                            <i class="fas fa-unlink mr-1" aria-hidden="true"></i>
+                                            <i aria-hidden="true" class="fas fa-unlink mr-1"></i>
                                             Not used
                                         </span>
                                     @endif
@@ -323,17 +323,17 @@
                                     <div class="flex items-center justify-end space-x-2">
                                         <button wire:click="editMedia({{ $media->id }})"
                                                 class="text-brand hover:text-brand">
-                                            <i class="fas fa-edit" aria-hidden="true"></i>
+                                            <i aria-hidden="true" class="fas fa-edit"></i>
                                         </button>
                                         <a href="{{ $media->getUrl() }}"
                                            target="_blank"
                                            class="text-content-muted hover:text-content-muted">
-                                            <i class="fas fa-external-link-alt" aria-hidden="true"></i>
+                                            <i aria-hidden="true" class="fas fa-external-link-alt"></i>
                                         </a>
                                         <button wire:click="deleteMedia({{ $media->id }})"
                                                 wire:confirm="Are you sure you want to delete this file?"
                                                 class="text-red-600 hover:text-red-900">
-                                            <i class="fas fa-trash" aria-hidden="true"></i>
+                                            <i aria-hidden="true" class="fas fa-trash"></i>
                                         </button>
                                     </div>
                                 </td>
@@ -341,7 +341,7 @@
                         @empty
                             <tr>
                                 <td colspan="8" class="px-6 py-12 text-center">
-                                    <i class="fas fa-photo-video text-gray-300 text-4xl mb-4" aria-hidden="true"></i>
+                                    <i aria-hidden="true" class="fas fa-photo-video text-gray-300 text-4xl mb-4"></i>
                                     <p class="text-content-muted">No media files found</p>
                                 </td>
                             </tr>
@@ -368,7 +368,7 @@
                         <h3 class="text-lg font-medium text-content">Upload Media Files</h3>
                         <button wire:click="$set('showMediaUpload', false)"
                                 class="text-content-muted hover:text-content-muted" aria-label="Close">
-                            <i class="fas fa-times" aria-hidden="true"></i>
+                            <i aria-hidden="true" class="fas fa-times"></i>
                         </button>
                     </div>
                 </div>
@@ -383,7 +383,7 @@
                                id="bulk_upload">
 
                         <label for="bulk_upload" class="cursor-pointer">
-                            <i class="fas fa-cloud-upload-alt text-content-muted text-6xl mb-4" aria-hidden="true"></i>
+                            <i aria-hidden="true" class="fas fa-cloud-upload-alt text-content-muted text-6xl mb-4"></i>
                             <p class="text-lg text-content-muted mb-2">Drop files here or click to upload</p>
                             <p class="text-sm text-content-muted mb-4">
                                 Supports: JPEG, PNG, GIF, WebP, MP4, PDF<br>
@@ -438,7 +438,7 @@
                         <h3 class="text-lg font-medium text-content">Edit Media</h3>
                         <button wire:click="cancelEdit"
                                 class="text-content-muted hover:text-content-muted" aria-label="Close">
-                            <i class="fas fa-times" aria-hidden="true"></i>
+                            <i aria-hidden="true" class="fas fa-times"></i>
                         </button>
                     </div>
                 </div>

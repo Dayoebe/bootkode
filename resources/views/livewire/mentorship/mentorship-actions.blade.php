@@ -21,7 +21,7 @@
                             @endif
                         </h3>
                         <button wire:click="closeModal" class="text-themed-secondary hover:text-themed-primary transition-colors" aria-label="Close">
-                            <i class="fas fa-times text-xl" aria-hidden="true"></i>
+                            <i aria-hidden="true" class="fas fa-times text-xl"></i>
                         </button>
                     </div>
                 </div>
@@ -91,7 +91,7 @@
                                                 <h5 class="font-medium text-themed-primary mb-1 transition-colors duration-300">Mentor Rating</h5>
                                                 <div class="text-yellow-400">
                                                     @for($i = 1; $i <= 5; $i++)
-                                                        <i class="fas fa-star {{ $i <= $currentSession->mentor_rating ? '' : 'text-themed-tertiary' }}" aria-hidden="true"></i>
+                                                        <i aria-hidden="true" class="fas fa-star {{ $i <= $currentSession->mentor_rating ? '' : 'text-themed-tertiary' }}"></i>
                                                     @endfor
                                                 </div>
                                             </div>
@@ -102,7 +102,7 @@
                                                 <h5 class="font-medium text-themed-primary mb-1 transition-colors duration-300">Mentee Rating</h5>
                                                 <div class="text-yellow-400">
                                                     @for($i = 1; $i <= 5; $i++)
-                                                        <i class="fas fa-star {{ $i <= $currentSession->mentee_rating ? '' : 'text-themed-tertiary' }}" aria-hidden="true"></i>
+                                                        <i aria-hidden="true" class="fas fa-star {{ $i <= $currentSession->mentee_rating ? '' : 'text-themed-tertiary' }}"></i>
                                                     @endfor
                                                 </div>
                                             </div>
@@ -219,7 +219,7 @@
                     <div class="flex items-center justify-between">
                         <h3 class="text-xl font-bold text-themed-primary transition-colors duration-300">Complete Session</h3>
                         <button wire:click="closeModal" class="text-themed-secondary hover:text-themed-primary transition-colors" aria-label="Close">
-                            <i class="fas fa-times text-xl" aria-hidden="true"></i>
+                            <i aria-hidden="true" class="fas fa-times text-xl"></i>
                         </button>
                     </div>
                 </div>
@@ -243,13 +243,13 @@
                                     placeholder="Next steps or tasks for the mentee...">
                                 <button type="button" wire:click="removeActionItem({{ $index }})"
                                     class="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-r-lg transition-colors" aria-label="Remove action item">
-                                    <i class="fas fa-minus" aria-hidden="true"></i>
+                                    <i aria-hidden="true" class="fas fa-minus"></i>
                                 </button>
                             </div>
                         @endforeach
                         <button type="button" wire:click="addActionItem"
                             class="mt-2 px-4 py-2 bk-button bk-button-primary   rounded-lg transition-colors">
-                            <i class="fas fa-plus mr-2" aria-hidden="true"></i>Add Action Item
+                            <i aria-hidden="true" class="fas fa-plus mr-2"></i>Add Action Item
                         </button>
                     </div>
 
@@ -344,7 +344,7 @@
                             @endif
                         </h3>
                         <button wire:click="closeModal" class="text-themed-secondary hover:text-themed-primary transition-colors" aria-label="Close">
-                            <i class="fas fa-times text-xl" aria-hidden="true"></i>
+                            <i aria-hidden="true" class="fas fa-times text-xl"></i>
                         </button>
                     </div>
                 </div>
@@ -398,7 +398,7 @@
                                         <a href="{{ $currentCodeReview->repository_url }}" target="_blank"
                                            class="text-brand hover:text-brand break-all transition-colors">
                                             {{ $currentCodeReview->repository_url }}
-                                            <i class="fas fa-external-link-alt ml-1" aria-hidden="true"></i>
+                                            <i aria-hidden="true" class="fas fa-external-link-alt ml-1"></i>
                                         </a>
                                     </div>
                                 @endif
@@ -409,7 +409,7 @@
                                         <a href="{{ $currentCodeReview->pull_request_url }}" target="_blank"
                                            class="text-brand hover:text-brand break-all transition-colors">
                                             {{ $currentCodeReview->pull_request_url }}
-                                            <i class="fas fa-external-link-alt ml-1" aria-hidden="true"></i>
+                                            <i aria-hidden="true" class="fas fa-external-link-alt ml-1"></i>
                                         </a>
                                     </div>
                                 @endif
@@ -509,13 +509,13 @@
                                                     placeholder="Suggestion for improvement..."></textarea>
                                                 <button type="button" wire:click="removeSuggestion({{ $index }})"
                                                     class="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-r-lg transition-colors" aria-label="Remove suggestion">
-                                                    <i class="fas fa-minus" aria-hidden="true"></i>
+                                                    <i aria-hidden="true" class="fas fa-minus"></i>
                                                 </button>
                                             </div>
                                         @endforeach
                                         <button type="button" wire:click="addSuggestion"
                                             class="mt-2 px-4 py-2 bk-button bk-button-primary   rounded-lg transition-colors">
-                                            <i class="fas fa-plus mr-2" aria-hidden="true"></i>Add Suggestion
+                                            <i aria-hidden="true" class="fas fa-plus mr-2"></i>Add Suggestion
                                         </button>
                                     </div>
 
@@ -541,13 +541,13 @@
                                                     placeholder="Area that needs improvement...">
                                                 <button type="button" wire:click="removeImprovementArea({{ $index }})"
                                                     class="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-r-lg transition-colors" aria-label="Remove improvement area">
-                                                    <i class="fas fa-minus" aria-hidden="true"></i>
+                                                    <i aria-hidden="true" class="fas fa-minus"></i>
                                                 </button>
                                             </div>
                                         @endforeach
                                         <button type="button" wire:click="addImprovementArea"
                                             class="mt-2 px-4 py-2 bk-button bk-button-primary   rounded-lg transition-colors">
-                                            <i class="fas fa-plus mr-2" aria-hidden="true"></i>Add Area
+                                            <i aria-hidden="true" class="fas fa-plus mr-2"></i>Add Area
                                         </button>
                                     </div>
 
@@ -608,13 +608,13 @@
                                         placeholder="e.g., React, Node.js, Python">
                                     <button type="button" wire:click="removeTechnology({{ $index }})"
                                         class="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-r-lg transition-colors" aria-label="Remove technology">
-                                        <i class="fas fa-minus" aria-hidden="true"></i>
+                                        <i aria-hidden="true" class="fas fa-minus"></i>
                                     </button>
                                 </div>
                             @endforeach
                             <button type="button" wire:click="addTechnology"
                                 class="mt-2 px-4 py-2 bk-button bk-button-primary   rounded-lg transition-colors">
-                                <i class="fas fa-plus mr-2" aria-hidden="true"></i>Add Technology
+                                <i aria-hidden="true" class="fas fa-plus mr-2"></i>Add Technology
                             </button>
                             @error('technologies') <span class="text-red-500 dark:text-red-400 text-sm">{{ $message }}</span> @enderror
                         </div>
@@ -674,7 +674,7 @@
                     <div class="flex items-center justify-between">
                         <h3 class="text-xl font-bold text-themed-primary transition-colors duration-300">Leave a Review</h3>
                         <button wire:click="closeModal" class="text-themed-secondary hover:text-themed-primary transition-colors" aria-label="Close">
-                            <i class="fas fa-times text-xl" aria-hidden="true"></i>
+                            <i aria-hidden="true" class="fas fa-times text-xl"></i>
                         </button>
                     </div>
                 </div>
@@ -770,13 +770,13 @@
                                         placeholder="Something positive...">
                                     <button type="button" wire:click="removePro({{ $index }})"
                                         class="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-r-lg transition-colors" aria-label="Remove pro">
-                                        <i class="fas fa-minus" aria-hidden="true"></i>
+                                        <i aria-hidden="true" class="fas fa-minus"></i>
                                     </button>
                                 </div>
                             @endforeach
                             <button type="button" wire:click="addPro"
                                 class="mt-2 px-4 py-2 bg-green-600 hover:bg-green-700 dark:bg-green-500 dark:hover:bg-green-600 text-white rounded-lg transition-colors">
-                                <i class="fas fa-plus mr-2" aria-hidden="true"></i>Add Pro
+                                <i aria-hidden="true" class="fas fa-plus mr-2"></i>Add Pro
                             </button>
                         </div>
 
@@ -789,13 +789,13 @@
                                         placeholder="Something to improve...">
                                     <button type="button" wire:click="removeCon({{ $index }})"
                                         class="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-r-lg transition-colors" aria-label="Remove con">
-                                        <i class="fas fa-minus" aria-hidden="true"></i>
+                                        <i aria-hidden="true" class="fas fa-minus"></i>
                                     </button>
                                 </div>
                             @endforeach
                             <button type="button" wire:click="addCon"
                                 class="mt-2 px-4 py-2 bg-orange-500 hover:bg-orange-600 text-white rounded-lg transition-colors">
-                                <i class="fas fa-plus mr-2" aria-hidden="true"></i>Add Con
+                                <i aria-hidden="true" class="fas fa-plus mr-2"></i>Add Con
                             </button>
                         </div>
                     </div>

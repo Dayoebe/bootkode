@@ -9,7 +9,7 @@
                     <div class="flex-1">
                         <div class="flex items-center space-x-4 mb-3">
                             <div class="p-3 bg-brand/10 rounded-lg">
-                                <i class="fas fa-chart-line text-brand text-xl" aria-hidden="true"></i>
+                                <i aria-hidden="true" class="fas fa-chart-line text-brand text-xl"></i>
                             </div>
                             <div>
                                 <h2 class="text-2xl font-bold text-content">Content & Reviews Management</h2>
@@ -25,7 +25,7 @@
                                 <div class="text-sm text-content-muted">Active Codes</div>
                                 <div class="text-2xl font-bold text-content">{{ $promotionStats['active_codes'] ?? 0 }}</div>
                                 <div class="text-xs text-green-600 mt-1 flex items-center">
-                                    <i class="fas fa-arrow-up mr-1" aria-hidden="true"></i>
+                                    <i aria-hidden="true" class="fas fa-arrow-up mr-1"></i>
                                     Live now
                                 </div>
                             </div>
@@ -54,7 +54,7 @@
                                 <div class="text-sm text-content-muted">Avg Rating</div>
                                 <div class="text-2xl font-bold text-content flex items-center">
                                     {{ number_format($reviewStats['average_rating'] ?? 0, 1) }}/5
-                                    <i class="fas fa-star text-yellow-400 ml-1 text-sm" aria-hidden="true"></i>
+                                    <i aria-hidden="true" class="fas fa-star text-yellow-400 ml-1 text-sm"></i>
                                 </div>
                                 <div class="text-xs text-content-muted mt-1">Overall quality</div>
                             </div>
@@ -67,7 +67,7 @@
                     @if($activeTab === 'promotions')
                         <button wire:click="openCreateModal"
                                 class="inline-flex items-center px-4 py-2.5 bg-action text-action-foreground rounded-lg hover:bg-action transition-all duration-200 text-sm font-medium shadow-sm ">
-                            <i class="fas fa-plus mr-2" aria-hidden="true"></i>
+                            <i aria-hidden="true" class="fas fa-plus mr-2"></i>
                             Create Discount Code
                         </button>
                     @else
@@ -99,14 +99,14 @@
                 <button wire:click="setActiveTab('promotions')"
                         class="{{ $activeTab === 'promotions' ? 'border-blue-500 text-brand bg-blue-50' : 'border-transparent text-content-muted hover:text-content hover:border-slate-300' }}
                         whitespace-nowrap py-4 px-6 border-b-2 font-medium text-sm flex items-center transition-all duration-200 rounded-t-xl">
-                    <i class="fas fa-tags mr-3" aria-hidden="true"></i>
+                    <i aria-hidden="true" class="fas fa-tags mr-3"></i>
                     Promotions & Discounts
                 </button>
 
                 <button wire:click="setActiveTab('reviews')"
                         class="{{ $activeTab === 'reviews' ? 'border-blue-500 text-brand bg-blue-50' : 'border-transparent text-content-muted hover:text-content hover:border-slate-300' }}
                         whitespace-nowrap py-4 px-6 border-b-2 font-medium text-sm flex items-center transition-all duration-200 rounded-t-xl relative">
-                    <i class="fas fa-star mr-3" aria-hidden="true"></i>
+                    <i aria-hidden="true" class="fas fa-star mr-3"></i>
                     Reviews & Ratings
                     @if(($reviewStats['pending_reviews'] ?? 0) > 0)
                         <span class="ml-2 bg-amber-500 text-white text-xs px-2 py-1 rounded-full  font-semibold">

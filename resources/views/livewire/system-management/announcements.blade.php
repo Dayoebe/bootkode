@@ -2,7 +2,7 @@
     <!-- Header -->
     <div class="bg-brand-ink   p-6 rounded-lg shadow-sm text-white mb-8  ">
         <h1 class=" font-bold text-white bk-page-title">
-            <i class="fas fa-bullhorn mr-2" aria-hidden="true"></i> Announcements
+            <i aria-hidden="true" class="fas fa-bullhorn mr-2"></i> Announcements
         </h1>
         <p class="text-brand mt-2">View platform and course announcements</p>
     </div>
@@ -14,7 +14,7 @@
             <div class="flex-1">
                 <label for="search" class="block text-sm font-medium text-themed-primary mb-2">Search Announcements</label>
                 <div class="relative">
-                    <i class="fas fa-search absolute left-3 top-3 text-themed-secondary" aria-hidden="true"></i>
+                    <i aria-hidden="true" class="fas fa-search absolute left-3 top-3 text-themed-secondary"></i>
                     <input wire:model.live.debounce.300ms="search" type="text" id="search"
                            placeholder="Search announcements..."
                            class="w-full pl-10 pr-4 py-2 border border-themed-primary bg-themed-tertiary rounded-lg focus:outline-none focus:ring-2 focus:ring-brand/30 focus:border-brand text-themed-primary">
@@ -45,7 +45,7 @@
                             'border-b-2 border-transparent text-themed-secondary hover:text-themed-primary': activeTab !== 'all'
                         }"
                         class="flex-1 whitespace-nowrap py-4 px-4 font-medium text-sm flex items-center justify-center transition-all duration-300">
-                    <i class="fas fa-list mr-2" aria-hidden="true"></i> All Announcements
+                    <i aria-hidden="true" class="fas fa-list mr-2"></i> All Announcements
                 </button>
                 <button @click="activeTab = 'my_courses'"
                         :class="{
@@ -53,7 +53,7 @@
                             'border-b-2 border-transparent text-themed-secondary hover:text-themed-primary': activeTab !== 'my_courses'
                         }"
                         class="flex-1 whitespace-nowrap py-4 px-4 font-medium text-sm flex items-center justify-center transition-all duration-300">
-                    <i class="fas fa-graduation-cap mr-2" aria-hidden="true"></i> My Courses
+                    <i aria-hidden="true" class="fas fa-graduation-cap mr-2"></i> My Courses
                 </button>
             </nav>
         </div>
@@ -70,7 +70,7 @@
                             <!-- Icon -->
                             <div class="flex-shrink-0">
                                 <div class="flex items-center justify-center h-10 w-10 rounded-lg bg-brand/10 dark:bg-action/30">
-                                    <i class="fas fa-megaphone text-brand dark:text-brand" aria-hidden="true"></i>
+                                    <i aria-hidden="true" class="fas fa-megaphone text-brand dark:text-brand"></i>
                                 </div>
                             </div>
 
@@ -78,21 +78,21 @@
                             <div class="flex-1 min-w-0">
                                 <h3 class="text-lg font-semibold text-themed-primary">{{ $announcement->title }}</h3>
                                 <p class="text-sm text-themed-secondary mt-1">
-                                    <i class="fas fa-user mr-1" aria-hidden="true"></i>{{ $announcement->user->name }}
+                                    <i aria-hidden="true" class="fas fa-user mr-1"></i>{{ $announcement->user->name }}
                                     <span class="mx-2">•</span>
-                                    <i class="fas fa-calendar mr-1" aria-hidden="true"></i>{{ $announcement->published_at->format('M d, Y \a\t g:i A') }}
+                                    <i aria-hidden="true" class="fas fa-calendar mr-1"></i>{{ $announcement->published_at->format('M d, Y \a\t g:i A') }}
                                 </p>
 
                                 @if($announcement->course)
                                     <div class="mt-2">
                                         <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-brand/10 dark:bg-action/30 text-brand dark:text-brand">
-                                            <i class="fas fa-book mr-1" aria-hidden="true"></i>{{ $announcement->course->title }}
+                                            <i aria-hidden="true" class="fas fa-book mr-1"></i>{{ $announcement->course->title }}
                                         </span>
                                     </div>
                                 @else
                                     <div class="mt-2">
                                         <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-brand/10 dark:bg-action/30 text-brand dark:text-brand">
-                                            <i class="fas fa-globe mr-1" aria-hidden="true"></i>Platform-Wide
+                                            <i aria-hidden="true" class="fas fa-globe mr-1"></i>Platform-Wide
                                         </span>
                                     </div>
                                 @endif
@@ -103,15 +103,15 @@
                         <div class="flex-shrink-0 ml-4">
                             @if($announcement->status === 'published')
                                 <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300">
-                                    <i class="fas fa-check-circle mr-1" aria-hidden="true"></i>Published
+                                    <i aria-hidden="true" class="fas fa-check-circle mr-1"></i>Published
                                 </span>
                             @elseif($announcement->status === 'draft')
                                 <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-300">
-                                    <i class="fas fa-edit mr-1" aria-hidden="true"></i>Draft
+                                    <i aria-hidden="true" class="fas fa-edit mr-1"></i>Draft
                                 </span>
                             @else
                                 <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-surface-muted dark:bg-gray-700 text-content dark:text-gray-300">
-                                    <i class="fas fa-archive mr-1" aria-hidden="true"></i>Archived
+                                    <i aria-hidden="true" class="fas fa-archive mr-1"></i>Archived
                                 </span>
                             @endif
                         </div>
@@ -127,15 +127,15 @@
                     <!-- Footer with Read More -->
                     <div class="mt-4 pt-4 border-t border-themed-primary flex items-center justify-between">
                         <div class="flex items-center space-x-4 text-xs text-themed-secondary">
-                            <span><i class="fas fa-clock mr-1" aria-hidden="true"></i>{{ $announcement->created_at->diffForHumans() }}</span>
+                            <span><i aria-hidden="true" class="fas fa-clock mr-1"></i>{{ $announcement->created_at->diffForHumans() }}</span>
                             @if($announcement->updated_at->ne($announcement->created_at))
-                                <span><i class="fas fa-pencil-alt mr-1" aria-hidden="true"></i>Updated {{ $announcement->updated_at->diffForHumans() }}</span>
+                                <span><i aria-hidden="true" class="fas fa-pencil-alt mr-1"></i>Updated {{ $announcement->updated_at->diffForHumans() }}</span>
                             @endif
                         </div>
 
                         @if(strlen($announcement->content) > 300)
                             <a href="#" class="inline-flex items-center text-brand dark:text-brand hover:text-brand dark:hover:text-brand text-sm font-medium transition-colors">
-                                Read More <i class="fas fa-arrow-right ml-1" aria-hidden="true"></i>
+                                Read More <i aria-hidden="true" class="fas fa-arrow-right ml-1"></i>
                             </a>
                         @endif
                     </div>
@@ -144,13 +144,13 @@
                 <!-- Empty State -->
                 <div class="text-center py-16">
                     <div class="bg-themed-tertiary rounded-full p-6 w-24 h-24 mx-auto mb-4 flex items-center justify-center">
-                        <i class="fas fa-inbox fa-2x text-themed-secondary" aria-hidden="true"></i>
+                        <i aria-hidden="true" class="fas fa-inbox fa-2x text-themed-secondary"></i>
                     </div>
                     <h3 class="text-xl font-semibold text-themed-primary mb-2">No announcements found</h3>
                     <p class="text-themed-secondary mb-6">There are no announcements to display at the moment.</p>
                     <button wire:click="$set('search', '')" wire:click="$set('courseFilter', '')"
                             class="inline-flex items-center px-4 py-2 bg-brand/10 dark:bg-action/30 text-brand dark:text-brand rounded-lg hover:bg-cyan-200 dark:hover:bg-action/50 transition-colors text-sm font-medium">
-                        <i class="fas fa-redo mr-2" aria-hidden="true"></i>Clear Filters
+                        <i aria-hidden="true" class="fas fa-redo mr-2"></i>Clear Filters
                     </button>
                 </div>
             @endforelse
@@ -169,7 +169,7 @@
         <div class="bg-themed-secondary rounded-lg p-4 border border-themed-primary">
             <div class="flex items-center">
                 <div class="p-3 rounded-lg bg-brand/10 dark:bg-action/30">
-                    <i class="fas fa-megaphone text-brand dark:text-brand text-xl" aria-hidden="true"></i>
+                    <i aria-hidden="true" class="fas fa-megaphone text-brand dark:text-brand text-xl"></i>
                 </div>
                 <div class="ml-4">
                     <p class="text-sm text-themed-secondary">Total Announcements</p>
@@ -181,7 +181,7 @@
         <div class="bg-themed-secondary rounded-lg p-4 border border-themed-primary">
             <div class="flex items-center">
                 <div class="p-3 rounded-lg bg-green-100 dark:bg-green-900/30">
-                    <i class="fas fa-check-circle text-green-600 dark:text-green-400 text-xl" aria-hidden="true"></i>
+                    <i aria-hidden="true" class="fas fa-check-circle text-green-600 dark:text-green-400 text-xl"></i>
                 </div>
                 <div class="ml-4">
                     <p class="text-sm text-themed-secondary">Published</p>
@@ -193,7 +193,7 @@
         <div class="bg-themed-secondary rounded-lg p-4 border border-themed-primary">
             <div class="flex items-center">
                 <div class="p-3 rounded-lg bg-brand/10 dark:bg-action/30">
-                    <i class="fas fa-book text-brand dark:text-brand text-xl" aria-hidden="true"></i>
+                    <i aria-hidden="true" class="fas fa-book text-brand dark:text-brand text-xl"></i>
                 </div>
                 <div class="ml-4">
                     <p class="text-sm text-themed-secondary">Courses</p>

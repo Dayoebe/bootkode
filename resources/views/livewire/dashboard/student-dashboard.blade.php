@@ -12,7 +12,7 @@
                     <div class="flex items-center justify-between mb-6">
                         <h2 class="text-xl font-bold text-themed-primary transition-colors duration-300">Continue Learning</h2>
                         <a href="{{ route('student.enrolled-courses') }}" class="text-brand dark:text-brand hover:text-brand dark:hover:text-brand text-sm font-medium transition-colors duration-300">
-                            View All <i class="fas fa-arrow-right ml-1" aria-hidden="true"></i>
+                            View All <i aria-hidden="true" class="fas fa-arrow-right ml-1"></i>
                         </a>
                     </div>
 
@@ -24,7 +24,7 @@
                                         <img src="{{ $progress['thumbnail'] }}" alt="{{ $progress['title'] }}" class="w-20 h-20 rounded-lg object-cover flex-shrink-0">
                                     @else
                                         <div class="w-20 h-20 bg-brand/10 dark:bg-action/30 rounded-lg flex items-center justify-center flex-shrink-0 transition-colors duration-300">
-                                            <i class="fas fa-book text-brand dark:text-brand text-2xl" aria-hidden="true"></i>
+                                            <i aria-hidden="true" class="fas fa-book text-brand dark:text-brand text-2xl"></i>
                                         </div>
                                     @endif
 
@@ -56,7 +56,7 @@
                                         @if($progress['next_lesson'])
                                             <div class="mt-3 flex flex-col items-start gap-3 sm:flex-row sm:items-center sm:justify-between">
                                                 <p class="text-sm text-themed-primary transition-colors duration-300">
-                                                    <i class="fas fa-play-circle text-brand mr-1" aria-hidden="true"></i>
+                                                    <i aria-hidden="true" class="fas fa-play-circle text-brand mr-1"></i>
                                                     Next: {{ $progress['next_lesson']['title'] }}
                                                 </p>
                                                 <a href="{{ route('course.view', ['course' => $progress['slug']]) }}" class="bk-button bk-button-primary shrink-0">
@@ -69,7 +69,7 @@
                             </div>
                         @empty
                             <div class="text-center py-12">
-                                <i class="fas fa-book-open text-themed-tertiary text-4xl mb-3" aria-hidden="true"></i>
+                                <i aria-hidden="true" class="fas fa-book-open text-themed-tertiary text-4xl mb-3"></i>
                                 <p class="text-themed-secondary mb-4 transition-colors duration-300">No active courses</p>
                                 <a href="{{ route('student.course-catalog') }}" class="bk-button bk-button-primary">
                                     Browse Courses
@@ -92,7 +92,7 @@
                         <p class="text-xs text-green-600 dark:text-green-400 font-medium transition-colors duration-300">{{ $this->quickStats['completed_courses'] }} completed</p>
                     </div>
                     <div class="bg-brand/10 dark:bg-action/30 p-3 rounded-full transition-colors duration-300">
-                        <i class="fas fa-book text-brand dark:text-brand text-xl" aria-hidden="true"></i>
+                        <i aria-hidden="true" class="fas fa-book text-brand dark:text-brand text-xl"></i>
                     </div>
                 </div>
             </div>
@@ -106,7 +106,7 @@
                         <p class="text-xs text-brand dark:text-brand font-medium transition-colors duration-300">earned</p>
                     </div>
                     <div class="bg-brand/10 dark:bg-action/30 p-3 rounded-full transition-colors duration-300">
-                        <i class="fas fa-certificate text-brand dark:text-brand text-xl" aria-hidden="true"></i>
+                        <i aria-hidden="true" class="fas fa-certificate text-brand dark:text-brand text-xl"></i>
                     </div>
                 </div>
             </div>
@@ -120,7 +120,7 @@
                         <p class="text-xs text-yellow-600 dark:text-yellow-400 font-medium transition-colors duration-300">assessments</p>
                     </div>
                     <div class="bg-yellow-100 dark:bg-yellow-900/30 p-3 rounded-full transition-colors duration-300">
-                        <i class="fas fa-chart-line text-yellow-600 dark:text-yellow-400 text-xl" aria-hidden="true"></i>
+                        <i aria-hidden="true" class="fas fa-chart-line text-yellow-600 dark:text-yellow-400 text-xl"></i>
                     </div>
                 </div>
             </div>
@@ -134,7 +134,7 @@
                         <p class="text-xs text-green-600 dark:text-green-400 font-medium transition-colors duration-300">total</p>
                     </div>
                     <div class="bg-green-100 dark:bg-green-900/30 p-3 rounded-full transition-colors duration-300">
-                        <i class="fas fa-clock text-green-600 dark:text-green-400 text-xl" aria-hidden="true"></i>
+                        <i aria-hidden="true" class="fas fa-clock text-green-600 dark:text-green-400 text-xl"></i>
                     </div>
                 </div>
             </div>
@@ -148,7 +148,7 @@
                         <p class="text-xs text-brand dark:text-brand font-medium transition-colors duration-300">unlocked</p>
                     </div>
                     <div class="bg-brand/10 dark:bg-action/30 p-3 rounded-full transition-colors duration-300">
-                        <i class="fas fa-trophy text-brand dark:text-brand text-xl" aria-hidden="true"></i>
+                        <i aria-hidden="true" class="fas fa-trophy text-brand dark:text-brand text-xl"></i>
                     </div>
                 </div>
             </div>
@@ -162,7 +162,7 @@
                         <p class="text-xs text-red-600 dark:text-red-400 font-medium transition-colors duration-300">assessments</p>
                     </div>
                     <div class="bg-red-100 dark:bg-red-900/30 p-3 rounded-full transition-colors duration-300">
-                        <i class="fas fa-tasks text-red-600 dark:text-red-400 text-xl" aria-hidden="true"></i>
+                        <i aria-hidden="true" class="fas fa-tasks text-red-600 dark:text-red-400 text-xl"></i>
                     </div>
                 </div>
             </div>
@@ -176,7 +176,7 @@
                         <p class="text-xs text-brand dark:text-brand font-medium transition-colors duration-300">completed</p>
                     </div>
                     <div class="bg-brand/10 dark:bg-action/30 p-3 rounded-full transition-colors duration-300">
-                        <i class="fas fa-check-circle text-brand dark:text-brand text-xl" aria-hidden="true"></i>
+                        <i aria-hidden="true" class="fas fa-check-circle text-brand dark:text-brand text-xl"></i>
                     </div>
                 </div>
             </div>
@@ -190,7 +190,7 @@
                         <p class="text-xs text-pink-600 dark:text-pink-400 font-medium transition-colors duration-300">courses saved</p>
                     </div>
                     <div class="bg-pink-100 dark:bg-pink-900/30 p-3 rounded-full transition-colors duration-300">
-                        <i class="fas fa-heart text-pink-600 dark:text-pink-400 text-xl" aria-hidden="true"></i>
+                        <i aria-hidden="true" class="fas fa-heart text-pink-600 dark:text-pink-400 text-xl"></i>
                     </div>
                 </div>
             </div>
@@ -292,7 +292,7 @@
                             <div class="space-y-2">
                                 @foreach($this->performanceAnalytics['improvement_areas'] as $area)
                                     <div class="flex items-start space-x-2 text-sm">
-                                        <i class="fas fa-lightbulb text-yellow-500 dark:text-yellow-400 mt-1" aria-hidden="true"></i>
+                                        <i aria-hidden="true" class="fas fa-lightbulb text-yellow-500 dark:text-yellow-400 mt-1"></i>
                                         <div>
                                             <p class="text-themed-primary font-medium transition-colors duration-300">{{ $area['area'] }}</p>
                                             <p class="text-themed-secondary text-xs transition-colors duration-300">{{ $area['suggestion'] }}</p>
@@ -320,7 +320,7 @@
                                     <h4 class="font-medium text-themed-primary transition-colors duration-300">{{ $review['course_title'] }}</h4>
                                     <div class="flex items-center">
                                         @for($i = 1; $i <= 5; $i++)
-                                            <i class="fas fa-star text-sm {{ $i <= $review['rating'] ? 'text-yellow-400 dark:text-yellow-300' : 'text-themed-tertiary' }} transition-colors duration-300" aria-hidden="true"></i>
+                                            <i aria-hidden="true" class="fas fa-star text-sm {{ $i <= $review['rating'] ? 'text-yellow-400 dark:text-yellow-300' : 'text-themed-tertiary' }} transition-colors duration-300"></i>
                                         @endfor
                                     </div>
                                 </div>
@@ -329,14 +329,14 @@
                                     <span class="text-themed-tertiary transition-colors duration-300">{{ $review['created_at']->diffForHumans() }}</span>
                                     <div class="flex items-center space-x-3">
                                         @if($review['is_approved'])
-                                            <span class="text-green-600 dark:text-green-400 transition-colors duration-300"><i class="fas fa-check-circle mr-1" aria-hidden="true"></i>Approved</span>
+                                            <span class="text-green-600 dark:text-green-400 transition-colors duration-300"><i aria-hidden="true" class="fas fa-check-circle mr-1"></i>Approved</span>
                                         @else
-                                            <span class="text-yellow-600 dark:text-yellow-400 transition-colors duration-300"><i class="fas fa-clock mr-1" aria-hidden="true"></i>Pending</span>
+                                            <span class="text-yellow-600 dark:text-yellow-400 transition-colors duration-300"><i aria-hidden="true" class="fas fa-clock mr-1"></i>Pending</span>
                                         @endif
                                         @if($review['has_reply'])
-                                            <span class="text-brand dark:text-brand transition-colors duration-300"><i class="fas fa-reply mr-1" aria-hidden="true"></i>Replied</span>
+                                            <span class="text-brand dark:text-brand transition-colors duration-300"><i aria-hidden="true" class="fas fa-reply mr-1"></i>Replied</span>
                                         @endif
-                                        <span class="text-themed-tertiary transition-colors duration-300"><i class="fas fa-thumbs-up mr-1" aria-hidden="true"></i>{{ $review['helpful_count'] }}</span>
+                                        <span class="text-themed-tertiary transition-colors duration-300"><i aria-hidden="true" class="fas fa-thumbs-up mr-1"></i>{{ $review['helpful_count'] }}</span>
                                     </div>
                                 </div>
                             </div>
@@ -359,15 +359,15 @@
                                 <div class="flex-shrink-0">
                                     @if($task['type'] === 'assessment')
                                         <div class="w-8 h-8 bg-red-100 dark:bg-red-900/30 rounded-full flex items-center justify-center transition-colors duration-300">
-                                            <i class="fas fa-clipboard-check text-red-600 dark:text-red-400 text-sm" aria-hidden="true"></i>
+                                            <i aria-hidden="true" class="fas fa-clipboard-check text-red-600 dark:text-red-400 text-sm"></i>
                                         </div>
                                     @elseif($task['type'] === 'certificate')
                                         <div class="w-8 h-8 bg-brand/10 dark:bg-action/30 rounded-full flex items-center justify-center transition-colors duration-300">
-                                            <i class="fas fa-certificate text-brand dark:text-brand text-sm" aria-hidden="true"></i>
+                                            <i aria-hidden="true" class="fas fa-certificate text-brand dark:text-brand text-sm"></i>
                                         </div>
                                     @else
                                         <div class="w-8 h-8 bg-brand/10 dark:bg-action/30 rounded-full flex items-center justify-center transition-colors duration-300">
-                                            <i class="fas fa-play text-brand dark:text-brand text-sm" aria-hidden="true"></i>
+                                            <i aria-hidden="true" class="fas fa-play text-brand dark:text-brand text-sm"></i>
                                         </div>
                                     @endif
                                 </div>
@@ -385,12 +385,12 @@
                                     </div>
                                 </div>
                                 <a href="{{ $task['url'] }}" class="text-brand dark:text-brand hover:text-brand dark:hover:text-brand transition-colors">
-                                    <i class="fas fa-arrow-right text-sm" aria-hidden="true"></i>
+                                    <i aria-hidden="true" class="fas fa-arrow-right text-sm"></i>
                                 </a>
                             </div>
                         @empty
                             <div class="text-center py-8">
-                                <i class="fas fa-tasks text-themed-tertiary text-3xl mb-2" aria-hidden="true"></i>
+                                <i aria-hidden="true" class="fas fa-tasks text-themed-tertiary text-3xl mb-2"></i>
                                 <p class="text-themed-secondary transition-colors duration-300">No upcoming tasks</p>
                                 <p class="text-xs text-themed-tertiary mt-1 transition-colors duration-300">You're all caught up!</p>
                             </div>
@@ -429,7 +429,7 @@
                             </div>
                         @empty
                             <div class="text-center py-8">
-                                <i class="fas fa-trophy text-themed-tertiary text-3xl mb-2" aria-hidden="true"></i>
+                                <i aria-hidden="true" class="fas fa-trophy text-themed-tertiary text-3xl mb-2"></i>
                                 <p class="text-themed-secondary transition-colors duration-300">No achievements yet</p>
                                 <p class="text-xs text-themed-tertiary mt-1 transition-colors duration-300">Complete lessons to earn your first achievement!</p>
                             </div>
@@ -463,7 +463,7 @@
                             </div>
                         @empty
                             <div class="text-center py-8">
-                                <i class="fas fa-bullhorn text-themed-tertiary text-3xl mb-2" aria-hidden="true"></i>
+                                <i aria-hidden="true" class="fas fa-bullhorn text-themed-tertiary text-3xl mb-2"></i>
                                 <p class="text-themed-secondary transition-colors duration-300">No announcements</p>
                             </div>
                         @endforelse
@@ -516,7 +516,7 @@
                             </div>
                             @if($this->careerTools['shortlisted_count'] > 0)
                                 <div class="flex items-center space-x-2 mb-2">
-                                    <i class="fas fa-check-circle text-green-500 dark:text-green-400 text-sm" aria-hidden="true"></i>
+                                    <i aria-hidden="true" class="fas fa-check-circle text-green-500 dark:text-green-400 text-sm"></i>
                                     <span class="text-xs text-themed-secondary transition-colors duration-300">{{ $this->careerTools['shortlisted_count'] }} shortlisted</span>
                                 </div>
                             @endif
@@ -568,7 +568,7 @@
                     @if($this->mentorshipStatus['pending_requests'] > 0)
                         <div class="mb-4 p-3 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg transition-colors duration-300">
                             <p class="text-sm text-yellow-800 dark:text-yellow-300 transition-colors duration-300">
-                                <i class="fas fa-clock mr-2" aria-hidden="true"></i>
+                                <i aria-hidden="true" class="fas fa-clock mr-2"></i>
                                 {{ $this->mentorshipStatus['pending_requests'] }} pending request{{ $this->mentorshipStatus['pending_requests'] > 1 ? 's' : '' }}
                             </p>
                         </div>
@@ -621,7 +621,7 @@
                                     <img src="{{ $item['thumbnail'] }}" alt="{{ $item['title'] }}" class="w-16 h-16 rounded object-cover flex-shrink-0">
                                 @else
                                     <div class="w-16 h-16 bg-themed-tertiary rounded flex items-center justify-center flex-shrink-0 transition-colors duration-300">
-                                        <i class="fas fa-book text-themed-secondary" aria-hidden="true"></i>
+                                        <i aria-hidden="true" class="fas fa-book text-themed-secondary"></i>
                                     </div>
                                 @endif
                                 <div class="flex-1 min-w-0">
@@ -633,7 +633,7 @@
                                         </span>
                                         @if($item['rating'])
                                             <div class="flex items-center">
-                                                <i class="fas fa-star text-yellow-400 dark:text-yellow-300 text-xs" aria-hidden="true"></i>
+                                                <i aria-hidden="true" class="fas fa-star text-yellow-400 dark:text-yellow-300 text-xs"></i>
                                                 <span class="text-xs text-themed-secondary ml-1 transition-colors duration-300">{{ number_format($item['rating'], 1) }}</span>
                                             </div>
                                         @endif

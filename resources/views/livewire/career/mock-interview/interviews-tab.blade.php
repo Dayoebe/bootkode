@@ -4,7 +4,7 @@
         <div class="flex flex-wrap items-center gap-4">
             <button wire:click="$set('showCreateForm', true)"
                 class="bg-action hover:bg-action/90 text-action-foreground px-6 py-3 rounded-lg transition-colors font-semibold shadow-sm">
-                <i class="fas fa-plus mr-2" aria-hidden="true"></i> Create New Interview
+                <i aria-hidden="true" class="fas fa-plus mr-2"></i> Create New Interview
             </button>
         </div>
 
@@ -99,17 +99,17 @@
                             @if($interview->isScheduled())
                                 <button wire:click="startInterview({{ $interview->id }})"
                                     class="flex-1 bg-action hover:bg-action/90 text-action-foreground px-4 py-2 rounded-lg transition-colors font-medium">
-                                    <i class="fas fa-play mr-1" aria-hidden="true"></i> Start Interview
+                                    <i aria-hidden="true" class="fas fa-play mr-1"></i> Start Interview
                                 </button>
                             @elseif($interview->isCompleted())
                                 <button wire:click="viewResults({{ $interview->id }})"
                                     class="flex-1 bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg transition-colors font-medium">
-                                    <i class="fas fa-chart-bar mr-1" aria-hidden="true"></i> View Results
+                                    <i aria-hidden="true" class="fas fa-chart-bar mr-1"></i> View Results
                                 </button>
                                 @if($interview->allow_retakes && $interview->retake_count < $interview->max_retakes)
                                     <button wire:click="retakeInterview({{ $interview->id }})"
                                         class="px-4 py-2 bg-orange-600 hover:bg-orange-700 text-white rounded-lg transition-colors">
-                                        <i class="fas fa-redo" aria-hidden="true"></i>
+                                        <i aria-hidden="true" class="fas fa-redo"></i>
                                     </button>
                                 @endif
                             @endif
@@ -118,14 +118,14 @@
                                 <button wire:click="editInterview({{ $interview->id }})"
                                     class="p-2 bg-brand/10 text-brand hover:bg-brand/20 rounded-lg transition-colors"
                                     title="Edit">
-                                    <i class="fas fa-edit" aria-hidden="true"></i>
+                                    <i aria-hidden="true" class="fas fa-edit"></i>
                                 </button>
 
                                 <button wire:click="deleteInterview({{ $interview->id }})"
                                     wire:confirm="Are you sure you want to delete this interview?"
                                     class="p-2 bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 hover:bg-red-200 dark:hover:bg-red-900/50 rounded-lg transition-colors"
                                     title="Delete">
-                                    <i class="fas fa-trash" aria-hidden="true"></i>
+                                    <i aria-hidden="true" class="fas fa-trash"></i>
                                 </button>
                             </div>
                         </div>
@@ -152,7 +152,7 @@
             @if(!$searchTerm && !$filterType && !$filterStatus)
                 <button wire:click="$set('showCreateForm', true)"
                     class="bg-action hover:bg-action/90 text-action-foreground px-8 py-3 rounded-lg transition-colors font-semibold">
-                    <i class="fas fa-plus mr-2" aria-hidden="true"></i> Create Your First Interview
+                    <i aria-hidden="true" class="fas fa-plus mr-2"></i> Create Your First Interview
                 </button>
             @endif
         </div>

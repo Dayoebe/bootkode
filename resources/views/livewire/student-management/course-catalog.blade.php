@@ -18,7 +18,7 @@
             <h2 class="text-lg font-semibold text-themed-primary">Filter Courses</h2>
             <button wire:click="resetFilters"
                 class="text-brand hover:text-accent-themed-secondary text-sm flex items-center transition-colors">
-                <i class="fas fa-redo-alt mr-2" aria-hidden="true"></i> Reset Filters
+                <i aria-hidden="true" class="fas fa-redo-alt mr-2"></i> Reset Filters
             </button>
         </div>
 
@@ -28,7 +28,7 @@
                 <input aria-label="Search courses" type="text" wire:model.live.debounce.300ms="search" placeholder="Search courses..."
                     class="w-full pl-10 pr-4 py-3 bg-themed-secondary border border-themed-secondary rounded-lg text-themed-primary placeholder-themed-tertiary focus:outline-none focus:ring-2 focus:ring-brand">
                 <div class="absolute left-3 top-3.5 text-themed-tertiary">
-                    <i class="fas fa-search" aria-hidden="true"></i>
+                    <i aria-hidden="true" class="fas fa-search"></i>
                 </div>
             </div>
 
@@ -89,11 +89,11 @@
         <div class="inline-flex rounded-md shadow-sm" role="group">
             <button type="button"
                 class="px-4 py-2 text-sm font-medium text-themed-primary bg-themed-secondary border border-themed-secondary rounded-l-lg hover:bg-themed-tertiary focus:z-10 focus:ring-2 focus:ring-brand transition-colors">
-                <i class="fas fa-th-large mr-2" aria-hidden="true"></i> Grid
+                <i aria-hidden="true" class="fas fa-th-large mr-2"></i> Grid
             </button>
             <button type="button"
                 class="px-4 py-2 text-sm font-medium text-themed-primary bg-themed-secondary border-t border-b border-r border-themed-secondary rounded-r-lg hover:bg-themed-tertiary focus:z-10 focus:ring-2 focus:ring-brand transition-colors">
-                <i class="fas fa-list mr-2" aria-hidden="true"></i> List
+                <i aria-hidden="true" class="fas fa-list mr-2"></i> List
             </button>
         </div>
     </div>
@@ -114,7 +114,7 @@
                             </span>
                             @if($course->quality_label_text)
                                 <span class="text-xs px-3 py-1.5 rounded-full shadow font-semibold {{ $course->quality_label_class }}">
-                                    <i class="fas fa-shield-check mr-1" aria-hidden="true"></i>{{ $course->quality_label_text }}
+                                    <i aria-hidden="true" class="fas fa-shield-check mr-1"></i>{{ $course->quality_label_text }}
                                 </span>
                             @endif
                             <span class="bg-themed-tertiary text-themed-primary text-xs px-3 py-1.5 rounded-full shadow">
@@ -124,15 +124,15 @@
                         <div class="absolute top-3 right-3 flex gap-2">
                             <button wire:click="toggleWishlist({{ $course->id }})"
                                 class="p-2 bg-themed-secondary rounded-full shadow-sm text-{{ in_array($course->id, $wishlistCourseIds) ? 'red-500' : 'themed-tertiary' }} hover:text-red-500 transition-colors">
-                                <i class="fas fa-heart text-sm" aria-hidden="true"></i>
+                                <i aria-hidden="true" class="fas fa-heart text-sm"></i>
                             </button>
                             <button wire:click="showPreview({{ $course->id }})"
                                 class="p-2 bg-themed-secondary rounded-full shadow-sm text-themed-tertiary hover:text-brand transition-colors">
-                                <i class="fas fa-eye text-sm" aria-hidden="true"></i>
+                                <i aria-hidden="true" class="fas fa-eye text-sm"></i>
                             </button>
                         </div>
                         <div class="absolute bottom-3 left-3 bg-black/70 text-white text-xs px-3 py-1.5 rounded-full">
-                            <i class="far fa-clock mr-1" aria-hidden="true"></i>
+                            <i aria-hidden="true" class="far fa-clock mr-1"></i>
                             {{ $course->estimated_duration_minutes ? round($course->estimated_duration_minutes / 60) . 'h' : 'N/A' }}
                         </div>
                     </div>
@@ -141,7 +141,7 @@
                         <div class="flex justify-between items-start mb-3">
                             <h3 class="font-bold text-themed-primary text-lg line-clamp-2">{{ $course->title }}</h3>
                             <div class="flex items-center text-yellow-400 ml-2">
-                                <i class="fas fa-star text-sm" aria-hidden="true"></i>
+                                <i aria-hidden="true" class="fas fa-star text-sm"></i>
                                 <span
                                     class="text-sm font-medium ml-1 text-themed-secondary">{{ number_format($course->reviews_avg_rating ?? 0, 1) }}</span>
                             </div>
@@ -158,7 +158,7 @@
                                 <span>{{ $course->instructor->name }}</span>
                             </div>
                             <div class="flex items-center">
-                                <i class="fas fa-users mr-1.5" aria-hidden="true"></i>
+                                <i aria-hidden="true" class="fas fa-users mr-1.5"></i>
                                 <span>{{ $course->enrollments_count }}</span>
                             </div>
                         </div>
@@ -167,11 +167,11 @@
                             <div class="text-sm font-medium">
                                 @if($course->is_premium)
                                     <span class="text-yellow-600 dark:text-yellow-400">
-                                        <i class="fas fa-crown mr-1.5" aria-hidden="true"></i> ${{ number_format($course->price, 2) }}
+                                        <i aria-hidden="true" class="fas fa-crown mr-1.5"></i> ${{ number_format($course->price, 2) }}
                                     </span>
                                 @else
                                     <span class="text-green-600 dark:text-green-400">
-                                        <i class="fas fa-badge-check mr-1.5" aria-hidden="true"></i> Free
+                                        <i aria-hidden="true" class="fas fa-badge-check mr-1.5"></i> Free
                                     </span>
                                 @endif
                             </div>
@@ -179,12 +179,12 @@
                             @if(in_array($course->id, $enrolledCourseIds))
                                 <a href="{{ route('course.view', $course->slug) }}"
                                     class="px-4 py-2 bg-action hover:bg-action/90 text-action-foreground rounded-lg text-sm font-medium transition-colors flex items-center">
-                                    Continue <i class="fas fa-arrow-right ml-1.5 text-xs" aria-hidden="true"></i>
+                                    Continue <i aria-hidden="true" class="fas fa-arrow-right ml-1.5 text-xs"></i>
                                 </a>
                             @else
                                 <button wire:click="enroll({{ $course->id }})"
                                     class="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg text-sm font-medium transition-colors flex items-center">
-                                    Enroll <i class="fas fa-plus-circle ml-1.5 text-xs" aria-hidden="true"></i>
+                                    Enroll <i aria-hidden="true" class="fas fa-plus-circle ml-1.5 text-xs"></i>
                                 </button>
                             @endif
                         </div>
@@ -202,14 +202,14 @@
         <div
             class="bg-themed-tertiary border border-dashed border-themed-secondary rounded-lg p-10 text-center transition-colors">
             <div class="mx-auto w-16 h-16 bg-themed-tertiary rounded-full flex items-center justify-center mb-4">
-                <i class="fas fa-book-open text-themed-tertiary text-xl" aria-hidden="true"></i>
+                <i aria-hidden="true" class="fas fa-book-open text-themed-tertiary text-xl"></i>
             </div>
             <h3 class="text-lg font-medium text-themed-primary mb-2">No courses found</h3>
             <p class="text-themed-secondary mb-6 max-w-md mx-auto">Try adjusting your search filters or search terms to find
                 what you're looking for.</p>
             <button wire:click="resetFilters"
                 class="inline-flex items-center px-4 py-2.5 bg-action hover:bg-action/90 text-action-foreground rounded-lg text-sm font-medium transition-colors">
-                <i class="fas fa-redo-alt mr-2" aria-hidden="true"></i> Reset Filters
+                <i aria-hidden="true" class="fas fa-redo-alt mr-2"></i> Reset Filters
             </button>
         </div>
     @endif
@@ -225,7 +225,7 @@
                         <h2 class="text-2xl font-bold text-themed-primary">{{ $previewCourse->title }}</h2>
                         <button wire:click="closePreview"
                             class="text-themed-tertiary hover:text-themed-primary p-1 transition-colors" aria-label="Close">
-                            <i class="fas fa-times text-xl" aria-hidden="true"></i>
+                            <i aria-hidden="true" class="fas fa-times text-xl"></i>
                         </button>
                     </div>
 
@@ -247,7 +247,7 @@
                                     <ul class="grid grid-cols-1 md:grid-cols-2 gap-3">
                                         @foreach(array_slice($previewCourse->learning_outcomes, 0, 4) as $outcome)
                                             <li class="flex items-start">
-                                                <i class="fas fa-check-circle text-green-500 mt-1 mr-3" aria-hidden="true"></i>
+                                                <i aria-hidden="true" class="fas fa-check-circle text-green-500 mt-1 mr-3"></i>
                                                 <span class="text-themed-secondary">{{ $outcome }}</span>
                                             </li>
                                         @endforeach
@@ -291,14 +291,14 @@
                                         <span class="text-themed-secondary">Rating:</span>
                                         <span class="text-yellow-500 font-medium flex items-center">
                                             {{ number_format($previewCourse->reviews_avg_rating ?? 0, 1) }}
-                                            <i class="fas fa-star ml-1 text-sm" aria-hidden="true"></i>
+                                            <i aria-hidden="true" class="fas fa-star ml-1 text-sm"></i>
                                         </span>
                                     </div>
                                     @if($previewCourse->quality_label_text)
                                         <div class="flex justify-between items-center">
                                             <span class="text-themed-secondary">Quality:</span>
                                             <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold {{ $previewCourse->quality_label_class }}">
-                                                <i class="fas fa-shield-check mr-1" aria-hidden="true"></i>{{ $previewCourse->quality_label_text }}
+                                                <i aria-hidden="true" class="fas fa-shield-check mr-1"></i>{{ $previewCourse->quality_label_text }}
                                             </span>
                                         </div>
                                     @endif
@@ -309,19 +309,19 @@
                                 <h3 class="font-bold text-themed-primary mb-3">This course includes</h3>
                                 <ul class="space-y-2 text-sm">
                                     <li class="flex items-center text-themed-secondary">
-                                        <i class="fas fa-play-circle text-brand mr-3" aria-hidden="true"></i>
+                                        <i aria-hidden="true" class="fas fa-play-circle text-brand mr-3"></i>
                                         {{ $previewCourse->total_lessons }} lessons
                                     </li>
                                     <li class="flex items-center text-themed-secondary">
-                                        <i class="fas fa-tasks text-brand mr-3" aria-hidden="true"></i>
+                                        <i aria-hidden="true" class="fas fa-tasks text-brand mr-3"></i>
                                         {{ $previewCourse->total_assessments }} exercises
                                     </li>
                                     <li class="flex items-center text-themed-secondary">
-                                        <i class="fas fa-infinity text-brand mr-3" aria-hidden="true"></i>
+                                        <i aria-hidden="true" class="fas fa-infinity text-brand mr-3"></i>
                                         Full lifetime access
                                     </li>
                                     <li class="flex items-center text-themed-secondary">
-                                        <i class="fas fa-mobile-alt text-brand mr-3" aria-hidden="true"></i>
+                                        <i aria-hidden="true" class="fas fa-mobile-alt text-brand mr-3"></i>
                                         Access on mobile and TV
                                     </li>
                                 </ul>
@@ -336,7 +336,7 @@
                                 @else
                                     <button wire:click="enroll({{ $previewCourse->id }})"
                                         class="w-full px-4 py-3 bg-green-600 hover:bg-green-700 text-white rounded-lg font-medium transition-colors flex items-center justify-center">
-                                        <i class="fas fa-lock-open mr-2" aria-hidden="true"></i>
+                                        <i aria-hidden="true" class="fas fa-lock-open mr-2"></i>
                                         Enroll Now
                                     </button>
                                     <p class="text-center text-xs text-themed-tertiary mt-2">

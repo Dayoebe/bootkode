@@ -10,7 +10,7 @@ x-transition:leave-end="opacity-0 transform -translate-x-8">
     <div class="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-6">
         <div
             class="w-10 h-10 sm:w-12 sm:h-12 bg-action rounded-full flex items-center justify-center flex-shrink-0">
-            <i class="fas fa-list-ul text-action-foreground text-lg sm:text-xl" aria-hidden="true"></i>
+            <i aria-hidden="true" class="fas fa-list-ul text-action-foreground text-lg sm:text-xl"></i>
         </div>
         <div>
             <h2
@@ -29,7 +29,7 @@ x-transition:leave-end="opacity-0 transform -translate-x-8">
                 class="bg-brand/10 dark:bg-surface/30 p-4 sm:p-6 rounded-lg border border-brand dark:border-brand transition-colors duration-300">
                 <label
                     class="block text-sm font-medium text-brand dark:text-brand mb-4 flex items-center gap-2 transition-colors duration-300">
-                    <i class="fas fa-lightbulb text-brand dark:text-brand" aria-hidden="true"></i>
+                    <i aria-hidden="true" class="fas fa-lightbulb text-brand dark:text-brand"></i>
                     Learning Outcomes
                 </label>
                 <div class="space-y-3">
@@ -43,7 +43,7 @@ x-transition:leave-end="opacity-0 transform -translate-x-8">
                             @if (count($learning_outcomes) > 1)
                                 <button type="button" wire:click="removeLearningOutcome({{ $index }})"
                                     class="text-red-500 hover:text-red-600 dark:text-red-400 dark:hover:text-red-300 p-2 transition-colors duration-300" aria-label="Remove learning outcome">
-                                    <i class="fas fa-trash" aria-hidden="true"></i>
+                                    <i aria-hidden="true" class="fas fa-trash"></i>
                                 </button>
                             @endif
                         </div>
@@ -51,7 +51,7 @@ x-transition:leave-end="opacity-0 transform -translate-x-8">
                 </div>
                 <button type="button" wire:click="addLearningOutcome"
                     class="mt-3 px-3 sm:px-4 py-2 bg-surface text-content rounded-lg hover:bg-surface transition-colors flex items-center gap-2 text-sm sm:text-base">
-                    <i class="fas fa-plus" aria-hidden="true"></i> Add Outcome
+                    <i aria-hidden="true" class="fas fa-plus"></i> Add Outcome
                 </button>
             </div>
 
@@ -60,7 +60,7 @@ x-transition:leave-end="opacity-0 transform -translate-x-8">
                 class="bg-orange-50 dark:bg-orange-900/30 p-4 sm:p-6 rounded-lg border border-orange-200 dark:border-orange-800 transition-colors duration-300">
                 <label
                     class="block text-sm font-medium text-orange-700 dark:text-orange-300 mb-4 flex items-center gap-2 transition-colors duration-300">
-                    <i class="fas fa-exclamation-circle text-orange-500 dark:text-orange-400" aria-hidden="true"></i>
+                    <i aria-hidden="true" class="fas fa-exclamation-circle text-orange-500 dark:text-orange-400"></i>
                     Prerequisites
                 </label>
                 <div class="space-y-3">
@@ -74,7 +74,7 @@ x-transition:leave-end="opacity-0 transform -translate-x-8">
                             @if (count($prerequisites) > 1)
                                 <button type="button" wire:click="removePrerequisite({{ $index }})"
                                     class="text-red-500 hover:text-red-600 dark:text-red-400 dark:hover:text-red-300 p-2 transition-colors duration-300" aria-label="Remove prerequisite">
-                                    <i class="fas fa-trash" aria-hidden="true"></i>
+                                    <i aria-hidden="true" class="fas fa-trash"></i>
                                 </button>
                             @endif
                         </div>
@@ -82,7 +82,7 @@ x-transition:leave-end="opacity-0 transform -translate-x-8">
                 </div>
                 <button type="button" wire:click="addPrerequisite"
                     class="mt-3 px-3 sm:px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition-colors flex items-center gap-2 text-sm sm:text-base">
-                    <i class="fas fa-plus" aria-hidden="true"></i> Add Prerequisite
+                    <i aria-hidden="true" class="fas fa-plus"></i> Add Prerequisite
                 </button>
             </div>
 
@@ -91,7 +91,7 @@ x-transition:leave-end="opacity-0 transform -translate-x-8">
                 class="bg-green-50 dark:bg-green-900/30 p-4 sm:p-6 rounded-lg border border-green-200 dark:border-green-800 transition-colors duration-300">
                 <label
                     class="block text-sm font-medium text-green-700 dark:text-green-300 mb-2 flex items-center gap-2 transition-colors duration-300">
-                    <i class="fas fa-percentage text-green-500 dark:text-green-400" aria-hidden="true"></i>
+                    <i aria-hidden="true" class="fas fa-percentage text-green-500 dark:text-green-400"></i>
                     Completion Threshold (%)
                 </label>
                 <div class="relative">
@@ -117,7 +117,7 @@ x-transition:leave-end="opacity-0 transform -translate-x-8">
                 class="bg-brand/10 dark:bg-surface/30 p-4 sm:p-6 rounded-lg border border-brand dark:border-brand transition-colors duration-300">
                 <label
                     class="block text-sm font-medium text-brand dark:text-brand mb-4 flex items-center gap-2 transition-colors duration-300">
-                    <i class="fas fa-question-circle text-brand dark:text-brand" aria-hidden="true"></i>
+                    <i aria-hidden="true" class="fas fa-question-circle text-brand dark:text-brand"></i>
                     Frequently Asked Questions
                 </label>
                 <div class="space-y-4">
@@ -135,7 +135,7 @@ x-transition:leave-end="opacity-0 transform -translate-x-8">
                             @if (count($faqs) > 1)
                                 <button type="button" wire:click="removeFaq({{ $index }})"
                                     class="mt-2 text-red-500 hover:text-red-600 dark:text-red-400 dark:hover:text-red-300 text-sm flex items-center gap-1 transition-colors duration-300">
-                                    <i class="fas fa-trash" aria-hidden="true"></i> Remove FAQ
+                                    <i aria-hidden="true" class="fas fa-trash"></i> Remove FAQ
                                 </button>
                             @endif
                         </div>
@@ -143,7 +143,7 @@ x-transition:leave-end="opacity-0 transform -translate-x-8">
                 </div>
                 <button type="button" wire:click="addFaq"
                     class="mt-3 px-3 sm:px-4 py-2 bg-surface text-content rounded-lg hover:bg-surface transition-colors flex items-center gap-2 text-sm sm:text-base">
-                    <i class="fas fa-plus" aria-hidden="true"></i> Add FAQ
+                    <i aria-hidden="true" class="fas fa-plus"></i> Add FAQ
                 </button>
             </div>
 
@@ -152,7 +152,7 @@ x-transition:leave-end="opacity-0 transform -translate-x-8">
                 class="bg-brand/10 dark:bg-surface/30 p-4 sm:p-6 rounded-lg border border-brand dark:border-brand transition-colors duration-300">
                 <label
                     class="block text-sm font-medium text-brand dark:text-brand mb-4 flex items-center gap-2 transition-colors duration-300">
-                    <i class="fas fa-box-open text-brand dark:text-brand" aria-hidden="true"></i>
+                    <i aria-hidden="true" class="fas fa-box-open text-brand dark:text-brand"></i>
                     Materials Included
                 </label>
                 <div class="space-y-3">
@@ -166,7 +166,7 @@ x-transition:leave-end="opacity-0 transform -translate-x-8">
                             @if (count($materials_included) > 1)
                                 <button type="button" wire:click="removeMaterial({{ $index }})"
                                     class="text-red-500 hover:text-red-600 dark:text-red-400 dark:hover:text-red-300 p-2 transition-colors duration-300" aria-label="Remove material">
-                                    <i class="fas fa-trash" aria-hidden="true"></i>
+                                    <i aria-hidden="true" class="fas fa-trash"></i>
                                 </button>
                             @endif
                         </div>
@@ -174,7 +174,7 @@ x-transition:leave-end="opacity-0 transform -translate-x-8">
                 </div>
                 <button type="button" wire:click="addMaterial"
                     class="mt-3 px-3 sm:px-4 py-2 bg-surface text-content rounded-lg hover:bg-surface transition-colors flex items-center gap-2 text-sm sm:text-base">
-                    <i class="fas fa-plus" aria-hidden="true"></i> Add Material
+                    <i aria-hidden="true" class="fas fa-plus"></i> Add Material
                 </button>
             </div>
 
@@ -183,7 +183,7 @@ x-transition:leave-end="opacity-0 transform -translate-x-8">
                 class="bg-brand/10 dark:bg-surface/30 p-4 sm:p-6 rounded-lg border border-brand dark:border-brand transition-colors duration-300">
                 <label
                     class="block text-sm font-medium text-brand dark:text-brand mb-4 flex items-center gap-2 transition-colors duration-300">
-                    <i class="fas fa-book-open text-brand dark:text-brand" aria-hidden="true"></i>
+                    <i aria-hidden="true" class="fas fa-book-open text-brand dark:text-brand"></i>
                     Syllabus Overview
                 </label>
                 <textarea aria-label="Provide a high-level overview of your course modules and structure" wire:model="syllabus_overview" rows="4"

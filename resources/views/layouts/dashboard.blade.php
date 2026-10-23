@@ -104,7 +104,7 @@
         height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
     @if(auth()->check() && !auth()->user()->hasVerifiedEmail())
-        <livewire:components.email-verification-alert />
+        <livewire:component.email-verification-alert />
     @endif
 
     <div class="min-h-screen bg-themed-primary">

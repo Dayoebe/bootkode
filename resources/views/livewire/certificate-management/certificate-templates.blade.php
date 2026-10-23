@@ -14,7 +14,7 @@
             @php($settings = \App\Models\Credentials\CertificateTemplate::safeSettings($template->settings))
             <x-ui.panel wire:key="template-{{ $template->id }}">
                 <div class="space-y-4">
-                    <div aria-hidden="true" class="border-4 p-6 text-center" style="background-color: {{ $settings['backgroundColor'] }}; border-color: {{ $settings['borderColor'] }}; color: {{ $settings['textColor'] }}">
+                    <div class="border-4 p-6 text-center" style="background-color: {{ $settings['backgroundColor'] }}; border-color: {{ $settings['borderColor'] }}; color: {{ $settings['textColor'] }}">
                         <p class="text-xs uppercase tracking-widest" style="color: {{ $settings['accentColor'] }}">Design preview</p>
                         <p class="mt-2 text-xl" style="font-family: '{{ $settings['headerFont'] }}', serif">Certificate</p>
                         <p class="mt-2 text-sm" style="font-family: '{{ $settings['bodyFont'] }}', sans-serif">Recipient name</p>

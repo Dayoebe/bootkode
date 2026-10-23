@@ -4,11 +4,11 @@
         <input aria-label="Search discussions" type="text" wire:model.live.debounce="search"
                class="w-full pl-10 pr-4 py-2 bg-themed-secondary border border-themed-primary text-themed-primary rounded-lg placeholder-themed-secondary focus:ring-2 focus:ring-brand/30 focus:border-transparent"
                placeholder="Search discussions...">
-        <i class="fas fa-search absolute left-3 top-2.5 text-themed-secondary" aria-hidden="true"></i>
+        <i aria-hidden="true" class="fas fa-search absolute left-3 top-2.5 text-themed-secondary"></i>
     </div>
     <button wire:click="openModal('forum')"
             class="bg-action hover:bg-action active:bg-action text-action-foreground px-4 py-2 rounded-lg font-medium transition-colors flex items-center gap-2 whitespace-nowrap">
-        <i class="fas fa-plus" aria-hidden="true"></i>
+        <i aria-hidden="true" class="fas fa-plus"></i>
         <span class="hidden sm:inline">New Discussion</span>
     </button>
 </div>
@@ -29,12 +29,12 @@
                         <div class="flex items-center gap-2">
                             @if($thread->is_pinned)
                                 <span class="text-red-500" title="Pinned">
-                                    <i class="fas fa-thumbtack text-sm" aria-hidden="true"></i>
+                                    <i aria-hidden="true" class="fas fa-thumbtack text-sm"></i>
                                 </span>
                             @endif
                             @if($thread->is_locked)
                                 <span class="text-themed-secondary" title="Locked">
-                                    <i class="fas fa-lock text-sm" aria-hidden="true"></i>
+                                    <i aria-hidden="true" class="fas fa-lock text-sm"></i>
                                 </span>
                             @endif
                         </div>
@@ -52,10 +52,10 @@
                         <div class="flex items-center gap-3">
                             <span>{{ $thread->user->name }}</span>
                             <span>{{ $thread->created_at->diffForHumans() }}</span>
-                            <span><i class="fas fa-eye mr-1" aria-hidden="true"></i>{{ $thread->views }}</span>
+                            <span><i aria-hidden="true" class="fas fa-eye mr-1"></i>{{ $thread->views }}</span>
                         </div>
                         <div class="flex items-center gap-3">
-                            <span><i class="fas fa-comments mr-1" aria-hidden="true"></i>{{ $thread->replies_count }}</span>
+                            <span><i aria-hidden="true" class="fas fa-comments mr-1"></i>{{ $thread->replies_count }}</span>
                         </div>
                     </div>
                 </div>
@@ -63,12 +63,12 @@
         </div>
     @empty
         <div class="text-center py-12 bg-themed-secondary border border-themed-primary rounded-lg">
-            <i class="fas fa-comments text-themed-secondary text-4xl mb-3 block" aria-hidden="true"></i>
+            <i aria-hidden="true" class="fas fa-comments text-themed-secondary text-4xl mb-3 block"></i>
             <h3 class="text-lg font-semibold text-themed-primary mb-1">No discussions yet</h3>
             <p class="text-themed-secondary mb-4">Start a conversation!</p>
             <button wire:click="openModal('forum')"
                     class="bg-action hover:bg-action text-action-foreground px-4 py-2 rounded-lg font-medium transition-colors inline-flex items-center gap-2">
-                <i class="fas fa-plus" aria-hidden="true"></i>Create Discussion
+                <i aria-hidden="true" class="fas fa-plus"></i>Create Discussion
             </button>
         </div>
     @endforelse

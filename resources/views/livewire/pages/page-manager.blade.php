@@ -5,7 +5,7 @@
             <div class="flex flex-col md:flex-row justify-between items-start md:items-center py-4 md:py-6 space-y-4 md:space-y-0">
                 <div class="flex items-center space-x-4">
                     <div class="bg-action p-3 rounded-lg  ">
-                        <i class="fas fa-file-alt text-action-foreground text-xl" aria-hidden="true"></i>
+                        <i aria-hidden="true" class="fas fa-file-alt text-action-foreground text-xl"></i>
                     </div>
                     <div class=" ">
                         <h1 class="  font-bold text-content bk-page-title">Page Management</h1>
@@ -40,7 +40,7 @@
                         class="p-2 text-content-muted hover:text-content rounded-full hover:bg-surface-muted transition-all duration-200"
                         title="Refresh Statistics"
                      aria-label="Refresh Statistics">
-                        <i class="fas fa-sync-alt" aria-hidden="true"></i>
+                        <i aria-hidden="true" class="fas fa-sync-alt"></i>
                     </button>
                 </div>
             </div>
@@ -67,7 +67,7 @@
                             : 'border-transparent text-content-muted hover:text-content hover:border-line hover:bg-gray-50'
                         }} whitespace-nowrap py-2 md:py-3 px-3 md:px-4 border-b-2 font-medium text-xs md:text-sm flex items-center rounded-t-lg transition-all duration-200"
                     >
-                        <i class="{{ $tabData['icon'] }} mr-1 md:mr-2"></i>
+                        <i aria-hidden="true" class="{{ $tabData['icon'] }} mr-1 md:mr-2"></i>
                         <span class="hidden sm:inline">{{ $tabData['label'] }}</span>
                     </button>
                 @endforeach
@@ -137,10 +137,10 @@
                 <div class="p-4">
                     <div class="flex items-start">
                         <div class="flex-shrink-0">
-                            <i x-show="notification.type === 'success'" class="fas fa-check-circle text-green-400" aria-hidden="true"></i>
-                            <i x-show="notification.type === 'error'" class="fas fa-exclamation-circle text-red-400" aria-hidden="true"></i>
-                            <i x-show="notification.type === 'warning'" class="fas fa-exclamation-triangle text-yellow-400" aria-hidden="true"></i>
-                            <i x-show="notification.type === 'info'" class="fas fa-info-circle text-brand" aria-hidden="true"></i>
+                            <i aria-hidden="true" x-show="notification.type === 'success'" class="fas fa-check-circle text-green-400"></i>
+                            <i aria-hidden="true" x-show="notification.type === 'error'" class="fas fa-exclamation-circle text-red-400"></i>
+                            <i aria-hidden="true" x-show="notification.type === 'warning'" class="fas fa-exclamation-triangle text-yellow-400"></i>
+                            <i aria-hidden="true" x-show="notification.type === 'info'" class="fas fa-info-circle text-brand"></i>
                         </div>
                         <div class="ml-3 w-0 flex-1 pt-0.5">
                             <p class="text-sm font-medium text-content" x-text="notification.message"></p>

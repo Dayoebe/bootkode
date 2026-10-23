@@ -7,7 +7,7 @@
         </div>
         <button wire:click="openCreateModal"
                 class="px-4 py-2 bg-action text-action-foreground rounded-lg hover:bg-action transition-colors">
-            <i class="fas fa-plus mr-2" aria-hidden="true"></i>
+            <i aria-hidden="true" class="fas fa-plus mr-2"></i>
             Add Category
         </button>
     </div>
@@ -72,11 +72,11 @@
                             <div class="flex items-center space-x-2">
                                 <button wire:click="openEditModal({{ $category->id }})"
                                         class="text-brand hover:text-brand">
-                                    <i class="fas fa-edit" aria-hidden="true"></i>
+                                    <i aria-hidden="true" class="fas fa-edit"></i>
                                 </button>
                                 <button wire:click="confirmDelete({{ $category->id }})"
                                         class="text-red-600 hover:text-red-800">
-                                    <i class="fas fa-trash" aria-hidden="true"></i>
+                                    <i aria-hidden="true" class="fas fa-trash"></i>
                                 </button>
                             </div>
                         </td>
@@ -84,7 +84,7 @@
                 @empty
                     <tr>
                         <td colspan="5" class="px-6 py-12 text-center text-content-muted">
-                            <i class="fas fa-folder text-4xl mb-4" aria-hidden="true"></i>
+                            <i aria-hidden="true" class="fas fa-folder text-4xl mb-4"></i>
                             <p>No categories found.</p>
                         </td>
                     </tr>

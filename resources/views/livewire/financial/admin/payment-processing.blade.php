@@ -6,7 +6,7 @@
             <h1 class=" font-bold text-themed-primary bk-page-title">Payment Processing Center</h1>
             <p class="text-themed-secondary">Manage payments, withdrawals, and financial operations</p>
             <a href="{{ route('admin.commercial.readiness') }}" class="mt-3 inline-flex rounded-lg border border-themed-secondary px-3 py-2 text-sm font-semibold text-themed-primary hover:border-brand hover:text-brand">
-                <i class="fas fa-file-invoice-dollar mr-2" aria-hidden="true"></i>Commercial readiness
+                <i aria-hidden="true" class="fas fa-file-invoice-dollar mr-2"></i>Commercial readiness
             </a>
         </div>
 

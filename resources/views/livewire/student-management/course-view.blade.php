@@ -42,7 +42,7 @@
                 <div class="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
                     <div class="flex items-start gap-4">
                         <div class="flex h-16 w-16 flex-shrink-0 items-center justify-center rounded-lg bg-white/15 shadow-sm">
-                            <i class="fas fa-rocket text-3xl" aria-hidden="true"></i>
+                            <i aria-hidden="true" class="fas fa-rocket text-3xl"></i>
                         </div>
 
                         <div>
@@ -87,7 +87,7 @@
                     <div class="flex items-start gap-4">
                         <div class="flex h-14 w-14 flex-shrink-0 items-center justify-center rounded-lg text-white shadow-sm"
                             style="background: rgb(var(--bk-action)); color: rgb(var(--bk-action-text));">
-                            <i class="fas fa-play-circle text-2xl" aria-hidden="true"></i>
+                            <i aria-hidden="true" class="fas fa-play-circle text-2xl"></i>
                         </div>
 
                         <div>
@@ -103,7 +103,7 @@
                     <button wire:click="continueFromLastLesson"
                         class="inline-flex items-center justify-center gap-2 rounded-lg px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:-translate-y-0.5"
                         style="background: rgb(var(--bk-action)); color: rgb(var(--bk-action-text));">
-                        <i class="fas fa-arrow-right" aria-hidden="true"></i>
+                        <i aria-hidden="true" class="fas fa-arrow-right"></i>
                         Continue
                     </button>
                 </div>
@@ -126,7 +126,7 @@
 
                     <button wire:click="messageInstructor" wire:loading.attr="disabled" wire:target="messageInstructor"
                         class="inline-flex items-center justify-center gap-2 rounded-lg bg-action px-5 py-3 text-sm font-semibold text-action-foreground shadow-sm transition hover:bg-action disabled:cursor-not-allowed disabled:opacity-60">
-                        <i class="fas fa-comment-dots" aria-hidden="true"></i>
+                        <i aria-hidden="true" class="fas fa-comment-dots"></i>
                         <span wire:loading.remove wire:target="messageInstructor">Message Instructor</span>
                         <span wire:loading wire:target="messageInstructor">Opening</span>
                     </button>
@@ -180,7 +180,7 @@
                                 <button type="button" @click="toggleType(@js($type))"
                                     class="rounded-lg border px-3 py-2 text-left text-xs font-semibold transition"
                                     :class="selectedTypes.includes(@js($type)) ? 'border-emerald-500 bg-emerald-50 text-emerald-700 dark:bg-emerald-900/20 dark:text-emerald-300' : 'border-themed-secondary bg-themed-secondary text-themed-secondary'">
-                                    <i class="{{ $meta['icon'] }} mr-1"></i>{{ $meta['label'] }}
+                                    <i aria-hidden="true" class="{{ $meta['icon'] }} mr-1"></i>{{ $meta['label'] }}
                                 </button>
                             @endforeach
                         </div>
@@ -188,22 +188,22 @@
                         <div class="mt-4 grid gap-2 sm:grid-cols-2">
                             <button type="button" @click="download" :disabled="downloading"
                                 class="inline-flex items-center justify-center gap-2 rounded-lg bg-action px-4 py-2 text-sm font-semibold text-action-foreground transition hover:bg-action/90 disabled:opacity-60">
-                                <i class="fas fa-download" aria-hidden="true"></i>
+                                <i aria-hidden="true" class="fas fa-download"></i>
                                 <span x-text="downloading ? 'Downloading' : (installed ? 'Refresh Pack' : 'Download Pack')"></span>
                             </button>
                             <button type="button" @click="open" x-show="installed"
                                 class="inline-flex items-center justify-center gap-2 rounded-lg border border-themed-secondary bg-themed-secondary px-4 py-2 text-sm font-semibold text-themed-primary">
-                                <i class="fas fa-book-reader" aria-hidden="true"></i>
+                                <i aria-hidden="true" class="fas fa-book-reader"></i>
                                 Read Offline
                             </button>
                             <button type="button" @click="sync"
                                 class="inline-flex items-center justify-center gap-2 rounded-lg border border-themed-secondary bg-themed-secondary px-4 py-2 text-sm font-semibold text-themed-primary">
-                                <i class="fas fa-rotate" aria-hidden="true"></i>
+                                <i aria-hidden="true" class="fas fa-rotate"></i>
                                 Sync Progress
                             </button>
                             <button type="button" @click="remove" x-show="installed"
                                 class="inline-flex items-center justify-center gap-2 rounded-lg border border-red-200 bg-red-50 px-4 py-2 text-sm font-semibold text-red-700 dark:border-red-800 dark:bg-red-900/20 dark:text-red-300">
-                                <i class="fas fa-trash" aria-hidden="true"></i>
+                                <i aria-hidden="true" class="fas fa-trash"></i>
                                 Remove
                             </button>
                         </div>
@@ -284,7 +284,7 @@
                 <div class="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
                     <div class="flex items-start gap-4">
                         <div class="flex h-16 w-16 flex-shrink-0 items-center justify-center rounded-lg bg-white/15 shadow-sm">
-                            <i class="fas fa-trophy text-3xl" aria-hidden="true"></i>
+                            <i aria-hidden="true" class="fas fa-trophy text-3xl"></i>
                         </div>
 
                         <div>
@@ -298,7 +298,7 @@
 
                     <a href="{{ route('student.certificates.index') }}"
                         class="inline-flex items-center justify-center gap-2 rounded-lg bg-surface px-5 py-3 text-sm font-semibold text-emerald-600 shadow-sm transition hover:-translate-y-0.5 hover:bg-emerald-50">
-                        <i class="fas fa-certificate" aria-hidden="true"></i>
+                        <i aria-hidden="true" class="fas fa-certificate"></i>
                         View Certificate
                     </a>
                 </div>
@@ -340,7 +340,7 @@
                         @if ($resumeLesson)
                             <button wire:click="continueFromLastLesson"
                                 class="inline-flex w-full items-center justify-center gap-2 rounded-lg border border-themed-secondary bg-themed-tertiary px-4 py-3 text-sm font-semibold text-themed-primary shadow-sm transition">
-                                <i class="fas fa-history" aria-hidden="true"></i>
+                                <i aria-hidden="true" class="fas fa-history"></i>
                                 Resume
                             </button>
                         @endif
@@ -348,7 +348,7 @@
                         <button @click="navOpen = true"
                             class="inline-flex w-full items-center justify-center gap-2 rounded-lg px-4 py-3 text-sm font-semibold text-white shadow-sm transition"
                             style="background: rgb(var(--bk-action)); color: rgb(var(--bk-action-text));">
-                            <i class="fas fa-compass" aria-hidden="true"></i>
+                            <i aria-hidden="true" class="fas fa-compass"></i>
                             Course Map
                         </button>
                     </div>
@@ -370,7 +370,7 @@
 
                         <button @click="navOpen = false"
                             class="flex h-10 w-10 items-center justify-center rounded-lg border border-themed-secondary bg-themed-tertiary text-themed-primary transition hover:bg-themed-secondary" aria-label="Close">
-                            <i class="fas fa-times" aria-hidden="true"></i>
+                            <i aria-hidden="true" class="fas fa-times"></i>
                         </button>
                     </div>
 
@@ -406,7 +406,7 @@
                     <div
                         class="rounded-lg border border-themed-primary bg-themed-secondary p-6 text-center shadow-sm   sm:p-10">
                         <div class="mx-auto flex h-16 w-16 items-center justify-center rounded-lg border border-themed-secondary bg-themed-tertiary">
-                            <i class="fas fa-book-open text-2xl accent-themed-primary" aria-hidden="true"></i>
+                            <i aria-hidden="true" class="fas fa-book-open text-2xl accent-themed-primary"></i>
                         </div>
                         <h3 class="mt-5 text-xl font-semibold text-themed-primary">No lesson selected</h3>
                         <p class="mt-2 text-sm leading-6 text-themed-secondary">
@@ -414,7 +414,7 @@
                         </p>
                         <button @click="navOpen = true"
                             class="mt-5 inline-flex items-center gap-2 rounded-lg border border-themed-secondary bg-themed-tertiary px-5 py-3 text-sm font-semibold text-themed-primary transition hover:bg-themed-secondary lg:hidden">
-                            <i class="fas fa-compass" aria-hidden="true"></i>
+                            <i aria-hidden="true" class="fas fa-compass"></i>
                             Open Course Map
                         </button>
                     </div>

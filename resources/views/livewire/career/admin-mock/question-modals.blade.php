@@ -9,7 +9,7 @@
             </h3>
             <button wire:click="$set('showCreateQuestionModal', false)"
                 class="text-themed-secondary hover:text-themed-primary transition-colors" aria-label="Close">
-                <i class="fas fa-times text-xl" aria-hidden="true"></i>
+                <i aria-hidden="true" class="fas fa-times text-xl"></i>
             </button>
         </div>
 

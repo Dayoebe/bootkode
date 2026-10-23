@@ -28,7 +28,7 @@
                     <p class="text-2xl font-bold text-content">{{ $affiliateStats['formatted_total_earned'] }}</p>
                 </div>
                 <div class="bg-green-100 p-3 rounded-lg">
-                    <i class="fas fa-coins text-green-600 text-xl" aria-hidden="true"></i>
+                    <i aria-hidden="true" class="fas fa-coins text-green-600 text-xl"></i>
                 </div>
             </div>
         </div>
@@ -41,7 +41,7 @@
                     <p class="text-2xl font-bold text-content">{{ $affiliateStats['total_referrals'] }}</p>
                 </div>
                 <div class="bg-brand/10 p-3 rounded-lg">
-                    <i class="fas fa-users text-brand text-xl" aria-hidden="true"></i>
+                    <i aria-hidden="true" class="fas fa-users text-brand text-xl"></i>
                 </div>
             </div>
         </div>
@@ -54,7 +54,7 @@
                     <p class="text-2xl font-bold text-content">{{ $affiliateStats['active_referrals'] }}</p>
                 </div>
                 <div class="bg-brand/10 p-3 rounded-lg">
-                    <i class="fas fa-user-check text-brand text-xl" aria-hidden="true"></i>
+                    <i aria-hidden="true" class="fas fa-user-check text-brand text-xl"></i>
                 </div>
             </div>
         </div>
@@ -67,7 +67,7 @@
                     <p class="text-2xl font-bold text-content">₦{{ number_format($affiliateStats['pending_commissions'], 2) }}</p>
                 </div>
                 <div class="bg-yellow-100 p-3 rounded-lg">
-                    <i class="fas fa-clock text-yellow-600 text-xl" aria-hidden="true"></i>
+                    <i aria-hidden="true" class="fas fa-clock text-yellow-600 text-xl"></i>
                 </div>
             </div>
         </div>
@@ -83,10 +83,10 @@
             </div>
             <button onclick="copyToClipboard('{{ $affiliateStats['referral_link'] }}')"
                     class="px-4 py-2 bg-action text-action-foreground rounded-md hover:bg-action transition-colors">
-                <i class="fas fa-copy mr-2" aria-hidden="true"></i> Copy
+                <i aria-hidden="true" class="fas fa-copy mr-2"></i> Copy
             </button>
             <a href="{{ route('affiliate.tools') }}" class="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors">
-                <i class="fas fa-bullhorn mr-2" aria-hidden="true"></i> Marketing Tools
+                <i aria-hidden="true" class="fas fa-bullhorn mr-2"></i> Marketing Tools
             </a>
         </div>
     </div>
@@ -102,7 +102,7 @@
                 @else
                     <div class="flex items-center justify-center h-full text-content-muted">
                         <div class="text-center">
-                            <i class="fas fa-chart-line text-4xl mb-4" aria-hidden="true"></i>
+                            <i aria-hidden="true" class="fas fa-chart-line text-4xl mb-4"></i>
                             <p>No commission data available for this period</p>
                         </div>
                     </div>
@@ -129,7 +129,7 @@
                 </div>
             @else
                 <div class="text-center py-8 text-content-muted">
-                    <i class="fas fa-graduation-cap text-4xl mb-4" aria-hidden="true"></i>
+                    <i aria-hidden="true" class="fas fa-graduation-cap text-4xl mb-4"></i>
                     <p>No course sales data available</p>
                 </div>
             @endif

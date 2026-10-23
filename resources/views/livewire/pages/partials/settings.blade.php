@@ -326,7 +326,7 @@
                 <button type="button"
                         wire:click="testEmailSettings"
                         class="text-sm bg-surface-muted hover:bg-gray-200 px-3 py-1 rounded-lg transition-colors">
-                    <i class="fas fa-paper-plane mr-1" aria-hidden="true"></i>Test Email
+                    <i aria-hidden="true" class="fas fa-paper-plane mr-1"></i>Test Email
                 </button>
             </div>
 
@@ -375,12 +375,12 @@
                     <button type="button"
                             wire:click="clearCache"
                             class="text-sm bg-yellow-100 hover:bg-yellow-200 text-yellow-800 px-3 py-1 rounded-lg transition-colors">
-                        <i class="fas fa-trash mr-1" aria-hidden="true"></i>Clear Cache
+                        <i aria-hidden="true" class="fas fa-trash mr-1"></i>Clear Cache
                     </button>
                     <button type="button"
                             wire:click="optimizeDatabase"
                             class="text-sm bg-brand/10 hover:bg-blue-200 text-brand px-3 py-1 rounded-lg transition-colors">
-                        <i class="fas fa-database mr-1" aria-hidden="true"></i>Optimize DB
+                        <i aria-hidden="true" class="fas fa-database mr-1"></i>Optimize DB
                     </button>
                 </div>
             </div>
@@ -405,19 +405,19 @@
                             wire:click="resetToDefaults"
                             wire:confirm="Are you sure you want to reset all settings to defaults?"
                             class="text-sm bg-surface-muted hover:bg-gray-200 text-content px-4 py-2 rounded-lg transition-colors">
-                        <i class="fas fa-undo mr-2" aria-hidden="true"></i>Reset to Defaults
+                        <i aria-hidden="true" class="fas fa-undo mr-2"></i>Reset to Defaults
                     </button>
 
                     <button type="button"
                             wire:click="exportSettings"
                             class="text-sm bg-brand/10 hover:bg-purple-200 text-brand px-4 py-2 rounded-lg transition-colors">
-                        <i class="fas fa-download mr-2" aria-hidden="true"></i>Export Settings
+                        <i aria-hidden="true" class="fas fa-download mr-2"></i>Export Settings
                     </button>
                 </div>
 
                 <button type="submit"
                         class="bg-action text-action-foreground px-6 py-2 rounded-lg hover:bg-action transition-colors">
-                    <i class="fas fa-save mr-2" aria-hidden="true"></i>Save Settings
+                    <i aria-hidden="true" class="fas fa-save mr-2"></i>Save Settings
                 </button>
             </div>
         </div>

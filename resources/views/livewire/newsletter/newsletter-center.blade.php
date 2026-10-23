@@ -7,7 +7,7 @@
                 <div class="flex flex-col md:flex-row justify-between items-start md:items-center py-4 md:py-6 space-y-4 md:space-y-0">
                     <div class="flex items-center space-x-4">
                         <div class="bg-action p-3 rounded-lg  ">
-                            <i class="fas fa-envelope text-action-foreground text-xl" aria-hidden="true"></i>
+                            <i aria-hidden="true" class="fas fa-envelope text-action-foreground text-xl"></i>
                         </div>
                         <div class=" ">
                             <h1 class="  font-bold text-content bk-page-title">Newsletter Management</h1>
@@ -21,21 +21,21 @@
                             wire:click="createCampaign"
                             class="bg-action hover:bg-action text-action-foreground px-3 py-2 md:px-4 md:py-2 rounded-lg font-medium transition-all duration-200 text-sm md:text-base"
                         >
-                            <i class="fas fa-plus mr-1 md:mr-2" aria-hidden="true"></i>
+                            <i aria-hidden="true" class="fas fa-plus mr-1 md:mr-2"></i>
                             <span class="hidden sm:inline">New Campaign</span>
                         </button>
                         <button
                             wire:click="importSubscribers"
                             class="bg-green-600 hover:bg-green-700 text-white px-3 py-2 md:px-4 md:py-2 rounded-lg font-medium transition-all duration-200 text-sm md:text-base"
                         >
-                            <i class="fas fa-upload mr-1 md:mr-2" aria-hidden="true"></i>
+                            <i aria-hidden="true" class="fas fa-upload mr-1 md:mr-2"></i>
                             <span class="hidden sm:inline">Import</span>
                         </button>
                         <button
                             wire:click="viewPerformance"
                             class="bg-action hover:bg-action text-action-foreground px-3 py-2 md:px-4 md:py-2 rounded-lg font-medium transition-all duration-200 text-sm md:text-base"
                         >
-                            <i class="fas fa-tachometer-alt mr-1 md:mr-2" aria-hidden="true"></i>
+                            <i aria-hidden="true" class="fas fa-tachometer-alt mr-1 md:mr-2"></i>
                             <span class="hidden sm:inline">Performance</span>
                         </button>
                     </div>
@@ -82,7 +82,7 @@
                         class="absolute top-1 right-1 p-1 text-content-muted hover:text-content-muted rounded transition-colors"
                         title="Refresh Statistics"
                      aria-label="Refresh Statistics">
-                        <i class="fas fa-sync-alt text-xs" aria-hidden="true"></i>
+                        <i aria-hidden="true" class="fas fa-sync-alt text-xs"></i>
                     </button>
                 </div>
             </div>
@@ -117,7 +117,7 @@
                             }} whitespace-nowrap py-2 md:py-3 px-3 md:px-4 border-b-2 font-medium text-xs md:text-sm flex items-center rounded-t-lg transition-all duration-200"
                             title="{{ $tabData['full_label'] }}"
                         >
-                            <i class="{{ $tabData['icon'] }} mr-1 md:mr-2"></i>
+                            <i aria-hidden="true" class="{{ $tabData['icon'] }} mr-1 md:mr-2"></i>
                             <span class="hidden sm:inline">{{ $tabData['label'] }}</span>
 
                             @if($activeTab === $tab)
@@ -169,7 +169,7 @@
                  x-transition:leave="animate__animated animate__slideOutRight"
                  class="fixed top-4 right-4 bg-green-500 text-white px-4 py-2 md:px-6 md:py-3 rounded-lg shadow-sm z-50 max-w-xs md:max-w-md">
                 <div class="flex items-center">
-                    <i class="fas fa-check-circle mr-2" aria-hidden="true"></i>
+                    <i aria-hidden="true" class="fas fa-check-circle mr-2"></i>
                     <span class="text-sm">{{ session('message') }}</span>
                 </div>
             </div>
@@ -181,7 +181,7 @@
                  x-transition:leave="animate__animated animate__slideOutRight"
                  class="fixed top-4 right-4 bg-red-500 text-white px-4 py-2 md:px-6 md:py-3 rounded-lg shadow-sm z-50 max-w-xs md:max-w-md">
                 <div class="flex items-center">
-                    <i class="fas fa-exclamation-circle mr-2" aria-hidden="true"></i>
+                    <i aria-hidden="true" class="fas fa-exclamation-circle mr-2"></i>
                     <span class="text-sm">{{ session('error') }}</span>
                 </div>
             </div>
@@ -193,7 +193,7 @@
                  x-transition:leave="animate__animated animate__slideOutRight"
                  class="fixed top-4 right-4 bg-yellow-500 text-white px-4 py-2 md:px-6 md:py-3 rounded-lg shadow-sm z-50 max-w-xs md:max-w-md">
                 <div class="flex items-center">
-                    <i class="fas fa-exclamation-triangle mr-2" aria-hidden="true"></i>
+                    <i aria-hidden="true" class="fas fa-exclamation-triangle mr-2"></i>
                     <span class="text-sm">{{ session('warning') }}</span>
                 </div>
             </div>

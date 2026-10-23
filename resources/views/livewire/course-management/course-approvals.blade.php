@@ -7,7 +7,7 @@
             class="bg-themed-secondary rounded-lg shadow-sm border border-themed-primary p-6   transition-colors duration-300">
             <div class="flex items-center gap-4">
                 <div class="bg-brand-ink   p-4 rounded-lg shadow-sm">
-                    <i class="fas fa-check-circle text-white text-2xl" aria-hidden="true"></i>
+                    <i aria-hidden="true" class="fas fa-check-circle text-white text-2xl"></i>
                 </div>
                 <div>
                     <h1 class="  font-bold text-themed-primary transition-colors duration-300 bk-page-title">
@@ -25,7 +25,7 @@
             <div class="bg-green-100/50 border border-green-400 text-green-700 px-6 py-4 rounded-lg transition-colors duration-300  "
                 role="alert">
                 <div class="flex items-center gap-2">
-                    <i class="fas fa-check-circle text-lg" aria-hidden="true"></i>
+                    <i aria-hidden="true" class="fas fa-check-circle text-lg"></i>
                     <span class="font-medium">{{ session('message') }}</span>
                 </div>
             </div>
@@ -34,7 +34,7 @@
             <div class="bg-red-100/50 border border-red-400 text-red-700 px-6 py-4 rounded-lg transition-colors duration-300  "
                 role="alert">
                 <div class="flex items-center gap-2">
-                    <i class="fas fa-exclamation-circle text-lg" aria-hidden="true"></i>
+                    <i aria-hidden="true" class="fas fa-exclamation-circle text-lg"></i>
                     <span class="font-medium">{{ session('error') }}</span>
                 </div>
             </div>
@@ -46,7 +46,7 @@
             <div class="flex items-center justify-between mb-4">
                 <h3
                     class="text-lg font-bold text-themed-primary flex items-center gap-2 transition-colors duration-300">
-                    <i class="fas fa-search text-brand" aria-hidden="true"></i>
+                    <i aria-hidden="true" class="fas fa-search text-brand"></i>
                     Search & Filter
                 </h3>
             </div>
@@ -58,10 +58,10 @@
                     aria-label="Search courses">
                 <div
                     class="absolute left-3 top-1/2 -translate-y-1/2 text-themed-secondary transition-colors duration-300">
-                    <i class="fas fa-search" aria-hidden="true"></i>
+                    <i aria-hidden="true" class="fas fa-search"></i>
                 </div>
                 <div wire:loading wire:target="search" class="absolute right-3 top-1/2 -translate-y-1/2">
-                    <i class="fas fa-spinner animate-spin text-brand" aria-hidden="true"></i>
+                    <i aria-hidden="true" class="fas fa-spinner animate-spin text-brand"></i>
                 </div>
             </div>
         </div>
@@ -72,7 +72,7 @@
                 class="text-center py-16 bg-themed-secondary rounded-lg shadow-sm border border-themed-primary transition-colors duration-300">
                 <div
                     class="bg-green-100/50 w-24 h-24 rounded-full flex items-center justify-center mx-auto mb-6 transition-colors duration-300">
-                    <i class="fas fa-inbox text-4xl text-green-600" aria-hidden="true"></i>
+                    <i aria-hidden="true" class="fas fa-inbox text-4xl text-green-600"></i>
                 </div>
                 <h3 class="text-xl font-bold text-themed-primary mb-3 transition-colors duration-300">No pending approvals
                 </h3>
@@ -114,7 +114,7 @@
                                 <td colspan="5"
                                     class="px-6 py-8 text-center text-sm text-themed-secondary transition-colors duration-300">
                                     <div class="flex items-center justify-center gap-2">
-                                        <i class="fas fa-circle-notch fa-spin" aria-hidden="true"></i>
+                                        <i aria-hidden="true" class="fas fa-circle-notch fa-spin"></i>
                                         <span>Loading...</span>
                                     </div>
                                 </td>
@@ -156,7 +156,7 @@
                                         <span
                                             class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold transition-colors duration-300
                                                     {{ $score >= 70 ? 'bg-green-100/50 text-green-800' : ($score > 0 ? 'bg-orange-100/50 text-orange-800' : 'bg-gray-100/50 text-gray-800') }}">
-                                            <i class="fas fa-clipboard-check mr-1" aria-hidden="true"></i> {{ $score }}%
+                                            <i aria-hidden="true" class="fas fa-clipboard-check mr-1"></i> {{ $score }}%
                                         </span>
                                         <div class="text-xs text-themed-secondary mt-2">
                                             Media: {{ $summary['broken_media_count'] ?? 0 }} broken / Assessment: {{ $summary['assessment_coverage_percent'] ?? 0 }}%
@@ -170,17 +170,17 @@
                                             <a href="{{ route('courses.preview', $course) }}" target="_blank"
                                                 class="p-2 rounded-lg text-brand hover:bg-brand/10 transition-all duration-300 transform "
                                                 title="Preview course">
-                                                <i class="fas fa-eye" aria-hidden="true"></i>
+                                                <i aria-hidden="true" class="fas fa-eye"></i>
                                             </a>
                                             <button wire:click="openApproveModal({{ $course->id }})"
                                                 class="p-2 rounded-lg text-green-600 hover:bg-green-100/50 transition-all duration-300 transform "
                                                 title="Approve course">
-                                                <i class="fas fa-check-circle" aria-hidden="true"></i>
+                                                <i aria-hidden="true" class="fas fa-check-circle"></i>
                                             </button>
                                             <button wire:click="openRejectModal({{ $course->id }})"
                                                 class="p-2 rounded-lg text-red-600 hover:bg-red-100/50 transition-all duration-300 transform "
                                                 title="Reject course">
-                                                <i class="fas fa-times-circle" aria-hidden="true"></i>
+                                                <i aria-hidden="true" class="fas fa-times-circle"></i>
                                             </button>
                                         </div>
                                     </td>
@@ -214,7 +214,7 @@
                 <div class="text-center mb-6">
                     <div
                         class="w-16 h-16 bg-green-100/50 rounded-full flex items-center justify-center mx-auto mb-4 transition-colors duration-300">
-                        <i class="fas fa-check-circle text-green-600 text-2xl" aria-hidden="true"></i>
+                        <i aria-hidden="true" class="fas fa-check-circle text-green-600 text-2xl"></i>
                     </div>
                     <h3 class="text-xl font-bold text-themed-primary mb-2 transition-colors duration-300">Confirm
                         Approval</h3>
@@ -232,7 +232,7 @@
                         class="flex-1 bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-lg transition-all duration-300 disabled:opacity-50 transform ">
                         <span wire:loading.remove wire:target="approveCourse">Approve</span>
                         <span wire:loading wire:target="approveCourse" class="flex items-center justify-center gap-2">
-                            <i class="fas fa-spinner fa-spin" aria-hidden="true"></i>Approving...
+                            <i aria-hidden="true" class="fas fa-spinner fa-spin"></i>Approving...
                         </span>
                     </button>
                 </div>
@@ -254,7 +254,7 @@
                 <div class="text-center mb-6">
                     <div
                         class="w-16 h-16 bg-red-100/50 rounded-full flex items-center justify-center mx-auto mb-4 transition-colors duration-300">
-                        <i class="fas fa-times-circle text-red-600 text-2xl" aria-hidden="true"></i>
+                        <i aria-hidden="true" class="fas fa-times-circle text-red-600 text-2xl"></i>
                     </div>
                     <h3 class="text-xl font-bold text-themed-primary mb-2 transition-colors duration-300">Reject Course
                     </h3>
@@ -279,7 +279,7 @@
                         </div>
                         @error('rejectionReason')
                             <p class="mt-2 text-sm text-red-500 flex items-center gap-1">
-                                <i class="fas fa-exclamation-circle" aria-hidden="true"></i>
+                                <i aria-hidden="true" class="fas fa-exclamation-circle"></i>
                                 {{ $message }}
                             </p>
                         @enderror
@@ -295,7 +295,7 @@
                             <span wire:loading.remove wire:target="rejectCourse">Reject Course</span>
                             <span wire:loading wire:target="rejectCourse"
                                 class="flex items-center justify-center gap-2">
-                                <i class="fas fa-spinner fa-spin" aria-hidden="true"></i>Rejecting...
+                                <i aria-hidden="true" class="fas fa-spinner fa-spin"></i>Rejecting...
                             </span>
                         </button>
                     </div>

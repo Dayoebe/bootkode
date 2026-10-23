@@ -46,18 +46,18 @@
                             @elseif($currentInterview->format === 'voice')
                                 <div class="text-center py-8">
                                     <button class="bg-red-600 hover:bg-red-700 text-white px-8 py-4 rounded-full transition-colors">
-                                        <i class="fas fa-microphone text-2xl mr-2" aria-hidden="true"></i> Start Recording
+                                        <i aria-hidden="true" class="fas fa-microphone text-2xl mr-2"></i> Start Recording
                                     </button>
                                     <p class="text-themed-secondary mt-4">Click to start voice recording</p>
                                 </div>
                             @elseif($currentInterview->format === 'video')
                                 <div class="text-center py-8">
                                     <div class="bg-themed-tertiary rounded-lg p-8 mb-4 border border-themed-primary">
-                                        <i class="fas fa-video text-6xl text-themed-secondary mb-4" aria-hidden="true"></i>
+                                        <i aria-hidden="true" class="fas fa-video text-6xl text-themed-secondary mb-4"></i>
                                         <p class="text-themed-secondary">Video recording will start here</p>
                                     </div>
                                     <button class="bg-red-600 hover:bg-red-700 text-white px-8 py-4 rounded-full transition-colors">
-                                        <i class="fas fa-video mr-2" aria-hidden="true"></i> Start Video Recording
+                                        <i aria-hidden="true" class="fas fa-video mr-2"></i> Start Video Recording
                                     </button>
                                 </div>
                             @endif
@@ -66,13 +66,13 @@
                             @if(in_array($currentInterview->format, ['voice', 'video']))
                                 <div class="flex justify-center space-x-4 mt-4">
                                     <button class="bg-themed-secondary hover:bg-themed-tertiary text-themed-primary border border-themed-primary px-6 py-2 rounded-lg transition-colors">
-                                        <i class="fas fa-pause mr-2" aria-hidden="true"></i> Pause
+                                        <i aria-hidden="true" class="fas fa-pause mr-2"></i> Pause
                                     </button>
                                     <button class="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-lg transition-colors">
-                                        <i class="fas fa-play mr-2" aria-hidden="true"></i> Resume
+                                        <i aria-hidden="true" class="fas fa-play mr-2"></i> Resume
                                     </button>
                                     <button class="bg-action hover:bg-action text-action-foreground px-6 py-2 rounded-lg transition-colors">
-                                        <i class="fas fa-stop mr-2" aria-hidden="true"></i> Stop & Continue
+                                        <i aria-hidden="true" class="fas fa-stop mr-2"></i> Stop & Continue
                                     </button>
                                 </div>
                             @endif
@@ -84,13 +84,13 @@
                 <div class="flex justify-between pt-6 border-t border-themed-primary">
                     <button wire:click="completeInterview"
                         class="bg-themed-secondary hover:bg-themed-tertiary text-themed-primary border border-themed-primary px-6 py-3 rounded-lg transition-colors">
-                        <i class="fas fa-times mr-2" aria-hidden="true"></i> End Interview
+                        <i aria-hidden="true" class="fas fa-times mr-2"></i> End Interview
                     </button>
 
                     <div class="space-x-4">
                         @if($currentQuestionIndex > 0)
                             <button class="bg-themed-tertiary hover:bg-action hover:text-action-foreground text-themed-primary border border-themed-primary px-6 py-3 rounded-lg transition-colors">
-                                <i class="fas fa-chevron-left mr-2" aria-hidden="true"></i> Previous
+                                <i aria-hidden="true" class="fas fa-chevron-left mr-2"></i> Previous
                             </button>
                         @endif
 
@@ -98,7 +98,7 @@
                             class="bg-action hover:bg-action/90 text-action-foreground px-8 py-3 rounded-lg font-semibold transition-colors"
                             {{ empty($currentAnswer) && $currentInterview->format === 'text' ? 'disabled opacity-50 cursor-not-allowed' : '' }}>
                             {{ $currentQuestionIndex === count($currentInterview->questions) - 1 ? 'Finish Interview' : 'Next Question' }}
-                            <i class="fas fa-chevron-right ml-2" aria-hidden="true"></i>
+                            <i aria-hidden="true" class="fas fa-chevron-right ml-2"></i>
                         </button>
                     </div>
                 </div>

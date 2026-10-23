@@ -42,7 +42,7 @@
                         <div class="bg-themed-secondary rounded-lg border border-themed-primary p-8 lg:p-12 text-center transition-colors duration-300">
                             <div class="max-w-md mx-auto">
                                 <div class="w-20 h-20 bg-brand/20 rounded-full flex items-center justify-center mx-auto mb-6 transition-colors duration-300">
-                                    <i class="fas fa-book-open text-3xl text-brand" aria-hidden="true"></i>
+                                    <i aria-hidden="true" class="fas fa-book-open text-3xl text-brand"></i>
                                 </div>
                                 <h3 class="text-2xl font-bold text-themed-primary mb-3 transition-colors duration-300">Get Started</h3>
                                 @if ($course->sections->count() === 0)

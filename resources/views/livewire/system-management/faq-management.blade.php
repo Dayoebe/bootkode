@@ -2,7 +2,7 @@
     <!-- Header -->
     <div class="bg-brand-ink   p-6 rounded-lg shadow-sm text-white mb-8  ">
         <h1 class=" font-bold text-white bk-page-title">
-            <i class="fas fa-question mr-2" aria-hidden="true"></i> FAQ Management
+            <i aria-hidden="true" class="fas fa-question mr-2"></i> FAQ Management
         </h1>
         <p class="text-amber-100 mt-2">Create and manage frequently asked questions</p>
     </div>
@@ -10,38 +10,38 @@
     <!-- Form for Create/Update -->
     <form wire:submit.prevent="saveFaq" class="bg-themed-secondary shadow rounded-lg p-6 mb-8   border border-themed-primary transition-colors duration-300">
         <h3 class="text-lg font-semibold text-themed-primary mb-6 flex items-center">
-            <i class="fas fa-plus-circle text-amber-600 dark:text-amber-400 mr-2" aria-hidden="true"></i>{{ $editId ? 'Update' : 'Create' }} FAQ
+            <i aria-hidden="true" class="fas fa-plus-circle text-amber-600 dark:text-amber-400 mr-2"></i>{{ $editId ? 'Update' : 'Create' }} FAQ
         </h3>
 
         <div class="space-y-6">
             <div>
                 <label for="question" class="block text-sm font-semibold text-themed-primary mb-2">
-                    <i class="fas fa-heading mr-2 text-amber-600 dark:text-amber-400" aria-hidden="true"></i>Question <span class="text-red-600 dark:text-red-400">*</span>
+                    <i aria-hidden="true" class="fas fa-heading mr-2 text-amber-600 dark:text-amber-400"></i>Question <span class="text-red-600 dark:text-red-400">*</span>
                 </label>
                 <input wire:model="question" type="text" id="question"
                        class="w-full px-4 py-3 border border-themed-primary bg-themed-tertiary rounded-lg shadow-sm focus:ring-2 focus:ring-amber-500 focus:border-amber-500 text-themed-primary transition-colors duration-200"
                        placeholder="Enter the FAQ question">
-                @error('question') <p class="mt-2 text-sm text-red-600"><i class="fas fa-exclamation-circle mr-1" aria-hidden="true"></i>{{ $message }}</p> @enderror
+                @error('question') <p class="mt-2 text-sm text-red-600"><i aria-hidden="true" class="fas fa-exclamation-circle mr-1"></i>{{ $message }}</p> @enderror
             </div>
 
             <div>
                 <label for="answer" class="block text-sm font-semibold text-themed-primary mb-2">
-                    <i class="fas fa-align-left mr-2 text-amber-600 dark:text-amber-400" aria-hidden="true"></i>Answer <span class="text-red-600 dark:text-red-400">*</span>
+                    <i aria-hidden="true" class="fas fa-align-left mr-2 text-amber-600 dark:text-amber-400"></i>Answer <span class="text-red-600 dark:text-red-400">*</span>
                 </label>
                 <textarea wire:model="answer" id="answer" rows="6"
                           class="w-full px-4 py-3 border border-themed-primary bg-themed-tertiary rounded-lg shadow-sm focus:ring-2 focus:ring-amber-500 focus:border-amber-500 text-themed-primary transition-colors duration-200"
                           placeholder="Enter the detailed answer..."></textarea>
-                @error('answer') <p class="mt-2 text-sm text-red-600"><i class="fas fa-exclamation-circle mr-1" aria-hidden="true"></i>{{ $message }}</p> @enderror
+                @error('answer') <p class="mt-2 text-sm text-red-600"><i aria-hidden="true" class="fas fa-exclamation-circle mr-1"></i>{{ $message }}</p> @enderror
             </div>
 
             <div>
                 <label for="order" class="block text-sm font-semibold text-themed-primary mb-2">
-                    <i class="fas fa-sort-numeric-up mr-2 text-amber-600 dark:text-amber-400" aria-hidden="true"></i>Display Order
+                    <i aria-hidden="true" class="fas fa-sort-numeric-up mr-2 text-amber-600 dark:text-amber-400"></i>Display Order
                 </label>
                 <input wire:model="order" type="number" id="order" min="0"
                        class="w-full px-4 py-3 border border-themed-primary bg-themed-tertiary rounded-lg shadow-sm focus:ring-2 focus:ring-amber-500 focus:border-amber-500 text-themed-primary transition-colors duration-200"
                        placeholder="Enter order number (0, 1, 2, ...)">
-                @error('order') <p class="mt-2 text-sm text-red-600"><i class="fas fa-exclamation-circle mr-1" aria-hidden="true"></i>{{ $message }}</p> @enderror
+                @error('order') <p class="mt-2 text-sm text-red-600"><i aria-hidden="true" class="fas fa-exclamation-circle mr-1"></i>{{ $message }}</p> @enderror
                 <p class="text-xs text-themed-secondary mt-1">Lower numbers appear first</p>
             </div>
         </div>
@@ -55,8 +55,8 @@
             @endif
             <button type="submit" wire:loading.attr="disabled"
                     class="inline-flex items-center px-6 py-3 border border-transparent text-sm font-semibold rounded-lg shadow-sm text-white bg-amber-600 hover:bg-amber-700 dark:bg-amber-700 dark:hover:bg-amber-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-500 dark:focus:ring-offset-themed-secondary disabled:opacity-50 transition-colors duration-200">
-                <span wire:loading.remove><i class="fas fa-save mr-2" aria-hidden="true"></i> {{ $editId ? 'Update' : 'Create' }} FAQ</span>
-                <span wire:loading><i class="fas fa-circle-notch fa-spin mr-2" aria-hidden="true"></i> Saving...</span>
+                <span wire:loading.remove><i aria-hidden="true" class="fas fa-save mr-2"></i> {{ $editId ? 'Update' : 'Create' }} FAQ</span>
+                <span wire:loading><i aria-hidden="true" class="fas fa-circle-notch fa-spin mr-2"></i> Saving...</span>
             </button>
         </div>
     </form>
@@ -69,7 +69,7 @@
                 <div class="flex-1 w-full">
                     <label for="search" class="block text-sm font-medium text-themed-primary mb-2">Search FAQs</label>
                     <div class="relative">
-                        <i class="fas fa-search absolute left-3 top-3 text-themed-secondary" aria-hidden="true"></i>
+                        <i aria-hidden="true" class="fas fa-search absolute left-3 top-3 text-themed-secondary"></i>
                         <input wire:model.live.debounce.300ms="search" type="text" id="search"
                                placeholder="Search questions..."
                                class="w-full pl-10 pr-4 py-2 border border-themed-primary bg-themed-secondary rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500 text-themed-primary transition-colors duration-200">
@@ -110,7 +110,7 @@
                             </td>
                             <td class="px-6 py-4 text-sm text-themed-secondary">
                                 <div class="flex items-center space-x-1">
-                                    <i class="fas fa-calendar text-amber-600 dark:text-amber-400" aria-hidden="true"></i>
+                                    <i aria-hidden="true" class="fas fa-calendar text-amber-600 dark:text-amber-400"></i>
                                     {{ $faq->created_at->format('M d, Y') }}
                                 </div>
                             </td>
@@ -119,12 +119,12 @@
                                     <button wire:click="editFaq({{ $faq->id }})"
                                             class="p-2 text-amber-600 dark:text-amber-400 hover:text-amber-800 dark:hover:text-amber-300 hover:bg-amber-100/30 dark:hover:bg-amber-900/20 rounded-lg transition-colors"
                                             title="Edit">
-                                        <i class="fas fa-edit" aria-hidden="true"></i>
+                                        <i aria-hidden="true" class="fas fa-edit"></i>
                                     </button>
                                     <button wire:click="deleteFaq({{ $faq->id }})" wire:confirm="Delete this FAQ permanently?"
                                             class="p-2 text-red-600 dark:text-red-400 hover:text-red-800 dark:hover:text-red-300 hover:bg-red-100/30 dark:hover:bg-red-900/20 rounded-lg transition-colors"
                                             title="Delete">
-                                        <i class="fas fa-trash" aria-hidden="true"></i>
+                                        <i aria-hidden="true" class="fas fa-trash"></i>
                                     </button>
                                 </div>
                             </td>
@@ -133,7 +133,7 @@
                         <tr>
                             <td colspan="5" class="px-6 py-12 text-center">
                                 <div class="bg-themed-tertiary rounded-full p-6 w-20 h-20 mx-auto mb-4 flex items-center justify-center">
-                                    <i class="fas fa-inbox text-2xl text-themed-secondary" aria-hidden="true"></i>
+                                    <i aria-hidden="true" class="fas fa-inbox text-2xl text-themed-secondary"></i>
                                 </div>
                                 <p class="text-themed-secondary text-lg font-medium">No FAQs found</p>
                                 <p class="text-themed-tertiary text-sm mt-1">Create your first FAQ to get started</p>
@@ -157,7 +157,7 @@
         <div class="bg-themed-secondary rounded-lg p-4 border border-themed-primary transition-colors duration-300">
             <div class="flex items-center">
                 <div class="p-3 rounded-lg bg-amber-100 dark:bg-amber-900/30">
-                    <i class="fas fa-question-circle text-amber-600 dark:text-amber-400 text-xl" aria-hidden="true"></i>
+                    <i aria-hidden="true" class="fas fa-question-circle text-amber-600 dark:text-amber-400 text-xl"></i>
                 </div>
                 <div class="ml-4">
                     <p class="text-sm text-themed-secondary">Total FAQs</p>
@@ -169,7 +169,7 @@
         <div class="bg-themed-secondary rounded-lg p-4 border border-themed-primary transition-colors duration-300">
             <div class="flex items-center">
                 <div class="p-3 rounded-lg bg-brand/10 dark:bg-action/30">
-                    <i class="fas fa-plus-circle text-brand dark:text-brand text-xl" aria-hidden="true"></i>
+                    <i aria-hidden="true" class="fas fa-plus-circle text-brand dark:text-brand text-xl"></i>
                 </div>
                 <div class="ml-4">
                     <p class="text-sm text-themed-secondary">Last Added</p>
@@ -181,7 +181,7 @@
         <div class="bg-themed-secondary rounded-lg p-4 border border-themed-primary transition-colors duration-300">
             <div class="flex items-center">
                 <div class="p-3 rounded-lg bg-green-100 dark:bg-green-900/30">
-                    <i class="fas fa-check-circle text-green-600 dark:text-green-400 text-xl" aria-hidden="true"></i>
+                    <i aria-hidden="true" class="fas fa-check-circle text-green-600 dark:text-green-400 text-xl"></i>
                 </div>
                 <div class="ml-4">
                     <p class="text-sm text-themed-secondary">Status</p>

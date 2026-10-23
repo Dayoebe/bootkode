@@ -23,7 +23,7 @@
                     <!-- Quick Actions -->
                     <a href="{{ route('mentorship.hub') }}"
                         class="bg-action dark:bg-action hover:bg-action dark:hover:bg-action text-action-foreground px-4 py-2 rounded-lg font-medium transition-colors duration-200">
-                        <i class="fas fa-calendar-plus mr-2" aria-hidden="true"></i>
+                        <i aria-hidden="true" class="fas fa-calendar-plus mr-2"></i>
                         Schedule Session
                     </a>
         </x-slot:actions>
@@ -47,7 +47,7 @@
                         </div>
                     </div>
                     <div class="bg-brand/10 dark:bg-action/30 p-3 rounded-full transition-colors duration-300">
-                        <i class="fas fa-users text-brand dark:text-brand text-xl" aria-hidden="true"></i>
+                        <i aria-hidden="true" class="fas fa-users text-brand dark:text-brand text-xl"></i>
                     </div>
                 </div>
             </div>
@@ -67,7 +67,7 @@
                         </div>
                     </div>
                     <div class="bg-brand/10 dark:bg-action/30 p-3 rounded-full transition-colors duration-300">
-                        <i class="fas fa-comments text-brand dark:text-brand text-xl" aria-hidden="true"></i>
+                        <i aria-hidden="true" class="fas fa-comments text-brand dark:text-brand text-xl"></i>
                     </div>
                 </div>
             </div>
@@ -82,8 +82,8 @@
                         <div class="flex items-center mt-2 text-sm">
                             <div class="flex text-yellow-400 dark:text-yellow-300 mr-2">
                                 @for($i = 1; $i <= 5; $i++)
-                                    <i
-                                        class="fas fa-star{{ $i <= $this->overviewStats['avg_session_rating'] ? '' : '-o' }}" aria-hidden="true"></i>
+                                    <i aria-hidden="true"
+                                        class="fas fa-star{{ $i <= $this->overviewStats['avg_session_rating'] ? '' : '-o' }}"></i>
                                 @endfor
                             </div>
                             <span
@@ -92,7 +92,7 @@
                         </div>
                     </div>
                     <div class="bg-yellow-100 dark:bg-yellow-900/30 p-3 rounded-full transition-colors duration-300">
-                        <i class="fas fa-trophy text-yellow-600 dark:text-yellow-400 text-xl" aria-hidden="true"></i>
+                        <i aria-hidden="true" class="fas fa-trophy text-yellow-600 dark:text-yellow-400 text-xl"></i>
                     </div>
                 </div>
             </div>
@@ -112,7 +112,7 @@
                         </div>
                     </div>
                     <div class="bg-brand/10 dark:bg-action/30 p-3 rounded-full transition-colors duration-300">
-                        <i class="fas fa-briefcase text-brand dark:text-brand text-xl" aria-hidden="true"></i>
+                        <i aria-hidden="true" class="fas fa-briefcase text-brand dark:text-brand text-xl"></i>
                     </div>
                 </div>
             </div>
@@ -132,7 +132,7 @@
                         </h2>
                         <a href="{{ route('mentorship.dashboard') }}"
                             class="text-brand dark:text-brand hover:text-brand dark:hover:text-brand text-sm font-medium transition-colors duration-300">
-                            View All <i class="fas fa-arrow-right ml-1" aria-hidden="true"></i>
+                            View All <i aria-hidden="true" class="fas fa-arrow-right ml-1"></i>
                         </a>
                     </div>
 
@@ -160,7 +160,7 @@
                                             <span>Learning: {{ $mentee['learning_progress'] }}%</span>
                                             <span>Career: {{ $mentee['career_progress']['success_rate'] }}%</span>
                                             <span class="flex items-center">
-                                                <i class="fas fa-star text-yellow-400 dark:text-yellow-300 mr-1" aria-hidden="true"></i>
+                                                <i aria-hidden="true" class="fas fa-star text-yellow-400 dark:text-yellow-300 mr-1"></i>
                                                 {{ number_format($mentee['overall_score'], 1) }}
                                             </span>
                                         </div>
@@ -178,7 +178,7 @@
                             </div>
                         @empty
                             <div class="text-center py-8">
-                                <i class="fas fa-user-plus text-themed-tertiary text-4xl mb-4" aria-hidden="true"></i>
+                                <i aria-hidden="true" class="fas fa-user-plus text-themed-tertiary text-4xl mb-4"></i>
                                 <p class="text-themed-secondary mb-4 transition-colors duration-300">No mentees assigned yet</p>
                                 <a href="{{ route('mentorship.hub') }}"
                                     class="bg-action dark:bg-action hover:bg-action dark:hover:bg-action text-action-foreground px-4 py-2 rounded-lg transition-colors">
@@ -285,7 +285,7 @@
                             </div>
                         @empty
                             <div class="text-center py-6">
-                                <i class="fas fa-chart-line text-themed-tertiary text-3xl mb-2" aria-hidden="true"></i>
+                                <i aria-hidden="true" class="fas fa-chart-line text-themed-tertiary text-3xl mb-2"></i>
                                 <p class="text-themed-secondary transition-colors duration-300">No career guidance data
                                     available</p>
                             </div>
@@ -367,7 +367,7 @@
                             Interviews</h2>
                         <a href="{{ route('admin.interview') }}"
                             class="text-brand dark:text-brand hover:text-brand dark:hover:text-brand text-sm font-medium transition-colors duration-300">
-                            View All <i class="fas fa-arrow-right ml-1" aria-hidden="true"></i>
+                            View All <i aria-hidden="true" class="fas fa-arrow-right ml-1"></i>
                         </a>
                     </div>
 
@@ -395,7 +395,7 @@
                             </div>
                         @empty
                             <div class="text-center py-6">
-                                <i class="fas fa-microphone-alt text-themed-tertiary text-3xl mb-2" aria-hidden="true"></i>
+                                <i aria-hidden="true" class="fas fa-microphone-alt text-themed-tertiary text-3xl mb-2"></i>
                                 <p class="text-themed-secondary transition-colors duration-300">No mock interviews conducted</p>
                             </div>
                         @endforelse
@@ -421,8 +421,8 @@
                                 class="flex items-center space-x-3 p-3 border border-themed-primary rounded-lg transition-colors duration-300">
                                 <div
                                     class="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center {{ $ticket['priority'] === 'high' ? 'bg-red-100 dark:bg-red-900/30' : ($ticket['priority'] === 'medium' ? 'bg-yellow-100 dark:bg-yellow-900/30' : 'bg-green-100 dark:bg-green-900/30') }} transition-colors duration-300">
-                                    <i
-                                        class="fas fa-exclamation text-xs {{ $ticket['priority'] === 'high' ? 'text-red-600 dark:text-red-400' : ($ticket['priority'] === 'medium' ? 'text-yellow-600 dark:text-yellow-400' : 'text-green-600 dark:text-green-400') }}" aria-hidden="true"></i>
+                                    <i aria-hidden="true"
+                                        class="fas fa-exclamation text-xs {{ $ticket['priority'] === 'high' ? 'text-red-600 dark:text-red-400' : ($ticket['priority'] === 'medium' ? 'text-yellow-600 dark:text-yellow-400' : 'text-green-600 dark:text-green-400') }}"></i>
                                 </div>
                                 <div class="flex-1 min-w-0">
                                     <h4 class="text-sm font-medium text-themed-primary truncate transition-colors duration-300">
@@ -439,7 +439,7 @@
                             </div>
                         @empty
                             <div class="text-center py-6">
-                                <i class="fas fa-check-circle text-green-400 dark:text-green-500 text-3xl mb-2" aria-hidden="true"></i>
+                                <i aria-hidden="true" class="fas fa-check-circle text-green-400 dark:text-green-500 text-3xl mb-2"></i>
                                 <p class="text-themed-secondary transition-colors duration-300">No pending support tickets</p>
                             </div>
                         @endforelse
@@ -460,7 +460,7 @@
                                 class="flex items-start space-x-3 p-3 rounded-lg hover:bg-themed-tertiary transition-colors duration-200">
                                 <div
                                     class="flex-shrink-0 w-8 h-8 bg-themed-tertiary rounded-full flex items-center justify-center transition-colors duration-300">
-                                    <i class="{{ $activity['icon'] }} text-xs {{ $activity['color'] }}"></i>
+                                    <i aria-hidden="true" class="{{ $activity['icon'] }} text-xs {{ $activity['color'] }}"></i>
                                 </div>
                                 <div class="flex-1 min-w-0">
                                     <p class="text-sm font-medium text-themed-primary transition-colors duration-300">
@@ -473,7 +473,7 @@
                             </div>
                         @empty
                             <div class="text-center py-6">
-                                <i class="fas fa-clock text-themed-tertiary text-3xl mb-2" aria-hidden="true"></i>
+                                <i aria-hidden="true" class="fas fa-clock text-themed-tertiary text-3xl mb-2"></i>
                                 <p class="text-themed-secondary transition-colors duration-300">No recent activities</p>
                             </div>
                         @endforelse

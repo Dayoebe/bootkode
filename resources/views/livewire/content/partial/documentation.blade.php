@@ -11,7 +11,7 @@
                 wire:click="openCreateModal"
                 class="bg-action dark:bg-action text-action-foreground px-4 py-2 rounded-lg hover:bg-action dark:hover:bg-action transition-colors flex items-center space-x-2"
             >
-                <i class="fas fa-plus" aria-hidden="true"></i>
+                <i aria-hidden="true" class="fas fa-plus"></i>
                 <span>Create Document</span>
             </button>
         </div>
@@ -19,19 +19,19 @@
         <!-- Quick Actions -->
         <div class="mt-6 flex flex-wrap gap-2">
             <button class="px-3 py-1 bg-brand/10 dark:bg-action/30 text-brand dark:text-brand rounded-full text-sm hover:bg-blue-200 dark:hover:bg-action/40 transition-colors">
-                <i class="fas fa-file-alt mr-1" aria-hidden="true"></i>
+                <i aria-hidden="true" class="fas fa-file-alt mr-1"></i>
                 New Guide
             </button>
             <button class="px-3 py-1 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 rounded-full text-sm hover:bg-green-200 dark:hover:bg-green-900/40 transition-colors">
-                <i class="fas fa-question-circle mr-1" aria-hidden="true"></i>
+                <i aria-hidden="true" class="fas fa-question-circle mr-1"></i>
                 New FAQ
             </button>
             <button class="px-3 py-1 bg-brand/10 dark:bg-action/30 text-brand dark:text-brand rounded-full text-sm hover:bg-purple-200 dark:hover:bg-action/40 transition-colors">
-                <i class="fas fa-code mr-1" aria-hidden="true"></i>
+                <i aria-hidden="true" class="fas fa-code mr-1"></i>
                 API Documentation
             </button>
             <button class="px-3 py-1 bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-300 rounded-full text-sm hover:bg-orange-200 dark:hover:bg-orange-900/40 transition-colors">
-                <i class="fas fa-book mr-1" aria-hidden="true"></i>
+                <i aria-hidden="true" class="fas fa-book mr-1"></i>
                 Tutorial
             </button>
         </div>
@@ -106,19 +106,19 @@
                                 <div class="flex items-center justify-center w-8 h-8 rounded-lg bg-brand/10 dark:bg-action/30">
                                     @switch($document->type)
                                         @case('guide')
-                                            <i class="fas fa-book text-brand dark:text-brand" aria-hidden="true"></i>
+                                            <i aria-hidden="true" class="fas fa-book text-brand dark:text-brand"></i>
                                             @break
                                         @case('faq')
-                                            <i class="fas fa-question-circle text-brand dark:text-brand" aria-hidden="true"></i>
+                                            <i aria-hidden="true" class="fas fa-question-circle text-brand dark:text-brand"></i>
                                             @break
                                         @case('api')
-                                            <i class="fas fa-code text-brand dark:text-brand" aria-hidden="true"></i>
+                                            <i aria-hidden="true" class="fas fa-code text-brand dark:text-brand"></i>
                                             @break
                                         @case('tutorial')
-                                            <i class="fas fa-graduation-cap text-brand dark:text-brand" aria-hidden="true"></i>
+                                            <i aria-hidden="true" class="fas fa-graduation-cap text-brand dark:text-brand"></i>
                                             @break
                                         @default
-                                            <i class="fas fa-file-alt text-brand dark:text-brand" aria-hidden="true"></i>
+                                            <i aria-hidden="true" class="fas fa-file-alt text-brand dark:text-brand"></i>
                                     @endswitch
                                 </div>
 
@@ -134,7 +134,7 @@
 
                                 @if($document->featured)
                                     <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-300">
-                                        <i class="fas fa-star mr-1" aria-hidden="true"></i>
+                                        <i aria-hidden="true" class="fas fa-star mr-1"></i>
                                         Featured
                                     </span>
                                 @endif
@@ -154,25 +154,25 @@
                                 class="text-content-muted dark:text-content-muted hover:text-content-muted dark:hover:text-gray-300 p-1 transition-colors"
                                 onclick="toggleDocDropdown({{ $document->id }})"
                             >
-                                <i class="fas fa-ellipsis-v" aria-hidden="true"></i>
+                                <i aria-hidden="true" class="fas fa-ellipsis-v"></i>
                             </button>
                             <div id="doc-dropdown-{{ $document->id }}" class="hidden absolute right-0 z-10 mt-2 w-48 bg-surface dark:bg-gray-800 rounded-md shadow-sm ring-1 ring-black ring-opacity-5 dark:ring-gray-700">
                                 <div class="py-1">
                                     <button wire:click="openEditModal({{ $document->id }})" class="w-full text-left px-4 py-2 text-sm text-content dark:text-gray-300 hover:bg-surface-muted dark:hover:bg-gray-700 flex items-center transition-colors">
-                                        <i class="fas fa-edit mr-2" aria-hidden="true"></i> Edit
+                                        <i aria-hidden="true" class="fas fa-edit mr-2"></i> Edit
                                     </button>
                                     <button wire:click="toggleFeatured({{ $document->id }})" class="w-full text-left px-4 py-2 text-sm text-yellow-700 dark:text-yellow-400 hover:bg-yellow-50 dark:hover:bg-yellow-900/20 flex items-center transition-colors">
-                                        <i class="fas {{ $document->featured ? 'fa-star-half-alt' : 'fa-star' }} mr-2" aria-hidden="true"></i>
+                                        <i aria-hidden="true" class="fas {{ $document->featured ? 'fa-star-half-alt' : 'fa-star' }} mr-2"></i>
                                         {{ $document->featured ? 'Unfeature' : 'Feature' }}
                                     </button>
                                     <button wire:click="changeStatus({{ $document->id }}, 'published')" class="w-full text-left px-4 py-2 text-sm text-green-700 dark:text-green-400 hover:bg-green-50 dark:hover:bg-green-900/20 flex items-center transition-colors">
-                                        <i class="fas fa-check mr-2" aria-hidden="true"></i> Publish
+                                        <i aria-hidden="true" class="fas fa-check mr-2"></i> Publish
                                     </button>
                                     <button wire:click="changeStatus({{ $document->id }}, 'archived')" class="w-full text-left px-4 py-2 text-sm text-brand dark:text-brand hover:bg-brand/10 dark:hover:bg-action/20 flex items-center transition-colors">
-                                        <i class="fas fa-archive mr-2" aria-hidden="true"></i> Archive
+                                        <i aria-hidden="true" class="fas fa-archive mr-2"></i> Archive
                                     </button>
                                     <button wire:click="openDeleteModal({{ $document->id }})" class="w-full text-left px-4 py-2 text-sm text-red-700 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 flex items-center transition-colors">
-                                        <i class="fas fa-trash mr-2" aria-hidden="true"></i> Delete
+                                        <i aria-hidden="true" class="fas fa-trash mr-2"></i> Delete
                                     </button>
                                 </div>
                             </div>
@@ -183,7 +183,7 @@
                     <div class="space-y-2 text-xs text-content-muted dark:text-content-muted">
                         <div class="flex items-center justify-between">
                             <span>
-                                <i class="fas fa-user mr-1" aria-hidden="true"></i>
+                                <i aria-hidden="true" class="fas fa-user mr-1"></i>
                                 {{ $document->creator->name ?? 'Unknown' }}
                             </span>
                             @if($document->difficulty_level)
@@ -199,12 +199,12 @@
 
                         <div class="flex items-center justify-between">
                             <span>
-                                <i class="fas fa-calendar mr-1" aria-hidden="true"></i>
+                                <i aria-hidden="true" class="fas fa-calendar mr-1"></i>
                                 {{ $document->created_at->format('M j, Y') }}
                             </span>
                             @if($document->views_count ?? 0 > 0)
                                 <span>
-                                    <i class="fas fa-eye mr-1" aria-hidden="true"></i>
+                                    <i aria-hidden="true" class="fas fa-eye mr-1"></i>
                                     {{ number_format($document->views_count) }}
                                 </span>
                             @endif
@@ -212,14 +212,14 @@
 
                         @if($document->category)
                             <div class="flex items-center">
-                                <i class="fas fa-tag mr-1" aria-hidden="true"></i>
+                                <i aria-hidden="true" class="fas fa-tag mr-1"></i>
                                 <span>{{ $document->category->name }}</span>
                             </div>
                         @endif
 
                         @if($document->updated_at && $document->updated_at->ne($document->created_at))
                             <div class="flex items-center">
-                                <i class="fas fa-edit mr-1" aria-hidden="true"></i>
+                                <i aria-hidden="true" class="fas fa-edit mr-1"></i>
                                 <span>Updated {{ $document->updated_at->diffForHumans() }}</span>
                             </div>
                         @endif
@@ -259,7 +259,7 @@
         @empty
             <div class="col-span-full">
                 <div class="text-center py-12">
-                    <i class="fas fa-file-alt text-6xl text-gray-300 dark:text-content-muted mb-4" aria-hidden="true"></i>
+                    <i aria-hidden="true" class="fas fa-file-alt text-6xl text-gray-300 dark:text-content-muted mb-4"></i>
                     <h3 class="text-lg font-medium text-content dark:text-white mb-2">No documentation found</h3>
                     <p class="text-content-muted dark:text-content-muted mb-4">
                         @if($search || $selectedType || $selectedCategory || $selectedStatus)
@@ -291,7 +291,7 @@
                     <div class="flex justify-between items-center mb-6">
                         <h3 class="text-lg font-semibold text-content dark:text-white">Create New Document</h3>
                         <button wire:click="closeCreateModal" class="text-content-muted dark:text-content-muted hover:text-content-muted dark:hover:text-gray-300 transition-colors" aria-label="Close">
-                            <i class="fas fa-times text-xl" aria-hidden="true"></i>
+                            <i aria-hidden="true" class="fas fa-times text-xl"></i>
                         </button>
                     </div>
 
@@ -430,7 +430,7 @@
                     <div class="flex justify-between items-center mb-6">
                         <h3 class="text-lg font-semibold text-content dark:text-white">Edit Document</h3>
                         <button wire:click="closeEditModal" class="text-content-muted dark:text-content-muted hover:text-content-muted dark:hover:text-gray-300 transition-colors" aria-label="Close">
-                            <i class="fas fa-times text-xl" aria-hidden="true"></i>
+                            <i aria-hidden="true" class="fas fa-times text-xl"></i>
                         </button>
                     </div>
 
@@ -565,7 +565,7 @@
                 <div class="p-6">
                     <div class="flex items-center mb-4">
                         <div class="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-red-100 dark:bg-red-900/30">
-                            <i class="fas fa-exclamation-triangle text-red-600 dark:text-red-400" aria-hidden="true"></i>
+                            <i aria-hidden="true" class="fas fa-exclamation-triangle text-red-600 dark:text-red-400"></i>
                         </div>
                     </div>
                     <div class="text-center">

@@ -5,7 +5,7 @@
         <div class="relative">
             <input aria-label="Search vendors" wire:model.live.debounce.300ms="search" type="text" placeholder="Search vendors..."
                 class="w-64 pl-10 pr-4 py-2 border border-line rounded-lg focus:ring-brand/30 focus:border-brand">
-            <i class="fas fa-search absolute left-3 top-3 text-content-muted" aria-hidden="true"></i>
+            <i aria-hidden="true" class="fas fa-search absolute left-3 top-3 text-content-muted"></i>
         </div>
 
         <select aria-label="Vendor status" wire:model.live="vendorStatus"
@@ -20,7 +20,7 @@
         <div class="ml-auto flex gap-2">
             <button wire:click="exportVendors"
                 class="px-3 py-2 bg-gray-600 text-white text-sm rounded-lg hover:bg-gray-700">
-                <i class="fas fa-download mr-2" aria-hidden="true"></i>Export
+                <i aria-hidden="true" class="fas fa-download mr-2"></i>Export
             </button>
         </div>
     </div>
@@ -131,23 +131,23 @@
                                         @if($isPending)
                                             <button wire:click="openApprovalModal({{ $user->id }})"
                                                 class="text-green-600 hover:text-green-900" title="Approve">
-                                                <i class="fas fa-check" aria-hidden="true"></i>
+                                                <i aria-hidden="true" class="fas fa-check"></i>
                                             </button>
                                             <button wire:click="openRejectionModal({{ $user->id }})"
                                                 class="text-red-600 hover:text-red-900" title="Reject">
-                                                <i class="fas fa-times" aria-hidden="true"></i>
+                                                <i aria-hidden="true" class="fas fa-times"></i>
                                             </button>
                                         @elseif($isApproved && !$isSuspended)
                                             <button wire:click="suspendVendor({{ $user->id }})"
                                                 onclick="confirm('Suspend this vendor?') || event.stopImmediatePropagation()"
                                                 class="text-orange-600 hover:text-orange-900" title="Suspend">
-                                                <i class="fas fa-pause" aria-hidden="true"></i>
+                                                <i aria-hidden="true" class="fas fa-pause"></i>
                                             </button>
                                         @elseif($isSuspended)
                                             <button wire:click="reactivateVendor({{ $user->id }})"
                                                 onclick="confirm('Reactivate this vendor?') || event.stopImmediatePropagation()"
                                                 class="text-green-600 hover:text-green-900" title="Reactivate">
-                                                <i class="fas fa-play" aria-hidden="true"></i>
+                                                <i aria-hidden="true" class="fas fa-play"></i>
                                             </button>
                                         @endif
                                     </div>
@@ -164,7 +164,7 @@
         </div>
     @else
         <div class="text-center py-12 bg-surface rounded-lg border border-line">
-            <i class="fas fa-user-tie text-gray-300 text-6xl mb-4" aria-hidden="true"></i>
+            <i aria-hidden="true" class="fas fa-user-tie text-gray-300 text-6xl mb-4"></i>
             <h3 class="text-lg font-medium text-content mb-2">No vendors found</h3>
             <p class="text-content-muted">
                 @if($vendorStatus === 'pending')

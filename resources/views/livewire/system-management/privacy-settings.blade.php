@@ -2,7 +2,7 @@
     <!-- Header -->
     <div class="bg-brand-ink   p-6 rounded-lg shadow-sm text-white mb-8">
         <h1 class=" font-bold flex items-center bk-page-title">
-            <i class="fas fa-lock mr-3" aria-hidden="true"></i>
+            <i aria-hidden="true" class="fas fa-lock mr-3"></i>
             Privacy Settings
         </h1>
         <p class="text-red-100 mt-2">Manage your privacy, security, and data preferences</p>
@@ -13,7 +13,7 @@
         <div class="bg-themed-secondary rounded-lg shadow-sm border border-themed-primary overflow-hidden">
             <div class="px-6 py-4 border-b border-themed-primary">
                 <div class="flex items-center">
-                    <i class="fas fa-user-shield text-brand dark:text-brand mr-3 text-lg" aria-hidden="true"></i>
+                    <i aria-hidden="true" class="fas fa-user-shield text-brand dark:text-brand mr-3 text-lg"></i>
                     <div>
                         <h3 class="text-lg font-semibold text-themed-primary">Profile Privacy</h3>
                         <p class="text-sm text-themed-secondary">Control who can see your profile and information</p>
@@ -115,8 +115,8 @@
                 <div class="mt-6 pt-4 border-t border-themed-primary flex justify-end">
                     <button type="submit" wire:loading.attr="disabled"
                             class="bg-action hover:bg-action dark:bg-action dark:hover:bg-action text-action-foreground px-6 py-2 rounded-lg transition-colors duration-200 font-medium">
-                        <span wire:loading.remove><i class="fas fa-save mr-2" aria-hidden="true"></i>Save Profile Privacy</span>
-                        <span wire:loading><i class="fas fa-circle-notch fa-spin mr-2" aria-hidden="true"></i>Saving...</span>
+                        <span wire:loading.remove><i aria-hidden="true" class="fas fa-save mr-2"></i>Save Profile Privacy</span>
+                        <span wire:loading><i aria-hidden="true" class="fas fa-circle-notch fa-spin mr-2"></i>Saving...</span>
                     </button>
                 </div>
             </form>
@@ -126,7 +126,7 @@
         <div class="bg-themed-secondary rounded-lg shadow-sm border border-themed-primary overflow-hidden">
             <div class="px-6 py-4 border-b border-themed-primary">
                 <div class="flex items-center">
-                    <i class="fas fa-comments text-green-600 dark:text-green-400 mr-3 text-lg" aria-hidden="true"></i>
+                    <i aria-hidden="true" class="fas fa-comments text-green-600 dark:text-green-400 mr-3 text-lg"></i>
                     <div>
                         <h3 class="text-lg font-semibold text-themed-primary">Communication Privacy</h3>
                         <p class="text-sm text-themed-secondary">Control how others can contact and interact with you</p>
@@ -197,8 +197,8 @@
                 <div class="mt-6 pt-4 border-t border-themed-primary flex justify-end">
                     <button type="submit" wire:loading.attr="disabled"
                             class="bg-green-600 hover:bg-green-700 dark:bg-green-700 dark:hover:bg-green-800 text-white px-6 py-2 rounded-lg transition-colors duration-200 font-medium">
-                        <span wire:loading.remove><i class="fas fa-save mr-2" aria-hidden="true"></i>Save Communication Settings</span>
-                        <span wire:loading><i class="fas fa-circle-notch fa-spin mr-2" aria-hidden="true"></i>Saving...</span>
+                        <span wire:loading.remove><i aria-hidden="true" class="fas fa-save mr-2"></i>Save Communication Settings</span>
+                        <span wire:loading><i aria-hidden="true" class="fas fa-circle-notch fa-spin mr-2"></i>Saving...</span>
                     </button>
                 </div>
             </form>
@@ -208,7 +208,7 @@
         <div class="bg-themed-secondary rounded-lg shadow-sm border border-themed-primary overflow-hidden">
             <div class="px-6 py-4 border-b border-themed-primary">
                 <div class="flex items-center">
-                    <i class="fas fa-chart-bar text-brand dark:text-brand mr-3 text-lg" aria-hidden="true"></i>
+                    <i aria-hidden="true" class="fas fa-chart-bar text-brand dark:text-brand mr-3 text-lg"></i>
                     <div>
                         <h3 class="text-lg font-semibold text-themed-primary">Data & Analytics Privacy</h3>
                         <p class="text-sm text-themed-secondary">Control how your data is collected and used</p>
@@ -271,8 +271,8 @@
                 <div class="mt-6 pt-4 border-t border-themed-primary flex justify-end">
                     <button type="submit" wire:loading.attr="disabled"
                             class="bg-action hover:bg-action dark:bg-action dark:hover:bg-action text-action-foreground px-6 py-2 rounded-lg transition-colors duration-200 font-medium">
-                        <span wire:loading.remove><i class="fas fa-save mr-2" aria-hidden="true"></i>Save Data Settings</span>
-                        <span wire:loading><i class="fas fa-circle-notch fa-spin mr-2" aria-hidden="true"></i>Saving...</span>
+                        <span wire:loading.remove><i aria-hidden="true" class="fas fa-save mr-2"></i>Save Data Settings</span>
+                        <span wire:loading><i aria-hidden="true" class="fas fa-circle-notch fa-spin mr-2"></i>Saving...</span>
                     </button>
                 </div>
             </form>
@@ -282,7 +282,7 @@
         <div class="bg-themed-secondary rounded-lg shadow-sm border border-themed-primary overflow-hidden">
             <div class="px-6 py-4 border-b border-themed-primary">
                 <div class="flex items-center">
-                    <i class="fas fa-shield-alt text-red-600 dark:text-red-400 mr-3 text-lg" aria-hidden="true"></i>
+                    <i aria-hidden="true" class="fas fa-shield-alt text-red-600 dark:text-red-400 mr-3 text-lg"></i>
                     <div>
                         <h3 class="text-lg font-semibold text-themed-primary">Security Settings</h3>
                         <p class="text-sm text-themed-secondary">Manage your account security and notifications</p>
@@ -303,12 +303,12 @@
                                 @if($two_factor_enabled)
                                     <button type="button" wire:click="disable2FA"
                                             class="bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400 px-4 py-2 rounded-lg hover:bg-red-200 dark:hover:bg-red-900/50 transition-colors">
-                                        <i class="fas fa-times mr-2" aria-hidden="true"></i>Disable
+                                        <i aria-hidden="true" class="fas fa-times mr-2"></i>Disable
                                     </button>
                                 @else
                                     <button type="button" wire:click="enable2FA"
                                             class="bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 px-4 py-2 rounded-lg hover:bg-green-200 dark:hover:bg-green-900/50 transition-colors">
-                                        <i class="fas fa-plus mr-2" aria-hidden="true"></i>Enable
+                                        <i aria-hidden="true" class="fas fa-plus mr-2"></i>Enable
                                     </button>
                                 @endif
                             </div>
@@ -364,8 +364,8 @@
                 <div class="mt-6 pt-4 border-t border-themed-primary flex justify-end">
                     <button type="submit" wire:loading.attr="disabled"
                             class="bg-red-600 hover:bg-red-700 dark:bg-red-700 dark:hover:bg-red-800 text-white px-6 py-2 rounded-lg transition-colors duration-200 font-medium">
-                        <span wire:loading.remove><i class="fas fa-save mr-2" aria-hidden="true"></i>Save Security Settings</span>
-                        <span wire:loading><i class="fas fa-circle-notch fa-spin mr-2" aria-hidden="true"></i>Saving...</span>
+                        <span wire:loading.remove><i aria-hidden="true" class="fas fa-save mr-2"></i>Save Security Settings</span>
+                        <span wire:loading><i aria-hidden="true" class="fas fa-circle-notch fa-spin mr-2"></i>Saving...</span>
                     </button>
                 </div>
             </form>
@@ -375,7 +375,7 @@
         <div class="bg-themed-secondary rounded-lg shadow-sm border border-themed-primary overflow-hidden">
             <div class="px-6 py-4 border-b border-themed-primary">
                 <div class="flex items-center">
-                    <i class="fas fa-download text-themed-secondary mr-3 text-lg" aria-hidden="true"></i>
+                    <i aria-hidden="true" class="fas fa-download text-themed-secondary mr-3 text-lg"></i>
                     <div>
                         <h3 class="text-lg font-semibold text-themed-primary">Data Export & Account Management</h3>
                         <p class="text-sm text-themed-secondary">Export your data or manage your account</p>
@@ -388,7 +388,7 @@
                     <!-- Data Export -->
                     <div class="border border-brand dark:border-brand rounded-lg p-4 bg-brand/10 dark:bg-action/10">
                         <div class="flex items-start space-x-3">
-                            <i class="fas fa-file-export text-brand dark:text-brand mt-1" aria-hidden="true"></i>
+                            <i aria-hidden="true" class="fas fa-file-export text-brand dark:text-brand mt-1"></i>
                             <div class="flex-1">
                                 <h4 class="font-medium text-themed-primary">Export Your Data</h4>
                                 <p class="text-sm text-themed-secondary mt-1">
@@ -396,7 +396,7 @@
                                 </p>
                                 <button wire:click="exportData"
                                         class="mt-3 bg-brand/10 dark:bg-action/30 text-brand dark:text-brand px-4 py-2 rounded-lg hover:bg-blue-200 dark:hover:bg-action/50 transition-colors text-sm font-medium">
-                                    <i class="fas fa-download mr-2" aria-hidden="true"></i>Request Data Export
+                                    <i aria-hidden="true" class="fas fa-download mr-2"></i>Request Data Export
                                 </button>
                             </div>
                         </div>
@@ -405,7 +405,7 @@
                     <!-- Account Deletion -->
                     <div class="border border-red-300 dark:border-red-700 rounded-lg p-4 bg-red-100/10 dark:bg-red-900/10">
                         <div class="flex items-start space-x-3">
-                            <i class="fas fa-exclamation-triangle text-red-600 dark:text-red-400 mt-1" aria-hidden="true"></i>
+                            <i aria-hidden="true" class="fas fa-exclamation-triangle text-red-600 dark:text-red-400 mt-1"></i>
                             <div class="flex-1">
                                 <h4 class="font-medium text-red-700 dark:text-red-300">Delete Account</h4>
                                 <p class="text-sm text-red-600 dark:text-red-400 mt-1">
@@ -413,7 +413,7 @@
                                 </p>
                                 <button wire:click="deleteAccount"
                                         class="mt-3 bg-red-600 hover:bg-red-700 dark:bg-red-700 dark:hover:bg-red-800 text-white px-4 py-2 rounded-lg transition-colors text-sm font-medium">
-                                    <i class="fas fa-trash mr-2" aria-hidden="true"></i>Delete Account
+                                    <i aria-hidden="true" class="fas fa-trash mr-2"></i>Delete Account
                                 </button>
                             </div>
                         </div>
@@ -424,7 +424,7 @@
                 <div class="mt-6 pt-6 border-t border-themed-primary">
                     <div class="bg-themed-tertiary p-4 rounded-lg">
                         <h4 class="font-medium text-themed-primary mb-3 flex items-center">
-                            <i class="fas fa-info-circle text-brand dark:text-brand mr-2" aria-hidden="true"></i>
+                            <i aria-hidden="true" class="fas fa-info-circle text-brand dark:text-brand mr-2"></i>
                             Your Privacy Settings Summary
                         </h4>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-themed-secondary">

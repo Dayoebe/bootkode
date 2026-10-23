@@ -11,7 +11,7 @@
                 wire:click="openCreateModal"
                 class="bg-action dark:bg-action text-action-foreground px-4 py-2 rounded-lg hover:bg-action dark:hover:bg-action transition-colors flex items-center space-x-2"
             >
-                <i class="fas fa-plus" aria-hidden="true"></i>
+                <i aria-hidden="true" class="fas fa-plus"></i>
                 <span>Add New Category</span>
             </button>
         </div>
@@ -25,7 +25,7 @@
                     placeholder="Search categories..."
                     class="w-full px-4 py-2 pl-10 border border-line dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-brand/30 focus:border-transparent bg-surface dark:bg-gray-700 text-content dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500"
                 >
-                <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-content-muted dark:text-content-muted" aria-hidden="true"></i>
+                <i aria-hidden="true" class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-content-muted dark:text-content-muted"></i>
             </div>
         </div>
     </div>
@@ -40,7 +40,7 @@
                             <div class="flex items-center space-x-4 flex-1">
                                 <!-- Category Icon & Color -->
                                 <div class="flex items-center justify-center w-12 h-12 rounded-lg" style="background-color: {{ $category->color }}20">
-                                    <i class="{{ $category->icon }} text-xl" style="color: {{ $category->color }}"></i>
+                                    <i aria-hidden="true" class="{{ $category->icon }} text-xl" style="color: {{ $category->color }}"></i>
                                 </div>
 
                                 <!-- Category Info -->
@@ -52,7 +52,7 @@
                                         <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
                                             {{ $category->is_active ? 'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300' : 'bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-300' }}
                                         ">
-                                            <i class="fas {{ $category->is_active ? 'fa-check-circle' : 'fa-times-circle' }} mr-1" aria-hidden="true"></i>
+                                            <i aria-hidden="true" class="fas {{ $category->is_active ? 'fa-check-circle' : 'fa-times-circle' }} mr-1"></i>
                                             {{ $category->is_active ? 'Active' : 'Inactive' }}
                                         </span>
 
@@ -68,12 +68,12 @@
 
                                     <div class="flex items-center space-x-4 text-xs text-content-muted dark:text-content-muted mt-2">
                                         <span>
-                                            <i class="fas fa-calendar mr-1" aria-hidden="true"></i>
+                                            <i aria-hidden="true" class="fas fa-calendar mr-1"></i>
                                             Created {{ $category->created_at->format('M j, Y') }}
                                         </span>
                                         @if($category->updated_at && $category->updated_at->ne($category->created_at))
                                             <span>
-                                                <i class="fas fa-edit mr-1" aria-hidden="true"></i>
+                                                <i aria-hidden="true" class="fas fa-edit mr-1"></i>
                                                 Updated {{ $category->updated_at->diffForHumans() }}
                                             </span>
                                         @endif
@@ -90,14 +90,14 @@
                                         class="text-content-muted dark:text-content-muted hover:text-content-muted dark:hover:text-gray-300 p-1 rounded hover:bg-surface-muted dark:hover:bg-gray-700"
                                         title="Move Up"
                                     >
-                                        <i class="fas fa-chevron-up" aria-hidden="true"></i>
+                                        <i aria-hidden="true" class="fas fa-chevron-up"></i>
                                     </button>
                                     <button
                                         wire:click="moveDown({{ $category->id }})"
                                         class="text-content-muted dark:text-content-muted hover:text-content-muted dark:hover:text-gray-300 p-1 rounded hover:bg-surface-muted dark:hover:bg-gray-700"
                                         title="Move Down"
                                     >
-                                        <i class="fas fa-chevron-down" aria-hidden="true"></i>
+                                        <i aria-hidden="true" class="fas fa-chevron-down"></i>
                                     </button>
                                 </div>
 
@@ -116,7 +116,7 @@
                                     wire:click="openEditModal({{ $category->id }})"
                                     class="text-brand dark:text-brand hover:text-brand dark:hover:text-brand bg-brand/10 dark:bg-action/20 hover:bg-brand/10 dark:hover:bg-action/30 px-3 py-1 rounded text-xs font-medium transition-colors"
                                 >
-                                    <i class="fas fa-edit mr-1" aria-hidden="true"></i>
+                                    <i aria-hidden="true" class="fas fa-edit mr-1"></i>
                                     Edit
                                 </button>
 
@@ -126,7 +126,7 @@
                                     class="text-red-600 dark:text-red-400 hover:text-red-800 dark:hover:text-red-300 bg-red-50 dark:bg-red-900/20 hover:bg-red-100 dark:hover:bg-red-900/30 px-3 py-1 rounded text-xs font-medium transition-colors"
                                     {{ ($category->documents_count ?? 0) > 0 ? 'disabled title="Cannot delete category with documents"' : '' }}
                                 >
-                                    <i class="fas fa-trash mr-1" aria-hidden="true"></i>
+                                    <i aria-hidden="true" class="fas fa-trash mr-1"></i>
                                     Delete
                                 </button>
                             </div>
@@ -136,7 +136,7 @@
             </div>
         @else
             <div class="p-12 text-center">
-                <i class="fas fa-tags text-6xl text-gray-300 dark:text-content-muted mb-4" aria-hidden="true"></i>
+                <i aria-hidden="true" class="fas fa-tags text-6xl text-gray-300 dark:text-content-muted mb-4"></i>
                 <h3 class="text-lg font-medium text-content dark:text-white mb-2">No categories found</h3>
                 <p class="text-content-muted dark:text-content-muted mb-4">
                     @if($search)
@@ -160,7 +160,7 @@
                     <div class="flex justify-between items-center mb-6">
                         <h3 class="text-lg font-semibold text-content dark:text-white">Create New Category</h3>
                         <button wire:click="closeCreateModal" class="text-content-muted dark:text-content-muted hover:text-content-muted dark:hover:text-gray-300" aria-label="Close">
-                            <i class="fas fa-times text-xl" aria-hidden="true"></i>
+                            <i aria-hidden="true" class="fas fa-times text-xl"></i>
                         </button>
                     </div>
 
@@ -232,7 +232,7 @@
                             <h4 class="text-sm font-medium text-content dark:text-gray-300 mb-2">Preview:</h4>
                             <div class="flex items-center space-x-3 p-3 bg-surface-muted dark:bg-gray-700 rounded-lg">
                                 <div class="flex items-center justify-center w-10 h-10 rounded-lg" style="background-color: {{ $color }}20">
-                                    <i class="{{ $icon }} text-lg" style="color: {{ $color }}"></i>
+                                    <i aria-hidden="true" class="{{ $icon }} text-lg" style="color: {{ $color }}"></i>
                                 </div>
                                 <div>
                                     <h5 class="font-medium text-content dark:text-white">{{ $name ?: 'Category Name' }}</h5>
@@ -272,7 +272,7 @@
                     <div class="flex justify-between items-center mb-6">
                         <h3 class="text-lg font-semibold text-content dark:text-white">Edit Category</h3>
                         <button wire:click="closeEditModal" class="text-content-muted dark:text-content-muted hover:text-content-muted dark:hover:text-gray-300" aria-label="Close">
-                            <i class="fas fa-times text-xl" aria-hidden="true"></i>
+                            <i aria-hidden="true" class="fas fa-times text-xl"></i>
                         </button>
                     </div>
 
@@ -343,7 +343,7 @@
                             <h4 class="text-sm font-medium text-content dark:text-gray-300 mb-2">Preview:</h4>
                             <div class="flex items-center space-x-3 p-3 bg-surface-muted dark:bg-gray-700 rounded-lg">
                                 <div class="flex items-center justify-center w-10 h-10 rounded-lg" style="background-color: {{ $color }}20">
-                                    <i class="{{ $icon }} text-lg" style="color: {{ $color }}"></i>
+                                    <i aria-hidden="true" class="{{ $icon }} text-lg" style="color: {{ $color }}"></i>
                                 </div>
                                 <div>
                                     <h5 class="font-medium text-content dark:text-white">{{ $name ?: 'Category Name' }}</h5>
@@ -382,7 +382,7 @@
                 <div class="p-6">
                     <div class="flex items-center mb-4">
                         <div class="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-red-100 dark:bg-red-900/30">
-                            <i class="fas fa-exclamation-triangle text-red-600 dark:text-red-400" aria-hidden="true"></i>
+                            <i aria-hidden="true" class="fas fa-exclamation-triangle text-red-600 dark:text-red-400"></i>
                         </div>
                     </div>
                     <div class="text-center">

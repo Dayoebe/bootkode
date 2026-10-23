@@ -8,12 +8,12 @@
         <div class="flex flex-wrap gap-2">
             <button wire:click="downloadSampleCsv"
                     class="inline-flex items-center px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white text-sm font-medium rounded-md transition-colors">
-                <i class="fas fa-download mr-2" aria-hidden="true"></i>
+                <i aria-hidden="true" class="fas fa-download mr-2"></i>
                 Sample CSV
             </button>
             <button wire:click="openUploadModal"
                     class="inline-flex items-center px-4 py-2 bg-action hover:bg-action text-action-foreground text-sm font-medium rounded-md transition-colors">
-                <i class="fas fa-upload mr-2" aria-hidden="true"></i>
+                <i aria-hidden="true" class="fas fa-upload mr-2"></i>
                 Upload CSV
             </button>
         </div>
@@ -62,9 +62,9 @@
                             <div class="flex items-center space-x-1">
                                 <span>Batch</span>
                                 @if($sortBy === 'name')
-                                    <i class="fas fa-sort-{{ $sortDirection === 'asc' ? 'up' : 'down' }} text-brand dark:text-brand" aria-hidden="true"></i>
+                                    <i aria-hidden="true" class="fas fa-sort-{{ $sortDirection === 'asc' ? 'up' : 'down' }} text-brand dark:text-brand"></i>
                                 @else
-                                    <i class="fas fa-sort text-gray-300 dark:text-content-muted" aria-hidden="true"></i>
+                                    <i aria-hidden="true" class="fas fa-sort text-gray-300 dark:text-content-muted"></i>
                                 @endif
                             </div>
                         </th>
@@ -76,9 +76,9 @@
                             <div class="flex items-center space-x-1">
                                 <span>Status</span>
                                 @if($sortBy === 'status')
-                                    <i class="fas fa-sort-{{ $sortDirection === 'asc' ? 'up' : 'down' }} text-brand dark:text-brand" aria-hidden="true"></i>
+                                    <i aria-hidden="true" class="fas fa-sort-{{ $sortDirection === 'asc' ? 'up' : 'down' }} text-brand dark:text-brand"></i>
                                 @else
-                                    <i class="fas fa-sort text-gray-300 dark:text-content-muted" aria-hidden="true"></i>
+                                    <i aria-hidden="true" class="fas fa-sort text-gray-300 dark:text-content-muted"></i>
                                 @endif
                             </div>
                         </th>
@@ -93,9 +93,9 @@
                             <div class="flex items-center space-x-1">
                                 <span>Created</span>
                                 @if($sortBy === 'created_at')
-                                    <i class="fas fa-sort-{{ $sortDirection === 'asc' ? 'up' : 'down' }} text-brand dark:text-brand" aria-hidden="true"></i>
+                                    <i aria-hidden="true" class="fas fa-sort-{{ $sortDirection === 'asc' ? 'up' : 'down' }} text-brand dark:text-brand"></i>
                                 @else
-                                    <i class="fas fa-sort text-gray-300 dark:text-content-muted" aria-hidden="true"></i>
+                                    <i aria-hidden="true" class="fas fa-sort text-gray-300 dark:text-content-muted"></i>
                                 @endif
                             </div>
                         </th>
@@ -165,12 +165,12 @@
                                 <div class="space-y-1">
                                     @if($batch->successful_enrollments > 0)
                                         <div class="text-xs text-green-600 dark:text-green-400">
-                                            <i class="fas fa-check mr-1" aria-hidden="true"></i>{{ $batch->successful_enrollments }} successful
+                                            <i aria-hidden="true" class="fas fa-check mr-1"></i>{{ $batch->successful_enrollments }} successful
                                         </div>
                                     @endif
                                     @if($batch->failed_enrollments > 0)
                                         <div class="text-xs text-red-600 dark:text-red-400">
-                                            <i class="fas fa-times mr-1" aria-hidden="true"></i>{{ $batch->failed_enrollments }} failed
+                                            <i aria-hidden="true" class="fas fa-times mr-1"></i>{{ $batch->failed_enrollments }} failed
                                         </div>
                                     @endif
                                     @if($batch->successful_enrollments == 0 && $batch->failed_enrollments == 0)
@@ -192,33 +192,33 @@
                                     <button wire:click="viewDetails({{ $batch->id }})"
                                             class="text-brand dark:text-brand hover:text-brand dark:hover:text-brand transition-colors"
                                             title="View Details">
-                                        <i class="fas fa-eye" aria-hidden="true"></i>
+                                        <i aria-hidden="true" class="fas fa-eye"></i>
                                     </button>
                                     @if($batch->errors && count($batch->errors) > 0)
                                         <button wire:click="downloadErrorReport({{ $batch->id }})"
                                                 class="text-orange-600 dark:text-orange-400 hover:text-orange-900 dark:hover:text-orange-300 transition-colors"
                                                 title="Download Error Report">
-                                            <i class="fas fa-exclamation-triangle" aria-hidden="true"></i>
+                                            <i aria-hidden="true" class="fas fa-exclamation-triangle"></i>
                                         </button>
                                     @endif
                                     @if($batch->isFailed())
                                         <button wire:click="retryBatch({{ $batch->id }})"
                                                 class="text-green-600 dark:text-green-400 hover:text-green-900 dark:hover:text-green-300 transition-colors"
                                                 title="Retry">
-                                            <i class="fas fa-redo" aria-hidden="true"></i>
+                                            <i aria-hidden="true" class="fas fa-redo"></i>
                                         </button>
                                     @endif
                                     @if($batch->isPending() || $batch->isProcessing())
                                         <button wire:click="cancelBatch({{ $batch->id }})"
                                                 class="text-yellow-600 dark:text-yellow-400 hover:text-yellow-900 dark:hover:text-yellow-300 transition-colors"
                                                 title="Cancel">
-                                            <i class="fas fa-pause" aria-hidden="true"></i>
+                                            <i aria-hidden="true" class="fas fa-pause"></i>
                                         </button>
                                     @endif
                                     <button wire:click="deleteBatch({{ $batch->id }})"
                                             class="text-red-600 dark:text-red-400 hover:text-red-900 dark:hover:text-red-300 transition-colors"
                                             title="Delete">
-                                        <i class="fas fa-trash" aria-hidden="true"></i>
+                                        <i aria-hidden="true" class="fas fa-trash"></i>
                                     </button>
                                 </div>
                             </td>
@@ -227,12 +227,12 @@
                         <tr>
                             <td colspan="7" class="px-6 py-12 text-center">
                                 <div class="flex flex-col items-center">
-                                    <i class="fas fa-users text-4xl text-gray-300 dark:text-content-muted mb-4" aria-hidden="true"></i>
+                                    <i aria-hidden="true" class="fas fa-users text-4xl text-gray-300 dark:text-content-muted mb-4"></i>
                                     <h3 class="text-lg font-medium text-content dark:text-white mb-2">No bulk enrollments yet</h3>
                                     <p class="text-sm text-content-muted dark:text-content-muted mb-4">Upload a CSV file to get started with bulk enrollments.</p>
                                     <button wire:click="openUploadModal"
                                             class="inline-flex items-center px-4 py-2 bg-action hover:bg-action text-action-foreground text-sm font-medium rounded-md transition-colors">
-                                        <i class="fas fa-upload mr-2" aria-hidden="true"></i>
+                                        <i aria-hidden="true" class="fas fa-upload mr-2"></i>
                                         Upload CSV
                                     </button>
                                 </div>
@@ -258,7 +258,7 @@
                 <div class="flex items-center justify-between pb-4 border-b border-line dark:border-gray-700">
                     <h3 class="text-lg font-semibold text-content dark:text-white">Upload Bulk Enrollment CSV</h3>
                     <button aria-label="Close dialog" wire:click="closeModals" class="text-content-muted dark:text-content-muted hover:text-content-muted dark:hover:text-gray-300">
-                        <i class="fas fa-times text-xl" aria-hidden="true"></i>
+                        <i aria-hidden="true" class="fas fa-times text-xl"></i>
                     </button>
                 </div>
 
@@ -316,7 +316,7 @@
                             <label class="block text-sm font-medium text-content dark:text-gray-300">CSV File *</label>
                             <div class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-line dark:border-gray-600 border-dashed rounded-md hover:border-gray-400 dark:hover:border-gray-500 transition-colors bg-surface dark:bg-gray-700/30">
                                 <div class="space-y-1 text-center">
-                                    <i class="fas fa-cloud-upload-alt text-3xl text-content-muted dark:text-content-muted" aria-hidden="true"></i>
+                                    <i aria-hidden="true" class="fas fa-cloud-upload-alt text-3xl text-content-muted dark:text-content-muted"></i>
                                     <div class="flex text-sm text-content-muted dark:text-content-muted">
                                         <label class="relative cursor-pointer bg-surface dark:bg-gray-800 rounded-md font-medium text-brand dark:text-brand hover:text-brand dark:hover:text-brand">
                                             <span>Upload a file</span>
@@ -327,7 +327,7 @@
                                     <p class="text-xs text-content-muted dark:text-content-muted">CSV files up to 10MB</p>
                                     @if($csvFile)
                                         <p class="text-sm text-green-600 dark:text-green-400 mt-2">
-                                            <i class="fas fa-file-csv mr-1" aria-hidden="true"></i>{{ $csvFile->getClientOriginalName() }}
+                                            <i aria-hidden="true" class="fas fa-file-csv mr-1"></i>{{ $csvFile->getClientOriginalName() }}
                                         </p>
                                     @endif
                                 </div>
@@ -338,7 +338,7 @@
                         <!-- CSV Format Help -->
                         <div class="bg-brand/10 dark:bg-action/20 border border-brand dark:border-brand rounded-md p-3">
                             <div class="flex">
-                                <i class="fas fa-info-circle text-brand dark:text-brand mt-0.5 mr-2" aria-hidden="true"></i>
+                                <i aria-hidden="true" class="fas fa-info-circle text-brand dark:text-brand mt-0.5 mr-2"></i>
                                 <div>
                                     <h4 class="text-sm font-medium text-brand dark:text-brand">CSV Format Requirements</h4>
                                     <div class="text-sm text-brand dark:text-brand mt-1">
@@ -363,7 +363,7 @@
                         </button>
                         <button type="submit"
                                 class="px-4 py-2 bg-action hover:bg-action text-action-foreground text-sm font-medium rounded-md transition-colors">
-                            <i class="fas fa-upload mr-2" aria-hidden="true"></i>Start Bulk Enrollment
+                            <i aria-hidden="true" class="fas fa-upload mr-2"></i>Start Bulk Enrollment
                         </button>
                     </div>
                 </form>
@@ -378,7 +378,7 @@
                 <div class="flex items-center justify-between pb-4 border-b border-line dark:border-gray-700">
                     <h3 class="text-lg font-semibold text-content dark:text-white">Batch Details</h3>
                     <button aria-label="Close dialog" wire:click="closeModals" class="text-content-muted dark:text-content-muted hover:text-content-muted dark:hover:text-gray-300">
-                        <i class="fas fa-times text-xl" aria-hidden="true"></i>
+                        <i aria-hidden="true" class="fas fa-times text-xl"></i>
                     </button>
                 </div>
 
@@ -474,7 +474,7 @@
                     @if($selectedBatch->errors && count($selectedBatch->errors) > 0)
                         <button wire:click="downloadErrorReport({{ $selectedBatch->id }})"
                                 class="px-4 py-2 bg-orange-600 hover:bg-orange-700 text-white text-sm font-medium rounded-md transition-colors">
-                            <i class="fas fa-download mr-2" aria-hidden="true"></i>Download Error Report
+                            <i aria-hidden="true" class="fas fa-download mr-2"></i>Download Error Report
                         </button>
                     @endif
                     <button wire:click="closeModals"

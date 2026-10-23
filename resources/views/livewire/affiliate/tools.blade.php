@@ -15,19 +15,19 @@
             <nav class="-mb-px flex max-w-full gap-6 overflow-x-auto px-6">
                 <button wire:click="setTool('links')"
                         class="min-h-11 shrink-0 py-4 px-1 border-b-2 font-medium text-sm {{ $selectedTool === 'links' ? 'border-blue-500 text-blue-600' : 'border-transparent text-content-muted hover:text-content hover:border-gray-300' }}">
-                    <i class="fas fa-link mr-2" aria-hidden="true"></i> Referral Links
+                    <i aria-hidden="true" class="fas fa-link mr-2"></i> Referral Links
                 </button>
                 <button wire:click="setTool('banners')"
                         class="min-h-11 shrink-0 py-4 px-1 border-b-2 font-medium text-sm {{ $selectedTool === 'banners' ? 'border-blue-500 text-blue-600' : 'border-transparent text-content-muted hover:text-content hover:border-gray-300' }}">
-                    <i class="fas fa-image mr-2" aria-hidden="true"></i> Banner Images
+                    <i aria-hidden="true" class="fas fa-image mr-2"></i> Banner Images
                 </button>
                 <button wire:click="setTool('social')"
                         class="min-h-11 shrink-0 py-4 px-1 border-b-2 font-medium text-sm {{ $selectedTool === 'social' ? 'border-blue-500 text-blue-600' : 'border-transparent text-content-muted hover:text-content hover:border-gray-300' }}">
-                    <i class="fas fa-share-alt mr-2" aria-hidden="true"></i> Social Media
+                    <i aria-hidden="true" class="fas fa-share-alt mr-2"></i> Social Media
                 </button>
                 <button wire:click="setTool('email')"
                         class="min-h-11 shrink-0 py-4 px-1 border-b-2 font-medium text-sm {{ $selectedTool === 'email' ? 'border-blue-500 text-blue-600' : 'border-transparent text-content-muted hover:text-content hover:border-gray-300' }}">
-                    <i class="fas fa-envelope mr-2" aria-hidden="true"></i> Email Templates
+                    <i aria-hidden="true" class="fas fa-envelope mr-2"></i> Email Templates
                 </button>
             </nav>
         </div>
@@ -48,9 +48,9 @@
                                 <button wire:click="copyToClipboard('{{ $affiliate->referral_link }}', 'main')"
                                         class="bk-button bk-button-primary">
                                     @if($copiedText === 'main')
-                                        <i class="fas fa-check" aria-hidden="true"></i> Copied!
+                                        <i aria-hidden="true" class="fas fa-check"></i> Copied!
                                     @else
-                                        <i class="fas fa-copy" aria-hidden="true"></i> Copy
+                                        <i aria-hidden="true" class="fas fa-copy"></i> Copy
                                     @endif
                                 </button>
                             </div>
@@ -65,7 +65,7 @@
                                     <p class="text-sm text-content-muted mb-2">Share this QR code for easy mobile access</p>
                                     <a href="{{ $marketingAssets['qr_code_url'] }}" download="referral-qr-code.png"
                                        class="inline-flex items-center px-3 py-2 border border-line shadow-sm text-sm font-medium rounded-md text-content bg-surface hover:bg-surface-muted">
-                                        <i class="fas fa-download mr-2" aria-hidden="true"></i> Download QR Code
+                                        <i aria-hidden="true" class="fas fa-download mr-2"></i> Download QR Code
                                     </a>
                                 </div>
                             </div>
@@ -118,25 +118,25 @@
                     <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
                         <a href="{{ $marketingAssets['social_media']['facebook'] }}" target="_blank"
                            class="flex flex-col items-center p-4 bg-brand/10 rounded-lg hover:bg-brand/10 transition-colors">
-                            <i class="fab fa-facebook-f text-2xl text-brand mb-2" aria-hidden="true"></i>
+                            <i aria-hidden="true" class="fab fa-facebook-f text-2xl text-brand mb-2"></i>
                             <span class="text-sm font-medium text-content">Facebook</span>
                         </a>
 
                         <a href="{{ $marketingAssets['social_media']['twitter'] }}" target="_blank"
                            class="flex flex-col items-center p-4 bg-brand/10 rounded-lg hover:bg-brand/10 transition-colors">
-                            <i class="fab fa-twitter text-2xl text-brand mb-2" aria-hidden="true"></i>
+                            <i aria-hidden="true" class="fab fa-twitter text-2xl text-brand mb-2"></i>
                             <span class="text-sm font-medium text-content">Twitter</span>
                         </a>
 
                         <a href="{{ $marketingAssets['social_media']['linkedin'] }}" target="_blank"
                            class="flex flex-col items-center p-4 bg-brand/10 rounded-lg hover:bg-brand/10 transition-colors">
-                            <i class="fab fa-linkedin-in text-2xl text-brand mb-2" aria-hidden="true"></i>
+                            <i aria-hidden="true" class="fab fa-linkedin-in text-2xl text-brand mb-2"></i>
                             <span class="text-sm font-medium text-content">LinkedIn</span>
                         </a>
 
                         <a href="{{ $marketingAssets['social_media']['whatsapp'] }}" target="_blank"
                            class="flex flex-col items-center p-4 bg-green-50 rounded-lg hover:bg-green-100 transition-colors">
-                            <i class="fab fa-whatsapp text-2xl text-green-500 mb-2" aria-hidden="true"></i>
+                            <i aria-hidden="true" class="fab fa-whatsapp text-2xl text-green-500 mb-2"></i>
                             <span class="text-sm font-medium text-content">WhatsApp</span>
                         </a>
                     </div>
@@ -209,7 +209,7 @@
     <!-- Performance Tips -->
     <div class="bg-brand/10 rounded-lg p-6">
         <h3 class="text-lg font-semibold text-brand mb-4">
-            <i class="fas fa-lightbulb mr-2" aria-hidden="true"></i> Marketing Tips
+            <i aria-hidden="true" class="fas fa-lightbulb mr-2"></i> Marketing Tips
         </h3>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
             <div class="bg-surface rounded-lg p-4">

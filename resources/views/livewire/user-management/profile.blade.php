@@ -42,26 +42,26 @@
                             <div class="flex flex-wrap items-center gap-2 mb-3">
                                 <span
                                     class="px-3 py-1 sm:px-4 sm:py-1.5 rounded-full text-xs sm:text-sm font-medium bg-action text-action-foreground border border-brand/30 ">
-                                    <i class="fas fa-user-tag mr-1" aria-hidden="true"></i>
+                                    <i aria-hidden="true" class="fas fa-user-tag mr-1"></i>
                                     {{ ucfirst(str_replace('_', ' ', $user->role)) }}
                                 </span>
 
                                 @if ($user->email_verified_at)
                                     <span
                                         class="px-2 py-1 sm:px-3 sm:py-1.5 rounded-full text-xs sm:text-sm font-medium bg-green-500/20 border border-green-500/30 text-green-600  flex items-center">
-                                        <i class="fas fa-check-circle mr-1" aria-hidden="true"></i> Verified
+                                        <i aria-hidden="true" class="fas fa-check-circle mr-1"></i> Verified
                                     </span>
                                 @else
                                     <span
                                         class="px-2 py-1 sm:px-3 sm:py-1.5 rounded-full text-xs sm:text-sm font-medium bg-yellow-500/20 border border-yellow-500/30 text-yellow-600  flex items-center">
-                                        <i class="fas fa-exclamation-circle mr-1" aria-hidden="true"></i> Unverified
+                                        <i aria-hidden="true" class="fas fa-exclamation-circle mr-1"></i> Unverified
                                     </span>
                                 @endif
 
                                 @if ($user->is_active)
                                     <span
                                         class="px-2 py-1 sm:px-3 sm:py-1.5 rounded-full text-xs sm:text-sm font-medium bg-emerald-500/20 border border-emerald-500/30 text-emerald-600  flex items-center">
-                                        <i class="fas fa-circle mr-1 text-xs" aria-hidden="true"></i> Active
+                                        <i aria-hidden="true" class="fas fa-circle mr-1 text-xs"></i> Active
                                     </span>
                                 @endif
                             </div>
@@ -80,20 +80,20 @@
                         @if ($isEditing)
                             <button wire:click="toggleEditMode"
                                 class="px-4 py-2 sm:px-6 sm:py-3 bg-themed-tertiary hover:bg-themed-primary/20 border border-themed-primary text-themed-primary rounded-lg font-medium transition-all duration-300  flex items-center justify-center">
-                                <i class="fas fa-times mr-2" aria-hidden="true"></i> Cancel
+                                <i aria-hidden="true" class="fas fa-times mr-2"></i> Cancel
                             </button>
                             <button wire:click="updateProfile"
                                 class="px-4 py-2 sm:px-6 sm:py-3 bg-action     text-action-foreground rounded-lg font-semibold transition-all duration-300 shadow-sm hover:shadow-emerald-500/25 flex items-center justify-center">
-                                <i class="fas fa-save mr-2" aria-hidden="true"></i> Save Changes
+                                <i aria-hidden="true" class="fas fa-save mr-2"></i> Save Changes
                             </button>
                         @else
                             <button wire:click="toggleEditMode"
                                 class="px-4 py-2 sm:px-6 sm:py-3 bg-action hover:bg-action/90 text-action-foreground rounded-lg font-semibold transition-all duration-300 shadow-sm hover:shadow-accent-themed-primary/25 flex items-center justify-center">
-                                <i class="fas fa-edit mr-2" aria-hidden="true"></i> Edit Profile
+                                <i aria-hidden="true" class="fas fa-edit mr-2"></i> Edit Profile
                             </button>
                             <button type="button" disabled aria-describedby="profile-sharing-unavailable"
                                 class="px-4 py-2 sm:px-6 sm:py-3 bg-themed-tertiary hover:bg-themed-primary/20 border border-themed-primary text-themed-primary rounded-lg font-medium transition-all duration-300  flex items-center justify-center">
-                                <i class="fas fa-share-alt mr-2" aria-hidden="true"></i> Share profile
+                                <i aria-hidden="true" class="fas fa-share-alt mr-2"></i> Share profile
                             </button>
                             <p id="profile-sharing-unavailable" class="max-w-48 text-xs text-content-muted">A public account profile link is not available.</p>
                         @endif
@@ -136,7 +136,7 @@
                                     'text-themed-secondary hover:text-themed-primary hover:bg-themed-tertiary': activeTab !== '{{ $key }}'
                                 }"
                             class="whitespace-nowrap px-4 py-2 sm:px-6 sm:py-3 rounded-lg font-medium text-xs sm:text-sm transition-all duration-300 flex items-center mx-1">
-                            <i class="{{ $tab['icon'] }} mr-2"></i> {{ $tab['label'] }}
+                            <i aria-hidden="true" class="{{ $tab['icon'] }} mr-2"></i> {{ $tab['label'] }}
                         </button>
                     @endforeach
                 </div>

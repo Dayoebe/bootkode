@@ -15,12 +15,12 @@
                     <!-- Quick Actions -->
                     <button wire:click="toggleQuickActionModal"
                             class="bg-action hover:bg-action/90 text-action-foreground px-4 py-2 rounded-lg font-medium transition-colors duration-200 flex items-center">
-                        <i class="fas fa-bolt mr-2" aria-hidden="true"></i>
+                        <i aria-hidden="true" class="fas fa-bolt mr-2"></i>
                         Quick Actions
                     </button>
 
                     <!-- Settings -->
-                    <a href="{{ route('settings') }}" class="bk-icon-button" aria-label="Settings"><i class="fas fa-cog text-lg" aria-hidden="true"></i></a>
+                    <a href="{{ route('settings') }}" class="bk-icon-button" aria-label="Settings"><i aria-hidden="true" class="fas fa-cog text-lg"></i></a>
         </x-slot:actions>
     </x-ui.page-header>
 
@@ -38,7 +38,7 @@
                     </div>
                 </div>
                 <div class="bg-brand/10 dark:bg-action/30 p-3 rounded-full transition-colors duration-300">
-                    <i class="fas fa-users text-brand dark:text-brand text-xl" aria-hidden="true"></i>
+                    <i aria-hidden="true" class="fas fa-users text-brand dark:text-brand text-xl"></i>
                 </div>
             </div>
         </div>
@@ -54,7 +54,7 @@
                     </div>
                 </div>
                 <div class="bg-green-100 dark:bg-green-900/30 p-3 rounded-full transition-colors duration-300">
-                    <i class="fas fa-book text-green-600 dark:text-green-400 text-xl" aria-hidden="true"></i>
+                    <i aria-hidden="true" class="fas fa-book text-green-600 dark:text-green-400 text-xl"></i>
                 </div>
             </div>
         </div>
@@ -70,7 +70,7 @@
                     </div>
                 </div>
                 <div class="bg-yellow-100 dark:bg-yellow-900/30 p-3 rounded-full transition-colors duration-300">
-                    <i class="fas fa-chart-line text-yellow-600 dark:text-yellow-400 text-xl" aria-hidden="true"></i>
+                    <i aria-hidden="true" class="fas fa-chart-line text-yellow-600 dark:text-yellow-400 text-xl"></i>
                 </div>
             </div>
         </div>
@@ -86,7 +86,7 @@
                     </div>
                 </div>
                 <div class="bg-red-100 dark:bg-red-900/30 p-3 rounded-full transition-colors duration-300">
-                    <i class="fas fa-ticket-alt text-red-600 dark:text-red-400 text-xl" aria-hidden="true"></i>
+                    <i aria-hidden="true" class="fas fa-ticket-alt text-red-600 dark:text-red-400 text-xl"></i>
                 </div>
             </div>
         </div>
@@ -103,7 +103,7 @@
                 <div class="flex items-center justify-between mb-6">
                     <h2 class="text-xl font-bold text-themed-primary transition-colors duration-300">User Growth</h2>
                     <div class="flex items-center space-x-2 text-sm text-themed-tertiary transition-colors duration-300">
-                        <i class="fas fa-chart-area" aria-hidden="true"></i>
+                        <i aria-hidden="true" class="fas fa-chart-area"></i>
                         <span>Last {{ $selectedTimeframe === '24hours' ? '24 hours' : ($selectedTimeframe === '7days' ? '7 days' : ($selectedTimeframe === '30days' ? '30 days' : '90 days')) }}</span>
                     </div>
                 </div>
@@ -119,7 +119,7 @@
                 <div class="flex items-center justify-between mb-6">
                     <h2 class="text-xl font-bold text-themed-primary transition-colors duration-300">Revenue Analytics</h2>
                     <div class="flex items-center space-x-2 text-sm text-themed-tertiary transition-colors duration-300">
-                        <i class="fas fa-money-bill-wave" aria-hidden="true"></i>
+                        <i aria-hidden="true" class="fas fa-money-bill-wave"></i>
                         <span>Daily Revenue Trend</span>
                     </div>
                 </div>
@@ -135,7 +135,7 @@
                 <div class="flex items-center justify-between mb-6">
                     <h2 class="text-xl font-bold text-themed-primary transition-colors duration-300">Top Performing Courses</h2>
                     <a href="{{ route('all-course') }}" class="accent-themed-primary hover:text-accent-themed-secondary text-sm font-medium transition-colors duration-300">
-                        View All <i class="fas fa-arrow-right ml-1" aria-hidden="true"></i>
+                        View All <i aria-hidden="true" class="fas fa-arrow-right ml-1"></i>
                     </a>
                 </div>
                 <div class="space-y-4">
@@ -183,21 +183,21 @@
                 <div class="space-y-4">
                     <div class="flex items-center justify-between p-3 bg-green-50 dark:bg-green-900/20 rounded-lg transition-colors duration-300">
                         <div class="flex items-center">
-                            <i class="fas fa-database text-green-600 dark:text-green-400 mr-3" aria-hidden="true"></i>
+                            <i aria-hidden="true" class="fas fa-database text-green-600 dark:text-green-400 mr-3"></i>
                             <span class="font-medium text-themed-primary transition-colors duration-300">Database</span>
                         </div>
                         <span class="text-green-600 dark:text-green-400 font-medium transition-colors duration-300">{{ $this->systemHealth['database_health']['status'] === 'healthy' ? 'Healthy' : 'Error' }}</span>
                     </div>
                     <div class="flex items-center justify-between p-3 bg-brand/10 dark:bg-action/20 rounded-lg transition-colors duration-300">
                         <div class="flex items-center">
-                            <i class="fas fa-memory text-brand dark:text-brand mr-3" aria-hidden="true"></i>
+                            <i aria-hidden="true" class="fas fa-memory text-brand dark:text-brand mr-3"></i>
                             <span class="font-medium text-themed-primary transition-colors duration-300">Cache</span>
                         </div>
                         <span class="text-brand dark:text-brand font-medium transition-colors duration-300">{{ $this->systemHealth['cache_status'] === 'operational' ? 'Active' : 'Error' }}</span>
                     </div>
                     <div class="flex items-center justify-between p-3 bg-themed-tertiary rounded-lg transition-colors duration-300">
                         <div class="flex items-center">
-                            <i class="fas fa-hdd text-themed-secondary mr-3" aria-hidden="true"></i>
+                            <i aria-hidden="true" class="fas fa-hdd text-themed-secondary mr-3"></i>
                             <span class="font-medium text-themed-primary transition-colors duration-300">Storage</span>
                         </div>
                         <span class="text-themed-secondary font-medium transition-colors duration-300">{{ $this->systemHealth['storage_usage']['percentage'] }}%</span>
@@ -212,14 +212,14 @@
                 <div class="flex items-center justify-between mb-6">
                     <h2 class="text-xl font-bold text-themed-primary transition-colors duration-300">Recent Activities</h2>
                     <button class="accent-themed-primary hover:text-accent-themed-secondary text-sm font-medium transition-colors duration-300">
-                        View All <i class="fas fa-arrow-right ml-1" aria-hidden="true"></i>
+                        View All <i aria-hidden="true" class="fas fa-arrow-right ml-1"></i>
                     </button>
                 </div>
                 <div class="space-y-3">
                     @forelse($this->recentActivities as $activity)
                     <div class="flex items-start space-x-3 p-3 rounded-lg hover:bg-themed-tertiary transition-colors duration-200">
                         <div class="flex-shrink-0 w-8 h-8 bg-themed-tertiary rounded-full flex items-center justify-center transition-colors duration-300">
-                            <i class="{{ $activity['icon'] }} text-xs {{ $activity['color'] }}"></i>
+                            <i aria-hidden="true" class="{{ $activity['icon'] }} text-xs {{ $activity['color'] }}"></i>
                         </div>
                         <div class="flex-1 min-w-0">
                             <p class="text-sm font-medium text-themed-primary transition-colors duration-300">{{ $activity['description'] }}</p>
@@ -261,11 +261,11 @@
                                 <button wire:click="approveCourse({{ $course['id'] }})"
                                         class="text-green-600 dark:text-green-400 hover:text-green-700 dark:hover:text-green-300 p-1 rounded transition-colors"
                                         title="Approve Course" aria-label="Approve Course">
-                                    <i class="fas fa-check text-sm" aria-hidden="true"></i>
+                                    <i aria-hidden="true" class="fas fa-check text-sm"></i>
                                 </button>
                                 <button class="text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 p-1 rounded transition-colors"
                                         title="Reject Course" aria-label="Reject Course">
-                                    <i class="fas fa-times text-sm" aria-hidden="true"></i>
+                                    <i aria-hidden="true" class="fas fa-times text-sm"></i>
                                 </button>
                             </div>
                         </div>
@@ -289,11 +289,11 @@
                                 <button wire:click="approveCertificate({{ $certificate['id'] }})"
                                         class="text-green-600 dark:text-green-400 hover:text-green-700 dark:hover:text-green-300 p-1 rounded transition-colors"
                                         title="Approve Certificate" aria-label="Approve Certificate">
-                                    <i class="fas fa-check text-sm" aria-hidden="true"></i>
+                                    <i aria-hidden="true" class="fas fa-check text-sm"></i>
                                 </button>
                                 <button class="text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 p-1 rounded transition-colors"
                                         title="Reject Certificate" aria-label="Reject Certificate">
-                                    <i class="fas fa-times text-sm" aria-hidden="true"></i>
+                                    <i aria-hidden="true" class="fas fa-times text-sm"></i>
                                 </button>
                             </div>
                         </div>
@@ -312,11 +312,11 @@
 <div class="bg-themed-secondary rounded-lg p-8 w-full max-w-2xl transform transition-all duration-300 scale-100 max-h-[90vh] overflow-y-auto border border-themed-primary">
             <div class="flex items-center justify-between mb-8">
                 <h3 class="text-2xl font-bold text-themed-primary flex items-center transition-colors duration-300">
-                    <i class="fas fa-lightning-bolt accent-themed-primary mr-3" aria-hidden="true"></i>
+                    <i aria-hidden="true" class="fas fa-lightning-bolt accent-themed-primary mr-3"></i>
                     Quick Actions
                 </h3>
                 <button type="button" aria-label="Close quick actions" wire:click="toggleQuickActionModal" class="text-themed-tertiary hover:text-themed-secondary transition-colors">
-                    <i class="fas fa-times text-xl" aria-hidden="true"></i>
+                    <i aria-hidden="true" class="fas fa-times text-xl"></i>
                 </button>
             </div>
 
@@ -325,7 +325,7 @@
                 <button wire:click="quickAction('manage_users')"
                         class="flex items-center p-4 text-left bg-themed-tertiary hover:bg-themed-primary rounded-lg transition-all duration-200 group border border-transparent hover:border-themed-secondary">
                     <div class="bg-action p-2 rounded-lg mr-4 group-hover:bg-action/90 transition-colors">
-                        <i class="fas fa-users text-action-foreground" aria-hidden="true"></i>
+                        <i aria-hidden="true" class="fas fa-users text-action-foreground"></i>
                     </div>
                     <div>
                         <div class="font-semibold text-themed-primary transition-colors duration-300">Manage Users</div>
@@ -343,7 +343,7 @@
         <div x-data="{ open: false }" class="relative">
             <button @click="open = !open"
                     class="bg-themed-secondary shadow-sm border border-themed-primary rounded-full p-3  transition-all duration-200">
-                <i class="fas fa-sliders-h text-themed-secondary" aria-hidden="true"></i>
+                <i aria-hidden="true" class="fas fa-sliders-h text-themed-secondary"></i>
             </button>
 
             <div x-show="open"

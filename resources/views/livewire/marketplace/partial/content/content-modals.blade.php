@@ -9,7 +9,7 @@
                 <div class="flex items-center justify-between">
                     <div class="flex items-center space-x-3">
                         <div class="p-2 bg-brand/10 rounded-lg">
-                            <i class="fas fa-tags text-brand text-lg" aria-hidden="true"></i>
+                            <i aria-hidden="true" class="fas fa-tags text-brand text-lg"></i>
                         </div>
                         <div>
                             <h3 class="text-xl font-semibold text-content">Create Discount Code</h3>
@@ -18,7 +18,7 @@
                     </div>
                     <button wire:click="closeCreateModal"
                             class="p-2 text-content-muted hover:text-content-muted hover:bg-surface-muted rounded-lg transition-all" aria-label="Close">
-                        <i class="fas fa-times text-lg" aria-hidden="true"></i>
+                        <i aria-hidden="true" class="fas fa-times text-lg"></i>
                     </button>
                 </div>
             </div>
@@ -27,7 +27,7 @@
                 <!-- Code Generation Section -->
                 <div class="bg-surface-muted border border-line rounded-lg p-6">
                     <label class="block text-sm font-semibold text-content mb-3">
-                        <i class="fas fa-tag mr-2" aria-hidden="true"></i>
+                        <i aria-hidden="true" class="fas fa-tag mr-2"></i>
                         Discount Code
                         <span class="text-red-500 ml-1">*</span>
                     </label>
@@ -39,13 +39,13 @@
                         <button type="button"
                                 wire:click="generateCode"
                                 class="px-6 py-3 bg-action text-action-foreground rounded-lg hover:bg-action transition-all duration-200 font-medium shadow-sm">
-                            <i class="fas fa-magic mr-2" aria-hidden="true"></i>
+                            <i aria-hidden="true" class="fas fa-magic mr-2"></i>
                             Generate
                         </button>
                     </div>
                     @error('code')
                         <p class="text-red-600 text-sm mt-2 flex items-center">
-                            <i class="fas fa-exclamation-circle mr-1" aria-hidden="true"></i>{{ $message }}
+                            <i aria-hidden="true" class="fas fa-exclamation-circle mr-1"></i>{{ $message }}
                         </p>
                     @enderror
                     <p class="text-xs text-content-muted mt-2">Use a memorable code that customers can easily type</p>
@@ -55,7 +55,7 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
                         <label class="block text-sm font-semibold text-content mb-3">
-                            <i class="fas fa-cogs mr-2" aria-hidden="true"></i>
+                            <i aria-hidden="true" class="fas fa-cogs mr-2"></i>
                             Discount Type
                             <span class="text-red-500 ml-1">*</span>
                         </label>
@@ -68,7 +68,7 @@
 
                     <div>
                         <label class="block text-sm font-semibold text-content mb-3">
-                            <i class="fas fa-calculator mr-2" aria-hidden="true"></i>
+                            <i aria-hidden="true" class="fas fa-calculator mr-2"></i>
                             Discount Value
                             <span class="text-red-500 ml-1">*</span>
                             <span class="text-xs text-content-muted ml-1">
@@ -91,7 +91,7 @@
                         </div>
                         @error('value')
                             <p class="text-red-600 text-sm mt-2 flex items-center">
-                                <i class="fas fa-exclamation-circle mr-1" aria-hidden="true"></i>{{ $message }}
+                                <i aria-hidden="true" class="fas fa-exclamation-circle mr-1"></i>{{ $message }}
                             </p>
                         @enderror
                     </div>
@@ -100,7 +100,7 @@
                 <!-- Usage Conditions -->
                 <div class="bg-amber-50 border border-amber-200 rounded-lg p-6">
                     <h4 class="text-sm font-semibold text-amber-800 mb-4 flex items-center">
-                        <i class="fas fa-shield-alt mr-2" aria-hidden="true"></i>
+                        <i aria-hidden="true" class="fas fa-shield-alt mr-2"></i>
                         Usage Conditions
                     </h4>
 
@@ -148,7 +148,7 @@
                 <!-- Validity Period -->
                 <div class="bg-brand/10 border border-brand rounded-lg p-6">
                     <h4 class="text-sm font-semibold text-brand mb-4 flex items-center">
-                        <i class="fas fa-calendar mr-2" aria-hidden="true"></i>
+                        <i aria-hidden="true" class="fas fa-calendar mr-2"></i>
                         Validity Period
                     </h4>
 
@@ -178,7 +178,7 @@
                 <!-- Description -->
                 <div>
                     <label class="block text-sm font-semibold text-content mb-3">
-                        <i class="fas fa-align-left mr-2" aria-hidden="true"></i>
+                        <i aria-hidden="true" class="fas fa-align-left mr-2"></i>
                         Internal Description
                     </label>
                     <textarea aria-label="Internal notes about this discount code (not visible to customers)" wire:model="description"
@@ -195,7 +195,7 @@
                            id="isActive"
                            class="rounded border-line text-green-600 focus:ring-green-500 h-5 w-5">
                     <label for="isActive" class="ml-3 flex items-center cursor-pointer">
-                        <i class="fas fa-power-off mr-2 text-green-600" aria-hidden="true"></i>
+                        <i aria-hidden="true" class="fas fa-power-off mr-2 text-green-600"></i>
                         <span class="text-sm font-medium text-green-900">Activate code immediately after creation</span>
                     </label>
                 </div>
@@ -204,7 +204,7 @@
                 @if($code && $value)
                     <div class="bg-surface-muted border border-line rounded-lg p-6">
                         <h4 class="text-sm font-semibold text-content mb-3 flex items-center">
-                            <i class="fas fa-eye mr-2" aria-hidden="true"></i>
+                            <i aria-hidden="true" class="fas fa-eye mr-2"></i>
                             Code Preview
                         </h4>
                         <div class="bg-surface border border-line rounded-lg p-4">
@@ -233,12 +233,12 @@
                     <button type="button"
                             wire:click="closeCreateModal"
                             class="px-6 py-3 border border-line rounded-lg text-content hover:bg-surface-muted transition-colors font-medium">
-                        <i class="fas fa-times mr-2" aria-hidden="true"></i>
+                        <i aria-hidden="true" class="fas fa-times mr-2"></i>
                         Cancel
                     </button>
                     <button type="submit"
                             class="px-6 py-3 bg-action text-action-foreground rounded-lg hover:bg-action transition-all duration-200 font-medium shadow-sm ">
-                        <i class="fas fa-plus mr-2" aria-hidden="true"></i>
+                        <i aria-hidden="true" class="fas fa-plus mr-2"></i>
                         Create Discount Code
                     </button>
                 </div>
@@ -256,7 +256,7 @@
                 <div class="flex items-center justify-between">
                     <div class="flex items-center space-x-3">
                         <div class="p-2 bg-{{ $moderationAction === 'delete' ? 'red' : 'amber' }}-100 rounded-lg">
-                            <i class="fas fa-{{ $moderationAction === 'delete' ? 'trash' : 'gavel' }} text-{{ $moderationAction === 'delete' ? 'red' : 'amber' }}-600 text-lg" aria-hidden="true"></i>
+                            <i aria-hidden="true" class="fas fa-{{ $moderationAction === 'delete' ? 'trash' : 'gavel' }} text-{{ $moderationAction === 'delete' ? 'red' : 'amber' }}-600 text-lg"></i>
                         </div>
                         <div>
                             <h3 class="text-xl font-semibold text-content">
@@ -267,7 +267,7 @@
                     </div>
                     <button wire:click="closeModerationModal"
                             class="p-2 text-content-muted hover:text-content-muted hover:bg-surface-muted rounded-lg transition-all" aria-label="Close">
-                        <i class="fas fa-times text-lg" aria-hidden="true"></i>
+                        <i aria-hidden="true" class="fas fa-times text-lg"></i>
                     </button>
                 </div>
             </div>
@@ -285,7 +285,7 @@
                             <div class="flex items-center mb-2">
                                 <div class="flex mr-2">
                                     @for($i = 1; $i <= 5; $i++)
-                                        <i class="fas fa-star text-{{ $i <= $selectedReview->rating ? 'yellow' : 'slate' }}-400 text-sm" aria-hidden="true"></i>
+                                        <i aria-hidden="true" class="fas fa-star text-{{ $i <= $selectedReview->rating ? 'yellow' : 'slate' }}-400 text-sm"></i>
                                     @endfor
                                 </div>
                                 <span class="text-sm font-semibold text-content">{{ $selectedReview->rating }}/5</span>
@@ -310,7 +310,7 @@
                 @if($moderationAction === 'reject' || $moderationAction === 'delete')
                     <div class="mb-6">
                         <label for="moderationReason" class="block text-sm font-semibold text-content mb-3">
-                            <i class="fas fa-comment-alt mr-2" aria-hidden="true"></i>
+                            <i aria-hidden="true" class="fas fa-comment-alt mr-2"></i>
                             {{ $moderationAction === 'reject' ? 'Rejection' : 'Deletion' }} Reason
                             <span class="text-red-500 ml-1">*</span>
                         </label>
@@ -321,7 +321,7 @@
                                   class="w-full px-4 py-3 border border-line rounded-lg focus:ring-2 focus:ring-{{ $moderationAction === 'delete' ? 'red' : 'amber' }}-500 focus:border-{{ $moderationAction === 'delete' ? 'red' : 'amber' }}-500 resize-none"></textarea>
                         @error('moderationReason')
                             <p class="text-red-600 text-sm mt-2 flex items-center">
-                                <i class="fas fa-exclamation-circle mr-1" aria-hidden="true"></i>{{ $message }}
+                                <i aria-hidden="true" class="fas fa-exclamation-circle mr-1"></i>{{ $message }}
                             </p>
                         @enderror
                     </div>
@@ -330,7 +330,7 @@
                 <!-- Warning Message -->
                 <div class="mb-6 p-4 bg-{{ $moderationAction === 'delete' ? 'red' : 'amber' }}-50 border border-{{ $moderationAction === 'delete' ? 'red' : 'amber' }}-200 rounded-lg">
                     <div class="flex items-start">
-                        <i class="fas fa-exclamation-triangle text-{{ $moderationAction === 'delete' ? 'red' : 'amber' }}-500 mr-3 mt-0.5" aria-hidden="true"></i>
+                        <i aria-hidden="true" class="fas fa-exclamation-triangle text-{{ $moderationAction === 'delete' ? 'red' : 'amber' }}-500 mr-3 mt-0.5"></i>
                         <div class="text-sm text-{{ $moderationAction === 'delete' ? 'red' : 'amber' }}-800">
                             <p class="font-semibold mb-2">
                                 {{ $moderationAction === 'delete' ? 'Permanent Action Warning' : 'Review Rejection Notice' }}
@@ -356,20 +356,20 @@
                 <div class="flex justify-end space-x-3">
                     <button wire:click="closeModerationModal"
                             class="px-6 py-3 border border-line rounded-lg text-content hover:bg-surface-muted transition-colors font-medium">
-                        <i class="fas fa-arrow-left mr-2" aria-hidden="true"></i>
+                        <i aria-hidden="true" class="fas fa-arrow-left mr-2"></i>
                         Cancel
                     </button>
 
                     @if($moderationAction === 'reject')
                         <button wire:click="rejectReview"
                                 class="px-6 py-3 bg-amber-600 text-white rounded-lg hover:bg-amber-700 transition-colors font-medium">
-                            <i class="fas fa-times mr-2" aria-hidden="true"></i>
+                            <i aria-hidden="true" class="fas fa-times mr-2"></i>
                             Reject Review
                         </button>
                     @elseif($moderationAction === 'delete')
                         <button wire:click="deleteReview"
                                 class="px-6 py-3 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors font-medium">
-                            <i class="fas fa-trash mr-2" aria-hidden="true"></i>
+                            <i aria-hidden="true" class="fas fa-trash mr-2"></i>
                             Delete Permanently
                         </button>
                     @endif

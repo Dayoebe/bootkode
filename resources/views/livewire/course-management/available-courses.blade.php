@@ -6,7 +6,7 @@
             <div class="flex flex-col lg:flex-row lg:items-center justify-between mb-6">
                 <div class="flex items-center gap-4 mb-6 lg:mb-0">
                     <div class="bg-surface-muted   p-4 rounded-lg shadow-sm">
-                        <i class="fas fa-graduation-cap text-brand text-3xl" aria-hidden="true"></i>
+                        <i aria-hidden="true" class="fas fa-graduation-cap text-brand text-3xl"></i>
                     </div>
                     <div>
                         <h1 class="  font-bold text-themed-primary transition-colors duration-300 bk-page-title">
@@ -23,14 +23,14 @@
                     <button @click="viewMode = viewMode === 'grid' ? 'list' : 'grid'"
                         class="inline-flex items-center justify-center gap-2 bg-themed-secondary hover:bg-themed-tertiary text-themed-primary px-6 py-3 rounded-lg font-bold border border-themed-primary transition-all duration-300 transform "
                         x-data="{ viewMode: 'grid' }">
-                        <i :class="viewMode === 'grid' ? 'fas fa-list' : 'fas fa-th-large'" aria-hidden="true"></i>
+                        <i aria-hidden="true" :class="viewMode === 'grid' ? 'fas fa-list' : 'fas fa-th-large'"></i>
                         <span x-text="viewMode === 'grid' ? 'List View' : 'Grid View'"></span>
                     </button>
 
                     <button @click="showFilters = !showFilters"
                         x-data="{ showFilters: false }"
                         class="inline-flex items-center justify-center gap-2 bg-action hover:bg-action/90 text-action-foreground px-6 py-3 rounded-lg font-bold transition-all duration-300 transform  shadow-sm">
-                        <i class="fas fa-filter" aria-hidden="true"></i>
+                        <i aria-hidden="true" class="fas fa-filter"></i>
                         <span>Filters</span>
                     </button>
                 </div>
@@ -48,7 +48,7 @@
                                 Courses Available</p>
                         </div>
                         <div class="bg-themed-secondary p-4 rounded-lg transition-colors duration-300 border border-themed-primary">
-                            <i class="fas fa-book-open text-brand text-2xl" aria-hidden="true"></i>
+                            <i aria-hidden="true" class="fas fa-book-open text-brand text-2xl"></i>
                         </div>
                     </div>
                 </div>
@@ -63,7 +63,7 @@
                                 Currently Enrolled</p>
                         </div>
                         <div class="bg-themed-secondary p-4 rounded-lg transition-colors duration-300 border border-themed-primary">
-                            <i class="fas fa-user-graduate text-green-500 text-2xl" aria-hidden="true"></i>
+                            <i aria-hidden="true" class="fas fa-user-graduate text-green-500 text-2xl"></i>
                         </div>
                     </div>
                 </div>
@@ -78,7 +78,7 @@
                                 Courses Completed</p>
                         </div>
                         <div class="bg-themed-secondary p-4 rounded-lg transition-colors duration-300 border border-themed-primary">
-                            <i class="fas fa-trophy text-brand text-2xl" aria-hidden="true"></i>
+                            <i aria-hidden="true" class="fas fa-trophy text-brand text-2xl"></i>
                         </div>
                     </div>
                 </div>
@@ -98,12 +98,12 @@
 
             <div class="flex flex-col sm:flex-row sm:items-center justify-between mb-6">
                 <h3 class="text-xl font-bold text-themed-primary flex items-center gap-2 mb-4 sm:mb-0 transition-colors duration-300">
-                    <i class="fas fa-magic text-brand" aria-hidden="true"></i>
+                    <i aria-hidden="true" class="fas fa-magic text-brand"></i>
                     Smart Filters
                 </h3>
                 <button wire:click="resetFilters"
                     class="inline-flex items-center gap-2 bg-themed-tertiary hover:bg-themed-secondary text-themed-primary px-6 py-3 rounded-lg font-bold transition-all duration-300 transform  border border-themed-primary">
-                    <i class="fas fa-redo-alt" aria-hidden="true"></i>
+                    <i aria-hidden="true" class="fas fa-redo-alt"></i>
                     <span>Reset All</span>
                 </button>
             </div>
@@ -117,10 +117,10 @@
                             placeholder="Search by title, description, instructor..."
                             class="w-full pl-10 pr-4 py-3 bg-themed-tertiary border-2 border-themed-primary rounded-lg text-themed-primary placeholder-themed-secondary focus:border-brand focus:ring-2 focus:ring-brand/20 transition-all duration-300">
                         <div class="absolute left-3 top-1/2 -translate-y-1/2 text-themed-secondary transition-colors duration-300">
-                            <i class="fas fa-search" aria-hidden="true"></i>
+                            <i aria-hidden="true" class="fas fa-search"></i>
                         </div>
                         <div wire:loading wire:target="search" class="absolute right-3 top-1/2 -translate-y-1/2">
-                            <i class="fas fa-spinner animate-spin text-brand" aria-hidden="true"></i>
+                            <i aria-hidden="true" class="fas fa-spinner animate-spin text-brand"></i>
                         </div>
                     </div>
                 </div>
@@ -198,7 +198,7 @@
                                 class="w-full h-full object-cover">
                         @else
                             <div class="w-full h-full flex items-center justify-center bg-surface-muted   ">
-                                <i class="fas fa-graduation-cap text-brand text-4xl opacity-80" aria-hidden="true"></i>
+                                <i aria-hidden="true" class="fas fa-graduation-cap text-brand text-4xl opacity-80"></i>
                             </div>
                         @endif
 
@@ -216,7 +216,7 @@
 
                             @if ($course->certificate_template)
                                 <span class="bg-action/90  text-action-foreground text-xs font-bold px-3 py-1 rounded-full flex items-center">
-                                    <i class="fas fa-medal mr-1" aria-hidden="true"></i> Cert
+                                    <i aria-hidden="true" class="fas fa-medal mr-1"></i> Cert
                                 </span>
                             @endif
                         </div>
@@ -226,7 +226,7 @@
                             class="absolute top-3 right-3 p-2 rounded-full transition-all duration-300 transform "
                             :class="isWishlisted ? 'bg-red-500/90 text-white' : 'bg-themed-secondary/90 text-themed-primary hover:text-red-500 border border-themed-primary'"
                             title="Toggle Wishlist">
-                            <i class="fas fa-heart" aria-hidden="true"></i>
+                            <i aria-hidden="true" class="fas fa-heart"></i>
                         </button>
 
                         <!-- Progress Ring -->
@@ -253,7 +253,7 @@
                                 {{ Str::limit($course->category->name ?? 'Uncategorized', 12) }}
                             </span>
                             <span class="text-themed-secondary text-xs font-medium flex items-center transition-colors duration-300">
-                                <i class="fas fa-clock mr-1" aria-hidden="true"></i>
+                                <i aria-hidden="true" class="fas fa-clock mr-1"></i>
                                 {{ $course->estimated_duration_minutes ? intval($course->estimated_duration_minutes / 60) . 'h ' . ($course->estimated_duration_minutes % 60) . 'm' : 'Self-paced' }}
                             </span>
                         </div>
@@ -273,7 +273,7 @@
                             <div class="flex items-center gap-2 mb-3">
                                 <div class="flex">
                                     @for($i = 1; $i <= 5; $i++)
-                                        <i class="fas fa-star text-xs {{ $course->average_rating >= $i ? 'text-yellow-400' : 'text-themed-tertiary' }}" aria-hidden="true"></i>
+                                        <i aria-hidden="true" class="fas fa-star text-xs {{ $course->average_rating >= $i ? 'text-yellow-400' : 'text-themed-tertiary' }}"></i>
                                     @endfor
                                 </div>
                                 <span class="font-semibold text-themed-primary text-sm">{{ number_format($course->average_rating, 1) }}</span>
@@ -285,7 +285,7 @@
                         <div class="flex items-center justify-between mb-4">
                             <div class="flex items-center">
                                 <div class="bg-themed-tertiary rounded-full w-7 h-7 flex items-center justify-center mr-2 transition-colors duration-300 border border-themed-primary">
-                                    <i class="fas fa-user-tie text-themed-secondary text-xs" aria-hidden="true"></i>
+                                    <i aria-hidden="true" class="fas fa-user-tie text-themed-secondary text-xs"></i>
                                 </div>
                                 <p class="text-xs font-bold text-themed-primary transition-colors duration-300">
                                     {{ Str::limit($course->instructor->name, 15) }}
@@ -304,7 +304,7 @@
                                     :disabled="@js(in_array($course->id, $enrollingCourseIds))"
                                     class="w-full bg-action hover:bg-action/90 text-action-foreground font-bold py-2.5 px-4 rounded-lg transition-all duration-300 transform  disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center shadow-sm">
                                     <span class="flex items-center gap-2">
-                                        <i class="fas fa-rocket" aria-hidden="true"></i>
+                                        <i aria-hidden="true" class="fas fa-rocket"></i>
                                         Enroll Now
                                     </span>
                                 </button>
@@ -314,13 +314,13 @@
                                 <div class="flex gap-2">
                                     <a href="{{ route('course.view', $course->slug) }}"
                                         class="flex-1 bg-green-500 hover:bg-green-600 text-white font-bold py-2.5 px-4 rounded-lg transition-all duration-300 transform  flex items-center justify-center shadow-sm">
-                                        <i class="fas fa-play mr-2" aria-hidden="true"></i>
+                                        <i aria-hidden="true" class="fas fa-play mr-2"></i>
                                         Continue
                                     </a>
                                     <button @click="$wire.dropCourse({{ $course->id }})"
                                         :disabled="@js(in_array($course->id, $droppingCourseIds))"
                                         class="bg-themed-tertiary hover:bg-red-100 text-red-700 font-bold py-2.5 px-4 rounded-lg transition-all duration-300 transform  disabled:opacity-50 border border-themed-primary">
-                                        <i class="fas fa-sign-out-alt" aria-hidden="true"></i>
+                                        <i aria-hidden="true" class="fas fa-sign-out-alt"></i>
                                     </button>
                                 </div>
                             </template>
@@ -328,7 +328,7 @@
                             <!-- Secondary Actions -->
                             <a href="{{ route('courses.preview', $course) }}"
                                 class="w-full bg-themed-tertiary hover:bg-themed-secondary text-themed-primary font-bold py-2 px-3 rounded-lg transition-all duration-300 transform  border border-themed-primary flex items-center justify-center">
-                                <i class="fas fa-eye mr-2" aria-hidden="true"></i>
+                                <i aria-hidden="true" class="fas fa-eye mr-2"></i>
                                 Preview
                             </a>
                         </div>
@@ -337,7 +337,7 @@
             @empty
                 <div class="col-span-full text-center py-20 bg-themed-secondary rounded-lg shadow-sm border border-themed-primary transition-colors duration-300">
                     <div class="bg-brand/10 w-32 h-32 rounded-full flex items-center justify-center mx-auto mb-8 transition-colors duration-300">
-                        <i class="fas fa-search text-6xl text-brand" aria-hidden="true"></i>
+                        <i aria-hidden="true" class="fas fa-search text-6xl text-brand"></i>
                     </div>
                     <h3 class="text-3xl font-bold text-themed-primary mb-4 transition-colors duration-300">
                         No courses found</h3>
@@ -346,7 +346,7 @@
                     </p>
                     <button wire:click="resetFilters"
                         class="inline-flex items-center gap-2 bg-action hover:bg-action/90 text-action-foreground px-8 py-4 rounded-lg font-bold transition-all duration-300 transform ">
-                        <i class="fas fa-redo-alt" aria-hidden="true"></i> Reset Filters
+                        <i aria-hidden="true" class="fas fa-redo-alt"></i> Reset Filters
                     </button>
                 </div>
             @endforelse
@@ -384,13 +384,13 @@
             <div class="flex items-center justify-between">
                 <h3 class="text-2xl font-bold text-themed-primary flex items-center gap-3">
                     <div class="bg-brand/10 p-3 rounded-lg">
-                        <i class="fas fa-wallet text-brand" aria-hidden="true"></i>
+                        <i aria-hidden="true" class="fas fa-wallet text-brand"></i>
                     </div>
                     Confirm Enrollment
                 </h3>
                 <button wire:click="closePaymentModal"
                         class="text-themed-secondary hover:text-themed-primary p-2 rounded-lg hover:bg-themed-tertiary transition-all duration-300" aria-label="Close">
-                    <i class="fas fa-times text-xl" aria-hidden="true"></i>
+                    <i aria-hidden="true" class="fas fa-times text-xl"></i>
                 </button>
             </div>
         </div>
@@ -407,7 +407,7 @@
                                  class="w-20 h-20 rounded-lg object-cover flex-shrink-0">
                         @else
                             <div class="w-20 h-20 rounded-lg bg-surface-muted   flex items-center justify-center flex-shrink-0">
-                                <i class="fas fa-graduation-cap text-brand text-2xl" aria-hidden="true"></i>
+                                <i aria-hidden="true" class="fas fa-graduation-cap text-brand text-2xl"></i>
                             </div>
                         @endif
 
@@ -424,7 +424,7 @@
             @else
                 <div class="bg-themed-tertiary rounded-lg p-4 border border-themed-primary">
                     <div class="flex items-center justify-center py-4">
-                        <i class="fas fa-spinner animate-spin text-brand text-2xl mr-3" aria-hidden="true"></i>
+                        <i aria-hidden="true" class="fas fa-spinner animate-spin text-brand text-2xl mr-3"></i>
                         <span class="text-themed-secondary">Loading course details...</span>
                     </div>
                 </div>
@@ -438,7 +438,7 @@
                 <div class="flex items-center justify-between p-4 bg-themed-tertiary rounded-lg border border-themed-primary">
                     <div class="flex items-center gap-3">
                         <div class="bg-action/10 p-2 rounded-lg">
-                            <i class="fas fa-wallet text-brand" aria-hidden="true"></i>
+                            <i aria-hidden="true" class="fas fa-wallet text-brand"></i>
                         </div>
                         <span class="text-themed-secondary font-medium">Current Balance</span>
                     </div>
@@ -451,7 +451,7 @@
                 <div class="flex items-center justify-between p-4 bg-themed-tertiary rounded-lg border border-themed-primary">
                     <div class="flex items-center gap-3">
                         <div class="bg-orange-500/10 p-2 rounded-lg">
-                            <i class="fas fa-tag text-orange-500" aria-hidden="true"></i>
+                            <i aria-hidden="true" class="fas fa-tag text-orange-500"></i>
                         </div>
                         <span class="text-themed-secondary font-medium">Course Price</span>
                     </div>
@@ -465,7 +465,7 @@
                     {{ ($hasSufficientFunds ?? false) ? 'bg-green-50 border-green-300 dark:bg-green-900/20 dark:border-green-700' : 'bg-red-50 border-red-300 dark:bg-red-900/20 dark:border-red-700' }}">
                     <div class="flex items-center gap-3">
                         <div class="{{ ($hasSufficientFunds ?? false) ? 'bg-green-500/10' : 'bg-red-500/10' }} p-2 rounded-lg">
-                            <i class="fas {{ ($hasSufficientFunds ?? false) ? 'fa-check-circle text-green-500' : 'fa-exclamation-circle text-red-500' }}" aria-hidden="true"></i>
+                            <i aria-hidden="true" class="fas {{ ($hasSufficientFunds ?? false) ? 'fa-check-circle text-green-500' : 'fa-exclamation-circle text-red-500' }}"></i>
                         </div>
                         <span class="{{ ($hasSufficientFunds ?? false) ? 'text-green-700 dark:text-green-300' : 'text-red-700 dark:text-red-300' }} font-medium">
                             Balance After Payment
@@ -480,7 +480,7 @@
                 @if(!($hasSufficientFunds ?? true))
                     <div class="bg-red-50 dark:bg-red-900/20 border border-red-300 dark:border-red-700 rounded-lg p-4">
                         <div class="flex gap-3">
-                            <i class="fas fa-exclamation-triangle text-red-600 dark:text-red-400 text-xl flex-shrink-0" aria-hidden="true"></i>
+                            <i aria-hidden="true" class="fas fa-exclamation-triangle text-red-600 dark:text-red-400 text-xl flex-shrink-0"></i>
                             <div>
                                 <h5 class="font-bold text-red-700 dark:text-red-300 mb-1">Insufficient Funds</h5>
                                 <p class="text-red-600 dark:text-red-400 text-sm">
@@ -505,11 +505,11 @@
                             wire:loading.attr="disabled"
                             class="flex-1 bg-action hover:bg-action/90 text-action-foreground font-bold py-3 px-6 rounded-lg transition-all duration-300 disabled:opacity-50 transform  shadow-sm">
                         <span wire:loading.remove wire:target="confirmEnrollment" class="flex items-center justify-center gap-2">
-                            <i class="fas fa-check-circle" aria-hidden="true"></i>
+                            <i aria-hidden="true" class="fas fa-check-circle"></i>
                             Confirm & Enroll
                         </span>
                         <span wire:loading wire:target="confirmEnrollment" class="flex items-center justify-center gap-2">
-                            <i class="fas fa-spinner animate-spin" aria-hidden="true"></i>
+                            <i aria-hidden="true" class="fas fa-spinner animate-spin"></i>
                             Processing...
                         </span>
                     </button>
@@ -520,7 +520,7 @@
                     </button>
                     <a href="{{ route('wallet.index') }}"
                        class="flex-1 bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-6 rounded-lg transition-all duration-300 transform  shadow-sm flex items-center justify-center gap-2">
-                        <i class="fas fa-plus-circle" aria-hidden="true"></i>
+                        <i aria-hidden="true" class="fas fa-plus-circle"></i>
                         Fund Wallet
                     </a>
                 @endif

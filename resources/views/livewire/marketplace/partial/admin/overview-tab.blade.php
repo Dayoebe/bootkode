@@ -18,7 +18,7 @@
                             </p>
                         </div>
                         <div class="bg-yellow-100 p-2 rounded-full">
-                            <i class="fas fa-clock text-yellow-600" aria-hidden="true"></i>
+                            <i aria-hidden="true" class="fas fa-clock text-yellow-600"></i>
                         </div>
                     </div>
                 </div>
@@ -33,7 +33,7 @@
                             </p>
                         </div>
                         <div class="bg-brand/10 p-2 rounded-full">
-                            <i class="fas fa-shopping-bag text-brand" aria-hidden="true"></i>
+                            <i aria-hidden="true" class="fas fa-shopping-bag text-brand"></i>
                         </div>
                     </div>
                 </div>
@@ -48,7 +48,7 @@
                             </p>
                         </div>
                         <div class="bg-green-100 p-2 rounded-full">
-                            <i class="fas fa-money-bill-wave text-green-600" aria-hidden="true"></i>
+                            <i aria-hidden="true" class="fas fa-money-bill-wave text-green-600"></i>
                         </div>
                     </div>
                 </div>
@@ -63,7 +63,7 @@
                             </p>
                         </div>
                         <div class="bg-brand/10 p-2 rounded-full">
-                            <i class="fas fa-user-clock text-brand" aria-hidden="true"></i>
+                            <i aria-hidden="true" class="fas fa-user-clock text-brand"></i>
                         </div>
                     </div>
                 </div>
@@ -121,7 +121,7 @@
                     </div>
                 @else
                     <div class="text-center py-4">
-                        <i class="fas fa-history text-gray-300 text-2xl mb-2" aria-hidden="true"></i>
+                        <i aria-hidden="true" class="fas fa-history text-gray-300 text-2xl mb-2"></i>
                         <p class="text-sm text-content-muted">No recent activity</p>
                     </div>
                 @endif

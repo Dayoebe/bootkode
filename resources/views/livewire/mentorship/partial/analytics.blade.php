@@ -24,7 +24,7 @@
                         <p class="text-xs opacity-75 mt-1">{{ ucfirst(str_replace('_', ' ', $dateFilter)) }}</p>
                     </div>
                     <div class="text-3xl opacity-80">
-                        <i class="fas fa-calendar-check" aria-hidden="true"></i>
+                        <i aria-hidden="true" class="fas fa-calendar-check"></i>
                     </div>
                 </div>
             </div>
@@ -39,7 +39,7 @@
                         <p class="text-xs opacity-75 mt-1">Session feedback</p>
                     </div>
                     <div class="text-3xl opacity-80">
-                        <i class="fas fa-star" aria-hidden="true"></i>
+                        <i aria-hidden="true" class="fas fa-star"></i>
                     </div>
                 </div>
             </div>
@@ -53,7 +53,7 @@
                         <p class="text-xs opacity-75 mt-1">Completed reviews</p>
                     </div>
                     <div class="text-3xl opacity-80">
-                        <i class="fas fa-code" aria-hidden="true"></i>
+                        <i aria-hidden="true" class="fas fa-code"></i>
                     </div>
                 </div>
             </div>
@@ -67,7 +67,7 @@
                         <p class="text-xs opacity-75 mt-1">Average response</p>
                     </div>
                     <div class="text-3xl opacity-80">
-                        <i class="fas fa-clock" aria-hidden="true"></i>
+                        <i aria-hidden="true" class="fas fa-clock"></i>
                     </div>
                 </div>
             </div>
@@ -92,7 +92,7 @@
                                 ₦{{ number_format($monthlyEarnings, 2) }}</p>
                         </div>
                         <div class="text-green-700 dark:text-green-400 transition-colors duration-300">
-                            <i class="fas fa-naira-sign text-2xl" aria-hidden="true"></i>
+                            <i aria-hidden="true" class="fas fa-naira-sign text-2xl"></i>
                         </div>
                     </div>
                     <div
@@ -104,7 +104,7 @@
                                 ₦{{ number_format($totalEarnings, 2) }}</p>
                         </div>
                         <div class="text-brand transition-colors duration-300">
-                            <i class="fas fa-chart-line text-2xl" aria-hidden="true"></i>
+                            <i aria-hidden="true" class="fas fa-chart-line text-2xl"></i>
                         </div>
                     </div>
                 </div>
@@ -126,7 +126,7 @@
                             {{ $completedSessions }}</p>
                     </div>
                     <div class="text-themed-secondary transition-colors duration-300">
-                        <i class="fas fa-check-circle text-2xl" aria-hidden="true"></i>
+                        <i aria-hidden="true" class="fas fa-check-circle text-2xl"></i>
                     </div>
                 </div>
                 <div
@@ -140,7 +140,7 @@
                             {{ $upcomingSessions }}</p>
                     </div>
                     <div class="text-orange-700 dark:text-orange-400 transition-colors duration-300">
-                        <i class="fas fa-calendar-alt text-2xl" aria-hidden="true"></i>
+                        <i aria-hidden="true" class="fas fa-calendar-alt text-2xl"></i>
                     </div>
                 </div>
             </div>
@@ -155,7 +155,7 @@
             <div class="text-center">
                 <div
                     class="w-16 h-16 bg-brand/20 text-brand rounded-full flex items-center justify-center mx-auto mb-3 border border-brand/30 transition-colors duration-300">
-                    <i class="fas fa-users text-2xl" aria-hidden="true"></i>
+                    <i aria-hidden="true" class="fas fa-users text-2xl"></i>
                 </div>
                 <h4 class="font-semibold text-themed-primary transition-colors duration-300">Total Mentees</h4>
                 <p class="text-3xl font-bold text-brand transition-colors duration-300">{{ $totalMentees }}</p>
@@ -164,7 +164,7 @@
             <div class="text-center">
                 <div
                     class="w-16 h-16 bg-green-100/50 dark:bg-green-900/30 text-green-700 dark:text-green-400 rounded-full flex items-center justify-center mx-auto mb-3 border border-green-200/50 dark:border-green-800 transition-colors duration-300">
-                    <i class="fas fa-star text-2xl" aria-hidden="true"></i>
+                    <i aria-hidden="true" class="fas fa-star text-2xl"></i>
                 </div>
                 <h4 class="font-semibold text-themed-primary transition-colors duration-300">Average Rating</h4>
                 <p class="text-3xl font-bold text-green-700 dark:text-green-400 transition-colors duration-300">
@@ -174,7 +174,7 @@
             <div class="text-center">
                 <div
                     class="w-16 h-16 bg-brand/10 dark:bg-action/30 text-brand dark:text-brand rounded-full flex items-center justify-center mx-auto mb-3 border border-brand dark:border-brand transition-colors duration-300">
-                    <i class="fas fa-code text-2xl" aria-hidden="true"></i>
+                    <i aria-hidden="true" class="fas fa-code text-2xl"></i>
                 </div>
                 <h4 class="font-semibold text-themed-primary transition-colors duration-300">Code Reviews</h4>
                 <p class="text-3xl font-bold text-brand dark:text-brand transition-colors duration-300">

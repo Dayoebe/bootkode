@@ -4,7 +4,7 @@
             <h1 class=" font-bold text-themed-primary bk-page-title">Question Sets</h1>
             <button wire:click="$set('showCreateSetModal', true)"
                 class="bg-action text-action-foreground px-6 py-3 rounded-lg hover:bg-action/90 transition-colors font-semibold">
-                <i class="fas fa-plus mr-2" aria-hidden="true"></i> Create Question Set
+                <i aria-hidden="true" class="fas fa-plus mr-2"></i> Create Question Set
             </button>
         </div>
 
@@ -32,17 +32,17 @@
                     <div class="mt-4 flex space-x-2">
                         <button wire:click="editSet({{ $set->id }})"
                             class="flex-1 bg-yellow-600 text-white px-4 py-2 rounded-lg hover:bg-yellow-700 transition-colors font-medium">
-                            <i class="fas fa-edit mr-1" aria-hidden="true"></i> Edit
+                            <i aria-hidden="true" class="fas fa-edit mr-1"></i> Edit
                         </button>
                         <button wire:click="deleteSet({{ $set->id }})" wire:confirm="Delete this set?"
                             class="flex-1 bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-colors font-medium">
-                            <i class="fas fa-trash mr-1" aria-hidden="true"></i> Delete
+                            <i aria-hidden="true" class="fas fa-trash mr-1"></i> Delete
                         </button>
                     </div>
                 </div>
             @empty
                 <div class="col-span-full text-center py-16">
-                    <i class="fas fa-folder-open text-6xl text-themed-secondary mb-4" aria-hidden="true"></i>
+                    <i aria-hidden="true" class="fas fa-folder-open text-6xl text-themed-secondary mb-4"></i>
                     <p class="text-themed-secondary mb-4">No question sets yet</p>
                     <button wire:click="$set('showCreateSetModal', true)"
                         class="bg-action text-action-foreground px-6 py-3 rounded-lg hover:bg-action/90 transition-colors font-semibold">
@@ -61,7 +61,7 @@
                     <h3 class="text-xl font-bold text-themed-primary">Create Question Set</h3>
                     <button wire:click="$set('showCreateSetModal', false)"
                         class="text-themed-secondary hover:text-themed-primary transition-colors" aria-label="Close">
-                        <i class="fas fa-times text-xl" aria-hidden="true"></i>
+                        <i aria-hidden="true" class="fas fa-times text-xl"></i>
                     </button>
                 </div>
 
@@ -135,7 +135,7 @@
                         </button>
                         <button type="submit"
                             class="px-6 py-3 rounded-lg bg-action text-action-foreground hover:bg-action/90 transition-colors font-medium">
-                            <i class="fas fa-save mr-2" aria-hidden="true"></i> Save Set
+                            <i aria-hidden="true" class="fas fa-save mr-2"></i> Save Set
                         </button>
                     </div>
                 </form>

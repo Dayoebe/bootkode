@@ -25,19 +25,19 @@
         <div class="flex gap-2 overflow-x-auto px-4">
             <button wire:click="setModerationTab('reports')"
                 class="px-4 py-3 font-medium text-sm transition-all whitespace-nowrap {{ $moderationTab === 'reports' ? 'border-b-2 border-red-500 text-red-500' : 'border-b-2 border-transparent text-themed-secondary hover:text-themed-primary' }}">
-                <i class="fas fa-flag mr-2" aria-hidden="true"></i>Community Reports
+                <i aria-hidden="true" class="fas fa-flag mr-2"></i>Community Reports
             </button>
             <button wire:click="setModerationTab('feedback')"
                 class="px-4 py-3 font-medium text-sm transition-all whitespace-nowrap {{ $moderationTab === 'feedback' ? 'border-b-2 border-yellow-500 text-yellow-500' : 'border-b-2 border-transparent text-themed-secondary hover:text-themed-primary' }}">
-                <i class="fas fa-comment mr-2" aria-hidden="true"></i>User Feedback
+                <i aria-hidden="true" class="fas fa-comment mr-2"></i>User Feedback
             </button>
             <button wire:click="setModerationTab('flagged')"
                 class="px-4 py-3 font-medium text-sm transition-all whitespace-nowrap {{ $moderationTab === 'flagged' ? 'border-b-2 border-brand text-blue-500' : 'border-b-2 border-transparent text-themed-secondary hover:text-themed-primary' }}">
-                <i class="fas fa-exclamation-triangle mr-2" aria-hidden="true"></i>Flagged Content
+                <i aria-hidden="true" class="fas fa-exclamation-triangle mr-2"></i>Flagged Content
             </button>
             <button wire:click="setModerationTab('users')"
                 class="px-4 py-3 font-medium text-sm transition-all whitespace-nowrap {{ $moderationTab === 'users' ? 'border-b-2 border-brand text-purple-500' : 'border-b-2 border-transparent text-themed-secondary hover:text-themed-primary' }}">
-                <i class="fas fa-users-slash mr-2" aria-hidden="true"></i>Manage Users
+                <i aria-hidden="true" class="fas fa-users-slash mr-2"></i>Manage Users
             </button>
         </div>
     </div>
@@ -78,18 +78,18 @@
                     <p class="text-sm text-themed-secondary mb-3 line-clamp-3">{{ $report->description }}</p>
 
                     <div class="text-xs text-themed-secondary mb-3 pb-3 border-b border-themed-primary">
-                        <i class="fas fa-clock mr-1" aria-hidden="true"></i>{{ $report->created_at->diffForHumans() }}
+                        <i aria-hidden="true" class="fas fa-clock mr-1"></i>{{ $report->created_at->diffForHumans() }}
                     </div>
 
                     @if($report->status === 'pending')
                         <div class="flex gap-2">
                             <button wire:click="reviewReport({{ $report->id }})"
                                 class="flex-1 bg-action hover:bg-action text-action-foreground px-3 py-2 rounded-lg text-sm font-medium transition-colors">
-                                <i class="fas fa-eye mr-1" aria-hidden="true"></i>Review
+                                <i aria-hidden="true" class="fas fa-eye mr-1"></i>Review
                             </button>
                             <button wire:click="dismissReport({{ $report->id }})"
                                 class="flex-1 bg-gray-600 hover:bg-gray-700 text-white px-3 py-2 rounded-lg text-sm font-medium transition-colors">
-                                <i class="fas fa-times mr-1" aria-hidden="true"></i>Dismiss
+                                <i aria-hidden="true" class="fas fa-times mr-1"></i>Dismiss
                             </button>
                         </div>
                     @else
@@ -101,7 +101,7 @@
                 </div>
             @empty
                 <div class="text-center py-12 bg-themed-secondary border border-themed-primary rounded-lg">
-                    <i class="fas fa-inbox text-themed-secondary text-4xl mb-3 block" aria-hidden="true"></i>
+                    <i aria-hidden="true" class="fas fa-inbox text-themed-secondary text-4xl mb-3 block"></i>
                     <h3 class="text-lg font-semibold text-themed-primary mb-1">No reports</h3>
                     <p class="text-themed-secondary">All community reports have been addressed!</p>
                 </div>
@@ -146,14 +146,14 @@
                     <p class="text-sm text-themed-secondary mb-2 line-clamp-2">{{ $feedback->message }}</p>
 
                     <div class="text-xs text-themed-secondary mb-3 pb-3 border-b border-themed-primary">
-                        <i class="fas fa-user mr-1" aria-hidden="true"></i>{{ $feedback->user->name }}
-                        <i class="fas fa-clock ml-3 mr-1" aria-hidden="true"></i>{{ $feedback->created_at->diffForHumans() }}
+                        <i aria-hidden="true" class="fas fa-user mr-1"></i>{{ $feedback->user->name }}
+                        <i aria-hidden="true" class="fas fa-clock ml-3 mr-1"></i>{{ $feedback->created_at->diffForHumans() }}
                     </div>
 
                     @if($feedback->status === 'open')
                         <button wire:click="assignFeedback({{ $feedback->id }})"
                             class="w-full bg-action hover:bg-action text-action-foreground px-3 py-2 rounded-lg text-sm font-medium transition-colors">
-                            <i class="fas fa-hand-pointer mr-1" aria-hidden="true"></i>Assign to Me
+                            <i aria-hidden="true" class="fas fa-hand-pointer mr-1"></i>Assign to Me
                         </button>
                     @elseif($feedback->status === 'in_progress')
                         <div class="text-xs text-themed-secondary mb-2">
@@ -162,11 +162,11 @@
                         <div class="grid grid-cols-2 gap-2">
                             <button wire:click="respondToFeedback({{ $feedback->id }})"
                                 class="bg-green-600 hover:bg-green-700 text-white px-3 py-2 rounded-lg text-sm font-medium transition-colors">
-                                <i class="fas fa-reply mr-1" aria-hidden="true"></i>Respond
+                                <i aria-hidden="true" class="fas fa-reply mr-1"></i>Respond
                             </button>
                             <button wire:click="resolveFeedback({{ $feedback->id }})"
                                 class="bg-action hover:bg-action text-action-foreground px-3 py-2 rounded-lg text-sm font-medium transition-colors">
-                                <i class="fas fa-check mr-1" aria-hidden="true"></i>Resolve
+                                <i aria-hidden="true" class="fas fa-check mr-1"></i>Resolve
                             </button>
                         </div>
                     @else
@@ -178,7 +178,7 @@
                 </div>
             @empty
                 <div class="text-center py-12 bg-themed-secondary border border-themed-primary rounded-lg">
-                    <i class="fas fa-comments text-themed-secondary text-4xl mb-3 block" aria-hidden="true"></i>
+                    <i aria-hidden="true" class="fas fa-comments text-themed-secondary text-4xl mb-3 block"></i>
                     <h3 class="text-lg font-semibold text-themed-primary mb-1">No feedback</h3>
                     <p class="text-themed-secondary">All user feedback has been addressed!</p>
                 </div>
@@ -194,7 +194,7 @@
                     <div class="flex items-start justify-between mb-2">
                         <h3 class="font-semibold text-themed-primary flex-1 line-clamp-2">{{ $thread->title }}</h3>
                         <span class="text-yellow-400 text-sm font-medium whitespace-nowrap ml-2">
-                            <i class="fas fa-flag mr-1" aria-hidden="true"></i>Flagged
+                            <i aria-hidden="true" class="fas fa-flag mr-1"></i>Flagged
                         </span>
                     </div>
 
@@ -202,24 +202,24 @@
                         {{ Str::limit(strip_tags($thread->content), 150) }}</p>
 
                     <div class="text-xs text-themed-secondary mb-3 pb-3 border-b border-themed-primary">
-                        <i class="fas fa-user mr-1" aria-hidden="true"></i>{{ $thread->user->name }}
-                        <i class="fas fa-clock ml-3 mr-1" aria-hidden="true"></i>{{ $thread->created_at->diffForHumans() }}
+                        <i aria-hidden="true" class="fas fa-user mr-1"></i>{{ $thread->user->name }}
+                        <i aria-hidden="true" class="fas fa-clock ml-3 mr-1"></i>{{ $thread->created_at->diffForHumans() }}
                     </div>
 
                     <div class="flex gap-2">
                         <button wire:click="unflagThread({{ $thread->id }})"
                             class="flex-1 bg-green-600 hover:bg-green-700 text-white px-3 py-2 rounded-lg text-sm font-medium transition-colors">
-                            <i class="fas fa-check mr-1" aria-hidden="true"></i>Approve
+                            <i aria-hidden="true" class="fas fa-check mr-1"></i>Approve
                         </button>
                         <button wire:confirm="Remove this discussion and its replies?" wire:click="removeThread({{ $thread->id }})"
                             class="flex-1 bg-red-600 hover:bg-red-700 text-white px-3 py-2 rounded-lg text-sm font-medium transition-colors">
-                            <i class="fas fa-trash mr-1" aria-hidden="true"></i>Remove
+                            <i aria-hidden="true" class="fas fa-trash mr-1"></i>Remove
                         </button>
                     </div>
                 </div>
             @empty
                 <div class="text-center py-12 bg-themed-secondary border border-themed-primary rounded-lg">
-                    <i class="fas fa-check-circle text-themed-secondary text-4xl mb-3 block" aria-hidden="true"></i>
+                    <i aria-hidden="true" class="fas fa-check-circle text-themed-secondary text-4xl mb-3 block"></i>
                     <h3 class="text-lg font-semibold text-themed-primary mb-1">No flagged content</h3>
                     <p class="text-themed-secondary">All content is in good standing!</p>
                 </div>
@@ -262,19 +262,19 @@
                         @if($user->is_active)
                             <button wire:confirm="Block this account?" wire:click="blockUser({{ $user->id }})"
                                 class="flex-1 bg-red-600 hover:bg-red-700 text-white px-3 py-2 rounded-lg text-sm font-medium transition-colors">
-                                <i class="fas fa-ban mr-1" aria-hidden="true"></i>Block User
+                                <i aria-hidden="true" class="fas fa-ban mr-1"></i>Block User
                             </button>
                         @else
                             <button wire:confirm="Restore this account?" wire:click="unblockUser({{ $user->id }})"
                                 class="flex-1 bg-green-600 hover:bg-green-700 text-white px-3 py-2 rounded-lg text-sm font-medium transition-colors">
-                                <i class="fas fa-check mr-1" aria-hidden="true"></i>Unblock User
+                                <i aria-hidden="true" class="fas fa-check mr-1"></i>Unblock User
                             </button>
                         @endif
                     </div>
                 </div>
             @empty
                 <div class="text-center py-12 bg-themed-secondary border border-themed-primary rounded-lg">
-                    <i class="fas fa-users text-themed-secondary text-4xl mb-3 block" aria-hidden="true"></i>
+                    <i aria-hidden="true" class="fas fa-users text-themed-secondary text-4xl mb-3 block"></i>
                     <h3 class="text-lg font-semibold text-themed-primary mb-1">No users found</h3>
                     <p class="text-themed-secondary">Try adjusting your search filters.</p>
                 </div>

@@ -47,7 +47,7 @@
                         <div class="space-y-2">
                             @forelse($mentorship->goals_with_progress ?? [] as $goal)
                                 <div class="flex items-center gap-2 text-sm {{ $goal['completed'] ? 'text-themed-tertiary line-through' : 'text-themed-secondary' }}">
-                                    <i class="fas {{ $goal['completed'] ? 'fa-check-circle text-green-600' : 'fa-circle text-themed-tertiary' }}" aria-hidden="true"></i>
+                                    <i aria-hidden="true" class="fas {{ $goal['completed'] ? 'fa-check-circle text-green-600' : 'fa-circle text-themed-tertiary' }}"></i>
                                     <span>{{ $goal['text'] }}</span>
                                 </div>
                             @empty
@@ -110,7 +110,7 @@
     @else
         <div class="text-center py-16">
             <div class="text-6xl text-themed-tertiary mb-4 transition-colors duration-300">
-                <i class="fas fa-users" aria-hidden="true"></i>
+                <i aria-hidden="true" class="fas fa-users"></i>
             </div>
             <h3 class="text-xl font-semibold text-themed-primary mb-2 transition-colors duration-300">No mentees yet</h3>
             <p class="text-themed-secondary transition-colors duration-300">Your mentees will appear here once you accept

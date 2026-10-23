@@ -5,7 +5,7 @@
             <div class="flex justify-between items-center py-6">
                 <div class="flex items-center space-x-4">
                     <div class="bg-action p-3 rounded-lg">
-                        <i class="fas fa-file-alt text-action-foreground text-xl" aria-hidden="true"></i>
+                        <i aria-hidden="true" class="fas fa-file-alt text-action-foreground text-xl"></i>
                     </div>
                     <div>
                         <h1 class=" font-bold text-themed-primary bk-page-title">Resume Builder</h1>
@@ -22,23 +22,23 @@
 
                     <button wire:click="setViewMode('preview')"
                         class="bg-action hover:bg-action/90 text-action-foreground px-6 py-3 rounded-lg font-medium transition-colors duration-200 flex items-center">
-                        <i class="fas fa-eye mr-2" aria-hidden="true"></i>Preview
+                        <i aria-hidden="true" class="fas fa-eye mr-2"></i>Preview
                     </button>
 
                     <div class="relative" x-data="{ open: false }">
                         <button @click="open = !open"
                             class="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg font-medium transition-colors duration-200 flex items-center">
-                            <i class="fas fa-download mr-2" aria-hidden="true"></i>Export
+                            <i aria-hidden="true" class="fas fa-download mr-2"></i>Export
                         </button>
                         <div x-show="open" @click.away="open = false" x-transition
                             class="absolute right-0 mt-2 w-48 bg-themed-secondary rounded-lg shadow-sm z-20 border border-themed-primary">
                             <button wire:click="exportPDF"
                                 class="block w-full text-left px-4 py-3 text-sm text-themed-primary hover:bg-themed-tertiary flex items-center transition-colors">
-                                <i class="fas fa-file-pdf mr-3 text-red-500" aria-hidden="true"></i>Export as PDF
+                                <i aria-hidden="true" class="fas fa-file-pdf mr-3 text-red-500"></i>Export as PDF
                             </button>
                             <button wire:click="exportJSON"
                                 class="block w-full text-left px-4 py-3 text-sm text-themed-primary hover:bg-themed-tertiary flex items-center transition-colors">
-                                <i class="fas fa-file-code mr-3 text-brand" aria-hidden="true"></i>Export as JSON
+                                <i aria-hidden="true" class="fas fa-file-code mr-3 text-brand"></i>Export as JSON
                             </button>
                         </div>
                     </div>
@@ -80,7 +80,7 @@
                                     class="w-full flex items-center justify-between px-4 py-3 text-sm font-medium rounded-lg transition-all duration-200
                                                                     {{ $activeSection === $key ? 'bg-action text-action-foreground border-l-4 border-accent-themed-secondary' : 'text-themed-primary hover:bg-themed-tertiary' }}">
                                     <div class="flex items-center">
-                                        <i class="{{ $section['icon'] }} mr-3"></i>
+                                        <i aria-hidden="true" class="{{ $section['icon'] }} mr-3"></i>
                                         {{ $section['label'] }}
                                     </div>
                                     @if($section['required'])
@@ -125,7 +125,7 @@
                     @if(count($suggestions) > 0)
                         <div class="bg-themed-secondary rounded-lg shadow-sm p-6 border border-themed-primary">
                             <h3 class="text-lg font-semibold text-themed-primary mb-4 flex items-center">
-                                <i class="fas fa-lightbulb text-yellow-500 mr-2" aria-hidden="true"></i>
+                                <i aria-hidden="true" class="fas fa-lightbulb text-yellow-500 mr-2"></i>
                                 AI Suggestions
                             </h3>
                             <div class="space-y-3">
@@ -149,7 +149,7 @@
                 <div class="bg-themed-secondary rounded-lg shadow-sm mb-6 p-4 flex items-center justify-between border border-themed-primary">
                     <button wire:click="setViewMode('edit')"
                         class="bg-themed-tertiary text-themed-primary hover:bg-themed-primary hover:text-themed-secondary px-4 py-2 rounded-lg flex items-center transition-colors">
-                        <i class="fas fa-arrow-left mr-2" aria-hidden="true"></i>Back to Editor
+                        <i aria-hidden="true" class="fas fa-arrow-left mr-2"></i>Back to Editor
                     </button>
                     <div class="flex space-x-2">
                         @foreach($templates as $key => $template)
@@ -244,10 +244,10 @@
         <div x-data="{ show: true }" x-show="show" x-transition
             class="fixed bottom-4 right-4 bg-green-500 text-white px-6 py-4 rounded-lg shadow-sm z-50">
             <div class="flex items-center">
-                <i class="fas fa-check-circle mr-3" aria-hidden="true"></i>
+                <i aria-hidden="true" class="fas fa-check-circle mr-3"></i>
                 {{ session('success') }}
                 <button @click="show = false" class="ml-4 text-green-200 hover:text-white transition-colors" aria-label="Close">
-                    <i class="fas fa-times" aria-hidden="true"></i>
+                    <i aria-hidden="true" class="fas fa-times"></i>
                 </button>
             </div>
         </div>
@@ -257,10 +257,10 @@
         <div x-data="{ show: true }" x-show="show" x-transition
             class="fixed bottom-4 right-4 bg-red-500 text-white px-6 py-4 rounded-lg shadow-sm z-50">
             <div class="flex items-center">
-                <i class="fas fa-exclamation-circle mr-3" aria-hidden="true"></i>
+                <i aria-hidden="true" class="fas fa-exclamation-circle mr-3"></i>
                 {{ session('error') }}
                 <button @click="show = false" class="ml-4 text-red-200 hover:text-white transition-colors" aria-label="Close">
-                    <i class="fas fa-times" aria-hidden="true"></i>
+                    <i aria-hidden="true" class="fas fa-times"></i>
                 </button>
             </div>
         </div>
@@ -270,10 +270,10 @@
         <div x-data="{ show: true }" x-show="show" x-transition
             class="fixed bottom-4 right-4 bg-action text-action-foreground px-6 py-4 rounded-lg shadow-sm z-50">
             <div class="flex items-center">
-                <i class="fas fa-info-circle mr-3" aria-hidden="true"></i>
+                <i aria-hidden="true" class="fas fa-info-circle mr-3"></i>
                 {{ session('info') }}
                 <button @click="show = false" class="ml-4 text-brand hover:text-white transition-colors" aria-label="Close">
-                    <i class="fas fa-times" aria-hidden="true"></i>
+                    <i aria-hidden="true" class="fas fa-times"></i>
                 </button>
             </div>
         </div>

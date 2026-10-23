@@ -8,7 +8,7 @@
         <div class="flex flex-wrap gap-2">
             <button wire:click="exportAnalytics"
                     class="inline-flex items-center px-4 py-2 bg-green-600 hover:bg-green-700 text-white text-sm font-medium rounded-md transition-colors">
-                <i class="fas fa-download mr-2" aria-hidden="true"></i>
+                <i aria-hidden="true" class="fas fa-download mr-2"></i>
                 Export Data
             </button>
         </div>
@@ -51,7 +51,7 @@
                             <p class="text-xs text-content-muted dark:text-content-muted mt-1">{{ number_format($analyticsData['institutions']['active']) }} active</p>
                         </div>
                         <div class="bg-brand/10 dark:bg-action/30 p-3 rounded-full">
-                            <i class="fas fa-university text-brand dark:text-brand text-xl" aria-hidden="true"></i>
+                            <i aria-hidden="true" class="fas fa-university text-brand dark:text-brand text-xl"></i>
                         </div>
                     </div>
                 </div>
@@ -67,7 +67,7 @@
                             <p class="text-xs text-content-muted dark:text-content-muted mt-1">{{ number_format($analyticsData['users']['active']) }} active</p>
                         </div>
                         <div class="bg-green-100 dark:bg-green-900/30 p-3 rounded-full">
-                            <i class="fas fa-users text-green-600 dark:text-green-400 text-xl" aria-hidden="true"></i>
+                            <i aria-hidden="true" class="fas fa-users text-green-600 dark:text-green-400 text-xl"></i>
                         </div>
                     </div>
                 </div>
@@ -83,7 +83,7 @@
                             <p class="text-xs text-content-muted dark:text-content-muted mt-1">{{ number_format($analyticsData['enrollments']['completed']) }} completed</p>
                         </div>
                         <div class="bg-brand/10 dark:bg-action/30 p-3 rounded-full">
-                            <i class="fas fa-graduation-cap text-brand dark:text-brand text-xl" aria-hidden="true"></i>
+                            <i aria-hidden="true" class="fas fa-graduation-cap text-brand dark:text-brand text-xl"></i>
                         </div>
                     </div>
                 </div>
@@ -101,7 +101,7 @@
                             @endif
                         </div>
                         <div class="bg-yellow-100 dark:bg-yellow-900/30 p-3 rounded-full">
-                            <i class="fas fa-certificate text-yellow-600 dark:text-yellow-400 text-xl" aria-hidden="true"></i>
+                            <i aria-hidden="true" class="fas fa-certificate text-yellow-600 dark:text-yellow-400 text-xl"></i>
                         </div>
                     </div>
                 </div>
@@ -138,7 +138,7 @@
                     <div class="bg-surface dark:bg-gray-800 rounded-lg shadow-sm border border-line dark:border-gray-700 p-6 transition-colors duration-300">
                         <div class="flex items-center justify-between mb-6">
                             <h3 class="text-lg font-semibold text-content dark:text-white">Institution Types</h3>
-                            <i class="fas fa-chart-pie text-content-muted dark:text-content-muted" aria-hidden="true"></i>
+                            <i aria-hidden="true" class="fas fa-chart-pie text-content-muted dark:text-content-muted"></i>
                         </div>
                         <div class="space-y-4">
                             @php
@@ -266,7 +266,7 @@
     @else
         <!-- Loading or Empty State -->
         <div class="bg-surface dark:bg-gray-800 rounded-lg shadow-sm border border-line dark:border-gray-700 p-12 text-center transition-colors duration-300">
-            <i class="fas fa-chart-line text-4xl text-gray-300 dark:text-content-muted mb-4" aria-hidden="true"></i>
+            <i aria-hidden="true" class="fas fa-chart-line text-4xl text-gray-300 dark:text-content-muted mb-4"></i>
             <h3 class="text-lg font-medium text-content dark:text-white mb-2">Loading Analytics...</h3>
             <p class="text-sm text-content-muted dark:text-content-muted">Please wait while we gather the data.</p>
         </div>

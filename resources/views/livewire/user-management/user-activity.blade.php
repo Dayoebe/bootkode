@@ -3,7 +3,7 @@
     <div class="bg-themed-secondary  rounded-lg lg:rounded-lg shadow-sm lg:shadow-sm border border-themed-primary overflow-hidden mb-6 lg:mb-8 transition-colors duration-300">
         <div class="relative z-10 p-6 lg:p-8">
             <h1 class=" font-bold text-themed-primary transition-colors duration-300 bk-page-title">
-                <i class="fas fa-history mr-2" aria-hidden="true"></i> User Activity
+                <i aria-hidden="true" class="fas fa-history mr-2"></i> User Activity
             </h1>
             <p class="text-themed-secondary mt-2 transition-colors duration-300">Monitor user actions across the platform</p>
         </div>
@@ -13,7 +13,7 @@
     @if (session('success'))
         <div class="mb-4 p-3 sm:p-4 bg-green-100 border border-green-200 text-green-700 rounded-lg   transition-colors duration-300">
             <div class="flex items-center">
-                <i class="fas fa-check-circle mr-2 flex-shrink-0" aria-hidden="true"></i>
+                <i aria-hidden="true" class="fas fa-check-circle mr-2 flex-shrink-0"></i>
                 <span>{{ session('success') }}</span>
             </div>
         </div>
@@ -22,7 +22,7 @@
     @if (session('error'))
         <div class="mb-4 p-3 sm:p-4 bg-red-100 border border-red-200 text-red-700 rounded-lg   transition-colors duration-300">
             <div class="flex items-center">
-                <i class="fas fa-exclamation-circle mr-2 flex-shrink-0" aria-hidden="true"></i>
+                <i aria-hidden="true" class="fas fa-exclamation-circle mr-2 flex-shrink-0"></i>
                 <span>{{ session('error') }}</span>
             </div>
         </div>
@@ -31,7 +31,7 @@
     <!-- Loading Spinner -->
     <div wire:loading class="fixed inset-0 bg-themed-primary bg-opacity-50 flex items-center justify-center z-50 transition-colors duration-300">
         <div class="bg-themed-secondary p-6 rounded-lg shadow-sm border border-themed-primary transition-colors duration-300">
-            <i class="fas fa-spinner fa-spin text-brand text-3xl mb-2 block mx-auto" aria-label="Loading"></i>
+            <i aria-hidden="true" class="fas fa-spinner fa-spin text-brand text-3xl mb-2 block mx-auto" aria-label="Loading"></i>
             <p class="text-themed-primary text-sm">Loading activities...</p>
         </div>
     </div>
@@ -49,7 +49,7 @@
                     @endforeach
                 </select>
                 <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-                    <i class="fas fa-chevron-down text-themed-secondary text-sm" aria-hidden="true"></i>
+                    <i aria-hidden="true" class="fas fa-chevron-down text-themed-secondary text-sm"></i>
                 </div>
             </div>
         </div>
@@ -64,7 +64,7 @@
                     @endforeach
                 </select>
                 <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-                    <i class="fas fa-chevron-down text-themed-secondary text-sm" aria-hidden="true"></i>
+                    <i aria-hidden="true" class="fas fa-chevron-down text-themed-secondary text-sm"></i>
                 </div>
             </div>
         </div>
@@ -79,7 +79,7 @@
                     <option value="100">100 per page</option>
                 </select>
                 <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-                    <i class="fas fa-chevron-down text-themed-secondary text-sm" aria-hidden="true"></i>
+                    <i aria-hidden="true" class="fas fa-chevron-down text-themed-secondary text-sm"></i>
                 </div>
             </div>
         </div>
@@ -129,7 +129,7 @@
         @else
             <div class="p-12 text-center">
                 <div class="w-16 h-16 bg-themed-tertiary rounded-full flex items-center justify-center mx-auto mb-4 transition-colors duration-300">
-                    <i class="fas fa-history text-themed-secondary text-2xl" aria-hidden="true"></i>
+                    <i aria-hidden="true" class="fas fa-history text-themed-secondary text-2xl"></i>
                 </div>
                 <h3 class="text-lg font-medium text-themed-primary mb-2 transition-colors duration-300">No activities found</h3>
                 <p class="text-themed-secondary transition-colors duration-300">

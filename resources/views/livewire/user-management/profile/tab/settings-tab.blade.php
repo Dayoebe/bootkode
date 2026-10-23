@@ -2,7 +2,7 @@
 <div x-show="activeTab === 'settings'" x-transition.opacity.duration.300ms class="py-4 sm:py-6 lg:py-8">
     <div class="flex items-center mb-6 sm:mb-8">
         <div class="w-10 h-10 sm:w-12 sm:h-12 bg-brand-ink     rounded-lg flex items-center justify-center mr-3 sm:mr-4 shadow-sm">
-            <i class="fas fa-cog text-white text-lg sm:text-xl" aria-hidden="true"></i>
+            <i aria-hidden="true" class="fas fa-cog text-white text-lg sm:text-xl"></i>
         </div>
         <div>
             <h2 class="text-xl sm:text-2xl font-bold text-themed-primary transition-colors duration-300">Account Settings</h2>
@@ -14,7 +14,7 @@
         <!-- Theme Selection -->
         <div class="bg-themed-secondary p-4 sm:p-6 rounded-lg border border-themed-primary  transition-colors duration-300">
             <h3 class="text-lg font-semibold text-themed-primary mb-3 sm:mb-4 flex items-center transition-colors duration-300">
-                <i class="fas fa-palette text-brand dark:text-brand mr-2" aria-hidden="true"></i>
+                <i aria-hidden="true" class="fas fa-palette text-brand dark:text-brand mr-2"></i>
                 Theme Preferences
             </h3>
 
@@ -24,14 +24,14 @@
                         :class="theme === 'light' ? 'ring-2 ring-offset-2 ring-indigo-500' : ''"
                         class="w-full flex items-center gap-3 p-3 sm:p-4 bg-surface dark:bg-gray-700/30 rounded-lg border border-themed-primary  transition-all duration-300">
                     <div class="w-12 h-12 rounded-lg bg-surface-muted   border-2 border-line flex items-center justify-center">
-                        <i class="fas fa-sun text-yellow-500 text-lg" aria-hidden="true"></i>
+                        <i aria-hidden="true" class="fas fa-sun text-yellow-500 text-lg"></i>
                     </div>
                     <div class="flex-1 text-left">
                         <p class="font-semibold text-themed-primary text-sm sm:text-base">Light</p>
                         <p class="text-xs sm:text-sm text-themed-secondary">Bright and clean interface</p>
                     </div>
                     <div v-if="theme === 'light'" class="w-5 h-5 rounded-full bg-action flex items-center justify-center">
-                        <i class="fas fa-check text-action-foreground text-xs" aria-hidden="true"></i>
+                        <i aria-hidden="true" class="fas fa-check text-action-foreground text-xs"></i>
                     </div>
                 </button>
 
@@ -40,14 +40,14 @@
                         :class="theme === 'dark' ? 'ring-2 ring-offset-2 ring-indigo-500' : ''"
                         class="w-full flex items-center gap-3 p-3 sm:p-4 bg-themed-secondary rounded-lg border border-themed-primary  transition-all duration-300">
                     <div class="w-12 h-12 rounded-lg bg-brand-ink   border-2 border-gray-700 flex items-center justify-center">
-                        <i class="fas fa-moon text-brand text-lg" aria-hidden="true"></i>
+                        <i aria-hidden="true" class="fas fa-moon text-brand text-lg"></i>
                     </div>
                     <div class="flex-1 text-left">
                         <p class="font-semibold text-themed-primary text-sm sm:text-base">Dark</p>
                         <p class="text-xs sm:text-sm text-themed-secondary">Easy on the eyes at night</p>
                     </div>
                     <div v-if="theme === 'dark'" class="w-5 h-5 rounded-full bg-action flex items-center justify-center">
-                        <i class="fas fa-check text-action-foreground text-xs" aria-hidden="true"></i>
+                        <i aria-hidden="true" class="fas fa-check text-action-foreground text-xs"></i>
                     </div>
                 </button>
 
@@ -56,14 +56,14 @@
                         :class="theme === 'sepia' ? 'ring-2 ring-offset-2 ring-indigo-500' : ''"
                         class="w-full flex items-center gap-3 p-3 sm:p-4 bg-themed-secondary rounded-lg border border-themed-primary  transition-all duration-300">
                     <div class="w-12 h-12 rounded-lg bg-surface-muted   border-2 border-amber-300 flex items-center justify-center">
-                        <i class="fas fa-book text-amber-700 text-lg" aria-hidden="true"></i>
+                        <i aria-hidden="true" class="fas fa-book text-amber-700 text-lg"></i>
                     </div>
                     <div class="flex-1 text-left">
                         <p class="font-semibold text-themed-primary text-sm sm:text-base">Sepia (Reading)</p>
                         <p class="text-xs sm:text-sm text-themed-secondary">Warm tones for reading mode</p>
                     </div>
                     <div v-if="theme === 'sepia'" class="w-5 h-5 rounded-full bg-action flex items-center justify-center">
-                        <i class="fas fa-check text-action-foreground text-xs" aria-hidden="true"></i>
+                        <i aria-hidden="true" class="fas fa-check text-action-foreground text-xs"></i>
                     </div>
                 </button>
 
@@ -72,14 +72,14 @@
                         :class="theme === 'ocean' ? 'ring-2 ring-offset-2 ring-indigo-500' : ''"
                         class="w-full flex items-center gap-3 p-3 sm:p-4 bg-themed-secondary rounded-lg border border-themed-primary  transition-all duration-300">
                     <div class="w-12 h-12 rounded-lg bg-surface-muted   border-2 border-brand flex items-center justify-center">
-                        <i class="fas fa-water text-brand text-lg" aria-hidden="true"></i>
+                        <i aria-hidden="true" class="fas fa-water text-brand text-lg"></i>
                     </div>
                     <div class="flex-1 text-left">
                         <p class="font-semibold text-themed-primary text-sm sm:text-base">Ocean</p>
                         <p class="text-xs sm:text-sm text-themed-secondary">Cool blue and cyan tones</p>
                     </div>
                     <div v-if="theme === 'ocean'" class="w-5 h-5 rounded-full bg-action flex items-center justify-center">
-                        <i class="fas fa-check text-action-foreground text-xs" aria-hidden="true"></i>
+                        <i aria-hidden="true" class="fas fa-check text-action-foreground text-xs"></i>
                     </div>
                 </button>
 
@@ -88,14 +88,14 @@
                         :class="theme === 'forest' ? 'ring-2 ring-offset-2 ring-indigo-500' : ''"
                         class="w-full flex items-center gap-3 p-3 sm:p-4 bg-themed-secondary rounded-lg border border-themed-primary  transition-all duration-300">
                     <div class="w-12 h-12 rounded-lg bg-surface-muted   border-2 border-green-400 flex items-center justify-center">
-                        <i class="fas fa-leaf text-green-600 text-lg" aria-hidden="true"></i>
+                        <i aria-hidden="true" class="fas fa-leaf text-green-600 text-lg"></i>
                     </div>
                     <div class="flex-1 text-left">
                         <p class="font-semibold text-themed-primary text-sm sm:text-base">Forest</p>
                         <p class="text-xs sm:text-sm text-themed-secondary">Natural green palette</p>
                     </div>
                     <div v-if="theme === 'forest'" class="w-5 h-5 rounded-full bg-action flex items-center justify-center">
-                        <i class="fas fa-check text-action-foreground text-xs" aria-hidden="true"></i>
+                        <i aria-hidden="true" class="fas fa-check text-action-foreground text-xs"></i>
                     </div>
                 </button>
             </div>
@@ -104,7 +104,7 @@
         <!-- Account Security -->
         <div class="bg-themed-secondary p-4 sm:p-6 rounded-lg border border-themed-primary  transition-colors duration-300">
             <h3 class="text-lg font-semibold text-themed-primary mb-3 sm:mb-4 flex items-center transition-colors duration-300">
-                <i class="fas fa-shield-alt text-green-500 dark:text-green-400 mr-2" aria-hidden="true"></i>
+                <i aria-hidden="true" class="fas fa-shield-alt text-green-500 dark:text-green-400 mr-2"></i>
                 Account Security
             </h3>
 
@@ -152,7 +152,7 @@
         <!-- Notifications & Privacy -->
         <div class="bg-themed-secondary p-4 sm:p-6 rounded-lg border border-themed-primary  transition-colors duration-300">
             <h3 class="text-lg font-semibold text-themed-primary mb-3 sm:mb-4 flex items-center transition-colors duration-300">
-                <i class="fas fa-bell text-brand dark:text-brand mr-2" aria-hidden="true"></i>
+                <i aria-hidden="true" class="fas fa-bell text-brand dark:text-brand mr-2"></i>
                 Notifications & Privacy
             </h3>
 
@@ -222,7 +222,7 @@
         <!-- Data & Privacy -->
         <div class="bg-themed-secondary p-4 sm:p-6 rounded-lg border border-themed-primary  transition-colors duration-300">
             <h3 class="text-lg font-semibold text-themed-primary mb-3 sm:mb-4 flex items-center transition-colors duration-300">
-                <i class="fas fa-database text-brand dark:text-brand mr-2" aria-hidden="true"></i>
+                <i aria-hidden="true" class="fas fa-database text-brand dark:text-brand mr-2"></i>
                 Data & Privacy
             </h3>
 
@@ -235,7 +235,7 @@
                     </div>
                     <button wire:click="exportData"
                             class="px-3 py-2 sm:px-4 sm:py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg text-xs sm:text-sm font-medium transition-colors flex items-center gap-2">
-                        <i class="fas fa-download" aria-hidden="true"></i>
+                        <i aria-hidden="true" class="fas fa-download"></i>
                         <span>Export</span>
                     </button>
                 </div>
@@ -269,7 +269,7 @@
         <!-- Danger Zone -->
         <div class="bg-red-100/20 dark:bg-red-500/10 p-4 sm:p-6 rounded-lg border border-red-300/50 dark:border-red-500/30  transition-colors duration-300">
             <h3 class="text-lg font-semibold text-red-700 dark:text-red-300 mb-3 sm:mb-4 flex items-center transition-colors duration-300">
-                <i class="fas fa-exclamation-triangle text-red-600 dark:text-red-400 mr-2" aria-hidden="true"></i>
+                <i aria-hidden="true" class="fas fa-exclamation-triangle text-red-600 dark:text-red-400 mr-2"></i>
                 Danger Zone
             </h3>
 
@@ -332,7 +332,7 @@
                 <div class="bg-themed-secondary px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
                     <div class="sm:flex sm:items-start">
                         <div class="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-brand/10 dark:bg-action/20 sm:mx-0 sm:h-10 sm:w-10">
-                            <i class="fas fa-key text-brand dark:text-brand" aria-hidden="true"></i>
+                            <i aria-hidden="true" class="fas fa-key text-brand dark:text-brand"></i>
                         </div>
                         <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left flex-1">
                             <h3 class="text-lg leading-6 font-medium text-themed-primary">Change Password</h3>
@@ -396,7 +396,7 @@
                 <div class="px-4 pt-5 pb-4 sm:p-6">
                     <div class="sm:flex sm:items-start">
                         <div class="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-yellow-100 dark:bg-yellow-500/20 sm:mx-0 sm:h-10 sm:w-10">
-                            <i class="fas fa-laptop text-yellow-600 dark:text-yellow-400" aria-hidden="true"></i>
+                            <i aria-hidden="true" class="fas fa-laptop text-yellow-600 dark:text-yellow-400"></i>
                         </div>
                         <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left flex-1">
                             <h3 class="text-lg leading-6 font-medium text-themed-primary">Active Sessions</h3>
@@ -441,7 +441,7 @@
                 <div class="px-4 pt-5 pb-4 sm:p-6">
                     <div class="sm:flex sm:items-start">
                         <div class="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-orange-100 dark:bg-orange-500/20 sm:mx-0 sm:h-10 sm:w-10">
-                            <i class="fas fa-user-slash text-orange-600 dark:text-orange-400" aria-hidden="true"></i>
+                            <i aria-hidden="true" class="fas fa-user-slash text-orange-600 dark:text-orange-400"></i>
                         </div>
                         <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left flex-1">
                             <h3 class="text-lg leading-6 font-medium text-themed-primary">Deactivate Account</h3>
@@ -451,7 +451,7 @@
                                 </p>
                                 <div class="mt-4 bg-orange-100/30 dark:bg-orange-500/10 border border-orange-300/50 dark:border-orange-500/30 rounded-lg p-3">
                                     <p class="text-sm text-orange-800 dark:text-orange-300">
-                                        <i class="fas fa-info-circle mr-2" aria-hidden="true"></i>Your data will be preserved.
+                                        <i aria-hidden="true" class="fas fa-info-circle mr-2"></i>Your data will be preserved.
                                     </p>
                                 </div>
                             </div>
@@ -493,14 +493,14 @@
                 <div class="px-4 pt-5 pb-4 sm:p-6">
                     <div class="sm:flex sm:items-start">
                         <div class="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-red-100 dark:bg-red-500/20 sm:mx-0 sm:h-10 sm:w-10">
-                            <i class="fas fa-exclamation-triangle text-red-600 dark:text-red-400" aria-hidden="true"></i>
+                            <i aria-hidden="true" class="fas fa-exclamation-triangle text-red-600 dark:text-red-400"></i>
                         </div>
                         <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left flex-1">
                             <h3 class="text-lg leading-6 font-medium text-themed-primary">Delete Account Permanently</h3>
                             <div class="mt-4 space-y-4">
                                 <div class="bg-red-100/30 dark:bg-red-500/10 border border-red-300/50 dark:border-red-500/30 rounded-lg p-3">
                                     <p class="text-sm text-red-800 dark:text-red-300">
-                                        <i class="fas fa-exclamation-triangle mr-2" aria-hidden="true"></i>
+                                        <i aria-hidden="true" class="fas fa-exclamation-triangle mr-2"></i>
                                         <strong>Warning:</strong> This action cannot be undone!
                                     </p>
                                 </div>

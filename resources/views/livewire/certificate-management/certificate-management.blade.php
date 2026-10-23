@@ -77,21 +77,21 @@
                 <div class="relative">
                     <input aria-label="Student name, email, cert #" type="text" wire:model.live="searchTerm" placeholder="Student name, email, cert #..."
                         class="w-full bg-themed-tertiary border border-themed-primary rounded-lg pl-10 pr-3 py-2 text-themed-primary focus:ring-2 focus:ring-brand transition-colors duration-300">
-                    <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-themed-secondary" aria-hidden="true"></i>
+                    <i aria-hidden="true" class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-themed-secondary"></i>
                 </div>
             </div>
         </div>
 
         <div class="flex justify-between items-center mt-4">
             <button wire:click="clearFilters" class="text-brand hover:text-accent-themed-secondary text-sm transition-colors">
-                <i class="fas fa-times mr-1" aria-hidden="true"></i> Clear Filters
+                <i aria-hidden="true" class="fas fa-times mr-1"></i> Clear Filters
             </button>
 
             @if (auth()->user()->isSuperAdmin())
                 <div class="flex gap-2">
                     <button onclick="bulkApprove()"
                         class="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg text-sm transition-colors">
-                        <i class="fas fa-check mr-2" aria-hidden="true"></i>Bulk Approve Selected
+                        <i aria-hidden="true" class="fas fa-check mr-2"></i>Bulk Approve Selected
                     </button>
                 </div>
             @endif
@@ -178,7 +178,7 @@
                                     @elseif($certificate->status === 'rejected') bg-red-900 text-red-300
                                     @elseif($certificate->status === 'revoked') bg-themed-tertiary text-themed-secondary
                                     @else bg-action text-brand @endif">
-                                    <i class="{{ $certificate->status_icon }} mr-1.5"></i>
+                                    <i aria-hidden="true" class="{{ $certificate->status_icon }} mr-1.5"></i>
                                     {{ ucfirst(str_replace('_', ' ', $certificate->status)) }}
                                 </span>
                             </td>
@@ -208,25 +208,25 @@
                                         <button wire:click="showApprovalModal({{ $certificate->id }})"
                                             class="text-green-400 hover:text-green-300 p-2 rounded-lg hover:bg-green-900/30 transition-colors"
                                             title="Approve Certificate">
-                                            <i class="fas fa-check" aria-hidden="true"></i>
+                                            <i aria-hidden="true" class="fas fa-check"></i>
                                         </button>
                                         <button wire:click="showRejectionModal({{ $certificate->id }})"
                                             class="text-red-400 hover:text-red-300 p-2 rounded-lg hover:bg-red-900/30 transition-colors"
                                             title="Reject Certificate">
-                                            <i class="fas fa-times" aria-hidden="true"></i>
+                                            <i aria-hidden="true" class="fas fa-times"></i>
                                         </button>
                                     @elseif($certificate->isApproved())
                                         <a href="{{ route('certificate.view', $certificate->verification_code) }}"
                                             target="_blank"
                                             class="text-brand hover:text-accent-themed-secondary p-2 rounded-lg hover:bg-themed-tertiary transition-colors"
                                             title="View Certificate">
-                                            <i class="fas fa-eye" aria-hidden="true"></i>
+                                            <i aria-hidden="true" class="fas fa-eye"></i>
                                         </a>
                                         @if (auth()->user()->isSuperAdmin() || auth()->user()->isAcademyAdmin())
                                             <button wire:click="showRevocationModal({{ $certificate->id }})"
                                                 class="text-yellow-400 hover:text-yellow-300 p-2 rounded-lg hover:bg-yellow-900/30 transition-colors"
                                                 title="Revoke Certificate">
-                                                <i class="fas fa-ban" aria-hidden="true"></i>
+                                                <i aria-hidden="true" class="fas fa-ban"></i>
                                             </button>
                                         @endif
                                     @endif
@@ -236,7 +236,7 @@
                                         onclick="document.getElementById('certificateDetailsModal').classList.remove('hidden')"
                                         class="text-themed-secondary hover:text-themed-primary p-2 rounded-lg hover:bg-themed-tertiary transition-colors"
                                         title="View Details">
-                                        <i class="fas fa-info-circle" aria-hidden="true"></i>
+                                        <i aria-hidden="true" class="fas fa-info-circle"></i>
                                     </button>
                                 </div>
                             </td>
@@ -246,7 +246,7 @@
                             <td colspan="{{ auth()->user()->isSuperAdmin() ? 8 : 7 }}"
                                 class="px-6 py-12 text-center">
                                 <div class="text-themed-secondary">
-                                    <i class="fas fa-certificate text-4xl mb-4" aria-hidden="true"></i>
+                                    <i aria-hidden="true" class="fas fa-certificate text-4xl mb-4"></i>
                                     <div class="text-lg font-medium mb-2 text-themed-primary">No certificates found</div>
                                     <div class="text-sm">Try adjusting your filters or search criteria</div>
                                 </div>
@@ -277,7 +277,7 @@
                         <h3 class="text-xl font-bold text-themed-primary">Certificate Details</h3>
                         <button onclick="document.getElementById('certificateDetailsModal').classList.add('hidden')"
                             class="text-themed-secondary hover:text-themed-primary transition-colors" aria-label="Close">
-                            <i class="fas fa-times text-xl" aria-hidden="true"></i>
+                            <i aria-hidden="true" class="fas fa-times text-xl"></i>
                         </button>
                     </div>
 
@@ -353,12 +353,12 @@
                                         <a href="{{ route('certificate.view', $selectedCertificate->verification_code) }}"
                                             target="_blank"
                                             class="w-full bg-action hover:bg-action/90 text-action-foreground py-2 px-4 rounded-lg transition-colors inline-flex items-center justify-center">
-                                            <i class="fas fa-eye mr-2" aria-hidden="true"></i>View Certificate
+                                            <i aria-hidden="true" class="fas fa-eye mr-2"></i>View Certificate
                                         </a>
                                         <a href="{{ route('certificate.download', $selectedCertificate->verification_code) }}"
                                             target="_blank"
                                             class="w-full bg-green-600 hover:bg-green-700 text-white py-2 px-4 rounded-lg transition-colors inline-flex items-center justify-center">
-                                            <i class="fas fa-download mr-2" aria-hidden="true"></i>Download PDF
+                                            <i aria-hidden="true" class="fas fa-download mr-2"></i>Download PDF
                                         </a>
                                     </div>
                                 </div>
@@ -438,7 +438,7 @@
                         </button>
                         <button wire:click="approveCertificate"
                             class="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors">
-                            <i class="fas fa-check mr-2" aria-hidden="true"></i>Approve
+                            <i aria-hidden="true" class="fas fa-check mr-2"></i>Approve
                         </button>
                     </div>
                 </div>
@@ -469,7 +469,7 @@
                         </button>
                         <button wire:click="rejectCertificate"
                             class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors">
-                            <i class="fas fa-times mr-2" aria-hidden="true"></i>Reject
+                            <i aria-hidden="true" class="fas fa-times mr-2"></i>Reject
                         </button>
                     </div>
                 </div>
@@ -485,7 +485,7 @@
                     <h3 class="text-xl font-bold text-themed-primary mb-4">Revoke Certificate</h3>
                     <div class="bg-yellow-900/30 border border-yellow-500 rounded-lg p-4 mb-4">
                         <div class="flex items-center text-yellow-400">
-                            <i class="fas fa-exclamation-triangle mr-2" aria-hidden="true"></i>
+                            <i aria-hidden="true" class="fas fa-exclamation-triangle mr-2"></i>
                             <span class="font-semibold">Warning: This action cannot be undone</span>
                         </div>
                         <p class="text-yellow-300 text-sm mt-1">
@@ -510,7 +510,7 @@
                         </button>
                         <button wire:click="revokeCertificate"
                             class="px-4 py-2 bg-yellow-600 hover:bg-yellow-700 text-white rounded-lg transition-colors">
-                            <i class="fas fa-ban mr-2" aria-hidden="true"></i>Revoke Certificate
+                            <i aria-hidden="true" class="fas fa-ban mr-2"></i>Revoke Certificate
                         </button>
                     </div>
                 </div>
@@ -521,7 +521,7 @@
     <!-- Loading Overlay -->
     <div wire:loading class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
         <div class="bg-themed-secondary rounded-lg p-8 flex items-center border border-themed-primary">
-            <i class="fas fa-spinner fa-spin text-brand text-2xl mr-4" aria-hidden="true"></i>
+            <i aria-hidden="true" class="fas fa-spinner fa-spin text-brand text-2xl mr-4"></i>
             <span class="text-themed-primary font-medium">Processing request...</span>
         </div>
     </div>

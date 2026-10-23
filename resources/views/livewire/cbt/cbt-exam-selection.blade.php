@@ -9,7 +9,7 @@
     @if (session()->has('error'))
         <div class="mb-6 bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-700 text-red-800 dark:text-red-300 px-4 py-3 rounded-lg">
             <div class="flex items-center">
-                <i class="fas fa-exclamation-circle mr-2" aria-hidden="true"></i>
+                <i aria-hidden="true" class="fas fa-exclamation-circle mr-2"></i>
                 <span>{{ session('error') }}</span>
             </div>
         </div>
@@ -18,7 +18,7 @@
     @if (session()->has('warning'))
         <div class="mb-6 bg-yellow-50 dark:bg-yellow-900/30 border border-yellow-200 dark:border-yellow-700 text-yellow-800 dark:text-yellow-300 px-4 py-3 rounded-lg">
             <div class="flex items-center">
-                <i class="fas fa-exclamation-triangle mr-2" aria-hidden="true"></i>
+                <i aria-hidden="true" class="fas fa-exclamation-triangle mr-2"></i>
                 <span>{{ session('warning') }}</span>
             </div>
         </div>
@@ -79,7 +79,7 @@
 
                             @if(!$assessment->can_take)
                                 <div class="mt-2 pt-2 border-t border-themed-secondary text-xs text-red-600 dark:text-red-400 flex items-center">
-                                    <i class="fas fa-exclamation-triangle mr-1" aria-hidden="true"></i>
+                                    <i aria-hidden="true" class="fas fa-exclamation-triangle mr-1"></i>
                                     <span>{{ $assessment->attempt_message }}</span>
                                 </div>
                             @endif
@@ -103,13 +103,13 @@
                                 <button wire:click="startExam({{ $assessment->id }})"
                                     wire:confirm="Are you ready to start this exam? Once started, the timer will begin immediately."
                                     class="w-full bg-action hover:bg-action/90 text-action-foreground px-4 py-2 rounded-lg transition-colors flex items-center justify-center font-medium">
-                                    <i class="fas fa-play mr-2" aria-hidden="true"></i>
+                                    <i aria-hidden="true" class="fas fa-play mr-2"></i>
                                     {{ $assessment->user_result ? 'Retake Exam' : 'Start Exam' }}
                                 </button>
                             @else
                                 <button disabled
                                     class="w-full bg-gray-400 dark:bg-gray-600 cursor-not-allowed text-white px-4 py-2 rounded-lg flex items-center justify-center font-medium opacity-50">
-                                    <i class="fas fa-ban mr-2" aria-hidden="true"></i>
+                                    <i aria-hidden="true" class="fas fa-ban mr-2"></i>
                                     No Attempts Remaining
                                 </button>
                             @endif
@@ -117,7 +117,7 @@
                             @if($assessment->user_result)
                                 <button wire:click="viewResults({{ $assessment->id }})"
                                     class="w-full bg-themed-tertiary hover:bg-themed-secondary text-themed-primary border border-themed-secondary px-4 py-2 rounded-lg transition-colors flex items-center justify-center font-medium">
-                                    <i class="fas fa-chart-line mr-2" aria-hidden="true"></i>View Results
+                                    <i aria-hidden="true" class="fas fa-chart-line mr-2"></i>View Results
                                 </button>
                             @endif
                         </div>
@@ -126,14 +126,14 @@
                         @if($assessment->course)
                             <div class="mt-4 pt-4 border-t border-themed-secondary">
                                 <div class="flex items-center text-sm text-themed-secondary">
-                                    <i class="fas fa-book mr-2" aria-hidden="true"></i>
+                                    <i aria-hidden="true" class="fas fa-book mr-2"></i>
                                     <span>{{ $assessment->course->title }}</span>
                                 </div>
                             </div>
                         @else
                             <div class="mt-4 pt-4 border-t border-themed-secondary">
                                 <div class="flex items-center text-sm text-themed-secondary">
-                                    <i class="fas fa-certificate mr-2" aria-hidden="true"></i>
+                                    <i aria-hidden="true" class="fas fa-certificate mr-2"></i>
                                     <span>Standalone CBT Exam</span>
                                 </div>
                             </div>
@@ -178,13 +178,13 @@
         <!-- No Assessments Available -->
         <div class="text-center py-16">
             <div class="w-24 h-24 bg-themed-tertiary rounded-full flex items-center justify-center mx-auto mb-6">
-                <i class="fas fa-clipboard-list text-themed-secondary text-4xl" aria-hidden="true"></i>
+                <i aria-hidden="true" class="fas fa-clipboard-list text-themed-secondary text-4xl"></i>
             </div>
             <h3 class="text-xl font-semibold text-themed-secondary mb-2">No CBT Assessments Available</h3>
             <p class="text-themed-tertiary mb-6">There are currently no computer-based tests available for you to take.</p>
             <a href="{{ route('student.dashboard') }}"
                 class="inline-flex items-center px-4 py-2 bg-action text-action-foreground rounded-lg hover:bg-action/90 transition-colors">
-                <i class="fas fa-arrow-left mr-2" aria-hidden="true"></i>Back to Dashboard
+                <i aria-hidden="true" class="fas fa-arrow-left mr-2"></i>Back to Dashboard
             </a>
         </div>
     @endif
@@ -192,7 +192,7 @@
     <!-- Important Notes -->
     <div class="mt-8 bg-brand/10 dark:bg-surface/30 border border-brand dark:border-brand rounded-lg p-6">
         <h3 class="text-lg font-semibold text-brand dark:text-brand mb-3 flex items-center">
-            <i class="fas fa-info-circle mr-2" aria-hidden="true"></i>Important Notes
+            <i aria-hidden="true" class="fas fa-info-circle mr-2"></i>Important Notes
         </h3>
         <ul class="space-y-2 text-brand dark:text-brand text-sm">
             <li class="flex items-start">

@@ -12,7 +12,7 @@
                     wire:click="toggleFilters"
                     class="text-content dark:text-gray-300 bg-surface-muted dark:bg-gray-700 px-4 py-2 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors flex items-center space-x-2"
                 >
-                    <i class="fas fa-filter" aria-hidden="true"></i>
+                    <i aria-hidden="true" class="fas fa-filter"></i>
                     <span>{{ $showFilters ? 'Hide' : 'Show' }} Filters</span>
                 </button>
 
@@ -21,7 +21,7 @@
                         wire:click="clearFilters"
                         class="text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/20 px-4 py-2 rounded-lg hover:bg-red-100 dark:hover:bg-red-900/30 transition-colors flex items-center space-x-2"
                     >
-                        <i class="fas fa-times" aria-hidden="true"></i>
+                        <i aria-hidden="true" class="fas fa-times"></i>
                         <span>Clear Filters</span>
                     </button>
                 @endif
@@ -32,7 +32,7 @@
         <div class="mt-6 grid grid-cols-1 md:grid-cols-5 gap-4">
             <div class="bg-brand/10 dark:bg-action/20 rounded-lg p-4 transition-colors duration-300">
                 <div class="flex items-center">
-                    <i class="fas fa-file-alt text-brand dark:text-brand text-xl mr-3" aria-hidden="true"></i>
+                    <i aria-hidden="true" class="fas fa-file-alt text-brand dark:text-brand text-xl mr-3"></i>
                     <div>
                         <p class="text-2xl font-bold text-brand dark:text-brand">{{ $documents->total() }}</p>
                         <p class="text-sm text-brand dark:text-brand">Total Documents</p>
@@ -41,7 +41,7 @@
             </div>
             <div class="bg-green-50 dark:bg-green-900/20 rounded-lg p-4 transition-colors duration-300">
                 <div class="flex items-center">
-                    <i class="fas fa-check-circle text-green-600 dark:text-green-400 text-xl mr-3" aria-hidden="true"></i>
+                    <i aria-hidden="true" class="fas fa-check-circle text-green-600 dark:text-green-400 text-xl mr-3"></i>
                     <div>
                         <p class="text-2xl font-bold text-green-600 dark:text-green-400">{{ $documents->where('status', 'published')->count() }}</p>
                         <p class="text-sm text-green-700 dark:text-green-300">Published</p>
@@ -50,7 +50,7 @@
             </div>
             <div class="bg-orange-50 dark:bg-orange-900/20 rounded-lg p-4 transition-colors duration-300">
                 <div class="flex items-center">
-                    <i class="fas fa-clock text-orange-600 dark:text-orange-400 text-xl mr-3" aria-hidden="true"></i>
+                    <i aria-hidden="true" class="fas fa-clock text-orange-600 dark:text-orange-400 text-xl mr-3"></i>
                     <div>
                         <p class="text-2xl font-bold text-orange-600 dark:text-orange-400">{{ $documents->where('status', 'pending_review')->count() }}</p>
                         <p class="text-sm text-orange-700 dark:text-orange-300">Pending Review</p>
@@ -59,7 +59,7 @@
             </div>
             <div class="bg-surface-muted dark:bg-gray-700 rounded-lg p-4 transition-colors duration-300">
                 <div class="flex items-center">
-                    <i class="fas fa-edit text-content-muted dark:text-content-muted text-xl mr-3" aria-hidden="true"></i>
+                    <i aria-hidden="true" class="fas fa-edit text-content-muted dark:text-content-muted text-xl mr-3"></i>
                     <div>
                         <p class="text-2xl font-bold text-content-muted dark:text-gray-300">{{ $documents->where('status', 'draft')->count() }}</p>
                         <p class="text-sm text-content dark:text-content-muted">Drafts</p>
@@ -68,7 +68,7 @@
             </div>
             <div class="bg-brand/10 dark:bg-action/20 rounded-lg p-4 transition-colors duration-300">
                 <div class="flex items-center">
-                    <i class="fas fa-star text-brand dark:text-brand text-xl mr-3" aria-hidden="true"></i>
+                    <i aria-hidden="true" class="fas fa-star text-brand dark:text-brand text-xl mr-3"></i>
                     <div>
                         <p class="text-2xl font-bold text-brand dark:text-brand">{{ $documents->where('featured', true)->count() }}</p>
                         <p class="text-sm text-brand dark:text-brand">Featured</p>
@@ -159,12 +159,12 @@
                     <div class="flex items-center space-x-2 text-sm">
                         <button wire:click="sortBy('title')" class="flex items-center space-x-1 text-content-muted dark:text-content-muted hover:text-content dark:hover:text-gray-200 transition-colors">
                             <span>Title</span>
-                            <i class="fas fa-sort {{ $sortBy === 'title' ? ($sortDirection === 'asc' ? 'fa-sort-up' : 'fa-sort-down') : '' }}" aria-hidden="true"></i>
+                            <i aria-hidden="true" class="fas fa-sort {{ $sortBy === 'title' ? ($sortDirection === 'asc' ? 'fa-sort-up' : 'fa-sort-down') : '' }}"></i>
                         </button>
                         <span class="text-gray-300 dark:text-content-muted">|</span>
                         <button wire:click="sortBy('created_at')" class="flex items-center space-x-1 text-content-muted dark:text-content-muted hover:text-content dark:hover:text-gray-200 transition-colors">
                             <span>Date</span>
-                            <i class="fas fa-sort {{ $sortBy === 'created_at' ? ($sortDirection === 'asc' ? 'fa-sort-up' : 'fa-sort-down') : '' }}" aria-hidden="true"></i>
+                            <i aria-hidden="true" class="fas fa-sort {{ $sortBy === 'created_at' ? ($sortDirection === 'asc' ? 'fa-sort-up' : 'fa-sort-down') : '' }}"></i>
                         </button>
                     </div>
                 </div>
@@ -199,7 +199,7 @@
                                     <!-- Visibility Badge -->
                                     @if($document->visibility !== 'public')
                                         <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-300">
-                                            <i class="fas fa-lock mr-1" aria-hidden="true"></i>
+                                            <i aria-hidden="true" class="fas fa-lock mr-1"></i>
                                             {{ $visibilities[$document->visibility] ?? $document->visibility }}
                                         </span>
                                     @endif
@@ -207,7 +207,7 @@
                                     <!-- Featured Badge -->
                                     @if($document->featured)
                                         <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-brand/10 dark:bg-action/30 text-brand dark:text-brand">
-                                            <i class="fas fa-star mr-1" aria-hidden="true"></i>
+                                            <i aria-hidden="true" class="fas fa-star mr-1"></i>
                                             Featured
                                         </span>
                                     @endif
@@ -219,22 +219,22 @@
 
                                 <div class="flex items-center space-x-6 text-xs text-content-muted dark:text-content-muted mb-3">
                                     <span>
-                                        <i class="fas fa-user mr-1" aria-hidden="true"></i>
+                                        <i aria-hidden="true" class="fas fa-user mr-1"></i>
                                         {{ $document->creator->name ?? 'Unknown Author' }}
                                     </span>
                                     <span>
-                                        <i class="fas fa-calendar mr-1" aria-hidden="true"></i>
+                                        <i aria-hidden="true" class="fas fa-calendar mr-1"></i>
                                         {{ $document->created_at->format('M j, Y') }}
                                     </span>
                                     @if($document->updated_at && $document->updated_at->ne($document->created_at))
                                         <span>
-                                            <i class="fas fa-edit mr-1" aria-hidden="true"></i>
+                                            <i aria-hidden="true" class="fas fa-edit mr-1"></i>
                                             Updated {{ $document->updated_at->diffForHumans() }}
                                         </span>
                                     @endif
                                     @if($document->category)
                                         <span>
-                                            <i class="fas fa-tag mr-1" aria-hidden="true"></i>
+                                            <i aria-hidden="true" class="fas fa-tag mr-1"></i>
                                             {{ $document->category->name }}
                                         </span>
                                     @endif
@@ -244,24 +244,24 @@
                                 <div class="flex items-center space-x-6 text-xs text-content-muted dark:text-content-muted">
                                     @if($document->views_count ?? 0 > 0)
                                         <span>
-                                            <i class="fas fa-eye mr-1" aria-hidden="true"></i>
+                                            <i aria-hidden="true" class="fas fa-eye mr-1"></i>
                                             {{ number_format($document->views_count) }} views
                                         </span>
                                     @endif
                                     @if($document->word_count ?? 0 > 0)
                                         <span>
-                                            <i class="fas fa-file-word mr-1" aria-hidden="true"></i>
+                                            <i aria-hidden="true" class="fas fa-file-word mr-1"></i>
                                             {{ number_format($document->word_count) }} words
                                         </span>
                                     @endif
                                     @if($document->reading_time ?? 0 > 0)
                                         <span>
-                                            <i class="fas fa-clock mr-1" aria-hidden="true"></i>
+                                            <i aria-hidden="true" class="fas fa-clock mr-1"></i>
                                             {{ $document->reading_time }} min read
                                         </span>
                                     @endif
                                     <span>
-                                        <i class="fas fa-signal mr-1" aria-hidden="true"></i>
+                                        <i aria-hidden="true" class="fas fa-signal mr-1"></i>
                                         {{ ucfirst($document->difficulty_level ?? 'beginner') }}
                                     </span>
                                 </div>
@@ -282,11 +282,11 @@
                                 <!-- Quick Actions -->
                                 <div class="flex items-center space-x-1">
                                     <button class="text-brand dark:text-brand hover:text-brand dark:hover:text-brand bg-brand/10 dark:bg-action/20 hover:bg-brand/10 dark:hover:bg-action/30 p-2 rounded transition-colors" title="View Document" aria-label="View Document">
-                                        <i class="fas fa-eye" aria-hidden="true"></i>
+                                        <i aria-hidden="true" class="fas fa-eye"></i>
                                     </button>
 
                                     <button class="text-green-600 dark:text-green-400 hover:text-green-800 dark:hover:text-green-300 bg-green-50 dark:bg-green-900/20 hover:bg-green-100 dark:hover:bg-green-900/30 p-2 rounded transition-colors" title="Edit Document" aria-label="Edit Document">
-                                        <i class="fas fa-edit" aria-hidden="true"></i>
+                                        <i aria-hidden="true" class="fas fa-edit"></i>
                                     </button>
 
                                     <!-- More Actions Dropdown -->
@@ -296,24 +296,24 @@
                                             class="text-content-muted dark:text-content-muted hover:text-content-muted dark:hover:text-gray-300 p-2 rounded hover:bg-surface-muted dark:hover:bg-gray-700 transition-colors"
                                             onclick="toggleDocumentDropdown({{ $document->id }})"
                                         >
-                                            <i class="fas fa-ellipsis-v" aria-hidden="true"></i>
+                                            <i aria-hidden="true" class="fas fa-ellipsis-v"></i>
                                         </button>
                                         <div id="document-dropdown-{{ $document->id }}" class="hidden absolute right-0 z-10 mt-2 w-48 bg-surface dark:bg-gray-800 rounded-md shadow-sm ring-1 ring-black ring-opacity-5 dark:ring-gray-700">
                                             <div class="py-1">
                                                 <button class="w-full text-left px-4 py-2 text-sm text-content dark:text-gray-300 hover:bg-surface-muted dark:hover:bg-gray-700 flex items-center transition-colors">
-                                                    <i class="fas fa-copy mr-2" aria-hidden="true"></i>
+                                                    <i aria-hidden="true" class="fas fa-copy mr-2"></i>
                                                     Duplicate
                                                 </button>
                                                 <button class="w-full text-left px-4 py-2 text-sm text-brand dark:text-brand hover:bg-brand/10 dark:hover:bg-action/20 flex items-center transition-colors">
-                                                    <i class="fas fa-download mr-2" aria-hidden="true"></i>
+                                                    <i aria-hidden="true" class="fas fa-download mr-2"></i>
                                                     Export
                                                 </button>
                                                 <button class="w-full text-left px-4 py-2 text-sm text-orange-700 dark:text-orange-400 hover:bg-orange-50 dark:hover:bg-orange-900/20 flex items-center transition-colors">
-                                                    <i class="fas fa-archive mr-2" aria-hidden="true"></i>
+                                                    <i aria-hidden="true" class="fas fa-archive mr-2"></i>
                                                     Archive
                                                 </button>
                                                 <button class="w-full text-left px-4 py-2 text-sm text-red-700 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 flex items-center transition-colors">
-                                                    <i class="fas fa-trash mr-2" aria-hidden="true"></i>
+                                                    <i aria-hidden="true" class="fas fa-trash mr-2"></i>
                                                     Delete
                                                 </button>
                                             </div>
@@ -334,7 +334,7 @@
             @endif
         @else
             <div class="p-12 text-center">
-                <i class="fas fa-file-alt text-6xl text-gray-300 dark:text-content-muted mb-4" aria-hidden="true"></i>
+                <i aria-hidden="true" class="fas fa-file-alt text-6xl text-gray-300 dark:text-content-muted mb-4"></i>
                 <h3 class="text-lg font-medium text-content dark:text-white mb-2">No documents found</h3>
                 <p class="text-content-muted dark:text-content-muted mb-4">
                     @if($search || $selectedType || $selectedCategory || $selectedStatus || $selectedVisibility)

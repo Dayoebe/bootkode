@@ -70,4 +70,13 @@ class DashboardNavigationTest extends TestCase
         $user->syncRoles(['student']);
         $component->call('getRoleStats')->assertForbidden();
     }
+
+    public function test_unverified_account_can_render_the_existing_wallet_verification_notice(): void
+    {
+        Role::findOrCreate('student', 'web');
+        $user = User::factory()->create(['role' => 'student', 'email_verified_at' => null]);
+        $user->assignRole('student');
+        $this->actingAs($user)->get(route('wallet.index'))->assertOk()->assertSee('Email Not Verified');
+        $this->get(route('profile.view'))->assertRedirect(route('verification.notice'));
+    }
 }

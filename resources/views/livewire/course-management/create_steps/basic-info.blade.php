@@ -1,7 +1,7 @@
 <div class="bg-themed-secondary rounded-lg p-4 sm:p-6 lg:p-8 shadow-sm border border-themed-primary transition-colors duration-300">
     <div class="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-6">
         <div class="w-10 h-10 sm:w-12 sm:h-12 bg-action rounded-full flex items-center justify-center flex-shrink-0">
-            <i class="fas fa-info-circle text-action-foreground text-lg sm:text-xl" aria-hidden="true"></i>
+            <i aria-hidden="true" class="fas fa-info-circle text-action-foreground text-lg sm:text-xl"></i>
         </div>
         <div>
             <h2 class="text-xl sm:text-2xl font-bold text-themed-primary transition-colors duration-300">Basic Information</h2>
@@ -15,7 +15,7 @@
             <!-- Course Title - FIXED: Changed wire:model.live to wire:model.blur -->
             <div class="group">
                 <label class="block text-sm font-medium text-themed-primary mb-2 flex items-center gap-2 transition-colors duration-300" for="course-title">
-                    <i class="fas fa-heading text-brand dark:text-brand" aria-hidden="true"></i>
+                    <i aria-hidden="true" class="fas fa-heading text-brand dark:text-brand"></i>
                     Course Title <span class="text-red-500">*</span>
                 </label>
                 <input type="text"
@@ -30,7 +30,7 @@
             <!-- Course Slug -->
             <div class="group">
                 <label class="block text-sm font-medium text-themed-primary mb-2 flex items-center gap-2 transition-colors duration-300" for="course-slug">
-                    <i class="fas fa-link text-brand dark:text-brand" aria-hidden="true"></i>
+                    <i aria-hidden="true" class="fas fa-link text-brand dark:text-brand"></i>
                     Course URL Slug <span class="text-red-500">*</span>
                 </label>
                 <div class="relative">
@@ -51,7 +51,7 @@
             <!-- Course Subtitle -->
             <div class="group">
                 <label class="block text-sm font-medium text-themed-primary mb-2 flex items-center gap-2 transition-colors duration-300" for="course-subtitle">
-                    <i class="fas fa-subtitle text-brand dark:text-brand" aria-hidden="true"></i>
+                    <i aria-hidden="true" class="fas fa-subtitle text-brand dark:text-brand"></i>
                     Course Subtitle
                 </label>
                 <input type="text"
@@ -69,7 +69,7 @@
             <!-- Category -->
             <div class="group">
                 <label class="block text-sm font-medium text-themed-primary mb-2 flex items-center gap-2 transition-colors duration-300" for="course-category-id">
-                    <i class="fas fa-tags text-brand dark:text-brand" aria-hidden="true"></i>
+                    <i aria-hidden="true" class="fas fa-tags text-brand dark:text-brand"></i>
                     Category <span class="text-red-500">*</span>
                 </label>
                 <select wire:model="category_id"
@@ -87,7 +87,7 @@
             <!-- Difficulty Level -->
             <div class="group">
                 <label class="block text-sm font-medium text-themed-primary mb-2 flex items-center gap-2 transition-colors duration-300" for="course-difficulty-level">
-                    <i class="fas fa-layer-group text-brand dark:text-brand" aria-hidden="true"></i>
+                    <i aria-hidden="true" class="fas fa-layer-group text-brand dark:text-brand"></i>
                     Difficulty Level <span class="text-red-500">*</span>
                 </label>
                 <select wire:model="difficulty_level"

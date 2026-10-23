@@ -10,7 +10,7 @@
                     placeholder="Search campaigns..."
                     class="pl-10 pr-4 py-2 w-full md:w-64 border border-line rounded-lg focus:ring-2 focus:ring-brand/30 focus:border-transparent"
                 >
-                <i class="fas fa-search absolute left-3 top-3 text-content-muted" aria-hidden="true"></i>
+                <i aria-hidden="true" class="fas fa-search absolute left-3 top-3 text-content-muted"></i>
             </div>
         </div>
     </div>
@@ -61,14 +61,14 @@
                                     class="text-brand hover:text-brand text-sm"
                                     title="View Details"
                                 >
-                                    <i class="fas fa-eye" aria-hidden="true"></i> View Details
+                                    <i aria-hidden="true" class="fas fa-eye"></i> View Details
                                 </button>
                             </td>
                         </tr>
                     @empty
                         <tr>
                             <td colspan="7" class="px-6 py-12 text-center text-content-muted">
-                                <i class="fas fa-chart-pie text-4xl mb-4 text-gray-300" aria-hidden="true"></i>
+                                <i aria-hidden="true" class="fas fa-chart-pie text-4xl mb-4 text-gray-300"></i>
                                 <p>No campaign reports available.</p>
                             </td>
                         </tr>
@@ -94,7 +94,7 @@
                         <div class="flex justify-between items-center mb-4">
                             <h3 class="text-lg font-medium">Campaign Report: {{ $selectedCampaign->name }}</h3>
                             <button @click="show = false; $wire.closeCampaignDetails()" class="text-content-muted hover:text-content-muted" aria-label="Close">
-                                <i class="fas fa-times" aria-hidden="true"></i>
+                                <i aria-hidden="true" class="fas fa-times"></i>
                             </button>
                         </div>
 

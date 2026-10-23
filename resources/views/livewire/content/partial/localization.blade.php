@@ -12,7 +12,7 @@
                     wire:click="exportTranslations"
                     class="bg-green-600 dark:bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-700 dark:hover:bg-green-600 transition-colors flex items-center space-x-2"
                 >
-                    <i class="fas fa-download" aria-hidden="true"></i>
+                    <i aria-hidden="true" class="fas fa-download"></i>
                     <span>Export Translations</span>
                 </button>
 
@@ -20,7 +20,7 @@
                     wire:click="importTranslations"
                     class="bg-action dark:bg-action text-action-foreground px-4 py-2 rounded-lg hover:bg-action dark:hover:bg-action transition-colors flex items-center space-x-2"
                 >
-                    <i class="fas fa-upload" aria-hidden="true"></i>
+                    <i aria-hidden="true" class="fas fa-upload"></i>
                     <span>Import Translations</span>
                 </button>
             </div>
@@ -92,7 +92,7 @@
                     wire:click="$refresh"
                     class="w-full bg-surface-muted dark:bg-gray-700 text-content dark:text-gray-300 px-4 py-2 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors flex items-center justify-center space-x-2"
                 >
-                    <i class="fas fa-sync-alt" aria-hidden="true"></i>
+                    <i aria-hidden="true" class="fas fa-sync-alt"></i>
                     <span>Refresh</span>
                 </button>
             </div>
@@ -128,16 +128,16 @@
 
                                 <div class="flex items-center space-x-4 text-xs text-content-muted dark:text-content-muted">
                                     <span>
-                                        <i class="fas fa-user mr-1" aria-hidden="true"></i>
+                                        <i aria-hidden="true" class="fas fa-user mr-1"></i>
                                         {{ $item->creator->name ?? 'Unknown' }}
                                     </span>
                                     <span>
-                                        <i class="fas fa-calendar mr-1" aria-hidden="true"></i>
+                                        <i aria-hidden="true" class="fas fa-calendar mr-1"></i>
                                         {{ $item->created_at->format('M j, Y') }}
                                     </span>
                                     @if($item->updated_at && $item->updated_at->ne($item->created_at))
                                         <span>
-                                            <i class="fas fa-edit mr-1" aria-hidden="true"></i>
+                                            <i aria-hidden="true" class="fas fa-edit mr-1"></i>
                                             Updated {{ $item->updated_at->format('M j, Y') }}
                                         </span>
                                     @endif
@@ -157,9 +157,9 @@
                                             >
                                                 <span>{{ strtoupper($lang) }}</span>
                                                 @if(rand(0, 1))
-                                                    <i class="fas fa-check text-xs" aria-hidden="true"></i>
+                                                    <i aria-hidden="true" class="fas fa-check text-xs"></i>
                                                 @else
-                                                    <i class="fas fa-plus text-xs" aria-hidden="true"></i>
+                                                    <i aria-hidden="true" class="fas fa-plus text-xs"></i>
                                                 @endif
                                             </button>
                                         @endif
@@ -179,7 +179,7 @@
             @endif
         @else
             <div class="p-12 text-center">
-                <i class="fas fa-language text-6xl text-gray-300 dark:text-content-muted mb-4" aria-hidden="true"></i>
+                <i aria-hidden="true" class="fas fa-language text-6xl text-gray-300 dark:text-content-muted mb-4"></i>
                 <h3 class="text-lg font-medium text-content dark:text-white mb-2">No content found</h3>
                 <p class="text-content-muted dark:text-content-muted">
                     @if($search)
@@ -207,7 +207,7 @@
                             </p>
                         </div>
                         <button wire:click="closeTranslationModal" class="text-content-muted dark:text-content-muted hover:text-content-muted dark:hover:text-gray-300 transition-colors" aria-label="Close">
-                            <i class="fas fa-times text-xl" aria-hidden="true"></i>
+                            <i aria-hidden="true" class="fas fa-times text-xl"></i>
                         </button>
                     </div>
 
@@ -268,7 +268,7 @@
                         <div class="bg-brand/10 dark:bg-action/20 border border-brand dark:border-brand rounded-lg p-4 transition-colors duration-300">
                             <div class="flex">
                                 <div class="flex-shrink-0">
-                                    <i class="fas fa-info-circle text-brand dark:text-brand" aria-hidden="true"></i>
+                                    <i aria-hidden="true" class="fas fa-info-circle text-brand dark:text-brand"></i>
                                 </div>
                                 <div class="ml-3">
                                     <h4 class="text-sm font-medium text-brand dark:text-brand">Translation Tips</h4>
@@ -290,7 +290,7 @@
                                 wire:click="autoTranslate"
                                 class="bg-yellow-600 dark:bg-yellow-500 text-white px-4 py-2 rounded-lg hover:bg-yellow-700 dark:hover:bg-yellow-600 transition-colors flex items-center space-x-2"
                             >
-                                <i class="fas fa-magic" aria-hidden="true"></i>
+                                <i aria-hidden="true" class="fas fa-magic"></i>
                                 <span>Auto Translate</span>
                             </button>
 

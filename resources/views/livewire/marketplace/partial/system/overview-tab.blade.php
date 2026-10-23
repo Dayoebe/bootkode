@@ -11,7 +11,7 @@
                     <p class="text-brand text-sm mt-1">Platform Earnings: ₦{{ number_format($stats['platform_commission'], 0) }}</p>
                 </div>
                 <div class="bg-purple-400 p-3 rounded-full">
-                    <i class="fas fa-chart-line text-2xl" aria-hidden="true"></i>
+                    <i aria-hidden="true" class="fas fa-chart-line text-2xl"></i>
                 </div>
             </div>
         </div>
@@ -25,7 +25,7 @@
                     <p class="text-green-100 text-sm mt-1">Completed: {{ number_format($stats['completed_orders']) }}</p>
                 </div>
                 <div class="bg-green-400 p-3 rounded-full">
-                    <i class="fas fa-shopping-cart text-2xl" aria-hidden="true"></i>
+                    <i aria-hidden="true" class="fas fa-shopping-cart text-2xl"></i>
                 </div>
             </div>
         </div>
@@ -39,7 +39,7 @@
                     <p class="text-brand text-sm mt-1">Vendor Earnings: ₦{{ number_format($stats['vendor_earnings'], 0) }}</p>
                 </div>
                 <div class="bg-blue-400 p-3 rounded-full">
-                    <i class="fas fa-users text-2xl" aria-hidden="true"></i>
+                    <i aria-hidden="true" class="fas fa-users text-2xl"></i>
                 </div>
             </div>
         </div>
@@ -52,7 +52,7 @@
             <h3 class="text-lg font-semibold text-content mb-4">Revenue Trend (Last 30 Days)</h3>
             <div class="h-64 flex items-center justify-center text-content-muted">
                 <div class="text-center">
-                    <i class="fas fa-chart-area text-4xl mb-2" aria-hidden="true"></i>
+                    <i aria-hidden="true" class="fas fa-chart-area text-4xl mb-2"></i>
                     <p>Chart visualization would go here</p>
                     <p class="text-sm">Integration with Chart.js or similar library needed</p>
                 </div>
@@ -68,11 +68,11 @@
                         <div class="flex-shrink-0">
                             @if($activity['type'] === 'item')
                                 <div class="w-8 h-8 bg-brand/10 rounded-full flex items-center justify-center">
-                                    <i class="fas fa-box text-brand text-sm" aria-hidden="true"></i>
+                                    <i aria-hidden="true" class="fas fa-box text-brand text-sm"></i>
                                 </div>
                             @elseif($activity['type'] === 'order')
                                 <div class="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
-                                    <i class="fas fa-shopping-cart text-green-600 text-sm" aria-hidden="true"></i>
+                                    <i aria-hidden="true" class="fas fa-shopping-cart text-green-600 text-sm"></i>
                                 </div>
                             @endif
                         </div>
@@ -104,7 +104,7 @@
                     </div>
                 @empty
                     <div class="text-center py-8 text-content-muted">
-                        <i class="fas fa-history text-2xl mb-2" aria-hidden="true"></i>
+                        <i aria-hidden="true" class="fas fa-history text-2xl mb-2"></i>
                         <p>No recent activity</p>
                     </div>
                 @endforelse

@@ -5,7 +5,7 @@
             <input type="text" aria-label="Search challenges" wire:model.live.debounce="search"
                    class="w-full pl-10 pr-4 py-2 bg-themed-secondary border border-themed-primary text-themed-primary rounded-lg placeholder-themed-secondary focus:ring-2 focus:ring-orange-500 focus:border-transparent"
                    placeholder="Search challenges...">
-            <i class="fas fa-search absolute left-3 top-2.5 text-themed-secondary" aria-hidden="true"></i>
+            <i aria-hidden="true" class="fas fa-search absolute left-3 top-2.5 text-themed-secondary"></i>
         </div>
         <select aria-label="Challenge difficulty" wire:model.live="difficultyFilter"
                 class="bg-themed-secondary border border-themed-primary text-themed-primary rounded-lg px-3 py-2 focus:ring-2 focus:ring-orange-500 focus:border-transparent text-sm">
@@ -16,7 +16,7 @@
         </select>
         <button wire:click="openModal('code-challenge')"
         class="bg-orange-600 hover:bg-orange-700 active:bg-orange-800 text-white px-4 py-2 rounded-lg font-medium transition-colors flex items-center gap-2 whitespace-nowrap">
-    <i class="fas fa-plus" aria-hidden="true"></i>
+    <i aria-hidden="true" class="fas fa-plus"></i>
     <span class="hidden sm:inline">Challenge</span>
 </button>
     </div>
@@ -40,24 +40,24 @@
 
                 <!-- Points & Creator -->
                 <div class="flex items-center gap-2 text-xs text-themed-secondary mb-3 pb-3 border-b border-themed-primary flex-wrap">
-                    <span><i class="fas fa-trophy mr-1 text-orange-400" aria-hidden="true"></i>{{ isset($challenge->metadata['points']) ? $challenge->metadata['points'].' pts' : 'Points not set' }}</span>
-                    <span><i class="fas fa-user mr-1" aria-hidden="true"></i>{{ $challenge->creator->name ?? 'Not recorded' }}</span>
+                    <span><i aria-hidden="true" class="fas fa-trophy mr-1 text-orange-400"></i>{{ isset($challenge->metadata['points']) ? $challenge->metadata['points'].' pts' : 'Points not set' }}</span>
+                    <span><i aria-hidden="true" class="fas fa-user mr-1"></i>{{ $challenge->creator->name ?? 'Not recorded' }}</span>
                 </div>
 
                 <!-- Solve Button -->
                 <button wire:click="openCodeChallenge({{ $challenge->id }})"
                         class="w-full bg-orange-600 hover:bg-orange-700 text-white rounded-lg py-2 font-medium transition-colors text-sm">
-                    <i class="fas fa-code mr-1" aria-hidden="true"></i>Solve
+                    <i aria-hidden="true" class="fas fa-code mr-1"></i>Solve
                 </button>
             </div>
         @empty
             <div class="col-span-full text-center py-12 bg-themed-secondary border border-themed-primary rounded-lg">
-                <i class="fas fa-code text-themed-secondary text-4xl mb-3 block" aria-hidden="true"></i>
+                <i aria-hidden="true" class="fas fa-code text-themed-secondary text-4xl mb-3 block"></i>
                 <h3 class="text-lg font-semibold text-themed-primary mb-1">No challenges yet</h3>
                 <p class="text-themed-secondary mb-4">Create the first challenge!</p>
                 <button wire:click="openModal('code-challenge')"
                         class="bg-orange-600 hover:bg-orange-700 text-white px-4 py-2 rounded-lg font-medium inline-flex items-center gap-2">
-                    <i class="fas fa-plus" aria-hidden="true"></i>Create Challenge
+                    <i aria-hidden="true" class="fas fa-plus"></i>Create Challenge
                 </button>
             </div>
         @endforelse

@@ -11,7 +11,7 @@
                 wire:click="openCreateModal"
                 class="bg-action dark:bg-action text-action-foreground px-4 py-2 rounded-lg hover:bg-action dark:hover:bg-action transition-colors flex items-center space-x-2"
             >
-                <i class="fas fa-plus" aria-hidden="true"></i>
+                <i aria-hidden="true" class="fas fa-plus"></i>
                 <span>Add New Material</span>
             </button>
         </div>
@@ -92,21 +92,21 @@
                     <div class="ml-4">
                         <div class="relative inline-block text-left">
                             <button type="button" class="p-1 text-content-muted dark:text-content-muted hover:text-content-muted dark:hover:text-gray-300 transition-colors" onclick="toggleDropdown({{ $material->id }})">
-                                <i class="fas fa-ellipsis-v" aria-hidden="true"></i>
+                                <i aria-hidden="true" class="fas fa-ellipsis-v"></i>
                             </button>
                             <div id="dropdown-{{ $material->id }}" class="hidden absolute right-0 z-10 mt-2 w-48 bg-surface dark:bg-gray-800 rounded-md shadow-sm ring-1 ring-black ring-opacity-5 dark:ring-gray-700">
                                 <div class="py-1">
                                     @if($material->file_path)
                                         <button wire:click="downloadFile({{ $material->id }})" class="w-full text-left px-4 py-2 text-sm text-content dark:text-gray-300 hover:bg-surface-muted dark:hover:bg-gray-700 flex items-center transition-colors">
-                                            <i class="fas fa-download mr-2" aria-hidden="true"></i> Download
+                                            <i aria-hidden="true" class="fas fa-download mr-2"></i> Download
                                         </button>
                                     @endif
 
                                     <button wire:click="openEditModal({{ $material->id }})" class="w-full text-left px-4 py-2 text-sm text-content dark:text-gray-300 hover:bg-surface-muted dark:hover:bg-gray-700 flex items-center transition-colors">
-                                        <i class="fas fa-edit mr-2" aria-hidden="true"></i> Edit
+                                        <i aria-hidden="true" class="fas fa-edit mr-2"></i> Edit
                                     </button>
                                     <button wire:click="openDeleteModal({{ $material->id }})" class="w-full text-left px-4 py-2 text-sm text-red-700 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 flex items-center transition-colors">
-                                        <i class="fas fa-trash mr-2" aria-hidden="true"></i> Delete
+                                        <i aria-hidden="true" class="fas fa-trash mr-2"></i> Delete
                                     </button>
                                 </div>
                             </div>
@@ -118,7 +118,7 @@
                 <div class="mb-4">
                     @if($material->file_path)
                         <div class="flex items-center space-x-2 text-sm text-content-muted dark:text-content-muted mb-2">
-                            <i class="fas fa-paperclip" aria-hidden="true"></i>
+                            <i aria-hidden="true" class="fas fa-paperclip"></i>
                             <span>{{ $material->original_filename }}</span>
                             @if($material->file_size)
                                 <span class="text-content-muted dark:text-content-muted">• {{ number_format($material->file_size / 1024 / 1024, 1) }} MB</span>
@@ -128,7 +128,7 @@
 
                     @if($material->course)
                         <div class="flex items-center space-x-2 text-sm text-content-muted dark:text-content-muted mb-2">
-                            <i class="fas fa-book" aria-hidden="true"></i>
+                            <i aria-hidden="true" class="fas fa-book"></i>
                             <span>{{ $material->course->title }}</span>
                         </div>
                     @endif
@@ -148,12 +148,12 @@
                 <div class="flex items-center justify-between text-sm text-content-muted dark:text-content-muted pt-4 border-t border-line dark:border-gray-700">
                     <div class="flex items-center space-x-4">
                         <span>
-                            <i class="fas fa-user mr-1" aria-hidden="true"></i>
+                            <i aria-hidden="true" class="fas fa-user mr-1"></i>
                             {{ $material->creator->name ?? 'Unknown' }}
                         </span>
                         @if($material->download_count > 0)
                             <span>
-                                <i class="fas fa-download mr-1" aria-hidden="true"></i>
+                                <i aria-hidden="true" class="fas fa-download mr-1"></i>
                                 {{ $material->download_count }}
                             </span>
                         @endif
@@ -161,9 +161,9 @@
 
                     <div class="flex items-center space-x-2">
                         @if($material->is_public)
-                            <i class="fas fa-globe text-green-500 dark:text-green-400" title="Public"></i>
+                            <i aria-hidden="true" class="fas fa-globe text-green-500 dark:text-green-400" title="Public"></i>
                         @else
-                            <i class="fas fa-lock text-content-muted dark:text-content-muted" title="Private"></i>
+                            <i aria-hidden="true" class="fas fa-lock text-content-muted dark:text-content-muted" title="Private"></i>
                         @endif
                         <span>{{ $material->created_at->format('M j, Y') }}</span>
                     </div>
@@ -172,7 +172,7 @@
         @empty
             <div class="col-span-full">
                 <div class="text-center py-12">
-                    <i class="fas fa-book-open text-6xl text-gray-300 dark:text-content-muted mb-4" aria-hidden="true"></i>
+                    <i aria-hidden="true" class="fas fa-book-open text-6xl text-gray-300 dark:text-content-muted mb-4"></i>
                     <h3 class="text-lg font-medium text-content dark:text-white mb-2">No materials found</h3>
                     <p class="text-content-muted dark:text-content-muted mb-4">
                         @if($search || $selectedType || $selectedCourse)
@@ -204,7 +204,7 @@
                     <div class="flex justify-between items-center mb-6">
                         <h3 class="text-lg font-semibold text-content dark:text-white">Create New Learning Material</h3>
                         <button wire:click="closeCreateModal" class="text-content-muted dark:text-content-muted hover:text-content-muted dark:hover:text-gray-300 transition-colors" aria-label="Close">
-                            <i class="fas fa-times" aria-hidden="true"></i>
+                            <i aria-hidden="true" class="fas fa-times"></i>
                         </button>
                     </div>
 
@@ -307,7 +307,7 @@
                     <div class="flex justify-between items-center mb-6">
                         <h3 class="text-lg font-semibold text-content dark:text-white">Edit Learning Material</h3>
                         <button wire:click="closeEditModal" class="text-content-muted dark:text-content-muted hover:text-content-muted dark:hover:text-gray-300 transition-colors" aria-label="Close">
-                            <i class="fas fa-times" aria-hidden="true"></i>
+                            <i aria-hidden="true" class="fas fa-times"></i>
                         </button>
                     </div>
 
@@ -412,7 +412,7 @@
                 <div class="p-6">
                     <div class="flex items-center mb-4">
                         <div class="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-red-100 dark:bg-red-900/30">
-                            <i class="fas fa-exclamation-triangle text-red-600 dark:text-red-400" aria-hidden="true"></i>
+                            <i aria-hidden="true" class="fas fa-exclamation-triangle text-red-600 dark:text-red-400"></i>
                         </div>
                     </div>
                     <div class="text-center">

@@ -11,17 +11,17 @@
             <div class="flex items-center space-x-4">
                 <button wire:click="runSeoAudit"
                         class="bg-action text-action-foreground px-4 py-2 rounded-lg hover:bg-action transition-colors">
-                    <i class="fas fa-search mr-2" aria-hidden="true"></i>Run SEO Audit
+                    <i aria-hidden="true" class="fas fa-search mr-2"></i>Run SEO Audit
                 </button>
 
                 <button wire:click="generateSitemap"
                         class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors">
-                    <i class="fas fa-sitemap mr-2" aria-hidden="true"></i>Generate Sitemap
+                    <i aria-hidden="true" class="fas fa-sitemap mr-2"></i>Generate Sitemap
                 </button>
 
                 <button wire:click="exportSeoReport"
                         class="bg-action text-action-foreground px-4 py-2 rounded-lg hover:bg-action transition-colors">
-                    <i class="fas fa-download mr-2" aria-hidden="true"></i>Export Report
+                    <i aria-hidden="true" class="fas fa-download mr-2"></i>Export Report
                 </button>
             </div>
         </div>
@@ -74,10 +74,10 @@
                                     $issue['type'] === 'critical' ? 'bg-red-100' :
                                     ($issue['type'] === 'warning' ? 'bg-yellow-100' : 'bg-blue-100')
                                 }}">
-                                    <i class="fas {{
+                                    <i aria-hidden="true" class="fas {{
                                         $issue['type'] === 'critical' ? 'fa-exclamation-triangle text-red-600' :
                                         ($issue['type'] === 'warning' ? 'fa-exclamation text-yellow-600' : 'fa-info text-blue-600')
-                                    }}" aria-hidden="true"></i>
+                                    }}"></i>
                                 </div>
                             </div>
 
@@ -114,11 +114,11 @@
                                 <div class="mt-4 flex space-x-3">
                                     <button wire:click="fixSeoIssue({{ $index }})"
                                             class="inline-flex items-center px-3 py-1 border border-transparent text-xs font-medium rounded-md text-action-foreground bg-action hover:bg-action">
-                                        <i class="fas fa-wrench mr-1" aria-hidden="true"></i>
+                                        <i aria-hidden="true" class="fas fa-wrench mr-1"></i>
                                         Auto Fix
                                     </button>
                                     <button class="inline-flex items-center px-3 py-1 border border-line text-xs font-medium rounded-md text-content bg-surface hover:bg-surface-muted">
-                                        <i class="fas fa-eye mr-1" aria-hidden="true"></i>
+                                        <i aria-hidden="true" class="fas fa-eye mr-1"></i>
                                         View Details
                                     </button>
                                 </div>
@@ -143,7 +143,7 @@
                     @foreach($seoSuggestions as $suggestion)
                         <div class="flex items-start space-x-3">
                             <div class="flex-shrink-0">
-                                <i class="fas fa-lightbulb text-yellow-500 mt-0.5" aria-hidden="true"></i>
+                                <i aria-hidden="true" class="fas fa-lightbulb text-yellow-500 mt-0.5"></i>
                             </div>
                             <div class="text-sm text-content">
                                 {{ $suggestion }}
@@ -199,7 +199,7 @@
                 <div class="pt-4 border-t border-line">
                     <button wire:click="generateSitemap"
                             class="w-full bg-action text-action-foreground py-2 px-4 rounded-lg hover:bg-action transition-colors text-sm">
-                        <i class="fas fa-sync mr-2" aria-hidden="true"></i>Regenerate Sitemap
+                        <i aria-hidden="true" class="fas fa-sync mr-2"></i>Regenerate Sitemap
                     </button>
                 </div>
             </div>
@@ -232,7 +232,7 @@
                     </div>
                 @empty
                     <div class="p-6 text-center">
-                        <i class="fas fa-check-circle text-green-500 text-3xl mb-3" aria-hidden="true"></i>
+                        <i aria-hidden="true" class="fas fa-check-circle text-green-500 text-3xl mb-3"></i>
                         <p class="text-sm text-content-muted">No crawl errors found</p>
                     </div>
                 @endforelse

@@ -8,7 +8,7 @@
         <div class="flex flex-wrap gap-2">
             <button wire:click="sendExpiryNotifications"
                     class="inline-flex items-center px-4 py-2 bg-orange-600 hover:bg-orange-700 text-white text-sm font-medium rounded-md transition-colors">
-                <i class="fas fa-bell mr-2" aria-hidden="true"></i>
+                <i aria-hidden="true" class="fas fa-bell mr-2"></i>
                 Send Expiry Alerts
             </button>
         </div>
@@ -65,9 +65,9 @@
                             <div class="flex items-center space-x-1">
                                 <span>Expires</span>
                                 @if($sortBy === 'license_end_date')
-                                    <i class="fas fa-sort-{{ $sortDirection === 'asc' ? 'up' : 'down' }} text-brand dark:text-brand" aria-hidden="true"></i>
+                                    <i aria-hidden="true" class="fas fa-sort-{{ $sortDirection === 'asc' ? 'up' : 'down' }} text-brand dark:text-brand"></i>
                                 @else
-                                    <i class="fas fa-sort text-gray-300 dark:text-content-muted" aria-hidden="true"></i>
+                                    <i aria-hidden="true" class="fas fa-sort text-gray-300 dark:text-content-muted"></i>
                                 @endif
                             </div>
                         </th>
@@ -129,15 +129,15 @@
                                     @php $daysLeft = $institution->getDaysUntilExpiry(); @endphp
                                     @if($daysLeft <= 0)
                                         <div class="text-xs text-red-600 dark:text-red-400 font-medium">
-                                            <i class="fas fa-exclamation-triangle mr-1" aria-hidden="true"></i>Expired
+                                            <i aria-hidden="true" class="fas fa-exclamation-triangle mr-1"></i>Expired
                                         </div>
                                     @elseif($daysLeft <= 30)
                                         <div class="text-xs text-orange-600 dark:text-orange-400 font-medium">
-                                            <i class="fas fa-clock mr-1" aria-hidden="true"></i>{{ $daysLeft }} days left
+                                            <i aria-hidden="true" class="fas fa-clock mr-1"></i>{{ $daysLeft }} days left
                                         </div>
                                     @else
                                         <div class="text-xs text-green-600 dark:text-green-400">
-                                            <i class="fas fa-check mr-1" aria-hidden="true"></i>{{ $daysLeft }} days left
+                                            <i aria-hidden="true" class="fas fa-check mr-1"></i>{{ $daysLeft }} days left
                                         </div>
                                     @endif
                                 @else
@@ -158,12 +158,12 @@
                                     <button wire:click="openRenewModal({{ $institution->id }})"
                                             class="text-green-600 dark:text-green-400 hover:text-green-900 dark:hover:text-green-300 transition-colors"
                                             title="Renew License">
-                                        <i class="fas fa-redo" aria-hidden="true"></i>
+                                        <i aria-hidden="true" class="fas fa-redo"></i>
                                     </button>
                                     <button wire:click="openUpgradeModal({{ $institution->id }})"
                                             class="text-brand dark:text-brand hover:text-brand dark:hover:text-brand transition-colors"
                                             title="Upgrade License">
-                                        <i class="fas fa-arrow-up" aria-hidden="true"></i>
+                                        <i aria-hidden="true" class="fas fa-arrow-up"></i>
                                     </button>
                                 </div>
                             </td>
@@ -172,7 +172,7 @@
                         <tr>
                             <td colspan="6" class="px-6 py-12 text-center">
                                 <div class="flex flex-col items-center">
-                                    <i class="fas fa-key text-4xl text-gray-300 dark:text-content-muted mb-4" aria-hidden="true"></i>
+                                    <i aria-hidden="true" class="fas fa-key text-4xl text-gray-300 dark:text-content-muted mb-4"></i>
                                     <h3 class="text-lg font-medium text-content dark:text-white mb-2">No licenses found</h3>
                                     <p class="text-sm text-content-muted dark:text-content-muted">No institutions match your current filters.</p>
                                 </div>
@@ -198,7 +198,7 @@
                 <div class="flex items-center justify-between pb-4 border-b border-line dark:border-gray-700">
                     <h3 class="text-lg font-semibold text-content dark:text-white">Renew License</h3>
                     <button aria-label="Close dialog" wire:click="closeModals" class="text-content-muted dark:text-content-muted hover:text-content-muted dark:hover:text-gray-300">
-                        <i class="fas fa-times text-xl" aria-hidden="true"></i>
+                        <i aria-hidden="true" class="fas fa-times text-xl"></i>
                     </button>
                 </div>
 
@@ -248,7 +248,7 @@
                 <div class="flex items-center justify-between pb-4 border-b border-line dark:border-gray-700">
                     <h3 class="text-lg font-semibold text-content dark:text-white">Upgrade License</h3>
                     <button aria-label="Close dialog" wire:click="closeModals" class="text-content-muted dark:text-content-muted hover:text-content-muted dark:hover:text-gray-300">
-                        <i class="fas fa-times text-xl" aria-hidden="true"></i>
+                        <i aria-hidden="true" class="fas fa-times text-xl"></i>
                     </button>
                 </div>
 

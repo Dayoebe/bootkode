@@ -2,7 +2,7 @@
 <div class="space-y-6">
     <div class="mb-6">
         <h2 class="text-xl font-bold text-content flex items-center">
-            <i class="fas fa-chart-bar mr-2 text-brand" aria-hidden="true"></i>
+            <i aria-hidden="true" class="fas fa-chart-bar mr-2 text-brand"></i>
             Analytics Dashboard
         </h2>
         <p class="text-content-muted">Real-time insights and performance metrics from your marketplace data</p>
@@ -17,7 +17,7 @@
                     <p class="text-3xl font-bold">{{ number_format($stats['total_vendors'] + ($stats['total_orders'] / 2)) }}</p>
                     <p class="text-brand text-xs mt-1">Platform registered users</p>
                 </div>
-                <i class="fas fa-users text-4xl text-brand" aria-hidden="true"></i>
+                <i aria-hidden="true" class="fas fa-users text-4xl text-brand"></i>
             </div>
         </div>
 
@@ -28,7 +28,7 @@
                     <p class="text-3xl font-bold">₦{{ number_format($stats['total_revenue']) }}</p>
                     <p class="text-green-200 text-xs mt-1">All-time revenue</p>
                 </div>
-                <i class="fas fa-chart-line text-4xl text-green-300" aria-hidden="true"></i>
+                <i aria-hidden="true" class="fas fa-chart-line text-4xl text-green-300"></i>
             </div>
         </div>
 
@@ -39,7 +39,7 @@
                     <p class="text-3xl font-bold">{{ $stats['pending_orders'] + $stats['completed_orders'] }}</p>
                     <p class="text-brand text-xs mt-1">{{ $stats['pending_orders'] }} pending</p>
                 </div>
-                <i class="fas fa-shopping-bag text-4xl text-brand" aria-hidden="true"></i>
+                <i aria-hidden="true" class="fas fa-shopping-bag text-4xl text-brand"></i>
             </div>
         </div>
 
@@ -50,7 +50,7 @@
                     <p class="text-3xl font-bold">{{ $stats['conversion_rate'] }}%</p>
                     <p class="text-orange-200 text-xs mt-1">Visitor to customer</p>
                 </div>
-                <i class="fas fa-trending-up text-4xl text-orange-300" aria-hidden="true"></i>
+                <i aria-hidden="true" class="fas fa-trending-up text-4xl text-orange-300"></i>
             </div>
         </div>
     </div>

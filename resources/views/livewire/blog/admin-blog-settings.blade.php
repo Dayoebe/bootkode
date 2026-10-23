@@ -131,7 +131,7 @@
                                             <button type="button"
                                                     wire:click="removeKeyword({{ $index }})"
                                                     class="ml-2 text-brand hover:text-brand" aria-label="Close">
-                                                <i class="fas fa-times" aria-hidden="true"></i>
+                                                <i aria-hidden="true" class="fas fa-times"></i>
                                             </button>
                                         </span>
                                     @endforeach
@@ -159,7 +159,7 @@
         <div class="flex justify-end">
             <button type="submit"
                     class="px-6 py-3 bg-action text-action-foreground rounded-lg hover:bg-action transition-colors font-medium">
-                <i class="fas fa-save mr-2" aria-hidden="true"></i>
+                <i aria-hidden="true" class="fas fa-save mr-2"></i>
                 Save Settings
             </button>
         </div>

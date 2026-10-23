@@ -18,7 +18,7 @@
             </div>
 
             <a href="{{ route('course-approvals') }}" class="inline-flex items-center justify-center px-4 py-2 rounded-lg bg-themed-tertiary border border-themed-primary text-themed-primary hover:bg-themed-secondary text-sm font-semibold">
-                <i class="fas fa-check-circle mr-2" aria-hidden="true"></i> Course Approvals
+                <i aria-hidden="true" class="fas fa-check-circle mr-2"></i> Course Approvals
             </a>
         </div>
     </div>
@@ -27,35 +27,35 @@
         <button type="button" wire:click="$set('statusFilter', 'all')" class="text-left bg-themed-secondary border border-themed-primary rounded-lg p-4 hover:border-brand transition">
             <div class="flex items-center justify-between">
                 <span class="text-sm text-themed-secondary">All courses</span>
-                <i class="fas fa-book text-brand" aria-hidden="true"></i>
+                <i aria-hidden="true" class="fas fa-book text-brand"></i>
             </div>
             <p class="text-3xl font-bold text-themed-primary mt-3">{{ number_format($stats['total']) }}</p>
         </button>
         <button type="button" wire:click="$set('statusFilter', 'not_checked')" class="text-left bg-themed-secondary border border-themed-primary rounded-lg p-4 hover:border-line transition">
             <div class="flex items-center justify-between">
                 <span class="text-sm text-themed-secondary">Not checked</span>
-                <i class="fas fa-circle-question text-content-muted" aria-hidden="true"></i>
+                <i aria-hidden="true" class="fas fa-circle-question text-content-muted"></i>
             </div>
             <p class="text-3xl font-bold text-themed-primary mt-3">{{ number_format($stats['not_checked']) }}</p>
         </button>
         <button type="button" wire:click="$set('statusFilter', 'needs_work')" class="text-left bg-themed-secondary border border-themed-primary rounded-lg p-4 hover:border-orange-300 transition">
             <div class="flex items-center justify-between">
                 <span class="text-sm text-themed-secondary">Needs work</span>
-                <i class="fas fa-triangle-exclamation text-orange-500" aria-hidden="true"></i>
+                <i aria-hidden="true" class="fas fa-triangle-exclamation text-orange-500"></i>
             </div>
             <p class="text-3xl font-bold text-themed-primary mt-3">{{ number_format($stats['needs_work']) }}</p>
         </button>
         <button type="button" wire:click="$set('statusFilter', 'ready')" class="text-left bg-themed-secondary border border-themed-primary rounded-lg p-4 hover:border-green-300 transition">
             <div class="flex items-center justify-between">
                 <span class="text-sm text-themed-secondary">Ready</span>
-                <i class="fas fa-shield-check text-green-500" aria-hidden="true"></i>
+                <i aria-hidden="true" class="fas fa-shield-check text-green-500"></i>
             </div>
             <p class="text-3xl font-bold text-themed-primary mt-3">{{ number_format($stats['ready']) }}</p>
         </button>
         <button type="button" wire:click="$set('statusFilter', 'stale')" class="text-left bg-themed-secondary border border-themed-primary rounded-lg p-4 hover:border-amber-300 transition">
             <div class="flex items-center justify-between">
                 <span class="text-sm text-themed-secondary">Review due</span>
-                <i class="fas fa-calendar-xmark text-amber-500" aria-hidden="true"></i>
+                <i aria-hidden="true" class="fas fa-calendar-xmark text-amber-500"></i>
             </div>
             <p class="text-3xl font-bold text-themed-primary mt-3">{{ number_format($stats['stale']) }}</p>
         </button>
@@ -66,7 +66,7 @@
             <div class="md:col-span-2">
                 <label class="block text-xs font-semibold text-themed-secondary mb-1">Search</label>
                 <div class="relative">
-                    <i class="fas fa-search absolute left-3 top-3 text-themed-secondary text-xs" aria-hidden="true"></i>
+                    <i aria-hidden="true" class="fas fa-search absolute left-3 top-3 text-themed-secondary text-xs"></i>
                     <input aria-label="Course title, description, instructor" type="search" wire:model.live.debounce.350ms="search"
                            class="w-full rounded-lg border border-themed-primary bg-themed-tertiary text-themed-primary pl-9 pr-3 py-2 text-sm"
                            placeholder="Course title, description, instructor...">
@@ -123,7 +123,7 @@
                                             <img src="{{ asset('storage/' . $course->thumbnail) }}" alt="{{ $course->title }}" class="h-full w-full object-cover">
                                         @else
                                             <div class="h-full w-full flex items-center justify-center text-themed-secondary">
-                                                <i class="fas fa-image" aria-hidden="true"></i>
+                                                <i aria-hidden="true" class="fas fa-image"></i>
                                             </div>
                                         @endif
                                     </div>
@@ -194,24 +194,24 @@
                             <td class="px-5 py-4 text-right min-w-[300px]">
                                 <div class="flex flex-wrap justify-end gap-2">
                                     <button type="button" wire:click="runQualityCheck({{ $course->id }})" class="px-3 py-2 rounded-lg bg-action hover:bg-action text-action-foreground text-xs font-semibold">
-                                        <i class="fas fa-clipboard-check mr-1" aria-hidden="true"></i> Run QA
+                                        <i aria-hidden="true" class="fas fa-clipboard-check mr-1"></i> Run QA
                                     </button>
                                     <button type="button" wire:click="runQualityCheck({{ $course->id }}, true)" class="px-3 py-2 rounded-lg bg-action hover:bg-action text-action-foreground text-xs font-semibold">
-                                        <i class="fas fa-photo-film mr-1" aria-hidden="true"></i> Check Media
+                                        <i aria-hidden="true" class="fas fa-photo-film mr-1"></i> Check Media
                                     </button>
                                     <button type="button" wire:click="markReviewed({{ $course->id }})" class="px-3 py-2 rounded-lg bg-green-600 hover:bg-green-700 text-white text-xs font-semibold">
-                                        <i class="fas fa-calendar-check mr-1" aria-hidden="true"></i> Reviewed
+                                        <i aria-hidden="true" class="fas fa-calendar-check mr-1"></i> Reviewed
                                     </button>
                                     <button type="button" wire:click="togglePublicLabel({{ $course->id }})" class="px-3 py-2 rounded-lg bg-themed-tertiary hover:bg-themed-secondary border border-themed-primary text-themed-primary text-xs font-semibold">
-                                        <i class="fas fa-tag mr-1" aria-hidden="true"></i> {{ $course->quality_public_label_enabled ? 'Hide' : 'Show' }}
+                                        <i aria-hidden="true" class="fas fa-tag mr-1"></i> {{ $course->quality_public_label_enabled ? 'Hide' : 'Show' }}
                                     </button>
                                     @if(!$course->is_approved)
                                         <button type="button" wire:click="approveIfReady({{ $course->id }})" class="px-3 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold">
-                                            <i class="fas fa-check mr-1" aria-hidden="true"></i> Approve
+                                            <i aria-hidden="true" class="fas fa-check mr-1"></i> Approve
                                         </button>
                                     @endif
                                     <button type="button" wire:click="toggleDetails({{ $course->id }})" class="px-3 py-2 rounded-lg bg-themed-tertiary hover:bg-themed-secondary border border-themed-primary text-themed-primary text-xs font-semibold">
-                                        <i class="fas fa-list-ul mr-1" aria-hidden="true"></i> Details
+                                        <i aria-hidden="true" class="fas fa-list-ul mr-1"></i> Details
                                     </button>
                                 </div>
                             </td>
@@ -225,7 +225,7 @@
                                             @forelse($issues as $issue)
                                                 <div class="flex items-start gap-3 py-2 border-b border-themed-primary last:border-b-0">
                                                     <span class="mt-0.5 inline-flex h-6 w-6 items-center justify-center rounded-full text-xs {{ ($issue['severity'] ?? '') === 'critical' ? 'bg-red-100 text-red-700' : (($issue['severity'] ?? '') === 'warning' ? 'bg-yellow-100 text-yellow-700' : 'bg-blue-100 text-blue-700') }}">
-                                                        <i class="fas fa-{{ ($issue['severity'] ?? '') === 'critical' ? 'xmark' : 'info' }}" aria-hidden="true"></i>
+                                                        <i aria-hidden="true" class="fas fa-{{ ($issue['severity'] ?? '') === 'critical' ? 'xmark' : 'info' }}"></i>
                                                     </span>
                                                     <div>
                                                         <p class="text-sm font-semibold text-themed-primary">{{ ucfirst(str_replace('_', ' ', $issue['code'] ?? 'issue')) }}</p>
@@ -260,7 +260,7 @@
                     @empty
                         <tr>
                             <td colspan="5" class="px-5 py-12 text-center text-themed-secondary">
-                                <i class="fas fa-clipboard-check text-3xl text-green-500 mb-3" aria-hidden="true"></i>
+                                <i aria-hidden="true" class="fas fa-clipboard-check text-3xl text-green-500 mb-3"></i>
                                 <p>No courses match this quality filter.</p>
                             </td>
                         </tr>

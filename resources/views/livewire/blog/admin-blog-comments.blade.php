@@ -118,30 +118,30 @@
                     <div class="flex items-center space-x-2 ml-4">
                         <button wire:click="viewComment({{ $comment->id }})"
                                 class="text-brand hover:text-brand p-2">
-                            <i class="fas fa-eye" aria-hidden="true"></i>
+                            <i aria-hidden="true" class="fas fa-eye"></i>
                         </button>
                         @if($comment->status !== 'approved')
                             <button wire:click="approveComment({{ $comment->id }})"
                                     class="text-green-600 hover:text-green-800 p-2">
-                                <i class="fas fa-check" aria-hidden="true"></i>
+                                <i aria-hidden="true" class="fas fa-check"></i>
                             </button>
                         @endif
                         @if($comment->status !== 'rejected')
                             <button wire:click="rejectComment({{ $comment->id }})"
                                     class="text-red-600 hover:text-red-800 p-2">
-                                <i class="fas fa-times" aria-hidden="true"></i>
+                                <i aria-hidden="true" class="fas fa-times"></i>
                             </button>
                         @endif
                         <button wire:click="deleteComment({{ $comment->id }})"
                                 class="text-red-600 hover:text-red-800 p-2">
-                            <i class="fas fa-trash" aria-hidden="true"></i>
+                            <i aria-hidden="true" class="fas fa-trash"></i>
                         </button>
                     </div>
                 </div>
             </div>
         @empty
             <div class="bg-surface dark:bg-gray-800 rounded-lg shadow-sm p-12 text-center">
-                <i class="fas fa-comments text-4xl text-gray-300 mb-4" aria-hidden="true"></i>
+                <i aria-hidden="true" class="fas fa-comments text-4xl text-gray-300 mb-4"></i>
                 <p class="text-content-muted">No comments found.</p>
             </div>
         @endforelse
@@ -158,7 +158,7 @@
                 <div class="flex justify-between items-start mb-4">
                     <h3 class="text-lg font-medium text-content dark:text-white">Comment Details</h3>
                     <button wire:click="closeModal" class="text-content-muted hover:text-content-muted" aria-label="Close">
-                        <i class="fas fa-times" aria-hidden="true"></i>
+                        <i aria-hidden="true" class="fas fa-times"></i>
                     </button>
                 </div>
 

@@ -5,7 +5,7 @@
             <div class="sticky top-0 bg-themed-secondary border-b border-themed-primary p-6 flex items-center justify-between">
                 <h2 class="text-xl font-bold text-themed-primary">Start New Discussion</h2>
                 <button type="button" aria-label="Close dialog" wire:click="closeModal()" class="text-themed-secondary hover:text-themed-primary transition-colors">
-                    <i class="fas fa-times text-2xl" aria-hidden="true"></i>
+                    <i aria-hidden="true" class="fas fa-times text-2xl"></i>
                 </button>
             </div>
 
@@ -45,7 +45,7 @@
                     </button>
                     <button type="submit"
                             class="px-4 py-2 bg-action hover:bg-action text-action-foreground rounded-lg font-medium transition-colors flex items-center gap-2">
-                        <i class="fas fa-paper-plane" aria-hidden="true"></i>Post Discussion
+                        <i aria-hidden="true" class="fas fa-paper-plane"></i>Post Discussion
                     </button>
                 </div>
             </form>

@@ -5,7 +5,7 @@
         <div class="relative flex flex-col gap-6 xl:flex-row xl:items-center xl:justify-between">
             <div class="max-w-3xl">
                 <div class="mb-4 inline-flex items-center gap-2 rounded-full border border-brand bg-teal-300/10 px-3 py-1 text-xs font-bold uppercase tracking-[0.14em] text-brand">
-                    <i class="fas fa-route" aria-hidden="true"></i>
+                    <i aria-hidden="true" class="fas fa-route"></i>
                     Guided learner journey
                 </div>
                 <h1 class="bk-display  font-bold leading-tight  bk-page-title">From learning goal to career-ready evidence.</h1>
@@ -26,7 +26,7 @@
                 @if ($nextStep)
                     <div class="mt-4 flex items-start gap-3 border-t border-white/10 pt-4">
                         <div class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-teal-300 text-content">
-                            <i class="{{ $nextStep['icon'] }}"></i>
+                            <i aria-hidden="true" class="{{ $nextStep['icon'] }}"></i>
                         </div>
                         <div class="min-w-0">
                             <p class="text-xs font-bold uppercase tracking-wide text-content-muted">Next step</p>
@@ -34,12 +34,12 @@
                             @if ($nextStep['route'])
                                 <a href="{{ $nextStep['route'] }}" wire:navigate class="mt-2 inline-flex items-center gap-2 text-sm font-bold text-brand hover:text-white">
                                     {{ $nextStep['action'] }}
-                                    <i class="fas fa-arrow-right text-xs" aria-hidden="true"></i>
+                                    <i aria-hidden="true" class="fas fa-arrow-right text-xs"></i>
                                 </a>
                             @else
                                 <a href="#goal-options" class="mt-2 inline-flex items-center gap-2 text-sm font-bold text-brand hover:text-white">
                                     {{ $nextStep['action'] }}
-                                    <i class="fas fa-arrow-right text-xs" aria-hidden="true"></i>
+                                    <i aria-hidden="true" class="fas fa-arrow-right text-xs"></i>
                                 </a>
                             @endif
                         </div>
@@ -57,7 +57,7 @@
             </div>
             @if ($selectedGoalData)
                 <div class="inline-flex items-center gap-2 px-3 py-2 rounded-lg bg-themed-secondary border border-themed-primary text-sm text-themed-primary">
-                    <i class="{{ $selectedGoalData['icon'] }} text-brand"></i>
+                    <i aria-hidden="true" class="{{ $selectedGoalData['icon'] }} text-brand"></i>
                     {{ $selectedGoalData['label'] }}
                 </div>
             @endif
@@ -80,7 +80,7 @@
                             'bg-action text-action-foreground' => $selectedGoal === $key,
                             'bg-themed-tertiary text-brand' => $selectedGoal !== $key,
                         ])">
-                            <i class="{{ $goal['icon'] }}"></i>
+                            <i aria-hidden="true" class="{{ $goal['icon'] }}"></i>
                         </div>
                         <div>
                             <div class="font-semibold text-themed-primary">{{ $goal['label'] }}</div>
@@ -114,9 +114,9 @@
                             'border border-themed-secondary bg-themed-secondary text-themed-secondary' => $step['status'] === 'open',
                         ])">
                             @if ($step['status'] === 'complete')
-                                <i class="fas fa-check" aria-hidden="true"></i>
+                                <i aria-hidden="true" class="fas fa-check"></i>
                             @else
-                                <i class="{{ $step['icon'] }}"></i>
+                                <i aria-hidden="true" class="{{ $step['icon'] }}"></i>
                             @endif
                         </div>
 
@@ -134,19 +134,19 @@
                             </div>
                             <h3 class="mt-1 font-bold text-themed-primary">{{ $step['label'] }}</h3>
                             <p class="mt-1 text-sm leading-6 text-themed-secondary">{{ $step['copy'] }}</p>
-                            <p class="mt-2 text-xs font-semibold text-themed-tertiary"><i class="fas fa-chart-simple mr-1.5" aria-hidden="true"></i>{{ $step['metric'] }}</p>
+                            <p class="mt-2 text-xs font-semibold text-themed-tertiary"><i aria-hidden="true" class="fas fa-chart-simple mr-1.5"></i>{{ $step['metric'] }}</p>
                         </div>
 
                         <div class="md:text-right">
                             @if ($step['route'])
                                 <a href="{{ $step['route'] }}" wire:navigate class="inline-flex w-full items-center justify-center gap-2 rounded-lg border border-themed-secondary bg-themed-secondary px-3 py-2.5 text-sm font-bold text-themed-primary transition hover:border-brand md:w-auto">
                                     {{ $step['action'] }}
-                                    <i class="fas fa-arrow-right text-xs" aria-hidden="true"></i>
+                                    <i aria-hidden="true" class="fas fa-arrow-right text-xs"></i>
                                 </a>
                             @else
                                 <a href="#goal-options" class="inline-flex w-full items-center justify-center gap-2 rounded-lg border border-themed-secondary bg-themed-secondary px-3 py-2.5 text-sm font-bold text-themed-primary transition hover:border-brand md:w-auto">
                                     {{ $step['action'] }}
-                                    <i class="fas fa-arrow-right text-xs" aria-hidden="true"></i>
+                                    <i aria-hidden="true" class="fas fa-arrow-right text-xs"></i>
                                 </a>
                             @endif
                         </div>
@@ -182,17 +182,17 @@
                         </div>
                         <a href="{{ route('course.view', ['course' => $currentCourse->slug, 'continue' => 1]) }}" wire:navigate class="mt-4 inline-flex w-full items-center justify-center gap-2 px-4 py-2 rounded-lg bg-action text-action-foreground hover:bg-action/90 font-medium transition-colors">
                             Continue learning
-                            <i class="fas fa-arrow-right text-xs" aria-hidden="true"></i>
+                            <i aria-hidden="true" class="fas fa-arrow-right text-xs"></i>
                         </a>
                     </div>
                 @else
                     <div class="mt-4 rounded-lg border-2 border-dashed border-themed-secondary bg-themed-primary p-5 text-center">
-                        <i class="fas fa-book-open text-3xl text-themed-tertiary mb-3" aria-hidden="true"></i>
+                        <i aria-hidden="true" class="fas fa-book-open text-3xl text-themed-tertiary mb-3"></i>
                         <h3 class="font-semibold text-themed-primary">No active course yet</h3>
                         <p class="text-sm text-themed-secondary mt-1">Choose a goal, then enroll in a course to start the path.</p>
                         <a href="{{ route('student.course-catalog') }}" wire:navigate class="mt-4 inline-flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-action text-action-foreground hover:bg-action/90 text-sm font-medium">
                             Browse catalog
-                            <i class="fas fa-arrow-right text-xs" aria-hidden="true"></i>
+                            <i aria-hidden="true" class="fas fa-arrow-right text-xs"></i>
                         </a>
                     </div>
                 @endif
@@ -202,19 +202,19 @@
                 <h2 class="text-lg font-bold text-themed-primary">Career Launchpad</h2>
                 <div class="mt-4 grid grid-cols-1 gap-3">
                     <a href="{{ route('portfolio.show') }}" wire:navigate class="flex items-center justify-between gap-3 bg-themed-primary border border-themed-secondary hover:border-brand rounded-lg p-3 transition-colors">
-                        <span class="flex items-center gap-3 text-themed-primary font-medium"><i class="fas fa-id-card text-brand" aria-hidden="true"></i> Portfolio</span>
+                        <span class="flex items-center gap-3 text-themed-primary font-medium"><i aria-hidden="true" class="fas fa-id-card text-brand"></i> Portfolio</span>
                         <span class="text-xs text-themed-tertiary">{{ $stats['portfolioCount'] }}</span>
                     </a>
                     <a href="{{ route('resume.builder') }}" wire:navigate class="flex items-center justify-between gap-3 bg-themed-primary border border-themed-secondary hover:border-brand rounded-lg p-3 transition-colors">
-                        <span class="flex items-center gap-3 text-themed-primary font-medium"><i class="fas fa-file-alt text-brand" aria-hidden="true"></i> Resume</span>
+                        <span class="flex items-center gap-3 text-themed-primary font-medium"><i aria-hidden="true" class="fas fa-file-alt text-brand"></i> Resume</span>
                         <span class="text-xs text-themed-tertiary">{{ $stats['resumeProfileCount'] }}</span>
                     </a>
                     <a href="{{ route('user.interview') }}" wire:navigate class="flex items-center justify-between gap-3 bg-themed-primary border border-themed-secondary hover:border-brand rounded-lg p-3 transition-colors">
-                        <span class="flex items-center gap-3 text-themed-primary font-medium"><i class="fas fa-comments text-brand" aria-hidden="true"></i> Mock interviews</span>
+                        <span class="flex items-center gap-3 text-themed-primary font-medium"><i aria-hidden="true" class="fas fa-comments text-brand"></i> Mock interviews</span>
                         <span class="text-xs text-themed-tertiary">{{ $stats['mockInterviewCount'] }}</span>
                     </a>
                     <a href="{{ route('search.job') }}" wire:navigate class="flex items-center justify-between gap-3 bg-themed-primary border border-themed-secondary hover:border-brand rounded-lg p-3 transition-colors">
-                        <span class="flex items-center gap-3 text-themed-primary font-medium"><i class="fas fa-search-dollar text-brand" aria-hidden="true"></i> Job search</span>
+                        <span class="flex items-center gap-3 text-themed-primary font-medium"><i aria-hidden="true" class="fas fa-search-dollar text-brand"></i> Job search</span>
                         <span class="text-xs text-themed-tertiary">{{ $stats['jobApplicationCount'] }}</span>
                     </a>
                 </div>
@@ -230,7 +230,7 @@
             </div>
             <a href="{{ route('student.course-catalog') }}" wire:navigate class="inline-flex items-center gap-2 text-sm text-brand hover:text-accent-themed-secondary font-medium">
                 View full catalog
-                <i class="fas fa-arrow-right text-xs" aria-hidden="true"></i>
+                <i aria-hidden="true" class="fas fa-arrow-right text-xs"></i>
             </a>
         </div>
 
@@ -246,12 +246,12 @@
                             <h3 class="font-semibold text-themed-primary line-clamp-2">{{ $course->title }}</h3>
                             <p class="text-sm text-themed-secondary mt-2 line-clamp-2">{{ $course->subtitle ?: $course->description }}</p>
                             <div class="flex items-center justify-between mt-4 text-xs text-themed-tertiary">
-                                <span><i class="fas fa-users mr-1" aria-hidden="true"></i>{{ $course->enrollments_count ?? 0 }}</span>
+                                <span><i aria-hidden="true" class="fas fa-users mr-1"></i>{{ $course->enrollments_count ?? 0 }}</span>
                                 <span>{{ $course->formatted_price }}</span>
                             </div>
                             <a href="{{ route('student.course-catalog', ['search' => $course->title]) }}" wire:navigate class="mt-4 inline-flex w-full items-center justify-center gap-2 px-3 py-2 rounded-lg bg-themed-primary border border-themed-secondary text-themed-primary hover:border-brand text-sm font-medium transition-colors">
                                 View in catalog
-                                <i class="fas fa-arrow-right text-xs" aria-hidden="true"></i>
+                                <i aria-hidden="true" class="fas fa-arrow-right text-xs"></i>
                             </a>
                         </div>
                     </article>
@@ -259,12 +259,12 @@
             </div>
         @else
             <div class="bg-themed-secondary border-2 border-dashed border-themed-secondary rounded-lg p-8 text-center">
-                <i class="fas fa-compass text-4xl text-themed-tertiary mb-3" aria-hidden="true"></i>
+                <i aria-hidden="true" class="fas fa-compass text-4xl text-themed-tertiary mb-3"></i>
                 <h3 class="text-lg font-semibold text-themed-primary">No recommendations yet</h3>
                 <p class="text-themed-secondary mt-1">Select a goal or add published courses to the catalog to populate this section.</p>
                 <a href="{{ route('student.course-catalog') }}" wire:navigate class="mt-4 inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-action text-action-foreground hover:bg-action/90 text-sm font-medium">
                     Browse catalog
-                    <i class="fas fa-arrow-right text-xs" aria-hidden="true"></i>
+                    <i aria-hidden="true" class="fas fa-arrow-right text-xs"></i>
                 </a>
             </div>
         @endif

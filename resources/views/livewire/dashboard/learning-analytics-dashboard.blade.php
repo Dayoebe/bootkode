@@ -12,7 +12,7 @@
             <div class="flex items-center justify-between">
                 <div class="flex items-center space-x-4">
                     <div class="w-12 h-12 rounded-lg bg-action dark:bg-action flex items-center justify-center transition-colors duration-300">
-                        <i class="fas fa-chart-line text-action-foreground text-xl" aria-hidden="true"></i>
+                        <i aria-hidden="true" class="fas fa-chart-line text-action-foreground text-xl"></i>
                     </div>
                     <div>
                         <h1 class=" font-bold text-themed-primary transition-colors duration-300 bk-page-title">{{ $user->name }}'s Analytics</h1>
@@ -29,9 +29,9 @@
                     <button wire:click="refreshData"
                             class="bg-action dark:bg-action hover:bg-action dark:hover:bg-action text-action-foreground px-4 py-2 rounded-lg transition-colors duration-200"
                             wire:loading.attr="disabled" aria-label="Refresh data">
-                        <i class="fas fa-sync-alt"
+                        <i aria-hidden="true" class="fas fa-sync-alt"
                            wire:loading.class="animate-spin"
-                           wire:target="refreshData" aria-hidden="true"></i>
+                           wire:target="refreshData"></i>
                     </button>
                 </div>
             </div>
@@ -46,7 +46,7 @@
             <div class="bg-themed-secondary rounded-lg p-6 shadow-sm border border-themed-primary   transition-all duration-200">
                 <div class="flex items-center justify-between mb-4">
                     <div class="w-12 h-12 rounded-lg bg-brand/10 dark:bg-action/30 flex items-center justify-center transition-colors duration-300">
-                        <i class="fas fa-star text-brand dark:text-brand text-xl" aria-hidden="true"></i>
+                        <i aria-hidden="true" class="fas fa-star text-brand dark:text-brand text-xl"></i>
                     </div>
                     <span class="text-3xl font-bold text-themed-primary transition-colors duration-300">{{ $stats['level'] ?? 1 }}</span>
                 </div>
@@ -62,7 +62,7 @@
             <div class="bg-themed-secondary rounded-lg p-6 shadow-sm border border-themed-primary   transition-all duration-200">
                 <div class="flex items-center justify-between mb-4">
                     <div class="w-12 h-12 rounded-lg bg-red-50 dark:bg-red-900/30 flex items-center justify-center transition-colors duration-300">
-                        <i class="fas fa-fire text-red-500 dark:text-red-400 text-xl" aria-hidden="true"></i>
+                        <i aria-hidden="true" class="fas fa-fire text-red-500 dark:text-red-400 text-xl"></i>
                     </div>
                     <span class="text-3xl font-bold text-themed-primary transition-colors duration-300">{{ $stats['current_streak'] ?? 0 }}</span>
                 </div>
@@ -83,7 +83,7 @@
             <div class="bg-themed-secondary rounded-lg p-6 shadow-sm border border-themed-primary   transition-all duration-200">
                 <div class="flex items-center justify-between mb-4">
                     <div class="w-12 h-12 rounded-lg bg-green-50 dark:bg-green-900/30 flex items-center justify-center transition-colors duration-300">
-                        <i class="fas fa-bolt text-green-600 dark:text-green-400 text-xl" aria-hidden="true"></i>
+                        <i aria-hidden="true" class="fas fa-bolt text-green-600 dark:text-green-400 text-xl"></i>
                     </div>
                     <span class="text-3xl font-bold text-themed-primary transition-colors duration-300">{{ $stats['energy']['current'] ?? 100 }}</span>
                 </div>
@@ -105,15 +105,15 @@
             <div class="bg-themed-secondary rounded-lg p-6 shadow-sm border border-themed-primary   transition-all duration-200">
                 <div class="flex items-center justify-between mb-4">
                     <div class="w-12 h-12 rounded-lg bg-yellow-50 dark:bg-yellow-900/30 flex items-center justify-center transition-colors duration-300">
-                        <i class="fas fa-coins text-yellow-600 dark:text-yellow-400 text-xl" aria-hidden="true"></i>
+                        <i aria-hidden="true" class="fas fa-coins text-yellow-600 dark:text-yellow-400 text-xl"></i>
                     </div>
                     <div class="text-right">
                         <div class="text-lg font-bold flex items-center justify-end text-themed-primary transition-colors duration-300">
-                            <i class="fas fa-coins mr-1 text-yellow-600 dark:text-yellow-400" aria-hidden="true"></i>
+                            <i aria-hidden="true" class="fas fa-coins mr-1 text-yellow-600 dark:text-yellow-400"></i>
                             {{ number_format($stats['coins'] ?? 0) }}
                         </div>
                         <div class="text-sm flex items-center justify-end text-themed-primary transition-colors duration-300">
-                            <i class="fas fa-gem mr-1 text-brand dark:text-brand" aria-hidden="true"></i>
+                            <i aria-hidden="true" class="fas fa-gem mr-1 text-brand dark:text-brand"></i>
                             {{ number_format($stats['gems'] ?? 0) }}
                         </div>
                     </div>
@@ -171,7 +171,7 @@
                 {{-- Quick Stats Panel --}}
                 <div class="bg-themed-secondary rounded-lg p-6 shadow-sm border border-themed-primary transition-colors duration-300">
                     <h3 class="text-xl font-bold text-themed-primary mb-4 flex items-center transition-colors duration-300">
-                        <i class="fas fa-trophy text-yellow-500 dark:text-yellow-400 mr-2" aria-hidden="true"></i>
+                        <i aria-hidden="true" class="fas fa-trophy text-yellow-500 dark:text-yellow-400 mr-2"></i>
                         Your Stats
                     </h3>
                     <div class="space-y-4">
@@ -202,12 +202,12 @@
                 <div class="bg-themed-secondary rounded-lg p-6 shadow-sm border border-themed-primary transition-colors duration-300">
                     <div class="flex items-center justify-between mb-4">
                         <h3 class="text-xl font-bold text-themed-primary flex items-center transition-colors duration-300">
-                            <i class="fas fa-medal text-yellow-500 dark:text-yellow-400 mr-2" aria-hidden="true"></i>
+                            <i aria-hidden="true" class="fas fa-medal text-yellow-500 dark:text-yellow-400 mr-2"></i>
                             Recent Achievements
                         </h3>
                         <button wire:click="toggleAchievements"
                                 class="text-themed-tertiary hover:text-themed-secondary transition-colors" aria-label="Toggle achievements">
-                            <i class="fas fa-chevron-down transition-transform duration-200 {{ $showAchievements ? 'rotate-180' : '' }}" aria-hidden="true"></i>
+                            <i aria-hidden="true" class="fas fa-chevron-down transition-transform duration-200 {{ $showAchievements ? 'rotate-180' : '' }}"></i>
                         </button>
                     </div>
 
@@ -218,7 +218,7 @@
                                     <div class="flex items-center space-x-3">
                                         <div class="w-10 h-10 rounded-lg flex items-center justify-center"
                                              style="background: {{ $achievement['color'] ?? '#3B82F6' }};">
-                                            <i class="{{ $achievement['icon'] ?? 'fas fa-trophy' }} text-white" aria-hidden="true"></i>
+                                            <i aria-hidden="true" class="{{ $achievement['icon'] ?? 'fas fa-trophy' }} text-white"></i>
                                         </div>
                                         <div class="flex-1">
                                             <h4 class="font-semibold text-themed-primary transition-colors duration-300">{{ $achievement['name'] }}</h4>
@@ -243,7 +243,7 @@
                         </div>
                     @else
                         <div class="text-center py-8 text-themed-tertiary transition-colors duration-300">
-                            <i class="fas fa-trophy text-4xl mb-2 opacity-50" aria-hidden="true"></i>
+                            <i aria-hidden="true" class="fas fa-trophy text-4xl mb-2 opacity-50"></i>
                             <p>No achievements yet. Start learning to unlock them!</p>
                         </div>
                     @endif
@@ -256,7 +256,7 @@
             {{-- Learning Progress Breakdown --}}
             <div class="bg-themed-secondary rounded-lg p-6 shadow-sm border border-themed-primary transition-colors duration-300">
                 <h3 class="text-xl font-bold text-themed-primary mb-6 flex items-center transition-colors duration-300">
-                    <i class="fas fa-chart-pie text-brand dark:text-brand mr-2" aria-hidden="true"></i>
+                    <i aria-hidden="true" class="fas fa-chart-pie text-brand dark:text-brand mr-2"></i>
                     Learning Progress
                 </h3>
 
@@ -278,7 +278,7 @@
                         <div class="flex justify-between items-center mb-2">
                             <span class="text-themed-secondary transition-colors duration-300">Weekly Growth</span>
                             <span class="font-bold flex items-center {{ ($progressData['completion_rate'] ?? 0) >= 0 ? 'text-green-600 dark:text-green-400' : 'text-red-500 dark:text-red-400' }} transition-colors duration-300">
-                                <i class="fas fa-arrow-{{ ($progressData['completion_rate'] ?? 0) >= 0 ? 'up' : 'down' }} mr-1" aria-hidden="true"></i>
+                                <i aria-hidden="true" class="fas fa-arrow-{{ ($progressData['completion_rate'] ?? 0) >= 0 ? 'up' : 'down' }} mr-1"></i>
                                 {{ abs($progressData['completion_rate'] ?? 0) }}%
                             </span>
                         </div>
@@ -310,12 +310,12 @@
             <div class="bg-themed-secondary rounded-lg p-6 shadow-sm border border-themed-primary transition-colors duration-300">
                 <div class="flex items-center justify-between mb-6">
                     <h3 class="text-xl font-bold text-themed-primary flex items-center transition-colors duration-300">
-                        <i class="fas fa-ranking-star text-yellow-500 dark:text-yellow-400 mr-2" aria-hidden="true"></i>
+                        <i aria-hidden="true" class="fas fa-ranking-star text-yellow-500 dark:text-yellow-400 mr-2"></i>
                         Top Learners
                     </h3>
                     <button wire:click="toggleLeaderboard"
                             class="text-themed-tertiary hover:text-themed-secondary transition-colors" aria-label="Toggle leaderboard">
-                        <i class="fas fa-expand-alt" aria-hidden="true"></i>
+                        <i aria-hidden="true" class="fas fa-expand-alt"></i>
                     </button>
                 </div>
 
@@ -340,11 +340,11 @@
                                         <div class="flex items-center space-x-4 text-sm text-themed-secondary mt-1 transition-colors duration-300">
                                             <span>{{ number_format($leader['points']) }} XP</span>
                                             <span class="flex items-center">
-                                                <i class="fas fa-fire text-red-500 dark:text-red-400 mr-1" aria-hidden="true"></i>
+                                                <i aria-hidden="true" class="fas fa-fire text-red-500 dark:text-red-400 mr-1"></i>
                                                 {{ $leader['streak'] }}
                                             </span>
                                             <span class="flex items-center">
-                                                <i class="fas fa-medal text-yellow-500 dark:text-yellow-400 mr-1" aria-hidden="true"></i>
+                                                <i aria-hidden="true" class="fas fa-medal text-yellow-500 dark:text-yellow-400 mr-1"></i>
                                                 {{ $leader['badges_count'] }}
                                             </span>
                                         </div>
@@ -362,7 +362,7 @@
             {{-- Activity Heatmap --}}
             <div class="bg-themed-secondary rounded-lg p-6 shadow-sm border border-themed-primary transition-colors duration-300">
                 <h3 class="text-xl font-bold text-themed-primary mb-6 flex items-center transition-colors duration-300">
-                    <i class="fas fa-calendar-alt text-red-500 dark:text-red-400 mr-2" aria-hidden="true"></i>
+                    <i aria-hidden="true" class="fas fa-calendar-alt text-red-500 dark:text-red-400 mr-2"></i>
                     Activity Heatmap
                 </h3>
 
@@ -411,7 +411,7 @@
             {{-- Performance Metrics --}}
             <div class="bg-themed-secondary rounded-lg p-6 shadow-sm border border-themed-primary transition-colors duration-300">
                 <h3 class="text-xl font-bold text-themed-primary mb-6 flex items-center transition-colors duration-300">
-                    <i class="fas fa-chart-bar text-green-600 dark:text-green-400 mr-2" aria-hidden="true"></i>
+                    <i aria-hidden="true" class="fas fa-chart-bar text-green-600 dark:text-green-400 mr-2"></i>
                     Performance Metrics
                 </h3>
 
@@ -475,7 +475,7 @@
                     {{-- AI Insights --}}
                     <div class="bg-brand/10 dark:bg-action/20 border border-brand dark:border-brand rounded-lg p-4 transition-colors duration-300">
                         <div class="flex items-center space-x-2 mb-2">
-                            <i class="fas fa-brain text-brand dark:text-brand" aria-hidden="true"></i>
+                            <i aria-hidden="true" class="fas fa-brain text-brand dark:text-brand"></i>
                             <span class="font-semibold text-brand dark:text-brand transition-colors duration-300">AI Insight</span>
                         </div>
                         <p class="text-sm text-brand dark:text-brand transition-colors duration-300">Your learning velocity increased 23% this week. JavaScript is your strongest subject with 87% average scores.</p>
@@ -487,7 +487,7 @@
         {{-- Smart Recommendations Section --}}
         <div class="bg-themed-secondary rounded-lg p-6 shadow-sm border border-themed-primary transition-colors duration-300">
             <h3 class="text-xl font-bold text-themed-primary mb-6 flex items-center transition-colors duration-300">
-                <i class="fas fa-lightbulb text-yellow-500 dark:text-yellow-400 mr-2" aria-hidden="true"></i>
+                <i aria-hidden="true" class="fas fa-lightbulb text-yellow-500 dark:text-yellow-400 mr-2"></i>
                 Smart Recommendations
             </h3>
 
@@ -495,7 +495,7 @@
                 {{-- Study Recommendation --}}
                 <div class="bg-brand/10 dark:bg-action/20 border border-brand dark:border-brand rounded-lg p-4 hover:bg-brand/10 dark:hover:bg-action/30 transition-colors duration-200">
                     <div class="flex items-center space-x-2 mb-3">
-                        <i class="fas fa-book-open text-brand dark:text-brand" aria-hidden="true"></i>
+                        <i aria-hidden="true" class="fas fa-book-open text-brand dark:text-brand"></i>
                         <span class="font-semibold text-brand dark:text-brand transition-colors duration-300">Study Recommendation</span>
                     </div>
                     <p class="text-sm text-brand dark:text-brand mb-3 transition-colors duration-300">Focus on JavaScript fundamentals - you're 75% through the course!</p>
@@ -507,7 +507,7 @@
                 {{-- Challenge Card --}}
                 <div class="bg-orange-50 dark:bg-orange-900/20 border border-orange-200 dark:border-orange-800 rounded-lg p-4 hover:bg-orange-100 dark:hover:bg-orange-900/30 transition-colors duration-200">
                     <div class="flex items-center space-x-2 mb-3">
-                        <i class="fas fa-trophy text-orange-600 dark:text-orange-400" aria-hidden="true"></i>
+                        <i aria-hidden="true" class="fas fa-trophy text-orange-600 dark:text-orange-400"></i>
                         <span class="font-semibold text-orange-800 dark:text-orange-300 transition-colors duration-300">Weekly Challenge</span>
                     </div>
                     <p class="text-sm text-orange-700 dark:text-orange-300 mb-3 transition-colors duration-300">Complete 5 lessons this week to unlock 500 bonus XP!</p>
@@ -519,7 +519,7 @@
                 {{-- Reward Available --}}
                 <div class="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-4 hover:bg-green-100 dark:hover:bg-green-900/30 transition-colors duration-200">
                     <div class="flex items-center space-x-2 mb-3">
-                        <i class="fas fa-gift text-green-600 dark:text-green-400" aria-hidden="true"></i>
+                        <i aria-hidden="true" class="fas fa-gift text-green-600 dark:text-green-400"></i>
                         <span class="font-semibold text-green-800 dark:text-green-300 transition-colors duration-300">Reward Available</span>
                     </div>
                     <p class="text-sm text-green-700 dark:text-green-300 mb-3 transition-colors duration-300">Daily quest: Complete any lesson for +50 XP and 10 coins!</p>
@@ -536,7 +536,7 @@
         <div class="fixed top-20 right-6 z-50 bg-themed-secondary border border-themed-primary shadow-sm p-4 rounded-lg max-w-sm transition-colors duration-300">
             <div class="flex items-center space-x-3">
                 <div class="w-12 h-12 rounded-lg bg-yellow-500 dark:bg-yellow-600 flex items-center justify-center transition-colors duration-300">
-                    <i class="fas fa-trophy text-white text-xl" aria-hidden="true"></i>
+                    <i aria-hidden="true" class="fas fa-trophy text-white text-xl"></i>
                 </div>
                 <div>
                     <h4 class="font-bold text-themed-primary transition-colors duration-300">New Achievement Unlocked!</h4>
@@ -544,7 +544,7 @@
                 </div>
             </div>
             <button onclick="this.parentElement.remove()" class="absolute top-2 right-2 text-themed-tertiary hover:text-themed-secondary transition-colors" aria-label="Close">
-                <i class="fas fa-times" aria-hidden="true"></i>
+                <i aria-hidden="true" class="fas fa-times"></i>
             </button>
         </div>
     @endif
@@ -553,7 +553,7 @@
     <div wire:loading.flex wire:target="loadDashboardData,refreshData"
          class="fixed inset-0 bg-black bg-opacity-50 items-center justify-center z-50">
         <div class="bg-themed-secondary rounded-lg p-8 text-center shadow-sm border border-themed-primary transition-colors duration-300">
-            <i class="fas fa-spinner fa-spin text-4xl text-brand dark:text-brand mb-4" aria-hidden="true"></i>
+            <i aria-hidden="true" class="fas fa-spinner fa-spin text-4xl text-brand dark:text-brand mb-4"></i>
             <p class="text-lg font-semibold text-themed-primary transition-colors duration-300">Updating Analytics...</p>
         </div>
     </div>
@@ -670,7 +670,7 @@
         notification.innerHTML = `
             <div class="flex items-center space-x-3">
                 <div class="w-12 h-12 rounded-lg bg-yellow-500 dark:bg-yellow-600 flex items-center justify-center">
-                    <i class="fas fa-trophy text-white text-xl" aria-hidden="true"></i>
+                    <i aria-hidden="true" class="fas fa-trophy text-white text-xl"></i>
                 </div>
                 <div>
                     <h4 class="font-bold text-themed-primary">Achievement Unlocked!</h4>

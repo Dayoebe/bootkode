@@ -43,7 +43,7 @@
                         placeholder="Search by name, skills, or specialization..."
                         class="w-full pl-12 pr-4 py-4 border border-themed-primary rounded-lg focus:ring-2 focus:ring-brand focus:border-transparent text-lg bg-themed-secondary text-themed-primary placeholder-themed-tertiary transition-colors duration-300">
                     <div class="absolute left-4 top-1/2 transform -translate-y-1/2">
-                        <i class="fas fa-search text-themed-tertiary transition-colors duration-300" aria-hidden="true"></i>
+                        <i aria-hidden="true" class="fas fa-search text-themed-tertiary transition-colors duration-300"></i>
                     </div>
                 </div>
             </div>
@@ -95,11 +95,11 @@
                 <div class="flex items-center space-x-2">
                     <button wire:click="$set('viewMode', 'grid')"
                         class="p-2 rounded-lg transition-colors duration-300 {{ $viewMode === 'grid' ? 'bg-brand/20 text-brand' : 'text-themed-tertiary hover:text-themed-secondary' }}">
-                        <i class="fas fa-th" aria-hidden="true"></i>
+                        <i aria-hidden="true" class="fas fa-th"></i>
                     </button>
                     <button wire:click="$set('viewMode', 'list')"
                         class="p-2 rounded-lg transition-colors duration-300 {{ $viewMode === 'list' ? 'bg-brand/20 text-brand' : 'text-themed-tertiary hover:text-themed-secondary' }}">
-                        <i class="fas fa-list" aria-hidden="true"></i>
+                        <i aria-hidden="true" class="fas fa-list"></i>
                     </button>
                 </div>
             </div>
@@ -123,7 +123,7 @@
                                         <div class="flex items-center mt-1">
                                             <div class="text-yellow-400 mr-2">
                                                 @for($i = 1; $i <= 5; $i++)
-                                                    <i class="fas fa-star {{ $i <= floor($mentor->rating) ? '' : 'text-themed-tertiary' }}" aria-hidden="true"></i>
+                                                    <i aria-hidden="true" class="fas fa-star {{ $i <= floor($mentor->rating) ? '' : 'text-themed-tertiary' }}"></i>
                                                 @endfor
                                             </div>
                                             <span class="text-sm text-themed-secondary transition-colors duration-300">({{ $mentor->total_reviews }})</span>
@@ -171,21 +171,21 @@
 
                                 <!-- Stats -->
                                 <div class="flex justify-between text-sm text-themed-secondary mb-6 transition-colors duration-300">
-                                    <span><i class="fas fa-users mr-1" aria-hidden="true"></i>{{ $mentor->total_mentees }} mentees</span>
-                                    <span><i class="fas fa-calendar mr-1" aria-hidden="true"></i>{{ $mentor->total_sessions }} sessions</span>
-                                    <span><i class="fas fa-clock mr-1" aria-hidden="true"></i>{{ $mentor->years_experience }}+ years</span>
+                                    <span><i aria-hidden="true" class="fas fa-users mr-1"></i>{{ $mentor->total_mentees }} mentees</span>
+                                    <span><i aria-hidden="true" class="fas fa-calendar mr-1"></i>{{ $mentor->total_sessions }} sessions</span>
+                                    <span><i aria-hidden="true" class="fas fa-clock mr-1"></i>{{ $mentor->years_experience }}+ years</span>
                                 </div>
 
                                 <!-- Actions -->
                                 <div class="space-y-2">
                                     <button wire:click="selectMentor({{ $mentor->id }})"
                                         class="w-full bk-button bk-button-primary   px-4 py-3 rounded-lg transition-colors font-semibold">
-                                        <i class="fas fa-user mr-2" aria-hidden="true"></i>View Profile
+                                        <i aria-hidden="true" class="fas fa-user mr-2"></i>View Profile
                                     </button>
                                     @if($mentor->canAcceptMentees())
                                         <button wire:click="requestMentorship({{ $mentor->id }})"
                                             class="w-full bg-green-600 hover:bg-green-700 dark:bg-green-500 dark:hover:bg-green-600 text-white px-4 py-2 rounded-lg transition-colors">
-                                            <i class="fas fa-handshake mr-2" aria-hidden="true"></i>Request Mentorship
+                                            <i aria-hidden="true" class="fas fa-handshake mr-2"></i>Request Mentorship
                                         </button>
                                     @endif
                                 </div>
@@ -210,7 +210,7 @@
                                         <div class="flex items-center mt-1">
                                             <div class="text-yellow-400 mr-2 text-sm">
                                                 @for($i = 1; $i <= 5; $i++)
-                                                    <i class="fas fa-star {{ $i <= floor($mentor->rating) ? '' : 'text-themed-tertiary' }}" aria-hidden="true"></i>
+                                                    <i aria-hidden="true" class="fas fa-star {{ $i <= floor($mentor->rating) ? '' : 'text-themed-tertiary' }}"></i>
                                                 @endfor
                                             </div>
                                             <span class="text-sm text-themed-secondary transition-colors duration-300">({{ $mentor->total_reviews }})</span>
@@ -246,12 +246,12 @@
                                     <div class="flex space-x-2">
                                         <button wire:click="selectMentor({{ $mentor->id }})"
                                             class="bk-button bk-button-primary   px-4 py-2 rounded-lg transition-colors text-sm">
-                                            <i class="fas fa-user mr-1" aria-hidden="true"></i>View
+                                            <i aria-hidden="true" class="fas fa-user mr-1"></i>View
                                         </button>
                                         @if($mentor->canAcceptMentees())
                                             <button wire:click="requestMentorship({{ $mentor->id }})"
                                                 class="bg-green-600 hover:bg-green-700 dark:bg-green-500 dark:hover:bg-green-600 text-white px-4 py-2 rounded-lg transition-colors text-sm">
-                                                <i class="fas fa-handshake mr-1" aria-hidden="true"></i>Request
+                                                <i aria-hidden="true" class="fas fa-handshake mr-1"></i>Request
                                             </button>
                                         @endif
                                     </div>
@@ -269,13 +269,13 @@
         @else
             <div class="text-center py-16 bg-themed-secondary rounded-lg shadow-sm border border-themed-primary transition-colors duration-300">
                 <div class="text-6xl text-themed-tertiary mb-4 transition-colors duration-300">
-                    <i class="fas fa-search" aria-hidden="true"></i>
+                    <i aria-hidden="true" class="fas fa-search"></i>
                 </div>
                 <h3 class="text-xl font-semibold text-themed-primary mb-2 transition-colors duration-300">No mentors found</h3>
                 <p class="text-themed-secondary mb-6 transition-colors duration-300">Try adjusting your search criteria or filters</p>
                 <button wire:click="$set('searchTerm', '')" wire:click="$set('experienceFilter', '')" wire:click="$set('ratingFilter', '')"
                     class="bk-button bk-button-primary   px-6 py-3 rounded-lg transition-colors">
-                    <i class="fas fa-redo mr-2" aria-hidden="true"></i>Clear Filters
+                    <i aria-hidden="true" class="fas fa-redo mr-2"></i>Clear Filters
                 </button>
             </div>
         @endif
@@ -289,7 +289,7 @@
                     <div class="flex items-center justify-between">
                         <h3 class="text-2xl font-bold text-themed-primary transition-colors duration-300">Mentor Profile</h3>
                         <button aria-label="Close dialog" wire:click="closeModal" class="text-themed-secondary hover:text-themed-primary transition-colors">
-                            <i class="fas fa-times text-xl" aria-hidden="true"></i>
+                            <i aria-hidden="true" class="fas fa-times text-xl"></i>
                         </button>
                     </div>
                 </div>
@@ -306,7 +306,7 @@
                             <div class="flex items-center mt-2">
                                 <div class="text-yellow-400 mr-2">
                                     @for($i = 1; $i <= 5; $i++)
-                                        <i class="fas fa-star {{ $i <= floor($selectedMentor->rating) ? '' : 'text-themed-tertiary' }}" aria-hidden="true"></i>
+                                        <i aria-hidden="true" class="fas fa-star {{ $i <= floor($selectedMentor->rating) ? '' : 'text-themed-tertiary' }}"></i>
                                     @endfor
                                 </div>
                                 <span class="text-sm text-themed-secondary transition-colors duration-300">({{ $selectedMentor->total_reviews }} reviews)</span>
@@ -379,7 +379,7 @@
                         @if($selectedMentor->canAcceptMentees())
                             <button wire:click="requestMentorship({{ $selectedMentor->id }})"
                                 class="flex-1 px-6 py-3 bg-green-600 hover:bg-green-700 dark:bg-green-500 dark:hover:bg-green-600 text-white rounded-lg transition-colors">
-                                <i class="fas fa-handshake mr-2" aria-hidden="true"></i>Request Mentorship
+                                <i aria-hidden="true" class="fas fa-handshake mr-2"></i>Request Mentorship
                             </button>
                         @endif
                     </div>
@@ -396,7 +396,7 @@
                     <div class="flex items-center justify-between">
                         <h3 class="text-2xl font-bold text-themed-primary transition-colors duration-300">Request Mentorship</h3>
                         <button aria-label="Close dialog" wire:click="closeModal" class="text-themed-secondary hover:text-themed-primary transition-colors">
-                            <i class="fas fa-times text-xl" aria-hidden="true"></i>
+                            <i aria-hidden="true" class="fas fa-times text-xl"></i>
                         </button>
                     </div>
                 </div>
@@ -426,14 +426,14 @@
                                 @if(count($goals) > 1)
                                     <button type="button" wire:click="removeGoal({{ $index }})"
                                         class="text-red-600 dark:text-red-400 hover:text-red-800 dark:hover:text-red-300" aria-label="Close">
-                                        <i class="fas fa-times" aria-hidden="true"></i>
+                                        <i aria-hidden="true" class="fas fa-times"></i>
                                     </button>
                                 @endif
                             </div>
                         @endforeach
                         <button type="button" wire:click="addGoal"
                             class="text-brand hover:text-brand text-sm transition-colors">
-                            <i class="fas fa-plus mr-1" aria-hidden="true"></i>Add Goal
+                            <i aria-hidden="true" class="fas fa-plus mr-1"></i>Add Goal
                         </button>
                         @error('goals') <span class="text-red-500 dark:text-red-400 text-sm">{{ $message }}</span> @enderror
                     </div>
@@ -448,14 +448,14 @@
                                 @if(count($expectations) > 1)
                                     <button type="button" wire:click="removeExpectation({{ $index }})"
                                         class="text-red-600 dark:text-red-400 hover:text-red-800 dark:hover:text-red-300" aria-label="Close">
-                                        <i class="fas fa-times" aria-hidden="true"></i>
+                                        <i aria-hidden="true" class="fas fa-times"></i>
                                     </button>
                                 @endif
                             </div>
                         @endforeach
                         <button type="button" wire:click="addExpectation"
                             class="text-brand hover:text-brand text-sm transition-colors">
-                            <i class="fas fa-plus mr-1" aria-hidden="true"></i>Add Expectation
+                            <i aria-hidden="true" class="fas fa-plus mr-1"></i>Add Expectation
                         </button>
                         @error('expectations') <span class="text-red-500 dark:text-red-400 text-sm">{{ $message }}</span> @enderror
                     </div>
@@ -474,7 +474,7 @@
                         </button>
                         <button type="submit"
                             class="px-6 py-3 bk-button bk-button-primary   rounded-lg transition-colors">
-                            <i class="fas fa-paper-plane mr-2" aria-hidden="true"></i>Send Request
+                            <i aria-hidden="true" class="fas fa-paper-plane mr-2"></i>Send Request
                         </button>
                     </div>
                 </form>

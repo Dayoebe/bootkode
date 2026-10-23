@@ -214,7 +214,7 @@
                             <div class="mt-4 flex items-start gap-4">
                                 <span
                                     class="flex h-14 w-14 flex-shrink-0 items-center justify-center rounded-lg text-action-foreground shadow-sm {{ $isCompleted ? 'bg-emerald-600' : ($hasAssessments && !$allAssessmentsPassed ? 'bg-amber-500' : 'bg-blue-600') }}">
-                                    <i class="fas {{ $isCompleted ? 'fa-check' : ($hasAssessments && !$allAssessmentsPassed ? 'fa-clipboard-check' : 'fa-play') }} text-lg" aria-hidden="true"></i>
+                                    <i aria-hidden="true" class="fas {{ $isCompleted ? 'fa-check' : ($hasAssessments && !$allAssessmentsPassed ? 'fa-clipboard-check' : 'fa-play') }} text-lg"></i>
                                 </span>
 
                                 <div>
@@ -243,14 +243,14 @@
                                 @if ($isCompleted)
                                     <button wire:click="markAsIncomplete"
                                         class="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-amber-500 px-4 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-amber-600">
-                                        <i class="fas fa-undo" aria-hidden="true"></i>
+                                        <i aria-hidden="true" class="fas fa-undo"></i>
                                         Mark Incomplete
                                     </button>
                                 @else
                                     <button wire:click="markAsCompleted"
                                         class="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-emerald-600 px-4 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-emerald-700 {{ $hasAssessments && !$allAssessmentsPassed ? 'cursor-not-allowed opacity-50' : '' }}"
                                         @if ($hasAssessments && !$allAssessmentsPassed) disabled @endif>
-                                        <i class="fas fa-check" aria-hidden="true"></i>
+                                        <i aria-hidden="true" class="fas fa-check"></i>
                                         Mark Complete
                                     </button>
                                 @endif
@@ -275,7 +275,7 @@
             @if ($assessmentPreview)
                 <div class="mb-6 rounded-[1.75rem] border border-brand bg-brand-ink   p-4 shadow-sm dark:border-brand   md:p-6">
                     <h3 class="mb-4 flex items-center text-lg font-bold text-content dark:text-white">
-                        <i class="fas fa-eye mr-2 text-brand dark:text-brand" aria-hidden="true"></i>
+                        <i aria-hidden="true" class="fas fa-eye mr-2 text-brand dark:text-brand"></i>
                         Assessment Preview
                     </h3>
 
@@ -363,19 +363,19 @@
                         class="group flex w-full items-center justify-between rounded-lg border-2 border-brand bg-brand-ink   p-4 text-left shadow-sm transition hover:-translate-y-0.5 hover:shadow-sm dark:border-brand  ">
                         <div class="flex items-center gap-4">
                             <div class="flex h-11 w-11 items-center justify-center rounded-lg bg-brand-ink   text-white shadow-sm">
-                                <i class="fas fa-clipboard-check text-lg" aria-hidden="true"></i>
+                                <i aria-hidden="true" class="fas fa-clipboard-check text-lg"></i>
                             </div>
                             <div>
                                 <h3 class="text-lg font-semibold text-content dark:text-white">
                                     Assessment Required
                                     @if (!$allAssessmentsPassed)
                                         <span class="ml-2 inline-flex items-center rounded-full bg-red-600 px-2 py-1 text-xs font-medium text-white ">
-                                            <i class="fas fa-exclamation-triangle mr-1" aria-hidden="true"></i>
+                                            <i aria-hidden="true" class="fas fa-exclamation-triangle mr-1"></i>
                                             Required
                                         </span>
                                     @else
                                         <span class="ml-2 inline-flex items-center rounded-full bg-green-600 px-2 py-1 text-xs font-medium text-white">
-                                            <i class="fas fa-check mr-1" aria-hidden="true"></i>
+                                            <i aria-hidden="true" class="fas fa-check mr-1"></i>
                                             Completed
                                         </span>
                                     @endif
@@ -389,16 +389,16 @@
                         <div class="flex items-center gap-3">
                             @if (!$allAssessmentsPassed)
                                 <div class="flex h-8 w-8 items-center justify-center rounded-full bg-red-600 text-white shadow-sm ">
-                                    <i class="fas fa-exclamation text-sm" aria-hidden="true"></i>
+                                    <i aria-hidden="true" class="fas fa-exclamation text-sm"></i>
                                 </div>
                             @else
                                 <div class="flex h-8 w-8 items-center justify-center rounded-full bg-green-500 text-white shadow-sm">
-                                    <i class="fas fa-check text-sm" aria-hidden="true"></i>
+                                    <i aria-hidden="true" class="fas fa-check text-sm"></i>
                                 </div>
                             @endif
 
-                            <i class="fas fa-chevron-down text-brand transition-transform duration-300 dark:text-brand"
-                                :class="{ 'rotate-180': isOpen('assessments') }" aria-hidden="true"></i>
+                            <i aria-hidden="true" class="fas fa-chevron-down text-brand transition-transform duration-300 dark:text-brand"
+                                :class="{ 'rotate-180': isOpen('assessments') }"></i>
                         </div>
                     </button>
 
@@ -418,11 +418,11 @@
                         @click="toggle('documents')"
                         class="group flex w-full items-center justify-between rounded-lg border border-line bg-surface-muted p-4 text-left transition hover:bg-surface-muted dark:border-gray-600 dark:bg-gray-700/50 dark:hover:bg-gray-700">
                         <h3 class="flex items-center text-lg font-semibold text-content dark:text-white">
-                            <i class="fas fa-file-alt mr-2 text-brand dark:text-brand" aria-hidden="true"></i>
+                            <i aria-hidden="true" class="fas fa-file-alt mr-2 text-brand dark:text-brand"></i>
                             Course Materials
                         </h3>
-                        <i class="fas fa-chevron-down text-content-muted transition-transform duration-300 group-hover:text-content dark:text-content-muted dark:group-hover:text-white"
-                            :class="{ 'rotate-180': isOpen('documents') }" aria-hidden="true"></i>
+                        <i aria-hidden="true" class="fas fa-chevron-down text-content-muted transition-transform duration-300 group-hover:text-content dark:text-content-muted dark:group-hover:text-white"
+                            :class="{ 'rotate-180': isOpen('documents') }"></i>
                     </button>
 
                     <div class="mt-3" x-show="isOpen('documents')" x-transition.opacity.scale.origin.top>
@@ -436,18 +436,18 @@
                                         <div class="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded bg-action shadow-sm">
                                             @switch(strtolower($document['type'] ?? 'file'))
                                                 @case('pdf')
-                                                    <i class="fas fa-file-pdf text-white" aria-hidden="true"></i>
+                                                    <i aria-hidden="true" class="fas fa-file-pdf text-white"></i>
                                                 @break
                                                 @case('doc')
                                                 @case('docx')
-                                                    <i class="fas fa-file-word text-white" aria-hidden="true"></i>
+                                                    <i aria-hidden="true" class="fas fa-file-word text-white"></i>
                                                 @break
                                                 @case('ppt')
                                                 @case('pptx')
-                                                    <i class="fas fa-file-powerpoint text-white" aria-hidden="true"></i>
+                                                    <i aria-hidden="true" class="fas fa-file-powerpoint text-white"></i>
                                                 @break
                                                 @default
-                                                    <i class="fas fa-file text-white" aria-hidden="true"></i>
+                                                    <i aria-hidden="true" class="fas fa-file text-white"></i>
                                             @endswitch
                                         </div>
                                         <div class="min-w-0">
@@ -461,11 +461,11 @@
                                         <button type="button"
                                             x-on:click='openDocument(@js($documentUrl), @js($document["name"]))'
                                             class="rounded-lg bg-action px-3 py-2 text-sm text-action-foreground shadow-sm transition-colors hover:bg-action hover:shadow-sm">
-                                            <i class="fas fa-eye mr-1" aria-hidden="true"></i> View
+                                            <i aria-hidden="true" class="fas fa-eye mr-1"></i> View
                                         </button>
                                         <a href="{{ $documentUrl }}" target="_blank"
                                             class="rounded-lg bg-gray-500 px-3 py-2 text-sm text-white shadow-sm transition-colors hover:bg-gray-600 hover:shadow-sm dark:bg-gray-600 dark:hover:bg-gray-700">
-                                            <i class="fas fa-download mr-1" aria-hidden="true"></i> Download
+                                            <i aria-hidden="true" class="fas fa-download mr-1"></i> Download
                                         </a>
                                     </div>
                                 </div>
@@ -482,11 +482,11 @@
                         @click="toggle('video-content')"
                         class="group flex w-full items-center justify-between rounded-lg border border-line bg-surface-muted p-4 text-left transition hover:bg-surface-muted dark:border-gray-600 dark:bg-gray-700/50 dark:hover:bg-gray-700">
                         <h3 class="flex items-center text-lg font-semibold text-content dark:text-white">
-                            <i class="fas fa-video mr-2 text-red-600 dark:text-red-400" aria-hidden="true"></i>
+                            <i aria-hidden="true" class="fas fa-video mr-2 text-red-600 dark:text-red-400"></i>
                             Video Lesson
                         </h3>
-                        <i class="fas fa-chevron-down text-content-muted transition-transform duration-300 group-hover:text-content dark:text-content-muted dark:group-hover:text-white"
-                            :class="{ 'rotate-180': isOpen('video-content') }" aria-hidden="true"></i>
+                        <i aria-hidden="true" class="fas fa-chevron-down text-content-muted transition-transform duration-300 group-hover:text-content dark:text-content-muted dark:group-hover:text-white"
+                            :class="{ 'rotate-180': isOpen('video-content') }"></i>
                     </button>
 
                     <div class="mt-3" x-show="isOpen('video-content')" x-transition.opacity.scale.origin.top>
@@ -528,11 +528,11 @@
                         @click="toggle('uploaded-videos')"
                         class="group flex w-full items-center justify-between rounded-lg border border-line bg-surface-muted p-4 text-left transition hover:bg-surface-muted dark:border-gray-600 dark:bg-gray-700/50 dark:hover:bg-gray-700">
                         <h3 class="flex items-center text-lg font-semibold text-content dark:text-white">
-                            <i class="fas fa-film mr-2 text-brand dark:text-brand" aria-hidden="true"></i>
+                            <i aria-hidden="true" class="fas fa-film mr-2 text-brand dark:text-brand"></i>
                             Course Videos
                         </h3>
-                        <i class="fas fa-chevron-down text-content-muted transition-transform duration-300 group-hover:text-content dark:text-content-muted dark:group-hover:text-white"
-                            :class="{ 'rotate-180': isOpen('uploaded-videos') }" aria-hidden="true"></i>
+                        <i aria-hidden="true" class="fas fa-chevron-down text-content-muted transition-transform duration-300 group-hover:text-content dark:text-content-muted dark:group-hover:text-white"
+                            :class="{ 'rotate-180': isOpen('uploaded-videos') }"></i>
                     </button>
 
                     <div class="mt-3" x-show="isOpen('uploaded-videos')" x-transition.opacity.scale.origin.top>
@@ -563,11 +563,11 @@
                         @click="toggle('audio-content')"
                         class="group flex w-full items-center justify-between rounded-lg border border-line bg-surface-muted p-4 text-left transition hover:bg-surface-muted dark:border-gray-600 dark:bg-gray-700/50 dark:hover:bg-gray-700">
                         <h3 class="flex items-center text-lg font-semibold text-content dark:text-white">
-                            <i class="fas fa-headphones mr-2 text-green-600 dark:text-green-400" aria-hidden="true"></i>
+                            <i aria-hidden="true" class="fas fa-headphones mr-2 text-green-600 dark:text-green-400"></i>
                             Audio Content
                         </h3>
-                        <i class="fas fa-chevron-down text-content-muted transition-transform duration-300 group-hover:text-content dark:text-content-muted dark:group-hover:text-white"
-                            :class="{ 'rotate-180': isOpen('audio-content') }" aria-hidden="true"></i>
+                        <i aria-hidden="true" class="fas fa-chevron-down text-content-muted transition-transform duration-300 group-hover:text-content dark:text-content-muted dark:group-hover:text-white"
+                            :class="{ 'rotate-180': isOpen('audio-content') }"></i>
                     </button>
 
                     <div class="mt-3" x-show="isOpen('audio-content')" x-transition.opacity.scale.origin.top>
@@ -584,8 +584,8 @@
                                         <button type="button"
                                             class="play-pause-btn flex h-10 w-10 items-center justify-center rounded-full bg-brand-ink   text-white shadow-sm transition-all duration-200   hover:shadow-sm"
                                             onclick="togglePlayPause({{ $index }})">
-                                            <i class="fas fa-play" id="play-icon-{{ $index }}" aria-hidden="true"></i>
-                                            <i class="fas fa-pause hidden" id="pause-icon-{{ $index }}" aria-hidden="true"></i>
+                                            <i aria-hidden="true" class="fas fa-play" id="play-icon-{{ $index }}"></i>
+                                            <i aria-hidden="true" class="fas fa-pause hidden" id="pause-icon-{{ $index }}"></i>
                                         </button>
                                         <div class="flex-1">
                                             <div class="mb-1 h-2 w-full rounded-full bg-gray-200 shadow-inner dark:bg-gray-700">
@@ -618,11 +618,11 @@
                         @click="toggle('images-content')"
                         class="group flex w-full items-center justify-between rounded-lg border border-line bg-surface-muted p-4 text-left transition hover:bg-surface-muted dark:border-gray-600 dark:bg-gray-700/50 dark:hover:bg-gray-700">
                         <h3 class="flex items-center text-lg font-semibold text-content dark:text-white">
-                            <i class="fas fa-images mr-2 text-pink-600 dark:text-pink-400" aria-hidden="true"></i>
+                            <i aria-hidden="true" class="fas fa-images mr-2 text-pink-600 dark:text-pink-400"></i>
                             Lesson Images
                         </h3>
-                        <i class="fas fa-chevron-down text-content-muted transition-transform duration-300 group-hover:text-content dark:text-content-muted dark:group-hover:text-white"
-                            :class="{ 'rotate-180': isOpen('images-content') }" aria-hidden="true"></i>
+                        <i aria-hidden="true" class="fas fa-chevron-down text-content-muted transition-transform duration-300 group-hover:text-content dark:text-content-muted dark:group-hover:text-white"
+                            :class="{ 'rotate-180': isOpen('images-content') }"></i>
                     </button>
 
                     <div class="mt-3" x-show="isOpen('images-content')" x-transition.opacity.scale.origin.top>
@@ -663,11 +663,11 @@
                         @click="toggle('external-links')"
                         class="group flex w-full items-center justify-between rounded-lg border border-line bg-surface-muted p-4 text-left transition hover:bg-surface-muted dark:border-gray-600 dark:bg-gray-700/50 dark:hover:bg-gray-700">
                         <h3 class="flex items-center text-lg font-semibold text-content dark:text-white">
-                            <i class="fas fa-external-link-alt mr-2 text-orange-600 dark:text-orange-400" aria-hidden="true"></i>
+                            <i aria-hidden="true" class="fas fa-external-link-alt mr-2 text-orange-600 dark:text-orange-400"></i>
                             Additional Resources
                         </h3>
-                        <i class="fas fa-chevron-down text-content-muted transition-transform duration-300 group-hover:text-content dark:text-content-muted dark:group-hover:text-white"
-                            :class="{ 'rotate-180': isOpen('external-links') }" aria-hidden="true"></i>
+                        <i aria-hidden="true" class="fas fa-chevron-down text-content-muted transition-transform duration-300 group-hover:text-content dark:text-content-muted dark:group-hover:text-white"
+                            :class="{ 'rotate-180': isOpen('external-links') }"></i>
                     </button>
 
                     <div class="mt-3" x-show="isOpen('external-links')" x-transition.opacity.scale.origin.top>
@@ -676,7 +676,7 @@
                                 <a href="{{ $link['url'] }}" target="_blank"
                                     class="block rounded-lg border border-line bg-surface-muted p-4 shadow-sm transition-all duration-200 hover:bg-surface-muted  dark:border-gray-600 dark:bg-gray-700/50 dark:hover:bg-gray-700">
                                     <div class="flex items-center">
-                                        <i class="fas fa-external-link-alt mr-3 text-orange-500 dark:text-orange-400" aria-hidden="true"></i>
+                                        <i aria-hidden="true" class="fas fa-external-link-alt mr-3 text-orange-500 dark:text-orange-400"></i>
                                         <div>
                                             <p class="font-medium text-content dark:text-white">{{ $link['title'] }}</p>
                                             <p class="mt-1 text-xs text-content-muted dark:text-content-muted">{{ $link['url'] }}</p>
@@ -699,7 +699,7 @@
                     <h3 class="text-lg font-semibold text-themed-primary" x-text="documentModalTitle"></h3>
                     <button type="button" @click="closeDocument()"
                         class="text-themed-secondary transition-colors hover:text-themed-primary" aria-label="Close">
-                        <i class="fas fa-times text-xl" aria-hidden="true"></i>
+                        <i aria-hidden="true" class="fas fa-times text-xl"></i>
                     </button>
                 </div>
                 <div class="flex-1 p-4">
@@ -717,7 +717,7 @@
                     <h3 class="text-lg font-semibold text-themed-primary">Image Preview</h3>
                     <button type="button" @click="closeImage()"
                         class="text-themed-secondary transition-colors hover:text-themed-primary" aria-label="Close">
-                        <i class="fas fa-times text-xl" aria-hidden="true"></i>
+                        <i aria-hidden="true" class="fas fa-times text-xl"></i>
                     </button>
                 </div>
                 <div class="flex flex-1 items-center justify-center p-4">
@@ -778,12 +778,12 @@
                 @if ($previousLesson)
                     <button wire:click="goToPreviousLesson"
                         class="inline-flex w-full min-w-0 items-center justify-center gap-2 rounded-lg border border-themed-secondary bg-themed-tertiary px-5 py-3 text-sm font-semibold text-themed-primary shadow-sm transition hover:-translate-y-0.5 hover:bg-themed-secondary sm:min-w-[14rem]">
-                        <i class="fas fa-arrow-left" aria-hidden="true"></i>
+                        <i aria-hidden="true" class="fas fa-arrow-left"></i>
                         Previous Lesson
                     </button>
                 @else
                     <div class="inline-flex w-full min-w-0 items-center justify-center gap-2 rounded-lg border border-themed-secondary bg-themed-secondary px-5 py-3 text-sm font-medium text-themed-secondary sm:min-w-[14rem]">
-                        <i class="fas fa-book-open" aria-hidden="true"></i>
+                        <i aria-hidden="true" class="fas fa-book-open"></i>
                         Start of course
                     </div>
                 @endif
@@ -794,11 +794,11 @@
                             class="inline-flex w-full min-w-0 items-center justify-center gap-2 rounded-lg px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:-translate-y-0.5 sm:min-w-[14rem]"
                             style="background: rgb(var(--bk-action)); color: rgb(var(--bk-action-text));">
                             Continue
-                            <i class="fas fa-arrow-right" aria-hidden="true"></i>
+                            <i aria-hidden="true" class="fas fa-arrow-right"></i>
                         </button>
                     @else
                         <div class="inline-flex w-full min-w-0 items-center justify-center gap-2 rounded-lg bg-red-600 px-5 py-3 text-sm font-semibold text-white opacity-85 sm:min-w-[14rem]">
-                            <i class="fas fa-clipboard-check" aria-hidden="true"></i>
+                            <i aria-hidden="true" class="fas fa-clipboard-check"></i>
                             Complete assessments to continue
                         </div>
                     @endif
@@ -806,7 +806,7 @@
                     <button wire:click="completeCourse"
                         class="inline-flex w-full min-w-0 items-center justify-center gap-2 rounded-lg bg-emerald-600 px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:-translate-y-0.5 hover:bg-emerald-700 sm:min-w-[14rem] {{ !$this->canProceedToNext() ? 'cursor-not-allowed opacity-50' : '' }}"
                         @if (!$this->canProceedToNext()) disabled @endif>
-                        <i class="fas fa-trophy" aria-hidden="true"></i>
+                        <i aria-hidden="true" class="fas fa-trophy"></i>
                         Complete Course
                     </button>
                 @endif

@@ -15,7 +15,7 @@
                 wire:click="{{ $editingPageId ? 'hideEditForm' : 'hideCreateForm' }}"
                 class="text-content-muted hover:text-content-muted"
              aria-label="Close">
-                <i class="fas fa-times text-xl" aria-hidden="true"></i>
+                <i aria-hidden="true" class="fas fa-times text-xl"></i>
             </button>
         </div>
 
@@ -71,7 +71,7 @@
                                         wire:click="syncSlugFromTitle"
                                         class="inline-flex items-center gap-2 rounded-lg border border-line bg-surface px-3 py-1.5 text-xs font-semibold text-content transition-colors hover:bg-surface-muted"
                                     >
-                                        <i class="fas fa-rotate" aria-hidden="true"></i>
+                                        <i aria-hidden="true" class="fas fa-rotate"></i>
                                         Sync from title
                                     </button>
                                 @endif
@@ -347,14 +347,14 @@
                                 >
                                 <label for="featured_image" class="cursor-pointer">
                                     <div class="text-center">
-                                        <i class="fas fa-cloud-upload-alt text-content-muted text-4xl mb-4" aria-hidden="true"></i>
+                                        <i aria-hidden="true" class="fas fa-cloud-upload-alt text-content-muted text-4xl mb-4"></i>
                                         <p class="text-sm text-content-muted">Click to upload featured image</p>
                                         <p class="text-xs text-content-muted">PNG, JPG, GIF up to 2MB</p>
                                     </div>
                                 </label>
                                 @if($featured_image)
                                     <div class="mt-4 text-sm text-green-600">
-                                        <i class="fas fa-check-circle mr-2" aria-hidden="true"></i>
+                                        <i aria-hidden="true" class="fas fa-check-circle mr-2"></i>
                                         Image selected: {{ $featured_image->getClientOriginalName() }}
                                     </div>
                                 @endif
@@ -456,7 +456,7 @@
                                         wire:click="removeShortcode('{{ $key }}')"
                                         class="text-red-600 hover:text-red-700 px-2"
                                      aria-label="Remove shortcode">
-                                        <i class="fas fa-trash" aria-hidden="true"></i>
+                                        <i aria-hidden="true" class="fas fa-trash"></i>
                                     </button>
                                 </div>
                             @endforeach
@@ -465,7 +465,7 @@
                                 wire:click="addShortcode"
                                 class="text-brand hover:text-brand text-sm"
                             >
-                                <i class="fas fa-plus mr-2" aria-hidden="true"></i>Add Shortcode
+                                <i aria-hidden="true" class="fas fa-plus mr-2"></i>Add Shortcode
                             </button>
                         </div>
                     </div>

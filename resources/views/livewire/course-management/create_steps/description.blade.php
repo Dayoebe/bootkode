@@ -2,7 +2,7 @@
 <div class="bg-themed-secondary rounded-lg p-4 sm:p-6 lg:p-8 shadow-sm border border-themed-primary transition-colors duration-300">
     <div class="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-6">
         <div class="w-10 h-10 sm:w-12 sm:h-12 bg-action rounded-full flex items-center justify-center flex-shrink-0">
-            <i class="fas fa-align-left text-action-foreground text-lg sm:text-xl" aria-hidden="true"></i>
+            <i aria-hidden="true" class="fas fa-align-left text-action-foreground text-lg sm:text-xl"></i>
         </div>
         <div>
             <h2 class="text-xl sm:text-2xl font-bold text-themed-primary transition-colors duration-300">
@@ -37,7 +37,7 @@
             <!-- Target Audience -->
             <div>
                 <label class="block text-sm font-medium text-themed-primary mb-2 flex items-center gap-2 transition-colors duration-300">
-                    <i class="fas fa-users text-brand dark:text-brand" aria-hidden="true"></i>
+                    <i aria-hidden="true" class="fas fa-users text-brand dark:text-brand"></i>
                     Target Audience
                 </label>
                 <input aria-label="e.g., Beginners, Professionals, Students" type="text"
@@ -52,7 +52,7 @@
             <!-- Duration -->
             <div>
                 <label class="block text-sm font-medium text-themed-primary mb-2 flex items-center gap-2 transition-colors duration-300">
-                    <i class="fas fa-clock text-brand dark:text-brand" aria-hidden="true"></i>
+                    <i aria-hidden="true" class="fas fa-clock text-brand dark:text-brand"></i>
                     Estimated Duration (minutes)
                 </label>
                 <input aria-label="e.g., 120" type="number"

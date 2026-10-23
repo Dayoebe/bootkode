@@ -5,7 +5,7 @@
         <div class="flex flex-col gap-5 xl:flex-row xl:items-center xl:justify-between">
             <div>
                 <div class="mb-3 inline-flex items-center gap-2 rounded-full bg-brand/10 px-3 py-1 text-xs font-semibold text-brand">
-                    <i class="fas fa-calendar-check" aria-hidden="true"></i>
+                    <i aria-hidden="true" class="fas fa-calendar-check"></i>
                     Mentorship operations
                 </div>
                 <h{{ $embedded ? 2 : 1 }} class="text-2xl font-bold text-themed-primary md:text-3xl">Scheduling, notes, payouts, and progress</h{{ $embedded ? 2 : 1 }}>
@@ -16,7 +16,7 @@
 
             <button type="button" wire:click="createSession"
                 class="inline-flex items-center justify-center gap-2 rounded-lg bg-action px-4 py-3 text-sm font-semibold text-action-foreground transition hover:bg-action/90">
-                <i class="fas fa-plus" aria-hidden="true"></i>
+                <i aria-hidden="true" class="fas fa-plus"></i>
                 Book session
             </button>
         </div>
@@ -85,7 +85,7 @@
                         </div>
                         <button type="button" wire:click="createSession({{ $mentorship->id }})"
                             class="inline-flex shrink-0 items-center gap-2 rounded-lg border border-themed-secondary bg-themed-primary px-3 py-2 text-xs font-semibold text-themed-primary transition hover:border-brand">
-                            <i class="fas fa-calendar-plus" aria-hidden="true"></i>
+                            <i aria-hidden="true" class="fas fa-calendar-plus"></i>
                             Book
                         </button>
                     </div>
@@ -127,23 +127,23 @@
                         <h3 class="truncate text-lg font-semibold text-themed-primary">{{ $session->title }}</h3>
                         <p class="mt-1 line-clamp-2 text-sm text-themed-secondary">{{ $session->description }}</p>
                         <div class="mt-3 flex flex-wrap gap-3 text-xs text-themed-tertiary">
-                            <span><i class="fas fa-user mr-1" aria-hidden="true"></i>{{ $otherPerson->name }}</span>
-                            <span><i class="fas fa-calendar mr-1" aria-hidden="true"></i>{{ $session->scheduled_at->format('M j, Y') }}</span>
-                            <span><i class="fas fa-clock mr-1" aria-hidden="true"></i>{{ $session->scheduled_at->format('g:i A') }} · {{ $session->duration_minutes ?? 60 }} min</span>
-                            <span><i class="fas fa-video mr-1" aria-hidden="true"></i>{{ ucwords(str_replace('_', ' ', $session->format ?? 'video')) }}</span>
+                            <span><i aria-hidden="true" class="fas fa-user mr-1"></i>{{ $otherPerson->name }}</span>
+                            <span><i aria-hidden="true" class="fas fa-calendar mr-1"></i>{{ $session->scheduled_at->format('M j, Y') }}</span>
+                            <span><i aria-hidden="true" class="fas fa-clock mr-1"></i>{{ $session->scheduled_at->format('g:i A') }} · {{ $session->duration_minutes ?? 60 }} min</span>
+                            <span><i aria-hidden="true" class="fas fa-video mr-1"></i>{{ ucwords(str_replace('_', ' ', $session->format ?? 'video')) }}</span>
                         </div>
                     </div>
 
                     <div class="flex flex-wrap gap-2 lg:justify-end">
                         <button type="button" wire:click="viewSession({{ $session->id }})"
                             class="rounded-lg border border-themed-secondary bg-themed-primary px-3 py-2 text-sm font-medium text-themed-primary transition hover:border-brand">
-                            <i class="fas fa-eye mr-1" aria-hidden="true"></i>View
+                            <i aria-hidden="true" class="fas fa-eye mr-1"></i>View
                         </button>
 
                         @if ($session->status === 'scheduled')
                             <button type="button" wire:click="editSession({{ $session->id }})"
                                 class="rounded-lg border border-themed-secondary bg-themed-primary px-3 py-2 text-sm font-medium text-themed-primary transition hover:border-brand">
-                                <i class="fas fa-edit mr-1" aria-hidden="true"></i>Edit
+                                <i aria-hidden="true" class="fas fa-edit mr-1"></i>Edit
                             </button>
                             @if ($isMentor || auth()->user()->isAcademyAdmin() || auth()->user()->isSuperAdmin())
                                 <button type="button" wire:click="startSession({{ $session->id }})"
@@ -175,12 +175,12 @@
             </article>
         @empty
             <div class="rounded-lg border-2 border-dashed border-themed-secondary bg-themed-secondary p-10 text-center">
-                <i class="fas fa-calendar-alt mb-3 text-4xl text-themed-tertiary" aria-hidden="true"></i>
+                <i aria-hidden="true" class="fas fa-calendar-alt mb-3 text-4xl text-themed-tertiary"></i>
                 <h3 class="text-lg font-semibold text-themed-primary">No sessions found</h3>
                 <p class="mt-1 text-themed-secondary">Book a session from an active mentorship to start tracking operations.</p>
                 <button type="button" wire:click="createSession"
                     class="mt-4 inline-flex items-center gap-2 rounded-lg bg-action px-4 py-2 text-sm font-semibold text-action-foreground hover:bg-action/90">
-                    <i class="fas fa-plus" aria-hidden="true"></i>
+                    <i aria-hidden="true" class="fas fa-plus"></i>
                     Book session
                 </button>
             </div>
@@ -197,7 +197,7 @@
                 <div class="flex items-center justify-between border-b border-themed-primary p-5">
                     <h2 class="text-xl font-bold text-themed-primary">{{ $editingSessionId ? 'Edit session' : 'Book session' }}</h2>
                     <button aria-label="Close dialog" type="button" wire:click="closeModal" class="grid h-9 w-9 place-items-center rounded-lg bg-themed-tertiary text-themed-secondary">
-                        <i class="fas fa-times" aria-hidden="true"></i>
+                        <i aria-hidden="true" class="fas fa-times"></i>
                     </button>
                 </div>
 
@@ -311,7 +311,7 @@
                         <p class="text-sm text-themed-secondary">{{ $selectedSession->title }}</p>
                     </div>
                     <button aria-label="Close dialog" type="button" wire:click="closeModal" class="grid h-9 w-9 place-items-center rounded-lg bg-themed-tertiary text-themed-secondary">
-                        <i class="fas fa-times" aria-hidden="true"></i>
+                        <i aria-hidden="true" class="fas fa-times"></i>
                     </button>
                 </div>
 
@@ -334,14 +334,14 @@
                                         placeholder="Next step">
                                     <button type="button" wire:click="removeActionItem({{ $index }})"
                                         class="grid h-10 w-10 place-items-center rounded-lg bg-red-600 text-white" aria-label="Remove action item">
-                                        <i class="fas fa-minus" aria-hidden="true"></i>
+                                        <i aria-hidden="true" class="fas fa-minus"></i>
                                     </button>
                                 </div>
                             @endforeach
                         </div>
                         <button type="button" wire:click="addActionItem"
                             class="mt-3 inline-flex items-center gap-2 rounded-lg border border-themed-primary px-3 py-2 text-sm font-medium text-themed-primary">
-                            <i class="fas fa-plus" aria-hidden="true"></i>
+                            <i aria-hidden="true" class="fas fa-plus"></i>
                             Add action item
                         </button>
                     </div>
@@ -416,7 +416,7 @@
                 <div class="flex items-center justify-between border-b border-themed-primary p-5">
                     <h2 class="text-xl font-bold text-themed-primary">Session details</h2>
                     <button aria-label="Close dialog" type="button" wire:click="closeModal" class="grid h-9 w-9 place-items-center rounded-lg bg-themed-tertiary text-themed-secondary">
-                        <i class="fas fa-times" aria-hidden="true"></i>
+                        <i aria-hidden="true" class="fas fa-times"></i>
                     </button>
                 </div>
                 <div class="space-y-5 p-5">
@@ -463,7 +463,7 @@
                     @if ($selectedSession->meeting_link)
                         <a href="{{ $selectedSession->meeting_link }}" target="_blank"
                             class="inline-flex items-center gap-2 rounded-lg bg-action px-4 py-2 text-sm font-semibold text-action-foreground hover:bg-action/90">
-                            <i class="fas fa-external-link-alt" aria-hidden="true"></i>
+                            <i aria-hidden="true" class="fas fa-external-link-alt"></i>
                             Open meeting link
                         </a>
                     @endif

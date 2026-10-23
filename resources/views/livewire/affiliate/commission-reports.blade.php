@@ -31,7 +31,7 @@
 
             <div class="flex items-end">
                 <button wire:click="exportReport" class="w-full px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors">
-                    <i class="fas fa-download mr-2" aria-hidden="true"></i> Export CSV
+                    <i aria-hidden="true" class="fas fa-download mr-2"></i> Export CSV
                 </button>
             </div>
         </div>
@@ -108,7 +108,7 @@
             </div>
         @else
             <div class="px-6 py-12 text-center">
-                <i class="fas fa-chart-bar text-6xl text-content-muted mb-4" aria-hidden="true"></i>
+                <i aria-hidden="true" class="fas fa-chart-bar text-6xl text-content-muted mb-4"></i>
                 <h3 class="text-lg font-medium text-content mb-2">No data available</h3>
                 <p class="text-content-muted">No data found for the selected report type and date range.</p>
             </div>

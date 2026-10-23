@@ -5,7 +5,7 @@
         <div class="bg-themed-secondary rounded-lg shadow-sm border border-themed-primary p-6   transition-colors duration-300">
             <div class="flex items-center gap-4">
                 <div class="bg-brand-ink   p-4 rounded-lg shadow-sm">
-                    <i class="fas fa-chart-line text-white text-2xl" aria-hidden="true"></i>
+                    <i aria-hidden="true" class="fas fa-chart-line text-white text-2xl"></i>
                 </div>
                 <div>
                     <h1 class="  font-bold text-themed-primary transition-colors duration-300 bk-page-title">
@@ -66,12 +66,12 @@
                             </h3>
                             <div class="flex mt-2">
                                 @for($i = 1; $i <= 5; $i++)
-                                    <i class="fas fa-star text-yellow-400 {{ $instructorMetrics['avg_rating'] >= $i ? '' : 'opacity-30' }}" aria-hidden="true"></i>
+                                    <i aria-hidden="true" class="fas fa-star text-yellow-400 {{ $instructorMetrics['avg_rating'] >= $i ? '' : 'opacity-30' }}"></i>
                                 @endfor
                             </div>
                         </div>
                         <div class="bg-yellow-100/50 p-4 rounded-lg transition-colors duration-300">
-                            <i class="fas fa-star text-yellow-600 text-2xl" aria-hidden="true"></i>
+                            <i aria-hidden="true" class="fas fa-star text-yellow-600 text-2xl"></i>
                         </div>
                     </div>
                 </div>
@@ -90,7 +90,7 @@
                             </p>
                         </div>
                         <div class="bg-brand/10 p-4 rounded-lg transition-colors duration-300">
-                            <i class="fas fa-comments text-brand text-2xl" aria-hidden="true"></i>
+                            <i aria-hidden="true" class="fas fa-comments text-brand text-2xl"></i>
                         </div>
                     </div>
                 </div>
@@ -109,7 +109,7 @@
                             </div>
                         </div>
                         <div class="bg-green-100/50 p-4 rounded-lg transition-colors duration-300">
-                            <i class="fas fa-reply text-green-600 text-2xl" aria-hidden="true"></i>
+                            <i aria-hidden="true" class="fas fa-reply text-green-600 text-2xl"></i>
                         </div>
                     </div>
                 </div>
@@ -126,7 +126,7 @@
                             <p class="text-sm text-themed-tertiary mt-2 transition-colors duration-300">hours</p>
                         </div>
                         <div class="bg-brand/10 p-4 rounded-lg transition-colors duration-300">
-                            <i class="fas fa-clock text-brand text-2xl" aria-hidden="true"></i>
+                            <i aria-hidden="true" class="fas fa-clock text-brand text-2xl"></i>
                         </div>
                     </div>
                 </div>
@@ -150,7 +150,7 @@
                 <!-- Sentiment Analysis -->
                 <div class="bg-themed-secondary rounded-lg shadow-sm border border-themed-primary p-6 transition-colors duration-300">
                     <h3 class="text-lg font-bold text-themed-primary mb-4 flex items-center transition-colors duration-300">
-                        <i class="fas fa-smile text-green-500 mr-2" aria-hidden="true"></i>
+                        <i aria-hidden="true" class="fas fa-smile text-green-500 mr-2"></i>
                         Sentiment Analysis
                     </h3>
                     <div class="text-center py-8">
@@ -164,7 +164,7 @@
                         <div class="mt-4">
                             <span class="px-4 py-2 rounded-full text-sm font-bold transition-colors duration-300
                                 {{ $satisfactionMetrics['trend'] === 'increasing' ? 'bg-green-100/50 text-green-800' : ($satisfactionMetrics['trend'] === 'decreasing' ? 'bg-red-100/50 text-red-800' : 'bg-themed-tertiary text-themed-secondary') }}">
-                                <i class="fas fa-{{ $satisfactionMetrics['trend'] === 'increasing' ? 'arrow-up' : ($satisfactionMetrics['trend'] === 'decreasing' ? 'arrow-down' : 'minus') }} mr-1" aria-hidden="true"></i>
+                                <i aria-hidden="true" class="fas fa-{{ $satisfactionMetrics['trend'] === 'increasing' ? 'arrow-up' : ($satisfactionMetrics['trend'] === 'decreasing' ? 'arrow-down' : 'minus') }} mr-1"></i>
                                 Trend: {{ ucfirst($satisfactionMetrics['trend']) }}
                             </span>
                         </div>
@@ -174,7 +174,7 @@
                 <!-- Top Keywords -->
                 <div class="bg-themed-secondary rounded-lg shadow-sm border border-themed-primary p-6 transition-colors duration-300">
                     <h3 class="text-lg font-bold text-themed-primary mb-4 flex items-center transition-colors duration-300">
-                        <i class="fas fa-tags text-brand mr-2" aria-hidden="true"></i>
+                        <i aria-hidden="true" class="fas fa-tags text-brand mr-2"></i>
                         Most Common Keywords
                     </h3>
                     <div class="space-y-3">
@@ -204,7 +204,7 @@
                         @endphp
                         <div class="flex items-center gap-4">
                             <div class="w-12 text-sm font-bold text-themed-primary transition-colors duration-300">
-                                {{ $star }} <i class="fas fa-star text-yellow-400 text-xs" aria-hidden="true"></i>
+                                {{ $star }} <i aria-hidden="true" class="fas fa-star text-yellow-400 text-xs"></i>
                             </div>
                             <div class="flex-1 bg-themed-tertiary rounded-full h-4 transition-colors duration-300">
                                 <div class="bg-surface-muted   h-4 rounded-full transition-all duration-500"
@@ -219,7 +219,7 @@
             </div>
         @else
             <div class="text-center py-20 bg-themed-secondary rounded-lg shadow-sm border border-themed-primary transition-colors duration-300">
-                <i class="fas fa-chart-line text-themed-tertiary text-6xl mb-4" aria-hidden="true"></i>
+                <i aria-hidden="true" class="fas fa-chart-line text-themed-tertiary text-6xl mb-4"></i>
                 <h3 class="text-xl font-bold text-themed-primary mb-2 transition-colors duration-300">No Course Selected</h3>
                 <p class="text-themed-secondary transition-colors duration-300">Select a course above to view analytics</p>
             </div>

@@ -2,12 +2,12 @@
     <!-- Header -->
     <div class="bg-brand-ink   p-6 rounded-lg shadow-sm text-white mb-8">
         <h1 class=" font-bold flex items-center bk-page-title">
-            <i class="fas fa-language mr-3" aria-hidden="true"></i>
+            <i aria-hidden="true" class="fas fa-language mr-3"></i>
             Language & Localization
         </h1>
         <p class="text-emerald-100 mt-2">Manage platform languages, translations, and regional settings</p>
         <div class="mt-3 text-sm text-emerald-200">
-            <i class="fas fa-crown mr-1" aria-hidden="true"></i>
+            <i aria-hidden="true" class="fas fa-crown mr-1"></i>
             Super Admin Only
         </div>
     </div>
@@ -20,35 +20,35 @@
                     wire:click="setActiveTab('languages')"
                     class="whitespace-nowrap py-4 px-3 sm:px-4 border-b-2 font-medium text-sm flex items-center transition-all duration-300
                            {{ $activeTab === 'languages' ? 'border-emerald-500 text-emerald-600 dark:text-emerald-400 bg-emerald-100/10 dark:bg-emerald-900/20' : 'border-transparent text-themed-secondary hover:text-themed-primary hover:border-themed-primary' }}">
-                    <i class="fas fa-globe mr-2" aria-hidden="true"></i>
+                    <i aria-hidden="true" class="fas fa-globe mr-2"></i>
                     Languages
                 </button>
                 <button
                     wire:click="setActiveTab('regional')"
                     class="whitespace-nowrap py-4 px-3 sm:px-4 border-b-2 font-medium text-sm flex items-center transition-all duration-300
                            {{ $activeTab === 'regional' ? 'border-emerald-500 text-emerald-600 dark:text-emerald-400 bg-emerald-100/10 dark:bg-emerald-900/20' : 'border-transparent text-themed-secondary hover:text-themed-primary hover:border-themed-primary' }}">
-                    <i class="fas fa-map mr-2" aria-hidden="true"></i>
+                    <i aria-hidden="true" class="fas fa-map mr-2"></i>
                     Regional Settings
                 </button>
                 <button
                     wire:click="setActiveTab('translations')"
                     class="whitespace-nowrap py-4 px-3 sm:px-4 border-b-2 font-medium text-sm flex items-center transition-all duration-300
                            {{ $activeTab === 'translations' ? 'border-emerald-500 text-emerald-600 dark:text-emerald-400 bg-emerald-100/10 dark:bg-emerald-900/20' : 'border-transparent text-themed-secondary hover:text-themed-primary hover:border-themed-primary' }}">
-                    <i class="fas fa-file-alt mr-2" aria-hidden="true"></i>
+                    <i aria-hidden="true" class="fas fa-file-alt mr-2"></i>
                     Translations
                 </button>
                 <button
                     wire:click="setActiveTab('rtl')"
                     class="whitespace-nowrap py-4 px-3 sm:px-4 border-b-2 font-medium text-sm flex items-center transition-all duration-300
                            {{ $activeTab === 'rtl' ? 'border-emerald-500 text-emerald-600 dark:text-emerald-400 bg-emerald-100/10 dark:bg-emerald-900/20' : 'border-transparent text-themed-secondary hover:text-themed-primary hover:border-themed-primary' }}">
-                    <i class="fas fa-align-right mr-2" aria-hidden="true"></i>
+                    <i aria-hidden="true" class="fas fa-align-right mr-2"></i>
                     RTL Support
                 </button>
                 <button
                     wire:click="setActiveTab('system')"
                     class="whitespace-nowrap py-4 px-3 sm:px-4 border-b-2 font-medium text-sm flex items-center transition-all duration-300
                            {{ $activeTab === 'system' ? 'border-emerald-500 text-emerald-600 dark:text-emerald-400 bg-emerald-100/10 dark:bg-emerald-900/20' : 'border-transparent text-themed-secondary hover:text-themed-primary hover:border-themed-primary' }}">
-                    <i class="fas fa-tools mr-2" aria-hidden="true"></i>
+                    <i aria-hidden="true" class="fas fa-tools mr-2"></i>
                     System
                 </button>
             </nav>
@@ -61,7 +61,7 @@
             <form wire:submit.prevent="saveLanguageSettings" class="bg-themed-secondary rounded-lg shadow-sm border border-themed-primary overflow-hidden  ">
                 <div class="px-6 py-4 border-b border-themed-primary">
                     <h3 class="text-lg font-semibold text-themed-primary flex items-center">
-                        <i class="fas fa-globe text-emerald-600 dark:text-emerald-400 mr-2" aria-hidden="true"></i>
+                        <i aria-hidden="true" class="fas fa-globe text-emerald-600 dark:text-emerald-400 mr-2"></i>
                         Language Configuration
                     </h3>
                     <p class="text-sm text-themed-secondary mt-1">Configure available languages and default settings</p>
@@ -72,7 +72,7 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
                             <label for="default_language" class="block text-sm font-medium text-themed-primary mb-2">
-                                <i class="fas fa-star mr-2 text-emerald-600" aria-hidden="true"></i>Default Language
+                                <i aria-hidden="true" class="fas fa-star mr-2 text-emerald-600"></i>Default Language
                             </label>
                             <select wire:model="default_language" id="default_language"
                                     class="block w-full border border-themed-primary bg-themed-tertiary rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 text-themed-primary transition-colors duration-200 px-4 py-2">
@@ -87,7 +87,7 @@
 
                         <div>
                             <label for="fallback_language" class="block text-sm font-medium text-themed-primary mb-2">
-                                <i class="fas fa-shield-alt mr-2 text-emerald-600" aria-hidden="true"></i>Fallback Language
+                                <i aria-hidden="true" class="fas fa-shield-alt mr-2 text-emerald-600"></i>Fallback Language
                             </label>
                             <select wire:model="fallback_language" id="fallback_language"
                                     class="block w-full border border-themed-primary bg-themed-tertiary rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 text-themed-primary transition-colors duration-200 px-4 py-2">
@@ -129,7 +129,7 @@
                                                {{ $code === $default_language ? 'bg-emerald-200 dark:bg-emerald-800 text-emerald-800 dark:text-emerald-100' : 'bg-gray-200 dark:bg-gray-700 text-content dark:text-gray-300' }}">
                                         {{ strtoupper($code) }}
                                         @if($code === $default_language)
-                                            <i class="fas fa-star ml-1 text-xs" aria-hidden="true"></i>
+                                            <i aria-hidden="true" class="fas fa-star ml-1 text-xs"></i>
                                         @endif
                                     </span>
                                 @endforeach
@@ -140,13 +140,13 @@
 
                 <div class="px-6 py-4 border-t border-themed-primary flex justify-between items-center">
                     <div class="text-sm text-themed-secondary">
-                        <i class="fas fa-info-circle mr-1" aria-hidden="true"></i>
+                        <i aria-hidden="true" class="fas fa-info-circle mr-1"></i>
                         Changes apply immediately
                     </div>
                     <button type="submit" wire:loading.attr="disabled"
                             class="bg-emerald-600 hover:bg-emerald-700 dark:bg-emerald-700 dark:hover:bg-emerald-800 text-white px-6 py-2 rounded-lg transition-colors duration-200 disabled:opacity-50">
-                        <span wire:loading.remove><i class="fas fa-save mr-2" aria-hidden="true"></i>Save Languages</span>
-                        <span wire:loading><i class="fas fa-circle-notch fa-spin mr-2" aria-hidden="true"></i>Saving...</span>
+                        <span wire:loading.remove><i aria-hidden="true" class="fas fa-save mr-2"></i>Save Languages</span>
+                        <span wire:loading><i aria-hidden="true" class="fas fa-circle-notch fa-spin mr-2"></i>Saving...</span>
                     </button>
                 </div>
             </form>
@@ -157,7 +157,7 @@
             <form wire:submit.prevent="saveRegionalSettings" class="bg-themed-secondary rounded-lg shadow-sm border border-themed-primary overflow-hidden  ">
                 <div class="px-6 py-4 border-b border-themed-primary">
                     <h3 class="text-lg font-semibold text-themed-primary flex items-center">
-                        <i class="fas fa-map text-emerald-600 dark:text-emerald-400 mr-2" aria-hidden="true"></i>
+                        <i aria-hidden="true" class="fas fa-map text-emerald-600 dark:text-emerald-400 mr-2"></i>
                         Regional Settings
                     </h3>
                     <p class="text-sm text-themed-secondary mt-1">Configure timezone, currency, and date/time formats</p>
@@ -229,8 +229,8 @@
                 <div class="px-6 py-4 border-t border-themed-primary flex justify-end">
                     <button type="submit" wire:loading.attr="disabled"
                             class="bg-emerald-600 hover:bg-emerald-700 dark:bg-emerald-700 dark:hover:bg-emerald-800 text-white px-6 py-2 rounded-lg transition-colors duration-200 disabled:opacity-50">
-                        <span wire:loading.remove><i class="fas fa-save mr-2" aria-hidden="true"></i>Save Regional Settings</span>
-                        <span wire:loading><i class="fas fa-circle-notch fa-spin mr-2" aria-hidden="true"></i>Saving...</span>
+                        <span wire:loading.remove><i aria-hidden="true" class="fas fa-save mr-2"></i>Save Regional Settings</span>
+                        <span wire:loading><i aria-hidden="true" class="fas fa-circle-notch fa-spin mr-2"></i>Saving...</span>
                     </button>
                 </div>
             </form>
@@ -242,7 +242,7 @@
                 <div class="bg-themed-secondary rounded-lg shadow-sm border border-themed-primary overflow-hidden  ">
                     <div class="px-6 py-4 border-b border-themed-primary">
                         <h3 class="text-lg font-semibold text-themed-primary flex items-center">
-                            <i class="fas fa-file-alt text-emerald-600 dark:text-emerald-400 mr-2" aria-hidden="true"></i>
+                            <i aria-hidden="true" class="fas fa-file-alt text-emerald-600 dark:text-emerald-400 mr-2"></i>
                             Translation Management
                         </h3>
                         <p class="text-sm text-themed-secondary mt-1">Import, export, and manage translations</p>
@@ -265,7 +265,7 @@
                                             <span class="text-sm font-medium min-w-[3rem] text-right text-themed-primary">75%</span>
                                             <button wire:click="exportTranslations('{{ $code }}')"
                                                     class="px-3 py-1 bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 rounded text-xs hover:bg-emerald-200 dark:hover:bg-emerald-900/50 transition-colors">
-                                                <i class="fas fa-download mr-1" aria-hidden="true"></i>Export
+                                                <i aria-hidden="true" class="fas fa-download mr-1"></i>Export
                                             </button>
                                         </div>
                                     </div>
@@ -296,8 +296,8 @@
                                 <div class="flex justify-end">
                                     <button type="submit" wire:loading.attr="disabled"
                                             class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 dark:bg-emerald-700 dark:hover:bg-emerald-800 text-white rounded-lg transition-colors disabled:opacity-50">
-                                        <span wire:loading.remove><i class="fas fa-upload mr-2" aria-hidden="true"></i>Import</span>
-                                        <span wire:loading><i class="fas fa-circle-notch fa-spin mr-2" aria-hidden="true"></i>Importing...</span>
+                                        <span wire:loading.remove><i aria-hidden="true" class="fas fa-upload mr-2"></i>Import</span>
+                                        <span wire:loading><i aria-hidden="true" class="fas fa-circle-notch fa-spin mr-2"></i>Importing...</span>
                                     </button>
                                 </div>
                             </form>
@@ -312,7 +312,7 @@
             <form wire:submit.prevent="saveRtlSettings" class="bg-themed-secondary rounded-lg shadow-sm border border-themed-primary overflow-hidden  ">
                 <div class="px-6 py-4 border-b border-themed-primary">
                     <h3 class="text-lg font-semibold text-themed-primary flex items-center">
-                        <i class="fas fa-align-right text-emerald-600 dark:text-emerald-400 mr-2" aria-hidden="true"></i>
+                        <i aria-hidden="true" class="fas fa-align-right text-emerald-600 dark:text-emerald-400 mr-2"></i>
                         Right-to-Left (RTL) Support
                     </h3>
                     <p class="text-sm text-themed-secondary mt-1">Configure RTL language support and layout</p>
@@ -346,8 +346,8 @@
                 <div class="px-6 py-4 border-t border-themed-primary flex justify-end">
                     <button type="submit" wire:loading.attr="disabled"
                             class="bg-emerald-600 hover:bg-emerald-700 dark:bg-emerald-700 dark:hover:bg-emerald-800 text-white px-6 py-2 rounded-lg transition-colors duration-200 disabled:opacity-50">
-                        <span wire:loading.remove><i class="fas fa-save mr-2" aria-hidden="true"></i>Save RTL Settings</span>
-                        <span wire:loading><i class="fas fa-circle-notch fa-spin mr-2" aria-hidden="true"></i>Saving...</span>
+                        <span wire:loading.remove><i aria-hidden="true" class="fas fa-save mr-2"></i>Save RTL Settings</span>
+                        <span wire:loading><i aria-hidden="true" class="fas fa-circle-notch fa-spin mr-2"></i>Saving...</span>
                     </button>
                 </div>
             </form>
@@ -359,7 +359,7 @@
                 <div class="bg-themed-secondary rounded-lg shadow-sm border border-themed-primary overflow-hidden  ">
                     <div class="px-6 py-4 border-b border-themed-primary">
                         <h3 class="text-lg font-semibold text-themed-primary flex items-center">
-                            <i class="fas fa-tools text-emerald-600 dark:text-emerald-400 mr-2" aria-hidden="true"></i>
+                            <i aria-hidden="true" class="fas fa-tools text-emerald-600 dark:text-emerald-400 mr-2"></i>
                             System Actions
                         </h3>
                     </div>
@@ -368,26 +368,26 @@
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <button wire:click="clearTranslationCache" wire:loading.attr="disabled"
                                     class="px-4 py-3 bg-action hover:bg-action dark:bg-action dark:hover:bg-action text-action-foreground rounded-lg transition-colors disabled:opacity-50 font-medium">
-                                <span wire:loading.remove><i class="fas fa-trash mr-2" aria-hidden="true"></i>Clear Translation Cache</span>
-                                <span wire:loading><i class="fas fa-circle-notch fa-spin mr-2" aria-hidden="true"></i>Clearing...</span>
+                                <span wire:loading.remove><i aria-hidden="true" class="fas fa-trash mr-2"></i>Clear Translation Cache</span>
+                                <span wire:loading><i aria-hidden="true" class="fas fa-circle-notch fa-spin mr-2"></i>Clearing...</span>
                             </button>
 
                             <button wire:click="rebuildLanguageFiles" wire:loading.attr="disabled"
                                     class="px-4 py-3 bg-green-600 hover:bg-green-700 dark:bg-green-700 dark:hover:bg-green-800 text-white rounded-lg transition-colors disabled:opacity-50 font-medium">
-                                <span wire:loading.remove><i class="fas fa-hammer mr-2" aria-hidden="true"></i>Rebuild Language Files</span>
-                                <span wire:loading><i class="fas fa-circle-notch fa-spin mr-2" aria-hidden="true"></i>Rebuilding...</span>
+                                <span wire:loading.remove><i aria-hidden="true" class="fas fa-hammer mr-2"></i>Rebuild Language Files</span>
+                                <span wire:loading><i aria-hidden="true" class="fas fa-circle-notch fa-spin mr-2"></i>Rebuilding...</span>
                             </button>
 
                             <button wire:click="validateTranslations" wire:loading.attr="disabled"
                                     class="px-4 py-3 bg-action hover:bg-action dark:bg-action dark:hover:bg-action text-action-foreground rounded-lg transition-colors disabled:opacity-50 font-medium">
-                                <span wire:loading.remove><i class="fas fa-check-circle mr-2" aria-hidden="true"></i>Validate Translations</span>
-                                <span wire:loading><i class="fas fa-circle-notch fa-spin mr-2" aria-hidden="true"></i>Validating...</span>
+                                <span wire:loading.remove><i aria-hidden="true" class="fas fa-check-circle mr-2"></i>Validate Translations</span>
+                                <span wire:loading><i aria-hidden="true" class="fas fa-circle-notch fa-spin mr-2"></i>Validating...</span>
                             </button>
 
                             <button wire:click="optimizeTranslations" wire:loading.attr="disabled"
                                     class="px-4 py-3 bg-orange-600 hover:bg-orange-700 dark:bg-orange-700 dark:hover:bg-orange-800 text-white rounded-lg transition-colors disabled:opacity-50 font-medium">
-                                <span wire:loading.remove><i class="fas fa-rocket mr-2" aria-hidden="true"></i>Optimize</span>
-                                <span wire:loading><i class="fas fa-circle-notch fa-spin mr-2" aria-hidden="true"></i>Optimizing...</span>
+                                <span wire:loading.remove><i aria-hidden="true" class="fas fa-rocket mr-2"></i>Optimize</span>
+                                <span wire:loading><i aria-hidden="true" class="fas fa-circle-notch fa-spin mr-2"></i>Optimizing...</span>
                             </button>
                         </div>
 

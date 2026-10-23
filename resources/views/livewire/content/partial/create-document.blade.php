@@ -37,7 +37,7 @@
                         "
                     >
                         @if($step < $currentStep)
-                            <i class="fas fa-check" aria-hidden="true"></i>
+                            <i aria-hidden="true" class="fas fa-check"></i>
                         @else
                             {{ $step }}
                         @endif
@@ -306,7 +306,7 @@
 
                         @if($featured)
                             <div class="flex items-center space-x-2">
-                                <i class="fas fa-star text-yellow-500 dark:text-yellow-400" aria-hidden="true"></i>
+                                <i aria-hidden="true" class="fas fa-star text-yellow-500 dark:text-yellow-400"></i>
                                 <span class="text-sm font-medium text-content dark:text-gray-300">This document will be featured</span>
                             </div>
                         @endif
@@ -346,7 +346,7 @@
                             wire:click="previousStep"
                             class="px-6 py-2 text-content dark:text-gray-300 bg-gray-200 dark:bg-gray-700 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors flex items-center space-x-2"
                         >
-                            <i class="fas fa-arrow-left" aria-hidden="true"></i>
+                            <i aria-hidden="true" class="fas fa-arrow-left"></i>
                             <span>Previous</span>
                         </button>
                     @endif
@@ -360,7 +360,7 @@
                             class="px-6 py-2 bg-action dark:bg-action text-action-foreground rounded-lg hover:bg-action dark:hover:bg-action transition-colors flex items-center space-x-2"
                         >
                             <span>Next</span>
-                            <i class="fas fa-arrow-right" aria-hidden="true"></i>
+                            <i aria-hidden="true" class="fas fa-arrow-right"></i>
                         </button>
                     @else
                         <!-- Final Step Actions -->
@@ -370,7 +370,7 @@
                                 wire:click="saveDraft"
                                 class="px-6 py-2 text-content dark:text-gray-300 bg-gray-200 dark:bg-gray-700 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors flex items-center space-x-2"
                             >
-                                <i class="fas fa-save" aria-hidden="true"></i>
+                                <i aria-hidden="true" class="fas fa-save"></i>
                                 <span>Save Draft</span>
                             </button>
 
@@ -379,7 +379,7 @@
                                 wire:click="submitForReview"
                                 class="px-6 py-2 bg-yellow-600 dark:bg-yellow-500 text-white rounded-lg hover:bg-yellow-700 dark:hover:bg-yellow-600 transition-colors flex items-center space-x-2"
                             >
-                                <i class="fas fa-paper-plane" aria-hidden="true"></i>
+                                <i aria-hidden="true" class="fas fa-paper-plane"></i>
                                 <span>Submit for Review</span>
                             </button>
 
@@ -388,7 +388,7 @@
                                 wire:click="saveAndPublish"
                                 class="px-6 py-2 bg-green-600 dark:bg-green-500 text-white rounded-lg hover:bg-green-700 dark:hover:bg-green-600 transition-colors flex items-center space-x-2"
                             >
-                                <i class="fas fa-check" aria-hidden="true"></i>
+                                <i aria-hidden="true" class="fas fa-check"></i>
                                 <span>Publish Now</span>
                             </button>
                         </div>

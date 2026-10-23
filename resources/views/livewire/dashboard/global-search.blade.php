@@ -6,7 +6,7 @@
         </label>
         <div class="mt-2 flex flex-col gap-3 sm:flex-row">
             <div class="relative flex-1">
-                <i class="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-sm text-themed-tertiary" aria-hidden="true"></i>
+                <i aria-hidden="true" class="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-sm text-themed-tertiary"></i>
                 <input
                     id="workspace-search-page"
                     type="search"
@@ -18,7 +18,7 @@
             </div>
 
             <a href="{{ route('dashboard') }}" class="inline-flex h-12 items-center justify-center gap-2 rounded-lg border border-themed-primary px-4 text-sm font-bold text-themed-secondary transition hover:bg-themed-tertiary hover:text-themed-primary">
-                <i class="fas fa-arrow-left" aria-hidden="true"></i>
+                <i aria-hidden="true" class="fas fa-arrow-left"></i>
                 Dashboard
             </a>
         </div>
@@ -34,7 +34,7 @@
 
     @if($q && $total === 0)
         <section class="rounded-lg border border-dashed border-themed-primary bg-themed-secondary px-4 py-12 text-center">
-            <i class="fas fa-search text-3xl text-themed-tertiary" aria-hidden="true"></i>
+            <i aria-hidden="true" class="fas fa-search text-3xl text-themed-tertiary"></i>
             <h2 class="bk-display mt-4 text-xl font-bold text-themed-primary">No results found</h2>
             <p class="mt-2 text-sm font-semibold text-themed-secondary">Try a course title, lesson name, user email, certificate number, page, post, or material keyword.</p>
         </section>
@@ -46,7 +46,7 @@
                 <section class="space-y-3">
                     <div class="flex items-center justify-between gap-3">
                         <h2 class="flex items-center gap-2 text-sm font-bold uppercase tracking-wide text-themed-secondary">
-                            <i class="{{ $group['icon'] }} text-brand"></i>
+                            <i aria-hidden="true" class="{{ $group['icon'] }} text-brand"></i>
                             {{ $group['label'] }}
                         </h2>
                         <span class="rounded-full bg-themed-tertiary px-2.5 py-1 text-xs font-bold text-themed-tertiary">
@@ -58,7 +58,7 @@
                         @foreach($group['items'] as $item)
                             <a href="{{ $item['url'] }}" class="group flex min-w-0 gap-3 rounded-lg border border-themed-primary bg-themed-secondary p-4 shadow-sm transition hover:border-brand hover:bg-themed-tertiary">
                                 <span class="grid h-10 w-10 shrink-0 place-items-center rounded-lg bg-brand/10 text-brand dark:bg-teal-400/10 dark:text-brand">
-                                    <i class="{{ $item['icon'] }}"></i>
+                                    <i aria-hidden="true" class="{{ $item['icon'] }}"></i>
                                 </span>
                                 <span class="min-w-0">
                                     <span class="block truncate text-sm font-bold text-themed-primary group-hover:text-brand dark:group-hover:text-brand">{{ $item['title'] }}</span>

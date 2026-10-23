@@ -13,7 +13,7 @@
             @foreach($resources as $key => $category)
                 <button wire:click="setActiveCategory('{{ $key }}')"
                     class="min-h-11 px-4 py-2 rounded-lg transition-colors duration-300 {{ $activeCategory === $key ? 'bk-button bk-button-primary ' : 'bg-themed-tertiary text-themed-primary hover:bg-brand/20' }}">
-                    <i class="{{ $category['icon'] }} mr-2"></i>{{ $category['title'] }}
+                    <i aria-hidden="true" class="{{ $category['icon'] }} mr-2"></i>{{ $category['title'] }}
                 </button>
             @endforeach
         </div>
@@ -27,8 +27,8 @@
                 <div class="flex items-start space-x-4">
                     <div
                         class="w-12 h-12 bg-brand/20 rounded-lg flex items-center justify-center flex-shrink-0 border border-brand/30 transition-colors duration-300">
-                        <i
-                            class="fas fa-{{ $item['type'] === 'document' ? 'file-alt' : ($item['type'] === 'video' ? 'play-circle' : 'link') }} text-brand transition-colors duration-300" aria-hidden="true"></i>
+                        <i aria-hidden="true"
+                            class="fas fa-{{ $item['type'] === 'document' ? 'file-alt' : ($item['type'] === 'video' ? 'play-circle' : 'link') }} text-brand transition-colors duration-300"></i>
                     </div>
                     <div class="flex-1">
                         <h3 class="font-semibold text-themed-primary mb-2 transition-colors duration-300">

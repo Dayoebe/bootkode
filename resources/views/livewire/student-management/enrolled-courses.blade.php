@@ -14,7 +14,7 @@
                         <input aria-label="Search courses" type="text" wire:model.live.debounce.300ms="search" placeholder="Search courses..."
                             class="w-full pl-10 pr-4 py-2 bg-themed-primary border border-themed-secondary rounded-lg text-themed-primary placeholder-themed-tertiary focus:outline-none focus:ring-2 focus:ring-brand">
                         <div class="absolute left-3 top-2.5 text-themed-tertiary">
-                            <i class="fas fa-search" aria-hidden="true"></i>
+                            <i aria-hidden="true" class="fas fa-search"></i>
                         </div>
                     </div>
 
@@ -50,7 +50,7 @@
                         </span>
                         @if ($progress >= 100)
                             <span class="absolute top-2 right-2 bg-green-500 text-white p-1 rounded-full">
-                                <i class="fas fa-check text-xs" aria-hidden="true"></i>
+                                <i aria-hidden="true" class="fas fa-check text-xs"></i>
                             </span>
                         @endif
                     </div>
@@ -74,7 +74,7 @@
                             </a>
                             @if (!$compact)
                                 <button class="bg-themed-tertiary hover:bg-themed-secondary text-themed-primary p-1.5 rounded border border-themed-secondary transition-colors" aria-label="More actions">
-                                    <i class="fas fa-ellipsis-v text-xs" aria-hidden="true"></i>
+                                    <i aria-hidden="true" class="fas fa-ellipsis-v text-xs"></i>
                                 </button>
                             @endif
                         </div>
@@ -90,7 +90,7 @@
         @endif
     @else
         <div class="bg-themed-tertiary border-2 border-dashed border-themed-secondary rounded-lg p-8 text-center">
-            <i class="fas fa-book-open text-themed-tertiary text-4xl mb-3" aria-hidden="true"></i>
+            <i aria-hidden="true" class="fas fa-book-open text-themed-tertiary text-4xl mb-3"></i>
             <h3 class="text-lg font-medium text-themed-secondary mb-2">
                 {{ $compact ? 'No courses in progress' : 'No enrolled courses' }}
             </h3>
@@ -100,7 +100,7 @@
             <a href="{{ route('student.course-catalog') }}"
                 class="inline-flex items-center px-4 py-2 bg-action hover:bg-action/90 text-action-foreground rounded-lg text-sm font-medium transition-colors"
                 wire:navigate>
-                <i class="fas fa-book-open mr-2" aria-hidden="true"></i> Browse Catalog
+                <i aria-hidden="true" class="fas fa-book-open mr-2"></i> Browse Catalog
             </a>
         </div>
     @endif

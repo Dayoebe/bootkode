@@ -10,7 +10,7 @@ x-transition:leave-end="opacity-0 transform -translate-x-8">
     <div class="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-6">
         <div
             class="w-10 h-10 sm:w-12 sm:h-12 bg-yellow-500 rounded-full flex items-center justify-center flex-shrink-0">
-            <i class="fas fa-check-circle text-white text-lg sm:text-xl" aria-hidden="true"></i>
+            <i aria-hidden="true" class="fas fa-check-circle text-white text-lg sm:text-xl"></i>
         </div>
         <div>
             <h2
@@ -37,8 +37,8 @@ x-transition:leave-end="opacity-0 transform -translate-x-8">
                 @else
                     <div
                         class="w-full lg:w-48 h-32 bg-themed-secondary rounded-lg flex items-center justify-center border border-themed-primary transition-colors duration-300">
-                        <i
-                            class="fas fa-image text-3xl text-themed-secondary transition-colors duration-300" aria-hidden="true"></i>
+                        <i aria-hidden="true"
+                            class="fas fa-image text-3xl text-themed-secondary transition-colors duration-300"></i>
                     </div>
                 @endif
             </div>
@@ -56,25 +56,25 @@ x-transition:leave-end="opacity-0 transform -translate-x-8">
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 text-sm">
                     <div class="flex items-center gap-2">
-                        <i class="fas fa-tag text-brand dark:text-brand" aria-hidden="true"></i>
+                        <i aria-hidden="true" class="fas fa-tag text-brand dark:text-brand"></i>
                         <span class="text-themed-primary transition-colors duration-300">
                             {{ $categories->where('id', $category_id)->first()->name ?? 'No category' }}
                         </span>
                     </div>
                     <div class="flex items-center gap-2">
-                        <i class="fas fa-layer-group text-brand dark:text-brand" aria-hidden="true"></i>
+                        <i aria-hidden="true" class="fas fa-layer-group text-brand dark:text-brand"></i>
                         <span class="text-themed-primary transition-colors duration-300">
                             {{ $difficultyLevels[$difficulty_level] ?? 'Not specified' }}
                         </span>
                     </div>
                     <div class="flex items-center gap-2">
-                        <i class="fas fa-clock text-green-500 dark:text-green-400" aria-hidden="true"></i>
+                        <i aria-hidden="true" class="fas fa-clock text-green-500 dark:text-green-400"></i>
                         <span class="text-themed-primary transition-colors duration-300">
                             {{ $estimated_duration_minutes ?? 0 }} minutes
                         </span>
                     </div>
                     <div class="flex items-center gap-2">
-                        <i class="fas fa-dollar-sign text-yellow-500 dark:text-yellow-400" aria-hidden="true"></i>
+                        <i aria-hidden="true" class="fas fa-dollar-sign text-yellow-500 dark:text-yellow-400"></i>
                         <span class="text-themed-primary transition-colors duration-300">
                             @if ($is_free)
                                 Free
@@ -86,13 +86,13 @@ x-transition:leave-end="opacity-0 transform -translate-x-8">
                         </span>
                     </div>
                     <div class="flex items-center gap-2">
-                        <i class="fas fa-users text-brand dark:text-brand" aria-hidden="true"></i>
+                        <i aria-hidden="true" class="fas fa-users text-brand dark:text-brand"></i>
                         <span class="text-themed-primary transition-colors duration-300">
                             {{ $target_audience ?? 'Not specified' }}
                         </span>
                     </div>
                     <div class="flex items-center gap-2">
-                        <i class="fas fa-globe text-red-500 dark:text-red-400" aria-hidden="true"></i>
+                        <i aria-hidden="true" class="fas fa-globe text-red-500 dark:text-red-400"></i>
                         <span class="text-themed-primary transition-colors duration-300">
                             {{ $is_published ? 'Published' : 'Draft' }}
                         </span>
@@ -110,7 +110,7 @@ x-transition:leave-end="opacity-0 transform -translate-x-8">
                 class="bg-themed-tertiary p-4 sm:p-6 rounded-lg border border-themed-primary transition-colors duration-300">
                 <h4
                     class="text-lg font-semibold text-themed-primary mb-3 flex items-center gap-2 transition-colors duration-300">
-                    <i class="fas fa-align-left text-brand dark:text-brand" aria-hidden="true"></i>
+                    <i aria-hidden="true" class="fas fa-align-left text-brand dark:text-brand"></i>
                     Description
                 </h4>
                 <p
@@ -124,7 +124,7 @@ x-transition:leave-end="opacity-0 transform -translate-x-8">
                     class="bg-themed-tertiary p-4 sm:p-6 rounded-lg border border-themed-primary transition-colors duration-300">
                     <h4
                         class="text-lg font-semibold text-themed-primary mb-3 flex items-center gap-2 transition-colors duration-300">
-                        <i class="fas fa-lightbulb text-brand dark:text-brand" aria-hidden="true"></i>
+                        <i aria-hidden="true" class="fas fa-lightbulb text-brand dark:text-brand"></i>
                         Learning Outcomes
                     </h4>
                     <ul class="space-y-2">
@@ -132,8 +132,8 @@ x-transition:leave-end="opacity-0 transform -translate-x-8">
                             @if (!empty(trim($outcome)))
                                 <li
                                     class="flex items-start gap-2 text-themed-secondary text-sm sm:text-base transition-colors duration-300">
-                                    <i
-                                        class="fas fa-check text-green-500 dark:text-green-400 mt-1 flex-shrink-0" aria-hidden="true"></i>
+                                    <i aria-hidden="true"
+                                        class="fas fa-check text-green-500 dark:text-green-400 mt-1 flex-shrink-0"></i>
                                     <span>{{ $outcome }}</span>
                                 </li>
                             @endif
@@ -150,7 +150,7 @@ x-transition:leave-end="opacity-0 transform -translate-x-8">
                     class="bg-themed-tertiary p-4 sm:p-6 rounded-lg border border-themed-primary transition-colors duration-300">
                     <h4
                         class="text-lg font-semibold text-themed-primary mb-3 flex items-center gap-2 transition-colors duration-300">
-                        <i class="fas fa-exclamation-circle text-orange-500 dark:text-orange-400" aria-hidden="true"></i>
+                        <i aria-hidden="true" class="fas fa-exclamation-circle text-orange-500 dark:text-orange-400"></i>
                         Prerequisites
                     </h4>
                     <ul class="space-y-2">
@@ -158,8 +158,8 @@ x-transition:leave-end="opacity-0 transform -translate-x-8">
                             @if (!empty(trim($prerequisite)))
                                 <li
                                     class="flex items-start gap-2 text-themed-secondary text-sm sm:text-base transition-colors duration-300">
-                                    <i
-                                        class="fas fa-circle text-orange-500 dark:text-orange-400 text-xs mt-2 flex-shrink-0" aria-hidden="true"></i>
+                                    <i aria-hidden="true"
+                                        class="fas fa-circle text-orange-500 dark:text-orange-400 text-xs mt-2 flex-shrink-0"></i>
                                     <span>{{ $prerequisite }}</span>
                                 </li>
                             @endif
@@ -173,7 +173,7 @@ x-transition:leave-end="opacity-0 transform -translate-x-8">
                     class="bg-themed-tertiary p-4 sm:p-6 rounded-lg border border-themed-primary transition-colors duration-300">
                     <h4
                         class="text-lg font-semibold text-themed-primary mb-3 flex items-center gap-2 transition-colors duration-300">
-                        <i class="fas fa-box-open text-brand dark:text-brand" aria-hidden="true"></i>
+                        <i aria-hidden="true" class="fas fa-box-open text-brand dark:text-brand"></i>
                         Materials Included
                     </h4>
                     <ul class="space-y-2">
@@ -181,8 +181,8 @@ x-transition:leave-end="opacity-0 transform -translate-x-8">
                             @if (!empty(trim($material)))
                                 <li
                                     class="flex items-start gap-2 text-themed-secondary text-sm sm:text-base transition-colors duration-300">
-                                    <i
-                                        class="fas fa-check-circle text-brand dark:text-brand mt-1 flex-shrink-0" aria-hidden="true"></i>
+                                    <i aria-hidden="true"
+                                        class="fas fa-check-circle text-brand dark:text-brand mt-1 flex-shrink-0"></i>
                                     <span>{{ $material }}</span>
                                 </li>
                             @endif
@@ -196,7 +196,7 @@ x-transition:leave-end="opacity-0 transform -translate-x-8">
                     class="bg-themed-tertiary p-4 sm:p-6 rounded-lg border border-themed-primary transition-colors duration-300">
                     <h4
                         class="text-lg font-semibold text-themed-primary mb-3 flex items-center gap-2 transition-colors duration-300">
-                        <i class="fas fa-tags text-brand dark:text-brand" aria-hidden="true"></i>
+                        <i aria-hidden="true" class="fas fa-tags text-brand dark:text-brand"></i>
                         Tags
                     </h4>
                     <div class="flex flex-wrap gap-2">

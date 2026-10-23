@@ -11,7 +11,7 @@
                 <p class="text-green-200 text-sm mt-1">All-time earnings</p>
             </div>
             <div class="bg-green-400/30 p-3 rounded-full">
-                <i class="fas fa-money-bill-wave text-2xl" aria-hidden="true"></i>
+                <i aria-hidden="true" class="fas fa-money-bill-wave text-2xl"></i>
             </div>
         </div>
     </div>
@@ -25,7 +25,7 @@
                 <p class="text-brand text-sm mt-1">Items sold</p>
             </div>
             <div class="bg-blue-400/30 p-3 rounded-full">
-                <i class="fas fa-shopping-cart text-2xl" aria-hidden="true"></i>
+                <i aria-hidden="true" class="fas fa-shopping-cart text-2xl"></i>
             </div>
         </div>
     </div>
@@ -39,7 +39,7 @@
                 <p class="text-brand text-sm mt-1">of {{ $analyticsData['total_items'] ?? 0 }} total</p>
             </div>
             <div class="bg-purple-400/30 p-3 rounded-full">
-                <i class="fas fa-box text-2xl" aria-hidden="true"></i>
+                <i aria-hidden="true" class="fas fa-box text-2xl"></i>
             </div>
         </div>
     </div>
@@ -53,7 +53,7 @@
                 <p class="text-yellow-200 text-sm mt-1">Customer satisfaction</p>
             </div>
             <div class="bg-yellow-400/30 p-3 rounded-full">
-                <i class="fas fa-star text-2xl" aria-hidden="true"></i>
+                <i aria-hidden="true" class="fas fa-star text-2xl"></i>
             </div>
         </div>
     </div>
@@ -64,7 +64,7 @@
     <!-- This Month Stats -->
     <div class="bg-surface rounded-lg shadow-sm border border-line p-6">
         <h3 class="text-lg font-semibold text-content mb-4 flex items-center">
-            <i class="fas fa-calendar-alt mr-2 text-brand" aria-hidden="true"></i>
+            <i aria-hidden="true" class="fas fa-calendar-alt mr-2 text-brand"></i>
             This Month Performance
         </h3>
 
@@ -72,7 +72,7 @@
             <div class="flex items-center justify-between p-4 bg-green-50 rounded-lg">
                 <div class="flex items-center">
                     <div class="bg-green-500 p-2 rounded-full mr-3">
-                        <i class="fas fa-dollar-sign text-white" aria-hidden="true"></i>
+                        <i aria-hidden="true" class="fas fa-dollar-sign text-white"></i>
                     </div>
                     <div>
                         <p class="text-sm font-medium text-content-muted">Monthly Revenue</p>
@@ -84,7 +84,7 @@
             <div class="flex items-center justify-between p-4 bg-brand/10 rounded-lg">
                 <div class="flex items-center">
                     <div class="bg-action p-2 rounded-full mr-3">
-                        <i class="fas fa-shopping-bag text-action-foreground" aria-hidden="true"></i>
+                        <i aria-hidden="true" class="fas fa-shopping-bag text-action-foreground"></i>
                     </div>
                     <div>
                         <p class="text-sm font-medium text-content-muted">Monthly Sales</p>
@@ -96,7 +96,7 @@
             <div class="flex items-center justify-between p-4 bg-brand/10 rounded-lg">
                 <div class="flex items-center">
                     <div class="bg-action p-2 rounded-full mr-3">
-                        <i class="fas fa-eye text-action-foreground" aria-hidden="true"></i>
+                        <i aria-hidden="true" class="fas fa-eye text-action-foreground"></i>
                     </div>
                     <div>
                         <p class="text-sm font-medium text-content-muted">Total Views</p>
@@ -110,7 +110,7 @@
     <!-- Item Status Breakdown -->
     <div class="bg-surface rounded-lg shadow-sm border border-line p-6">
         <h3 class="text-lg font-semibold text-content mb-4 flex items-center">
-            <i class="fas fa-chart-pie mr-2 text-brand" aria-hidden="true"></i>
+            <i aria-hidden="true" class="fas fa-chart-pie mr-2 text-brand"></i>
             Item Status Breakdown
         </h3>
 
@@ -171,7 +171,7 @@
 <!-- Performance Insights -->
 <div class="bg-surface rounded-lg shadow-sm border border-line p-6">
     <h3 class="text-lg font-semibold text-content mb-6 flex items-center">
-        <i class="fas fa-lightbulb mr-2 text-yellow-500" aria-hidden="true"></i>
+        <i aria-hidden="true" class="fas fa-lightbulb mr-2 text-yellow-500"></i>
         Performance Insights & Tips
     </h3>
 
@@ -179,7 +179,7 @@
         <!-- Completion Rate -->
         <div class="p-4 bg-surface-muted   rounded-lg border border-brand">
             <div class="flex items-center mb-3">
-                <i class="fas fa-tasks text-brand mr-2" aria-hidden="true"></i>
+                <i aria-hidden="true" class="fas fa-tasks text-brand mr-2"></i>
                 <h4 class="font-semibold text-content">Completion Rate</h4>
             </div>
             <div class="text-2xl font-bold text-brand mb-2">
@@ -197,7 +197,7 @@
         <!-- Revenue per Item -->
         <div class="p-4 bg-surface-muted   rounded-lg border border-green-200">
             <div class="flex items-center mb-3">
-                <i class="fas fa-calculator text-green-600 mr-2" aria-hidden="true"></i>
+                <i aria-hidden="true" class="fas fa-calculator text-green-600 mr-2"></i>
                 <h4 class="font-semibold text-content">Revenue per Item</h4>
             </div>
             <div class="text-2xl font-bold text-green-600 mb-2">
@@ -209,21 +209,21 @@
         <!-- Quick Actions -->
         <div class="p-4 bg-surface-muted   rounded-lg border border-brand">
             <div class="flex items-center mb-3">
-                <i class="fas fa-rocket text-brand mr-2" aria-hidden="true"></i>
+                <i aria-hidden="true" class="fas fa-rocket text-brand mr-2"></i>
                 <h4 class="font-semibold text-content">Quick Actions</h4>
             </div>
             <div class="space-y-2">
                 @if(($analyticsData['draft_items'] ?? 0) > 0)
                     <button wire:click="showListings"
                             class="w-full text-left px-3 py-2 bg-surface rounded border hover:bg-surface-muted text-sm transition-colors">
-                        <i class="fas fa-edit mr-2 text-brand" aria-hidden="true"></i>
+                        <i aria-hidden="true" class="fas fa-edit mr-2 text-brand"></i>
                         Complete {{ $analyticsData['draft_items'] }} drafts
                     </button>
                 @endif
 
                 <button wire:click="showCreate"
                         class="w-full text-left px-3 py-2 bg-surface rounded border hover:bg-surface-muted text-sm transition-colors">
-                    <i class="fas fa-plus mr-2 text-brand" aria-hidden="true"></i>
+                    <i aria-hidden="true" class="fas fa-plus mr-2 text-brand"></i>
                     Create new item
                 </button>
             </div>
@@ -235,7 +235,7 @@
 @if(($analyticsData['draft_items'] ?? 0) > 0 || ($analyticsData['rejected_items'] ?? 0) > 0)
     <div class="bg-surface-muted   border border-yellow-200 rounded-lg p-6">
         <h3 class="text-lg font-semibold text-content mb-4 flex items-center">
-            <i class="fas fa-exclamation-triangle mr-2 text-yellow-600" aria-hidden="true"></i>
+            <i aria-hidden="true" class="fas fa-exclamation-triangle mr-2 text-yellow-600"></i>
             Action Required
         </h3>
 
@@ -243,7 +243,7 @@
             @if(($analyticsData['draft_items'] ?? 0) > 0)
                 <div class="flex items-center justify-between p-3 bg-surface rounded-lg border border-yellow-200">
                     <div class="flex items-center">
-                        <i class="fas fa-edit text-yellow-600 mr-3" aria-hidden="true"></i>
+                        <i aria-hidden="true" class="fas fa-edit text-yellow-600 mr-3"></i>
                         <div>
                             <p class="font-medium text-content">{{ $analyticsData['draft_items'] }} Draft Items</p>
                             <p class="text-sm text-content-muted">Complete and submit these items for review</p>
@@ -259,7 +259,7 @@
             @if(($analyticsData['rejected_items'] ?? 0) > 0)
                 <div class="flex items-center justify-between p-3 bg-surface rounded-lg border border-red-200">
                     <div class="flex items-center">
-                        <i class="fas fa-times-circle text-red-600 mr-3" aria-hidden="true"></i>
+                        <i aria-hidden="true" class="fas fa-times-circle text-red-600 mr-3"></i>
                         <div>
                             <p class="font-medium text-content">{{ $analyticsData['rejected_items'] }} Rejected Items</p>
                             <p class="text-sm text-content-muted">Review feedback and resubmit these items</p>
@@ -279,14 +279,14 @@
 @if(($analyticsData['total_sales'] ?? 0) > 0 || ($analyticsData['total_revenue'] ?? 0) > 0)
     <div class="bg-surface-muted   border border-green-200 rounded-lg p-6">
         <h3 class="text-lg font-semibold text-content mb-4 flex items-center">
-            <i class="fas fa-trophy mr-2 text-green-600" aria-hidden="true"></i>
+            <i aria-hidden="true" class="fas fa-trophy mr-2 text-green-600"></i>
             Milestones Achieved
         </h3>
 
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
             @if(($analyticsData['total_sales'] ?? 0) >= 1)
                 <div class="text-center p-4 bg-surface rounded-lg border border-green-200">
-                    <i class="fas fa-medal text-green-600 text-2xl mb-2" aria-hidden="true"></i>
+                    <i aria-hidden="true" class="fas fa-medal text-green-600 text-2xl mb-2"></i>
                     <p class="font-semibold text-content">First Sale!</p>
                     <p class="text-sm text-content-muted">You've made your first marketplace sale</p>
                 </div>
@@ -294,7 +294,7 @@
 
             @if(($analyticsData['total_revenue'] ?? 0) >= 10000)
                 <div class="text-center p-4 bg-surface rounded-lg border border-green-200">
-                    <i class="fas fa-star text-green-600 text-2xl mb-2" aria-hidden="true"></i>
+                    <i aria-hidden="true" class="fas fa-star text-green-600 text-2xl mb-2"></i>
                     <p class="font-semibold text-content">₦10K Earned!</p>
                     <p class="text-sm text-content-muted">You've earned over ₦10,000</p>
                 </div>
@@ -302,7 +302,7 @@
 
             @if(($analyticsData['published_items'] ?? 0) >= 5)
                 <div class="text-center p-4 bg-surface rounded-lg border border-green-200">
-                    <i class="fas fa-boxes text-green-600 text-2xl mb-2" aria-hidden="true"></i>
+                    <i aria-hidden="true" class="fas fa-boxes text-green-600 text-2xl mb-2"></i>
                     <p class="font-semibold text-content">5+ Items Published!</p>
                     <p class="text-sm text-content-muted">You have a growing marketplace presence</p>
                 </div>
