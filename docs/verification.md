@@ -477,3 +477,10 @@ Isolated browser records contained **three attempts**, **four saved files**, **t
 Read-only row counts and SHA-256 fingerprints of working users, courses, lessons, assessments, questions, attempts, answers, credentials, reward ledger and **41 migration records** matched before/after. No fixture was inserted into the working database. Only owned browser/server processes were stopped; existing development listeners and the concurrent Vite hot file were preserved. Concurrent AI/content-import source, tests, documentation and generated working assets remain outside these commits.
 
 Q&A/peer-review settings are still configuration, not a completed participation workflow. Backed-up legacy reconciliation, other criteria-editor acceptance, review notification delivery and existing provider/dependency/legal/historical-file/accessibility gates remain open. Delivery is an ordinary feature-branch push with exact remote HEAD verification; no merge, deployment or whole-product readiness claim follows.
+
+
+### Resumed runtime check — 23 October 2026
+
+After the interrupted delivery resumed, the four submission commits were intact and the index contained no staged work. Concurrent content-import source/docs/styles remained as uncommitted work. The existing Laravel listener on 8000 and Vite on 5173 were retained; the current hot file was not changed. MySQL/MariaDB was inactive with no 3306 listener, and the homepage returned HTTP 500 with MySQL connection refused. `sudo -n /opt/lampp/lampp startmysql` was refused because this session requires an interactive administrator password. Database directories belong to mysql, so no unprivileged alternate server, permission change or database reconstruction was attempted.
+
+An administrator must run `sudo /opt/lampp/lampp startmysql` before current HTTP/database acceptance can be repeated. The earlier 251-test, browser and record-preservation evidence above was obtained on 22 October with the database running; it is not presented as a fresh 23 October test run. This runtime blocker does not change the committed source/build acceptance or authorize any destructive database operation.
