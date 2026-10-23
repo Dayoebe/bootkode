@@ -1,4 +1,4 @@
-<div class="space-y-6 p-4 sm:p-6 lg:p-8">
+<div class="space-y-6">
     @if (session()->has('message'))
         <div class="rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-semibold text-emerald-800">
             {{ session('message') }}
@@ -14,13 +14,13 @@
     <div class="rounded-lg border border-themed-primary bg-themed-secondary p-6 shadow-sm">
         <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
             <div>
-                <p class="text-sm font-semibold uppercase tracking-wide text-accent-primary">Billing</p>
-                <h1 class="text-2xl font-bold text-themed-primary">Receipts & invoices</h1>
+                <p class="text-sm font-semibold uppercase tracking-wide text-brand">Billing</p>
+                <h1 class=" font-bold text-themed-primary bk-page-title">Receipts & invoices</h1>
                 <p class="mt-1 max-w-2xl text-sm text-themed-secondary">
                     View payment receipts, invoices, and refund credit notes attached to your BootKode account.
                 </p>
             </div>
-            <button type="button" wire:click="generateReceipts" class="rounded-lg bg-accent-primary px-4 py-3 text-sm font-semibold text-white hover:bg-accent-secondary">
+            <button type="button" wire:click="generateReceipts" class="rounded-lg bg-action px-4 py-3 text-sm font-semibold text-action-foreground hover:bg-action/90">
                 <i class="fas fa-rotate mr-2"></i>Update Receipts
             </button>
         </div>
@@ -34,21 +34,21 @@
 
     <div class="rounded-lg border border-themed-primary bg-themed-secondary p-5 shadow-sm">
         <div class="overflow-x-auto">
-            <table class="min-w-full divide-y divide-themed-primary text-sm">
+            <x-ui.table label="Billing Documents.Blade records"><table class="min-w-full divide-y divide-themed-primary text-sm">
                 <thead>
                     <tr class="text-left text-xs font-semibold uppercase text-themed-secondary">
-                        <th class="py-3">Document</th>
-                        <th class="py-3">Type</th>
-                        <th class="py-3">Issued</th>
-                        <th class="py-3 text-right">Paid</th>
-                        <th class="py-3 text-right">Status</th>
+                        <th scope="col" class="py-3">Document</th>
+                        <th scope="col" class="py-3">Type</th>
+                        <th scope="col" class="py-3">Issued</th>
+                        <th scope="col" class="py-3 text-right">Paid</th>
+                        <th scope="col" class="py-3 text-right">Status</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-themed-primary">
                     @forelse($documents as $document)
                         <tr>
                             <td class="py-3">
-                                <a href="{{ route('commercial.documents.show', $document) }}" target="_blank" class="font-semibold text-accent-primary hover:underline">{{ $document->document_number }}</a>
+                                <a href="{{ route('commercial.documents.show', $document) }}" target="_blank" class="font-semibold text-brand hover:underline">{{ $document->document_number }}</a>
                                 <p class="text-xs text-themed-tertiary">{{ $document->customer_email }}</p>
                             </td>
                             <td class="py-3 text-themed-secondary">{{ str($document->type)->headline() }}</td>
@@ -66,7 +66,7 @@
                         </tr>
                     @endforelse
                 </tbody>
-            </table>
+            </table></x-ui.table>
         </div>
 
         @if(method_exists($documents, 'links'))

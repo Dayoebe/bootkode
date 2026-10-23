@@ -19,9 +19,9 @@
             return this.expandedSections.includes(id);
         }
     }"
-    class="rounded-[2rem] border border-themed-primary bg-themed-secondary p-4 shadow-xl transition-colors duration-300 animate__animated animate__fadeInLeft lg:sticky lg:top-4">
-    <div class="rounded-2xl border border-themed-secondary p-5 shadow-sm"
-        style="background: linear-gradient(160deg, rgba(var(--accent-primary), 0.14), rgba(var(--accent-secondary), 0.08));">
+    class="rounded-lg border border-themed-primary bg-themed-secondary p-4 shadow-sm transition-colors duration-300   lg:sticky lg:top-4">
+    <div class="rounded-lg border border-themed-secondary p-5 shadow-sm"
+        style="background: rgb(var(--accent-primary));">
         <div class="flex items-start justify-between gap-4">
             <div>
                 <p class="text-xs font-semibold uppercase tracking-[0.18em] text-themed-secondary">Course Map</p>
@@ -30,30 +30,30 @@
                     Open a section, pick an unlocked lesson, and keep moving in sequence.
                 </p>
             </div>
-            <span class="flex h-12 w-12 items-center justify-center rounded-2xl bg-themed-secondary shadow-sm">
+            <span class="flex h-12 w-12 items-center justify-center rounded-lg bg-themed-secondary shadow-sm">
                 <i class="fas fa-compass text-lg accent-themed-primary"></i>
             </span>
         </div>
 
         <div class="mt-5 grid grid-cols-2 gap-3 text-center">
-            <div class="rounded-2xl border border-themed-secondary bg-themed-secondary px-3 py-3 shadow-sm">
+            <div class="rounded-lg border border-themed-secondary bg-themed-secondary px-3 py-3 shadow-sm">
                 <p class="text-lg font-semibold text-themed-primary">{{ count($completedLessons) }}</p>
                 <p class="text-[11px] uppercase tracking-[0.16em] text-themed-tertiary">Completed</p>
             </div>
-            <div class="rounded-2xl border border-themed-secondary bg-themed-secondary px-3 py-3 shadow-sm">
+            <div class="rounded-lg border border-themed-secondary bg-themed-secondary px-3 py-3 shadow-sm">
                 <p class="text-lg font-semibold text-themed-primary">{{ count($unlockedSections) }}</p>
                 <p class="text-[11px] uppercase tracking-[0.16em] text-themed-tertiary">Unlocked</p>
             </div>
         </div>
 
-        <div class="mt-4 rounded-2xl border border-themed-secondary bg-themed-secondary p-4 shadow-sm">
+        <div class="mt-4 rounded-lg border border-themed-secondary bg-themed-secondary p-4 shadow-sm">
             <div class="flex items-center justify-between gap-3">
                 <p class="text-xs font-semibold uppercase tracking-[0.16em] text-themed-tertiary">Course Progress</p>
                 <span class="text-sm font-semibold text-themed-primary">{{ $overallProgress }}%</span>
             </div>
             <div class="mt-3 h-2 overflow-hidden rounded-full border border-themed-secondary bg-themed-tertiary">
                 <div class="h-full rounded-full"
-                    style="width: {{ $overallProgress }}%; background: linear-gradient(135deg, rgb(var(--accent-primary)), rgb(var(--accent-secondary)));">
+                    style="width: {{ $overallProgress }}%; background: rgb(var(--accent-primary));">
                 </div>
             </div>
         </div>
@@ -68,13 +68,13 @@
             @endphp
 
             <section
-                class="overflow-hidden rounded-2xl border border-themed-secondary bg-themed-tertiary shadow-sm transition-all duration-300 {{ $isUnlocked ? '' : 'opacity-70' }}">
+                class="overflow-hidden rounded-lg border border-themed-secondary bg-themed-tertiary shadow-sm transition-all duration-300 {{ $isUnlocked ? '' : 'opacity-70' }}">
                 <button type="button"
                     @click="toggleSection({{ $section->id }})"
                     class="flex w-full items-start justify-between gap-3 px-4 py-4 text-left">
                     <div class="flex min-w-0 items-start gap-3">
                         <span
-                            class="mt-0.5 flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-2xl {{ $isCompleted ? 'bg-green-500/15 text-green-500' : ($isUnlocked ? 'bg-themed-secondary accent-themed-primary' : 'bg-themed-secondary text-themed-tertiary') }}">
+                            class="mt-0.5 flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-lg {{ $isCompleted ? 'bg-green-500/15 text-green-500' : ($isUnlocked ? 'bg-themed-secondary accent-themed-primary' : 'bg-themed-secondary text-themed-tertiary') }}">
                             @if ($isCompleted)
                                 <i class="fas fa-check-circle"></i>
                             @elseif ($isUnlocked)
@@ -119,7 +119,7 @@
                 <div class="px-4 pb-4" x-show="isExpanded({{ $section->id }})" x-transition.opacity.scale.origin.top>
                     <div class="mb-4 h-2 overflow-hidden rounded-full border border-themed-secondary bg-themed-secondary">
                         <div class="h-full rounded-full transition-all duration-300"
-                            style="width: {{ $sectionProgress }}%; background: linear-gradient(135deg, rgb(var(--accent-primary)), rgb(var(--accent-secondary)));">
+                            style="width: {{ $sectionProgress }}%; background: rgb(var(--accent-primary));">
                         </div>
                     </div>
 
@@ -133,18 +133,18 @@
                             <button wire:click="selectLesson({{ $lesson->id }}, {{ $section->id }})"
                                 @click="$dispatch('close-course-nav')"
                                 @if (!$isUnlocked) disabled @endif
-                                class="flex w-full items-center justify-between gap-3 rounded-2xl border px-3 py-3 text-left transition-all duration-200
+                                class="flex w-full items-center justify-between gap-3 rounded-lg border px-3 py-3 text-left transition-all duration-200
                                     {{ $isCurrentLesson
                                         ? 'border-transparent text-white shadow-lg'
                                         : ($isUnlocked
                                             ? 'border-themed-secondary bg-themed-secondary text-themed-primary hover:-translate-y-0.5 hover:shadow-md'
                                             : 'border-themed-secondary bg-themed-secondary text-themed-tertiary cursor-not-allowed') }}"
                                 @if ($isCurrentLesson)
-                                    style="background: linear-gradient(135deg, rgb(var(--accent-primary)), rgb(var(--accent-secondary)));"
+                                    style="background: rgb(var(--bk-action)); color: rgb(var(--bk-action-text));"
                                 @endif>
                                 <div class="flex min-w-0 items-center gap-3">
                                     <span
-                                        class="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-2xl {{ $isCurrentLesson ? 'bg-white/20 text-white' : ($isLessonCompleted ? 'bg-green-500/15 text-green-500' : ($isUnlocked ? 'bg-themed-tertiary accent-themed-primary' : 'bg-themed-tertiary text-themed-tertiary')) }}">
+                                        class="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg {{ $isCurrentLesson ? 'bg-white/20 text-white' : ($isLessonCompleted ? 'bg-green-500/15 text-green-500' : ($isUnlocked ? 'bg-themed-tertiary accent-themed-primary' : 'bg-themed-tertiary text-themed-tertiary')) }}">
                                         @if ($isLessonCompleted)
                                             <i class="fas fa-check"></i>
                                         @elseif ($isCurrentLesson)
@@ -173,7 +173,7 @@
                                             @endif
                                             @if ($lesson->hasDocuments())
                                                 <span class="inline-flex items-center gap-1">
-                                                    <i class="fas fa-file-alt text-indigo-500"></i>
+                                                    <i class="fas fa-file-alt text-brand"></i>
                                                     Resources
                                                 </span>
                                             @endif
@@ -192,7 +192,7 @@
         @endforeach
     </div>
 
-    <div class="mt-4 rounded-2xl border border-themed-secondary bg-themed-tertiary p-4 shadow-sm">
+    <div class="mt-4 rounded-lg border border-themed-secondary bg-themed-tertiary p-4 shadow-sm">
         <div class="flex items-center justify-between text-sm">
             <span class="text-themed-secondary">Unlock rule</span>
             <span class="font-semibold text-themed-primary">{{ $sectionCompletionThreshold ?? 80 }}%</span>

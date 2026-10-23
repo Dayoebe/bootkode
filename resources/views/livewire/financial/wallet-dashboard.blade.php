@@ -2,9 +2,9 @@
 <div class="space-y-6">
     <!-- Header -->
     <div class="mb-8">
-        <h1 class="text-2xl font-bold text-themed-primary">My Wallet</h1>
+        <h1 class=" font-bold text-themed-primary bk-page-title">My Wallet</h1>
         <p class="text-themed-secondary">Manage your funds and track transactions</p>
-        <a href="{{ route('billing.documents') }}" class="mt-3 inline-flex rounded-lg border border-themed-secondary px-3 py-2 text-sm font-semibold text-themed-primary hover:border-blue-400 hover:text-blue-700">
+        <a href="{{ route('billing.documents') }}" class="mt-3 inline-flex rounded-lg border border-themed-secondary px-3 py-2 text-sm font-semibold text-themed-primary hover:border-brand hover:text-brand">
             <i class="fas fa-receipt mr-2"></i>Receipts & invoices
         </a>
     </div>
@@ -12,14 +12,14 @@
     <!-- Wallet Balance Cards -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
         <!-- User Wallet Balance -->
-        <div class="bg-themed-secondary rounded-lg shadow-sm p-6 border-l-4 border-blue-500">
+        <div class="bg-themed-secondary rounded-lg shadow-sm p-6 border-l-4 border-brand">
             <div class="flex items-center justify-between">
                 <div>
                     <p class="text-sm text-themed-secondary">User Wallet</p>
                     <p class="text-2xl font-bold text-themed-primary">{{ $walletStats['formatted_user_balance'] }}</p>
                 </div>
-                <div class="bg-blue-100 p-3 rounded-lg">
-                    <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div class="bg-brand/10 p-3 rounded-lg">
+                    <svg class="w-6 h-6 text-brand" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"></path>
                     </svg>
                 </div>
@@ -52,14 +52,14 @@
         </div>
 
         <!-- Total Balance -->
-        <div class="bg-themed-secondary rounded-lg shadow-sm p-6 border-l-4 border-purple-500">
+        <div class="bg-themed-secondary rounded-lg shadow-sm p-6 border-l-4 border-brand">
             <div class="flex items-center justify-between">
                 <div>
                     <p class="text-sm text-themed-secondary">Total Balance</p>
                     <p class="text-2xl font-bold text-themed-primary">{{ $walletStats['formatted_total_balance'] }}</p>
                 </div>
-                <div class="bg-purple-100 p-3 rounded-lg">
-                    <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div class="bg-brand/10 p-3 rounded-lg">
+                    <svg class="w-6 h-6 text-brand" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2-2V7a2 2 0 012-2h2a2 2 0 002 2v2a2 2 0 002 2h2a2 2 0 012-2V7a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 00-2 2h-2a2 2 0 00-2 2v6a2 2 0 01-2 2H9z"></path>
                     </svg>
                 </div>
@@ -112,7 +112,7 @@
                 </div>
             @else
                 <div class="text-center py-8">
-                    <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <svg class="mx-auto h-12 w-12 text-content-muted" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
                     </svg>
                     <h3 class="mt-2 text-sm font-medium text-themed-primary">No transactions yet</h3>
@@ -128,12 +128,12 @@
             <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
                 <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" wire:click="closeFundingModal"></div>
 
-                <div class="inline-block align-bottom bg-themed-secondary rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+                <div class="inline-block align-bottom bg-themed-secondary rounded-lg text-left overflow-hidden shadow-sm transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
                     <form wire:submit.prevent="fundWallet" wire:loading.attr="aria-busy">
                         <div class="bg-themed-secondary px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
                             <div class="sm:flex sm:items-start">
-                                <div class="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-blue-100 sm:mx-0 sm:h-10 sm:w-10">
-                                    <svg class="h-6 w-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <div class="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-brand/10 sm:mx-0 sm:h-10 sm:w-10">
+                                    <svg class="h-6 w-6 text-brand" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"></path>
                                     </svg>
                                 </div>
@@ -146,7 +146,7 @@
                                                 type="number"
                                                 id="fundAmount"
                                                 wire:model="fundAmount"
-                                                class="shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-themed-secondary rounded-md"
+                                                class="shadow-sm focus:ring-brand/30 focus:border-brand block w-full sm:text-sm border-themed-secondary rounded-md"
                                                 placeholder="Enter amount (min: ₦100)"
                                                 min="100"
                                                 max="500000"
@@ -164,10 +164,10 @@
                             </div>
                         </div>
                         <div class="bg-themed-tertiary px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
-                            <button type="submit" class="bk-button bk-button-primary w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2  text-base font-medium   focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:ml-3 sm:w-auto sm:text-sm">
+                            <button type="submit" class="bk-button bk-button-primary w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2  text-base font-medium   focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand/30 sm:ml-3 sm:w-auto sm:text-sm">
                                 Continue to Payment
                             </button>
-                            <button type="button" wire:click="closeFundingModal" class="mt-3 w-full inline-flex justify-center rounded-md border border-themed-secondary shadow-sm px-4 py-2 bg-themed-secondary text-base font-medium text-themed-primary hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
+                            <button type="button" wire:click="closeFundingModal" class="mt-3 w-full inline-flex justify-center rounded-md border border-themed-secondary shadow-sm px-4 py-2 bg-themed-secondary text-base font-medium text-themed-primary hover:bg-surface-muted focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand/30 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
                                 Cancel
                             </button>
                         </div>

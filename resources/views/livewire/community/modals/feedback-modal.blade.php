@@ -2,7 +2,7 @@
 @if($activeModal === 'feedback')
     <div role="dialog" aria-modal="true" aria-label="Submit Feedback" x-data x-trap.inert.noscroll="true" x-on:keydown.escape.window="$wire.closeModal()" class="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
         <div
-            class="bg-themed-secondary rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto animate-slide-in">
+            class="bg-themed-secondary rounded-lg shadow-sm max-w-2xl w-full max-h-[90vh] overflow-y-auto animate-slide-in">
             <div
                 class="sticky top-0 bg-themed-secondary border-b border-themed-primary p-6 flex items-center justify-between">
                 <h2 class="text-xl font-bold text-themed-primary">Submit Feedback</h2>
@@ -50,7 +50,7 @@
                     @error('feedbackMessage') <span id="community-feedbackMessage-error" class="text-red-500 text-xs mt-1">{{ $message }}</span> @enderror
                 </div>
 
-                <div class="bg-blue-100/20 border border-blue-500/30 rounded-lg p-3 text-sm text-blue-300">
+                <div class="bg-brand/10 border border-brand rounded-lg p-3 text-sm text-brand">
                     <i class="fas fa-lightbulb mr-2"></i>
                     Your feedback helps us improve the platform. Be specific and constructive!
                 </div>

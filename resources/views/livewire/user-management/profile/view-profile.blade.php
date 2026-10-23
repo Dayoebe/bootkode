@@ -2,24 +2,24 @@
     <!-- Personal Information Tab -->
     <div x-show="activeTab === 'personal'" x-transition.opacity.duration.300ms class="py-4 sm:py-6 lg:py-8">
         <div class="flex items-center mb-6 sm:mb-8">
-            <div class="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-r from-accent-themed-primary to-accent-themed-secondary rounded-xl flex items-center justify-center mr-3 sm:mr-4">
-                <i class="fas fa-user-circle text-white text-lg sm:text-xl"></i>
+            <div class="w-10 h-10 sm:w-12 sm:h-12 bg-surface-muted   rounded-lg flex items-center justify-center mr-3 sm:mr-4">
+                <i class="fas fa-user-circle text-brand text-lg sm:text-xl"></i>
             </div>
             <div>
                 <h2 class="text-xl sm:text-2xl font-bold text-themed-primary transition-colors duration-300">Personal Information</h2>
                 <p class="text-sm sm:text-base text-themed-secondary transition-colors duration-300">Your profile details and account information</p>
             </div>
         </div>
-    
+
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 md:gap-8">
             <!-- Basic Info -->
             <div class="space-y-4 sm:space-y-6">
-                <div class="bg-themed-secondary p-4 sm:p-6 rounded-xl border border-themed-primary backdrop-blur-sm transition-colors duration-300">
+                <div class="bg-themed-secondary p-4 sm:p-6 rounded-lg border border-themed-primary  transition-colors duration-300">
                     <h3 class="text-lg font-semibold text-themed-primary mb-3 sm:mb-4 flex items-center transition-colors duration-300">
                         <i class="fas fa-user accent-themed-primary mr-2"></i>
                         Basic Information
                     </h3>
-    
+
                     <div class="space-y-3 sm:space-y-4">
                         <div>
                             <p class="text-xs sm:text-sm font-medium text-themed-secondary mb-1 transition-colors duration-300">Full Name</p>
@@ -49,15 +49,15 @@
                     </div>
                 </div>
             </div>
-    
+
             <!-- Address & Professional Info -->
             <div class="space-y-4 sm:space-y-6">
-                <div class="bg-themed-secondary p-4 sm:p-6 rounded-xl border border-themed-primary backdrop-blur-sm transition-colors duration-300">
+                <div class="bg-themed-secondary p-4 sm:p-6 rounded-lg border border-themed-primary  transition-colors duration-300">
                     <h3 class="text-lg font-semibold text-themed-primary mb-3 sm:mb-4 flex items-center transition-colors duration-300">
                         <i class="fas fa-briefcase text-green-500 mr-2"></i>
                         Professional & Location
                     </h3>
-    
+
                     <div class="space-y-3 sm:space-y-4">
                         <div>
                             <p class="text-xs sm:text-sm font-medium text-themed-secondary mb-1 transition-colors duration-300">Occupation</p>
@@ -80,11 +80,11 @@
             </div>
         </div>
     </div>
-    
+
     <!-- Education Tab -->
     <div x-show="activeTab === 'education'" x-transition.opacity.duration.300ms class="py-4 sm:py-6 lg:py-8">
         <div class="flex items-center mb-6 sm:mb-8">
-            <div class="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-r from-purple-500 to-pink-600 rounded-xl flex items-center justify-center mr-3 sm:mr-4">
+            <div class="w-10 h-10 sm:w-12 sm:h-12 bg-brand-ink   rounded-lg flex items-center justify-center mr-3 sm:mr-4">
                 <i class="fas fa-graduation-cap text-white text-lg sm:text-xl"></i>
             </div>
             <div>
@@ -92,16 +92,16 @@
                 <p class="text-sm sm:text-base text-themed-secondary transition-colors duration-300">Your educational background and professional skills</p>
             </div>
         </div>
-    
+
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 md:gap-8">
             <!-- Education & Career Section -->
             <div class="space-y-4 sm:space-y-6">
-                <div class="bg-themed-secondary p-4 sm:p-6 rounded-xl border border-themed-primary backdrop-blur-sm transition-colors duration-300">
+                <div class="bg-themed-secondary p-4 sm:p-6 rounded-lg border border-themed-primary  transition-colors duration-300">
                     <h3 class="text-lg font-semibold text-themed-primary mb-3 sm:mb-4 flex items-center transition-colors duration-300">
-                        <i class="fas fa-graduation-cap text-purple-500 mr-2"></i>
+                        <i class="fas fa-graduation-cap text-brand mr-2"></i>
                         Education & Career
                     </h3>
-    
+
                     <div class="space-y-3 sm:space-y-4">
                         <div>
                             <p class="text-xs sm:text-sm font-medium text-themed-secondary mb-1 transition-colors duration-300">Education Level</p>
@@ -114,20 +114,20 @@
                     </div>
                 </div>
             </div>
-    
+
             <!-- Skills & Interests Section -->
             <div class="space-y-4 sm:space-y-6">
-                <div class="bg-themed-secondary p-4 sm:p-6 rounded-xl border border-themed-primary backdrop-blur-sm transition-colors duration-300">
+                <div class="bg-themed-secondary p-4 sm:p-6 rounded-lg border border-themed-primary  transition-colors duration-300">
                     <h3 class="text-lg font-semibold text-themed-primary mb-3 sm:mb-4 flex items-center transition-colors duration-300">
                         <i class="fas fa-tools text-pink-500 mr-2"></i>
                         Skills & Interests
                     </h3>
-    
+
                     <div>
                         @if ($user->skills)
                             <div class="flex flex-wrap gap-2">
                                 @foreach (explode(',', $user->skills) as $skill)
-                                    <span class="px-2 py-1 sm:px-3 sm:py-2 rounded-full text-xs sm:text-sm font-medium bg-accent-themed-primary/10 border border-accent-themed-primary/20 text-accent-themed-primary backdrop-blur-sm transition-colors duration-300">
+                                    <span class="px-2 py-1 sm:px-3 sm:py-2 rounded-full text-xs sm:text-sm font-medium bg-brand/10 border border-brand/20 text-brand  transition-colors duration-300">
                                         {{ trim($skill) }}
                                     </span>
                                 @endforeach
@@ -136,7 +136,7 @@
                             <div class="text-center py-4 sm:py-6 text-themed-secondary transition-colors duration-300">
                                 <i class="fas fa-tools text-xl sm:text-2xl mb-2"></i>
                                 <p class="text-sm sm:text-base">No skills specified</p>
-                                <button wire:click="toggleEditMode" class="mt-2 text-xs sm:text-sm text-accent-themed-primary hover:text-accent-themed-secondary transition-colors duration-300">
+                                <button wire:click="toggleEditMode" class="mt-2 text-xs sm:text-sm text-brand hover:text-accent-themed-secondary transition-colors duration-300">
                                     Add skills →
                                 </button>
                             </div>
@@ -146,11 +146,11 @@
             </div>
         </div>
     </div>
-    
+
     <!-- Social Links Tab -->
     <div x-show="activeTab === 'social'" x-transition.opacity.duration.300ms class="py-4 sm:py-6 lg:py-8">
         <div class="flex items-center mb-6 sm:mb-8">
-            <div class="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-r from-pink-500 to-red-600 rounded-xl flex items-center justify-center mr-3 sm:mr-4">
+            <div class="w-10 h-10 sm:w-12 sm:h-12 bg-brand-ink   rounded-lg flex items-center justify-center mr-3 sm:mr-4">
                 <i class="fas fa-share-alt text-white text-lg sm:text-xl"></i>
             </div>
             <div>
@@ -158,23 +158,23 @@
                 <p class="text-sm sm:text-base text-themed-secondary transition-colors duration-300">Connect with your social media profiles</p>
             </div>
         </div>
-    
+
         @if ($user->social_links && count($user->social_links) > 0)
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
                 @foreach ($user->social_links as $platform => $url)
                     <a href="{{ $url }}" target="_blank"
-                        class="bg-themed-secondary hover:bg-themed-tertiary rounded-xl p-4 sm:p-6 transition-all duration-300 border border-themed-primary backdrop-blur-sm group">
+                        class="bg-themed-secondary hover:bg-themed-tertiary rounded-lg p-4 sm:p-6 transition-all duration-300 border border-themed-primary  group">
                         <div class="flex items-center">
-                            <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-accent-themed-primary/10 border border-accent-themed-primary/20 flex items-center justify-center mr-3 sm:mr-4 group-hover:scale-105 transition-transform duration-300">
+                            <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-lg bg-brand/10 border border-brand/20 flex items-center justify-center mr-3 sm:mr-4  transition-transform duration-300">
                                 @switch($platform)
                                     @case('twitter')
-                                        <i class="fab fa-twitter text-blue-400 text-lg sm:text-xl"></i>
+                                        <i class="fab fa-twitter text-brand text-lg sm:text-xl"></i>
                                     @break
                                     @case('facebook')
-                                        <i class="fab fa-facebook-f text-blue-500 text-lg sm:text-xl"></i>
+                                        <i class="fab fa-facebook-f text-brand text-lg sm:text-xl"></i>
                                     @break
                                     @case('linkedin')
-                                        <i class="fab fa-linkedin-in text-blue-600 text-lg sm:text-xl"></i>
+                                        <i class="fab fa-linkedin-in text-brand text-lg sm:text-xl"></i>
                                     @break
                                     @case('github')
                                         <i class="fab fa-github text-themed-primary text-lg sm:text-xl"></i>
@@ -199,24 +199,24 @@
                 @endforeach
             </div>
         @else
-            <div class="bg-themed-secondary rounded-xl p-6 sm:p-8 md:p-12 text-center border border-themed-primary backdrop-blur-sm transition-colors duration-300">
-                <div class="w-16 h-16 sm:w-20 sm:h-20 bg-accent-themed-primary/10 rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4 transition-colors duration-300">
-                    <i class="fas fa-share-alt text-accent-themed-primary text-xl sm:text-2xl md:text-3xl"></i>
+            <div class="bg-themed-secondary rounded-lg p-6 sm:p-8 md:p-12 text-center border border-themed-primary  transition-colors duration-300">
+                <div class="w-16 h-16 sm:w-20 sm:h-20 bg-brand/10 rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4 transition-colors duration-300">
+                    <i class="fas fa-share-alt text-brand text-xl sm:text-2xl md:text-3xl"></i>
                 </div>
                 <h3 class="text-lg sm:text-xl text-themed-primary font-semibold mb-2 transition-colors duration-300">No social links added</h3>
                 <p class="text-sm sm:text-base text-themed-secondary mb-4 sm:mb-6 transition-colors duration-300">Connect your social media profiles to share with others</p>
                 <button wire:click="toggleEditMode"
-                    class="px-4 py-2 sm:px-6 sm:py-3 bg-accent-themed-primary hover:bg-accent-themed-secondary text-white rounded-xl font-semibold transition-all duration-300 shadow-lg hover:shadow-accent-themed-primary/25 text-sm sm:text-base">
+                    class="px-4 py-2 sm:px-6 sm:py-3 bg-action hover:bg-action/90 text-action-foreground rounded-lg font-semibold transition-all duration-300 shadow-sm hover:shadow-accent-themed-primary/25 text-sm sm:text-base">
                     <i class="fas fa-plus mr-2"></i> Add Social Links
                 </button>
             </div>
         @endif
     </div>
-    
+
     <!-- Activity Tab -->
     <div x-show="activeTab === 'activity'" x-transition.opacity.duration.300ms class="py-4 sm:py-6 lg:py-8">
         <div class="flex items-center mb-6 sm:mb-8">
-            <div class="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-r from-emerald-500 to-teal-600 rounded-xl flex items-center justify-center mr-3 sm:mr-4">
+            <div class="w-10 h-10 sm:w-12 sm:h-12 bg-brand-ink   rounded-lg flex items-center justify-center mr-3 sm:mr-4">
                 <i class="fas fa-chart-line text-white text-lg sm:text-xl"></i>
             </div>
             <div>
@@ -224,20 +224,20 @@
                 <p class="text-sm sm:text-base text-themed-secondary transition-colors duration-300">Your learning activity and engagement metrics</p>
             </div>
         </div>
-    
+
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 mb-6 sm:mb-8">
-            <div class="bg-gradient-to-br from-accent-themed-primary/10 to-accent-themed-secondary/10 p-4 sm:p-6 rounded-xl border border-accent-themed-primary/20 backdrop-blur-sm transition-colors duration-300">
+            <div class="bg-surface-muted   p-4 sm:p-6 rounded-lg border border-brand/20  transition-colors duration-300">
                 <div class="flex items-center justify-between mb-3 sm:mb-4">
-                    <h3 class="text-accent-themed-primary font-semibold text-sm sm:text-base transition-colors duration-300">Courses Enrolled</h3>
-                    <div class="w-8 h-8 sm:w-10 sm:h-10 bg-accent-themed-primary/20 rounded-lg flex items-center justify-center transition-colors duration-300">
-                        <i class="fas fa-book-open text-accent-themed-primary text-sm sm:text-base"></i>
+                    <h3 class="text-brand font-semibold text-sm sm:text-base transition-colors duration-300">Courses Enrolled</h3>
+                    <div class="w-8 h-8 sm:w-10 sm:h-10 bg-brand/20 rounded-lg flex items-center justify-center transition-colors duration-300">
+                        <i class="fas fa-book-open text-brand text-sm sm:text-base"></i>
                     </div>
                 </div>
                 <p class="text-2xl sm:text-3xl font-bold text-themed-primary mb-1 sm:mb-2 transition-colors duration-300">{{ $activityStats['courses_enrolled']['total'] ?? 0 }}</p>
                 <p class="text-xs sm:text-sm text-themed-secondary transition-colors duration-300">+{{ $activityStats['courses_enrolled']['this_month'] ?? 0 }} this month</p>
             </div>
-    
-            <div class="bg-gradient-to-br from-green-500/10 to-emerald-600/10 p-4 sm:p-6 rounded-xl border border-green-500/20 backdrop-blur-sm transition-colors duration-300">
+
+            <div class="bg-brand-ink   p-4 sm:p-6 rounded-lg border border-green-500/20  transition-colors duration-300">
                 <div class="flex items-center justify-between mb-3 sm:mb-4">
                     <h3 class="text-green-600 font-semibold text-sm sm:text-base transition-colors duration-300">Lessons Completed</h3>
                     <div class="w-8 h-8 sm:w-10 sm:h-10 bg-green-500/20 rounded-lg flex items-center justify-center transition-colors duration-300">
@@ -248,18 +248,18 @@
                 <p class="text-xs sm:text-sm text-themed-secondary transition-colors duration-300">+{{ $activityStats['lessons_completed']['this_month'] ?? 0 }} this month</p>
             </div>
         </div>
-    
+
         <!-- Recent Activity Timeline -->
-        <div class="bg-themed-secondary p-4 sm:p-6 rounded-xl border border-themed-primary backdrop-blur-sm transition-colors duration-300">
+        <div class="bg-themed-secondary p-4 sm:p-6 rounded-lg border border-themed-primary  transition-colors duration-300">
             <h3 class="text-lg font-semibold text-themed-primary mb-4 sm:mb-6 flex items-center transition-colors duration-300">
                 <i class="fas fa-history text-emerald-500 mr-2"></i> Recent Activity
             </h3>
-    
+
             <div class="space-y-3 sm:space-y-4">
                 @forelse($recentActivities ?? [] as $activity)
-                    <div class="flex items-start bg-themed-tertiary p-3 sm:p-4 rounded-xl border border-themed-primary transition-colors duration-300">
-                        <div class="flex-shrink-0 w-8 h-8 sm:w-10 sm:h-10 rounded-lg bg-accent-themed-primary/10 border border-accent-themed-primary/20 flex items-center justify-center mr-3 sm:mr-4 transition-colors duration-300">
-                            <i class="fas fa-{{ $activity['icon'] ?? 'activity' }} text-accent-themed-primary text-sm sm:text-base"></i>
+                    <div class="flex items-start bg-themed-tertiary p-3 sm:p-4 rounded-lg border border-themed-primary transition-colors duration-300">
+                        <div class="flex-shrink-0 w-8 h-8 sm:w-10 sm:h-10 rounded-lg bg-brand/10 border border-brand/20 flex items-center justify-center mr-3 sm:mr-4 transition-colors duration-300">
+                            <i class="fas fa-{{ $activity['icon'] ?? 'activity' }} text-brand text-sm sm:text-base"></i>
                         </div>
                         <div class="flex-1 min-w-0">
                             <p class="text-themed-primary font-medium text-sm sm:text-base">{{ $activity['title'] }}</p>
@@ -281,11 +281,11 @@
             </div>
         </div>
     </div>
-    
+
     <!-- Progress Tab -->
     <div x-show="activeTab === 'progress'" x-transition.opacity.duration.300ms class="py-4 sm:py-6 lg:py-8">
         <div class="flex items-center mb-6 sm:mb-8">
-            <div class="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-r from-orange-500 to-amber-600 rounded-xl flex items-center justify-center mr-3 sm:mr-4">
+            <div class="w-10 h-10 sm:w-12 sm:h-12 bg-brand-ink   rounded-lg flex items-center justify-center mr-3 sm:mr-4">
                 <i class="fas fa-chart-pie text-white text-lg sm:text-xl"></i>
             </div>
             <div>
@@ -293,18 +293,18 @@
                 <p class="text-sm sm:text-base text-themed-secondary transition-colors duration-300">Track your learning journey and achievements</p>
             </div>
         </div>
-    
+
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-6 sm:mb-8">
-            <div class="bg-accent-themed-primary/10 p-4 sm:p-6 rounded-xl border border-accent-themed-primary/20 backdrop-blur-sm transition-colors duration-300">
+            <div class="bg-brand/10 p-4 sm:p-6 rounded-lg border border-brand/20  transition-colors duration-300">
                 <div class="flex items-center justify-between mb-3 sm:mb-4">
-                    <h3 class="text-accent-themed-primary font-semibold text-sm sm:text-base">Courses</h3>
-                    <i class="fas fa-book text-accent-themed-primary text-lg sm:text-xl"></i>
+                    <h3 class="text-brand font-semibold text-sm sm:text-base">Courses</h3>
+                    <i class="fas fa-book text-brand text-lg sm:text-xl"></i>
                 </div>
                 <p class="text-2xl sm:text-3xl font-bold text-themed-primary">{{ $learningProgress['total_courses'] ?? 0 }}</p>
                 <p class="text-xs sm:text-sm text-themed-secondary">Enrolled</p>
             </div>
-    
-            <div class="bg-green-500/10 p-4 sm:p-6 rounded-xl border border-green-500/20 backdrop-blur-sm transition-colors duration-300">
+
+            <div class="bg-green-500/10 p-4 sm:p-6 rounded-lg border border-green-500/20  transition-colors duration-300">
                 <div class="flex items-center justify-between mb-3 sm:mb-4">
                     <h3 class="text-green-600 font-semibold text-sm sm:text-base">Lessons</h3>
                     <i class="fas fa-check-circle text-green-500 text-lg sm:text-xl"></i>
@@ -312,8 +312,8 @@
                 <p class="text-2xl sm:text-3xl font-bold text-themed-primary">{{ $learningProgress['completed_lessons'] ?? 0 }}</p>
                 <p class="text-xs sm:text-sm text-themed-secondary">Completed</p>
             </div>
-    
-            <div class="bg-amber-500/10 p-4 sm:p-6 rounded-xl border border-amber-500/20 backdrop-blur-sm transition-colors duration-300">
+
+            <div class="bg-amber-500/10 p-4 sm:p-6 rounded-lg border border-amber-500/20  transition-colors duration-300">
                 <div class="flex items-center justify-between mb-3 sm:mb-4">
                     <h3 class="text-amber-600 font-semibold text-sm sm:text-base">Resources</h3>
                     <i class="fas fa-bookmark text-amber-500 text-lg sm:text-xl"></i>
@@ -321,8 +321,8 @@
                 <p class="text-2xl sm:text-3xl font-bold text-themed-primary">{{ $learningProgress['saved_resources'] ?? 0 }}</p>
                 <p class="text-xs sm:text-sm text-themed-secondary">Saved</p>
             </div>
-    
-            <div class="bg-pink-500/10 p-4 sm:p-6 rounded-xl border border-pink-500/20 backdrop-blur-sm transition-colors duration-300">
+
+            <div class="bg-pink-500/10 p-4 sm:p-6 rounded-lg border border-pink-500/20  transition-colors duration-300">
                 <div class="flex items-center justify-between mb-3 sm:mb-4">
                     <h3 class="text-pink-600 font-semibold text-sm sm:text-base">Wishlist</h3>
                     <i class="fas fa-heart text-pink-500 text-lg sm:text-xl"></i>
@@ -331,13 +331,13 @@
                 <p class="text-xs sm:text-sm text-themed-secondary">Items</p>
             </div>
         </div>
-    
+
         <!-- Course Progress -->
-        <div class="bg-themed-secondary p-4 sm:p-6 rounded-xl border border-themed-primary backdrop-blur-sm transition-colors duration-300">
+        <div class="bg-themed-secondary p-4 sm:p-6 rounded-lg border border-themed-primary  transition-colors duration-300">
             <h3 class="text-lg font-semibold text-themed-primary mb-4 sm:mb-6 flex items-center">
                 <i class="fas fa-chart-bar text-orange-400 mr-2"></i> Course Progress
             </h3>
-    
+
             @if (isset($user->courses) && $user->courses->count() > 0)
                 <div class="space-y-3 sm:space-y-4">
                     @foreach ($user->courses as $course)
@@ -355,7 +355,7 @@
                                 <span class="text-xs sm:text-sm text-themed-secondary">{{ $completedCount }}/{{ $totalLessons }} lessons</span>
                             </div>
                             <div class="w-full bg-themed-primary/20 rounded-full h-2 sm:h-3">
-                                <div class="bg-gradient-to-r from-orange-500 to-amber-500 h-2 sm:h-3 rounded-full transition-all duration-500" style="width: {{ $percentage }}%"></div>
+                                <div class="bg-brand-ink   h-2 sm:h-3 rounded-full transition-all duration-500" style="width: {{ $percentage }}%"></div>
                             </div>
                             <div class="flex justify-between items-center mt-1 sm:mt-2">
                                 <span class="text-xs text-themed-secondary">{{ number_format($percentage, 1) }}% complete</span>
@@ -377,11 +377,11 @@
             @endif
         </div>
     </div>
-    
+
     <!-- Resources Tab -->
     <div x-show="activeTab === 'resources'" x-transition.opacity.duration.300ms class="py-4 sm:py-6 lg:py-8">
         <div class="flex items-center mb-6 sm:mb-8">
-            <div class="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-r from-yellow-500 to-amber-600 rounded-xl flex items-center justify-center mr-3 sm:mr-4">
+            <div class="w-10 h-10 sm:w-12 sm:h-12 bg-brand-ink   rounded-lg flex items-center justify-center mr-3 sm:mr-4">
                 <i class="fas fa-bookmark text-white text-lg sm:text-xl"></i>
             </div>
             <div>
@@ -389,15 +389,15 @@
                 <p class="text-sm sm:text-base text-themed-secondary transition-colors duration-300">Quick access to your bookmarked content</p>
             </div>
         </div>
-    
+
         @if (isset($savedResources) && $savedResources->count() > 0)
             <div class="space-y-3 sm:space-y-4">
                 @foreach ($savedResources as $resource)
-                    <div class="bg-themed-secondary hover:bg-themed-tertiary rounded-xl p-4 sm:p-6 transition-all duration-300 border border-themed-primary backdrop-blur-sm group">
+                    <div class="bg-themed-secondary hover:bg-themed-tertiary rounded-lg p-4 sm:p-6 transition-all duration-300 border border-themed-primary  group">
                         <div class="flex items-start">
                             <div class="flex-shrink-0 w-10 h-10 sm:w-12 sm:h-12 rounded-lg bg-yellow-500/10 border border-yellow-500/20 flex items-center justify-center mr-3 sm:mr-4">
                                 @if ($resource->resourceable_type === 'App\Models\Learning\Lesson')
-                                    <i class="fas fa-play text-accent-themed-primary text-sm sm:text-base"></i>
+                                    <i class="fas fa-play text-brand text-sm sm:text-base"></i>
                                 @elseif($resource->resourceable_type === 'App\Models\Assignment')
                                     <i class="fas fa-tasks text-green-500 text-sm sm:text-base"></i>
                                 @else
@@ -417,7 +417,7 @@
                 @endforeach
             </div>
         @else
-            <div class="bg-themed-secondary rounded-xl p-6 sm:p-8 md:p-12 text-center border border-themed-primary backdrop-blur-sm transition-colors duration-300">
+            <div class="bg-themed-secondary rounded-lg p-6 sm:p-8 md:p-12 text-center border border-themed-primary  transition-colors duration-300">
                 <div class="w-16 h-16 sm:w-20 sm:h-20 bg-yellow-500/10 rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4">
                     <i class="fas fa-bookmark text-yellow-500 text-xl sm:text-2xl md:text-3xl"></i>
                 </div>
@@ -426,14 +426,14 @@
             </div>
         @endif
     </div>
-    
+
     <!-- Wishlist Tab -->
     @include('livewire.user-management.profile.tab.wishlist-tab')
-    
+
     <!-- Certificates Tab -->
     @include('livewire.user-management.profile.tab.certificate-tab')
-    
+
     <!-- Settings Tab -->
     @include('livewire.user-management.profile.tab.settings-tab')
-    
+
     </div>

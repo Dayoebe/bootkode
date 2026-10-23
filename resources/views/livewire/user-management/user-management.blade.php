@@ -1,10 +1,10 @@
 <div
-    class="p-4 sm:p-6 bg-themed-secondary rounded-lg shadow-md animate__animated animate__fadeIn transition-colors duration-300 max-w-full overflow-hidden">
+    class="p-4 sm:p-6 bg-themed-secondary rounded-lg shadow-sm   transition-colors duration-300 max-w-full overflow-hidden">
     <!-- Header -->
     <div class="mb-8">
         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div>
-                <h1 class="text-2xl sm:text-3xl font-bold text-themed-primary transition-colors duration-300">
+                <h1 class="  font-bold text-themed-primary transition-colors duration-300 bk-page-title">
                     <i class="fas fa-users-cog mr-2"></i>
                     User Management
                 </h1>
@@ -16,11 +16,11 @@
                     <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                         <i class="fas fa-search text-themed-secondary"></i>
                     </div>
-                    <input wire:model.live.debounce.300ms="search" type="text" placeholder="Search users..."
-                        class="w-full pl-10 pr-3 py-2 border border-themed-primary rounded-xl bg-themed-secondary text-themed-primary placeholder-themed-tertiary focus:outline-none focus:ring-2 focus:ring-accent-themed-primary transition-all duration-200 text-sm">
+                    <input aria-label="Search users" wire:model.live.debounce.300ms="search" type="text" placeholder="Search users..."
+                        class="w-full pl-10 pr-3 py-2 border border-themed-primary rounded-lg bg-themed-secondary text-themed-primary placeholder-themed-tertiary focus:outline-none focus:ring-2 focus:ring-brand transition-all duration-200 text-sm">
                 </div>
                 <button wire:click="createUser" type="button"
-                    class="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-xl shadow-sm text-white bg-accent-themed-primary hover:bg-accent-themed-secondary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-accent-themed-primary transition-all duration-200 whitespace-nowrap">
+                    class="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-lg shadow-sm text-action-foreground bg-action hover:bg-action/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand transition-all duration-200 whitespace-nowrap">
                     <i class="fas fa-user-plus mr-2"></i>
                     Add User
                 </button>
@@ -31,7 +31,7 @@
     <!-- Flash Messages -->
     @if (session('success'))
         <div
-            class="mb-4 p-3 sm:p-4 bg-green-100 border border-green-200 text-green-700 rounded-xl animate__animated animate__fadeIn transition-colors duration-300">
+            class="mb-4 p-3 sm:p-4 bg-green-100 border border-green-200 text-green-700 rounded-lg   transition-colors duration-300">
             <div class="flex items-center">
                 <i class="fas fa-check-circle mr-2 flex-shrink-0"></i>
                 <span class="text-sm sm:text-base">{{ session('success') }}</span>
@@ -41,7 +41,7 @@
 
     @if (session('error'))
         <div
-            class="mb-4 p-3 sm:p-4 bg-red-100 border border-red-200 text-red-700 rounded-xl animate__animated animate__fadeIn transition-colors duration-300">
+            class="mb-4 p-3 sm:p-4 bg-red-100 border border-red-200 text-red-700 rounded-lg   transition-colors duration-300">
             <div class="flex items-center">
                 <i class="fas fa-exclamation-circle mr-2 flex-shrink-0"></i>
                 <span class="text-sm sm:text-base">{{ session('error') }}</span>
@@ -53,8 +53,8 @@
     <div wire:loading
         class="fixed inset-0 bg-themed-primary bg-opacity-50 flex items-center justify-center z-50 transition-colors duration-300">
         <div
-            class="bg-themed-secondary p-6 rounded-xl shadow-2xl border border-themed-primary transition-colors duration-300">
-            <i class="fas fa-spinner fa-spin text-accent-themed-primary text-3xl mb-2 block mx-auto"></i>
+            class="bg-themed-secondary p-6 rounded-lg shadow-sm border border-themed-primary transition-colors duration-300">
+            <i class="fas fa-spinner fa-spin text-brand text-3xl mb-2 block mx-auto"></i>
             <p class="text-themed-primary text-sm">Processing users...</p>
         </div>
     </div>
@@ -67,7 +67,7 @@
                 class="block text-sm font-medium text-themed-primary mb-2 transition-colors duration-300">Status</label>
             <div class="relative">
                 <select wire:model.live="statusFilter" id="statusFilter"
-                    class="w-full p-3 border border-themed-primary rounded-xl bg-themed-secondary text-themed-primary transition-all duration-200 text-sm appearance-none focus:outline-none focus:ring-2 focus:ring-accent-themed-primary">
+                    class="w-full p-3 border border-themed-primary rounded-lg bg-themed-secondary text-themed-primary transition-all duration-200 text-sm appearance-none focus:outline-none focus:ring-2 focus:ring-brand">
                     <option value="all">All Users</option>
                     <option value="active">Active Only</option>
                     <option value="inactive">Inactive Only</option>
@@ -85,7 +85,7 @@
                 Page</label>
             <div class="relative">
                 <select wire:model.live="perPage" id="perPage"
-                    class="w-full p-3 border border-themed-primary rounded-xl bg-themed-secondary text-themed-primary transition-all duration-200 text-sm appearance-none focus:outline-none focus:ring-2 focus:ring-accent-themed-primary">
+                    class="w-full p-3 border border-themed-primary rounded-lg bg-themed-secondary text-themed-primary transition-all duration-200 text-sm appearance-none focus:outline-none focus:ring-2 focus:ring-brand">
                     <option value="10">10</option>
                     <option value="15">15</option>
                     <option value="25">25</option>
@@ -101,10 +101,10 @@
 
     <!-- Users Table - Desktop View -->
     <div
-        class="hidden lg:block bg-themed-secondary rounded-xl border border-themed-primary backdrop-blur-sm transition-colors duration-300 overflow-hidden shadow-lg">
+        class="hidden lg:block bg-themed-secondary rounded-lg border border-themed-primary  transition-colors duration-300 overflow-hidden shadow-sm">
         <div class="overflow-x-auto">
-            <table class="min-w-full divide-y divide-themed-primary">
-                <thead class="bg-gradient-to-r from-accent-themed-primary to-accent-themed-secondary">
+            <x-ui.table label="User Management.Blade records"><table class="min-w-full divide-y divide-themed-primary">
+                <thead class="bg-surface-muted  ">
                     <tr>
                         <th scope="col" class="px-6 py-4 text-left text-xs font-bold uppercase tracking-wider">User</th>
                         <th scope="col" class="px-6 py-4 text-left text-xs font-bold uppercase tracking-wider">Role</th>
@@ -130,7 +130,7 @@
                                                 loading="lazy">
                                         @else
                                             <div
-                                                class="w-full h-full bg-gradient-to-r from-accent-themed-primary to-accent-themed-secondary flex items-center justify-center font-bold text-sm">
+                                                class="w-full h-full bg-surface-muted   flex items-center justify-center font-bold text-sm">
                                                 {{ strtoupper(substr($user->name, 0, 1)) }}
                                             </div>
                                         @endif
@@ -145,7 +145,7 @@
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
                                 <span
-                                    class="px-2.5 py-0.5 inline-flex text-xs leading-5 font-semibold rounded-full bg-accent-themed-primary/10 text-accent-themed-primary border border-accent-themed-primary/20">
+                                    class="px-2.5 py-0.5 inline-flex text-xs leading-5 font-semibold rounded-full bg-brand/10 text-brand border border-brand/20">
                                     {{ ucfirst(str_replace('_', ' ', $user->role)) }}
                                 </span>
                             </td>
@@ -183,7 +183,7 @@
                                 <div class="flex items-center justify-end gap-1 flex-wrap">
                                     @if (!$user->hasVerifiedEmail())
                                         <button wire:click="resendVerificationEmail({{ $user->id }})"
-                                            class="inline-flex items-center gap-1 px-3 py-2 text-xs bg-accent-themed-primary/10 text-accent-themed-primary border border-accent-themed-primary/20 rounded-lg hover:bg-accent-themed-primary/20 transition-colors duration-200 whitespace-nowrap">
+                                            class="inline-flex items-center gap-1 px-3 py-2 text-xs bg-brand/10 text-brand border border-brand/20 rounded-lg hover:bg-brand/20 transition-colors duration-200 whitespace-nowrap">
                                             <i class="fas fa-paper-plane"></i><span class="hidden sm:inline">Resend</span>
                                         </button>
                                         <button wire:click="markAsVerified({{ $user->id }})" wire:confirm="Mark as verified?"
@@ -203,7 +203,7 @@
                                         </button>
                                     @endif
                                     <button wire:click="editUser({{ $user->id }})"
-                                        class="inline-flex items-center gap-1 px-3 py-2 text-xs bg-accent-themed-primary text-white rounded-lg hover:bg-accent-themed-secondary transition-colors duration-200 whitespace-nowrap">
+                                        class="inline-flex items-center gap-1 px-3 py-2 text-xs bg-action text-action-foreground rounded-lg hover:bg-action/90 transition-colors duration-200 whitespace-nowrap">
                                         <i class="fas fa-edit"></i><span class="hidden sm:inline">Edit</span>
                                     </button>
                                     <button wire:click="deleteUser({{ $user->id }})" wire:confirm="Delete user?"
@@ -230,7 +230,7 @@
                         </tr>
                     @endforelse
                 </tbody>
-            </table>
+            </table></x-ui.table>
         </div>
     </div>
 
@@ -238,7 +238,7 @@
     <div class="lg:hidden grid grid-cols-1 gap-4">
         @forelse ($users as $user)
             <div
-                class="bg-themed-secondary rounded-xl border border-themed-primary p-4 shadow-md hover:shadow-lg transition-shadow duration-300">
+                class="bg-themed-secondary rounded-lg border border-themed-primary p-4 shadow-sm hover:shadow-sm transition-shadow duration-300">
                 <!-- User Header -->
                 <div class="flex items-start justify-between mb-4">
                     <div class="flex items-center gap-3 flex-1 min-w-0">
@@ -246,12 +246,12 @@
                             @if($user->profile_picture)
                                 {{-- <img src="{{ asset('storage/' . $user->profile_picture) }}"  --}}
                                 <img src="{{ $user->profile_picture }}"
-                                
+
                                 alt="Avatar of {{ $user->name }}"
                                     class="w-full h-full object-cover" loading="lazy">
                             @else
                                 <div
-                                    class="w-full h-full bg-gradient-to-r from-accent-themed-primary to-accent-themed-secondary flex items-center justify-center text-white font-bold">
+                                    class="w-full h-full bg-action   flex items-center justify-center text-action-foreground font-bold">
                                     {{ strtoupper(substr($user->name, 0, 1)) }}
                                 </div>
                             @endif
@@ -268,7 +268,7 @@
                     <div>
                         <p class="text-xs text-themed-secondary mb-1">Role</p>
                         <span
-                            class="px-2 py-1 inline-flex text-xs font-semibold rounded-full bg-accent-themed-primary/10 text-accent-themed-primary border border-accent-themed-primary/20">
+                            class="px-2 py-1 inline-flex text-xs font-semibold rounded-full bg-brand/10 text-brand border border-brand/20">
                             {{ ucfirst(str_replace('_', ' ', $user->role)) }}
                         </span>
                     </div>
@@ -310,7 +310,7 @@
                 <div class="flex flex-wrap gap-2">
                     @if (!$user->hasVerifiedEmail())
                         <button wire:click="resendVerificationEmail({{ $user->id }})"
-                            class="flex-1 text-xs px-2 py-2 bg-accent-themed-primary/10 text-accent-themed-primary border border-accent-themed-primary/20 rounded-lg hover:bg-accent-themed-primary/20 transition-colors duration-200">
+                            class="flex-1 text-xs px-2 py-2 bg-brand/10 text-brand border border-brand/20 rounded-lg hover:bg-brand/20 transition-colors duration-200">
                             <i class="fas fa-paper-plane mr-1"></i>Resend
                         </button>
                         <button wire:click="markAsVerified({{ $user->id }})" wire:confirm="Mark as verified?"
@@ -332,7 +332,7 @@
                 </div>
                 <div class="flex gap-2 mt-2">
                     <button wire:click="editUser({{ $user->id }})"
-                        class="flex-1 text-xs px-2 py-2 bg-accent-themed-primary hover:bg-accent-themed-secondary text-white rounded-lg transition-colors duration-200">
+                        class="flex-1 text-xs px-2 py-2 bg-action hover:bg-action/90 text-action-foreground rounded-lg transition-colors duration-200">
                         <i class="fas fa-edit mr-1"></i>Edit
                     </button>
                     <button wire:click="deleteUser({{ $user->id }})" wire:confirm="Delete user?"
@@ -342,7 +342,7 @@
                 </div>
             </div>
         @empty
-            <div class="bg-themed-secondary rounded-xl border border-themed-primary p-8 text-center">
+            <div class="bg-themed-secondary rounded-lg border border-themed-primary p-8 text-center">
                 <div
                     class="w-16 h-16 bg-themed-tertiary rounded-full flex items-center justify-center mx-auto mb-4 transition-colors duration-300">
                     <i class="fas fa-users-slash text-themed-secondary text-2xl"></i>
@@ -355,7 +355,7 @@
 
     <!-- Pagination -->
     <div
-        class="mt-6 bg-themed-secondary p-4 rounded-xl border border-themed-primary backdrop-blur-sm transition-colors duration-300">
+        class="mt-6 bg-themed-secondary p-4 rounded-lg border border-themed-primary  transition-colors duration-300">
         {{ $users->links('pagination::tailwind') }}
     </div>
 
@@ -374,7 +374,7 @@
             <!-- Modal panel -->
             <div x-show="modalOpen" x-transition:enter="transition ease-out duration-300"
                 x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100"
-                class="relative bg-themed-secondary rounded-t-2xl sm:rounded-2xl w-full sm:max-w-2xl p-4 sm:p-6 shadow-xl border border-themed-primary max-h-[90vh] overflow-y-auto">
+                class="relative bg-themed-secondary rounded-t-2xl sm:rounded-lg w-full sm:max-w-2xl p-4 sm:p-6 shadow-sm border border-themed-primary max-h-[90vh] overflow-y-auto">
 
                 <div class="flex justify-between items-center mb-4">
                     <h3 class="text-lg sm:text-xl font-bold text-themed-primary">
@@ -382,7 +382,7 @@
                         {{ $editMode ? 'Edit User' : 'Create New User' }}
                     </h3>
                     <button type="button" @click="modalOpen = false" wire:click="closeModalAndReset"
-                        class="text-themed-secondary hover:text-themed-primary transition-colors duration-200">
+                        class="text-themed-secondary hover:text-themed-primary transition-colors duration-200" aria-label="Close">
                         <i class="fas fa-times text-xl"></i>
                     </button>
                 </div>
@@ -438,7 +438,7 @@
                             Name <span class="text-red-500">*</span>
                         </label>
                         <input wire:model="name" type="text" id="name"
-                            class="w-full p-3 border border-themed-primary rounded-lg bg-themed-secondary text-themed-primary focus:outline-none focus:ring-2 focus:ring-accent-themed-primary transition-all duration-200 text-sm">
+                            class="w-full p-3 border border-themed-primary rounded-lg bg-themed-secondary text-themed-primary focus:outline-none focus:ring-2 focus:ring-brand transition-all duration-200 text-sm">
                         @error('name') <p class="text-red-600 text-xs mt-1">{{ $message }}</p> @enderror
                     </div>
 
@@ -448,7 +448,7 @@
                             Email <span class="text-red-500">*</span>
                         </label>
                         <input wire:model="email" type="email" id="email"
-                            class="w-full p-3 border border-themed-primary rounded-lg bg-themed-secondary text-themed-primary focus:outline-none focus:ring-2 focus:ring-accent-themed-primary transition-all duration-200 text-sm">
+                            class="w-full p-3 border border-themed-primary rounded-lg bg-themed-secondary text-themed-primary focus:outline-none focus:ring-2 focus:ring-brand transition-all duration-200 text-sm">
                         @error('email') <p class="text-red-600 text-xs mt-1">{{ $message }}</p> @enderror
                     </div>
 
@@ -459,7 +459,7 @@
                         </label>
                         <div class="relative">
                             <select wire:model="role" id="role"
-                                class="w-full p-3 border border-themed-primary rounded-lg bg-themed-secondary text-themed-primary focus:outline-none focus:ring-2 focus:ring-accent-themed-primary transition-all duration-200 text-sm appearance-none">
+                                class="w-full p-3 border border-themed-primary rounded-lg bg-themed-secondary text-themed-primary focus:outline-none focus:ring-2 focus:ring-brand transition-all duration-200 text-sm appearance-none">
                                 <option value="">Select a role</option>
                                 @foreach ($roles as $key => $value)
                                     <option value="{{ $key }}">{{ $value }}</option>
@@ -478,7 +478,7 @@
                         <div x-show="!editMode" class="mb-3">
                             <label class="inline-flex items-center gap-2 cursor-pointer">
                                 <input wire:model.live="autoGeneratePassword" type="checkbox"
-                                    class="rounded border-themed-primary text-accent-themed-primary focus:ring-accent-themed-primary bg-themed-secondary transition-all duration-200">
+                                    class="rounded border-themed-primary text-brand focus:ring-brand bg-themed-secondary transition-all duration-200">
                                 <span class="text-sm text-themed-secondary">
                                     <i class="fas fa-random mr-1"></i>
                                     Auto-generate secure password
@@ -496,9 +496,9 @@
                                 </label>
                                 <div class="relative">
                                     <input wire:model="password" type="password" id="password"
-                                        class="w-full p-3 border border-themed-primary rounded-lg bg-themed-secondary text-themed-primary focus:outline-none focus:ring-2 focus:ring-accent-themed-primary transition-all duration-200 text-sm">
+                                        class="w-full p-3 border border-themed-primary rounded-lg bg-themed-secondary text-themed-primary focus:outline-none focus:ring-2 focus:ring-brand transition-all duration-200 text-sm">
                                     <button type="button" @click="$wire.generateRandomPassword()"
-                                        class="absolute right-2 top-1/2 -translate-y-1/2 px-3 py-1 bg-accent-themed-primary text-white rounded text-xs hover:bg-accent-themed-secondary">
+                                        class="absolute right-2 top-1/2 -translate-y-1/2 px-3 py-1 bg-action text-action-foreground rounded text-xs hover:bg-action/90">
                                         <i class="fas fa-random"></i>
                                     </button>
                                 </div>
@@ -511,7 +511,7 @@
                                     Confirm Password <span class="text-red-500" x-show="!editMode">*</span>
                                 </label>
                                 <input wire:model="password_confirmation" type="password" id="password_confirmation"
-                                    class="w-full p-3 border border-themed-primary rounded-lg bg-themed-secondary text-themed-primary focus:outline-none focus:ring-2 focus:ring-accent-themed-primary transition-all duration-200 text-sm">
+                                    class="w-full p-3 border border-themed-primary rounded-lg bg-themed-secondary text-themed-primary focus:outline-none focus:ring-2 focus:ring-brand transition-all duration-200 text-sm">
                                 @error('password_confirmation') <p class="text-red-600 text-xs mt-1">{{ $message }}</p>
                                 @enderror
                             </div>
@@ -528,7 +528,7 @@
 
                         <label class="inline-flex items-center gap-2 cursor-pointer">
                             <input type="checkbox" wire:model="markAsVerified"
-                                class="rounded border-themed-primary text-accent-themed-primary focus:ring-accent-themed-primary bg-themed-secondary transition-all duration-200">
+                                class="rounded border-themed-primary text-brand focus:ring-brand bg-themed-secondary transition-all duration-200">
                             <span class="text-sm text-themed-secondary">
                                 <i class="fas fa-check-circle mr-1"></i>
                                 Mark email as verified (Recommended)
@@ -537,7 +537,7 @@
 
                         <label class="inline-flex items-center gap-2 cursor-pointer">
                             <input type="checkbox" wire:model="sendWelcomeEmail"
-                                class="rounded border-themed-primary text-accent-themed-primary focus:ring-accent-themed-primary bg-themed-secondary transition-all duration-200">
+                                class="rounded border-themed-primary text-brand focus:ring-brand bg-themed-secondary transition-all duration-200">
                             <span class="text-sm text-themed-secondary">
                                 <i class="fas fa-paper-plane mr-1"></i>
                                 Send welcome email with login credentials
@@ -546,7 +546,7 @@
 
                         <label class="inline-flex items-center gap-2 cursor-pointer">
                             <input type="checkbox" wire:model="sendVerificationEmail"
-                                class="rounded border-themed-primary text-accent-themed-primary focus:ring-accent-themed-primary bg-themed-secondary transition-all duration-200">
+                                class="rounded border-themed-primary text-brand focus:ring-brand bg-themed-secondary transition-all duration-200">
                             <span class="text-sm text-themed-secondary">
                                 <i class="fas fa-shield-alt mr-1"></i>
                                 Send email verification link
@@ -555,7 +555,7 @@
 
                         <label x-show="!editMode" class="inline-flex items-center gap-2 cursor-pointer">
                             <input type="checkbox" wire:model="createAnother"
-                                class="rounded border-themed-primary text-accent-themed-primary focus:ring-accent-themed-primary bg-themed-secondary transition-all duration-200">
+                                class="rounded border-themed-primary text-brand focus:ring-brand bg-themed-secondary transition-all duration-200">
                             <span class="text-sm text-themed-secondary">
                                 <i class="fas fa-plus-circle mr-1"></i>
                                 Create another user after saving
@@ -564,13 +564,13 @@
                     </div>
 
                     <!-- Info Box -->
-                    <div class="bg-blue-50 dark:bg-blue-900/20 border-l-4 border-blue-400 p-4 rounded">
+                    <div class="bg-brand/10 dark:bg-action/20 border-l-4 border-brand p-4 rounded">
                         <div class="flex">
                             <div class="flex-shrink-0">
-                                <i class="fas fa-info-circle text-blue-400"></i>
+                                <i class="fas fa-info-circle text-brand"></i>
                             </div>
                             <div class="ml-3">
-                                <p class="text-xs text-blue-700 dark:text-blue-300">
+                                <p class="text-xs text-brand dark:text-brand">
                                     <strong>Note:</strong> Users created by admins are automatically activated and can
                                     login immediately.
                                     <span x-show="$wire.markAsVerified">Their email will be pre-verified.</span>
@@ -586,7 +586,7 @@
                             <i class="fas fa-times mr-2"></i>Cancel
                         </button>
                         <button type="submit" wire:loading.attr="disabled" wire:target="saveUser"
-                            class="flex-1 px-4 py-2 bg-accent-themed-primary hover:bg-accent-themed-secondary text-white rounded-lg font-medium transition-colors duration-200 text-sm disabled:opacity-50 disabled:cursor-not-allowed">
+                            class="flex-1 px-4 py-2 bg-action hover:bg-action/90 text-action-foreground rounded-lg font-medium transition-colors duration-200 text-sm disabled:opacity-50 disabled:cursor-not-allowed">
                             <span wire:loading.remove wire:target="saveUser">
                                 <i class="fas fa-save mr-2"></i>{{ $editMode ? 'Update User' : 'Create User' }}
                             </span>

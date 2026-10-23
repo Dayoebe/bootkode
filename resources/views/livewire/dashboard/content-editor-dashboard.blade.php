@@ -1,65 +1,38 @@
-<div class="min-h-screen bg-themed-primary transition-colors duration-300 p-4 md:p-6">
-    <!-- Header Section -->
-    <div class="mb-8">
-        <div class="bg-themed-secondary rounded-2xl shadow-sm border border-themed-primary p-6 relative overflow-hidden transition-colors duration-300">
-            <!-- Background decoration -->
-            <div class="absolute top-0 right-0 w-40 h-40 bg-gradient-to-br from-purple-100 to-pink-100 dark:from-purple-900/30 dark:to-pink-900/30 rounded-full -translate-y-12 translate-x-12 opacity-60"></div>
-            
-            <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center space-y-4 lg:space-y-0 relative">
-                <div>
-                    <h1 class="text-3xl font-bold text-themed-primary flex items-center transition-colors duration-300">
-                        <i class="fas fa-pen-fancy text-purple-600 dark:text-purple-400 mr-3"></i>
-                        Content Editor Dashboard
-                    </h1>
-                    <p class="text-themed-secondary mt-1 transition-colors duration-300">Welcome back, {{ auth()->user()->name }}! Create and manage compelling content.</p>
-                    
-                    <div class="flex items-center space-x-4 mt-3">
-                        <div class="flex items-center bg-purple-100 dark:bg-purple-900/30 text-purple-800 dark:text-purple-300 px-3 py-1 rounded-full text-sm transition-colors duration-300">
-                            <i class="fas fa-eye mr-2"></i>
-                            {{ number_format($this->overviewStats['total_views']) }} total views
-                        </div>
-                        <div class="flex items-center bg-pink-100 dark:bg-pink-900/30 text-pink-800 dark:text-pink-300 px-3 py-1 rounded-full text-sm transition-colors duration-300">
-                            <i class="fas fa-heart mr-2"></i>
-                            {{ number_format($this->overviewStats['total_likes']) }} likes
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="flex flex-wrap items-center space-x-3">
-                    <!-- Content Type Filter -->
-                    <select wire:model.live="selectedContentType" class="bg-themed-secondary border border-themed-secondary text-themed-primary px-3 py-2 text-sm rounded-lg focus:ring-2 focus:ring-purple-500 dark:focus:ring-purple-400 focus:border-purple-500 dark:focus:border-purple-400 transition-colors duration-300">
+<div class="space-y-6">
+    <x-ui.page-header title="Content workspace" description="Organise, review and maintain your learning content.">
+        <x-slot:actions>
+<!-- Content Type Filter -->
+                    <select aria-label="Filter content" wire:model.live="selectedContentType" class="bg-themed-secondary border border-themed-secondary text-themed-primary px-3 py-2 text-sm rounded-lg focus:ring-2 focus:ring-brand/30 dark:focus:ring-brand/30 focus:border-brand dark:focus:border-brand transition-colors duration-300">
                         <option value="all">All Content</option>
                         <option value="blog_posts">Blog Posts</option>
                         <option value="pages">Pages</option>
                         <option value="faqs">FAQs</option>
                         <option value="announcements">Announcements</option>
                     </select>
-                    
+
                     <!-- Timeframe Selector -->
-                    <div class="flex bg-themed-tertiary rounded-lg p-1 transition-colors duration-300">
+                    <div role="group" aria-label="Reporting period" class="flex bg-themed-tertiary rounded-lg p-1 transition-colors duration-300">
                         @foreach(['7days' => '7d', '30days' => '30d', '90days' => '90d', '12months' => '12m'] as $value => $label)
-                            <button 
-                                wire:click="updateTimeframe('{{ $value }}')"
-                                class="px-3 py-1 rounded-md text-sm font-medium transition-all duration-200 {{ $selectedTimeframe === $value ? 'bg-themed-secondary text-purple-600 dark:text-purple-400 shadow-sm' : 'text-themed-secondary hover:text-themed-primary' }}">
+                            <button
+                                wire:click="updateTimeframe('{{ $value }}')" aria-label="Report for {{ $label }}" aria-pressed="{{ $selectedTimeframe === $value ? 'true' : 'false' }}"
+                                class="px-3 py-1 rounded-md text-sm font-medium transition-all duration-200 {{ $selectedTimeframe === $value ? 'bg-themed-secondary text-brand dark:text-brand shadow-sm' : 'text-themed-secondary hover:text-themed-primary' }}">
                                 {{ $label }}
                             </button>
                         @endforeach
                     </div>
-                    
+
                     <!-- Quick Actions -->
-                    <a href="{{ route('admin.blog.posts.create') }}" class="bg-purple-600 dark:bg-purple-500 hover:bg-purple-700 dark:hover:bg-purple-600 text-white px-4 py-2 rounded-lg font-medium transition-colors duration-200">
+                    <a href="{{ route('admin.blog.posts.create') }}" class="bg-action dark:bg-action hover:bg-action dark:hover:bg-action text-action-foreground px-4 py-2 rounded-lg font-medium transition-colors duration-200">
                         <i class="fas fa-plus mr-2"></i>
                         New Post
                     </a>
-                </div>
-            </div>
-        </div>
-    </div>
+        </x-slot:actions>
+    </x-ui.page-header>
 
     <!-- Overview Stats Grid -->
     @if($showWidgets['overview_stats'])
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-        <div class="bg-themed-secondary rounded-xl shadow-sm border border-themed-primary p-6 hover:shadow-md dark:hover:shadow-xl transition-all duration-200">
+        <div class="bg-themed-secondary rounded-lg shadow-sm border border-themed-primary p-6   transition-all duration-200">
             <div class="flex items-center justify-between">
                 <div>
                     <p class="text-sm text-themed-secondary font-medium transition-colors duration-300">Total Posts</p>
@@ -69,29 +42,29 @@
                         <span class="text-themed-tertiary ml-1 transition-colors duration-300">published</span>
                     </div>
                 </div>
-                <div class="bg-purple-100 dark:bg-purple-900/30 p-3 rounded-full transition-colors duration-300">
-                    <i class="fas fa-file-alt text-purple-600 dark:text-purple-400 text-xl"></i>
+                <div class="bg-brand/10 dark:bg-action/30 p-3 rounded-full transition-colors duration-300">
+                    <i class="fas fa-file-alt text-brand dark:text-brand text-xl"></i>
                 </div>
             </div>
         </div>
 
-        <div class="bg-themed-secondary rounded-xl shadow-sm border border-themed-primary p-6 hover:shadow-md dark:hover:shadow-xl transition-all duration-200">
+        <div class="bg-themed-secondary rounded-lg shadow-sm border border-themed-primary p-6   transition-all duration-200">
             <div class="flex items-center justify-between">
                 <div>
                     <p class="text-sm text-themed-secondary font-medium transition-colors duration-300">Total Views</p>
                     <h3 class="text-3xl font-bold text-themed-primary mt-1 transition-colors duration-300">{{ number_format($this->overviewStats['total_views']) }}</h3>
                     <div class="flex items-center mt-2 text-sm">
-                        <span class="text-blue-600 dark:text-blue-400 font-medium transition-colors duration-300">{{ number_format($this->overviewStats['total_views'] / max($this->overviewStats['published_posts'], 1), 0) }}</span>
+                        <span class="text-brand dark:text-brand font-medium transition-colors duration-300">{{ number_format($this->overviewStats['total_views'] / max($this->overviewStats['published_posts'], 1), 0) }}</span>
                         <span class="text-themed-tertiary ml-1 transition-colors duration-300">avg per post</span>
                     </div>
                 </div>
-                <div class="bg-blue-100 dark:bg-blue-900/30 p-3 rounded-full transition-colors duration-300">
-                    <i class="fas fa-eye text-blue-600 dark:text-blue-400 text-xl"></i>
+                <div class="bg-brand/10 dark:bg-action/30 p-3 rounded-full transition-colors duration-300">
+                    <i class="fas fa-eye text-brand dark:text-brand text-xl"></i>
                 </div>
             </div>
         </div>
 
-        <div class="bg-themed-secondary rounded-xl shadow-sm border border-themed-primary p-6 hover:shadow-md dark:hover:shadow-xl transition-all duration-200">
+        <div class="bg-themed-secondary rounded-lg shadow-sm border border-themed-primary p-6   transition-all duration-200">
             <div class="flex items-center justify-between">
                 <div>
                     <p class="text-sm text-themed-secondary font-medium transition-colors duration-300">Engagement</p>
@@ -107,7 +80,7 @@
             </div>
         </div>
 
-        <div class="bg-themed-secondary rounded-xl shadow-sm border border-themed-primary p-6 hover:shadow-md dark:hover:shadow-xl transition-all duration-200">
+        <div class="bg-themed-secondary rounded-lg shadow-sm border border-themed-primary p-6   transition-all duration-200">
             <div class="flex items-center justify-between">
                 <div>
                     <p class="text-sm text-themed-secondary font-medium transition-colors duration-300">Avg Read Time</p>
@@ -131,18 +104,18 @@
         <div class="xl:col-span-2 space-y-8">
             <!-- Content Analytics -->
             @if($showWidgets['content_analytics'])
-            <div class="bg-themed-secondary rounded-xl shadow-sm border border-themed-primary p-6 transition-colors duration-300">
+            <div class="bg-themed-secondary rounded-lg shadow-sm border border-themed-primary p-6 transition-colors duration-300">
                 <h2 class="text-xl font-bold text-themed-primary mb-6 transition-colors duration-300">Content Analytics</h2>
-                
+
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                     <!-- Content Trends Chart -->
                     <div>
                         <h3 class="text-sm font-semibold text-themed-primary mb-3 transition-colors duration-300">Content Performance ({{ $selectedTimeframe === '7days' ? 'Last 7 Days' : ($selectedTimeframe === '30days' ? 'Last 30 Days' : ($selectedTimeframe === '90days' ? 'Last 90 Days' : 'Last 12 Months')) }})</h3>
                         <div class="h-48">
-                            <canvas id="contentTrendsChart"></canvas>
+                            <canvas role="img" aria-label="content Trends chart" id="contentTrendsChart"></canvas>
                         </div>
                     </div>
-                    
+
                     <!-- Category Performance -->
                     <div>
                         <h3 class="text-sm font-semibold text-themed-primary mb-3 transition-colors duration-300">Category Performance</h3>
@@ -154,7 +127,7 @@
                                     <p class="text-sm text-themed-secondary transition-colors duration-300">{{ $category['post_count'] }} posts</p>
                                 </div>
                                 <div class="text-right">
-                                    <div class="text-sm font-bold text-purple-600 dark:text-purple-400 transition-colors duration-300">{{ number_format($category['total_views']) }}</div>
+                                    <div class="text-sm font-bold text-brand dark:text-brand transition-colors duration-300">{{ number_format($category['total_views']) }}</div>
                                     <div class="text-xs text-themed-tertiary transition-colors duration-300">views</div>
                                 </div>
                             </div>
@@ -162,7 +135,7 @@
                             <p class="text-themed-tertiary text-sm transition-colors duration-300">No category data available</p>
                             @endforelse
                         </div>
-                        
+
                         <!-- Top Performing Posts -->
                         <div class="mt-6 pt-4 border-t border-themed-primary transition-colors duration-300">
                             <h4 class="text-sm font-semibold text-themed-primary mb-3 transition-colors duration-300">Top Performing Posts</h4>
@@ -170,7 +143,7 @@
                                 @foreach($this->contentAnalytics['top_performing_posts'] as $post)
                                 <div class="flex items-center justify-between text-sm">
                                     <span class="text-themed-secondary truncate transition-colors duration-300">{{ \Str::limit($post['title'], 25) }}</span>
-                                    <span class="font-medium text-purple-600 dark:text-purple-400 transition-colors duration-300">{{ number_format($post['views']) }}</span>
+                                    <span class="font-medium text-brand dark:text-brand transition-colors duration-300">{{ number_format($post['views']) }}</span>
                                 </div>
                                 @endforeach
                             </div>
@@ -182,14 +155,14 @@
 
             <!-- Recent Posts -->
             @if($showWidgets['recent_posts'])
-            <div class="bg-themed-secondary rounded-xl shadow-sm border border-themed-primary p-6 transition-colors duration-300">
+            <div class="bg-themed-secondary rounded-lg shadow-sm border border-themed-primary p-6 transition-colors duration-300">
                 <div class="flex items-center justify-between mb-6">
                     <h2 class="text-xl font-bold text-themed-primary transition-colors duration-300">Recent Posts</h2>
-                    <a href="{{ route('admin.blog.posts.index') }}" class="text-purple-600 dark:text-purple-400 hover:text-purple-700 dark:hover:text-purple-300 text-sm font-medium transition-colors duration-300">
+                    <a href="{{ route('admin.blog.posts.index') }}" class="text-brand dark:text-brand hover:text-brand dark:hover:text-brand text-sm font-medium transition-colors duration-300">
                         View All <i class="fas fa-arrow-right ml-1"></i>
                     </a>
                 </div>
-                
+
                 <div class="space-y-4">
                     @forelse($this->recentPosts as $post)
                     <div class="flex items-center justify-between p-4 bg-themed-tertiary rounded-lg hover:bg-themed-secondary transition-colors duration-200">
@@ -219,29 +192,29 @@
                                 </div>
                             </div>
                         </div>
-                        
+
                         <div class="flex items-center space-x-3">
                             <!-- Performance Score -->
                             <div class="text-center">
-                                <div class="text-lg font-bold text-purple-600 dark:text-purple-400 transition-colors duration-300">{{ number_format($post['performance_score'], 0) }}</div>
+                                <div class="text-lg font-bold text-brand dark:text-brand transition-colors duration-300">{{ number_format($post['performance_score'], 0) }}</div>
                                 <div class="text-xs text-themed-tertiary transition-colors duration-300">score</div>
                             </div>
-                            
+
                             <!-- Status Badge -->
                             <span class="px-3 py-1 text-xs rounded-full {{ $post['status'] === 'published' ? 'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300' : ($post['status'] === 'draft' ? 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-300' : 'bg-themed-tertiary text-themed-primary') }} transition-colors duration-300">
                                 {{ ucfirst($post['status']) }}
                             </span>
-                            
+
                             @if($post['is_featured'])
-                            <span class="px-2 py-1 text-xs bg-purple-100 dark:bg-purple-900/30 text-purple-800 dark:text-purple-300 rounded-full transition-colors duration-300">
+                            <span class="px-2 py-1 text-xs bg-brand/10 dark:bg-action/30 text-brand dark:text-brand rounded-full transition-colors duration-300">
                                 Featured
                             </span>
                             @endif
-                            
+
                             <!-- Quick Publish Button -->
                             @if($post['status'] === 'draft')
-                            <button wire:click="quickPublish({{ $post['id'] }})" 
-                                    class="text-green-600 dark:text-green-400 hover:text-green-700 dark:hover:text-green-300 text-sm transition-colors duration-300">
+                            <button wire:click="quickPublish({{ $post['id'] }})"
+                                    class="text-green-600 dark:text-green-400 hover:text-green-700 dark:hover:text-green-300 text-sm transition-colors duration-300" aria-label="Quick publish">
                                 <i class="fas fa-rocket"></i>
                             </button>
                             @endif
@@ -251,7 +224,7 @@
                     <div class="text-center py-8">
                         <i class="fas fa-pen-alt text-themed-tertiary text-4xl mb-4 transition-colors duration-300"></i>
                         <p class="text-themed-secondary mb-4 transition-colors duration-300">No posts created yet</p>
-                        <a href="{{ route('admin.blog.posts.create') }}" class="bg-purple-600 dark:bg-purple-500 hover:bg-purple-700 dark:hover:bg-purple-600 text-white px-4 py-2 rounded-lg transition-colors">
+                        <a href="{{ route('admin.blog.posts.create') }}" class="bg-action dark:bg-action hover:bg-action dark:hover:bg-action text-action-foreground px-4 py-2 rounded-lg transition-colors">
                             Create Your First Post
                         </a>
                     </div>
@@ -265,9 +238,9 @@
         <div class="space-y-8">
             <!-- Pending Content -->
             @if($showWidgets['pending_content'])
-            <div class="bg-themed-secondary rounded-xl shadow-sm border border-themed-primary p-6 transition-colors duration-300">
+            <div class="bg-themed-secondary rounded-lg shadow-sm border border-themed-primary p-6 transition-colors duration-300">
                 <h2 class="text-xl font-bold text-themed-primary mb-6 transition-colors duration-300">Pending Content</h2>
-                
+
                 <div class="space-y-6">
                     <!-- Draft Posts -->
                     <div>
@@ -296,12 +269,12 @@
                     <!-- Pending Comments -->
                     <div>
                         <h3 class="text-sm font-semibold text-themed-primary mb-3 flex items-center transition-colors duration-300">
-                            <i class="fas fa-comments text-blue-600 dark:text-blue-400 mr-2"></i>
+                            <i class="fas fa-comments text-brand dark:text-brand mr-2"></i>
                             Pending Comments ({{ count($this->pendingContent['pending_comments']) }})
                         </h3>
                         <div class="space-y-2">
                             @forelse($this->pendingContent['pending_comments'] as $comment)
-                            <div class="p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg transition-colors duration-300">
+                            <div class="p-3 bg-brand/10 dark:bg-action/20 rounded-lg transition-colors duration-300">
                                 <div class="flex items-start justify-between">
                                     <div class="flex-1">
                                         <h4 class="text-sm font-medium text-themed-primary transition-colors duration-300">{{ $comment->user->name }}</h4>
@@ -312,7 +285,7 @@
                                         <button class="text-green-600 dark:text-green-400 hover:text-green-700 dark:hover:text-green-300 text-xs transition-colors duration-300">
                                             <i class="fas fa-check"></i>
                                         </button>
-                                        <button class="text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 text-xs transition-colors duration-300">
+                                        <button class="text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 text-xs transition-colors duration-300" aria-label="Close">
                                             <i class="fas fa-times"></i>
                                         </button>
                                     </div>
@@ -327,12 +300,12 @@
                     <!-- Scheduled Posts -->
                     <div>
                         <h3 class="text-sm font-semibold text-themed-primary mb-3 flex items-center transition-colors duration-300">
-                            <i class="fas fa-calendar text-purple-600 dark:text-purple-400 mr-2"></i>
+                            <i class="fas fa-calendar text-brand dark:text-brand mr-2"></i>
                             Scheduled Posts ({{ count($this->pendingContent['scheduled_posts']) }})
                         </h3>
                         <div class="space-y-2">
                             @forelse($this->pendingContent['scheduled_posts'] as $scheduled)
-                            <div class="p-3 bg-purple-50 dark:bg-purple-900/20 rounded-lg transition-colors duration-300">
+                            <div class="p-3 bg-brand/10 dark:bg-action/20 rounded-lg transition-colors duration-300">
                                 <h4 class="text-sm font-medium text-themed-primary truncate transition-colors duration-300">{{ $scheduled->title }}</h4>
                                 <div class="flex items-center justify-between text-xs text-themed-secondary mt-1 transition-colors duration-300">
                                     <span>{{ $scheduled->category->name ?? 'Uncategorized' }}</span>
@@ -350,9 +323,9 @@
 
             <!-- SEO Performance -->
             @if($showWidgets['seo_performance'])
-            <div class="bg-themed-secondary rounded-xl shadow-sm border border-themed-primary p-6 transition-colors duration-300">
+            <div class="bg-themed-secondary rounded-lg shadow-sm border border-themed-primary p-6 transition-colors duration-300">
                 <h2 class="text-xl font-bold text-themed-primary mb-6 transition-colors duration-300">SEO Performance</h2>
-                
+
                 <div class="space-y-4">
                     <!-- SEO Score -->
                     <div class="text-center">
@@ -372,9 +345,9 @@
                             <div class="text-lg font-bold text-green-600 dark:text-green-400 transition-colors duration-300">{{ $this->seoPerformance['seo_optimized_posts'] }}</div>
                             <div class="text-xs text-green-600 dark:text-green-400 transition-colors duration-300">Optimized Posts</div>
                         </div>
-                        <div class="text-center p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg transition-colors duration-300">
-                            <div class="text-lg font-bold text-blue-600 dark:text-blue-400 transition-colors duration-300">{{ $this->seoPerformance['meta_completion_rate'] }}%</div>
-                            <div class="text-xs text-blue-600 dark:text-blue-400 transition-colors duration-300">Meta Complete</div>
+                        <div class="text-center p-3 bg-brand/10 dark:bg-action/20 rounded-lg transition-colors duration-300">
+                            <div class="text-lg font-bold text-brand dark:text-brand transition-colors duration-300">{{ $this->seoPerformance['meta_completion_rate'] }}%</div>
+                            <div class="text-xs text-brand dark:text-brand transition-colors duration-300">Meta Complete</div>
                         </div>
                     </div>
 
@@ -383,7 +356,7 @@
                         <h4 class="text-sm font-semibold text-themed-primary mb-3 transition-colors duration-300">Trending Topics</h4>
                         <div class="flex flex-wrap gap-2">
                             @foreach($this->contentInsights['trending_topics'] as $topic)
-                            <span class="px-2 py-1 bg-purple-100 dark:bg-purple-900/30 text-purple-800 dark:text-purple-300 text-xs rounded-full transition-colors duration-300">{{ $topic }}</span>
+                            <span class="px-2 py-1 bg-brand/10 dark:bg-action/30 text-brand dark:text-brand text-xs rounded-full transition-colors duration-300">{{ $topic }}</span>
                             @endforeach
                         </div>
                     </div>
@@ -393,9 +366,9 @@
 
             <!-- Content Calendar -->
             @if($showWidgets['content_calendar'])
-            <div class="bg-themed-secondary rounded-xl shadow-sm border border-themed-primary p-6 transition-colors duration-300">
+            <div class="bg-themed-secondary rounded-lg shadow-sm border border-themed-primary p-6 transition-colors duration-300">
                 <h2 class="text-xl font-bold text-themed-primary mb-6 transition-colors duration-300">Content Calendar</h2>
-                
+
                 <div class="space-y-4">
                     <div>
                         <h4 class="text-sm font-semibold text-themed-primary mb-3 transition-colors duration-300">Publishing Insights</h4>
@@ -426,7 +399,7 @@
                     <!-- Quick Actions -->
                     <div class="pt-4 border-t border-themed-primary transition-colors duration-300">
                         <div class="grid grid-cols-2 gap-2">
-                            <a href="{{ route('admin.blog.posts.create') }}" class="block text-center bg-purple-600 dark:bg-purple-500 hover:bg-purple-700 dark:hover:bg-purple-600 text-white py-2 rounded-lg text-sm font-medium transition-colors">
+                            <a href="{{ route('admin.blog.posts.create') }}" class="block text-center bg-action dark:bg-action hover:bg-action dark:hover:bg-action text-action-foreground py-2 rounded-lg text-sm font-medium transition-colors">
                                 New Post
                             </a>
                             <a href="{{ route('admin.blog.settings') }}" class="block text-center bg-themed-tertiary hover:bg-themed-secondary text-themed-primary py-2 rounded-lg text-sm font-medium transition-colors">
@@ -440,20 +413,20 @@
 
             <!-- Content Insights -->
             @if($showWidgets['content_insights'])
-            <div class="bg-themed-secondary rounded-xl shadow-sm border border-themed-primary p-6 transition-colors duration-300">
+            <div class="bg-themed-secondary rounded-lg shadow-sm border border-themed-primary p-6 transition-colors duration-300">
                 <h2 class="text-xl font-bold text-themed-primary mb-6 transition-colors duration-300">Content Insights</h2>
-                
+
                 <div class="space-y-6">
                     <!-- Reading Patterns -->
                     <div>
                         <h4 class="text-sm font-semibold text-themed-primary mb-3 transition-colors duration-300">Reading Patterns</h4>
                         <div class="grid grid-cols-2 gap-4 text-sm">
                             <div class="p-3 bg-themed-tertiary rounded-lg transition-colors duration-300">
-                                <div class="font-bold text-purple-600 dark:text-purple-400 text-lg transition-colors duration-300">65%</div>
+                                <div class="font-bold text-brand dark:text-brand text-lg transition-colors duration-300">65%</div>
                                 <div class="text-themed-secondary transition-colors duration-300">Mobile Readers</div>
                             </div>
                             <div class="p-3 bg-themed-tertiary rounded-lg transition-colors duration-300">
-                                <div class="font-bold text-blue-600 dark:text-blue-400 text-lg transition-colors duration-300">4.2m</div>
+                                <div class="font-bold text-brand dark:text-brand text-lg transition-colors duration-300">4.2m</div>
                                 <div class="text-themed-secondary transition-colors duration-300">Avg Session</div>
                             </div>
                         </div>
@@ -465,7 +438,7 @@
                         <div class="space-y-2">
                             <div class="flex items-center justify-between text-sm">
                                 <div class="flex items-center space-x-2">
-                                    <i class="fab fa-google text-blue-600 dark:text-blue-400"></i>
+                                    <i class="fab fa-google text-brand dark:text-brand"></i>
                                     <span class="text-themed-primary transition-colors duration-300">Google Search</span>
                                 </div>
                                 <span class="font-medium text-themed-secondary transition-colors duration-300">45.2%</span>
@@ -479,7 +452,7 @@
                             </div>
                             <div class="flex items-center justify-between text-sm">
                                 <div class="flex items-center space-x-2">
-                                    <i class="fas fa-link text-purple-600 dark:text-purple-400"></i>
+                                    <i class="fas fa-link text-brand dark:text-brand"></i>
                                     <span class="text-themed-primary transition-colors duration-300">Direct Traffic</span>
                                 </div>
                                 <span class="font-medium text-themed-secondary transition-colors duration-300">26.1%</span>
@@ -494,7 +467,7 @@
                             <div class="p-2 bg-yellow-50 dark:bg-yellow-900/20 rounded text-xs text-yellow-800 dark:text-yellow-300 transition-colors duration-300">
                                 💡 Consider writing about "Web Development Trends" - high search volume
                             </div>
-                            <div class="p-2 bg-blue-50 dark:bg-blue-900/20 rounded text-xs text-blue-800 dark:text-blue-300 transition-colors duration-300">
+                            <div class="p-2 bg-brand/10 dark:bg-action/20 rounded text-xs text-brand dark:text-brand transition-colors duration-300">
                                 📈 Your tutorials get 3x more engagement than news posts
                             </div>
                             <div class="p-2 bg-green-50 dark:bg-green-900/20 rounded text-xs text-green-800 dark:text-green-300 transition-colors duration-300">
@@ -511,22 +484,22 @@
     <!-- Widget Toggle Panel -->
     <div class="fixed bottom-6 right-6 z-40">
         <div x-data="{ open: false }" class="relative">
-            <button @click="open = !open" 
-                    class="bg-themed-secondary shadow-lg border border-themed-primary rounded-full p-3 hover:shadow-xl transition-all duration-200">
+            <button @click="open = !open"
+                    class="bg-themed-secondary shadow-sm border border-themed-primary rounded-full p-3  transition-all duration-200">
                 <i class="fas fa-sliders-h text-themed-secondary"></i>
             </button>
-            
-            <div x-show="open" 
+
+            <div x-show="open"
                  x-transition
                  @click.outside="open = false"
-                 class="absolute bottom-full right-0 mb-2 bg-themed-secondary rounded-xl shadow-xl border border-themed-primary p-4 w-64 transition-colors duration-300">
+                 class="absolute bottom-full right-0 mb-2 bg-themed-secondary rounded-lg shadow-sm border border-themed-primary p-4 w-64 transition-colors duration-300">
                 <h3 class="font-semibold text-themed-primary mb-3 transition-colors duration-300">Dashboard Widgets</h3>
                 <div class="space-y-2">
                     @foreach($showWidgets as $widget => $isVisible)
                     <label class="flex items-center cursor-pointer">
-                        <input type="checkbox" 
-                               wire:model="showWidgets.{{ $widget }}" 
-                               class="rounded border-themed-secondary text-purple-600 dark:text-purple-400 focus:ring-purple-500 dark:focus:ring-purple-400 dark:bg-themed-tertiary transition-colors duration-300">
+                        <input type="checkbox"
+                               wire:model="showWidgets.{{ $widget }}"
+                               class="rounded border-themed-secondary text-brand dark:text-brand focus:ring-brand/30 dark:focus:ring-brand/30 dark:bg-themed-tertiary transition-colors duration-300">
                         <span class="ml-2 text-sm text-themed-secondary transition-colors duration-300">{{ ucwords(str_replace('_', ' ', $widget)) }}</span>
                     </label>
                     @endforeach
@@ -541,7 +514,7 @@
 document.addEventListener('DOMContentLoaded', function() {
     // Get current theme for chart colors
     const isDark = document.documentElement.classList.contains('dark');
-    
+
     // Chart.js default configuration for dark mode
     Chart.defaults.color = isDark ? '#D1D5DB' : '#374151';
     Chart.defaults.borderColor = isDark ? '#374151' : '#E5E7EB';
@@ -581,6 +554,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 }]
             },
             options: {
+                animation: false,
                 responsive: true,
                 maintainAspectRatio: false,
                 plugins: {
@@ -637,7 +611,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     });
-    
+
     observer.observe(document.documentElement, {
         attributes: true,
         attributeFilter: ['class']

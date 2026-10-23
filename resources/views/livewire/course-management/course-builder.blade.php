@@ -1,8 +1,8 @@
 <div x-data="simpleBuilder()" x-init="init()" class="min-h-screen bg-themed-primary transition-colors duration-300">
     <!-- Loading Overlay -->
     <div x-show="isLoading" class="fixed inset-0 bg-black/50 z-50 flex items-center justify-center">
-        <div class="bg-themed-secondary rounded-lg p-6 flex items-center gap-4 shadow-xl border border-themed-primary transition-colors duration-300">
-            <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-accent-themed-primary"></div>
+        <div class="bg-themed-secondary rounded-lg p-6 flex items-center gap-4 shadow-sm border border-themed-primary transition-colors duration-300">
+            <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-brand"></div>
             <span class="text-themed-primary transition-colors duration-300">Loading...</span>
         </div>
     </div>
@@ -17,10 +17,10 @@
             <!-- Course Outline Sidebar -->
             <div class="xl:col-span-1 order-2 xl:order-1">
                 <div class="sticky top-6">
-                    <livewire:course-management.course-builder.course-outline 
-                        :course="$course" 
+                    <livewire:course-management.course-builder.course-outline
+                        :course="$course"
                         :activeSectionId="$activeSectionId"
-                        :activeLessonId="$activeContentId" 
+                        :activeLessonId="$activeContentId"
                         wire:key="outline-{{ $course->id }}" />
                 </div>
             </div>
@@ -29,20 +29,20 @@
             <div class="xl:col-span-3 order-1 xl:order-2 min-w-0">
                 @if ($activeContentType === 'lesson' && $activeContentId)
                     <!-- Show Lesson Editor -->
-                    <div class="animate__animated animate__fadeIn">
+                    <div class=" ">
                         <div class="bg-themed-secondary rounded-lg shadow-sm border border-themed-primary transition-colors duration-300">
-                            <livewire:course-management.course-builder.lesson-editor 
+                            <livewire:course-management.course-builder.lesson-editor
                                 :lessonId="$activeContentId"
                                 :key="'lesson-editor-' . $activeContentId" />
                         </div>
                     </div>
                 @else
                     <!-- Enhanced Empty State -->
-                    <div class="animate__animated animate__fadeIn">
+                    <div class=" ">
                         <div class="bg-themed-secondary rounded-lg border border-themed-primary p-8 lg:p-12 text-center transition-colors duration-300">
                             <div class="max-w-md mx-auto">
-                                <div class="w-20 h-20 bg-accent-themed-primary/20 rounded-full flex items-center justify-center mx-auto mb-6 transition-colors duration-300">
-                                    <i class="fas fa-book-open text-3xl text-accent-themed-primary"></i>
+                                <div class="w-20 h-20 bg-brand/20 rounded-full flex items-center justify-center mx-auto mb-6 transition-colors duration-300">
+                                    <i class="fas fa-book-open text-3xl text-brand"></i>
                                 </div>
                                 <h3 class="text-2xl font-bold text-themed-primary mb-3 transition-colors duration-300">Get Started</h3>
                                 @if ($course->sections->count() === 0)
@@ -70,7 +70,7 @@
         function simpleBuilder() {
             return {
                 isLoading: false,
-                
+
                 init() {
                     this.setupLivewireListeners();
                 },

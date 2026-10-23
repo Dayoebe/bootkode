@@ -1,13 +1,13 @@
 <!-- Search Bar & Create Button -->
 <div class="mb-6 flex gap-4">
     <div class="flex-1 relative">
-        <input type="text" wire:model.live.debounce="search"
-               class="w-full pl-10 pr-4 py-2 bg-themed-secondary border border-themed-primary text-themed-primary rounded-lg placeholder-themed-secondary focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+        <input aria-label="Search discussions" type="text" wire:model.live.debounce="search"
+               class="w-full pl-10 pr-4 py-2 bg-themed-secondary border border-themed-primary text-themed-primary rounded-lg placeholder-themed-secondary focus:ring-2 focus:ring-brand/30 focus:border-transparent"
                placeholder="Search discussions...">
         <i class="fas fa-search absolute left-3 top-2.5 text-themed-secondary"></i>
     </div>
     <button wire:click="openModal('forum')"
-            class="bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white px-4 py-2 rounded-lg font-medium transition-colors flex items-center gap-2 whitespace-nowrap">
+            class="bg-action hover:bg-action active:bg-action text-action-foreground px-4 py-2 rounded-lg font-medium transition-colors flex items-center gap-2 whitespace-nowrap">
         <i class="fas fa-plus"></i>
         <span class="hidden sm:inline">New Discussion</span>
     </button>
@@ -16,7 +16,7 @@
 <!-- Threads List -->
 <div class="space-y-3">
     @forelse($threads as $thread)
-        <div class="bg-themed-secondary border border-themed-primary rounded-lg p-4 hover:shadow-md hover:border-blue-500/50 transition-all group cursor-pointer">
+        <div class="bg-themed-secondary border border-themed-primary rounded-lg p-4  hover:border-brand transition-all group cursor-pointer">
             <div class="flex gap-3">
 
                 <img src="{{ $thread->user->profile_picture ? asset('storage/' . $thread->user->profile_picture) : 'https://ui-avatars.com/api/?name=' . urlencode($thread->user->name) }}"
@@ -38,7 +38,7 @@
                                 </span>
                             @endif
                         </div>
-                        <h3 class="font-semibold text-themed-primary group-hover:text-blue-600 transition-colors line-clamp-2 flex-1">
+                        <h3 class="font-semibold text-themed-primary group-hover:text-brand transition-colors line-clamp-2 flex-1">
                             {{ $thread->title }}
                         </h3>
                     </div>
@@ -67,7 +67,7 @@
             <h3 class="text-lg font-semibold text-themed-primary mb-1">No discussions yet</h3>
             <p class="text-themed-secondary mb-4">Start a conversation!</p>
             <button wire:click="openModal('forum')"
-                    class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-colors inline-flex items-center gap-2">
+                    class="bg-action hover:bg-action text-action-foreground px-4 py-2 rounded-lg font-medium transition-colors inline-flex items-center gap-2">
                 <i class="fas fa-plus"></i>Create Discussion
             </button>
         </div>

@@ -3,9 +3,9 @@
     <div class="space-y-6">
         <!-- Header -->
         <div class="mb-8">
-            <h1 class="text-2xl font-bold text-themed-primary">Payment Processing Center</h1>
+            <h1 class=" font-bold text-themed-primary bk-page-title">Payment Processing Center</h1>
             <p class="text-themed-secondary">Manage payments, withdrawals, and financial operations</p>
-            <a href="{{ route('admin.commercial.readiness') }}" class="mt-3 inline-flex rounded-lg border border-themed-secondary px-3 py-2 text-sm font-semibold text-themed-primary hover:border-blue-400 hover:text-blue-700">
+            <a href="{{ route('admin.commercial.readiness') }}" class="mt-3 inline-flex rounded-lg border border-themed-secondary px-3 py-2 text-sm font-semibold text-themed-primary hover:border-brand hover:text-brand">
                 <i class="fas fa-file-invoice-dollar mr-2"></i>Commercial readiness
             </a>
         </div>
@@ -28,7 +28,7 @@
                 </div>
             </div>
 
-            <div class="bg-themed-secondary rounded-lg shadow-sm p-4 border-l-4 border-blue-500">
+            <div class="bg-themed-secondary rounded-lg shadow-sm p-4 border-l-4 border-brand">
                 <p class="text-xs text-themed-secondary">Success Rate</p>
                 <p class="text-lg font-bold text-themed-primary">{{ $stats['success_rate'] }}%</p>
             </div>
@@ -48,9 +48,9 @@
                 <p class="text-lg font-bold text-red-600">{{ $stats['failed_payments'] }}</p>
             </div>
 
-            <div class="bg-themed-secondary rounded-lg shadow-sm p-4 border-l-4 border-purple-500">
+            <div class="bg-themed-secondary rounded-lg shadow-sm p-4 border-l-4 border-brand">
                 <p class="text-xs text-themed-secondary">Withdrawals</p>
-                <p class="text-lg font-bold text-purple-600">{{ $stats['pending_withdrawals'] }}</p>
+                <p class="text-lg font-bold text-brand">{{ $stats['pending_withdrawals'] }}</p>
             </div>
         </div>
 
@@ -58,23 +58,23 @@
         <div class="border-b border-themed-primary mb-8">
             <nav class="-mb-px flex space-x-8">
                 <button wire:click="setTab('overview')"
-                    class="{{ $selectedTab === 'overview' ? 'border-blue-500 text-blue-600' : 'border-transparent text-themed-secondary hover:text-gray-700 hover:border-gray-300' }} whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm">
+                    class="{{ $selectedTab === 'overview' ? 'border-blue-500 text-blue-600' : 'border-transparent text-themed-secondary hover:text-content hover:border-gray-300' }} whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm">
                     Payment Overview
                 </button>
                 <button wire:click="setTab('transactions')"
-                    class="{{ $selectedTab === 'transactions' ? 'border-blue-500 text-blue-600' : 'border-transparent text-themed-secondary hover:text-gray-700 hover:border-gray-300' }} whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm">
+                    class="{{ $selectedTab === 'transactions' ? 'border-blue-500 text-blue-600' : 'border-transparent text-themed-secondary hover:text-content hover:border-gray-300' }} whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm">
                     All Transactions
                 </button>
                 <button wire:click="setTab('withdrawals')"
-                    class="{{ $selectedTab === 'withdrawals' ? 'border-blue-500 text-blue-600' : 'border-transparent text-themed-secondary hover:text-gray-700 hover:border-gray-300' }} whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm">
+                    class="{{ $selectedTab === 'withdrawals' ? 'border-blue-500 text-blue-600' : 'border-transparent text-themed-secondary hover:text-content hover:border-gray-300' }} whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm">
                     Pending Withdrawals
                 </button>
                 <button wire:click="setTab('failed')"
-                    class="{{ $selectedTab === 'failed' ? 'border-blue-500 text-blue-600' : 'border-transparent text-themed-secondary hover:text-gray-700 hover:border-gray-300' }} whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm">
+                    class="{{ $selectedTab === 'failed' ? 'border-blue-500 text-blue-600' : 'border-transparent text-themed-secondary hover:text-content hover:border-gray-300' }} whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm">
                     Review Failed
                 </button>
                 <button wire:click="setTab('reports')"
-                    class="{{ $selectedTab === 'reports' ? 'border-blue-500 text-blue-600' : 'border-transparent text-themed-secondary hover:text-gray-700 hover:border-gray-300' }} whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm">
+                    class="{{ $selectedTab === 'reports' ? 'border-blue-500 text-blue-600' : 'border-transparent text-themed-secondary hover:text-content hover:border-gray-300' }} whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm">
                     Generate Reports
                 </button>
             </nav>
@@ -110,7 +110,7 @@
 
         @if (session()->has('info'))
             <div x-data="{ show: true }" x-init="setTimeout(() => show = false, 5000)" x-show="show"
-                class="fixed top-4 right-4 bg-blue-500 text-white px-6 py-3 rounded-lg shadow-sm z-50">
+                class="fixed top-4 right-4 bg-action text-action-foreground px-6 py-3 rounded-lg shadow-sm z-50">
                 {{ session('info') }}
             </div>
         @endif
@@ -119,7 +119,7 @@
     <!-- Loading Spinner -->
     <div wire:loading class="fixed inset-0 z-50 flex items-center justify-center bg-gray-900 bg-opacity-50">
         <div class="bg-themed-secondary rounded-lg p-6 flex items-center space-x-3">
-            <svg class="animate-spin h-6 w-6 text-blue-600" fill="none" viewBox="0 0 24 24">
+            <svg class="animate-spin h-6 w-6 text-brand" fill="none" viewBox="0 0 24 24">
                 <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                 <path class="opacity-75" fill="currentColor"
                     d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">

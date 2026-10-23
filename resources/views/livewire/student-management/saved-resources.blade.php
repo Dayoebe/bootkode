@@ -1,15 +1,15 @@
 <div>
-    <div class="bg-themed-secondary rounded-xl shadow-lg border border-themed-primary p-6 mb-6 transition-colors duration-300">
+    <div class="bg-themed-secondary rounded-lg shadow-sm border border-themed-primary p-6 mb-6 transition-colors duration-300">
         <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-            <h2 class="text-2xl font-bold text-themed-primary flex items-center gap-2">
-                <i class="fas fa-bookmark mr-2 text-accent-themed-primary"></i>
+            <h1 class="text-2xl font-bold text-themed-primary flex items-center gap-2">
+                <i class="fas fa-bookmark mr-2 text-brand"></i>
                 My Saved Resources
-            </h2>
+            </h1>
 
             <div class="flex flex-col sm:flex-row gap-3 w-full md:w-auto">
                 <div class="relative flex-grow">
-                    <input type="text" wire:model.live.debounce.300ms="search" placeholder="Search saved resources..."
-                        class="w-full bg-themed-tertiary border border-themed-secondary rounded-lg px-4 py-2 text-themed-primary placeholder-themed-tertiary focus:ring-2 focus:ring-accent-themed-primary focus:border-accent-themed-primary transition-colors duration-300">
+                    <input aria-label="Search saved resources" type="text" wire:model.live.debounce.300ms="search" placeholder="Search saved resources..."
+                        class="w-full bg-themed-tertiary border border-themed-secondary rounded-lg px-4 py-2 text-themed-primary placeholder-themed-tertiary focus:ring-2 focus:ring-brand focus:border-brand transition-colors duration-300">
                     <i class="fas fa-search absolute right-3 top-3 text-themed-tertiary"></i>
                 </div>
 
@@ -23,8 +23,8 @@
         </div>
 
         <div class="mt-4 flex flex-wrap gap-3">
-            <select wire:model.live="filter"
-                class="bg-themed-tertiary border border-themed-secondary rounded-lg px-3 py-2 text-themed-primary focus:ring-2 focus:ring-accent-themed-primary focus:border-accent-themed-primary transition-colors duration-300">
+            <select aria-label="Filter" wire:model.live="filter"
+                class="bg-themed-tertiary border border-themed-secondary rounded-lg px-3 py-2 text-themed-primary focus:ring-2 focus:ring-brand focus:border-brand transition-colors duration-300">
                 <option value="all">All Types</option>
                 <option value="lesson">Lessons</option>
                 <option value="note">Notes</option>
@@ -32,8 +32,8 @@
                 <option value="video">Videos</option>
             </select>
 
-            <select wire:model.live="sort"
-                class="bg-themed-tertiary border border-themed-secondary rounded-lg px-3 py-2 text-themed-primary focus:ring-2 focus:ring-accent-themed-primary focus:border-accent-themed-primary transition-colors duration-300">
+            <select aria-label="Sort" wire:model.live="sort"
+                class="bg-themed-tertiary border border-themed-secondary rounded-lg px-3 py-2 text-themed-primary focus:ring-2 focus:ring-brand focus:border-brand transition-colors duration-300">
                 <option value="newest">Newest First</option>
                 <option value="oldest">Oldest First</option>
                 <option value="course">By Course</option>
@@ -44,7 +44,7 @@
     @if($groupByCourse)
         <!-- Grouped by Course View -->
         @forelse($groupedResources as $courseId => $resources)
-            <div class="bg-themed-secondary rounded-xl shadow-lg border border-themed-primary p-6 mb-6 transition-colors duration-300">
+            <div class="bg-themed-secondary rounded-lg shadow-sm border border-themed-primary p-6 mb-6 transition-colors duration-300">
                 <div class="flex items-center justify-between mb-4">
                     <h3 class="text-xl font-bold text-themed-primary flex items-center">
                         <img src="{{ asset('storage/' . ($courses[$courseId]->thumbnail ?? 'images/default-course.png')) }}"
@@ -59,13 +59,13 @@
 
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                     @foreach($resources as $bookmark)
-                        <div class="bg-themed-tertiary rounded-lg border border-themed-secondary p-4 hover:border-accent-themed-primary transition-colors duration-300">
+                        <div class="bg-themed-tertiary rounded-lg border border-themed-secondary p-4 hover:border-brand transition-colors duration-300">
                             <div class="flex justify-between items-start mb-2">
                                 <span class="px-2 py-1 bg-themed-secondary text-xs rounded-full text-themed-primary font-medium">
                                     {{ ucfirst($bookmark->type) }}
                                 </span>
                                 <button wire:click="removeBookmark('{{ $bookmark->id }}')"
-                                    class="text-themed-tertiary hover:text-accent-themed-primary transition-colors duration-300" title="Remove bookmark">
+                                    class="text-themed-tertiary hover:text-brand transition-colors duration-300" title="Remove bookmark">
                                     <i class="fas fa-times"></i>
                                 </button>
                             </div>
@@ -85,7 +85,7 @@
                                     Saved {{ $bookmark->created_at->diffForHumans() }}
                                 </span>
                                 <a href="{{ route('student.enrolled-courses') }}?highlight={{ $bookmark->resourceable_id }}"
-                                    class="text-accent-themed-primary hover:text-accent-themed-secondary transition-colors duration-300">
+                                    class="text-brand hover:text-accent-themed-secondary transition-colors duration-300">
                                     View Resource <i class="fas fa-arrow-right ml-1"></i>
                                 </a>
                             </div>
@@ -94,7 +94,7 @@
                 </div>
             </div>
         @empty
-            <div class="bg-themed-secondary rounded-xl shadow-lg border border-themed-primary p-8 text-center transition-colors duration-300">
+            <div class="bg-themed-secondary rounded-lg shadow-sm border border-themed-primary p-8 text-center transition-colors duration-300">
                 <i class="fas fa-bookmark text-5xl text-themed-tertiary mb-4"></i>
                 <h3 class="text-xl font-bold text-themed-primary mb-2">No Saved Resources Yet</h3>
                 <p class="text-themed-secondary mb-4">
@@ -102,7 +102,7 @@
                     click the bookmark icon to save them here for easy access.
                 </p>
                 <a href="{{ route('student.course-catalog') }}"
-                    class="inline-flex items-center px-4 py-2 bg-accent-themed-primary hover:bg-accent-themed-secondary rounded-lg text-white transition-colors duration-300">
+                    class="inline-flex items-center px-4 py-2 bg-action hover:bg-action/90 rounded-lg text-action-foreground transition-colors duration-300">
                     <i class="fas fa-book-open mr-2"></i> Browse Courses
                 </a>
             </div>
@@ -111,13 +111,13 @@
         <!-- Default List View -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             @forelse($savedResources as $bookmark)
-                <div class="bg-themed-secondary rounded-xl shadow-lg border border-themed-primary p-5 hover:border-accent-themed-primary transition-colors duration-300">
+                <div class="bg-themed-secondary rounded-lg shadow-sm border border-themed-primary p-5 hover:border-brand transition-colors duration-300">
                     <div class="flex justify-between items-start mb-3">
                         <span class="px-2 py-1 bg-themed-tertiary text-xs rounded-full text-themed-primary font-medium">
                             {{ ucfirst($bookmark->type) }}
                         </span>
                         <button wire:click="removeBookmark('{{ $bookmark->id }}')"
-                            class="text-themed-tertiary hover:text-accent-themed-primary transition-colors duration-300" title="Remove bookmark">
+                            class="text-themed-tertiary hover:text-brand transition-colors duration-300" title="Remove bookmark">
                             <i class="fas fa-times"></i>
                         </button>
                     </div>
@@ -152,13 +152,13 @@
                             Saved {{ $bookmark->created_at->diffForHumans() }}
                         </span>
                         <a href="{{ route('student.enrolled-courses') }}?highlight={{ $bookmark->resourceable_id }}"
-                            class="text-accent-themed-primary hover:text-accent-themed-secondary transition-colors duration-300 flex items-center">
+                            class="text-brand hover:text-accent-themed-secondary transition-colors duration-300 flex items-center">
                             Open <i class="fas fa-external-link-alt ml-1 text-xs"></i>
                         </a>
                     </div>
                 </div>
             @empty
-                <div class="col-span-full bg-themed-secondary rounded-xl shadow-lg border border-themed-primary p-8 text-center transition-colors duration-300">
+                <div class="col-span-full bg-themed-secondary rounded-lg shadow-sm border border-themed-primary p-8 text-center transition-colors duration-300">
                     <i class="fas fa-bookmark text-5xl text-themed-tertiary mb-4"></i>
                     <h3 class="text-xl font-bold text-themed-primary mb-2">No Saved Resources Yet</h3>
                     <p class="text-themed-secondary mb-4">
@@ -166,7 +166,7 @@
                         click the bookmark icon to save them here for easy access.
                     </p>
                     <a href="{{ route('student.course-catalog') }}"
-                        class="inline-flex items-center px-4 py-2 bg-accent-themed-primary hover:bg-accent-themed-secondary rounded-lg text-white transition-colors duration-300">
+                        class="inline-flex items-center px-4 py-2 bg-action hover:bg-action/90 rounded-lg text-action-foreground transition-colors duration-300">
                         <i class="fas fa-book-open mr-2"></i> Browse Courses
                     </a>
                 </div>

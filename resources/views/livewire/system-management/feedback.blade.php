@@ -1,7 +1,7 @@
 <div class="px-4 sm:px-6 lg:px-8 py-8">
     <!-- Header -->
-    <div class="bg-gradient-to-r from-rose-600 to-pink-600 p-6 rounded-2xl shadow-xl text-white mb-8 animate__animated animate__fadeIn">
-        <h1 class="text-3xl font-bold text-white">
+    <div class="bg-brand-ink   p-6 rounded-lg shadow-sm text-white mb-8  ">
+        <h1 class=" font-bold text-white bk-page-title">
             <i class="fas fa-comment-dots mr-2"></i> Feedback
         </h1>
         <p class="text-rose-100 mt-2">Share your thoughts to help us improve</p>
@@ -9,20 +9,20 @@
 
     <!-- Tabs -->
     <div x-data="{ activeTab: @entangle('activeTab') }" class="mb-8">
-        <div class="bg-themed-secondary rounded-2xl shadow-sm border border-themed-primary overflow-hidden">
+        <div class="bg-themed-secondary rounded-lg shadow-sm border border-themed-primary overflow-hidden">
             <nav class="flex border-b border-themed-primary" aria-label="Tabs">
                 <button @click="activeTab = 'submit_feedback'"
-                    :class="{ 
-                        'border-b-2 border-rose-500 text-rose-600 dark:text-rose-400 bg-rose-100/10 dark:bg-rose-900/20': activeTab === 'submit_feedback', 
-                        'border-b-2 border-transparent text-themed-secondary hover:text-themed-primary': activeTab !== 'submit_feedback' 
+                    :class="{
+                        'border-b-2 border-rose-500 text-rose-600 dark:text-rose-400 bg-rose-100/10 dark:bg-rose-900/20': activeTab === 'submit_feedback',
+                        'border-b-2 border-transparent text-themed-secondary hover:text-themed-primary': activeTab !== 'submit_feedback'
                     }"
                     class="flex-1 whitespace-nowrap py-4 px-1 font-medium text-sm flex items-center justify-center transition-all duration-300">
                     <i class="fas fa-pen mr-2"></i> Submit Feedback
                 </button>
                 <button @click="activeTab = 'my_feedback'"
-                    :class="{ 
-                        'border-b-2 border-rose-500 text-rose-600 dark:text-rose-400 bg-rose-100/10 dark:bg-rose-900/20': activeTab === 'my_feedback', 
-                        'border-b-2 border-transparent text-themed-secondary hover:text-themed-primary': activeTab !== 'my_feedback' 
+                    :class="{
+                        'border-b-2 border-rose-500 text-rose-600 dark:text-rose-400 bg-rose-100/10 dark:bg-rose-900/20': activeTab === 'my_feedback',
+                        'border-b-2 border-transparent text-themed-secondary hover:text-themed-primary': activeTab !== 'my_feedback'
                     }"
                     class="flex-1 whitespace-nowrap py-4 px-1 font-medium text-sm flex items-center justify-center transition-all duration-300">
                     <i class="fas fa-history mr-2"></i> My Feedback
@@ -33,12 +33,12 @@
         <!-- Tab Content -->
         <div class="mt-8">
             <!-- Submit Feedback Tab -->
-            <div x-show="activeTab === 'submit_feedback'" x-transition class="bg-themed-secondary shadow rounded-2xl p-6 animate__animated animate__fadeInUp border border-themed-primary">
+            <div x-show="activeTab === 'submit_feedback'" x-transition class="bg-themed-secondary shadow rounded-lg p-6   border border-themed-primary">
                 <h3 class="text-xl font-semibold text-themed-primary mb-6 flex items-center">
                     <i class="fas fa-lightbulb text-rose-600 dark:text-rose-400 mr-2"></i>
                     Share Your Feedback
                 </h3>
-                
+
                 <form wire:submit.prevent="saveFeedback" enctype="multipart/form-data">
                     <div class="space-y-6">
                         <!-- Category Selection -->
@@ -47,7 +47,7 @@
                                 <i class="fas fa-tag mr-2 text-rose-600 dark:text-rose-400"></i>Category
                             </label>
                             <select wire:model="category" id="category"
-                                class="w-full px-4 py-3 border border-themed-primary bg-themed-tertiary rounded-xl text-themed-primary focus:outline-none focus:ring-2 focus:ring-rose-500 focus:border-rose-500 transition-all duration-200">
+                                class="w-full px-4 py-3 border border-themed-primary bg-themed-tertiary rounded-lg text-themed-primary focus:outline-none focus:ring-2 focus:ring-rose-500 focus:border-rose-500 transition-all duration-200">
                                 <option value="general">General Feedback</option>
                                 <option value="course">Course Related</option>
                                 <option value="platform">Platform Features</option>
@@ -64,7 +64,7 @@
                                     <i class="fas fa-graduation-cap mr-2 text-rose-600 dark:text-rose-400"></i>Select Course
                                 </label>
                                 <select wire:model="course_id" id="course_id"
-                                    class="w-full px-4 py-3 border border-themed-primary bg-themed-tertiary rounded-xl text-themed-primary focus:outline-none focus:ring-2 focus:ring-rose-500 focus:border-rose-500 transition-all duration-200">
+                                    class="w-full px-4 py-3 border border-themed-primary bg-themed-tertiary rounded-lg text-themed-primary focus:outline-none focus:ring-2 focus:ring-rose-500 focus:border-rose-500 transition-all duration-200">
                                     <option value="">-- Select a course --</option>
                                     @foreach($courses as $course)
                                         <option value="{{ $course->id }}">{{ $course->title }}</option>
@@ -80,7 +80,7 @@
                                 <i class="fas fa-message mr-2 text-rose-600 dark:text-rose-400"></i>Your Feedback
                             </label>
                             <textarea wire:model="message" id="message" rows="5"
-                                class="w-full px-4 py-3 border border-themed-primary bg-themed-tertiary rounded-xl text-themed-primary focus:outline-none focus:ring-2 focus:ring-rose-500 focus:border-rose-500 transition-all duration-200"
+                                class="w-full px-4 py-3 border border-themed-primary bg-themed-tertiary rounded-lg text-themed-primary focus:outline-none focus:ring-2 focus:ring-rose-500 focus:border-rose-500 transition-all duration-200"
                                 placeholder="Please share your feedback, suggestions, or concerns..."></textarea>
                             @error('message') <p class="mt-2 text-sm text-red-600"><i class="fas fa-exclamation-circle mr-1"></i>{{ $message }}</p> @enderror
                         </div>
@@ -111,7 +111,7 @@
                             <label for="attachment" class="block text-sm font-semibold text-themed-primary mb-3">
                                 <i class="fas fa-paperclip mr-2 text-rose-600 dark:text-rose-400"></i>Attachment (optional)
                             </label>
-                            <div class="border-2 border-dashed border-themed-primary bg-themed-tertiary rounded-xl p-6 text-center hover:border-rose-500 dark:hover:border-rose-400 transition-colors duration-200">
+                            <div class="border-2 border-dashed border-themed-primary bg-themed-tertiary rounded-lg p-6 text-center hover:border-rose-500 dark:hover:border-rose-400 transition-colors duration-200">
                                 <div class="flex flex-col items-center">
                                     <i class="fas fa-cloud-upload-alt text-3xl text-rose-600 dark:text-rose-400 mb-2"></i>
                                     <label for="attachment" class="cursor-pointer">
@@ -133,7 +133,7 @@
                     <!-- Submit Button -->
                     <div class="mt-8 flex items-center justify-end space-x-4">
                         <button type="submit" wire:loading.attr="disabled"
-                                class="inline-flex items-center px-8 py-3 border border-transparent text-base font-semibold rounded-xl shadow-lg text-white bg-gradient-to-r from-rose-600 to-pink-600 hover:from-rose-700 hover:to-pink-700 dark:from-rose-700 dark:to-pink-800 dark:hover:from-rose-800 dark:hover:to-pink-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-rose-500 dark:focus:ring-offset-themed-secondary disabled:opacity-50 transition-all duration-200 transform hover:scale-105">
+                                class="inline-flex items-center px-8 py-3 border border-transparent text-base font-semibold rounded-lg shadow-sm text-white bg-brand-ink         focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-rose-500 dark:focus:ring-offset-themed-secondary disabled:opacity-50 transition-all duration-200 transform ">
                             <span wire:loading.remove><i class="fas fa-paper-plane mr-2"></i>Submit Feedback</span>
                             <span wire:loading><i class="fas fa-circle-notch fa-spin mr-2"></i>Submitting...</span>
                         </button>
@@ -144,7 +144,7 @@
             <!-- My Feedback Tab -->
             <div x-show="activeTab === 'my_feedback'" x-transition class="space-y-6">
                 <!-- Search and Filter -->
-                <div class="bg-themed-secondary shadow rounded-2xl p-6 border border-themed-primary">
+                <div class="bg-themed-secondary shadow rounded-lg p-6 border border-themed-primary">
                     <div class="flex flex-col sm:flex-row gap-4">
                         <div class="flex-1">
                             <label for="search_feedback" class="block text-sm font-medium text-themed-primary mb-2">Search</label>
@@ -169,18 +169,18 @@
                 </div>
 
                 <!-- Feedback List -->
-                <div class="bg-themed-secondary shadow rounded-2xl border border-themed-primary overflow-hidden">
+                <div class="bg-themed-secondary shadow rounded-lg border border-themed-primary overflow-hidden">
                     <div class="space-y-4 p-6">
                         @forelse($feedbacks as $feedback)
-                            <div class="border border-themed-primary rounded-xl p-4 hover:shadow-lg hover:bg-themed-tertiary transition-all duration-200 animate__animated animate__fadeInUp">
+                            <div class="border border-themed-primary rounded-lg p-4 hover:shadow-sm hover:bg-themed-tertiary transition-all duration-200  ">
                                 <div class="flex justify-between items-start mb-3">
                                     <div>
                                         <div class="flex items-center gap-2 mb-2 flex-wrap">
                                             <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold
-                                                @if($feedback->status === 'open') bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300
+                                                @if($feedback->status === 'open') bg-brand/10 dark:bg-action/30 text-brand dark:text-brand
                                                 @elseif($feedback->status === 'responded') bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300
-                                                @else bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-300 @endif">
-                                                <i class="fas 
+                                                @else bg-surface-muted dark:bg-gray-700 text-content dark:text-gray-300 @endif">
+                                                <i class="fas
                                                     @if($feedback->status === 'open') fa-clock
                                                     @elseif($feedback->status === 'responded') fa-check-circle
                                                     @else fa-times-circle @endif mr-1"></i>

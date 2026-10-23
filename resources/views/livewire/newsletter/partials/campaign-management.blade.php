@@ -5,17 +5,17 @@
         <div class="flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-4 w-full md:w-auto">
             <!-- Search -->
             <div class="relative">
-                <input 
-                    type="text" 
-                    wire:model.live.debounce.300ms="search" 
+                <input
+ aria-label="Search campaigns"                    type="text"
+                    wire:model.live.debounce.300ms="search"
                     placeholder="Search campaigns..."
-                    class="pl-10 pr-4 py-2 w-full md:w-64 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    class="pl-10 pr-4 py-2 w-full md:w-64 border border-line rounded-lg focus:ring-2 focus:ring-brand/30 focus:border-transparent"
                 >
-                <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
+                <i class="fas fa-search absolute left-3 top-3 text-content-muted"></i>
             </div>
 
             <!-- Status Filter -->
-            <select wire:model.live="statusFilter" class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+            <select aria-label="Status filter" wire:model.live="statusFilter" class="px-4 py-2 border border-line rounded-lg focus:ring-2 focus:ring-brand/30">
                 <option value="">All Statuses</option>
                 <option value="draft">Draft</option>
                 <option value="scheduled">Scheduled</option>
@@ -25,9 +25,9 @@
             </select>
         </div>
 
-        <button 
+        <button
             wire:click="$set('showCreateModal', true)"
-            class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-colors"
+            class="bg-action hover:bg-action text-action-foreground px-4 py-2 rounded-lg font-medium transition-colors"
         >
             <i class="fas fa-plus mr-2"></i>Create Campaign
         </button>
@@ -36,10 +36,10 @@
     <!-- Campaigns Grid -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         @forelse($campaigns as $campaign)
-            <div class="bg-white rounded-lg shadow border border-gray-200 overflow-hidden">
+            <div class="bg-surface rounded-lg shadow border border-line overflow-hidden">
                 <div class="p-6">
                     <div class="flex justify-between items-start mb-4">
-                        <h3 class="text-lg font-semibold text-gray-900 truncate">{{ $campaign->name }}</h3>
+                        <h3 class="text-lg font-semibold text-content truncate">{{ $campaign->name }}</h3>
                         <span class="px-2 py-1 text-xs font-semibold rounded-full
                             {{ $campaign->status === 'draft' ? 'bg-gray-100 text-gray-800' : '' }}
                             {{ $campaign->status === 'scheduled' ? 'bg-yellow-100 text-yellow-800' : '' }}
@@ -51,9 +51,9 @@
                         </span>
                     </div>
 
-                    <p class="text-sm text-gray-600 mb-3">{{ $campaign->subject }}</p>
+                    <p class="text-sm text-content-muted mb-3">{{ $campaign->subject }}</p>
 
-                    <div class="flex justify-between text-sm text-gray-500 mb-4">
+                    <div class="flex justify-between text-sm text-content-muted mb-4">
                         <span>Recipients: {{ number_format($campaign->total_recipients) }}</span>
                         <span>Created: {{ $campaign->created_at->format('M j') }}</span>
                     </div>
@@ -62,11 +62,11 @@
                         <div class="grid grid-cols-2 gap-4 mb-4 text-sm">
                             <div class="text-center">
                                 <div class="font-semibold text-green-600">{{ $campaign->open_rate }}%</div>
-                                <div class="text-gray-500">Open Rate</div>
+                                <div class="text-content-muted">Open Rate</div>
                             </div>
                             <div class="text-center">
-                                <div class="font-semibold text-blue-600">{{ $campaign->click_rate }}%</div>
-                                <div class="text-gray-500">Click Rate</div>
+                                <div class="font-semibold text-brand">{{ $campaign->click_rate }}%</div>
+                                <div class="text-content-muted">Click Rate</div>
                             </div>
                         </div>
                     @endif
@@ -74,23 +74,23 @@
                     <div class="flex justify-between items-center">
                         <div class="flex space-x-2">
                             @if($campaign->canBeSent())
-                                <button 
+                                <button
                                     wire:click="editCampaign({{ $campaign->id }})"
-                                    class="text-blue-600 hover:text-blue-900 text-sm"
+                                    class="text-brand hover:text-brand text-sm"
                                     title="Edit"
                                 >
                                     <i class="fas fa-edit"></i>
                                 </button>
                             @endif
-                            <button 
+                            <button
                                 wire:click="duplicateCampaign({{ $campaign->id }})"
-                                class="text-purple-600 hover:text-purple-900 text-sm"
+                                class="text-brand hover:text-brand text-sm"
                                 title="Duplicate"
                             >
                                 <i class="fas fa-copy"></i>
                             </button>
                             @if($campaign->status !== 'sent' && $campaign->status !== 'sending')
-                                <button 
+                                <button
                                     wire:click="deleteCampaign({{ $campaign->id }})"
                                     onclick="return confirm('Are you sure?')"
                                     class="text-red-600 hover:text-red-900 text-sm"
@@ -103,7 +103,7 @@
 
                         <div class="flex space-x-1">
                             @if($campaign->canBeSent())
-                                <button 
+                                <button
                                     wire:click="sendCampaign({{ $campaign->id }})"
                                     onclick="return confirm('Are you sure you want to send this campaign?')"
                                     class="bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded text-sm transition-colors"
@@ -112,7 +112,7 @@
                                 </button>
                             @endif
                             @if(in_array($campaign->status, ['scheduled','sending']))
-                                <button 
+                                <button
                                     wire:click="cancelCampaign({{ $campaign->id }})"
                                     onclick="return confirm('Are you sure you want to cancel this campaign?')"
                                     class="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded text-sm transition-colors"
@@ -127,10 +127,10 @@
         @empty
             <div class="col-span-full text-center py-12">
                 <i class="fas fa-paper-plane text-4xl text-gray-300 mb-4"></i>
-                <p class="text-gray-500">No campaigns found.</p>
-                <button 
+                <p class="text-content-muted">No campaigns found.</p>
+                <button
                     wire:click="$set('showCreateModal', true)"
-                    class="mt-4 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-colors"
+                    class="mt-4 bg-action hover:bg-action text-action-foreground px-4 py-2 rounded-lg font-medium transition-colors"
                 >
                     Create Your First Campaign
                 </button>
@@ -145,93 +145,93 @@
     @endif
 
     <!-- Create Campaign Modal -->
-    <div x-data="{ show: @entangle('showCreateModal') }" x-show="show" class="fixed inset-0 z-50 overflow-y-auto" x-cloak>
+    <div x-data="{ show: @entangle('showCreateModal') }" x-show="show" class="fixed inset-0 z-50 overflow-y-auto" x-cloak x-trap.inert.noscroll="show" role="dialog" aria-modal="true" aria-label="Create New Campaign" tabindex="-1" @keydown.escape.stop="show = false">
         <div class="flex items-center justify-center min-h-screen px-4">
             <div class="fixed inset-0 bg-black bg-opacity-50" @click="show = false"></div>
-            <div class="relative bg-white rounded-lg w-full max-w-4xl max-h-[90vh] overflow-y-auto">
+            <div class="relative bg-surface rounded-lg w-full max-w-4xl max-h-[90vh] overflow-y-auto">
                 <div class="p-6">
                     <h3 class="text-lg font-medium mb-4">Create New Campaign</h3>
                     <form wire:submit.prevent="createCampaign">
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div class="space-y-4">
                                 <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-1">Campaign Name *</label>
-                                    <input 
-                                        type="text" 
-                                        wire:model="name" 
+                                    <label class="block text-sm font-medium text-content mb-1">Campaign Name *</label>
+                                    <input
+ aria-label="Name"                                        type="text"
+                                        wire:model="name"
                                         required
-                                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                        class="w-full px-3 py-2 border border-line rounded-lg focus:ring-2 focus:ring-brand/30 focus:border-transparent"
                                     >
                                     @error('name') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
                                 </div>
 
                                 <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-1">Email Subject *</label>
-                                    <input 
-                                        type="text" 
-                                        wire:model="subject" 
+                                    <label class="block text-sm font-medium text-content mb-1">Email Subject *</label>
+                                    <input
+ aria-label="Subject"                                        type="text"
+                                        wire:model="subject"
                                         required
-                                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                        class="w-full px-3 py-2 border border-line rounded-lg focus:ring-2 focus:ring-brand/30 focus:border-transparent"
                                     >
                                     @error('subject') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
                                 </div>
 
                                 <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-1">Preview Text</label>
-                                    <textarea 
-                                        wire:model="previewText" 
+                                    <label class="block text-sm font-medium text-content mb-1">Preview Text</label>
+                                    <textarea
+ aria-label="This text appears in email clients as a preview"                                        wire:model="previewText"
                                         rows="3"
                                         placeholder="This text appears in email clients as a preview..."
-                                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                        class="w-full px-3 py-2 border border-line rounded-lg focus:ring-2 focus:ring-brand/30 focus:border-transparent"
                                     ></textarea>
                                 </div>
 
                                 <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-1">From Name *</label>
-                                    <input 
-                                        type="text" 
-                                        wire:model="fromName" 
+                                    <label class="block text-sm font-medium text-content mb-1">From Name *</label>
+                                    <input
+ aria-label="From name"                                        type="text"
+                                        wire:model="fromName"
                                         required
-                                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                        class="w-full px-3 py-2 border border-line rounded-lg focus:ring-2 focus:ring-brand/30 focus:border-transparent"
                                     >
                                 </div>
 
                                 <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-1">From Email *</label>
-                                    <input 
-                                        type="email" 
-                                        wire:model="fromEmail" 
+                                    <label class="block text-sm font-medium text-content mb-1">From Email *</label>
+                                    <input
+ aria-label="From email"                                        type="email"
+                                        wire:model="fromEmail"
                                         required
-                                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                        class="w-full px-3 py-2 border border-line rounded-lg focus:ring-2 focus:ring-brand/30 focus:border-transparent"
                                     >
                                 </div>
 
                                 <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-1">Reply To</label>
-                                    <input 
-                                        type="email" 
-                                        wire:model="replyTo" 
-                                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                    <label class="block text-sm font-medium text-content mb-1">Reply To</label>
+                                    <input
+ aria-label="Reply to"                                        type="email"
+                                        wire:model="replyTo"
+                                        class="w-full px-3 py-2 border border-line rounded-lg focus:ring-2 focus:ring-brand/30 focus:border-transparent"
                                     >
                                 </div>
 
                                 <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-1">Schedule Send (Optional)</label>
-                                    <input 
-                                        type="datetime-local" 
-                                        wire:model="scheduledAt" 
-                                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                    <label class="block text-sm font-medium text-content mb-1">Schedule Send (Optional)</label>
+                                    <input
+ aria-label="Scheduled at"                                        type="datetime-local"
+                                        wire:model="scheduledAt"
+                                        class="w-full px-3 py-2 border border-line rounded-lg focus:ring-2 focus:ring-brand/30 focus:border-transparent"
                                     >
                                 </div>
                             </div>
 
                             <div class="space-y-4">
                                 <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-1">Template (Optional)</label>
-                                    <select 
-                                        wire:model.live="templateId" 
+                                    <label class="block text-sm font-medium text-content mb-1">Template (Optional)</label>
+                                    <select
+ aria-label="Template id"                                        wire:model.live="templateId"
                                         wire:change="loadTemplate($event.target.value)"
-                                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                        class="w-full px-3 py-2 border border-line rounded-lg focus:ring-2 focus:ring-brand/30 focus:border-transparent"
                                     >
                                         <option value="">Select a template...</option>
                                         @foreach($templates as $template)
@@ -241,16 +241,16 @@
                                 </div>
 
                                 <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-1">Email Content *</label>
-                                    <textarea 
-                                        wire:model="htmlContent" 
+                                    <label class="block text-sm font-medium text-content mb-1">Email Content *</label>
+                                    <textarea
+ aria-label="Enter your email HTML content here"                                        wire:model="htmlContent"
                                         rows="15"
                                         required
                                         placeholder="Enter your email HTML content here..."
-                                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                        class="w-full px-3 py-2 border border-line rounded-lg focus:ring-2 focus:ring-brand/30 focus:border-transparent"
                                     ></textarea>
                                     @error('htmlContent') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
-                                    <p class="text-xs text-gray-500 mt-1">
+                                    <p class="text-xs text-content-muted mt-1">
                                         Available variables: @{{subscriber_email}}, @{{subscriber_first_name}}, @{{subscriber_last_name}}, @{{unsubscribe_url}}
                                     </p>
                                 </div>
@@ -258,16 +258,16 @@
                         </div>
 
                         <div class="mt-6 flex justify-end space-x-3">
-                            <button 
-                                type="button" 
+                            <button
+                                type="button"
                                 @click="show = false"
-                                class="px-4 py-2 text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50"
+                                class="px-4 py-2 text-content border border-line rounded-lg hover:bg-surface-muted"
                             >
                                 Cancel
                             </button>
-                            <button 
+                            <button
                                 type="submit"
-                                class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+                                class="px-4 py-2 bg-action text-action-foreground rounded-lg hover:bg-action"
                             >
                                 {{ $scheduledAt ? 'Schedule Campaign' : 'Create Draft' }}
                             </button>
@@ -279,93 +279,93 @@
     </div>
 
     <!-- Edit Campaign Modal -->
-    <div x-data="{ show: @entangle('showEditModal') }" x-show="show" class="fixed inset-0 z-50 overflow-y-auto" x-cloak>
+    <div x-data="{ show: @entangle('showEditModal') }" x-show="show" class="fixed inset-0 z-50 overflow-y-auto" x-cloak x-trap.inert.noscroll="show" role="dialog" aria-modal="true" aria-label="Edit Campaign" tabindex="-1" @keydown.escape.stop="show = false">
         <div class="flex items-center justify-center min-h-screen px-4">
             <div class="fixed inset-0 bg-black bg-opacity-50" @click="show = false"></div>
-            <div class="relative bg-white rounded-lg w-full max-w-4xl max-h-[90vh] overflow-y-auto">
+            <div class="relative bg-surface rounded-lg w-full max-w-4xl max-h-[90vh] overflow-y-auto">
                 <div class="p-6">
                     <h3 class="text-lg font-medium mb-4">Edit Campaign</h3>
                     <form wire:submit.prevent="updateCampaign">
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div class="space-y-4">
                                 <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-1">Campaign Name *</label>
-                                    <input 
-                                        type="text" 
-                                        wire:model="name" 
+                                    <label class="block text-sm font-medium text-content mb-1">Campaign Name *</label>
+                                    <input
+ aria-label="Name"                                        type="text"
+                                        wire:model="name"
                                         required
-                                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                        class="w-full px-3 py-2 border border-line rounded-lg focus:ring-2 focus:ring-brand/30 focus:border-transparent"
                                     >
                                     @error('name') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
                                 </div>
 
                                 <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-1">Email Subject *</label>
-                                    <input 
-                                        type="text" 
-                                        wire:model="subject" 
+                                    <label class="block text-sm font-medium text-content mb-1">Email Subject *</label>
+                                    <input
+ aria-label="Subject"                                        type="text"
+                                        wire:model="subject"
                                         required
-                                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                        class="w-full px-3 py-2 border border-line rounded-lg focus:ring-2 focus:ring-brand/30 focus:border-transparent"
                                     >
                                     @error('subject') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
                                 </div>
 
                                 <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-1">Preview Text</label>
-                                    <textarea 
-                                        wire:model="previewText" 
+                                    <label class="block text-sm font-medium text-content mb-1">Preview Text</label>
+                                    <textarea
+ aria-label="Preview text"                                        wire:model="previewText"
                                         rows="3"
-                                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                        class="w-full px-3 py-2 border border-line rounded-lg focus:ring-2 focus:ring-brand/30 focus:border-transparent"
                                     ></textarea>
                                 </div>
 
                                 <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-1">From Name *</label>
-                                    <input 
-                                        type="text" 
-                                        wire:model="fromName" 
+                                    <label class="block text-sm font-medium text-content mb-1">From Name *</label>
+                                    <input
+ aria-label="From name"                                        type="text"
+                                        wire:model="fromName"
                                         required
-                                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                        class="w-full px-3 py-2 border border-line rounded-lg focus:ring-2 focus:ring-brand/30 focus:border-transparent"
                                     >
                                 </div>
 
                                 <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-1">From Email *</label>
-                                    <input 
-                                        type="email" 
-                                        wire:model="fromEmail" 
+                                    <label class="block text-sm font-medium text-content mb-1">From Email *</label>
+                                    <input
+ aria-label="From email"                                        type="email"
+                                        wire:model="fromEmail"
                                         required
-                                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                        class="w-full px-3 py-2 border border-line rounded-lg focus:ring-2 focus:ring-brand/30 focus:border-transparent"
                                     >
                                 </div>
 
                                 <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-1">Reply To</label>
-                                    <input 
-                                        type="email" 
-                                        wire:model="replyTo" 
-                                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                    <label class="block text-sm font-medium text-content mb-1">Reply To</label>
+                                    <input
+ aria-label="Reply to"                                        type="email"
+                                        wire:model="replyTo"
+                                        class="w-full px-3 py-2 border border-line rounded-lg focus:ring-2 focus:ring-brand/30 focus:border-transparent"
                                     >
                                 </div>
 
                                 <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-1">Schedule Send (Optional)</label>
-                                    <input 
-                                        type="datetime-local" 
-                                        wire:model="scheduledAt" 
-                                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                    <label class="block text-sm font-medium text-content mb-1">Schedule Send (Optional)</label>
+                                    <input
+ aria-label="Scheduled at"                                        type="datetime-local"
+                                        wire:model="scheduledAt"
+                                        class="w-full px-3 py-2 border border-line rounded-lg focus:ring-2 focus:ring-brand/30 focus:border-transparent"
                                     >
                                 </div>
                             </div>
 
                             <div class="space-y-4">
                                 <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-1">Email Content *</label>
-                                    <textarea 
-                                        wire:model="htmlContent" 
+                                    <label class="block text-sm font-medium text-content mb-1">Email Content *</label>
+                                    <textarea
+ aria-label="Html content"                                        wire:model="htmlContent"
                                         rows="20"
                                         required
-                                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                        class="w-full px-3 py-2 border border-line rounded-lg focus:ring-2 focus:ring-brand/30 focus:border-transparent"
                                     ></textarea>
                                     @error('htmlContent') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
                                 </div>
@@ -373,16 +373,16 @@
                         </div>
 
                         <div class="mt-6 flex justify-end space-x-3">
-                            <button 
-                                type="button" 
+                            <button
+                                type="button"
                                 @click="show = false"
-                                class="px-4 py-2 text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50"
+                                class="px-4 py-2 text-content border border-line rounded-lg hover:bg-surface-muted"
                             >
                                 Cancel
                             </button>
-                            <button 
+                            <button
                                 type="submit"
-                                class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+                                class="px-4 py-2 bg-action text-action-foreground rounded-lg hover:bg-action"
                             >
                                 Update Campaign
                             </button>

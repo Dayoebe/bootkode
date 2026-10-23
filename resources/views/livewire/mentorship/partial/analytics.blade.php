@@ -1,11 +1,11 @@
 <div class="space-y-8">
     <!-- Analytics Header -->
     <div
-        class="bg-themed-secondary rounded-2xl shadow-lg p-6 border border-themed-primary transition-colors duration-300">
+        class="bg-themed-secondary rounded-lg shadow-sm p-6 border border-themed-primary transition-colors duration-300">
         <div class="flex items-center justify-between mb-6">
             <h2 class="text-2xl font-bold text-themed-primary transition-colors duration-300">Performance Analytics</h2>
             <div class="flex items-center space-x-4">
-                <select wire:model.live="dateFilter"
+                <select aria-label="Date filter" wire:model.live="dateFilter"
                     class="px-4 py-2 border border-themed-primary rounded-lg focus:ring-2 focus:ring-brand focus:border-transparent bg-themed-secondary text-themed-primary transition-colors duration-300">
                     <option value="this_week">This Week</option>
                     <option value="this_month">This Month</option>
@@ -79,7 +79,7 @@
         <!-- Earnings Chart -->
         @if(auth()->user()->mentorProfile && auth()->user()->mentorProfile->hourly_rate > 0)
             <div
-                class="bg-themed-secondary rounded-2xl shadow-lg p-6 border border-themed-primary transition-colors duration-300">
+                class="bg-themed-secondary rounded-lg shadow-sm p-6 border border-themed-primary transition-colors duration-300">
                 <h3 class="text-xl font-bold text-themed-primary mb-6 transition-colors duration-300">Earnings Overview</h3>
                 <div class="space-y-4">
                     <div
@@ -113,7 +113,7 @@
 
         <!-- Session Stats -->
         <div
-            class="bg-themed-secondary rounded-2xl shadow-lg p-6 border border-themed-primary transition-colors duration-300">
+            class="bg-themed-secondary rounded-lg shadow-sm p-6 border border-themed-primary transition-colors duration-300">
             <h3 class="text-xl font-bold text-themed-primary mb-6 transition-colors duration-300">Session Statistics
             </h3>
             <div class="space-y-4">
@@ -149,7 +149,7 @@
 
     <!-- Detailed Analytics -->
     <div
-        class="bg-themed-secondary rounded-2xl shadow-lg p-6 border border-themed-primary transition-colors duration-300">
+        class="bg-themed-secondary rounded-lg shadow-sm p-6 border border-themed-primary transition-colors duration-300">
         <h3 class="text-xl font-bold text-themed-primary mb-6 transition-colors duration-300">Detailed Insights</h3>
         <div class="grid md:grid-cols-3 gap-6">
             <div class="text-center">
@@ -173,11 +173,11 @@
             </div>
             <div class="text-center">
                 <div
-                    class="w-16 h-16 bg-purple-100/50 dark:bg-purple-900/30 text-purple-700 dark:text-purple-400 rounded-full flex items-center justify-center mx-auto mb-3 border border-purple-200/50 dark:border-purple-800 transition-colors duration-300">
+                    class="w-16 h-16 bg-brand/10 dark:bg-action/30 text-brand dark:text-brand rounded-full flex items-center justify-center mx-auto mb-3 border border-brand dark:border-brand transition-colors duration-300">
                     <i class="fas fa-code text-2xl"></i>
                 </div>
                 <h4 class="font-semibold text-themed-primary transition-colors duration-300">Code Reviews</h4>
-                <p class="text-3xl font-bold text-purple-700 dark:text-purple-400 transition-colors duration-300">
+                <p class="text-3xl font-bold text-brand dark:text-brand transition-colors duration-300">
                     {{ $pendingCodeReviews }}</p>
                 <p class="text-sm text-themed-secondary transition-colors duration-300">Pending</p>
             </div>

@@ -152,8 +152,8 @@
                             @endif
 
                             @if($selectedInterview->improvement_suggestions)
-                                <div class="bg-blue-50 rounded-lg p-4 border border-blue-200">
-                                    <h5 class="text-sm font-medium text-blue-700 mb-2">Recommendations</h5>
+                                <div class="bg-brand/10 rounded-lg p-4 border border-brand">
+                                    <h5 class="text-sm font-medium text-brand mb-2">Recommendations</h5>
                                     <ul class="list-disc list-inside text-sm text-themed-primary space-y-1">
                                         @foreach($selectedInterview->improvement_suggestions as $suggestion)
                                             <li>{{ $suggestion }}</li>

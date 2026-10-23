@@ -1,41 +1,41 @@
-<div class="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
+<div class="min-h-screen bg-surface-muted dark:bg-gray-900 transition-colors duration-300">
     <!-- Header -->
-    <div class="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700 transition-colors duration-300">
+    <div class="bg-surface dark:bg-gray-800 shadow-sm border-b border-line dark:border-gray-700 transition-colors duration-300">
         <div class="px-4 sm:px-6 lg:px-8">
             <div class="flex flex-col md:flex-row justify-between items-start md:items-center py-4 md:py-6 space-y-4 md:space-y-0">
                 <div class="flex items-center space-x-4">
-                    <div class="bg-indigo-600 dark:bg-indigo-500 p-3 rounded-lg animate__animated animate__fadeInLeft">
-                        <i class="fas fa-edit text-white text-xl"></i>
+                    <div class="bg-action dark:bg-action p-3 rounded-lg  ">
+                        <i class="fas fa-edit text-action-foreground text-xl"></i>
                     </div>
-                    <div class="animate__animated animate__fadeInUp">
-                        <h1 class="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white">Content & Documentation Management</h1>
-                        <p class="text-gray-600 dark:text-gray-400 mt-1 text-sm md:text-base">Create, manage, and organize educational content</p>
+                    <div class=" ">
+                        <h1 class="  font-bold text-content dark:text-white bk-page-title">Content & Documentation Management</h1>
+                        <p class="text-content-muted dark:text-content-muted mt-1 text-sm md:text-base">Create, manage, and organize educational content</p>
                     </div>
                 </div>
-                
+
                 <!-- Quick Stats -->
-                <div class="flex items-center space-x-4 md:space-x-6 animate__animated animate__fadeInRight overflow-x-auto pb-2 md:pb-0 w-full md:w-auto">
+                <div class="flex items-center space-x-4 md:space-x-6   overflow-x-auto pb-2 md:pb-0 w-full md:w-auto">
                     <div class="text-center min-w-[70px] md:min-w-0">
-                        <div class="text-xl md:text-2xl font-bold text-indigo-600 dark:text-indigo-400">{{ $stats['total_documents'] }}</div>
-                        <div class="text-xs text-gray-500 dark:text-gray-400">Documents</div>
+                        <div class="text-xl md:text-2xl font-bold text-brand dark:text-brand">{{ $stats['total_documents'] }}</div>
+                        <div class="text-xs text-content-muted dark:text-content-muted">Documents</div>
                     </div>
                     <div class="text-center min-w-[70px] md:min-w-0">
                         <div class="text-xl md:text-2xl font-bold text-green-600 dark:text-green-400">{{ $stats['total_videos'] }}</div>
-                        <div class="text-xs text-gray-500 dark:text-gray-400">Videos</div>
+                        <div class="text-xs text-content-muted dark:text-content-muted">Videos</div>
                     </div>
                     <div class="text-center min-w-[70px] md:min-w-0">
-                        <div class="text-xl md:text-2xl font-bold text-blue-600 dark:text-blue-400">{{ $stats['total_materials'] }}</div>
-                        <div class="text-xs text-gray-500 dark:text-gray-400">Materials</div>
+                        <div class="text-xl md:text-2xl font-bold text-brand dark:text-brand">{{ $stats['total_materials'] }}</div>
+                        <div class="text-xs text-content-muted dark:text-content-muted">Materials</div>
                     </div>
                     <div class="text-center min-w-[70px] md:min-w-0">
                         <div class="text-xl md:text-2xl font-bold text-orange-600 dark:text-orange-400">{{ $stats['pending_reviews'] }}</div>
-                        <div class="text-xs text-gray-500 dark:text-gray-400">Pending</div>
+                        <div class="text-xs text-content-muted dark:text-content-muted">Pending</div>
                     </div>
-                    <button 
+                    <button
                         wire:click="refreshStats"
-                        class="p-2 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-all duration-200"
+                        class="p-2 text-content-muted dark:text-content-muted hover:text-content dark:hover:text-gray-300 rounded-full hover:bg-surface-muted dark:hover:bg-gray-700 transition-all duration-200"
                         title="Refresh Statistics"
-                    >
+                     aria-label="Refresh Statistics">
                         <i class="fas fa-sync-alt"></i>
                     </button>
                 </div>
@@ -45,7 +45,7 @@
 
     <!-- Navigation Tabs -->
     <div class="px-4 sm:px-6 lg:px-8 py-4">
-        <div class="border-b border-gray-200 dark:border-gray-700">
+        <div class="border-b border-line dark:border-gray-700">
             <nav class="-mb-px flex space-x-2 md:space-x-4 overflow-x-auto pb-1">
                 @foreach([
                         'learning-materials' => ['label' => 'Materials', 'icon' => 'fas fa-book', 'full_label' => 'Learning Materials'],
@@ -61,17 +61,17 @@
                     ] as $tab => $tabData)
                     <button
                         wire:click="setActiveTab('{{ $tab }}')"
-                        class="{{ $activeTab === $tab 
-                            ? 'border-indigo-500 text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-900/20' 
-                            : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800' 
+                        class="{{ $activeTab === $tab
+                            ? 'border-indigo-500 text-brand dark:text-brand bg-brand/10 dark:bg-indigo-900/20'
+                            : 'border-transparent text-content-muted dark:text-content-muted hover:text-content dark:hover:text-gray-300 hover:border-line dark:hover:border-gray-600 hover:bg-surface-muted dark:hover:bg-gray-800'
                         }} whitespace-nowrap py-2 md:py-3 px-3 md:px-4 border-b-2 font-medium text-xs md:text-sm flex items-center rounded-t-lg transition-all duration-200"
                         title="{{ $tabData['full_label'] }}"
                     >
                         <i class="{{ $tabData['icon'] }} mr-1 md:mr-2"></i>
                         <span class="hidden sm:inline">{{ $tabData['label'] }}</span>
-                        
+
                         @if($activeTab === $tab)
-                            <span class="ml-1 md:ml-2 bg-indigo-500 dark:bg-indigo-600 text-white text-xs px-1 md:px-2 py-0.5 md:py-1 rounded-full animate__animated animate__fadeInUp animate__faster hidden md:inline">
+                            <span class="ml-1 md:ml-2 bg-action dark:bg-action text-action-foreground text-xs px-1 md:px-2 py-0.5 md:py-1 rounded-full    hidden md:inline">
                                 Active
                             </span>
                         @endif
@@ -89,7 +89,7 @@
 
     <!-- Content Area with Loading Animation -->
     <div class="px-4 sm:px-6 lg:px-8 py-4 overflow-x-auto" wire:loading.class="opacity-50 pointer-events-none">
-        <div class="animate__animated animate__fadeIn w-full min-w-0">
+        <div class="  w-full min-w-0">
             @if($activeTab === 'learning-materials')
                 @livewire('content.partial.learning-materials')
             @elseif($activeTab === 'video-library')
@@ -116,20 +116,20 @@
 
     <!-- Loading Overlay -->
     <div wire:loading class="fixed inset-0 bg-black bg-opacity-25 dark:bg-opacity-50 z-50 flex items-center justify-center">
-        <div class="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-xl animate__animated animate__fadeIn">
+        <div class="bg-surface dark:bg-gray-800 rounded-lg p-6 shadow-sm  ">
             <div class="flex items-center space-x-3">
-                <div class="animate-spin rounded-full h-6 w-6 border-b-2 border-indigo-600 dark:border-indigo-400"></div>
-                <span class="text-gray-700 dark:text-gray-300">Loading content...</span>
+                <div class="animate-spin rounded-full h-6 w-6 border-b-2 border-brand dark:border-brand"></div>
+                <span class="text-content dark:text-gray-300">Loading content...</span>
             </div>
         </div>
     </div>
 
     <!-- Flash Messages -->
     @if (session()->has('message'))
-        <div x-data="{ show: true }" x-init="setTimeout(() => show = false, 5000)" x-show="show" 
+        <div x-data="{ show: true }" x-init="setTimeout(() => show = false, 5000)" x-show="show"
              x-transition:enter="animate__animated animate__slideInRight"
              x-transition:leave="animate__animated animate__slideOutRight"
-             class="fixed top-4 right-4 bg-green-500 dark:bg-green-600 text-white px-4 py-2 md:px-6 md:py-3 rounded-lg shadow-lg z-50 max-w-xs md:max-w-md">
+             class="fixed top-4 right-4 bg-green-500 dark:bg-green-600 text-white px-4 py-2 md:px-6 md:py-3 rounded-lg shadow-sm z-50 max-w-xs md:max-w-md">
             <div class="flex items-center">
                 <i class="fas fa-check-circle mr-2"></i>
                 <span class="text-sm">{{ session('message') }}</span>
@@ -138,10 +138,10 @@
     @endif
 
     @if (session()->has('error'))
-        <div x-data="{ show: true }" x-init="setTimeout(() => show = false, 5000)" x-show="show" 
+        <div x-data="{ show: true }" x-init="setTimeout(() => show = false, 5000)" x-show="show"
              x-transition:enter="animate__animated animate__slideInRight"
              x-transition:leave="animate__animated animate__slideOutRight"
-             class="fixed top-4 right-4 bg-red-500 dark:bg-red-600 text-white px-4 py-2 md:px-6 md:py-3 rounded-lg shadow-lg z-50 max-w-xs md:max-w-md">
+             class="fixed top-4 right-4 bg-red-500 dark:bg-red-600 text-white px-4 py-2 md:px-6 md:py-3 rounded-lg shadow-sm z-50 max-w-xs md:max-w-md">
             <div class="flex items-center">
                 <i class="fas fa-exclamation-circle mr-2"></i>
                 <span class="text-sm">{{ session('error') }}</span>
@@ -150,10 +150,10 @@
     @endif
 
     @if (session()->has('warning'))
-        <div x-data="{ show: true }" x-init="setTimeout(() => show = false, 5000)" x-show="show" 
+        <div x-data="{ show: true }" x-init="setTimeout(() => show = false, 5000)" x-show="show"
              x-transition:enter="animate__animated animate__slideInRight"
              x-transition:leave="animate__animated animate__slideOutRight"
-             class="fixed top-4 right-4 bg-yellow-500 dark:bg-yellow-600 text-white px-4 py-2 md:px-6 md:py-3 rounded-lg shadow-lg z-50 max-w-xs md:max-w-md">
+             class="fixed top-4 right-4 bg-yellow-500 dark:bg-yellow-600 text-white px-4 py-2 md:px-6 md:py-3 rounded-lg shadow-sm z-50 max-w-xs md:max-w-md">
             <div class="flex items-center">
                 <i class="fas fa-exclamation-triangle mr-2"></i>
                 <span class="text-sm">{{ session('warning') }}</span>

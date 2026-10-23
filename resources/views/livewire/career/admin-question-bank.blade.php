@@ -4,7 +4,7 @@
         <div class="flex items-center justify-between">
             <h2 class="text-xl font-semibold text-themed-primary">Question Bank</h2>
             <button wire:click="$set('showCreateQuestionModal', true)"
-                class="bg-accent-themed-primary text-white px-4 py-2 rounded-md hover:bg-accent-themed-secondary transition-colors font-medium">
+                class="bg-action text-action-foreground px-4 py-2 rounded-md hover:bg-action/90 transition-colors font-medium">
                 <i class="fas fa-plus mr-2"></i> Add Question
             </button>
         </div>
@@ -12,11 +12,11 @@
         <!-- Filters -->
         <div class="shadow rounded-lg p-6 bg-themed-secondary border border-themed-primary">
             <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-                <input wire:model.live.debounce.300ms="questionSearch" type="text" placeholder="Search questions..."
-                    class="px-3 py-2 border border-themed-primary rounded-md focus:ring-2 focus:ring-accent-themed-primary focus:border-transparent bg-themed-secondary text-themed-primary placeholder-themed-tertiary">
+                <input aria-label="Search questions" wire:model.live.debounce.300ms="questionSearch" type="text" placeholder="Search questions..."
+                    class="px-3 py-2 border border-themed-primary rounded-md focus:ring-2 focus:ring-brand focus:border-transparent bg-themed-secondary text-themed-primary placeholder-themed-tertiary">
 
-                <select wire:model.live="questionFilterType"
-                    class="px-3 py-2 border border-themed-primary rounded-md focus:ring-2 focus:ring-accent-themed-primary focus:border-transparent bg-themed-secondary text-themed-primary">
+                <select aria-label="Question filter type" wire:model.live="questionFilterType"
+                    class="px-3 py-2 border border-themed-primary rounded-md focus:ring-2 focus:ring-brand focus:border-transparent bg-themed-secondary text-themed-primary">
                     <option value="">All Types</option>
                     <option value="technical">Technical</option>
                     <option value="behavioral">Behavioral</option>
@@ -25,8 +25,8 @@
                     <option value="hr">HR</option>
                 </select>
 
-                <select wire:model.live="questionFilterDifficulty"
-                    class="px-3 py-2 border border-themed-primary rounded-md focus:ring-2 focus:ring-accent-themed-primary focus:border-transparent bg-themed-secondary text-themed-primary">
+                <select aria-label="Question filter difficulty" wire:model.live="questionFilterDifficulty"
+                    class="px-3 py-2 border border-themed-primary rounded-md focus:ring-2 focus:ring-brand focus:border-transparent bg-themed-secondary text-themed-primary">
                     <option value="">All Difficulty</option>
                     <option value="beginner">Beginner</option>
                     <option value="intermediate">Intermediate</option>
@@ -34,8 +34,8 @@
                     <option value="expert">Expert</option>
                 </select>
 
-                <select wire:model.live="questionFilterStatus"
-                    class="px-3 py-2 border border-themed-primary rounded-md focus:ring-2 focus:ring-accent-themed-primary focus:border-transparent bg-themed-secondary text-themed-primary">
+                <select aria-label="Question filter status" wire:model.live="questionFilterStatus"
+                    class="px-3 py-2 border border-themed-primary rounded-md focus:ring-2 focus:ring-brand focus:border-transparent bg-themed-secondary text-themed-primary">
                     <option value="">All Status</option>
                     <option value="active">Active</option>
                     <option value="inactive">Inactive</option>
@@ -47,34 +47,34 @@
 
         <!-- Questions Table -->
         <div class="shadow overflow-hidden sm:rounded-lg bg-themed-secondary border border-themed-primary">
-            <table class="min-w-full divide-y divide-themed-primary">
+            <x-ui.table label="Admin Question Bank.Blade records"><table class="min-w-full divide-y divide-themed-primary">
                 <thead class="bg-themed-tertiary">
                     <tr>
-                        <th
+                        <th scope="col"
                             class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-themed-secondary">
                             Question
                         </th>
-                        <th
+                        <th scope="col"
                             class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-themed-secondary">
                             Type
                         </th>
-                        <th
+                        <th scope="col"
                             class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-themed-secondary">
                             Difficulty
                         </th>
-                        <th
+                        <th scope="col"
                             class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-themed-secondary">
                             Points
                         </th>
-                        <th
+                        <th scope="col"
                             class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-themed-secondary">
                             Status
                         </th>
-                        <th
+                        <th scope="col"
                             class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-themed-secondary">
                             Usage
                         </th>
-                        <th
+                        <th scope="col"
                             class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-themed-secondary">
                             Actions
                         </th>
@@ -95,12 +95,12 @@
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
                                 <span
-                                    class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                                    class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-brand/10 text-brand">
                                     {{ $question->type_label }}
                                 </span>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
-                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium 
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
                                         {{ $question->difficulty_level === 'beginner' ? 'bg-green-100 text-green-800' : '' }}
                                         {{ $question->difficulty_level === 'intermediate' ? 'bg-yellow-100 text-yellow-800' : '' }}
                                         {{ $question->difficulty_level === 'advanced' ? 'bg-orange-100 text-orange-800' : '' }}
@@ -139,7 +139,7 @@
                             <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                 <div class="flex items-center space-x-2">
                                     <button wire:click="viewQuestion({{ $question->id }})"
-                                        class="text-accent-themed-primary hover:text-accent-themed-secondary transition-colors">
+                                        class="text-brand hover:text-accent-themed-secondary transition-colors">
                                         <i class="fas fa-eye"></i>
                                     </button>
 
@@ -175,14 +175,14 @@
                                     style="display: block;"></i>
                                 <p>No questions found. Create your first question to get started!</p>
                                 <button wire:click="$set('showCreateQuestionModal', true)"
-                                    class="mt-4 bg-accent-themed-primary text-white px-6 py-2 rounded-md hover:bg-accent-themed-secondary transition-colors font-medium">
+                                    class="mt-4 bg-action text-action-foreground px-6 py-2 rounded-md hover:bg-action/90 transition-colors font-medium">
                                     <i class="fas fa-plus mr-2"></i> Create Question
                                 </button>
                             </td>
                         </tr>
                     @endforelse
                 </tbody>
-            </table>
+            </table></x-ui.table>
 
             <!-- Pagination -->
             @if($this->questions->hasPages())
@@ -212,7 +212,7 @@
                             </div>
                             @if($set->is_template)
                                 <span
-                                    class="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-purple-100 text-purple-800">
+                                    class="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-brand/10 text-brand">
                                     Template
                                 </span>
                             @endif
@@ -235,7 +235,7 @@
 
                         <div class="mt-4 flex items-center space-x-2">
                             <button wire:click="viewQuestionSet({{ $set->id }})"
-                                class="flex-1 bg-accent-themed-primary text-white px-3 py-2 rounded-md hover:bg-accent-themed-secondary transition-colors text-sm font-medium">
+                                class="flex-1 bg-action text-action-foreground px-3 py-2 rounded-md hover:bg-action/90 transition-colors text-sm font-medium">
                                 <i class="fas fa-eye mr-1"></i> View
                             </button>
                             <button wire:click="editQuestionSet({{ $set->id }})"

@@ -5,11 +5,11 @@
         </div>
     @endif
 
-    <div class="rounded-xl border border-themed-primary bg-themed-secondary p-6 shadow-sm transition-colors duration-300">
+    <div class="rounded-lg border border-themed-primary bg-themed-secondary p-6 shadow-sm transition-colors duration-300">
         <div class="flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-between">
             <div>
-                <p class="text-sm font-semibold uppercase tracking-wide text-accent-primary">Real AI layer</p>
-                <h2 class="text-2xl font-bold text-themed-primary">AI Learning Coach</h2>
+                <p class="text-sm font-semibold uppercase tracking-wide text-brand">Real AI layer</p>
+                <h1 class="text-2xl font-bold text-themed-primary">AI Learning Coach</h1>
                 <p class="mt-1 max-w-3xl text-sm text-themed-secondary">
                     Skill diagnosis, adaptive learning path, tutor answers, assessment feedback, and course recommendations from your BootKode activity.
                 </p>
@@ -19,17 +19,17 @@
                     {{ $aiProviderReady ? 'BootKode AI enabled' : 'AI setup required' }}
                 </span>
                 <button type="button" wire:click="refreshProfile"
-                    class="rounded-lg border border-themed-primary px-4 py-2 text-sm font-semibold text-themed-primary transition hover:border-accent-primary hover:text-accent-primary">
+                    class="rounded-lg border border-themed-primary px-4 py-2 text-sm font-semibold text-themed-primary transition hover:border-brand hover:text-brand">
                     <i class="fas fa-rotate mr-2"></i>Refresh Diagnosis
                 </button>
             </div>
         </div>
 
         <form wire:submit.prevent="saveGoal" class="mt-5 grid gap-3 lg:grid-cols-[1fr_auto]">
-            <input type="text" wire:model="goal"
-                class="rounded-lg border border-themed-primary bg-themed-secondary px-4 py-3 text-sm text-themed-primary placeholder-themed-tertiary focus:border-accent-primary focus:ring-accent-primary"
+            <input aria-label="Set a learner goal, e.g. Become job-ready for Laravel backend roles" type="text" wire:model="goal"
+                class="rounded-lg border border-themed-primary bg-themed-secondary px-4 py-3 text-sm text-themed-primary placeholder-themed-tertiary focus:border-brand focus:ring-brand"
                 placeholder="Set a learner goal, e.g. Become job-ready for Laravel backend roles">
-            <button type="submit" class="rounded-lg bg-accent-primary px-4 py-3 text-sm font-semibold text-white transition hover:bg-accent-secondary">
+            <button type="submit" class="rounded-lg bg-action px-4 py-3 text-sm font-semibold text-action-foreground transition hover:bg-action/90">
                 Save Goal
             </button>
         </form>
@@ -54,7 +54,7 @@
         </div>
     </div>
 
-    <div class="rounded-xl border border-themed-primary bg-themed-secondary p-2 shadow-sm">
+    <div class="rounded-lg border border-themed-primary bg-themed-secondary p-2 shadow-sm">
         <div class="grid gap-2 md:grid-cols-5">
             @foreach([
                 'diagnosis' => ['Skill Diagnosis', 'fa-stethoscope'],
@@ -64,7 +64,7 @@
                 'recommendations' => ['Recommendations', 'fa-lightbulb'],
             ] as $tab => [$label, $icon])
                 <button type="button" wire:click="setTab('{{ $tab }}')"
-                    class="rounded-lg px-3 py-3 text-sm font-semibold transition {{ $activeTab === $tab ? 'bg-accent-primary text-white' : 'text-themed-secondary hover:bg-themed-tertiary hover:text-themed-primary' }}">
+                    class="rounded-lg px-3 py-3 text-sm font-semibold transition {{ $activeTab === $tab ? 'bg-action text-action-foreground' : 'text-themed-secondary hover:bg-themed-tertiary hover:text-themed-primary' }}">
                     <i class="fas {{ $icon }} mr-2"></i>{{ $label }}
                 </button>
             @endforeach
@@ -74,16 +74,16 @@
     @if($activeTab === 'diagnosis')
         <div class="grid gap-4 lg:grid-cols-2">
             @forelse($skillDiagnosis as $skill)
-                <div class="rounded-xl border border-themed-primary bg-themed-secondary p-5 shadow-sm">
+                <div class="rounded-lg border border-themed-primary bg-themed-secondary p-5 shadow-sm">
                     <div class="flex items-start justify-between gap-4">
                         <div>
                             <h3 class="font-semibold text-themed-primary">{{ $skill['label'] }}</h3>
                             <p class="mt-1 text-sm text-themed-secondary">{{ $skill['level'] }}</p>
                         </div>
-                        <span class="rounded-full bg-accent-primary/10 px-3 py-1 text-sm font-bold text-accent-primary">{{ $skill['score'] }}%</span>
+                        <span class="rounded-full bg-action/10 px-3 py-1 text-sm font-bold text-brand">{{ $skill['score'] }}%</span>
                     </div>
                     <div class="mt-4 h-2 rounded-full bg-themed-tertiary">
-                        <div class="h-2 rounded-full bg-accent-primary" style="width: {{ $skill['score'] }}%"></div>
+                        <div class="h-2 rounded-full bg-action" style="width: {{ $skill['score'] }}%"></div>
                     </div>
                     @if(!empty($skill['evidence']))
                         <div class="mt-4">
@@ -108,7 +108,7 @@
                     <p class="mt-4 rounded-lg bg-themed-tertiary p-3 text-sm text-themed-primary">{{ $skill['next_action'] }}</p>
                 </div>
             @empty
-                <div class="rounded-xl border border-dashed border-themed-primary bg-themed-secondary p-10 text-center lg:col-span-2">
+                <div class="rounded-lg border border-dashed border-themed-primary bg-themed-secondary p-10 text-center lg:col-span-2">
                     <i class="fas fa-stethoscope text-4xl text-themed-tertiary"></i>
                     <h3 class="mt-3 text-lg font-semibold text-themed-primary">No diagnosis yet</h3>
                     <p class="mt-1 text-sm text-themed-secondary">Enroll in a course or complete an assessment to generate stronger signals.</p>
@@ -118,18 +118,18 @@
     @endif
 
     @if($activeTab === 'path')
-        <div class="rounded-xl border border-themed-primary bg-themed-secondary p-5 shadow-sm">
+        <div class="rounded-lg border border-themed-primary bg-themed-secondary p-5 shadow-sm">
             <h3 class="text-lg font-semibold text-themed-primary">Adaptive Learning Path</h3>
             <div class="mt-5 space-y-4">
                 @forelse($adaptivePath as $index => $step)
                     <div class="grid gap-3 rounded-lg border border-themed-primary p-4 md:grid-cols-[48px_1fr_auto] md:items-center">
-                        <div class="flex h-12 w-12 items-center justify-center rounded-full bg-accent-primary text-sm font-bold text-white">{{ $index + 1 }}</div>
+                        <div class="flex h-12 w-12 items-center justify-center rounded-full bg-action text-sm font-bold text-action-foreground">{{ $index + 1 }}</div>
                         <div>
                             <p class="text-xs font-semibold uppercase text-themed-secondary">{{ $step['label'] }} · {{ ucfirst($step['priority']) }}</p>
                             <h4 class="mt-1 font-semibold text-themed-primary">{{ $step['title'] }}</h4>
                             <p class="mt-1 text-sm text-themed-secondary">{{ $step['detail'] }}</p>
                         </div>
-                        <a href="{{ $step['url'] }}" class="rounded-lg border border-themed-primary px-3 py-2 text-sm font-semibold text-themed-primary hover:border-accent-primary hover:text-accent-primary">
+                        <a href="{{ $step['url'] }}" class="rounded-lg border border-themed-primary px-3 py-2 text-sm font-semibold text-themed-primary hover:border-brand hover:text-brand">
                             Open
                         </a>
                     </div>
@@ -142,28 +142,28 @@
 
     @if($activeTab === 'tutor')
         <div class="grid gap-6 xl:grid-cols-[minmax(0,1fr)_420px]">
-            <div class="rounded-xl border border-themed-primary bg-themed-secondary p-5 shadow-sm">
+            <div class="rounded-lg border border-themed-primary bg-themed-secondary p-5 shadow-sm">
                 <h3 class="text-lg font-semibold text-themed-primary">Open the AI Coding Mentor</h3>
                 <p class="mt-2 text-sm text-themed-secondary">Continue in the private, persistent mentor workspace with conversation history and authorized course context.</p>
                 <form wire:submit.prevent="askTutor" class="mt-4 space-y-4">
-                    <select wire:model="selectedCourseId"
+                    <select aria-label="Selected course id" wire:model="selectedCourseId"
                         class="w-full rounded-lg border border-themed-primary bg-themed-secondary px-4 py-3 text-sm text-themed-primary">
                         <option value="">Use all available course context</option>
                         @foreach($enrolledCourses as $course)
                             <option value="{{ $course->id }}">{{ $course->title }}</option>
                         @endforeach
                     </select>
-                    <textarea wire:model="question" rows="6"
-                        class="w-full rounded-lg border border-themed-primary bg-themed-secondary px-4 py-3 text-sm text-themed-primary placeholder-themed-tertiary focus:border-accent-primary focus:ring-accent-primary"
+                    <textarea aria-label="Ask about a lesson, error, concept, project, assessment, or what to learn next" wire:model="question" rows="6"
+                        class="w-full rounded-lg border border-themed-primary bg-themed-secondary px-4 py-3 text-sm text-themed-primary placeholder-themed-tertiary focus:border-brand focus:ring-brand"
                         placeholder="Ask about a lesson, error, concept, project, assessment, or what to learn next."></textarea>
                     @error('question') <p class="text-sm text-red-500">{{ $message }}</p> @enderror
-                    <button type="submit" class="rounded-lg bg-accent-primary px-4 py-3 text-sm font-semibold text-white transition hover:bg-accent-secondary">
+                    <button type="submit" class="rounded-lg bg-action px-4 py-3 text-sm font-semibold text-action-foreground transition hover:bg-action/90">
                         <i class="fas fa-arrow-right mr-2"></i>Open Coding Mentor
                     </button>
                 </form>
             </div>
 
-            <div class="rounded-xl border border-themed-primary bg-themed-secondary p-5 shadow-sm">
+            <div class="rounded-lg border border-themed-primary bg-themed-secondary p-5 shadow-sm">
                 <h3 class="text-lg font-semibold text-themed-primary">Recent Answers</h3>
                 <div class="mt-4 space-y-4">
                     @forelse($tutorMessages as $message)
@@ -183,7 +183,7 @@
     @if($activeTab === 'feedback')
         <div class="grid gap-4 lg:grid-cols-2">
             @forelse($assessmentFeedback as $feedback)
-                <div class="rounded-xl border border-themed-primary bg-themed-secondary p-5 shadow-sm">
+                <div class="rounded-lg border border-themed-primary bg-themed-secondary p-5 shadow-sm">
                     <div class="flex items-start justify-between gap-3">
                         <div>
                             <p class="text-xs font-semibold uppercase text-themed-secondary">{{ $feedback['course_title'] }}</p>
@@ -206,7 +206,7 @@
                     @endif
                 </div>
             @empty
-                <div class="rounded-xl border border-dashed border-themed-primary bg-themed-secondary p-10 text-center lg:col-span-2">
+                <div class="rounded-lg border border-dashed border-themed-primary bg-themed-secondary p-10 text-center lg:col-span-2">
                     <i class="fas fa-clipboard-check text-4xl text-themed-tertiary"></i>
                     <h3 class="mt-3 text-lg font-semibold text-themed-primary">No assessment attempts yet</h3>
                     <p class="mt-1 text-sm text-themed-secondary">Complete quizzes or projects to get targeted feedback.</p>
@@ -218,22 +218,22 @@
     @if($activeTab === 'recommendations')
         <div class="grid gap-4 lg:grid-cols-2 xl:grid-cols-3">
             @forelse($recommendations as $course)
-                <div class="rounded-xl border border-themed-primary bg-themed-secondary p-5 shadow-sm">
+                <div class="rounded-lg border border-themed-primary bg-themed-secondary p-5 shadow-sm">
                     <div class="flex items-start justify-between gap-3">
                         <div>
                             <p class="text-xs font-semibold uppercase text-themed-secondary">{{ $course['category'] ?: 'Course' }}</p>
                             <h3 class="mt-1 font-semibold text-themed-primary">{{ $course['title'] }}</h3>
                             <p class="mt-1 text-sm text-themed-secondary">{{ ucfirst($course['difficulty']) }} · {{ $course['instructor'] ?: 'BootKode' }}</p>
                         </div>
-                        <span class="rounded-full bg-accent-primary/10 px-3 py-1 text-sm font-bold text-accent-primary">{{ $course['score'] }}%</span>
+                        <span class="rounded-full bg-action/10 px-3 py-1 text-sm font-bold text-brand">{{ $course['score'] }}%</span>
                     </div>
                     <p class="mt-4 text-sm text-themed-secondary">{{ $course['reason'] }}</p>
-                    <a href="{{ $course['url'] }}" class="mt-4 inline-flex rounded-lg border border-themed-primary px-3 py-2 text-sm font-semibold text-themed-primary hover:border-accent-primary hover:text-accent-primary">
+                    <a href="{{ $course['url'] }}" class="mt-4 inline-flex rounded-lg border border-themed-primary px-3 py-2 text-sm font-semibold text-themed-primary hover:border-brand hover:text-brand">
                         View Course
                     </a>
                 </div>
             @empty
-                <div class="rounded-xl border border-dashed border-themed-primary bg-themed-secondary p-10 text-center lg:col-span-2 xl:col-span-3">
+                <div class="rounded-lg border border-dashed border-themed-primary bg-themed-secondary p-10 text-center lg:col-span-2 xl:col-span-3">
                     <i class="fas fa-lightbulb text-4xl text-themed-tertiary"></i>
                     <h3 class="mt-3 text-lg font-semibold text-themed-primary">No recommendations yet</h3>
                     <p class="mt-1 text-sm text-themed-secondary">Publish and approve courses, or complete more activity, to improve recommendation matching.</p>

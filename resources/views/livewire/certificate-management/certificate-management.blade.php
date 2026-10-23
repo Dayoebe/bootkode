@@ -2,7 +2,7 @@
     <!-- Header -->
     <div class="flex justify-between items-center mb-8">
         <div>
-            <h1 class="text-3xl font-bold text-themed-primary">Certificate Management</h1>
+            <h1 class=" font-bold text-themed-primary bk-page-title">Certificate Management</h1>
             <p class="text-themed-secondary mt-2">Review and manage certificate requests</p>
         </div>
 
@@ -29,13 +29,13 @@
     </div>
 
     <!-- Filters -->
-    <div class="bg-themed-secondary rounded-xl p-6 mb-8 border border-themed-primary transition-colors duration-300">
+    <div class="bg-themed-secondary rounded-lg p-6 mb-8 border border-themed-primary transition-colors duration-300">
         <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
             <!-- Status Filter -->
             <div>
                 <label class="block text-sm font-medium text-themed-primary mb-2">Status</label>
-                <select wire:model.live="statusFilter"
-                    class="w-full bg-themed-tertiary border border-themed-primary rounded-lg px-3 py-2 text-themed-primary focus:ring-2 focus:ring-accent-themed-primary transition-colors duration-300">
+                <select aria-label="Status filter" wire:model.live="statusFilter"
+                    class="w-full bg-themed-tertiary border border-themed-primary rounded-lg px-3 py-2 text-themed-primary focus:ring-2 focus:ring-brand transition-colors duration-300">
                     <option value="all">All Status</option>
                     <option value="requested">Requested</option>
                     <option value="pending">Pending</option>
@@ -48,8 +48,8 @@
             <!-- Course Filter -->
             <div>
                 <label class="block text-sm font-medium text-themed-primary mb-2">Course</label>
-                <select wire:model.live="courseFilter"
-                    class="w-full bg-themed-tertiary border border-themed-primary rounded-lg px-3 py-2 text-themed-primary focus:ring-2 focus:ring-accent-themed-primary transition-colors duration-300">
+                <select aria-label="Course filter" wire:model.live="courseFilter"
+                    class="w-full bg-themed-tertiary border border-themed-primary rounded-lg px-3 py-2 text-themed-primary focus:ring-2 focus:ring-brand transition-colors duration-300">
                     <option value="all">All Courses</option>
                     @foreach ($courses as $course)
                         <option value="{{ $course->id }}">{{ $course->title }}</option>
@@ -60,30 +60,30 @@
             <!-- Date From -->
             <div>
                 <label class="block text-sm font-medium text-themed-primary mb-2">From Date</label>
-                <input type="date" wire:model.live="dateFrom"
-                    class="w-full bg-themed-tertiary border border-themed-primary rounded-lg px-3 py-2 text-themed-primary focus:ring-2 focus:ring-accent-themed-primary transition-colors duration-300">
+                <input aria-label="Date from" type="date" wire:model.live="dateFrom"
+                    class="w-full bg-themed-tertiary border border-themed-primary rounded-lg px-3 py-2 text-themed-primary focus:ring-2 focus:ring-brand transition-colors duration-300">
             </div>
 
             <!-- Date To -->
             <div>
                 <label class="block text-sm font-medium text-themed-primary mb-2">To Date</label>
-                <input type="date" wire:model.live="dateTo"
-                    class="w-full bg-themed-tertiary border border-themed-primary rounded-lg px-3 py-2 text-themed-primary focus:ring-2 focus:ring-accent-themed-primary transition-colors duration-300">
+                <input aria-label="Date to" type="date" wire:model.live="dateTo"
+                    class="w-full bg-themed-tertiary border border-themed-primary rounded-lg px-3 py-2 text-themed-primary focus:ring-2 focus:ring-brand transition-colors duration-300">
             </div>
 
             <!-- Search -->
             <div>
                 <label class="block text-sm font-medium text-themed-primary mb-2">Search</label>
                 <div class="relative">
-                    <input type="text" wire:model.live="searchTerm" placeholder="Student name, email, cert #..."
-                        class="w-full bg-themed-tertiary border border-themed-primary rounded-lg pl-10 pr-3 py-2 text-themed-primary focus:ring-2 focus:ring-accent-themed-primary transition-colors duration-300">
+                    <input aria-label="Student name, email, cert #" type="text" wire:model.live="searchTerm" placeholder="Student name, email, cert #..."
+                        class="w-full bg-themed-tertiary border border-themed-primary rounded-lg pl-10 pr-3 py-2 text-themed-primary focus:ring-2 focus:ring-brand transition-colors duration-300">
                     <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-themed-secondary"></i>
                 </div>
             </div>
         </div>
 
         <div class="flex justify-between items-center mt-4">
-            <button wire:click="clearFilters" class="text-accent-themed-primary hover:text-accent-themed-secondary text-sm transition-colors">
+            <button wire:click="clearFilters" class="text-brand hover:text-accent-themed-secondary text-sm transition-colors">
                 <i class="fas fa-times mr-1"></i> Clear Filters
             </button>
 
@@ -99,30 +99,30 @@
     </div>
 
     <!-- Certificates Table -->
-    <div class="bg-themed-secondary rounded-xl overflow-hidden border border-themed-primary transition-colors duration-300">
+    <div class="bg-themed-secondary rounded-lg overflow-hidden border border-themed-primary transition-colors duration-300">
         <div class="overflow-x-auto">
-            <table class="w-full">
+            <x-ui.table label="Certificate Management.Blade records"><table class="w-full">
                 <thead class="bg-themed-tertiary">
                     <tr>
                         @if (auth()->user()->isSuperAdmin())
-                            <th class="px-6 py-3 text-left">
+                            <th scope="col" class="px-6 py-3 text-left">
                                 <input type="checkbox" id="selectAll"
-                                    class="rounded border-themed-primary bg-themed-secondary text-accent-themed-primary">
+                                    class="rounded border-themed-primary bg-themed-secondary text-brand">
                             </th>
                         @endif
-                        <th class="px-6 py-3 text-left text-xs font-medium text-themed-secondary uppercase tracking-wider">
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-themed-secondary uppercase tracking-wider">
                             Student</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-themed-secondary uppercase tracking-wider">
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-themed-secondary uppercase tracking-wider">
                             Course</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-themed-secondary uppercase tracking-wider">
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-themed-secondary uppercase tracking-wider">
                             Certificate #</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-themed-secondary uppercase tracking-wider">
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-themed-secondary uppercase tracking-wider">
                             Status</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-themed-secondary uppercase tracking-wider">Grade
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-themed-secondary uppercase tracking-wider">Grade
                         </th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-themed-secondary uppercase tracking-wider">
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-themed-secondary uppercase tracking-wider">
                             Requested</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-themed-secondary uppercase tracking-wider">
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-themed-secondary uppercase tracking-wider">
                             Actions</th>
                     </tr>
                 </thead>
@@ -133,7 +133,7 @@
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     @if ($certificate->isRequested())
                                         <input type="checkbox"
-                                            class="certificate-checkbox rounded border-themed-primary bg-themed-secondary text-accent-themed-primary"
+                                            class="certificate-checkbox rounded border-themed-primary bg-themed-secondary text-brand"
                                             value="{{ $certificate->id }}">
                                     @endif
                                 </td>
@@ -144,7 +144,7 @@
                                 <div class="flex items-center">
                                     <div class="flex-shrink-0 h-10 w-10">
                                         <div
-                                            class="h-10 w-10 rounded-full bg-accent-themed-primary flex items-center justify-center">
+                                            class="h-10 w-10 rounded-full bg-action flex items-center justify-center">
                                             <span class="text-white font-medium text-sm">
                                                 {{ substr($certificate->user->name, 0, 2) }}
                                             </span>
@@ -172,12 +172,12 @@
                             <!-- Status -->
                             <td class="px-6 py-4 whitespace-nowrap">
                                 <span
-                                    class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium 
+                                    class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
                                     @if ($certificate->status === 'approved') bg-green-900 text-green-300
                                     @elseif($certificate->status === 'requested') bg-yellow-900 text-yellow-300
                                     @elseif($certificate->status === 'rejected') bg-red-900 text-red-300
                                     @elseif($certificate->status === 'revoked') bg-themed-tertiary text-themed-secondary
-                                    @else bg-blue-900 text-blue-300 @endif">
+                                    @else bg-action text-brand @endif">
                                     <i class="{{ $certificate->status_icon }} mr-1.5"></i>
                                     {{ ucfirst(str_replace('_', ' ', $certificate->status)) }}
                                 </span>
@@ -187,7 +187,7 @@
                             <td class="px-6 py-4 whitespace-nowrap">
                                 @if ($certificate->grade)
                                     <span
-                                        class="inline-flex items-center px-2 py-1 rounded bg-accent-themed-primary text-white text-sm font-semibold">
+                                        class="inline-flex items-center px-2 py-1 rounded bg-action text-action-foreground text-sm font-semibold">
                                         {{ $certificate->grade }}
                                     </span>
                                 @else
@@ -218,7 +218,7 @@
                                     @elseif($certificate->isApproved())
                                         <a href="{{ route('certificate.view', $certificate->verification_code) }}"
                                             target="_blank"
-                                            class="text-accent-themed-primary hover:text-accent-themed-secondary p-2 rounded-lg hover:bg-themed-tertiary transition-colors"
+                                            class="text-brand hover:text-accent-themed-secondary p-2 rounded-lg hover:bg-themed-tertiary transition-colors"
                                             title="View Certificate">
                                             <i class="fas fa-eye"></i>
                                         </a>
@@ -254,7 +254,7 @@
                         </tr>
                     @endforelse
                 </tbody>
-            </table>
+            </table></x-ui.table>
         </div>
 
         <!-- Pagination -->
@@ -269,14 +269,14 @@
     <!-- Certificate Details Modal -->
     <div id="certificateDetailsModal"
         class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
-        <div class="bg-themed-secondary rounded-xl max-w-4xl w-full mx-4 max-h-screen overflow-y-auto border border-themed-primary">
+        <div class="bg-themed-secondary rounded-lg max-w-4xl w-full mx-4 max-h-screen overflow-y-auto border border-themed-primary">
             @if ($selectedCertificate)
                 <div class="p-6">
                     <!-- Modal Header -->
                     <div class="flex justify-between items-center mb-6">
                         <h3 class="text-xl font-bold text-themed-primary">Certificate Details</h3>
                         <button onclick="document.getElementById('certificateDetailsModal').classList.add('hidden')"
-                            class="text-themed-secondary hover:text-themed-primary transition-colors">
+                            class="text-themed-secondary hover:text-themed-primary transition-colors" aria-label="Close">
                             <i class="fas fa-times text-xl"></i>
                         </button>
                     </div>
@@ -352,7 +352,7 @@
                                     <div class="space-y-2">
                                         <a href="{{ route('certificate.view', $selectedCertificate->verification_code) }}"
                                             target="_blank"
-                                            class="w-full bg-accent-themed-primary hover:bg-accent-themed-secondary text-white py-2 px-4 rounded-lg transition-colors inline-flex items-center justify-center">
+                                            class="w-full bg-action hover:bg-action/90 text-action-foreground py-2 px-4 rounded-lg transition-colors inline-flex items-center justify-center">
                                             <i class="fas fa-eye mr-2"></i>View Certificate
                                         </a>
                                         <a href="{{ route('certificate.download', $selectedCertificate->verification_code) }}"
@@ -371,7 +371,7 @@
                         <h4 class="text-lg font-semibold text-themed-primary mb-3">Status History</h4>
                         <div class="space-y-3">
                             <div class="flex items-center text-sm">
-                                <div class="w-3 h-3 bg-blue-500 rounded-full mr-3"></div>
+                                <div class="w-3 h-3 bg-action rounded-full mr-3"></div>
                                 <div class="flex-1">
                                     <span class="text-themed-primary">Requested</span>
                                     <span class="text-themed-secondary ml-2">{{ $selectedCertificate->requested_at->format('M j, Y g:i A') }}</span>
@@ -422,8 +422,8 @@
 
     <!-- Approval Modal -->
     @if ($showApprovalModal && $selectedCertificate)
-        <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-            <div class="bg-themed-secondary rounded-xl max-w-md w-full mx-4 border border-themed-primary">
+        <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" x-trap.inert.noscroll="true" role="dialog" aria-modal="true" aria-label="Approve Certificate" tabindex="-1" x-data="{}" @keydown.escape.stop="$wire.set(&#x27;showApprovalModal&#x27;, false)">
+            <div class="bg-themed-secondary rounded-lg max-w-md w-full mx-4 border border-themed-primary">
                 <div class="p-6">
                     <h3 class="text-xl font-bold text-themed-primary mb-4">Approve Certificate</h3>
                     <p class="text-themed-secondary mb-6">
@@ -448,14 +448,14 @@
 
     <!-- Rejection Modal -->
     @if ($showRejectionModal && $selectedCertificate)
-        <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-            <div class="bg-themed-secondary rounded-xl max-w-md w-full mx-4 border border-themed-primary">
+        <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" x-trap.inert.noscroll="true" role="dialog" aria-modal="true" aria-label="Reject Certificate" tabindex="-1" x-data="{}" @keydown.escape.stop="$wire.set(&#x27;showRejectionModal&#x27;, false)">
+            <div class="bg-themed-secondary rounded-lg max-w-md w-full mx-4 border border-themed-primary">
                 <div class="p-6">
                     <h3 class="text-xl font-bold text-themed-primary mb-4">Reject Certificate</h3>
                     <p class="text-themed-secondary mb-4">
                         Please provide a reason for rejecting this certificate request:
                     </p>
-                    <textarea wire:model="rejectionReason"
+                    <textarea aria-label="Enter reason for rejection" wire:model="rejectionReason"
                         class="w-full bg-themed-tertiary border border-themed-primary rounded-lg px-3 py-2 text-themed-primary focus:ring-2 focus:ring-red-500 h-24 resize-none transition-colors duration-300"
                         placeholder="Enter reason for rejection..." required></textarea>
                     @error('rejectionReason')
@@ -479,8 +479,8 @@
 
     <!-- Revocation Modal -->
     @if ($showRevocationModal && $selectedCertificate)
-        <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-            <div class="bg-themed-secondary rounded-xl max-w-md w-full mx-4 border border-themed-primary">
+        <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" x-trap.inert.noscroll="true" role="dialog" aria-modal="true" aria-label="Revoke Certificate" tabindex="-1" x-data="{}" @keydown.escape.stop="$wire.set(&#x27;showRevocationModal&#x27;, false)">
+            <div class="bg-themed-secondary rounded-lg max-w-md w-full mx-4 border border-themed-primary">
                 <div class="p-6">
                     <h3 class="text-xl font-bold text-themed-primary mb-4">Revoke Certificate</h3>
                     <div class="bg-yellow-900/30 border border-yellow-500 rounded-lg p-4 mb-4">
@@ -496,7 +496,7 @@
                     <p class="text-themed-secondary mb-4">
                         Please provide a reason for revoking this certificate:
                     </p>
-                    <textarea wire:model="revocationReason"
+                    <textarea aria-label="Enter reason for revocation" wire:model="revocationReason"
                         class="w-full bg-themed-tertiary border border-themed-primary rounded-lg px-3 py-2 text-themed-primary focus:ring-2 focus:ring-yellow-500 h-24 resize-none transition-colors duration-300"
                         placeholder="Enter reason for revocation..." required></textarea>
                     @error('revocationReason')
@@ -521,7 +521,7 @@
     <!-- Loading Overlay -->
     <div wire:loading class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
         <div class="bg-themed-secondary rounded-lg p-8 flex items-center border border-themed-primary">
-            <i class="fas fa-spinner fa-spin text-accent-themed-primary text-2xl mr-4"></i>
+            <i class="fas fa-spinner fa-spin text-brand text-2xl mr-4"></i>
             <span class="text-themed-primary font-medium">Processing request...</span>
         </div>
     </div>

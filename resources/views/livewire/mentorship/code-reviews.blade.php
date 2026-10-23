@@ -11,7 +11,7 @@
         </div>
     @endif
 
-    <div class="rounded-xl border border-themed-primary bg-themed-secondary p-6 shadow-sm transition-colors duration-300">
+    <div class="rounded-lg border border-themed-primary bg-themed-secondary p-6 shadow-sm transition-colors duration-300">
         <div class="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
             <div>
                 <p class="text-sm font-semibold uppercase tracking-wide text-brand">Mentorship workflow</p>
@@ -37,9 +37,9 @@
                 <p class="text-xs font-medium uppercase text-amber-700 dark:text-amber-300">Pending</p>
                 <p class="mt-1 text-2xl font-bold text-amber-800 dark:text-amber-100">{{ $stats['pending'] }}</p>
             </div>
-            <div class="rounded-lg border border-sky-200 bg-sky-50 p-4 dark:border-sky-800 dark:bg-sky-900/20">
-                <p class="text-xs font-medium uppercase text-sky-700 dark:text-sky-300">In Review</p>
-                <p class="mt-1 text-2xl font-bold text-sky-800 dark:text-sky-100">{{ $stats['in_review'] }}</p>
+            <div class="rounded-lg border border-brand bg-brand/10 p-4 dark:border-brand dark:bg-action/20">
+                <p class="text-xs font-medium uppercase text-brand dark:text-brand">In Review</p>
+                <p class="mt-1 text-2xl font-bold text-brand dark:text-brand">{{ $stats['in_review'] }}</p>
             </div>
             <div class="rounded-lg border border-orange-200 bg-orange-50 p-4 dark:border-orange-800 dark:bg-orange-900/20">
                 <p class="text-xs font-medium uppercase text-orange-700 dark:text-orange-300">Revisions</p>
@@ -57,14 +57,14 @@
     </div>
 
     <div class="grid gap-6 xl:grid-cols-[minmax(0,1fr)_minmax(420px,0.95fr)]">
-        <div class="rounded-xl border border-themed-primary bg-themed-secondary p-5 shadow-sm transition-colors duration-300">
+        <div class="rounded-lg border border-themed-primary bg-themed-secondary p-5 shadow-sm transition-colors duration-300">
             <div class="flex flex-col gap-3">
                 <h3 class="text-lg font-semibold text-themed-primary">Review Queue</h3>
                 <div class="grid gap-2 sm:grid-cols-3 lg:w-full lg:max-w-[680px]">
-                    <input type="search" wire:model.live.debounce.300ms="search"
+                    <input aria-label="Search title, repo, learner" type="search" wire:model.live.debounce.300ms="search"
                         class="rounded-lg border border-themed-primary bg-themed-secondary px-3 py-2 text-sm text-themed-primary placeholder-themed-tertiary focus:border-brand focus:ring-brand"
                         placeholder="Search title, repo, learner">
-                    <select wire:model.live="statusFilter"
+                    <select aria-label="Status filter" wire:model.live="statusFilter"
                         class="rounded-lg border border-themed-primary bg-themed-secondary px-3 py-2 text-sm text-themed-primary focus:border-brand focus:ring-brand">
                         <option value="">All statuses</option>
                         <option value="pending">Pending</option>
@@ -73,7 +73,7 @@
                         <option value="completed">Completed</option>
                         <option value="declined">Declined</option>
                     </select>
-                    <select wire:model.live="priorityFilter"
+                    <select aria-label="Priority filter" wire:model.live="priorityFilter"
                         class="rounded-lg border border-themed-primary bg-themed-secondary px-3 py-2 text-sm text-themed-primary focus:border-brand focus:ring-brand">
                         <option value="">All priorities</option>
                         <option value="urgent">Urgent</option>
@@ -136,7 +136,7 @@
                             <div class="flex shrink-0 gap-2">
                                 @if($canStart)
                                     <button type="button" wire:click="startReview({{ $review->id }})"
-                                        class="rounded-lg bg-sky-600 px-3 py-2 text-xs font-semibold text-white transition hover:bg-sky-700">
+                                        class="rounded-lg bg-action px-3 py-2 text-xs font-semibold text-action-foreground transition hover:bg-action">
                                         Start
                                     </button>
                                 @endif
@@ -161,7 +161,7 @@
             </div>
         </div>
 
-        <div class="rounded-xl border border-themed-primary bg-themed-secondary p-5 shadow-sm transition-colors duration-300">
+        <div class="rounded-lg border border-themed-primary bg-themed-secondary p-5 shadow-sm transition-colors duration-300">
             @if($selectedReview)
                 @php
                     $latestSnippet = data_get($selectedReview->code_snippets, '0.code');
@@ -315,7 +315,7 @@
 
                     @if($selectedCanManage)
                         <form wire:submit.prevent="saveComment" class="mt-4">
-                            <textarea wire:model="mentorComment" rows="3"
+                            <textarea aria-label="Add a comment or implementation note" wire:model="mentorComment" rows="3"
                                 class="w-full rounded-lg border border-themed-primary bg-themed-secondary px-3 py-2 text-sm text-themed-primary placeholder-themed-tertiary focus:border-brand focus:ring-brand"
                                 placeholder="Add a comment or implementation note"></textarea>
                             @error('mentorComment') <p class="mt-1 text-xs text-red-500">{{ $message }}</p> @enderror
@@ -344,7 +344,7 @@
                                         <input type="number" min="0" max="5" wire:model.live="rubricScores.{{ $key }}"
                                             class="h-10 rounded-lg border border-themed-primary bg-themed-secondary px-3 text-sm text-themed-primary focus:border-brand focus:ring-brand">
                                     </div>
-                                    <textarea wire:model="rubricNotes.{{ $key }}" rows="2"
+                                    <textarea aria-label="Rubric note" wire:model="rubricNotes.{{ $key }}" rows="2"
                                         class="mt-3 w-full rounded-lg border border-themed-primary bg-themed-secondary px-3 py-2 text-sm text-themed-primary placeholder-themed-tertiary focus:border-brand focus:ring-brand"
                                         placeholder="Rubric note"></textarea>
                                 </div>
@@ -353,7 +353,7 @@
 
                         <div class="mt-4">
                             <label class="text-sm font-semibold text-themed-primary">Summary Feedback</label>
-                            <textarea wire:model="reviewFeedback" rows="5"
+                            <textarea aria-label="Detailed mentor feedback" wire:model="reviewFeedback" rows="5"
                                 class="mt-2 w-full rounded-lg border border-themed-primary bg-themed-secondary px-3 py-2 text-sm text-themed-primary placeholder-themed-tertiary focus:border-brand focus:ring-brand"
                                 placeholder="Detailed mentor feedback"></textarea>
                             @error('reviewFeedback') <p class="mt-1 text-xs text-red-500">{{ $message }}</p> @enderror
@@ -364,10 +364,10 @@
                                 <label class="text-sm font-semibold text-themed-primary">Suggestions</label>
                                 @foreach($suggestions as $index => $suggestion)
                                     <div class="mt-2 flex">
-                                        <input type="text" wire:model="suggestions.{{ $index }}"
+                                        <input aria-label="Suggestion" type="text" wire:model="suggestions.{{ $index }}"
                                             class="min-w-0 flex-1 rounded-l-lg border border-themed-primary bg-themed-secondary px-3 py-2 text-sm text-themed-primary placeholder-themed-tertiary focus:border-brand focus:ring-brand"
                                             placeholder="Suggestion">
-                                        <button type="button" wire:click="removeSuggestion({{ $index }})" class="rounded-r-lg bg-red-600 px-3 text-white">
+                                        <button type="button" wire:click="removeSuggestion({{ $index }})" class="rounded-r-lg bg-red-600 px-3 text-white" aria-label="Remove suggestion">
                                             <i class="fas fa-minus"></i>
                                         </button>
                                     </div>
@@ -380,10 +380,10 @@
                                 <label class="text-sm font-semibold text-themed-primary">Improvement Areas</label>
                                 @foreach($improvementAreas as $index => $area)
                                     <div class="mt-2 flex">
-                                        <input type="text" wire:model="improvementAreas.{{ $index }}"
+                                        <input aria-label="Area to improve" type="text" wire:model="improvementAreas.{{ $index }}"
                                             class="min-w-0 flex-1 rounded-l-lg border border-themed-primary bg-themed-secondary px-3 py-2 text-sm text-themed-primary placeholder-themed-tertiary focus:border-brand focus:ring-brand"
                                             placeholder="Area to improve">
-                                        <button type="button" wire:click="removeImprovementArea({{ $index }})" class="rounded-r-lg bg-red-600 px-3 text-white">
+                                        <button type="button" wire:click="removeImprovementArea({{ $index }})" class="rounded-r-lg bg-red-600 px-3 text-white" aria-label="Remove improvement area">
                                             <i class="fas fa-minus"></i>
                                         </button>
                                     </div>
@@ -397,21 +397,21 @@
                         <div class="mt-4 grid gap-4 md:grid-cols-2">
                             <div class="rounded-lg border border-themed-primary p-4">
                                 <label class="text-sm font-semibold text-themed-primary">Certificate Evidence</label>
-                                <input type="text" wire:model="certificateEvidenceTitle" class="mt-2 w-full rounded-lg border border-themed-primary bg-themed-secondary px-3 py-2 text-sm text-themed-primary" placeholder="Certificate title or request">
-                                <input type="url" wire:model="certificateEvidenceUrl" class="mt-2 w-full rounded-lg border border-themed-primary bg-themed-secondary px-3 py-2 text-sm text-themed-primary" placeholder="Evidence URL">
-                                <textarea wire:model="certificateEvidenceNotes" rows="2" class="mt-2 w-full rounded-lg border border-themed-primary bg-themed-secondary px-3 py-2 text-sm text-themed-primary" placeholder="Certificate notes"></textarea>
+                                <input aria-label="Certificate title or request" type="text" wire:model="certificateEvidenceTitle" class="mt-2 w-full rounded-lg border border-themed-primary bg-themed-secondary px-3 py-2 text-sm text-themed-primary" placeholder="Certificate title or request">
+                                <input aria-label="Evidence URL" type="url" wire:model="certificateEvidenceUrl" class="mt-2 w-full rounded-lg border border-themed-primary bg-themed-secondary px-3 py-2 text-sm text-themed-primary" placeholder="Evidence URL">
+                                <textarea aria-label="Certificate notes" wire:model="certificateEvidenceNotes" rows="2" class="mt-2 w-full rounded-lg border border-themed-primary bg-themed-secondary px-3 py-2 text-sm text-themed-primary" placeholder="Certificate notes"></textarea>
                             </div>
                             <div class="rounded-lg border border-themed-primary p-4">
                                 <label class="text-sm font-semibold text-themed-primary">Project Evidence</label>
-                                <input type="text" wire:model="projectEvidenceTitle" class="mt-2 w-full rounded-lg border border-themed-primary bg-themed-secondary px-3 py-2 text-sm text-themed-primary" placeholder="Portfolio/project title">
-                                <input type="url" wire:model="projectEvidenceUrl" class="mt-2 w-full rounded-lg border border-themed-primary bg-themed-secondary px-3 py-2 text-sm text-themed-primary" placeholder="Project URL">
-                                <textarea wire:model="projectEvidenceNotes" rows="2" class="mt-2 w-full rounded-lg border border-themed-primary bg-themed-secondary px-3 py-2 text-sm text-themed-primary" placeholder="Project notes"></textarea>
+                                <input aria-label="Portfolio/project title" type="text" wire:model="projectEvidenceTitle" class="mt-2 w-full rounded-lg border border-themed-primary bg-themed-secondary px-3 py-2 text-sm text-themed-primary" placeholder="Portfolio/project title">
+                                <input aria-label="Project URL" type="url" wire:model="projectEvidenceUrl" class="mt-2 w-full rounded-lg border border-themed-primary bg-themed-secondary px-3 py-2 text-sm text-themed-primary" placeholder="Project URL">
+                                <textarea aria-label="Project notes" wire:model="projectEvidenceNotes" rows="2" class="mt-2 w-full rounded-lg border border-themed-primary bg-themed-secondary px-3 py-2 text-sm text-themed-primary" placeholder="Project notes"></textarea>
                             </div>
                         </div>
 
                         <div class="mt-4">
                             <label class="text-sm font-semibold text-themed-primary">Approval Notes</label>
-                            <textarea wire:model="approvalNotes" rows="3"
+                            <textarea aria-label="Decision notes" wire:model="approvalNotes" rows="3"
                                 class="mt-2 w-full rounded-lg border border-themed-primary bg-themed-secondary px-3 py-2 text-sm text-themed-primary placeholder-themed-tertiary focus:border-brand focus:ring-brand"
                                 placeholder="Decision notes"></textarea>
                         </div>
@@ -440,7 +440,7 @@
 
     @if($showReviewModal)
         <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4" x-data="{ dialogOpen: true }" x-trap.inert.noscroll="dialogOpen" x-on:keydown.escape.window="dialogOpen = false; $wire.closeModal()" role="dialog" aria-modal="true" aria-label="Code Reviews dialog" tabindex="-1">
-            <div class="max-h-[92vh] w-full max-w-5xl overflow-y-auto rounded-xl border border-themed-primary bg-themed-secondary shadow-2xl">
+            <div class="max-h-[92vh] w-full max-w-5xl overflow-y-auto rounded-lg border border-themed-primary bg-themed-secondary shadow-sm">
                 <div class="sticky top-0 z-10 flex items-center justify-between border-b border-themed-primary bg-themed-secondary p-5">
                     <div>
                         <h3 class="text-xl font-bold text-themed-primary">Request Code Review</h3>
@@ -455,7 +455,7 @@
                     <div class="grid gap-4 md:grid-cols-2">
                         <div>
                             <label class="text-sm font-semibold text-themed-primary">Active Mentorship</label>
-                            <select wire:model="mentorshipId" class="mt-2 w-full rounded-lg border border-themed-primary bg-themed-secondary px-3 py-2 text-sm text-themed-primary">
+                            <select aria-label="Mentorship id" wire:model="mentorshipId" class="mt-2 w-full rounded-lg border border-themed-primary bg-themed-secondary px-3 py-2 text-sm text-themed-primary">
                                 <option value="">Select mentorship</option>
                                 @foreach($activeMentorships as $mentorship)
                                     <option value="{{ $mentorship->id }}">
@@ -467,7 +467,7 @@
                         </div>
                         <div>
                             <label class="text-sm font-semibold text-themed-primary">Priority</label>
-                            <select wire:model="priority" class="mt-2 w-full rounded-lg border border-themed-primary bg-themed-secondary px-3 py-2 text-sm text-themed-primary">
+                            <select aria-label="Priority" wire:model="priority" class="mt-2 w-full rounded-lg border border-themed-primary bg-themed-secondary px-3 py-2 text-sm text-themed-primary">
                                 <option value="low">Low</option>
                                 <option value="medium">Medium</option>
                                 <option value="high">High</option>
@@ -479,18 +479,18 @@
                     <div class="grid gap-4 md:grid-cols-2">
                         <div>
                             <label class="text-sm font-semibold text-themed-primary">Review Title</label>
-                            <input type="text" wire:model="reviewTitle" class="mt-2 w-full rounded-lg border border-themed-primary bg-themed-secondary px-3 py-2 text-sm text-themed-primary" placeholder="API authentication review">
+                            <input aria-label="API authentication review" type="text" wire:model="reviewTitle" class="mt-2 w-full rounded-lg border border-themed-primary bg-themed-secondary px-3 py-2 text-sm text-themed-primary" placeholder="API authentication review">
                             @error('reviewTitle') <p class="mt-1 text-xs text-red-500">{{ $message }}</p> @enderror
                         </div>
                         <div>
                             <label class="text-sm font-semibold text-themed-primary">Language or Stack</label>
-                            <input type="text" wire:model="language" class="mt-2 w-full rounded-lg border border-themed-primary bg-themed-secondary px-3 py-2 text-sm text-themed-primary" placeholder="Laravel, React, Python">
+                            <input aria-label="Laravel, React, Python" type="text" wire:model="language" class="mt-2 w-full rounded-lg border border-themed-primary bg-themed-secondary px-3 py-2 text-sm text-themed-primary" placeholder="Laravel, React, Python">
                         </div>
                     </div>
 
                     <div>
                         <label class="text-sm font-semibold text-themed-primary">Description</label>
-                        <textarea wire:model="reviewDescription" rows="3" class="mt-2 w-full rounded-lg border border-themed-primary bg-themed-secondary px-3 py-2 text-sm text-themed-primary" placeholder="What should the mentor review?"></textarea>
+                        <textarea aria-label="What should the mentor review?" wire:model="reviewDescription" rows="3" class="mt-2 w-full rounded-lg border border-themed-primary bg-themed-secondary px-3 py-2 text-sm text-themed-primary" placeholder="What should the mentor review?"></textarea>
                         @error('reviewDescription') <p class="mt-1 text-xs text-red-500">{{ $message }}</p> @enderror
                     </div>
 
@@ -498,8 +498,8 @@
                         <label class="text-sm font-semibold text-themed-primary">Technologies</label>
                         @foreach($technologies as $index => $technology)
                             <div class="mt-2 flex">
-                                <input type="text" wire:model="technologies.{{ $index }}" class="min-w-0 flex-1 rounded-l-lg border border-themed-primary bg-themed-secondary px-3 py-2 text-sm text-themed-primary" placeholder="Technology">
-                                <button type="button" wire:click="removeTechnology({{ $index }})" class="rounded-r-lg bg-red-600 px-3 text-white">
+                                <input aria-label="Technology" type="text" wire:model="technologies.{{ $index }}" class="min-w-0 flex-1 rounded-l-lg border border-themed-primary bg-themed-secondary px-3 py-2 text-sm text-themed-primary" placeholder="Technology">
+                                <button type="button" wire:click="removeTechnology({{ $index }})" class="rounded-r-lg bg-red-600 px-3 text-white" aria-label="Remove technology">
                                     <i class="fas fa-minus"></i>
                                 </button>
                             </div>
@@ -512,59 +512,59 @@
                     <div class="grid gap-4 md:grid-cols-2">
                         <div>
                             <label class="text-sm font-semibold text-themed-primary">Repository URL</label>
-                            <input type="url" wire:model="repositoryUrl" class="mt-2 w-full rounded-lg border border-themed-primary bg-themed-secondary px-3 py-2 text-sm text-themed-primary" placeholder="https://github.com/user/repo">
+                            <input aria-label="https://github.com/user/repo" type="url" wire:model="repositoryUrl" class="mt-2 w-full rounded-lg border border-themed-primary bg-themed-secondary px-3 py-2 text-sm text-themed-primary" placeholder="https://github.com/user/repo">
                             @error('repositoryUrl') <p class="mt-1 text-xs text-red-500">{{ $message }}</p> @enderror
                         </div>
                         <div>
                             <label class="text-sm font-semibold text-themed-primary">Pull Request URL</label>
-                            <input type="url" wire:model="pullRequestUrl" class="mt-2 w-full rounded-lg border border-themed-primary bg-themed-secondary px-3 py-2 text-sm text-themed-primary" placeholder="https://github.com/user/repo/pull/1">
+                            <input aria-label="https://github.com/user/repo/pull/1" type="url" wire:model="pullRequestUrl" class="mt-2 w-full rounded-lg border border-themed-primary bg-themed-secondary px-3 py-2 text-sm text-themed-primary" placeholder="https://github.com/user/repo/pull/1">
                         </div>
                     </div>
 
                     <div class="grid gap-4 md:grid-cols-2">
                         <div>
                             <label class="text-sm font-semibold text-themed-primary">Branch</label>
-                            <input type="text" wire:model="branchName" class="mt-2 w-full rounded-lg border border-themed-primary bg-themed-secondary px-3 py-2 text-sm text-themed-primary" placeholder="main">
+                            <input aria-label="main" type="text" wire:model="branchName" class="mt-2 w-full rounded-lg border border-themed-primary bg-themed-secondary px-3 py-2 text-sm text-themed-primary" placeholder="main">
                         </div>
                         <div>
                             <label class="text-sm font-semibold text-themed-primary">Commit Hash</label>
-                            <input type="text" wire:model="commitHash" class="mt-2 w-full rounded-lg border border-themed-primary bg-themed-secondary px-3 py-2 text-sm text-themed-primary" placeholder="Optional">
+                            <input aria-label="Optional" type="text" wire:model="commitHash" class="mt-2 w-full rounded-lg border border-themed-primary bg-themed-secondary px-3 py-2 text-sm text-themed-primary" placeholder="Optional">
                         </div>
                     </div>
 
                     <div class="grid gap-4 md:grid-cols-2">
                         <div>
                             <label class="text-sm font-semibold text-themed-primary">Files to Review</label>
-                            <textarea wire:model="filesToReviewText" rows="4" class="mt-2 w-full rounded-lg border border-themed-primary bg-themed-secondary px-3 py-2 text-sm text-themed-primary" placeholder="app/Http/Controllers/AuthController.php"></textarea>
+                            <textarea aria-label="app/Http/Controllers/AuthController.php" wire:model="filesToReviewText" rows="4" class="mt-2 w-full rounded-lg border border-themed-primary bg-themed-secondary px-3 py-2 text-sm text-themed-primary" placeholder="app/Http/Controllers/AuthController.php"></textarea>
                         </div>
                         <div>
                             <label class="text-sm font-semibold text-themed-primary">Learner Goal</label>
-                            <textarea wire:model="learnerGoal" rows="4" class="mt-2 w-full rounded-lg border border-themed-primary bg-themed-secondary px-3 py-2 text-sm text-themed-primary" placeholder="What should this prove for the learner?"></textarea>
+                            <textarea aria-label="What should this prove for the learner?" wire:model="learnerGoal" rows="4" class="mt-2 w-full rounded-lg border border-themed-primary bg-themed-secondary px-3 py-2 text-sm text-themed-primary" placeholder="What should this prove for the learner?"></textarea>
                         </div>
                     </div>
 
                     <div>
                         <label class="text-sm font-semibold text-themed-primary">Code Snippet</label>
-                        <textarea wire:model="codeSnippet" rows="8" class="mt-2 w-full rounded-lg border border-themed-primary bg-themed-secondary px-3 py-2 font-mono text-sm text-themed-primary" placeholder="Paste code here if there is no repo, or include the key snippet for context."></textarea>
+                        <textarea aria-label="Paste code here if there is no repo, or include the key snippet for context" wire:model="codeSnippet" rows="8" class="mt-2 w-full rounded-lg border border-themed-primary bg-themed-secondary px-3 py-2 font-mono text-sm text-themed-primary" placeholder="Paste code here if there is no repo, or include the key snippet for context."></textarea>
                     </div>
 
                     <div>
                         <label class="text-sm font-semibold text-themed-primary">Specific Questions</label>
-                        <textarea wire:model="specificQuestions" rows="3" class="mt-2 w-full rounded-lg border border-themed-primary bg-themed-secondary px-3 py-2 text-sm text-themed-primary" placeholder="Security, test coverage, architecture, naming, performance..."></textarea>
+                        <textarea aria-label="Security, test coverage, architecture, naming, performance" wire:model="specificQuestions" rows="3" class="mt-2 w-full rounded-lg border border-themed-primary bg-themed-secondary px-3 py-2 text-sm text-themed-primary" placeholder="Security, test coverage, architecture, naming, performance..."></textarea>
                     </div>
 
                     <div class="grid gap-4 md:grid-cols-2">
                         <div class="rounded-lg border border-themed-primary p-4">
                             <label class="text-sm font-semibold text-themed-primary">Certificate Evidence</label>
-                            <input type="text" wire:model="certificateEvidenceTitle" class="mt-2 w-full rounded-lg border border-themed-primary bg-themed-secondary px-3 py-2 text-sm text-themed-primary" placeholder="Certificate title or milestone">
-                            <input type="url" wire:model="certificateEvidenceUrl" class="mt-2 w-full rounded-lg border border-themed-primary bg-themed-secondary px-3 py-2 text-sm text-themed-primary" placeholder="Evidence URL">
-                            <textarea wire:model="certificateEvidenceNotes" rows="2" class="mt-2 w-full rounded-lg border border-themed-primary bg-themed-secondary px-3 py-2 text-sm text-themed-primary" placeholder="Evidence notes"></textarea>
+                            <input aria-label="Certificate title or milestone" type="text" wire:model="certificateEvidenceTitle" class="mt-2 w-full rounded-lg border border-themed-primary bg-themed-secondary px-3 py-2 text-sm text-themed-primary" placeholder="Certificate title or milestone">
+                            <input aria-label="Evidence URL" type="url" wire:model="certificateEvidenceUrl" class="mt-2 w-full rounded-lg border border-themed-primary bg-themed-secondary px-3 py-2 text-sm text-themed-primary" placeholder="Evidence URL">
+                            <textarea aria-label="Evidence notes" wire:model="certificateEvidenceNotes" rows="2" class="mt-2 w-full rounded-lg border border-themed-primary bg-themed-secondary px-3 py-2 text-sm text-themed-primary" placeholder="Evidence notes"></textarea>
                         </div>
                         <div class="rounded-lg border border-themed-primary p-4">
                             <label class="text-sm font-semibold text-themed-primary">Project Evidence</label>
-                            <input type="text" wire:model="projectEvidenceTitle" class="mt-2 w-full rounded-lg border border-themed-primary bg-themed-secondary px-3 py-2 text-sm text-themed-primary" placeholder="Portfolio project title">
-                            <input type="url" wire:model="projectEvidenceUrl" class="mt-2 w-full rounded-lg border border-themed-primary bg-themed-secondary px-3 py-2 text-sm text-themed-primary" placeholder="Project URL">
-                            <textarea wire:model="projectEvidenceNotes" rows="2" class="mt-2 w-full rounded-lg border border-themed-primary bg-themed-secondary px-3 py-2 text-sm text-themed-primary" placeholder="Project notes"></textarea>
+                            <input aria-label="Portfolio project title" type="text" wire:model="projectEvidenceTitle" class="mt-2 w-full rounded-lg border border-themed-primary bg-themed-secondary px-3 py-2 text-sm text-themed-primary" placeholder="Portfolio project title">
+                            <input aria-label="Project URL" type="url" wire:model="projectEvidenceUrl" class="mt-2 w-full rounded-lg border border-themed-primary bg-themed-secondary px-3 py-2 text-sm text-themed-primary" placeholder="Project URL">
+                            <textarea aria-label="Project notes" wire:model="projectEvidenceNotes" rows="2" class="mt-2 w-full rounded-lg border border-themed-primary bg-themed-secondary px-3 py-2 text-sm text-themed-primary" placeholder="Project notes"></textarea>
                         </div>
                     </div>
 
@@ -579,7 +579,7 @@
 
     @if($showRevisionModal)
         <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4" x-data="{ dialogOpen: true }" x-trap.inert.noscroll="dialogOpen" x-on:keydown.escape.window="dialogOpen = false; $wire.closeModal()" role="dialog" aria-modal="true" aria-label="Code Reviews dialog" tabindex="-1">
-            <div class="max-h-[92vh] w-full max-w-3xl overflow-y-auto rounded-xl border border-themed-primary bg-themed-secondary shadow-2xl">
+            <div class="max-h-[92vh] w-full max-w-3xl overflow-y-auto rounded-lg border border-themed-primary bg-themed-secondary shadow-sm">
                 <div class="flex items-center justify-between border-b border-themed-primary p-5">
                     <h3 class="text-xl font-bold text-themed-primary">Submit Revision</h3>
                     <button aria-label="Close dialog" type="button" wire:click="closeModal" class="text-themed-secondary hover:text-themed-primary">
@@ -590,35 +590,35 @@
                     <div class="grid gap-4 md:grid-cols-2">
                         <div>
                             <label class="text-sm font-semibold text-themed-primary">Repository URL</label>
-                            <input type="url" wire:model="repositoryUrl" class="mt-2 w-full rounded-lg border border-themed-primary bg-themed-secondary px-3 py-2 text-sm text-themed-primary">
+                            <input aria-label="Repository url" type="url" wire:model="repositoryUrl" class="mt-2 w-full rounded-lg border border-themed-primary bg-themed-secondary px-3 py-2 text-sm text-themed-primary">
                             @error('repositoryUrl') <p class="mt-1 text-xs text-red-500">{{ $message }}</p> @enderror
                         </div>
                         <div>
                             <label class="text-sm font-semibold text-themed-primary">Pull Request URL</label>
-                            <input type="url" wire:model="pullRequestUrl" class="mt-2 w-full rounded-lg border border-themed-primary bg-themed-secondary px-3 py-2 text-sm text-themed-primary">
+                            <input aria-label="Pull request url" type="url" wire:model="pullRequestUrl" class="mt-2 w-full rounded-lg border border-themed-primary bg-themed-secondary px-3 py-2 text-sm text-themed-primary">
                         </div>
                     </div>
                     <div class="grid gap-4 md:grid-cols-2">
                         <div>
                             <label class="text-sm font-semibold text-themed-primary">Branch</label>
-                            <input type="text" wire:model="branchName" class="mt-2 w-full rounded-lg border border-themed-primary bg-themed-secondary px-3 py-2 text-sm text-themed-primary">
+                            <input aria-label="Branch name" type="text" wire:model="branchName" class="mt-2 w-full rounded-lg border border-themed-primary bg-themed-secondary px-3 py-2 text-sm text-themed-primary">
                         </div>
                         <div>
                             <label class="text-sm font-semibold text-themed-primary">Commit Hash</label>
-                            <input type="text" wire:model="commitHash" class="mt-2 w-full rounded-lg border border-themed-primary bg-themed-secondary px-3 py-2 text-sm text-themed-primary">
+                            <input aria-label="Commit hash" type="text" wire:model="commitHash" class="mt-2 w-full rounded-lg border border-themed-primary bg-themed-secondary px-3 py-2 text-sm text-themed-primary">
                         </div>
                     </div>
                     <div>
                         <label class="text-sm font-semibold text-themed-primary">Files to Review</label>
-                        <textarea wire:model="filesToReviewText" rows="3" class="mt-2 w-full rounded-lg border border-themed-primary bg-themed-secondary px-3 py-2 text-sm text-themed-primary"></textarea>
+                        <textarea aria-label="Files to review text" wire:model="filesToReviewText" rows="3" class="mt-2 w-full rounded-lg border border-themed-primary bg-themed-secondary px-3 py-2 text-sm text-themed-primary"></textarea>
                     </div>
                     <div>
                         <label class="text-sm font-semibold text-themed-primary">Revised Snippet</label>
-                        <textarea wire:model="codeSnippet" rows="8" class="mt-2 w-full rounded-lg border border-themed-primary bg-themed-secondary px-3 py-2 font-mono text-sm text-themed-primary"></textarea>
+                        <textarea aria-label="Code snippet" wire:model="codeSnippet" rows="8" class="mt-2 w-full rounded-lg border border-themed-primary bg-themed-secondary px-3 py-2 font-mono text-sm text-themed-primary"></textarea>
                     </div>
                     <div>
                         <label class="text-sm font-semibold text-themed-primary">Revision Notes</label>
-                        <textarea wire:model="revisionNotes" rows="3" class="mt-2 w-full rounded-lg border border-themed-primary bg-themed-secondary px-3 py-2 text-sm text-themed-primary" placeholder="What changed?"></textarea>
+                        <textarea aria-label="What changed?" wire:model="revisionNotes" rows="3" class="mt-2 w-full rounded-lg border border-themed-primary bg-themed-secondary px-3 py-2 text-sm text-themed-primary" placeholder="What changed?"></textarea>
                     </div>
                     <div class="flex justify-end gap-3 border-t border-themed-primary pt-5">
                         <button type="button" wire:click="closeModal" class="rounded-lg border border-themed-primary px-4 py-2 text-sm font-semibold text-themed-primary hover:bg-themed-tertiary">Cancel</button>

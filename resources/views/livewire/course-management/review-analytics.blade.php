@@ -1,14 +1,14 @@
 <div class="bg-themed-primary min-h-screen transition-colors duration-300">
-    <div class="px-4 sm:px-6 lg:px-8 py-6 space-y-6">
-        
+    <div class="space-y-6">
+
         <!-- Page Header -->
-        <div class="bg-themed-secondary rounded-2xl shadow-lg border border-themed-primary p-6 animate__animated animate__fadeInDown transition-colors duration-300">
+        <div class="bg-themed-secondary rounded-lg shadow-sm border border-themed-primary p-6   transition-colors duration-300">
             <div class="flex items-center gap-4">
-                <div class="bg-gradient-to-br from-blue-500 to-purple-500 p-4 rounded-2xl shadow-lg">
+                <div class="bg-brand-ink   p-4 rounded-lg shadow-sm">
                     <i class="fas fa-chart-line text-white text-2xl"></i>
                 </div>
                 <div>
-                    <h1 class="text-2xl sm:text-3xl font-bold text-themed-primary transition-colors duration-300">
+                    <h1 class="  font-bold text-themed-primary transition-colors duration-300 bk-page-title">
                         Review Analytics
                     </h1>
                     <p class="text-themed-secondary mt-1 transition-colors duration-300">
@@ -19,21 +19,21 @@
         </div>
 
         <!-- Filters -->
-        <div class="bg-themed-secondary rounded-2xl shadow-lg border border-themed-primary p-6 transition-colors duration-300">
+        <div class="bg-themed-secondary rounded-lg shadow-sm border border-themed-primary p-6 transition-colors duration-300">
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
                     <label class="block text-sm font-bold text-themed-primary mb-2 transition-colors duration-300">Course</label>
-                    <select wire:model.live="courseId" class="w-full bg-themed-tertiary border-2 border-themed-primary rounded-xl px-4 py-3 text-themed-primary placeholder-themed-secondary focus:border-accent-themed-primary focus:ring-2 focus:ring-accent-themed-primary/20 transition-all duration-300">
+                    <select aria-label="Course id" wire:model.live="courseId" class="w-full bg-themed-tertiary border-2 border-themed-primary rounded-lg px-4 py-3 text-themed-primary placeholder-themed-secondary focus:border-brand focus:ring-2 focus:ring-brand/20 transition-all duration-300">
                         <option value="">Select a course</option>
                         @foreach($courses as $course)
                             <option value="{{ $course->id }}">{{ $course->title }}</option>
                         @endforeach
                     </select>
                 </div>
-                
+
                 <div>
                     <label class="block text-sm font-bold text-themed-primary mb-2 transition-colors duration-300">Time Range</label>
-                    <select wire:model.live="timeRange" class="w-full bg-themed-tertiary border-2 border-themed-primary rounded-xl px-4 py-3 text-themed-primary placeholder-themed-secondary focus:border-accent-themed-primary focus:ring-2 focus:ring-accent-themed-primary/20 transition-all duration-300">
+                    <select aria-label="Time range" wire:model.live="timeRange" class="w-full bg-themed-tertiary border-2 border-themed-primary rounded-lg px-4 py-3 text-themed-primary placeholder-themed-secondary focus:border-brand focus:ring-2 focus:ring-brand/20 transition-all duration-300">
                         <option value="7">Last 7 days</option>
                         <option value="30">Last 30 days</option>
                         <option value="90">Last 90 days</option>
@@ -43,7 +43,7 @@
 
                 <div>
                     <label class="block text-sm font-bold text-themed-primary mb-2 transition-colors duration-300">Metric</label>
-                    <select wire:model.live="selectedMetric" class="w-full bg-themed-tertiary border-2 border-themed-primary rounded-xl px-4 py-3 text-themed-primary placeholder-themed-secondary focus:border-accent-themed-primary focus:ring-2 focus:ring-accent-themed-primary/20 transition-all duration-300">
+                    <select aria-label="Selected metric" wire:model.live="selectedMetric" class="w-full bg-themed-tertiary border-2 border-themed-primary rounded-lg px-4 py-3 text-themed-primary placeholder-themed-secondary focus:border-brand focus:ring-2 focus:ring-brand/20 transition-all duration-300">
                         <option value="rating">Average Rating</option>
                         <option value="sentiment">Sentiment Score</option>
                         <option value="response_rate">Response Rate</option>
@@ -55,13 +55,13 @@
         @if($selectedCourse)
             <!-- Key Metrics -->
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-                <div class="bg-themed-secondary rounded-xl shadow-md border border-themed-primary p-6 transform hover:scale-105 transition-all duration-300 animate__animated animate__fadeInUp" style="animation-delay: 0.1s">
+                <div class="bg-themed-secondary rounded-lg shadow-sm border border-themed-primary p-6 transform  transition-all duration-300  " style="animation-delay: 0.1s">
                     <div class="flex items-center justify-between">
                         <div>
                             <p class="text-themed-secondary text-sm font-medium mb-1 transition-colors duration-300">
                                 Average Rating
                             </p>
-                            <h3 class="text-3xl font-bold text-accent-themed-primary transition-colors duration-300">
+                            <h3 class="text-3xl font-bold text-brand transition-colors duration-300">
                                 {{ number_format($instructorMetrics['avg_rating'], 1) }}
                             </h3>
                             <div class="flex mt-2">
@@ -70,72 +70,72 @@
                                 @endfor
                             </div>
                         </div>
-                        <div class="bg-yellow-100/50 p-4 rounded-xl transition-colors duration-300">
+                        <div class="bg-yellow-100/50 p-4 rounded-lg transition-colors duration-300">
                             <i class="fas fa-star text-yellow-600 text-2xl"></i>
                         </div>
                     </div>
                 </div>
 
-                <div class="bg-themed-secondary rounded-xl shadow-md border border-themed-primary p-6 transform hover:scale-105 transition-all duration-300 animate__animated animate__fadeInUp" style="animation-delay: 0.2s">
+                <div class="bg-themed-secondary rounded-lg shadow-sm border border-themed-primary p-6 transform  transition-all duration-300  " style="animation-delay: 0.2s">
                     <div class="flex items-center justify-between">
                         <div>
                             <p class="text-themed-secondary text-sm font-medium mb-1 transition-colors duration-300">
                                 Total Reviews
                             </p>
-                            <h3 class="text-3xl font-bold text-accent-themed-primary transition-colors duration-300">
+                            <h3 class="text-3xl font-bold text-brand transition-colors duration-300">
                                 {{ $instructorMetrics['total_reviews'] }}
                             </h3>
                             <p class="text-sm text-themed-tertiary mt-2 transition-colors duration-300">
                                 {{ $instructorMetrics['replied_reviews'] }} replied
                             </p>
                         </div>
-                        <div class="bg-blue-100/50 p-4 rounded-xl transition-colors duration-300">
-                            <i class="fas fa-comments text-blue-600 text-2xl"></i>
+                        <div class="bg-brand/10 p-4 rounded-lg transition-colors duration-300">
+                            <i class="fas fa-comments text-brand text-2xl"></i>
                         </div>
                     </div>
                 </div>
 
-                <div class="bg-themed-secondary rounded-xl shadow-md border border-themed-primary p-6 transform hover:scale-105 transition-all duration-300 animate__animated animate__fadeInUp" style="animation-delay: 0.3s">
+                <div class="bg-themed-secondary rounded-lg shadow-sm border border-themed-primary p-6 transform  transition-all duration-300  " style="animation-delay: 0.3s">
                     <div class="flex items-center justify-between">
                         <div>
                             <p class="text-themed-secondary text-sm font-medium mb-1 transition-colors duration-300">
                                 Response Rate
                             </p>
-                            <h3 class="text-3xl font-bold text-accent-themed-primary transition-colors duration-300">
+                            <h3 class="text-3xl font-bold text-brand transition-colors duration-300">
                                 {{ number_format($instructorMetrics['response_rate'], 0) }}%
                             </h3>
                             <div class="w-full bg-themed-tertiary rounded-full h-2 mt-2 transition-colors duration-300">
                                 <div class="bg-green-500 h-2 rounded-full transition-all duration-500" style="width: {{ $instructorMetrics['response_rate'] }}%"></div>
                             </div>
                         </div>
-                        <div class="bg-green-100/50 p-4 rounded-xl transition-colors duration-300">
+                        <div class="bg-green-100/50 p-4 rounded-lg transition-colors duration-300">
                             <i class="fas fa-reply text-green-600 text-2xl"></i>
                         </div>
                     </div>
                 </div>
 
-                <div class="bg-themed-secondary rounded-xl shadow-md border border-themed-primary p-6 transform hover:scale-105 transition-all duration-300 animate__animated animate__fadeInUp" style="animation-delay: 0.4s">
+                <div class="bg-themed-secondary rounded-lg shadow-sm border border-themed-primary p-6 transform  transition-all duration-300  " style="animation-delay: 0.4s">
                     <div class="flex items-center justify-between">
                         <div>
                             <p class="text-themed-secondary text-sm font-medium mb-1 transition-colors duration-300">
                                 Avg Response Time
                             </p>
-                            <h3 class="text-3xl font-bold text-accent-themed-primary transition-colors duration-300">
+                            <h3 class="text-3xl font-bold text-brand transition-colors duration-300">
                                 {{ $instructorMetrics['avg_response_time_hours'] ?? 'N/A' }}
                             </h3>
                             <p class="text-sm text-themed-tertiary mt-2 transition-colors duration-300">hours</p>
                         </div>
-                        <div class="bg-purple-100/50 p-4 rounded-xl transition-colors duration-300">
-                            <i class="fas fa-clock text-purple-600 text-2xl"></i>
+                        <div class="bg-brand/10 p-4 rounded-lg transition-colors duration-300">
+                            <i class="fas fa-clock text-brand text-2xl"></i>
                         </div>
                     </div>
                 </div>
             </div>
 
             <!-- Rating Trends Chart -->
-            <div class="bg-themed-secondary rounded-2xl shadow-lg border border-themed-primary p-6 transition-colors duration-300">
+            <div class="bg-themed-secondary rounded-lg shadow-sm border border-themed-primary p-6 transition-colors duration-300">
                 <h3 class="text-lg font-bold text-themed-primary mb-4 transition-colors duration-300">Rating Trends</h3>
-                <div class="h-64" x-data="{ 
+                <div class="h-64" x-data="{
                     chartData: @js($ratingTrends),
                     init() {
                         console.log(this.chartData);
@@ -148,7 +148,7 @@
             <!-- Satisfaction Metrics -->
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 <!-- Sentiment Analysis -->
-                <div class="bg-themed-secondary rounded-2xl shadow-lg border border-themed-primary p-6 transition-colors duration-300">
+                <div class="bg-themed-secondary rounded-lg shadow-sm border border-themed-primary p-6 transition-colors duration-300">
                     <h3 class="text-lg font-bold text-themed-primary mb-4 flex items-center transition-colors duration-300">
                         <i class="fas fa-smile text-green-500 mr-2"></i>
                         Sentiment Analysis
@@ -172,9 +172,9 @@
                 </div>
 
                 <!-- Top Keywords -->
-                <div class="bg-themed-secondary rounded-2xl shadow-lg border border-themed-primary p-6 transition-colors duration-300">
+                <div class="bg-themed-secondary rounded-lg shadow-sm border border-themed-primary p-6 transition-colors duration-300">
                     <h3 class="text-lg font-bold text-themed-primary mb-4 flex items-center transition-colors duration-300">
-                        <i class="fas fa-tags text-accent-themed-primary mr-2"></i>
+                        <i class="fas fa-tags text-brand mr-2"></i>
                         Most Common Keywords
                     </h3>
                     <div class="space-y-3">
@@ -183,7 +183,7 @@
                                 <span class="text-themed-primary font-medium transition-colors duration-300">{{ $keyword }}</span>
                                 <div class="flex items-center">
                                     <div class="w-32 bg-themed-tertiary rounded-full h-2 mr-3 transition-colors duration-300">
-                                        <div class="bg-accent-themed-primary h-2 rounded-full transition-all duration-500" style="width: {{ min(($count / max(array_values($satisfactionMetrics['top_keywords']))) * 100, 100) }}%"></div>
+                                        <div class="bg-action h-2 rounded-full transition-all duration-500" style="width: {{ min(($count / max(array_values($satisfactionMetrics['top_keywords']))) * 100, 100) }}%"></div>
                                     </div>
                                     <span class="text-sm text-themed-secondary w-8 text-right transition-colors duration-300">{{ $count }}</span>
                                 </div>
@@ -194,7 +194,7 @@
             </div>
 
             <!-- Rating Distribution -->
-            <div class="bg-themed-secondary rounded-2xl shadow-lg border border-themed-primary p-6 transition-colors duration-300">
+            <div class="bg-themed-secondary rounded-lg shadow-sm border border-themed-primary p-6 transition-colors duration-300">
                 <h3 class="text-lg font-bold text-themed-primary mb-4 transition-colors duration-300">Rating Distribution</h3>
                 <div class="space-y-3">
                     @foreach([5,4,3,2,1] as $star)
@@ -207,7 +207,7 @@
                                 {{ $star }} <i class="fas fa-star text-yellow-400 text-xs"></i>
                             </div>
                             <div class="flex-1 bg-themed-tertiary rounded-full h-4 transition-colors duration-300">
-                                <div class="bg-gradient-to-r from-yellow-400 to-yellow-600 h-4 rounded-full transition-all duration-500" 
+                                <div class="bg-surface-muted   h-4 rounded-full transition-all duration-500"
                                      style="width: {{ $percentage }}%"></div>
                             </div>
                             <div class="w-24 text-sm text-themed-secondary text-right transition-colors duration-300">
@@ -218,7 +218,7 @@
                 </div>
             </div>
         @else
-            <div class="text-center py-20 bg-themed-secondary rounded-2xl shadow-lg border border-themed-primary transition-colors duration-300">
+            <div class="text-center py-20 bg-themed-secondary rounded-lg shadow-sm border border-themed-primary transition-colors duration-300">
                 <i class="fas fa-chart-line text-themed-tertiary text-6xl mb-4"></i>
                 <h3 class="text-xl font-bold text-themed-primary mb-2 transition-colors duration-300">No Course Selected</h3>
                 <p class="text-themed-secondary transition-colors duration-300">Select a course above to view analytics</p>
@@ -226,11 +226,11 @@
         @endif
 
         <!-- Loading Overlay -->
-        <div wire:loading class="fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center z-50">
-            <div class="bg-themed-secondary rounded-2xl p-8 flex items-center shadow-2xl border border-themed-primary transition-colors duration-300">
+        <div wire:loading class="fixed inset-0 bg-black/30  flex items-center justify-center z-50">
+            <div class="bg-themed-secondary rounded-lg p-8 flex items-center shadow-sm border border-themed-primary transition-colors duration-300">
                 <div class="relative mr-4">
                     <div class="animate-spin rounded-full h-12 w-12 border-4 border-themed-tertiary"></div>
-                    <div class="animate-spin rounded-full h-12 w-12 border-4 border-accent-themed-primary border-t-transparent absolute top-0"></div>
+                    <div class="animate-spin rounded-full h-12 w-12 border-4 border-brand border-t-transparent absolute top-0"></div>
                 </div>
                 <span class="text-themed-primary font-semibold transition-colors duration-300">Loading analytics...</span>
             </div>

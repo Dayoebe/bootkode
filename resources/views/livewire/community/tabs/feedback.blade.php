@@ -4,7 +4,7 @@
     <!-- Search & Filters -->
     <div class="mb-6 flex gap-4 flex-wrap">
         <div class="flex-1 min-w-[250px] relative">
-            <input type="text" wire:model.live.debounce="search"
+            <input aria-label="Search feedback" type="text" wire:model.live.debounce="search"
                    class="w-full pl-10 pr-4 py-2 bg-themed-secondary border border-themed-primary text-themed-primary rounded-lg placeholder-themed-secondary focus:ring-2 focus:ring-red-500 focus:border-transparent"
                    placeholder="Search feedback...">
             <i class="fas fa-search absolute left-3 top-2.5 text-themed-secondary"></i>
@@ -19,7 +19,7 @@
     <!-- Feedback List -->
     <div class="space-y-3">
         @forelse($feedback as $item)
-            <div class="bg-themed-secondary border border-themed-primary rounded-lg p-4 hover:shadow-md transition-all">
+            <div class="bg-themed-secondary border border-themed-primary rounded-lg p-4  transition-all">
                 <!-- Header -->
                 <div class="flex items-start justify-between gap-2 mb-2">
                     <h3 class="font-semibold text-themed-primary flex-1">{{ $item->subject }}</h3>
@@ -33,8 +33,8 @@
                     <span class="bg-themed-tertiary px-2 py-1 rounded border border-themed-primary">
                         {{ ucfirst(str_replace('_', ' ', $item->category)) }}
                     </span>
-                    <span class="bg-{{ $item->priority === 'high' ? 'red' : ($item->priority === 'medium' ? 'yellow' : 'gray') }}-100/20 
-                               text-{{ $item->priority === 'high' ? 'red' : ($item->priority === 'medium' ? 'yellow' : 'gray') }}-400 
+                    <span class="bg-{{ $item->priority === 'high' ? 'red' : ($item->priority === 'medium' ? 'yellow' : 'gray') }}-100/20
+                               text-{{ $item->priority === 'high' ? 'red' : ($item->priority === 'medium' ? 'yellow' : 'gray') }}-400
                                px-2 py-1 rounded border border-{{ $item->priority === 'high' ? 'red' : ($item->priority === 'medium' ? 'yellow' : 'gray') }}-500/30">
                         {{ ucfirst($item->priority) }} Priority
                     </span>

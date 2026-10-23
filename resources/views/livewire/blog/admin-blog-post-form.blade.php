@@ -17,10 +17,10 @@
 
     <div class="flex items-center justify-between mb-8">
         <div>
-            <h1 class="text-2xl font-bold text-gray-900 dark:text-white">
+            <h1 class=" font-bold text-content dark:text-white bk-page-title">
                 {{ $isEdit ? 'Edit Post' : 'Create Post' }}
             </h1>
-            <p class="text-gray-600 dark:text-gray-400">
+            <p class="text-content-muted dark:text-content-muted">
                 {{ $isEdit ? 'Update your blog post' : 'Create a new blog post' }}
             </p>
         </div>
@@ -36,33 +36,33 @@
             {{-- Main Content --}}
             <div class="lg:col-span-2 space-y-6">
                 {{-- Title --}}
-                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6">
+                <div class="bg-surface dark:bg-gray-800 rounded-lg shadow-sm p-6">
                     <div class="space-y-4">
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                            <label class="block text-sm font-medium text-content dark:text-gray-300 mb-2">
                                 Title <span class="text-red-500">*</span>
                             </label>
-                            <input type="text" wire:model.blur="title"
-                                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white text-lg"
+                            <input aria-label="Enter post title" type="text" wire:model.blur="title"
+                                class="w-full px-4 py-3 border border-line rounded-lg focus:ring-2 focus:ring-brand/30 dark:bg-gray-700 dark:border-gray-600 dark:text-white text-lg"
                                 placeholder="Enter post title..." required>
                             @error('title')<span class="text-red-500 text-sm mt-1 block">{{ $message }}</span>@enderror
                         </div>
 
                         <div>
                             <div class="flex items-center justify-between mb-2">
-                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                <label class="block text-sm font-medium text-content dark:text-gray-300">
                                     Slug <span class="text-red-500">*</span>
                                 </label>
                                 <button type="button" wire:click="generateSlug"
-                                    class="text-sm text-blue-600 hover:text-blue-800 font-medium">
+                                    class="text-sm text-brand hover:text-brand font-medium">
                                     <i class="fas fa-sync mr-1"></i>
                                     Generate from title
                                 </button>
                             </div>
-                            <input type="text" wire:model="slug"
-                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                            <input aria-label="post-slug-url" type="text" wire:model="slug"
+                                class="w-full px-4 py-2 border border-line rounded-lg focus:ring-2 focus:ring-brand/30 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                                 placeholder="post-slug-url" required>
-                            <p class="text-sm text-gray-500 mt-1">
+                            <p class="text-sm text-content-muted mt-1">
                                 <i class="fas fa-info-circle mr-1"></i>
                                 URL: {{ url('/blog') }}/{{ $slug ?: 'your-slug' }}
                             </p>
@@ -72,8 +72,8 @@
                 </div>
 
                 {{-- Content Editor - FIXED --}}
-                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6">
-                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                <div class="bg-surface dark:bg-gray-800 rounded-lg shadow-sm p-6">
+                    <label class="block text-sm font-medium text-content dark:text-gray-300 mb-2">
                         Content <span class="text-red-500">*</span>
                     </label>
                     <div class="mb-4">
@@ -88,14 +88,14 @@
                 </div>
 
                 {{-- Excerpt --}}
-                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6">
-                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                <div class="bg-surface dark:bg-gray-800 rounded-lg shadow-sm p-6">
+                    <label class="block text-sm font-medium text-content dark:text-gray-300 mb-2">
                         Excerpt
                     </label>
-                    <textarea wire:model="excerpt" rows="3"
-                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                    <textarea aria-label="Brief description of your post" wire:model="excerpt" rows="3"
+                        class="w-full px-4 py-2 border border-line rounded-lg focus:ring-2 focus:ring-brand/30 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                         placeholder="Brief description of your post..."></textarea>
-                    <p class="text-sm text-gray-500 mt-2">
+                    <p class="text-sm text-content-muted mt-2">
                         <i class="fas fa-lightbulb mr-1"></i>
                         Leave empty to auto-generate from content (first 200 characters).
                     </p>
@@ -103,62 +103,62 @@
                 </div>
 
                 {{-- SEO Settings --}}
-                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm">
+                <div class="bg-surface dark:bg-gray-800 rounded-lg shadow-sm">
                     <button type="button" wire:click="$toggle('showSeoSection')"
-                        class="w-full flex items-center justify-between p-6 text-left hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
-                        <span class="text-lg font-medium text-gray-900 dark:text-white">
+                        class="w-full flex items-center justify-between p-6 text-left hover:bg-surface-muted dark:hover:bg-gray-700 transition-colors">
+                        <span class="text-lg font-medium text-content dark:text-white">
                             <i class="fas fa-search mr-2 text-green-500"></i>
                             SEO Settings
                         </span>
-                        <i class="fas fa-chevron-{{ $showSeoSection ? 'up' : 'down' }} text-gray-400"></i>
+                        <i class="fas fa-chevron-{{ $showSeoSection ? 'up' : 'down' }} text-content-muted"></i>
                     </button>
 
                     @if($showSeoSection)
-                        <div class="px-6 pb-6 border-t border-gray-200 dark:border-gray-700 space-y-4">
+                        <div class="px-6 pb-6 border-t border-line dark:border-gray-700 space-y-4">
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                <label class="block text-sm font-medium text-content dark:text-gray-300 mb-2">
                                     Meta Title
                                 </label>
-                                <input type="text" wire:model="meta_title"
-                                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                                <input aria-label="Auto-filled from post title" type="text" wire:model="meta_title"
+                                    class="w-full px-4 py-2 border border-line rounded-lg focus:ring-2 focus:ring-brand/30 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                                     placeholder="Auto-filled from post title">
                                 @error('meta_title')<span
                                 class="text-red-500 text-sm mt-1 block">{{ $message }}</span>@enderror
                             </div>
 
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                <label class="block text-sm font-medium text-content dark:text-gray-300 mb-2">
                                     Meta Description
                                 </label>
-                                <textarea wire:model="meta_description" rows="3"
-                                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                                <textarea aria-label="Brief description for search engines" wire:model="meta_description" rows="3"
+                                    class="w-full px-4 py-2 border border-line rounded-lg focus:ring-2 focus:ring-brand/30 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                                     placeholder="Brief description for search engines..."></textarea>
                                 @error('meta_description')<span
                                 class="text-red-500 text-sm mt-1 block">{{ $message }}</span>@enderror
                             </div>
 
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                <label class="block text-sm font-medium text-content dark:text-gray-300 mb-2">
                                     Keywords
                                 </label>
                                 <div class="flex flex-wrap gap-2 mb-2">
                                     @foreach($meta_keywords as $index => $keyword)
                                         <span
-                                            class="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm flex items-center">
+                                            class="px-3 py-1 bg-brand/10 text-brand rounded-full text-sm flex items-center">
                                             {{ $keyword }}
                                             <button type="button" wire:click="removeKeyword({{ $index }})"
-                                                class="ml-2 text-blue-600 hover:text-blue-800">
+                                                class="ml-2 text-brand hover:text-brand" aria-label="Close">
                                                 <i class="fas fa-times"></i>
                                             </button>
                                         </span>
                                     @endforeach
                                 </div>
                                 <div class="flex">
-                                    <input type="text" wire:model="newKeyword" wire:keydown.enter.prevent="addKeyword"
-                                        class="flex-1 px-4 py-2 border border-gray-300 rounded-l-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                                    <input aria-label="Add keyword" type="text" wire:model="newKeyword" wire:keydown.enter.prevent="addKeyword"
+                                        class="flex-1 px-4 py-2 border border-line rounded-l-lg focus:ring-2 focus:ring-brand/30 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                                         placeholder="Add keyword...">
                                     <button type="button" wire:click="addKeyword"
-                                        class="px-4 py-2 bg-blue-600 text-white rounded-r-lg hover:bg-blue-700">
+                                        class="px-4 py-2 bg-action text-action-foreground rounded-r-lg hover:bg-action" aria-label="Add keyword">
                                         <i class="fas fa-plus"></i>
                                     </button>
                                 </div>
@@ -171,19 +171,19 @@
             {{-- Sidebar --}}
             <div class="space-y-6">
                 {{-- Publish Settings --}}
-                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6">
-                    <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-4">
-                        <i class="fas fa-paper-plane text-blue-500 mr-2"></i>
+                <div class="bg-surface dark:bg-gray-800 rounded-lg shadow-sm p-6">
+                    <h3 class="text-lg font-medium text-content dark:text-white mb-4">
+                        <i class="fas fa-paper-plane text-brand mr-2"></i>
                         Publish Settings
                     </h3>
 
                     <div class="space-y-4">
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                            <label class="block text-sm font-medium text-content dark:text-gray-300 mb-2">
                                 Status <span class="text-red-500">*</span>
                             </label>
-                            <select wire:model.live="status"
-                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                            <select aria-label="Status" wire:model.live="status"
+                                class="w-full px-4 py-2 border border-line rounded-lg focus:ring-2 focus:ring-brand/30 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
                                 <option value="draft">📝 Draft</option>
                                 <option value="published">🌐 Published</option>
                                 <option value="scheduled">⏰ Scheduled</option>
@@ -198,7 +198,7 @@
                                     <i class="fas fa-calendar-alt mr-1"></i>
                                     Schedule Publish Date & Time <span class="text-red-500">*</span>
                                 </label>
-                                <input type="datetime-local" wire:model="published_at"
+                                <input aria-label="Published at" type="datetime-local" wire:model="published_at"
                                     class="w-full px-4 py-2 border border-yellow-300 rounded-lg focus:ring-2 focus:ring-yellow-500 dark:bg-yellow-800 dark:border-yellow-600 dark:text-white"
                                     min="{{ now()->format('Y-m-d\TH:i') }}" required>
                                 @error('published_at')<span
@@ -206,11 +206,11 @@
                             </div>
                         @endif
 
-                        <div class="border-t border-gray-200 dark:border-gray-700 pt-4 space-y-3">
+                        <div class="border-t border-line dark:border-gray-700 pt-4 space-y-3">
                             <div class="flex items-center">
                                 <input type="checkbox" wire:model="is_featured" id="is_featured"
-                                    class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
-                                <label for="is_featured" class="ml-2 text-sm text-gray-700 dark:text-gray-300">
+                                    class="rounded border-line text-brand focus:ring-brand/30">
+                                <label for="is_featured" class="ml-2 text-sm text-content dark:text-gray-300">
                                     <i class="fas fa-star text-yellow-500 mr-1"></i>
                                     Featured Post
                                 </label>
@@ -218,9 +218,9 @@
 
                             <div class="flex items-center">
                                 <input type="checkbox" wire:model="allow_comments" id="allow_comments"
-                                    class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
-                                <label for="allow_comments" class="ml-2 text-sm text-gray-700 dark:text-gray-300">
-                                    <i class="fas fa-comments text-blue-500 mr-1"></i>
+                                    class="rounded border-line text-brand focus:ring-brand/30">
+                                <label for="allow_comments" class="ml-2 text-sm text-content dark:text-gray-300">
+                                    <i class="fas fa-comments text-brand mr-1"></i>
                                     Allow Comments
                                 </label>
                             </div>
@@ -230,23 +230,23 @@
 
                 {{-- FIXED: Multiple Categories --}}
 {{-- Multiple Categories --}}
-<div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6">
-    <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-4">
-        <i class="fas fa-folder text-purple-500 mr-2"></i>
+<div class="bg-surface dark:bg-gray-800 rounded-lg shadow-sm p-6">
+    <h3 class="text-lg font-medium text-content dark:text-white mb-4">
+        <i class="fas fa-folder text-brand mr-2"></i>
         Categories & Tags
     </h3>
 
     <div class="space-y-4">
         {{-- Multiple Category Selection --}}
         <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            <label class="block text-sm font-medium text-content dark:text-gray-300 mb-2">
                 Categories <span class="text-red-500">*</span>
-                <span class="text-xs text-gray-500 font-normal">(Select one or more)</span>
+                <span class="text-xs text-content-muted font-normal">(Select one or more)</span>
             </label>
-            
+
             {{-- Selected Categories Display --}}
             @if(count($category_ids) > 0)
-                <div class="mb-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                <div class="mb-3 p-3 bg-surface-muted dark:bg-gray-700 rounded-lg">
                     <div class="flex flex-wrap gap-2">
                         @foreach($category_ids as $index => $categoryId)
                             @php $selectedCategory = $categories->find($categoryId); @endphp
@@ -258,24 +258,24 @@
                                     @if($index === 0)
                                         <span class="ml-2 px-1.5 py-0.5 bg-white/50 rounded text-xs">Primary</span>
                                     @endif
-                                    <button type="button" 
+                                    <button type="button"
                                             wire:click="removeCategory({{ $index }})"
-                                            class="ml-2 hover:text-red-500">
+                                            class="ml-2 hover:text-red-500" aria-label="Close">
                                         <i class="fas fa-times"></i>
                                     </button>
                                 </span>
                             @endif
                         @endforeach
                     </div>
-                    <p class="text-xs text-gray-500 mt-2">
+                    <p class="text-xs text-content-muted mt-2">
                         <i class="fas fa-info-circle mr-1"></i>
                         The first category is the primary category for URL routing.
                     </p>
                 </div>
             @endif
-            
+
             {{-- Category Selection Dropdown --}}
-            <select class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+            <select class="w-full px-4 py-2 border border-line rounded-lg focus:ring-2 focus:ring-brand/30 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                     onchange="if(this.value && !@js($category_ids).includes(parseInt(this.value))) { @this.category_ids.push(parseInt(this.value)); } this.value='';">
                 <option value="">Add a category...</option>
                 @foreach($categories as $category)
@@ -284,11 +284,11 @@
                     @endif
                 @endforeach
             </select>
-            
+
             @if(count($categories) === 0)
-                <p class="text-sm text-gray-500 mt-2">
+                <p class="text-sm text-content-muted mt-2">
                     <i class="fas fa-info-circle mr-1"></i>
-                    No categories available. <a href="{{ route('admin.blog.categories.index') }}" class="text-blue-600 hover:underline">Create categories first</a>.
+                    No categories available. <a href="{{ route('admin.blog.categories.index') }}" class="text-brand hover:underline">Create categories first</a>.
                 </p>
             @endif
             @error('category_ids')<span class="text-red-500 text-sm mt-1 block">{{ $message }}</span>@enderror
@@ -296,26 +296,26 @@
 
         {{-- Tags --}}
         <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            <label class="block text-sm font-medium text-content dark:text-gray-300 mb-2">
                 Tags
             </label>
             <div class="flex flex-wrap gap-2 mb-2">
                 @foreach($tags as $index => $tag)
-                    <span class="px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm flex items-center">
+                    <span class="px-3 py-1 bg-surface-muted text-content rounded-full text-sm flex items-center">
                         #{{ $tag }}
                         <button type="button" wire:click="removeTag({{ $index }})"
-                            class="ml-2 text-gray-500 hover:text-gray-700">
+                            class="ml-2 text-content-muted hover:text-content" aria-label="Close">
                             <i class="fas fa-times"></i>
                         </button>
                     </span>
                 @endforeach
             </div>
             <div class="flex">
-                <input type="text" wire:model="newTag" wire:keydown.enter.prevent="addTag"
-                    class="flex-1 px-4 py-2 border border-gray-300 rounded-l-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                <input aria-label="Add tag" type="text" wire:model="newTag" wire:keydown.enter.prevent="addTag"
+                    class="flex-1 px-4 py-2 border border-line rounded-l-lg focus:ring-2 focus:ring-brand/30 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                     placeholder="Add tag...">
                 <button type="button" wire:click="addTag"
-                    class="px-4 py-2 bg-gray-600 text-white rounded-r-lg hover:bg-gray-700">
+                    class="px-4 py-2 bg-gray-600 text-white rounded-r-lg hover:bg-gray-700" aria-label="Add tag">
                     <i class="fas fa-plus"></i>
                 </button>
             </div>
@@ -324,8 +324,8 @@
 </div>
 
                 {{-- Featured Image --}}
-                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6">
-                    <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-4">
+                <div class="bg-surface dark:bg-gray-800 rounded-lg shadow-sm p-6">
+                    <h3 class="text-lg font-medium text-content dark:text-white mb-4">
                         <i class="fas fa-image text-green-500 mr-2"></i>
                         Featured Image
                     </h3>
@@ -338,7 +338,7 @@
                                 <div
                                     class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30 transition-opacity rounded-lg flex items-center justify-center">
                                     <button type="button" wire:click="toggleRemoveImage"
-                                        class="bg-red-500 text-white p-2 rounded-full hover:bg-red-600 transition-colors opacity-0 group-hover:opacity-100">
+                                        class="bg-red-500 text-white p-2 rounded-full hover:bg-red-600 transition-colors opacity-0 group-hover:opacity-100" aria-label="Toggle remove image">
                                         <i class="fas fa-trash text-sm"></i>
                                     </button>
                                 </div>
@@ -371,7 +371,7 @@
                             @if(is_object($featured_image) && method_exists($featured_image, 'temporaryUrl'))
                                 <img src="{{ $featured_image->temporaryUrl() }}" alt="Preview"
                                     class="w-full h-48 object-cover rounded-lg">
-                                <p class="text-sm text-blue-600 mt-2">
+                                <p class="text-sm text-brand mt-2">
                                     <i class="fas fa-upload mr-1"></i>
                                     New image
                                 </p>
@@ -379,16 +379,16 @@
                         </div>
                         <div class="mb-4" wire:loading wire:target="featured_image">
                             <div class="w-full h-48 bg-gray-200 rounded-lg flex items-center justify-center">
-                                <i class="fas fa-spinner fa-spin text-3xl text-gray-400"></i>
+                                <i class="fas fa-spinner fa-spin text-3xl text-content-muted"></i>
                             </div>
-                            <p class="text-sm text-blue-600 mt-2">Uploading...</p>
+                            <p class="text-sm text-brand mt-2">Uploading...</p>
                         </div>
                     @endif
 
                     @if(!$removeExistingImage)
                         <div>
-                            <input type="file" wire:model="featured_image" accept="image/*"
-                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white text-sm">
+                            <input aria-label="Featured image" type="file" wire:model="featured_image" accept="image/*"
+                                class="w-full px-4 py-2 border border-line rounded-lg focus:ring-2 focus:ring-brand/30 dark:bg-gray-700 dark:border-gray-600 dark:text-white text-sm">
                             @error('featured_image')
                                 <span class="text-red-500 text-sm mt-1 block">{{ $message }}</span>
                             @enderror
@@ -397,10 +397,10 @@
                 </div>
 
                 {{-- Action Buttons --}}
-                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6">
+                <div class="bg-surface dark:bg-gray-800 rounded-lg shadow-sm p-6">
                     <div class="space-y-3">
                         <button type="submit"
-                            class="w-full px-4 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium"
+                            class="w-full px-4 py-3 bg-action text-action-foreground rounded-lg hover:bg-action transition-colors font-medium"
                             wire:loading.attr="disabled">
                             <span wire:loading.remove wire:target="save">
                                 <i class="fas fa-save mr-2"></i>
@@ -442,7 +442,7 @@
 
                         @if($isEdit && $post && $post->slug)
                             <a href="{{ route('blog.show', $post->slug) }}" target="_blank"
-                                class="w-full px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors text-center block">
+                                class="w-full px-4 py-2 bg-action text-action-foreground rounded-lg hover:bg-action transition-colors text-center block">
                                 <i class="fas fa-external-link-alt mr-2"></i>
                                 Preview Post
                             </a>
@@ -450,23 +450,23 @@
                     </div>
 
                     @if($isEdit && $post)
-                        <div class="border-t border-gray-200 dark:border-gray-700 mt-6 pt-4">
-                            <h4 class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">Post Statistics</h4>
+                        <div class="border-t border-line dark:border-gray-700 mt-6 pt-4">
+                            <h4 class="text-sm font-medium text-content dark:text-gray-300 mb-3">Post Statistics</h4>
                             <div class="grid grid-cols-3 gap-4 text-center">
-                                <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-3">
-                                    <div class="text-lg font-bold text-gray-900 dark:text-white">
+                                <div class="bg-surface-muted dark:bg-gray-700 rounded-lg p-3">
+                                    <div class="text-lg font-bold text-content dark:text-white">
                                         {{ number_format($post->views_count) }}</div>
-                                    <div class="text-xs text-gray-500">Views</div>
+                                    <div class="text-xs text-content-muted">Views</div>
                                 </div>
-                                <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-3">
-                                    <div class="text-lg font-bold text-gray-900 dark:text-white">
+                                <div class="bg-surface-muted dark:bg-gray-700 rounded-lg p-3">
+                                    <div class="text-lg font-bold text-content dark:text-white">
                                         {{ number_format($post->likes_count) }}</div>
-                                    <div class="text-xs text-gray-500">Likes</div>
+                                    <div class="text-xs text-content-muted">Likes</div>
                                 </div>
-                                <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-3">
-                                    <div class="text-lg font-bold text-gray-900 dark:text-white">
+                                <div class="bg-surface-muted dark:bg-gray-700 rounded-lg p-3">
+                                    <div class="text-lg font-bold text-content dark:text-white">
                                         {{ number_format($post->comments_count) }}</div>
-                                    <div class="text-xs text-gray-500">Comments</div>
+                                    <div class="text-xs text-content-muted">Comments</div>
                                 </div>
                             </div>
                         </div>
@@ -523,7 +523,7 @@
     <script>
         let trixEditor = null;
         let hiddenInput = null;
-    
+
         function syncTrixContent() {
             if (trixEditor && hiddenInput) {
                 const content = trixEditor.innerHTML;
@@ -534,45 +534,45 @@
             }
             return null;
         }
-    
+
         function initTrixEditor() {
             trixEditor = document.querySelector('trix-editor');
             hiddenInput = document.getElementById('trix-content');
-            
+
             if (!trixEditor || !hiddenInput) {
                 console.error('Trix elements not found');
                 return;
             }
-    
+
             // Load initial content
             const initialContent = hiddenInput.value || '';
             if (initialContent && trixEditor.editor) {
                 trixEditor.editor.loadHTML(initialContent);
             }
-    
+
             // Sync content on change (debounced)
             let timeout;
             trixEditor.addEventListener('trix-change', function(e) {
                 clearTimeout(timeout);
                 timeout = setTimeout(syncTrixContent, 500);
             });
-    
+
             // CRITICAL: Sync on blur
             trixEditor.addEventListener('trix-blur', syncTrixContent);
-    
+
             console.log('Trix editor initialized');
         }
-    
+
         // Initialize on page load
         document.addEventListener('DOMContentLoaded', initTrixEditor);
-    
+
         // Re-initialize after Livewire updates
         document.addEventListener('livewire:navigated', initTrixEditor);
-        
+
         Livewire.hook('morph.updated', () => {
             setTimeout(initTrixEditor, 100);
         });
-    
+
         // CRITICAL: Intercept form submission to sync content first
         Livewire.hook('commit', ({ component, commit, respond, succeed, fail }) => {
             // Sync content before any Livewire action

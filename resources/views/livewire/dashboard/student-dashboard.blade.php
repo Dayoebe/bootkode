@@ -11,20 +11,20 @@
                 <div class="bg-themed-secondary rounded-lg shadow-sm border border-themed-primary p-6 transition-colors duration-300">
                     <div class="flex items-center justify-between mb-6">
                         <h2 class="text-xl font-bold text-themed-primary transition-colors duration-300">Continue Learning</h2>
-                        <a href="{{ route('student.enrolled-courses') }}" class="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 text-sm font-medium transition-colors duration-300">
+                        <a href="{{ route('student.enrolled-courses') }}" class="text-brand dark:text-brand hover:text-brand dark:hover:text-brand text-sm font-medium transition-colors duration-300">
                             View All <i class="fas fa-arrow-right ml-1"></i>
                         </a>
                     </div>
 
                     <div class="space-y-4">
                         @forelse($this->learningProgress as $progress)
-                            <div class="border border-themed-primary rounded-lg p-4 hover:border-blue-300 dark:hover:border-blue-500 transition-colors duration-200">
+                            <div class="border border-themed-primary rounded-lg p-4 hover:border-brand dark:hover:border-brand transition-colors duration-200">
                                 <div class="flex items-start space-x-4">
                                     @if($progress['thumbnail'])
                                         <img src="{{ $progress['thumbnail'] }}" alt="{{ $progress['title'] }}" class="w-20 h-20 rounded-lg object-cover flex-shrink-0">
                                     @else
-                                        <div class="w-20 h-20 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center flex-shrink-0 transition-colors duration-300">
-                                            <i class="fas fa-book text-blue-600 dark:text-blue-400 text-2xl"></i>
+                                        <div class="w-20 h-20 bg-brand/10 dark:bg-action/30 rounded-lg flex items-center justify-center flex-shrink-0 transition-colors duration-300">
+                                            <i class="fas fa-book text-brand dark:text-brand text-2xl"></i>
                                         </div>
                                     @endif
 
@@ -56,7 +56,7 @@
                                         @if($progress['next_lesson'])
                                             <div class="mt-3 flex flex-col items-start gap-3 sm:flex-row sm:items-center sm:justify-between">
                                                 <p class="text-sm text-themed-primary transition-colors duration-300">
-                                                    <i class="fas fa-play-circle text-blue-500 mr-1"></i>
+                                                    <i class="fas fa-play-circle text-brand mr-1"></i>
                                                     Next: {{ $progress['next_lesson']['title'] }}
                                                 </p>
                                                 <a href="{{ route('course.view', ['course' => $progress['slug']]) }}" class="bk-button bk-button-primary shrink-0">
@@ -84,35 +84,35 @@
     @if($showWidgets['quick_stats'])
         <div class="grid grid-cols-2 xl:grid-cols-4 gap-4 lg:gap-6 mb-8">
             <!-- Enrolled Courses -->
-            <div class="bg-themed-secondary rounded-lg shadow-sm border border-themed-primary p-4 lg:p-6 hover:shadow-md dark:hover:shadow-xl transition-all duration-200">
+            <div class="bg-themed-secondary rounded-lg shadow-sm border border-themed-primary p-4 lg:p-6   transition-all duration-200">
                 <div class="flex items-center justify-between">
                     <div>
                         <p class="text-sm text-themed-secondary font-medium transition-colors duration-300">Enrolled</p>
                         <h3 class="text-2xl font-bold text-themed-primary mt-1 transition-colors duration-300">{{ $this->quickStats['enrolled_courses'] }}</h3>
                         <p class="text-xs text-green-600 dark:text-green-400 font-medium transition-colors duration-300">{{ $this->quickStats['completed_courses'] }} completed</p>
                     </div>
-                    <div class="bg-blue-100 dark:bg-blue-900/30 p-3 rounded-full transition-colors duration-300">
-                        <i class="fas fa-book text-blue-600 dark:text-blue-400 text-xl"></i>
+                    <div class="bg-brand/10 dark:bg-action/30 p-3 rounded-full transition-colors duration-300">
+                        <i class="fas fa-book text-brand dark:text-brand text-xl"></i>
                     </div>
                 </div>
             </div>
 
             <!-- Certificates -->
-            <div class="bg-themed-secondary rounded-lg shadow-sm border border-themed-primary p-4 lg:p-6 hover:shadow-md dark:hover:shadow-xl transition-all duration-200">
+            <div class="bg-themed-secondary rounded-lg shadow-sm border border-themed-primary p-4 lg:p-6   transition-all duration-200">
                 <div class="flex items-center justify-between">
                     <div>
                         <p class="text-sm text-themed-secondary font-medium transition-colors duration-300">Certificates</p>
                         <h3 class="text-2xl font-bold text-themed-primary mt-1 transition-colors duration-300">{{ $this->quickStats['certificates_earned'] }}</h3>
-                        <p class="text-xs text-purple-600 dark:text-purple-400 font-medium transition-colors duration-300">earned</p>
+                        <p class="text-xs text-brand dark:text-brand font-medium transition-colors duration-300">earned</p>
                     </div>
-                    <div class="bg-purple-100 dark:bg-purple-900/30 p-3 rounded-full transition-colors duration-300">
-                        <i class="fas fa-certificate text-purple-600 dark:text-purple-400 text-xl"></i>
+                    <div class="bg-brand/10 dark:bg-action/30 p-3 rounded-full transition-colors duration-300">
+                        <i class="fas fa-certificate text-brand dark:text-brand text-xl"></i>
                     </div>
                 </div>
             </div>
 
             <!-- Average Score -->
-            <div class="bg-themed-secondary rounded-lg shadow-sm border border-themed-primary p-4 lg:p-6 hover:shadow-md dark:hover:shadow-xl transition-all duration-200">
+            <div class="bg-themed-secondary rounded-lg shadow-sm border border-themed-primary p-4 lg:p-6   transition-all duration-200">
                 <div class="flex items-center justify-between">
                     <div>
                         <p class="text-sm text-themed-secondary font-medium transition-colors duration-300">Avg Score</p>
@@ -126,7 +126,7 @@
             </div>
 
             <!-- Study Time -->
-            <div class="bg-themed-secondary rounded-lg shadow-sm border border-themed-primary p-4 lg:p-6 hover:shadow-md dark:hover:shadow-xl transition-all duration-200">
+            <div class="bg-themed-secondary rounded-lg shadow-sm border border-themed-primary p-4 lg:p-6   transition-all duration-200">
                 <div class="flex items-center justify-between">
                     <div>
                         <p class="text-sm text-themed-secondary font-medium transition-colors duration-300">Study Time</p>
@@ -140,21 +140,21 @@
             </div>
 
             <!-- Achievements -->
-            <div class="bg-themed-secondary rounded-lg shadow-sm border border-themed-primary p-4 lg:p-6 hover:shadow-md dark:hover:shadow-xl transition-all duration-200">
+            <div class="bg-themed-secondary rounded-lg shadow-sm border border-themed-primary p-4 lg:p-6   transition-all duration-200">
                 <div class="flex items-center justify-between">
                     <div>
                         <p class="text-sm text-themed-secondary font-medium transition-colors duration-300">Achievements</p>
                         <h3 class="text-2xl font-bold text-themed-primary mt-1 transition-colors duration-300">{{ $this->quickStats['achievements_unlocked'] }}</h3>
-                        <p class="text-xs text-indigo-600 dark:text-indigo-400 font-medium transition-colors duration-300">unlocked</p>
+                        <p class="text-xs text-brand dark:text-brand font-medium transition-colors duration-300">unlocked</p>
                     </div>
-                    <div class="bg-indigo-100 dark:bg-indigo-900/30 p-3 rounded-full transition-colors duration-300">
-                        <i class="fas fa-trophy text-indigo-600 dark:text-indigo-400 text-xl"></i>
+                    <div class="bg-brand/10 dark:bg-action/30 p-3 rounded-full transition-colors duration-300">
+                        <i class="fas fa-trophy text-brand dark:text-brand text-xl"></i>
                     </div>
                 </div>
             </div>
 
             <!-- Pending Tasks -->
-            <div class="bg-themed-secondary rounded-lg shadow-sm border border-themed-primary p-4 lg:p-6 hover:shadow-md dark:hover:shadow-xl transition-all duration-200">
+            <div class="bg-themed-secondary rounded-lg shadow-sm border border-themed-primary p-4 lg:p-6   transition-all duration-200">
                 <div class="flex items-center justify-between">
                     <div>
                         <p class="text-sm text-themed-secondary font-medium transition-colors duration-300">Pending</p>
@@ -168,21 +168,21 @@
             </div>
 
             <!-- Lessons Completed -->
-            <div class="bg-themed-secondary rounded-lg shadow-sm border border-themed-primary p-4 lg:p-6 hover:shadow-md dark:hover:shadow-xl transition-all duration-200">
+            <div class="bg-themed-secondary rounded-lg shadow-sm border border-themed-primary p-4 lg:p-6   transition-all duration-200">
                 <div class="flex items-center justify-between">
                     <div>
                         <p class="text-sm text-themed-secondary font-medium transition-colors duration-300">Lessons</p>
                         <h3 class="text-2xl font-bold text-themed-primary mt-1 transition-colors duration-300">{{ $this->quickStats['lessons_completed'] }}</h3>
-                        <p class="text-xs text-teal-600 dark:text-teal-400 font-medium transition-colors duration-300">completed</p>
+                        <p class="text-xs text-brand dark:text-brand font-medium transition-colors duration-300">completed</p>
                     </div>
-                    <div class="bg-teal-100 dark:bg-teal-900/30 p-3 rounded-full transition-colors duration-300">
-                        <i class="fas fa-check-circle text-teal-600 dark:text-teal-400 text-xl"></i>
+                    <div class="bg-brand/10 dark:bg-action/30 p-3 rounded-full transition-colors duration-300">
+                        <i class="fas fa-check-circle text-brand dark:text-brand text-xl"></i>
                     </div>
                 </div>
             </div>
 
             <!-- Wishlist -->
-            <div class="bg-themed-secondary rounded-lg shadow-sm border border-themed-primary p-4 lg:p-6 hover:shadow-md dark:hover:shadow-xl transition-all duration-200">
+            <div class="bg-themed-secondary rounded-lg shadow-sm border border-themed-primary p-4 lg:p-6   transition-all duration-200">
                 <div class="flex items-center justify-between">
                     <div>
                         <p class="text-sm text-themed-secondary font-medium transition-colors duration-300">Wishlist</p>
@@ -202,25 +202,25 @@
             @if($showWidgets['performance_analytics'])
                 <div class="bg-themed-secondary rounded-lg shadow-sm border border-themed-primary p-6 transition-colors duration-300">
                     <h2 class="text-xl font-bold text-themed-primary mb-6 transition-colors duration-300">Study Activity</h2>
-                    
+
                     <div class="mb-4 flex items-center justify-between">
                         <span class="text-sm text-themed-secondary transition-colors duration-300">
                             Total: {{ number_format($this->performanceAnalytics['total_study_time_this_period'], 1) }}h this period
                         </span>
-                        <a href="{{ route('learning.analytics') }}" class="text-sm text-blue-600 dark:text-blue-400 hover:underline transition-colors duration-300">
+                        <a href="{{ route('learning.analytics') }}" class="text-sm text-brand dark:text-brand hover:underline transition-colors duration-300">
                             View Details
                         </a>
                     </div>
 
                     <div class="h-64">
-                        <canvas id="studyActivityChart"></canvas>
+                        <canvas role="img" aria-label="study Activity chart" id="studyActivityChart"></canvas>
                     </div>
                 </div>
 
                 <!-- Subject Performance -->
                 <div class="bg-themed-secondary rounded-lg shadow-sm border border-themed-primary p-6 transition-colors duration-300">
                     <h2 class="text-xl font-bold text-themed-primary mb-6 transition-colors duration-300">Performance by Subject Category</h2>
-                    
+
                     <div class="space-y-4">
                         @forelse($this->performanceAnalytics['subject_performance'] as $subject)
                             <div class="border-b border-themed-primary pb-4 last:border-0 transition-colors duration-300">
@@ -231,7 +231,7 @@
                                     </span>
                                 </div>
                                 <div class="w-full bg-themed-tertiary rounded-full h-2 transition-colors duration-300">
-                                    <div class="bg-gradient-to-r from-green-400 to-blue-500 h-2 rounded-full" 
+                                    <div class="bg-surface-muted   h-2 rounded-full"
                                          style="width: {{ $subject['average_progress'] }}%"></div>
                                 </div>
                                 <div class="flex items-center justify-between mt-2">
@@ -262,7 +262,7 @@
                                 </span>
                             </div>
                             <div class="w-full bg-themed-tertiary rounded-full h-3 transition-colors duration-300">
-                                <div class="bg-gradient-to-r from-blue-500 to-purple-500 h-3 rounded-full transition-all duration-300"
+                                <div class="bg-brand-ink   h-3 rounded-full transition-all duration-300"
                                     style="width: {{ min(($this->performanceAnalytics['weekly_goals']['lessons_completed'] / $this->performanceAnalytics['weekly_goals']['lessons_target']) * 100, 100) }}%">
                                 </div>
                             </div>
@@ -278,7 +278,7 @@
                                 </span>
                             </div>
                             <div class="w-full bg-themed-tertiary rounded-full h-3 transition-colors duration-300">
-                                <div class="bg-gradient-to-r from-green-400 to-blue-500 h-3 rounded-full transition-all duration-300"
+                                <div class="bg-surface-muted   h-3 rounded-full transition-all duration-300"
                                     style="width: {{ min(($this->performanceAnalytics['weekly_goals']['study_hours_completed'] / $this->performanceAnalytics['weekly_goals']['study_hours_target']) * 100, 100) }}%">
                                 </div>
                             </div>
@@ -310,7 +310,7 @@
                 <div class="bg-themed-secondary rounded-lg shadow-sm border border-themed-primary p-6 transition-colors duration-300">
                     <div class="flex items-center justify-between mb-6">
                         <h2 class="text-xl font-bold text-themed-primary transition-colors duration-300">Your Recent Reviews</h2>
-                        <a href="{{ route('course-reviews') }}" class="text-sm text-blue-600 dark:text-blue-400 hover:underline transition-colors duration-300">View All</a>
+                        <a href="{{ route('course-reviews') }}" class="text-sm text-brand dark:text-brand hover:underline transition-colors duration-300">View All</a>
                     </div>
 
                     <div class="space-y-4">
@@ -334,7 +334,7 @@
                                             <span class="text-yellow-600 dark:text-yellow-400 transition-colors duration-300"><i class="fas fa-clock mr-1"></i>Pending</span>
                                         @endif
                                         @if($review['has_reply'])
-                                            <span class="text-blue-600 dark:text-blue-400 transition-colors duration-300"><i class="fas fa-reply mr-1"></i>Replied</span>
+                                            <span class="text-brand dark:text-brand transition-colors duration-300"><i class="fas fa-reply mr-1"></i>Replied</span>
                                         @endif
                                         <span class="text-themed-tertiary transition-colors duration-300"><i class="fas fa-thumbs-up mr-1"></i>{{ $review['helpful_count'] }}</span>
                                     </div>
@@ -355,19 +355,19 @@
 
                     <div class="space-y-3">
                         @forelse($this->upcomingTasks as $task)
-                            <div class="flex items-center space-x-3 p-3 rounded-lg border border-themed-primary hover:border-blue-300 dark:hover:border-blue-500 transition-colors">
+                            <div class="flex items-center space-x-3 p-3 rounded-lg border border-themed-primary hover:border-brand dark:hover:border-brand transition-colors">
                                 <div class="flex-shrink-0">
                                     @if($task['type'] === 'assessment')
                                         <div class="w-8 h-8 bg-red-100 dark:bg-red-900/30 rounded-full flex items-center justify-center transition-colors duration-300">
                                             <i class="fas fa-clipboard-check text-red-600 dark:text-red-400 text-sm"></i>
                                         </div>
                                     @elseif($task['type'] === 'certificate')
-                                        <div class="w-8 h-8 bg-purple-100 dark:bg-purple-900/30 rounded-full flex items-center justify-center transition-colors duration-300">
-                                            <i class="fas fa-certificate text-purple-600 dark:text-purple-400 text-sm"></i>
+                                        <div class="w-8 h-8 bg-brand/10 dark:bg-action/30 rounded-full flex items-center justify-center transition-colors duration-300">
+                                            <i class="fas fa-certificate text-brand dark:text-brand text-sm"></i>
                                         </div>
                                     @else
-                                        <div class="w-8 h-8 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center transition-colors duration-300">
-                                            <i class="fas fa-play text-blue-600 dark:text-blue-400 text-sm"></i>
+                                        <div class="w-8 h-8 bg-brand/10 dark:bg-action/30 rounded-full flex items-center justify-center transition-colors duration-300">
+                                            <i class="fas fa-play text-brand dark:text-brand text-sm"></i>
                                         </div>
                                     @endif
                                 </div>
@@ -384,7 +384,7 @@
                                         @endif
                                     </div>
                                 </div>
-                                <a href="{{ $task['url'] }}" class="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 transition-colors">
+                                <a href="{{ $task['url'] }}" class="text-brand dark:text-brand hover:text-brand dark:hover:text-brand transition-colors">
                                     <i class="fas fa-arrow-right text-sm"></i>
                                 </a>
                             </div>
@@ -404,7 +404,7 @@
                 <div class="bg-themed-secondary rounded-lg shadow-sm border border-themed-primary p-6 transition-colors duration-300">
                     <div class="flex items-center justify-between mb-6">
                         <h2 class="text-xl font-bold text-themed-primary transition-colors duration-300">Recent Achievements</h2>
-                        <a href="{{ route('gamification.badges') }}" class="text-sm text-blue-600 dark:text-blue-400 hover:underline transition-colors duration-300">View All</a>
+                        <a href="{{ route('gamification.badges') }}" class="text-sm text-brand dark:text-brand hover:underline transition-colors duration-300">View All</a>
                     </div>
 
                     <div class="space-y-3">
@@ -415,7 +415,7 @@
                                     <h4 class="text-sm font-semibold text-themed-primary transition-colors duration-300">{{ $achievement['name'] }}</h4>
                                     <p class="text-xs text-themed-secondary transition-colors duration-300">{{ $achievement['description'] }}</p>
                                     <div class="flex items-center mt-1 space-x-2">
-                                        <span class="text-xs px-2 py-1 rounded-full {{ $achievement['rarity'] === 'legendary' ? 'bg-purple-100 dark:bg-purple-900/30 text-purple-800 dark:text-purple-300' : ($achievement['rarity'] === 'epic' ? 'bg-indigo-100 dark:bg-indigo-900/30 text-indigo-800 dark:text-indigo-300' : 'bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300') }} transition-colors duration-300">
+                                        <span class="text-xs px-2 py-1 rounded-full {{ $achievement['rarity'] === 'legendary' ? 'bg-purple-100 dark:bg-action/30 text-brand dark:text-purple-300' : ($achievement['rarity'] === 'epic' ? 'bg-indigo-100 dark:bg-action/30 text-brand dark:text-indigo-300' : 'bg-blue-100 dark:bg-action/30 text-brand dark:text-blue-300') }} transition-colors duration-300">
                                             {{ ucfirst($achievement['rarity']) }}
                                         </span>
                                         @if($achievement['points_earned'] > 0)
@@ -443,7 +443,7 @@
                 <div class="bg-themed-secondary rounded-lg shadow-sm border border-themed-primary p-6 transition-colors duration-300">
                     <div class="flex items-center justify-between mb-6">
                         <h2 class="text-xl font-bold text-themed-primary transition-colors duration-300">Announcements</h2>
-                        <a href="{{ route('announcements') }}" class="text-sm text-blue-600 dark:text-blue-400 hover:underline transition-colors duration-300">View All</a>
+                        <a href="{{ route('announcements') }}" class="text-sm text-brand dark:text-brand hover:underline transition-colors duration-300">View All</a>
                     </div>
 
                     <div class="space-y-4">
@@ -452,7 +452,7 @@
                                 <div class="flex items-start justify-between mb-1">
                                     <h4 class="text-sm font-semibold text-themed-primary transition-colors duration-300">{{ $announcement['title'] }}</h4>
                                     @if($announcement['is_new'])
-                                        <span class="text-xs bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 px-2 py-1 rounded-full ml-2 transition-colors duration-300">New</span>
+                                        <span class="text-xs bg-brand/10 dark:bg-action/30 text-brand dark:text-brand px-2 py-1 rounded-full ml-2 transition-colors duration-300">New</span>
                                     @endif
                                 </div>
                                 <p class="text-xs text-themed-secondary mb-2 transition-colors duration-300">{{ $announcement['content'] }}</p>
@@ -484,9 +484,9 @@
                                 <span class="text-sm text-themed-secondary transition-colors duration-300">{{ $this->careerTools['portfolio_completion'] }}%</span>
                             </div>
                             <div class="w-full bg-themed-tertiary rounded-full h-2 transition-colors duration-300">
-                                <div class="bg-gradient-to-r from-green-400 to-blue-500 h-2 rounded-full" style="width: {{ $this->careerTools['portfolio_completion'] }}%"></div>
+                                <div class="bg-surface-muted   h-2 rounded-full" style="width: {{ $this->careerTools['portfolio_completion'] }}%"></div>
                             </div>
-                            <a href="{{ route('portfolio.show') }}" class="text-xs text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 mt-2 inline-block transition-colors duration-300">
+                            <a href="{{ route('portfolio.show') }}" class="text-xs text-brand dark:text-brand hover:text-brand dark:hover:text-brand mt-2 inline-block transition-colors duration-300">
                                 Update Portfolio
                             </a>
                         </div>
@@ -502,7 +502,7 @@
                                         </p>
                                     @endif
                                 </div>
-                                <a href="{{ route('resume.builder') }}" class="text-xs bg-themed-tertiary hover:bg-blue-100 dark:hover:bg-blue-900/30 text-themed-primary dark:text-blue-400 px-3 py-1 rounded-md transition-colors duration-300">
+                                <a href="{{ route('resume.builder') }}" class="text-xs bg-themed-tertiary hover:bg-brand/10 dark:hover:bg-action/30 text-themed-primary dark:text-brand px-3 py-1 rounded-md transition-colors duration-300">
                                     {{ $this->careerTools['resume_status']['exists'] ? 'Edit' : 'Create' }}
                                 </a>
                             </div>
@@ -533,10 +533,10 @@
                                                 <p class="text-themed-primary truncate font-medium transition-colors duration-300">{{ \Str::limit($application['job_title'], 20) }}</p>
                                                 <p class="text-xs text-themed-secondary transition-colors duration-300">{{ $application['company'] }}</p>
                                             </div>
-                                            <span class="px-2 py-1 text-xs rounded-full ml-2 {{ 
-                                                $application['status_color'] === 'green' ? 'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300' : 
-                                                ($application['status_color'] === 'yellow' ? 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-300' : 
-                                                ($application['status_color'] === 'blue' ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300' :
+                                            <span class="px-2 py-1 text-xs rounded-full ml-2 {{
+                                                $application['status_color'] === 'green' ? 'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300' :
+                                                ($application['status_color'] === 'yellow' ? 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-300' :
+                                                ($application['status_color'] === 'blue' ? 'bg-blue-100 dark:bg-action/30 text-brand dark:text-blue-300' :
                                                 'bg-themed-secondary text-themed-primary'))
                                             }} transition-colors duration-300">
                                                 {{ $application['status_label'] }}
@@ -549,7 +549,7 @@
 
                         <!-- Quick Actions -->
                         <div class="pt-3 border-t border-themed-primary transition-colors duration-300">
-                            <a href="{{ route('search.job') }}" class="block text-center bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 text-white py-2 rounded-lg text-sm font-medium transition-colors duration-300">
+                            <a href="{{ route('search.job') }}" class="block text-center bg-action hover:bg-action dark:bg-action dark:hover:bg-action text-action-foreground py-2 rounded-lg text-sm font-medium transition-colors duration-300">
                                 Browse Jobs
                             </a>
                         </div>
@@ -562,7 +562,7 @@
                 <div class="bg-themed-secondary rounded-lg shadow-sm border border-themed-primary p-6 transition-colors duration-300">
                     <div class="flex items-center justify-between mb-6">
                         <h2 class="text-xl font-bold text-themed-primary transition-colors duration-300">Mentorship</h2>
-                        <a href="{{ route('mentorship.hub') }}" class="text-sm text-blue-600 dark:text-blue-400 hover:underline transition-colors duration-300">View All</a>
+                        <a href="{{ route('mentorship.hub') }}" class="text-sm text-brand dark:text-brand hover:underline transition-colors duration-300">View All</a>
                     </div>
 
                     @if($this->mentorshipStatus['pending_requests'] > 0)
@@ -583,12 +583,12 @@
                                         <span class="text-xs text-themed-secondary transition-colors duration-300">{{ $mentorship['duration_weeks'] }} weeks</span>
                                     </div>
                                     <div class="w-full bg-themed-tertiary rounded-full h-2 mb-2 transition-colors duration-300">
-                                        <div class="bg-gradient-to-r from-purple-500 to-pink-500 h-2 rounded-full" style="width: {{ $mentorship['progress_percentage'] }}%"></div>
+                                        <div class="bg-brand-ink   h-2 rounded-full" style="width: {{ $mentorship['progress_percentage'] }}%"></div>
                                     </div>
                                     <div class="flex items-center justify-between text-xs">
                                         <span class="text-themed-secondary transition-colors duration-300">{{ $mentorship['progress_percentage'] }}% complete</span>
                                         @if($mentorship['next_session'])
-                                            <span class="text-blue-600 dark:text-blue-400 transition-colors duration-300">Next: {{ $mentorship['next_session']->scheduled_at->format('M j') }}</span>
+                                            <span class="text-brand dark:text-brand transition-colors duration-300">Next: {{ $mentorship['next_session']->scheduled_at->format('M j') }}</span>
                                         @endif
                                     </div>
                                 </div>
@@ -611,12 +611,12 @@
                 <div class="bg-themed-secondary rounded-lg shadow-sm border border-themed-primary p-6 transition-colors duration-300">
                     <div class="flex items-center justify-between mb-6">
                         <h2 class="text-xl font-bold text-themed-primary transition-colors duration-300">Wishlist</h2>
-                        <a href="{{ route('student.saved-resources') }}" class="text-sm text-blue-600 dark:text-blue-400 hover:underline transition-colors duration-300">View All</a>
+                        <a href="{{ route('student.saved-resources') }}" class="text-sm text-brand dark:text-brand hover:underline transition-colors duration-300">View All</a>
                     </div>
 
                     <div class="space-y-3">
                         @foreach($this->wishlistPreview as $item)
-                            <div class="flex items-start space-x-3 border border-themed-primary rounded-lg p-3 hover:border-blue-300 dark:hover:border-blue-500 transition-colors">
+                            <div class="flex items-start space-x-3 border border-themed-primary rounded-lg p-3 hover:border-brand dark:hover:border-brand transition-colors">
                                 @if($item['thumbnail'])
                                     <img src="{{ $item['thumbnail'] }}" alt="{{ $item['title'] }}" class="w-16 h-16 rounded object-cover flex-shrink-0">
                                 @else
@@ -650,7 +650,7 @@
                 <h2 class="text-lg font-bold text-themed-primary mb-4 transition-colors duration-300">System Status</h2>
 
                 <div class="flex items-center space-x-3">
-                    <div class="w-3 h-3 rounded-full {{ $this->systemHealth['status'] === 'operational' ? 'bg-green-500 dark:bg-green-400' : 'bg-red-500 dark:bg-red-400' }} animate-pulse"></div>
+                    <div class="w-3 h-3 rounded-full {{ $this->systemHealth['status'] === 'operational' ? 'bg-green-500 dark:bg-green-400' : 'bg-red-500 dark:bg-red-400' }} "></div>
                     <div>
                         <p class="text-sm font-medium text-themed-primary transition-colors duration-300">
                             {{ $this->systemHealth['status'] === 'operational' ? 'All Systems Operational' : 'Service Issues' }}
@@ -674,7 +674,7 @@
         document.addEventListener('DOMContentLoaded', function () {
             // Get current theme for chart colors
             const isDark = document.documentElement.classList.contains('dark');
-            
+
             // Study Activity Chart
             const studyData = @json($this->performanceAnalytics['study_activity']);
             if (window.bootkodeDashboardCharts?.shouldRender('studyActivityChart', studyData, ['activity'])) {
@@ -699,6 +699,7 @@
                             }]
                         },
                         options: {
+                animation: false,
                             responsive: true,
                             maintainAspectRatio: false,
                             plugins: {

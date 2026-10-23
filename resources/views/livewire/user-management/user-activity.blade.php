@@ -1,8 +1,8 @@
-<div class="p-4 sm:p-6 bg-themed-secondary rounded-lg shadow-md animate__animated animate__fadeIn transition-colors duration-300 max-w-full overflow-hidden">
+<div class="p-4 sm:p-6 bg-themed-secondary rounded-lg shadow-sm   transition-colors duration-300 max-w-full overflow-hidden">
     <!-- Header -->
-    <div class="bg-themed-secondary backdrop-blur-sm rounded-2xl lg:rounded-3xl shadow-lg lg:shadow-2xl border border-themed-primary overflow-hidden mb-6 lg:mb-8 transition-colors duration-300">
+    <div class="bg-themed-secondary  rounded-lg lg:rounded-lg shadow-sm lg:shadow-sm border border-themed-primary overflow-hidden mb-6 lg:mb-8 transition-colors duration-300">
         <div class="relative z-10 p-6 lg:p-8">
-            <h1 class="text-3xl font-bold text-themed-primary transition-colors duration-300">
+            <h1 class=" font-bold text-themed-primary transition-colors duration-300 bk-page-title">
                 <i class="fas fa-history mr-2"></i> User Activity
             </h1>
             <p class="text-themed-secondary mt-2 transition-colors duration-300">Monitor user actions across the platform</p>
@@ -11,7 +11,7 @@
 
     <!-- Flash Messages -->
     @if (session('success'))
-        <div class="mb-4 p-3 sm:p-4 bg-green-100 border border-green-200 text-green-700 rounded-xl animate__animated animate__fadeIn transition-colors duration-300">
+        <div class="mb-4 p-3 sm:p-4 bg-green-100 border border-green-200 text-green-700 rounded-lg   transition-colors duration-300">
             <div class="flex items-center">
                 <i class="fas fa-check-circle mr-2 flex-shrink-0"></i>
                 <span>{{ session('success') }}</span>
@@ -20,7 +20,7 @@
     @endif
 
     @if (session('error'))
-        <div class="mb-4 p-3 sm:p-4 bg-red-100 border border-red-200 text-red-700 rounded-xl animate__animated animate__fadeIn transition-colors duration-300">
+        <div class="mb-4 p-3 sm:p-4 bg-red-100 border border-red-200 text-red-700 rounded-lg   transition-colors duration-300">
             <div class="flex items-center">
                 <i class="fas fa-exclamation-circle mr-2 flex-shrink-0"></i>
                 <span>{{ session('error') }}</span>
@@ -30,8 +30,8 @@
 
     <!-- Loading Spinner -->
     <div wire:loading class="fixed inset-0 bg-themed-primary bg-opacity-50 flex items-center justify-center z-50 transition-colors duration-300">
-        <div class="bg-themed-secondary p-6 rounded-xl shadow-2xl border border-themed-primary transition-colors duration-300">
-            <i class="fas fa-spinner fa-spin text-accent-themed-primary text-3xl mb-2 block mx-auto" aria-label="Loading"></i>
+        <div class="bg-themed-secondary p-6 rounded-lg shadow-sm border border-themed-primary transition-colors duration-300">
+            <i class="fas fa-spinner fa-spin text-brand text-3xl mb-2 block mx-auto" aria-label="Loading"></i>
             <p class="text-themed-primary text-sm">Loading activities...</p>
         </div>
     </div>
@@ -42,7 +42,7 @@
             <label for="userFilter" class="block text-sm font-medium text-themed-primary mb-2 transition-colors duration-300">Filter by User</label>
             <div class="relative">
                 <select wire:model.live="userFilter" id="userFilter"
-                        class="w-full p-3 border border-themed-primary rounded-xl bg-themed-secondary text-themed-primary transition-all duration-200 text-sm appearance-none focus:outline-none focus:ring-2 focus:ring-accent-themed-primary">
+                        class="w-full p-3 border border-themed-primary rounded-lg bg-themed-secondary text-themed-primary transition-all duration-200 text-sm appearance-none focus:outline-none focus:ring-2 focus:ring-brand">
                     <option value="">All Users</option>
                     @foreach($users as $id => $name)
                         <option value="{{ $id }}">{{ $name }}</option>
@@ -57,7 +57,7 @@
             <label for="actionFilter" class="block text-sm font-medium text-themed-primary mb-2 transition-colors duration-300">Filter by Action</label>
             <div class="relative">
                 <select wire:model.live="actionFilter" id="actionFilter"
-                        class="w-full p-3 border border-themed-primary rounded-xl bg-themed-secondary text-themed-primary transition-all duration-200 text-sm appearance-none focus:outline-none focus:ring-2 focus:ring-accent-themed-primary">
+                        class="w-full p-3 border border-themed-primary rounded-lg bg-themed-secondary text-themed-primary transition-all duration-200 text-sm appearance-none focus:outline-none focus:ring-2 focus:ring-brand">
                     <option value="">All Actions</option>
                     @foreach($actionTypes as $action)
                         <option value="{{ $action }}">{{ ucfirst(str_replace('_', ' ', $action)) }}</option>
@@ -72,7 +72,7 @@
             <label for="perPage" class="block text-sm font-medium text-themed-primary mb-2 transition-colors duration-300">Per Page</label>
             <div class="relative">
                 <select wire:model.live="perPage" id="perPage"
-                        class="w-full p-3 border border-themed-primary rounded-xl bg-themed-secondary text-themed-primary transition-all duration-200 text-sm appearance-none focus:outline-none focus:ring-2 focus:ring-accent-themed-primary">
+                        class="w-full p-3 border border-themed-primary rounded-lg bg-themed-secondary text-themed-primary transition-all duration-200 text-sm appearance-none focus:outline-none focus:ring-2 focus:ring-brand">
                     <option value="10">10 per page</option>
                     <option value="25">25 per page</option>
                     <option value="50">50 per page</option>
@@ -86,19 +86,19 @@
     </div>
 
     <!-- Activity Timeline -->
-    <div class="bg-themed-secondary rounded-xl border border-themed-primary backdrop-blur-sm transition-colors duration-300 overflow-hidden shadow-lg">
+    <div class="bg-themed-secondary rounded-lg border border-themed-primary  transition-colors duration-300 overflow-hidden shadow-sm">
         @if($activities->count() > 0)
             <div class="divide-y divide-themed-primary">
                 @foreach($activities as $activity)
-                    <div class="p-6 hover:bg-themed-tertiary transition-colors duration-200 animate__animated animate__fadeInUp">
+                    <div class="p-6 hover:bg-themed-tertiary transition-colors duration-200  ">
                         <div class="flex items-center space-x-4">
                             <div class="flex-shrink-0">
                                 @if($activity->causer && $activity->causer->profile_picture)
                                     <img src="{{ $activity->causer->profile_picture }}"
                                             alt="Avatar of {{ $activity->causer->name }}"
-                                         class="h-12 w-12 rounded-full object-cover border-2 border-accent-themed-primary/20">
+                                         class="h-12 w-12 rounded-full object-cover border-2 border-brand/20">
                                 @else
-                                    <div class="h-12 w-12 rounded-full bg-gradient-to-r from-accent-themed-primary to-accent-themed-secondary flex items-center justify-center text-white text-xl font-bold">
+                                    <div class="h-12 w-12 rounded-full bg-action   flex items-center justify-center text-action-foreground text-xl font-bold">
                                         {{ $activity->causer ? strtoupper(substr($activity->causer->name, 0, 1)) : '?' }}
                                     </div>
                                 @endif
@@ -111,7 +111,7 @@
                                 <div class="flex items-center mt-1 space-x-3">
                                     <p class="text-xs text-themed-secondary">{{ $activity->created_at->diffForHumans() }}</p>
                                     @if($activity->event)
-                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-accent-themed-primary/10 text-accent-themed-primary border border-accent-themed-primary/20 transition-colors duration-300">
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-brand/10 text-brand border border-brand/20 transition-colors duration-300">
                                             {{ ucfirst($activity->event) }}
                                         </span>
                                     @endif
@@ -141,8 +141,8 @@
                 </p>
                 @if ($search || $userFilter || $actionFilter)
                     <div class="mt-4">
-                        <button wire:click="$set('search', '')" wire:click="$set('userFilter', '')" wire:click="$set('actionFilter', '')" 
-                            class="inline-flex items-center px-3 py-2 border border-themed-primary shadow-sm text-sm leading-4 font-medium rounded-lg text-themed-primary bg-themed-secondary hover:bg-themed-tertiary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-accent-themed-primary transition-colors duration-200">
+                        <button wire:click="$set('search', '')" wire:click="$set('userFilter', '')" wire:click="$set('actionFilter', '')"
+                            class="inline-flex items-center px-3 py-2 border border-themed-primary shadow-sm text-sm leading-4 font-medium rounded-lg text-themed-primary bg-themed-secondary hover:bg-themed-tertiary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand transition-colors duration-200">
                             Clear all filters
                         </button>
                     </div>

@@ -1,7 +1,7 @@
 
 <!-- resources/views/livewire/financial/course-checkout.blade.php -->
 <div class="bg-themed-secondary rounded-lg shadow-sm p-6">
-    <h1 class="text-2xl font-bold text-themed-primary mb-4">Review your enrollment</h1>
+    <h1 class=" font-bold text-themed-primary mb-4 bk-page-title">Review your enrollment</h1>
 
     <!-- Course Details -->
     <div class="border-b border-themed-primary pb-4 mb-4">
@@ -55,8 +55,8 @@
     </div>
 
     @if($walletBalance < $course->price)
-        <div class="mt-4 p-4 bg-blue-50 rounded-lg">
-            <p class="text-blue-800 text-sm">Need to fund your wallet?
+        <div class="mt-4 p-4 bg-brand/10 rounded-lg">
+            <p class="text-brand text-sm">Need to fund your wallet?
                 <a href="{{ route('wallet.index') }}" class="underline font-medium">Click here to add funds</a>
             </p>
         </div>

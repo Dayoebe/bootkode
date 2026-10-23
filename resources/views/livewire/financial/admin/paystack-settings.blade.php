@@ -1,5 +1,5 @@
 <div class="space-y-6">
-    <h1 class="text-2xl font-bold text-themed-primary">Payment configuration</h1>
+    <h1 class=" font-bold text-themed-primary bk-page-title">Payment configuration</h1>
     <div class="bk-dashboard-panel space-y-5 p-6">
         <p class="text-themed-secondary">Payment credentials are managed through the server environment. Keys are never sent to your browser.</p>
         <dl class="grid gap-5 sm:grid-cols-2">

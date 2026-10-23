@@ -5,9 +5,9 @@
         <h3 class="text-lg font-semibold text-themed-primary mb-4">Quick Actions</h3>
         <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
             <button onclick="window.livewire.emit('setTab', 'transactions')"
-                    class="p-4 border-2 border-dashed border-themed-secondary rounded-lg hover:border-blue-500 hover:bg-blue-50 transition-colors">
+                    class="p-4 border-2 border-dashed border-themed-secondary rounded-lg hover:border-brand hover:bg-brand/10 transition-colors">
                 <div class="text-center">
-                    <svg class="mx-auto h-8 w-8 text-gray-400 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg class="mx-auto h-8 w-8 text-content-muted mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"></path>
                     </svg>
                     <p class="text-sm font-medium">Verify Pending</p>
@@ -17,7 +17,7 @@
             <button onclick="window.livewire.emit('setTab', 'withdrawals')"
                     class="p-4 border-2 border-dashed border-themed-secondary rounded-lg hover:border-green-500 hover:bg-green-50 transition-colors">
                 <div class="text-center">
-                    <svg class="mx-auto h-8 w-8 text-gray-400 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg class="mx-auto h-8 w-8 text-content-muted mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
                     </svg>
                     <p class="text-sm font-medium">Process Withdrawals</p>
@@ -27,7 +27,7 @@
             <button onclick="window.livewire.emit('setTab', 'failed')"
                     class="p-4 border-2 border-dashed border-themed-secondary rounded-lg hover:border-yellow-500 hover:bg-yellow-50 transition-colors">
                 <div class="text-center">
-                    <svg class="mx-auto h-8 w-8 text-gray-400 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg class="mx-auto h-8 w-8 text-content-muted mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                     </svg>
                     <p class="text-sm font-medium">Review Failed</p>
@@ -35,9 +35,9 @@
             </button>
 
             <button onclick="window.livewire.emit('setTab', 'reports')"
-                    class="p-4 border-2 border-dashed border-themed-secondary rounded-lg hover:border-purple-500 hover:bg-purple-50 transition-colors">
+                    class="p-4 border-2 border-dashed border-themed-secondary rounded-lg hover:border-brand hover:bg-brand/10 transition-colors">
                 <div class="text-center">
-                    <svg class="mx-auto h-8 w-8 text-gray-400 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg class="mx-auto h-8 w-8 text-content-muted mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2-2V7a2 2 0 012-2h2a2 2 0 002 2v2a2 2 0 002 2h2a2 2 0 012-2V7a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 00-2 2h-2a2 2 0 00-2 2v6a2 2 0 01-2 2H9z"></path>
                     </svg>
                     <p class="text-sm font-medium">Generate Reports</p>
@@ -61,7 +61,7 @@
                                 <div>
                                     <p class="font-medium text-themed-primary">{{ $payment->customer_name ?? 'N/A' }}</p>
                                     <p class="text-sm text-themed-secondary">{{ $payment->customer_email }}</p>
-                                    <p class="text-xs text-gray-400">{{ $payment->created_at->diffForHumans() }}</p>
+                                    <p class="text-xs text-content-muted">{{ $payment->created_at->diffForHumans() }}</p>
                                     @if($payment->gateway_response)
                                         <p class="text-xs text-red-600">{{ $payment->gateway_response }}</p>
                                     @endif
@@ -78,11 +78,11 @@
                     </div>
                 @else
                     <div class="text-center py-8">
-                        <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <svg class="mx-auto h-12 w-12 text-content-muted" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                         </svg>
                         <p class="text-themed-secondary mt-2">No failed payments</p>
-                        <p class="text-sm text-gray-400">All recent transactions processed successfully</p>
+                        <p class="text-sm text-content-muted">All recent transactions processed successfully</p>
                     </div>
                 @endif
             </div>
@@ -105,7 +105,7 @@
                                     <div class="ml-3">
                                         <p class="font-medium text-themed-primary">{{ $withdrawal->user->name }}</p>
                                         <p class="text-sm text-themed-secondary">{{ $withdrawal->account_name }}</p>
-                                        <p class="text-xs text-gray-400">{{ $withdrawal->requested_at->diffForHumans() }}</p>
+                                        <p class="text-xs text-content-muted">{{ $withdrawal->requested_at->diffForHumans() }}</p>
                                     </div>
                                 </div>
                                 <div class="text-right">
@@ -128,11 +128,11 @@
                     </div>
                 @else
                     <div class="text-center py-8">
-                        <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <svg class="mx-auto h-12 w-12 text-content-muted" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path>
                         </svg>
                         <p class="text-themed-secondary mt-2">No pending withdrawals</p>
-                        <p class="text-sm text-gray-400">All withdrawal requests have been processed</p>
+                        <p class="text-sm text-content-muted">All withdrawal requests have been processed</p>
                     </div>
                 @endif
             </div>

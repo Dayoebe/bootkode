@@ -8,13 +8,8 @@
 @endphp
 
 <div
-    class="relative overflow-hidden rounded-[2rem] border border-themed-primary bg-themed-secondary shadow-xl transition-colors duration-300 animate__animated animate__fadeInDown">
-    <div class="absolute inset-0 opacity-80"
-        style="background:
-            radial-gradient(circle at top left, rgba(var(--accent-primary), 0.16), transparent 34%),
-            radial-gradient(circle at top right, rgba(var(--accent-secondary), 0.12), transparent 30%),
-            linear-gradient(135deg, rgba(var(--accent-primary), 0.05), transparent 58%);">
-    </div>
+    class="relative overflow-hidden rounded-lg border border-themed-primary bg-themed-secondary shadow-sm transition-colors duration-300  ">
+
 
     <div class="relative p-5 md:p-8">
         <div class="grid gap-6 xl:grid-cols-[minmax(0,1.2fr)_minmax(18rem,0.85fr)] xl:items-start">
@@ -32,12 +27,12 @@
                         </span>
                     @endif
                     <span class="rounded-full border border-transparent px-3 py-1 text-white"
-                        style="background: linear-gradient(135deg, rgb(var(--accent-primary)), rgb(var(--accent-secondary)));">
+                        style="background: rgb(var(--bk-action)); color: rgb(var(--bk-action-text));">
                         {{ $course->formatted_duration }}
                     </span>
                 </div>
 
-                <h1 class="mt-5 text-3xl font-semibold tracking-tight text-themed-primary md:text-4xl">
+                <h1 class="mt-5  font-semibold tracking-tight text-themed-primary  bk-page-title">
                     {{ $course->title }}
                 </h1>
 
@@ -68,18 +63,18 @@
             </div>
 
             <div class="grid gap-3 sm:grid-cols-2">
-                <div class="rounded-2xl border border-themed-secondary bg-themed-tertiary p-4 shadow-sm">
+                <div class="rounded-lg border border-themed-secondary bg-themed-tertiary p-4 shadow-sm">
                     <p class="text-xs font-semibold uppercase tracking-[0.16em] text-themed-tertiary">Overall Progress</p>
                     <div class="mt-3 flex items-end justify-between gap-3">
                         <span class="text-4xl font-semibold text-themed-primary">{{ $overallProgress }}%</span>
                         <span class="rounded-full px-3 py-1 text-xs font-semibold text-white"
-                            style="background: linear-gradient(135deg, rgb(var(--accent-primary)), rgb(var(--accent-secondary)));">
+                            style="background: rgb(var(--bk-action)); color: rgb(var(--bk-action-text));">
                             {{ $stats['completed'] }}/{{ $stats['total'] }}
                         </span>
                     </div>
                 </div>
 
-                <div class="rounded-2xl border border-themed-secondary bg-themed-tertiary p-4 shadow-sm">
+                <div class="rounded-lg border border-themed-secondary bg-themed-tertiary p-4 shadow-sm">
                     <p class="text-xs font-semibold uppercase tracking-[0.16em] text-themed-tertiary">Unlocked Sections</p>
                     <div class="mt-3 flex items-end justify-between gap-3">
                         <span class="text-4xl font-semibold text-themed-primary">{{ $unlockedCount }}</span>
@@ -87,7 +82,7 @@
                     </div>
                 </div>
 
-                <div class="rounded-2xl border border-themed-secondary bg-themed-tertiary p-4 shadow-sm">
+                <div class="rounded-lg border border-themed-secondary bg-themed-tertiary p-4 shadow-sm">
                     <p class="text-xs font-semibold uppercase tracking-[0.16em] text-themed-tertiary">Completed Sections</p>
                     <div class="mt-3 flex items-end justify-between gap-3">
                         <span class="text-4xl font-semibold text-themed-primary">{{ $completedSections }}</span>
@@ -95,7 +90,7 @@
                     </div>
                 </div>
 
-                <div class="rounded-2xl border border-themed-secondary bg-themed-tertiary p-4 shadow-sm">
+                <div class="rounded-lg border border-themed-secondary bg-themed-tertiary p-4 shadow-sm">
                     <p class="text-xs font-semibold uppercase tracking-[0.16em] text-themed-tertiary">Remaining Lessons</p>
                     <div class="mt-3 flex items-end justify-between gap-3">
                         <span class="text-4xl font-semibold text-themed-primary">{{ $remainingLessons }}</span>
@@ -106,7 +101,7 @@
         </div>
 
         <div class="mt-8 grid gap-4 lg:grid-cols-[minmax(0,1fr)_22rem]">
-            <div class="rounded-2xl border border-themed-secondary bg-themed-tertiary p-5 shadow-sm">
+            <div class="rounded-lg border border-themed-secondary bg-themed-tertiary p-5 shadow-sm">
                 <div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
                     <div class="min-w-0">
                         <p class="text-xs font-semibold uppercase tracking-[0.18em] text-themed-tertiary">Current Runway</p>
@@ -120,7 +115,7 @@
                         </p>
                     </div>
 
-                    <div class="rounded-2xl border border-themed-secondary bg-themed-secondary px-4 py-3 text-right shadow-sm">
+                    <div class="rounded-lg border border-themed-secondary bg-themed-secondary px-4 py-3 text-right shadow-sm">
                         <p class="text-xs font-semibold uppercase tracking-[0.18em] text-themed-tertiary">Unlock Rule</p>
                         <p class="mt-2 text-sm font-semibold text-themed-primary">
                             {{ $sectionCompletionThreshold }}% per section
@@ -130,12 +125,12 @@
 
                 <div class="mt-5 h-3 overflow-hidden rounded-full border border-themed-secondary bg-themed-secondary">
                     <div class="h-full rounded-full transition-all duration-500"
-                        style="width: {{ $overallProgress }}%; background: linear-gradient(135deg, rgb(var(--accent-primary)), rgb(var(--accent-secondary)));">
+                        style="width: {{ $overallProgress }}%; background: rgb(var(--accent-primary));">
                     </div>
                 </div>
             </div>
 
-            <div class="rounded-2xl border border-themed-secondary bg-themed-tertiary p-5 shadow-sm">
+            <div class="rounded-lg border border-themed-secondary bg-themed-tertiary p-5 shadow-sm">
                 <p class="text-xs font-semibold uppercase tracking-[0.18em] text-themed-tertiary">Next Milestone</p>
 
                 @if ($nextUnlock)
@@ -149,7 +144,7 @@
                         @endif
                     </p>
 
-                    <div class="mt-4 rounded-2xl border border-themed-secondary bg-themed-secondary px-4 py-3 text-sm text-themed-secondary">
+                    <div class="mt-4 rounded-lg border border-themed-secondary bg-themed-secondary px-4 py-3 text-sm text-themed-secondary">
                         {{ $nextUnlock['completed_lessons'] }}/{{ $nextUnlock['required_lessons'] }} lessons needed for unlock
                     </div>
                 @else

@@ -3,13 +3,13 @@
     <!-- Filters -->
     <div class="flex flex-wrap gap-3 items-center">
         <div class="relative">
-            <input wire:model.live.debounce.300ms="search" type="text" placeholder="Search vendors..."
-                class="w-64 pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-purple-500 focus:border-purple-500">
-            <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
+            <input aria-label="Search vendors" wire:model.live.debounce.300ms="search" type="text" placeholder="Search vendors..."
+                class="w-64 pl-10 pr-4 py-2 border border-line rounded-lg focus:ring-brand/30 focus:border-brand">
+            <i class="fas fa-search absolute left-3 top-3 text-content-muted"></i>
         </div>
 
-        <select wire:model.live="vendorStatus"
-            class="px-3 py-2 border border-gray-300 rounded-lg focus:ring-purple-500 focus:border-purple-500">
+        <select aria-label="Vendor status" wire:model.live="vendorStatus"
+            class="px-3 py-2 border border-line rounded-lg focus:ring-brand/30 focus:border-brand">
             <option value="all">All Status</option>
             <option value="pending">Pending</option>
             <option value="approved">Approved</option>
@@ -27,30 +27,30 @@
 
     <!-- Vendors Table -->
     @if(isset($users) && $users->count() > 0)
-        <div class="bg-white border border-gray-200 rounded-lg overflow-hidden">
+        <div class="bg-surface border border-line rounded-lg overflow-hidden">
             <div class="overflow-x-auto">
-                <table class="min-w-full divide-y divide-gray-200">
-                    <thead class="bg-gray-50">
+                <x-ui.table label="Vendors Tab.Blade records"><table class="min-w-full divide-y divide-line">
+                    <thead class="bg-surface-muted">
                         <tr>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-content-muted uppercase tracking-wider">
                                 Vendor</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-content-muted uppercase tracking-wider">
                                 Role</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-content-muted uppercase tracking-wider">
                                 Items</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-content-muted uppercase tracking-wider">
                                 Sales</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-content-muted uppercase tracking-wider">
                                 Commission</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-content-muted uppercase tracking-wider">
                                 Status</th>
-                            <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-content-muted uppercase tracking-wider">
                                 Actions</th>
                         </tr>
                     </thead>
-                    <tbody class="bg-white divide-y divide-gray-200">
+                    <tbody class="bg-surface divide-y divide-line">
                         @foreach($users as $user)
-                            <tr class="hover:bg-gray-50">
+                            <tr class="hover:bg-surface-muted">
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <div class="flex items-center">
                                         @if($user->profile_picture)
@@ -62,28 +62,28 @@
                                         @else
                                             <div class="flex-shrink-0 h-10 w-10">
                                                 <div
-                                                    class="h-10 w-10 rounded-full bg-purple-100 flex items-center justify-center">
+                                                    class="h-10 w-10 rounded-full bg-brand/10 flex items-center justify-center">
                                                     <span
-                                                        class="text-purple-600 font-medium">{{ substr($user->name, 0, 2) }}</span>
+                                                        class="text-brand font-medium">{{ substr($user->name, 0, 2) }}</span>
                                                 </div>
                                             </div>
                                         @endif
                                         <div class="ml-4">
-                                            <div class="text-sm font-medium text-gray-900">{{ $user->name }}</div>
-                                            <div class="text-sm text-gray-500">{{ $user->email }}</div>
+                                            <div class="text-sm font-medium text-content">{{ $user->name }}</div>
+                                            <div class="text-sm text-content-muted">{{ $user->email }}</div>
                                         </div>
                                     </div>
                                 </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-content">
                                     {{ ucfirst(str_replace('_', ' ', $user->role)) }}
                                 </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-content">
                                     {{ $user->marketplace_items_count ?? 0 }}
                                 </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-content">
                                     ₦{{ number_format($user->total_earnings ?? 0, 0) }}
                                 </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-content">
                                     @php
                                         $metadata = $user->metadata ?? [];
                                         $commission = $metadata['vendor_commission_rate'] ?? 80;
@@ -121,7 +121,7 @@
                                         </span>
                                     @else
                                         <span
-                                            class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+                                            class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-surface-muted text-content">
                                             Active
                                         </span>
                                     @endif
@@ -155,18 +155,18 @@
                             </tr>
                         @endforeach
                     </tbody>
-                </table>
+                </table></x-ui.table>
             </div>
 
-            <div class="px-6 py-4 border-t border-gray-200">
+            <div class="px-6 py-4 border-t border-line">
                 {{ $users->links() }}
             </div>
         </div>
     @else
-        <div class="text-center py-12 bg-white rounded-lg border border-gray-200">
+        <div class="text-center py-12 bg-surface rounded-lg border border-line">
             <i class="fas fa-user-tie text-gray-300 text-6xl mb-4"></i>
-            <h3 class="text-lg font-medium text-gray-900 mb-2">No vendors found</h3>
-            <p class="text-gray-500">
+            <h3 class="text-lg font-medium text-content mb-2">No vendors found</h3>
+            <p class="text-content-muted">
                 @if($vendorStatus === 'pending')
                     No pending vendor applications at this time.
                 @elseif($search)

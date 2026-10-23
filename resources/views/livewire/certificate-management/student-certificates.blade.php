@@ -3,18 +3,18 @@
         <!-- Header -->
         <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
             <div>
-                <h1 class="text-3xl font-bold text-themed-primary">My Certificates</h1>
+                <h1 class=" font-bold text-themed-primary bk-page-title">My Certificates</h1>
                 <p class="text-themed-secondary mt-2">View and manage your earned certificates</p>
             </div>
-            
+
             <div class="flex flex-col sm:flex-row gap-4">
-                <a href="{{ route('student.course-catalog') }}" 
-                   class="px-6 py-3 bg-themed-tertiary hover:bg-accent-themed-secondary text-themed-primary rounded-lg font-semibold transition-colors flex items-center">
+                <a href="{{ route('student.course-catalog') }}"
+                   class="px-6 py-3 bg-themed-tertiary hover:bg-action/90 text-themed-primary rounded-lg font-semibold transition-colors flex items-center">
                     <i class="fas fa-book mr-2"></i>
                     Browse Courses
                 </a>
                 <a href="{{ route('student.certificate.request') }}"
-                   class="px-6 py-3 bg-accent-themed-primary hover:bg-accent-themed-secondary text-white rounded-lg font-semibold transition-colors flex items-center">
+                   class="px-6 py-3 bg-action hover:bg-action/90 text-action-foreground rounded-lg font-semibold transition-colors flex items-center">
                     <i class="fas fa-plus mr-2"></i>
                     Request Certificate
                 </a>
@@ -23,7 +23,7 @@
 
         <!-- Stats Cards -->
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-            <div class="bg-gradient-to-r from-green-600 to-emerald-600 rounded-xl p-6 text-white">
+            <div class="bg-brand-ink   rounded-lg p-6 text-white">
                 <div class="flex items-center">
                     <i class="fas fa-check-circle text-3xl mr-4"></i>
                     <div>
@@ -32,8 +32,8 @@
                     </div>
                 </div>
             </div>
-            
-            <div class="bg-gradient-to-r from-yellow-600 to-orange-600 rounded-xl p-6 text-white">
+
+            <div class="bg-brand-ink   rounded-lg p-6 text-white">
                 <div class="flex items-center">
                     <i class="fas fa-clock text-3xl mr-4"></i>
                     <div>
@@ -42,8 +42,8 @@
                     </div>
                 </div>
             </div>
-            
-            <div class="bg-gradient-to-r from-red-600 to-pink-600 rounded-xl p-6 text-white">
+
+            <div class="bg-brand-ink   rounded-lg p-6 text-white">
                 <div class="flex items-center">
                     <i class="fas fa-times-circle text-3xl mr-4"></i>
                     <div>
@@ -52,8 +52,8 @@
                     </div>
                 </div>
             </div>
-            
-            <div class="bg-gradient-to-r from-blue-600 to-indigo-600 rounded-xl p-6 text-white">
+
+            <div class="bg-brand-ink   rounded-lg p-6 text-white">
                 <div class="flex items-center">
                     <i class="fas fa-certificate text-3xl mr-4"></i>
                     <div>
@@ -65,12 +65,12 @@
         </div>
 
         <!-- Filters -->
-        <div class="bg-themed-secondary rounded-xl p-6 mb-8 border border-themed-primary transition-colors duration-300">
+        <div class="bg-themed-secondary rounded-lg p-6 mb-8 border border-themed-primary transition-colors duration-300">
             <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
                 <!-- Status Filter -->
                 <div>
                     <label class="block text-sm font-medium text-themed-primary mb-2">Status</label>
-                    <select wire:model.live="statusFilter" class="w-full bg-themed-tertiary border border-themed-primary rounded-lg px-3 py-2 text-themed-primary focus:ring-2 focus:ring-accent-themed-primary transition-colors duration-300">
+                    <select aria-label="Status filter" wire:model.live="statusFilter" class="w-full bg-themed-tertiary border border-themed-primary rounded-lg px-3 py-2 text-themed-primary focus:ring-2 focus:ring-brand transition-colors duration-300">
                         <option value="all">All Status</option>
                         <option value="approved">Approved</option>
                         <option value="requested">Pending</option>
@@ -83,9 +83,9 @@
                 <div>
                     <label class="block text-sm font-medium text-themed-primary mb-2">Search</label>
                     <div class="relative">
-                        <input type="text" wire:model.live.debounce.300ms="searchTerm" 
-                               placeholder="Course name, certificate #..." 
-                               class="w-full bg-themed-tertiary border border-themed-primary rounded-lg pl-10 pr-3 py-2 text-themed-primary focus:ring-2 focus:ring-accent-themed-primary transition-colors duration-300">
+                        <input aria-label="Course name, certificate #" type="text" wire:model.live.debounce.300ms="searchTerm"
+                               placeholder="Course name, certificate #..."
+                               class="w-full bg-themed-tertiary border border-themed-primary rounded-lg pl-10 pr-3 py-2 text-themed-primary focus:ring-2 focus:ring-brand transition-colors duration-300">
                         <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-themed-secondary"></i>
                     </div>
                 </div>
@@ -93,7 +93,7 @@
                 <!-- Sort By -->
                 <div>
                     <label class="block text-sm font-medium text-themed-primary mb-2">Sort By</label>
-                    <select wire:model.live="sortBy" class="w-full bg-themed-tertiary border border-themed-primary rounded-lg px-3 py-2 text-themed-primary focus:ring-2 focus:ring-accent-themed-primary transition-colors duration-300">
+                    <select aria-label="Sort by" wire:model.live="sortBy" class="w-full bg-themed-tertiary border border-themed-primary rounded-lg px-3 py-2 text-themed-primary focus:ring-2 focus:ring-brand transition-colors duration-300">
                         <option value="created_at">Request Date</option>
                         <option value="completion_date">Completion Date</option>
                         <option value="approved_at">Approval Date</option>
@@ -104,7 +104,7 @@
                 <!-- Sort Direction -->
                 <div>
                     <label class="block text-sm font-medium text-themed-primary mb-2">Order</label>
-                    <select wire:model.live="sortDirection" class="w-full bg-themed-tertiary border border-themed-primary rounded-lg px-3 py-2 text-themed-primary focus:ring-2 focus:ring-accent-themed-primary transition-colors duration-300">
+                    <select aria-label="Sort direction" wire:model.live="sortDirection" class="w-full bg-themed-tertiary border border-themed-primary rounded-lg px-3 py-2 text-themed-primary focus:ring-2 focus:ring-brand transition-colors duration-300">
                         <option value="desc">Newest First</option>
                         <option value="asc">Oldest First</option>
                     </select>
@@ -112,10 +112,10 @@
             </div>
 
             <div class="flex justify-between items-center mt-4">
-                <button wire:click="clearFilters" class="text-accent-themed-primary hover:text-accent-themed-secondary text-sm transition-colors">
+                <button wire:click="clearFilters" class="text-brand hover:text-accent-themed-secondary text-sm transition-colors">
                     <i class="fas fa-times mr-1"></i> Clear Filters
                 </button>
-                
+
                 <div class="text-themed-secondary text-sm">
                     Showing {{ $certificates->count() }} of {{ $certificates->total() }} certificates
                 </div>
@@ -126,7 +126,7 @@
         @if($certificates->count() > 0)
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
                 @foreach($certificates as $certificate)
-                <div class="bg-themed-secondary rounded-xl p-6 border border-themed-primary hover:border-accent-themed-primary transition-all duration-200 hover:shadow-lg">
+                <div class="bg-themed-secondary rounded-lg p-6 border border-themed-primary hover:border-brand transition-all duration-200 hover:shadow-sm">
                     <!-- Status Badge -->
                     <div class="flex items-center justify-between mb-4">
                         <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
@@ -134,16 +134,16 @@
                             @elseif($certificate->status === 'requested') bg-yellow-900 text-yellow-300
                             @elseif($certificate->status === 'rejected') bg-red-900 text-red-300
                             @elseif($certificate->status === 'revoked') bg-gray-700 text-gray-300
-                            @else bg-blue-900 text-blue-300 @endif">
-                            <i class="fas fa-{{ $certificate->status === 'approved' ? 'check-circle' : 
-                                ($certificate->status === 'requested' ? 'clock' : 
-                                ($certificate->status === 'rejected' ? 'times-circle' : 
+                            @else bg-action text-brand @endif">
+                            <i class="fas fa-{{ $certificate->status === 'approved' ? 'check-circle' :
+                                ($certificate->status === 'requested' ? 'clock' :
+                                ($certificate->status === 'rejected' ? 'times-circle' :
                                 ($certificate->status === 'revoked' ? 'ban' : 'certificate'))) }} mr-1.5"></i>
                             {{ ucfirst(str_replace('_', ' ', $certificate->status)) }}
                         </span>
-                        
+
                         @if($certificate->grade)
-                        <span class="bg-accent-themed-primary text-white px-2 py-1 rounded text-sm font-semibold">
+                        <span class="bg-action text-action-foreground px-2 py-1 rounded text-sm font-semibold">
                             {{ $certificate->grade }}
                         </span>
                         @endif
@@ -192,16 +192,16 @@
                                 </button>
                                 @endif
                                 <button wire:click="viewCertificate({{ $certificate->id }})"
-                                       class="flex-1 bg-accent-themed-primary hover:bg-accent-themed-secondary text-white text-center py-2 px-3 rounded-lg text-sm transition-colors flex items-center justify-center">
+                                       class="flex-1 bg-action hover:bg-action/90 text-action-foreground text-center py-2 px-3 rounded-lg text-sm transition-colors flex items-center justify-center">
                                     <i class="fas fa-eye mr-1"></i>View
                                 </button>
                             </div>
                             @if($certificate->verification_code)
                             <div class="text-center">
                                 <span class="text-xs text-themed-secondary">Verify at: </span>
-                                <a href="{{ route('certificate.verify.code', $certificate->verification_code) }}" 
-                                   target="_blank" 
-                                   class="text-xs text-accent-themed-primary hover:text-accent-themed-secondary transition-colors">
+                                <a href="{{ route('certificate.verify.code', $certificate->verification_code) }}"
+                                   target="_blank"
+                                   class="text-xs text-brand hover:text-accent-themed-secondary transition-colors">
                                     {{ Str::limit(route('certificate.verify.code', $certificate->verification_code), 40) }}
                                 </a>
                             </div>
@@ -251,14 +251,14 @@
 
         @else
             <!-- Empty State -->
-            <div class="bg-themed-secondary rounded-xl p-12 text-center border border-themed-primary">
+            <div class="bg-themed-secondary rounded-lg p-12 text-center border border-themed-primary">
                 @if($statusFilter !== 'all' || $searchTerm)
                     <!-- No results for filters -->
                     <i class="fas fa-search text-6xl text-themed-tertiary mb-6"></i>
                     <h3 class="text-xl font-semibold text-themed-primary mb-4">No certificates found</h3>
                     <p class="text-themed-secondary mb-8">No certificates match your current filters. Try adjusting your search criteria.</p>
-                    <button wire:click="clearFilters" 
-                           class="inline-flex items-center px-6 py-3 bg-accent-themed-primary hover:bg-accent-themed-secondary text-white rounded-lg font-semibold transition-colors">
+                    <button wire:click="clearFilters"
+                           class="inline-flex items-center px-6 py-3 bg-action hover:bg-action/90 text-action-foreground rounded-lg font-semibold transition-colors">
                         <i class="fas fa-times mr-2"></i>
                         Clear Filters
                     </button>
@@ -268,12 +268,12 @@
                     <h3 class="text-xl font-semibold text-themed-primary mb-4">No Certificates Yet</h3>
                     <p class="text-themed-secondary mb-8">Complete courses to earn certificates and showcase your achievements.</p>
                     <div class="flex flex-col sm:flex-row gap-4 justify-center">
-                        <a href="{{ route('student.course-catalog') }}" 
-                           class="inline-flex items-center px-6 py-3 bg-accent-themed-primary hover:bg-accent-themed-secondary text-white rounded-lg font-semibold transition-colors">
+                        <a href="{{ route('student.course-catalog') }}"
+                           class="inline-flex items-center px-6 py-3 bg-action hover:bg-action/90 text-action-foreground rounded-lg font-semibold transition-colors">
                             <i class="fas fa-book mr-2"></i>
                             Explore Courses
                         </a>
-                        <a href="{{ route('student.enrolled-courses') }}" 
+                        <a href="{{ route('student.enrolled-courses') }}"
                            class="inline-flex items-center px-6 py-3 bg-themed-tertiary hover:bg-themed-primary text-themed-primary rounded-lg font-semibold transition-colors">
                             <i class="fas fa-graduation-cap mr-2"></i>
                             My Enrolled Courses
@@ -287,11 +287,11 @@
     <!-- Loading Overlay -->
     <div wire:loading class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
         <div class="bg-themed-secondary rounded-lg p-8 flex items-center">
-            <i class="fas fa-spinner fa-spin text-accent-themed-primary text-2xl mr-4"></i>
+            <i class="fas fa-spinner fa-spin text-brand text-2xl mr-4"></i>
             <span class="text-themed-primary font-medium">Loading certificates...</span>
         </div>
     </div>
-    
+
     <script>
    document.addEventListener('livewire:initialized', function () {
         // Handle certificate opening in new tab

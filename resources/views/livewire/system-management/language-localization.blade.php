@@ -1,7 +1,7 @@
 <div class="px-4 sm:px-6 lg:px-8 py-8">
     <!-- Header -->
-    <div class="bg-gradient-to-r from-emerald-600 to-teal-600 p-6 rounded-2xl shadow-xl text-white mb-8">
-        <h1 class="text-3xl font-bold flex items-center">
+    <div class="bg-brand-ink   p-6 rounded-lg shadow-sm text-white mb-8">
+        <h1 class=" font-bold flex items-center bk-page-title">
             <i class="fas fa-language mr-3"></i>
             Language & Localization
         </h1>
@@ -13,38 +13,38 @@
     </div>
 
     <!-- Tabs -->
-    <div class="bg-themed-secondary rounded-xl shadow-sm mb-8 border border-themed-primary overflow-hidden">
+    <div class="bg-themed-secondary rounded-lg shadow-sm mb-8 border border-themed-primary overflow-hidden">
         <div class="border-b border-themed-primary">
             <nav class="-mb-px flex space-x-1 px-4 sm:px-6 overflow-x-auto" aria-label="Tabs">
-                <button 
+                <button
                     wire:click="setActiveTab('languages')"
                     class="whitespace-nowrap py-4 px-3 sm:px-4 border-b-2 font-medium text-sm flex items-center transition-all duration-300
                            {{ $activeTab === 'languages' ? 'border-emerald-500 text-emerald-600 dark:text-emerald-400 bg-emerald-100/10 dark:bg-emerald-900/20' : 'border-transparent text-themed-secondary hover:text-themed-primary hover:border-themed-primary' }}">
                     <i class="fas fa-globe mr-2"></i>
                     Languages
                 </button>
-                <button 
+                <button
                     wire:click="setActiveTab('regional')"
                     class="whitespace-nowrap py-4 px-3 sm:px-4 border-b-2 font-medium text-sm flex items-center transition-all duration-300
                            {{ $activeTab === 'regional' ? 'border-emerald-500 text-emerald-600 dark:text-emerald-400 bg-emerald-100/10 dark:bg-emerald-900/20' : 'border-transparent text-themed-secondary hover:text-themed-primary hover:border-themed-primary' }}">
                     <i class="fas fa-map mr-2"></i>
                     Regional Settings
                 </button>
-                <button 
+                <button
                     wire:click="setActiveTab('translations')"
                     class="whitespace-nowrap py-4 px-3 sm:px-4 border-b-2 font-medium text-sm flex items-center transition-all duration-300
                            {{ $activeTab === 'translations' ? 'border-emerald-500 text-emerald-600 dark:text-emerald-400 bg-emerald-100/10 dark:bg-emerald-900/20' : 'border-transparent text-themed-secondary hover:text-themed-primary hover:border-themed-primary' }}">
                     <i class="fas fa-file-alt mr-2"></i>
                     Translations
                 </button>
-                <button 
+                <button
                     wire:click="setActiveTab('rtl')"
                     class="whitespace-nowrap py-4 px-3 sm:px-4 border-b-2 font-medium text-sm flex items-center transition-all duration-300
                            {{ $activeTab === 'rtl' ? 'border-emerald-500 text-emerald-600 dark:text-emerald-400 bg-emerald-100/10 dark:bg-emerald-900/20' : 'border-transparent text-themed-secondary hover:text-themed-primary hover:border-themed-primary' }}">
                     <i class="fas fa-align-right mr-2"></i>
                     RTL Support
                 </button>
-                <button 
+                <button
                     wire:click="setActiveTab('system')"
                     class="whitespace-nowrap py-4 px-3 sm:px-4 border-b-2 font-medium text-sm flex items-center transition-all duration-300
                            {{ $activeTab === 'system' ? 'border-emerald-500 text-emerald-600 dark:text-emerald-400 bg-emerald-100/10 dark:bg-emerald-900/20' : 'border-transparent text-themed-secondary hover:text-themed-primary hover:border-themed-primary' }}">
@@ -58,7 +58,7 @@
     <div class="space-y-8">
         <!-- Languages Tab -->
         @if($activeTab === 'languages')
-            <form wire:submit.prevent="saveLanguageSettings" class="bg-themed-secondary rounded-xl shadow-sm border border-themed-primary overflow-hidden animate__animated animate__fadeIn">
+            <form wire:submit.prevent="saveLanguageSettings" class="bg-themed-secondary rounded-lg shadow-sm border border-themed-primary overflow-hidden  ">
                 <div class="px-6 py-4 border-b border-themed-primary">
                     <h3 class="text-lg font-semibold text-themed-primary flex items-center">
                         <i class="fas fa-globe text-emerald-600 dark:text-emerald-400 mr-2"></i>
@@ -104,7 +104,7 @@
                         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                             @foreach(['en' => 'English', 'es' => 'Español', 'fr' => 'Français', 'de' => 'Deutsch', 'pt' => 'Português', 'ar' => 'العربية', 'zh' => '中文', 'ja' => '日本語'] as $code => $lang)
                                 <label class="flex items-center p-4 border border-themed-primary rounded-lg hover:border-emerald-300 hover:bg-themed-tertiary transition-all cursor-pointer">
-                                    <input wire:click="toggleLanguage('{{ $code }}')" type="checkbox" 
+                                    <input wire:click="toggleLanguage('{{ $code }}')" type="checkbox"
                                            {{ in_array($code, $enabled_languages) ? 'checked' : '' }}
                                            class="h-4 w-4 text-emerald-600 border-themed-primary rounded focus:ring-emerald-500">
                                     <div class="ml-3 flex-1">
@@ -112,7 +112,7 @@
                                         <p class="text-xs text-themed-secondary">{{ $code }}</p>
                                     </div>
                                     @if($code === 'ar')
-                                        <span class="ml-2 px-2 py-1 text-xs bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded">RTL</span>
+                                        <span class="ml-2 px-2 py-1 text-xs bg-brand/10 dark:bg-action/30 text-brand dark:text-brand rounded">RTL</span>
                                     @endif
                                 </label>
                             @endforeach
@@ -125,8 +125,8 @@
                             <h4 class="font-medium text-emerald-900 dark:text-emerald-100 mb-2">Enabled Languages ({{ count($enabled_languages) }})</h4>
                             <div class="flex flex-wrap gap-2">
                                 @foreach($enabled_languages as $code)
-                                    <span class="inline-flex items-center px-3 py-1 rounded-full text-sm 
-                                               {{ $code === $default_language ? 'bg-emerald-200 dark:bg-emerald-800 text-emerald-800 dark:text-emerald-100' : 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300' }}">
+                                    <span class="inline-flex items-center px-3 py-1 rounded-full text-sm
+                                               {{ $code === $default_language ? 'bg-emerald-200 dark:bg-emerald-800 text-emerald-800 dark:text-emerald-100' : 'bg-gray-200 dark:bg-gray-700 text-content dark:text-gray-300' }}">
                                         {{ strtoupper($code) }}
                                         @if($code === $default_language)
                                             <i class="fas fa-star ml-1 text-xs"></i>
@@ -154,7 +154,7 @@
 
         <!-- Regional Settings Tab -->
         @if($activeTab === 'regional')
-            <form wire:submit.prevent="saveRegionalSettings" class="bg-themed-secondary rounded-xl shadow-sm border border-themed-primary overflow-hidden animate__animated animate__fadeIn">
+            <form wire:submit.prevent="saveRegionalSettings" class="bg-themed-secondary rounded-lg shadow-sm border border-themed-primary overflow-hidden  ">
                 <div class="px-6 py-4 border-b border-themed-primary">
                     <h3 class="text-lg font-semibold text-themed-primary flex items-center">
                         <i class="fas fa-map text-emerald-600 dark:text-emerald-400 mr-2"></i>
@@ -239,7 +239,7 @@
         <!-- Translations Tab -->
         @if($activeTab === 'translations')
             <div class="space-y-6">
-                <div class="bg-themed-secondary rounded-xl shadow-sm border border-themed-primary overflow-hidden animate__animated animate__fadeIn">
+                <div class="bg-themed-secondary rounded-lg shadow-sm border border-themed-primary overflow-hidden  ">
                     <div class="px-6 py-4 border-b border-themed-primary">
                         <h3 class="text-lg font-semibold text-themed-primary flex items-center">
                             <i class="fas fa-file-alt text-emerald-600 dark:text-emerald-400 mr-2"></i>
@@ -309,7 +309,7 @@
 
         <!-- RTL Support Tab -->
         @if($activeTab === 'rtl')
-            <form wire:submit.prevent="saveRtlSettings" class="bg-themed-secondary rounded-xl shadow-sm border border-themed-primary overflow-hidden animate__animated animate__fadeIn">
+            <form wire:submit.prevent="saveRtlSettings" class="bg-themed-secondary rounded-lg shadow-sm border border-themed-primary overflow-hidden  ">
                 <div class="px-6 py-4 border-b border-themed-primary">
                     <h3 class="text-lg font-semibold text-themed-primary flex items-center">
                         <i class="fas fa-align-right text-emerald-600 dark:text-emerald-400 mr-2"></i>
@@ -356,7 +356,7 @@
         <!-- System Tab -->
         @if($activeTab === 'system')
             <div class="space-y-6">
-                <div class="bg-themed-secondary rounded-xl shadow-sm border border-themed-primary overflow-hidden animate__animated animate__fadeIn">
+                <div class="bg-themed-secondary rounded-lg shadow-sm border border-themed-primary overflow-hidden  ">
                     <div class="px-6 py-4 border-b border-themed-primary">
                         <h3 class="text-lg font-semibold text-themed-primary flex items-center">
                             <i class="fas fa-tools text-emerald-600 dark:text-emerald-400 mr-2"></i>
@@ -367,7 +367,7 @@
                     <div class="p-6">
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <button wire:click="clearTranslationCache" wire:loading.attr="disabled"
-                                    class="px-4 py-3 bg-blue-600 hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800 text-white rounded-lg transition-colors disabled:opacity-50 font-medium">
+                                    class="px-4 py-3 bg-action hover:bg-action dark:bg-action dark:hover:bg-action text-action-foreground rounded-lg transition-colors disabled:opacity-50 font-medium">
                                 <span wire:loading.remove><i class="fas fa-trash mr-2"></i>Clear Translation Cache</span>
                                 <span wire:loading><i class="fas fa-circle-notch fa-spin mr-2"></i>Clearing...</span>
                             </button>
@@ -379,7 +379,7 @@
                             </button>
 
                             <button wire:click="validateTranslations" wire:loading.attr="disabled"
-                                    class="px-4 py-3 bg-purple-600 hover:bg-purple-700 dark:bg-purple-700 dark:hover:bg-purple-800 text-white rounded-lg transition-colors disabled:opacity-50 font-medium">
+                                    class="px-4 py-3 bg-action hover:bg-action dark:bg-action dark:hover:bg-action text-action-foreground rounded-lg transition-colors disabled:opacity-50 font-medium">
                                 <span wire:loading.remove><i class="fas fa-check-circle mr-2"></i>Validate Translations</span>
                                 <span wire:loading><i class="fas fa-circle-notch fa-spin mr-2"></i>Validating...</span>
                             </button>

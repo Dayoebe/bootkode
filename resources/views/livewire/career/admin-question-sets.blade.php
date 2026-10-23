@@ -1,19 +1,19 @@
 <div class="min-h-screen bg-themed-primary p-6">
     <div class="">
         <div class="flex justify-between items-center mb-6">
-            <h1 class="text-3xl font-bold text-themed-primary">Question Sets</h1>
+            <h1 class=" font-bold text-themed-primary bk-page-title">Question Sets</h1>
             <button wire:click="$set('showCreateSetModal', true)"
-                class="bg-accent-themed-primary text-white px-6 py-3 rounded-xl hover:bg-accent-themed-secondary transition-colors font-semibold">
+                class="bg-action text-action-foreground px-6 py-3 rounded-lg hover:bg-action/90 transition-colors font-semibold">
                 <i class="fas fa-plus mr-2"></i> Create Question Set
             </button>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             @forelse($questionSets as $set)
-                <div class="bg-themed-secondary rounded-xl shadow-lg p-6 border border-themed-primary hover:shadow-xl transition-shadow">
+                <div class="bg-themed-secondary rounded-lg shadow-sm p-6 border border-themed-primary  transition-shadow">
                     <h3 class="text-xl font-bold text-themed-primary mb-2">{{ $set->name }}</h3>
                     <p class="text-themed-secondary text-sm mb-4">{{ Str::limit($set->description, 100) }}</p>
-                    
+
                     <div class="space-y-2 text-sm">
                         <div class="flex justify-between">
                             <span class="text-themed-secondary">Questions:</span>
@@ -45,7 +45,7 @@
                     <i class="fas fa-folder-open text-6xl text-themed-secondary mb-4"></i>
                     <p class="text-themed-secondary mb-4">No question sets yet</p>
                     <button wire:click="$set('showCreateSetModal', true)"
-                        class="bg-accent-themed-primary text-white px-6 py-3 rounded-xl hover:bg-accent-themed-secondary transition-colors font-semibold">
+                        class="bg-action text-action-foreground px-6 py-3 rounded-lg hover:bg-action/90 transition-colors font-semibold">
                         Create Your First Set
                     </button>
                 </div>
@@ -55,12 +55,12 @@
 
     {{-- Create Set Modal --}}
     @if($showCreateSetModal)
-        <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-            <div class="bg-themed-secondary rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-hidden border border-themed-primary">
+        <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50" x-trap.inert.noscroll="true" role="dialog" aria-modal="true" aria-label="Create Question Set" tabindex="-1" x-data="{}" @keydown.escape.stop="$wire.set(&#x27;showCreateSetModal&#x27;, false)">
+            <div class="bg-themed-secondary rounded-lg max-w-4xl w-full max-h-[90vh] overflow-hidden border border-themed-primary">
                 <div class="px-6 py-4 border-b border-themed-primary bg-themed-tertiary flex justify-between items-center">
                     <h3 class="text-xl font-bold text-themed-primary">Create Question Set</h3>
                     <button wire:click="$set('showCreateSetModal', false)"
-                        class="text-themed-secondary hover:text-themed-primary transition-colors">
+                        class="text-themed-secondary hover:text-themed-primary transition-colors" aria-label="Close">
                         <i class="fas fa-times text-xl"></i>
                     </button>
                 </div>
@@ -69,21 +69,21 @@
                     <div class="space-y-4">
                         <div>
                             <label class="block text-sm font-semibold text-themed-primary mb-2">Set Name *</label>
-                            <input wire:model="name" type="text" required
-                                class="w-full px-4 py-3 border border-themed-primary rounded-xl focus:ring-2 focus:ring-accent-themed-primary focus:border-transparent bg-themed-secondary text-themed-primary placeholder-themed-tertiary">
+                            <input aria-label="Name" wire:model="name" type="text" required
+                                class="w-full px-4 py-3 border border-themed-primary rounded-lg focus:ring-2 focus:ring-brand focus:border-transparent bg-themed-secondary text-themed-primary placeholder-themed-tertiary">
                         </div>
 
                         <div>
                             <label class="block text-sm font-semibold text-themed-primary mb-2">Description</label>
-                            <textarea wire:model="description" rows="3"
-                                class="w-full px-4 py-3 border border-themed-primary rounded-xl focus:ring-2 focus:ring-accent-themed-primary focus:border-transparent bg-themed-secondary text-themed-primary placeholder-themed-tertiary"></textarea>
+                            <textarea aria-label="Description" wire:model="description" rows="3"
+                                class="w-full px-4 py-3 border border-themed-primary rounded-lg focus:ring-2 focus:ring-brand focus:border-transparent bg-themed-secondary text-themed-primary placeholder-themed-tertiary"></textarea>
                         </div>
 
                         <div class="grid grid-cols-3 gap-4">
                             <div>
                                 <label class="block text-sm font-semibold text-themed-primary mb-2">Type</label>
-                                <select wire:model="type"
-                                    class="w-full px-4 py-3 border border-themed-primary rounded-xl focus:ring-2 focus:ring-accent-themed-primary focus:border-transparent bg-themed-secondary text-themed-primary">
+                                <select aria-label="Type" wire:model="type"
+                                    class="w-full px-4 py-3 border border-themed-primary rounded-lg focus:ring-2 focus:ring-brand focus:border-transparent bg-themed-secondary text-themed-primary">
                                     <option value="technical">Technical</option>
                                     <option value="behavioral">Behavioral</option>
                                     <option value="mixed">Mixed</option>
@@ -91,8 +91,8 @@
                             </div>
                             <div>
                                 <label class="block text-sm font-semibold text-themed-primary mb-2">Difficulty</label>
-                                <select wire:model="difficulty_level"
-                                    class="w-full px-4 py-3 border border-themed-primary rounded-xl focus:ring-2 focus:ring-accent-themed-primary focus:border-transparent bg-themed-secondary text-themed-primary">
+                                <select aria-label="Difficulty level" wire:model="difficulty_level"
+                                    class="w-full px-4 py-3 border border-themed-primary rounded-lg focus:ring-2 focus:ring-brand focus:border-transparent bg-themed-secondary text-themed-primary">
                                     <option value="beginner">Beginner</option>
                                     <option value="intermediate">Intermediate</option>
                                     <option value="advanced">Advanced</option>
@@ -100,14 +100,14 @@
                             </div>
                             <div>
                                 <label class="block text-sm font-semibold text-themed-primary mb-2">Duration (min)</label>
-                                <input wire:model="estimated_duration" type="number" min="15"
-                                    class="w-full px-4 py-3 border border-themed-primary rounded-xl focus:ring-2 focus:ring-accent-themed-primary focus:border-transparent bg-themed-secondary text-themed-primary placeholder-themed-tertiary">
+                                <input aria-label="Estimated duration" wire:model="estimated_duration" type="number" min="15"
+                                    class="w-full px-4 py-3 border border-themed-primary rounded-lg focus:ring-2 focus:ring-brand focus:border-transparent bg-themed-secondary text-themed-primary placeholder-themed-tertiary">
                             </div>
                         </div>
 
                         <div>
                             <label class="block text-sm font-semibold text-themed-primary mb-2">Select Questions</label>
-                            <div class="border border-themed-primary rounded-xl p-4 max-h-96 overflow-y-auto bg-themed-tertiary">
+                            <div class="border border-themed-primary rounded-lg p-4 max-h-96 overflow-y-auto bg-themed-tertiary">
                                 @foreach($availableQuestions as $question)
                                     <label class="flex items-start p-3 hover:bg-themed-secondary rounded-lg cursor-pointer transition-colors">
                                         <input type="checkbox" wire:click="toggleQuestion({{ $question->id }})"
@@ -130,11 +130,11 @@
 
                     <div class="flex justify-end space-x-4 mt-6 pt-6 border-t border-themed-primary">
                         <button type="button" wire:click="$set('showCreateSetModal', false)"
-                            class="px-6 py-3 rounded-xl bg-themed-tertiary text-themed-primary hover:bg-themed-secondary transition-colors font-medium">
+                            class="px-6 py-3 rounded-lg bg-themed-tertiary text-themed-primary hover:bg-themed-secondary transition-colors font-medium">
                             Cancel
                         </button>
                         <button type="submit"
-                            class="px-6 py-3 rounded-xl bg-accent-themed-primary text-white hover:bg-accent-themed-secondary transition-colors font-medium">
+                            class="px-6 py-3 rounded-lg bg-action text-action-foreground hover:bg-action/90 transition-colors font-medium">
                             <i class="fas fa-save mr-2"></i> Save Set
                         </button>
                     </div>

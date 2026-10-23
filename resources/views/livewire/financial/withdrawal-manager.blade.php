@@ -2,12 +2,12 @@
 <div class="space-y-6">
     <!-- Header -->
     <div class="mb-8">
-        <h1 class="text-2xl font-bold text-themed-primary">Withdrawal Management</h1>
+        <h1 class=" font-bold text-themed-primary bk-page-title">Withdrawal Management</h1>
         <p class="text-themed-secondary">Request and track your earnings withdrawals</p>
     </div>
 
     <!-- Available Balance Card -->
-    <div class="bg-gradient-to-r from-green-500 to-green-600 rounded-lg shadow-sm p-6 mb-8 text-white">
+    <div class="bg-brand-ink   rounded-lg shadow-sm p-6 mb-8 text-white">
         <div class="flex items-center justify-between">
             <div>
                 <p class="text-green-100">Available for Withdrawal</p>
@@ -21,7 +21,7 @@
         </div>
         @if($availableBalance >= 1000)
             <div class="mt-4">
-                <button wire:click="openWithdrawalForm" class="bg-themed-secondary text-green-600 py-2 px-6 rounded-lg font-semibold hover:bg-gray-100 transition-colors">
+                <button wire:click="openWithdrawalForm" class="bg-themed-secondary text-green-600 py-2 px-6 rounded-lg font-semibold hover:bg-surface-muted transition-colors">
                     Request Withdrawal
                 </button>
             </div>
@@ -39,14 +39,14 @@
         </div>
         <div class="overflow-x-auto">
             @if($withdrawals->count() > 0)
-                <table class="min-w-full divide-y divide-themed-primary">
+                <x-ui.table label="Withdrawal Manager.Blade records"><table class="min-w-full divide-y divide-themed-primary">
                     <thead class="bg-themed-tertiary">
                         <tr>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-themed-secondary uppercase tracking-wider">Date</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-themed-secondary uppercase tracking-wider">Amount</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-themed-secondary uppercase tracking-wider">Bank Details</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-themed-secondary uppercase tracking-wider">Status</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-themed-secondary uppercase tracking-wider">Actions</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-themed-secondary uppercase tracking-wider">Date</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-themed-secondary uppercase tracking-wider">Amount</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-themed-secondary uppercase tracking-wider">Bank Details</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-themed-secondary uppercase tracking-wider">Status</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-themed-secondary uppercase tracking-wider">Actions</th>
                         </tr>
                     </thead>
                     <tbody class="bg-themed-secondary divide-y divide-themed-primary">
@@ -73,19 +73,19 @@
                                     @if($withdrawal->isPending())
                                         <button class="text-red-600 hover:text-red-900">Cancel</button>
                                     @else
-                                        <span class="text-gray-400">—</span>
+                                        <span class="text-content-muted">—</span>
                                     @endif
                                 </td>
                             </tr>
                         @endforeach
                     </tbody>
-                </table>
+                </table></x-ui.table>
                 <div class="px-6 py-4 border-t border-themed-primary">
                     {{ $withdrawals->links() }}
                 </div>
             @else
                 <div class="text-center py-12">
-                    <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <svg class="mx-auto h-12 w-12 text-content-muted" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path>
                     </svg>
                     <h3 class="mt-2 text-sm font-medium text-themed-primary">No withdrawals yet</h3>
@@ -101,7 +101,7 @@
             <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
                 <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" wire:click="closeWithdrawalForm"></div>
 
-                <div class="inline-block align-bottom bg-themed-secondary rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+                <div class="inline-block align-bottom bg-themed-secondary rounded-lg text-left overflow-hidden shadow-sm transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
                     <form wire:submit.prevent="requestWithdrawal">
                         <div class="bg-themed-secondary px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
                             <div class="sm:flex sm:items-start">
@@ -171,7 +171,7 @@
                                                 readonly
                                             >
                                             @if($isResolvingAccount)
-                                                <p class="mt-2 text-sm text-blue-600">Resolving account details...</p>
+                                                <p class="mt-2 text-sm text-brand">Resolving account details...</p>
                                             @endif
                                             @error('accountName') <p class="mt-2 text-sm text-red-600">{{ $message }}</p> @enderror
                                         </div>
@@ -183,7 +183,7 @@
                             <button type="submit" class="bk-button bk-button-primary w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2  text-base font-medium   focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 sm:ml-3 sm:w-auto sm:text-sm">
                                 Submit Request
                             </button>
-                            <button type="button" wire:click="closeWithdrawalForm" class="mt-3 w-full inline-flex justify-center rounded-md border border-themed-secondary shadow-sm px-4 py-2 bg-themed-secondary text-base font-medium text-themed-primary hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
+                            <button type="button" wire:click="closeWithdrawalForm" class="mt-3 w-full inline-flex justify-center rounded-md border border-themed-secondary shadow-sm px-4 py-2 bg-themed-secondary text-base font-medium text-themed-primary hover:bg-surface-muted focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
                                 Cancel
                             </button>
                         </div>

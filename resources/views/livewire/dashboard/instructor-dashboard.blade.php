@@ -1,53 +1,37 @@
-<div class="min-h-screen bg-themed-primary transition-colors duration-300 p-4 md:p-6">
-    <!-- Header Section -->
-    <div class="mb-8">
-        <div class="bg-themed-secondary rounded-2xl shadow-sm border border-themed-primary p-6 relative overflow-hidden transition-colors duration-300">
-            <!-- Background decoration -->
-            <div class="absolute top-0 right-0 w-40 h-40 bg-indigo-100 dark:bg-indigo-900/20 rounded-full -translate-y-12 translate-x-12 opacity-60 transition-colors duration-300"></div>
-            
-            <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center space-y-4 lg:space-y-0 relative">
-                <div>
-                    <h1 class="text-3xl font-bold text-themed-primary flex items-center transition-colors duration-300">
-                        <i class="fas fa-chalkboard-teacher text-indigo-600 dark:text-indigo-400 mr-3"></i>
-                        Instructor Dashboard
-                    </h1>
-                    <p class="text-themed-secondary mt-1 transition-colors duration-300">Welcome back, {{ auth()->user()->name }}! Manage your courses and track student progress.</p>
-                </div>
-                
-                <div class="flex flex-wrap items-center space-x-3">
-                    <!-- Course Filter -->
-                    <select wire:model.live="selectedCourseFilter" class="bg-themed-secondary border border-themed-secondary text-themed-primary px-3 py-2 text-sm rounded-lg focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 focus:border-indigo-500 dark:focus:border-indigo-400 transition-colors duration-300">
+<div class="space-y-6">
+    <x-ui.page-header title="Teaching workspace" description="Manage your courses, assessments and learner progress.">
+        <x-slot:actions>
+<!-- Course Filter -->
+                    <select aria-label="Filter courses" wire:model.live="selectedCourseFilter" class="bg-themed-secondary border border-themed-secondary text-themed-primary px-3 py-2 text-sm rounded-lg focus:ring-2 focus:ring-brand/30 dark:focus:ring-brand/30 focus:border-brand dark:focus:border-brand transition-colors duration-300">
                         <option value="all">All Courses</option>
                         @foreach(auth()->user()->courses as $course)
                             <option value="{{ $course->id }}">{{ \Str::limit($course->title, 30) }}</option>
                         @endforeach
                     </select>
-                    
+
                     <!-- Timeframe Selector -->
-                    <div class="flex bg-themed-tertiary rounded-lg p-1 transition-colors duration-300">
+                    <div role="group" aria-label="Reporting period" class="flex bg-themed-tertiary rounded-lg p-1 transition-colors duration-300">
                         @foreach(['7days' => '7d', '30days' => '30d', '90days' => '90d'] as $value => $label)
-                            <button 
-                                wire:click="updateTimeframe('{{ $value }}')"
-                                class="px-3 py-1 rounded-md text-sm font-medium transition-all duration-200 {{ $selectedTimeframe === $value ? 'bg-themed-secondary text-indigo-600 dark:text-indigo-400 shadow-sm' : 'text-themed-secondary hover:text-themed-primary' }}">
+                            <button
+                                wire:click="updateTimeframe('{{ $value }}')" aria-label="Report for {{ $label }}" aria-pressed="{{ $selectedTimeframe === $value ? 'true' : 'false' }}"
+                                class="px-3 py-1 rounded-md text-sm font-medium transition-all duration-200 {{ $selectedTimeframe === $value ? 'bg-themed-secondary text-brand dark:text-brand shadow-sm' : 'text-themed-secondary hover:text-themed-primary' }}">
                                 {{ $label }}
                             </button>
                         @endforeach
                     </div>
-                    
+
                     <!-- Quick Actions -->
-                    <a href="{{ route('create.course') }}" class="bg-indigo-600 dark:bg-indigo-500 hover:bg-indigo-700 dark:hover:bg-indigo-600 text-white px-4 py-2 rounded-lg font-medium transition-colors duration-200">
+                    <a href="{{ route('create.course') }}" class="bg-action dark:bg-action hover:bg-action dark:hover:bg-action text-action-foreground px-4 py-2 rounded-lg font-medium transition-colors duration-200">
                         <i class="fas fa-plus mr-2"></i>
                         New Course
                     </a>
-                </div>
-            </div>
-        </div>
-    </div>
+        </x-slot:actions>
+    </x-ui.page-header>
 
     <!-- Overview Stats Grid -->
     @if($showWidgets['overview_stats'])
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-        <div class="bg-themed-secondary rounded-xl shadow-sm border border-themed-primary p-6 hover:shadow-md dark:hover:shadow-xl transition-all duration-200">
+        <div class="bg-themed-secondary rounded-lg shadow-sm border border-themed-primary p-6   transition-all duration-200">
             <div class="flex items-center justify-between">
                 <div>
                     <p class="text-sm text-themed-secondary font-medium transition-colors duration-300">Total Courses</p>
@@ -57,13 +41,13 @@
                         <span class="text-themed-tertiary ml-1 transition-colors duration-300">published</span>
                     </div>
                 </div>
-                <div class="bg-blue-100 dark:bg-blue-900/30 p-3 rounded-full transition-colors duration-300">
-                    <i class="fas fa-book text-blue-600 dark:text-blue-400 text-xl"></i>
+                <div class="bg-brand/10 dark:bg-action/30 p-3 rounded-full transition-colors duration-300">
+                    <i class="fas fa-book text-brand dark:text-brand text-xl"></i>
                 </div>
             </div>
         </div>
 
-        <div class="bg-themed-secondary rounded-xl shadow-sm border border-themed-primary p-6 hover:shadow-md dark:hover:shadow-xl transition-all duration-200">
+        <div class="bg-themed-secondary rounded-lg shadow-sm border border-themed-primary p-6   transition-all duration-200">
             <div class="flex items-center justify-between">
                 <div>
                     <p class="text-sm text-themed-secondary font-medium transition-colors duration-300">Total Students</p>
@@ -79,7 +63,7 @@
             </div>
         </div>
 
-        <div class="bg-themed-secondary rounded-xl shadow-sm border border-themed-primary p-6 hover:shadow-md dark:hover:shadow-xl transition-all duration-200">
+        <div class="bg-themed-secondary rounded-lg shadow-sm border border-themed-primary p-6   transition-all duration-200">
             <div class="flex items-center justify-between">
                 <div>
                     <p class="text-sm text-themed-secondary font-medium transition-colors duration-300">Average Rating</p>
@@ -99,7 +83,7 @@
             </div>
         </div>
 
-        <div class="bg-themed-secondary rounded-xl shadow-sm border border-themed-primary p-6 hover:shadow-md dark:hover:shadow-xl transition-all duration-200">
+        <div class="bg-themed-secondary rounded-lg shadow-sm border border-themed-primary p-6   transition-all duration-200">
             <div class="flex items-center justify-between">
                 <div>
                     <p class="text-sm text-themed-secondary font-medium transition-colors duration-300">Total Earnings</p>
@@ -109,8 +93,8 @@
                         <span class="text-themed-tertiary ml-1 transition-colors duration-300">this month</span>
                     </div>
                 </div>
-                <div class="bg-purple-100 dark:bg-purple-900/30 p-3 rounded-full transition-colors duration-300">
-                    <i class="fas fa-wallet text-purple-600 dark:text-purple-400 text-xl"></i>
+                <div class="bg-brand/10 dark:bg-action/30 p-3 rounded-full transition-colors duration-300">
+                    <i class="fas fa-wallet text-brand dark:text-brand text-xl"></i>
                 </div>
             </div>
         </div>
@@ -123,14 +107,14 @@
         <div class="xl:col-span-2 space-y-8">
             <!-- Course Performance -->
             @if($showWidgets['course_performance'])
-            <div class="bg-themed-secondary rounded-xl shadow-sm border border-themed-primary p-6 transition-colors duration-300">
+            <div class="bg-themed-secondary rounded-lg shadow-sm border border-themed-primary p-6 transition-colors duration-300">
                 <div class="flex items-center justify-between mb-6">
                     <h2 class="text-xl font-bold text-themed-primary transition-colors duration-300">Course Performance</h2>
-                    <a href="{{ route('my-course') }}" class="text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300 text-sm font-medium transition-colors duration-300">
+                    <a href="{{ route('my-course') }}" class="text-brand dark:text-brand hover:text-brand dark:hover:text-brand text-sm font-medium transition-colors duration-300">
                         View All <i class="fas fa-arrow-right ml-1"></i>
                     </a>
                 </div>
-                
+
                 <div class="space-y-4">
                     @forelse($this->coursePerformance->take(5) as $course)
                     <div class="flex items-center justify-between p-4 bg-themed-tertiary rounded-lg hover:bg-themed-secondary transition-colors duration-200">
@@ -138,11 +122,11 @@
                             @if($course['thumbnail'])
                             <img src="{{ $course['thumbnail'] }}" alt="{{ $course['title'] }}" class="w-12 h-12 rounded-lg object-cover">
                             @else
-                            <div class="w-12 h-12 bg-indigo-100 dark:bg-indigo-900/30 rounded-lg flex items-center justify-center transition-colors duration-300">
-                                <i class="fas fa-book text-indigo-600 dark:text-indigo-400"></i>
+                            <div class="w-12 h-12 bg-brand/10 dark:bg-action/30 rounded-lg flex items-center justify-center transition-colors duration-300">
+                                <i class="fas fa-book text-brand dark:text-brand"></i>
                             </div>
                             @endif
-                            
+
                             <div>
                                 <h4 class="font-semibold text-themed-primary transition-colors duration-300">{{ \Str::limit($course['title'], 40) }}</h4>
                                 <div class="flex items-center space-x-4 text-sm text-themed-secondary mt-1 transition-colors duration-300">
@@ -155,7 +139,7 @@
                                 </div>
                             </div>
                         </div>
-                        
+
                         <div class="text-right">
                             <div class="text-lg font-bold text-themed-primary transition-colors duration-300">₦{{ number_format($course['revenue'], 0) }}</div>
                             <span class="px-2 py-1 text-xs rounded-full {{ $course['status'] === 'Published' ? 'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300' : ($course['status'] === 'Pending Approval' ? 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-300' : 'bg-themed-tertiary text-themed-primary') }} transition-colors duration-300">
@@ -167,7 +151,7 @@
                     <div class="text-center py-8">
                         <i class="fas fa-book-open text-themed-tertiary text-4xl mb-4"></i>
                         <p class="text-themed-secondary mb-4 transition-colors duration-300">No courses created yet</p>
-                        <a href="{{ route('create.course') }}" class="bg-indigo-600 dark:bg-indigo-500 hover:bg-indigo-700 dark:hover:bg-indigo-600 text-white px-4 py-2 rounded-lg transition-colors">
+                        <a href="{{ route('create.course') }}" class="bg-action dark:bg-action hover:bg-action dark:hover:bg-action text-action-foreground px-4 py-2 rounded-lg transition-colors">
                             Create Your First Course
                         </a>
                     </div>
@@ -178,18 +162,18 @@
 
             <!-- Student Analytics -->
             @if($showWidgets['student_analytics'])
-            <div class="bg-themed-secondary rounded-xl shadow-sm border border-themed-primary p-6 transition-colors duration-300">
+            <div class="bg-themed-secondary rounded-lg shadow-sm border border-themed-primary p-6 transition-colors duration-300">
                 <h2 class="text-xl font-bold text-themed-primary mb-6 transition-colors duration-300">Student Analytics</h2>
-                
+
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                     <!-- Enrollment Trends Chart -->
                     <div>
                         <h3 class="text-sm font-semibold text-themed-primary mb-3 transition-colors duration-300">Enrollment Trends</h3>
                         <div class="h-48">
-                            <canvas id="enrollmentTrendsChart"></canvas>
+                            <canvas role="img" aria-label="enrollment Trends chart" id="enrollmentTrendsChart"></canvas>
                         </div>
                     </div>
-                    
+
                     <!-- Student Engagement Metrics -->
                     <div>
                         <h3 class="text-sm font-semibold text-themed-primary mb-3 transition-colors duration-300">Student Engagement</h3>
@@ -206,7 +190,7 @@
                                 <span class="text-sm text-themed-secondary transition-colors duration-300">Engagement Rate</span>
                                 <div class="flex items-center space-x-2">
                                     <div class="w-16 bg-themed-tertiary rounded-full h-2 transition-colors duration-300">
-                                        <div class="bg-gradient-to-r from-green-400 to-blue-500 dark:from-green-300 dark:to-blue-400 h-2 rounded-full" 
+                                        <div class="bg-surface-muted     h-2 rounded-full"
                                              style="width: {{ $this->studentAnalytics['engagement_rate'] }}%"></div>
                                     </div>
                                     <span class="text-sm font-medium text-themed-primary transition-colors duration-300">{{ $this->studentAnalytics['engagement_rate'] }}%</span>
@@ -214,10 +198,10 @@
                             </div>
                             <div class="flex items-center justify-between">
                                 <span class="text-sm text-themed-secondary transition-colors duration-300">Completion Rate</span>
-                                <span class="text-lg font-bold text-purple-600 dark:text-purple-400 transition-colors duration-300">{{ $this->studentAnalytics['completion_rate'] }}%</span>
+                                <span class="text-lg font-bold text-brand dark:text-brand transition-colors duration-300">{{ $this->studentAnalytics['completion_rate'] }}%</span>
                             </div>
                         </div>
-                        
+
                         <!-- Top Performing Students -->
                         @if(count($this->studentAnalytics['top_students']) > 0)
                         <div class="mt-6">
@@ -226,7 +210,7 @@
                                 @foreach($this->studentAnalytics['top_students'] as $student)
                                 <div class="flex items-center justify-between text-sm">
                                     <span class="text-themed-secondary transition-colors duration-300">{{ $student['name'] }}</span>
-                                    <span class="font-medium text-indigo-600 dark:text-indigo-400 transition-colors duration-300">{{ $student['average_score'] }}%</span>
+                                    <span class="font-medium text-brand dark:text-brand transition-colors duration-300">{{ $student['average_score'] }}%</span>
                                 </div>
                                 @endforeach
                             </div>
@@ -239,18 +223,18 @@
 
             <!-- Earnings Overview -->
             @if($showWidgets['earnings_overview'])
-            <div class="bg-themed-secondary rounded-xl shadow-sm border border-themed-primary p-6 transition-colors duration-300">
+            <div class="bg-themed-secondary rounded-lg shadow-sm border border-themed-primary p-6 transition-colors duration-300">
                 <h2 class="text-xl font-bold text-themed-primary mb-6 transition-colors duration-300">Earnings Overview</h2>
-                
+
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                     <!-- Daily Earnings Chart -->
                     <div>
                         <h3 class="text-sm font-semibold text-themed-primary mb-3 transition-colors duration-300">Daily Earnings ({{ $selectedTimeframe === '7days' ? 'Last 7 Days' : ($selectedTimeframe === '30days' ? 'Last 30 Days' : 'Last 90 Days') }})</h3>
                         <div class="h-48">
-                            <canvas id="earningsChart"></canvas>
+                            <canvas role="img" aria-label="earnings chart" id="earningsChart"></canvas>
                         </div>
                     </div>
-                    
+
                     <!-- Top Earning Courses -->
                     <div>
                         <h3 class="text-sm font-semibold text-themed-primary mb-3 transition-colors duration-300">Top Earning Courses</h3>
@@ -264,14 +248,14 @@
                             <p class="text-themed-secondary text-sm transition-colors duration-300">No earnings data available</p>
                             @endforelse
                         </div>
-                        
+
                         <!-- Earnings Summary -->
                         <div class="mt-6 pt-4 border-t border-themed-primary transition-colors duration-300">
                             <div class="flex items-center justify-between mb-2">
                                 <span class="text-sm text-themed-secondary transition-colors duration-300">Pending Earnings</span>
                                 <span class="text-sm font-bold text-orange-600 dark:text-orange-400 transition-colors duration-300">₦{{ number_format($this->earningsOverview['pending_earnings'], 0) }}</span>
                             </div>
-                            <a href="{{ route('instructor.earnings') }}" class="block text-center bg-indigo-600 dark:bg-indigo-500 hover:bg-indigo-700 dark:hover:bg-indigo-600 text-white py-2 rounded-lg text-sm font-medium transition-colors">
+                            <a href="{{ route('instructor.earnings') }}" class="block text-center bg-action dark:bg-action hover:bg-action dark:hover:bg-action text-action-foreground py-2 rounded-lg text-sm font-medium transition-colors">
                                 View Detailed Earnings
                             </a>
                         </div>
@@ -285,14 +269,14 @@
         <div class="space-y-8">
             <!-- Certificate Requests -->
             @if($showWidgets['certificate_requests'])
-            <div class="bg-themed-secondary rounded-xl shadow-sm border border-themed-primary p-6 transition-colors duration-300">
+            <div class="bg-themed-secondary rounded-lg shadow-sm border border-themed-primary p-6 transition-colors duration-300">
                 <div class="flex items-center justify-between mb-6">
                     <h2 class="text-xl font-bold text-themed-primary transition-colors duration-300">Certificate Requests</h2>
                     <span class="bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-300 text-xs font-medium px-2 py-1 rounded-full transition-colors duration-300">
                         {{ count($this->certificateRequests) }} pending
                     </span>
                 </div>
-                
+
                 <div class="space-y-3 max-h-96 overflow-y-auto">
                     @forelse($this->certificateRequests as $request)
                     <div class="border border-themed-primary rounded-lg p-4 transition-colors duration-300">
@@ -308,12 +292,12 @@
                             </div>
                         </div>
                         <div class="flex space-x-2 mt-3">
-                            <button wire:click="approveCertificate({{ $request['id'] }})" 
+                            <button wire:click="approveCertificate({{ $request['id'] }})"
                                     class="flex-1 bg-green-600 dark:bg-green-500 hover:bg-green-700 dark:hover:bg-green-600 text-white text-xs py-2 rounded-lg transition-colors">
                                 <i class="fas fa-check mr-1"></i>
                                 Approve
                             </button>
-                            <button onclick="rejectCertificate({{ $request['id'] }})" 
+                            <button onclick="rejectCertificate({{ $request['id'] }})"
                                     class="flex-1 bg-red-600 dark:bg-red-500 hover:bg-red-700 dark:hover:bg-red-600 text-white text-xs py-2 rounded-lg transition-colors">
                                 <i class="fas fa-times mr-1"></i>
                                 Reject
@@ -332,21 +316,21 @@
 
             <!-- Recent Enrollments -->
             @if($showWidgets['recent_enrollments'])
-            <div class="bg-themed-secondary rounded-xl shadow-sm border border-themed-primary p-6 transition-colors duration-300">
+            <div class="bg-themed-secondary rounded-lg shadow-sm border border-themed-primary p-6 transition-colors duration-300">
                 <h2 class="text-xl font-bold text-themed-primary mb-6 transition-colors duration-300">Recent Enrollments</h2>
-                
+
                 <div class="space-y-3 max-h-80 overflow-y-auto">
                     @forelse($this->recentEnrollments as $enrollment)
                     <div class="flex items-center space-x-3 p-3 border border-themed-primary rounded-lg transition-colors duration-300">
-                        <div class="flex-shrink-0 w-10 h-10 bg-indigo-100 dark:bg-indigo-900/30 rounded-full flex items-center justify-center transition-colors duration-300">
-                            <i class="fas fa-user text-indigo-600 dark:text-indigo-400"></i>
+                        <div class="flex-shrink-0 w-10 h-10 bg-brand/10 dark:bg-action/30 rounded-full flex items-center justify-center transition-colors duration-300">
+                            <i class="fas fa-user text-brand dark:text-brand"></i>
                         </div>
                         <div class="flex-1 min-w-0">
                             <h4 class="text-sm font-medium text-themed-primary truncate transition-colors duration-300">{{ $enrollment['student_name'] }}</h4>
                             <p class="text-xs text-themed-secondary truncate transition-colors duration-300">{{ \Str::limit($enrollment['course_title'], 25) }}</p>
                             <div class="flex items-center mt-1">
                                 <div class="w-16 bg-themed-tertiary rounded-full h-1 transition-colors duration-300">
-                                    <div class="bg-indigo-500 dark:bg-indigo-400 h-1 rounded-full" style="width: {{ $enrollment['progress'] }}%"></div>
+                                    <div class="bg-action dark:bg-indigo-400 h-1 rounded-full" style="width: {{ $enrollment['progress'] }}%"></div>
                                 </div>
                                 <span class="text-xs text-themed-secondary ml-2 transition-colors duration-300">{{ $enrollment['progress'] }}%</span>
                             </div>
@@ -365,9 +349,9 @@
 
             <!-- Course Reviews -->
             @if($showWidgets['course_reviews'])
-            <div class="bg-themed-secondary rounded-xl shadow-sm border border-themed-primary p-6 transition-colors duration-300">
+            <div class="bg-themed-secondary rounded-lg shadow-sm border border-themed-primary p-6 transition-colors duration-300">
                 <h2 class="text-xl font-bold text-themed-primary mb-6 transition-colors duration-300">Recent Reviews</h2>
-                
+
                 <div class="space-y-4 max-h-96 overflow-y-auto">
                     @forelse($this->courseReviews as $review)
                     <div class="border border-themed-primary rounded-lg p-4 transition-colors duration-300">
@@ -401,14 +385,14 @@
 
             <!-- Marketplace Items -->
             @if($showWidgets['marketplace_items'] && count($this->marketplaceItems) > 0)
-            <div class="bg-themed-secondary rounded-xl shadow-sm border border-themed-primary p-6 transition-colors duration-300">
+            <div class="bg-themed-secondary rounded-lg shadow-sm border border-themed-primary p-6 transition-colors duration-300">
                 <div class="flex items-center justify-between mb-6">
                     <h2 class="text-xl font-bold text-themed-primary transition-colors duration-300">Marketplace Items</h2>
-                    <a href="{{ route('marketplace.seller.listings') }}" class="text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300 text-sm font-medium transition-colors duration-300">
+                    <a href="{{ route('marketplace.seller.listings') }}" class="text-brand dark:text-brand hover:text-brand dark:hover:text-brand text-sm font-medium transition-colors duration-300">
                         View All <i class="fas fa-arrow-right ml-1"></i>
                     </a>
                 </div>
-                
+
                 <div class="space-y-3">
                     @foreach($this->marketplaceItems as $item)
                     <div class="flex items-center justify-between p-3 border border-themed-primary rounded-lg transition-colors duration-300">
@@ -439,7 +423,7 @@
 document.addEventListener('DOMContentLoaded', function() {
     // Get current theme for chart colors
     const isDark = document.documentElement.classList.contains('dark');
-    
+
     // Chart.js default configuration for dark mode
     Chart.defaults.color = isDark ? '#D1D5DB' : '#374151';
     Chart.defaults.borderColor = isDark ? '#374151' : '#E5E7EB';
@@ -463,6 +447,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 }]
             },
             options: {
+                animation: false,
                 responsive: true,
                 maintainAspectRatio: false,
                 plugins: {
@@ -511,6 +496,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 }]
             },
             options: {
+                animation: false,
                 responsive: true,
                 maintainAspectRatio: false,
                 plugins: {
@@ -555,7 +541,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     });
-    
+
     observer.observe(document.documentElement, {
         attributes: true,
         attributeFilter: ['class']

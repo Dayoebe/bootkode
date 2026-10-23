@@ -12,8 +12,8 @@
     <div class="bg-themed-secondary border border-themed-primary rounded-lg p-6 shadow-sm">
         <div class="flex flex-col xl:flex-row xl:items-center xl:justify-between gap-4">
             <div>
-                <p class="text-sm font-semibold text-blue-600 dark:text-blue-400 uppercase tracking-wide">Course Quality Control</p>
-                <h1 class="text-2xl md:text-3xl font-bold text-themed-primary mt-1">Editorial QA before courses go public</h1>
+                <p class="text-sm font-semibold text-brand dark:text-brand uppercase tracking-wide">Course Quality Control</p>
+                <h1 class="  font-bold text-themed-primary mt-1 bk-page-title">Editorial QA before courses go public</h1>
                 <p class="text-themed-secondary mt-2 max-w-3xl">Score completeness, scan broken media, check assessment coverage, schedule content reviews, and control public quality labels.</p>
             </div>
 
@@ -24,17 +24,17 @@
     </div>
 
     <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-5 gap-4">
-        <button type="button" wire:click="$set('statusFilter', 'all')" class="text-left bg-themed-secondary border border-themed-primary rounded-lg p-4 hover:border-blue-300 transition">
+        <button type="button" wire:click="$set('statusFilter', 'all')" class="text-left bg-themed-secondary border border-themed-primary rounded-lg p-4 hover:border-brand transition">
             <div class="flex items-center justify-between">
                 <span class="text-sm text-themed-secondary">All courses</span>
-                <i class="fas fa-book text-blue-500"></i>
+                <i class="fas fa-book text-brand"></i>
             </div>
             <p class="text-3xl font-bold text-themed-primary mt-3">{{ number_format($stats['total']) }}</p>
         </button>
-        <button type="button" wire:click="$set('statusFilter', 'not_checked')" class="text-left bg-themed-secondary border border-themed-primary rounded-lg p-4 hover:border-gray-300 transition">
+        <button type="button" wire:click="$set('statusFilter', 'not_checked')" class="text-left bg-themed-secondary border border-themed-primary rounded-lg p-4 hover:border-line transition">
             <div class="flex items-center justify-between">
                 <span class="text-sm text-themed-secondary">Not checked</span>
-                <i class="fas fa-circle-question text-gray-500"></i>
+                <i class="fas fa-circle-question text-content-muted"></i>
             </div>
             <p class="text-3xl font-bold text-themed-primary mt-3">{{ number_format($stats['not_checked']) }}</p>
         </button>
@@ -67,14 +67,14 @@
                 <label class="block text-xs font-semibold text-themed-secondary mb-1">Search</label>
                 <div class="relative">
                     <i class="fas fa-search absolute left-3 top-3 text-themed-secondary text-xs"></i>
-                    <input type="search" wire:model.live.debounce.350ms="search"
+                    <input aria-label="Course title, description, instructor" type="search" wire:model.live.debounce.350ms="search"
                            class="w-full rounded-lg border border-themed-primary bg-themed-tertiary text-themed-primary pl-9 pr-3 py-2 text-sm"
                            placeholder="Course title, description, instructor...">
                 </div>
             </div>
             <div>
                 <label class="block text-xs font-semibold text-themed-secondary mb-1">Status</label>
-                <select wire:model.live="statusFilter" class="w-full rounded-lg border border-themed-primary bg-themed-tertiary text-themed-primary px-3 py-2 text-sm">
+                <select aria-label="Status filter" wire:model.live="statusFilter" class="w-full rounded-lg border border-themed-primary bg-themed-tertiary text-themed-primary px-3 py-2 text-sm">
                     <option value="all">All statuses</option>
                     <option value="pending">Pending approval</option>
                     <option value="not_checked">Not checked</option>
@@ -85,7 +85,7 @@
             </div>
             <div>
                 <label class="block text-xs font-semibold text-themed-secondary mb-1">Sort</label>
-                <select wire:model.live="sortBy" class="w-full rounded-lg border border-themed-primary bg-themed-tertiary text-themed-primary px-3 py-2 text-sm">
+                <select aria-label="Sort by" wire:model.live="sortBy" class="w-full rounded-lg border border-themed-primary bg-themed-tertiary text-themed-primary px-3 py-2 text-sm">
                     <option value="lowest_score">Lowest score</option>
                     <option value="highest_score">Highest score</option>
                     <option value="review_due">Review due</option>
@@ -97,14 +97,14 @@
 
     <div class="bg-themed-secondary border border-themed-primary rounded-lg overflow-hidden">
         <div class="overflow-x-auto">
-            <table class="min-w-full divide-y divide-themed-primary">
+            <x-ui.table label="Course Quality Control.Blade records"><table class="min-w-full divide-y divide-themed-primary">
                 <thead class="bg-themed-tertiary">
                     <tr>
-                        <th class="px-5 py-3 text-left text-xs font-bold uppercase text-themed-secondary">Course</th>
-                        <th class="px-5 py-3 text-left text-xs font-bold uppercase text-themed-secondary">Quality</th>
-                        <th class="px-5 py-3 text-left text-xs font-bold uppercase text-themed-secondary">Checks</th>
-                        <th class="px-5 py-3 text-left text-xs font-bold uppercase text-themed-secondary">Review Date</th>
-                        <th class="px-5 py-3 text-right text-xs font-bold uppercase text-themed-secondary">Actions</th>
+                        <th scope="col" class="px-5 py-3 text-left text-xs font-bold uppercase text-themed-secondary">Course</th>
+                        <th scope="col" class="px-5 py-3 text-left text-xs font-bold uppercase text-themed-secondary">Quality</th>
+                        <th scope="col" class="px-5 py-3 text-left text-xs font-bold uppercase text-themed-secondary">Checks</th>
+                        <th scope="col" class="px-5 py-3 text-left text-xs font-bold uppercase text-themed-secondary">Review Date</th>
+                        <th scope="col" class="px-5 py-3 text-right text-xs font-bold uppercase text-themed-secondary">Actions</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-themed-primary">
@@ -134,7 +134,7 @@
                                             <span class="inline-flex px-2 py-1 rounded text-xs font-semibold {{ $course->is_approved ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300' : 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-300' }}">
                                                 {{ $course->is_approved ? 'Approved' : 'Pending' }}
                                             </span>
-                                            <span class="inline-flex px-2 py-1 rounded text-xs font-semibold {{ $course->is_published ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300' : 'bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300' }}">
+                                            <span class="inline-flex px-2 py-1 rounded text-xs font-semibold {{ $course->is_published ? 'bg-blue-100 text-brand dark:bg-action/30 dark:text-blue-300' : 'bg-gray-100 text-content dark:bg-gray-800 dark:text-gray-300' }}">
                                                 {{ $course->is_published ? 'Published' : 'Unpublished' }}
                                             </span>
                                         </div>
@@ -143,7 +143,7 @@
                             </td>
                             <td class="px-5 py-4 min-w-[220px]">
                                 <div class="flex items-center gap-3">
-                                    <div class="text-3xl font-black {{ $score >= 85 ? 'text-green-600' : ($score >= 70 ? 'text-blue-600' : ($score >= 50 ? 'text-orange-600' : 'text-red-600')) }}">{{ $score }}</div>
+                                    <div class="text-3xl font-bold {{ $score >= 85 ? 'text-green-600' : ($score >= 70 ? 'text-blue-600' : ($score >= 50 ? 'text-orange-600' : 'text-red-600')) }}">{{ $score }}</div>
                                     <div class="flex-1">
                                         <div class="h-2 rounded-full bg-themed-tertiary overflow-hidden">
                                             <div class="h-full rounded-full {{ $score >= 85 ? 'bg-green-500' : ($score >= 70 ? 'bg-blue-500' : ($score >= 50 ? 'bg-orange-500' : 'bg-red-500')) }}" style="width: {{ min(100, $score) }}%"></div>
@@ -193,10 +193,10 @@
                             </td>
                             <td class="px-5 py-4 text-right min-w-[300px]">
                                 <div class="flex flex-wrap justify-end gap-2">
-                                    <button type="button" wire:click="runQualityCheck({{ $course->id }})" class="px-3 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold">
+                                    <button type="button" wire:click="runQualityCheck({{ $course->id }})" class="px-3 py-2 rounded-lg bg-action hover:bg-action text-action-foreground text-xs font-semibold">
                                         <i class="fas fa-clipboard-check mr-1"></i> Run QA
                                     </button>
-                                    <button type="button" wire:click="runQualityCheck({{ $course->id }}, true)" class="px-3 py-2 rounded-lg bg-purple-600 hover:bg-purple-700 text-white text-xs font-semibold">
+                                    <button type="button" wire:click="runQualityCheck({{ $course->id }}, true)" class="px-3 py-2 rounded-lg bg-action hover:bg-action text-action-foreground text-xs font-semibold">
                                         <i class="fas fa-photo-film mr-1"></i> Check Media
                                     </button>
                                     <button type="button" wire:click="markReviewed({{ $course->id }})" class="px-3 py-2 rounded-lg bg-green-600 hover:bg-green-700 text-white text-xs font-semibold">
@@ -266,7 +266,7 @@
                         </tr>
                     @endforelse
                 </tbody>
-            </table>
+            </table></x-ui.table>
         </div>
 
         @if($courses->hasPages())

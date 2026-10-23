@@ -2,13 +2,13 @@
     <!-- Header -->
     <div class="flex justify-between items-center mb-8">
         <div>
-            <h1 class="text-3xl font-bold text-themed-primary">Certificate Analytics</h1>
+            <h1 class=" font-bold text-themed-primary bk-page-title">Certificate Analytics</h1>
             <p class="text-themed-secondary mt-2">Comprehensive analytics and insights for certificate management</p>
         </div>
 
         <div class="flex gap-4">
-            <select wire:model.live="dateRange"
-                class="bg-themed-secondary border border-themed-primary rounded-lg px-3 py-2 text-themed-primary focus:ring-2 focus:ring-accent-themed-primary transition-colors duration-300">
+            <select aria-label="Date range" wire:model.live="dateRange"
+                class="bg-themed-secondary border border-themed-primary rounded-lg px-3 py-2 text-themed-primary focus:ring-2 focus:ring-brand transition-colors duration-300">
                 <option value="7">Last 7 Days</option>
                 <option value="30">Last 30 Days</option>
                 <option value="90">Last 3 Months</option>
@@ -18,8 +18,8 @@
             </select>
 
             @if (!auth()->user()->hasRole('instructor') || auth()->user()->hasRole('super_admin'))
-                <select wire:model.live="selectedCourse"
-                    class="bg-themed-secondary border border-themed-primary rounded-lg px-3 py-2 text-themed-primary focus:ring-2 focus:ring-accent-themed-primary transition-colors duration-300">
+                <select aria-label="Selected course" wire:model.live="selectedCourse"
+                    class="bg-themed-secondary border border-themed-primary rounded-lg px-3 py-2 text-themed-primary focus:ring-2 focus:ring-brand transition-colors duration-300">
                     <option value="all">All Courses</option>
                     @foreach ($availableCourses as $course)
                         <option value="{{ $course->id }}">{{ Str::limit($course->title, 30) }}</option>
@@ -28,7 +28,7 @@
             @endif
 
             <button wire:click="exportReport"
-                class="px-4 py-2 bg-accent-themed-primary hover:bg-accent-themed-secondary text-white rounded-lg transition-colors flex items-center">
+                class="px-4 py-2 bg-action hover:bg-action/90 text-action-foreground rounded-lg transition-colors flex items-center">
                 <i class="fas fa-download mr-2"></i>Export Report
             </button>
         </div>
@@ -36,7 +36,7 @@
 
     <!-- Key Metrics -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-        <div class="bg-gradient-to-r from-blue-600 to-blue-700 rounded-xl p-6 text-white">
+        <div class="bg-brand-ink   rounded-lg p-6 text-white">
             <div class="flex items-center justify-between">
                 <div>
                     <p class="text-sm opacity-90">Total Certificates</p>
@@ -47,7 +47,7 @@
             </div>
         </div>
 
-        <div class="bg-gradient-to-r from-green-600 to-green-700 rounded-xl p-6 text-white">
+        <div class="bg-brand-ink   rounded-lg p-6 text-white">
             <div class="flex items-center justify-between">
                 <div>
                     <p class="text-sm opacity-90">Approved</p>
@@ -58,7 +58,7 @@
             </div>
         </div>
 
-        <div class="bg-gradient-to-r from-yellow-600 to-yellow-700 rounded-xl p-6 text-white">
+        <div class="bg-brand-ink   rounded-lg p-6 text-white">
             <div class="flex items-center justify-between">
                 <div>
                     <p class="text-sm opacity-90">Pending</p>
@@ -69,7 +69,7 @@
             </div>
         </div>
 
-        <div class="bg-gradient-to-r from-purple-600 to-purple-700 rounded-xl p-6 text-white">
+        <div class="bg-brand-ink   rounded-lg p-6 text-white">
             <div class="flex items-center justify-between">
                 <div>
                     <p class="text-sm opacity-90">This Month</p>
@@ -84,7 +84,7 @@
     <!-- Charts Row -->
     <div class="grid lg:grid-cols-2 gap-6 mb-8">
         <!-- Certificates Over Time -->
-        <div class="bg-themed-secondary rounded-xl p-6 border border-themed-primary transition-colors duration-300">
+        <div class="bg-themed-secondary rounded-lg p-6 border border-themed-primary transition-colors duration-300">
             <h3 class="text-lg font-semibold text-themed-primary mb-4">Certificates Over Time</h3>
             <div class="h-64">
                 @if (count($monthlyStats) > 0)
@@ -95,7 +95,7 @@
                                 <div class="flex flex-col items-center flex-1 mx-1">
                                     <div class="w-full bg-themed-tertiary rounded-t"
                                         style="height: {{ $stat['total'] > 0 ? max(($stat['total'] / max(array_column($monthlyStats, 'total'))) * 100, 10) : 10 }}%">
-                                        <div class="bg-accent-themed-primary rounded-t h-full flex items-end justify-center">
+                                        <div class="bg-action rounded-t h-full flex items-end justify-center">
                                             <span class="text-themed-primary text-xs font-semibold mb-1">{{ $stat['total'] }}</span>
                                         </div>
                                     </div>
@@ -114,7 +114,7 @@
         </div>
 
         <!-- Status Distribution -->
-        <div class="bg-themed-secondary rounded-xl p-6 border border-themed-primary transition-colors duration-300">
+        <div class="bg-themed-secondary rounded-lg p-6 border border-themed-primary transition-colors duration-300">
             <h3 class="text-lg font-semibold text-themed-primary mb-4">Status Distribution</h3>
             <div class="h-64 flex items-center justify-center">
                 @if ($totalCertificates > 0)
@@ -162,7 +162,7 @@
     <!-- Top Courses and Recent Activity -->
     <div class="grid lg:grid-cols-2 gap-6">
         <!-- Most Certificated Courses -->
-        <div class="bg-themed-secondary rounded-xl p-6 border border-themed-primary transition-colors duration-300">
+        <div class="bg-themed-secondary rounded-lg p-6 border border-themed-primary transition-colors duration-300">
             <h3 class="text-lg font-semibold text-themed-primary mb-4">Top Certificated Courses</h3>
             <div class="space-y-4">
                 @forelse($topCourses as $item)
@@ -173,7 +173,7 @@
                             <p class="text-themed-secondary text-sm">{{ $item['instructor_name'] }}</p>
                         </div>
                         <div class="text-right">
-                            <div class="text-2xl font-bold text-accent-themed-primary">{{ $item['certificate_count'] }}</div>
+                            <div class="text-2xl font-bold text-brand">{{ $item['certificate_count'] }}</div>
                             <div class="text-xs text-themed-secondary">certificates</div>
                         </div>
                     </div>
@@ -187,7 +187,7 @@
         </div>
 
         <!-- Recent Activity -->
-        <div class="bg-themed-secondary rounded-xl p-6 border border-themed-primary transition-colors duration-300">
+        <div class="bg-themed-secondary rounded-lg p-6 border border-themed-primary transition-colors duration-300">
             <h3 class="text-lg font-semibold text-themed-primary mb-4">Recent Activity</h3>
             <div class="space-y-4 max-h-96 overflow-y-auto">
                 @forelse($recentActivity as $activity)
@@ -208,7 +208,7 @@
                             <p class="text-themed-secondary text-xs">{{ $activity['created_at']->diffForHumans() }}</p>
                         </div>
                         <span
-                            class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium 
+                            class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium
                             bg-{{ $activity['status_color'] }}-900 text-{{ $activity['status_color'] }}-300">
                             {{ ucfirst($activity['status']) }}
                         </span>
@@ -225,18 +225,18 @@
 
     <!-- Monthly Statistics Table (if needed) -->
     @if (count($monthlyStats) > 0 && auth()->user()->hasRole(['super_admin', 'academy_admin']))
-        <div class="mt-8 bg-themed-secondary rounded-xl p-6 border border-themed-primary transition-colors duration-300">
+        <div class="mt-8 bg-themed-secondary rounded-lg p-6 border border-themed-primary transition-colors duration-300">
             <h3 class="text-lg font-semibold text-themed-primary mb-4">Monthly Breakdown</h3>
             <div class="overflow-x-auto">
-                <table class="w-full">
+                <x-ui.table label="Certificate Analytics.Blade records"><table class="w-full">
                     <thead>
                         <tr class="border-b border-themed-primary">
-                            <th class="text-left text-themed-secondary py-2">Month</th>
-                            <th class="text-right text-themed-secondary py-2">Total</th>
-                            <th class="text-right text-themed-secondary py-2">Approved</th>
-                            <th class="text-right text-themed-secondary py-2">Pending</th>
-                            <th class="text-right text-themed-secondary py-2">Rejected</th>
-                            <th class="text-right text-themed-secondary py-2">Approval Rate</th>
+                            <th scope="col" class="text-left text-themed-secondary py-2">Month</th>
+                            <th scope="col" class="text-right text-themed-secondary py-2">Total</th>
+                            <th scope="col" class="text-right text-themed-secondary py-2">Approved</th>
+                            <th scope="col" class="text-right text-themed-secondary py-2">Pending</th>
+                            <th scope="col" class="text-right text-themed-secondary py-2">Rejected</th>
+                            <th scope="col" class="text-right text-themed-secondary py-2">Approval Rate</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -253,7 +253,7 @@
                             </tr>
                         @endforeach
                     </tbody>
-                </table>
+                </table></x-ui.table>
             </div>
         </div>
     @endif
@@ -262,7 +262,7 @@
     <!-- Loading Overlay -->
     <div wire:loading class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
         <div class="bg-themed-secondary rounded-lg p-8 flex items-center">
-            <i class="fas fa-spinner fa-spin text-accent-themed-primary text-2xl mr-4"></i>
+            <i class="fas fa-spinner fa-spin text-brand text-2xl mr-4"></i>
             <span class="text-themed-primary font-medium">Loading analytics...</span>
         </div>
     </div>

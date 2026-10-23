@@ -1,23 +1,23 @@
-<div class="bg-themed-primary dark:bg-gray-900 rounded-xl p-6 transition-colors duration-300">
+<div class="bg-themed-primary dark:bg-gray-900 rounded-lg p-6 transition-colors duration-300">
     <!-- Header Section -->
     <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
         <div>
-            <h1 class="text-3xl font-bold text-themed-primary mb-2">Explore Courses</h1>
+            <h1 class=" font-bold text-themed-primary mb-2 bk-page-title">Explore Courses</h1>
             <p class="text-themed-secondary mt-1">Discover skills that will shape your future</p>
         </div>
         <div class="flex items-center gap-4 text-sm">
-            <span class="px-3 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-200 rounded-full">
+            <span class="px-3 py-1 bg-brand/10 dark:bg-action/30 text-brand dark:text-brand rounded-full">
                 {{ $courses->total() }} courses available
             </span>
         </div>
     </div>
 
     <!-- Filters Section -->
-    <div class="bg-themed-tertiary rounded-xl p-5 mb-8">
+    <div class="bg-themed-tertiary rounded-lg p-5 mb-8">
         <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-5">
             <h2 class="text-lg font-semibold text-themed-primary">Filter Courses</h2>
             <button wire:click="resetFilters"
-                class="text-accent-themed-primary hover:text-accent-themed-secondary text-sm flex items-center transition-colors">
+                class="text-brand hover:text-accent-themed-secondary text-sm flex items-center transition-colors">
                 <i class="fas fa-redo-alt mr-2"></i> Reset Filters
             </button>
         </div>
@@ -25,31 +25,31 @@
         <!-- Search and Main Filters -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
             <div class="relative">
-                <input type="text" wire:model.live.debounce.300ms="search" placeholder="Search courses..."
-                    class="w-full pl-10 pr-4 py-3 bg-themed-secondary border border-themed-secondary rounded-lg text-themed-primary placeholder-themed-tertiary focus:outline-none focus:ring-2 focus:ring-accent-themed-primary">
+                <input aria-label="Search courses" type="text" wire:model.live.debounce.300ms="search" placeholder="Search courses..."
+                    class="w-full pl-10 pr-4 py-3 bg-themed-secondary border border-themed-secondary rounded-lg text-themed-primary placeholder-themed-tertiary focus:outline-none focus:ring-2 focus:ring-brand">
                 <div class="absolute left-3 top-3.5 text-themed-tertiary">
                     <i class="fas fa-search"></i>
                 </div>
             </div>
 
-            <select wire:model.live="categoryFilter"
-                class="bg-themed-secondary border border-themed-secondary text-themed-primary rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-accent-themed-primary">
+            <select aria-label="Category filter" wire:model.live="categoryFilter"
+                class="bg-themed-secondary border border-themed-secondary text-themed-primary rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-brand">
                 <option value="">All Categories</option>
                 @foreach($categories as $category)
                     <option value="{{ $category->id }}">{{ $category->name }}</option>
                 @endforeach
             </select>
 
-            <select wire:model.live="difficultyFilter"
-                class="bg-themed-secondary border border-themed-secondary text-themed-primary rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-accent-themed-primary">
+            <select aria-label="Difficulty filter" wire:model.live="difficultyFilter"
+                class="bg-themed-secondary border border-themed-secondary text-themed-primary rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-brand">
                 <option value="">All Levels</option>
                 <option value="beginner">Beginner</option>
                 <option value="intermediate">Intermediate</option>
                 <option value="advanced">Advanced</option>
             </select>
 
-            <select wire:model.live="sortBy"
-                class="bg-themed-secondary border border-themed-secondary text-themed-primary rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-accent-themed-primary">
+            <select aria-label="Sort by" wire:model.live="sortBy"
+                class="bg-themed-secondary border border-themed-secondary text-themed-primary rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-brand">
                 <option value="newest">Newest First</option>
                 <option value="popular">Most Popular</option>
                 <option value="rating">Highest Rated</option>
@@ -59,23 +59,23 @@
 
         <!-- Secondary Filters -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <select wire:model.live="durationFilter"
-                class="bg-themed-secondary border border-themed-secondary text-themed-primary rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-accent-themed-primary">
+            <select aria-label="Duration filter" wire:model.live="durationFilter"
+                class="bg-themed-secondary border border-themed-secondary text-themed-primary rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-brand">
                 <option value="">Any Duration</option>
                 <option value="short">Short (< 1 hour)</option>
                 <option value="medium">Medium (1-3 hours)</option>
                 <option value="long">Long (> 3 hours)</option>
             </select>
 
-            <select wire:model.live="priceFilter"
-                class="bg-themed-secondary border border-themed-secondary text-themed-primary rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-accent-themed-primary">
+            <select aria-label="Price filter" wire:model.live="priceFilter"
+                class="bg-themed-secondary border border-themed-secondary text-themed-primary rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-brand">
                 <option value="">All Pricing</option>
                 <option value="free">Free Courses</option>
                 <option value="premium">Premium Courses</option>
             </select>
 
-            <select wire:model.live="ratingFilter"
-                class="bg-themed-secondary border border-themed-secondary text-themed-primary rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-accent-themed-primary">
+            <select aria-label="Rating filter" wire:model.live="ratingFilter"
+                class="bg-themed-secondary border border-themed-secondary text-themed-primary rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-brand">
                 <option value="">Any Rating</option>
                 <option value="4">4+ Stars</option>
                 <option value="3">3+ Stars</option>
@@ -88,11 +88,11 @@
     <div class="flex justify-end mb-6">
         <div class="inline-flex rounded-md shadow-sm" role="group">
             <button type="button"
-                class="px-4 py-2 text-sm font-medium text-themed-primary bg-themed-secondary border border-themed-secondary rounded-l-lg hover:bg-themed-tertiary focus:z-10 focus:ring-2 focus:ring-accent-themed-primary transition-colors">
+                class="px-4 py-2 text-sm font-medium text-themed-primary bg-themed-secondary border border-themed-secondary rounded-l-lg hover:bg-themed-tertiary focus:z-10 focus:ring-2 focus:ring-brand transition-colors">
                 <i class="fas fa-th-large mr-2"></i> Grid
             </button>
             <button type="button"
-                class="px-4 py-2 text-sm font-medium text-themed-primary bg-themed-secondary border-t border-b border-r border-themed-secondary rounded-r-lg hover:bg-themed-tertiary focus:z-10 focus:ring-2 focus:ring-accent-themed-primary transition-colors">
+                class="px-4 py-2 text-sm font-medium text-themed-primary bg-themed-secondary border-t border-b border-r border-themed-secondary rounded-r-lg hover:bg-themed-tertiary focus:z-10 focus:ring-2 focus:ring-brand transition-colors">
                 <i class="fas fa-list mr-2"></i> List
             </button>
         </div>
@@ -103,13 +103,13 @@
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             @foreach($courses as $course)
                 <div
-                    class="bg-themed-secondary rounded-xl border border-themed-primary hover:shadow-lg transition-all duration-300 overflow-hidden group">
+                    class="bg-themed-secondary rounded-lg border border-themed-primary hover:shadow-sm transition-all duration-300 overflow-hidden group">
                     <div class="relative overflow-hidden">
                         <img src="{{ asset('storage/' . ($course->thumbnail ?? 'images/default-course.png')) }}"
                             alt="{{ $course->title }}"
-                            class="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300">
+                            class="w-full h-48 object-cover  transition-transform duration-300">
                         <div class="absolute top-3 left-3 flex flex-col gap-2">
-                            <span class="bg-accent-themed-primary text-white text-xs px-3 py-1.5 rounded-full shadow">
+                            <span class="bg-action text-action-foreground text-xs px-3 py-1.5 rounded-full shadow">
                                 {{ $course->category->name ?? 'Uncategorized' }}
                             </span>
                             @if($course->quality_label_text)
@@ -127,7 +127,7 @@
                                 <i class="fas fa-heart text-sm"></i>
                             </button>
                             <button wire:click="showPreview({{ $course->id }})"
-                                class="p-2 bg-themed-secondary rounded-full shadow-sm text-themed-tertiary hover:text-accent-themed-primary transition-colors">
+                                class="p-2 bg-themed-secondary rounded-full shadow-sm text-themed-tertiary hover:text-brand transition-colors">
                                 <i class="fas fa-eye text-sm"></i>
                             </button>
                         </div>
@@ -178,7 +178,7 @@
 
                             @if(in_array($course->id, $enrolledCourseIds))
                                 <a href="{{ route('course.view', $course->slug) }}"
-                                    class="px-4 py-2 bg-accent-themed-primary hover:bg-accent-themed-secondary text-white rounded-lg text-sm font-medium transition-colors flex items-center">
+                                    class="px-4 py-2 bg-action hover:bg-action/90 text-action-foreground rounded-lg text-sm font-medium transition-colors flex items-center">
                                     Continue <i class="fas fa-arrow-right ml-1.5 text-xs"></i>
                                 </a>
                             @else
@@ -200,7 +200,7 @@
     @else
         <!-- Empty State -->
         <div
-            class="bg-themed-tertiary border border-dashed border-themed-secondary rounded-xl p-10 text-center transition-colors">
+            class="bg-themed-tertiary border border-dashed border-themed-secondary rounded-lg p-10 text-center transition-colors">
             <div class="mx-auto w-16 h-16 bg-themed-tertiary rounded-full flex items-center justify-center mb-4">
                 <i class="fas fa-book-open text-themed-tertiary text-xl"></i>
             </div>
@@ -208,7 +208,7 @@
             <p class="text-themed-secondary mb-6 max-w-md mx-auto">Try adjusting your search filters or search terms to find
                 what you're looking for.</p>
             <button wire:click="resetFilters"
-                class="inline-flex items-center px-4 py-2.5 bg-accent-themed-primary hover:bg-accent-themed-secondary text-white rounded-lg text-sm font-medium transition-colors">
+                class="inline-flex items-center px-4 py-2.5 bg-action hover:bg-action/90 text-action-foreground rounded-lg text-sm font-medium transition-colors">
                 <i class="fas fa-redo-alt mr-2"></i> Reset Filters
             </button>
         </div>
@@ -219,12 +219,12 @@
         <div class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4" x-data
             x-on:click.self="$wire.closePreview()">
             <div
-                class="bg-themed-secondary rounded-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto border border-themed-primary">
+                class="bg-themed-secondary rounded-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto border border-themed-primary">
                 <div class="p-6">
                     <div class="flex justify-between items-start mb-6">
                         <h2 class="text-2xl font-bold text-themed-primary">{{ $previewCourse->title }}</h2>
                         <button wire:click="closePreview"
-                            class="text-themed-tertiary hover:text-themed-primary p-1 transition-colors">
+                            class="text-themed-tertiary hover:text-themed-primary p-1 transition-colors" aria-label="Close">
                             <i class="fas fa-times text-xl"></i>
                         </button>
                     </div>
@@ -257,7 +257,7 @@
                         </div>
 
                         <div class="lg:col-span-1">
-                            <div class="bg-themed-tertiary rounded-xl p-5 mb-5 border border-themed-secondary">
+                            <div class="bg-themed-tertiary rounded-lg p-5 mb-5 border border-themed-secondary">
                                 <h3 class="font-bold text-themed-primary mb-4 text-lg">Course Details</h3>
                                 <div class="space-y-4">
                                     <div class="flex justify-between items-center">
@@ -305,23 +305,23 @@
                                 </div>
                             </div>
 
-                            <div class="bg-themed-tertiary rounded-xl p-5 mb-5 border border-themed-secondary">
+                            <div class="bg-themed-tertiary rounded-lg p-5 mb-5 border border-themed-secondary">
                                 <h3 class="font-bold text-themed-primary mb-3">This course includes</h3>
                                 <ul class="space-y-2 text-sm">
                                     <li class="flex items-center text-themed-secondary">
-                                        <i class="fas fa-play-circle text-accent-themed-primary mr-3"></i>
+                                        <i class="fas fa-play-circle text-brand mr-3"></i>
                                         {{ $previewCourse->total_lessons }} lessons
                                     </li>
                                     <li class="flex items-center text-themed-secondary">
-                                        <i class="fas fa-tasks text-accent-themed-primary mr-3"></i>
+                                        <i class="fas fa-tasks text-brand mr-3"></i>
                                         {{ $previewCourse->total_assessments }} exercises
                                     </li>
                                     <li class="flex items-center text-themed-secondary">
-                                        <i class="fas fa-infinity text-accent-themed-primary mr-3"></i>
+                                        <i class="fas fa-infinity text-brand mr-3"></i>
                                         Full lifetime access
                                     </li>
                                     <li class="flex items-center text-themed-secondary">
-                                        <i class="fas fa-mobile-alt text-accent-themed-primary mr-3"></i>
+                                        <i class="fas fa-mobile-alt text-brand mr-3"></i>
                                         Access on mobile and TV
                                     </li>
                                 </ul>
@@ -330,7 +330,7 @@
                             <div class="mt-6">
                                 @if(in_array($previewCourse->id, $enrolledCourseIds))
                                     <a href="{{ route('course.view', $previewCourse->slug) }}"
-                                        class="w-full block text-center px-4 py-3 bg-accent-themed-primary hover:bg-accent-themed-secondary text-white rounded-lg font-medium transition-colors">
+                                        class="w-full block text-center px-4 py-3 bg-action hover:bg-action/90 text-action-foreground rounded-lg font-medium transition-colors">
                                         Continue Learning
                                     </a>
                                 @else

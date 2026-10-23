@@ -3,13 +3,13 @@
     <!-- Filters -->
     <div class="flex flex-wrap gap-3 items-center">
         <div class="relative">
-            <input wire:model.live.debounce.300ms="search" type="text" placeholder="Search orders..."
-                class="w-64 pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-purple-500 focus:border-purple-500">
-            <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
+            <input aria-label="Search orders" wire:model.live.debounce.300ms="search" type="text" placeholder="Search orders..."
+                class="w-64 pl-10 pr-4 py-2 border border-line rounded-lg focus:ring-brand/30 focus:border-brand">
+            <i class="fas fa-search absolute left-3 top-3 text-content-muted"></i>
         </div>
 
-        <select wire:model.live="orderStatus"
-            class="px-3 py-2 border border-gray-300 rounded-lg focus:ring-purple-500 focus:border-purple-500">
+        <select aria-label="Order status" wire:model.live="orderStatus"
+            class="px-3 py-2 border border-line rounded-lg focus:ring-brand/30 focus:border-brand">
             <option value="">All Status</option>
             <option value="pending">Pending</option>
             <option value="confirmed">Confirmed</option>
@@ -18,54 +18,54 @@
             <option value="cancelled">Cancelled</option>
         </select>
 
-        <select wire:model.live="paymentStatus"
-            class="px-3 py-2 border border-gray-300 rounded-lg focus:ring-purple-500 focus:border-purple-500">
+        <select aria-label="Payment status" wire:model.live="paymentStatus"
+            class="px-3 py-2 border border-line rounded-lg focus:ring-brand/30 focus:border-brand">
             <option value="">All Payments</option>
             <option value="paid">Paid</option>
             <option value="unpaid">Unpaid</option>
             <option value="refunded">Refunded</option>
         </select>
 
-        <input wire:model.live="dateFrom" type="date"
-            class="px-3 py-2 border border-gray-300 rounded-lg focus:ring-purple-500 focus:border-purple-500">
+        <input aria-label="Date from" wire:model.live="dateFrom" type="date"
+            class="px-3 py-2 border border-line rounded-lg focus:ring-brand/30 focus:border-brand">
 
-        <input wire:model.live="dateTo" type="date"
-            class="px-3 py-2 border border-gray-300 rounded-lg focus:ring-purple-500 focus:border-purple-500">
+        <input aria-label="Date to" wire:model.live="dateTo" type="date"
+            class="px-3 py-2 border border-line rounded-lg focus:ring-brand/30 focus:border-brand">
     </div>
 
     <!-- Orders Table -->
     @if(isset($orders) && $orders->count() > 0)
-        <div class="bg-white border border-gray-200 rounded-lg overflow-hidden">
+        <div class="bg-surface border border-line rounded-lg overflow-hidden">
             <div class="overflow-x-auto">
-                <table class="min-w-full divide-y divide-gray-200">
-                    <thead class="bg-gray-50">
+                <x-ui.table label="Orders Tab.Blade records"><table class="min-w-full divide-y divide-line">
+                    <thead class="bg-surface-muted">
                         <tr>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-content-muted uppercase tracking-wider">
                                 Order</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-content-muted uppercase tracking-wider">
                                 Customer</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-content-muted uppercase tracking-wider">
                                 Item</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-content-muted uppercase tracking-wider">
                                 Vendor</th>
-                            <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-content-muted uppercase tracking-wider">
                                 Amount</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-content-muted uppercase tracking-wider">
                                 Status</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-content-muted uppercase tracking-wider">
                                 Payment</th>
-                            <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-content-muted uppercase tracking-wider">
                                 Actions</th>
                         </tr>
                     </thead>
-                    <tbody class="bg-white divide-y divide-gray-200">
+                    <tbody class="bg-surface divide-y divide-line">
                         @foreach($orders as $order)
-                            <tr class="hover:bg-gray-50">
+                            <tr class="hover:bg-surface-muted">
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <div>
-                                        <div class="text-sm font-medium text-gray-900">{{ $order->order_number }}
+                                        <div class="text-sm font-medium text-content">{{ $order->order_number }}
                                         </div>
-                                        <div class="text-sm text-gray-500">
+                                        <div class="text-sm text-content-muted">
                                             {{ $order->created_at->format('M d, Y H:i') }}
                                         </div>
                                     </div>
@@ -74,40 +74,40 @@
                                     <div class="flex items-center">
                                         <div class="flex-shrink-0 h-8 w-8">
                                             @if($order->customer && $order->customer->profile_picture)
-                                                <img class="h-8 w-8 rounded-full object-cover" 
+                                                <img class="h-8 w-8 rounded-full object-cover"
                                                     src="{{ asset('storage/' . $order->customer->profile_picture) }}"
                                                     alt="{{ $order->customer->name }}">
                                             @else
                                                 <div
-                                                    class="h-8 w-8 rounded-full bg-gray-200 flex items-center justify-center text-sm font-medium text-gray-700">
+                                                    class="h-8 w-8 rounded-full bg-gray-200 flex items-center justify-center text-sm font-medium text-content">
                                                     {{ substr($order->customer->name ?? 'U', 0, 1) }}
                                                 </div>
                                             @endif
                                         </div>
                                         <div class="ml-3">
-                                            <div class="text-sm font-medium text-gray-900">
+                                            <div class="text-sm font-medium text-content">
                                                 {{ $order->customer->name ?? 'Unknown Customer' }}
                                             </div>
-                                            <div class="text-sm text-gray-500">{{ $order->customer->email ?? '' }}
+                                            <div class="text-sm text-content-muted">{{ $order->customer->email ?? '' }}
                                             </div>
                                         </div>
                                     </div>
                                 </td>
                                 <td class="px-6 py-4">
-                                    <div class="text-sm font-medium text-gray-900">
+                                    <div class="text-sm font-medium text-content">
                                         {{ Str::limit($order->item->title ?? 'Deleted Item', 30) }}
                                     </div>
-                                    <div class="text-sm text-gray-500">
+                                    <div class="text-sm text-content-muted">
                                         {{ ucfirst($order->item->type ?? 'unknown') }}
                                     </div>
                                 </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-content">
                                     {{ $order->vendor->name ?? 'Unknown Vendor' }}
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-right">
-                                    <div class="text-sm font-semibold text-gray-900">
+                                    <div class="text-sm font-semibold text-content">
                                         ₦{{ number_format($order->total_amount, 2) }}</div>
-                                    <div class="text-xs text-gray-500">
+                                    <div class="text-xs text-content-muted">
                                         ₦{{ number_format($order->vendor_earning, 2) }} vendor</div>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
@@ -143,7 +143,7 @@
                                 <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                     <div class="flex items-center gap-2 justify-end">
                                         <button wire:click="viewOrder({{ $order->id }})"
-                                            class="text-purple-600 hover:text-purple-900" title="View Details">
+                                            class="text-brand hover:text-brand" title="View Details">
                                             <i class="fas fa-eye"></i>
                                         </button>
                                         @if($order->status === 'pending')
@@ -164,18 +164,18 @@
                             </tr>
                         @endforeach
                     </tbody>
-                </table>
+                </table></x-ui.table>
             </div>
 
-            <div class="px-6 py-4 border-t border-gray-200">
+            <div class="px-6 py-4 border-t border-line">
                 {{ $orders->links() }}
             </div>
         </div>
     @else
-        <div class="text-center py-12 bg-white rounded-lg border border-gray-200">
+        <div class="text-center py-12 bg-surface rounded-lg border border-line">
             <i class="fas fa-clipboard-list text-gray-300 text-6xl mb-4"></i>
-            <h3 class="text-lg font-medium text-gray-900 mb-2">No orders found</h3>
-            <p class="text-gray-500">
+            <h3 class="text-lg font-medium text-content mb-2">No orders found</h3>
+            <p class="text-content-muted">
                 @if($orderStatus)
                     No {{ strtolower($orderStatus) }} orders found.
                 @elseif($search)

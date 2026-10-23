@@ -3,12 +3,12 @@
     <!-- Key Metrics Row -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <!-- Total Revenue Card -->
-        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6 hover:shadow-md transition-all duration-200">
+        <div class="bg-surface dark:bg-gray-800 rounded-lg shadow-sm border border-line dark:border-gray-700 p-6  transition-all duration-200">
             <div class="flex items-center justify-between">
                 <div>
-                    <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Total Revenue</p>
+                    <p class="text-sm font-medium text-content-muted dark:text-content-muted">Total Revenue</p>
                     <p class="text-3xl font-bold text-green-600 dark:text-green-400">{{ $stats['total_revenue'] === null ? 'Not connected' : number_format($stats['total_revenue']) }}</p>
-                    <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">{{ $selectedPeriod }} days</p>
+                    <p class="text-xs text-content-muted dark:text-content-muted mt-1">{{ $selectedPeriod }} days</p>
                 </div>
                 <div class="bg-green-100 dark:bg-green-900/30 p-3 rounded-full">
                     <i class="fas fa-dollar-sign text-green-600 dark:text-green-400 text-xl"></i>
@@ -17,45 +17,45 @@
         </div>
 
         <!-- Recent Enrollments Card -->
-        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6 hover:shadow-md transition-all duration-200">
+        <div class="bg-surface dark:bg-gray-800 rounded-lg shadow-sm border border-line dark:border-gray-700 p-6  transition-all duration-200">
             <div class="flex items-center justify-between">
                 <div>
-                    <p class="text-sm font-medium text-gray-600 dark:text-gray-400">New Enrollments</p>
-                    <p class="text-3xl font-bold text-blue-600 dark:text-blue-400">{{ number_format($stats['recent_enrollments']) }}</p>
-                    <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">{{ $selectedPeriod }} days</p>
+                    <p class="text-sm font-medium text-content-muted dark:text-content-muted">New Enrollments</p>
+                    <p class="text-3xl font-bold text-brand dark:text-brand">{{ number_format($stats['recent_enrollments']) }}</p>
+                    <p class="text-xs text-content-muted dark:text-content-muted mt-1">{{ $selectedPeriod }} days</p>
                 </div>
-                <div class="bg-blue-100 dark:bg-blue-900/30 p-3 rounded-full">
-                    <i class="fas fa-user-graduate text-blue-600 dark:text-blue-400 text-xl"></i>
+                <div class="bg-brand/10 dark:bg-action/30 p-3 rounded-full">
+                    <i class="fas fa-user-graduate text-brand dark:text-brand text-xl"></i>
                 </div>
             </div>
         </div>
 
         <!-- Certificates Issued Card -->
-        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6 hover:shadow-md transition-all duration-200">
+        <div class="bg-surface dark:bg-gray-800 rounded-lg shadow-sm border border-line dark:border-gray-700 p-6  transition-all duration-200">
             <div class="flex items-center justify-between">
                 <div>
-                    <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Certificates Issued</p>
-                    <p class="text-3xl font-bold text-purple-600 dark:text-purple-400">{{ number_format($stats['certificates_issued']) }}</p>
-                    <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">{{ $selectedPeriod }} days</p>
+                    <p class="text-sm font-medium text-content-muted dark:text-content-muted">Certificates Issued</p>
+                    <p class="text-3xl font-bold text-brand dark:text-brand">{{ number_format($stats['certificates_issued']) }}</p>
+                    <p class="text-xs text-content-muted dark:text-content-muted mt-1">{{ $selectedPeriod }} days</p>
                 </div>
-                <div class="bg-purple-100 dark:bg-purple-900/30 p-3 rounded-full">
-                    <i class="fas fa-certificate text-purple-600 dark:text-purple-400 text-xl"></i>
+                <div class="bg-brand/10 dark:bg-action/30 p-3 rounded-full">
+                    <i class="fas fa-certificate text-brand dark:text-brand text-xl"></i>
                 </div>
             </div>
         </div>
 
         <!-- Active Institutions Card -->
-        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6 hover:shadow-md transition-all duration-200">
+        <div class="bg-surface dark:bg-gray-800 rounded-lg shadow-sm border border-line dark:border-gray-700 p-6  transition-all duration-200">
             <div class="flex items-center justify-between">
                 <div>
-                    <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Active Institutions</p>
-                    <p class="text-3xl font-bold text-indigo-600 dark:text-indigo-400">{{ number_format($stats['active_institutions']) }}</p>
-                    <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                    <p class="text-sm font-medium text-content-muted dark:text-content-muted">Active Institutions</p>
+                    <p class="text-3xl font-bold text-brand dark:text-brand">{{ number_format($stats['active_institutions']) }}</p>
+                    <p class="text-xs text-content-muted dark:text-content-muted mt-1">
                         {{ round(($stats['active_institutions'] / max($stats['total_institutions'], 1)) * 100, 1) }}% of total
                     </p>
                 </div>
-                <div class="bg-indigo-100 dark:bg-indigo-900/30 p-3 rounded-full">
-                    <i class="fas fa-university text-indigo-600 dark:text-indigo-400 text-xl"></i>
+                <div class="bg-brand/10 dark:bg-action/30 p-3 rounded-full">
+                    <i class="fas fa-university text-brand dark:text-brand text-xl"></i>
                 </div>
             </div>
         </div>
@@ -64,12 +64,12 @@
     <!-- Charts and Analytics Row -->
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <!-- Growth Chart -->
-        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+        <div class="bg-surface dark:bg-gray-800 rounded-lg shadow-sm border border-line dark:border-gray-700 p-6">
             <div class="flex items-center justify-between mb-6">
-                <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Growth Trends</h3>
+                <h3 class="text-lg font-semibold text-content dark:text-white">Growth Trends</h3>
                 <div class="flex space-x-2">
-                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300">
-                        <span class="w-2 h-2 bg-blue-500 dark:bg-blue-400 rounded-full mr-1"></span>
+                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-brand/10 dark:bg-action/30 text-brand dark:text-brand">
+                        <span class="w-2 h-2 bg-action dark:bg-blue-400 rounded-full mr-1"></span>
                         Institutions
                     </span>
                     <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300">
@@ -82,7 +82,7 @@
                 @if(!empty($monthlyGrowthData['months']))
                     <canvas id="growthChart" class="w-full h-full"></canvas>
                 @else
-                    <div class="flex items-center justify-center h-full text-gray-500 dark:text-gray-400">
+                    <div class="flex items-center justify-center h-full text-content-muted dark:text-content-muted">
                         <div class="text-center">
                             <i class="fas fa-chart-line text-4xl mb-2"></i>
                             <p>No data available</p>
@@ -93,10 +93,10 @@
         </div>
 
         <!-- Institution Type Breakdown -->
-        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+        <div class="bg-surface dark:bg-gray-800 rounded-lg shadow-sm border border-line dark:border-gray-700 p-6">
             <div class="flex items-center justify-between mb-6">
-                <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Institution Types</h3>
-                <i class="fas fa-chart-pie text-gray-400 dark:text-gray-500"></i>
+                <h3 class="text-lg font-semibold text-content dark:text-white">Institution Types</h3>
+                <i class="fas fa-chart-pie text-content-muted dark:text-content-muted"></i>
             </div>
             <div class="space-y-4">
                 @if($institutionTypeBreakdown->count() > 0)
@@ -106,19 +106,19 @@
                         $darkColors = ['dark:bg-blue-400', 'dark:bg-green-400', 'dark:bg-purple-400', 'dark:bg-yellow-400', 'dark:bg-red-400', 'dark:bg-indigo-400', 'dark:bg-pink-400'];
                     @endphp
                     @foreach($institutionTypeBreakdown as $type => $count)
-                        @php 
-                            $percentage = $total > 0 ? ($count / $total) * 100 : 0; 
+                        @php
+                            $percentage = $total > 0 ? ($count / $total) * 100 : 0;
                             $color = $colors[$loop->index % count($colors)];
                             $darkColor = $darkColors[$loop->index % count($darkColors)];
                         @endphp
                         <div class="flex items-center justify-between">
                             <div class="flex items-center space-x-3">
                                 <div class="w-3 h-3 rounded-full {{ $color }} {{ $darkColor }}"></div>
-                                <span class="text-sm font-medium text-gray-700 dark:text-gray-300">{{ $type }}</span>
+                                <span class="text-sm font-medium text-content dark:text-gray-300">{{ $type }}</span>
                             </div>
                             <div class="flex items-center space-x-2">
-                                <span class="text-sm text-gray-600 dark:text-gray-400">{{ $count }}</span>
-                                <span class="text-xs text-gray-500 dark:text-gray-500">({{ number_format($percentage, 1) }}%)</span>
+                                <span class="text-sm text-content-muted dark:text-content-muted">{{ $count }}</span>
+                                <span class="text-xs text-content-muted dark:text-content-muted">({{ number_format($percentage, 1) }}%)</span>
                             </div>
                         </div>
                         <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
@@ -126,7 +126,7 @@
                         </div>
                     @endforeach
                 @else
-                    <div class="flex items-center justify-center py-8 text-gray-500 dark:text-gray-400">
+                    <div class="flex items-center justify-center py-8 text-content-muted dark:text-content-muted">
                         <div class="text-center">
                             <i class="fas fa-chart-pie text-4xl mb-2"></i>
                             <p>No institutions yet</p>
@@ -140,10 +140,10 @@
     <!-- License Status and Top Institutions Row -->
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <!-- License Status Breakdown -->
-        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+        <div class="bg-surface dark:bg-gray-800 rounded-lg shadow-sm border border-line dark:border-gray-700 p-6">
             <div class="flex items-center justify-between mb-6">
-                <h3 class="text-lg font-semibold text-gray-900 dark:text-white">License Status</h3>
-                <i class="fas fa-key text-gray-400 dark:text-gray-500"></i>
+                <h3 class="text-lg font-semibold text-content dark:text-white">License Status</h3>
+                <i class="fas fa-key text-content-muted dark:text-content-muted"></i>
             </div>
             <div class="grid grid-cols-2 gap-4">
                 @php
@@ -170,17 +170,17 @@
         </div>
 
         <!-- Top Institutions by Users -->
-        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+        <div class="bg-surface dark:bg-gray-800 rounded-lg shadow-sm border border-line dark:border-gray-700 p-6">
             <div class="flex items-center justify-between mb-6">
-                <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Top Institutions</h3>
-                <span class="text-xs text-gray-500 dark:text-gray-400">By active users</span>
+                <h3 class="text-lg font-semibold text-content dark:text-white">Top Institutions</h3>
+                <span class="text-xs text-content-muted dark:text-content-muted">By active users</span>
             </div>
             <div class="space-y-4">
                 @if($topInstitutions->count() > 0)
                     @foreach($topInstitutions as $institution)
-                        <div class="flex items-center justify-between p-3 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
+                        <div class="flex items-center justify-between p-3 rounded-lg hover:bg-surface-muted dark:hover:bg-gray-700/50 transition-colors">
                             <div class="flex items-center space-x-3">
-                                <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
+                                <div class="w-10 h-10 bg-brand-ink   rounded-lg flex items-center justify-center">
                                     @if($institution->logo)
                                         <img class="w-8 h-8 rounded object-cover" src="{{ Storage::url($institution->logo) }}" alt="{{ $institution->name }}">
                                     @else
@@ -190,18 +190,18 @@
                                     @endif
                                 </div>
                                 <div>
-                                    <p class="font-medium text-gray-900 dark:text-white">{{ Str::limit($institution->name, 25) }}</p>
-                                    <p class="text-xs text-gray-500 dark:text-gray-400">{{ $institution->institution_type_name }}</p>
+                                    <p class="font-medium text-content dark:text-white">{{ Str::limit($institution->name, 25) }}</p>
+                                    <p class="text-xs text-content-muted dark:text-content-muted">{{ $institution->institution_type_name }}</p>
                                 </div>
                             </div>
                             <div class="text-right">
-                                <p class="font-semibold text-gray-900 dark:text-white">{{ number_format($institution->users_count) }}</p>
-                                <p class="text-xs text-gray-500 dark:text-gray-400">users</p>
+                                <p class="font-semibold text-content dark:text-white">{{ number_format($institution->users_count) }}</p>
+                                <p class="text-xs text-content-muted dark:text-content-muted">users</p>
                             </div>
                         </div>
                     @endforeach
                 @else
-                    <div class="flex items-center justify-center py-8 text-gray-500 dark:text-gray-400">
+                    <div class="flex items-center justify-center py-8 text-content-muted dark:text-content-muted">
                         <div class="text-center">
                             <i class="fas fa-building text-4xl mb-2"></i>
                             <p>No institutions yet</p>
@@ -213,28 +213,28 @@
     </div>
 
     <!-- Recent Activities -->
-    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+    <div class="bg-surface dark:bg-gray-800 rounded-lg shadow-sm border border-line dark:border-gray-700 p-6">
         <div class="flex items-center justify-between mb-6">
-            <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Recent Activities</h3>
-            <span class="text-xs text-gray-500 dark:text-gray-400">Last {{ $selectedPeriod }} days</span>
+            <h3 class="text-lg font-semibold text-content dark:text-white">Recent Activities</h3>
+            <span class="text-xs text-content-muted dark:text-content-muted">Last {{ $selectedPeriod }} days</span>
         </div>
         <div class="space-y-4">
             @if($recentActivities->count() > 0)
                 @foreach($recentActivities as $activity)
-                    <div class="flex items-start space-x-4 p-3 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
+                    <div class="flex items-start space-x-4 p-3 rounded-lg hover:bg-surface-muted dark:hover:bg-gray-700/50 transition-colors">
                         <div class="flex-shrink-0">
                             <div class="w-8 h-8 bg-{{ $activity['color'] }}-100 dark:bg-{{ $activity['color'] }}-900/30 rounded-full flex items-center justify-center">
                                 <i class="{{ $activity['icon'] }} text-{{ $activity['color'] }}-600 dark:text-{{ $activity['color'] }}-400 text-sm"></i>
                             </div>
                         </div>
                         <div class="flex-1 min-w-0">
-                            <p class="font-medium text-gray-900 dark:text-white">{{ $activity['title'] }}</p>
-                            <p class="text-sm text-gray-600 dark:text-gray-400">{{ $activity['description'] }}</p>
+                            <p class="font-medium text-content dark:text-white">{{ $activity['title'] }}</p>
+                            <p class="text-sm text-content-muted dark:text-content-muted">{{ $activity['description'] }}</p>
                             <div class="flex items-center space-x-4 mt-1">
-                                <span class="text-xs text-gray-500 dark:text-gray-400">
+                                <span class="text-xs text-content-muted dark:text-content-muted">
                                     <i class="fas fa-user mr-1"></i>{{ $activity['user'] }}
                                 </span>
-                                <span class="text-xs text-gray-500 dark:text-gray-400">
+                                <span class="text-xs text-content-muted dark:text-content-muted">
                                     <i class="fas fa-clock mr-1"></i>{{ $activity['time']->diffForHumans() }}
                                 </span>
                             </div>
@@ -242,7 +242,7 @@
                     </div>
                 @endforeach
             @else
-                <div class="flex items-center justify-center py-8 text-gray-500 dark:text-gray-400">
+                <div class="flex items-center justify-center py-8 text-content-muted dark:text-content-muted">
                     <div class="text-center">
                         <i class="fas fa-history text-4xl mb-2"></i>
                         <p>No recent activities</p>
@@ -264,7 +264,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const isDarkMode = document.documentElement.classList.contains('dark');
             const gridColor = isDarkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.05)';
             const textColor = isDarkMode ? '#9CA3AF' : '#6B7280';
-            
+
             new Chart(ctx, {
                 type: 'line',
                 data: {

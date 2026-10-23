@@ -1,4 +1,4 @@
-<div class="mx-auto max-w-7xl space-y-6 p-4 sm:p-6">
+<div class="space-y-6">
     <x-ui.page-header title="Certificate templates" description="Save certificate designs and choose the default for future awards. Issued certificates retain their saved design.">
         <x-slot:actions>
             @if(auth()->user()->hasAnyRole(['super_admin', 'academy_admin']))
@@ -58,7 +58,7 @@
             </div>
             <div>
                 <x-input-label for="template-description" value="Description" />
-                <textarea id="template-description" wire:model="templateDescription" rows="2" maxlength="255" class="mt-1 block w-full rounded-lg border-line bg-surface text-content" aria-describedby="template-description-error"></textarea>
+                <textarea aria-label="Template description" id="template-description" wire:model="templateDescription" rows="2" maxlength="255" class="mt-1 block w-full rounded-lg border-line bg-surface text-content" aria-describedby="template-description-error"></textarea>
                 <x-input-error id="template-description-error" :messages="$errors->get('templateDescription')" />
             </div>
             <fieldset>
@@ -113,7 +113,7 @@
             </div>
             <p class="text-sm text-content-muted">Example labels show the layout. This preview is not an issued certificate.</p>
             @if($showPreview)
-                <iframe title="Certificate design preview" sandbox="" srcdoc="{{ $previewHtml }}" class="h-[480px] w-full rounded-lg border border-line bg-white"></iframe>
+                <iframe title="Certificate design preview" sandbox="" srcdoc="{{ $previewHtml }}" class="h-[480px] w-full rounded-lg border border-line bg-surface"></iframe>
             @endif
         </div>
     </x-modal>

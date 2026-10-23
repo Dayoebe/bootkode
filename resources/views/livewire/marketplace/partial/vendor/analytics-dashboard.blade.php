@@ -3,7 +3,7 @@
 <!-- Analytics Overview Cards -->
 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
     <!-- Revenue Card -->
-    <div class="bg-gradient-to-br from-green-500 to-emerald-600 rounded-xl p-6 text-white">
+    <div class="bg-brand-ink   rounded-lg p-6 text-white">
         <div class="flex items-center justify-between">
             <div>
                 <p class="text-green-100 text-sm font-medium">Total Revenue</p>
@@ -17,12 +17,12 @@
     </div>
 
     <!-- Sales Card -->
-    <div class="bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl p-6 text-white">
+    <div class="bg-brand-ink   rounded-lg p-6 text-white">
         <div class="flex items-center justify-between">
             <div>
-                <p class="text-blue-100 text-sm font-medium">Total Sales</p>
+                <p class="text-brand text-sm font-medium">Total Sales</p>
                 <p class="text-3xl font-bold">{{ $analyticsData['total_sales'] ?? 0 }}</p>
-                <p class="text-blue-200 text-sm mt-1">Items sold</p>
+                <p class="text-brand text-sm mt-1">Items sold</p>
             </div>
             <div class="bg-blue-400/30 p-3 rounded-full">
                 <i class="fas fa-shopping-cart text-2xl"></i>
@@ -31,12 +31,12 @@
     </div>
 
     <!-- Items Card -->
-    <div class="bg-gradient-to-br from-purple-500 to-violet-600 rounded-xl p-6 text-white">
+    <div class="bg-brand-ink   rounded-lg p-6 text-white">
         <div class="flex items-center justify-between">
             <div>
-                <p class="text-purple-100 text-sm font-medium">Published Items</p>
+                <p class="text-brand text-sm font-medium">Published Items</p>
                 <p class="text-3xl font-bold">{{ $analyticsData['published_items'] ?? 0 }}</p>
-                <p class="text-purple-200 text-sm mt-1">of {{ $analyticsData['total_items'] ?? 0 }} total</p>
+                <p class="text-brand text-sm mt-1">of {{ $analyticsData['total_items'] ?? 0 }} total</p>
             </div>
             <div class="bg-purple-400/30 p-3 rounded-full">
                 <i class="fas fa-box text-2xl"></i>
@@ -45,7 +45,7 @@
     </div>
 
     <!-- Rating Card -->
-    <div class="bg-gradient-to-br from-yellow-500 to-orange-600 rounded-xl p-6 text-white">
+    <div class="bg-brand-ink   rounded-lg p-6 text-white">
         <div class="flex items-center justify-between">
             <div>
                 <p class="text-yellow-100 text-sm font-medium">Average Rating</p>
@@ -62,12 +62,12 @@
 <!-- Monthly Performance -->
 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
     <!-- This Month Stats -->
-    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-        <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
-            <i class="fas fa-calendar-alt mr-2 text-blue-600"></i>
+    <div class="bg-surface rounded-lg shadow-sm border border-line p-6">
+        <h3 class="text-lg font-semibold text-content mb-4 flex items-center">
+            <i class="fas fa-calendar-alt mr-2 text-brand"></i>
             This Month Performance
         </h3>
-        
+
         <div class="space-y-4">
             <div class="flex items-center justify-between p-4 bg-green-50 rounded-lg">
                 <div class="flex items-center">
@@ -75,32 +75,32 @@
                         <i class="fas fa-dollar-sign text-white"></i>
                     </div>
                     <div>
-                        <p class="text-sm font-medium text-gray-600">Monthly Revenue</p>
-                        <p class="text-xl font-bold text-gray-900">₦{{ number_format($analyticsData['this_month_revenue'] ?? 0, 0) }}</p>
+                        <p class="text-sm font-medium text-content-muted">Monthly Revenue</p>
+                        <p class="text-xl font-bold text-content">₦{{ number_format($analyticsData['this_month_revenue'] ?? 0, 0) }}</p>
                     </div>
                 </div>
             </div>
 
-            <div class="flex items-center justify-between p-4 bg-blue-50 rounded-lg">
+            <div class="flex items-center justify-between p-4 bg-brand/10 rounded-lg">
                 <div class="flex items-center">
-                    <div class="bg-blue-500 p-2 rounded-full mr-3">
-                        <i class="fas fa-shopping-bag text-white"></i>
+                    <div class="bg-action p-2 rounded-full mr-3">
+                        <i class="fas fa-shopping-bag text-action-foreground"></i>
                     </div>
                     <div>
-                        <p class="text-sm font-medium text-gray-600">Monthly Sales</p>
-                        <p class="text-xl font-bold text-gray-900">{{ $analyticsData['this_month_sales'] ?? 0 }}</p>
+                        <p class="text-sm font-medium text-content-muted">Monthly Sales</p>
+                        <p class="text-xl font-bold text-content">{{ $analyticsData['this_month_sales'] ?? 0 }}</p>
                     </div>
                 </div>
             </div>
 
-            <div class="flex items-center justify-between p-4 bg-purple-50 rounded-lg">
+            <div class="flex items-center justify-between p-4 bg-brand/10 rounded-lg">
                 <div class="flex items-center">
-                    <div class="bg-purple-500 p-2 rounded-full mr-3">
-                        <i class="fas fa-eye text-white"></i>
+                    <div class="bg-action p-2 rounded-full mr-3">
+                        <i class="fas fa-eye text-action-foreground"></i>
                     </div>
                     <div>
-                        <p class="text-sm font-medium text-gray-600">Total Views</p>
-                        <p class="text-xl font-bold text-gray-900">{{ number_format($analyticsData['total_views'] ?? 0) }}</p>
+                        <p class="text-sm font-medium text-content-muted">Total Views</p>
+                        <p class="text-xl font-bold text-content">{{ number_format($analyticsData['total_views'] ?? 0) }}</p>
                     </div>
                 </div>
             </div>
@@ -108,43 +108,43 @@
     </div>
 
     <!-- Item Status Breakdown -->
-    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-        <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
-            <i class="fas fa-chart-pie mr-2 text-purple-600"></i>
+    <div class="bg-surface rounded-lg shadow-sm border border-line p-6">
+        <h3 class="text-lg font-semibold text-content mb-4 flex items-center">
+            <i class="fas fa-chart-pie mr-2 text-brand"></i>
             Item Status Breakdown
         </h3>
-        
+
         <div class="space-y-3">
             <div class="flex items-center justify-between">
                 <div class="flex items-center">
                     <div class="w-4 h-4 bg-green-500 rounded-full mr-3"></div>
-                    <span class="text-sm font-medium text-gray-700">Published</span>
+                    <span class="text-sm font-medium text-content">Published</span>
                 </div>
-                <span class="font-bold text-gray-900">{{ $analyticsData['published_items'] ?? 0 }}</span>
+                <span class="font-bold text-content">{{ $analyticsData['published_items'] ?? 0 }}</span>
             </div>
 
             <div class="flex items-center justify-between">
                 <div class="flex items-center">
                     <div class="w-4 h-4 bg-yellow-500 rounded-full mr-3"></div>
-                    <span class="text-sm font-medium text-gray-700">Drafts</span>
+                    <span class="text-sm font-medium text-content">Drafts</span>
                 </div>
-                <span class="font-bold text-gray-900">{{ $analyticsData['draft_items'] ?? 0 }}</span>
+                <span class="font-bold text-content">{{ $analyticsData['draft_items'] ?? 0 }}</span>
             </div>
 
             <div class="flex items-center justify-between">
                 <div class="flex items-center">
-                    <div class="w-4 h-4 bg-blue-500 rounded-full mr-3"></div>
-                    <span class="text-sm font-medium text-gray-700">Pending Review</span>
+                    <div class="w-4 h-4 bg-action rounded-full mr-3"></div>
+                    <span class="text-sm font-medium text-content">Pending Review</span>
                 </div>
-                <span class="font-bold text-gray-900">{{ $analyticsData['pending_items'] ?? 0 }}</span>
+                <span class="font-bold text-content">{{ $analyticsData['pending_items'] ?? 0 }}</span>
             </div>
 
             <div class="flex items-center justify-between">
                 <div class="flex items-center">
                     <div class="w-4 h-4 bg-red-500 rounded-full mr-3"></div>
-                    <span class="text-sm font-medium text-gray-700">Rejected</span>
+                    <span class="text-sm font-medium text-content">Rejected</span>
                 </div>
-                <span class="font-bold text-gray-900">{{ $analyticsData['rejected_items'] ?? 0 }}</span>
+                <span class="font-bold text-content">{{ $analyticsData['rejected_items'] ?? 0 }}</span>
             </div>
         </div>
 
@@ -156,12 +156,12 @@
                 $draftPercent = ($analyticsData['draft_items'] ?? 0) / $totalItems * 100;
                 $pendingPercent = ($analyticsData['pending_items'] ?? 0) / $totalItems * 100;
             @endphp
-            
+
             <div class="w-full bg-gray-200 rounded-full h-3">
                 <div class="flex h-full rounded-full overflow-hidden">
                     <div class="bg-green-500" style="width: {{ $publishedPercent }}%"></div>
                     <div class="bg-yellow-500" style="width: {{ $draftPercent }}%"></div>
-                    <div class="bg-blue-500" style="width: {{ $pendingPercent }}%"></div>
+                    <div class="bg-action" style="width: {{ $pendingPercent }}%"></div>
                 </div>
             </div>
         </div>
@@ -169,23 +169,23 @@
 </div>
 
 <!-- Performance Insights -->
-<div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-    <h3 class="text-lg font-semibold text-gray-900 mb-6 flex items-center">
+<div class="bg-surface rounded-lg shadow-sm border border-line p-6">
+    <h3 class="text-lg font-semibold text-content mb-6 flex items-center">
         <i class="fas fa-lightbulb mr-2 text-yellow-500"></i>
         Performance Insights & Tips
     </h3>
-    
+
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         <!-- Completion Rate -->
-        <div class="p-4 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-lg border border-blue-200">
+        <div class="p-4 bg-surface-muted   rounded-lg border border-brand">
             <div class="flex items-center mb-3">
-                <i class="fas fa-tasks text-blue-600 mr-2"></i>
-                <h4 class="font-semibold text-gray-900">Completion Rate</h4>
+                <i class="fas fa-tasks text-brand mr-2"></i>
+                <h4 class="font-semibold text-content">Completion Rate</h4>
             </div>
-            <div class="text-2xl font-bold text-blue-600 mb-2">
+            <div class="text-2xl font-bold text-brand mb-2">
                 {{ $totalItems > 0 ? round(($analyticsData['published_items'] ?? 0) / $totalItems * 100) : 0 }}%
             </div>
-            <p class="text-sm text-gray-600">
+            <p class="text-sm text-content-muted">
                 @if($totalItems > 0 && ($analyticsData['published_items'] ?? 0) / $totalItems < 0.5)
                     Complete more drafts to increase visibility
                 @else
@@ -195,35 +195,35 @@
         </div>
 
         <!-- Revenue per Item -->
-        <div class="p-4 bg-gradient-to-br from-green-50 to-emerald-50 rounded-lg border border-green-200">
+        <div class="p-4 bg-surface-muted   rounded-lg border border-green-200">
             <div class="flex items-center mb-3">
                 <i class="fas fa-calculator text-green-600 mr-2"></i>
-                <h4 class="font-semibold text-gray-900">Revenue per Item</h4>
+                <h4 class="font-semibold text-content">Revenue per Item</h4>
             </div>
             <div class="text-2xl font-bold text-green-600 mb-2">
                 ₦{{ $analyticsData['published_items'] > 0 ? number_format(($analyticsData['total_revenue'] ?? 0) / $analyticsData['published_items'], 0) : 0 }}
             </div>
-            <p class="text-sm text-gray-600">Average earnings per published item</p>
+            <p class="text-sm text-content-muted">Average earnings per published item</p>
         </div>
 
         <!-- Quick Actions -->
-        <div class="p-4 bg-gradient-to-br from-purple-50 to-violet-50 rounded-lg border border-purple-200">
+        <div class="p-4 bg-surface-muted   rounded-lg border border-brand">
             <div class="flex items-center mb-3">
-                <i class="fas fa-rocket text-purple-600 mr-2"></i>
-                <h4 class="font-semibold text-gray-900">Quick Actions</h4>
+                <i class="fas fa-rocket text-brand mr-2"></i>
+                <h4 class="font-semibold text-content">Quick Actions</h4>
             </div>
             <div class="space-y-2">
                 @if(($analyticsData['draft_items'] ?? 0) > 0)
-                    <button wire:click="showListings" 
-                            class="w-full text-left px-3 py-2 bg-white rounded border hover:bg-gray-50 text-sm transition-colors">
-                        <i class="fas fa-edit mr-2 text-purple-600"></i>
+                    <button wire:click="showListings"
+                            class="w-full text-left px-3 py-2 bg-surface rounded border hover:bg-surface-muted text-sm transition-colors">
+                        <i class="fas fa-edit mr-2 text-brand"></i>
                         Complete {{ $analyticsData['draft_items'] }} drafts
                     </button>
                 @endif
-                
-                <button wire:click="showCreate" 
-                        class="w-full text-left px-3 py-2 bg-white rounded border hover:bg-gray-50 text-sm transition-colors">
-                    <i class="fas fa-plus mr-2 text-purple-600"></i>
+
+                <button wire:click="showCreate"
+                        class="w-full text-left px-3 py-2 bg-surface rounded border hover:bg-surface-muted text-sm transition-colors">
+                    <i class="fas fa-plus mr-2 text-brand"></i>
                     Create new item
                 </button>
             </div>
@@ -233,39 +233,39 @@
 
 <!-- Recommended Actions -->
 @if(($analyticsData['draft_items'] ?? 0) > 0 || ($analyticsData['rejected_items'] ?? 0) > 0)
-    <div class="bg-gradient-to-r from-yellow-50 to-orange-50 border border-yellow-200 rounded-lg p-6">
-        <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+    <div class="bg-surface-muted   border border-yellow-200 rounded-lg p-6">
+        <h3 class="text-lg font-semibold text-content mb-4 flex items-center">
             <i class="fas fa-exclamation-triangle mr-2 text-yellow-600"></i>
             Action Required
         </h3>
-        
+
         <div class="space-y-3">
             @if(($analyticsData['draft_items'] ?? 0) > 0)
-                <div class="flex items-center justify-between p-3 bg-white rounded-lg border border-yellow-200">
+                <div class="flex items-center justify-between p-3 bg-surface rounded-lg border border-yellow-200">
                     <div class="flex items-center">
                         <i class="fas fa-edit text-yellow-600 mr-3"></i>
                         <div>
-                            <p class="font-medium text-gray-900">{{ $analyticsData['draft_items'] }} Draft Items</p>
-                            <p class="text-sm text-gray-600">Complete and submit these items for review</p>
+                            <p class="font-medium text-content">{{ $analyticsData['draft_items'] }} Draft Items</p>
+                            <p class="text-sm text-content-muted">Complete and submit these items for review</p>
                         </div>
                     </div>
-                    <button wire:click="showListings; $set('status', 'draft')" 
+                    <button wire:click="showListings; $set('status', 'draft')"
                             class="px-4 py-2 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 transition-colors">
                         Review Drafts
                     </button>
                 </div>
             @endif
-            
+
             @if(($analyticsData['rejected_items'] ?? 0) > 0)
-                <div class="flex items-center justify-between p-3 bg-white rounded-lg border border-red-200">
+                <div class="flex items-center justify-between p-3 bg-surface rounded-lg border border-red-200">
                     <div class="flex items-center">
                         <i class="fas fa-times-circle text-red-600 mr-3"></i>
                         <div>
-                            <p class="font-medium text-gray-900">{{ $analyticsData['rejected_items'] }} Rejected Items</p>
-                            <p class="text-sm text-gray-600">Review feedback and resubmit these items</p>
+                            <p class="font-medium text-content">{{ $analyticsData['rejected_items'] }} Rejected Items</p>
+                            <p class="text-sm text-content-muted">Review feedback and resubmit these items</p>
                         </div>
                     </div>
-                    <button wire:click="showListings; $set('status', 'rejected')" 
+                    <button wire:click="showListings; $set('status', 'rejected')"
                             class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors">
                         Fix Issues
                     </button>
@@ -277,34 +277,34 @@
 
 <!-- Success Milestones -->
 @if(($analyticsData['total_sales'] ?? 0) > 0 || ($analyticsData['total_revenue'] ?? 0) > 0)
-    <div class="bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 rounded-lg p-6">
-        <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+    <div class="bg-surface-muted   border border-green-200 rounded-lg p-6">
+        <h3 class="text-lg font-semibold text-content mb-4 flex items-center">
             <i class="fas fa-trophy mr-2 text-green-600"></i>
             Milestones Achieved
         </h3>
-        
+
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
             @if(($analyticsData['total_sales'] ?? 0) >= 1)
-                <div class="text-center p-4 bg-white rounded-lg border border-green-200">
+                <div class="text-center p-4 bg-surface rounded-lg border border-green-200">
                     <i class="fas fa-medal text-green-600 text-2xl mb-2"></i>
-                    <p class="font-semibold text-gray-900">First Sale!</p>
-                    <p class="text-sm text-gray-600">You've made your first marketplace sale</p>
+                    <p class="font-semibold text-content">First Sale!</p>
+                    <p class="text-sm text-content-muted">You've made your first marketplace sale</p>
                 </div>
             @endif
-            
+
             @if(($analyticsData['total_revenue'] ?? 0) >= 10000)
-                <div class="text-center p-4 bg-white rounded-lg border border-green-200">
+                <div class="text-center p-4 bg-surface rounded-lg border border-green-200">
                     <i class="fas fa-star text-green-600 text-2xl mb-2"></i>
-                    <p class="font-semibold text-gray-900">₦10K Earned!</p>
-                    <p class="text-sm text-gray-600">You've earned over ₦10,000</p>
+                    <p class="font-semibold text-content">₦10K Earned!</p>
+                    <p class="text-sm text-content-muted">You've earned over ₦10,000</p>
                 </div>
             @endif
-            
+
             @if(($analyticsData['published_items'] ?? 0) >= 5)
-                <div class="text-center p-4 bg-white rounded-lg border border-green-200">
+                <div class="text-center p-4 bg-surface rounded-lg border border-green-200">
                     <i class="fas fa-boxes text-green-600 text-2xl mb-2"></i>
-                    <p class="font-semibold text-gray-900">5+ Items Published!</p>
-                    <p class="text-sm text-gray-600">You have a growing marketplace presence</p>
+                    <p class="font-semibold text-content">5+ Items Published!</p>
+                    <p class="text-sm text-content-muted">You have a growing marketplace presence</p>
                 </div>
             @endif
         </div>

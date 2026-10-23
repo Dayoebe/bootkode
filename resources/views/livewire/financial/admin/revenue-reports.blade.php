@@ -1,17 +1,17 @@
-<div class="space-y-6 p-4 sm:p-6 lg:p-8">
+<div class="space-y-6">
     <div class="rounded-lg border border-themed-primary bg-themed-secondary p-6 shadow-sm">
         <div class="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
             <div>
-                <p class="text-sm font-semibold uppercase tracking-wide text-accent-primary">Revenue reports</p>
-                <h1 class="text-2xl font-bold text-themed-primary">Commercial revenue report</h1>
+                <p class="text-sm font-semibold uppercase tracking-wide text-brand">Revenue reports</p>
+                <h1 class=" font-bold text-themed-primary bk-page-title">Commercial revenue report</h1>
                 <p class="mt-1 max-w-2xl text-sm text-themed-secondary">
                     Gross revenue, net revenue, refunds, commissions, instructor earnings, affiliate commission, and payout exposure.
                 </p>
             </div>
             <div class="flex flex-wrap gap-2">
-                <input type="date" wire:model.live="dateFrom" class="rounded-lg border border-themed-primary bg-themed-secondary px-3 py-2 text-sm text-themed-primary">
-                <input type="date" wire:model.live="dateTo" class="rounded-lg border border-themed-primary bg-themed-secondary px-3 py-2 text-sm text-themed-primary">
-                <button type="button" wire:click="exportCsv" class="rounded-lg bg-accent-primary px-4 py-2 text-sm font-semibold text-white hover:bg-accent-secondary">
+                <input aria-label="Date from" type="date" wire:model.live="dateFrom" class="rounded-lg border border-themed-primary bg-themed-secondary px-3 py-2 text-sm text-themed-primary">
+                <input aria-label="Date to" type="date" wire:model.live="dateTo" class="rounded-lg border border-themed-primary bg-themed-secondary px-3 py-2 text-sm text-themed-primary">
+                <button type="button" wire:click="exportCsv" class="rounded-lg bg-action px-4 py-2 text-sm font-semibold text-action-foreground hover:bg-action/90">
                     Export CSV
                 </button>
             </div>
@@ -41,14 +41,14 @@
         <div class="rounded-lg border border-themed-primary bg-themed-secondary p-5 shadow-sm">
             <h2 class="text-lg font-semibold text-themed-primary">Daily movement</h2>
             <div class="mt-5 overflow-x-auto">
-                <table class="min-w-full divide-y divide-themed-primary text-sm">
+                <x-ui.table label="Revenue Reports.Blade records"><table class="min-w-full divide-y divide-themed-primary text-sm">
                     <thead>
                         <tr class="text-left text-xs font-semibold uppercase text-themed-secondary">
-                            <th class="py-3">Date</th>
-                            <th class="py-3 text-right">Payments</th>
-                            <th class="py-3 text-right">Marketplace</th>
-                            <th class="py-3 text-right">Refunds</th>
-                            <th class="py-3 text-right">Net</th>
+                            <th scope="col" class="py-3">Date</th>
+                            <th scope="col" class="py-3 text-right">Payments</th>
+                            <th scope="col" class="py-3 text-right">Marketplace</th>
+                            <th scope="col" class="py-3 text-right">Refunds</th>
+                            <th scope="col" class="py-3 text-right">Net</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-themed-primary">
@@ -64,7 +64,7 @@
                             <tr><td colspan="5" class="py-8 text-center text-themed-secondary">No revenue movement in this period.</td></tr>
                         @endforelse
                     </tbody>
-                </table>
+                </table></x-ui.table>
             </div>
         </div>
 
@@ -86,7 +86,7 @@
                     </div>
                 @endforeach
             </div>
-            <a href="{{ route('admin.commercial.readiness') }}" class="mt-4 inline-flex rounded-lg border border-themed-primary px-3 py-2 text-sm font-semibold text-themed-primary hover:border-accent-primary hover:text-accent-primary">
+            <a href="{{ route('admin.commercial.readiness') }}" class="mt-4 inline-flex rounded-lg border border-themed-primary px-3 py-2 text-sm font-semibold text-themed-primary hover:border-brand hover:text-brand">
                 Open commercial readiness
             </a>
         </div>

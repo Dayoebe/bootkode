@@ -3,18 +3,18 @@
     <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between space-y-4 lg:space-y-0">
         <div class="flex flex-wrap items-center gap-4">
             <button wire:click="$set('showCreateForm', true)"
-                class="bg-accent-themed-primary hover:bg-accent-themed-secondary text-white px-6 py-3 rounded-xl transition-colors font-semibold shadow-lg">
+                class="bg-action hover:bg-action/90 text-action-foreground px-6 py-3 rounded-lg transition-colors font-semibold shadow-sm">
                 <i class="fas fa-plus mr-2"></i> Create New Interview
             </button>
         </div>
 
         <!-- Search and Filters -->
         <div class="flex flex-wrap items-center gap-4">
-            <input wire:model.live.debounce.300ms="searchTerm" type="text" placeholder="Search interviews..."
-                class="px-4 py-2 border border-themed-primary rounded-lg bg-themed-secondary text-themed-primary placeholder-themed-tertiary focus:ring-2 focus:ring-accent-themed-primary focus:border-transparent transition-all w-64">
+            <input aria-label="Search interviews" wire:model.live.debounce.300ms="searchTerm" type="text" placeholder="Search interviews..."
+                class="px-4 py-2 border border-themed-primary rounded-lg bg-themed-secondary text-themed-primary placeholder-themed-tertiary focus:ring-2 focus:ring-brand focus:border-transparent transition-all w-64">
 
-            <select wire:model.live="filterType"
-                class="px-4 py-2 border border-themed-primary rounded-lg bg-themed-secondary text-themed-primary focus:ring-2 focus:ring-accent-themed-primary focus:border-transparent transition-all">
+            <select aria-label="Filter type" wire:model.live="filterType"
+                class="px-4 py-2 border border-themed-primary rounded-lg bg-themed-secondary text-themed-primary focus:ring-2 focus:ring-brand focus:border-transparent transition-all">
                 <option value="">All Types</option>
                 <option value="technical">Technical</option>
                 <option value="behavioral">Behavioral</option>
@@ -24,8 +24,8 @@
                 <option value="hr">HR</option>
             </select>
 
-            <select wire:model.live="filterStatus"
-                class="px-4 py-2 border border-themed-primary rounded-lg bg-themed-secondary text-themed-primary focus:ring-2 focus:ring-accent-themed-primary focus:border-transparent transition-all">
+            <select aria-label="Filter status" wire:model.live="filterStatus"
+                class="px-4 py-2 border border-themed-primary rounded-lg bg-themed-secondary text-themed-primary focus:ring-2 focus:ring-brand focus:border-transparent transition-all">
                 <option value="">All Status</option>
                 <option value="scheduled">Scheduled</option>
                 <option value="in_progress">In Progress</option>
@@ -44,7 +44,7 @@
     @if($interviewCount > 0)
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             @foreach($interviews as $interview)
-                <div class="bg-themed-secondary border border-themed-primary rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden">
+                <div class="bg-themed-secondary border border-themed-primary rounded-lg shadow-sm  transition-all duration-300 overflow-hidden">
                     <!-- Header -->
                     <div class="p-6 border-b border-themed-primary">
                         <div class="flex items-start justify-between mb-4">
@@ -55,7 +55,7 @@
                                     <p class="text-sm text-themed-secondary">{{ $interview->type_label }}</p>
                                 </div>
                             </div>
-                            <span class="px-3 py-1 text-sm rounded-full bg-accent-themed-primary/10 text-accent-themed-primary whitespace-nowrap font-medium">
+                            <span class="px-3 py-1 text-sm rounded-full bg-brand/10 text-brand whitespace-nowrap font-medium">
                                 {{ $interview->status_label }}
                             </span>
                         </div>
@@ -85,7 +85,7 @@
                             @if($interview->overall_score)
                                 <div class="flex items-center justify-between">
                                     <span>Score:</span>
-                                    <span class="font-bold text-accent-themed-primary">
+                                    <span class="font-bold text-brand">
                                         {{ number_format($interview->overall_score, 1) }}%
                                     </span>
                                 </div>
@@ -98,7 +98,7 @@
                         <div class="flex space-x-2">
                             @if($interview->isScheduled())
                                 <button wire:click="startInterview({{ $interview->id }})"
-                                    class="flex-1 bg-accent-themed-primary hover:bg-accent-themed-secondary text-white px-4 py-2 rounded-lg transition-colors font-medium">
+                                    class="flex-1 bg-action hover:bg-action/90 text-action-foreground px-4 py-2 rounded-lg transition-colors font-medium">
                                     <i class="fas fa-play mr-1"></i> Start Interview
                                 </button>
                             @elseif($interview->isCompleted())
@@ -116,7 +116,7 @@
 
                             <div class="flex space-x-1">
                                 <button wire:click="editInterview({{ $interview->id }})"
-                                    class="p-2 bg-accent-themed-primary/10 text-accent-themed-primary hover:bg-accent-themed-primary/20 rounded-lg transition-colors"
+                                    class="p-2 bg-brand/10 text-brand hover:bg-brand/20 rounded-lg transition-colors"
                                     title="Edit">
                                     <i class="fas fa-edit"></i>
                                 </button>
@@ -151,7 +151,7 @@
             </p>
             @if(!$searchTerm && !$filterType && !$filterStatus)
                 <button wire:click="$set('showCreateForm', true)"
-                    class="bg-accent-themed-primary hover:bg-accent-themed-secondary text-white px-8 py-3 rounded-xl transition-colors font-semibold">
+                    class="bg-action hover:bg-action/90 text-action-foreground px-8 py-3 rounded-lg transition-colors font-semibold">
                     <i class="fas fa-plus mr-2"></i> Create Your First Interview
                 </button>
             @endif

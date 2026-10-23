@@ -4,11 +4,11 @@
     <div class="bg-themed-secondary rounded-lg shadow-sm p-6 mb-6">
         <div class="grid grid-cols-1 md:grid-cols-5 gap-4 mb-4">
             <div>
-                <input wire:model.debounce.300ms="search" type="text" placeholder="Search transactions..."
-                       class="w-full rounded-md border-themed-secondary shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                <input aria-label="Search transactions" wire:model.debounce.300ms="search" type="text" placeholder="Search transactions..."
+                       class="w-full rounded-md border-themed-secondary shadow-sm focus:border-brand focus:ring-brand/30">
             </div>
             <div>
-                <select wire:model="statusFilter" class="w-full rounded-md border-themed-secondary shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                <select aria-label="Status filter" wire:model="statusFilter" class="w-full rounded-md border-themed-secondary shadow-sm focus:border-brand focus:ring-brand/30">
                     <option value="all">All Status</option>
                     <option value="pending">Pending</option>
                     <option value="success">Success</option>
@@ -17,7 +17,7 @@
                 </select>
             </div>
             <div>
-                <select wire:model="typeFilter" class="w-full rounded-md border-themed-secondary shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                <select aria-label="Type filter" wire:model="typeFilter" class="w-full rounded-md border-themed-secondary shadow-sm focus:border-brand focus:ring-brand/30">
                     <option value="all">All Types</option>
                     <option value="wallet_funding">Wallet Funding</option>
                     <option value="withdrawal">Withdrawal</option>
@@ -25,18 +25,18 @@
                 </select>
             </div>
             <div>
-                <input wire:model="dateFrom" type="date" class="w-full rounded-md border-themed-secondary shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                <input aria-label="Date from" wire:model="dateFrom" type="date" class="w-full rounded-md border-themed-secondary shadow-sm focus:border-brand focus:ring-brand/30">
             </div>
             <div>
-                <input wire:model="dateTo" type="date" class="w-full rounded-md border-themed-secondary shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                <input aria-label="Date to" wire:model="dateTo" type="date" class="w-full rounded-md border-themed-secondary shadow-sm focus:border-brand focus:ring-brand/30">
             </div>
         </div>
 
         <!-- Bulk Actions -->
         @if(count($selectedTransactions) > 0)
-            <div class="flex items-center space-x-4 p-3 bg-blue-50 rounded-lg">
-                <span class="text-sm text-blue-800 font-medium">{{ count($selectedTransactions) }} selected</span>
-                <select wire:model="bulkAction" class="rounded-md border-themed-secondary shadow-sm text-sm">
+            <div class="flex items-center space-x-4 p-3 bg-brand/10 rounded-lg">
+                <span class="text-sm text-brand font-medium">{{ count($selectedTransactions) }} selected</span>
+                <select aria-label="Bulk action" wire:model="bulkAction" class="rounded-md border-themed-secondary shadow-sm text-sm">
                     <option value="">Choose action...</option>
                     <option value="verify">Verify Payments</option>
                     <option value="retry">Retry Failed</option>
@@ -54,33 +54,33 @@
     <div class="bg-themed-secondary rounded-lg shadow-sm overflow-hidden">
         @if($transactions->count() > 0)
             <div class="overflow-x-auto">
-                <table class="min-w-full divide-y divide-themed-primary">
+                <x-ui.table label="Payment Transactions.Blade records"><table class="min-w-full divide-y divide-themed-primary">
                     <thead class="bg-themed-tertiary">
                         <tr>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-themed-secondary uppercase tracking-wider">
-                                <input type="checkbox" wire:model="selectAll" class="rounded border-themed-secondary focus:ring-blue-500">
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-themed-secondary uppercase tracking-wider">
+                                <input aria-label="Select all" type="checkbox" wire:model="selectAll" class="rounded border-themed-secondary focus:ring-brand/30">
                             </th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-themed-secondary uppercase tracking-wider">Date</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-themed-secondary uppercase tracking-wider">Customer</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-themed-secondary uppercase tracking-wider">Reference</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-themed-secondary uppercase tracking-wider">Type</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-themed-secondary uppercase tracking-wider">Amount</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-themed-secondary uppercase tracking-wider">Status</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-themed-secondary uppercase tracking-wider">Actions</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-themed-secondary uppercase tracking-wider">Date</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-themed-secondary uppercase tracking-wider">Customer</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-themed-secondary uppercase tracking-wider">Reference</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-themed-secondary uppercase tracking-wider">Type</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-themed-secondary uppercase tracking-wider">Amount</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-themed-secondary uppercase tracking-wider">Status</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-themed-secondary uppercase tracking-wider">Actions</th>
                         </tr>
                     </thead>
                     <tbody class="bg-themed-secondary divide-y divide-themed-primary">
                         @foreach($transactions as $transaction)
-                            <tr class="hover:bg-gray-50 transition-colors">
+                            <tr class="hover:bg-surface-muted transition-colors">
                                 <td class="px-6 py-4 whitespace-nowrap">
-                                    <input type="checkbox" wire:model="selectedTransactions"
+                                    <input aria-label="Selected transactions" type="checkbox" wire:model="selectedTransactions"
                                            value="{{ $transaction->id }}"
-                                           class="rounded border-themed-secondary focus:ring-blue-500">
+                                           class="rounded border-themed-secondary focus:ring-brand/30">
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-themed-secondary">
                                     {{ $transaction->created_at->format('M d, Y') }}
                                     <br>
-                                    <span class="text-xs text-gray-400">{{ $transaction->created_at->format('H:i') }}</span>
+                                    <span class="text-xs text-content-muted">{{ $transaction->created_at->format('H:i') }}</span>
                                 </td>
                                 <td class="px-6 py-4">
                                     <div>
@@ -122,7 +122,7 @@
                                     <div class="flex space-x-2">
                                         @if($transaction->status === 'pending')
                                             <button wire:click="verifySinglePayment({{ $transaction->id }})"
-                                                    class="text-blue-600 hover:text-blue-900 transition-colors">
+                                                    class="text-brand hover:text-brand transition-colors">
                                                 Verify
                                             </button>
                                         @endif
@@ -135,7 +135,7 @@
                                         @endif
 
                                         <button onclick="navigator.clipboard.writeText('{{ $transaction->reference }}')"
-                                                class="text-themed-secondary hover:text-gray-900 transition-colors"
+                                                class="text-themed-secondary hover:text-content transition-colors"
                                                 title="Copy Reference">
                                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
@@ -146,7 +146,7 @@
                             </tr>
                         @endforeach
                     </tbody>
-                </table>
+                </table></x-ui.table>
             </div>
 
             <!-- Pagination -->
@@ -155,7 +155,7 @@
             </div>
         @else
             <div class="text-center py-12">
-                <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg class="mx-auto h-12 w-12 text-content-muted" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path>
                 </svg>
                 <h3 class="mt-2 text-sm font-medium text-themed-primary">No transactions found</h3>
@@ -166,13 +166,13 @@
 
     <!-- Refund Modal -->
     @if($showRefundModal)
-        <div class="fixed inset-0 z-50 overflow-y-auto">
+        <div class="fixed inset-0 z-50 overflow-y-auto" x-trap.inert.noscroll="true" role="dialog" aria-modal="true" aria-label="Process Refund" tabindex="-1" x-data="{}" @keydown.escape.stop="$wire.set(&#x27;showRefundModal&#x27;, false)">
             <div class="flex items-center justify-center min-h-screen px-4">
                 <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" wire:click="closeRefundModal"></div>
                 <div class="bg-themed-secondary rounded-lg p-6 max-w-md w-full relative transform transition-all">
                     <div class="flex items-center justify-between mb-4">
                         <h3 class="text-lg font-semibold text-themed-primary">Process Refund</h3>
-                        <button wire:click="closeRefundModal" class="text-gray-400 hover:text-gray-600">
+                        <button wire:click="closeRefundModal" class="text-content-muted hover:text-content-muted">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                             </svg>
@@ -183,16 +183,16 @@
                         <div class="space-y-4">
                             <div>
                                 <label class="block text-sm font-medium text-themed-primary mb-1">Refund Amount (₦)</label>
-                                <input wire:model="refundAmount" type="number" step="0.01" min="1"
-                                       class="w-full rounded-md border-themed-secondary shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                                <input aria-label="Refund amount" wire:model="refundAmount" type="number" step="0.01" min="1"
+                                       class="w-full rounded-md border-themed-secondary shadow-sm focus:border-brand focus:ring-brand/30">
                                 @error('refundAmount')
                                     <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
                                 @enderror
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-themed-primary mb-1">Reason for Refund</label>
-                                <textarea wire:model="refundReason" rows="3"
-                                          class="w-full rounded-md border-themed-secondary shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                                <textarea aria-label="Enter the reason for this refund" wire:model="refundReason" rows="3"
+                                          class="w-full rounded-md border-themed-secondary shadow-sm focus:border-brand focus:ring-brand/30"
                                           placeholder="Enter the reason for this refund..."></textarea>
                                 @error('refundReason')
                                     <p class="text-red-600 text-sm mt-1">{{ $message }}</p>

@@ -1,14 +1,14 @@
 <div class=" px-4 sm:px-6 lg:px-8 py-8">
     <!-- Header -->
-    <div class="bg-gradient-to-r from-amber-600 to-orange-600 p-6 rounded-2xl shadow-xl text-white mb-8 animate__animated animate__fadeIn">
-        <h1 class="text-3xl font-bold text-white">
+    <div class="bg-brand-ink   p-6 rounded-lg shadow-sm text-white mb-8  ">
+        <h1 class=" font-bold text-white bk-page-title">
             <i class="fas fa-question mr-2"></i> FAQ Management
         </h1>
         <p class="text-amber-100 mt-2">Create and manage frequently asked questions</p>
     </div>
 
     <!-- Form for Create/Update -->
-    <form wire:submit.prevent="saveFaq" class="bg-themed-secondary shadow rounded-lg p-6 mb-8 animate__animated animate__fadeInUp border border-themed-primary transition-colors duration-300">
+    <form wire:submit.prevent="saveFaq" class="bg-themed-secondary shadow rounded-lg p-6 mb-8   border border-themed-primary transition-colors duration-300">
         <h3 class="text-lg font-semibold text-themed-primary mb-6 flex items-center">
             <i class="fas fa-plus-circle text-amber-600 dark:text-amber-400 mr-2"></i>{{ $editId ? 'Update' : 'Create' }} FAQ
         </h3>
@@ -83,19 +83,19 @@
 
         <!-- Table -->
         <div class="overflow-x-auto">
-            <table class="min-w-full divide-y divide-themed-primary">
+            <x-ui.table label="Faq Management.Blade records"><table class="min-w-full divide-y divide-themed-primary">
                 <thead class="bg-themed-tertiary">
                     <tr>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-themed-primary uppercase tracking-wider">Order</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-themed-primary uppercase tracking-wider">Question</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-themed-primary uppercase tracking-wider">Answer Preview</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-themed-primary uppercase tracking-wider">Created</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-themed-primary uppercase tracking-wider">Actions</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-themed-primary uppercase tracking-wider">Order</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-themed-primary uppercase tracking-wider">Question</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-themed-primary uppercase tracking-wider">Answer Preview</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-themed-primary uppercase tracking-wider">Created</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-themed-primary uppercase tracking-wider">Actions</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-themed-primary">
                     @forelse($faqs as $faq)
-                        <tr class="hover:bg-themed-tertiary transition-colors duration-200 animate__animated animate__fadeInUp">
+                        <tr class="hover:bg-themed-tertiary transition-colors duration-200  ">
                             <td class="px-6 py-4 text-sm">
                                 <span class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300 font-semibold">
                                     {{ $faq->order }}
@@ -141,7 +141,7 @@
                         </tr>
                     @endforelse
                 </tbody>
-            </table>
+            </table></x-ui.table>
         </div>
 
         <!-- Pagination -->
@@ -168,8 +168,8 @@
 
         <div class="bg-themed-secondary rounded-lg p-4 border border-themed-primary transition-colors duration-300">
             <div class="flex items-center">
-                <div class="p-3 rounded-lg bg-blue-100 dark:bg-blue-900/30">
-                    <i class="fas fa-plus-circle text-blue-600 dark:text-blue-400 text-xl"></i>
+                <div class="p-3 rounded-lg bg-brand/10 dark:bg-action/30">
+                    <i class="fas fa-plus-circle text-brand dark:text-brand text-xl"></i>
                 </div>
                 <div class="ml-4">
                     <p class="text-sm text-themed-secondary">Last Added</p>

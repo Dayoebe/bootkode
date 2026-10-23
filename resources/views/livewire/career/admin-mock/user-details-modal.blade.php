@@ -1,5 +1,5 @@
 @if($showUserModal && $selectedUser)
-    <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50" wire:key="user-modal-{{ $selectedUser->id }}">
+    <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50" wire:key="user-modal-{{ $selectedUser- x-trap.inert.noscroll="true" role="dialog" aria-modal="true" aria-label="User modal" tabindex="-1" x-data="{}" @keydown.escape.stop="$wire.set(&#x27;showUserModal&#x27;, false)">id }}">
         <div class="rounded-lg max-w-4xl w-full max-h-[90vh] overflow-hidden bg-themed-secondary border border-themed-primary">
             <div class="px-6 py-4 border-b border-themed-primary bg-themed-tertiary flex items-center justify-between">
                 <h3 class="text-lg font-medium text-themed-primary">User Details - {{ $selectedUser->name }}</h3>
@@ -21,19 +21,19 @@
 
                 <!-- User Performance Overview -->
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-                    <div class="bg-blue-50 rounded-lg p-4 border border-blue-200">
-                        <div class="text-2xl font-bold text-blue-600">{{ $userStats['total_interviews'] }}</div>
-                        <div class="text-sm text-blue-700">Total Interviews</div>
+                    <div class="bg-brand/10 rounded-lg p-4 border border-brand">
+                        <div class="text-2xl font-bold text-brand">{{ $userStats['total_interviews'] }}</div>
+                        <div class="text-sm text-brand">Total Interviews</div>
                     </div>
                     <div class="bg-green-50 rounded-lg p-4 border border-green-200">
                         <div class="text-2xl font-bold text-green-600">{{ number_format($userStats['average_score'], 1) }}%</div>
                         <div class="text-sm text-green-700">Average Score</div>
                     </div>
-                    <div class="bg-purple-50 rounded-lg p-4 border border-purple-200">
-                        <div class="text-2xl font-bold text-purple-600">
+                    <div class="bg-brand/10 rounded-lg p-4 border border-brand">
+                        <div class="text-2xl font-bold text-brand">
                             {{ $userStats['total_interviews'] > 0 ? number_format(($userStats['completed_interviews'] / $userStats['total_interviews']) * 100, 1) : 0 }}%
                         </div>
-                        <div class="text-sm text-purple-700">Completion Rate</div>
+                        <div class="text-sm text-brand">Completion Rate</div>
                     </div>
                 </div>
 
@@ -41,22 +41,22 @@
                 <div>
                     <h4 class="text-md font-medium mb-4 text-themed-primary">Recent Interviews</h4>
                     <div class="overflow-hidden shadow ring-1 ring-themed-primary md:rounded-lg">
-                        <table class="min-w-full divide-y divide-themed-primary">
+                        <x-ui.table label="User Details Modal.Blade records"><table class="min-w-full divide-y divide-themed-primary">
                             <thead class="bg-themed-tertiary">
                                 <tr>
-                                    <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-themed-secondary">
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-themed-secondary">
                                         Interview
                                     </th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-themed-secondary">
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-themed-secondary">
                                         Type
                                     </th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-themed-secondary">
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-themed-secondary">
                                         Status
                                     </th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-themed-secondary">
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-themed-secondary">
                                         Score
                                     </th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-themed-secondary">
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-themed-secondary">
                                         Date
                                     </th>
                                 </tr>
@@ -88,7 +88,7 @@
                                     </tr>
                                 @endforeach
                             </tbody>
-                        </table>
+                        </table></x-ui.table>
                     </div>
                 </div>
             </div>

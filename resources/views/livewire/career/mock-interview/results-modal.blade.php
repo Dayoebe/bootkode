@@ -1,11 +1,11 @@
 {{-- results-modal.blade.php --}}
 @if($showResultsModal && $currentInterview)
-    <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50 overflow-y-auto">
+    <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50 overflow-y-auto" x-trap.inert.noscroll="true" role="dialog" aria-modal="true" aria-label="Interview Results" tabindex="-1" x-data="{}" @keydown.escape.stop="$wire.set(&#x27;showResultsModal&#x27;, false)">
         <div
-            class="bg-themed-secondary border border-themed-primary rounded-2xl max-w-6xl w-full max-h-[90vh] overflow-hidden my-8">
+            class="bg-themed-secondary border border-themed-primary rounded-lg max-w-6xl w-full max-h-[90vh] overflow-hidden my-8">
             <!-- Results Header -->
             <div
-                class="p-6 border-b border-themed-primary bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20">
+                class="p-6 border-b border-themed-primary bg-brand-ink    ">
                 <div class="flex items-center justify-between">
                     <div>
                         <h2 class="text-2xl font-bold text-themed-primary">Interview Results</h2>
@@ -26,7 +26,7 @@
                     <!-- Overall Score -->
                     <div class="text-center mb-8">
                         <div
-                            class="inline-flex items-center justify-center w-32 h-32 bg-gradient-to-br from-accent-themed-primary to-accent-themed-secondary rounded-full text-white mb-4">
+                            class="inline-flex items-center justify-center w-32 h-32 bg-action   rounded-full text-action-foreground mb-4">
                             <span
                                 class="text-3xl font-bold">{{ number_format($currentInterview->overall_score ?? 0, 1) }}%</span>
                         </div>
@@ -36,22 +36,22 @@
 
                     <!-- Score Breakdown -->
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-                        <div class="bg-themed-tertiary border border-themed-primary rounded-xl p-4 text-center">
-                            <div class="text-2xl font-bold text-blue-600 dark:text-blue-400">
+                        <div class="bg-themed-tertiary border border-themed-primary rounded-lg p-4 text-center">
+                            <div class="text-2xl font-bold text-brand dark:text-brand">
                                 {{ number_format($currentInterview->technical_score ?? 0, 1) }}%</div>
                             <div class="text-sm text-themed-secondary">Technical Skills</div>
                         </div>
-                        <div class="bg-themed-tertiary border border-themed-primary rounded-xl p-4 text-center">
+                        <div class="bg-themed-tertiary border border-themed-primary rounded-lg p-4 text-center">
                             <div class="text-2xl font-bold text-green-600 dark:text-green-400">
                                 {{ number_format($currentInterview->communication_score ?? 0, 1) }}%</div>
                             <div class="text-sm text-themed-secondary">Communication</div>
                         </div>
-                        <div class="bg-themed-tertiary border border-themed-primary rounded-xl p-4 text-center">
-                            <div class="text-2xl font-bold text-purple-600 dark:text-purple-400">
+                        <div class="bg-themed-tertiary border border-themed-primary rounded-lg p-4 text-center">
+                            <div class="text-2xl font-bold text-brand dark:text-brand">
                                 {{ number_format($currentInterview->confidence_score ?? 0, 1) }}%</div>
                             <div class="text-sm text-themed-secondary">Confidence</div>
                         </div>
-                        <div class="bg-themed-tertiary border border-themed-primary rounded-xl p-4 text-center">
+                        <div class="bg-themed-tertiary border border-themed-primary rounded-lg p-4 text-center">
                             <div class="text-2xl font-bold text-orange-600 dark:text-orange-400">
                                 {{ number_format($currentInterview->problem_solving_score ?? 0, 1) }}%</div>
                             <div class="text-sm text-themed-secondary">Problem Solving</div>
@@ -61,9 +61,9 @@
                     <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
                         <!-- AI Feedback -->
                         @if($currentInterview->ai_feedback)
-                            <div class="bg-themed-tertiary border border-themed-primary rounded-xl p-6">
+                            <div class="bg-themed-tertiary border border-themed-primary rounded-lg p-6">
                                 <h4 class="text-lg font-bold text-themed-primary mb-4 flex items-center">
-                                    <i class="fas fa-brain w-5 h-5 mr-2 text-blue-600 dark:text-blue-400"></i>
+                                    <i class="fas fa-brain w-5 h-5 mr-2 text-brand dark:text-brand"></i>
                                     AI-Powered Insights
                                 </h4>
 
@@ -111,9 +111,9 @@
                         @endif
 
                         <!-- Recommendations -->
-                        <div class="bg-themed-tertiary border border-themed-primary rounded-xl p-6">
+                        <div class="bg-themed-tertiary border border-themed-primary rounded-lg p-6">
                             <h4 class="text-lg font-bold text-themed-primary mb-4 flex items-center">
-                                <i class="fas fa-lightbulb w-5 h-5 mr-2 text-purple-600 dark:text-purple-400"></i>
+                                <i class="fas fa-lightbulb w-5 h-5 mr-2 text-brand dark:text-brand"></i>
                                 Recommendations
                             </h4>
 
@@ -122,8 +122,8 @@
                                     @foreach($currentInterview->improvement_suggestions as $suggestion)
                                         <li class="flex items-start">
                                             <div
-                                                class="bg-accent-themed-primary/10 border border-accent-themed-primary/30 p-1 rounded-full mr-3 mt-1 flex-shrink-0">
-                                                <i class="fas fa-arrow-right text-accent-themed-primary text-xs"></i>
+                                                class="bg-brand/10 border border-brand/30 p-1 rounded-full mr-3 mt-1 flex-shrink-0">
+                                                <i class="fas fa-arrow-right text-brand text-xs"></i>
                                             </div>
                                             <span class="text-sm text-themed-primary">{{ $suggestion }}</span>
                                         </li>
@@ -149,7 +149,7 @@
                         @endif
 
                         <button
-                            class="bg-accent-themed-primary hover:bg-accent-themed-secondary text-white px-6 py-3 rounded-lg transition-colors font-medium">
+                            class="bg-action hover:bg-action/90 text-action-foreground px-6 py-3 rounded-lg transition-colors font-medium">
                             <i class="fas fa-download mr-2"></i> Download Report
                         </button>
 

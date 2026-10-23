@@ -4,7 +4,7 @@
     <section class="rounded-lg border border-themed-primary bg-themed-secondary p-5 md:p-6">
         <div class="flex flex-col gap-5 xl:flex-row xl:items-center xl:justify-between">
             <div>
-                <div class="mb-3 inline-flex items-center gap-2 rounded-full bg-accent-themed-primary/10 px-3 py-1 text-xs font-semibold text-accent-themed-primary">
+                <div class="mb-3 inline-flex items-center gap-2 rounded-full bg-brand/10 px-3 py-1 text-xs font-semibold text-brand">
                     <i class="fas fa-calendar-check"></i>
                     Mentorship operations
                 </div>
@@ -15,7 +15,7 @@
             </div>
 
             <button type="button" wire:click="createSession"
-                class="inline-flex items-center justify-center gap-2 rounded-lg bg-accent-themed-primary px-4 py-3 text-sm font-semibold text-white transition hover:bg-accent-themed-secondary">
+                class="inline-flex items-center justify-center gap-2 rounded-lg bg-action px-4 py-3 text-sm font-semibold text-action-foreground transition hover:bg-action/90">
                 <i class="fas fa-plus"></i>
                 Book session
             </button>
@@ -43,16 +43,16 @@
 
     <section class="rounded-lg border border-themed-primary bg-themed-secondary p-4">
         <div class="grid grid-cols-1 gap-3 md:grid-cols-3">
-            <select wire:model.live="dateFilter"
-                class="rounded-lg border border-themed-primary bg-themed-primary px-3 py-2 text-themed-primary focus:outline-none focus:ring-2 focus:ring-accent-themed-primary">
+            <select aria-label="Date filter" wire:model.live="dateFilter"
+                class="rounded-lg border border-themed-primary bg-themed-primary px-3 py-2 text-themed-primary focus:outline-none focus:ring-2 focus:ring-brand">
                 <option value="upcoming">Upcoming and active</option>
                 <option value="this_week">This week</option>
                 <option value="this_month">This month</option>
                 <option value="past">Past and completed</option>
             </select>
 
-            <select wire:model.live="statusFilter"
-                class="rounded-lg border border-themed-primary bg-themed-primary px-3 py-2 text-themed-primary focus:outline-none focus:ring-2 focus:ring-accent-themed-primary">
+            <select aria-label="Status filter" wire:model.live="statusFilter"
+                class="rounded-lg border border-themed-primary bg-themed-primary px-3 py-2 text-themed-primary focus:outline-none focus:ring-2 focus:ring-brand">
                 <option value="">All statuses</option>
                 <option value="scheduled">Scheduled</option>
                 <option value="in_progress">In progress</option>
@@ -84,13 +84,13 @@
                             </div>
                         </div>
                         <button type="button" wire:click="createSession({{ $mentorship->id }})"
-                            class="inline-flex shrink-0 items-center gap-2 rounded-lg border border-themed-secondary bg-themed-primary px-3 py-2 text-xs font-semibold text-themed-primary transition hover:border-accent-themed-primary">
+                            class="inline-flex shrink-0 items-center gap-2 rounded-lg border border-themed-secondary bg-themed-primary px-3 py-2 text-xs font-semibold text-themed-primary transition hover:border-brand">
                             <i class="fas fa-calendar-plus"></i>
                             Book
                         </button>
                     </div>
                     <div class="mt-3 h-2 overflow-hidden rounded-full bg-themed-tertiary">
-                        <div class="h-2 rounded-full bg-accent-themed-primary" style="width: {{ $mentorship->progress_percentage }}%"></div>
+                        <div class="h-2 rounded-full bg-action" style="width: {{ $mentorship->progress_percentage }}%"></div>
                     </div>
                 </div>
             @endforeach
@@ -106,10 +106,10 @@
                     'completed' => 'bg-green-500/10 text-green-600',
                     'in_progress' => 'bg-blue-500/10 text-blue-600',
                     'cancelled', 'missed' => 'bg-red-500/10 text-red-600',
-                    default => 'bg-accent-themed-primary/10 text-accent-themed-primary',
+                    default => 'bg-brand/10 text-brand',
                 };
             @endphp
-            <article class="rounded-lg border border-themed-primary bg-themed-secondary p-4 transition hover:border-accent-themed-primary">
+            <article class="rounded-lg border border-themed-primary bg-themed-secondary p-4 transition hover:border-brand">
                 <div class="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
                     <div class="min-w-0 flex-1">
                         <div class="mb-2 flex flex-wrap items-center gap-2">
@@ -136,18 +136,18 @@
 
                     <div class="flex flex-wrap gap-2 lg:justify-end">
                         <button type="button" wire:click="viewSession({{ $session->id }})"
-                            class="rounded-lg border border-themed-secondary bg-themed-primary px-3 py-2 text-sm font-medium text-themed-primary transition hover:border-accent-themed-primary">
+                            class="rounded-lg border border-themed-secondary bg-themed-primary px-3 py-2 text-sm font-medium text-themed-primary transition hover:border-brand">
                             <i class="fas fa-eye mr-1"></i>View
                         </button>
 
                         @if ($session->status === 'scheduled')
                             <button type="button" wire:click="editSession({{ $session->id }})"
-                                class="rounded-lg border border-themed-secondary bg-themed-primary px-3 py-2 text-sm font-medium text-themed-primary transition hover:border-accent-themed-primary">
+                                class="rounded-lg border border-themed-secondary bg-themed-primary px-3 py-2 text-sm font-medium text-themed-primary transition hover:border-brand">
                                 <i class="fas fa-edit mr-1"></i>Edit
                             </button>
                             @if ($isMentor || auth()->user()->isAcademyAdmin() || auth()->user()->isSuperAdmin())
                                 <button type="button" wire:click="startSession({{ $session->id }})"
-                                    class="rounded-lg bg-blue-600 px-3 py-2 text-sm font-medium text-white transition hover:bg-blue-700">
+                                    class="rounded-lg bg-action px-3 py-2 text-sm font-medium text-action-foreground transition hover:bg-action">
                                     Start
                                 </button>
                                 <button type="button" wire:click="completeSession({{ $session->id }})"
@@ -166,7 +166,7 @@
                             </button>
                         @elseif ($session->status === 'completed' && $session->is_billable && $session->payment_status !== 'paid' && ($isMentor || auth()->user()->isAcademyAdmin() || auth()->user()->isSuperAdmin()))
                             <button type="button" wire:click="payoutSession({{ $session->id }})"
-                                class="rounded-lg bg-accent-themed-primary px-3 py-2 text-sm font-medium text-white transition hover:bg-accent-themed-secondary">
+                                class="rounded-lg bg-action px-3 py-2 text-sm font-medium text-action-foreground transition hover:bg-action/90">
                                 Pay mentor
                             </button>
                         @endif
@@ -179,7 +179,7 @@
                 <h3 class="text-lg font-semibold text-themed-primary">No sessions found</h3>
                 <p class="mt-1 text-themed-secondary">Book a session from an active mentorship to start tracking operations.</p>
                 <button type="button" wire:click="createSession"
-                    class="mt-4 inline-flex items-center gap-2 rounded-lg bg-accent-themed-primary px-4 py-2 text-sm font-semibold text-white hover:bg-accent-themed-secondary">
+                    class="mt-4 inline-flex items-center gap-2 rounded-lg bg-action px-4 py-2 text-sm font-semibold text-action-foreground hover:bg-action/90">
                     <i class="fas fa-plus"></i>
                     Book session
                 </button>
@@ -193,7 +193,7 @@
 
     @if ($showSessionModal)
         <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4" x-data="{ dialogOpen: true }" x-trap.inert.noscroll="dialogOpen" x-on:keydown.escape.window="dialogOpen = false; $wire.closeModal()" role="dialog" aria-modal="true" aria-label="Sessions dialog" tabindex="-1">
-            <div class="max-h-[90vh] w-full max-w-3xl overflow-y-auto rounded-lg border border-themed-primary bg-themed-secondary shadow-xl">
+            <div class="max-h-[90vh] w-full max-w-3xl overflow-y-auto rounded-lg border border-themed-primary bg-themed-secondary shadow-sm">
                 <div class="flex items-center justify-between border-b border-themed-primary p-5">
                     <h2 class="text-xl font-bold text-themed-primary">{{ $editingSessionId ? 'Edit session' : 'Book session' }}</h2>
                     <button aria-label="Close dialog" type="button" wire:click="closeModal" class="grid h-9 w-9 place-items-center rounded-lg bg-themed-tertiary text-themed-secondary">
@@ -204,8 +204,8 @@
                 <form wire:submit.prevent="submitSession" class="space-y-5 p-5">
                     <div>
                         <label class="mb-2 block text-sm font-medium text-themed-primary">Mentorship</label>
-                        <select wire:model="mentorshipId"
-                            class="w-full rounded-lg border border-themed-primary bg-themed-primary px-3 py-2 text-themed-primary focus:outline-none focus:ring-2 focus:ring-accent-themed-primary">
+                        <select aria-label="Mentorship id" wire:model="mentorshipId"
+                            class="w-full rounded-lg border border-themed-primary bg-themed-primary px-3 py-2 text-themed-primary focus:outline-none focus:ring-2 focus:ring-brand">
                             <option value="">Choose active mentorship</option>
                             @foreach ($activeMentorships as $mentorship)
                                 <option value="{{ $mentorship->id }}">
@@ -219,14 +219,14 @@
                     <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
                         <div>
                             <label class="mb-2 block text-sm font-medium text-themed-primary">Title</label>
-                            <input type="text" wire:model="sessionTitle"
-                                class="w-full rounded-lg border border-themed-primary bg-themed-primary px-3 py-2 text-themed-primary focus:outline-none focus:ring-2 focus:ring-accent-themed-primary">
+                            <input aria-label="Session title" type="text" wire:model="sessionTitle"
+                                class="w-full rounded-lg border border-themed-primary bg-themed-primary px-3 py-2 text-themed-primary focus:outline-none focus:ring-2 focus:ring-brand">
                             @error('sessionTitle') <p class="mt-1 text-sm text-red-500">{{ $message }}</p> @enderror
                         </div>
                         <div>
                             <label class="mb-2 block text-sm font-medium text-themed-primary">Type</label>
-                            <select wire:model="sessionType"
-                                class="w-full rounded-lg border border-themed-primary bg-themed-primary px-3 py-2 text-themed-primary focus:outline-none focus:ring-2 focus:ring-accent-themed-primary">
+                            <select aria-label="Session type" wire:model="sessionType"
+                                class="w-full rounded-lg border border-themed-primary bg-themed-primary px-3 py-2 text-themed-primary focus:outline-none focus:ring-2 focus:ring-brand">
                                 @foreach ($sessionTypes as $value => $label)
                                     <option value="{{ $value }}">{{ $label }}</option>
                                 @endforeach
@@ -237,22 +237,22 @@
 
                     <div>
                         <label class="mb-2 block text-sm font-medium text-themed-primary">Description</label>
-                        <textarea wire:model="sessionDescription" rows="3"
-                            class="w-full rounded-lg border border-themed-primary bg-themed-primary px-3 py-2 text-themed-primary focus:outline-none focus:ring-2 focus:ring-accent-themed-primary"></textarea>
+                        <textarea aria-label="Session description" wire:model="sessionDescription" rows="3"
+                            class="w-full rounded-lg border border-themed-primary bg-themed-primary px-3 py-2 text-themed-primary focus:outline-none focus:ring-2 focus:ring-brand"></textarea>
                         @error('sessionDescription') <p class="mt-1 text-sm text-red-500">{{ $message }}</p> @enderror
                     </div>
 
                     <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
                         <div>
                             <label class="mb-2 block text-sm font-medium text-themed-primary">Date and time</label>
-                            <input type="datetime-local" wire:model="scheduledAt"
-                                class="w-full rounded-lg border border-themed-primary bg-themed-primary px-3 py-2 text-themed-primary focus:outline-none focus:ring-2 focus:ring-accent-themed-primary">
+                            <input aria-label="Scheduled at" type="datetime-local" wire:model="scheduledAt"
+                                class="w-full rounded-lg border border-themed-primary bg-themed-primary px-3 py-2 text-themed-primary focus:outline-none focus:ring-2 focus:ring-brand">
                             @error('scheduledAt') <p class="mt-1 text-sm text-red-500">{{ $message }}</p> @enderror
                         </div>
                         <div>
                             <label class="mb-2 block text-sm font-medium text-themed-primary">Duration</label>
-                            <select wire:model="duration"
-                                class="w-full rounded-lg border border-themed-primary bg-themed-primary px-3 py-2 text-themed-primary focus:outline-none focus:ring-2 focus:ring-accent-themed-primary">
+                            <select aria-label="Duration" wire:model="duration"
+                                class="w-full rounded-lg border border-themed-primary bg-themed-primary px-3 py-2 text-themed-primary focus:outline-none focus:ring-2 focus:ring-brand">
                                 <option value="30">30 minutes</option>
                                 <option value="45">45 minutes</option>
                                 <option value="60">60 minutes</option>
@@ -263,8 +263,8 @@
                         </div>
                         <div>
                             <label class="mb-2 block text-sm font-medium text-themed-primary">Format</label>
-                            <select wire:model="sessionFormat"
-                                class="w-full rounded-lg border border-themed-primary bg-themed-primary px-3 py-2 text-themed-primary focus:outline-none focus:ring-2 focus:ring-accent-themed-primary">
+                            <select aria-label="Session format" wire:model="sessionFormat"
+                                class="w-full rounded-lg border border-themed-primary bg-themed-primary px-3 py-2 text-themed-primary focus:outline-none focus:ring-2 focus:ring-brand">
                                 @foreach ($sessionFormats as $value => $label)
                                     <option value="{{ $value }}">{{ $label }}</option>
                                 @endforeach
@@ -275,14 +275,14 @@
 
                     <div>
                         <label class="mb-2 block text-sm font-medium text-themed-primary">Agenda</label>
-                        <textarea wire:model="agenda" rows="3"
-                            class="w-full rounded-lg border border-themed-primary bg-themed-primary px-3 py-2 text-themed-primary focus:outline-none focus:ring-2 focus:ring-accent-themed-primary"></textarea>
+                        <textarea aria-label="Agenda" wire:model="agenda" rows="3"
+                            class="w-full rounded-lg border border-themed-primary bg-themed-primary px-3 py-2 text-themed-primary focus:outline-none focus:ring-2 focus:ring-brand"></textarea>
                     </div>
 
                     <div>
                         <label class="mb-2 block text-sm font-medium text-themed-primary">Meeting link</label>
-                        <input type="url" wire:model="meetingLink"
-                            class="w-full rounded-lg border border-themed-primary bg-themed-primary px-3 py-2 text-themed-primary focus:outline-none focus:ring-2 focus:ring-accent-themed-primary"
+                        <input aria-label="https://" type="url" wire:model="meetingLink"
+                            class="w-full rounded-lg border border-themed-primary bg-themed-primary px-3 py-2 text-themed-primary focus:outline-none focus:ring-2 focus:ring-brand"
                             placeholder="https://...">
                         @error('meetingLink') <p class="mt-1 text-sm text-red-500">{{ $message }}</p> @enderror
                     </div>
@@ -293,7 +293,7 @@
                             Cancel
                         </button>
                         <button type="submit"
-                            class="rounded-lg bg-accent-themed-primary px-4 py-2 text-sm font-semibold text-white hover:bg-accent-themed-secondary">
+                            class="rounded-lg bg-action px-4 py-2 text-sm font-semibold text-action-foreground hover:bg-action/90">
                             {{ $editingSessionId ? 'Save changes' : 'Book session' }}
                         </button>
                     </div>
@@ -304,7 +304,7 @@
 
     @if ($showCompletionModal && $selectedSession)
         <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4" x-data="{ dialogOpen: true }" x-trap.inert.noscroll="dialogOpen" x-on:keydown.escape.window="dialogOpen = false; $wire.closeModal()" role="dialog" aria-modal="true" aria-label="Sessions dialog" tabindex="-1">
-            <div class="max-h-[90vh] w-full max-w-3xl overflow-y-auto rounded-lg border border-themed-primary bg-themed-secondary shadow-xl">
+            <div class="max-h-[90vh] w-full max-w-3xl overflow-y-auto rounded-lg border border-themed-primary bg-themed-secondary shadow-sm">
                 <div class="flex items-center justify-between border-b border-themed-primary p-5">
                     <div>
                         <h2 class="text-xl font-bold text-themed-primary">Complete session</h2>
@@ -318,8 +318,8 @@
                 <form wire:submit.prevent="submitCompletion" class="space-y-5 p-5">
                     <div>
                         <label class="mb-2 block text-sm font-medium text-themed-primary">Session notes</label>
-                        <textarea wire:model="sessionNotes" rows="5"
-                            class="w-full rounded-lg border border-themed-primary bg-themed-primary px-3 py-2 text-themed-primary focus:outline-none focus:ring-2 focus:ring-accent-themed-primary"
+                        <textarea aria-label="What was discussed, decided, and learned?" wire:model="sessionNotes" rows="5"
+                            class="w-full rounded-lg border border-themed-primary bg-themed-primary px-3 py-2 text-themed-primary focus:outline-none focus:ring-2 focus:ring-brand"
                             placeholder="What was discussed, decided, and learned?"></textarea>
                         @error('sessionNotes') <p class="mt-1 text-sm text-red-500">{{ $message }}</p> @enderror
                     </div>
@@ -329,11 +329,11 @@
                         <div class="space-y-2">
                             @foreach ($actionItems as $index => $item)
                                 <div class="flex gap-2">
-                                    <input type="text" wire:model="actionItems.{{ $index }}"
-                                        class="flex-1 rounded-lg border border-themed-primary bg-themed-primary px-3 py-2 text-themed-primary focus:outline-none focus:ring-2 focus:ring-accent-themed-primary"
+                                    <input aria-label="Next step" type="text" wire:model="actionItems.{{ $index }}"
+                                        class="flex-1 rounded-lg border border-themed-primary bg-themed-primary px-3 py-2 text-themed-primary focus:outline-none focus:ring-2 focus:ring-brand"
                                         placeholder="Next step">
                                     <button type="button" wire:click="removeActionItem({{ $index }})"
-                                        class="grid h-10 w-10 place-items-center rounded-lg bg-red-600 text-white">
+                                        class="grid h-10 w-10 place-items-center rounded-lg bg-red-600 text-white" aria-label="Remove action item">
                                         <i class="fas fa-minus"></i>
                                     </button>
                                 </div>
@@ -349,26 +349,26 @@
                     <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
                         <div>
                             <label class="mb-2 block text-sm font-medium text-themed-primary">Mentor feedback</label>
-                            <textarea wire:model="mentorFeedback" rows="3"
-                                class="w-full rounded-lg border border-themed-primary bg-themed-primary px-3 py-2 text-themed-primary focus:outline-none focus:ring-2 focus:ring-accent-themed-primary"></textarea>
+                            <textarea aria-label="Mentor feedback" wire:model="mentorFeedback" rows="3"
+                                class="w-full rounded-lg border border-themed-primary bg-themed-primary px-3 py-2 text-themed-primary focus:outline-none focus:ring-2 focus:ring-brand"></textarea>
                         </div>
                         <div>
                             <label class="mb-2 block text-sm font-medium text-themed-primary">Mentee feedback</label>
-                            <textarea wire:model="menteeFeedback" rows="3"
-                                class="w-full rounded-lg border border-themed-primary bg-themed-primary px-3 py-2 text-themed-primary focus:outline-none focus:ring-2 focus:ring-accent-themed-primary"></textarea>
+                            <textarea aria-label="Mentee feedback" wire:model="menteeFeedback" rows="3"
+                                class="w-full rounded-lg border border-themed-primary bg-themed-primary px-3 py-2 text-themed-primary focus:outline-none focus:ring-2 focus:ring-brand"></textarea>
                         </div>
                     </div>
 
                     <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
                         <div>
                             <label class="mb-2 block text-sm font-medium text-themed-primary">Actual duration</label>
-                            <input type="number" wire:model="actualDuration" min="15" max="360"
-                                class="w-full rounded-lg border border-themed-primary bg-themed-primary px-3 py-2 text-themed-primary focus:outline-none focus:ring-2 focus:ring-accent-themed-primary">
+                            <input aria-label="Actual duration" type="number" wire:model="actualDuration" min="15" max="360"
+                                class="w-full rounded-lg border border-themed-primary bg-themed-primary px-3 py-2 text-themed-primary focus:outline-none focus:ring-2 focus:ring-brand">
                         </div>
                         <div>
                             <label class="mb-2 block text-sm font-medium text-themed-primary">Mentor rating</label>
-                            <select wire:model="mentorRating"
-                                class="w-full rounded-lg border border-themed-primary bg-themed-primary px-3 py-2 text-themed-primary focus:outline-none focus:ring-2 focus:ring-accent-themed-primary">
+                            <select aria-label="Mentor rating" wire:model="mentorRating"
+                                class="w-full rounded-lg border border-themed-primary bg-themed-primary px-3 py-2 text-themed-primary focus:outline-none focus:ring-2 focus:ring-brand">
                                 <option value="">No rating</option>
                                 @for ($i = 1; $i <= 5; $i++)
                                     <option value="{{ $i }}">{{ $i }}</option>
@@ -377,8 +377,8 @@
                         </div>
                         <div>
                             <label class="mb-2 block text-sm font-medium text-themed-primary">Mentee rating</label>
-                            <select wire:model="menteeRating"
-                                class="w-full rounded-lg border border-themed-primary bg-themed-primary px-3 py-2 text-themed-primary focus:outline-none focus:ring-2 focus:ring-accent-themed-primary">
+                            <select aria-label="Mentee rating" wire:model="menteeRating"
+                                class="w-full rounded-lg border border-themed-primary bg-themed-primary px-3 py-2 text-themed-primary focus:outline-none focus:ring-2 focus:ring-brand">
                                 <option value="">No rating</option>
                                 @for ($i = 1; $i <= 5; $i++)
                                     <option value="{{ $i }}">{{ $i }}</option>
@@ -412,7 +412,7 @@
 
     @if ($showDetailsModal && $selectedSession)
         <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4" x-data="{ dialogOpen: true }" x-trap.inert.noscroll="dialogOpen" x-on:keydown.escape.window="dialogOpen = false; $wire.closeModal()" role="dialog" aria-modal="true" aria-label="Sessions dialog" tabindex="-1">
-            <div class="max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-lg border border-themed-primary bg-themed-secondary shadow-xl">
+            <div class="max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-lg border border-themed-primary bg-themed-secondary shadow-sm">
                 <div class="flex items-center justify-between border-b border-themed-primary p-5">
                     <h2 class="text-xl font-bold text-themed-primary">Session details</h2>
                     <button aria-label="Close dialog" type="button" wire:click="closeModal" class="grid h-9 w-9 place-items-center rounded-lg bg-themed-tertiary text-themed-secondary">
@@ -462,7 +462,7 @@
 
                     @if ($selectedSession->meeting_link)
                         <a href="{{ $selectedSession->meeting_link }}" target="_blank"
-                            class="inline-flex items-center gap-2 rounded-lg bg-accent-themed-primary px-4 py-2 text-sm font-semibold text-white hover:bg-accent-themed-secondary">
+                            class="inline-flex items-center gap-2 rounded-lg bg-action px-4 py-2 text-sm font-semibold text-action-foreground hover:bg-action/90">
                             <i class="fas fa-external-link-alt"></i>
                             Open meeting link
                         </a>

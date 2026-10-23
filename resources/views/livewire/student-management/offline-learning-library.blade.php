@@ -14,17 +14,17 @@
     }"
     x-init="refresh(); window.addEventListener('bootkode-offline-packs-updated', () => refresh())"
     class="space-y-6">
-    <div class="rounded-xl border border-themed-primary bg-themed-secondary p-6 shadow-sm">
+    <div class="rounded-lg border border-themed-primary bg-themed-secondary p-6 shadow-sm">
         <div class="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
             <div>
                 <p class="text-xs font-semibold uppercase tracking-[0.18em] text-themed-secondary">Mobile learning</p>
-                <h1 class="mt-2 text-2xl font-bold text-themed-primary">Offline Learning Packs</h1>
+                <h1 class="mt-2  font-bold text-themed-primary bk-page-title">Offline Learning Packs</h1>
                 <p class="mt-2 max-w-2xl text-sm leading-6 text-themed-secondary">
                     Download course lessons, PDFs, images, and audio while online, read them in the offline reader, then sync progress when your connection returns.
                 </p>
             </div>
             <button type="button" @click="sync"
-                    class="inline-flex items-center justify-center rounded-lg bg-accent-themed-primary px-4 py-2 text-sm font-semibold text-white hover:bg-accent-themed-secondary">
+                    class="inline-flex items-center justify-center rounded-lg bg-action px-4 py-2 text-sm font-semibold text-action-foreground hover:bg-action/90">
                 <i class="fas fa-rotate mr-2"></i>
                 Sync Progress
             </button>
@@ -42,7 +42,7 @@
                     $manifest = $pack->manifest ?? [];
                     $course = $pack->course;
                 @endphp
-                <article class="rounded-xl border border-themed-primary bg-themed-secondary p-5 shadow-sm">
+                <article class="rounded-lg border border-themed-primary bg-themed-secondary p-5 shadow-sm">
                     <div class="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
                         <div class="min-w-0">
                             <div class="flex flex-wrap items-center gap-2">
@@ -59,7 +59,7 @@
                                 downloaded {{ $pack->downloaded_at?->diffForHumans() ?? 'recently' }}
                             </p>
                             <div class="mt-3 h-2 overflow-hidden rounded-full bg-themed-tertiary">
-                                <div class="h-full rounded-full bg-accent-themed-primary" style="width: {{ min(100, $pack->storage_usage_percentage) }}%"></div>
+                                <div class="h-full rounded-full bg-action" style="width: {{ min(100, $pack->storage_usage_percentage) }}%"></div>
                             </div>
                             <p class="mt-1 text-xs text-themed-tertiary">
                                 {{ $pack->storage_usage_percentage }}% of {{ number_format($pack->storage_limit_mb) }} MB pack limit.
@@ -71,7 +71,7 @@
                         <div class="grid gap-2 sm:grid-cols-3 md:w-72 md:grid-cols-1">
                             <button type="button"
                                     onclick="window.bootkodeOffline.openReader('{{ $course?->slug }}')"
-                                    class="rounded-lg bg-accent-themed-primary px-4 py-2 text-sm font-semibold text-white hover:bg-accent-themed-secondary">
+                                    class="rounded-lg bg-action px-4 py-2 text-sm font-semibold text-action-foreground hover:bg-action/90">
                                 <i class="fas fa-book-reader mr-2"></i>Read Offline
                             </button>
                             <a href="{{ $course ? route('course.view', $course->slug) : '#' }}"
@@ -87,18 +87,18 @@
                     </div>
                 </article>
             @empty
-                <div class="rounded-xl border-2 border-dashed border-themed-secondary bg-themed-tertiary p-8 text-center">
+                <div class="rounded-lg border-2 border-dashed border-themed-secondary bg-themed-tertiary p-8 text-center">
                     <i class="fas fa-download mb-3 text-4xl text-themed-tertiary"></i>
                     <h2 class="text-lg font-semibold text-themed-primary">No offline packs yet</h2>
                     <p class="mt-2 text-sm text-themed-secondary">Open an enrolled course and use the offline pack panel to download it for mobile learning.</p>
-                    <a href="{{ route('student.enrolled-courses') }}" class="mt-4 inline-flex items-center rounded-lg bg-accent-themed-primary px-4 py-2 text-sm font-semibold text-white">
+                    <a href="{{ route('student.enrolled-courses') }}" class="mt-4 inline-flex items-center rounded-lg bg-action px-4 py-2 text-sm font-semibold text-action-foreground">
                         <i class="fas fa-book mr-2"></i>My Courses
                     </a>
                 </div>
             @endforelse
         </div>
 
-        <aside class="rounded-xl border border-themed-primary bg-themed-secondary p-5 shadow-sm">
+        <aside class="rounded-lg border border-themed-primary bg-themed-secondary p-5 shadow-sm">
             <h2 class="text-base font-semibold text-themed-primary">This Device</h2>
             <div class="mt-4 space-y-3 text-sm text-themed-secondary">
                 <div class="rounded-lg border border-themed-secondary bg-themed-tertiary p-3">

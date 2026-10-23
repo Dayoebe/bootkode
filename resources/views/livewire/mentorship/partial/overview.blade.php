@@ -1,7 +1,7 @@
 <div>
     <!-- Welcome Section -->
     <div
-        class="bg-themed-secondary rounded-2xl shadow-lg p-8 border border-themed-primary transition-colors duration-300">
+        class="bg-themed-secondary rounded-lg shadow-sm p-8 border border-themed-primary transition-colors duration-300">
         <div class="mb-6 flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-between">
             <div>
                 <h2 class="text-2xl font-bold text-themed-primary mb-2 transition-colors duration-300">Mentoring activity</h2>
@@ -16,7 +16,7 @@
                             </button>
                             <button wire:click="toggleAvailability" class="px-6 py-3 rounded-lg transition-colors duration-300 {{ $isAvailable
                     ? 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300 hover:bg-red-200 dark:hover:bg-red-900/50'
-                    : 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 hover:bg-green-200 dark:hover:bg-green-900/50' 
+                    : 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 hover:bg-green-200 dark:hover:bg-green-900/50'
                                     }}">
                                 <i class="fas fa-{{ $isAvailable ? 'pause' : 'play' }} mr-2"></i>
                                 {{ $isAvailable ? 'Go Unavailable' : 'Go Available' }}
@@ -87,7 +87,7 @@
         <!-- Pending Requests -->
         @if(count($pendingRequestsList) > 0)
             <div
-                class="bg-yellow-100/50 dark:bg-yellow-900/30 border border-yellow-200/50 dark:border-yellow-800 rounded-xl p-6 mb-6 transition-colors duration-300">
+                class="bg-yellow-100/50 dark:bg-yellow-900/30 border border-yellow-200/50 dark:border-yellow-800 rounded-lg p-6 mb-6 transition-colors duration-300">
                 <h3 class="text-lg font-semibold text-yellow-800 dark:text-yellow-300 mb-4 transition-colors duration-300">
                     <i class="fas fa-bell mr-2"></i>Pending Mentorship Requests ({{ count($pendingRequestsList) }})
                 </h3>
@@ -124,7 +124,7 @@
     <div class="grid lg:grid-cols-2 gap-8 mt-8">
         <!-- Upcoming Sessions -->
         <div
-            class="bg-themed-secondary rounded-2xl shadow-lg p-6 border border-themed-primary transition-colors duration-300">
+            class="bg-themed-secondary rounded-lg shadow-sm p-6 border border-themed-primary transition-colors duration-300">
             <div class="flex items-center justify-between mb-6">
                 <h3 class="text-xl font-bold text-themed-primary transition-colors duration-300">Upcoming Sessions</h3>
                 <button wire:click="$dispatch('change-tab', {tab: 'sessions'})"
@@ -165,7 +165,7 @@
 
         <!-- Recent Code Reviews -->
         <div
-            class="bg-themed-secondary rounded-2xl shadow-lg p-6 border border-themed-primary transition-colors duration-300">
+            class="bg-themed-secondary rounded-lg shadow-sm p-6 border border-themed-primary transition-colors duration-300">
             <div class="flex items-center justify-between mb-6">
                 <h3 class="text-xl font-bold text-themed-primary transition-colors duration-300">Recent Code Reviews
                 </h3>
@@ -186,8 +186,8 @@
                                         {{ $review->title }}</h4>
                                     <div class="flex items-center mt-2 space-x-4">
                                         <span
-                                            class="text-xs bg-{{ $review->status === 'pending' ? 'yellow' : ($review->status === 'completed' ? 'green' : 'blue') }}-100 dark:bg-{{ $review->status === 'pending' ? 'yellow' : ($review->status === 'completed' ? 'green' : 'blue') }}-900/30 
-                                                       text-{{ $review->status === 'pending' ? 'yellow' : ($review->status === 'completed' ? 'green' : 'blue') }}-800 dark:text-{{ $review->status === 'pending' ? 'yellow' : ($review->status === 'completed' ? 'green' : 'blue') }}-300 
+                                            class="text-xs bg-{{ $review->status === 'pending' ? 'yellow' : ($review->status === 'completed' ? 'green' : 'blue') }}-100 dark:bg-{{ $review->status === 'pending' ? 'yellow' : ($review->status === 'completed' ? 'green' : 'blue') }}-900/30
+                                                       text-{{ $review->status === 'pending' ? 'yellow' : ($review->status === 'completed' ? 'green' : 'blue') }}-800 dark:text-{{ $review->status === 'pending' ? 'yellow' : ($review->status === 'completed' ? 'green' : 'blue') }}-300
                                                        px-2 py-1 rounded-full border border-{{ $review->status === 'pending' ? 'yellow' : ($review->status === 'completed' ? 'green' : 'blue') }}-200 dark:border-{{ $review->status === 'pending' ? 'yellow' : ($review->status === 'completed' ? 'green' : 'blue') }}-800 transition-colors duration-300">
                                             {{ ucfirst($review->status) }}
                                         </span>
@@ -200,7 +200,7 @@
                                         {{ $review->requested_at->diffForHumans() }}
                                     </p>
                                 </div>
-                                <div class="text-2xl text-purple-500 dark:text-purple-400">
+                                <div class="text-2xl text-brand dark:text-brand">
                                     <i class="fas fa-code-branch"></i>
                                 </div>
                             </div>

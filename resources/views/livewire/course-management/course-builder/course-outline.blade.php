@@ -1,17 +1,17 @@
-<div class="bg-themed-secondary dark:bg-gray-800 p-4 sm:p-6 rounded-xl shadow-lg border border-themed-primary dark:border-gray-700 transition-colors duration-300">
-    
-    <h3 class="text-lg font-bold text-gray-800 dark:text-white mb-4 transition-colors duration-300">Course Outline</h3>
+<div class="bg-themed-secondary dark:bg-gray-800 p-4 sm:p-6 rounded-lg shadow-sm border border-themed-primary dark:border-gray-700 transition-colors duration-300">
+
+    <h3 class="text-lg font-bold text-content dark:text-white mb-4 transition-colors duration-300">Course Outline</h3>
 
     <!-- Create Section Form -->
     <div class="mb-6">
         <form wire:submit.prevent="createSection" class="flex flex-col sm:flex-row gap-2">
             <input type="text" wire:model="newSectionTitle"
-                class="w-full px-4 py-2 bg-themed-tertiary dark:bg-gray-700 border border-themed-primary dark:border-gray-600 rounded-lg text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors duration-300"
+                class="w-full px-4 py-2 bg-themed-tertiary dark:bg-gray-700 border border-themed-primary dark:border-gray-600 rounded-lg text-content dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-brand/30 focus:border-transparent transition-colors duration-300"
                 placeholder="Enter section title..." aria-label="New section title">
-            <button type="submit" 
-                wire:loading.attr="disabled" 
+            <button type="submit"
+                wire:loading.attr="disabled"
                 wire:target="createSection"
-                class="px-4 py-2 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white rounded-lg transition-colors duration-300 flex items-center justify-center min-w-[120px]">
+                class="px-4 py-2 bg-action hover:bg-action disabled:bg-gray-400 text-action-foreground rounded-lg transition-colors duration-300 flex items-center justify-center min-w-[120px]">
                 <span wire:loading.remove wire:target="createSection">
                     <i class="fas fa-plus mr-2"></i> Add Section
                 </span>
@@ -29,23 +29,23 @@
     <div class="space-y-2">
         @forelse ($sections as $sectionIndex => $section)
             <div wire:key="section-{{ $section->id }}" class="bg-themed-tertiary dark:bg-gray-700 rounded-lg border border-themed-primary dark:border-gray-600 transition-all duration-300">
-                
+
                 <!-- Section Header -->
                 <div class="flex items-center justify-between p-3 cursor-pointer hover:bg-themed-secondary dark:hover:bg-gray-600 transition-colors duration-300 rounded-t-lg"
                     @click.stop="$wire.toggleSection({{ $section->id }})">
                     <div class="flex items-center flex-1 min-w-0">
-                        <i class="fas fa-folder text-blue-600 dark:text-blue-400 mr-2 transition-all duration-200"></i>
+                        <i class="fas fa-folder text-brand dark:text-brand mr-2 transition-all duration-200"></i>
                         @if ($editingSectionId === $section->id)
-                            <input wire:model="newSectionTitleEdit" 
+                            <input aria-label="New section title edit" wire:model="newSectionTitleEdit"
                                    wire:keydown.enter="updateSection"
                                    wire:keydown.escape="cancelEditSection"
                                    @click.stop
-                                   class="bg-themed-secondary dark:bg-gray-600 text-gray-900 dark:text-white px-2 py-1 rounded flex-1 border border-themed-primary dark:border-gray-500 transition-colors duration-300"
+                                   class="bg-themed-secondary dark:bg-gray-600 text-content dark:text-white px-2 py-1 rounded flex-1 border border-themed-primary dark:border-gray-500 transition-colors duration-300"
                                    autofocus>
                         @else
-                            <span class="text-gray-800 dark:text-white truncate transition-colors duration-300">{{ $section->title }}</span>
+                            <span class="text-content dark:text-white truncate transition-colors duration-300">{{ $section->title }}</span>
                         @endif
-                        <span class="ml-2 text-xs text-gray-500 dark:text-gray-400 bg-gray-200 dark:bg-gray-600 px-2 py-1 rounded-full transition-colors duration-300">
+                        <span class="ml-2 text-xs text-content-muted dark:text-content-muted bg-gray-200 dark:bg-gray-600 px-2 py-1 rounded-full transition-colors duration-300">
                             {{ $section->lessons->count() }}
                         </span>
                     </div>
@@ -53,21 +53,21 @@
                     <div class="flex space-x-2" @click.stop>
                         @if ($editingSectionId === $section->id)
                             <button wire:click="updateSection"
-                                class="text-green-600 dark:text-green-400 hover:text-green-700 dark:hover:text-green-300 transition-colors p-1">
+                                class="text-green-600 dark:text-green-400 hover:text-green-700 dark:hover:text-green-300 transition-colors p-1" aria-label="Update section">
                                 <i class="fas fa-check"></i>
                             </button>
                             <button wire:click="cancelEditSection"
-                                class="text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-white transition-colors p-1">
+                                class="text-content-muted dark:text-content-muted hover:text-content dark:hover:text-white transition-colors p-1" aria-label="Close">
                                 <i class="fas fa-times"></i>
                             </button>
                         @else
                             <button wire:click="startEditSection({{ $section->id }})"
-                                class="text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors p-1">
+                                class="text-content-muted dark:text-content-muted hover:text-brand dark:hover:text-brand transition-colors p-1">
                                 <i class="fas fa-edit"></i>
                             </button>
                             <button wire:click="deleteSection({{ $section->id }})"
                                 onclick="return confirm('Are you sure you want to delete this section and all its lessons?')"
-                                class="text-gray-600 dark:text-gray-400 hover:text-red-600 dark:hover:text-red-400 transition-colors p-1">
+                                class="text-content-muted dark:text-content-muted hover:text-red-600 dark:hover:text-red-400 transition-colors p-1">
                                 <i class="fas fa-trash"></i>
                             </button>
                         @endif
@@ -77,21 +77,21 @@
                 <!-- Lessons List -->
                 @if(in_array($section->id, $expandedSections))
                     <div class="ml-8 pr-3 pb-2 space-y-2 bg-themed-tertiary dark:bg-gray-700 rounded-b-lg border-t border-themed-primary dark:border-gray-600 transition-colors duration-300">
-                        
+
                         <!-- Lessons -->
                         @foreach ($section->lessons as $lesson)
                             <div wire:key="lesson-{{ $lesson->id }}"
                                 class="flex items-center justify-between group p-2 rounded transition-all duration-200
-                                        {{ $activeLessonId == $lesson->id 
-                                            ? 'bg-blue-500 text-white shadow-lg transform scale-[1.02]' 
-                                            : 'bg-themed-secondary dark:bg-gray-600 hover:bg-gray-200 dark:hover:bg-gray-500 text-gray-800 dark:text-white' }}">
+                                        {{ $activeLessonId == $lesson->id
+                                            ? 'bg-blue-500 text-action-foreground shadow-sm transform scale-[1.02]'
+                                            : 'bg-themed-secondary dark:bg-gray-600 hover:bg-gray-200 dark:hover:bg-gray-500 text-content dark:text-white' }}">
                                 <div class="flex items-center flex-1 min-w-0">
                                     @if ($editingLessonId === $lesson->id)
-                                        <input wire:model="newLessonTitleEdit" 
+                                        <input aria-label="New lesson title edit" wire:model="newLessonTitleEdit"
                                                wire:keydown.enter="updateLesson"
                                                wire:keydown.escape="cancelEditLesson"
                                                @click.stop
-                                               class="bg-themed-secondary dark:bg-gray-600 text-gray-900 dark:text-white px-2 py-1 rounded flex-1 border border-themed-primary dark:border-gray-500 transition-colors duration-300"
+                                               class="bg-themed-secondary dark:bg-gray-600 text-content dark:text-white px-2 py-1 rounded flex-1 border border-themed-primary dark:border-gray-500 transition-colors duration-300"
                                                autofocus>
                                     @else
                                         <button wire:click="selectLesson({{ $lesson->id }})"
@@ -107,27 +107,27 @@
                                 <div class="flex space-x-2" @click.stop>
                                     @if ($editingLessonId === $lesson->id)
                                         <button wire:click="updateLesson"
-                                            class="text-green-600 dark:text-green-400 hover:text-green-700 dark:hover:text-green-300 transition-colors p-1">
+                                            class="text-green-600 dark:text-green-400 hover:text-green-700 dark:hover:text-green-300 transition-colors p-1" aria-label="Update lesson">
                                             <i class="fas fa-check"></i>
                                         </button>
                                         <button wire:click="cancelEditLesson"
-                                            class="text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-white transition-colors p-1">
+                                            class="text-content-muted dark:text-content-muted hover:text-content dark:hover:text-white transition-colors p-1" aria-label="Close">
                                             <i class="fas fa-times"></i>
                                         </button>
                                     @else
                                         <button wire:click="startEditLesson({{ $lesson->id }})"
                                             class="opacity-0 group-hover:opacity-100 transition-all duration-200 p-1
-                                                {{ $activeLessonId == $lesson->id 
-                                                    ? 'text-white hover:text-blue-200' 
-                                                    : 'text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400' }}">
+                                                {{ $activeLessonId == $lesson->id
+                                                    ? 'text-white hover:text-blue-200'
+                                                    : 'text-gray-600 dark:text-content-muted hover:text-brand dark:hover:text-blue-400' }}">
                                             <i class="fas fa-edit text-xs"></i>
                                         </button>
                                         <button wire:click="deleteLesson({{ $lesson->id }})"
                                             onclick="return confirm('Delete this lesson? This action cannot be undone.')"
                                             class="opacity-0 group-hover:opacity-100 transition-all duration-200 p-1
-                                                {{ $activeLessonId == $lesson->id 
-                                                    ? 'text-white hover:text-red-200' 
-                                                    : 'text-gray-600 dark:text-gray-400 hover:text-red-600 dark:hover:text-red-400' }}">
+                                                {{ $activeLessonId == $lesson->id
+                                                    ? 'text-white hover:text-red-200'
+                                                    : 'text-gray-600 dark:text-content-muted hover:text-red-600 dark:hover:text-red-400' }}">
                                             <i class="fas fa-trash text-xs"></i>
                                         </button>
                                     @endif
@@ -138,9 +138,9 @@
                         <!-- Add Lesson Form -->
                         <form wire:submit.prevent="createLesson({{ $section->id }})" class="flex items-center gap-2 pt-2">
                             <input type="text" wire:model="newLessonTitles.{{ $section->id }}"
-                                class="flex-1 px-3 py-1 bg-themed-secondary dark:bg-gray-600 border border-themed-primary dark:border-gray-500 rounded text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 text-sm focus:ring-2 focus:ring-green-500 focus:border-transparent transition-colors duration-300"
+                                class="flex-1 px-3 py-1 bg-themed-secondary dark:bg-gray-600 border border-themed-primary dark:border-gray-500 rounded text-content dark:text-white placeholder-gray-500 dark:placeholder-gray-400 text-sm focus:ring-2 focus:ring-green-500 focus:border-transparent transition-colors duration-300"
                                 placeholder="New lesson title...">
-                            <button type="submit" 
+                            <button type="submit"
                                 wire:loading.attr="disabled"
                                 wire:target="createLesson({{ $section->id }})"
                                 class="px-2 py-1 bg-green-600 hover:bg-green-700 disabled:bg-gray-400 text-white rounded text-sm transition-colors duration-300 min-w-[60px] flex items-center justify-center">
@@ -159,7 +159,7 @@
                 @endif
             </div>
         @empty
-            <div class="text-gray-500 dark:text-gray-400 text-center py-8 transition-colors duration-300">
+            <div class="text-content-muted dark:text-content-muted text-center py-8 transition-colors duration-300">
                 <i class="fas fa-folder-plus text-4xl mb-3 opacity-50"></i>
                 <p>No sections yet. Create one to start!</p>
             </div>

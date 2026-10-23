@@ -49,7 +49,7 @@
     <!-- Navigation Tabs -->
     <div class="mt-6 border-t border-line pt-4">
         <nav class="flex space-x-1 overflow-x-auto">
-            <button wire:click="showListings" 
+            <button wire:click="showListings"
                     class="min-h-11 px-4 py-2 rounded-lg font-medium text-sm whitespace-nowrap transition-colors {{ $currentView === 'listings' ? 'bk-button-primary' : 'text-content-muted hover:text-brand hover:bg-surface-muted' }} flex items-center">
                 <i class="fas fa-list-alt mr-2"></i>
                 My Listings
@@ -57,21 +57,21 @@
                     <span class="ml-2 bg-yellow-500 text-white text-xs px-2 py-0.5 rounded-full">{{ $analyticsData['draft_items'] }}</span>
                 @endif
             </button>
-            
-            <button wire:click="showCreate" 
+
+            <button wire:click="showCreate"
                     class="min-h-11 px-4 py-2 rounded-lg font-medium text-sm whitespace-nowrap transition-colors {{ $currentView === 'create' ? 'bk-button-primary' : 'text-content-muted hover:text-brand hover:bg-surface-muted' }} flex items-center">
                 <i class="fas fa-{{ $editingItemId ? 'edit' : 'plus' }} mr-2"></i>
                 {{ $editingItemId ? 'Edit Item' : 'Create New' }}
             </button>
 
-            <button wire:click="showAnalytics" 
+            <button wire:click="showAnalytics"
                     class="min-h-11 px-4 py-2 rounded-lg font-medium text-sm whitespace-nowrap transition-colors {{ $currentView === 'analytics' ? 'bk-button-primary' : 'text-content-muted hover:text-brand hover:bg-surface-muted' }} flex items-center">
                 <i class="fas fa-chart-line mr-2"></i>
                 Analytics
             </button>
 
             @if($currentView === 'create' && $editingItemId)
-                <button wire:click="showCreate" 
+                <button wire:click="showCreate"
                         class="min-h-11 px-4 py-2 rounded-lg font-medium text-sm whitespace-nowrap transition-colors text-content-muted hover:text-brand hover:bg-surface-muted flex items-center">
                     <i class="fas fa-times mr-2"></i>
                     Cancel Edit
@@ -97,8 +97,8 @@
 @endif
 
 @if(session()->has('info'))
-    <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 flex items-center">
-        <i class="fas fa-info-circle text-blue-600 mr-3"></i>
-        <div class="text-blue-800 font-medium">{{ session('info') }}</div>
+    <div class="bg-brand/10 border border-brand rounded-lg p-4 flex items-center">
+        <i class="fas fa-info-circle text-brand mr-3"></i>
+        <div class="text-brand font-medium">{{ session('info') }}</div>
     </div>
 @endif

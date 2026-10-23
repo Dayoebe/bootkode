@@ -22,10 +22,10 @@
                 <img src="{{ $featuredMedia->getUrl() }}" alt="{{ $featuredMedia->alt_text ?? $page->title }}">
             </div>
         @endif
-        
+
         <header class="page-header">
-            <h1 class="page-title">{{ $page->title }}</h1>
-            
+            <h1 class="page-title bk-page-title">{{ $page->title }}</h1>
+
             @if($page->settings['enable_reading_time'] ?? false)
                 <div class="page-meta">
                     <span class="reading-time">
@@ -35,11 +35,11 @@
                 </div>
             @endif
         </header>
-        
+
         <div class="page-content">
             {!! $page->getProcessedContent() !!}
         </div>
-        
+
         @if($page->settings['enable_sharing'] ?? true)
             <footer class="page-footer">
                 <div class="share-buttons">

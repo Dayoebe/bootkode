@@ -11,11 +11,11 @@
             <div class="text-sm text-themed-secondary">Pending Feedback</div>
         </div>
         <div class="bg-themed-secondary border border-themed-primary rounded-lg p-4">
-            <div class="text-3xl font-bold text-blue-400 mb-1">{{ $flaggedThreads ?? 0 }}</div>
+            <div class="text-3xl font-bold text-brand mb-1">{{ $flaggedThreads ?? 0 }}</div>
             <div class="text-sm text-themed-secondary">Flagged Threads</div>
         </div>
         <div class="bg-themed-secondary border border-themed-primary rounded-lg p-4">
-            <div class="text-3xl font-bold text-purple-400 mb-1">{{ $blockedUsers ?? 0 }}</div>
+            <div class="text-3xl font-bold text-brand mb-1">{{ $blockedUsers ?? 0 }}</div>
             <div class="text-sm text-themed-secondary">Blocked Users</div>
         </div>
     </div>
@@ -32,11 +32,11 @@
                 <i class="fas fa-comment mr-2"></i>User Feedback
             </button>
             <button wire:click="setModerationTab('flagged')"
-                class="px-4 py-3 font-medium text-sm transition-all whitespace-nowrap {{ $moderationTab === 'flagged' ? 'border-b-2 border-blue-500 text-blue-500' : 'border-b-2 border-transparent text-themed-secondary hover:text-themed-primary' }}">
+                class="px-4 py-3 font-medium text-sm transition-all whitespace-nowrap {{ $moderationTab === 'flagged' ? 'border-b-2 border-brand text-blue-500' : 'border-b-2 border-transparent text-themed-secondary hover:text-themed-primary' }}">
                 <i class="fas fa-exclamation-triangle mr-2"></i>Flagged Content
             </button>
             <button wire:click="setModerationTab('users')"
-                class="px-4 py-3 font-medium text-sm transition-all whitespace-nowrap {{ $moderationTab === 'users' ? 'border-b-2 border-purple-500 text-purple-500' : 'border-b-2 border-transparent text-themed-secondary hover:text-themed-primary' }}">
+                class="px-4 py-3 font-medium text-sm transition-all whitespace-nowrap {{ $moderationTab === 'users' ? 'border-b-2 border-brand text-purple-500' : 'border-b-2 border-transparent text-themed-secondary hover:text-themed-primary' }}">
                 <i class="fas fa-users-slash mr-2"></i>Manage Users
             </button>
         </div>
@@ -46,7 +46,7 @@
     @if($moderationTab === 'reports')
         <div class="space-y-3">
             <div class="mb-4 flex gap-2">
-                <select wire:model.live="reportStatusFilter"
+                <select aria-label="Report status filter" wire:model.live="reportStatusFilter"
                     class="bg-themed-secondary border border-themed-primary text-themed-primary rounded-lg px-3 py-2 text-sm">
                     <option value="">All Statuses</option>
                     <option value="pending">Pending</option>
@@ -84,7 +84,7 @@
                     @if($report->status === 'pending')
                         <div class="flex gap-2">
                             <button wire:click="reviewReport({{ $report->id }})"
-                                class="flex-1 bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-lg text-sm font-medium transition-colors">
+                                class="flex-1 bg-action hover:bg-action text-action-foreground px-3 py-2 rounded-lg text-sm font-medium transition-colors">
                                 <i class="fas fa-eye mr-1"></i>Review
                             </button>
                             <button wire:click="dismissReport({{ $report->id }})"
@@ -113,7 +113,7 @@
     @if($moderationTab === 'feedback')
         <div class="space-y-3">
             <div class="mb-4 flex gap-2">
-                <select wire:model.live="feedbackStatusFilter"
+                <select aria-label="Feedback status filter" wire:model.live="feedbackStatusFilter"
                     class="bg-themed-secondary border border-themed-primary text-themed-primary rounded-lg px-3 py-2 text-sm">
                     <option value="">All Statuses</option>
                     <option value="open">Open</option>
@@ -124,7 +124,7 @@
             </div>
 
             @forelse($feedbackItems ?? [] as $feedback)
-                <div class="bg-themed-secondary border border-themed-primary rounded-lg p-4 hover:shadow-md transition-all">
+                <div class="bg-themed-secondary border border-themed-primary rounded-lg p-4  transition-all">
                     <div class="flex items-start justify-between mb-2">
                         <h3 class="font-semibold text-themed-primary flex-1">{{ $feedback->subject }}</h3>
                         <span
@@ -152,7 +152,7 @@
 
                     @if($feedback->status === 'open')
                         <button wire:click="assignFeedback({{ $feedback->id }})"
-                            class="w-full bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-lg text-sm font-medium transition-colors">
+                            class="w-full bg-action hover:bg-action text-action-foreground px-3 py-2 rounded-lg text-sm font-medium transition-colors">
                             <i class="fas fa-hand-pointer mr-1"></i>Assign to Me
                         </button>
                     @elseif($feedback->status === 'in_progress')
@@ -165,7 +165,7 @@
                                 <i class="fas fa-reply mr-1"></i>Respond
                             </button>
                             <button wire:click="resolveFeedback({{ $feedback->id }})"
-                                class="bg-purple-600 hover:bg-purple-700 text-white px-3 py-2 rounded-lg text-sm font-medium transition-colors">
+                                class="bg-action hover:bg-action text-action-foreground px-3 py-2 rounded-lg text-sm font-medium transition-colors">
                                 <i class="fas fa-check mr-1"></i>Resolve
                             </button>
                         </div>
@@ -232,8 +232,8 @@
     @if($moderationTab === 'users')
         <div class="space-y-3">
             <div class="mb-4">
-                <input type="text" wire:model.live.debounce="userSearch"
-                    class="w-full pl-10 pr-4 py-2 bg-themed-secondary border border-themed-primary text-themed-primary rounded-lg placeholder-themed-secondary focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                <input aria-label="Search users" type="text" wire:model.live.debounce="userSearch"
+                    class="w-full pl-10 pr-4 py-2 bg-themed-secondary border border-themed-primary text-themed-primary rounded-lg placeholder-themed-secondary focus:ring-2 focus:ring-brand/30 focus:border-transparent"
                     placeholder="Search users...">
             </div>
 

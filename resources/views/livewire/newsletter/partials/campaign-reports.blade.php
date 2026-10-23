@@ -4,46 +4,46 @@
         <div class="flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-4 w-full md:w-auto">
             <!-- Search -->
             <div class="relative">
-                <input 
-                    type="text" 
-                    wire:model.live.debounce.300ms="search" 
+                <input
+ aria-label="Search campaigns"                    type="text"
+                    wire:model.live.debounce.300ms="search"
                     placeholder="Search campaigns..."
-                    class="pl-10 pr-4 py-2 w-full md:w-64 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    class="pl-10 pr-4 py-2 w-full md:w-64 border border-line rounded-lg focus:ring-2 focus:ring-brand/30 focus:border-transparent"
                 >
-                <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
+                <i class="fas fa-search absolute left-3 top-3 text-content-muted"></i>
             </div>
         </div>
     </div>
 
     <!-- Campaigns Table -->
-    <div class="bg-white rounded-lg shadow overflow-hidden">
+    <div class="bg-surface rounded-lg shadow overflow-hidden">
         <div class="overflow-x-auto">
-            <table class="min-w-full divide-y divide-gray-200">
-                <thead class="bg-gray-50">
+            <x-ui.table label="Campaign Reports.Blade records"><table class="min-w-full divide-y divide-line">
+                <thead class="bg-surface-muted">
                     <tr>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Campaign</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Sent</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Opens</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Clicks</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Bounces</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Unsubscribes</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-content-muted uppercase tracking-wider">Campaign</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-content-muted uppercase tracking-wider">Sent</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-content-muted uppercase tracking-wider">Opens</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-content-muted uppercase tracking-wider">Clicks</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-content-muted uppercase tracking-wider">Bounces</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-content-muted uppercase tracking-wider">Unsubscribes</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-content-muted uppercase tracking-wider">Actions</th>
                     </tr>
                 </thead>
-                <tbody class="bg-white divide-y divide-gray-200">
+                <tbody class="bg-surface divide-y divide-line">
                     @forelse($campaigns as $campaign)
-                        <tr class="hover:bg-gray-50">
+                        <tr class="hover:bg-surface-muted">
                             <td class="px-6 py-4">
                                 <div class="flex flex-col">
-                                    <div class="text-sm font-medium text-gray-900">{{ $campaign->name }}</div>
-                                    <div class="text-sm text-gray-500">{{ $campaign->subject }}</div>
-                                    <div class="text-xs text-gray-400">{{ $campaign->sent_at?->format('M j, Y H:i') }}</div>
+                                    <div class="text-sm font-medium text-content">{{ $campaign->name }}</div>
+                                    <div class="text-sm text-content-muted">{{ $campaign->subject }}</div>
+                                    <div class="text-xs text-content-muted">{{ $campaign->sent_at?->format('M j, Y H:i') }}</div>
                                 </div>
                             </td>
-                            <td class="px-6 py-4 text-sm text-gray-900">
+                            <td class="px-6 py-4 text-sm text-content">
                                 {{ $campaign->sent_count }}
                             </td>
-                            <td class="px-6 py-4 text-sm text-blue-600">
+                            <td class="px-6 py-4 text-sm text-brand">
                                 {{ $campaign->open_count }} ({{ $campaign->sent_count > 0 ? round(($campaign->open_count / $campaign->sent_count) * 100, 2) : 0 }}%)
                             </td>
                             <td class="px-6 py-4 text-sm text-green-600">
@@ -56,9 +56,9 @@
                                 {{ $campaign->unsubscribe_count }} ({{ $campaign->sent_count > 0 ? round(($campaign->unsubscribe_count / $campaign->sent_count) * 100, 2) : 0 }}%)
                             </td>
                             <td class="px-6 py-4">
-                                <button 
+                                <button
                                     wire:click="selectCampaign({{ $campaign->id }})"
-                                    class="text-blue-600 hover:text-blue-900 text-sm"
+                                    class="text-brand hover:text-brand text-sm"
                                     title="View Details"
                                 >
                                     <i class="fas fa-eye"></i> View Details
@@ -67,18 +67,18 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="7" class="px-6 py-12 text-center text-gray-500">
+                            <td colspan="7" class="px-6 py-12 text-center text-content-muted">
                                 <i class="fas fa-chart-pie text-4xl mb-4 text-gray-300"></i>
                                 <p>No campaign reports available.</p>
                             </td>
                         </tr>
                     @endforelse
                 </tbody>
-            </table>
+            </table></x-ui.table>
         </div>
 
         @if($campaigns->hasPages())
-            <div class="px-6 py-3 border-t border-gray-200">
+            <div class="px-6 py-3 border-t border-line">
                 {{ $campaigns->links() }}
             </div>
         @endif
@@ -86,31 +86,31 @@
 
     <!-- Campaign Details Modal -->
     @if($selectedCampaign)
-        <div x-data="{ show: true }" x-show="show" class="fixed inset-0 z-50 overflow-y-auto" x-cloak>
+        <div x-data="{ show: true }" x-show="show" class="fixed inset-0 z-50 overflow-y-auto" x-cloak x-trap.inert.noscroll="show" role="dialog" aria-modal="true" aria-label="Dialog" tabindex="-1" @keydown.escape.stop="show = false">
             <div class="flex items-center justify-center min-h-screen px-4">
                 <div class="fixed inset-0 bg-black bg-opacity-50" @click="show = false; $wire.closeCampaignDetails()"></div>
-                <div class="relative bg-white rounded-lg w-full max-w-4xl max-h-[90vh] overflow-y-auto">
+                <div class="relative bg-surface rounded-lg w-full max-w-4xl max-h-[90vh] overflow-y-auto">
                     <div class="p-6">
                         <div class="flex justify-between items-center mb-4">
                             <h3 class="text-lg font-medium">Campaign Report: {{ $selectedCampaign->name }}</h3>
-                            <button @click="show = false; $wire.closeCampaignDetails()" class="text-gray-400 hover:text-gray-600">
+                            <button @click="show = false; $wire.closeCampaignDetails()" class="text-content-muted hover:text-content-muted" aria-label="Close">
                                 <i class="fas fa-times"></i>
                             </button>
                         </div>
 
                         <!-- Campaign Overview -->
                         <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-                            <div class="bg-blue-50 p-4 rounded-lg text-center">
-                                <div class="text-2xl font-bold text-blue-600">{{ $campaignDetails['sent'] ?? 0 }}</div>
-                                <div class="text-sm text-blue-800">Total Sent</div>
+                            <div class="bg-brand/10 p-4 rounded-lg text-center">
+                                <div class="text-2xl font-bold text-brand">{{ $campaignDetails['sent'] ?? 0 }}</div>
+                                <div class="text-sm text-brand">Total Sent</div>
                             </div>
                             <div class="bg-green-50 p-4 rounded-lg text-center">
                                 <div class="text-2xl font-bold text-green-600">{{ $campaignDetails['opens'] ?? 0 }}</div>
                                 <div class="text-sm text-green-800">Opens ({{ $campaignDetails['open_rate'] ?? 0 }}%)</div>
                             </div>
-                            <div class="bg-purple-50 p-4 rounded-lg text-center">
-                                <div class="text-2xl font-bold text-purple-600">{{ $campaignDetails['clicks'] ?? 0 }}</div>
-                                <div class="text-sm text-purple-800">Clicks ({{ $campaignDetails['click_rate'] ?? 0 }}%)</div>
+                            <div class="bg-brand/10 p-4 rounded-lg text-center">
+                                <div class="text-2xl font-bold text-brand">{{ $campaignDetails['clicks'] ?? 0 }}</div>
+                                <div class="text-sm text-brand">Clicks ({{ $campaignDetails['click_rate'] ?? 0 }}%)</div>
                             </div>
                             <div class="bg-red-50 p-4 rounded-lg text-center">
                                 <div class="text-2xl font-bold text-red-600">{{ $campaignDetails['bounces'] ?? 0 }}</div>
@@ -138,9 +138,9 @@
                                 <div class="text-lg font-semibold text-yellow-800">Unsubscribes</div>
                                 <div class="text-2xl font-bold text-yellow-600">{{ $campaignDetails['unsubscribes'] ?? 0 }} ({{ $campaignDetails['unsubscribe_rate'] ?? 0 }}%)</div>
                             </div>
-                            <div class="bg-gray-50 p-4 rounded-lg">
-                                <div class="text-lg font-semibold text-gray-800">Failed Deliveries</div>
-                                <div class="text-2xl font-bold text-gray-600">{{ $campaignDetails['failed'] ?? 0 }}</div>
+                            <div class="bg-surface-muted p-4 rounded-lg">
+                                <div class="text-lg font-semibold text-content">Failed Deliveries</div>
+                                <div class="text-2xl font-bold text-content-muted">{{ $campaignDetails['failed'] ?? 0 }}</div>
                             </div>
                         </div>
 
@@ -148,21 +148,21 @@
                         <div class="mb-6">
                             <h4 class="text-md font-semibold mb-3">Recipient Details</h4>
                             <div class="overflow-x-auto">
-                                <table class="min-w-full divide-y divide-gray-200">
-                                    <thead class="bg-gray-50">
+                                <x-ui.table label="Campaign Reports.Blade records"><table class="min-w-full divide-y divide-line">
+                                    <thead class="bg-surface-muted">
                                         <tr>
-                                            <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
-                                            <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                                            <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Opened</th>
-                                            <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Clicked</th>
+                                            <th scope="col" class="px-4 py-2 text-left text-xs font-medium text-content-muted uppercase tracking-wider">Email</th>
+                                            <th scope="col" class="px-4 py-2 text-left text-xs font-medium text-content-muted uppercase tracking-wider">Status</th>
+                                            <th scope="col" class="px-4 py-2 text-left text-xs font-medium text-content-muted uppercase tracking-wider">Opened</th>
+                                            <th scope="col" class="px-4 py-2 text-left text-xs font-medium text-content-muted uppercase tracking-wider">Clicked</th>
                                         </tr>
                                     </thead>
-                                    <tbody class="bg-white divide-y divide-gray-200">
+                                    <tbody class="bg-surface divide-y divide-line">
                                         @foreach($selectedCampaign->interactions->where('type', 'send') as $interaction)
                                             <tr>
                                                 <td class="px-4 py-2 text-sm">{{ $interaction->subscriber->email }}</td>
                                                 <td class="px-4 py-2 text-sm">
-                                                    <span class="px-2 py-1 text-xs rounded-full 
+                                                    <span class="px-2 py-1 text-xs rounded-full
                                                         {{ $interaction->status === 'completed' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }}">
                                                         {{ ucfirst($interaction->status) }}
                                                     </span>
@@ -171,25 +171,25 @@
                                                     @if($selectedCampaign->interactions->where('subscriber_id', $interaction->subscriber_id)->where('type', 'open')->count() > 0)
                                                         <span class="text-green-600">Yes</span>
                                                     @else
-                                                        <span class="text-gray-400">No</span>
+                                                        <span class="text-content-muted">No</span>
                                                     @endif
                                                 </td>
                                                 <td class="px-4 py-2 text-sm">
                                                     @if($selectedCampaign->interactions->where('subscriber_id', $interaction->subscriber_id)->where('type', 'click')->count() > 0)
                                                         <span class="text-green-600">Yes</span>
                                                     @else
-                                                        <span class="text-gray-400">No</span>
+                                                        <span class="text-content-muted">No</span>
                                                     @endif
                                                 </td>
                                             </tr>
                                         @endforeach
                                     </tbody>
-                                </table>
+                                </table></x-ui.table>
                             </div>
                         </div>
 
                         <div class="flex justify-end">
-                            <button 
+                            <button
                                 @click="show = false; $wire.closeCampaignDetails()"
                                 class="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700"
                             >

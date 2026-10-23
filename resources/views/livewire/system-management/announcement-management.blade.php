@@ -1,14 +1,14 @@
 <div class=" px-4 sm:px-6 lg:px-8 py-8">
     <!-- Header -->
-    <div class="bg-gradient-to-r from-emerald-600 to-teal-600 p-6 rounded-2xl shadow-xl text-white mb-8 animate__animated animate__fadeIn">
-        <h1 class="text-3xl font-bold text-white">
+    <div class="bg-brand-ink   p-6 rounded-lg shadow-sm text-white mb-8  ">
+        <h1 class=" font-bold text-white bk-page-title">
             <i class="fas fa-bullhorn mr-2"></i> Announcement Management
         </h1>
         <p class="text-emerald-100 mt-2">Create and manage platform announcements</p>
     </div>
 
     <!-- Form -->
-    <div class="bg-themed-secondary shadow rounded-xl p-6 mb-8 animate__animated animate__fadeInUp border border-themed-primary">
+    <div class="bg-themed-secondary shadow rounded-lg p-6 mb-8   border border-themed-primary">
         <h3 class="text-lg font-semibold text-themed-primary mb-6 flex items-center">
             <i class="fas fa-plus-circle text-emerald-600 dark:text-emerald-400 mr-2"></i>{{ $editId ? 'Update' : 'Create' }} Announcement
         </h3>
@@ -83,7 +83,7 @@
     </div>
 
     <!-- Announcements List -->
-    <div class="bg-themed-secondary shadow rounded-xl border border-themed-primary overflow-hidden">
+    <div class="bg-themed-secondary shadow rounded-lg border border-themed-primary overflow-hidden">
         <!-- Search and Filter -->
         <div class="p-6 border-b border-themed-primary">
             <div class="flex flex-col sm:flex-row gap-4">
@@ -111,7 +111,7 @@
         <!-- List -->
         <div class="space-y-0">
             @forelse($announcements as $announcement)
-                <div class="p-6 border-b border-themed-primary hover:bg-themed-tertiary transition-colors duration-200 last:border-b-0 animate__animated animate__fadeInUp">
+                <div class="p-6 border-b border-themed-primary hover:bg-themed-tertiary transition-colors duration-200 last:border-b-0  ">
                     <div class="flex justify-between items-start">
                         <div class="flex-1">
                             <div class="flex items-center gap-2 mb-2 flex-wrap">
@@ -122,9 +122,9 @@
                                     {{ ucfirst($announcement->status) }}
                                 </span>
                             </div>
-                            
+
                             <p class="text-sm text-themed-secondary mb-2">{{ Str::limit($announcement->content, 150) }}</p>
-                            
+
                             <div class="flex items-center flex-wrap gap-3 text-xs text-themed-secondary">
                                 <span><i class="fas fa-user mr-1"></i>{{ $announcement->user->name }}</span>
                                 <span>•</span>
@@ -139,7 +139,7 @@
                                 @endif
                             </div>
                         </div>
-                        
+
                         <!-- Actions -->
                         <div class="flex items-center space-x-2 ml-4">
                             <button wire:click="editAnnouncement({{ $announcement->id }})"

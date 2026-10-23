@@ -1,6 +1,6 @@
 {{-- FILE: resources/views/livewire/mentorship/partial/profile.blade.php --}}
 
-<div class="bg-themed-secondary rounded-2xl shadow-lg p-6 border border-themed-primary transition-colors duration-300">
+<div class="bg-themed-secondary rounded-lg shadow-sm p-6 border border-themed-primary transition-colors duration-300">
     <div class="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <h2 class="text-2xl font-bold text-themed-primary transition-colors duration-300">Mentor Profile</h2>
         @if(!$profileId)
@@ -127,7 +127,7 @@
                     <h4 class="font-semibold text-themed-primary mb-3 transition-colors duration-300">Contact Links</h4>
                     <div class="flex space-x-4">
                         @if($linkedinProfile)
-                            <a href="{{ $linkedinProfile }}" target="_blank" class="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 transition-colors">
+                            <a href="{{ $linkedinProfile }}" target="_blank" class="text-brand dark:text-brand hover:text-brand dark:hover:text-brand transition-colors">
                                 <i class="fab fa-linkedin text-xl"></i>
                             </a>
                         @endif
@@ -137,7 +137,7 @@
                             </a>
                         @endif
                         @if($portfolioUrl)
-                            <a href="{{ $portfolioUrl }}" target="_blank" class="text-purple-600 dark:text-purple-400 hover:text-purple-800 dark:hover:text-purple-300 transition-colors">
+                            <a href="{{ $portfolioUrl }}" target="_blank" class="text-brand dark:text-brand hover:text-brand dark:hover:text-brand transition-colors">
                                 <i class="fas fa-globe text-xl"></i>
                             </a>
                         @endif
@@ -202,7 +202,7 @@
 <!-- Profile Edit Modal -->
 @if($showProfileModal)
     <div x-data="{ dialogOpen: true }" x-trap.inert.noscroll="dialogOpen" x-on:keydown.escape.window="dialogOpen = false; $wire.closeModal()" role="dialog" aria-modal="true" aria-label="Edit mentor profile" tabindex="-1" class="fixed inset-0 bg-black/50 dark:bg-black/75 overflow-y-auto h-full w-full z-50 transition-colors duration-300">
-        <div class="relative top-20 mx-auto p-5 border border-themed-primary w-11/12 md:w-3/4 lg:w-1/2 shadow-lg rounded-md bg-themed-secondary max-h-[85vh] overflow-y-auto transition-colors duration-300">
+        <div class="relative top-20 mx-auto p-5 border border-themed-primary w-11/12 md:w-3/4 lg:w-1/2 shadow-sm rounded-md bg-themed-secondary max-h-[85vh] overflow-y-auto transition-colors duration-300">
             <div class="mt-3">
                 <div class="flex items-center justify-between mb-6">
                     <h3 class="text-2xl font-bold text-themed-primary transition-colors duration-300">Edit Mentor Profile</h3>
@@ -215,7 +215,7 @@
                     <!-- Bio -->
                     <div>
                         <label class="block text-sm font-medium text-themed-primary mb-2 transition-colors duration-300">Bio *</label>
-                        <textarea wire:model="bio" rows="4"
+                        <textarea aria-label="Tell mentees about yourself" wire:model="bio" rows="4"
                             class="w-full px-3 py-2 border border-themed-primary rounded-lg focus:ring-2 focus:ring-brand focus:border-transparent bg-themed-secondary text-themed-primary placeholder-themed-tertiary transition-colors duration-300"
                             placeholder="Tell mentees about yourself..."></textarea>
                         @error('bio') <span class="text-red-500 dark:text-red-400 text-sm">{{ $message }}</span> @enderror
@@ -226,12 +226,12 @@
                         <label class="block text-sm font-medium text-themed-primary mb-2 transition-colors duration-300">Specializations *</label>
                         @foreach($specializations as $index => $specialization)
                             <div class="flex items-center space-x-2 mb-2">
-                                <input type="text" wire:model="specializations.{{ $index }}"
+                                <input aria-label="e.g., Web Development" type="text" wire:model="specializations.{{ $index }}"
                                     class="flex-1 px-3 py-2 border border-themed-primary rounded-lg focus:ring-2 focus:ring-brand focus:border-transparent bg-themed-secondary text-themed-primary placeholder-themed-tertiary transition-colors duration-300"
                                     placeholder="e.g., Web Development">
                                 @if(count($specializations) > 1)
                                     <button type="button" wire:click="removeSpecialization({{ $index }})"
-                                        class="text-red-600 dark:text-red-400 hover:text-red-800 dark:hover:text-red-300 transition-colors">
+                                        class="text-red-600 dark:text-red-400 hover:text-red-800 dark:hover:text-red-300 transition-colors" aria-label="Close">
                                         <i class="fas fa-times"></i>
                                     </button>
                                 @endif
@@ -249,12 +249,12 @@
                         <label class="block text-sm font-medium text-themed-primary mb-2 transition-colors duration-300">Skills</label>
                         @foreach($skills as $index => $skill)
                             <div class="flex items-center space-x-2 mb-2">
-                                <input type="text" wire:model="skills.{{ $index }}"
+                                <input aria-label="e.g., JavaScript, Python" type="text" wire:model="skills.{{ $index }}"
                                     class="flex-1 px-3 py-2 border border-themed-primary rounded-lg focus:ring-2 focus:ring-brand focus:border-transparent bg-themed-secondary text-themed-primary placeholder-themed-tertiary transition-colors duration-300"
                                     placeholder="e.g., JavaScript, Python">
                                 @if(count($skills) > 1)
                                     <button type="button" wire:click="removeSkill({{ $index }})"
-                                        class="text-red-600 dark:text-red-400 hover:text-red-800 dark:hover:text-red-300 transition-colors">
+                                        class="text-red-600 dark:text-red-400 hover:text-red-800 dark:hover:text-red-300 transition-colors" aria-label="Close">
                                         <i class="fas fa-times"></i>
                                     </button>
                                 @endif
@@ -270,7 +270,7 @@
                     <div class="grid md:grid-cols-2 gap-4">
                         <div>
                             <label class="block text-sm font-medium text-themed-primary mb-2 transition-colors duration-300">Experience Level *</label>
-                            <select wire:model="experienceLevel"
+                            <select aria-label="Experience level" wire:model="experienceLevel"
                                 class="w-full px-3 py-2 border border-themed-primary rounded-lg focus:ring-2 focus:ring-brand focus:border-transparent bg-themed-secondary text-themed-primary transition-colors duration-300">
                                 <option value="">Select Level</option>
                                 <option value="junior">Junior</option>
@@ -282,7 +282,7 @@
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-themed-primary mb-2 transition-colors duration-300">Years of Experience *</label>
-                            <input type="number" wire:model="yearsExperience" min="0" max="50"
+                            <input aria-label="Years experience" type="number" wire:model="yearsExperience" min="0" max="50"
                                 class="w-full px-3 py-2 border border-themed-primary rounded-lg focus:ring-2 focus:ring-brand focus:border-transparent bg-themed-secondary text-themed-primary transition-colors duration-300">
                             @error('yearsExperience') <span class="text-red-500 dark:text-red-400 text-sm">{{ $message }}</span> @enderror
                         </div>
@@ -292,13 +292,13 @@
                     <div class="grid md:grid-cols-2 gap-4">
                         <div>
                             <label class="block text-sm font-medium text-themed-primary mb-2 transition-colors duration-300">Maximum Mentees *</label>
-                            <input type="number" wire:model="maxMentees" min="1" max="20"
+                            <input aria-label="Max mentees" type="number" wire:model="maxMentees" min="1" max="20"
                                 class="w-full px-3 py-2 border border-themed-primary rounded-lg focus:ring-2 focus:ring-brand focus:border-transparent bg-themed-secondary text-themed-primary transition-colors duration-300">
                             @error('maxMentees') <span class="text-red-500 dark:text-red-400 text-sm">{{ $message }}</span> @enderror
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-themed-primary mb-2 transition-colors duration-300">Hourly rate (NGN)</label>
-                            <input type="number" wire:model="hourlyRate" min="0" max="500" step="0.01"
+                            <input aria-label="0 for free mentoring" type="number" wire:model="hourlyRate" min="0" max="500" step="0.01"
                                 class="w-full px-3 py-2 border border-themed-primary rounded-lg focus:ring-2 focus:ring-brand focus:border-transparent bg-themed-secondary text-themed-primary transition-colors duration-300"
                                 placeholder="0 for free mentoring">
                         </div>
@@ -307,7 +307,7 @@
                     <!-- Timezone -->
                     <div>
                         <label class="block text-sm font-medium text-themed-primary mb-2 transition-colors duration-300">Timezone *</label>
-                        <select wire:model="timezone"
+                        <select aria-label="Timezone" wire:model="timezone"
                             class="w-full px-3 py-2 border border-themed-primary rounded-lg focus:ring-2 focus:ring-brand focus:border-transparent bg-themed-secondary text-themed-primary transition-colors duration-300">
                             <option value="UTC">UTC</option>
                             <option value="America/New_York">Eastern Time</option>
@@ -324,7 +324,7 @@
                     <!-- Mentoring Approach -->
                     <div>
                         <label class="block text-sm font-medium text-themed-primary mb-2 transition-colors duration-300">Mentoring Approach *</label>
-                        <textarea wire:model="mentoringApproach" rows="3"
+                        <textarea aria-label="Describe your mentoring style" wire:model="mentoringApproach" rows="3"
                             class="w-full px-3 py-2 border border-themed-primary rounded-lg focus:ring-2 focus:ring-brand focus:border-transparent bg-themed-secondary text-themed-primary placeholder-themed-tertiary transition-colors duration-300"
                             placeholder="Describe your mentoring style..."></textarea>
                         @error('mentoringApproach') <span class="text-red-500 dark:text-red-400 text-sm">{{ $message }}</span> @enderror
@@ -337,7 +337,7 @@
                             @foreach(['Video Calls', 'Voice Calls', 'Text Chat', 'Email', 'Screen Sharing', 'Code Reviews'] as $preference)
                                 <label class="flex items-center">
                                     <input type="checkbox"
-                                        wire:click="toggleCommunicationPreference('{{ $preference }}')" 
+                                        wire:click="toggleCommunicationPreference('{{ $preference }}')"
                                         {{ in_array($preference, $communicationPreferences) ? 'checked' : '' }}
                                         class="rounded border-themed-primary text-brand shadow-sm focus:border-brand focus:ring focus:ring-brand/20 bg-themed-secondary transition-colors duration-300">
                                     <span class="ml-2 text-sm text-themed-primary transition-colors duration-300">{{ $preference }}</span>
@@ -350,19 +350,19 @@
                     <div class="grid md:grid-cols-3 gap-4">
                         <div>
                             <label class="block text-sm font-medium text-themed-primary mb-2 transition-colors duration-300">LinkedIn</label>
-                            <input type="url" wire:model="linkedinProfile"
+                            <input aria-label="https://linkedin.com/in/" type="url" wire:model="linkedinProfile"
                                 class="w-full px-3 py-2 border border-themed-primary rounded-lg focus:ring-2 focus:ring-brand focus:border-transparent bg-themed-secondary text-themed-primary placeholder-themed-tertiary transition-colors duration-300"
                                 placeholder="https://linkedin.com/in/...">
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-themed-primary mb-2 transition-colors duration-300">GitHub</label>
-                            <input type="url" wire:model="githubProfile"
+                            <input aria-label="https://github.com/" type="url" wire:model="githubProfile"
                                 class="w-full px-3 py-2 border border-themed-primary rounded-lg focus:ring-2 focus:ring-brand focus:border-transparent bg-themed-secondary text-themed-primary placeholder-themed-tertiary transition-colors duration-300"
                                 placeholder="https://github.com/...">
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-themed-primary mb-2 transition-colors duration-300">Portfolio</label>
-                            <input type="url" wire:model="portfolioUrl"
+                            <input aria-label="https://yourportfolio.com" type="url" wire:model="portfolioUrl"
                                 class="w-full px-3 py-2 border border-themed-primary rounded-lg focus:ring-2 focus:ring-brand focus:border-transparent bg-themed-secondary text-themed-primary placeholder-themed-tertiary transition-colors duration-300"
                                 placeholder="https://yourportfolio.com">
                         </div>
@@ -409,7 +409,7 @@
                                     <input type="time" wire:model="availabilitySlots.{{ $index }}.end"
                                         class="rounded-lg border border-themed-primary bg-themed-secondary px-3 py-2 text-themed-primary focus:ring-2 focus:ring-brand">
                                     <button type="button" wire:click="removeAvailabilitySlot({{ $index }})"
-                                        class="grid h-10 w-10 place-items-center rounded-lg bg-red-600 text-white hover:bg-red-700">
+                                        class="grid h-10 w-10 place-items-center rounded-lg bg-red-600 text-white hover:bg-red-700" aria-label="Remove availability slot">
                                         <i class="fas fa-minus"></i>
                                     </button>
                                 </div>

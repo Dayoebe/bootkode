@@ -1,10 +1,10 @@
 <div class="min-h-screen bg-themed-primary">
     <!-- Header Section -->
-    <div class="bg-themed-secondary shadow-lg border-b border-themed-primary">
+    <div class="bg-themed-secondary shadow-sm border-b border-themed-primary">
         <div class="px-6 py-8">
             <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between">
                 <div class="mb-6 lg:mb-0">
-                    <h1 class="text-4xl font-bold text-themed-primary mb-2">Mock Interviews</h1>
+                    <h1 class=" font-bold text-themed-primary mb-2 bk-page-title">Mock Interviews</h1>
                     <p class="text-xl text-themed-secondary">Practice makes perfect - Ace your next interview</p>
                 </div>
 

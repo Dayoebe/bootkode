@@ -2,24 +2,24 @@
     <!-- Header -->
     <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 sm:gap-0 mb-4 sm:mb-6">
         <div class="w-full sm:w-auto">
-            <h1 class="text-2xl sm:text-3xl font-bold text-themed-primary flex items-center">
+            <h1 class="  font-bold text-themed-primary flex items-center bk-page-title">
                 <i class="fas fa-cog mr-2"></i>CBT Management
             </h1>
             <p class="text-sm sm:text-base text-themed-secondary">Create and manage CBT assessments and questions</p>
         </div>
         <button wire:click="$set('showCreateModal', true)"
-            class="w-full sm:w-auto bg-accent-themed-primary hover:bg-accent-themed-secondary text-white px-3 sm:px-4 py-2 rounded-lg flex items-center justify-center transition-colors text-sm sm:text-base">
+            class="w-full sm:w-auto bg-action hover:bg-action/90 text-action-foreground px-3 sm:px-4 py-2 rounded-lg flex items-center justify-center transition-colors text-sm sm:text-base">
             <i class="fas fa-plus mr-2"></i>Create CBT Assessment
         </button>
     </div>
 
     <!-- Flash Messages -->
     @if (session()->has('message'))
-        <div class="bg-green-100 dark:bg-green-900/30 border border-green-400 dark:border-green-600 text-green-700 dark:text-green-300 px-4 py-3 rounded mb-6 animate-pulse" role="alert">
+        <div class="bg-green-100 dark:bg-green-900/30 border border-green-400 dark:border-green-600 text-green-700 dark:text-green-300 px-4 py-3 rounded mb-6 " role="alert">
             <div class="flex items-center">
                 <i class="fas fa-check-circle mr-2"></i>
                 <span>{{ session('message') }}</span>
-                <button type="button" class="ml-auto text-green-700 dark:text-green-300 hover:text-green-900 dark:hover:text-green-100" onclick="this.parentElement.parentElement.remove()">
+                <button type="button" class="ml-auto text-green-700 dark:text-green-300 hover:text-green-900 dark:hover:text-green-100" onclick="this.parentElement.parentElement.remove()" aria-label="Close">
                     <i class="fas fa-times"></i>
                 </button>
             </div>
@@ -31,7 +31,7 @@
             <div class="flex items-center">
                 <i class="fas fa-exclamation-circle mr-2"></i>
                 <span>{{ session('error') }}</span>
-                <button type="button" class="ml-auto text-red-700 dark:text-red-300 hover:text-red-900 dark:hover:text-red-100" onclick="this.parentElement.parentElement.remove()">
+                <button type="button" class="ml-auto text-red-700 dark:text-red-300 hover:text-red-900 dark:hover:text-red-100" onclick="this.parentElement.parentElement.remove()" aria-label="Close">
                     <i class="fas fa-times"></i>
                 </button>
             </div>
@@ -39,9 +39,9 @@
     @endif
 
     <!-- Assessments List -->
-    <div class="bg-themed-secondary rounded-lg shadow-lg border border-themed-primary overflow-hidden">
+    <div class="bg-themed-secondary rounded-lg shadow-sm border border-themed-primary overflow-hidden">
         <div class="bg-themed-secondary py-3 sm:py-4 px-4 sm:px-6 border-b border-themed-secondary">
-            <h6 class="text-base sm:text-lg font-semibold text-accent-themed-primary">CBT Assessments</h6>
+            <h6 class="text-base sm:text-lg font-semibold text-brand">CBT Assessments</h6>
         </div>
         <div class="p-3 sm:p-6">
             @if($assessments->count() > 0)
@@ -51,7 +51,7 @@
                         <div class="bg-themed-tertiary rounded-lg p-4 border border-themed-secondary">
                             <div class="flex justify-between items-start mb-2">
                                 <h3 class="font-semibold text-themed-primary text-base">{{ $assessment->title }}</h3>
-                                <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-themed-secondary text-accent-themed-primary whitespace-nowrap ml-2">
+                                <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-themed-secondary text-brand whitespace-nowrap ml-2">
                                     {{ $assessment->questions->count() }} Q
                                 </span>
                             </div>
@@ -68,7 +68,7 @@
                                 </div>
                                 @if($assessment->shuffle_questions)
                                 <div class="col-span-2">
-                                    <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300">
+                                    <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-brand/10 dark:bg-action/30 text-brand dark:text-brand">
                                         <i class="fas fa-random mr-1"></i>Questions Shuffled
                                     </span>
                                 </div>
@@ -77,12 +77,12 @@
 
                             <div class="flex justify-end space-x-2 pt-3 border-t border-themed-secondary">
                                 <button wire:click="viewParticipants({{ $assessment->id }})"
-                                    class="text-purple-600 hover:text-purple-800 p-2 rounded-lg hover:bg-themed-secondary transition-colors"
+                                    class="text-brand hover:text-brand p-2 rounded-lg hover:bg-themed-secondary transition-colors"
                                     title="View Participants">
                                     <i class="fas fa-users"></i>
                                 </button>
                                 <button wire:click="manageQuestions({{ $assessment->id }})"
-                                    class="text-accent-themed-primary hover:text-accent-themed-secondary p-2 rounded-lg hover:bg-themed-secondary transition-colors"
+                                    class="text-brand hover:text-accent-themed-secondary p-2 rounded-lg hover:bg-themed-secondary transition-colors"
                                     title="Manage Questions">
                                     <i class="fas fa-question-circle"></i>
                                 </button>
@@ -104,16 +104,16 @@
 
                 <!-- Desktop Table View -->
                 <div class="hidden lg:block overflow-x-auto">
-                    <table class="min-w-full table-auto">
+                    <x-ui.table label="Cbt Management.Blade records"><table class="min-w-full table-auto">
                         <thead class="bg-themed-tertiary">
                             <tr>
-                                <th class="px-4 xl:px-6 py-3 text-left text-xs font-medium text-themed-secondary uppercase tracking-wider">Title</th>
-                                <th class="px-4 xl:px-6 py-3 text-left text-xs font-medium text-themed-secondary uppercase tracking-wider">Course</th>
-                                <th class="px-4 xl:px-6 py-3 text-left text-xs font-medium text-themed-secondary uppercase tracking-wider">Questions</th>
-                                <th class="px-4 xl:px-6 py-3 text-left text-xs font-medium text-themed-secondary uppercase tracking-wider">Duration</th>
-                                <th class="px-4 xl:px-6 py-3 text-left text-xs font-medium text-themed-secondary uppercase tracking-wider">Pass %</th>
-                                <th class="px-4 xl:px-6 py-3 text-left text-xs font-medium text-themed-secondary uppercase tracking-wider">Settings</th>
-                                <th class="px-4 xl:px-6 py-3 text-left text-xs font-medium text-themed-secondary uppercase tracking-wider">Actions</th>
+                                <th scope="col" class="px-4 xl:px-6 py-3 text-left text-xs font-medium text-themed-secondary uppercase tracking-wider">Title</th>
+                                <th scope="col" class="px-4 xl:px-6 py-3 text-left text-xs font-medium text-themed-secondary uppercase tracking-wider">Course</th>
+                                <th scope="col" class="px-4 xl:px-6 py-3 text-left text-xs font-medium text-themed-secondary uppercase tracking-wider">Questions</th>
+                                <th scope="col" class="px-4 xl:px-6 py-3 text-left text-xs font-medium text-themed-secondary uppercase tracking-wider">Duration</th>
+                                <th scope="col" class="px-4 xl:px-6 py-3 text-left text-xs font-medium text-themed-secondary uppercase tracking-wider">Pass %</th>
+                                <th scope="col" class="px-4 xl:px-6 py-3 text-left text-xs font-medium text-themed-secondary uppercase tracking-wider">Settings</th>
+                                <th scope="col" class="px-4 xl:px-6 py-3 text-left text-xs font-medium text-themed-secondary uppercase tracking-wider">Actions</th>
                             </tr>
                         </thead>
                         <tbody class="bg-themed-secondary divide-y divide-themed-primary">
@@ -127,7 +127,7 @@
                                         <div class="text-sm text-themed-primary">{{ $assessment->course->title ?? 'Standalone' }}</div>
                                     </td>
                                     <td class="px-4 xl:px-6 py-4 whitespace-nowrap">
-                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-themed-tertiary text-accent-themed-primary">
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-themed-tertiary text-brand">
                                             {{ $assessment->questions->count() }} Questions
                                         </span>
                                     </td>
@@ -135,11 +135,11 @@
                                     <td class="px-4 xl:px-6 py-4 whitespace-nowrap text-sm text-themed-primary">{{ $assessment->pass_percentage }}%</td>
                                     <td class="px-4 xl:px-6 py-4">
                                         <div class="flex flex-col gap-1">
-                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium {{ $assessment->max_attempts === null ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300' : 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-300' }}">
+                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium {{ $assessment->max_attempts === null ? 'bg-blue-100 dark:bg-action/30 text-brand dark:text-blue-300' : 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-300' }}">
                                                 {{ $assessment->formatted_max_attempts }}
                                             </span>
                                             @if($assessment->shuffle_questions)
-                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-100 dark:bg-purple-900/30 text-purple-800 dark:text-purple-300">
+                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-brand/10 dark:bg-action/30 text-brand dark:text-brand">
                                                 <i class="fas fa-random mr-1"></i>Shuffled
                                             </span>
                                             @endif
@@ -148,12 +148,12 @@
                                     <td class="px-4 xl:px-6 py-4 whitespace-nowrap">
                                         <div class="flex space-x-2">
                                             <button wire:click="viewParticipants({{ $assessment->id }})"
-                                                class="text-purple-600 dark:text-purple-400 hover:text-purple-800 dark:hover:text-purple-300 p-2 rounded-lg hover:bg-themed-tertiary transition-colors"
+                                                class="text-brand dark:text-brand hover:text-brand dark:hover:text-brand p-2 rounded-lg hover:bg-themed-tertiary transition-colors"
                                                 title="View Participants">
                                                 <i class="fas fa-users"></i>
                                             </button>
                                             <button wire:click="manageQuestions({{ $assessment->id }})"
-                                                class="text-accent-themed-primary hover:text-accent-themed-secondary p-2 rounded-lg hover:bg-themed-tertiary transition-colors"
+                                                class="text-brand hover:text-accent-themed-secondary p-2 rounded-lg hover:bg-themed-tertiary transition-colors"
                                                 title="Manage Questions">
                                                 <i class="fas fa-question-circle"></i>
                                             </button>
@@ -173,7 +173,7 @@
                                 </tr>
                             @endforeach
                         </tbody>
-                    </table>
+                    </table></x-ui.table>
                 </div>
                 <div class="mt-6">
                     {{ $assessments->links() }}
@@ -192,12 +192,12 @@
     <!-- Create Assessment Modal -->
     <!-- Create Assessment Modal -->
     <div class="@if($showCreateModal) fixed inset-0 bg-gray-600 bg-opacity-50 dark:bg-gray-900 dark:bg-opacity-75 overflow-y-auto h-full w-full z-50 @else hidden @endif">
-        <div class="relative top-4 sm:top-20 mx-2 sm:mx-auto p-4 sm:p-5 border w-auto sm:w-11/12 max-w-4xl shadow-lg rounded-lg bg-themed-secondary border-themed-primary @if($showCreateModal) animate-fade-in-down @endif">
+        <div class="relative top-4 sm:top-20 mx-2 sm:mx-auto p-4 sm:p-5 border w-auto sm:w-11/12 max-w-4xl shadow-sm rounded-lg bg-themed-secondary border-themed-primary @if($showCreateModal) animate-fade-in-down @endif">
             <div class="border-b border-themed-secondary pb-3 sm:pb-4 mb-3 sm:mb-4">
                 <h5 class="text-lg sm:text-xl font-semibold text-themed-primary flex items-center pr-8">
                     <i class="fas fa-plus mr-2"></i>Create CBT Assessment
                 </h5>
-                <button type="button" class="absolute top-3 sm:top-4 right-3 sm:right-4 text-themed-tertiary hover:text-themed-secondary" wire:click="closeModals">
+                <button type="button" class="absolute top-3 sm:top-4 right-3 sm:right-4 text-themed-tertiary hover:text-themed-secondary" wire:click="closeModals" aria-label="Close">
                     <i class="fas fa-times text-lg sm:text-xl"></i>
                 </button>
             </div>
@@ -205,7 +205,7 @@
                 <form wire:submit="createAssessment">
                     <div class="mb-3 sm:mb-4">
                         <label for="course_id" class="block text-xs sm:text-sm font-medium text-themed-primary mb-2">Course (Optional)</label>
-                        <select wire:model="course_id" class="w-full px-2 sm:px-3 py-2 text-sm sm:text-base border border-themed-secondary rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-themed-primary focus:border-accent-themed-primary bg-themed-primary text-themed-primary placeholder-themed-tertiary">
+                        <select aria-label="Course id" wire:model="course_id" class="w-full px-2 sm:px-3 py-2 text-sm sm:text-base border border-themed-secondary rounded-lg focus:outline-none focus:ring-2 focus:ring-brand focus:border-brand bg-themed-primary text-themed-primary placeholder-themed-tertiary">
                             <option value="">Standalone CBT (No course)</option>
                             @foreach($courses as $course)
                                 <option value="{{ $course->id }}">{{ $course->title }}</option>
@@ -217,35 +217,35 @@
 
                     <div class="mb-3 sm:mb-4">
                         <label for="title" class="block text-xs sm:text-sm font-medium text-themed-primary mb-2">Assessment Title</label>
-                        <input type="text" wire:model="title" class="w-full px-2 sm:px-3 py-2 text-sm sm:text-base border border-themed-secondary rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-themed-primary focus:border-accent-themed-primary bg-themed-primary text-themed-primary placeholder-themed-tertiary" required>
+                        <input aria-label="Title" type="text" wire:model="title" class="w-full px-2 sm:px-3 py-2 text-sm sm:text-base border border-themed-secondary rounded-lg focus:outline-none focus:ring-2 focus:ring-brand focus:border-brand bg-themed-primary text-themed-primary placeholder-themed-tertiary" required>
                         @error('title') <div class="text-red-500 dark:text-red-400 text-xs sm:text-sm mt-1">{{ $message }}</div> @enderror
                     </div>
 
                     <div class="mb-3 sm:mb-4">
                         <label for="description" class="block text-xs sm:text-sm font-medium text-themed-primary mb-2">Description</label>
-                        <textarea wire:model="description" class="w-full px-2 sm:px-3 py-2 text-sm sm:text-base border border-themed-secondary rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-themed-primary focus:border-accent-themed-primary bg-themed-primary text-themed-primary placeholder-themed-tertiary" rows="3"></textarea>
+                        <textarea aria-label="Description" wire:model="description" class="w-full px-2 sm:px-3 py-2 text-sm sm:text-base border border-themed-secondary rounded-lg focus:outline-none focus:ring-2 focus:ring-brand focus:border-brand bg-themed-primary text-themed-primary placeholder-themed-tertiary" rows="3"></textarea>
                         @error('description') <div class="text-red-500 dark:text-red-400 text-xs sm:text-sm mt-1">{{ $message }}</div> @enderror
                     </div>
 
                     <div class="grid grid-cols-1 sm:grid-cols-4 gap-3 sm:gap-4 mb-4 sm:mb-6">
                         <div>
                             <label for="pass_percentage" class="block text-xs sm:text-sm font-medium text-themed-primary mb-2">Pass %</label>
-                            <input type="number" wire:model="pass_percentage" class="w-full px-2 sm:px-3 py-2 text-sm sm:text-base border border-themed-secondary rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-themed-primary focus:border-accent-themed-primary bg-themed-primary text-themed-primary placeholder-themed-tertiary" min="1" max="100" required>
+                            <input aria-label="Pass percentage" type="number" wire:model="pass_percentage" class="w-full px-2 sm:px-3 py-2 text-sm sm:text-base border border-themed-secondary rounded-lg focus:outline-none focus:ring-2 focus:ring-brand focus:border-brand bg-themed-primary text-themed-primary placeholder-themed-tertiary" min="1" max="100" required>
                             @error('pass_percentage') <div class="text-red-500 dark:text-red-400 text-xs sm:text-sm mt-1">{{ $message }}</div> @enderror
                         </div>
                         <div>
                             <label for="estimated_duration_minutes" class="block text-xs sm:text-sm font-medium text-themed-primary mb-2">Duration (Min)</label>
-                            <input type="number" wire:model="estimated_duration_minutes" class="w-full px-2 sm:px-3 py-2 text-sm sm:text-base border border-themed-secondary rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-themed-primary focus:border-accent-themed-primary bg-themed-primary text-themed-primary placeholder-themed-tertiary" min="1" required>
+                            <input aria-label="Estimated duration minutes" type="number" wire:model="estimated_duration_minutes" class="w-full px-2 sm:px-3 py-2 text-sm sm:text-base border border-themed-secondary rounded-lg focus:outline-none focus:ring-2 focus:ring-brand focus:border-brand bg-themed-primary text-themed-primary placeholder-themed-tertiary" min="1" required>
                             @error('estimated_duration_minutes') <div class="text-red-500 dark:text-red-400 text-xs sm:text-sm mt-1">{{ $message }}</div> @enderror
                         </div>
                         <div>
                             <label for="max_score" class="block text-xs sm:text-sm font-medium text-themed-primary mb-2">Max Score</label>
-                            <input type="number" wire:model="max_score" class="w-full px-2 sm:px-3 py-2 text-sm sm:text-base border border-themed-secondary rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-themed-primary focus:border-accent-themed-primary bg-themed-primary text-themed-primary placeholder-themed-tertiary" min="1" required>
+                            <input aria-label="Max score" type="number" wire:model="max_score" class="w-full px-2 sm:px-3 py-2 text-sm sm:text-base border border-themed-secondary rounded-lg focus:outline-none focus:ring-2 focus:ring-brand focus:border-brand bg-themed-primary text-themed-primary placeholder-themed-tertiary" min="1" required>
                             @error('max_score') <div class="text-red-500 dark:text-red-400 text-xs sm:text-sm mt-1">{{ $message }}</div> @enderror
                         </div>
                         <div>
                             <label for="max_attempts" class="block text-xs sm:text-sm font-medium text-themed-primary mb-2">Max Attempts</label>
-                            <input type="number" wire:model="max_attempts" class="w-full px-2 sm:px-3 py-2 text-sm sm:text-base border border-themed-secondary rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-themed-primary focus:border-accent-themed-primary bg-themed-primary text-themed-primary placeholder-themed-tertiary" min="1" max="100" placeholder="Unlimited">
+                            <input aria-label="Unlimited" type="number" wire:model="max_attempts" class="w-full px-2 sm:px-3 py-2 text-sm sm:text-base border border-themed-secondary rounded-lg focus:outline-none focus:ring-2 focus:ring-brand focus:border-brand bg-themed-primary text-themed-primary placeholder-themed-tertiary" min="1" max="100" placeholder="Unlimited">
                             <p class="text-xs text-themed-tertiary mt-1">Leave empty for unlimited</p>
                             @error('max_attempts') <div class="text-red-500 dark:text-red-400 text-xs sm:text-sm mt-1">{{ $message }}</div> @enderror
                         </div>
@@ -254,7 +254,7 @@
                     <!-- NEW: Shuffle Settings -->
                     <div class="bg-themed-tertiary rounded-lg p-4 mb-4 sm:mb-6 border border-themed-secondary">
                         <h6 class="text-sm font-semibold text-themed-primary mb-3 flex items-center">
-                            <i class="fas fa-random mr-2 text-accent-themed-primary"></i>
+                            <i class="fas fa-random mr-2 text-brand"></i>
                             Anti-Cheating Settings (UTME Style)
                         </h6>
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -265,7 +265,7 @@
                                 </div>
                                 <label class="relative inline-flex items-center cursor-pointer ml-3">
                                     <input type="checkbox" wire:model="shuffle_questions" class="sr-only peer">
-                                    <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
+                                    <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-brand/30 dark:peer-focus:ring-brand/30 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-surface after:border-line after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-action"></div>
                                 </label>
                             </div>
 
@@ -276,7 +276,7 @@
                                 </div>
                                 <label class="relative inline-flex items-center cursor-pointer ml-3">
                                     <input type="checkbox" wire:model="shuffle_options" class="sr-only peer">
-                                    <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
+                                    <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-brand/30 dark:peer-focus:ring-brand/30 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-surface after:border-line after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-action"></div>
                                 </label>
                             </div>
                         </div>
@@ -284,7 +284,7 @@
 
                     <div class="flex flex-col-reverse sm:flex-row justify-end gap-2 sm:gap-3 pt-3 sm:pt-4 border-t border-themed-secondary">
                         <button type="button" class="w-full sm:w-auto px-3 sm:px-4 py-2 text-sm sm:text-base bg-themed-tertiary text-themed-primary rounded-lg hover:bg-themed-secondary transition-colors border border-themed-secondary" wire:click="closeModals">Cancel</button>
-                        <button type="submit" class="w-full sm:w-auto px-3 sm:px-4 py-2 text-sm sm:text-base bg-accent-themed-primary text-white rounded-lg hover:bg-accent-themed-secondary transition-colors flex items-center justify-center">
+                        <button type="submit" class="w-full sm:w-auto px-3 sm:px-4 py-2 text-sm sm:text-base bg-action text-action-foreground rounded-lg hover:bg-action/90 transition-colors flex items-center justify-center">
                             <i class="fas fa-save mr-2"></i>Create Assessment
                         </button>
                     </div>
@@ -297,14 +297,14 @@
     <div
         class="@if($showEditModal) fixed inset-0 bg-gray-600 bg-opacity-50 dark:bg-gray-900 dark:bg-opacity-75 overflow-y-auto h-full w-full z-50 @else hidden @endif">
         <div
-            class="relative top-4 sm:top-20 mx-2 sm:mx-auto p-4 sm:p-5 border w-auto sm:w-11/12 max-w-4xl shadow-lg rounded-lg bg-themed-secondary border-themed-primary @if($showEditModal) animate-fade-in-down @endif">
+            class="relative top-4 sm:top-20 mx-2 sm:mx-auto p-4 sm:p-5 border w-auto sm:w-11/12 max-w-4xl shadow-sm rounded-lg bg-themed-secondary border-themed-primary @if($showEditModal) animate-fade-in-down @endif">
             <div class="border-b border-themed-secondary pb-3 sm:pb-4 mb-3 sm:mb-4">
                 <h5 class="text-lg sm:text-xl font-semibold text-themed-primary flex items-center pr-8">
                     <i class="fas fa-edit mr-2"></i>Edit CBT Assessment
                 </h5>
                 <button type="button"
                     class="absolute top-3 sm:top-4 right-3 sm:right-4 text-themed-tertiary hover:text-themed-secondary"
-                    wire:click="closeModals">
+                    wire:click="closeModals" aria-label="Close">
                     <i class="fas fa-times text-lg sm:text-xl"></i>
                 </button>
             </div>
@@ -314,8 +314,8 @@
                         <label for="course_id"
                             class="block text-xs sm:text-sm font-medium text-themed-primary mb-2">Course
                             (Optional)</label>
-                        <select wire:model="course_id"
-                            class="w-full px-2 sm:px-3 py-2 text-sm sm:text-base border border-themed-secondary rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-themed-primary focus:border-accent-themed-primary bg-themed-primary text-themed-primary placeholder-themed-tertiary">
+                        <select aria-label="Course id" wire:model="course_id"
+                            class="w-full px-2 sm:px-3 py-2 text-sm sm:text-base border border-themed-secondary rounded-lg focus:outline-none focus:ring-2 focus:ring-brand focus:border-brand bg-themed-primary text-themed-primary placeholder-themed-tertiary">
                             <option value="">Standalone CBT (No course)</option>
                             @foreach($courses as $course)
                                 <option value="{{ $course->id }}">{{ $course->title }}</option>
@@ -329,8 +329,8 @@
                         <label for="title"
                             class="block text-xs sm:text-sm font-medium text-themed-primary mb-2">Assessment
                             Title</label>
-                        <input type="text" wire:model="title"
-                            class="w-full px-2 sm:px-3 py-2 text-sm sm:text-base border border-themed-secondary rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-themed-primary focus:border-accent-themed-primary bg-themed-primary text-themed-primary placeholder-themed-tertiary"
+                        <input aria-label="Title" type="text" wire:model="title"
+                            class="w-full px-2 sm:px-3 py-2 text-sm sm:text-base border border-themed-secondary rounded-lg focus:outline-none focus:ring-2 focus:ring-brand focus:border-brand bg-themed-primary text-themed-primary placeholder-themed-tertiary"
                             required>
                         @error('title') <div class="text-red-500 dark:text-red-400 text-xs sm:text-sm mt-1">
                         {{ $message }}</div> @enderror
@@ -339,8 +339,8 @@
                     <div class="mb-3 sm:mb-4">
                         <label for="description"
                             class="block text-xs sm:text-sm font-medium text-themed-primary mb-2">Description</label>
-                        <textarea wire:model="description"
-                            class="w-full px-2 sm:px-3 py-2 text-sm sm:text-base border border-themed-secondary rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-themed-primary focus:border-accent-themed-primary bg-themed-primary text-themed-primary placeholder-themed-tertiary"
+                        <textarea aria-label="Description" wire:model="description"
+                            class="w-full px-2 sm:px-3 py-2 text-sm sm:text-base border border-themed-secondary rounded-lg focus:outline-none focus:ring-2 focus:ring-brand focus:border-brand bg-themed-primary text-themed-primary placeholder-themed-tertiary"
                             rows="3"></textarea>
                         @error('description') <div class="text-red-500 dark:text-red-400 text-xs sm:text-sm mt-1">
                         {{ $message }}</div> @enderror
@@ -350,8 +350,8 @@
                         <div>
                             <label for="pass_percentage"
                                 class="block text-xs sm:text-sm font-medium text-themed-primary mb-2">Pass %</label>
-                            <input type="number" wire:model="pass_percentage"
-                                class="w-full px-2 sm:px-3 py-2 text-sm sm:text-base border border-themed-secondary rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-themed-primary focus:border-accent-themed-primary bg-themed-primary text-themed-primary placeholder-themed-tertiary"
+                            <input aria-label="Pass percentage" type="number" wire:model="pass_percentage"
+                                class="w-full px-2 sm:px-3 py-2 text-sm sm:text-base border border-themed-secondary rounded-lg focus:outline-none focus:ring-2 focus:ring-brand focus:border-brand bg-themed-primary text-themed-primary placeholder-themed-tertiary"
                                 min="1" max="100" required>
                             @error('pass_percentage') <div
                                 class="text-red-500 dark:text-red-400 text-xs sm:text-sm mt-1">{{ $message }}</div>
@@ -361,8 +361,8 @@
                             <label for="estimated_duration_minutes"
                                 class="block text-xs sm:text-sm font-medium text-themed-primary mb-2">Duration
                                 (Min)</label>
-                            <input type="number" wire:model="estimated_duration_minutes"
-                                class="w-full px-2 sm:px-3 py-2 text-sm sm:text-base border border-themed-secondary rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-themed-primary focus:border-accent-themed-primary bg-themed-primary text-themed-primary placeholder-themed-tertiary"
+                            <input aria-label="Estimated duration minutes" type="number" wire:model="estimated_duration_minutes"
+                                class="w-full px-2 sm:px-3 py-2 text-sm sm:text-base border border-themed-secondary rounded-lg focus:outline-none focus:ring-2 focus:ring-brand focus:border-brand bg-themed-primary text-themed-primary placeholder-themed-tertiary"
                                 min="1" required>
                             @error('estimated_duration_minutes') <div
                                 class="text-red-500 dark:text-red-400 text-xs sm:text-sm mt-1">{{ $message }}</div>
@@ -371,8 +371,8 @@
                         <div>
                             <label for="max_score"
                                 class="block text-xs sm:text-sm font-medium text-themed-primary mb-2">Max Score</label>
-                            <input type="number" wire:model="max_score"
-                                class="w-full px-2 sm:px-3 py-2 text-sm sm:text-base border border-themed-secondary rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-themed-primary focus:border-accent-themed-primary bg-themed-primary text-themed-primary placeholder-themed-tertiary"
+                            <input aria-label="Max score" type="number" wire:model="max_score"
+                                class="w-full px-2 sm:px-3 py-2 text-sm sm:text-base border border-themed-secondary rounded-lg focus:outline-none focus:ring-2 focus:ring-brand focus:border-brand bg-themed-primary text-themed-primary placeholder-themed-tertiary"
                                 min="1" required>
                             @error('max_score') <div class="text-red-500 dark:text-red-400 text-xs sm:text-sm mt-1">
                             {{ $message }}</div> @enderror
@@ -381,8 +381,8 @@
                             <label for="max_attempts"
                                 class="block text-xs sm:text-sm font-medium text-themed-primary mb-2">Max
                                 Attempts</label>
-                            <input type="number" wire:model="max_attempts"
-                                class="w-full px-2 sm:px-3 py-2 text-sm sm:text-base border border-themed-secondary rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-themed-primary focus:border-accent-themed-primary bg-themed-primary text-themed-primary placeholder-themed-tertiary"
+                            <input aria-label="Unlimited" type="number" wire:model="max_attempts"
+                                class="w-full px-2 sm:px-3 py-2 text-sm sm:text-base border border-themed-secondary rounded-lg focus:outline-none focus:ring-2 focus:ring-brand focus:border-brand bg-themed-primary text-themed-primary placeholder-themed-tertiary"
                                 min="1" max="100" placeholder="Unlimited">
                             <p class="text-xs text-themed-tertiary mt-1">Leave empty for unlimited</p>
                             @error('max_attempts') <div class="text-red-500 dark:text-red-400 text-xs sm:text-sm mt-1">
@@ -392,7 +392,7 @@
                      <!-- NEW: Shuffle Settings -->
                      <div class="bg-themed-tertiary rounded-lg p-4 mb-4 sm:mb-6 border border-themed-secondary">
                         <h6 class="text-sm font-semibold text-themed-primary mb-3 flex items-center">
-                            <i class="fas fa-random mr-2 text-accent-themed-primary"></i>
+                            <i class="fas fa-random mr-2 text-brand"></i>
                             Anti-Cheating Settings (UTME Style)
                         </h6>
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -403,7 +403,7 @@
                                 </div>
                                 <label class="relative inline-flex items-center cursor-pointer ml-3">
                                     <input type="checkbox" wire:model="shuffle_questions" class="sr-only peer">
-                                    <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
+                                    <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-brand/30 dark:peer-focus:ring-brand/30 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-surface after:border-line after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-action"></div>
                                 </label>
                             </div>
 
@@ -414,7 +414,7 @@
                                 </div>
                                 <label class="relative inline-flex items-center cursor-pointer ml-3">
                                     <input type="checkbox" wire:model="shuffle_options" class="sr-only peer">
-                                    <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
+                                    <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-brand/30 dark:peer-focus:ring-brand/30 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-surface after:border-line after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-action"></div>
                                 </label>
                             </div>
                         </div>
@@ -426,7 +426,7 @@
                             class="w-full sm:w-auto px-3 sm:px-4 py-2 text-sm sm:text-base bg-themed-tertiary text-themed-primary rounded-lg hover:bg-themed-secondary transition-colors border border-themed-secondary"
                             wire:click="closeModals">Cancel</button>
                         <button type="submit"
-                            class="w-full sm:w-auto px-3 sm:px-4 py-2 text-sm sm:text-base bg-accent-themed-primary text-white rounded-lg hover:bg-accent-themed-secondary transition-colors flex items-center justify-center">
+                            class="w-full sm:w-auto px-3 sm:px-4 py-2 text-sm sm:text-base bg-action text-action-foreground rounded-lg hover:bg-action/90 transition-colors flex items-center justify-center">
                             <i class="fas fa-save mr-2"></i>Update Assessment
                         </button>
                     </div>
@@ -440,14 +440,14 @@
         <div
             class="fixed inset-0 bg-gray-600 bg-opacity-50 dark:bg-gray-900 dark:bg-opacity-75 overflow-y-auto h-full w-full z-50">
             <div
-                class="relative top-10 mx-auto p-5 border w-11/12 max-w-7xl shadow-lg rounded-lg bg-themed-secondary border-themed-primary animate-fade-in-up">
+                class="relative top-10 mx-auto p-5 border w-11/12 max-w-7xl shadow-sm rounded-lg bg-themed-secondary border-themed-primary animate-fade-in-up">
                 <div class="border-b border-themed-secondary pb-4 mb-4">
                     <h5 class="text-xl font-semibold text-themed-primary flex items-center">
                         <i class="fas fa-question-circle mr-2"></i>
                         Manage Questions - {{ $selectedAssessment->title }}
                     </h5>
                     <button type="button" class="absolute top-4 right-4 text-themed-tertiary hover:text-themed-secondary"
-                        wire:click="closeModals">
+                        wire:click="closeModals" aria-label="Close">
                         <i class="fas fa-times text-xl"></i>
                     </button>
                 </div>
@@ -463,8 +463,8 @@
                                     <span class="text-xs text-themed-tertiary">(Use $...$ for inline math and $...$ for
                                         display math)</span>
                                 </label>
-                                <textarea wire:model="question_text"
-                                    class="w-full px-3 py-2 border border-themed-secondary rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-themed-primary focus:border-accent-themed-primary bg-themed-primary text-themed-primary placeholder-themed-tertiary"
+                                <textarea aria-label="E.g., Solve the equation: $x^2 + y^2 = 25$" wire:model="question_text"
+                                    class="w-full px-3 py-2 border border-themed-secondary rounded-lg focus:outline-none focus:ring-2 focus:ring-brand focus:border-brand bg-themed-primary text-themed-primary placeholder-themed-tertiary"
                                     rows="3" placeholder="E.g., Solve the equation: $x^2 + y^2 = 25$" required></textarea>
                                 @error('question_text') <div class="text-red-500 dark:text-red-400 text-sm mt-1">
                                 {{ $message }}</div> @enderror
@@ -486,8 +486,8 @@
                                 <div class="md:col-span-2">
                                     <label for="question_type"
                                         class="block text-sm font-medium text-themed-primary mb-2">Question Type</label>
-                                    <select wire:model.live="question_type"
-                                        class="w-full px-3 py-2 border border-themed-secondary rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-themed-primary focus:border-accent-themed-primary bg-themed-primary text-themed-primary placeholder-themed-tertiary"
+                                    <select aria-label="Question type" wire:model.live="question_type"
+                                        class="w-full px-3 py-2 border border-themed-secondary rounded-lg focus:outline-none focus:ring-2 focus:ring-brand focus:border-brand bg-themed-primary text-themed-primary placeholder-themed-tertiary"
                                         required>
                                         <option value="multiple_choice">Multiple Choice</option>
                                         <option value="true_false">True/False</option>
@@ -498,8 +498,8 @@
                                 <div>
                                     <label for="points"
                                         class="block text-sm font-medium text-themed-primary mb-2">Points</label>
-                                    <input type="number" wire:model="points"
-                                        class="w-full px-3 py-2 border border-themed-secondary rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-themed-primary focus:border-accent-themed-primary bg-themed-primary text-themed-primary placeholder-themed-tertiary"
+                                    <input aria-label="Points" type="number" wire:model="points"
+                                        class="w-full px-3 py-2 border border-themed-secondary rounded-lg focus:outline-none focus:ring-2 focus:ring-brand focus:border-brand bg-themed-primary text-themed-primary placeholder-themed-tertiary"
                                         step="0.1" min="0.1" required>
                                     @error('points') <div class="text-red-500 dark:text-red-400 text-sm mt-1">{{ $message }}
                                     </div> @enderror
@@ -521,17 +521,17 @@
                                                     {{ chr(65 + $index) }}
                                                 </span>
                                                 <input type="text" wire:model="options.{{ $index }}"
-                                                    class="flex-1 px-3 py-2 border border-themed-secondary focus:outline-none focus:ring-2 focus:ring-accent-themed-primary focus:border-accent-themed-primary bg-themed-primary text-themed-primary placeholder-themed-tertiary"
+                                                    class="flex-1 px-3 py-2 border border-themed-secondary focus:outline-none focus:ring-2 focus:ring-brand focus:border-brand bg-themed-primary text-themed-primary placeholder-themed-tertiary"
                                                     placeholder="Option {{ chr(65 + $index) }} (e.g., $x^2 + 5x + 6$)">
                                                 <div
                                                     class="bg-themed-tertiary border border-l-0 border-r-0 border-themed-secondary px-3 py-2">
                                                     <input type="checkbox" wire:model="correct_answers" value="{{ $index }}"
-                                                        class="form-checkbox h-4 w-4 text-accent-themed-primary"
+                                                        class="form-checkbox h-4 w-4 text-brand"
                                                         title="Correct Answer">
                                                 </div>
                                                 <button type="button" onclick="toggleOptionPreview({{ $index }})"
                                                     class="bg-themed-tertiary border border-l-0 border-themed-secondary rounded-r-lg px-3 py-2 hover:bg-themed-secondary transition-colors"
-                                                    title="Toggle Preview">
+                                                    title="Toggle Preview" aria-label="Toggle Preview">
                                                     <i class="fas fa-eye text-themed-secondary"></i>
                                                 </button>
                                             </div>
@@ -560,12 +560,12 @@
                                     <div class="space-y-2">
                                         <div class="flex items-center">
                                             <input type="radio" wire:model="correct_answers" value="0"
-                                                class="form-radio h-4 w-4 text-accent-themed-primary" id="true_option">
+                                                class="form-radio h-4 w-4 text-brand" id="true_option">
                                             <label class="ml-2 text-sm text-themed-primary" for="true_option">True</label>
                                         </div>
                                         <div class="flex items-center">
                                             <input type="radio" wire:model="correct_answers" value="1"
-                                                class="form-radio h-4 w-4 text-accent-themed-primary" id="false_option">
+                                                class="form-radio h-4 w-4 text-brand" id="false_option">
                                             <label class="ml-2 text-sm text-themed-primary" for="false_option">False</label>
                                         </div>
                                     </div>
@@ -578,8 +578,8 @@
                                     <span class="text-xs text-themed-tertiary">(Use $...$ for inline math and $...$ for
                                         display math)</span>
                                 </label>
-                                <textarea wire:model="explanation"
-                                    class="w-full px-3 py-2 border border-themed-secondary rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-themed-primary focus:border-accent-themed-primary bg-themed-primary text-themed-primary placeholder-themed-tertiary"
+                                <textarea aria-label="E.g., Using Pythagorean theorem: $a^2 + b^2 = c^2$" wire:model="explanation"
+                                    class="w-full px-3 py-2 border border-themed-secondary rounded-lg focus:outline-none focus:ring-2 focus:ring-brand focus:border-brand bg-themed-primary text-themed-primary placeholder-themed-tertiary"
                                     rows="2" placeholder="E.g., Using Pythagorean theorem: $a^2 + b^2 = c^2$"></textarea>
 
                                 <!-- Live Preview -->
@@ -609,7 +609,7 @@
                         @if($selectedAssessment->questions->count() > 0)
                             <div id="questions-sortable" class="space-y-3 max-h-[600px] overflow-y-auto pr-2">
                                 @foreach($selectedAssessment->questions->sortBy('order') as $question)
-                                    <div class="question-item bg-themed-tertiary border border-themed-secondary rounded-lg p-4 hover:shadow-md transition-shadow"
+                                    <div class="question-item bg-themed-tertiary border border-themed-secondary rounded-lg p-4  transition-shadow"
                                         data-id="{{ $question->id }}">
                                         <div class="flex items-start">
                                             <!-- Drag Handle -->
@@ -646,11 +646,11 @@
                                                 @endif
                                                 <div class="flex space-x-2 mt-2">
                                                     <span
-                                                        class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-themed-secondary text-accent-themed-primary">
+                                                        class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-themed-secondary text-brand">
                                                         {{ ucfirst(str_replace('_', ' ', $question->question_type)) }}
                                                     </span>
                                                     <span
-                                                        class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-themed-tertiary text-accent-themed-primary">
+                                                        class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-themed-tertiary text-brand">
                                                         {{ $question->points }} pts
                                                     </span>
                                                 </div>
@@ -659,7 +659,7 @@
                                             <!-- Action Buttons -->
                                             <div class="flex space-x-2 ml-3">
                                                 <button wire:click="editQuestion({{ $question->id }})"
-                                                    class="text-blue-600 hover:text-blue-800 p-2 rounded-lg hover:bg-blue-50 dark:hover:bg-blue-900/30 transition-colors"
+                                                    class="text-brand hover:text-brand p-2 rounded-lg hover:bg-brand/10 dark:hover:bg-action/30 transition-colors"
                                                     title="Edit Question">
                                                     <i class="fas fa-edit"></i>
                                                 </button>
@@ -688,12 +688,12 @@
 
     <!-- Edit Question Modal -->
     @if($showEditQuestionModal && $editingQuestion)
-        <div class="fixed inset-0 bg-black bg-opacity-50 z-[60] flex items-center justify-center p-4">
+        <div class="fixed inset-0 bg-black bg-opacity-50 z-[60] flex items-center justify-center p-4" x-trap.inert.noscroll="true" role="dialog" aria-modal="true" aria-label="Edit Question" tabindex="-1" x-data="{}" @keydown.escape.stop="$wire.set(&#x27;showEditQuestionModal&#x27;, false)">
             <div class="bg-themed-secondary rounded-lg max-w-4xl w-full max-h-screen overflow-y-auto">
                 <div class="p-6 border-b border-themed-secondary sticky top-0 bg-themed-secondary z-10">
                     <h3 class="text-xl font-bold text-themed-primary">Edit Question</h3>
                     <button type="button" class="absolute top-4 right-4 text-themed-tertiary hover:text-themed-secondary"
-                        wire:click="closeModals">
+                        wire:click="closeModals" aria-label="Close">
                         <i class="fas fa-times text-xl"></i>
                     </button>
                 </div>
@@ -707,8 +707,8 @@
                                 <span class="text-xs text-themed-tertiary">(Use $...$ for inline math, $...$ for
                                     display)</span>
                             </label>
-                            <textarea wire:model="question_text" rows="3"
-                                class="w-full px-3 py-2 border border-themed-secondary rounded-lg bg-themed-primary text-themed-primary focus:ring-2 focus:ring-accent-themed-primary"
+                            <textarea aria-label="Question text" wire:model="question_text" rows="3"
+                                class="w-full px-3 py-2 border border-themed-secondary rounded-lg bg-themed-primary text-themed-primary focus:ring-2 focus:ring-brand"
                                 required></textarea>
 
                             <!-- Live Preview -->
@@ -728,8 +728,8 @@
                         <div class="grid grid-cols-2 gap-4 mb-4">
                             <div>
                                 <label class="block text-sm font-medium text-themed-primary mb-2">Question Type</label>
-                                <select wire:model.live="question_type"
-                                    class="w-full px-3 py-2 border border-themed-secondary rounded-lg bg-themed-primary focus:ring-2 focus:ring-accent-themed-primary">
+                                <select aria-label="Question type" wire:model.live="question_type"
+                                    class="w-full px-3 py-2 border border-themed-secondary rounded-lg bg-themed-primary focus:ring-2 focus:ring-brand">
                                     <option value="multiple_choice">Multiple Choice</option>
                                     <option value="true_false">True/False</option>
                                     <option value="short_answer">Short Answer</option>
@@ -737,8 +737,8 @@
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-themed-primary mb-2">Points</label>
-                                <input type="number" wire:model="points" step="0.1" min="0.1"
-                                    class="w-full px-3 py-2 border border-themed-secondary rounded-lg bg-themed-primary focus:ring-2 focus:ring-accent-themed-primary"
+                                <input aria-label="Points" type="number" wire:model="points" step="0.1" min="0.1"
+                                    class="w-full px-3 py-2 border border-themed-secondary rounded-lg bg-themed-primary focus:ring-2 focus:ring-brand"
                                     required>
                             </div>
                         </div>
@@ -754,11 +754,11 @@
                                             {{ chr(65 + $index) }}
                                         </span>
                                         <input type="text" wire:model="options.{{ $index }}"
-                                            class="flex-1 px-3 py-2 border border-themed-secondary bg-themed-primary focus:ring-2 focus:ring-accent-themed-primary">
+                                            class="flex-1 px-3 py-2 border border-themed-secondary bg-themed-primary focus:ring-2 focus:ring-brand">
                                         <div
                                             class="bg-themed-tertiary border border-l-0 border-themed-secondary px-3 py-2 rounded-r-lg">
                                             <input type="checkbox" wire:model="correct_answers" value="{{ $index }}"
-                                                class="form-checkbox h-4 w-4 text-accent-themed-primary" title="Correct Answer">
+                                                class="form-checkbox h-4 w-4 text-brand" title="Correct Answer">
                                         </div>
                                     </div>
                                 @endforeach
@@ -769,12 +769,12 @@
                                 <div class="space-y-2">
                                     <div class="flex items-center">
                                         <input type="radio" wire:model="correct_answers" value="0"
-                                            class="form-radio h-4 w-4 text-accent-themed-primary" id="edit_true">
+                                            class="form-radio h-4 w-4 text-brand" id="edit_true">
                                         <label class="ml-2 text-sm text-themed-primary" for="edit_true">True</label>
                                     </div>
                                     <div class="flex items-center">
                                         <input type="radio" wire:model="correct_answers" value="1"
-                                            class="form-radio h-4 w-4 text-accent-themed-primary" id="edit_false">
+                                            class="form-radio h-4 w-4 text-brand" id="edit_false">
                                         <label class="ml-2 text-sm text-themed-primary" for="edit_false">False</label>
                                     </div>
                                 </div>
@@ -784,8 +784,8 @@
                         <!-- Explanation -->
                         <div class="mb-4">
                             <label class="block text-sm font-medium text-themed-primary mb-2">Explanation (Optional)</label>
-                            <textarea wire:model="explanation" rows="2"
-                                class="w-full px-3 py-2 border border-themed-secondary rounded-lg bg-themed-primary focus:ring-2 focus:ring-accent-themed-primary"></textarea>
+                            <textarea aria-label="Explanation" wire:model="explanation" rows="2"
+                                class="w-full px-3 py-2 border border-themed-secondary rounded-lg bg-themed-primary focus:ring-2 focus:ring-brand"></textarea>
 
                             <!-- Live Preview -->
                             <div class="mt-2 p-3 bg-themed-tertiary rounded-lg">
@@ -806,7 +806,7 @@
                                 class="px-4 py-2 bg-gray-300 dark:bg-gray-600 text-themed-primary dark:text-white rounded-lg hover:bg-gray-400 dark:hover:bg-gray-700">
                                 Cancel
                             </button>
-                            <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+                            <button type="submit" class="px-4 py-2 bg-action text-action-foreground rounded-lg hover:bg-action">
                                 <i class="fas fa-save mr-2"></i>Update Question
                             </button>
                         </div>
@@ -818,7 +818,7 @@
 
     <!-- Participants Modal -->
     @if($showParticipantsModal && $selectedAssessment)
-        <div class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+        <div class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4" x-trap.inert.noscroll="true" role="dialog" aria-modal="true" aria-label="Participants modal" tabindex="-1" x-data="{}" @keydown.escape.stop="$wire.set(&#x27;showParticipantsModal&#x27;, false)">
             <div class="bg-themed-secondary rounded-lg max-w-6xl w-full max-h-screen overflow-hidden"
                 x-data="{ expandedUser: null }">
                 <div class="p-6 border-b border-themed-secondary flex justify-between items-center">
@@ -826,7 +826,7 @@
                         <i class="fas fa-users mr-2"></i>
                         Participants - {{ $selectedAssessment->title }}
                     </h3>
-                    <button type="button" wire:click="closeModals" class="text-themed-tertiary hover:text-themed-secondary">
+                    <button type="button" wire:click="closeModals" class="text-themed-tertiary hover:text-themed-secondary" aria-label="Close">
                         <i class="fas fa-times text-xl"></i>
                     </button>
                 </div>
@@ -837,22 +837,22 @@
                     @endphp
 
                     @if($participants->count() > 0)
-                        <table class="w-full border-collapse">
+                        <x-ui.table label="Cbt Management.Blade records"><table class="w-full border-collapse">
                             <thead class="bg-themed-tertiary sticky top-0">
                                 <tr>
-                                    <th class="px-4 py-3 text-left text-xs font-medium uppercase text-themed-secondary">Rank
+                                    <th scope="col" class="px-4 py-3 text-left text-xs font-medium uppercase text-themed-secondary">Rank
                                     </th>
-                                    <th class="px-4 py-3 text-left text-xs font-medium uppercase text-themed-secondary">Student
+                                    <th scope="col" class="px-4 py-3 text-left text-xs font-medium uppercase text-themed-secondary">Student
                                         Name</th>
-                                    <th class="px-4 py-3 text-left text-xs font-medium uppercase text-themed-secondary">Email
+                                    <th scope="col" class="px-4 py-3 text-left text-xs font-medium uppercase text-themed-secondary">Email
                                     </th>
-                                    <th class="px-4 py-3 text-center text-xs font-medium uppercase text-themed-secondary">
+                                    <th scope="col" class="px-4 py-3 text-center text-xs font-medium uppercase text-themed-secondary">
                                         Attempts</th>
-                                    <th class="px-4 py-3 text-center text-xs font-medium uppercase text-themed-secondary">Best
+                                    <th scope="col" class="px-4 py-3 text-center text-xs font-medium uppercase text-themed-secondary">Best
                                         Score</th>
-                                    <th class="px-4 py-3 text-center text-xs font-medium uppercase text-themed-secondary">Status
+                                    <th scope="col" class="px-4 py-3 text-center text-xs font-medium uppercase text-themed-secondary">Status
                                     </th>
-                                    <th class="px-4 py-3 text-center text-xs font-medium uppercase text-themed-secondary">
+                                    <th scope="col" class="px-4 py-3 text-center text-xs font-medium uppercase text-themed-secondary">
                                         Details</th>
                                 </tr>
                             </thead>
@@ -897,7 +897,7 @@
                                         <td class="px-4 py-3 text-center">
                                             <button
                                                 @click="expandedUser = expandedUser === {{ $participant['user_id'] }} ? null : {{ $participant['user_id'] }}"
-                                                class="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 px-3 py-1 rounded hover:bg-blue-50 dark:hover:bg-blue-900/30 transition-colors">
+                                                class="text-brand hover:text-brand dark:text-brand dark:hover:text-brand px-3 py-1 rounded hover:bg-brand/10 dark:hover:bg-action/30 transition-colors">
                                                 <i class="fas"
                                                     :class="expandedUser === {{ $participant['user_id'] }} ? 'fa-eye-slash' : 'fa-eye'"></i>
                                                 <span
@@ -948,7 +948,7 @@
                                     </tr>
                                 @endforeach
                             </tbody>
-                        </table>
+                        </table></x-ui.table>
                     @else
                         <div class="text-center py-12">
                             <i class="fas fa-users text-6xl text-themed-tertiary mb-4"></i>

@@ -1,18 +1,18 @@
 <!-- Enhanced Filters and Controls -->
-<div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+<div class="bg-surface rounded-lg shadow-sm border border-line p-6">
     <div class="flex flex-col lg:flex-row lg:items-center justify-between space-y-4 lg:space-y-0">
         <!-- Search and Filters -->
         <div class="flex flex-wrap items-center gap-3">
             <div class="relative">
-                <input wire:model.live.debounce.300ms="search" 
-                       type="text" 
-                       placeholder="Search your items..." 
-                       class="w-64 pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-purple-500 focus:border-purple-500">
-                <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
+                <input aria-label="Search your items" wire:model.live.debounce.300ms="search"
+                       type="text"
+                       placeholder="Search your items..."
+                       class="w-64 pl-10 pr-4 py-2 border border-line rounded-lg focus:ring-brand/30 focus:border-brand">
+                <i class="fas fa-search absolute left-3 top-3 text-content-muted"></i>
             </div>
-            
-            <select wire:model.live="status" 
-                    class="px-3 py-2 border border-gray-300 rounded-lg focus:ring-purple-500 focus:border-purple-500">
+
+            <select aria-label="Status" wire:model.live="status"
+                    class="px-3 py-2 border border-line rounded-lg focus:ring-brand/30 focus:border-brand">
                 <option value="">All Status</option>
                 @isset($statuses)
                     @foreach($statuses as $key => $label)
@@ -21,8 +21,8 @@
                 @endisset
             </select>
 
-            <select wire:model.live="sortBy" 
-                    class="px-3 py-2 border border-gray-300 rounded-lg focus:ring-purple-500 focus:border-purple-500">
+            <select aria-label="Sort by" wire:model.live="sortBy"
+                    class="px-3 py-2 border border-line rounded-lg focus:ring-brand/30 focus:border-brand">
                 <option value="latest">Latest First</option>
                 <option value="oldest">Oldest First</option>
                 <option value="title">Title A-Z</option>
@@ -33,47 +33,47 @@
             </select>
 
             @if($search || $status)
-                <button wire:click="$set('search', ''); $set('status', '')" 
-                        class="px-3 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors">
+                <button wire:click="$set('search', ''); $set('status', '')"
+                        class="px-3 py-2 bg-surface-muted text-content rounded-lg hover:bg-gray-200 transition-colors">
                     <i class="fas fa-times mr-1"></i>
                     Clear
                 </button>
             @endif
         </div>
-        
+
         <!-- Action Buttons -->
         <div class="flex items-center space-x-3">
             @if($selectedItems && count($selectedItems) > 0)
                 <div class="flex items-center space-x-2">
-                    <span class="text-sm text-gray-600">{{ count($selectedItems) }} selected</span>
-                    <select wire:model="bulkAction" 
-                            class="px-3 py-1.5 text-sm border border-gray-300 rounded-lg focus:ring-purple-500 focus:border-purple-500">
+                    <span class="text-sm text-content-muted">{{ count($selectedItems) }} selected</span>
+                    <select aria-label="Bulk action" wire:model="bulkAction"
+                            class="px-3 py-1.5 text-sm border border-line rounded-lg focus:ring-brand/30 focus:border-brand">
                         <option value="">Bulk Actions</option>
                         <option value="submit_review">Submit for Review</option>
                         <option value="duplicate">Duplicate Selected</option>
                         <option value="delete">Delete Selected</option>
                     </select>
-                    <button wire:click="executeBulkAction" 
-                            class="px-3 py-1.5 bg-blue-600 text-white text-sm rounded-lg hover:bg-blue-700 transition-colors"
-                            @if(!$bulkAction) disabled class="px-3 py-1.5 bg-gray-300 text-gray-500 text-sm rounded-lg cursor-not-allowed" @endif>
+                    <button wire:click="executeBulkAction"
+                            class="px-3 py-1.5 bg-action text-action-foreground text-sm rounded-lg hover:bg-action transition-colors"
+                            @if(!$bulkAction) disabled class="px-3 py-1.5 bg-gray-300 text-content-muted text-sm rounded-lg cursor-not-allowed" @endif>
                         Execute
                     </button>
                 </div>
             @endif
 
-            <button wire:click="showCreate" 
-                    class="inline-flex items-center px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors">
+            <button wire:click="showCreate"
+                    class="inline-flex items-center px-4 py-2 bg-action text-action-foreground rounded-lg hover:bg-action transition-colors">
                 <i class="fas fa-plus mr-2"></i>
                 Create New Item
             </button>
         </div>
     </div>
-    
+
     <!-- Quick Stats Row -->
     <div class="mt-6 grid grid-cols-2 md:grid-cols-6 gap-4">
-        <div class="text-center p-3 bg-gray-50 rounded-lg">
-            <div class="text-lg font-bold text-gray-900">{{ $analyticsData['total_items'] ?? 0 }}</div>
-            <div class="text-xs text-gray-600">Total Items</div>
+        <div class="text-center p-3 bg-surface-muted rounded-lg">
+            <div class="text-lg font-bold text-content">{{ $analyticsData['total_items'] ?? 0 }}</div>
+            <div class="text-xs text-content-muted">Total Items</div>
         </div>
         <div class="text-center p-3 bg-green-50 rounded-lg">
             <div class="text-lg font-bold text-green-600">{{ $analyticsData['published_items'] ?? 0 }}</div>
@@ -83,17 +83,17 @@
             <div class="text-lg font-bold text-yellow-600">{{ $analyticsData['draft_items'] ?? 0 }}</div>
             <div class="text-xs text-yellow-600">Drafts</div>
         </div>
-        <div class="text-center p-3 bg-blue-50 rounded-lg">
-            <div class="text-lg font-bold text-blue-600">{{ $analyticsData['pending_items'] ?? 0 }}</div>
-            <div class="text-xs text-blue-600">Pending</div>
+        <div class="text-center p-3 bg-brand/10 rounded-lg">
+            <div class="text-lg font-bold text-brand">{{ $analyticsData['pending_items'] ?? 0 }}</div>
+            <div class="text-xs text-brand">Pending</div>
         </div>
         <div class="text-center p-3 bg-red-50 rounded-lg">
             <div class="text-lg font-bold text-red-600">{{ $analyticsData['rejected_items'] ?? 0 }}</div>
             <div class="text-xs text-red-600">Rejected</div>
         </div>
-        <div class="text-center p-3 bg-purple-50 rounded-lg">
-            <div class="text-lg font-bold text-purple-600">{{ number_format($analyticsData['avg_rating'] ?? 0, 1) }}</div>
-            <div class="text-xs text-purple-600">Avg Rating</div>
+        <div class="text-center p-3 bg-brand/10 rounded-lg">
+            <div class="text-lg font-bold text-brand">{{ number_format($analyticsData['avg_rating'] ?? 0, 1) }}</div>
+            <div class="text-xs text-brand">Avg Rating</div>
         </div>
     </div>
 </div>
@@ -101,13 +101,13 @@
 <!-- Enhanced Items Grid -->
 @isset($items)
     @if($items->count() > 0)
-        <div class="bg-white rounded-lg shadow-sm border border-gray-200">
+        <div class="bg-surface rounded-lg shadow-sm border border-line">
             <!-- Bulk Select Header -->
-            <div class="p-4 border-b border-gray-200 bg-gray-50">
+            <div class="p-4 border-b border-line bg-surface-muted">
                 <label class="flex items-center">
                     <input type="checkbox" wire:model="selectAll" wire:click="toggleSelectAll"
-                           class="rounded border-gray-300 text-purple-600 focus:ring-purple-500">
-                    <span class="ml-2 text-sm text-gray-700">Select All</span>
+                           class="rounded border-line text-brand focus:ring-brand/30">
+                    <span class="ml-2 text-sm text-content">Select All</span>
                 </label>
             </div>
 
@@ -115,24 +115,24 @@
             <div class="p-6">
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     @foreach($items as $item)
-                        <div class="border border-gray-200 rounded-lg overflow-hidden hover:shadow-lg transition-all duration-200 {{ in_array($item->id, $selectedItems) ? 'ring-2 ring-purple-500 bg-purple-50' : 'hover:border-purple-300' }}">
+                        <div class="border border-line rounded-lg overflow-hidden hover:shadow-sm transition-all duration-200 {{ in_array($item->id, $selectedItems) ? 'ring-2 ring-brand/30 bg-purple-50' : 'hover:border-purple-300' }}">
                             <!-- Card Header with Selection -->
                             <div class="relative">
                                 @if($item->getPrimaryImage())
-                                    <img src="{{ asset('storage/' . $item->getPrimaryImage()) }}" 
-                                         alt="{{ $item->title }}" 
+                                    <img src="{{ asset('storage/' . $item->getPrimaryImage()) }}"
+                                         alt="{{ $item->title }}"
                                          class="w-full h-48 object-cover">
                                 @else
-                                    <div class="w-full h-48 bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">
-                                        <i class="fas fa-image text-gray-400 text-3xl"></i>
+                                    <div class="w-full h-48 bg-surface-muted   flex items-center justify-center">
+                                        <i class="fas fa-image text-content-muted text-3xl"></i>
                                     </div>
                                 @endif
-                                
+
                                 <!-- Selection Checkbox -->
                                 <div class="absolute top-3 left-3">
                                     <label class="inline-flex items-center">
                                         <input type="checkbox" wire:model="selectedItems" value="{{ $item->id }}"
-                                               class="rounded border-gray-300 text-purple-600 focus:ring-purple-500 bg-white shadow-sm">
+                                               class="rounded border-line text-brand focus:ring-brand/30 bg-surface shadow-sm">
                                     </label>
                                 </div>
 
@@ -147,7 +147,7 @@
                                             'suspended' => 'bg-orange-100 text-orange-800',
                                         ];
                                     @endphp
-                                    <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium {{ $statusColors[$item->status] ?? 'bg-gray-100 text-gray-800' }} backdrop-blur-sm">
+                                    <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium {{ $statusColors[$item->status] ?? 'bg-gray-100 text-gray-800' }} ">
                                         <i class="fas fa-{{ $item->status === 'approved' ? 'check' : ($item->status === 'pending' ? 'clock' : ($item->status === 'rejected' ? 'times' : 'edit')) }} mr-1"></i>
                                         {{ ucfirst($item->status) }}
                                     </span>
@@ -155,12 +155,12 @@
 
                          <!-- Price Tag -->
 <div class="absolute bottom-3 right-3">
-    <div class="bg-white/90 backdrop-blur-sm rounded-lg px-2 py-1">
+    <div class="bg-white/90  rounded-lg px-2 py-1">
         @if($item->hasDiscount())
-            <span class="text-lg font-bold text-gray-900">₦{{ number_format($item->discount_price, 0) }}</span>
-            <div class="text-sm text-gray-500 line-through">₦{{ number_format($item->price, 0) }}</div>
+            <span class="text-lg font-bold text-content">₦{{ number_format($item->discount_price, 0) }}</span>
+            <div class="text-sm text-content-muted line-through">₦{{ number_format($item->price, 0) }}</div>
         @else
-            <span class="text-lg font-bold text-gray-900">₦{{ number_format($item->price, 0) }}</span>
+            <span class="text-lg font-bold text-content">₦{{ number_format($item->price, 0) }}</span>
         @endif
     </div>
 </div>
@@ -168,11 +168,11 @@
 
                             <!-- Card Content -->
                             <div class="p-4">
-                                <h3 class="font-semibold text-gray-900 text-lg mb-2 line-clamp-2">{{ $item->title }}</h3>
-                                <p class="text-gray-600 text-sm mb-3 line-clamp-2">{{ $item->short_description }}</p>
-                                
+                                <h3 class="font-semibold text-content text-lg mb-2 line-clamp-2">{{ $item->title }}</h3>
+                                <p class="text-content-muted text-sm mb-3 line-clamp-2">{{ $item->short_description }}</p>
+
                                 <!-- Item Stats -->
-                                <div class="flex items-center justify-between text-sm text-gray-500 mb-4">
+                                <div class="flex items-center justify-between text-sm text-content-muted mb-4">
                                     <div class="flex items-center space-x-3">
                                         <span class="flex items-center">
                                             <i class="fas fa-eye mr-1"></i>
@@ -195,7 +195,7 @@
                                     <!-- Edit Button (only for drafts and rejected) -->
                                     @if(in_array($item->status, ['draft', 'rejected']))
                                         <button wire:click="editItem({{ $item->id }})"
-                                                class="flex-1 min-w-0 px-3 py-1.5 bg-blue-600 text-white text-sm rounded-lg hover:bg-blue-700 transition-colors flex items-center justify-center">
+                                                class="flex-1 min-w-0 px-3 py-1.5 bg-action text-action-foreground text-sm rounded-lg hover:bg-action transition-colors flex items-center justify-center">
                                             <i class="fas fa-edit mr-1"></i>
                                             Edit
                                         </button>
@@ -215,7 +215,7 @@
                                             class="px-3 py-1.5 bg-gray-600 text-white text-sm rounded-lg hover:bg-gray-700 transition-colors">
                                         <i class="fas fa-copy"></i>
                                     </button>
-                                    
+
                                     <!-- Delete Button (only if no orders) -->
                                     @if(!$item->orders()->exists())
                                         <button wire:click="deleteItem({{ $item->id }})"
@@ -228,7 +228,7 @@
                                     <!-- View Public (only for approved items) -->
                                     @if($item->status === 'approved')
                                         <a href="#" target="_blank"
-                                           class="px-3 py-1.5 border border-gray-300 text-gray-700 text-sm rounded-lg hover:bg-gray-50 transition-colors">
+                                           class="px-3 py-1.5 border border-line text-content text-sm rounded-lg hover:bg-surface-muted transition-colors">
                                             <i class="fas fa-external-link-alt"></i>
                                         </a>
                                     @endif
@@ -236,15 +236,15 @@
 
                                 <!-- Recent Orders Preview -->
                                 @if($item->orders && $item->orders->count() > 0)
-                                    <div class="mt-3 pt-3 border-t border-gray-100">
-                                        <h5 class="text-xs font-medium text-gray-700 mb-2 flex items-center">
+                                    <div class="mt-3 pt-3 border-t border-line">
+                                        <h5 class="text-xs font-medium text-content mb-2 flex items-center">
                                             <i class="fas fa-shopping-cart mr-1"></i>
                                             Recent Orders:
                                         </h5>
                                         <div class="space-y-1">
                                             @foreach($item->orders->take(2) as $order)
                                                 <div class="flex justify-between text-xs">
-                                                    <span class="text-gray-600">{{ Str::limit($order->customer->name, 20) }}</span>
+                                                    <span class="text-content-muted">{{ Str::limit($order->customer->name, 20) }}</span>
                                                     <span class="text-{{ $order->status === 'completed' ? 'green' : 'yellow' }}-600 font-medium">
                                                         {{ ucfirst($order->status) }}
                                                     </span>
@@ -255,14 +255,14 @@
                                 @endif
 
                                 <!-- Item Type Badge -->
-                                <div class="mt-3 pt-3 border-t border-gray-100">
+                                <div class="mt-3 pt-3 border-t border-line">
                                     <div class="flex items-center justify-between">
-                                        <span class="inline-flex items-center px-2 py-1 bg-purple-100 text-purple-800 text-xs font-medium rounded-full">
+                                        <span class="inline-flex items-center px-2 py-1 bg-brand/10 text-brand text-xs font-medium rounded-full">
                                             <i class="fas fa-{{ $item->type === 'course' ? 'graduation-cap' : ($item->type === 'service' ? 'handshake' : 'file-alt') }} mr-1"></i>
                                             {{ ucfirst($item->type) }}
                                         </span>
                                         @if($item->duration_minutes)
-                                            <span class="text-xs text-gray-500">{{ $item->getFormattedDuration() }}</span>
+                                            <span class="text-xs text-content-muted">{{ $item->getFormattedDuration() }}</span>
                                         @endif
                                     </div>
                                 </div>
@@ -271,47 +271,47 @@
                     @endforeach
                 </div>
             </div>
-            
+
             <!-- Pagination -->
-            <div class="px-6 py-4 border-t border-gray-200 bg-gray-50">
+            <div class="px-6 py-4 border-t border-line bg-surface-muted">
                 {{ $items->links() }}
             </div>
         </div>
     @else
         <!-- Empty State -->
-        <div class="bg-white rounded-lg shadow-sm border border-gray-200">
+        <div class="bg-surface rounded-lg shadow-sm border border-line">
             <div class="text-center py-16">
-                <div class="w-24 h-24 mx-auto mb-6 bg-gradient-to-br from-purple-100 to-indigo-100 rounded-full flex items-center justify-center">
-                    <i class="fas fa-store text-3xl text-purple-600"></i>
+                <div class="w-24 h-24 mx-auto mb-6 bg-surface-muted   rounded-full flex items-center justify-center">
+                    <i class="fas fa-store text-3xl text-brand"></i>
                 </div>
-                
-                <h3 class="text-xl font-medium text-gray-900 mb-2">
+
+                <h3 class="text-xl font-medium text-content mb-2">
                     @if($search || $status)
                         No matching items found
                     @else
                         No items yet
                     @endif
                 </h3>
-                <p class="text-gray-500 mb-8 max-w-md mx-auto">
+                <p class="text-content-muted mb-8 max-w-md mx-auto">
                     @if($search || $status)
                         Try adjusting your search criteria or filters to find what you're looking for.
                     @else
                         Ready to start selling? Create your first marketplace item and reach thousands of potential customers.
                     @endif
                 </p>
-                
+
                 <div class="space-y-3">
                     @if($search || $status)
-                        <button wire:click="$set('search', ''); $set('status', '')" 
-                                class="inline-flex items-center px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+                        <button wire:click="$set('search', ''); $set('status', '')"
+                                class="inline-flex items-center px-6 py-3 bg-action text-action-foreground rounded-lg hover:bg-action transition-colors">
                             <i class="fas fa-times mr-2"></i>
                             Clear Filters
                         </button>
                         <br>
                     @endif
-                    
-                    <button wire:click="showCreate" 
-                            class="inline-flex items-center px-6 py-3 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors">
+
+                    <button wire:click="showCreate"
+                            class="inline-flex items-center px-6 py-3 bg-action text-action-foreground rounded-lg hover:bg-action transition-colors">
                         <i class="fas fa-plus mr-2"></i>
                         Create Your First Item
                     </button>

@@ -2,20 +2,20 @@
     <div>
         <!-- Header -->
         <div class="text-center mb-8">
-            <h1 class="text-4xl font-bold text-themed-primary mb-2">Certificate Request</h1>
+            <h1 class=" font-bold text-themed-primary mb-2 bk-page-title">Certificate Request</h1>
             <p class="text-themed-secondary">Complete your learning journey with an official certificate</p>
         </div>
 
         @if ($course)
             <!-- Course Information Card -->
-            <div class="bg-themed-secondary rounded-2xl p-8 mb-8 shadow-2xl border border-themed-primary transition-colors duration-300">
+            <div class="bg-themed-secondary rounded-lg p-8 mb-8 shadow-sm border border-themed-primary transition-colors duration-300">
                 <div class="flex items-start gap-6">
                     @if ($course->thumbnail)
                         <img src="{{ asset('storage/' . $course->thumbnail) }}" alt="{{ $course->title }}"
-                            class="w-24 h-24 rounded-xl object-cover">
+                            class="w-24 h-24 rounded-lg object-cover">
                     @else
-                        <div class="w-24 h-24 bg-accent-themed-primary rounded-xl flex items-center justify-center">
-                            <i class="fas fa-graduation-cap text-white text-2xl"></i>
+                        <div class="w-24 h-24 bg-action rounded-lg flex items-center justify-center">
+                            <i class="fas fa-graduation-cap text-action-foreground text-2xl"></i>
                         </div>
                     @endif
 
@@ -24,7 +24,7 @@
                         <p class="text-themed-secondary mb-4">{{ $course->subtitle }}</p>
 
                         <div class="flex flex-wrap gap-4 text-sm">
-                            <span class="bg-accent-themed-primary text-white px-3 py-1 rounded-full">
+                            <span class="bg-action text-action-foreground px-3 py-1 rounded-full">
                                 <i class="fas fa-user mr-1"></i>
                                 {{ $course->instructor->name }}
                             </span>
@@ -44,9 +44,9 @@
             </div>
 
             <!-- Progress Card -->
-            <div class="bg-themed-secondary rounded-2xl p-8 mb-8 shadow-2xl border border-themed-primary transition-colors duration-300">
+            <div class="bg-themed-secondary rounded-lg p-8 mb-8 shadow-sm border border-themed-primary transition-colors duration-300">
                 <h3 class="text-xl font-bold text-themed-primary mb-6 flex items-center">
-                    <i class="fas fa-chart-line mr-3 text-accent-themed-primary"></i>
+                    <i class="fas fa-chart-line mr-3 text-brand"></i>
                     Course Progress
                 </h3>
 
@@ -58,7 +58,7 @@
                             <span class="text-themed-primary font-bold">{{ $completionPercentage }}%</span>
                         </div>
                         <div class="w-full bg-themed-tertiary rounded-full h-3">
-                            <div class="bg-gradient-to-r from-accent-themed-primary to-accent-themed-secondary h-3 rounded-full transition-all duration-500"
+                            <div class="bg-surface-muted   h-3 rounded-full transition-all duration-500"
                                 style="width: {{ $completionPercentage }}%"></div>
                         </div>
                     </div>
@@ -105,9 +105,9 @@
             </div>
 
             <!-- Certificate Status Card -->
-            <div class="bg-themed-secondary rounded-2xl p-8 shadow-2xl border border-themed-primary transition-colors duration-300">
+            <div class="bg-themed-secondary rounded-lg p-8 shadow-sm border border-themed-primary transition-colors duration-300">
                 <h3 class="text-xl font-bold text-themed-primary mb-6 flex items-center">
-                    <i class="fas fa-certificate mr-3 text-accent-themed-primary"></i>
+                    <i class="fas fa-certificate mr-3 text-brand"></i>
                     Certificate Status
                 </h3>
 
@@ -170,7 +170,7 @@
                                 </button>
                                 <a href="{{ route('certificate.view', $existingCertificate->verification_code) }}"
                                     target="_blank"
-                                    class="px-6 py-3 bg-accent-themed-primary hover:bg-accent-themed-secondary text-white rounded-lg transition-colors flex items-center">
+                                    class="px-6 py-3 bg-action hover:bg-action/90 text-action-foreground rounded-lg transition-colors flex items-center">
                                     <i class="fas fa-eye mr-2"></i>
                                     View Certificate
                                 </a>
@@ -184,7 +184,7 @@
 
                         <!-- Certificate Preview (if approved) -->
                         @if ($existingCertificate->isApproved())
-                            <div class="bg-gradient-to-r from-accent-themed-primary to-accent-themed-secondary rounded-lg p-6 text-center">
+                            <div class="bg-surface-muted   rounded-lg p-6 text-center">
                                 <div class="text-white mb-4">
                                     <i class="fas fa-certificate text-4xl mb-2"></i>
                                     <div class="text-xl font-bold">Certificate Ready!</div>
@@ -195,7 +195,7 @@
                                     <div class="mt-4">
                                         <div class="text-sm text-white/80 mb-2">Verification QR Code:</div>
                                         <img src="{{ asset('storage/' . $existingCertificate->qr_code_path) }}"
-                                            alt="Verification QR Code" class="mx-auto w-20 h-20 bg-white p-1 rounded">
+                                            alt="Verification QR Code" class="mx-auto w-20 h-20 bg-surface p-1 rounded">
                                         <div class="text-xs text-white/70 mt-1">Scan to verify authenticity</div>
                                     </div>
                                 @endif
@@ -208,7 +208,7 @@
                         @if ($canRequestCertificate)
                             <div class="space-y-6">
                                 <div>
-                                    <i class="fas fa-award text-6xl text-accent-themed-primary mb-4"></i>
+                                    <i class="fas fa-award text-6xl text-brand mb-4"></i>
                                     <h4 class="text-2xl font-bold text-themed-primary mb-2">Ready to Get Certified?</h4>
                                     <p class="text-themed-secondary">You've completed the course! Request your official certificate now.</p>
                                 </div>
@@ -245,7 +245,7 @@
                                 </div>
 
                                 <button wire:click="requestCertificate"
-                                    class="px-8 py-4 bg-gradient-to-r from-accent-themed-primary to-accent-themed-secondary hover:opacity-90 text-white rounded-lg font-semibold text-lg transition-all duration-200 transform hover:scale-105 shadow-lg flex items-center mx-auto">
+                                    class="px-8 py-4 bg-action   hover:opacity-90 text-action-foreground rounded-lg font-semibold text-lg transition-all duration-200 transform  shadow-sm flex items-center mx-auto">
                                     <i class="fas fa-certificate mr-3"></i>
                                     Request My Certificate
                                 </button>
@@ -257,7 +257,7 @@
                                 <p class="text-themed-secondary mb-6">Finish all lessons to unlock your certificate.</p>
 
                                 <a href="{{ route('course.view', $course->slug) }}"
-                                    class="px-6 py-3 bg-accent-themed-primary hover:bg-accent-themed-secondary text-white rounded-lg transition-colors inline-flex items-center">
+                                    class="px-6 py-3 bg-action hover:bg-action/90 text-action-foreground rounded-lg transition-colors inline-flex items-center">
                                     <i class="fas fa-play mr-2"></i>
                                     Continue Learning
                                 </a>
@@ -270,14 +270,14 @@
             <!-- Back to Course -->
             <div class="text-center mt-8">
                 <a href="{{ route('course.view', $course->slug) }}"
-                    class="inline-flex items-center text-accent-themed-primary hover:text-accent-themed-secondary transition-colors">
+                    class="inline-flex items-center text-brand hover:text-accent-themed-secondary transition-colors">
                     <i class="fas fa-arrow-left mr-2"></i>
                     Back to Course
                 </a>
             </div>
         @else
             <!-- No Course Selected -->
-            <div class="items-center bg-themed-secondary rounded-2xl p-12 text-center shadow-2xl border border-themed-primary transition-colors duration-300">
+            <div class="items-center bg-themed-secondary rounded-lg p-12 text-center shadow-sm border border-themed-primary transition-colors duration-300">
                 <i class="fas fa-search text-6xl text-themed-tertiary mb-6"></i>
                 <h3 class="text-2xl font-bold text-themed-primary mb-4">Select a Course</h3>
                 <p class="text-themed-secondary mb-8">Choose a course to request a certificate for.</p>
@@ -289,7 +289,7 @@
                         Browse Courses
                     </a>
                     <a href="{{ route('student.dashboard') }}"
-                        class="px-6 py-3 bg-accent-themed-primary hover:bg-accent-themed-secondary text-white rounded-lg transition-colors flex items-center">
+                        class="px-6 py-3 bg-action hover:bg-action/90 text-action-foreground rounded-lg transition-colors flex items-center">
                         <i class="fas fa-home mr-2"></i>
                         Go to Dashboard
                     </a>
@@ -302,7 +302,7 @@
     <!-- Loading Overlay -->
     <div wire:loading class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
         <div class="bg-themed-secondary rounded-lg p-8 flex items-center">
-            <i class="fas fa-spinner fa-spin text-accent-themed-primary text-2xl mr-4"></i>
+            <i class="fas fa-spinner fa-spin text-brand text-2xl mr-4"></i>
             <span class="text-themed-primary font-medium">Processing your request...</span>
         </div>
     </div>
@@ -329,7 +329,7 @@
         }
 
         .gradient-border {
-            background: linear-gradient(45deg, #667eea 0%, #764ba2 100%);
+            background: rgb(var(--accent-primary));
             padding: 2px;
             border-radius: 12px;
         }

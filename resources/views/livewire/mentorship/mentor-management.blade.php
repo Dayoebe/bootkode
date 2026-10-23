@@ -1,53 +1,53 @@
 <div class="min-h-screen bg-themed-primary p-6 transition-colors duration-300">
     <!-- Header -->
     <div
-        class="bg-themed-secondary rounded-2xl shadow-lg p-6 mb-6 border border-themed-primary transition-colors duration-300">
-        <h1 class="text-3xl font-bold text-themed-primary mb-2 transition-colors duration-300">Mentor Management</h1>
+        class="bg-themed-secondary rounded-lg shadow-sm p-6 mb-6 border border-themed-primary transition-colors duration-300">
+        <h1 class=" font-bold text-themed-primary mb-2 transition-colors duration-300 bk-page-title">Mentor Management</h1>
         <p class="text-themed-secondary transition-colors duration-300">Approve and manage mentors</p>
     </div>
     <!-- Statistics -->
     <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-6">
         <div
-            class="bg-themed-secondary rounded-xl shadow-lg p-4 border border-themed-primary transition-colors duration-300">
+            class="bg-themed-secondary rounded-lg shadow-sm p-4 border border-themed-primary transition-colors duration-300">
             <div class="text-2xl font-bold text-themed-primary transition-colors duration-300">{{ $stats['total'] }}
             </div>
             <div class="text-sm text-themed-secondary transition-colors duration-300">Total Mentors</div>
         </div>
         <div
-            class="bg-yellow-100/50 dark:bg-yellow-900/30 rounded-xl shadow-lg p-4 border border-yellow-200/50 dark:border-yellow-800 transition-colors duration-300">
+            class="bg-yellow-100/50 dark:bg-yellow-900/30 rounded-lg shadow-sm p-4 border border-yellow-200/50 dark:border-yellow-800 transition-colors duration-300">
             <div class="text-2xl font-bold text-yellow-800 dark:text-yellow-300 transition-colors duration-300">
                 {{ $stats['pending'] }}</div>
             <div class="text-sm text-yellow-700 dark:text-yellow-400 transition-colors duration-300">Pending</div>
         </div>
         <div
-            class="bg-green-100/50 dark:bg-green-900/30 rounded-xl shadow-lg p-4 border border-green-200/50 dark:border-green-800 transition-colors duration-300">
+            class="bg-green-100/50 dark:bg-green-900/30 rounded-lg shadow-sm p-4 border border-green-200/50 dark:border-green-800 transition-colors duration-300">
             <div class="text-2xl font-bold text-green-800 dark:text-green-300 transition-colors duration-300">
                 {{ $stats['active'] }}</div>
             <div class="text-sm text-green-700 dark:text-green-400 transition-colors duration-300">Active</div>
         </div>
         <div
-            class="bg-red-100/50 dark:bg-red-900/30 rounded-xl shadow-lg p-4 border border-red-200/50 dark:border-red-800 transition-colors duration-300">
+            class="bg-red-100/50 dark:bg-red-900/30 rounded-lg shadow-sm p-4 border border-red-200/50 dark:border-red-800 transition-colors duration-300">
             <div class="text-2xl font-bold text-red-800 dark:text-red-300 transition-colors duration-300">
                 {{ $stats['inactive'] }}</div>
             <div class="text-sm text-red-700 dark:text-red-400 transition-colors duration-300">Inactive</div>
         </div>
         <div
-            class="bg-brand/20 rounded-xl shadow-lg p-4 border border-brand/30 transition-colors duration-300">
+            class="bg-brand/20 rounded-lg shadow-sm p-4 border border-brand/30 transition-colors duration-300">
             <div class="text-2xl font-bold text-brand transition-colors duration-300">
                 {{ $stats['total_mentorships'] }}</div>
             <div class="text-sm text-brand/80 transition-colors duration-300">Mentorships</div>
         </div>
         <div
-            class="bg-purple-100/50 dark:bg-purple-900/30 rounded-xl shadow-lg p-4 border border-purple-200/50 dark:border-purple-800 transition-colors duration-300">
-            <div class="text-2xl font-bold text-purple-800 dark:text-purple-300 transition-colors duration-300">
+            class="bg-brand/10 dark:bg-action/30 rounded-lg shadow-sm p-4 border border-brand dark:border-brand transition-colors duration-300">
+            <div class="text-2xl font-bold text-brand dark:text-brand transition-colors duration-300">
                 {{ $stats['active_mentorships'] }}</div>
-            <div class="text-sm text-purple-700 dark:text-purple-400 transition-colors duration-300">Active</div>
+            <div class="text-sm text-brand dark:text-brand transition-colors duration-300">Active</div>
         </div>
     </div>
 
     <!-- Tabs -->
     <div
-        class="bg-themed-secondary rounded-xl shadow-lg p-2 mb-6 border border-themed-primary transition-colors duration-300">
+        class="bg-themed-secondary rounded-lg shadow-sm p-2 mb-6 border border-themed-primary transition-colors duration-300">
         <div class="flex flex-wrap gap-2">
             <button wire:click="setActiveTab('pending')"
                 class="px-4 py-2 rounded-lg transition-colors duration-300 {{ $activeTab === 'pending' ? 'bk-button bk-button-primary ' : 'text-themed-primary hover:bg-themed-tertiary' }}">
@@ -70,11 +70,11 @@
 
     <!-- Filters -->
     <div
-        class="bg-themed-secondary rounded-xl shadow-lg p-4 mb-6 border border-themed-primary transition-colors duration-300">
+        class="bg-themed-secondary rounded-lg shadow-sm p-4 mb-6 border border-themed-primary transition-colors duration-300">
         <div class="grid md:grid-cols-3 gap-4">
-            <input wire:model.live.debounce.300ms="searchTerm" type="text" placeholder="Search mentors..."
+            <input aria-label="Search mentors" wire:model.live.debounce.300ms="searchTerm" type="text" placeholder="Search mentors..."
                 class="px-4 py-2 border border-themed-primary rounded-lg bg-themed-secondary text-themed-primary placeholder-themed-tertiary focus:ring-2 focus:ring-brand focus:border-transparent transition-colors duration-300">
-            <select wire:model.live="experienceFilter"
+            <select aria-label="Experience filter" wire:model.live="experienceFilter"
                 class="px-4 py-2 border border-themed-primary rounded-lg bg-themed-secondary text-themed-primary focus:ring-2 focus:ring-brand focus:border-transparent transition-colors duration-300">
                 <option value="">All Experience Levels</option>
                 <option value="junior">Junior</option>
@@ -89,7 +89,7 @@
     <div class="space-y-4">
         @foreach($mentors as $mentor)
             <div
-                class="bg-themed-secondary rounded-xl shadow-lg p-6 border border-themed-primary hover:shadow-xl transition-all duration-300">
+                class="bg-themed-secondary rounded-lg shadow-sm p-6 border border-themed-primary  transition-all duration-300">
                 <div class="flex items-center justify-between">
                     <div class="flex items-center space-x-4 flex-1">
                         <div

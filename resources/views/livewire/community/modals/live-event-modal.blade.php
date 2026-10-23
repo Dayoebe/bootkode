@@ -1,7 +1,7 @@
 {{-- resources/views/livewire/community/modals/live-event-modal.blade.php --}}
 @if($activeModal === 'live-event')
     <div role="dialog" aria-modal="true" aria-label="Create Live Event" x-data x-trap.inert.noscroll="true" x-on:keydown.escape.window="$wire.closeModal()" class="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
-        <div class="bg-themed-secondary rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto animate-slide-in">
+        <div class="bg-themed-secondary rounded-lg shadow-sm max-w-2xl w-full max-h-[90vh] overflow-y-auto animate-slide-in">
             <div class="sticky top-0 bg-themed-secondary border-b border-themed-primary p-6 flex items-center justify-between">
                 <h2 class="text-xl font-bold text-themed-primary">Create Live Event</h2>
                 <button type="button" aria-label="Close dialog" wire:click="closeModal()" class="text-themed-secondary hover:text-themed-primary transition-colors">
@@ -13,7 +13,7 @@
                 <div>
                     <label for="community-eventTitle" class="block text-sm font-medium text-themed-primary mb-2">Event Title</label>
                     <input type="text" wire:model="eventTitle"
-                           class="w-full bg-themed-tertiary border border-themed-primary text-themed-primary rounded-lg px-3 py-2 focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                           class="w-full bg-themed-tertiary border border-themed-primary text-themed-primary rounded-lg px-3 py-2 focus:ring-2 focus:ring-brand/30 focus:border-transparent"
                            placeholder="React Masterclass Webinar" id="community-eventTitle" aria-describedby="community-eventTitle-error">
                     @error('eventTitle') <span id="community-eventTitle-error" class="text-red-500 text-xs mt-1">{{ $message }}</span> @enderror
                 </div>
@@ -21,7 +21,7 @@
                 <div>
                     <label for="community-eventDescription" class="block text-sm font-medium text-themed-primary mb-2">Description</label>
                     <textarea wire:model="eventDescription" rows="3"
-                              class="w-full bg-themed-tertiary border border-themed-primary text-themed-primary rounded-lg px-3 py-2 focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                              class="w-full bg-themed-tertiary border border-themed-primary text-themed-primary rounded-lg px-3 py-2 focus:ring-2 focus:ring-brand/30 focus:border-transparent"
                               placeholder="What will be discussed?" id="community-eventDescription" aria-describedby="community-eventDescription-error"></textarea>
                     @error('eventDescription') <span id="community-eventDescription-error" class="text-red-500 text-xs mt-1">{{ $message }}</span> @enderror
                 </div>
@@ -29,7 +29,7 @@
                 <div>
                     <label for="community-eventLocation" class="block text-sm font-medium text-themed-primary mb-2">Location / Meeting Link</label>
                     <input type="text" wire:model="eventLocation"
-                           class="w-full bg-themed-tertiary border border-themed-primary text-themed-primary rounded-lg px-3 py-2 focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                           class="w-full bg-themed-tertiary border border-themed-primary text-themed-primary rounded-lg px-3 py-2 focus:ring-2 focus:ring-brand/30 focus:border-transparent"
                            placeholder="Zoom link, Discord, etc." id="community-eventLocation" aria-describedby="community-eventLocation-error">
                     @error('eventLocation') <span id="community-eventLocation-error" class="text-red-500 text-xs mt-1">{{ $message }}</span> @enderror
                 </div>
@@ -38,13 +38,13 @@
                     <div>
                         <label for="community-eventStartDate" class="block text-sm font-medium text-themed-primary mb-2">Start Date & Time</label>
                         <input type="datetime-local" wire:model="eventStartDate"
-                               class="w-full bg-themed-tertiary border border-themed-primary text-themed-primary rounded-lg px-3 py-2 focus:ring-2 focus:ring-purple-500 focus:border-transparent" id="community-eventStartDate" aria-describedby="community-eventStartDate-error">
+                               class="w-full bg-themed-tertiary border border-themed-primary text-themed-primary rounded-lg px-3 py-2 focus:ring-2 focus:ring-brand/30 focus:border-transparent" id="community-eventStartDate" aria-describedby="community-eventStartDate-error">
                         @error('eventStartDate') <span id="community-eventStartDate-error" class="text-red-500 text-xs mt-1">{{ $message }}</span> @enderror
                     </div>
                     <div>
                         <label for="community-eventEndDate" class="block text-sm font-medium text-themed-primary mb-2">End Date & Time</label>
                         <input type="datetime-local" wire:model="eventEndDate"
-                               class="w-full bg-themed-tertiary border border-themed-primary text-themed-primary rounded-lg px-3 py-2 focus:ring-2 focus:ring-purple-500 focus:border-transparent" id="community-eventEndDate" aria-describedby="community-eventEndDate-error">
+                               class="w-full bg-themed-tertiary border border-themed-primary text-themed-primary rounded-lg px-3 py-2 focus:ring-2 focus:ring-brand/30 focus:border-transparent" id="community-eventEndDate" aria-describedby="community-eventEndDate-error">
                     </div>
                 </div>
 
@@ -52,13 +52,13 @@
                     <div>
                         <label for="community-eventMaxParticipants" class="block text-sm font-medium text-themed-primary mb-2">Max Attendees</label>
                         <input type="number" wire:model="eventMaxParticipants" min="1"
-                               class="w-full bg-themed-tertiary border border-themed-primary text-themed-primary rounded-lg px-3 py-2 focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                               class="w-full bg-themed-tertiary border border-themed-primary text-themed-primary rounded-lg px-3 py-2 focus:ring-2 focus:ring-brand/30 focus:border-transparent"
                                placeholder="Leave empty for unlimited" id="community-eventMaxParticipants" aria-describedby="community-eventMaxParticipants-error">
                     </div>
                     <div>
                         <label for="community-eventTags" class="block text-sm font-medium text-themed-primary mb-2">Tags</label>
                         <input type="text" wire:model="eventTags"
-                               class="w-full bg-themed-tertiary border border-themed-primary text-themed-primary rounded-lg px-3 py-2 focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                               class="w-full bg-themed-tertiary border border-themed-primary text-themed-primary rounded-lg px-3 py-2 focus:ring-2 focus:ring-brand/30 focus:border-transparent"
                                placeholder="React, JavaScript (comma-separated)" id="community-eventTags" aria-describedby="community-eventTags-error">
                     </div>
                 </div>
@@ -69,7 +69,7 @@
                         Cancel
                     </button>
                     <button type="submit"
-                            class="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg font-medium transition-colors flex items-center gap-2">
+                            class="px-4 py-2 bg-action hover:bg-action text-action-foreground rounded-lg font-medium transition-colors flex items-center gap-2">
                         <i class="fas fa-calendar-plus"></i>Create Event
                     </button>
                 </div>

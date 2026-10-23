@@ -1,7 +1,7 @@
 <div>
     <div class="flex items-center justify-between mb-2">
         <label class="text-sm font-medium text-themed-primary flex items-center gap-2 transition-colors duration-300">
-            <i class="fas fa-image text-blue-500 dark:text-blue-400"></i>
+            <i class="fas fa-image text-brand dark:text-brand"></i>
             Course Thumbnail
         </label>
     </div>
@@ -9,33 +9,33 @@
     <!-- Enhanced Image Preview and Upload Area -->
     <div class="relative">
         <!-- File Input (Hidden) -->
-        <input type="file" 
-               wire:model="thumbnail" 
-               class="hidden" 
+        <input type="file"
+               wire:model="thumbnail"
+               class="hidden"
                id="thumbnail-upload"
                accept="image/jpeg,image/png,image/jpg">
 
         <!-- Image Preview Area -->
-        <div class="border-2 border-dashed border-themed-primary rounded-xl overflow-hidden bg-themed-tertiary transition-all duration-300 hover:border-blue-400 hover:bg-themed-secondary">
+        <div class="border-2 border-dashed border-themed-primary rounded-lg overflow-hidden bg-themed-tertiary transition-all duration-300 hover:border-brand hover:bg-themed-secondary">
 
             <!-- New Uploaded Image Preview -->
             @if ($thumbnailPreview)
                 <div class="relative group">
-                    <img src="{{ $thumbnailPreview }}" 
+                    <img src="{{ $thumbnailPreview }}"
                          alt="New thumbnail preview"
-                         class="w-full h-48 sm:h-56 object-cover transition-transform duration-300 group-hover:scale-105">
+                         class="w-full h-48 sm:h-56 object-cover transition-transform duration-300 ">
 
                     <!-- New Image Badge -->
                     <div class="absolute top-3 left-3">
-                        <span class="bg-green-500 text-white px-2 py-1 rounded-lg text-xs font-bold shadow-md flex items-center gap-1">
+                        <span class="bg-green-500 text-white px-2 py-1 rounded-lg text-xs font-bold shadow-sm flex items-center gap-1">
                             <i class="fas fa-plus"></i> New Image
                         </span>
                     </div>
 
                     <!-- FIXED: More visible Remove Button with clear icon -->
-                    <button type="button" 
+                    <button type="button"
                             wire:click="removeThumbnail"
-                            class="absolute top-3 right-3 bg-red-500 hover:bg-red-600 text-white w-10 h-10 rounded-lg shadow-lg transition-all duration-200 flex items-center justify-center group/btn">
+                            class="absolute top-3 right-3 bg-red-500 hover:bg-red-600 text-white w-10 h-10 rounded-lg shadow-sm transition-all duration-200 flex items-center justify-center group/btn">
                         <i class="fas fa-trash-alt text-lg"></i>
                         <span class="absolute -bottom-8 right-0 bg-gray-900 text-white text-xs px-2 py-1 rounded opacity-0 group-hover/btn:opacity-100 whitespace-nowrap transition-opacity">
                             Remove Image
@@ -44,7 +44,7 @@
 
                     <!-- Change Image Button -->
                     <label for="thumbnail-upload"
-                           class="absolute bottom-3 left-1/2 transform -translate-x-1/2 bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg shadow-md cursor-pointer transition-all duration-200 opacity-0 group-hover:opacity-100 flex items-center gap-2">
+                           class="absolute bottom-3 left-1/2 transform -translate-x-1/2 bg-action hover:bg-action text-action-foreground px-4 py-2 rounded-lg shadow-sm cursor-pointer transition-all duration-200 opacity-0 group-hover:opacity-100 flex items-center gap-2">
                         <i class="fas fa-camera"></i>
                         <span>Change Image</span>
                     </label>
@@ -55,19 +55,19 @@
                 <div class="relative group">
                     <img src="{{ asset('storage/' . $existingThumbnail) }}"
                          alt="Current course thumbnail"
-                         class="w-full h-48 sm:h-56 object-cover transition-transform duration-300 group-hover:scale-105">
+                         class="w-full h-48 sm:h-56 object-cover transition-transform duration-300 ">
 
                     <!-- Current Image Badge -->
                     <div class="absolute top-3 left-3">
-                        <span class="bg-blue-500 text-white px-2 py-1 rounded-lg text-xs font-bold shadow-md flex items-center gap-1">
+                        <span class="bg-action text-action-foreground px-2 py-1 rounded-lg text-xs font-bold shadow-sm flex items-center gap-1">
                             <i class="fas fa-image"></i> Current Image
                         </span>
                     </div>
 
                     <!-- FIXED: More visible Remove Button with icon and tooltip -->
-                    <button type="button" 
+                    <button type="button"
                             wire:click="removeThumbnail"
-                            class="absolute top-3 right-3 bg-red-500 hover:bg-red-600 text-white w-10 h-10 rounded-lg shadow-lg transition-all duration-200 flex items-center justify-center group/btn z-10">
+                            class="absolute top-3 right-3 bg-red-500 hover:bg-red-600 text-white w-10 h-10 rounded-lg shadow-sm transition-all duration-200 flex items-center justify-center group/btn z-10">
                         <i class="fas fa-trash-alt text-lg"></i>
                         <span class="absolute -bottom-8 right-0 bg-gray-900 text-white text-xs px-2 py-1 rounded opacity-0 group-hover/btn:opacity-100 whitespace-nowrap transition-opacity pointer-events-none">
                             Remove Image
@@ -76,7 +76,7 @@
 
                     <!-- Change Image Button -->
                     <label for="thumbnail-upload"
-                           class="absolute bottom-3 left-1/2 transform -translate-x-1/2 bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg shadow-md cursor-pointer transition-all duration-200 opacity-0 group-hover:opacity-100 flex items-center gap-2">
+                           class="absolute bottom-3 left-1/2 transform -translate-x-1/2 bg-action hover:bg-action text-action-foreground px-4 py-2 rounded-lg shadow-sm cursor-pointer transition-all duration-200 opacity-0 group-hover:opacity-100 flex items-center gap-2">
                         <i class="fas fa-camera"></i>
                         <span>Change Image</span>
                     </label>
@@ -85,7 +85,7 @@
             <!-- No Image State -->
             @else
                 <label for="thumbnail-upload" class="cursor-pointer block">
-                    <div class="h-48 sm:h-56 flex flex-col items-center justify-center text-center p-6 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors duration-300">
+                    <div class="h-48 sm:h-56 flex flex-col items-center justify-center text-center p-6 hover:bg-brand/10 dark:hover:bg-action/20 transition-colors duration-300">
                         <div class="mb-4">
                             <i class="fas fa-cloud-upload-alt text-4xl sm:text-5xl text-themed-secondary mb-4 transition-colors duration-300"></i>
                         </div>
@@ -95,7 +95,7 @@
                         <p class="text-themed-secondary text-sm mb-4 transition-colors duration-300">
                             Click here to browse and select an image
                         </p>
-                        <div class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg transition-colors duration-200 flex items-center gap-2">
+                        <div class="bg-action hover:bg-action text-action-foreground px-4 py-2 rounded-lg transition-colors duration-200 flex items-center gap-2">
                             <i class="fas fa-plus"></i>
                             <span>Select Image</span>
                         </div>
@@ -106,9 +106,9 @@
 
         <!-- Upload Progress -->
         <div wire:loading wire:target="thumbnail"
-             class="absolute inset-0 bg-themed-secondary/90 rounded-xl flex items-center justify-center backdrop-blur-sm z-10 transition-colors duration-300">
+             class="absolute inset-0 bg-themed-secondary/90 rounded-lg flex items-center justify-center  z-10 transition-colors duration-300">
             <div class="text-center">
-                <div class="animate-spin rounded-full h-8 w-8 border-4 border-blue-500 border-t-transparent mx-auto mb-3"></div>
+                <div class="animate-spin rounded-full h-8 w-8 border-4 border-brand border-t-transparent mx-auto mb-3"></div>
                 <p class="text-sm font-medium text-themed-primary transition-colors duration-300">
                     Uploading...
                 </p>
@@ -119,7 +119,7 @@
     <!-- Image Requirements -->
     <div class="mt-3 p-3 bg-themed-tertiary rounded-lg border border-themed-primary transition-colors duration-300">
         <div class="flex items-start gap-2">
-            <i class="fas fa-info-circle text-blue-500 mt-0.5 flex-shrink-0"></i>
+            <i class="fas fa-info-circle text-brand mt-0.5 flex-shrink-0"></i>
             <div class="text-xs text-themed-secondary transition-colors duration-300">
                 <p class="font-semibold mb-1">Image Requirements:</p>
                 <ul class="list-disc list-inside space-y-1 text-xs">

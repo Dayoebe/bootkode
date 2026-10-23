@@ -1,8 +1,8 @@
-<div class="bg-themed-secondary rounded-2xl shadow-lg p-6 border border-themed-primary transition-colors duration-300">
+<div class="bg-themed-secondary rounded-lg shadow-sm p-6 border border-themed-primary transition-colors duration-300">
     <div class="flex items-center justify-between mb-6">
         <h2 class="text-2xl font-bold text-themed-primary transition-colors duration-300">My Mentees</h2>
         <div class="flex items-center space-x-4">
-            <select wire:model.live="statusFilter"
+            <select aria-label="Status filter" wire:model.live="statusFilter"
                 class="px-4 py-2 border border-themed-primary rounded-lg focus:ring-2 focus:ring-brand focus:border-transparent bg-themed-secondary text-themed-primary transition-colors duration-300">
                 <option value="">All Status</option>
                 <option value="pending">Pending</option>
@@ -15,7 +15,7 @@
         <div class="grid gap-6">
             @foreach($mentorships as $mentorship)
                 <div
-                    class="border border-themed-primary rounded-lg p-6 hover:shadow-md transition-all duration-300 bg-themed-secondary">
+                    class="border border-themed-primary rounded-lg p-6  transition-all duration-300 bg-themed-secondary">
                     <div class="flex items-center justify-between mb-4">
                         <div class="flex items-center space-x-4">
                             <div
@@ -31,8 +31,8 @@
                         </div>
                         <div class="text-right">
                             <span
-                                class="bg-{{ $mentorship->status_color }}-100 dark:bg-{{ $mentorship->status_color }}-900/30 
-                                           text-{{ $mentorship->status_color }}-800 dark:text-{{ $mentorship->status_color }}-300 
+                                class="bg-{{ $mentorship->status_color }}-100 dark:bg-{{ $mentorship->status_color }}-900/30
+                                           text-{{ $mentorship->status_color }}-800 dark:text-{{ $mentorship->status_color }}-300
                                            px-3 py-1 rounded-full text-sm border border-{{ $mentorship->status_color }}-200 dark:border-{{ $mentorship->status_color }}-800 transition-colors duration-300">
                                 {{ $mentorship->status_label }}
                             </span>

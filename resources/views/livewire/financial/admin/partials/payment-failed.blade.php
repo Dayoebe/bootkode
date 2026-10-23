@@ -6,12 +6,12 @@
         <div class="grid grid-cols-1 md:grid-cols-5 gap-4 mb-6">
             <div>
                 <label class="block text-sm font-medium text-themed-primary mb-1">Search</label>
-                <input wire:model.debounce.300ms="search" type="text" placeholder="Search by reference, email..."
-                       class="w-full rounded-md border-themed-secondary shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                <input aria-label="Search by reference, email" wire:model.debounce.300ms="search" type="text" placeholder="Search by reference, email..."
+                       class="w-full rounded-md border-themed-secondary shadow-sm focus:border-brand focus:ring-brand/30">
             </div>
             <div>
                 <label class="block text-sm font-medium text-themed-primary mb-1">Date Range</label>
-                <select wire:model="failedDateRange" class="w-full rounded-md border-themed-secondary shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                <select aria-label="Failed date range" wire:model="failedDateRange" class="w-full rounded-md border-themed-secondary shadow-sm focus:border-brand focus:ring-brand/30">
                     <option value="today">Today</option>
                     <option value="yesterday">Yesterday</option>
                     <option value="week">Last 7 days</option>
@@ -20,7 +20,7 @@
             </div>
             <div>
                 <label class="block text-sm font-medium text-themed-primary mb-1">Failure Reason</label>
-                <select wire:model="failureReason" class="w-full rounded-md border-themed-secondary shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                <select aria-label="Failure reason" wire:model="failureReason" class="w-full rounded-md border-themed-secondary shadow-sm focus:border-brand focus:ring-brand/30">
                     <option value="all">All Reasons</option>
                     <option value="insufficient_funds">Insufficient Funds</option>
                     <option value="invalid_card">Invalid Card</option>
@@ -32,7 +32,7 @@
             </div>
             <div>
                 <label class="block text-sm font-medium text-themed-primary mb-1">Amount Range</label>
-                <select wire:model="failedAmountRange" class="w-full rounded-md border-themed-secondary shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                <select aria-label="Failed amount range" wire:model="failedAmountRange" class="w-full rounded-md border-themed-secondary shadow-sm focus:border-brand focus:ring-brand/30">
                     <option value="all">All Amounts</option>
                     <option value="0-1000">₦0 - ₦1,000</option>
                     <option value="1000-5000">₦1,000 - ₦5,000</option>
@@ -61,10 +61,10 @@
                     <p class="text-lg font-bold text-orange-800">₦{{ number_format($stats['total_amount_lost'], 2) }}</p>
                 </div>
             </div>
-            <div class="bg-blue-50 rounded-lg p-4 border border-blue-200">
+            <div class="bg-brand/10 rounded-lg p-4 border border-brand">
                 <div class="text-center">
-                    <p class="text-sm text-blue-600">Top Reason</p>
-                    <p class="text-xs font-bold text-blue-800">{{ Str::limit(ucfirst(str_replace('_', ' ', $stats['most_common_reason'])), 20) }}</p>
+                    <p class="text-sm text-brand">Top Reason</p>
+                    <p class="text-xs font-bold text-brand">{{ Str::limit(ucfirst(str_replace('_', ' ', $stats['most_common_reason'])), 20) }}</p>
                 </div>
             </div>
             <div class="bg-green-50 rounded-lg p-4 border border-green-200">
@@ -73,10 +73,10 @@
                     <p class="text-2xl font-bold text-green-800">{{ $stats['retry_success_rate'] }}%</p>
                 </div>
             </div>
-            <div class="bg-purple-50 rounded-lg p-4 border border-purple-200">
+            <div class="bg-brand/10 rounded-lg p-4 border border-brand">
                 <div class="text-center">
-                    <p class="text-sm text-purple-600">Daily Average</p>
-                    <p class="text-2xl font-bold text-purple-800">{{ $stats['daily_average'] }}</p>
+                    <p class="text-sm text-brand">Daily Average</p>
+                    <p class="text-2xl font-bold text-brand">{{ $stats['daily_average'] }}</p>
                 </div>
             </div>
         </div>
@@ -100,20 +100,20 @@
 
         @if($failedTransactions->count() > 0)
             <div class="overflow-x-auto">
-                <table class="min-w-full divide-y divide-themed-primary">
+                <x-ui.table label="Payment Failed.Blade records"><table class="min-w-full divide-y divide-themed-primary">
                     <thead class="bg-themed-tertiary">
                         <tr>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-themed-secondary uppercase tracking-wider">Customer</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-themed-secondary uppercase tracking-wider">Amount</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-themed-secondary uppercase tracking-wider">Failure Reason</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-themed-secondary uppercase tracking-wider">Failed At</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-themed-secondary uppercase tracking-wider">Reference</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-themed-secondary uppercase tracking-wider">Actions</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-themed-secondary uppercase tracking-wider">Customer</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-themed-secondary uppercase tracking-wider">Amount</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-themed-secondary uppercase tracking-wider">Failure Reason</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-themed-secondary uppercase tracking-wider">Failed At</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-themed-secondary uppercase tracking-wider">Reference</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-themed-secondary uppercase tracking-wider">Actions</th>
                         </tr>
                     </thead>
                     <tbody class="bg-themed-secondary divide-y divide-themed-primary">
                         @foreach($failedTransactions as $transaction)
-                            <tr class="hover:bg-gray-50 transition-colors">
+                            <tr class="hover:bg-surface-muted transition-colors">
                                 <td class="px-6 py-4">
                                     <div>
                                         <p class="text-sm font-medium text-themed-primary">{{ $transaction->customer_name ?? 'N/A' }}</p>
@@ -132,9 +132,9 @@
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-themed-secondary">
                                     {{ $transaction->created_at->format('M d, Y') }}
                                     <br>
-                                    <span class="text-xs text-gray-400">{{ $transaction->created_at->format('H:i') }}</span>
+                                    <span class="text-xs text-content-muted">{{ $transaction->created_at->format('H:i') }}</span>
                                     <br>
-                                    <span class="text-xs text-gray-400">{{ $transaction->created_at->diffForHumans() }}</span>
+                                    <span class="text-xs text-content-muted">{{ $transaction->created_at->diffForHumans() }}</span>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <div class="text-sm text-themed-primary font-mono">{{ Str::limit($transaction->reference, 15) }}</div>
@@ -145,7 +145,7 @@
                                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                     <div class="flex space-x-2">
                                         <button wire:click="retryFailedPayment({{ $transaction->id }})"
-                                                class="text-blue-600 hover:text-blue-900 transition-colors">
+                                                class="text-brand hover:text-brand transition-colors">
                                             Retry
                                         </button>
                                         <button wire:click="investigateFailure({{ $transaction->id }})"
@@ -162,7 +162,7 @@
                             </tr>
                         @endforeach
                     </tbody>
-                </table>
+                </table></x-ui.table>
             </div>
 
             <!-- Pagination -->
@@ -171,7 +171,7 @@
             </div>
         @else
             <div class="text-center py-12">
-                <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg class="mx-auto h-12 w-12 text-content-muted" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                 </svg>
                 <h3 class="mt-2 text-sm font-medium text-themed-primary">No failed transactions</h3>

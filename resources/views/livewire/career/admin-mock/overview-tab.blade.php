@@ -4,7 +4,7 @@
         <div class="rounded-lg shadow p-6 bg-themed-secondary border border-themed-primary">
             <div class="flex items-center">
                 <div class="flex-shrink-0">
-                    <div class="w-8 h-8 bg-blue-500 rounded-md flex items-center justify-center">
+                    <div class="w-8 h-8 bg-action rounded-md flex items-center justify-center">
                         <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
@@ -42,7 +42,7 @@
         <div class="rounded-lg shadow p-6 bg-themed-secondary border border-themed-primary">
             <div class="flex items-center">
                 <div class="flex-shrink-0">
-                    <div class="w-8 h-8 bg-purple-500 rounded-md flex items-center justify-center">
+                    <div class="w-8 h-8 bg-action rounded-md flex items-center justify-center">
                         <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
@@ -92,7 +92,7 @@
                         <div class="flex items-center">
                             <div class="w-32 rounded-full h-2 mr-3 bg-themed-tertiary">
                                 <div class="h-2 rounded-full transition-all duration-300"
-                                    style="width: {{ ($type['count'] / max(array_column($this->popularTypes, 'count'))) * 100 }}%; background: linear-gradient(90deg, rgb(var(--accent-primary)), rgb(var(--accent-secondary)));">
+                                    style="width: {{ ($type['count'] / max(array_column($this->popularTypes, 'count'))) * 100 }}%; background: rgb(var(--accent-primary));">
                                 </div>
                             </div>
                             <span class="text-sm text-themed-secondary">{{ $type['count'] }}</span>
@@ -117,13 +117,13 @@
                 <div>
                     <div class="flex items-center justify-between">
                         <span class="text-sm font-medium text-themed-secondary">Premium Usage</span>
-                        <span class="text-sm font-bold text-purple-600">{{ number_format($this->statistics['premiumUsage']) }}</span>
+                        <span class="text-sm font-bold text-brand">{{ number_format($this->statistics['premiumUsage']) }}</span>
                     </div>
                 </div>
                 <div>
                     <div class="flex items-center justify-between">
                         <span class="text-sm font-medium text-themed-secondary">Daily Interviews</span>
-                        <span class="text-sm font-bold text-accent-themed-primary">{{ number_format($this->statistics['dailyInterviews']) }}</span>
+                        <span class="text-sm font-bold text-brand">{{ number_format($this->statistics['dailyInterviews']) }}</span>
                     </div>
                 </div>
             </div>

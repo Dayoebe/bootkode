@@ -1,10 +1,10 @@
-<div class="p-4 sm:p-6 bg-themed-secondary rounded-lg shadow-md animate__animated animate__fadeIn transition-colors duration-300 max-w-full overflow-hidden" 
+<div class="p-4 sm:p-6 bg-themed-secondary rounded-lg shadow-sm   transition-colors duration-300 max-w-full overflow-hidden"
      x-data="{ tooltip: '', mouseX: 0, mouseY: 0 }"
      @mousemove="mouseX = $event.clientX; mouseY = $event.clientY">
 
     <!-- Flash Message -->
     @if (session('error'))
-        <div class="mb-4 p-3 sm:p-4 bg-red-100 border border-red-200 text-red-700 rounded-xl animate__animated animate__fadeIn transition-colors duration-300">
+        <div class="mb-4 p-3 sm:p-4 bg-red-100 border border-red-200 text-red-700 rounded-lg   transition-colors duration-300">
             <div class="flex items-center">
                 <i class="fas fa-exclamation-circle mr-2 flex-shrink-0"></i>
                 <span class="text-sm sm:text-base">{{ session('error') }}</span>
@@ -14,8 +14,8 @@
 
     <!-- Loading Spinner -->
     <div wire:loading class="fixed inset-0 bg-themed-primary bg-opacity-50 flex items-center justify-center z-50 transition-colors duration-300">
-        <div class="bg-themed-secondary p-6 rounded-xl shadow-2xl border border-themed-primary transition-colors duration-300">
-            <i class="fas fa-spinner fa-spin text-accent-themed-primary text-3xl mb-2 block mx-auto"></i>
+        <div class="bg-themed-secondary p-6 rounded-lg shadow-sm border border-themed-primary transition-colors duration-300">
+            <i class="fas fa-spinner fa-spin text-brand text-3xl mb-2 block mx-auto"></i>
             <p class="text-themed-primary text-sm">Loading users...</p>
         </div>
     </div>
@@ -24,11 +24,11 @@
     <div class="mb-8">
         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div>
-                <h1 class="text-2xl sm:text-3xl font-bold text-themed-primary transition-colors duration-300">All Users</h1>
+                <h1 class="  font-bold text-themed-primary transition-colors duration-300 bk-page-title">All Users</h1>
                 <p class="mt-1 text-sm sm:text-base text-themed-secondary transition-colors duration-300">Manage and view all system users</p>
             </div>
-            <div class="flex items-center gap-2 px-3 py-2 bg-accent-themed-primary/10 border border-accent-themed-primary/20 rounded-lg">
-                <span class="text-xs sm:text-sm text-accent-themed-primary font-medium">{{ $users->total() }} Total Users</span>
+            <div class="flex items-center gap-2 px-3 py-2 bg-brand/10 border border-brand/20 rounded-lg">
+                <span class="text-xs sm:text-sm text-brand font-medium">{{ $users->total() }} Total Users</span>
             </div>
         </div>
     </div>
@@ -40,7 +40,7 @@
             <label for="search-input" class="block text-sm font-medium text-themed-primary mb-2 transition-colors duration-300">Search Users</label>
             <div class="relative">
                 <input wire:model.live.debounce.300ms="search" type="text" id="search-input" placeholder="Search by name or email..."
-                    class="w-full p-3 pl-10 pr-4 border border-themed-primary rounded-xl focus:outline-none focus:ring-2 focus:ring-accent-themed-primary bg-themed-secondary text-themed-primary placeholder-themed-tertiary transition-all duration-200 text-sm">
+                    class="w-full p-3 pl-10 pr-4 border border-themed-primary rounded-lg focus:outline-none focus:ring-2 focus:ring-brand bg-themed-secondary text-themed-primary placeholder-themed-tertiary transition-all duration-200 text-sm">
                 <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                     <i class="fas fa-search text-themed-secondary text-sm"></i>
                 </div>
@@ -51,7 +51,7 @@
         <div>
             <label for="role-filter" class="block text-sm font-medium text-themed-primary mb-2 transition-colors duration-300">Role</label>
             <div class="relative">
-                <select wire:model.live="roleFilter" id="role-filter" class="w-full p-3 border border-themed-primary rounded-xl bg-themed-secondary text-themed-primary transition-all duration-200 text-sm appearance-none focus:outline-none focus:ring-2 focus:ring-accent-themed-primary">
+                <select wire:model.live="roleFilter" id="role-filter" class="w-full p-3 border border-themed-primary rounded-lg bg-themed-secondary text-themed-primary transition-all duration-200 text-sm appearance-none focus:outline-none focus:ring-2 focus:ring-brand">
                     <option value="">All Roles</option>
                     @foreach ($roles as $role)
                         <option value="{{ $role }}">{{ ucfirst($role) }}</option>
@@ -66,22 +66,22 @@
         <!-- Last Login Start -->
         <div>
             <label class="block text-sm font-medium text-themed-primary mb-2 transition-colors duration-300">Login From</label>
-            <input type="date" wire:model.live="lastLoginStart" 
-                class="w-full p-3 border border-themed-primary rounded-xl bg-themed-secondary text-themed-primary transition-all duration-200 text-sm focus:outline-none focus:ring-2 focus:ring-accent-themed-primary">
+            <input aria-label="Last login start" type="date" wire:model.live="lastLoginStart"
+                class="w-full p-3 border border-themed-primary rounded-lg bg-themed-secondary text-themed-primary transition-all duration-200 text-sm focus:outline-none focus:ring-2 focus:ring-brand">
         </div>
 
         <!-- Last Login End -->
         <div>
             <label class="block text-sm font-medium text-themed-primary mb-2 transition-colors duration-300">Login To</label>
-            <input type="date" wire:model.live="lastLoginEnd" 
-                class="w-full p-3 border border-themed-primary rounded-xl bg-themed-secondary text-themed-primary transition-all duration-200 text-sm focus:outline-none focus:ring-2 focus:ring-accent-themed-primary">
+            <input aria-label="Last login end" type="date" wire:model.live="lastLoginEnd"
+                class="w-full p-3 border border-themed-primary rounded-lg bg-themed-secondary text-themed-primary transition-all duration-200 text-sm focus:outline-none focus:ring-2 focus:ring-brand">
         </div>
 
         <!-- Per Page -->
         <div>
             <label class="block text-sm font-medium text-themed-primary mb-2 transition-colors duration-300">Per Page</label>
             <div class="relative">
-                <select wire:model.live="perPage" class="w-full p-3 border border-themed-primary rounded-xl bg-themed-secondary text-themed-primary transition-all duration-200 text-sm appearance-none focus:outline-none focus:ring-2 focus:ring-accent-themed-primary">
+                <select aria-label="Per page" wire:model.live="perPage" class="w-full p-3 border border-themed-primary rounded-lg bg-themed-secondary text-themed-primary transition-all duration-200 text-sm appearance-none focus:outline-none focus:ring-2 focus:ring-brand">
                     <option value="10">10 per page</option>
                     <option value="20">20 per page</option>
                     <option value="50">50 per page</option>
@@ -96,8 +96,8 @@
         <div>
             <label class="block text-sm font-medium text-themed-primary mb-2 transition-colors duration-300">&nbsp;</label>
             <button wire:click="exportCsv" wire:loading.attr="disabled"
-                class="w-full px-4 py-3 bg-green-500 hover:bg-green-600 text-white rounded-xl font-medium transition-all duration-300 text-sm shadow-lg hover:shadow-green-500/25 disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap">
-                <i class="fas fa-download mr-2"></i> 
+                class="w-full px-4 py-3 bg-green-500 hover:bg-green-600 text-white rounded-lg font-medium transition-all duration-300 text-sm shadow-sm hover:shadow-green-500/25 disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap">
+                <i class="fas fa-download mr-2"></i>
                 <span wire:loading.remove>Export CSV</span>
                 <span wire:loading>Exporting...</span>
             </button>
@@ -105,9 +105,9 @@
     </div>
 
     <!-- Statistics Chart -->
-    <div class="mb-6 bg-themed-secondary p-4 sm:p-6 rounded-xl border border-themed-primary backdrop-blur-sm transition-colors duration-300">
+    <div class="mb-6 bg-themed-secondary p-4 sm:p-6 rounded-lg border border-themed-primary  transition-colors duration-300">
         <h3 class="text-lg font-bold text-themed-primary mb-4 flex items-center">
-            <i class="fas fa-chart-bar mr-2 text-accent-themed-primary"></i>
+            <i class="fas fa-chart-bar mr-2 text-brand"></i>
             Users by Role
         </h3>
         <div class="w-full h-48 sm:h-64">
@@ -116,14 +116,14 @@
     </div>
 
     <!-- Desktop Table View -->
-    <div class="hidden lg:block bg-themed-secondary rounded-xl border border-themed-primary backdrop-blur-sm transition-colors duration-300 overflow-hidden shadow-lg">
+    <div class="hidden lg:block bg-themed-secondary rounded-lg border border-themed-primary  transition-colors duration-300 overflow-hidden shadow-sm">
         <div class="overflow-x-auto">
-            <table class="min-w-full" aria-label="All Users Table">
-                <thead class="bg-gradient-to-r from-accent-themed-primary to-accent-themed-secondary">
+            <x-ui.table label="Alluser.Blade records"><table class="min-w-full" aria-label="All Users Table">
+                <thead class="bg-surface-muted  ">
                     <tr>
-                        <th wire:click="sortBy('name')" class="px-6 py-4 text-left text-xs font-bold uppercase tracking-wider cursor-pointer hover:opacity-80 transition-opacity duration-200" aria-sort="ascending">
+                        <th scope="col" wire:click="sortBy('name')" class="px-6 py-4 text-left text-xs font-bold uppercase tracking-wider cursor-pointer hover:opacity-80 transition-opacity duration-200" aria-sort="ascending">
                             <div class="flex items-center">
-                                Name 
+                                Name
                                 @if ($sortField === 'name')
                                     <i class="fas fa-sort-{{ $sortDirection === 'asc' ? 'up' : 'down' }} ml-1"></i>
                                 @else
@@ -131,9 +131,9 @@
                                 @endif
                             </div>
                         </th>
-                        <th wire:click="sortBy('email')" class="px-6 py-4 text-left text-xs font-bold uppercase tracking-wider cursor-pointer hover:opacity-80 transition-opacity duration-200" aria-sort="none">
+                        <th scope="col" wire:click="sortBy('email')" class="px-6 py-4 text-left text-xs font-bold uppercase tracking-wider cursor-pointer hover:opacity-80 transition-opacity duration-200" aria-sort="none">
                             <div class="flex items-center">
-                                Email 
+                                Email
                                 @if ($sortField === 'email')
                                     <i class="fas fa-sort-{{ $sortDirection === 'asc' ? 'up' : 'down' }} ml-1"></i>
                                 @else
@@ -141,14 +141,14 @@
                                 @endif
                             </div>
                         </th>
-                        <th class="px-6 py-4 text-left text-xs font-bold uppercase tracking-wider">Role</th>
-                        <th class="px-6 py-4 text-left text-xs font-bold uppercase tracking-wider">Verified</th>
-                        <th class="px-6 py-4 text-left text-xs font-bold uppercase tracking-wider">Courses</th>
-                        <th class="px-6 py-4 text-left text-xs font-bold uppercase tracking-wider">Completed</th>
-                        <th class="px-6 py-4 text-left text-xs font-bold uppercase tracking-wider">In Progress</th>
-                        <th wire:click="sortBy('last_login_at')" class="px-6 py-4 text-left text-xs font-bold uppercase tracking-wider cursor-pointer hover:opacity-80 transition-opacity duration-200" aria-sort="none">
+                        <th scope="col" class="px-6 py-4 text-left text-xs font-bold uppercase tracking-wider">Role</th>
+                        <th scope="col" class="px-6 py-4 text-left text-xs font-bold uppercase tracking-wider">Verified</th>
+                        <th scope="col" class="px-6 py-4 text-left text-xs font-bold uppercase tracking-wider">Courses</th>
+                        <th scope="col" class="px-6 py-4 text-left text-xs font-bold uppercase tracking-wider">Completed</th>
+                        <th scope="col" class="px-6 py-4 text-left text-xs font-bold uppercase tracking-wider">In Progress</th>
+                        <th scope="col" wire:click="sortBy('last_login_at')" class="px-6 py-4 text-left text-xs font-bold uppercase tracking-wider cursor-pointer hover:opacity-80 transition-opacity duration-200" aria-sort="none">
                             <div class="flex items-center">
-                                Last Login 
+                                Last Login
                                 @if ($sortField === 'last_login_at')
                                     <i class="fas fa-sort-{{ $sortDirection === 'asc' ? 'up' : 'down' }} ml-1"></i>
                                 @else
@@ -156,8 +156,8 @@
                                 @endif
                             </div>
                         </th>
-                        <th class="px-6 py-4 text-left text-xs font-bold uppercase tracking-wider">Active</th>
-                        <th class="px-6 py-4 text-right text-xs font-bold uppercase tracking-wider">Actions</th>
+                        <th scope="col" class="px-6 py-4 text-left text-xs font-bold uppercase tracking-wider">Active</th>
+                        <th scope="col" class="px-6 py-4 text-right text-xs font-bold uppercase tracking-wider">Actions</th>
                     </tr>
                 </thead>
                 <tbody class="bg-themed-secondary divide-y divide-themed-primary">
@@ -168,11 +168,11 @@
                                     <div class="w-10 h-10 rounded-full overflow-hidden flex-shrink-0">
                                         @if($user->profile_picture)
                                             {{-- <img src="{{ asset('storage/' . $user->profile_picture) }}"  --}}
-                                            
+
                                             <img src="{{ $user->profile_picture }}"
                                             alt="Avatar" class="w-full h-full object-cover" loading="lazy">
                                         @else
-                                            <div class="w-full h-full bg-gradient-to-br from-accent-themed-primary to-accent-themed-secondary flex items-center justify-center font-bold text-sm">
+                                            <div class="w-full h-full bg-surface-muted   flex items-center justify-center font-bold text-sm">
                                                 {{ strtoupper(substr($user->name, 0, 1)) }}
                                             </div>
                                         @endif
@@ -184,7 +184,7 @@
                                 <div class="text-sm text-themed-secondary break-all">{{ $user->email }}</div>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
-                                <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-accent-themed-primary/10 text-accent-themed-primary border border-accent-themed-primary/20">
+                                <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-brand/10 text-brand border border-brand/20">
                                     {{ ucfirst($user->getRoleNames()->first() ?? 'N/A') }}
                                 </span>
                             </td>
@@ -211,7 +211,7 @@
                             <td class="px-6 py-4 whitespace-nowrap text-right">
                                 <div class="flex items-center justify-end gap-1 flex-wrap">
                                     @can('edit-users')
-                                        <a href="{{ route('profile.edit', $user->id) }}" class="inline-flex items-center gap-1 px-3 py-2 text-xs bg-accent-themed-primary/10 text-accent-themed-primary border border-accent-themed-primary/20 rounded-lg hover:bg-accent-themed-primary/20 transition-colors duration-200 whitespace-nowrap">
+                                        <a href="{{ route('profile.edit', $user->id) }}" class="inline-flex items-center gap-1 px-3 py-2 text-xs bg-brand/10 text-brand border border-brand/20 rounded-lg hover:bg-brand/20 transition-colors duration-200 whitespace-nowrap">
                                             <i class="fas fa-edit"></i><span class="hidden sm:inline">Edit</span>
                                         </a>
                                     @endcan
@@ -237,14 +237,14 @@
                         </tr>
                     @endforelse
                 </tbody>
-            </table>
+            </table></x-ui.table>
         </div>
     </div>
 
     <!-- Mobile Cards View -->
     <div class="lg:hidden grid grid-cols-1 gap-4">
         @forelse($users as $user)
-            <div class="bg-themed-secondary rounded-xl border border-themed-primary p-4 shadow-md hover:shadow-lg transition-shadow duration-300">
+            <div class="bg-themed-secondary rounded-lg border border-themed-primary p-4 shadow-sm hover:shadow-sm transition-shadow duration-300">
                 <!-- User Header -->
                 <div class="flex items-start justify-between mb-4">
                     <div class="flex items-center gap-3 flex-1 min-w-0">
@@ -254,7 +254,7 @@
                                 <img src="{{ $user->profile_picture }}"
                                 alt="Avatar" class="w-full h-full object-cover" loading="lazy">
                             @else
-                                <div class="w-full h-full bg-gradient-to-br from-accent-themed-primary to-accent-themed-secondary flex items-center justify-center text-white font-bold">
+                                <div class="w-full h-full bg-action   flex items-center justify-center text-action-foreground font-bold">
                                     {{ strtoupper(substr($user->name, 0, 1)) }}
                                 </div>
                             @endif
@@ -271,7 +271,7 @@
                 <div class="grid grid-cols-2 gap-3 mb-4">
                     <div>
                         <p class="text-xs text-themed-secondary mb-1">Role</p>
-                        <span class="px-2 py-1 inline-flex text-xs font-semibold rounded-full bg-accent-themed-primary/10 text-accent-themed-primary border border-accent-themed-primary/20">
+                        <span class="px-2 py-1 inline-flex text-xs font-semibold rounded-full bg-brand/10 text-brand border border-brand/20">
                             {{ ucfirst($user->getRoleNames()->first() ?? 'N/A') }}
                         </span>
                     </div>
@@ -297,7 +297,7 @@
                 <!-- Actions -->
                 <div class="flex gap-2">
                     @can('edit-users')
-                        <a href="{{ route('user.edit', $user->id) }}" class="flex-1 text-xs px-3 py-2 bg-accent-themed-primary text-white rounded-lg hover:bg-accent-themed-secondary transition-colors duration-200 font-medium text-center">
+                        <a href="{{ route('user.edit', $user->id) }}" class="flex-1 text-xs px-3 py-2 bg-action text-action-foreground rounded-lg hover:bg-action/90 transition-colors duration-200 font-medium text-center">
                             <i class="fas fa-edit mr-1"></i>Edit
                         </a>
                     @endcan
@@ -309,7 +309,7 @@
                 </div>
             </div>
         @empty
-            <div class="bg-themed-secondary rounded-xl border border-themed-primary p-8 text-center">
+            <div class="bg-themed-secondary rounded-lg border border-themed-primary p-8 text-center">
                 <div class="w-16 h-16 bg-themed-tertiary rounded-full flex items-center justify-center mx-auto mb-4 transition-colors duration-300">
                     <i class="fas fa-users text-themed-secondary text-2xl"></i>
                 </div>
@@ -320,7 +320,7 @@
     </div>
 
     <!-- Pagination -->
-    <div class="mt-6 bg-themed-secondary p-4 rounded-xl border border-themed-primary backdrop-blur-sm transition-colors duration-300">
+    <div class="mt-6 bg-themed-secondary p-4 rounded-lg border border-themed-primary  transition-colors duration-300">
         {{ $users->links('pagination::tailwind') }}
     </div>
 
@@ -340,10 +340,10 @@
             const accentPrimary = getComputedStyle(root).getPropertyValue('--accent-primary').trim();
             const textSecondary = getComputedStyle(root).getPropertyValue('--text-secondary').trim();
             const borderPrimary = getComputedStyle(root).getPropertyValue('--border-primary').trim();
-            
+
             const roles = @json($roles);
             const roleStats = @json(array_values($roleStats));
-            
+
             chartInstance = new Chart(ctx, {
                 type: 'bar',
                 data: {
@@ -362,8 +362,8 @@
                     maintainAspectRatio: false,
                     plugins: { legend: { display: false } },
                     scales: {
-                        x: { 
-                            ticks: { 
+                        x: {
+                            ticks: {
                                 color: `rgb(${textSecondary})`,
                                 maxRotation: 45,
                                 minRotation: 45
@@ -372,7 +372,7 @@
                                 color: `rgba(${borderPrimary}, 0.1)`
                             }
                         },
-                        y: { 
+                        y: {
                             beginAtZero: true,
                             ticks: { color: `rgb(${textSecondary})` },
                             grid: {

@@ -19,9 +19,9 @@
 
         <div class="relative mt-4">
             <i class="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-themed-tertiary"></i>
-            <input wire:model.live.debounce.300ms="search" type="search"
+            <input aria-label="Search" wire:model.live.debounce.300ms="search" type="search"
                 placeholder="Search"
-                class="h-10 w-full rounded-lg border-themed-primary bg-themed-tertiary pl-10 pr-3 text-sm text-themed-primary placeholder-themed-tertiary focus:border-blue-500 focus:ring-blue-500">
+                class="h-10 w-full rounded-lg border-themed-primary bg-themed-tertiary pl-10 pr-3 text-sm text-themed-primary placeholder-themed-tertiary focus:border-brand focus:ring-brand/30">
         </div>
     </div>
 
@@ -35,7 +35,7 @@
             <button wire:click="selectConversation({{ $conversation->id }})"
                 @click="conversationsOpen = false"
                 class="flex w-full gap-3 border-b border-themed-primary px-4 py-3 text-left transition hover:bg-themed-tertiary {{ $isActive ? 'bg-themed-tertiary' : '' }}">
-                <div class="relative flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-blue-100 text-sm font-semibold text-blue-700">
+                <div class="relative flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-brand/10 text-sm font-semibold text-brand">
                     {{ \Illuminate\Support\Str::upper(\Illuminate\Support\Str::substr($otherParticipant?->name ?? 'U', 0, 1)) }}
                     @if ($conversation->unread_count > 0)
                         <span class="absolute -right-1 -top-1 rounded-full bg-red-500 px-1.5 py-0.5 text-[10px] font-semibold leading-none text-white">
@@ -82,7 +82,7 @@
                     <button wire:click="startConversationForCourse({{ $course->id }})"
                         @click="conversationsOpen = false"
                         class="flex w-full items-center gap-3 rounded-lg border border-themed-primary bg-themed-tertiary px-3 py-2.5 text-left transition hover:bg-themed-secondary">
-                        <div class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-blue-600 text-xs font-semibold text-white">
+                        <div class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-action text-xs font-semibold text-action-foreground">
                             {{ \Illuminate\Support\Str::upper(\Illuminate\Support\Str::substr($course->instructor?->name ?? 'I', 0, 1)) }}
                         </div>
 

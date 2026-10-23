@@ -1,41 +1,9 @@
-<div class="min-h-screen bg-themed-primary transition-colors duration-300 p-4 md:p-6">
-    <!-- Header Section -->
-    <div class="mb-8">
-        <div
-            class="bg-themed-secondary rounded-2xl shadow-sm border border-themed-primary p-6 relative overflow-hidden transition-colors duration-300">
-            <!-- Background decoration -->
-            <div
-                class="absolute top-0 right-0 w-40 h-40 bg-teal-100 dark:bg-teal-900/20 rounded-full -translate-y-12 translate-x-12 opacity-60 transition-colors duration-300">
-            </div>
-
-            <div
-                class="flex flex-col lg:flex-row justify-between items-start lg:items-center space-y-4 lg:space-y-0 relative">
-                <div>
-                    <h1 class="text-3xl font-bold text-themed-primary flex items-center transition-colors duration-300">
-                        <i class="fas fa-hands-helping text-teal-600 dark:text-teal-400 mr-3"></i>
-                        Mentor Dashboard
-                    </h1>
-                    <p class="text-themed-secondary mt-1 transition-colors duration-300">Welcome back,
-                        {{ auth()->user()->name }}! Guide your mentees to success.</p>
-
-                    <div class="flex items-center space-x-4 mt-3">
-                        <div
-                            class="flex items-center bg-teal-100 dark:bg-teal-900/30 text-teal-800 dark:text-teal-300 px-3 py-1 rounded-full text-sm transition-colors duration-300">
-                            <i class="fas fa-users mr-2"></i>
-                            {{ $this->overviewStats['active_mentees'] }} active mentees
-                        </div>
-                        <div
-                            class="flex items-center bg-cyan-100 dark:bg-cyan-900/30 text-cyan-800 dark:text-cyan-300 px-3 py-1 rounded-full text-sm transition-colors duration-300">
-                            <i class="fas fa-chart-line mr-2"></i>
-                            {{ $this->overviewStats['success_rate'] }}% success rate
-                        </div>
-                    </div>
-                </div>
-
-                <div class="flex flex-wrap items-center space-x-3">
-                    <!-- Mentee Filter -->
-                    <select wire:model.live="selectedMenteeFilter"
-                        class="bg-themed-secondary border border-themed-secondary text-themed-primary px-3 py-2 text-sm rounded-lg focus:ring-2 focus:ring-teal-500 dark:focus:ring-teal-400 focus:border-teal-500 dark:focus:border-teal-400 transition-colors duration-300">
+<div class="space-y-6">
+    <x-ui.page-header title="Mentoring workspace" description="Review your mentees, sessions and pending feedback.">
+        <x-slot:actions>
+<!-- Mentee Filter -->
+                    <select aria-label="Filter mentees" wire:model.live="selectedMenteeFilter"
+                        class="bg-themed-secondary border border-themed-secondary text-themed-primary px-3 py-2 text-sm rounded-lg focus:ring-2 focus:ring-brand/30 dark:focus:ring-brand/30 focus:border-brand dark:focus:border-brand transition-colors duration-300">
                         <option value="all">All Mentees</option>
                         <option value="active">Active Mentees</option>
                         <option value="new">New Mentees</option>
@@ -43,10 +11,10 @@
                     </select>
 
                     <!-- Timeframe Selector -->
-                    <div class="flex bg-themed-tertiary rounded-lg p-1 transition-colors duration-300">
+                    <div role="group" aria-label="Reporting period" class="flex bg-themed-tertiary rounded-lg p-1 transition-colors duration-300">
                         @foreach(['7days' => '7d', '30days' => '30d', '90days' => '90d'] as $value => $label)
-                            <button wire:click="updateTimeframe('{{ $value }}')"
-                                class="px-3 py-1 rounded-md text-sm font-medium transition-all duration-200 {{ $selectedTimeframe === $value ? 'bg-themed-secondary text-teal-600 dark:text-teal-400 shadow-sm' : 'text-themed-secondary hover:text-themed-primary' }}">
+                            <button wire:click="updateTimeframe('{{ $value }}')" aria-label="Report for {{ $label }}" aria-pressed="{{ $selectedTimeframe === $value ? 'true' : 'false' }}"
+                                class="px-3 py-1 rounded-md text-sm font-medium transition-all duration-200 {{ $selectedTimeframe === $value ? 'bg-themed-secondary text-brand dark:text-brand shadow-sm' : 'text-themed-secondary hover:text-themed-primary' }}">
                                 {{ $label }}
                             </button>
                         @endforeach
@@ -54,20 +22,18 @@
 
                     <!-- Quick Actions -->
                     <a href="{{ route('mentorship.hub') }}"
-                        class="bg-teal-600 dark:bg-teal-500 hover:bg-teal-700 dark:hover:bg-teal-600 text-white px-4 py-2 rounded-lg font-medium transition-colors duration-200">
+                        class="bg-action dark:bg-action hover:bg-action dark:hover:bg-action text-action-foreground px-4 py-2 rounded-lg font-medium transition-colors duration-200">
                         <i class="fas fa-calendar-plus mr-2"></i>
                         Schedule Session
                     </a>
-                </div>
-            </div>
-        </div>
-    </div>
+        </x-slot:actions>
+    </x-ui.page-header>
 
     <!-- Overview Stats Grid -->
     @if($showWidgets['overview_stats'])
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
             <div
-                class="bg-themed-secondary rounded-xl shadow-sm border border-themed-primary p-6 hover:shadow-md dark:hover:shadow-xl transition-all duration-200">
+                class="bg-themed-secondary rounded-lg shadow-sm border border-themed-primary p-6   transition-all duration-200">
                 <div class="flex items-center justify-between">
                     <div>
                         <p class="text-sm text-themed-secondary font-medium transition-colors duration-300">Total Mentees
@@ -80,14 +46,14 @@
                             <span class="text-themed-tertiary ml-1 transition-colors duration-300">active</span>
                         </div>
                     </div>
-                    <div class="bg-teal-100 dark:bg-teal-900/30 p-3 rounded-full transition-colors duration-300">
-                        <i class="fas fa-users text-teal-600 dark:text-teal-400 text-xl"></i>
+                    <div class="bg-brand/10 dark:bg-action/30 p-3 rounded-full transition-colors duration-300">
+                        <i class="fas fa-users text-brand dark:text-brand text-xl"></i>
                     </div>
                 </div>
             </div>
 
             <div
-                class="bg-themed-secondary rounded-xl shadow-sm border border-themed-primary p-6 hover:shadow-md dark:hover:shadow-xl transition-all duration-200">
+                class="bg-themed-secondary rounded-lg shadow-sm border border-themed-primary p-6   transition-all duration-200">
                 <div class="flex items-center justify-between">
                     <div>
                         <p class="text-sm text-themed-secondary font-medium transition-colors duration-300">Sessions
@@ -96,18 +62,18 @@
                             {{ $this->overviewStats['completed_sessions'] }}</h3>
                         <div class="flex items-center mt-2 text-sm">
                             <span
-                                class="text-blue-600 dark:text-blue-400 font-medium transition-colors duration-300">{{ $this->overviewStats['upcoming_sessions'] }}</span>
+                                class="text-brand dark:text-brand font-medium transition-colors duration-300">{{ $this->overviewStats['upcoming_sessions'] }}</span>
                             <span class="text-themed-tertiary ml-1 transition-colors duration-300">upcoming</span>
                         </div>
                     </div>
-                    <div class="bg-blue-100 dark:bg-blue-900/30 p-3 rounded-full transition-colors duration-300">
-                        <i class="fas fa-comments text-blue-600 dark:text-blue-400 text-xl"></i>
+                    <div class="bg-brand/10 dark:bg-action/30 p-3 rounded-full transition-colors duration-300">
+                        <i class="fas fa-comments text-brand dark:text-brand text-xl"></i>
                     </div>
                 </div>
             </div>
 
             <div
-                class="bg-themed-secondary rounded-xl shadow-sm border border-themed-primary p-6 hover:shadow-md dark:hover:shadow-xl transition-all duration-200">
+                class="bg-themed-secondary rounded-lg shadow-sm border border-themed-primary p-6   transition-all duration-200">
                 <div class="flex items-center justify-between">
                     <div>
                         <p class="text-sm text-themed-secondary font-medium transition-colors duration-300">Success Rate</p>
@@ -132,7 +98,7 @@
             </div>
 
             <div
-                class="bg-themed-secondary rounded-xl shadow-sm border border-themed-primary p-6 hover:shadow-md dark:hover:shadow-xl transition-all duration-200">
+                class="bg-themed-secondary rounded-lg shadow-sm border border-themed-primary p-6   transition-all duration-200">
                 <div class="flex items-center justify-between">
                     <div>
                         <p class="text-sm text-themed-secondary font-medium transition-colors duration-300">Career
@@ -141,12 +107,12 @@
                             {{ $this->overviewStats['career_placements'] }}</h3>
                         <div class="flex items-center mt-2 text-sm">
                             <span
-                                class="text-purple-600 dark:text-purple-400 font-medium transition-colors duration-300">{{ $this->overviewStats['certificates_guided'] }}</span>
+                                class="text-brand dark:text-brand font-medium transition-colors duration-300">{{ $this->overviewStats['certificates_guided'] }}</span>
                             <span class="text-themed-tertiary ml-1 transition-colors duration-300">certificates</span>
                         </div>
                     </div>
-                    <div class="bg-purple-100 dark:bg-purple-900/30 p-3 rounded-full transition-colors duration-300">
-                        <i class="fas fa-briefcase text-purple-600 dark:text-purple-400 text-xl"></i>
+                    <div class="bg-brand/10 dark:bg-action/30 p-3 rounded-full transition-colors duration-300">
+                        <i class="fas fa-briefcase text-brand dark:text-brand text-xl"></i>
                     </div>
                 </div>
             </div>
@@ -160,12 +126,12 @@
             <!-- Mentee Progress -->
             @if($showWidgets['mentee_progress'])
                 <div
-                    class="bg-themed-secondary rounded-xl shadow-sm border border-themed-primary p-6 transition-colors duration-300">
+                    class="bg-themed-secondary rounded-lg shadow-sm border border-themed-primary p-6 transition-colors duration-300">
                     <div class="flex items-center justify-between mb-6">
                         <h2 class="text-xl font-bold text-themed-primary transition-colors duration-300">Mentee Progress
                         </h2>
                         <a href="{{ route('mentorship.dashboard') }}"
-                            class="text-teal-600 dark:text-teal-400 hover:text-teal-700 dark:hover:text-teal-300 text-sm font-medium transition-colors duration-300">
+                            class="text-brand dark:text-brand hover:text-brand dark:hover:text-brand text-sm font-medium transition-colors duration-300">
                             View All <i class="fas fa-arrow-right ml-1"></i>
                         </a>
                     </div>
@@ -180,9 +146,9 @@
                                             class="w-12 h-12 rounded-full object-cover">
                                     @else
                                         <div
-                                            class="w-12 h-12 bg-teal-100 dark:bg-teal-900/30 rounded-full flex items-center justify-center transition-colors duration-300">
+                                            class="w-12 h-12 bg-brand/10 dark:bg-action/30 rounded-full flex items-center justify-center transition-colors duration-300">
                                             <span
-                                                class="font-bold text-teal-600 dark:text-teal-400">{{ substr($mentee['name'], 0, 2) }}</span>
+                                                class="font-bold text-brand dark:text-brand">{{ substr($mentee['name'], 0, 2) }}</span>
                                         </div>
                                     @endif
 
@@ -215,7 +181,7 @@
                                 <i class="fas fa-user-plus text-themed-tertiary text-4xl mb-4"></i>
                                 <p class="text-themed-secondary mb-4 transition-colors duration-300">No mentees assigned yet</p>
                                 <a href="{{ route('mentorship.hub') }}"
-                                    class="bg-teal-600 dark:bg-teal-500 hover:bg-teal-700 dark:hover:bg-teal-600 text-white px-4 py-2 rounded-lg transition-colors">
+                                    class="bg-action dark:bg-action hover:bg-action dark:hover:bg-action text-action-foreground px-4 py-2 rounded-lg transition-colors">
                                     Find Mentees
                                 </a>
                             </div>
@@ -227,7 +193,7 @@
             <!-- Session Analytics -->
             @if($showWidgets['session_analytics'])
                 <div
-                    class="bg-themed-secondary rounded-xl shadow-sm border border-themed-primary p-6 transition-colors duration-300">
+                    class="bg-themed-secondary rounded-lg shadow-sm border border-themed-primary p-6 transition-colors duration-300">
                     <h2 class="text-xl font-bold text-themed-primary mb-6 transition-colors duration-300">Session Analytics
                     </h2>
 
@@ -237,7 +203,7 @@
                             <h3 class="text-sm font-semibold text-themed-primary mb-3 transition-colors duration-300">
                                 Session Trends</h3>
                             <div class="h-48">
-                                <canvas id="sessionTrendsChart"></canvas>
+                                <canvas role="img" aria-label="session Trends chart" id="sessionTrendsChart"></canvas>
                             </div>
                         </div>
 
@@ -253,7 +219,7 @@
                                         <div class="flex items-center space-x-2">
                                             <div
                                                 class="w-20 bg-themed-tertiary rounded-full h-2 transition-colors duration-300">
-                                                <div class="bg-gradient-to-r from-teal-400 to-cyan-500 dark:from-teal-300 dark:to-cyan-400 h-2 rounded-full"
+                                                <div class="bg-surface-muted     h-2 rounded-full"
                                                     style="width: {{ $percentage }}%"></div>
                                             </div>
                                             <span
@@ -270,14 +236,14 @@
                                 <div class="grid grid-cols-2 gap-4">
                                     <div class="text-center">
                                         <div
-                                            class="text-lg font-bold text-teal-600 dark:text-teal-400 transition-colors duration-300">
+                                            class="text-lg font-bold text-brand dark:text-brand transition-colors duration-300">
                                             {{ $this->sessionAnalytics['success_metrics']['goal_completion_rate'] }}%</div>
                                         <div class="text-xs text-themed-secondary transition-colors duration-300">Goal
                                             Completion</div>
                                     </div>
                                     <div class="text-center">
                                         <div
-                                            class="text-lg font-bold text-cyan-600 dark:text-cyan-400 transition-colors duration-300">
+                                            class="text-lg font-bold text-brand dark:text-brand transition-colors duration-300">
                                             {{ $this->sessionAnalytics['success_metrics']['mentee_retention_rate'] }}%</div>
                                         <div class="text-xs text-themed-secondary transition-colors duration-300">Retention
                                             Rate</div>
@@ -292,7 +258,7 @@
             <!-- Career Guidance Outcomes -->
             @if($showWidgets['career_guidance'])
                 <div
-                    class="bg-themed-secondary rounded-xl shadow-sm border border-themed-primary p-6 transition-colors duration-300">
+                    class="bg-themed-secondary rounded-lg shadow-sm border border-themed-primary p-6 transition-colors duration-300">
                     <h2 class="text-xl font-bold text-themed-primary mb-6 transition-colors duration-300">Career Guidance
                         Outcomes</h2>
 
@@ -312,7 +278,7 @@
                                 </div>
                                 <div class="text-right">
                                     <div
-                                        class="text-lg font-bold text-purple-600 dark:text-purple-400 transition-colors duration-300">
+                                        class="text-lg font-bold text-brand dark:text-brand transition-colors duration-300">
                                         {{ $outcome['success_rate'] }}%</div>
                                     <div class="text-xs text-themed-secondary transition-colors duration-300">success rate</div>
                                 </div>
@@ -334,7 +300,7 @@
             <!-- Mentorship Goals -->
             @if($showWidgets['mentorship_goals'])
                 <div
-                    class="bg-themed-secondary rounded-xl shadow-sm border border-themed-primary p-6 transition-colors duration-300">
+                    class="bg-themed-secondary rounded-lg shadow-sm border border-themed-primary p-6 transition-colors duration-300">
                     <h2 class="text-xl font-bold text-themed-primary mb-6 transition-colors duration-300">Monthly Goals</h2>
 
                     <div class="space-y-4">
@@ -349,7 +315,7 @@
                                 </span>
                             </div>
                             <div class="w-full bg-themed-tertiary rounded-full h-3 transition-colors duration-300">
-                                <div class="bg-gradient-to-r from-teal-500 to-cyan-500 dark:from-teal-400 dark:to-cyan-400 h-3 rounded-full transition-all duration-300"
+                                <div class="bg-surface-muted     h-3 rounded-full transition-all duration-300"
                                     style="width: {{ min(($this->mentorshipGoals['monthly_targets']['sessions_completed'] / $this->mentorshipGoals['monthly_targets']['sessions_target']) * 100, 100) }}%">
                                 </div>
                             </div>
@@ -366,7 +332,7 @@
                                 </span>
                             </div>
                             <div class="w-full bg-themed-tertiary rounded-full h-3 transition-colors duration-300">
-                                <div class="bg-gradient-to-r from-purple-500 to-indigo-500 dark:from-purple-400 dark:to-indigo-400 h-3 rounded-full transition-all duration-300"
+                                <div class="bg-surface-muted     h-3 rounded-full transition-all duration-300"
                                     style="width: {{ min(($this->mentorshipGoals['monthly_targets']['mentee_certifications_achieved'] / $this->mentorshipGoals['monthly_targets']['mentee_certifications_target']) * 100, 100) }}%">
                                 </div>
                             </div>
@@ -383,7 +349,7 @@
                                 </span>
                             </div>
                             <div class="w-full bg-themed-tertiary rounded-full h-3 transition-colors duration-300">
-                                <div class="bg-gradient-to-r from-green-500 to-emerald-500 dark:from-green-400 dark:to-emerald-400 h-3 rounded-full transition-all duration-300"
+                                <div class="bg-surface-muted     h-3 rounded-full transition-all duration-300"
                                     style="width: {{ min(($this->mentorshipGoals['monthly_targets']['job_placements_achieved'] / $this->mentorshipGoals['monthly_targets']['job_placements_target']) * 100, 100) }}%">
                                 </div>
                             </div>
@@ -395,12 +361,12 @@
             <!-- Mock Interviews -->
             @if($showWidgets['mock_interviews'])
                 <div
-                    class="bg-themed-secondary rounded-xl shadow-sm border border-themed-primary p-6 transition-colors duration-300">
+                    class="bg-themed-secondary rounded-lg shadow-sm border border-themed-primary p-6 transition-colors duration-300">
                     <div class="flex items-center justify-between mb-6">
                         <h2 class="text-xl font-bold text-themed-primary transition-colors duration-300">Recent Mock
                             Interviews</h2>
                         <a href="{{ route('admin.interview') }}"
-                            class="text-teal-600 dark:text-teal-400 hover:text-teal-700 dark:hover:text-teal-300 text-sm font-medium transition-colors duration-300">
+                            class="text-brand dark:text-brand hover:text-brand dark:hover:text-brand text-sm font-medium transition-colors duration-300">
                             View All <i class="fas fa-arrow-right ml-1"></i>
                         </a>
                     </div>
@@ -440,7 +406,7 @@
             <!-- Support Tickets -->
             @if($showWidgets['support_tickets'])
                 <div
-                    class="bg-themed-secondary rounded-xl shadow-sm border border-themed-primary p-6 transition-colors duration-300">
+                    class="bg-themed-secondary rounded-lg shadow-sm border border-themed-primary p-6 transition-colors duration-300">
                     <div class="flex items-center justify-between mb-6">
                         <h2 class="text-xl font-bold text-themed-primary transition-colors duration-300">Mentee Support</h2>
                         <span
@@ -484,7 +450,7 @@
             <!-- Recent Activities -->
             @if($showWidgets['recent_activities'])
                 <div
-                    class="bg-themed-secondary rounded-xl shadow-sm border border-themed-primary p-6 transition-colors duration-300">
+                    class="bg-themed-secondary rounded-lg shadow-sm border border-themed-primary p-6 transition-colors duration-300">
                     <h2 class="text-xl font-bold text-themed-primary mb-6 transition-colors duration-300">Recent Activities
                     </h2>
 
@@ -555,6 +521,7 @@
                         }]
                     },
                     options: {
+                animation: false,
                         responsive: true,
                         maintainAspectRatio: false,
                         plugins: {

@@ -1,16 +1,16 @@
 <div class="bg-themed-primary min-h-screen transition-colors duration-300">
-    <div class="px-4 sm:px-6 lg:px-8 py-6 space-y-6" 
-         x-data="{ tooltip: '' }" 
+    <div class="space-y-6"
+         x-data="{ tooltip: '' }"
          wire:review-updated.window="$refresh">
-        
+
         <!-- Page Header -->
-        <div class="bg-themed-secondary rounded-2xl shadow-lg border border-themed-primary p-6 animate__animated animate__fadeInDown transition-colors duration-300">
+        <div class="bg-themed-secondary rounded-lg shadow-sm border border-themed-primary p-6   transition-colors duration-300">
             <div class="flex items-center gap-4">
-                <div class="bg-gradient-to-br from-yellow-500 to-orange-500 p-4 rounded-2xl shadow-lg">
+                <div class="bg-brand-ink   p-4 rounded-lg shadow-sm">
                     <i class="fas fa-star text-white text-2xl"></i>
                 </div>
                 <div>
-                    <h1 class="text-2xl sm:text-3xl font-bold text-themed-primary transition-colors duration-300">
+                    <h1 class="  font-bold text-themed-primary transition-colors duration-300 bk-page-title">
                         Course Reviews
                     </h1>
                     <p class="text-themed-secondary mt-1 transition-colors duration-300">
@@ -21,30 +21,30 @@
         </div>
 
         <!-- Search Section -->
-        <div class="bg-themed-secondary rounded-2xl shadow-lg border border-themed-primary p-6 transition-colors duration-300">
+        <div class="bg-themed-secondary rounded-lg shadow-sm border border-themed-primary p-6 transition-colors duration-300">
             <div class="flex items-center justify-between mb-4">
                 <h3 class="text-lg font-bold text-themed-primary flex items-center gap-2 transition-colors duration-300">
-                    <i class="fas fa-search text-accent-themed-primary"></i>
+                    <i class="fas fa-search text-brand"></i>
                     Search Reviews
                 </h3>
             </div>
-            
+
             <div class="relative">
-                <input type="text" wire:model.live.debounce.300ms="search" 
+                <input aria-label="Search reviews or courses" type="text" wire:model.live.debounce.300ms="search"
                        placeholder="Search reviews or courses..."
-                       class="w-full pl-10 pr-10 py-3 bg-themed-tertiary border-2 border-themed-primary rounded-xl text-themed-primary placeholder-themed-secondary focus:border-accent-themed-primary focus:ring-2 focus:ring-accent-themed-primary/20 transition-all duration-300">
+                       class="w-full pl-10 pr-10 py-3 bg-themed-tertiary border-2 border-themed-primary rounded-lg text-themed-primary placeholder-themed-secondary focus:border-brand focus:ring-2 focus:ring-brand/20 transition-all duration-300">
                 <div class="absolute left-3 top-1/2 -translate-y-1/2 text-themed-secondary transition-colors duration-300">
                     <i class="fas fa-search"></i>
                 </div>
                 <div wire:loading wire:target="search" class="absolute right-3 top-1/2 -translate-y-1/2">
-                    <i class="fas fa-spinner animate-spin text-accent-themed-primary"></i>
+                    <i class="fas fa-spinner animate-spin text-brand"></i>
                 </div>
             </div>
         </div>
 
         <!-- Flash Messages -->
         @if (session()->has('message'))
-            <div class="bg-green-100/50 border border-green-400 text-green-700 px-6 py-4 rounded-xl transition-colors duration-300 animate__animated animate__fadeIn" 
+            <div class="bg-green-100/50 border border-green-400 text-green-700 px-6 py-4 rounded-lg transition-colors duration-300  "
                  role="alert">
                 <div class="flex items-center gap-2">
                     <i class="fas fa-check-circle text-lg"></i>
@@ -53,7 +53,7 @@
             </div>
         @endif
         @if (session()->has('error'))
-            <div class="bg-red-100/50 border border-red-400 text-red-700 px-6 py-4 rounded-xl transition-colors duration-300 animate__animated animate__fadeIn" 
+            <div class="bg-red-100/50 border border-red-400 text-red-700 px-6 py-4 rounded-lg transition-colors duration-300  "
                  role="alert">
                 <div class="flex items-center gap-2">
                     <i class="fas fa-exclamation-circle text-lg"></i>
@@ -64,7 +64,7 @@
 
         <!-- Reviews Table -->
         @if ($reviews->isEmpty())
-            <div class="text-center py-16 bg-themed-secondary rounded-2xl shadow-lg border border-themed-primary transition-colors duration-300">
+            <div class="text-center py-16 bg-themed-secondary rounded-lg shadow-sm border border-themed-primary transition-colors duration-300">
                 <div class="bg-yellow-100/50 w-24 h-24 rounded-full flex items-center justify-center mx-auto mb-6 transition-colors duration-300">
                     <i class="fas fa-star text-4xl text-yellow-600"></i>
                 </div>
@@ -74,10 +74,10 @@
                 </p>
             </div>
         @else
-            <div class="bg-themed-secondary rounded-2xl shadow-lg border border-themed-primary overflow-hidden transition-colors duration-300"
+            <div class="bg-themed-secondary rounded-lg shadow-sm border border-themed-primary overflow-hidden transition-colors duration-300"
                  wire:loading.class="opacity-50">
                 <div class="overflow-x-auto">
-                    <table class="min-w-full divide-y divide-themed-primary">
+                    <x-ui.table label="Course Reviews.Blade records"><table class="min-w-full divide-y divide-themed-primary">
                         <thead class="bg-themed-tertiary transition-colors duration-300">
                             <tr>
                                 <th scope="col" class="px-6 py-4 text-left text-xs font-bold text-themed-primary uppercase tracking-wider transition-colors duration-300">
@@ -107,7 +107,7 @@
                                 </td>
                             </tr>
                             @foreach ($reviews as $review)
-                                <tr class="hover:bg-themed-tertiary transition-colors duration-200 animate__animated animate__fadeInUp">
+                                <tr class="hover:bg-themed-tertiary transition-colors duration-200  ">
                                     <td class="px-6 py-4">
                                         <div class="text-sm font-semibold text-themed-primary transition-colors duration-300">
                                             {{ Str::limit($review->course->title, 40) }}
@@ -118,8 +118,8 @@
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap">
                                         <div class="flex items-center gap-3">
-                                            <div class="w-10 h-10 bg-gradient-to-br from-accent-themed-primary to-purple-400 rounded-full flex items-center justify-center shadow-md">
-                                                <i class="fas fa-user text-white"></i>
+                                            <div class="w-10 h-10 bg-surface-muted   rounded-full flex items-center justify-center shadow-sm">
+                                                <i class="fas fa-user text-brand"></i>
                                             </div>
                                             <div>
                                                 <div class="text-sm font-semibold text-themed-primary transition-colors duration-300">
@@ -139,11 +139,11 @@
                                             <div class="text-xs text-themed-secondary mt-1 transition-colors duration-300">
                                                 {{ $review->created_at->diffForHumans() }}
                                             </div>
-                                            
+
                                             <!-- Instructor Reply Display -->
                                             @if($review->instructor_reply)
-                                                <div class="mt-3 p-3 bg-accent-themed-primary/10 rounded-lg border border-accent-themed-primary/30 transition-colors duration-300">
-                                                    <div class="text-xs text-accent-themed-primary font-bold mb-1 transition-colors duration-300 flex items-center gap-1">
+                                                <div class="mt-3 p-3 bg-brand/10 rounded-lg border border-brand/30 transition-colors duration-300">
+                                                    <div class="text-xs text-brand font-bold mb-1 transition-colors duration-300 flex items-center gap-1">
                                                         <i class="fas fa-reply"></i>
                                                         Instructor Response
                                                         <span class="ml-2 text-themed-secondary font-normal">{{ $review->replied_at?->diffForHumans() }}</span>
@@ -169,13 +169,13 @@
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                         <div class="flex items-center gap-2">
-                                            <button wire:click="openReplyModal({{ $review->id }})" 
-                                                    class="p-2 rounded-lg text-accent-themed-primary hover:bg-accent-themed-primary/10 transition-all duration-300 transform hover:scale-110" 
+                                            <button wire:click="openReplyModal({{ $review->id }})"
+                                                    class="p-2 rounded-lg text-brand hover:bg-brand/10 transition-all duration-300 transform "
                                                     title="{{ $review->instructor_reply ? 'Update reply' : 'Reply to review' }}">
                                                 <i class="fas fa-reply"></i>
                                             </button>
-                                            <button wire:click="confirmDelete({{ $review->id }})" 
-                                                    class="p-2 rounded-lg text-red-600 hover:bg-red-100/50 transition-all duration-300 transform hover:scale-110" 
+                                            <button wire:click="confirmDelete({{ $review->id }})"
+                                                    class="p-2 rounded-lg text-red-600 hover:bg-red-100/50 transition-all duration-300 transform "
                                                     title="Delete review">
                                                 <i class="fas fa-trash-alt"></i>
                                             </button>
@@ -184,40 +184,40 @@
                                 </tr>
                             @endforeach
                         </tbody>
-                    </table>
+                    </table></x-ui.table>
                 </div>
             </div>
-            
+
             <!-- Pagination -->
             @if($reviews->hasPages())
-                <div class="bg-themed-secondary rounded-2xl shadow-lg border border-themed-primary p-4 transition-colors duration-300">
+                <div class="bg-themed-secondary rounded-lg shadow-sm border border-themed-primary p-4 transition-colors duration-300">
                     {{ $reviews->links('pagination::tailwind') }}
                 </div>
             @endif
         @endif
 
         <!-- Reply Modal -->
-        <div x-show="$wire.isReplyModalOpen" 
+        <div x-show="$wire.isReplyModalOpen"
              x-transition:enter="transition ease-out duration-300"
-             x-transition:enter-start="opacity-0" 
+             x-transition:enter-start="opacity-0"
              x-transition:enter-end="opacity-100"
              x-transition:leave="transition ease-in duration-200"
-             x-transition:leave-start="opacity-100" 
+             x-transition:leave-start="opacity-100"
              x-transition:leave-end="opacity-0"
-             class="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50"
-             x-cloak>
+             class="fixed inset-0 bg-black/50  flex items-center justify-center p-4 z-50"
+             x-cloak x-trap.inert.noscroll="$wire.isReplyModalOpen" role="dialog" aria-modal="true" aria-label="Reply to Review" tabindex="-1" x-data="{}" @keydown.escape.stop="$wire.isReplyModalOpen = false">
             <div @click.away="$wire.closeModal()"
                  x-transition:enter="transition ease-out duration-300"
-                 x-transition:enter-start="opacity-0 scale-95" 
+                 x-transition:enter-start="opacity-0 scale-95"
                  x-transition:enter-end="opacity-100 scale-100"
                  x-transition:leave="transition ease-in duration-200"
-                 x-transition:leave-start="opacity-100 scale-100" 
+                 x-transition:leave-start="opacity-100 scale-100"
                  x-transition:leave-end="opacity-0 scale-95"
-                 class="bg-themed-secondary rounded-2xl shadow-2xl w-full max-w-md mx-2 p-6 border border-themed-primary transition-colors duration-300">
-                
+                 class="bg-themed-secondary rounded-lg shadow-sm w-full max-w-md mx-2 p-6 border border-themed-primary transition-colors duration-300">
+
                 <div class="text-center mb-6">
-                    <div class="w-16 h-16 bg-accent-themed-primary/10 rounded-full flex items-center justify-center mx-auto mb-4 transition-colors duration-300">
-                        <i class="fas fa-reply text-accent-themed-primary text-2xl"></i>
+                    <div class="w-16 h-16 bg-brand/10 rounded-full flex items-center justify-center mx-auto mb-4 transition-colors duration-300">
+                        <i class="fas fa-reply text-brand text-2xl"></i>
                     </div>
                     <h3 class="text-xl font-bold text-themed-primary mb-2 transition-colors duration-300">Reply to Review</h3>
                     <p class="text-themed-secondary text-sm transition-colors duration-300">
@@ -231,28 +231,28 @@
                             Your Reply <span class="text-red-500">*</span>
                         </label>
                         <textarea wire:model="replyText" id="replyText" rows="4"
-                                  class="w-full px-4 py-3 bg-themed-tertiary border-2 border-themed-primary rounded-xl text-themed-primary placeholder-themed-secondary focus:border-accent-themed-primary focus:ring-2 focus:ring-accent-themed-primary/20 transition-all duration-300 resize-none"
+                                  class="w-full px-4 py-3 bg-themed-tertiary border-2 border-themed-primary rounded-lg text-themed-primary placeholder-themed-secondary focus:border-brand focus:ring-2 focus:ring-brand/20 transition-all duration-300 resize-none"
                                   placeholder="Thank you for your feedback. I appreciate your review and..."
                                   maxlength="1000"></textarea>
                         <div class="flex justify-between items-center mt-2 text-xs text-themed-secondary transition-colors duration-300">
                             <span>Be professional and constructive</span>
                             <span>{{ strlen($replyText ?? '') }}/1000</span>
                         </div>
-                        @error('replyText') 
+                        @error('replyText')
                             <p class="mt-2 text-sm text-red-500 flex items-center gap-1">
                                 <i class="fas fa-exclamation-circle"></i>
                                 {{ $message }}
                             </p>
                         @enderror
                     </div>
-                    
+
                     <div class="flex gap-3 pt-4">
                         <button type="button" wire:click="closeModal"
-                                class="flex-1 bg-themed-tertiary hover:bg-themed-secondary text-themed-primary font-semibold py-3 px-6 rounded-xl transition-all duration-300 border border-themed-primary transform hover:scale-105">
+                                class="flex-1 bg-themed-tertiary hover:bg-themed-secondary text-themed-primary font-semibold py-3 px-6 rounded-lg transition-all duration-300 border border-themed-primary transform ">
                             Cancel
                         </button>
                         <button type="submit" wire:loading.attr="disabled"
-                                class="flex-1 bg-accent-themed-primary hover:bg-accent-themed-secondary text-white font-bold py-3 px-6 rounded-xl transition-all duration-300 disabled:opacity-50 transform hover:scale-105">
+                                class="flex-1 bg-action hover:bg-action/90 text-action-foreground font-bold py-3 px-6 rounded-lg transition-all duration-300 disabled:opacity-50 transform ">
                             <span wire:loading.remove wire:target="saveReply">Send Reply</span>
                             <span wire:loading wire:target="saveReply" class="flex items-center justify-center gap-2">
                                 <i class="fas fa-spinner fa-spin"></i>Sending...
@@ -264,24 +264,24 @@
         </div>
 
         <!-- Delete Confirmation Modal -->
-        <div x-show="$wire.isDeleteModalOpen" 
+        <div x-show="$wire.isDeleteModalOpen"
              x-transition:enter="transition ease-out duration-300"
-             x-transition:enter-start="opacity-0" 
+             x-transition:enter-start="opacity-0"
              x-transition:enter-end="opacity-100"
              x-transition:leave="transition ease-in duration-200"
-             x-transition:leave-start="opacity-100" 
+             x-transition:leave-start="opacity-100"
              x-transition:leave-end="opacity-0"
-             class="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50"
-             x-cloak>
+             class="fixed inset-0 bg-black/50  flex items-center justify-center p-4 z-50"
+             x-cloak x-trap.inert.noscroll="$wire.isDeleteModalOpen" role="dialog" aria-modal="true" aria-label="Confirm Deletion" tabindex="-1" x-data="{}" @keydown.escape.stop="$wire.isDeleteModalOpen = false">
             <div @click.away="$wire.closeModal()"
                  x-transition:enter="transition ease-out duration-300"
-                 x-transition:enter-start="opacity-0 scale-95" 
+                 x-transition:enter-start="opacity-0 scale-95"
                  x-transition:enter-end="opacity-100 scale-100"
                  x-transition:leave="transition ease-in duration-200"
-                 x-transition:leave-start="opacity-100 scale-100" 
+                 x-transition:leave-start="opacity-100 scale-100"
                  x-transition:leave-end="opacity-0 scale-95"
-                 class="bg-themed-secondary rounded-2xl shadow-2xl w-full max-w-md mx-2 p-6 border border-themed-primary transition-colors duration-300">
-                
+                 class="bg-themed-secondary rounded-lg shadow-sm w-full max-w-md mx-2 p-6 border border-themed-primary transition-colors duration-300">
+
                 <div class="text-center mb-6">
                     <div class="w-16 h-16 bg-red-100/50 rounded-full flex items-center justify-center mx-auto mb-4 transition-colors duration-300">
                         <i class="fas fa-exclamation-triangle text-red-600 text-2xl"></i>
@@ -294,11 +294,11 @@
 
                 <div class="flex gap-3">
                     <button wire:click="closeModal"
-                            class="flex-1 bg-themed-tertiary hover:bg-themed-secondary text-themed-primary font-semibold py-3 px-6 rounded-xl transition-all duration-300 border border-themed-primary transform hover:scale-105">
+                            class="flex-1 bg-themed-tertiary hover:bg-themed-secondary text-themed-primary font-semibold py-3 px-6 rounded-lg transition-all duration-300 border border-themed-primary transform ">
                         Cancel
                     </button>
                     <button wire:click="delete"
-                            class="flex-1 bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-6 rounded-xl transition-all duration-300 transform hover:scale-105">
+                            class="flex-1 bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-6 rounded-lg transition-all duration-300 transform ">
                         Delete Review
                     </button>
                 </div>
@@ -306,17 +306,17 @@
         </div>
 
         <!-- Loading Overlay -->
-        <div wire:loading class="fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center z-40">
-            <div class="bg-themed-secondary rounded-2xl p-8 flex items-center shadow-2xl border border-themed-primary transition-colors duration-300">
+        <div wire:loading class="fixed inset-0 bg-black/30  flex items-center justify-center z-40">
+            <div class="bg-themed-secondary rounded-lg p-8 flex items-center shadow-sm border border-themed-primary transition-colors duration-300">
                 <div class="relative mr-4">
                     <div class="animate-spin rounded-full h-12 w-12 border-4 border-themed-tertiary"></div>
-                    <div class="animate-spin rounded-full h-12 w-12 border-4 border-accent-themed-primary border-t-transparent absolute top-0"></div>
+                    <div class="animate-spin rounded-full h-12 w-12 border-4 border-brand border-t-transparent absolute top-0"></div>
                 </div>
                 <span class="text-themed-primary font-semibold transition-colors duration-300">Processing...</span>
             </div>
         </div>
     </div>
-    
+
     <style>
     [x-cloak] { display: none !important; }
     </style>

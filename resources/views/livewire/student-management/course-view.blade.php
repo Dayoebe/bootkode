@@ -26,13 +26,8 @@
 <div
     x-data="{ navOpen: false }"
     x-on:close-course-nav.window="navOpen = false"
-    class="course-view-shell relative overflow-hidden rounded-[2rem]">
-    <div class="pointer-events-none absolute inset-0 opacity-70"
-        style="background:
-            radial-gradient(circle at top left, rgba(var(--accent-primary), 0.12), transparent 28%),
-            radial-gradient(circle at top right, rgba(var(--accent-secondary), 0.1), transparent 26%),
-            linear-gradient(180deg, rgba(var(--accent-primary), 0.03), transparent 35%);">
-    </div>
+    class="course-view-shell relative overflow-hidden rounded-lg">
+
 
     <div class="relative space-y-6 md:space-y-8">
         <livewire:student-management.course-view.course-progress-header :course="$course"
@@ -43,10 +38,10 @@
 
         @if (session()->has('success'))
             <div x-data="{ show: true }" x-show="show" x-transition.opacity.duration.300ms
-                class="overflow-hidden rounded-[2rem] border border-emerald-400/40 bg-gradient-to-r from-emerald-500 to-green-600 p-6 text-white shadow-xl animate__animated animate__fadeIn">
+                class="overflow-hidden rounded-lg border border-emerald-400/40 bg-brand-ink   p-6 text-white shadow-sm  ">
                 <div class="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
                     <div class="flex items-start gap-4">
-                        <div class="flex h-16 w-16 flex-shrink-0 items-center justify-center rounded-3xl bg-white/15 shadow-lg">
+                        <div class="flex h-16 w-16 flex-shrink-0 items-center justify-center rounded-lg bg-white/15 shadow-sm">
                             <i class="fas fa-rocket text-3xl"></i>
                         </div>
 
@@ -61,21 +56,21 @@
                     </div>
 
                     <button @click="show = false"
-                        class="self-start rounded-2xl border border-white/20 bg-white/10 px-4 py-3 text-sm font-medium text-white transition hover:bg-white/15">
+                        class="self-start rounded-lg border border-white/20 bg-white/10 px-4 py-3 text-sm font-medium text-white transition hover:bg-white/15">
                         Dismiss
                     </button>
                 </div>
 
                 <div class="mt-6 grid gap-3 sm:grid-cols-3">
-                    <div class="rounded-2xl border border-white/15 bg-white/10 p-4 text-center backdrop-blur-sm">
+                    <div class="rounded-lg border border-white/15 bg-white/10 p-4 text-center ">
                         <p class="text-2xl font-semibold">{{ $sectionCount }}</p>
                         <p class="mt-1 text-xs font-semibold uppercase tracking-[0.16em] text-white/75">Sections</p>
                     </div>
-                    <div class="rounded-2xl border border-white/15 bg-white/10 p-4 text-center backdrop-blur-sm">
+                    <div class="rounded-lg border border-white/15 bg-white/10 p-4 text-center ">
                         <p class="text-2xl font-semibold">{{ $lessonCount }}</p>
                         <p class="mt-1 text-xs font-semibold uppercase tracking-[0.16em] text-white/75">Lessons</p>
                     </div>
-                    <div class="rounded-2xl border border-white/15 bg-white/10 p-4 text-center backdrop-blur-sm">
+                    <div class="rounded-lg border border-white/15 bg-white/10 p-4 text-center ">
                         <p class="text-2xl font-semibold">
                             {{ $course->estimated_duration_minutes ? round($course->estimated_duration_minutes / 60) . 'h' : 'Self-paced' }}
                         </p>
@@ -87,11 +82,11 @@
 
         @if ($resumeLesson)
             <div
-                class="overflow-hidden rounded-[2rem] border border-themed-primary bg-themed-secondary p-5 shadow-xl animate__animated animate__fadeInUp">
+                class="overflow-hidden rounded-lg border border-themed-primary bg-themed-secondary p-5 shadow-sm  ">
                 <div class="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
                     <div class="flex items-start gap-4">
-                        <div class="flex h-14 w-14 flex-shrink-0 items-center justify-center rounded-3xl text-white shadow-lg"
-                            style="background: linear-gradient(135deg, rgb(var(--accent-primary)), rgb(var(--accent-secondary)));">
+                        <div class="flex h-14 w-14 flex-shrink-0 items-center justify-center rounded-lg text-white shadow-sm"
+                            style="background: rgb(var(--bk-action)); color: rgb(var(--bk-action-text));">
                             <i class="fas fa-play-circle text-2xl"></i>
                         </div>
 
@@ -106,8 +101,8 @@
                     </div>
 
                     <button wire:click="continueFromLastLesson"
-                        class="inline-flex items-center justify-center gap-2 rounded-2xl px-5 py-3 text-sm font-semibold text-white shadow-lg transition hover:-translate-y-0.5"
-                        style="background: linear-gradient(135deg, rgb(var(--accent-primary)), rgb(var(--accent-secondary)));">
+                        class="inline-flex items-center justify-center gap-2 rounded-lg px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:-translate-y-0.5"
+                        style="background: rgb(var(--bk-action)); color: rgb(var(--bk-action-text));">
                         <i class="fas fa-arrow-right"></i>
                         Continue
                     </button>
@@ -116,10 +111,10 @@
         @endif
 
         @if ($course->instructor)
-            <section class="overflow-hidden rounded-[1.5rem] border border-themed-primary bg-themed-secondary p-5 shadow-lg">
+            <section class="overflow-hidden rounded-lg border border-themed-primary bg-themed-secondary p-5 shadow-sm">
                 <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
                     <div class="flex min-w-0 items-center gap-4">
-                        <div class="flex h-14 w-14 flex-shrink-0 items-center justify-center rounded-2xl bg-blue-600 text-lg font-semibold text-white">
+                        <div class="flex h-14 w-14 flex-shrink-0 items-center justify-center rounded-lg bg-action text-lg font-semibold text-action-foreground">
                             {{ \Illuminate\Support\Str::upper(\Illuminate\Support\Str::substr($course->instructor->name ?? 'I', 0, 1)) }}
                         </div>
                         <div class="min-w-0">
@@ -130,7 +125,7 @@
                     </div>
 
                     <button wire:click="messageInstructor" wire:loading.attr="disabled" wire:target="messageInstructor"
-                        class="inline-flex items-center justify-center gap-2 rounded-2xl bg-blue-600 px-5 py-3 text-sm font-semibold text-white shadow-lg transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-60">
+                        class="inline-flex items-center justify-center gap-2 rounded-lg bg-action px-5 py-3 text-sm font-semibold text-action-foreground shadow-sm transition hover:bg-action disabled:cursor-not-allowed disabled:opacity-60">
                         <i class="fas fa-comment-dots"></i>
                         <span wire:loading.remove wire:target="messageInstructor">Message Instructor</span>
                         <span wire:loading wire:target="messageInstructor">Opening</span>
@@ -146,7 +141,7 @@
                 storageLimitMb: @js($offlineStorageLimitMb),
                 types: @js($offlineContentTypes)
             })"
-            class="overflow-hidden rounded-[1.5rem] border border-themed-primary bg-themed-secondary p-5 shadow-lg">
+            class="overflow-hidden rounded-lg border border-themed-primary bg-themed-secondary p-5 shadow-sm">
             <div class="flex flex-col gap-5 xl:flex-row xl:items-start xl:justify-between">
                 <div class="min-w-0">
                     <p class="text-xs font-semibold uppercase tracking-[0.18em] text-themed-secondary">Offline pack</p>
@@ -156,15 +151,15 @@
                     </p>
 
                     <div class="mt-4 grid gap-3 md:grid-cols-3">
-                        <div class="rounded-2xl border border-themed-secondary bg-themed-tertiary p-4">
+                        <div class="rounded-lg border border-themed-secondary bg-themed-tertiary p-4">
                             <p class="text-xs font-semibold uppercase tracking-[0.16em] text-themed-tertiary">Estimated Pack</p>
                             <p class="mt-2 text-2xl font-semibold text-themed-primary">{{ number_format($offlinePack?->size_mb ?? $offlineEstimateMb, 2) }} MB</p>
                         </div>
-                        <div class="rounded-2xl border border-themed-secondary bg-themed-tertiary p-4">
+                        <div class="rounded-lg border border-themed-secondary bg-themed-tertiary p-4">
                             <p class="text-xs font-semibold uppercase tracking-[0.16em] text-themed-tertiary">Last Download</p>
                             <p class="mt-2 text-sm font-semibold text-themed-primary">{{ $offlinePack?->downloaded_at?->diffForHumans() ?? 'Not downloaded yet' }}</p>
                         </div>
-                        <div class="rounded-2xl border border-themed-secondary bg-themed-tertiary p-4">
+                        <div class="rounded-lg border border-themed-secondary bg-themed-tertiary p-4">
                             <p class="text-xs font-semibold uppercase tracking-[0.16em] text-themed-tertiary">Last Sync</p>
                             <p class="mt-2 text-sm font-semibold text-themed-primary">{{ $offlinePack?->last_synced_at?->diffForHumans() ?? 'Waiting for offline progress' }}</p>
                         </div>
@@ -192,7 +187,7 @@
 
                         <div class="mt-4 grid gap-2 sm:grid-cols-2">
                             <button type="button" @click="download" :disabled="downloading"
-                                class="inline-flex items-center justify-center gap-2 rounded-lg bg-accent-themed-primary px-4 py-2 text-sm font-semibold text-white transition hover:bg-accent-themed-secondary disabled:opacity-60">
+                                class="inline-flex items-center justify-center gap-2 rounded-lg bg-action px-4 py-2 text-sm font-semibold text-action-foreground transition hover:bg-action/90 disabled:opacity-60">
                                 <i class="fas fa-download"></i>
                                 <span x-text="downloading ? 'Downloading' : (installed ? 'Refresh Pack' : 'Download Pack')"></span>
                             </button>
@@ -223,7 +218,7 @@
         </section>
 
         <section class="grid gap-4 sm:grid-cols-2 2xl:grid-cols-4">
-            <div class="overflow-hidden rounded-[1.75rem] border border-themed-primary bg-themed-secondary p-5 shadow-lg">
+            <div class="overflow-hidden rounded-[1.75rem] border border-themed-primary bg-themed-secondary p-5 shadow-sm">
                 <p class="text-xs font-semibold uppercase tracking-[0.18em] text-themed-secondary">Unlocked Sections</p>
                 <div class="mt-3 flex items-end justify-between gap-3">
                     <span class="text-3xl font-semibold text-themed-primary">{{ $unlockedSectionCount }}</span>
@@ -236,7 +231,7 @@
                 </p>
             </div>
 
-            <div class="overflow-hidden rounded-[1.75rem] border border-themed-primary bg-themed-secondary p-5 shadow-lg">
+            <div class="overflow-hidden rounded-[1.75rem] border border-themed-primary bg-themed-secondary p-5 shadow-sm">
                 <p class="text-xs font-semibold uppercase tracking-[0.18em] text-themed-secondary">Completed Lessons</p>
                 <div class="mt-3 flex items-end justify-between gap-3">
                     <span class="text-3xl font-semibold text-themed-primary">{{ count($completedLessons) }}</span>
@@ -249,7 +244,7 @@
                 </p>
             </div>
 
-            <div class="overflow-hidden rounded-[1.75rem] border border-themed-primary bg-themed-secondary p-5 shadow-lg">
+            <div class="overflow-hidden rounded-[1.75rem] border border-themed-primary bg-themed-secondary p-5 shadow-sm">
                 <p class="text-xs font-semibold uppercase tracking-[0.18em] text-themed-secondary">Current Section</p>
                 <div class="mt-3 flex items-end justify-between gap-3">
                     <span class="truncate text-2xl font-semibold text-themed-primary">
@@ -261,12 +256,12 @@
                 </div>
                 <div class="mt-4 h-2 overflow-hidden rounded-full border border-themed-secondary bg-themed-tertiary">
                     <div class="h-full rounded-full"
-                        style="width: {{ $currentSectionProgress }}%; background: linear-gradient(135deg, rgb(var(--accent-primary)), rgb(var(--accent-secondary)));">
+                        style="width: {{ $currentSectionProgress }}%; background: rgb(var(--accent-primary));">
                     </div>
                 </div>
             </div>
 
-            <div class="overflow-hidden rounded-[1.75rem] border border-themed-primary bg-themed-secondary p-5 shadow-lg">
+            <div class="overflow-hidden rounded-[1.75rem] border border-themed-primary bg-themed-secondary p-5 shadow-sm">
                 <p class="text-xs font-semibold uppercase tracking-[0.18em] text-themed-secondary">Next Unlock</p>
                 <div class="mt-3">
                     <p class="text-2xl font-semibold text-themed-primary">
@@ -285,10 +280,10 @@
 
         @if ($certificateEarned ?? false)
             <div
-                class="overflow-hidden rounded-[2rem] border border-emerald-400/40 bg-gradient-to-r from-emerald-500 to-green-600 p-6 text-white shadow-xl animate__animated animate__fadeInUp">
+                class="overflow-hidden rounded-lg border border-emerald-400/40 bg-brand-ink   p-6 text-white shadow-sm  ">
                 <div class="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
                     <div class="flex items-start gap-4">
-                        <div class="flex h-16 w-16 flex-shrink-0 items-center justify-center rounded-3xl bg-white/15 shadow-lg">
+                        <div class="flex h-16 w-16 flex-shrink-0 items-center justify-center rounded-lg bg-white/15 shadow-sm">
                             <i class="fas fa-trophy text-3xl"></i>
                         </div>
 
@@ -302,7 +297,7 @@
                     </div>
 
                     <a href="{{ route('student.certificates.index') }}"
-                        class="inline-flex items-center justify-center gap-2 rounded-2xl bg-white px-5 py-3 text-sm font-semibold text-emerald-600 shadow-lg transition hover:-translate-y-0.5 hover:bg-emerald-50">
+                        class="inline-flex items-center justify-center gap-2 rounded-lg bg-surface px-5 py-3 text-sm font-semibold text-emerald-600 shadow-sm transition hover:-translate-y-0.5 hover:bg-emerald-50">
                         <i class="fas fa-certificate"></i>
                         View Certificate
                     </a>
@@ -311,7 +306,7 @@
         @endif
 
         <div class="lg:hidden">
-            <div class="sticky top-4 z-30 overflow-hidden rounded-[1.75rem] border border-themed-primary bg-themed-secondary p-4 shadow-xl animate__animated animate__fadeInUp">
+            <div class="sticky top-4 z-30 overflow-hidden rounded-[1.75rem] border border-themed-primary bg-themed-secondary p-4 shadow-sm  ">
                 <div class="flex flex-col gap-4">
                     <div class="flex items-start justify-between gap-4">
                         <div class="min-w-0">
@@ -324,18 +319,18 @@
                         </p>
                         </div>
 
-                        <div class="rounded-2xl border border-themed-secondary bg-themed-tertiary px-3 py-2 text-right">
+                        <div class="rounded-lg border border-themed-secondary bg-themed-tertiary px-3 py-2 text-right">
                             <p class="text-[11px] font-semibold uppercase tracking-[0.16em] text-themed-secondary">Completed</p>
                             <p class="mt-1 text-sm font-semibold text-themed-primary">{{ count($completedLessons) }}/{{ $lessonCount }}</p>
                         </div>
                     </div>
 
                     <div class="grid grid-cols-2 gap-3">
-                        <div class="rounded-2xl border border-themed-secondary bg-themed-tertiary px-4 py-3">
+                        <div class="rounded-lg border border-themed-secondary bg-themed-tertiary px-4 py-3">
                             <p class="text-[11px] font-semibold uppercase tracking-[0.16em] text-themed-secondary">Unlocked</p>
                             <p class="mt-1 text-lg font-semibold text-themed-primary">{{ $unlockedSectionCount }}/{{ $sectionCount }}</p>
                         </div>
-                        <div class="rounded-2xl border border-themed-secondary bg-themed-tertiary px-4 py-3">
+                        <div class="rounded-lg border border-themed-secondary bg-themed-tertiary px-4 py-3">
                             <p class="text-[11px] font-semibold uppercase tracking-[0.16em] text-themed-secondary">Current Section</p>
                             <p class="mt-1 truncate text-sm font-semibold text-themed-primary">{{ $currentSection?->title ?? 'Ready to start' }}</p>
                         </div>
@@ -344,15 +339,15 @@
                     <div class="grid gap-2 sm:grid-cols-2">
                         @if ($resumeLesson)
                             <button wire:click="continueFromLastLesson"
-                                class="inline-flex w-full items-center justify-center gap-2 rounded-2xl border border-themed-secondary bg-themed-tertiary px-4 py-3 text-sm font-semibold text-themed-primary shadow-sm transition">
+                                class="inline-flex w-full items-center justify-center gap-2 rounded-lg border border-themed-secondary bg-themed-tertiary px-4 py-3 text-sm font-semibold text-themed-primary shadow-sm transition">
                                 <i class="fas fa-history"></i>
                                 Resume
                             </button>
                         @endif
 
                         <button @click="navOpen = true"
-                            class="inline-flex w-full items-center justify-center gap-2 rounded-2xl px-4 py-3 text-sm font-semibold text-white shadow-lg transition"
-                            style="background: linear-gradient(135deg, rgb(var(--accent-primary)), rgb(var(--accent-secondary)));">
+                            class="inline-flex w-full items-center justify-center gap-2 rounded-lg px-4 py-3 text-sm font-semibold text-white shadow-sm transition"
+                            style="background: rgb(var(--bk-action)); color: rgb(var(--bk-action-text));">
                             <i class="fas fa-compass"></i>
                             Course Map
                         </button>
@@ -362,11 +357,11 @@
         </div>
 
         <div x-cloak x-show="navOpen" class="fixed inset-0 z-50 lg:hidden">
-            <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" @click="navOpen = false"></div>
+            <div class="absolute inset-0 bg-black/60 " @click="navOpen = false"></div>
 
             <div class="absolute inset-y-0 left-0 w-full max-w-md p-4">
                 <div
-                    class="flex h-full flex-col overflow-hidden rounded-[2rem] border border-themed-primary bg-themed-secondary shadow-2xl animate__animated animate__fadeInLeft">
+                    class="flex h-full flex-col overflow-hidden rounded-lg border border-themed-primary bg-themed-secondary shadow-sm  ">
                     <div class="flex items-center justify-between border-b border-themed-secondary px-5 py-4">
                         <div>
                             <p class="text-xs font-semibold uppercase tracking-[0.18em] text-themed-secondary">Learning map</p>
@@ -374,7 +369,7 @@
                         </div>
 
                         <button @click="navOpen = false"
-                            class="flex h-10 w-10 items-center justify-center rounded-2xl border border-themed-secondary bg-themed-tertiary text-themed-primary transition hover:bg-themed-secondary">
+                            class="flex h-10 w-10 items-center justify-center rounded-lg border border-themed-secondary bg-themed-tertiary text-themed-primary transition hover:bg-themed-secondary" aria-label="Close">
                             <i class="fas fa-times"></i>
                         </button>
                     </div>
@@ -409,8 +404,8 @@
                         wire:key="content-{{ $currentLesson->id }}-{{ $progressVersion }}" />
                 @else
                     <div
-                        class="rounded-[2rem] border border-themed-primary bg-themed-secondary p-6 text-center shadow-xl animate__animated animate__fadeInUp sm:p-10">
-                        <div class="mx-auto flex h-16 w-16 items-center justify-center rounded-3xl border border-themed-secondary bg-themed-tertiary">
+                        class="rounded-lg border border-themed-primary bg-themed-secondary p-6 text-center shadow-sm   sm:p-10">
+                        <div class="mx-auto flex h-16 w-16 items-center justify-center rounded-lg border border-themed-secondary bg-themed-tertiary">
                             <i class="fas fa-book-open text-2xl accent-themed-primary"></i>
                         </div>
                         <h3 class="mt-5 text-xl font-semibold text-themed-primary">No lesson selected</h3>
@@ -418,7 +413,7 @@
                             Open the course map and choose any unlocked lesson to begin learning.
                         </p>
                         <button @click="navOpen = true"
-                            class="mt-5 inline-flex items-center gap-2 rounded-2xl border border-themed-secondary bg-themed-tertiary px-5 py-3 text-sm font-semibold text-themed-primary transition hover:bg-themed-secondary lg:hidden">
+                            class="mt-5 inline-flex items-center gap-2 rounded-lg border border-themed-secondary bg-themed-tertiary px-5 py-3 text-sm font-semibold text-themed-primary transition hover:bg-themed-secondary lg:hidden">
                             <i class="fas fa-compass"></i>
                             Open Course Map
                         </button>
@@ -428,7 +423,7 @@
         </div>
 
         <section id="course-reviews"
-            class="overflow-hidden rounded-[1.5rem] border border-themed-secondary bg-themed-tertiary/40 p-4 shadow-sm animate__animated animate__fadeInUp">
+            class="overflow-hidden rounded-lg border border-themed-secondary bg-themed-tertiary/40 p-4 shadow-sm  ">
             <div class="flex flex-col gap-2 border-b border-themed-secondary/70 pb-4 sm:flex-row sm:items-end sm:justify-between">
                 <div>
                     <p class="text-[11px] font-semibold uppercase tracking-[0.18em] text-themed-secondary">Optional</p>
@@ -438,7 +433,7 @@
                     </p>
                 </div>
 
-                <div class="rounded-2xl border border-themed-secondary bg-themed-secondary px-4 py-2 text-xs text-themed-secondary">
+                <div class="rounded-lg border border-themed-secondary bg-themed-secondary px-4 py-2 text-xs text-themed-secondary">
                     Secondary section
                 </div>
             </div>
@@ -458,11 +453,11 @@
             transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
         }
 
-        .text-accent-themed-primary {
+        .text-brand {
             color: rgb(var(--accent-primary));
         }
 
-        .bg-accent-themed-primary {
+        .bg-action {
             background-color: rgb(var(--accent-primary));
         }
 

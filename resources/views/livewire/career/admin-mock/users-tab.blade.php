@@ -6,25 +6,25 @@
 
     <!-- Users Table -->
     <div class="shadow overflow-hidden sm:rounded-lg bg-themed-secondary border border-themed-primary">
-        <table class="min-w-full divide-y divide-themed-primary">
+        <x-ui.table label="Users Tab.Blade records"><table class="min-w-full divide-y divide-themed-primary">
             <thead class="bg-themed-tertiary">
                 <tr>
-                    <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-themed-secondary">
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-themed-secondary">
                         User
                     </th>
-                    <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-themed-secondary">
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-themed-secondary">
                         Interviews
                     </th>
-                    <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-themed-secondary">
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-themed-secondary">
                         Completion Rate
                     </th>
-                    <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-themed-secondary">
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-themed-secondary">
                         Avg Score
                     </th>
-                    <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-themed-secondary">
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-themed-secondary">
                         Last Active
                     </th>
-                    <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-themed-secondary">
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-themed-secondary">
                         Actions
                     </th>
                 </tr>
@@ -61,13 +61,13 @@
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                             <button wire:click="viewUser({{ $user->id }})"
-                                class="text-accent-themed-primary hover:text-accent-themed-secondary transition-colors">
+                                class="text-brand hover:text-accent-themed-secondary transition-colors">
                                 View Details
                             </button>
                         </td>
                     </tr>
                 @endforeach
             </tbody>
-        </table>
+        </table></x-ui.table>
     </div>
 </div>

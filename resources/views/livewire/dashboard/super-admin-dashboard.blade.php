@@ -1,48 +1,33 @@
-<div class="min-h-screen bg-themed-primary transition-colors duration-300 p-4 md:p-6">
-    <!-- Header Section -->
-    <div class="mb-8">
-        <div class="bg-themed-secondary rounded-2xl shadow-sm border border-themed-primary p-6 transition-colors duration-300">
-            <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center space-y-4 lg:space-y-0">
-                <div>
-                    <h1 class="text-3xl font-bold text-themed-primary flex items-center transition-colors duration-300">
-                        <i class="fas fa-user-shield accent-themed-primary mr-3"></i>
-                        Super Admin Dashboard
-                    </h1>
-                    <p class="text-themed-secondary mt-1 transition-colors duration-300">Welcome back, {{ auth()->user()->name }}! Here's what's happening with your platform.</p>
-                </div>
-                
-                <div class="flex flex-wrap items-center space-x-3">
-                    <!-- Timeframe Selector -->
-                    <div class="flex bg-themed-tertiary rounded-lg p-1 transition-colors duration-300">
+<div class="space-y-6">
+    <x-ui.page-header title="Platform overview" description="Review platform activity, operations and the work that needs attention.">
+        <x-slot:actions>
+<!-- Timeframe Selector -->
+                    <div role="group" aria-label="Reporting period" class="flex bg-themed-tertiary rounded-lg p-1 transition-colors duration-300">
                         @foreach(['24hours' => '24h', '7days' => '7d', '30days' => '30d', '90days' => '90d'] as $value => $label)
-                            <button 
-                                wire:click="updateTimeframe('{{ $value }}')"
+                            <button
+                                wire:click="updateTimeframe('{{ $value }}')" aria-label="Report for {{ $label }}" aria-pressed="{{ $selectedTimeframe === $value ? 'true' : 'false' }}"
                                 class="px-3 py-1 rounded-md text-sm font-medium transition-all duration-200 {{ $selectedTimeframe === $value ? 'bg-themed-secondary accent-themed-primary shadow-sm' : 'text-themed-secondary hover:text-themed-primary' }}">
                                 {{ $label }}
                             </button>
                         @endforeach
                     </div>
-                    
+
                     <!-- Quick Actions -->
-                    <button wire:click="toggleQuickActionModal" 
-                            class="bg-accent-themed-primary hover:bg-accent-themed-secondary text-white px-4 py-2 rounded-lg font-medium transition-colors duration-200 flex items-center">
+                    <button wire:click="toggleQuickActionModal"
+                            class="bg-action hover:bg-action/90 text-action-foreground px-4 py-2 rounded-lg font-medium transition-colors duration-200 flex items-center">
                         <i class="fas fa-bolt mr-2"></i>
                         Quick Actions
                     </button>
-                    
+
                     <!-- Settings -->
-                    <button class="p-2 text-themed-tertiary hover:text-themed-secondary transition-colors duration-200">
-                        <i class="fas fa-cog text-lg"></i>
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
+                    <a href="{{ route('settings') }}" class="bk-icon-button" aria-label="Settings"><i class="fas fa-cog text-lg"></i></a>
+        </x-slot:actions>
+    </x-ui.page-header>
 
     <!-- Overview Stats Grid -->
     @if($showWidgets['overview_stats'])
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-        <div class="bg-themed-secondary rounded-xl shadow-sm border border-themed-primary p-6 hover:shadow-md transition-all duration-200">
+        <div class="bg-themed-secondary rounded-lg shadow-sm border border-themed-primary p-6  transition-all duration-200">
             <div class="flex items-center justify-between">
                 <div>
                     <p class="text-sm text-themed-secondary font-medium transition-colors duration-300">Total Users</p>
@@ -52,13 +37,13 @@
                         <span class="text-themed-tertiary ml-1 transition-colors duration-300">today</span>
                     </div>
                 </div>
-                <div class="bg-blue-100 dark:bg-blue-900/30 p-3 rounded-full transition-colors duration-300">
-                    <i class="fas fa-users text-blue-600 dark:text-blue-400 text-xl"></i>
+                <div class="bg-brand/10 dark:bg-action/30 p-3 rounded-full transition-colors duration-300">
+                    <i class="fas fa-users text-brand dark:text-brand text-xl"></i>
                 </div>
             </div>
         </div>
 
-        <div class="bg-themed-secondary rounded-xl shadow-sm border border-themed-primary p-6 hover:shadow-md transition-all duration-200">
+        <div class="bg-themed-secondary rounded-lg shadow-sm border border-themed-primary p-6  transition-all duration-200">
             <div class="flex items-center justify-between">
                 <div>
                     <p class="text-sm text-themed-secondary font-medium transition-colors duration-300">Active Courses</p>
@@ -74,7 +59,7 @@
             </div>
         </div>
 
-        <div class="bg-themed-secondary rounded-xl shadow-sm border border-themed-primary p-6 hover:shadow-md transition-all duration-200">
+        <div class="bg-themed-secondary rounded-lg shadow-sm border border-themed-primary p-6  transition-all duration-200">
             <div class="flex items-center justify-between">
                 <div>
                     <p class="text-sm text-themed-secondary font-medium transition-colors duration-300">Total Revenue</p>
@@ -90,7 +75,7 @@
             </div>
         </div>
 
-        <div class="bg-themed-secondary rounded-xl shadow-sm border border-themed-primary p-6 hover:shadow-md transition-all duration-200">
+        <div class="bg-themed-secondary rounded-lg shadow-sm border border-themed-primary p-6  transition-all duration-200">
             <div class="flex items-center justify-between">
                 <div>
                     <p class="text-sm text-themed-secondary font-medium transition-colors duration-300">Support Tickets</p>
@@ -114,7 +99,7 @@
         <div class="xl:col-span-2 space-y-8">
             <!-- User Growth Chart -->
             @if($showWidgets['user_analytics'])
-            <div class="bg-themed-secondary rounded-xl shadow-sm border border-themed-primary p-6 transition-colors duration-300">
+            <div class="bg-themed-secondary rounded-lg shadow-sm border border-themed-primary p-6 transition-colors duration-300">
                 <div class="flex items-center justify-between mb-6">
                     <h2 class="text-xl font-bold text-themed-primary transition-colors duration-300">User Growth</h2>
                     <div class="flex items-center space-x-2 text-sm text-themed-tertiary transition-colors duration-300">
@@ -123,14 +108,14 @@
                     </div>
                 </div>
                 <div class="h-80 bg-themed-tertiary rounded-lg p-4">
-                    <canvas id="userGrowthChart"></canvas>
+                    <canvas role="img" aria-label="user Growth chart" id="userGrowthChart"></canvas>
                 </div>
             </div>
             @endif
 
             <!-- Revenue Analytics -->
             @if($showWidgets['revenue_analytics'])
-            <div class="bg-themed-secondary rounded-xl shadow-sm border border-themed-primary p-6 transition-colors duration-300">
+            <div class="bg-themed-secondary rounded-lg shadow-sm border border-themed-primary p-6 transition-colors duration-300">
                 <div class="flex items-center justify-between mb-6">
                     <h2 class="text-xl font-bold text-themed-primary transition-colors duration-300">Revenue Analytics</h2>
                     <div class="flex items-center space-x-2 text-sm text-themed-tertiary transition-colors duration-300">
@@ -139,14 +124,14 @@
                     </div>
                 </div>
                 <div class="h-80 bg-themed-tertiary rounded-lg p-4">
-                    <canvas id="revenueChart"></canvas>
+                    <canvas role="img" aria-label="revenue chart" id="revenueChart"></canvas>
                 </div>
             </div>
             @endif
 
             <!-- Course Performance -->
             @if($showWidgets['course_performance'])
-            <div class="bg-themed-secondary rounded-xl shadow-sm border border-themed-primary p-6 transition-colors duration-300">
+            <div class="bg-themed-secondary rounded-lg shadow-sm border border-themed-primary p-6 transition-colors duration-300">
                 <div class="flex items-center justify-between mb-6">
                     <h2 class="text-xl font-bold text-themed-primary transition-colors duration-300">Top Performing Courses</h2>
                     <a href="{{ route('all-course') }}" class="accent-themed-primary hover:text-accent-themed-secondary text-sm font-medium transition-colors duration-300">
@@ -187,7 +172,7 @@
         <div class="space-y-8">
             <!-- System Health -->
             @if($showWidgets['system_health'])
-            <div class="bg-themed-secondary rounded-xl shadow-sm border border-themed-primary p-6 transition-colors duration-300">
+            <div class="bg-themed-secondary rounded-lg shadow-sm border border-themed-primary p-6 transition-colors duration-300">
                 <div class="flex items-center justify-between mb-6">
                     <h2 class="text-xl font-bold text-themed-primary transition-colors duration-300">System Health</h2>
                     <div class="flex items-center">
@@ -203,12 +188,12 @@
                         </div>
                         <span class="text-green-600 dark:text-green-400 font-medium transition-colors duration-300">{{ $this->systemHealth['database_health']['status'] === 'healthy' ? 'Healthy' : 'Error' }}</span>
                     </div>
-                    <div class="flex items-center justify-between p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg transition-colors duration-300">
+                    <div class="flex items-center justify-between p-3 bg-brand/10 dark:bg-action/20 rounded-lg transition-colors duration-300">
                         <div class="flex items-center">
-                            <i class="fas fa-memory text-blue-600 dark:text-blue-400 mr-3"></i>
+                            <i class="fas fa-memory text-brand dark:text-brand mr-3"></i>
                             <span class="font-medium text-themed-primary transition-colors duration-300">Cache</span>
                         </div>
-                        <span class="text-blue-600 dark:text-blue-400 font-medium transition-colors duration-300">{{ $this->systemHealth['cache_status'] === 'operational' ? 'Active' : 'Error' }}</span>
+                        <span class="text-brand dark:text-brand font-medium transition-colors duration-300">{{ $this->systemHealth['cache_status'] === 'operational' ? 'Active' : 'Error' }}</span>
                     </div>
                     <div class="flex items-center justify-between p-3 bg-themed-tertiary rounded-lg transition-colors duration-300">
                         <div class="flex items-center">
@@ -223,7 +208,7 @@
 
             <!-- Recent Activities -->
             @if($showWidgets['recent_activities'])
-            <div class="bg-themed-secondary rounded-xl shadow-sm border border-themed-primary p-6 transition-colors duration-300">
+            <div class="bg-themed-secondary rounded-lg shadow-sm border border-themed-primary p-6 transition-colors duration-300">
                 <div class="flex items-center justify-between mb-6">
                     <h2 class="text-xl font-bold text-themed-primary transition-colors duration-300">Recent Activities</h2>
                     <button class="accent-themed-primary hover:text-accent-themed-secondary text-sm font-medium transition-colors duration-300">
@@ -250,7 +235,7 @@
 
             <!-- Pending Approvals -->
             @if($showWidgets['pending_approvals'])
-            <div class="bg-themed-secondary rounded-xl shadow-sm border border-themed-primary p-6 transition-colors duration-300">
+            <div class="bg-themed-secondary rounded-lg shadow-sm border border-themed-primary p-6 transition-colors duration-300">
                 <div class="flex items-center justify-between mb-6">
                     <h2 class="text-xl font-bold text-themed-primary transition-colors duration-300">Pending Approvals</h2>
                     <div class="flex items-center space-x-1">
@@ -259,7 +244,7 @@
                         </span>
                     </div>
                 </div>
-                
+
                 <!-- Courses Tab -->
                 <div class="space-y-4">
                     <div>
@@ -267,19 +252,19 @@
                             Courses ({{ count($this->pendingApprovals['courses']) }})
                         </h3>
                         @forelse($this->pendingApprovals['courses'] as $course)
-                        <div class="flex items-center justify-between p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg mb-2 hover:bg-blue-100 dark:hover:bg-blue-900/30 transition-colors duration-200">
+                        <div class="flex items-center justify-between p-3 bg-brand/10 dark:bg-action/20 rounded-lg mb-2 hover:bg-brand/10 dark:hover:bg-action/30 transition-colors duration-200">
                             <div class="flex-1 min-w-0">
                                 <h4 class="text-sm font-medium text-themed-primary truncate transition-colors duration-300">{{ $course['title'] }}</h4>
                                 <p class="text-xs text-themed-secondary transition-colors duration-300">{{ $course['instructor'] }} • {{ $course['created_at'] }}</p>
                             </div>
                             <div class="flex space-x-2">
-                                <button wire:click="approveCourse({{ $course['id'] }})" 
+                                <button wire:click="approveCourse({{ $course['id'] }})"
                                         class="text-green-600 dark:text-green-400 hover:text-green-700 dark:hover:text-green-300 p-1 rounded transition-colors"
-                                        title="Approve Course">
+                                        title="Approve Course" aria-label="Approve Course">
                                     <i class="fas fa-check text-sm"></i>
                                 </button>
                                 <button class="text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 p-1 rounded transition-colors"
-                                        title="Reject Course">
+                                        title="Reject Course" aria-label="Reject Course">
                                     <i class="fas fa-times text-sm"></i>
                                 </button>
                             </div>
@@ -295,19 +280,19 @@
                             Certificates ({{ count($this->pendingApprovals['certificates']) }})
                         </h3>
                         @forelse($this->pendingApprovals['certificates'] as $certificate)
-                        <div class="flex items-center justify-between p-3 bg-purple-50 dark:bg-purple-900/20 rounded-lg mb-2 hover:bg-purple-100 dark:hover:bg-purple-900/30 transition-colors duration-200">
+                        <div class="flex items-center justify-between p-3 bg-brand/10 dark:bg-action/20 rounded-lg mb-2 hover:bg-brand/10 dark:hover:bg-action/30 transition-colors duration-200">
                             <div class="flex-1 min-w-0">
                                 <h4 class="text-sm font-medium text-themed-primary transition-colors duration-300">{{ $certificate['user'] }}</h4>
                                 <p class="text-xs text-themed-secondary transition-colors duration-300">{{ Str::limit($certificate['course'], 30) }} • {{ $certificate['created_at'] }}</p>
                             </div>
                             <div class="flex space-x-2">
-                                <button wire:click="approveCertificate({{ $certificate['id'] }})" 
+                                <button wire:click="approveCertificate({{ $certificate['id'] }})"
                                         class="text-green-600 dark:text-green-400 hover:text-green-700 dark:hover:text-green-300 p-1 rounded transition-colors"
-                                        title="Approve Certificate">
+                                        title="Approve Certificate" aria-label="Approve Certificate">
                                     <i class="fas fa-check text-sm"></i>
                                 </button>
                                 <button class="text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 p-1 rounded transition-colors"
-                                        title="Reject Certificate">
+                                        title="Reject Certificate" aria-label="Reject Certificate">
                                     <i class="fas fa-times text-sm"></i>
                                 </button>
                             </div>
@@ -323,25 +308,24 @@
     </div>
 
     <!-- Quick Actions Modal -->
-    @if($showQuickActionModal)
-    <div class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 transition-colors duration-300">
-        <div class="bg-themed-secondary rounded-3xl p-8 w-full max-w-2xl transform transition-all duration-300 scale-100 max-h-[90vh] overflow-y-auto border border-themed-primary">
+    <x-modal name="dashboard-quick-actions" model="showQuickActionModal" label="Quick actions" maxWidth="2xl">
+<div class="bg-themed-secondary rounded-lg p-8 w-full max-w-2xl transform transition-all duration-300 scale-100 max-h-[90vh] overflow-y-auto border border-themed-primary">
             <div class="flex items-center justify-between mb-8">
                 <h3 class="text-2xl font-bold text-themed-primary flex items-center transition-colors duration-300">
                     <i class="fas fa-lightning-bolt accent-themed-primary mr-3"></i>
                     Quick Actions
                 </h3>
-                <button wire:click="toggleQuickActionModal" class="text-themed-tertiary hover:text-themed-secondary transition-colors">
+                <button type="button" aria-label="Close quick actions" wire:click="toggleQuickActionModal" class="text-themed-tertiary hover:text-themed-secondary transition-colors">
                     <i class="fas fa-times text-xl"></i>
                 </button>
             </div>
-            
+
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <!-- Quick action buttons -->
                 <button wire:click="quickAction('manage_users')"
-                        class="flex items-center p-4 text-left bg-themed-tertiary hover:bg-themed-primary rounded-xl transition-all duration-200 group border border-transparent hover:border-themed-secondary">
-                    <div class="bg-accent-themed-primary p-2 rounded-lg mr-4 group-hover:bg-accent-themed-secondary transition-colors">
-                        <i class="fas fa-users text-white"></i>
+                        class="flex items-center p-4 text-left bg-themed-tertiary hover:bg-themed-primary rounded-lg transition-all duration-200 group border border-transparent hover:border-themed-secondary">
+                    <div class="bg-action p-2 rounded-lg mr-4 group-hover:bg-action/90 transition-colors">
+                        <i class="fas fa-users text-action-foreground"></i>
                     </div>
                     <div>
                         <div class="font-semibold text-themed-primary transition-colors duration-300">Manage Users</div>
@@ -352,28 +336,27 @@
                 <!-- Add more quick action buttons as needed -->
             </div>
         </div>
-    </div>
-    @endif
+    </x-modal>
 
     <!-- Widget Toggle Panel -->
     <div class="fixed bottom-6 right-6 z-40">
         <div x-data="{ open: false }" class="relative">
-            <button @click="open = !open" 
-                    class="bg-themed-secondary shadow-lg border border-themed-primary rounded-full p-3 hover:shadow-xl transition-all duration-200">
+            <button @click="open = !open"
+                    class="bg-themed-secondary shadow-sm border border-themed-primary rounded-full p-3  transition-all duration-200">
                 <i class="fas fa-sliders-h text-themed-secondary"></i>
             </button>
-            
-            <div x-show="open" 
+
+            <div x-show="open"
                  x-transition
                  @click.outside="open = false"
-                 class="absolute bottom-full right-0 mb-2 bg-themed-secondary rounded-xl shadow-xl border border-themed-primary p-4 w-64 transition-colors duration-300">
+                 class="absolute bottom-full right-0 mb-2 bg-themed-secondary rounded-lg shadow-sm border border-themed-primary p-4 w-64 transition-colors duration-300">
                 <h3 class="font-semibold text-themed-primary mb-3 transition-colors duration-300">Dashboard Widgets</h3>
                 <div class="space-y-2">
                     @foreach($showWidgets as $widget => $isVisible)
                     <label class="flex items-center cursor-pointer">
-                        <input type="checkbox" 
-                               wire:model="showWidgets.{{ $widget }}" 
-                               class="rounded border-themed-secondary text-accent-themed-primary focus:ring-accent-themed-primary">
+                        <input type="checkbox"
+                               wire:model="showWidgets.{{ $widget }}"
+                               class="rounded border-themed-secondary text-brand focus:ring-brand">
                         <span class="ml-2 text-sm text-themed-secondary transition-colors duration-300">{{ ucwords(str_replace('_', ' ', $widget)) }}</span>
                     </label>
                     @endforeach
@@ -389,7 +372,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Get current theme for chart colors
     const theme = document.documentElement.className || 'light';
     const isDark = theme === 'dark';
-    
+
     // Chart colors based on theme
     const chartColors = {
         light: {
@@ -452,6 +435,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     }]
                 },
                 options: {
+                animation: false,
                     responsive: true,
                     maintainAspectRatio: false,
                     plugins: {
@@ -495,6 +479,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     }]
                 },
                 options: {
+                animation: false,
                     responsive: true,
                     maintainAspectRatio: false,
                     plugins: {

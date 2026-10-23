@@ -1,7 +1,7 @@
 <div class="px-4 py-6 bg-themed-primary dark:bg-gray-900 min-h-screen transition-colors duration-300">
     <!-- Page Header -->
     <div class="mb-8">
-        <h2 class="text-3xl font-bold text-themed-primary mb-2">CBT Examinations</h2>
+        <h1 class="text-3xl font-bold text-themed-primary mb-2">CBT Examinations</h1>
         <p class="text-themed-secondary">Select an assessment to begin your computer-based test</p>
     </div>
 
@@ -28,9 +28,9 @@
     @if($availableAssessments->count() > 0)
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             @foreach($availableAssessments as $assessment)
-                <div class="bg-themed-secondary border border-themed-primary rounded-lg shadow-sm hover:shadow-md transition-all duration-300 border-l-4 
+                <div class="bg-themed-secondary border border-themed-primary rounded-lg shadow-sm  transition-all duration-300 border-l-4
                     {{ $assessment->user_result && $assessment->user_result['passed'] ? 'border-l-green-500' : ($assessment->can_take ? 'border-l-accent-themed-primary' : 'border-l-red-500') }}">
-                    
+
                     <div class="p-6">
                         <!-- Assessment Header -->
                         <div class="flex justify-between items-start mb-4">
@@ -76,7 +76,7 @@
                                     {{ $assessment->remaining_attempts === 'Unlimited' ? 'Unlimited' : $assessment->remaining_attempts }}
                                 </span>
                             </div>
-                            
+
                             @if(!$assessment->can_take)
                                 <div class="mt-2 pt-2 border-t border-themed-secondary text-xs text-red-600 dark:text-red-400 flex items-center">
                                     <i class="fas fa-exclamation-triangle mr-1"></i>
@@ -100,9 +100,9 @@
                         <!-- Action Buttons -->
                         <div class="space-y-2">
                             @if($assessment->can_take)
-                                <button wire:click="startExam({{ $assessment->id }})" 
+                                <button wire:click="startExam({{ $assessment->id }})"
                                     wire:confirm="Are you ready to start this exam? Once started, the timer will begin immediately."
-                                    class="w-full bg-accent-themed-primary hover:bg-accent-themed-secondary text-white px-4 py-2 rounded-lg transition-colors flex items-center justify-center font-medium">
+                                    class="w-full bg-action hover:bg-action/90 text-action-foreground px-4 py-2 rounded-lg transition-colors flex items-center justify-center font-medium">
                                     <i class="fas fa-play mr-2"></i>
                                     {{ $assessment->user_result ? 'Retake Exam' : 'Start Exam' }}
                                 </button>
@@ -156,7 +156,7 @@
                 <h3 class="text-lg font-semibold text-themed-primary mb-4">Your Progress Summary</h3>
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
                     <div class="text-center">
-                        <div class="text-2xl font-bold text-accent-themed-primary">{{ $completedAssessments }}</div>
+                        <div class="text-2xl font-bold text-brand">{{ $completedAssessments }}</div>
                         <div class="text-sm text-themed-secondary">Completed</div>
                     </div>
                     <div class="text-center">
@@ -182,19 +182,19 @@
             </div>
             <h3 class="text-xl font-semibold text-themed-secondary mb-2">No CBT Assessments Available</h3>
             <p class="text-themed-tertiary mb-6">There are currently no computer-based tests available for you to take.</p>
-            <a href="{{ route('student.dashboard') }}" 
-                class="inline-flex items-center px-4 py-2 bg-accent-themed-primary text-white rounded-lg hover:bg-accent-themed-secondary transition-colors">
+            <a href="{{ route('student.dashboard') }}"
+                class="inline-flex items-center px-4 py-2 bg-action text-action-foreground rounded-lg hover:bg-action/90 transition-colors">
                 <i class="fas fa-arrow-left mr-2"></i>Back to Dashboard
             </a>
         </div>
     @endif
 
     <!-- Important Notes -->
-    <div class="mt-8 bg-blue-50 dark:bg-blue-900/30 border border-blue-200 dark:border-blue-700 rounded-lg p-6">
-        <h3 class="text-lg font-semibold text-blue-800 dark:text-blue-300 mb-3 flex items-center">
+    <div class="mt-8 bg-brand/10 dark:bg-surface/30 border border-brand dark:border-brand rounded-lg p-6">
+        <h3 class="text-lg font-semibold text-brand dark:text-brand mb-3 flex items-center">
             <i class="fas fa-info-circle mr-2"></i>Important Notes
         </h3>
-        <ul class="space-y-2 text-blue-800 dark:text-blue-300 text-sm">
+        <ul class="space-y-2 text-brand dark:text-brand text-sm">
             <li class="flex items-start">
                 <span class="mr-2">•</span>
                 <span>Each assessment has a limited number of attempts. Use them wisely!</span>
@@ -221,7 +221,7 @@
             </li>
         </ul>
     </div>
-    
+
     <style>
         .line-clamp-2 {
             display: -webkit-box;

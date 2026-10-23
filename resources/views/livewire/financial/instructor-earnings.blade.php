@@ -2,13 +2,13 @@
 <div class="space-y-6">
     <!-- Header -->
     <div class="mb-8">
-        <h1 class="text-2xl font-bold text-themed-primary">Instructor Earnings</h1>
+        <h1 class=" font-bold text-themed-primary bk-page-title">Instructor Earnings</h1>
         <p class="text-themed-secondary">Track your course sales and earnings performance</p>
     </div>
 
     <!-- Period Selector -->
     <div class="mb-6">
-        <select wire:model="selectedPeriod" class="rounded-md border-themed-secondary shadow-sm">
+        <select aria-label="Selected period" wire:model="selectedPeriod" class="rounded-md border-themed-secondary shadow-sm">
             <option value="last_7_days">Last 7 Days</option>
             <option value="last_30_days">Last 30 Days</option>
             <option value="last_90_days">Last 90 Days</option>
@@ -18,7 +18,7 @@
 
     <!-- Earnings Overview Cards -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-        <div class="bg-gradient-to-r from-green-500 to-green-600 rounded-lg shadow-sm p-6 text-white">
+        <div class="bg-brand-ink   rounded-lg shadow-sm p-6 text-white">
             <div class="flex items-center justify-between">
                 <div>
                     <p class="text-green-100">Available Balance</p>
@@ -31,7 +31,7 @@
                 </div>
             </div>
             @if($earningsData['available_for_withdrawal'] >= 1000)
-                <button wire:click="openWithdrawalModal" class="mt-4 bg-themed-secondary text-green-600 py-2 px-4 rounded-lg font-semibold hover:bg-gray-100 transition-colors">
+                <button wire:click="openWithdrawalModal" class="mt-4 bg-themed-secondary text-green-600 py-2 px-4 rounded-lg font-semibold hover:bg-surface-muted transition-colors">
                     Request Withdrawal
                 </button>
             @else
@@ -39,28 +39,28 @@
             @endif
         </div>
 
-        <div class="bg-themed-secondary rounded-lg shadow-sm p-6 border-l-4 border-blue-500">
+        <div class="bg-themed-secondary rounded-lg shadow-sm p-6 border-l-4 border-brand">
             <div class="flex items-center justify-between">
                 <div>
                     <p class="text-sm text-themed-secondary">Total Earnings</p>
                     <p class="text-2xl font-bold text-themed-primary">₦{{ number_format($earningsData['total_earnings'], 2) }}</p>
                 </div>
-                <div class="bg-blue-100 p-3 rounded-lg">
-                    <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div class="bg-brand/10 p-3 rounded-lg">
+                    <svg class="w-6 h-6 text-brand" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path>
                     </svg>
                 </div>
             </div>
         </div>
 
-        <div class="bg-themed-secondary rounded-lg shadow-sm p-6 border-l-4 border-purple-500">
+        <div class="bg-themed-secondary rounded-lg shadow-sm p-6 border-l-4 border-brand">
             <div class="flex items-center justify-between">
                 <div>
                     <p class="text-sm text-themed-secondary">Courses Sold</p>
                     <p class="text-2xl font-bold text-themed-primary">{{ number_format($earningsData['courses_sold']) }}</p>
                 </div>
-                <div class="bg-purple-100 p-3 rounded-lg">
-                    <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div class="bg-brand/10 p-3 rounded-lg">
+                    <svg class="w-6 h-6 text-brand" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
                     </svg>
                 </div>
@@ -121,13 +121,13 @@
         </div>
         <div class="overflow-x-auto">
             @if($earningsData['recent_earnings']->count() > 0)
-                <table class="min-w-full divide-y divide-themed-primary">
+                <x-ui.table label="Instructor Earnings.Blade records"><table class="min-w-full divide-y divide-themed-primary">
                     <thead class="bg-themed-tertiary">
                         <tr>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-themed-secondary uppercase">Date</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-themed-secondary uppercase">Course</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-themed-secondary uppercase">Amount</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-themed-secondary uppercase">Description</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-themed-secondary uppercase">Date</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-themed-secondary uppercase">Course</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-themed-secondary uppercase">Amount</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-themed-secondary uppercase">Description</th>
                         </tr>
                     </thead>
                     <tbody class="bg-themed-secondary divide-y divide-themed-primary">
@@ -148,7 +148,7 @@
                             </tr>
                         @endforeach
                     </tbody>
-                </table>
+                </table></x-ui.table>
             @else
                 <div class="text-center py-12">
                     <p class="text-themed-secondary">No earnings found for this period</p>
@@ -159,11 +159,11 @@
 
     <!-- Withdrawal Modal -->
     @if($showWithdrawalModal)
-        <div class="fixed inset-0 z-50 overflow-y-auto">
+        <div class="fixed inset-0 z-50 overflow-y-auto" x-trap.inert.noscroll="true" role="dialog" aria-modal="true" aria-label="Request Withdrawal" tabindex="-1" x-data="{}" @keydown.escape.stop="$wire.set(&#x27;showWithdrawalModal&#x27;, false)">
             <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
                 <div class="fixed inset-0 bg-gray-500 bg-opacity-75" wire:click="closeWithdrawalModal"></div>
 
-                <div class="inline-block align-bottom bg-themed-secondary rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+                <div class="inline-block align-bottom bg-themed-secondary rounded-lg text-left overflow-hidden shadow-sm transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
                     <form wire:submit.prevent="requestWithdrawal">
                         <div class="bg-themed-secondary px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
                             <h3 class="text-lg leading-6 font-medium text-themed-primary mb-4">Request Withdrawal</h3>
@@ -200,7 +200,7 @@
                                     <label for="accountName" class="block text-sm font-medium text-themed-primary">Account Name</label>
                                     <input type="text" id="accountName" wire:model="accountName"
                                            class="mt-1 block w-full border-themed-secondary rounded-md shadow-sm bg-themed-tertiary" readonly>
-                                    @if($isResolvingAccount) <p class="text-blue-600 text-sm mt-1">Resolving account details...</p> @endif
+                                    @if($isResolvingAccount) <p class="text-brand text-sm mt-1">Resolving account details...</p> @endif
                                     @error('accountName') <p class="text-red-600 text-sm mt-1">{{ $message }}</p> @enderror
                                 </div>
                             </div>
@@ -209,7 +209,7 @@
                             <button type="submit" class="bk-button bk-button-primary w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2  text-base font-medium   sm:ml-3 sm:w-auto sm:text-sm">
                                 Submit Request
                             </button>
-                            <button type="button" wire:click="closeWithdrawalModal" class="mt-3 w-full inline-flex justify-center rounded-md border border-themed-secondary shadow-sm px-4 py-2 bg-themed-secondary text-base font-medium text-themed-primary hover:bg-gray-50 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
+                            <button type="button" wire:click="closeWithdrawalModal" class="mt-3 w-full inline-flex justify-center rounded-md border border-themed-secondary shadow-sm px-4 py-2 bg-themed-secondary text-base font-medium text-themed-primary hover:bg-surface-muted sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
                                 Cancel
                             </button>
                         </div>

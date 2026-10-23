@@ -1,4 +1,4 @@
-<div class="mx-auto max-w-7xl space-y-6 p-4 sm:p-6">
+<div class="space-y-6">
     <x-ui.page-header title="Mentorship" description="Follow your learning relationships, sessions, and code reviews." />
     <x-ui.flash />
     <dl class="grid grid-cols-2 gap-4 lg:grid-cols-4">
@@ -10,7 +10,7 @@
         <!-- Quick Actions -->
         <div class="grid md:grid-cols-3 gap-6 mb-8">
             @if(auth()->user()->isStudent())
-                <a href="{{ route('mentorship.find') }}" 
+                <a href="{{ route('mentorship.find') }}"
                    class="rounded-lg border border-line bg-surface p-6 text-content shadow-sm transition-colors hover:border-brand focus-visible:outline-brand">
                     <i class="fas fa-search text-2xl mb-3"></i>
                     <h3 class="text-lg font-semibold">Find New Mentor</h3>
@@ -59,7 +59,7 @@
         <!-- Main Content Grid -->
         <div class="grid lg:grid-cols-2 gap-8">
             <!-- My Active Mentorships -->
-            <div class="bg-themed-secondary rounded-2xl shadow-lg p-6 border border-themed-primary transition-colors duration-300">
+            <div class="bg-themed-secondary rounded-lg shadow-sm p-6 border border-themed-primary transition-colors duration-300">
                 <div class="flex items-center justify-between mb-6">
                     <h3 class="text-xl font-bold text-themed-primary transition-colors duration-300">My Active Mentorships</h3>
                     <a href="{{ route('mentorship.my-mentorships') }}" class="text-brand hover:text-brand transition-colors">
@@ -111,7 +111,7 @@
             </div>
 
             <!-- Upcoming Sessions -->
-            <div class="bg-themed-secondary rounded-2xl shadow-lg p-6 border border-themed-primary transition-colors duration-300">
+            <div class="bg-themed-secondary rounded-lg shadow-sm p-6 border border-themed-primary transition-colors duration-300">
                 <div class="flex items-center justify-between mb-6">
                     <h3 class="text-xl font-bold text-themed-primary transition-colors duration-300">Upcoming Sessions</h3>
                     <a href="{{ route('mentorship.sessions') }}" class="text-brand hover:text-brand transition-colors">
@@ -154,7 +154,7 @@
             </div>
 
             <!-- Recent Code Reviews -->
-            <div class="bg-themed-secondary rounded-2xl shadow-lg p-6 border border-themed-primary transition-colors duration-300 lg:col-span-2">
+            <div class="bg-themed-secondary rounded-lg shadow-sm p-6 border border-themed-primary transition-colors duration-300 lg:col-span-2">
                 <div class="flex items-center justify-between mb-6">
                     <h3 class="text-xl font-bold text-themed-primary transition-colors duration-300">Recent Code Reviews</h3>
                     <a href="{{ route('mentorship.code-reviews') }}" class="text-brand hover:text-brand transition-colors">
@@ -186,7 +186,7 @@
                                             {{ $review->requested_at?->diffForHumans() ?? 'Request date not recorded' }}
                                         </p>
                                     </div>
-                                    <div class="text-2xl text-purple-500 dark:text-purple-400">
+                                    <div class="text-2xl text-brand dark:text-brand">
                                         <i class="fas fa-code-branch"></i>
                                     </div>
                                 </div>

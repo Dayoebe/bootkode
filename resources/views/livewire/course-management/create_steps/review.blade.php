@@ -6,7 +6,7 @@ x-transition:leave-start="opacity-100 transform translate-x-0"
 x-transition:leave-end="opacity-0 transform -translate-x-8">
 
 <div
-    class="bg-themed-secondary rounded-2xl p-4 sm:p-6 lg:p-8 shadow-xl border border-themed-primary transition-colors duration-300">
+    class="bg-themed-secondary rounded-lg p-4 sm:p-6 lg:p-8 shadow-sm border border-themed-primary transition-colors duration-300">
     <div class="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-6">
         <div
             class="w-10 h-10 sm:w-12 sm:h-12 bg-yellow-500 rounded-full flex items-center justify-center flex-shrink-0">
@@ -23,17 +23,17 @@ x-transition:leave-end="opacity-0 transform -translate-x-8">
 
     <!-- Course Preview Card -->
     <div
-        class="bg-themed-tertiary rounded-xl p-4 sm:p-6 mb-6 sm:mb-8 border border-themed-primary transition-colors duration-300">
+        class="bg-themed-tertiary rounded-lg p-4 sm:p-6 mb-6 sm:mb-8 border border-themed-primary transition-colors duration-300">
         <div class="flex flex-col lg:flex-row gap-4 sm:gap-6">
             <!-- Thumbnail -->
 
             <div class="flex-shrink-0">
                 @if ($thumbnailPreview)
                     <img src="{{ $thumbnailPreview }}" alt="Course thumbnail"
-                        class="w-full lg:w-48 h-32 object-cover rounded-lg shadow-md">
+                        class="w-full lg:w-48 h-32 object-cover rounded-lg shadow-sm">
                 @elseif(($isEditMode ?? false) && isset($existingThumbnail) && $existingThumbnail && !($shouldRemoveThumbnail ?? false))
                     <img src="{{ asset('storage/' . $existingThumbnail) }}" alt="Course thumbnail"
-                        class="w-full lg:w-48 h-32 object-cover rounded-lg shadow-md">
+                        class="w-full lg:w-48 h-32 object-cover rounded-lg shadow-sm">
                 @else
                     <div
                         class="w-full lg:w-48 h-32 bg-themed-secondary rounded-lg flex items-center justify-center border border-themed-primary transition-colors duration-300">
@@ -56,13 +56,13 @@ x-transition:leave-end="opacity-0 transform -translate-x-8">
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 text-sm">
                     <div class="flex items-center gap-2">
-                        <i class="fas fa-tag text-purple-500 dark:text-purple-400"></i>
+                        <i class="fas fa-tag text-brand dark:text-brand"></i>
                         <span class="text-themed-primary transition-colors duration-300">
                             {{ $categories->where('id', $category_id)->first()->name ?? 'No category' }}
                         </span>
                     </div>
                     <div class="flex items-center gap-2">
-                        <i class="fas fa-layer-group text-blue-500 dark:text-blue-400"></i>
+                        <i class="fas fa-layer-group text-brand dark:text-brand"></i>
                         <span class="text-themed-primary transition-colors duration-300">
                             {{ $difficultyLevels[$difficulty_level] ?? 'Not specified' }}
                         </span>
@@ -86,7 +86,7 @@ x-transition:leave-end="opacity-0 transform -translate-x-8">
                         </span>
                     </div>
                     <div class="flex items-center gap-2">
-                        <i class="fas fa-users text-indigo-500 dark:text-indigo-400"></i>
+                        <i class="fas fa-users text-brand dark:text-brand"></i>
                         <span class="text-themed-primary transition-colors duration-300">
                             {{ $target_audience ?? 'Not specified' }}
                         </span>
@@ -107,10 +107,10 @@ x-transition:leave-end="opacity-0 transform -translate-x-8">
         <!-- Description & Outcomes -->
         <div class="space-y-4 sm:space-y-6">
             <div
-                class="bg-themed-tertiary p-4 sm:p-6 rounded-xl border border-themed-primary transition-colors duration-300">
+                class="bg-themed-tertiary p-4 sm:p-6 rounded-lg border border-themed-primary transition-colors duration-300">
                 <h4
                     class="text-lg font-semibold text-themed-primary mb-3 flex items-center gap-2 transition-colors duration-300">
-                    <i class="fas fa-align-left text-blue-500 dark:text-blue-400"></i>
+                    <i class="fas fa-align-left text-brand dark:text-brand"></i>
                     Description
                 </h4>
                 <p
@@ -121,10 +121,10 @@ x-transition:leave-end="opacity-0 transform -translate-x-8">
 
             @if (!empty(array_filter($learning_outcomes)))
                 <div
-                    class="bg-themed-tertiary p-4 sm:p-6 rounded-xl border border-themed-primary transition-colors duration-300">
+                    class="bg-themed-tertiary p-4 sm:p-6 rounded-lg border border-themed-primary transition-colors duration-300">
                     <h4
                         class="text-lg font-semibold text-themed-primary mb-3 flex items-center gap-2 transition-colors duration-300">
-                        <i class="fas fa-lightbulb text-indigo-500 dark:text-indigo-400"></i>
+                        <i class="fas fa-lightbulb text-brand dark:text-brand"></i>
                         Learning Outcomes
                     </h4>
                     <ul class="space-y-2">
@@ -147,7 +147,7 @@ x-transition:leave-end="opacity-0 transform -translate-x-8">
         <div class="space-y-4 sm:space-y-6">
             @if (!empty(array_filter($prerequisites)))
                 <div
-                    class="bg-themed-tertiary p-4 sm:p-6 rounded-xl border border-themed-primary transition-colors duration-300">
+                    class="bg-themed-tertiary p-4 sm:p-6 rounded-lg border border-themed-primary transition-colors duration-300">
                     <h4
                         class="text-lg font-semibold text-themed-primary mb-3 flex items-center gap-2 transition-colors duration-300">
                         <i class="fas fa-exclamation-circle text-orange-500 dark:text-orange-400"></i>
@@ -170,10 +170,10 @@ x-transition:leave-end="opacity-0 transform -translate-x-8">
 
             @if (!empty(array_filter($materials_included)))
                 <div
-                    class="bg-themed-tertiary p-4 sm:p-6 rounded-xl border border-themed-primary transition-colors duration-300">
+                    class="bg-themed-tertiary p-4 sm:p-6 rounded-lg border border-themed-primary transition-colors duration-300">
                     <h4
                         class="text-lg font-semibold text-themed-primary mb-3 flex items-center gap-2 transition-colors duration-300">
-                        <i class="fas fa-box-open text-teal-500 dark:text-teal-400"></i>
+                        <i class="fas fa-box-open text-brand dark:text-brand"></i>
                         Materials Included
                     </h4>
                     <ul class="space-y-2">
@@ -182,7 +182,7 @@ x-transition:leave-end="opacity-0 transform -translate-x-8">
                                 <li
                                     class="flex items-start gap-2 text-themed-secondary text-sm sm:text-base transition-colors duration-300">
                                     <i
-                                        class="fas fa-check-circle text-teal-500 dark:text-teal-400 mt-1 flex-shrink-0"></i>
+                                        class="fas fa-check-circle text-brand dark:text-brand mt-1 flex-shrink-0"></i>
                                     <span>{{ $material }}</span>
                                 </li>
                             @endif
@@ -193,17 +193,17 @@ x-transition:leave-end="opacity-0 transform -translate-x-8">
 
             @if (!empty(array_filter($tags)))
                 <div
-                    class="bg-themed-tertiary p-4 sm:p-6 rounded-xl border border-themed-primary transition-colors duration-300">
+                    class="bg-themed-tertiary p-4 sm:p-6 rounded-lg border border-themed-primary transition-colors duration-300">
                     <h4
                         class="text-lg font-semibold text-themed-primary mb-3 flex items-center gap-2 transition-colors duration-300">
-                        <i class="fas fa-tags text-purple-500 dark:text-purple-400"></i>
+                        <i class="fas fa-tags text-brand dark:text-brand"></i>
                         Tags
                     </h4>
                     <div class="flex flex-wrap gap-2">
                         @foreach ($tags as $tag)
                             @if (!empty(trim($tag)))
                                 <span
-                                    class="px-3 py-1 bg-purple-100 dark:bg-purple-900/50 text-purple-700 dark:text-purple-300 rounded-full text-sm font-medium transition-colors duration-300">
+                                    class="px-3 py-1 bg-brand/10 dark:bg-action/50 text-brand dark:text-brand rounded-full text-sm font-medium transition-colors duration-300">
                                     {{ $tag }}
                                 </span>
                             @endif

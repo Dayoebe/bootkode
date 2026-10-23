@@ -24,7 +24,7 @@
     <!-- Challenges Grid -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         @forelse($challenges as $challenge)
-            <div class="bg-themed-secondary border border-themed-primary rounded-lg p-4 hover:shadow-md hover:border-orange-500/50 transition-all">
+            <div class="bg-themed-secondary border border-themed-primary rounded-lg p-4  hover:border-orange-500/50 transition-all">
                 <!-- Header -->
                 <div class="flex items-start justify-between mb-3">
                     <h3 class="font-semibold text-themed-primary flex-1">{{ $challenge->title }}</h3>

@@ -3,7 +3,7 @@
     <!-- Search & Create -->
     <div class="mb-6 flex gap-4">
         <div class="flex-1 relative">
-            <input type="text" wire:model.live.debounce="search"
+            <input aria-label="Search study groups" type="text" wire:model.live.debounce="search"
                    class="w-full pl-10 pr-4 py-2 bg-themed-secondary border border-themed-primary text-themed-primary rounded-lg placeholder-themed-secondary focus:ring-2 focus:ring-green-500 focus:border-transparent"
                    placeholder="Search study groups...">
             <i class="fas fa-search absolute left-3 top-2.5 text-themed-secondary"></i>
@@ -18,7 +18,7 @@
     <!-- Study Groups Grid -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         @forelse($studyGroups as $group)
-            <div class="bg-themed-secondary border border-themed-primary rounded-lg p-4 hover:shadow-md hover:border-green-500/50 transition-all">
+            <div class="bg-themed-secondary border border-themed-primary rounded-lg p-4  hover:border-green-500/50 transition-all">
                 <!-- Header -->
                 <div class="flex items-start justify-between mb-3">
                     <h3 class="font-semibold text-themed-primary text-lg flex-1">{{ $group->title }}</h3>
