@@ -34,7 +34,7 @@
                     wire:click="testEmailConfiguration"
                     class="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg font-medium transition-colors"
                 >
-                    <i class="fas fa-paper-plane mr-2"></i>Send Test Email
+                    <i class="fas fa-paper-plane mr-2" aria-hidden="true"></i>Send Test Email
                 </button>
             </div>
         </div>
@@ -115,7 +115,7 @@
                 type="submit"
                 class="bg-action hover:bg-action text-action-foreground px-6 py-2 rounded-lg font-medium transition-colors"
             >
-                <i class="fas fa-save mr-2"></i>Save Settings
+                <i class="fas fa-save mr-2" aria-hidden="true"></i>Save Settings
             </button>
         </div>
     </form>

@@ -3,24 +3,24 @@
 <div class="w-full min-w-0 py-8">
     <div class="bg-surface rounded-lg shadow-sm p-8">
         <div class="text-center mb-8">
-            <i class="fas fa-share-alt text-6xl text-brand mb-4"></i>
+            <i class="fas fa-share-alt text-6xl text-brand mb-4" aria-hidden="true"></i>
             <h1 class=" font-bold text-content mb-4 bk-page-title">Join Our Affiliate Program</h1>
             <p class="text-lg text-content-muted">Earn commission by referring students to BootKode courses</p>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
             <div class="text-center p-6 bg-green-50 rounded-lg">
-                <i class="fas fa-percentage text-3xl text-green-600 mb-4"></i>
+                <i class="fas fa-percentage text-3xl text-green-600 mb-4" aria-hidden="true"></i>
                 <h3 class="text-lg font-semibold text-content mb-2">30% Commission</h3>
                 <p class="text-content-muted">Earn 30% of our platform share from every sale</p>
             </div>
             <div class="text-center p-6 bg-brand/10 rounded-lg">
-                <i class="fas fa-tools text-3xl text-brand mb-4"></i>
+                <i class="fas fa-tools text-3xl text-brand mb-4" aria-hidden="true"></i>
                 <h3 class="text-lg font-semibold text-content mb-2">Marketing Tools</h3>
                 <p class="text-content-muted">Get access to banners, links, and promotional materials</p>
             </div>
             <div class="text-center p-6 bg-brand/10 rounded-lg">
-                <i class="fas fa-chart-line text-3xl text-brand mb-4"></i>
+                <i class="fas fa-chart-line text-3xl text-brand mb-4" aria-hidden="true"></i>
                 <h3 class="text-lg font-semibold text-content mb-2">Real-time Analytics</h3>
                 <p class="text-content-muted">Track your performance with detailed reports</p>
             </div>

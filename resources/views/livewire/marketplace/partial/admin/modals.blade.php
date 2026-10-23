@@ -6,11 +6,11 @@
         <div class="bg-surface rounded-lg max-w-md w-full p-6 shadow-sm transform transition-all">
             <div class="flex items-center justify-between mb-6">
                 <h3 class="text-xl font-semibold text-content flex items-center">
-                    <i class="fas fa-user-check mr-2 text-green-600"></i>
+                    <i class="fas fa-user-check mr-2 text-green-600" aria-hidden="true"></i>
                     Approve Vendor
                 </h3>
                 <button wire:click="closeApprovalModal" class="text-content-muted hover:text-content-muted transition-colors" aria-label="Close">
-                    <i class="fas fa-times text-xl"></i>
+                    <i class="fas fa-times text-xl" aria-hidden="true"></i>
                 </button>
             </div>
 
@@ -35,7 +35,7 @@
 
                 <div class="bg-green-50 border border-green-200 rounded-lg p-4">
                     <p class="text-sm text-green-800">
-                        <i class="fas fa-info-circle mr-2"></i>
+                        <i class="fas fa-info-circle mr-2" aria-hidden="true"></i>
                         This will grant {{ $selectedUser->name }} full vendor privileges to create and sell items on the
                         marketplace.
                     </p>
@@ -44,7 +44,7 @@
 
             <div class="mb-6">
                 <label for="commissionRate" class="block text-sm font-medium text-content mb-2">
-                    <i class="fas fa-percentage mr-1"></i>
+                    <i class="fas fa-percentage mr-1" aria-hidden="true"></i>
                     Vendor Commission Rate (%)
                 </label>
                 <div class="relative">
@@ -65,7 +65,7 @@
                 </button>
                 <button wire:click="approveVendor"
                     class="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors flex items-center">
-                    <i class="fas fa-check mr-2"></i>
+                    <i class="fas fa-check mr-2" aria-hidden="true"></i>
                     Approve Vendor
                 </button>
             </div>
@@ -79,11 +79,11 @@
         <div class="bg-surface rounded-lg max-w-md w-full p-6 shadow-sm transform transition-all">
             <div class="flex items-center justify-between mb-6">
                 <h3 class="text-xl font-semibold text-content flex items-center">
-                    <i class="fas fa-user-times mr-2 text-red-600"></i>
+                    <i class="fas fa-user-times mr-2 text-red-600" aria-hidden="true"></i>
                     Reject Application
                 </h3>
                 <button wire:click="closeRejectionModal" class="text-content-muted hover:text-content-muted transition-colors" aria-label="Close">
-                    <i class="fas fa-times text-xl"></i>
+                    <i class="fas fa-times text-xl" aria-hidden="true"></i>
                 </button>
             </div>
 
@@ -108,7 +108,7 @@
 
                 <div class="bg-red-50 border border-red-200 rounded-lg p-4">
                     <p class="text-sm text-red-800">
-                        <i class="fas fa-exclamation-triangle mr-2"></i>
+                        <i class="fas fa-exclamation-triangle mr-2" aria-hidden="true"></i>
                         Please provide a clear reason for rejecting this vendor application. This message will be sent
                         to the applicant.
                     </p>
@@ -117,7 +117,7 @@
 
             <div class="mb-6">
                 <label for="rejectionReason" class="block text-sm font-medium text-content mb-2">
-                    <i class="fas fa-comment mr-1"></i>
+                    <i class="fas fa-comment mr-1" aria-hidden="true"></i>
                     Rejection Reason *
                 </label>
                 <textarea wire:model="rejectionReason" id="rejectionReason" rows="4"
@@ -125,7 +125,7 @@
                     class="w-full px-4 py-3 border border-line rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 resize-none transition-colors"></textarea>
                 @error('rejectionReason')
                     <p class="text-red-600 text-sm mt-2 flex items-center">
-                        <i class="fas fa-exclamation-circle mr-1"></i>
+                        <i class="fas fa-exclamation-circle mr-1" aria-hidden="true"></i>
                         {{ $message }}
                     </p>
                 @enderror
@@ -140,7 +140,7 @@
                     class="px-6 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors flex items-center"
                     @if(empty($rejectionReason)) disabled
                     class="px-6 py-2 bg-gray-300 text-content-muted rounded-lg cursor-not-allowed" @endif>
-                    <i class="fas fa-times mr-2"></i>
+                    <i class="fas fa-times mr-2" aria-hidden="true"></i>
                     Reject Application
                 </button>
             </div>
@@ -155,7 +155,7 @@
             <div class="flex items-center justify-between mb-4">
                 <h3 class="text-lg font-medium text-content">Order Details</h3>
                 <button wire:click="closeOrderModal" class="text-content-muted hover:text-content-muted" aria-label="Close">
-                    <i class="fas fa-times"></i>
+                    <i class="fas fa-times" aria-hidden="true"></i>
                 </button>
             </div>
 
@@ -212,7 +212,7 @@
                                 class="w-10 h-10 rounded-lg object-cover">
                         @else
                             <div class="w-10 h-10 bg-purple-200 rounded-lg flex items-center justify-center">
-                                <i class="fas fa-box text-brand"></i>
+                                <i class="fas fa-box text-brand" aria-hidden="true"></i>
                             </div>
                         @endif
                         <div>
@@ -266,7 +266,7 @@
                     <button wire:click="processRefund({{ $selectedOrder->id }})"
                         onclick="return confirm('Are you sure you want to process a refund for this order?')"
                         class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors">
-                        <i class="fas fa-undo mr-2"></i>
+                        <i class="fas fa-undo mr-2" aria-hidden="true"></i>
                         Process Refund
                     </button>
                 @endif

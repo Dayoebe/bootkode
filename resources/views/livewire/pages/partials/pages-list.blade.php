@@ -11,12 +11,12 @@
                            placeholder="Search pages..."
                            class="w-full pl-10 pr-4 py-2 border border-line rounded-lg focus:ring-brand/30 focus:border-brand">
                     <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                        <i class="fas fa-search text-content-muted"></i>
+                        <i class="fas fa-search text-content-muted" aria-hidden="true"></i>
                     </div>
                     @if($search)
                         <button wire:click="$set('search', '')"
                                 class="absolute inset-y-0 right-0 pr-3 flex items-center" aria-label="Close">
-                            <i class="fas fa-times text-content-muted hover:text-content-muted"></i>
+                            <i class="fas fa-times text-content-muted hover:text-content-muted" aria-hidden="true"></i>
                         </button>
                     @endif
                 </div>
@@ -24,12 +24,12 @@
                 <div class="flex items-center space-x-3">
                     <a href="{{ route('pages.create') }}"
                        class="bg-action text-action-foreground px-4 py-2 rounded-lg hover:bg-action transition-colors flex items-center">
-                        <i class="fas fa-plus mr-2"></i>Create Page
+                        <i class="fas fa-plus mr-2" aria-hidden="true"></i>Create Page
                     </a>
 
                     <button wire:click="clearFilters"
                             class="px-4 py-2 text-content-muted border border-line rounded-lg hover:bg-surface-muted transition-colors">
-                        <i class="fas fa-filter-circle-xmark mr-2"></i>Clear Filters
+                        <i class="fas fa-filter-circle-xmark mr-2" aria-hidden="true"></i>Clear Filters
                     </button>
                 </div>
             </div>
@@ -66,7 +66,7 @@
                 </select>
 
                 <div class="text-sm text-content-muted flex items-center">
-                    <i class="fas fa-list-ul mr-2"></i>
+                    <i class="fas fa-list-ul mr-2" aria-hidden="true"></i>
                     {{ $pages->total() }} page(s) found
                 </div>
             </div>
@@ -77,7 +77,7 @@
             <div class="mt-4 p-4 bg-brand/10 border border-brand rounded-lg">
                 <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-2 sm:space-y-0">
                     <span class="text-brand font-medium">
-                        <i class="fas fa-check-square mr-2"></i>
+                        <i class="fas fa-check-square mr-2" aria-hidden="true"></i>
                         {{ count($selectedPages) }} page(s) selected
                     </span>
                     <div class="flex items-center space-x-3">
@@ -103,7 +103,7 @@
 
     <!-- Pages Table -->
     <div class="overflow-x-auto">
-        <x-ui.table label="Pages List.Blade records"><table class="min-w-full divide-y divide-line">
+        <x-ui.table label="Pages List records"><table class="min-w-full divide-y divide-line">
             <thead class="bg-surface-muted">
                 <tr>
                     <th scope="col" class="px-6 py-3 text-left">
@@ -118,9 +118,9 @@
                         <div class="flex items-center">
                             Title
                             @if($sortBy === 'title')
-                                <i class="ml-1 fas fa-sort-{{ $sortDirection === 'asc' ? 'up' : 'down' }} text-brand"></i>
+                                <i class="ml-1 fas fa-sort-{{ $sortDirection === 'asc' ? 'up' : 'down' }} text-brand" aria-hidden="true"></i>
                             @else
-                                <i class="ml-1 fas fa-sort text-gray-300"></i>
+                                <i class="ml-1 fas fa-sort text-gray-300" aria-hidden="true"></i>
                             @endif
                         </div>
                     </th>
@@ -139,9 +139,9 @@
                         <div class="flex items-center">
                             Views
                             @if($sortBy === 'view_count')
-                                <i class="ml-1 fas fa-sort-{{ $sortDirection === 'asc' ? 'up' : 'down' }} text-brand"></i>
+                                <i class="ml-1 fas fa-sort-{{ $sortDirection === 'asc' ? 'up' : 'down' }} text-brand" aria-hidden="true"></i>
                             @else
-                                <i class="ml-1 fas fa-sort text-gray-300"></i>
+                                <i class="ml-1 fas fa-sort text-gray-300" aria-hidden="true"></i>
                             @endif
                         </div>
                     </th>
@@ -151,9 +151,9 @@
                         <div class="flex items-center">
                             Updated
                             @if($sortBy === 'updated_at')
-                                <i class="ml-1 fas fa-sort-{{ $sortDirection === 'asc' ? 'up' : 'down' }} text-brand"></i>
+                                <i class="ml-1 fas fa-sort-{{ $sortDirection === 'asc' ? 'up' : 'down' }} text-brand" aria-hidden="true"></i>
                             @else
-                                <i class="ml-1 fas fa-sort text-gray-300"></i>
+                                <i class="ml-1 fas fa-sort text-gray-300" aria-hidden="true"></i>
                             @endif
                         </div>
                     </th>
@@ -182,7 +182,7 @@
                                     </div>
                                 @else
                                     <div class="flex-shrink-0 h-12 w-12 bg-surface-muted rounded-lg flex items-center justify-center border border-line">
-                                        <i class="fas fa-file-alt text-content-muted"></i>
+                                        <i class="fas fa-file-alt text-content-muted" aria-hidden="true"></i>
                                     </div>
                                 @endif
 
@@ -206,7 +206,7 @@
                                            class="text-sm text-content-muted hover:text-brand truncate max-w-xs">
                                             /{{ $page->slug }}
                                         </a>
-                                        <i class="fas fa-external-link-alt text-xs text-gray-300"></i>
+                                        <i class="fas fa-external-link-alt text-xs text-gray-300" aria-hidden="true"></i>
                                     </div>
 
                                     @if($page->excerpt)
@@ -261,7 +261,7 @@
                         </td>
                         <td class="px-6 py-4">
                             <div class="flex items-center space-x-2">
-                                <i class="fas fa-eye text-content-muted text-xs"></i>
+                                <i class="fas fa-eye text-content-muted text-xs" aria-hidden="true"></i>
                                 <span class="text-sm font-medium text-content">
                                     {{ number_format($page->view_count) }}
                                 </span>
@@ -277,7 +277,7 @@
                             <div x-data="{ open: false }" class="relative inline-block text-left">
                                 <button @click="open = !open"
                                         class="text-content-muted hover:text-content-muted p-1 rounded-full hover:bg-surface-muted" aria-label="More actions">
-                                    <i class="fas fa-ellipsis-v"></i>
+                                    <i class="fas fa-ellipsis-v" aria-hidden="true"></i>
                                 </button>
 
                                 <div x-show="open"
@@ -293,7 +293,7 @@
                                         <button wire:click="editPage({{ $page->id }})"
                                                 class="flex items-center w-full text-left px-4 py-2 text-sm text-content hover:bg-surface-muted"
                                                 role="menuitem">
-                                            <i class="fas fa-edit w-4 mr-3 text-brand"></i>
+                                            <i class="fas fa-edit w-4 mr-3 text-brand" aria-hidden="true"></i>
                                             Edit Page
                                         </button>
 
@@ -301,28 +301,28 @@
                                            target="_blank"
                                            class="flex items-center px-4 py-2 text-sm text-content hover:bg-surface-muted"
                                            role="menuitem">
-                                            <i class="fas fa-eye w-4 mr-3 text-brand"></i>
+                                            <i class="fas fa-eye w-4 mr-3 text-brand" aria-hidden="true"></i>
                                             View Page
                                         </a>
 
                                         <button wire:click="openQuickEdit({{ $page->id }})"
                                                 class="flex items-center w-full text-left px-4 py-2 text-sm text-content hover:bg-surface-muted"
                                                 role="menuitem">
-                                            <i class="fas fa-bolt w-4 mr-3 text-yellow-500"></i>
+                                            <i class="fas fa-bolt w-4 mr-3 text-yellow-500" aria-hidden="true"></i>
                                             Quick Edit
                                         </button>
 
                                         <button wire:click="duplicatePage({{ $page->id }})"
                                                 class="flex items-center w-full text-left px-4 py-2 text-sm text-content hover:bg-surface-muted"
                                                 role="menuitem">
-                                            <i class="fas fa-copy w-4 mr-3 text-green-500"></i>
+                                            <i class="fas fa-copy w-4 mr-3 text-green-500" aria-hidden="true"></i>
                                             Duplicate
                                         </button>
 
                                         <button wire:click="togglePageStatus({{ $page->id }})"
                                                 class="flex items-center w-full text-left px-4 py-2 text-sm text-content hover:bg-surface-muted"
                                                 role="menuitem">
-                                            <i class="fas fa-toggle-{{ $page->isPublished() ? 'off' : 'on' }} w-4 mr-3 text-brand"></i>
+                                            <i class="fas fa-toggle-{{ $page->isPublished() ? 'off' : 'on' }} w-4 mr-3 text-brand" aria-hidden="true"></i>
                                             {{ $page->isPublished() ? 'Unpublish' : 'Publish' }}
                                         </button>
 
@@ -332,7 +332,7 @@
                                                 wire:confirm="Are you sure you want to delete '{{ $page->title }}'? This action cannot be undone."
                                                 class="flex items-center w-full text-left px-4 py-2 text-sm text-red-700 hover:bg-red-50"
                                                 role="menuitem">
-                                            <i class="fas fa-trash w-4 mr-3 text-red-500"></i>
+                                            <i class="fas fa-trash w-4 mr-3 text-red-500" aria-hidden="true"></i>
                                             Delete Page
                                         </button>
                                     </div>
@@ -344,7 +344,7 @@
                     <tr>
                         <td colspan="8" class="px-6 py-16 text-center">
                             <div class="flex flex-col items-center">
-                                <i class="fas fa-file-alt text-gray-300 text-6xl mb-6"></i>
+                                <i class="fas fa-file-alt text-gray-300 text-6xl mb-6" aria-hidden="true"></i>
 
                                 @if($search || $statusFilter || $templateFilter || $authorFilter || $dateFilter)
                                     <h3 class="text-lg font-medium text-content mb-2">No pages match your filters</h3>
@@ -358,7 +358,7 @@
                                     <p class="text-content-muted mb-6">Get started by creating your first page</p>
                                     <a href="{{ route('pages.create') }}"
                                        class="bg-action text-action-foreground px-6 py-3 rounded-lg hover:bg-action transition-colors">
-                                        <i class="fas fa-plus mr-2"></i>Create Your First Page
+                                        <i class="fas fa-plus mr-2" aria-hidden="true"></i>Create Your First Page
                                     </a>
                                 @endif
                             </div>
@@ -384,7 +384,7 @@
                     <div class="flex items-center justify-between">
                         <h3 class="text-lg font-medium text-content">Quick Edit: {{ $quickEditPage->title }}</h3>
                         <button wire:click="closeQuickEdit" class="text-content-muted hover:text-content-muted" aria-label="Close">
-                            <i class="fas fa-times"></i>
+                            <i class="fas fa-times" aria-hidden="true"></i>
                         </button>
                     </div>
                 </div>

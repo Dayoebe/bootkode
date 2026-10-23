@@ -5,24 +5,24 @@
         <nav class="flex space-x-4">
             <button wire:click="showBrowse"
                     class="{{ $currentView === 'browse' ? 'bg-purple-100 dark:bg-action text-brand dark:text-brand border-brand dark:border-purple-700' : 'text-gray-600 dark:text-content-muted hover:text-content dark:hover:text-white' }} px-4 py-2 rounded-lg border transition-colors duration-300 flex items-center">
-                <i class="fas fa-search mr-2"></i>
+                <i class="fas fa-search mr-2" aria-hidden="true"></i>
                 Browse Items
             </button>
 
             <button wire:click="showCategories"
                     class="{{ $currentView === 'categories' ? 'bg-purple-100 dark:bg-action text-brand dark:text-brand border-brand dark:border-purple-700' : 'text-gray-600 dark:text-content-muted hover:text-content dark:hover:text-white' }} px-4 py-2 rounded-lg border transition-colors duration-300 flex items-center">
-                <i class="fas fa-tags mr-2"></i>
+                <i class="fas fa-tags mr-2" aria-hidden="true"></i>
                 Categories
             </button>
 
             @if($currentView === 'product-details')
                 <button wire:click="backToBrowse"
                         class="text-content-muted dark:text-content-muted hover:text-content dark:hover:text-white px-4 py-2 rounded-lg border border-line dark:border-gray-700 transition-colors duration-300 flex items-center">
-                    <i class="fas fa-arrow-left mr-2"></i>
+                    <i class="fas fa-arrow-left mr-2" aria-hidden="true"></i>
                     Back to Browse
                 </button>
                 <div class="px-4 py-2 bg-brand/10 dark:bg-action text-brand dark:text-brand rounded-lg border border-brand dark:border-brand flex items-center transition-colors duration-300">
-                    <i class="fas fa-box-open mr-2"></i>
+                    <i class="fas fa-box-open mr-2" aria-hidden="true"></i>
                     Product Details
                 </div>
             @endif
@@ -41,10 +41,10 @@
                                type="text"
                                placeholder="Search courses, resources, services..."
                                class="w-full pl-10 pr-4 py-2 border border-line dark:border-gray-600 bg-surface dark:bg-gray-700 text-content dark:text-white rounded-lg focus:ring-brand/30 focus:border-brand transition-colors duration-300">
-                        <i class="fas fa-search absolute left-3 top-3 text-content-muted dark:text-content-muted"></i>
+                        <i class="fas fa-search absolute left-3 top-3 text-content-muted dark:text-content-muted" aria-hidden="true"></i>
                         @if($search)
                             <button wire:click="$set('search', '')" class="absolute right-3 top-3 text-content-muted dark:text-content-muted hover:text-content-muted dark:hover:text-content-muted transition-colors duration-300" aria-label="Close">
-                                <i class="fas fa-times"></i>
+                                <i class="fas fa-times" aria-hidden="true"></i>
                             </button>
                         @endif
                     </div>
@@ -83,7 +83,7 @@
                                 <span class="inline-flex items-center px-3 py-1 bg-brand/10 dark:bg-action text-brand dark:text-brand text-sm rounded-full transition-colors duration-300">
                                     Search: "{{ $search }}"
                                     <button wire:click="$set('search', '')" class="ml-2 hover:text-brand dark:hover:text-brand transition-colors duration-300" aria-label="Close">
-                                        <i class="fas fa-times text-xs"></i>
+                                        <i class="fas fa-times text-xs" aria-hidden="true"></i>
                                     </button>
                                 </span>
                             @endif
@@ -91,7 +91,7 @@
                                 <span class="inline-flex items-center px-3 py-1 bg-brand/10 dark:bg-action text-brand dark:text-brand text-sm rounded-full transition-colors duration-300">
                                     Type: {{ $types[$type] ?? $type }}
                                     <button wire:click="$set('type', '')" class="ml-2 hover:text-brand dark:hover:text-brand transition-colors duration-300" aria-label="Close">
-                                        <i class="fas fa-times text-xs"></i>
+                                        <i class="fas fa-times text-xs" aria-hidden="true"></i>
                                     </button>
                                 </span>
                             @endif
@@ -99,7 +99,7 @@
                                 <span class="inline-flex items-center px-3 py-1 bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-300 text-sm rounded-full transition-colors duration-300">
                                     Category
                                     <button wire:click="$set('category', '')" class="ml-2 hover:text-green-600 dark:hover:text-green-400 transition-colors duration-300" aria-label="Close">
-                                        <i class="fas fa-times text-xs"></i>
+                                        <i class="fas fa-times text-xs" aria-hidden="true"></i>
                                     </button>
                                 </span>
                             @endif
@@ -117,7 +117,7 @@
             @if($featuredItems->count() > 0)
                 <div class="bg-surface dark:bg-gray-800 rounded-lg shadow-sm border border-line dark:border-gray-700 p-6 transition-colors duration-300">
                     <h2 class="text-xl font-bold text-content dark:text-white mb-4 flex items-center transition-colors duration-300">
-                        <i class="fas fa-star text-yellow-500 mr-2"></i>
+                        <i class="fas fa-star text-yellow-500 mr-2" aria-hidden="true"></i>
                         Featured Items
                     </h2>
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -129,7 +129,7 @@
                                          class="w-full h-32 object-cover rounded-lg mb-3">
                                 @else
                                     <div class="w-full h-32 bg-gray-200 dark:bg-gray-700 rounded-lg mb-3 flex items-center justify-center transition-colors duration-300">
-                                        <i class="fas fa-image text-content-muted dark:text-content-muted text-2xl"></i>
+                                        <i class="fas fa-image text-content-muted dark:text-content-muted text-2xl" aria-hidden="true"></i>
                                     </div>
                                 @endif
 
@@ -184,7 +184,7 @@
                                          class="w-full h-40 object-cover">
                                 @else
                                     <div class="w-full h-40 bg-surface-muted dark:bg-gray-700 flex items-center justify-center transition-colors duration-300">
-                                        <i class="fas fa-image text-content-muted dark:text-content-muted text-3xl"></i>
+                                        <i class="fas fa-image text-content-muted dark:text-content-muted text-3xl" aria-hidden="true"></i>
                                     </div>
                                 @endif
 
@@ -195,7 +195,7 @@
                                         </span>
                                         @if($item->average_rating > 0)
                                             <div class="flex items-center space-x-1">
-                                                <i class="fas fa-star text-yellow-400 text-xs"></i>
+                                                <i class="fas fa-star text-yellow-400 text-xs" aria-hidden="true"></i>
                                                 <span class="text-xs text-content-muted dark:text-content-muted transition-colors duration-300">{{ number_format($item->average_rating, 1) }}</span>
                                             </div>
                                         @endif
@@ -205,8 +205,8 @@
                                     <p class="text-sm text-content-muted dark:text-content-muted line-clamp-2 transition-colors duration-300">{{ $item->short_description }}</p>
 
                                     <div class="flex items-center text-xs text-content-muted dark:text-content-muted space-x-3 transition-colors duration-300">
-                                        <span><i class="fas fa-user mr-1"></i>{{ $item->vendor->name }}</span>
-                                        <span><i class="fas fa-eye mr-1"></i>{{ $item->views_count }}</span>
+                                        <span><i class="fas fa-user mr-1" aria-hidden="true"></i>{{ $item->vendor->name }}</span>
+                                        <span><i class="fas fa-eye mr-1" aria-hidden="true"></i>{{ $item->views_count }}</span>
                                     </div>
 
                                     <div class="flex items-center justify-between pt-2">
@@ -235,12 +235,12 @@
                     </div>
                 @else
                     <div class="text-center py-12">
-                        <i class="fas fa-search text-gray-300 dark:text-content-muted text-6xl mb-4"></i>
+                        <i class="fas fa-search text-gray-300 dark:text-content-muted text-6xl mb-4" aria-hidden="true"></i>
                         <h3 class="text-lg font-medium text-content dark:text-white mb-2 transition-colors duration-300">No items found</h3>
                         <p class="text-content-muted dark:text-content-muted mb-4 transition-colors duration-300">Try adjusting your search criteria or browse our categories.</p>
                         <button wire:click="showCategories"
                                 class="inline-flex items-center px-4 py-2 bg-action dark:bg-action text-action-foreground rounded-lg hover:bg-action dark:hover:bg-action transition-colors duration-300">
-                            <i class="fas fa-tags mr-2"></i>
+                            <i class="fas fa-tags mr-2" aria-hidden="true"></i>
                             Browse Categories
                         </button>
                     </div>
@@ -261,7 +261,7 @@
                 @if($canManageCategories)
                     <button wire:click="openCreateCategoryForm"
                             class="inline-flex items-center px-4 py-2 bg-action dark:bg-action text-action-foreground rounded-lg hover:bg-action dark:hover:bg-action transition-colors duration-300">
-                        <i class="fas fa-plus mr-2"></i>
+                        <i class="fas fa-plus mr-2" aria-hidden="true"></i>
                         Add Category
                     </button>
                 @endif
@@ -273,7 +273,7 @@
             @if($featuredCategories->count() > 0)
                 <div class="bg-surface dark:bg-gray-800 rounded-lg shadow-sm border border-line dark:border-gray-700 p-6 transition-colors duration-300">
                     <h3 class="text-lg font-medium text-content dark:text-white mb-4 flex items-center transition-colors duration-300">
-                        <i class="fas fa-star text-yellow-500 mr-2"></i>
+                        <i class="fas fa-star text-yellow-500 mr-2" aria-hidden="true"></i>
                         Featured Categories
                     </h3>
                     <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-4">
@@ -313,14 +313,14 @@
                                             <h4 class="font-medium text-content dark:text-white group-hover:text-brand dark:group-hover:text-brand transition-colors duration-300">
                                                 {{ $category->name }}
                                                 @if($category->is_featured)
-                                                    <i class="fas fa-star text-yellow-500 text-xs ml-1"></i>
+                                                    <i class="fas fa-star text-yellow-500 text-xs ml-1" aria-hidden="true"></i>
                                                 @endif
                                             </h4>
                                             @if($category->description)
                                                 <p class="text-sm text-content-muted dark:text-content-muted line-clamp-2 transition-colors duration-300">{{ $category->description }}</p>
                                             @endif
                                             <div class="flex items-center mt-2 space-x-3 text-xs text-content-muted dark:text-content-muted transition-colors duration-300">
-                                                <span><i class="fas fa-box mr-1"></i>{{ $category->items_count }} items</span>
+                                                <span><i class="fas fa-box mr-1" aria-hidden="true"></i>{{ $category->items_count }} items</span>
                                                 <span class="px-2 py-1 bg-{{ $category->is_active ? 'green' : 'red' }}-100 dark:bg-{{ $category->is_active ? 'green' : 'red' }}-900 text-{{ $category->is_active ? 'green' : 'red' }}-800 dark:text-{{ $category->is_active ? 'green' : 'red' }}-300 rounded-full transition-colors duration-300">
                                                     {{ $category->is_active ? 'Active' : 'Inactive' }}
                                                 </span>
@@ -335,24 +335,24 @@
                                         <div class="flex space-x-1">
                                             <button wire:click="openEditCategoryForm({{ $category->id }})"
                                                     class="p-1 bg-action dark:bg-action text-action-foreground rounded text-xs hover:bg-action dark:hover:bg-action transition-colors duration-300">
-                                                <i class="fas fa-edit"></i>
+                                                <i class="fas fa-edit" aria-hidden="true"></i>
                                             </button>
 
                                             <button wire:click="toggleCategoryFeatured({{ $category->id }})"
                                                     class="p-1 bg-{{ $category->is_featured ? 'yellow' : 'gray' }}-600 text-white rounded text-xs hover:bg-{{ $category->is_featured ? 'yellow' : 'gray' }}-700 transition-colors duration-300">
-                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star" aria-hidden="true"></i>
                                             </button>
 
                                             <button wire:click="toggleCategoryActive({{ $category->id }})"
                                                     class="p-1 bg-{{ $category->is_active ? 'red' : 'green' }}-600 text-white rounded text-xs hover:bg-{{ $category->is_active ? 'red' : 'green' }}-700 transition-colors duration-300">
-                                                <i class="fas fa-{{ $category->is_active ? 'eye-slash' : 'eye' }}"></i>
+                                                <i class="fas fa-{{ $category->is_active ? 'eye-slash' : 'eye' }}" aria-hidden="true"></i>
                                             </button>
 
                                             @if($category->items_count === 0)
                                                 <button wire:click="deleteCategory({{ $category->id }})"
                                                         onclick="confirm('Are you sure you want to delete this category?') || event.stopImmediatePropagation()"
                                                         class="p-1 bg-red-600 dark:bg-red-500 text-white rounded text-xs hover:bg-red-700 dark:hover:bg-red-600 transition-colors duration-300">
-                                                    <i class="fas fa-trash"></i>
+                                                    <i class="fas fa-trash" aria-hidden="true"></i>
                                                 </button>
                                             @endif
                                         </div>
@@ -368,13 +368,13 @@
                     </div>
                 @else
                     <div class="text-center py-12">
-                        <i class="fas fa-folder-open text-gray-300 dark:text-content-muted text-6xl mb-4"></i>
+                        <i class="fas fa-folder-open text-gray-300 dark:text-content-muted text-6xl mb-4" aria-hidden="true"></i>
                         <h3 class="text-lg font-medium text-content dark:text-white mb-2 transition-colors duration-300">No categories yet</h3>
                         <p class="text-content-muted dark:text-content-muted mb-6 transition-colors duration-300">Categories help organize marketplace items.</p>
                         @if($canManageCategories)
                             <button wire:click="openCreateCategoryForm"
                                     class="inline-flex items-center px-4 py-2 bg-action dark:bg-action text-action-foreground rounded-lg hover:bg-action dark:hover:bg-action transition-colors duration-300">
-                                <i class="fas fa-plus mr-2"></i>
+                                <i class="fas fa-plus mr-2" aria-hidden="true"></i>
                                 Create First Category
                             </button>
                         @endif
@@ -398,7 +398,7 @@
                                      class="w-full h-64 object-cover rounded-lg">
                             @else
                                 <div class="w-full h-64 bg-gray-200 dark:bg-gray-700 rounded-lg flex items-center justify-center transition-colors duration-300">
-                                    <i class="fas fa-image text-content-muted dark:text-content-muted text-4xl"></i>
+                                    <i class="fas fa-image text-content-muted dark:text-content-muted text-4xl" aria-hidden="true"></i>
                                 </div>
                             @endif
 
@@ -424,7 +424,7 @@
                                     </span>
                                     @if($selectedItem->is_featured)
                                         <span class="px-3 py-1 bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-300 text-sm font-medium rounded-full transition-colors duration-300">
-                                            <i class="fas fa-star mr-1"></i>Featured
+                                            <i class="fas fa-star mr-1" aria-hidden="true"></i>Featured
                                         </span>
                                     @endif
                                 </div>
@@ -436,22 +436,22 @@
                             <!-- Stats -->
                             <div class="flex items-center space-x-6 text-sm text-content-muted dark:text-content-muted transition-colors duration-300">
                                 <div class="flex items-center">
-                                    <i class="fas fa-user mr-2"></i>
+                                    <i class="fas fa-user mr-2" aria-hidden="true"></i>
                                     <span>{{ $selectedItem->vendor->name }}</span>
                                 </div>
                                 @if($selectedItem->average_rating > 0)
                                     <div class="flex items-center">
-                                        <i class="fas fa-star text-yellow-400 mr-2"></i>
+                                        <i class="fas fa-star text-yellow-400 mr-2" aria-hidden="true"></i>
                                         <span>{{ number_format($selectedItem->average_rating, 1) }} ({{ $selectedItem->reviews_count }} reviews)</span>
                                     </div>
                                 @endif
                                 <div class="flex items-center">
-                                    <i class="fas fa-eye mr-2"></i>
+                                    <i class="fas fa-eye mr-2" aria-hidden="true"></i>
                                     <span>{{ number_format($selectedItem->views_count) }} views</span>
                                 </div>
                                 @if($selectedItem->duration_minutes)
                                     <div class="flex items-center">
-                                        <i class="fas fa-clock mr-2"></i>
+                                        <i class="fas fa-clock mr-2" aria-hidden="true"></i>
                                         <span>{{ $selectedItem->getFormattedDuration() }}</span>
                                     </div>
                                 @endif
@@ -475,11 +475,11 @@
                                     </div>
                                     <div class="space-x-2">
                                         <button class="bg-action dark:bg-action text-action-foreground px-6 py-3 rounded-lg hover:bg-action dark:hover:bg-action transition-colors duration-300">
-                                            <i class="fas fa-shopping-cart mr-2"></i>
+                                            <i class="fas fa-shopping-cart mr-2" aria-hidden="true"></i>
                                             Add to Cart
                                         </button>
                                         <button class="border border-line dark:border-gray-600 text-content dark:text-gray-300 px-6 py-3 rounded-lg hover:bg-surface-muted dark:hover:bg-gray-700 transition-colors duration-300">
-                                            <i class="fas fa-heart mr-2"></i>
+                                            <i class="fas fa-heart mr-2" aria-hidden="true"></i>
                                             Wishlist
                                         </button>
                                     </div>
@@ -532,7 +532,7 @@
                                             <span class="font-medium text-content dark:text-white transition-colors duration-300">{{ $review->user->name }}</span>
                                             <div class="flex">
                                                 @for($i = 1; $i <= 5; $i++)
-                                                    <i class="fas fa-star text-{{ $i <= $review->rating ? 'yellow' : 'gray' }}-400 text-sm"></i>
+                                                    <i class="fas fa-star text-{{ $i <= $review->rating ? 'yellow' : 'gray' }}-400 text-sm" aria-hidden="true"></i>
                                                 @endfor
                                             </div>
                                         </div>
@@ -551,12 +551,12 @@
                 <!-- Item not found -->
                 <div class="bg-surface dark:bg-gray-800 rounded-lg shadow-sm border border-line dark:border-gray-700 p-6 transition-colors duration-300">
                     <div class="text-center py-12">
-                        <i class="fas fa-exclamation-triangle text-yellow-400 text-6xl mb-4"></i>
+                        <i class="fas fa-exclamation-triangle text-yellow-400 text-6xl mb-4" aria-hidden="true"></i>
                         <h3 class="text-lg font-medium text-content dark:text-white mb-2 transition-colors duration-300">Item Not Found</h3>
                         <p class="text-content-muted dark:text-content-muted mb-6 transition-colors duration-300">The requested item could not be found or is no longer available.</p>
                         <button wire:click="backToBrowse"
                                 class="inline-flex items-center px-4 py-2 bg-action dark:bg-action text-action-foreground rounded-lg hover:bg-action dark:hover:bg-action transition-colors duration-300">
-                            <i class="fas fa-arrow-left mr-2"></i>
+                            <i class="fas fa-arrow-left mr-2" aria-hidden="true"></i>
                             Back to Browse
                         </button>
                     </div>
@@ -566,12 +566,12 @@
             <!-- No item selected -->
             <div class="bg-surface dark:bg-gray-800 rounded-lg shadow-sm border border-line dark:border-gray-700 p-6 transition-colors duration-300">
                 <div class="text-center py-12">
-                    <i class="fas fa-box-open text-gray-300 dark:text-content-muted text-6xl mb-4"></i>
+                    <i class="fas fa-box-open text-gray-300 dark:text-content-muted text-6xl mb-4" aria-hidden="true"></i>
                     <h3 class="text-lg font-medium text-content dark:text-white mb-2 transition-colors duration-300">Select an Item</h3>
                     <p class="text-content-muted dark:text-content-muted mb-6 transition-colors duration-300">Choose an item from the marketplace to view its details.</p>
                     <button wire:click="backToBrowse"
                             class="inline-flex items-center px-4 py-2 bg-action dark:bg-action text-action-foreground rounded-lg hover:bg-action dark:hover:bg-action transition-colors duration-300">
-                        <i class="fas fa-search mr-2"></i>
+                        <i class="fas fa-search mr-2" aria-hidden="true"></i>
                         Browse Items
                     </button>
                 </div>

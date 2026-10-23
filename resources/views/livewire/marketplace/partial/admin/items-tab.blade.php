@@ -6,7 +6,7 @@
             <div class="relative">
                 <input aria-label="Search items" wire:model.live.debounce.300ms="search" type="text" placeholder="Search items..."
                     class="w-64 pl-10 pr-4 py-2 border border-line rounded-lg focus:ring-brand/30 focus:border-brand">
-                <i class="fas fa-search absolute left-3 top-3 text-content-muted"></i>
+                <i class="fas fa-search absolute left-3 top-3 text-content-muted" aria-hidden="true"></i>
             </div>
 
             <select aria-label="Item status" wire:model.live="itemStatus"
@@ -88,7 +88,7 @@
     @if(isset($items) && $items->count() > 0)
         <div class="bg-surface border border-line rounded-lg overflow-hidden">
             <div class="overflow-x-auto">
-                <x-ui.table label="Items Tab.Blade records"><table class="min-w-full divide-y divide-line">
+                <x-ui.table label="Items Tab records"><table class="min-w-full divide-y divide-line">
                     <thead class="bg-surface-muted">
                         <tr>
                             <th scope="col" class="px-6 py-3 text-left">
@@ -131,7 +131,7 @@
                                         @else
                                             <div
                                                 class="flex-shrink-0 h-12 w-12 bg-surface-muted rounded-lg flex items-center justify-center">
-                                                <i class="fas fa-image text-content-muted"></i>
+                                                <i class="fas fa-image text-content-muted" aria-hidden="true"></i>
                                             </div>
                                         @endif
                                         <div class="ml-4">
@@ -203,7 +203,7 @@
                                     @if($item->is_featured)
                                         <span
                                             class="ml-2 inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-brand/10 text-brand">
-                                            <i class="fas fa-star mr-1"></i>Featured
+                                            <i class="fas fa-star mr-1" aria-hidden="true"></i>Featured
                                         </span>
                                     @endif
                                 </td>
@@ -215,20 +215,20 @@
                                         <!-- View Item -->
                                         <button wire:click="viewItemDetails({{ $item->id }})"
                                             class="text-brand hover:text-brand p-1" title="View Details">
-                                            <i class="fas fa-eye"></i>
+                                            <i class="fas fa-eye" aria-hidden="true"></i>
                                         </button>
 
                                         @if($item->status === 'pending')
                                             <!-- Approve -->
                                             <button wire:click="approveItem({{ $item->id }})"
                                                 class="text-green-600 hover:text-green-900 p-1" title="Approve">
-                                                <i class="fas fa-check"></i>
+                                                <i class="fas fa-check" aria-hidden="true"></i>
                                             </button>
                                             <!-- Reject -->
                                             <button wire:click="rejectItem({{ $item->id }})"
                                                 onclick="confirm('Reject this item?') || event.stopImmediatePropagation()"
                                                 class="text-red-600 hover:text-red-900 p-1" title="Reject">
-                                                <i class="fas fa-times"></i>
+                                                <i class="fas fa-times" aria-hidden="true"></i>
                                             </button>
                                         @endif
 
@@ -237,13 +237,13 @@
                                             <button wire:click="toggleFeatureItem({{ $item->id }})"
                                                 class="text-brand hover:text-brand p-1"
                                                 title="{{ $item->is_featured ? 'Remove from Featured' : 'Add to Featured' }}">
-                                                <i class="fas fa-{{ $item->is_featured ? 'star-half-alt' : 'star' }}"></i>
+                                                <i class="fas fa-{{ $item->is_featured ? 'star-half-alt' : 'star' }}" aria-hidden="true"></i>
                                             </button>
                                             <!-- Suspend -->
                                             <button wire:click="suspendItem({{ $item->id }})"
                                                 onclick="confirm('Suspend this item?') || event.stopImmediatePropagation()"
                                                 class="text-orange-600 hover:text-orange-900 p-1" title="Suspend">
-                                                <i class="fas fa-ban"></i>
+                                                <i class="fas fa-ban" aria-hidden="true"></i>
                                             </button>
                                         @endif
 
@@ -251,7 +251,7 @@
                                             <!-- Reactivate -->
                                             <button wire:click="reactivateItem({{ $item->id }})"
                                                 class="text-green-600 hover:text-green-900 p-1" title="Reactivate">
-                                                <i class="fas fa-play"></i>
+                                                <i class="fas fa-play" aria-hidden="true"></i>
                                             </button>
                                         @endif
 
@@ -259,7 +259,7 @@
                                             <!-- Re-approve -->
                                             <button wire:click="approveItem({{ $item->id }})"
                                                 class="text-green-600 hover:text-green-900 p-1" title="Approve">
-                                                <i class="fas fa-check"></i>
+                                                <i class="fas fa-check" aria-hidden="true"></i>
                                             </button>
                                         @endif
 
@@ -267,7 +267,7 @@
                                         <button wire:click="deleteItem({{ $item->id }})"
                                             onclick="confirm('Permanently delete this item?') || event.stopImmediatePropagation()"
                                             class="text-red-600 hover:text-red-900 p-1" title="Delete">
-                                            <i class="fas fa-trash"></i>
+                                            <i class="fas fa-trash" aria-hidden="true"></i>
                                         </button>
                                     </div>
                                 </td>
@@ -283,7 +283,7 @@
         </div>
     @else
         <div class="text-center py-12 bg-surface rounded-lg border border-line">
-            <i class="fas fa-box text-gray-300 text-6xl mb-4"></i>
+            <i class="fas fa-box text-gray-300 text-6xl mb-4" aria-hidden="true"></i>
             <h3 class="text-lg font-medium text-content mb-2">No items found</h3>
             <p class="text-content-muted">
                 @if($itemStatus)
@@ -308,7 +308,7 @@
                         </p>
                     </div>
                     <button type="button" wire:click="closeItemDetails" class="text-content-muted hover:text-content-muted" aria-label="Close">
-                        <i class="fas fa-times"></i>
+                        <i class="fas fa-times" aria-hidden="true"></i>
                     </button>
                 </div>
 

@@ -7,7 +7,7 @@
         :class="{ 'is-open': sidebarOpen }" aria-label="Workspace" wire:ignore.self>
         <div class="bk-sidebar-brand">
             <a href="{{ route('dashboard') }}" class="flex min-w-0 items-center gap-3" aria-label="BootKode dashboard" wire:navigate>
-                <img src="{{ asset('img/logo.png') }}" alt="" class="h-9 w-9 shrink-0 object-contain">
+                <span class="relative h-10 w-10 shrink-0 overflow-hidden"><img src="{{ asset('img/logo.png') }}" alt="" class="absolute left-1/2 top-1/2 w-24 max-w-none -translate-x-1/2 -translate-y-1/2"></span>
                 <span class="sidebar-expanded-content min-w-0">
                     <span class="block font-display text-base font-bold text-content">BootKode</span>
                     <span class="block text-xs text-content-muted">Learn. Build. Grow.</span>

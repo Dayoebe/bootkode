@@ -85,7 +85,7 @@
 
     <!-- Interviews Table -->
     <div class="shadow overflow-hidden sm:rounded-lg bg-themed-secondary border border-themed-primary">
-        <x-ui.table label="Interviews Tab.Blade records"><table class="min-w-full divide-y divide-themed-primary">
+        <x-ui.table label="Interviews Tab records"><table class="min-w-full divide-y divide-themed-primary">
             <thead class="bg-themed-tertiary">
                 <tr>
                     <th scope="col" class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-themed-secondary">

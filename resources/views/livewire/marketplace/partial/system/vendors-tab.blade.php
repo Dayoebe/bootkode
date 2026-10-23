@@ -11,7 +11,7 @@
                            placeholder="Search vendors by name or email..."
                            class="w-full pl-10 pr-4 py-2 border border-line rounded-lg focus:ring-brand/30 focus:border-brand">
                     <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                        <i class="fas fa-search text-content-muted"></i>
+                        <i class="fas fa-search text-content-muted" aria-hidden="true"></i>
                     </div>
                 </div>
             </div>
@@ -26,7 +26,7 @@
                 </select>
 
                 <button wire:click="$set('searchTerm', '')" class="px-3 py-2 text-content-muted hover:text-content">
-                    <i class="fas fa-times"></i> Clear
+                    <i class="fas fa-times" aria-hidden="true"></i> Clear
                 </button>
             </div>
         </div>
@@ -37,7 +37,7 @@
         <div class="bg-surface rounded-lg border border-line p-6">
             <div class="flex items-center">
                 <div class="p-2 bg-brand/10 rounded-lg">
-                    <i class="fas fa-users text-brand"></i>
+                    <i class="fas fa-users text-brand" aria-hidden="true"></i>
                 </div>
                 <div class="ml-4">
                     <p class="text-sm text-content-muted">Total Vendors</p>
@@ -49,7 +49,7 @@
         <div class="bg-surface rounded-lg border border-line p-6">
             <div class="flex items-center">
                 <div class="p-2 bg-green-100 rounded-lg">
-                    <i class="fas fa-user-check text-green-600"></i>
+                    <i class="fas fa-user-check text-green-600" aria-hidden="true"></i>
                 </div>
                 <div class="ml-4">
                     <p class="text-sm text-content-muted">Active Vendors</p>
@@ -61,7 +61,7 @@
         <div class="bg-surface rounded-lg border border-line p-6">
             <div class="flex items-center">
                 <div class="p-2 bg-brand/10 rounded-lg">
-                    <i class="fas fa-box text-brand"></i>
+                    <i class="fas fa-box text-brand" aria-hidden="true"></i>
                 </div>
                 <div class="ml-4">
                     <p class="text-sm text-content-muted">Total Items</p>
@@ -73,7 +73,7 @@
         <div class="bg-surface rounded-lg border border-line p-6">
             <div class="flex items-center">
                 <div class="p-2 bg-brand/10 rounded-lg">
-                    <i class="fas fa-dollar-sign text-brand"></i>
+                    <i class="fas fa-dollar-sign text-brand" aria-hidden="true"></i>
                 </div>
                 <div class="ml-4">
                     <p class="text-sm text-content-muted">Total Earnings</p>
@@ -90,7 +90,7 @@
         </div>
 
         <div class="overflow-x-auto">
-            <x-ui.table label="Vendors Tab.Blade records"><table class="min-w-full divide-y divide-line">
+            <x-ui.table label="Vendors Tab records"><table class="min-w-full divide-y divide-line">
                 <thead class="bg-surface-muted">
                     <tr>
                         <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-content-muted uppercase tracking-wider">Vendor</th>
@@ -163,41 +163,41 @@
                                     <button wire:click="viewVendor({{ $vendor->id }})"
                                             class="text-brand hover:text-brand"
                                             title="View Details">
-                                        <i class="fas fa-eye"></i>
+                                        <i class="fas fa-eye" aria-hidden="true"></i>
                                     </button>
 
                                     @if($vendor->is_active)
                                         <button wire:click="deactivateVendor({{ $vendor->id }})"
                                                 class="text-red-600 hover:text-red-900"
                                                 title="Deactivate Vendor">
-                                            <i class="fas fa-user-slash"></i>
+                                            <i class="fas fa-user-slash" aria-hidden="true"></i>
                                         </button>
                                     @else
                                         <button wire:click="activateVendor({{ $vendor->id }})"
                                                 class="text-green-600 hover:text-green-900"
                                                 title="Activate Vendor">
-                                            <i class="fas fa-user-check"></i>
+                                            <i class="fas fa-user-check" aria-hidden="true"></i>
                                         </button>
                                     @endif
 
                                     <div class="relative" x-data="{ open: false }">
                                         <button @click="open = !open" class="text-content-muted hover:text-content-muted" aria-label="More actions">
-                                            <i class="fas fa-ellipsis-v"></i>
+                                            <i class="fas fa-ellipsis-v" aria-hidden="true"></i>
                                         </button>
                                         <div x-show="open" @click.away="open = false"
                                              class="absolute right-0 mt-2 w-48 bg-surface rounded-md shadow-sm z-10 border border-line">
                                             <div class="py-1">
                                                 <a href="#" class="block px-4 py-2 text-sm text-content hover:bg-surface-muted">
-                                                    <i class="fas fa-chart-bar mr-2"></i>View Analytics
+                                                    <i class="fas fa-chart-bar mr-2" aria-hidden="true"></i>View Analytics
                                                 </a>
                                                 <a href="#" class="block px-4 py-2 text-sm text-content hover:bg-surface-muted">
-                                                    <i class="fas fa-envelope mr-2"></i>Send Email
+                                                    <i class="fas fa-envelope mr-2" aria-hidden="true"></i>Send Email
                                                 </a>
                                                 <a href="#" class="block px-4 py-2 text-sm text-content hover:bg-surface-muted">
-                                                    <i class="fas fa-history mr-2"></i>View History
+                                                    <i class="fas fa-history mr-2" aria-hidden="true"></i>View History
                                                 </a>
                                                 <a href="#" class="block px-4 py-2 text-sm text-content hover:bg-surface-muted">
-                                                    <i class="fas fa-money-bill mr-2"></i>Payout History
+                                                    <i class="fas fa-money-bill mr-2" aria-hidden="true"></i>Payout History
                                                 </a>
                                             </div>
                                         </div>
@@ -209,7 +209,7 @@
                         <tr>
                             <td colspan="8" class="px-6 py-8 text-center">
                                 <div class="text-content-muted">
-                                    <i class="fas fa-users text-4xl mb-4"></i>
+                                    <i class="fas fa-users text-4xl mb-4" aria-hidden="true"></i>
                                     <p class="text-lg font-medium">No vendors found</p>
                                     <p class="text-sm">Try adjusting your search criteria</p>
                                 </div>

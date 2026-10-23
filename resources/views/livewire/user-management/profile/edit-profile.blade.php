@@ -4,7 +4,7 @@
     <div x-show="activeTab === 'basic'" x-transition.opacity.duration.300ms class="p-4 sm:p-6 lg:p-8">
         <div class="flex flex-col sm:flex-row sm:items-center mb-6 sm:mb-8">
             <div class="w-12 h-12 bg-surface-muted   rounded-lg flex items-center justify-center mb-3 sm:mb-0 sm:mr-4 flex-shrink-0">
-                <i class="fas fa-user-circle text-brand text-xl"></i>
+                <i class="fas fa-user-circle text-brand text-xl" aria-hidden="true"></i>
             </div>
             <div class="min-w-0 flex-1">
                 <h2 class="text-xl sm:text-2xl font-bold text-themed-primary transition-colors duration-300">
@@ -22,12 +22,12 @@
                     <input type="text" id="name" wire:model="name"
                         class="w-full px-3 sm:px-4 py-3 sm:py-4 pl-10 sm:pl-12 bg-themed-secondary border border-themed-primary rounded-lg focus:ring-2 focus:ring-brand focus:border-brand text-themed-primary placeholder-themed-tertiary shadow-sm transition-all duration-200  text-sm sm:text-base">
                     <div class="absolute inset-y-0 left-0 pl-3 sm:pl-4 flex items-center pointer-events-none">
-                        <i class="fas fa-user text-themed-tertiary text-sm"></i>
+                        <i class="fas fa-user text-themed-tertiary text-sm" aria-hidden="true"></i>
                     </div>
                 </div>
                 @error('name')
                     <p class="mt-2 text-sm text-red-500 flex items-center transition-colors duration-300">
-                        <i class="fas fa-exclamation-circle mr-1 flex-shrink-0"></i>
+                        <i class="fas fa-exclamation-circle mr-1 flex-shrink-0" aria-hidden="true"></i>
                         <span class="break-words">{{ $message }}</span>
                     </p>
                 @enderror
@@ -40,12 +40,12 @@
                     <input type="email" id="email" wire:model="email"
                         class="w-full px-3 sm:px-4 py-3 sm:py-4 pl-10 sm:pl-12 bg-themed-secondary border border-themed-primary rounded-lg focus:ring-2 focus:ring-brand focus:border-brand text-themed-primary placeholder-themed-tertiary shadow-sm transition-all duration-200  text-sm sm:text-base">
                     <div class="absolute inset-y-0 left-0 pl-3 sm:pl-4 flex items-center pointer-events-none">
-                        <i class="fas fa-envelope text-themed-tertiary text-sm"></i>
+                        <i class="fas fa-envelope text-themed-tertiary text-sm" aria-hidden="true"></i>
                     </div>
                 </div>
                 @error('email')
                     <p class="mt-2 text-sm text-red-500 flex items-center transition-colors duration-300">
-                        <i class="fas fa-exclamation-circle mr-1 flex-shrink-0"></i>
+                        <i class="fas fa-exclamation-circle mr-1 flex-shrink-0" aria-hidden="true"></i>
                         <span class="break-words">{{ $message }}</span>
                     </p>
                 @enderror
@@ -58,12 +58,12 @@
                     <input type="tel" id="phone_number" wire:model="phone_number"
                         class="w-full px-3 sm:px-4 py-3 sm:py-4 pl-10 sm:pl-12 bg-themed-secondary border border-themed-primary rounded-lg focus:ring-2 focus:ring-brand focus:border-brand text-themed-primary placeholder-themed-tertiary shadow-sm transition-all duration-200  text-sm sm:text-base">
                     <div class="absolute inset-y-0 left-0 pl-3 sm:pl-4 flex items-center pointer-events-none">
-                        <i class="fas fa-phone text-themed-tertiary text-sm"></i>
+                        <i class="fas fa-phone text-themed-tertiary text-sm" aria-hidden="true"></i>
                     </div>
                 </div>
                 @error('phone_number')
                     <p class="mt-2 text-sm text-red-500 flex items-center transition-colors duration-300">
-                        <i class="fas fa-exclamation-circle mr-1 flex-shrink-0"></i>
+                        <i class="fas fa-exclamation-circle mr-1 flex-shrink-0" aria-hidden="true"></i>
                         <span class="break-words">{{ $message }}</span>
                     </p>
                 @enderror
@@ -76,12 +76,12 @@
                     <input type="date" id="date_of_birth" wire:model="date_of_birth"
                         class="w-full px-3 sm:px-4 py-3 sm:py-4 pl-10 sm:pl-12 bg-themed-secondary border border-themed-primary rounded-lg focus:ring-2 focus:ring-brand focus:border-brand text-themed-primary placeholder-themed-tertiary shadow-sm transition-all duration-200  text-sm sm:text-base">
                     <div class="absolute inset-y-0 left-0 pl-3 sm:pl-4 flex items-center pointer-events-none">
-                        <i class="fas fa-birthday-cake text-themed-tertiary text-sm"></i>
+                        <i class="fas fa-birthday-cake text-themed-tertiary text-sm" aria-hidden="true"></i>
                     </div>
                 </div>
                 @error('date_of_birth')
                     <p class="mt-2 text-sm text-red-500 flex items-center transition-colors duration-300">
-                        <i class="fas fa-exclamation-circle mr-1 flex-shrink-0"></i>
+                        <i class="fas fa-exclamation-circle mr-1 flex-shrink-0" aria-hidden="true"></i>
                         <span class="break-words">{{ $message }}</span>
                     </p>
                 @enderror
@@ -96,12 +96,12 @@
                         placeholder="Tell us a little about yourself..."></textarea>
                 </div>
                 <p class="text-xs text-themed-secondary mt-2 flex items-center transition-colors duration-300">
-                    <i class="fas fa-info-circle mr-1 flex-shrink-0"></i>
+                    <i class="fas fa-info-circle mr-1 flex-shrink-0" aria-hidden="true"></i>
                     Maximum 500 characters
                 </p>
                 @error('bio')
                     <p class="mt-2 text-sm text-red-500 flex items-center transition-colors duration-300">
-                        <i class="fas fa-exclamation-circle mr-1 flex-shrink-0"></i>
+                        <i class="fas fa-exclamation-circle mr-1 flex-shrink-0" aria-hidden="true"></i>
                         <span class="break-words">{{ $message }}</span>
                     </p>
                 @enderror
@@ -113,7 +113,7 @@
     <div x-show="activeTab === 'address'" x-transition.opacity.duration.300ms class="p-4 sm:p-6 lg:p-8">
         <div class="flex flex-col sm:flex-row sm:items-center mb-6 sm:mb-8">
             <div class="w-12 h-12 bg-brand-ink   rounded-lg flex items-center justify-center mb-3 sm:mb-0 sm:mr-4 flex-shrink-0">
-                <i class="fas fa-map-marker-alt text-white text-xl"></i>
+                <i class="fas fa-map-marker-alt text-white text-xl" aria-hidden="true"></i>
             </div>
             <div class="min-w-0 flex-1">
                 <h2 class="text-xl sm:text-2xl font-bold text-themed-primary transition-colors duration-300">
@@ -132,7 +132,7 @@
                         class="w-full px-3 sm:px-4 py-3 sm:py-4 pl-10 sm:pl-12 bg-themed-secondary border border-themed-primary rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 text-themed-primary placeholder-themed-tertiary shadow-sm transition-all duration-200  text-sm sm:text-base"
                         placeholder="123 Main Street">
                     <div class="absolute inset-y-0 left-0 pl-3 sm:pl-4 flex items-center pointer-events-none">
-                        <i class="fas fa-road text-themed-tertiary text-sm"></i>
+                        <i class="fas fa-road text-themed-tertiary text-sm" aria-hidden="true"></i>
                     </div>
                 </div>
                 @error('address_street')
@@ -148,7 +148,7 @@
                         class="w-full px-3 sm:px-4 py-3 sm:py-4 pl-10 sm:pl-12 bg-themed-secondary border border-themed-primary rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 text-themed-primary placeholder-themed-tertiary shadow-sm transition-all duration-200  text-sm sm:text-base"
                         placeholder="New York">
                     <div class="absolute inset-y-0 left-0 pl-3 sm:pl-4 flex items-center pointer-events-none">
-                        <i class="fas fa-city text-themed-tertiary text-sm"></i>
+                        <i class="fas fa-city text-themed-tertiary text-sm" aria-hidden="true"></i>
                     </div>
                 </div>
                 @error('address_city')
@@ -164,7 +164,7 @@
                         class="w-full px-3 sm:px-4 py-3 sm:py-4 pl-10 sm:pl-12 bg-themed-secondary border border-themed-primary rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 text-themed-primary placeholder-themed-tertiary shadow-sm transition-all duration-200  text-sm sm:text-base"
                         placeholder="New York">
                     <div class="absolute inset-y-0 left-0 pl-3 sm:pl-4 flex items-center pointer-events-none">
-                        <i class="fas fa-map text-themed-tertiary text-sm"></i>
+                        <i class="fas fa-map text-themed-tertiary text-sm" aria-hidden="true"></i>
                     </div>
                 </div>
                 @error('address_state')
@@ -180,7 +180,7 @@
                         class="w-full px-3 sm:px-4 py-3 sm:py-4 pl-10 sm:pl-12 bg-themed-secondary border border-themed-primary rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 text-themed-primary placeholder-themed-tertiary shadow-sm transition-all duration-200  text-sm sm:text-base"
                         placeholder="United States">
                     <div class="absolute inset-y-0 left-0 pl-3 sm:pl-4 flex items-center pointer-events-none">
-                        <i class="fas fa-globe text-themed-tertiary text-sm"></i>
+                        <i class="fas fa-globe text-themed-tertiary text-sm" aria-hidden="true"></i>
                     </div>
                 </div>
                 @error('address_country')
@@ -196,7 +196,7 @@
                         class="w-full px-3 sm:px-4 py-3 sm:py-4 pl-10 sm:pl-12 bg-themed-secondary border border-themed-primary rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 text-themed-primary placeholder-themed-tertiary shadow-sm transition-all duration-200  text-sm sm:text-base"
                         placeholder="10001">
                     <div class="absolute inset-y-0 left-0 pl-3 sm:pl-4 flex items-center pointer-events-none">
-                        <i class="fas fa-mail-bulk text-themed-tertiary text-sm"></i>
+                        <i class="fas fa-mail-bulk text-themed-tertiary text-sm" aria-hidden="true"></i>
                     </div>
                 </div>
                 @error('address_postal_code')
@@ -210,7 +210,7 @@
     <div x-show="activeTab === 'education'" x-transition.opacity.duration.300ms class="p-4 sm:p-6 lg:p-8">
         <div class="flex flex-col sm:flex-row sm:items-center mb-6 sm:mb-8">
             <div class="w-12 h-12 bg-brand-ink   rounded-lg flex items-center justify-center mb-3 sm:mb-0 sm:mr-4 flex-shrink-0">
-                <i class="fas fa-graduation-cap text-white text-xl"></i>
+                <i class="fas fa-graduation-cap text-white text-xl" aria-hidden="true"></i>
             </div>
             <div class="min-w-0 flex-1">
                 <h2 class="text-xl sm:text-2xl font-bold text-themed-primary transition-colors duration-300">
@@ -229,7 +229,7 @@
                         class="w-full px-3 sm:px-4 py-3 sm:py-4 pl-10 sm:pl-12 bg-themed-secondary border border-themed-primary rounded-lg focus:ring-2 focus:ring-brand/30 focus:border-brand text-themed-primary placeholder-themed-tertiary shadow-sm transition-all duration-200  text-sm sm:text-base"
                         placeholder="Software Developer">
                     <div class="absolute inset-y-0 left-0 pl-3 sm:pl-4 flex items-center pointer-events-none">
-                        <i class="fas fa-briefcase text-themed-tertiary text-sm"></i>
+                        <i class="fas fa-briefcase text-themed-tertiary text-sm" aria-hidden="true"></i>
                     </div>
                 </div>
                 @error('occupation')
@@ -252,10 +252,10 @@
                         <option value="Other">Other</option>
                     </select>
                     <div class="absolute inset-y-0 left-0 pl-3 sm:pl-4 flex items-center pointer-events-none">
-                        <i class="fas fa-graduation-cap text-themed-tertiary text-sm"></i>
+                        <i class="fas fa-graduation-cap text-themed-tertiary text-sm" aria-hidden="true"></i>
                     </div>
                     <div class="absolute inset-y-0 right-0 pr-3 sm:pr-4 flex items-center pointer-events-none">
-                        <i class="fas fa-chevron-down text-themed-tertiary text-sm"></i>
+                        <i class="fas fa-chevron-down text-themed-tertiary text-sm" aria-hidden="true"></i>
                     </div>
                 </div>
                 @error('education_level')
@@ -272,7 +272,7 @@
                         placeholder="Laravel, Vue.js, Photography, Digital Marketing..."></textarea>
                 </div>
                 <p class="text-xs text-themed-secondary mt-2 flex items-center transition-colors duration-300">
-                    <i class="fas fa-info-circle mr-1 flex-shrink-0"></i>
+                    <i class="fas fa-info-circle mr-1 flex-shrink-0" aria-hidden="true"></i>
                     Separate multiple skills with commas
                 </p>
                 @error('skills')
@@ -286,7 +286,7 @@
     <div x-show="activeTab === 'social'" x-transition.opacity.duration.300ms class="p-4 sm:p-6 lg:p-8">
         <div class="flex flex-col sm:flex-row sm:items-center mb-6 sm:mb-8">
             <div class="w-12 h-12 bg-brand-ink   rounded-lg flex items-center justify-center mb-3 sm:mb-0 sm:mr-4 flex-shrink-0">
-                <i class="fas fa-share-alt text-white text-xl"></i>
+                <i class="fas fa-share-alt text-white text-xl" aria-hidden="true"></i>
             </div>
             <div class="min-w-0 flex-1">
                 <h2 class="text-xl sm:text-2xl font-bold text-themed-primary transition-colors duration-300">
@@ -300,14 +300,14 @@
             <!-- Twitter -->
             <div class="w-full">
                 <label for="social_twitter" class="block text-sm font-semibold text-themed-primary mb-2 sm:mb-3 flex items-center transition-colors duration-300">
-                    <i class="fab fa-twitter text-brand mr-2 flex-shrink-0"></i> Twitter / X
+                    <i class="fab fa-twitter text-brand mr-2 flex-shrink-0" aria-hidden="true"></i> Twitter / X
                 </label>
                 <div class="relative w-full">
                     <input type="url" id="social_twitter" wire:model="social_links.twitter"
                         class="w-full px-3 sm:px-4 py-3 sm:py-4 pl-10 sm:pl-12 bg-themed-secondary border border-themed-primary rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-pink-500 text-themed-primary placeholder-themed-tertiary shadow-sm transition-all duration-200  text-sm sm:text-base"
                         placeholder="https://twitter.com/username">
                     <div class="absolute inset-y-0 left-0 pl-3 sm:pl-4 flex items-center pointer-events-none">
-                        <i class="fab fa-twitter text-brand text-sm"></i>
+                        <i class="fab fa-twitter text-brand text-sm" aria-hidden="true"></i>
                     </div>
                 </div>
                 @error('social_links.twitter')
@@ -318,14 +318,14 @@
             <!-- Facebook -->
             <div class="w-full">
                 <label for="social_facebook" class="block text-sm font-semibold text-themed-primary mb-2 sm:mb-3 flex items-center transition-colors duration-300">
-                    <i class="fab fa-facebook-f text-brand mr-2 flex-shrink-0"></i> Facebook
+                    <i class="fab fa-facebook-f text-brand mr-2 flex-shrink-0" aria-hidden="true"></i> Facebook
                 </label>
                 <div class="relative w-full">
                     <input type="url" id="social_facebook" wire:model="social_links.facebook"
                         class="w-full px-3 sm:px-4 py-3 sm:py-4 pl-10 sm:pl-12 bg-themed-secondary border border-themed-primary rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-pink-500 text-themed-primary placeholder-themed-tertiary shadow-sm transition-all duration-200  text-sm sm:text-base"
                         placeholder="https://facebook.com/username">
                     <div class="absolute inset-y-0 left-0 pl-3 sm:pl-4 flex items-center pointer-events-none">
-                        <i class="fab fa-facebook-f text-brand text-sm"></i>
+                        <i class="fab fa-facebook-f text-brand text-sm" aria-hidden="true"></i>
                     </div>
                 </div>
                 @error('social_links.facebook')
@@ -336,14 +336,14 @@
             <!-- LinkedIn -->
             <div class="w-full">
                 <label for="social_linkedin" class="block text-sm font-semibold text-themed-primary mb-2 sm:mb-3 flex items-center transition-colors duration-300">
-                    <i class="fab fa-linkedin-in text-brand mr-2 flex-shrink-0"></i> LinkedIn
+                    <i class="fab fa-linkedin-in text-brand mr-2 flex-shrink-0" aria-hidden="true"></i> LinkedIn
                 </label>
                 <div class="relative w-full">
                     <input type="url" id="social_linkedin" wire:model="social_links.linkedin"
                         class="w-full px-3 sm:px-4 py-3 sm:py-4 pl-10 sm:pl-12 bg-themed-secondary border border-themed-primary rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-pink-500 text-themed-primary placeholder-themed-tertiary shadow-sm transition-all duration-200  text-sm sm:text-base"
                         placeholder="https://linkedin.com/in/username">
                     <div class="absolute inset-y-0 left-0 pl-3 sm:pl-4 flex items-center pointer-events-none">
-                        <i class="fab fa-linkedin-in text-brand text-sm"></i>
+                        <i class="fab fa-linkedin-in text-brand text-sm" aria-hidden="true"></i>
                     </div>
                 </div>
                 @error('social_links.linkedin')
@@ -354,14 +354,14 @@
             <!-- GitHub -->
             <div class="w-full">
                 <label for="social_github" class="block text-sm font-semibold text-themed-primary mb-2 sm:mb-3 flex items-center transition-colors duration-300">
-                    <i class="fab fa-github text-themed-primary mr-2 flex-shrink-0"></i> GitHub
+                    <i class="fab fa-github text-themed-primary mr-2 flex-shrink-0" aria-hidden="true"></i> GitHub
                 </label>
                 <div class="relative w-full">
                     <input type="url" id="social_github" wire:model="social_links.github"
                         class="w-full px-3 sm:px-4 py-3 sm:py-4 pl-10 sm:pl-12 bg-themed-secondary border border-themed-primary rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-pink-500 text-themed-primary placeholder-themed-tertiary shadow-sm transition-all duration-200  text-sm sm:text-base"
                         placeholder="https://github.com/username">
                     <div class="absolute inset-y-0 left-0 pl-3 sm:pl-4 flex items-center pointer-events-none">
-                        <i class="fab fa-github text-themed-primary text-sm"></i>
+                        <i class="fab fa-github text-themed-primary text-sm" aria-hidden="true"></i>
                     </div>
                 </div>
                 @error('social_links.github')
@@ -372,14 +372,14 @@
             <!-- Instagram -->
             <div class="w-full">
                 <label for="social_instagram" class="block text-sm font-semibold text-themed-primary mb-2 sm:mb-3 flex items-center transition-colors duration-300">
-                    <i class="fab fa-instagram text-pink-500 mr-2 flex-shrink-0"></i> Instagram
+                    <i class="fab fa-instagram text-pink-500 mr-2 flex-shrink-0" aria-hidden="true"></i> Instagram
                 </label>
                 <div class="relative w-full">
                     <input type="url" id="social_instagram" wire:model="social_links.instagram"
                         class="w-full px-3 sm:px-4 py-3 sm:py-4 pl-10 sm:pl-12 bg-themed-secondary border border-themed-primary rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-pink-500 text-themed-primary placeholder-themed-tertiary shadow-sm transition-all duration-200  text-sm sm:text-base"
                         placeholder="https://instagram.com/username">
                     <div class="absolute inset-y-0 left-0 pl-3 sm:pl-4 flex items-center pointer-events-none">
-                        <i class="fab fa-instagram text-pink-500 text-sm"></i>
+                        <i class="fab fa-instagram text-pink-500 text-sm" aria-hidden="true"></i>
                     </div>
                 </div>
                 @error('social_links.instagram')
@@ -390,14 +390,14 @@
             <!-- Website -->
             <div class="w-full">
                 <label for="social_website" class="block text-sm font-semibold text-themed-primary mb-2 sm:mb-3 flex items-center transition-colors duration-300">
-                    <i class="fas fa-globe text-pink-400 mr-2 flex-shrink-0"></i> Website
+                    <i class="fas fa-globe text-pink-400 mr-2 flex-shrink-0" aria-hidden="true"></i> Website
                 </label>
                 <div class="relative w-full">
                     <input type="url" id="social_website" wire:model="social_links.website"
                         class="w-full px-3 sm:px-4 py-3 sm:py-4 pl-10 sm:pl-12 bg-themed-secondary border border-themed-primary rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-pink-500 text-themed-primary placeholder-themed-tertiary shadow-sm transition-all duration-200  text-sm sm:text-base"
                         placeholder="https://yourwebsite.com">
                     <div class="absolute inset-y-0 left-0 pl-3 sm:pl-4 flex items-center pointer-events-none">
-                        <i class="fas fa-globe text-pink-400 text-sm"></i>
+                        <i class="fas fa-globe text-pink-400 text-sm" aria-hidden="true"></i>
                     </div>
                 </div>
                 @error('social_links.website')
@@ -411,7 +411,7 @@
     <div x-show="activeTab === 'photo'" x-transition.opacity.duration.300ms class="p-4 sm:p-6 lg:p-8">
         <div class="flex flex-col sm:flex-row sm:items-center mb-6 sm:mb-8">
             <div class="w-12 h-12 bg-brand-ink   rounded-lg flex items-center justify-center mb-3 sm:mb-0 sm:mr-4 flex-shrink-0">
-                <i class="fas fa-camera text-white text-xl"></i>
+                <i class="fas fa-camera text-white text-xl" aria-hidden="true"></i>
             </div>
             <div class="min-w-0 flex-1">
                 <h2 class="text-xl sm:text-2xl font-bold text-themed-primary transition-colors duration-300">
@@ -429,7 +429,7 @@
                         <img src="{{ $temp_profile_picture }}"
                             class="w-36 h-36 sm:w-48 sm:h-48 rounded-lg object-cover border-4 border-red-500/30 shadow-sm">
                         <div class="absolute -top-2 -right-2 w-8 h-8 bg-green-500 rounded-full border-4 border-themed-secondary flex items-center justify-center transition-colors duration-300">
-                            <i class="fas fa-check text-white text-sm"></i>
+                            <i class="fas fa-check text-white text-sm" aria-hidden="true"></i>
                         </div>
                     @elseif($user->profile_picture)
 
@@ -445,7 +445,7 @@
                 @if ($user->profile_picture)
                     <button wire:click="deleteProfilePicture"
                         class="px-4 sm:px-6 py-2 sm:py-3 bg-red-50 hover:bg-red-100 border border-red-200 text-red-600 rounded-lg font-medium transition-all duration-300  text-sm sm:text-base">
-                        <i class="fas fa-trash-alt mr-2"></i> Remove Photo
+                        <i class="fas fa-trash-alt mr-2" aria-hidden="true"></i> Remove Photo
                     </button>
                 @endif
             </div>
@@ -454,7 +454,7 @@
             <div class="flex-1 w-full">
                 <div class="bg-themed-tertiary p-6 sm:p-8 rounded-lg border border-themed-primary  transition-colors duration-300">
                     <h3 class="text-lg font-semibold text-themed-primary mb-6 flex items-center transition-colors duration-300">
-                        <i class="fas fa-cloud-upload-alt text-red-400 mr-2 flex-shrink-0"></i> Upload New Photo
+                        <i class="fas fa-cloud-upload-alt text-red-400 mr-2 flex-shrink-0" aria-hidden="true"></i> Upload New Photo
                     </h3>
 
                     <div class="mb-6">
@@ -471,7 +471,7 @@
                     <!-- Upload Guidelines -->
                     <div class="bg-brand/10 p-4 rounded-lg border border-brand/20 transition-colors duration-300">
                         <h4 class="text-sm font-semibold text-themed-primary mb-2 flex items-center transition-colors duration-300">
-                            <i class="fas fa-info-circle text-brand mr-2 flex-shrink-0"></i> Photo Guidelines
+                            <i class="fas fa-info-circle text-brand mr-2 flex-shrink-0" aria-hidden="true"></i> Photo Guidelines
                         </h4>
                         <ul class="text-xs sm:text-sm text-themed-secondary space-y-1 transition-colors duration-300">
                             <li>• Accepted formats: JPG, PNG, GIF</li>

@@ -130,7 +130,7 @@
                             @click="window.innerWidth >= 1024 ? desktopConversationsOpen = !desktopConversationsOpen : conversationsOpen = true"
                             class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-themed-primary bg-themed-tertiary text-themed-primary transition hover:bg-themed-secondary"
                             aria-label="Toggle conversations">
-                            <i class="fas fa-bars"></i>
+                            <i class="fas fa-bars" aria-hidden="true"></i>
                         </button>
 
                         @if ($activeConversation)
@@ -159,7 +159,7 @@
                             class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-themed-primary bg-themed-tertiary text-themed-primary transition hover:bg-themed-secondary sm:w-auto sm:px-3"
                             wire:navigate
                             aria-label="Open course">
-                            <i class="fas fa-book-open sm:mr-2"></i>
+                            <i class="fas fa-book-open sm:mr-2" aria-hidden="true"></i>
                             <span class="hidden text-sm font-semibold sm:inline">Course</span>
                         </a>
                     @endif
@@ -197,7 +197,7 @@
                                     <div class="flex min-h-[22rem] items-center justify-center text-center">
                                         <div>
                                             <div class="mx-auto flex h-14 w-14 items-center justify-center rounded-lg bg-themed-tertiary">
-                                                <i class="fas fa-comment-dots text-xl text-themed-secondary"></i>
+                                                <i class="fas fa-comment-dots text-xl text-themed-secondary" aria-hidden="true"></i>
                                             </div>
                                             <p class="mt-4 text-sm font-semibold text-themed-primary">Start the conversation</p>
                                         </div>
@@ -208,14 +208,14 @@
                             <div class="flex h-full items-center justify-center p-6 text-center">
                                 <div class="max-w-sm">
                                     <div class="mx-auto flex h-16 w-16 items-center justify-center rounded-lg bg-themed-secondary shadow">
-                                        <i class="fas fa-comments text-2xl text-themed-secondary"></i>
+                                        <i class="fas fa-comments text-2xl text-themed-secondary" aria-hidden="true"></i>
                                     </div>
                                     <h2 class="mt-4 text-lg font-semibold text-themed-primary">Choose a conversation</h2>
                                     <button
                                         type="button"
                                         @click="conversationsOpen = true"
                                         class="mt-5 inline-flex items-center justify-center gap-2 rounded-lg bg-action px-4 py-2.5 text-sm font-semibold text-action-foreground transition hover:bg-action lg:hidden">
-                                        <i class="fas fa-comments"></i>
+                                        <i class="fas fa-comments" aria-hidden="true"></i>
                                         Conversations
                                     </button>
                                 </div>
@@ -233,7 +233,7 @@
                                 type="button"
                                 @click="viewLatestMessage()"
                                 class="pointer-events-auto inline-flex items-center gap-2 rounded-full bg-action px-4 py-2 text-xs font-semibold text-action-foreground shadow-sm ring-1 ring-white/20 transition hover:bg-action focus:outline-none focus:ring-2 focus:ring-brand/30">
-                                <i class="fas fa-arrow-down text-[11px]"></i>
+                                <i class="fas fa-arrow-down text-[11px]" aria-hidden="true"></i>
                                 <span x-text="newMessageCount === 1 ? '1 new message' : `${newMessageCount} new messages`"></span>
                                 <span class="underline underline-offset-2">View</span>
                             </button>
@@ -254,7 +254,7 @@
                             <button type="submit"
                                 x-bind:disabled="sending || draft.trim().length === 0"
                                 class="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-action text-sm font-semibold text-action-foreground transition hover:bg-action disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto sm:px-5">
-                                <i class="fas fa-paper-plane sm:mr-2"></i>
+                                <i class="fas fa-paper-plane sm:mr-2" aria-hidden="true"></i>
                                 <span class="hidden sm:inline">Send</span>
                             </button>
                         </div>

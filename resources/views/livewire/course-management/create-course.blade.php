@@ -12,7 +12,7 @@
             <div class="flex flex-col sm:flex-row sm:items-center justify-between mb-4 sm:mb-6">
                 <div class="mb-4 sm:mb-0">
                     <h1 class="  font-bold text-themed-primary flex items-center gap-2 sm:gap-3 transition-colors duration-300 bk-page-title">
-                        <i class="fas fa-{{ $isEditMode ?? false ? 'edit' : 'rocket' }} text-{{ $isEditMode ?? false ? 'orange' : 'purple' }}-500"></i>
+                        <i class="fas fa-{{ $isEditMode ?? false ? 'edit' : 'rocket' }} text-{{ $isEditMode ?? false ? 'orange' : 'purple' }}-500" aria-hidden="true"></i>
                         {{ ($isEditMode ?? false) ? 'Edit Course' : 'Create New Course' }}
                     </h1>
                     <p class="text-themed-secondary mt-1 sm:mt-2 text-sm sm:text-base transition-colors duration-300">

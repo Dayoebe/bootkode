@@ -33,7 +33,7 @@
             <div class="flex items-center">
                 <div class="flex-shrink-0">
                     <div class="w-8 h-8 bg-brand/10 rounded-lg flex items-center justify-center">
-                        <i class="fas fa-paper-plane text-brand"></i>
+                        <i class="fas fa-paper-plane text-brand" aria-hidden="true"></i>
                     </div>
                 </div>
                 <div class="ml-4">
@@ -47,7 +47,7 @@
             <div class="flex items-center">
                 <div class="flex-shrink-0">
                     <div class="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
-                        <i class="fas fa-envelope-open text-green-600"></i>
+                        <i class="fas fa-envelope-open text-green-600" aria-hidden="true"></i>
                     </div>
                 </div>
                 <div class="ml-4">
@@ -61,7 +61,7 @@
             <div class="flex items-center">
                 <div class="flex-shrink-0">
                     <div class="w-8 h-8 bg-brand/10 rounded-lg flex items-center justify-center">
-                        <i class="fas fa-mouse-pointer text-brand"></i>
+                        <i class="fas fa-mouse-pointer text-brand" aria-hidden="true"></i>
                     </div>
                 </div>
                 <div class="ml-4">
@@ -75,7 +75,7 @@
             <div class="flex items-center">
                 <div class="flex-shrink-0">
                     <div class="w-8 h-8 bg-red-100 rounded-lg flex items-center justify-center">
-                        <i class="fas fa-exclamation-triangle text-red-600"></i>
+                        <i class="fas fa-exclamation-triangle text-red-600" aria-hidden="true"></i>
                     </div>
                 </div>
                 <div class="ml-4">

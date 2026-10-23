@@ -3,7 +3,7 @@
     @if (session('success'))
         <div class="mb-4 p-3 sm:p-4 bg-green-100 border border-green-200 text-green-700 rounded-lg   transition-colors duration-300">
             <div class="flex items-center">
-                <i class="fas fa-check-circle mr-2 flex-shrink-0"></i>
+                <i class="fas fa-check-circle mr-2 flex-shrink-0" aria-hidden="true"></i>
                 <span class="text-sm sm:text-base">{{ session('success') }}</span>
             </div>
         </div>
@@ -11,7 +11,7 @@
     @if (session('error'))
         <div class="mb-4 p-3 sm:p-4 bg-red-100 border border-red-200 text-red-700 rounded-lg   transition-colors duration-300">
             <div class="flex items-center">
-                <i class="fas fa-exclamation-circle mr-2 flex-shrink-0"></i>
+                <i class="fas fa-exclamation-circle mr-2 flex-shrink-0" aria-hidden="true"></i>
                 <span class="text-sm sm:text-base">{{ session('error') }}</span>
             </div>
         </div>
@@ -20,7 +20,7 @@
     <!-- Loading Spinner -->
     <div wire:loading class="fixed inset-0 bg-themed-primary bg-opacity-50 flex items-center justify-center z-50 transition-colors duration-300">
         <div class="bg-themed-secondary p-6 rounded-lg shadow-sm border border-themed-primary transition-colors duration-300">
-            <i class="fas fa-spinner fa-spin text-brand text-3xl mb-2 block mx-auto"></i>
+            <i class="fas fa-spinner fa-spin text-brand text-3xl mb-2 block mx-auto" aria-hidden="true"></i>
             <p class="text-themed-primary text-sm">Processing verifications...</p>
         </div>
     </div>
@@ -47,7 +47,7 @@
                 <input wire:model.live.debounce.300ms="search" type="text" id="search-input" placeholder="Search by name or email..."
                     class="w-full p-3 pl-10 pr-4 border border-themed-primary rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 bg-themed-secondary text-themed-primary placeholder-themed-tertiary transition-all duration-200 text-sm">
                 <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <i class="fas fa-search text-themed-secondary text-sm"></i>
+                    <i class="fas fa-search text-themed-secondary text-sm" aria-hidden="true"></i>
                 </div>
             </div>
         </div>
@@ -63,7 +63,7 @@
                     @endforeach
                 </select>
                 <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-                    <i class="fas fa-chevron-down text-themed-secondary text-sm"></i>
+                    <i class="fas fa-chevron-down text-themed-secondary text-sm" aria-hidden="true"></i>
                 </div>
             </div>
         </div>
@@ -78,7 +78,7 @@
                     <option value="50">50 per page</option>
                 </select>
                 <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-                    <i class="fas fa-chevron-down text-themed-secondary text-sm"></i>
+                    <i class="fas fa-chevron-down text-themed-secondary text-sm" aria-hidden="true"></i>
                 </div>
             </div>
         </div>
@@ -87,20 +87,20 @@
     <!-- Bulk Actions -->
     <div class="mb-6 bg-themed-tertiary p-4 sm:p-6 rounded-lg border border-themed-primary  transition-colors duration-300">
         <h3 class="text-sm font-bold text-themed-primary mb-4 flex items-center">
-            <i class="fas fa-tasks mr-2 text-orange-500"></i>
+            <i class="fas fa-tasks mr-2 text-orange-500" aria-hidden="true"></i>
             Bulk Actions
         </h3>
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
             <!-- Verify Selected -->
             <button wire:click="bulkVerify"
                 class="px-4 py-3 bg-green-500 hover:bg-green-600 text-white rounded-lg font-medium transition-all duration-300 text-sm shadow-sm hover:shadow-green-500/25 disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap">
-                <i class="fas fa-check-circle mr-2"></i> Verify Selected
+                <i class="fas fa-check-circle mr-2" aria-hidden="true"></i> Verify Selected
             </button>
 
             <!-- Send Reminders -->
             <button wire:click="bulkSendReminders"
                 class="px-4 py-3 bg-action hover:bg-action/90 text-action-foreground rounded-lg font-medium transition-all duration-300 text-sm shadow-sm hover:shadow-accent-themed-primary/25 disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap">
-                <i class="fas fa-envelope mr-2"></i> Send Reminders
+                <i class="fas fa-envelope mr-2" aria-hidden="true"></i> Send Reminders
             </button>
 
             <!-- Selected Count -->
@@ -115,7 +115,7 @@
     <!-- Desktop Table View -->
     <div class="hidden lg:block bg-themed-secondary rounded-lg border border-themed-primary  transition-colors duration-300 overflow-hidden shadow-sm">
         <div class="overflow-x-auto">
-            <x-ui.table label="Pending Verifications.Blade records"><table class="min-w-full" aria-label="Pending Verifications Table">
+            <x-ui.table label="Pending Verifications records"><table class="min-w-full" aria-label="Pending Verifications Table">
                 <thead class="bg-brand-ink   text-white">
                     <tr>
                         <th scope="col" class="px-6 py-4 text-left text-xs font-bold uppercase tracking-wider">
@@ -128,9 +128,9 @@
                             <div class="flex items-center">
                                 Name
                                 @if ($sortField === 'name')
-                                    <i class="fas fa-sort-{{ $sortDirection === 'asc' ? 'up' : 'down' }} ml-1"></i>
+                                    <i class="fas fa-sort-{{ $sortDirection === 'asc' ? 'up' : 'down' }} ml-1" aria-hidden="true"></i>
                                 @else
-                                    <i class="fas fa-sort ml-1 opacity-50"></i>
+                                    <i class="fas fa-sort ml-1 opacity-50" aria-hidden="true"></i>
                                 @endif
                             </div>
                         </th>
@@ -138,9 +138,9 @@
                             <div class="flex items-center">
                                 Email
                                 @if ($sortField === 'email')
-                                    <i class="fas fa-sort-{{ $sortDirection === 'asc' ? 'up' : 'down' }} ml-1"></i>
+                                    <i class="fas fa-sort-{{ $sortDirection === 'asc' ? 'up' : 'down' }} ml-1" aria-hidden="true"></i>
                                 @else
-                                    <i class="fas fa-sort ml-1 opacity-50"></i>
+                                    <i class="fas fa-sort ml-1 opacity-50" aria-hidden="true"></i>
                                 @endif
                             </div>
                         </th>
@@ -149,9 +149,9 @@
                             <div class="flex items-center">
                                 Registered
                                 @if ($sortField === 'created_at')
-                                    <i class="fas fa-sort-{{ $sortDirection === 'asc' ? 'up' : 'down' }} ml-1"></i>
+                                    <i class="fas fa-sort-{{ $sortDirection === 'asc' ? 'up' : 'down' }} ml-1" aria-hidden="true"></i>
                                 @else
-                                    <i class="fas fa-sort ml-1 opacity-50"></i>
+                                    <i class="fas fa-sort ml-1 opacity-50" aria-hidden="true"></i>
                                 @endif
                             </div>
                         </th>
@@ -201,11 +201,11 @@
                                 <div class="flex items-center justify-end gap-1 flex-wrap">
                                     <button wire:click="verifyUser({{ $user->id }})"
                                         class="inline-flex items-center gap-1 px-3 py-2 text-xs bg-green-100 text-green-700 border border-green-200 rounded-lg hover:bg-green-200 transition-colors duration-200 whitespace-nowrap">
-                                        <i class="fas fa-check-circle"></i><span class="hidden sm:inline">Verify</span>
+                                        <i class="fas fa-check-circle" aria-hidden="true"></i><span class="hidden sm:inline">Verify</span>
                                     </button>
                                     <button wire:click="sendVerificationReminder({{ $user->id }})"
                                         class="inline-flex items-center gap-1 px-3 py-2 text-xs bg-brand/10 text-brand border border-brand/20 rounded-lg hover:bg-brand/20 transition-colors duration-200 whitespace-nowrap">
-                                        <i class="fas fa-envelope"></i><span class="hidden sm:inline">Remind</span>
+                                        <i class="fas fa-envelope" aria-hidden="true"></i><span class="hidden sm:inline">Remind</span>
                                     </button>
                                 </div>
                             </td>
@@ -215,7 +215,7 @@
                             <td colspan="8" class="px-6 py-12 text-center">
                                 <div class="flex flex-col items-center">
                                     <div class="w-16 h-16 bg-themed-tertiary rounded-full flex items-center justify-center mb-4 transition-colors duration-300">
-                                        <i class="fas fa-user-check text-themed-secondary text-2xl"></i>
+                                        <i class="fas fa-user-check text-themed-secondary text-2xl" aria-hidden="true"></i>
                                     </div>
                                     <h3 class="text-sm font-medium text-themed-primary transition-colors duration-300">All users are verified!</h3>
                                     <p class="text-sm text-themed-secondary transition-colors duration-300 mt-1">No pending verifications found</p>
@@ -254,7 +254,7 @@
                             <p class="text-themed-secondary text-xs truncate">{{ $user->email }}</p>
                         </div>
                     </div>
-                    <i class="fas fa-clock text-orange-500 text-sm flex-shrink-0 ml-2"></i>
+                    <i class="fas fa-clock text-orange-500 text-sm flex-shrink-0 ml-2" aria-hidden="true"></i>
                 </div>
 
                 <!-- Info Grid -->
@@ -283,18 +283,18 @@
                 <div class="flex gap-2">
                     <button wire:click="verifyUser({{ $user->id }})"
                         class="flex-1 text-xs px-3 py-2 bg-green-100 text-green-700 border border-green-200 rounded-lg hover:bg-green-200 transition-colors duration-200 font-medium">
-                        <i class="fas fa-check-circle mr-1"></i>Verify
+                        <i class="fas fa-check-circle mr-1" aria-hidden="true"></i>Verify
                     </button>
                     <button wire:click="sendVerificationReminder({{ $user->id }})"
                         class="flex-1 text-xs px-3 py-2 bg-brand/10 text-brand border border-brand/20 rounded-lg hover:bg-brand/20 transition-colors duration-200 font-medium">
-                        <i class="fas fa-envelope mr-1"></i>Remind
+                        <i class="fas fa-envelope mr-1" aria-hidden="true"></i>Remind
                     </button>
                 </div>
             </div>
         @empty
             <div class="bg-themed-secondary rounded-lg border border-themed-primary p-8 text-center">
                 <div class="w-16 h-16 bg-themed-tertiary rounded-full flex items-center justify-center mx-auto mb-4 transition-colors duration-300">
-                    <i class="fas fa-user-check text-themed-secondary text-2xl"></i>
+                    <i class="fas fa-user-check text-themed-secondary text-2xl" aria-hidden="true"></i>
                 </div>
                 <h3 class="text-sm font-medium text-themed-primary transition-colors duration-300">All users are verified!</h3>
                 <p class="text-sm text-themed-secondary transition-colors duration-300 mt-1">No pending verifications found</p>

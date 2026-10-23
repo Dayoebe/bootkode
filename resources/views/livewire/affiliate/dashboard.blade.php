@@ -28,7 +28,7 @@
                     <p class="text-2xl font-bold text-content">{{ $affiliateStats['formatted_total_earned'] }}</p>
                 </div>
                 <div class="bg-green-100 p-3 rounded-lg">
-                    <i class="fas fa-coins text-green-600 text-xl"></i>
+                    <i class="fas fa-coins text-green-600 text-xl" aria-hidden="true"></i>
                 </div>
             </div>
         </div>
@@ -41,7 +41,7 @@
                     <p class="text-2xl font-bold text-content">{{ $affiliateStats['total_referrals'] }}</p>
                 </div>
                 <div class="bg-brand/10 p-3 rounded-lg">
-                    <i class="fas fa-users text-brand text-xl"></i>
+                    <i class="fas fa-users text-brand text-xl" aria-hidden="true"></i>
                 </div>
             </div>
         </div>
@@ -54,7 +54,7 @@
                     <p class="text-2xl font-bold text-content">{{ $affiliateStats['active_referrals'] }}</p>
                 </div>
                 <div class="bg-brand/10 p-3 rounded-lg">
-                    <i class="fas fa-user-check text-brand text-xl"></i>
+                    <i class="fas fa-user-check text-brand text-xl" aria-hidden="true"></i>
                 </div>
             </div>
         </div>
@@ -67,7 +67,7 @@
                     <p class="text-2xl font-bold text-content">₦{{ number_format($affiliateStats['pending_commissions'], 2) }}</p>
                 </div>
                 <div class="bg-yellow-100 p-3 rounded-lg">
-                    <i class="fas fa-clock text-yellow-600 text-xl"></i>
+                    <i class="fas fa-clock text-yellow-600 text-xl" aria-hidden="true"></i>
                 </div>
             </div>
         </div>
@@ -83,10 +83,10 @@
             </div>
             <button onclick="copyToClipboard('{{ $affiliateStats['referral_link'] }}')"
                     class="px-4 py-2 bg-action text-action-foreground rounded-md hover:bg-action transition-colors">
-                <i class="fas fa-copy mr-2"></i> Copy
+                <i class="fas fa-copy mr-2" aria-hidden="true"></i> Copy
             </button>
             <a href="{{ route('affiliate.tools') }}" class="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors">
-                <i class="fas fa-bullhorn mr-2"></i> Marketing Tools
+                <i class="fas fa-bullhorn mr-2" aria-hidden="true"></i> Marketing Tools
             </a>
         </div>
     </div>
@@ -102,7 +102,7 @@
                 @else
                     <div class="flex items-center justify-center h-full text-content-muted">
                         <div class="text-center">
-                            <i class="fas fa-chart-line text-4xl mb-4"></i>
+                            <i class="fas fa-chart-line text-4xl mb-4" aria-hidden="true"></i>
                             <p>No commission data available for this period</p>
                         </div>
                     </div>
@@ -129,7 +129,7 @@
                 </div>
             @else
                 <div class="text-center py-8 text-content-muted">
-                    <i class="fas fa-graduation-cap text-4xl mb-4"></i>
+                    <i class="fas fa-graduation-cap text-4xl mb-4" aria-hidden="true"></i>
                     <p>No course sales data available</p>
                 </div>
             @endif
@@ -199,7 +199,7 @@
         <div class="bg-surface rounded-lg shadow-sm p-6 mt-8">
             <h3 class="text-lg font-semibold text-content mb-4">Monthly Performance</h3>
             <div class="overflow-x-auto">
-                <x-ui.table label="Dashboard.Blade records"><table class="min-w-full divide-y divide-line">
+                <x-ui.table label="Dashboard records"><table class="min-w-full divide-y divide-line">
                     <thead class="bg-surface-muted">
                         <tr>
                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-content-muted uppercase tracking-wider">Month</th>

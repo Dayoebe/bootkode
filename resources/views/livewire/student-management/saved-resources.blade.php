@@ -2,7 +2,7 @@
     <div class="bg-themed-secondary rounded-lg shadow-sm border border-themed-primary p-6 mb-6 transition-colors duration-300">
         <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
             <h1 class="text-2xl font-bold text-themed-primary flex items-center gap-2">
-                <i class="fas fa-bookmark mr-2 text-brand"></i>
+                <i class="fas fa-bookmark mr-2 text-brand" aria-hidden="true"></i>
                 My Saved Resources
             </h1>
 
@@ -10,13 +10,13 @@
                 <div class="relative flex-grow">
                     <input aria-label="Search saved resources" type="text" wire:model.live.debounce.300ms="search" placeholder="Search saved resources..."
                         class="w-full bg-themed-tertiary border border-themed-secondary rounded-lg px-4 py-2 text-themed-primary placeholder-themed-tertiary focus:ring-2 focus:ring-brand focus:border-brand transition-colors duration-300">
-                    <i class="fas fa-search absolute right-3 top-3 text-themed-tertiary"></i>
+                    <i class="fas fa-search absolute right-3 top-3 text-themed-tertiary" aria-hidden="true"></i>
                 </div>
 
                 <button wire:click="$toggle('groupByCourse')"
                     class="px-4 py-2 bg-themed-tertiary hover:bg-themed-secondary border border-themed-secondary rounded-lg text-themed-primary transition-colors duration-300"
                     title="{{ $groupByCourse ? 'Ungroup by course' : 'Group by course' }}">
-                    <i class="fas {{ $groupByCourse ? 'fa-list' : 'fa-layer-group' }} mr-1"></i>
+                    <i class="fas {{ $groupByCourse ? 'fa-list' : 'fa-layer-group' }} mr-1" aria-hidden="true"></i>
                     {{ $groupByCourse ? 'List View' : 'Group View' }}
                 </button>
             </div>
@@ -66,7 +66,7 @@
                                 </span>
                                 <button wire:click="removeBookmark('{{ $bookmark->id }}')"
                                     class="text-themed-tertiary hover:text-brand transition-colors duration-300" title="Remove bookmark">
-                                    <i class="fas fa-times"></i>
+                                    <i class="fas fa-times" aria-hidden="true"></i>
                                 </button>
                             </div>
 
@@ -86,7 +86,7 @@
                                 </span>
                                 <a href="{{ route('student.enrolled-courses') }}?highlight={{ $bookmark->resourceable_id }}"
                                     class="text-brand hover:text-accent-themed-secondary transition-colors duration-300">
-                                    View Resource <i class="fas fa-arrow-right ml-1"></i>
+                                    View Resource <i class="fas fa-arrow-right ml-1" aria-hidden="true"></i>
                                 </a>
                             </div>
                         </div>
@@ -95,7 +95,7 @@
             </div>
         @empty
             <div class="bg-themed-secondary rounded-lg shadow-sm border border-themed-primary p-8 text-center transition-colors duration-300">
-                <i class="fas fa-bookmark text-5xl text-themed-tertiary mb-4"></i>
+                <i class="fas fa-bookmark text-5xl text-themed-tertiary mb-4" aria-hidden="true"></i>
                 <h3 class="text-xl font-bold text-themed-primary mb-2">No Saved Resources Yet</h3>
                 <p class="text-themed-secondary mb-4">
                     You haven't saved any resources yet. When you find useful lessons or materials,
@@ -103,7 +103,7 @@
                 </p>
                 <a href="{{ route('student.course-catalog') }}"
                     class="inline-flex items-center px-4 py-2 bg-action hover:bg-action/90 rounded-lg text-action-foreground transition-colors duration-300">
-                    <i class="fas fa-book-open mr-2"></i> Browse Courses
+                    <i class="fas fa-book-open mr-2" aria-hidden="true"></i> Browse Courses
                 </a>
             </div>
         @endforelse
@@ -118,7 +118,7 @@
                         </span>
                         <button wire:click="removeBookmark('{{ $bookmark->id }}')"
                             class="text-themed-tertiary hover:text-brand transition-colors duration-300" title="Remove bookmark">
-                            <i class="fas fa-times"></i>
+                            <i class="fas fa-times" aria-hidden="true"></i>
                         </button>
                     </div>
 
@@ -153,13 +153,13 @@
                         </span>
                         <a href="{{ route('student.enrolled-courses') }}?highlight={{ $bookmark->resourceable_id }}"
                             class="text-brand hover:text-accent-themed-secondary transition-colors duration-300 flex items-center">
-                            Open <i class="fas fa-external-link-alt ml-1 text-xs"></i>
+                            Open <i class="fas fa-external-link-alt ml-1 text-xs" aria-hidden="true"></i>
                         </a>
                     </div>
                 </div>
             @empty
                 <div class="col-span-full bg-themed-secondary rounded-lg shadow-sm border border-themed-primary p-8 text-center transition-colors duration-300">
-                    <i class="fas fa-bookmark text-5xl text-themed-tertiary mb-4"></i>
+                    <i class="fas fa-bookmark text-5xl text-themed-tertiary mb-4" aria-hidden="true"></i>
                     <h3 class="text-xl font-bold text-themed-primary mb-2">No Saved Resources Yet</h3>
                     <p class="text-themed-secondary mb-4">
                         You haven't saved any resources yet. When you find useful lessons or materials,
@@ -167,7 +167,7 @@
                     </p>
                     <a href="{{ route('student.course-catalog') }}"
                         class="inline-flex items-center px-4 py-2 bg-action hover:bg-action/90 rounded-lg text-action-foreground transition-colors duration-300">
-                        <i class="fas fa-book-open mr-2"></i> Browse Courses
+                        <i class="fas fa-book-open mr-2" aria-hidden="true"></i> Browse Courses
                     </a>
                 </div>
             @endforelse

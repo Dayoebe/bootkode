@@ -23,7 +23,7 @@
             <button type="button" wire:click="createReview"
                 @if($activeMentorships->isEmpty()) disabled @endif
                 class="inline-flex items-center justify-center gap-2 rounded-lg bk-button bk-button-primary px-4 py-3 text-sm font-semibold transition disabled:cursor-not-allowed disabled:opacity-50">
-                <i class="fas fa-plus"></i>
+                <i class="fas fa-plus" aria-hidden="true"></i>
                 Request Review
             </button>
         </div>
@@ -120,10 +120,10 @@
                                 </button>
                                 <p class="mt-1 line-clamp-2 text-sm text-themed-secondary">{{ $review->description }}</p>
                                 <div class="mt-3 flex flex-wrap gap-x-4 gap-y-1 text-xs text-themed-secondary">
-                                    <span><i class="fas fa-user mr-1"></i>{{ $review->requester?->name ?? 'Unknown learner' }}</span>
-                                    <span><i class="fas fa-code-branch mr-1"></i>{{ $review->revisions_count }} revision{{ $review->revisions_count === 1 ? '' : 's' }}</span>
-                                    <span><i class="fas fa-comments mr-1"></i>{{ $review->comments_count }} comment{{ $review->comments_count === 1 ? '' : 's' }}</span>
-                                    <span><i class="fas fa-clock mr-1"></i>{{ optional($review->requested_at)->diffForHumans() ?? 'No date' }}</span>
+                                    <span><i class="fas fa-user mr-1" aria-hidden="true"></i>{{ $review->requester?->name ?? 'Unknown learner' }}</span>
+                                    <span><i class="fas fa-code-branch mr-1" aria-hidden="true"></i>{{ $review->revisions_count }} revision{{ $review->revisions_count === 1 ? '' : 's' }}</span>
+                                    <span><i class="fas fa-comments mr-1" aria-hidden="true"></i>{{ $review->comments_count }} comment{{ $review->comments_count === 1 ? '' : 's' }}</span>
+                                    <span><i class="fas fa-clock mr-1" aria-hidden="true"></i>{{ optional($review->requested_at)->diffForHumans() ?? 'No date' }}</span>
                                 </div>
                                 @if($review->technologies)
                                     <div class="mt-3 flex flex-wrap gap-2">
@@ -149,7 +149,7 @@
                     </div>
                 @empty
                     <div class="rounded-lg border border-dashed border-themed-primary py-12 text-center">
-                        <i class="fas fa-code text-4xl text-themed-tertiary"></i>
+                        <i class="fas fa-code text-4xl text-themed-tertiary" aria-hidden="true"></i>
                         <h3 class="mt-3 text-lg font-semibold text-themed-primary">No code reviews found</h3>
                         <p class="mt-1 text-sm text-themed-secondary">Submitted repositories and snippets will appear here.</p>
                     </div>
@@ -368,7 +368,7 @@
                                             class="min-w-0 flex-1 rounded-l-lg border border-themed-primary bg-themed-secondary px-3 py-2 text-sm text-themed-primary placeholder-themed-tertiary focus:border-brand focus:ring-brand"
                                             placeholder="Suggestion">
                                         <button type="button" wire:click="removeSuggestion({{ $index }})" class="rounded-r-lg bg-red-600 px-3 text-white" aria-label="Remove suggestion">
-                                            <i class="fas fa-minus"></i>
+                                            <i class="fas fa-minus" aria-hidden="true"></i>
                                         </button>
                                     </div>
                                 @endforeach
@@ -384,7 +384,7 @@
                                             class="min-w-0 flex-1 rounded-l-lg border border-themed-primary bg-themed-secondary px-3 py-2 text-sm text-themed-primary placeholder-themed-tertiary focus:border-brand focus:ring-brand"
                                             placeholder="Area to improve">
                                         <button type="button" wire:click="removeImprovementArea({{ $index }})" class="rounded-r-lg bg-red-600 px-3 text-white" aria-label="Remove improvement area">
-                                            <i class="fas fa-minus"></i>
+                                            <i class="fas fa-minus" aria-hidden="true"></i>
                                         </button>
                                     </div>
                                 @endforeach
@@ -430,7 +430,7 @@
                 @endif
             @else
                 <div class="flex min-h-[520px] flex-col items-center justify-center rounded-lg border border-dashed border-themed-primary text-center">
-                    <i class="fas fa-code-branch text-5xl text-themed-tertiary"></i>
+                    <i class="fas fa-code-branch text-5xl text-themed-tertiary" aria-hidden="true"></i>
                     <h3 class="mt-4 text-lg font-semibold text-themed-primary">Open a review</h3>
                     <p class="mt-1 max-w-sm text-sm text-themed-secondary">Select a submitted work item to see the repository, comments, revision history, rubric, and approval evidence.</p>
                 </div>
@@ -447,7 +447,7 @@
                         <p class="text-sm text-themed-secondary">Attach a repo, paste a snippet, or use both.</p>
                     </div>
                     <button aria-label="Close dialog" type="button" wire:click="closeModal" class="text-themed-secondary hover:text-themed-primary">
-                        <i class="fas fa-times text-xl"></i>
+                        <i class="fas fa-times text-xl" aria-hidden="true"></i>
                     </button>
                 </div>
 
@@ -500,7 +500,7 @@
                             <div class="mt-2 flex">
                                 <input aria-label="Technology" type="text" wire:model="technologies.{{ $index }}" class="min-w-0 flex-1 rounded-l-lg border border-themed-primary bg-themed-secondary px-3 py-2 text-sm text-themed-primary" placeholder="Technology">
                                 <button type="button" wire:click="removeTechnology({{ $index }})" class="rounded-r-lg bg-red-600 px-3 text-white" aria-label="Remove technology">
-                                    <i class="fas fa-minus"></i>
+                                    <i class="fas fa-minus" aria-hidden="true"></i>
                                 </button>
                             </div>
                         @endforeach
@@ -583,7 +583,7 @@
                 <div class="flex items-center justify-between border-b border-themed-primary p-5">
                     <h3 class="text-xl font-bold text-themed-primary">Submit Revision</h3>
                     <button aria-label="Close dialog" type="button" wire:click="closeModal" class="text-themed-secondary hover:text-themed-primary">
-                        <i class="fas fa-times text-xl"></i>
+                        <i class="fas fa-times text-xl" aria-hidden="true"></i>
                     </button>
                 </div>
                 <form wire:submit.prevent="submitRevision" class="space-y-4 p-5">

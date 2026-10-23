@@ -10,11 +10,11 @@
                 Saving...
             </div>
             <div x-show="autoSaveStatus === 'saved'" class="flex items-center gap-2">
-                <i class="fas fa-check-circle"></i>
+                <i class="fas fa-check-circle" aria-hidden="true"></i>
                 All changes saved
             </div>
             <div x-show="autoSaveStatus === 'error'" class="flex items-center gap-2">
-                <i class="fas fa-exclamation-triangle"></i>
+                <i class="fas fa-exclamation-triangle" aria-hidden="true"></i>
                 Save failed - <button @click="retrySave()" class="underline">retry</button>
             </div>
         </div>
@@ -27,11 +27,11 @@
             <div x-data="{ show: true }" x-show="show" x-transition.opacity
                  class="bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300 border border-green-200 dark:border-green-700 p-4 rounded-lg flex items-center justify-between transition-colors duration-300">
                 <div class="flex items-center gap-2">
-                    <i class="fas fa-check-circle"></i>
+                    <i class="fas fa-check-circle" aria-hidden="true"></i>
                     {{ session('success') }}
                 </div>
                 <button @click="show = false" class="text-green-600 dark:text-green-400 hover:text-green-800 dark:hover:text-green-200 transition-colors duration-300" aria-label="Close">
-                    <i class="fas fa-times"></i>
+                    <i class="fas fa-times" aria-hidden="true"></i>
                 </button>
             </div>
         @endif
@@ -41,7 +41,7 @@
             <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                 <div class="min-w-0 flex-1">
                     <h2 class="text-xl font-bold text-themed-primary transition-colors duration-300 truncate">
-                        <i class="fas fa-book-open text-brand dark:text-brand mr-2"></i>
+                        <i class="fas fa-book-open text-brand dark:text-brand mr-2" aria-hidden="true"></i>
                         {{ $lesson->title ?? 'Lesson Editor' }}
                     </h2>
                     <p class="text-sm text-themed-secondary transition-colors duration-300 truncate">
@@ -51,14 +51,14 @@
                 <div class="flex gap-2 flex-shrink-0">
                     <button @click="performQuickSave()" :disabled="isSaving"
                         class="px-3 py-2 bg-green-600 hover:bg-green-700 disabled:bg-gray-400 dark:disabled:bg-gray-600 text-white rounded-lg flex items-center gap-2 transition-colors duration-300 text-sm">
-                        <i class="fas fa-bolt" x-show="!isSaving"></i>
-                        <i class="fas fa-spinner fa-spin" x-show="isSaving"></i>
+                        <i class="fas fa-bolt" x-show="!isSaving" aria-hidden="true"></i>
+                        <i class="fas fa-spinner fa-spin" x-show="isSaving" aria-hidden="true"></i>
                         <span class="hidden sm:inline">Quick Save</span>
                     </button>
                     <button wire:click="saveLesson" wire:loading.attr="disabled"
                         class="px-3 py-2 bg-action hover:bg-action disabled:bg-gray-400 dark:disabled:bg-gray-600 text-action-foreground rounded-lg flex items-center gap-2 transition-colors duration-300 text-sm">
-                        <i class="fas fa-save" wire:loading.remove></i>
-                        <i class="fas fa-spinner fa-spin" wire:loading></i>
+                        <i class="fas fa-save" wire:loading.remove aria-hidden="true"></i>
+                        <i class="fas fa-spinner fa-spin" wire:loading aria-hidden="true"></i>
                         <span wire:loading.remove class="hidden sm:inline">Save All</span>
                         <span wire:loading class="hidden sm:inline">Saving...</span>
                     </button>
@@ -73,26 +73,26 @@
                     <button @click="switchTab('content')" :disabled="isSaving"
                         :class="{ 'border-blue-500 text-blue-600 dark:text-blue-400': activeTab === 'content', 'border-transparent text-themed-secondary hover:text-themed-primary': activeTab !== 'content' }"
                         class="whitespace-nowrap py-3 px-1 border-b-2 font-medium text-sm flex items-center gap-2 transition-colors duration-300 disabled:opacity-50 relative">
-                        <i class="fas fa-align-left"></i>
+                        <i class="fas fa-align-left" aria-hidden="true"></i>
                         <span class="hidden sm:inline">Content</span>
                         <div x-show="hasUnsavedContent && (titleChanged || descriptionChanged || contentChanged)" class="w-2 h-2 bg-orange-500 rounded-full"></div>
                     </button>
                     <button @click="switchTab('media')" :disabled="isSaving"
                         :class="{ 'border-pink-500 text-pink-600 dark:text-pink-400': activeTab === 'media', 'border-transparent text-themed-secondary hover:text-themed-primary': activeTab !== 'media' }"
                         class="whitespace-nowrap py-3 px-1 border-b-2 font-medium text-sm flex items-center gap-2 transition-colors duration-300 disabled:opacity-50 relative">
-                        <i class="fas fa-photo-video"></i>
+                        <i class="fas fa-photo-video" aria-hidden="true"></i>
                         <span class="hidden sm:inline">Media</span>
                     </button>
                     <button @click="switchTab('settings')" :disabled="isSaving"
                         :class="{ 'border-green-500 text-green-600 dark:text-green-400': activeTab === 'settings', 'border-transparent text-themed-secondary hover:text-themed-primary': activeTab !== 'settings' }"
                         class="whitespace-nowrap py-3 px-1 border-b-2 font-medium text-sm flex items-center gap-2 transition-colors duration-300 disabled:opacity-50 relative">
-                        <i class="fas fa-cog"></i>
+                        <i class="fas fa-cog" aria-hidden="true"></i>
                         <span class="hidden sm:inline">Settings</span>
                     </button>
                     <button @click="switchTab('assessment')" :disabled="isSaving"
                         :class="{ 'border-purple-500 text-purple-600 dark:text-purple-400': activeTab === 'assessment', 'border-transparent text-themed-secondary hover:text-themed-primary': activeTab !== 'assessment' }"
                         class="whitespace-nowrap py-3 px-1 border-b-2 font-medium text-sm flex items-center gap-2 transition-colors duration-300 disabled:opacity-50 relative">
-                        <i class="fas fa-clipboard-check"></i>
+                        <i class="fas fa-clipboard-check" aria-hidden="true"></i>
                         <span class="hidden sm:inline">Assessment</span>
                     </button>
                 </nav>
@@ -128,7 +128,7 @@
                                 class="flex-1 px-3 py-2 bg-themed-tertiary border border-themed-primary rounded-lg text-themed-primary focus:ring-2 focus:ring-brand/30 focus:border-transparent transition-colors duration-300 text-sm">
                             <button @click="manualSlugGeneration()" :disabled="isSaving"
                                 class="px-3 py-2 bg-themed-tertiary hover:bg-themed-secondary text-themed-primary rounded-lg disabled:opacity-50 transition-colors duration-300 text-sm border border-themed-primary" aria-label="Manual slug generation">
-                                <i class="fas fa-sync-alt"></i>
+                                <i class="fas fa-sync-alt" aria-hidden="true"></i>
                             </button>
                         </div>
                         @error('slug')
@@ -156,10 +156,10 @@
                         </label>
                         <div class="flex gap-1 text-xs">
                             <button @click="insertTemplate('intro')" class="px-2 py-1 bg-themed-tertiary text-themed-primary rounded hover:bg-themed-secondary transition-colors duration-300 border border-themed-primary">
-                                <i class="fas fa-play mr-1"></i>Intro
+                                <i class="fas fa-play mr-1" aria-hidden="true"></i>Intro
                             </button>
                             <button @click="insertTemplate('objectives')" class="px-2 py-1 bg-themed-tertiary text-themed-primary rounded hover:bg-themed-secondary transition-colors duration-300 border border-themed-primary">
-                                <i class="fas fa-bullseye mr-1"></i>Goals
+                                <i class="fas fa-bullseye mr-1" aria-hidden="true"></i>Goals
                             </button>
                         </div>
                     </div>
@@ -182,7 +182,7 @@
                 <!-- YouTube Video -->
                 <div class="bg-themed-tertiary rounded-lg p-4 border border-themed-primary transition-colors duration-300">
                     <h3 class="text-base font-medium text-themed-primary mb-3 flex items-center gap-2 transition-colors duration-300">
-                        <i class="fas fa-video text-red-600 dark:text-red-500"></i> YouTube Video
+                        <i class="fas fa-video text-red-600 dark:text-red-500" aria-hidden="true"></i> YouTube Video
                     </h3>
                     <div class="flex gap-2">
                         <input aria-label="https://www.youtube.com/watch?v=" type="url" wire:model="video_url"
@@ -205,7 +205,7 @@
                     <!-- Images -->
                     <div class="bg-themed-tertiary rounded-lg p-4 border border-themed-primary transition-colors duration-300">
                         <h4 class="font-medium text-themed-primary mb-3 flex items-center gap-2 transition-colors duration-300">
-                            <i class="fas fa-image text-green-600"></i> Images
+                            <i class="fas fa-image text-green-600" aria-hidden="true"></i> Images
                         </h4>
                         <div class="space-y-2">
                             <input aria-label="Image upload" type="file" wire:model="imageUpload" accept="image/*" class="w-full text-sm file:mr-2 file:py-1 file:px-3 file:rounded file:border-0 file:text-sm file:bg-brand/10 file:text-brand hover:file:bg-brand/10">
@@ -226,7 +226,7 @@
                                     <div class="flex items-center justify-between text-xs bg-themed-secondary p-2 rounded border border-themed-primary transition-colors duration-300">
                                         <span class="truncate">{{ $image['name'] }}</span>
                                         <button wire:click="removeFile('images', {{ $index }})" class="text-red-600 hover:text-red-800 transition-colors duration-300" aria-label="Remove file">
-                                            <i class="fas fa-trash"></i>
+                                            <i class="fas fa-trash" aria-hidden="true"></i>
                                         </button>
                                     </div>
                                 @endforeach
@@ -237,7 +237,7 @@
                     <!-- Documents -->
                     <div class="bg-themed-tertiary rounded-lg p-4 border border-themed-primary transition-colors duration-300">
                         <h4 class="font-medium text-themed-primary mb-3 flex items-center gap-2 transition-colors duration-300">
-                            <i class="fas fa-file-alt text-brand"></i> Documents
+                            <i class="fas fa-file-alt text-brand" aria-hidden="true"></i> Documents
                         </h4>
                         <div class="space-y-2">
                             <input aria-label="Document upload" type="file" wire:model="documentUpload" accept=".pdf,.doc,.docx,.txt,.epub,.ppt,.pptx" class="w-full text-sm file:mr-2 file:py-1 file:px-3 file:rounded file:border-0 file:text-sm file:bg-brand/10 file:text-brand hover:file:bg-brand/10">
@@ -258,7 +258,7 @@
                                     <div class="flex items-center justify-between text-xs bg-themed-secondary p-2 rounded border border-themed-primary transition-colors duration-300">
                                         <span class="truncate">{{ $doc['name'] }}</span>
                                         <button wire:click="removeFile('documents', {{ $index }})" class="text-red-600 hover:text-red-800 transition-colors duration-300" aria-label="Remove file">
-                                            <i class="fas fa-trash"></i>
+                                            <i class="fas fa-trash" aria-hidden="true"></i>
                                         </button>
                                     </div>
                                 @endforeach
@@ -272,7 +272,7 @@
                     <!-- Audio Files -->
                     <div class="bg-themed-tertiary rounded-lg p-4 border border-themed-primary transition-colors duration-300">
                         <h4 class="font-medium text-themed-primary mb-3 flex items-center gap-2 transition-colors duration-300">
-                            <i class="fas fa-music text-brand"></i> Audio Files
+                            <i class="fas fa-music text-brand" aria-hidden="true"></i> Audio Files
                         </h4>
                         <div class="space-y-2">
                             <input aria-label="Audio upload" type="file" wire:model="audioUpload" accept=".mp3,.wav,.m4a,.aac" class="w-full text-sm file:mr-2 file:py-1 file:px-3 file:rounded file:border-0 file:text-sm file:bg-brand/10 file:text-brand hover:file:bg-brand/10">
@@ -293,7 +293,7 @@
                                     <div class="flex items-center justify-between text-xs bg-themed-secondary p-2 rounded border border-themed-primary transition-colors duration-300">
                                         <span class="truncate">{{ $audio['name'] }}</span>
                                         <button wire:click="removeFile('audios', {{ $index }})" class="text-red-600 hover:text-red-800 transition-colors duration-300" aria-label="Remove file">
-                                            <i class="fas fa-trash"></i>
+                                            <i class="fas fa-trash" aria-hidden="true"></i>
                                         </button>
                                     </div>
                                 @endforeach
@@ -304,7 +304,7 @@
                     <!-- Video Files -->
                     <div class="bg-themed-tertiary rounded-lg p-4 border border-themed-primary transition-colors duration-300">
                         <h4 class="font-medium text-themed-primary mb-3 flex items-center gap-2 transition-colors duration-300">
-                            <i class="fas fa-film text-red-600"></i> Video Files
+                            <i class="fas fa-film text-red-600" aria-hidden="true"></i> Video Files
                         </h4>
                         <div class="space-y-2">
                             <input aria-label="Video upload" type="file" wire:model="videoUpload" accept=".mp4,.avi,.mov,.wmv" class="w-full text-sm file:mr-2 file:py-1 file:px-3 file:rounded file:border-0 file:text-sm file:bg-red-50 file:text-red-700 hover:file:bg-red-100">
@@ -325,7 +325,7 @@
                                     <div class="flex items-center justify-between text-xs bg-themed-secondary p-2 rounded border border-themed-primary transition-colors duration-300">
                                         <span class="truncate">{{ $video['name'] }}</span>
                                         <button wire:click="removeFile('videos', {{ $index }})" class="text-red-600 hover:text-red-800 transition-colors duration-300" aria-label="Remove file">
-                                            <i class="fas fa-trash"></i>
+                                            <i class="fas fa-trash" aria-hidden="true"></i>
                                         </button>
                                     </div>
                                 @endforeach
@@ -337,7 +337,7 @@
                 <!-- External Links -->
                 <div class="bg-themed-tertiary rounded-lg p-4 border border-themed-primary transition-colors duration-300">
                     <h4 class="font-medium text-themed-primary mb-3 flex items-center gap-2 transition-colors duration-300">
-                        <i class="fas fa-link text-brand"></i> External Links
+                        <i class="fas fa-link text-brand" aria-hidden="true"></i> External Links
                     </h4>
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-2 mb-3">
                         <input aria-label="Link title" type="text" wire:model="newLinkTitle" placeholder="Link title"
@@ -362,7 +362,7 @@
                                 <div class="flex items-center justify-between text-xs bg-themed-secondary p-2 rounded border border-themed-primary transition-colors duration-300">
                                     <a href="{{ $link['url'] }}" target="_blank" class="truncate text-brand hover:underline">{{ $link['title'] }}</a>
                                     <button wire:click="removeFile('external_links', {{ $index }})" class="text-red-600 hover:text-red-800 ml-2 transition-colors duration-300" aria-label="Remove file">
-                                        <i class="fas fa-trash"></i>
+                                        <i class="fas fa-trash" aria-hidden="true"></i>
                                     </button>
                                 </div>
                             @endforeach

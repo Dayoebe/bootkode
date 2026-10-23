@@ -6,7 +6,7 @@
         </label>
         <div class="mt-2 flex flex-col gap-3 sm:flex-row">
             <div class="relative flex-1">
-                <i class="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-sm text-themed-tertiary"></i>
+                <i class="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-sm text-themed-tertiary" aria-hidden="true"></i>
                 <input
                     id="workspace-search-page"
                     type="search"
@@ -18,7 +18,7 @@
             </div>
 
             <a href="{{ route('dashboard') }}" class="inline-flex h-12 items-center justify-center gap-2 rounded-lg border border-themed-primary px-4 text-sm font-bold text-themed-secondary transition hover:bg-themed-tertiary hover:text-themed-primary">
-                <i class="fas fa-arrow-left"></i>
+                <i class="fas fa-arrow-left" aria-hidden="true"></i>
                 Dashboard
             </a>
         </div>
@@ -34,7 +34,7 @@
 
     @if($q && $total === 0)
         <section class="rounded-lg border border-dashed border-themed-primary bg-themed-secondary px-4 py-12 text-center">
-            <i class="fas fa-search text-3xl text-themed-tertiary"></i>
+            <i class="fas fa-search text-3xl text-themed-tertiary" aria-hidden="true"></i>
             <h2 class="bk-display mt-4 text-xl font-bold text-themed-primary">No results found</h2>
             <p class="mt-2 text-sm font-semibold text-themed-secondary">Try a course title, lesson name, user email, certificate number, page, post, or material keyword.</p>
         </section>

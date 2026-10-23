@@ -233,7 +233,7 @@
                                 <button type="button"
                                         wire:click="removeFileType('{{ $type }}')"
                                         class="ml-2 text-brand hover:text-brand" aria-label="Close">
-                                    <i class="fas fa-times text-xs"></i>
+                                    <i class="fas fa-times text-xs" aria-hidden="true"></i>
                                 </button>
                             </span>
                         @endforeach
@@ -249,7 +249,7 @@
                     <button type="button"
                             wire:click="addFileType"
                             class="px-4 py-2 bg-action text-action-foreground rounded-lg hover:bg-action transition-colors">
-                        <i class="fas fa-plus mr-1"></i>Add
+                        <i class="fas fa-plus mr-1" aria-hidden="true"></i>Add
                     </button>
                 </div>
                 <p class="text-xs text-content-muted mt-2">Add common file extensions without the dot (e.g., pdf, zip, mp4)</p>
@@ -306,11 +306,11 @@
                     <div class="space-y-3">
                         <button type="button"
                                 class="w-full px-4 py-2 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 transition-colors">
-                            <i class="fas fa-sync mr-2"></i>Clear Marketplace Cache
+                            <i class="fas fa-sync mr-2" aria-hidden="true"></i>Clear Marketplace Cache
                         </button>
                         <button type="button"
                                 class="w-full px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition-colors">
-                            <i class="fas fa-database mr-2"></i>Rebuild Search Index
+                            <i class="fas fa-database mr-2" aria-hidden="true"></i>Rebuild Search Index
                         </button>
                     </div>
                 </div>
@@ -320,7 +320,7 @@
                     <div class="space-y-3">
                         <button type="button"
                                 class="w-full px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors">
-                            <i class="fas fa-tools mr-2"></i>Enable Maintenance Mode
+                            <i class="fas fa-tools mr-2" aria-hidden="true"></i>Enable Maintenance Mode
                         </button>
                         <p class="text-xs text-content-muted">This will disable the marketplace for customers while allowing admin access</p>
                     </div>
@@ -336,23 +336,23 @@
                             wire:click="resetToDefaults"
                             wire:confirm="Are you sure you want to reset all settings to defaults? This action cannot be undone."
                             class="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors">
-                        <i class="fas fa-undo mr-2"></i>Reset to Defaults
+                        <i class="fas fa-undo mr-2" aria-hidden="true"></i>Reset to Defaults
                     </button>
 
                     <button type="button"
                             class="px-4 py-2 bg-action text-action-foreground rounded-lg hover:bg-action transition-colors">
-                        <i class="fas fa-download mr-2"></i>Export Settings
+                        <i class="fas fa-download mr-2" aria-hidden="true"></i>Export Settings
                     </button>
                 </div>
 
                 <div class="flex space-x-3">
                     <button type="button"
                             class="px-4 py-2 border border-line text-content rounded-lg hover:bg-surface-muted transition-colors">
-                        <i class="fas fa-times mr-2"></i>Cancel
+                        <i class="fas fa-times mr-2" aria-hidden="true"></i>Cancel
                     </button>
                     <button type="submit"
                             class="px-4 py-2 bg-action text-action-foreground rounded-lg hover:bg-action transition-colors">
-                        <i class="fas fa-save mr-2"></i>Save Settings
+                        <i class="fas fa-save mr-2" aria-hidden="true"></i>Save Settings
                     </button>
                 </div>
             </div>
@@ -363,7 +363,7 @@
     <div class="bg-brand/10 rounded-lg border border-brand p-6">
         <div class="flex items-start space-x-3">
             <div class="flex-shrink-0">
-                <i class="fas fa-info-circle text-brand mt-1"></i>
+                <i class="fas fa-info-circle text-brand mt-1" aria-hidden="true"></i>
             </div>
             <div>
                 <h4 class="text-sm font-medium text-brand mb-2">Settings Information</h4>
@@ -374,7 +374,7 @@
                 </div>
                 <div class="mt-3">
                     <p class="text-xs text-brand">
-                        <i class="fas fa-exclamation-triangle mr-1"></i>
+                        <i class="fas fa-exclamation-triangle mr-1" aria-hidden="true"></i>
                         Changes to commission rates will only apply to new orders. Existing orders retain their original commission structure.
                     </p>
                 </div>

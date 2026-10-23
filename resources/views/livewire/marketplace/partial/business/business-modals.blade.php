@@ -6,11 +6,11 @@
         <div class="bg-surface dark:bg-gray-800 rounded-lg max-w-md w-full p-6 transition-colors duration-300">
             <div class="flex items-center justify-between mb-4">
                 <h3 class="text-lg font-medium text-content dark:text-white flex items-center">
-                    <i class="fas fa-sticky-note mr-2 text-brand dark:text-brand"></i>
+                    <i class="fas fa-sticky-note mr-2 text-brand dark:text-brand" aria-hidden="true"></i>
                     Notes for Order #{{ $selectedOrder->order_number }}
                 </h3>
                 <button wire:click="closeNoteModal" class="text-content-muted dark:text-content-muted hover:text-content-muted dark:hover:text-content-muted transition-colors duration-300" aria-label="Close">
-                    <i class="fas fa-times"></i>
+                    <i class="fas fa-times" aria-hidden="true"></i>
                 </button>
             </div>
 
@@ -23,7 +23,7 @@
                              class="w-12 h-12 object-cover rounded">
                     @else
                         <div class="w-12 h-12 bg-gray-200 dark:bg-gray-600 rounded flex items-center justify-center">
-                            <i class="fas fa-image text-content-muted dark:text-content-muted"></i>
+                            <i class="fas fa-image text-content-muted dark:text-content-muted" aria-hidden="true"></i>
                         </div>
                     @endif
                     <div>
@@ -50,7 +50,7 @@
                     </button>
                     <button type="submit"
                         class="px-4 py-2 bg-action dark:bg-action text-action-foreground rounded-lg hover:bg-action dark:hover:bg-action transition-colors duration-300">
-                        <i class="fas fa-save mr-2"></i>
+                        <i class="fas fa-save mr-2" aria-hidden="true"></i>
                         Save Notes
                     </button>
                 </div>
@@ -65,11 +65,11 @@
         <div class="bg-surface dark:bg-gray-800 rounded-lg max-w-lg w-full p-6 max-h-[90vh] overflow-y-auto transition-colors duration-300">
             <div class="flex items-center justify-between mb-6">
                 <h3 class="text-lg font-medium text-content dark:text-white flex items-center">
-                    <i class="fas fa-money-bill-wave mr-2 text-green-600 dark:text-green-400"></i>
+                    <i class="fas fa-money-bill-wave mr-2 text-green-600 dark:text-green-400" aria-hidden="true"></i>
                     Request Withdrawal
                 </h3>
                 <button wire:click="closeWithdrawalModal" class="text-content-muted dark:text-content-muted hover:text-content-muted dark:hover:text-content-muted transition-colors duration-300" aria-label="Close">
-                    <i class="fas fa-times"></i>
+                    <i class="fas fa-times" aria-hidden="true"></i>
                 </button>
             </div>
 
@@ -117,7 +117,7 @@
                 <!-- Account Details Info -->
                 <div class="mb-6 p-3 bg-brand/10 dark:bg-action/20 border border-brand dark:border-brand rounded-lg transition-colors duration-300">
                     <p class="text-sm text-brand dark:text-brand flex items-center">
-                        <i class="fas fa-info-circle mr-2"></i>
+                        <i class="fas fa-info-circle mr-2" aria-hidden="true"></i>
                         We'll use the account details from your profile. Make sure they're up to date.
                     </p>
                 </div>
@@ -127,15 +127,15 @@
                     <h5 class="text-sm font-medium text-content dark:text-white mb-2">Processing Information</h5>
                     <ul class="text-xs text-content-muted dark:text-content-muted space-y-1">
                         <li class="flex items-center">
-                            <i class="fas fa-dollar-sign mr-2 text-content-muted dark:text-content-muted"></i>
+                            <i class="fas fa-dollar-sign mr-2 text-content-muted dark:text-content-muted" aria-hidden="true"></i>
                             No additional fees deducted
                         </li>
                         <li class="flex items-center">
-                            <i class="fas fa-clock mr-2 text-content-muted dark:text-content-muted"></i>
+                            <i class="fas fa-clock mr-2 text-content-muted dark:text-content-muted" aria-hidden="true"></i>
                             Processing time: 1-3 business days
                         </li>
                         <li class="flex items-center">
-                            <i class="fas fa-shield-alt mr-2 text-content-muted dark:text-content-muted"></i>
+                            <i class="fas fa-shield-alt mr-2 text-content-muted dark:text-content-muted" aria-hidden="true"></i>
                             Secure bank transfer via Paystack
                         </li>
                     </ul>
@@ -173,7 +173,7 @@
                     </button>
                     <button type="submit"
                         class="px-4 py-2 bg-green-600 dark:bg-green-500 text-white rounded-lg hover:bg-green-700 dark:hover:bg-green-600 transition-colors duration-300 flex items-center">
-                        <i class="fas fa-paper-plane mr-2"></i>
+                        <i class="fas fa-paper-plane mr-2" aria-hidden="true"></i>
                         Request Withdrawal
                     </button>
                 </div>

@@ -31,7 +31,7 @@
 
             <div class="flex items-end">
                 <button wire:click="exportReport" class="w-full px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors">
-                    <i class="fas fa-download mr-2"></i> Export CSV
+                    <i class="fas fa-download mr-2" aria-hidden="true"></i> Export CSV
                 </button>
             </div>
         </div>
@@ -71,7 +71,7 @@
 
         @if(count($reportData) > 0)
             <div class="overflow-x-auto">
-                <x-ui.table label="Commission Reports.Blade records"><table class="min-w-full divide-y divide-line">
+                <x-ui.table label="Commission Reports records"><table class="min-w-full divide-y divide-line">
                     <thead class="bg-surface-muted">
                         <tr>
                             @if(in_array($reportType, ['overview', 'commissions'], true))
@@ -108,7 +108,7 @@
             </div>
         @else
             <div class="px-6 py-12 text-center">
-                <i class="fas fa-chart-bar text-6xl text-content-muted mb-4"></i>
+                <i class="fas fa-chart-bar text-6xl text-content-muted mb-4" aria-hidden="true"></i>
                 <h3 class="text-lg font-medium text-content mb-2">No data available</h3>
                 <p class="text-content-muted">No data found for the selected report type and date range.</p>
             </div>

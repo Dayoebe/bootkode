@@ -1,14 +1,14 @@
-<div class="min-h-screen bg-themed-primary p-6">
+<div class="space-y-6">
     <!-- Header -->
-    <div class="flex justify-between items-center mb-8">
+    <div class="flex flex-col gap-4 xl:flex-row xl:items-start xl:justify-between mb-8">
         <div>
             <h1 class=" font-bold text-themed-primary bk-page-title">Certificate Analytics</h1>
             <p class="text-themed-secondary mt-2">Comprehensive analytics and insights for certificate management</p>
         </div>
 
-        <div class="flex gap-4">
+        <div class="flex min-w-0 max-w-full flex-wrap gap-3">
             <select aria-label="Date range" wire:model.live="dateRange"
-                class="bg-themed-secondary border border-themed-primary rounded-lg px-3 py-2 text-themed-primary focus:ring-2 focus:ring-brand transition-colors duration-300">
+                class="max-w-full bg-themed-secondary border border-themed-primary rounded-lg px-3 py-2 text-themed-primary focus:ring-2 focus:ring-brand transition-colors duration-300">
                 <option value="7">Last 7 Days</option>
                 <option value="30">Last 30 Days</option>
                 <option value="90">Last 3 Months</option>
@@ -19,7 +19,7 @@
 
             @if (!auth()->user()->hasRole('instructor') || auth()->user()->hasRole('super_admin'))
                 <select aria-label="Selected course" wire:model.live="selectedCourse"
-                    class="bg-themed-secondary border border-themed-primary rounded-lg px-3 py-2 text-themed-primary focus:ring-2 focus:ring-brand transition-colors duration-300">
+                    class="max-w-full bg-themed-secondary border border-themed-primary rounded-lg px-3 py-2 text-themed-primary focus:ring-2 focus:ring-brand transition-colors duration-300">
                     <option value="all">All Courses</option>
                     @foreach ($availableCourses as $course)
                         <option value="{{ $course->id }}">{{ Str::limit($course->title, 30) }}</option>
@@ -29,7 +29,7 @@
 
             <button wire:click="exportReport"
                 class="px-4 py-2 bg-action hover:bg-action/90 text-action-foreground rounded-lg transition-colors flex items-center">
-                <i class="fas fa-download mr-2"></i>Export Report
+                <i class="fas fa-download mr-2" aria-hidden="true"></i>Export Report
             </button>
         </div>
     </div>
@@ -43,7 +43,7 @@
                     <p class="text-3xl font-bold">{{ number_format($totalCertificates) }}</p>
                     <p class="text-xs opacity-75">{{ $dateRange === 'all' ? 'All time' : 'Selected period' }}</p>
                 </div>
-                <i class="fas fa-certificate text-4xl opacity-80"></i>
+                <i class="fas fa-certificate text-4xl opacity-80" aria-hidden="true"></i>
             </div>
         </div>
 
@@ -54,7 +54,7 @@
                     <p class="text-3xl font-bold">{{ number_format($approvedCertificates) }}</p>
                     <p class="text-xs opacity-75">{{ $approvalRate }}% approval rate</p>
                 </div>
-                <i class="fas fa-check-circle text-4xl opacity-80"></i>
+                <i class="fas fa-check-circle text-4xl opacity-80" aria-hidden="true"></i>
             </div>
         </div>
 
@@ -65,7 +65,7 @@
                     <p class="text-3xl font-bold">{{ number_format($pendingCertificates) }}</p>
                     <p class="text-xs opacity-75">Awaiting review</p>
                 </div>
-                <i class="fas fa-clock text-4xl opacity-80"></i>
+                <i class="fas fa-clock text-4xl opacity-80" aria-hidden="true"></i>
             </div>
         </div>
 
@@ -76,7 +76,7 @@
                     <p class="text-3xl font-bold">{{ number_format($thisMonthCertificates) }}</p>
                     <p class="text-xs opacity-75">New certificates</p>
                 </div>
-                <i class="fas fa-calendar text-4xl opacity-80"></i>
+                <i class="fas fa-calendar text-4xl opacity-80" aria-hidden="true"></i>
             </div>
         </div>
     </div>
@@ -179,7 +179,7 @@
                     </div>
                 @empty
                     <div class="text-themed-secondary text-center py-8">
-                        <i class="fas fa-chart-bar text-4xl mb-4"></i>
+                        <i class="fas fa-chart-bar text-4xl mb-4" aria-hidden="true"></i>
                         <p>No certificate data available</p>
                     </div>
                 @endforelse
@@ -215,7 +215,7 @@
                     </div>
                 @empty
                     <div class="text-themed-secondary text-center py-8">
-                        <i class="fas fa-history text-4xl mb-4"></i>
+                        <i class="fas fa-history text-4xl mb-4" aria-hidden="true"></i>
                         <p>No recent activity</p>
                     </div>
                 @endforelse
@@ -228,7 +228,7 @@
         <div class="mt-8 bg-themed-secondary rounded-lg p-6 border border-themed-primary transition-colors duration-300">
             <h3 class="text-lg font-semibold text-themed-primary mb-4">Monthly Breakdown</h3>
             <div class="overflow-x-auto">
-                <x-ui.table label="Certificate Analytics.Blade records"><table class="w-full">
+                <x-ui.table label="Certificate Analytics records"><table class="w-full">
                     <thead>
                         <tr class="border-b border-themed-primary">
                             <th scope="col" class="text-left text-themed-secondary py-2">Month</th>
@@ -262,7 +262,7 @@
     <!-- Loading Overlay -->
     <div wire:loading class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
         <div class="bg-themed-secondary rounded-lg p-8 flex items-center">
-            <i class="fas fa-spinner fa-spin text-brand text-2xl mr-4"></i>
+            <i class="fas fa-spinner fa-spin text-brand text-2xl mr-4" aria-hidden="true"></i>
             <span class="text-themed-primary font-medium">Loading analytics...</span>
         </div>
     </div>

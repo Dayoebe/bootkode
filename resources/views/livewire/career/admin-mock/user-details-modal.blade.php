@@ -41,7 +41,7 @@
                 <div>
                     <h4 class="text-md font-medium mb-4 text-themed-primary">Recent Interviews</h4>
                     <div class="overflow-hidden shadow ring-1 ring-themed-primary md:rounded-lg">
-                        <x-ui.table label="User Details Modal.Blade records"><table class="min-w-full divide-y divide-themed-primary">
+                        <x-ui.table label="User Details Modal records"><table class="min-w-full divide-y divide-themed-primary">
                             <thead class="bg-themed-tertiary">
                                 <tr>
                                     <th scope="col" class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-themed-secondary">

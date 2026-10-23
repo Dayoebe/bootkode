@@ -31,7 +31,7 @@
                 </p>
             </div>
             <span class="flex h-12 w-12 items-center justify-center rounded-lg bg-themed-secondary shadow-sm">
-                <i class="fas fa-compass text-lg accent-themed-primary"></i>
+                <i class="fas fa-compass text-lg accent-themed-primary" aria-hidden="true"></i>
             </span>
         </div>
 
@@ -76,11 +76,11 @@
                         <span
                             class="mt-0.5 flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-lg {{ $isCompleted ? 'bg-green-500/15 text-green-500' : ($isUnlocked ? 'bg-themed-secondary accent-themed-primary' : 'bg-themed-secondary text-themed-tertiary') }}">
                             @if ($isCompleted)
-                                <i class="fas fa-check-circle"></i>
+                                <i class="fas fa-check-circle" aria-hidden="true"></i>
                             @elseif ($isUnlocked)
-                                <i class="fas fa-book-open"></i>
+                                <i class="fas fa-book-open" aria-hidden="true"></i>
                             @else
-                                <i class="fas fa-lock"></i>
+                                <i class="fas fa-lock" aria-hidden="true"></i>
                             @endif
                         </span>
 
@@ -111,7 +111,7 @@
                         <span class="text-xs font-semibold text-themed-secondary">{{ $sectionProgress }}%</span>
                         <span class="flex h-8 w-8 items-center justify-center rounded-full border border-themed-secondary bg-themed-secondary">
                             <i class="fas fa-chevron-down text-xs text-themed-tertiary transition-transform duration-300"
-                                :class="{ 'rotate-180': isExpanded({{ $section->id }}) }"></i>
+                                :class="{ 'rotate-180': isExpanded({{ $section- aria-hidden="true">id }}) }"></i>
                         </span>
                     </div>
                 </button>
@@ -146,13 +146,13 @@
                                     <span
                                         class="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg {{ $isCurrentLesson ? 'bg-white/20 text-white' : ($isLessonCompleted ? 'bg-green-500/15 text-green-500' : ($isUnlocked ? 'bg-themed-tertiary accent-themed-primary' : 'bg-themed-tertiary text-themed-tertiary')) }}">
                                         @if ($isLessonCompleted)
-                                            <i class="fas fa-check"></i>
+                                            <i class="fas fa-check" aria-hidden="true"></i>
                                         @elseif ($isCurrentLesson)
-                                            <i class="fas fa-play"></i>
+                                            <i class="fas fa-play" aria-hidden="true"></i>
                                         @elseif ($isUnlocked)
-                                            <i class="far fa-circle"></i>
+                                            <i class="far fa-circle" aria-hidden="true"></i>
                                         @else
-                                            <i class="fas fa-lock"></i>
+                                            <i class="fas fa-lock" aria-hidden="true"></i>
                                         @endif
                                     </span>
 
@@ -167,13 +167,13 @@
                                             @endif
                                             @if ($lesson->hasVideo())
                                                 <span class="inline-flex items-center gap-1">
-                                                    <i class="fas fa-video text-red-500"></i>
+                                                    <i class="fas fa-video text-red-500" aria-hidden="true"></i>
                                                     Video
                                                 </span>
                                             @endif
                                             @if ($lesson->hasDocuments())
                                                 <span class="inline-flex items-center gap-1">
-                                                    <i class="fas fa-file-alt text-brand"></i>
+                                                    <i class="fas fa-file-alt text-brand" aria-hidden="true"></i>
                                                     Resources
                                                 </span>
                                             @endif
@@ -182,7 +182,7 @@
                                 </div>
 
                                 @if ($isCurrentLesson)
-                                    <i class="fas fa-arrow-right text-sm text-white"></i>
+                                    <i class="fas fa-arrow-right text-sm text-white" aria-hidden="true"></i>
                                 @endif
                             </button>
                         @endforeach

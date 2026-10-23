@@ -9,7 +9,7 @@
         <div class="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-6">
             <div
                 class="w-10 h-10 sm:w-12 sm:h-12 bg-green-500 rounded-full flex items-center justify-center flex-shrink-0">
-                <i class="fas fa-dollar-sign text-white text-lg sm:text-xl"></i>
+                <i class="fas fa-dollar-sign text-white text-lg sm:text-xl" aria-hidden="true"></i>
             </div>
             <div>
                 <h2 class="text-xl sm:text-2xl font-bold text-themed-primary transition-colors duration-300">
@@ -30,7 +30,7 @@
                         <div class="w-12 h-12 sm:w-16 sm:h-16 mx-auto mb-3 sm:mb-4 rounded-full flex items-center justify-center transition-colors duration-300"
                             :class="$wire.is_free ? 'bg-green-500' : 'bg-themed-secondary border border-themed-primary'">
                             <i class="fas fa-gift text-lg sm:text-2xl"
-                                :class="$wire.is_free ? 'text-white' : 'text-themed-secondary'"></i>
+                                :class="$wire.is_free ? 'text-white' : 'text-themed-secondary'" aria-hidden="true"></i>
                         </div>
                         <h3
                             class="text-base sm:text-lg font-semibold text-themed-primary mb-2 transition-colors duration-300">
@@ -51,7 +51,7 @@
                         <div class="w-12 h-12 sm:w-16 sm:h-16 mx-auto mb-3 sm:mb-4 rounded-full flex items-center justify-center transition-colors duration-300"
                             :class="$wire.is_premium ? 'bg-purple-500' : 'bg-themed-secondary border border-themed-primary'">
                             <i class="fas fa-crown text-lg sm:text-2xl"
-                                :class="$wire.is_premium ? 'text-white' : 'text-themed-secondary'"></i>
+                                :class="$wire.is_premium ? 'text-white' : 'text-themed-secondary'" aria-hidden="true"></i>
                         </div>
                         <h3
                             class="text-base sm:text-lg font-semibold text-themed-primary mb-2 transition-colors duration-300">
@@ -71,7 +71,7 @@
                         <div class="w-12 h-12 sm:w-16 sm:h-16 mx-auto mb-3 sm:mb-4 rounded-full flex items-center justify-center transition-colors duration-300"
                             :class="!$wire.is_free && !$wire.is_premium ? 'bg-blue-500' : 'bg-themed-secondary border border-themed-primary'">
                             <i class="fas fa-money-bill-wave text-lg sm:text-2xl"
-                                :class="!$wire.is_free && !$wire.is_premium ? 'text-white' : 'text-themed-secondary'"></i>
+                                :class="!$wire.is_free && !$wire.is_premium ? 'text-white' : 'text-themed-secondary'" aria-hidden="true"></i>
                         </div>
                         <h3
                             class="text-base sm:text-lg font-semibold text-themed-primary mb-2 transition-colors duration-300">
@@ -87,7 +87,7 @@
         <div x-show="!$wire.is_free" x-transition class="mb-6">
             <label
                 class="block text-sm font-medium text-themed-primary mb-2 flex items-center gap-2 transition-colors duration-300">
-                <i class="fas fa-tag text-green-500 dark:text-green-400"></i>
+                <i class="fas fa-tag text-green-500 dark:text-green-400" aria-hidden="true"></i>
                 Course Price ($)
             </label>
             <div class="relative">
@@ -109,7 +109,7 @@
                     class="h-4 w-4 sm:h-5 sm:w-5 text-green-500 rounded border-themed-primary bg-themed-tertiary focus:ring-green-400">
                 <label for="publish_now"
                     class="text-themed-primary flex items-center gap-2 text-sm sm:text-base transition-colors duration-300">
-                    <i class="fas fa-globe text-green-500 dark:text-green-400"></i>
+                    <i class="fas fa-globe text-green-500 dark:text-green-400" aria-hidden="true"></i>
                     Publish immediately after approval
                 </label>
             </div>

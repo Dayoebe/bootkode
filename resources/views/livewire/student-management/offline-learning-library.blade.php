@@ -25,7 +25,7 @@
             </div>
             <button type="button" @click="sync"
                     class="inline-flex items-center justify-center rounded-lg bg-action px-4 py-2 text-sm font-semibold text-action-foreground hover:bg-action/90">
-                <i class="fas fa-rotate mr-2"></i>
+                <i class="fas fa-rotate mr-2" aria-hidden="true"></i>
                 Sync Progress
             </button>
         </div>
@@ -72,7 +72,7 @@
                             <button type="button"
                                     onclick="window.bootkodeOffline.openReader('{{ $course?->slug }}')"
                                     class="rounded-lg bg-action px-4 py-2 text-sm font-semibold text-action-foreground hover:bg-action/90">
-                                <i class="fas fa-book-reader mr-2"></i>Read Offline
+                                <i class="fas fa-book-reader mr-2" aria-hidden="true"></i>Read Offline
                             </button>
                             <a href="{{ $course ? route('course.view', $course->slug) : '#' }}"
                                class="rounded-lg border border-themed-secondary bg-themed-tertiary px-4 py-2 text-center text-sm font-semibold text-themed-primary">
@@ -88,11 +88,11 @@
                 </article>
             @empty
                 <div class="rounded-lg border-2 border-dashed border-themed-secondary bg-themed-tertiary p-8 text-center">
-                    <i class="fas fa-download mb-3 text-4xl text-themed-tertiary"></i>
+                    <i class="fas fa-download mb-3 text-4xl text-themed-tertiary" aria-hidden="true"></i>
                     <h2 class="text-lg font-semibold text-themed-primary">No offline packs yet</h2>
                     <p class="mt-2 text-sm text-themed-secondary">Open an enrolled course and use the offline pack panel to download it for mobile learning.</p>
                     <a href="{{ route('student.enrolled-courses') }}" class="mt-4 inline-flex items-center rounded-lg bg-action px-4 py-2 text-sm font-semibold text-action-foreground">
-                        <i class="fas fa-book mr-2"></i>My Courses
+                        <i class="fas fa-book mr-2" aria-hidden="true"></i>My Courses
                     </a>
                 </div>
             @endforelse

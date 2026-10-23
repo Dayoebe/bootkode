@@ -28,7 +28,7 @@
                     <div
                         class="w-12 h-12 bg-brand/20 rounded-lg flex items-center justify-center flex-shrink-0 border border-brand/30 transition-colors duration-300">
                         <i
-                            class="fas fa-{{ $item['type'] === 'document' ? 'file-alt' : ($item['type'] === 'video' ? 'play-circle' : 'link') }} text-brand transition-colors duration-300"></i>
+                            class="fas fa-{{ $item['type'] === 'document' ? 'file-alt' : ($item['type'] === 'video' ? 'play-circle' : 'link') }} text-brand transition-colors duration-300" aria-hidden="true"></i>
                     </div>
                     <div class="flex-1">
                         <h3 class="font-semibold text-themed-primary mb-2 transition-colors duration-300">

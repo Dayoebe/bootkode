@@ -21,7 +21,7 @@
                 </p>
             </div>
             <button type="button" wire:click="generateReceipts" class="rounded-lg bg-action px-4 py-3 text-sm font-semibold text-action-foreground hover:bg-action/90">
-                <i class="fas fa-rotate mr-2"></i>Update Receipts
+                <i class="fas fa-rotate mr-2" aria-hidden="true"></i>Update Receipts
             </button>
         </div>
 
@@ -34,7 +34,7 @@
 
     <div class="rounded-lg border border-themed-primary bg-themed-secondary p-5 shadow-sm">
         <div class="overflow-x-auto">
-            <x-ui.table label="Billing Documents.Blade records"><table class="min-w-full divide-y divide-themed-primary text-sm">
+            <x-ui.table label="Billing Documents records"><table class="min-w-full divide-y divide-themed-primary text-sm">
                 <thead>
                     <tr class="text-left text-xs font-semibold uppercase text-themed-secondary">
                         <th scope="col" class="py-3">Document</th>
@@ -59,7 +59,7 @@
                     @empty
                         <tr>
                             <td colspan="5" class="py-12 text-center">
-                                <i class="fas fa-receipt text-4xl text-themed-tertiary"></i>
+                                <i class="fas fa-receipt text-4xl text-themed-tertiary" aria-hidden="true"></i>
                                 <h2 class="mt-3 text-lg font-semibold text-themed-primary">No billing documents yet</h2>
                                 <p class="mt-1 text-sm text-themed-secondary">Successful payments will generate receipts here.</p>
                             </td>

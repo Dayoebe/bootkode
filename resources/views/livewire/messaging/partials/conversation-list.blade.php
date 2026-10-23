@@ -12,13 +12,13 @@
                     @click="conversationsOpen = false"
                     class="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-themed-primary bg-themed-tertiary text-themed-primary"
                     aria-label="Close conversations">
-                    <i class="fas fa-times"></i>
+                    <i class="fas fa-times" aria-hidden="true"></i>
                 </button>
             @endunless
         </div>
 
         <div class="relative mt-4">
-            <i class="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-themed-tertiary"></i>
+            <i class="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-themed-tertiary" aria-hidden="true"></i>
             <input aria-label="Search" wire:model.live.debounce.300ms="search" type="search"
                 placeholder="Search"
                 class="h-10 w-full rounded-lg border-themed-primary bg-themed-tertiary pl-10 pr-3 text-sm text-themed-primary placeholder-themed-tertiary focus:border-brand focus:ring-brand/30">
@@ -66,7 +66,7 @@
         @empty
             <div class="p-6 text-center">
                 <div class="mx-auto flex h-12 w-12 items-center justify-center rounded-lg bg-themed-tertiary">
-                    <i class="fas fa-comments text-themed-secondary"></i>
+                    <i class="fas fa-comments text-themed-secondary" aria-hidden="true"></i>
                 </div>
                 <p class="mt-3 text-sm font-semibold text-themed-primary">No conversations</p>
             </div>
@@ -91,7 +91,7 @@
                             <p class="truncate text-[11px] text-themed-secondary">{{ $course->instructor?->name ?? 'Instructor' }}</p>
                         </div>
 
-                        <i class="fas fa-comment text-xs text-themed-secondary"></i>
+                        <i class="fas fa-comment text-xs text-themed-secondary" aria-hidden="true"></i>
                     </button>
                 @endforeach
             </div>

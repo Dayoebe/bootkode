@@ -20,7 +20,7 @@
                 </span>
                 <button type="button" wire:click="refreshProfile"
                     class="rounded-lg border border-themed-primary px-4 py-2 text-sm font-semibold text-themed-primary transition hover:border-brand hover:text-brand">
-                    <i class="fas fa-rotate mr-2"></i>Refresh Diagnosis
+                    <i class="fas fa-rotate mr-2" aria-hidden="true"></i>Refresh Diagnosis
                 </button>
             </div>
         </div>
@@ -65,7 +65,7 @@
             ] as $tab => [$label, $icon])
                 <button type="button" wire:click="setTab('{{ $tab }}')"
                     class="rounded-lg px-3 py-3 text-sm font-semibold transition {{ $activeTab === $tab ? 'bg-action text-action-foreground' : 'text-themed-secondary hover:bg-themed-tertiary hover:text-themed-primary' }}">
-                    <i class="fas {{ $icon }} mr-2"></i>{{ $label }}
+                    <i class="fas {{ $icon }} mr-2" aria-hidden="true"></i>{{ $label }}
                 </button>
             @endforeach
         </div>
@@ -90,7 +90,7 @@
                             <p class="text-xs font-semibold uppercase text-themed-secondary">Evidence</p>
                             <ul class="mt-2 space-y-1 text-sm text-themed-secondary">
                                 @foreach($skill['evidence'] as $item)
-                                    <li><i class="fas fa-check text-emerald-500 mr-2"></i>{{ $item }}</li>
+                                    <li><i class="fas fa-check text-emerald-500 mr-2" aria-hidden="true"></i>{{ $item }}</li>
                                 @endforeach
                             </ul>
                         </div>
@@ -100,7 +100,7 @@
                             <p class="text-xs font-semibold uppercase text-themed-secondary">Gaps</p>
                             <ul class="mt-2 space-y-1 text-sm text-themed-secondary">
                                 @foreach($skill['gaps'] as $item)
-                                    <li><i class="fas fa-triangle-exclamation text-orange-500 mr-2"></i>{{ $item }}</li>
+                                    <li><i class="fas fa-triangle-exclamation text-orange-500 mr-2" aria-hidden="true"></i>{{ $item }}</li>
                                 @endforeach
                             </ul>
                         </div>
@@ -109,7 +109,7 @@
                 </div>
             @empty
                 <div class="rounded-lg border border-dashed border-themed-primary bg-themed-secondary p-10 text-center lg:col-span-2">
-                    <i class="fas fa-stethoscope text-4xl text-themed-tertiary"></i>
+                    <i class="fas fa-stethoscope text-4xl text-themed-tertiary" aria-hidden="true"></i>
                     <h3 class="mt-3 text-lg font-semibold text-themed-primary">No diagnosis yet</h3>
                     <p class="mt-1 text-sm text-themed-secondary">Enroll in a course or complete an assessment to generate stronger signals.</p>
                 </div>
@@ -158,7 +158,7 @@
                         placeholder="Ask about a lesson, error, concept, project, assessment, or what to learn next."></textarea>
                     @error('question') <p class="text-sm text-red-500">{{ $message }}</p> @enderror
                     <button type="submit" class="rounded-lg bg-action px-4 py-3 text-sm font-semibold text-action-foreground transition hover:bg-action/90">
-                        <i class="fas fa-arrow-right mr-2"></i>Open Coding Mentor
+                        <i class="fas fa-arrow-right mr-2" aria-hidden="true"></i>Open Coding Mentor
                     </button>
                 </form>
             </div>
@@ -207,7 +207,7 @@
                 </div>
             @empty
                 <div class="rounded-lg border border-dashed border-themed-primary bg-themed-secondary p-10 text-center lg:col-span-2">
-                    <i class="fas fa-clipboard-check text-4xl text-themed-tertiary"></i>
+                    <i class="fas fa-clipboard-check text-4xl text-themed-tertiary" aria-hidden="true"></i>
                     <h3 class="mt-3 text-lg font-semibold text-themed-primary">No assessment attempts yet</h3>
                     <p class="mt-1 text-sm text-themed-secondary">Complete quizzes or projects to get targeted feedback.</p>
                 </div>
@@ -234,7 +234,7 @@
                 </div>
             @empty
                 <div class="rounded-lg border border-dashed border-themed-primary bg-themed-secondary p-10 text-center lg:col-span-2 xl:col-span-3">
-                    <i class="fas fa-lightbulb text-4xl text-themed-tertiary"></i>
+                    <i class="fas fa-lightbulb text-4xl text-themed-tertiary" aria-hidden="true"></i>
                     <h3 class="mt-3 text-lg font-semibold text-themed-primary">No recommendations yet</h3>
                     <p class="mt-1 text-sm text-themed-secondary">Publish and approve courses, or complete more activity, to improve recommendation matching.</p>
                 </div>

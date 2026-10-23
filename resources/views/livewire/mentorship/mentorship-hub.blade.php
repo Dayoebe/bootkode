@@ -12,21 +12,21 @@
             @if(auth()->user()->isStudent())
                 <a href="{{ route('mentorship.find') }}"
                    class="rounded-lg border border-line bg-surface p-6 text-content shadow-sm transition-colors hover:border-brand focus-visible:outline-brand">
-                    <i class="fas fa-search text-2xl mb-3"></i>
+                    <i class="fas fa-search text-2xl mb-3" aria-hidden="true"></i>
                     <h3 class="text-lg font-semibold">Find New Mentor</h3>
                     <p class="text-sm text-content-muted">Discover expert mentors in your field</p>
                 </a>
 
                 <a href="{{ route('mentorship.sessions') }}"
                    class="rounded-lg border border-line bg-surface p-6 text-content shadow-sm transition-colors hover:border-brand focus-visible:outline-brand">
-                    <i class="fas fa-calendar-plus text-2xl mb-3"></i>
+                    <i class="fas fa-calendar-plus text-2xl mb-3" aria-hidden="true"></i>
                     <h3 class="text-lg font-semibold">Schedule Session</h3>
                     <p class="text-sm text-content-muted">Book time with your mentors</p>
                 </a>
 
                 <a href="{{ route('mentorship.code-reviews') }}"
                    class="rounded-lg border border-line bg-surface p-6 text-content shadow-sm transition-colors hover:border-brand focus-visible:outline-brand">
-                    <i class="fas fa-code text-2xl mb-3"></i>
+                    <i class="fas fa-code text-2xl mb-3" aria-hidden="true"></i>
                     <h3 class="text-lg font-semibold">Request Review</h3>
                     <p class="text-sm text-content-muted">Get your code professionally reviewed</p>
                 </a>
@@ -35,21 +35,21 @@
             @if(auth()->user()->isMentor())
                 <a href="{{ route('mentorship.dashboard') }}"
                    class="rounded-lg border border-line bg-surface p-6 text-content shadow-sm transition-colors hover:border-brand focus-visible:outline-brand">
-                    <i class="fas fa-chalkboard-teacher text-2xl mb-3"></i>
+                    <i class="fas fa-chalkboard-teacher text-2xl mb-3" aria-hidden="true"></i>
                     <h3 class="text-lg font-semibold">Mentor Dashboard</h3>
                     <p class="text-sm text-content-muted">Manage your mentees and sessions</p>
                 </a>
 
                 <a href="{{ route('mentorship.sessions') }}"
                    class="rounded-lg border border-line bg-surface p-6 text-content shadow-sm transition-colors hover:border-brand focus-visible:outline-brand">
-                    <i class="fas fa-calendar text-2xl mb-3"></i>
+                    <i class="fas fa-calendar text-2xl mb-3" aria-hidden="true"></i>
                     <h3 class="text-lg font-semibold">My Sessions</h3>
                     <p class="text-sm text-content-muted">View and manage your sessions</p>
                 </a>
 
                 <a href="{{ route('mentorship.code-reviews') }}"
                    class="rounded-lg border border-line bg-surface p-6 text-content shadow-sm transition-colors hover:border-brand focus-visible:outline-brand">
-                    <i class="fas fa-code text-2xl mb-3"></i>
+                    <i class="fas fa-code text-2xl mb-3" aria-hidden="true"></i>
                     <h3 class="text-lg font-semibold">Code Reviews</h3>
                     <p class="text-sm text-content-muted">Pending code reviews</p>
                 </a>
@@ -63,7 +63,7 @@
                 <div class="flex items-center justify-between mb-6">
                     <h3 class="text-xl font-bold text-themed-primary transition-colors duration-300">My Active Mentorships</h3>
                     <a href="{{ route('mentorship.my-mentorships') }}" class="text-brand hover:text-brand transition-colors">
-                        <i class="fas fa-arrow-right"></i>
+                        <i class="fas fa-arrow-right" aria-hidden="true"></i>
                     </a>
                 </div>
 
@@ -96,7 +96,7 @@
                                         @endif
                                     </div>
                                     <div class="text-2xl text-brand transition-colors duration-300">
-                                        <i class="fas fa-handshake"></i>
+                                        <i class="fas fa-handshake" aria-hidden="true"></i>
                                     </div>
                                 </div>
                             </div>
@@ -104,7 +104,7 @@
                     </div>
                 @else
                     <div class="text-center py-8 text-themed-secondary transition-colors duration-300">
-                        <i class="fas fa-handshake text-4xl mb-3"></i>
+                        <i class="fas fa-handshake text-4xl mb-3" aria-hidden="true"></i>
                         <p>No active mentorships</p>
                     </div>
                 @endif
@@ -115,7 +115,7 @@
                 <div class="flex items-center justify-between mb-6">
                     <h3 class="text-xl font-bold text-themed-primary transition-colors duration-300">Upcoming Sessions</h3>
                     <a href="{{ route('mentorship.sessions') }}" class="text-brand hover:text-brand transition-colors">
-                        <i class="fas fa-arrow-right"></i>
+                        <i class="fas fa-arrow-right" aria-hidden="true"></i>
                     </a>
                 </div>
 
@@ -139,7 +139,7 @@
                                     </div>
                                     <div class="text-2xl transition-colors duration-300"
                                          :class="{'text-purple-500 dark:text-purple-400': '{{ $session->type === 'code_review' }}', 'text-blue-500 dark:text-blue-400': '{{ $session->type !== 'code_review' }}'}">
-                                        <i class="fas fa-{{ $session->type === 'code_review' ? 'code' : 'video' }}"></i>
+                                        <i class="fas fa-{{ $session->type === 'code_review' ? 'code' : 'video' }}" aria-hidden="true"></i>
                                     </div>
                                 </div>
                             </div>
@@ -147,7 +147,7 @@
                     </div>
                 @else
                     <div class="text-center py-8 text-themed-secondary transition-colors duration-300">
-                        <i class="fas fa-calendar-times text-4xl mb-3"></i>
+                        <i class="fas fa-calendar-times text-4xl mb-3" aria-hidden="true"></i>
                         <p>No upcoming sessions</p>
                     </div>
                 @endif
@@ -158,7 +158,7 @@
                 <div class="flex items-center justify-between mb-6">
                     <h3 class="text-xl font-bold text-themed-primary transition-colors duration-300">Recent Code Reviews</h3>
                     <a href="{{ route('mentorship.code-reviews') }}" class="text-brand hover:text-brand transition-colors">
-                        <i class="fas fa-arrow-right"></i>
+                        <i class="fas fa-arrow-right" aria-hidden="true"></i>
                     </a>
                 </div>
 
@@ -187,7 +187,7 @@
                                         </p>
                                     </div>
                                     <div class="text-2xl text-brand dark:text-brand">
-                                        <i class="fas fa-code-branch"></i>
+                                        <i class="fas fa-code-branch" aria-hidden="true"></i>
                                     </div>
                                 </div>
                             </div>
@@ -195,7 +195,7 @@
                     </div>
                 @else
                     <div class="text-center py-8 text-themed-secondary transition-colors duration-300">
-                        <i class="fas fa-code text-4xl mb-3"></i>
+                        <i class="fas fa-code text-4xl mb-3" aria-hidden="true"></i>
                         <p>No code reviews yet</p>
                     </div>
                 @endif

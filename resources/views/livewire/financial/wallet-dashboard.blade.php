@@ -5,7 +5,7 @@
         <h1 class=" font-bold text-themed-primary bk-page-title">My Wallet</h1>
         <p class="text-themed-secondary">Manage your funds and track transactions</p>
         <a href="{{ route('billing.documents') }}" class="mt-3 inline-flex rounded-lg border border-themed-secondary px-3 py-2 text-sm font-semibold text-themed-primary hover:border-brand hover:text-brand">
-            <i class="fas fa-receipt mr-2"></i>Receipts & invoices
+            <i class="fas fa-receipt mr-2" aria-hidden="true"></i>Receipts & invoices
         </a>
     </div>
 

@@ -21,7 +21,7 @@
 
                     <!-- Quick Actions -->
                     <a href="{{ route('affiliate.tools') }}" class="bg-green-600 dark:bg-green-500 hover:bg-green-700 dark:hover:bg-green-600 text-white px-4 py-2 rounded-lg font-medium transition-colors duration-200">
-                        <i class="fas fa-tools mr-2"></i>
+                        <i class="fas fa-tools mr-2" aria-hidden="true"></i>
                         Marketing Tools
                     </a>
         </x-slot:actions>
@@ -41,7 +41,7 @@
                     </div>
                 </div>
                 <div class="bg-green-100 dark:bg-green-900/30 p-3 rounded-full transition-colors duration-300">
-                    <i class="fas fa-dollar-sign text-green-600 dark:text-green-400 text-xl"></i>
+                    <i class="fas fa-dollar-sign text-green-600 dark:text-green-400 text-xl" aria-hidden="true"></i>
                 </div>
             </div>
         </div>
@@ -57,7 +57,7 @@
                     </div>
                 </div>
                 <div class="bg-brand/10 dark:bg-action/30 p-3 rounded-full transition-colors duration-300">
-                    <i class="fas fa-users text-brand dark:text-brand text-xl"></i>
+                    <i class="fas fa-users text-brand dark:text-brand text-xl" aria-hidden="true"></i>
                 </div>
             </div>
         </div>
@@ -73,7 +73,7 @@
                     </div>
                 </div>
                 <div class="bg-brand/10 dark:bg-action/30 p-3 rounded-full transition-colors duration-300">
-                    <i class="fas fa-chart-line text-brand dark:text-brand text-xl"></i>
+                    <i class="fas fa-chart-line text-brand dark:text-brand text-xl" aria-hidden="true"></i>
                 </div>
             </div>
         </div>
@@ -89,7 +89,7 @@
                     </div>
                 </div>
                 <div class="bg-orange-100 dark:bg-orange-900/30 p-3 rounded-full transition-colors duration-300">
-                    <i class="fas fa-coins text-orange-600 dark:text-orange-400 text-xl"></i>
+                    <i class="fas fa-coins text-orange-600 dark:text-orange-400 text-xl" aria-hidden="true"></i>
                 </div>
             </div>
         </div>
@@ -156,7 +156,7 @@
                 <div class="flex items-center justify-between mb-6">
                     <h2 class="text-xl font-bold text-themed-primary transition-colors duration-300">Referral Performance</h2>
                     <a href="{{ route('affiliate.analytics') }}" class="text-green-600 dark:text-green-400 hover:text-green-700 dark:hover:text-green-300 text-sm font-medium transition-colors duration-300">
-                        View Details <i class="fas fa-arrow-right ml-1"></i>
+                        View Details <i class="fas fa-arrow-right ml-1" aria-hidden="true"></i>
                     </a>
                 </div>
 
@@ -173,7 +173,7 @@
                                     <span>{{ $referral['courses_purchased'] }} courses</span>
                                     <span>₦{{ number_format($referral['total_spent'], 0) }} spent</span>
                                     <span class="flex items-center">
-                                        <i class="fas fa-chart-line mr-1"></i>
+                                        <i class="fas fa-chart-line mr-1" aria-hidden="true"></i>
                                         {{ $referral['activity_score'] }}% active
                                     </span>
                                 </div>
@@ -189,7 +189,7 @@
                     </div>
                     @empty
                     <div class="text-center py-8">
-                        <i class="fas fa-user-plus text-themed-tertiary text-4xl mb-4 transition-colors duration-300"></i>
+                        <i class="fas fa-user-plus text-themed-tertiary text-4xl mb-4 transition-colors duration-300" aria-hidden="true"></i>
                         <p class="text-themed-secondary mb-4 transition-colors duration-300">No referrals yet</p>
                         <button wire:click="copyToClipboard('{{ auth()->user()->affiliate?->referral_link ?? '' }}')"
                                 class="bg-green-600 dark:bg-green-500 hover:bg-green-700 dark:hover:bg-green-600 text-white px-4 py-2 rounded-lg transition-colors">
@@ -220,7 +220,7 @@
                                    class="flex-1 bg-themed-tertiary border border-themed-secondary rounded-lg px-3 py-2 text-sm text-themed-primary transition-colors duration-300">
                             <button wire:click="copyToClipboard('{{ $this->marketingTools['referral_link'] ?? '' }}')"
                                     class="bg-green-600 dark:bg-green-500 hover:bg-green-700 dark:hover:bg-green-600 text-white px-3 py-2 rounded-lg text-sm transition-colors">
-                                <i class="fas fa-copy"></i>
+                                <i class="fas fa-copy" aria-hidden="true"></i>
                             </button>
                         </div>
                     </div>
@@ -235,7 +235,7 @@
                                    class="flex-1 bg-themed-tertiary border border-themed-secondary rounded-lg px-3 py-2 text-sm font-mono text-themed-primary transition-colors duration-300">
                             <button wire:click="copyToClipboard('{{ $this->marketingTools['referral_code'] ?? '' }}')"
                                     class="bg-green-600 dark:bg-green-500 hover:bg-green-700 dark:hover:bg-green-600 text-white px-3 py-2 rounded-lg text-sm transition-colors">
-                                <i class="fas fa-copy"></i>
+                                <i class="fas fa-copy" aria-hidden="true"></i>
                             </button>
                         </div>
                     </div>
@@ -293,7 +293,7 @@
                     </div>
                     @empty
                     <div class="text-center py-6">
-                        <i class="fas fa-medal text-themed-tertiary text-3xl mb-2 transition-colors duration-300"></i>
+                        <i class="fas fa-medal text-themed-tertiary text-3xl mb-2 transition-colors duration-300" aria-hidden="true"></i>
                         <p class="text-themed-secondary transition-colors duration-300">No active referrals yet</p>
                     </div>
                     @endforelse
@@ -307,7 +307,7 @@
                 <div class="flex items-center justify-between mb-6">
                     <h2 class="text-xl font-bold text-themed-primary transition-colors duration-300">Recent Transactions</h2>
                     <a href="{{ route('affiliate.commissions') }}" class="text-green-600 dark:text-green-400 hover:text-green-700 dark:hover:text-green-300 text-sm font-medium transition-colors duration-300">
-                        View All <i class="fas fa-arrow-right ml-1"></i>
+                        View All <i class="fas fa-arrow-right ml-1" aria-hidden="true"></i>
                     </a>
                 </div>
 
@@ -328,7 +328,7 @@
                     </div>
                     @empty
                     <div class="text-center py-6">
-                        <i class="fas fa-receipt text-themed-tertiary text-3xl mb-2 transition-colors duration-300"></i>
+                        <i class="fas fa-receipt text-themed-tertiary text-3xl mb-2 transition-colors duration-300" aria-hidden="true"></i>
                         <p class="text-themed-secondary transition-colors duration-300">No transactions yet</p>
                     </div>
                     @endforelse

@@ -2,7 +2,7 @@
 {{-- resources/views/livewire/affiliate/not-eligible.blade.php --}}
 <div class="w-full min-w-0 py-8">
     <div class="bg-surface rounded-lg shadow-sm p-8 text-center">
-        <i class="fas fa-user-times text-6xl text-red-600 mb-6"></i>
+        <i class="fas fa-user-times text-6xl text-red-600 mb-6" aria-hidden="true"></i>
         <h1 class=" font-bold text-content mb-4 bk-page-title">Affiliate Program Not Available</h1>
         <p class="text-lg text-content-muted mb-6">
             The affiliate program is currently available only to instructors and approved affiliate ambassadors.
@@ -12,11 +12,11 @@
             <h3 class="text-lg font-semibold text-content mb-4">How to Become Eligible</h3>
             <div class="text-left space-y-3">
                 <div class="flex items-center space-x-3">
-                    <i class="fas fa-graduation-cap text-brand"></i>
+                    <i class="fas fa-graduation-cap text-brand" aria-hidden="true"></i>
                     <span>Become an instructor by creating and publishing courses</span>
                 </div>
                 <div class="flex items-center space-x-3">
-                    <i class="fas fa-envelope text-brand"></i>
+                    <i class="fas fa-envelope text-brand" aria-hidden="true"></i>
                     <span>Contact our support team to apply for affiliate ambassador role</span>
                 </div>
             </div>

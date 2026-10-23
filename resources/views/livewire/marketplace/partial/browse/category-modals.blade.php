@@ -7,7 +7,7 @@
             <div class="flex items-center justify-between mb-4">
                 <h3 class="text-lg font-medium text-content dark:text-white">Create Category</h3>
                 <button wire:click="closeCreateCategoryForm" class="text-content-muted dark:text-content-muted hover:text-content-muted dark:hover:text-content-muted transition-colors duration-300" aria-label="Close">
-                    <i class="fas fa-times"></i>
+                    <i class="fas fa-times" aria-hidden="true"></i>
                 </button>
             </div>
 
@@ -107,7 +107,7 @@
             <div class="flex items-center justify-between mb-4">
                 <h3 class="text-lg font-medium text-content dark:text-white">Edit Category</h3>
                 <button wire:click="closeEditCategoryForm" class="text-content-muted dark:text-content-muted hover:text-content-muted dark:hover:text-content-muted transition-colors duration-300" aria-label="Close">
-                    <i class="fas fa-times"></i>
+                    <i class="fas fa-times" aria-hidden="true"></i>
                 </button>
             </div>
 

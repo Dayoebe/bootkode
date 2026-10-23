@@ -8,7 +8,7 @@
             <div class="flex items-center justify-between pb-4 border-b">
                 <h3 class="text-lg font-semibold text-content">Item Details</h3>
                 <button wire:click="closeItemModal" class="text-content-muted hover:text-content-muted" aria-label="Close">
-                    <i class="fas fa-times text-xl"></i>
+                    <i class="fas fa-times text-xl" aria-hidden="true"></i>
                 </button>
             </div>
 
@@ -89,7 +89,7 @@
                         <div class="space-y-3">
                             <button wire:click="approveItem({{ $selectedItem->id }})"
                                     class="w-full px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700">
-                                <i class="fas fa-check mr-2"></i>Approve Item
+                                <i class="fas fa-check mr-2" aria-hidden="true"></i>Approve Item
                             </button>
 
                             <div>
@@ -100,7 +100,7 @@
                                 <button wire:click="rejectItem({{ $selectedItem->id }})"
                                         class="w-full mt-2 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700"
                                         :disabled="!$wire.rejectionReason">
-                                    <i class="fas fa-times mr-2"></i>Reject Item
+                                    <i class="fas fa-times mr-2" aria-hidden="true"></i>Reject Item
                                 </button>
                             </div>
                         </div>
@@ -127,7 +127,7 @@
             <div class="flex items-center justify-between pb-4 border-b">
                 <h3 class="text-lg font-semibold text-content">Order Details</h3>
                 <button wire:click="closeOrderModal" class="text-content-muted hover:text-content-muted" aria-label="Close">
-                    <i class="fas fa-times text-xl"></i>
+                    <i class="fas fa-times text-xl" aria-hidden="true"></i>
                 </button>
             </div>
 
@@ -212,25 +212,25 @@
                             @if($selectedOrder->isPending())
                                 <button wire:click="updateOrderStatus({{ $selectedOrder->id }}, 'confirmed')"
                                         class="px-3 py-1 bg-action text-action-foreground rounded hover:bg-action">
-                                    <i class="fas fa-check mr-1"></i>Confirm
+                                    <i class="fas fa-check mr-1" aria-hidden="true"></i>Confirm
                                 </button>
                                 <button wire:click="updateOrderStatus({{ $selectedOrder->id }}, 'cancelled')"
                                         class="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700">
-                                    <i class="fas fa-times mr-1"></i>Cancel
+                                    <i class="fas fa-times mr-1" aria-hidden="true"></i>Cancel
                                 </button>
                             @endif
 
                             @if($selectedOrder->isConfirmed())
                                 <button wire:click="updateOrderStatus({{ $selectedOrder->id }}, 'completed')"
                                         class="px-3 py-1 bg-green-600 text-white rounded hover:bg-green-700">
-                                    <i class="fas fa-check-double mr-1"></i>Complete
+                                    <i class="fas fa-check-double mr-1" aria-hidden="true"></i>Complete
                                 </button>
                             @endif
 
                             @if($selectedOrder->isPaid())
                                 <button wire:click="refundOrder({{ $selectedOrder->id }})"
                                         class="px-3 py-1 bg-orange-600 text-white rounded hover:bg-orange-700">
-                                    <i class="fas fa-undo mr-1"></i>Refund
+                                    <i class="fas fa-undo mr-1" aria-hidden="true"></i>Refund
                                 </button>
                             @endif
                         </div>
@@ -257,7 +257,7 @@
             <div class="flex items-center justify-between pb-4 border-b">
                 <h3 class="text-lg font-semibold text-content">Vendor Details</h3>
                 <button wire:click="closeVendorModal" class="text-content-muted hover:text-content-muted" aria-label="Close">
-                    <i class="fas fa-times text-xl"></i>
+                    <i class="fas fa-times text-xl" aria-hidden="true"></i>
                 </button>
             </div>
 
@@ -365,21 +365,21 @@
                         @if($selectedVendor->is_active)
                             <button wire:click="deactivateVendor({{ $selectedVendor->id }})"
                                     class="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700">
-                                <i class="fas fa-user-slash mr-1"></i>Deactivate
+                                <i class="fas fa-user-slash mr-1" aria-hidden="true"></i>Deactivate
                             </button>
                         @else
                             <button wire:click="activateVendor({{ $selectedVendor->id }})"
                                     class="px-3 py-1 bg-green-600 text-white rounded hover:bg-green-700">
-                                <i class="fas fa-user-check mr-1"></i>Activate
+                                <i class="fas fa-user-check mr-1" aria-hidden="true"></i>Activate
                             </button>
                         @endif
 
                         <button class="px-3 py-1 bg-action text-action-foreground rounded hover:bg-action">
-                            <i class="fas fa-envelope mr-1"></i>Send Email
+                            <i class="fas fa-envelope mr-1" aria-hidden="true"></i>Send Email
                         </button>
 
                         <button class="px-3 py-1 bg-action text-action-foreground rounded hover:bg-action">
-                            <i class="fas fa-chart-bar mr-1"></i>View Analytics
+                            <i class="fas fa-chart-bar mr-1" aria-hidden="true"></i>View Analytics
                         </button>
                     </div>
                 </div>
@@ -405,7 +405,7 @@
     <div class="relative top-20 mx-auto p-5 border w-96 shadow-sm rounded-md bg-surface">
         <div class="mt-3 text-center">
             <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-yellow-100">
-                <i class="fas fa-exclamation-triangle text-yellow-600"></i>
+                <i class="fas fa-exclamation-triangle text-yellow-600" aria-hidden="true"></i>
             </div>
             <h3 class="text-lg font-medium text-content mt-4" x-text="message"></h3>
             <div class="mt-6 flex justify-center space-x-3">

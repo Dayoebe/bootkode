@@ -2,7 +2,7 @@
     <aside class="rounded-lg border border-themed-primary bg-themed-secondary p-4 shadow-sm">
         <div class="flex items-center justify-between gap-3">
             <div><p class="text-xs font-bold uppercase tracking-wider text-brand">BootKode AI</p><h2 class="text-lg font-bold text-themed-primary">Conversations</h2></div>
-            <button type="button" wire:click="newConversation" class="rounded-lg bg-action px-3 py-2 text-sm font-semibold text-action-foreground"><i class="fas fa-plus mr-1"></i> New</button>
+            <button type="button" wire:click="newConversation" class="rounded-lg bg-action px-3 py-2 text-sm font-semibold text-action-foreground"><i class="fas fa-plus mr-1" aria-hidden="true"></i> New</button>
         </div>
         <label class="mt-4 block text-xs font-semibold uppercase text-themed-secondary" for="mentor-course">Course context</label>
         <select id="mentor-course" wire:model="selectedCourseId" class="mt-2 w-full rounded-lg border border-themed-primary bg-themed-secondary px-3 py-2 text-sm text-themed-primary">
@@ -45,7 +45,7 @@
                     <div class="whitespace-pre-wrap break-words text-sm leading-6">{{ $message->content }}</div>
                 </article>
             @empty
-                <div class="mx-auto max-w-xl py-16 text-center"><i class="fas fa-code text-4xl text-brand"></i><h3 class="mt-4 text-xl font-bold text-themed-primary">Learn by working through the problem</h3><p class="mt-2 text-sm text-themed-secondary">Ask for an explanation, a hint, debugging guidance, practice questions, or help understanding an authorized lesson. Submitted code is analyzed as text and is never executed.</p></div>
+                <div class="mx-auto max-w-xl py-16 text-center"><i class="fas fa-code text-4xl text-brand" aria-hidden="true"></i><h3 class="mt-4 text-xl font-bold text-themed-primary">Learn by working through the problem</h3><p class="mt-2 text-sm text-themed-secondary">Ask for an explanation, a hint, debugging guidance, practice questions, or help understanding an authorized lesson. Submitted code is analyzed as text and is never executed.</p></div>
             @endforelse
         </div>
 

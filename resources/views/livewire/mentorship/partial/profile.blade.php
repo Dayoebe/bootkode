@@ -6,12 +6,12 @@
         @if(!$profileId)
             <button wire:click="editProfile"
                 class="bk-button bk-button-primary   px-6 py-3 rounded-lg transition-colors">
-                <i class="fas fa-user-plus mr-2"></i>Create mentor profile
+                <i class="fas fa-user-plus mr-2" aria-hidden="true"></i>Create mentor profile
             </button>
         @else
             <button wire:click="editProfile"
                 class="bk-button bk-button-primary   px-6 py-3 rounded-lg transition-colors">
-                <i class="fas fa-edit mr-2"></i>Edit Profile
+                <i class="fas fa-edit mr-2" aria-hidden="true"></i>Edit Profile
             </button>
         @endif
     </div>
@@ -30,7 +30,7 @@
                         <div class="flex items-center mt-2">
                             <div class="text-yellow-400 mr-2">
                                 @for($i = 1; $i <= 5; $i++)
-                                    <i class="fas fa-star {{ $i <= floor(auth()->user()->mentorProfile->rating ?? 0) ? '' : 'text-themed-tertiary' }}"></i>
+                                    <i class="fas fa-star {{ $i <= floor(auth()->user()->mentorProfile->rating ?? 0) ? '' : 'text-themed-tertiary' }}" aria-hidden="true"></i>
                                 @endfor
                             </div>
                             <span class="text-sm text-themed-secondary transition-colors duration-300">({{ auth()->user()->mentorProfile->total_reviews ?? 0 }} reviews)</span>
@@ -85,9 +85,9 @@
                     <h4 class="font-semibold text-themed-primary mb-3 transition-colors duration-300">Availability</h4>
                     <p class="text-themed-secondary transition-colors duration-300">
                         @if($isAvailable)
-                            <span class="text-green-600 dark:text-green-400"><i class="fas fa-check-circle mr-1"></i>Available for new mentees</span>
+                            <span class="text-green-600 dark:text-green-400"><i class="fas fa-check-circle mr-1" aria-hidden="true"></i>Available for new mentees</span>
                         @else
-                            <span class="text-red-600 dark:text-red-400"><i class="fas fa-pause-circle mr-1"></i>Currently unavailable</span>
+                            <span class="text-red-600 dark:text-red-400"><i class="fas fa-pause-circle mr-1" aria-hidden="true"></i>Currently unavailable</span>
                         @endif
                     </p>
                 </div>
@@ -128,17 +128,17 @@
                     <div class="flex space-x-4">
                         @if($linkedinProfile)
                             <a href="{{ $linkedinProfile }}" target="_blank" class="text-brand dark:text-brand hover:text-brand dark:hover:text-brand transition-colors">
-                                <i class="fab fa-linkedin text-xl"></i>
+                                <i class="fab fa-linkedin text-xl" aria-hidden="true"></i>
                             </a>
                         @endif
                         @if($githubProfile)
                             <a href="{{ $githubProfile }}" target="_blank" class="text-themed-primary hover:text-brand transition-colors">
-                                <i class="fab fa-github text-xl"></i>
+                                <i class="fab fa-github text-xl" aria-hidden="true"></i>
                             </a>
                         @endif
                         @if($portfolioUrl)
                             <a href="{{ $portfolioUrl }}" target="_blank" class="text-brand dark:text-brand hover:text-brand dark:hover:text-brand transition-colors">
-                                <i class="fas fa-globe text-xl"></i>
+                                <i class="fas fa-globe text-xl" aria-hidden="true"></i>
                             </a>
                         @endif
                     </div>
@@ -170,7 +170,7 @@
                                             <div class="flex items-center">
                                                 <div class="text-yellow-400 text-sm mr-2">
                                                     @for($i = 1; $i <= 5; $i++)
-                                                        <i class="fas fa-star {{ $i <= floor($review->overall_rating) ? '' : 'text-themed-tertiary' }}"></i>
+                                                        <i class="fas fa-star {{ $i <= floor($review->overall_rating) ? '' : 'text-themed-tertiary' }}" aria-hidden="true"></i>
                                                     @endfor
                                                 </div>
                                                 <span class="text-xs text-themed-secondary transition-colors duration-300">{{ $review->created_at->format('M j, Y') }}</span>
@@ -188,13 +188,13 @@
     @else
         <div class="text-center py-16">
             <div class="text-6xl text-themed-tertiary mb-4 transition-colors duration-300">
-                <i class="fas fa-user-plus"></i>
+                <i class="fas fa-user-plus" aria-hidden="true"></i>
             </div>
             <h3 class="text-xl font-semibold text-themed-primary mb-2 transition-colors duration-300">No mentor profile yet</h3>
             <p class="text-themed-secondary mb-6 transition-colors duration-300">Create your mentor profile to start accepting mentees</p>
             <button wire:click="editProfile"
                 class="bk-button bk-button-primary   px-6 py-3 rounded-lg transition-colors">
-                <i class="fas fa-user-plus mr-2"></i>Create mentor profile
+                <i class="fas fa-user-plus mr-2" aria-hidden="true"></i>Create mentor profile
             </button>
         </div>
     @endif
@@ -207,7 +207,7 @@
                 <div class="flex items-center justify-between mb-6">
                     <h3 class="text-2xl font-bold text-themed-primary transition-colors duration-300">Edit Mentor Profile</h3>
                     <button aria-label="Close profile editor" wire:click="closeModal" class="text-themed-secondary hover:text-themed-primary transition-colors">
-                        <i class="fas fa-times text-xl"></i>
+                        <i class="fas fa-times text-xl" aria-hidden="true"></i>
                     </button>
                 </div>
 
@@ -232,14 +232,14 @@
                                 @if(count($specializations) > 1)
                                     <button type="button" wire:click="removeSpecialization({{ $index }})"
                                         class="text-red-600 dark:text-red-400 hover:text-red-800 dark:hover:text-red-300 transition-colors" aria-label="Close">
-                                        <i class="fas fa-times"></i>
+                                        <i class="fas fa-times" aria-hidden="true"></i>
                                     </button>
                                 @endif
                             </div>
                         @endforeach
                         <button type="button" wire:click="addSpecialization"
                             class="text-brand hover:text-brand text-sm transition-colors">
-                            <i class="fas fa-plus mr-1"></i>Add Specialization
+                            <i class="fas fa-plus mr-1" aria-hidden="true"></i>Add Specialization
                         </button>
                         @error('specializations') <span class="text-red-500 dark:text-red-400 text-sm">{{ $message }}</span> @enderror
                     </div>
@@ -255,14 +255,14 @@
                                 @if(count($skills) > 1)
                                     <button type="button" wire:click="removeSkill({{ $index }})"
                                         class="text-red-600 dark:text-red-400 hover:text-red-800 dark:hover:text-red-300 transition-colors" aria-label="Close">
-                                        <i class="fas fa-times"></i>
+                                        <i class="fas fa-times" aria-hidden="true"></i>
                                     </button>
                                 @endif
                             </div>
                         @endforeach
                         <button type="button" wire:click="addSkill"
                             class="text-brand hover:text-brand text-sm transition-colors">
-                            <i class="fas fa-plus mr-1"></i>Add Skill
+                            <i class="fas fa-plus mr-1" aria-hidden="true"></i>Add Skill
                         </button>
                     </div>
 
@@ -391,7 +391,7 @@
                             <label class="block text-sm font-medium text-themed-primary transition-colors duration-300">Weekly Availability</label>
                             <button type="button" wire:click="addAvailabilitySlot"
                                 class="inline-flex items-center gap-2 rounded-lg bk-button bk-button-primary px-3 py-2 text-sm font-medium  ">
-                                <i class="fas fa-plus"></i>
+                                <i class="fas fa-plus" aria-hidden="true"></i>
                                 Add slot
                             </button>
                         </div>
@@ -410,7 +410,7 @@
                                         class="rounded-lg border border-themed-primary bg-themed-secondary px-3 py-2 text-themed-primary focus:ring-2 focus:ring-brand">
                                     <button type="button" wire:click="removeAvailabilitySlot({{ $index }})"
                                         class="grid h-10 w-10 place-items-center rounded-lg bg-red-600 text-white hover:bg-red-700" aria-label="Remove availability slot">
-                                        <i class="fas fa-minus"></i>
+                                        <i class="fas fa-minus" aria-hidden="true"></i>
                                     </button>
                                 </div>
                             @endforeach
@@ -426,7 +426,7 @@
                         </button>
                         <button type="submit"
                             class="px-6 py-2 bk-button bk-button-primary   rounded-lg transition-colors">
-                            <i class="fas fa-save mr-2"></i>Save Profile
+                            <i class="fas fa-save mr-2" aria-hidden="true"></i>Save Profile
                         </button>
                     </div>
                 </form>

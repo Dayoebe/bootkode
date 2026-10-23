@@ -113,26 +113,26 @@
                     <div class="flex space-x-2">
                         <button wire:click="viewMentor({{ $mentor->id }})"
                             class="px-4 py-2 bk-button bk-button-primary   rounded-lg transition-colors">
-                            <i class="fas fa-eye mr-1"></i>View
+                            <i class="fas fa-eye mr-1" aria-hidden="true"></i>View
                         </button>
                         @if(!$mentor->is_verified)
                             <button wire:click="approveMentor({{ $mentor->id }})"
                                 class="px-4 py-2 bg-green-600 hover:bg-green-700 dark:bg-green-500 dark:hover:bg-green-600 text-white rounded-lg transition-colors">
-                                <i class="fas fa-check mr-1"></i>Approve
+                                <i class="fas fa-check mr-1" aria-hidden="true"></i>Approve
                             </button>
                             <button wire:click="rejectMentor({{ $mentor->id }})"
                                 class="px-4 py-2 bg-red-600 hover:bg-red-700 dark:bg-red-500 dark:hover:bg-red-600 text-white rounded-lg transition-colors">
-                                <i class="fas fa-times mr-1"></i>Reject
+                                <i class="fas fa-times mr-1" aria-hidden="true"></i>Reject
                             </button>
                         @elseif($mentor->is_available)
                             <button wire:click="suspendMentor({{ $mentor->id }})"
                                 class="px-4 py-2 bg-orange-600 hover:bg-orange-700 dark:bg-orange-500 dark:hover:bg-orange-600 text-white rounded-lg transition-colors">
-                                <i class="fas fa-pause mr-1"></i>Suspend
+                                <i class="fas fa-pause mr-1" aria-hidden="true"></i>Suspend
                             </button>
                         @else
                             <button wire:click="reactivateMentor({{ $mentor->id }})"
                                 class="px-4 py-2 bg-green-600 hover:bg-green-700 dark:bg-green-500 dark:hover:bg-green-600 text-white rounded-lg transition-colors">
-                                <i class="fas fa-play mr-1"></i>Reactivate
+                                <i class="fas fa-play mr-1" aria-hidden="true"></i>Reactivate
                             </button>
                         @endif
                     </div>

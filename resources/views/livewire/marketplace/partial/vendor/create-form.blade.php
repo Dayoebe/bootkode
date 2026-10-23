@@ -5,7 +5,7 @@
     <!-- Basic Information -->
     <div class="bg-surface rounded-lg shadow-sm border border-line p-6">
         <h3 class="text-lg font-medium text-content mb-4 flex items-center">
-            <i class="fas fa-info-circle mr-2 text-brand"></i>
+            <i class="fas fa-info-circle mr-2 text-brand" aria-hidden="true"></i>
             Basic Information
         </h3>
 
@@ -77,7 +77,7 @@
     <!-- Pricing -->
     <div class="bg-surface rounded-lg shadow-sm border border-line p-6">
         <h3 class="text-lg font-medium text-content mb-4 flex items-center">
-            <i class="fas fa-dollar-sign mr-2 text-green-500"></i>
+            <i class="fas fa-dollar-sign mr-2 text-green-500" aria-hidden="true"></i>
             Pricing & Type
         </h3>
 
@@ -113,7 +113,7 @@
         @if($price > 0 && $discount_price && $discount_price < $price)
             <div class="mt-4 p-3 bg-green-50 border border-green-200 rounded-lg">
                 <p class="text-sm text-green-800 flex items-center">
-                    <i class="fas fa-percentage mr-2"></i>
+                    <i class="fas fa-percentage mr-2" aria-hidden="true"></i>
                     <span class="font-medium">{{ round((($price - $discount_price) / $price) * 100) }}% discount</span>
                     <span class="ml-2">- Customers save ₦{{ number_format($price - $discount_price, 2) }}</span>
                 </p>
@@ -124,7 +124,7 @@
     <!-- Media Upload -->
     <div class="bg-surface rounded-lg shadow-sm border border-line p-6">
         <h3 class="text-lg font-medium text-content mb-4 flex items-center">
-            <i class="fas fa-images mr-2 text-brand"></i>
+            <i class="fas fa-images mr-2 text-brand" aria-hidden="true"></i>
             Media & Files
         </h3>
 
@@ -139,7 +139,7 @@
                         @if ($thumbnail)
                             <img src="{{ $thumbnail->temporaryUrl() }}" class="mx-auto h-24 w-24 object-cover rounded-lg">
                         @else
-                            <i class="fas fa-image text-content-muted text-3xl"></i>
+                            <i class="fas fa-image text-content-muted text-3xl" aria-hidden="true"></i>
                         @endif
                         <div class="flex text-sm text-content-muted">
                             <label for="thumbnail"
@@ -169,7 +169,7 @@
                                 @endforeach
                             </div>
                         @else
-                            <i class="fas fa-images text-content-muted text-3xl"></i>
+                            <i class="fas fa-images text-content-muted text-3xl" aria-hidden="true"></i>
                         @endif
                         <div class="flex text-sm text-content-muted">
                             <label for="images"
@@ -190,7 +190,7 @@
         @if($is_digital)
             <div class="mt-6">
                 <label for="files" class="block text-sm font-medium text-content mb-2">
-                    <i class="fas fa-file mr-1"></i>
+                    <i class="fas fa-file mr-1" aria-hidden="true"></i>
                     Digital Files (for customers)
                 </label>
                 <div class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-line border-dashed rounded-lg hover:border-brand transition-colors">
@@ -199,13 +199,13 @@
                             <div class="space-y-1">
                                 @foreach($files as $file)
                                     <p class="text-sm text-content-muted flex items-center justify-center">
-                                        <i class="fas fa-file mr-2"></i>
+                                        <i class="fas fa-file mr-2" aria-hidden="true"></i>
                                         {{ $file->getClientOriginalName() }}
                                     </p>
                                 @endforeach
                             </div>
                         @else
-                            <i class="fas fa-file text-content-muted text-3xl"></i>
+                            <i class="fas fa-file text-content-muted text-3xl" aria-hidden="true"></i>
                         @endif
                         <div class="flex text-sm text-content-muted">
                             <label for="files"
@@ -225,7 +225,7 @@
     <!-- Categories and Tags -->
     <div class="bg-surface rounded-lg shadow-sm border border-line p-6">
         <h3 class="text-lg font-medium text-content mb-4 flex items-center">
-            <i class="fas fa-tags mr-2 text-orange-500"></i>
+            <i class="fas fa-tags mr-2 text-orange-500" aria-hidden="true"></i>
             Categories & Tags
         </h3>
 
@@ -259,7 +259,7 @@
                         class="flex-1 px-3 py-2 border border-line rounded-lg focus:ring-brand/30 focus:border-brand">
                     <button type="button" wire:click="addTag"
                         class="px-3 py-2 bg-action text-action-foreground rounded-lg hover:bg-action" aria-label="Add tag">
-                        <i class="fas fa-plus"></i>
+                        <i class="fas fa-plus" aria-hidden="true"></i>
                     </button>
                 </div>
 
@@ -271,7 +271,7 @@
                                 {{ $tag }}
                                 <button type="button" wire:click="removeTag({{ $index }})"
                                     class="ml-1 text-brand hover:text-brand" aria-label="Close">
-                                    <i class="fas fa-times text-xs"></i>
+                                    <i class="fas fa-times text-xs" aria-hidden="true"></i>
                                 </button>
                             </span>
                         @endforeach
@@ -307,7 +307,7 @@
     <!-- SEO Settings -->
     <div class="bg-surface rounded-lg shadow-sm border border-line p-6">
         <h3 class="text-lg font-medium text-content mb-4 flex items-center">
-            <i class="fas fa-search mr-2 text-brand"></i>
+            <i class="fas fa-search mr-2 text-brand" aria-hidden="true"></i>
             SEO Settings
         </h3>
 
@@ -348,20 +348,20 @@
     <div class="bg-surface rounded-lg shadow-sm border border-line p-6">
         <div class="flex flex-col sm:flex-row sm:items-center justify-between space-y-4 sm:space-y-0">
             <p class="text-sm text-content-muted flex items-center">
-                <i class="fas fa-info-circle mr-2"></i>
+                <i class="fas fa-info-circle mr-2" aria-hidden="true"></i>
                 Items are saved as drafts by default. Submit for review when ready to publish.
             </p>
 
             <div class="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-3">
                 <button type="button" wire:click="saveDraft"
                     class="px-4 py-2 border border-line rounded-lg text-content hover:bg-surface-muted transition-colors flex items-center justify-center">
-                    <i class="fas fa-save mr-2"></i>
+                    <i class="fas fa-save mr-2" aria-hidden="true"></i>
                     Save Draft
                 </button>
 
                 <button type="submit"
                     class="px-4 py-2 bg-action text-action-foreground rounded-lg hover:bg-action transition-colors flex items-center justify-center">
-                    <i class="fas fa-paper-plane mr-2"></i>
+                    <i class="fas fa-paper-plane mr-2" aria-hidden="true"></i>
                     {{ $editingItemId ? 'Update Item' : 'Submit for Review' }}
                 </button>
             </div>

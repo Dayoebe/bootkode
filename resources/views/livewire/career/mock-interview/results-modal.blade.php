@@ -63,7 +63,7 @@
                         @if($currentInterview->ai_feedback)
                             <div class="bg-themed-tertiary border border-themed-primary rounded-lg p-6">
                                 <h4 class="text-lg font-bold text-themed-primary mb-4 flex items-center">
-                                    <i class="fas fa-brain w-5 h-5 mr-2 text-brand dark:text-brand"></i>
+                                    <i class="fas fa-brain w-5 h-5 mr-2 text-brand dark:text-brand" aria-hidden="true"></i>
                                     AI-Powered Insights
                                 </h4>
 
@@ -83,7 +83,7 @@
                                                 @foreach($currentInterview->ai_feedback['strengths'] as $strength)
                                                     <li class="flex items-start">
                                                         <i
-                                                            class="fas fa-check text-green-600 dark:text-green-400 mt-0.5 mr-2 flex-shrink-0"></i>
+                                                            class="fas fa-check text-green-600 dark:text-green-400 mt-0.5 mr-2 flex-shrink-0" aria-hidden="true"></i>
                                                         <span class="text-sm text-themed-secondary">{{ $strength }}</span>
                                                     </li>
                                                 @endforeach
@@ -99,7 +99,7 @@
                                                 @foreach($currentInterview->ai_feedback['areas_for_improvement'] as $improvement)
                                                     <li class="flex items-start">
                                                         <i
-                                                            class="fas fa-exclamation-triangle text-orange-600 dark:text-orange-400 mt-0.5 mr-2 flex-shrink-0"></i>
+                                                            class="fas fa-exclamation-triangle text-orange-600 dark:text-orange-400 mt-0.5 mr-2 flex-shrink-0" aria-hidden="true"></i>
                                                         <span class="text-sm text-themed-secondary">{{ $improvement }}</span>
                                                     </li>
                                                 @endforeach
@@ -113,7 +113,7 @@
                         <!-- Recommendations -->
                         <div class="bg-themed-tertiary border border-themed-primary rounded-lg p-6">
                             <h4 class="text-lg font-bold text-themed-primary mb-4 flex items-center">
-                                <i class="fas fa-lightbulb w-5 h-5 mr-2 text-brand dark:text-brand"></i>
+                                <i class="fas fa-lightbulb w-5 h-5 mr-2 text-brand dark:text-brand" aria-hidden="true"></i>
                                 Recommendations
                             </h4>
 
@@ -123,7 +123,7 @@
                                         <li class="flex items-start">
                                             <div
                                                 class="bg-brand/10 border border-brand/30 p-1 rounded-full mr-3 mt-1 flex-shrink-0">
-                                                <i class="fas fa-arrow-right text-brand text-xs"></i>
+                                                <i class="fas fa-arrow-right text-brand text-xs" aria-hidden="true"></i>
                                             </div>
                                             <span class="text-sm text-themed-primary">{{ $suggestion }}</span>
                                         </li>
@@ -131,7 +131,7 @@
                                 </ul>
                             @else
                                 <div class="text-center py-4">
-                                    <i class="fas fa-chart-line text-6xl text-themed-tertiary mb-2"></i>
+                                    <i class="fas fa-chart-line text-6xl text-themed-tertiary mb-2" aria-hidden="true"></i>
                                     <p class="text-themed-secondary text-sm">Recommendations will be generated with premium AI
                                         analysis</p>
                                 </div>
@@ -144,23 +144,23 @@
                         @if($currentInterview->allow_retakes && $currentInterview->retake_count < $currentInterview->max_retakes)
                             <button wire:click="retakeInterview({{ $currentInterview->id }})"
                                 class="bg-orange-600 hover:bg-orange-700 text-white px-6 py-3 rounded-lg transition-colors font-medium">
-                                <i class="fas fa-redo mr-2"></i> Retake Interview
+                                <i class="fas fa-redo mr-2" aria-hidden="true"></i> Retake Interview
                             </button>
                         @endif
 
                         <button
                             class="bg-action hover:bg-action/90 text-action-foreground px-6 py-3 rounded-lg transition-colors font-medium">
-                            <i class="fas fa-download mr-2"></i> Download Report
+                            <i class="fas fa-download mr-2" aria-hidden="true"></i> Download Report
                         </button>
 
                         <button
                             class="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg transition-colors font-medium">
-                            <i class="fas fa-share mr-2"></i> Share Results
+                            <i class="fas fa-share mr-2" aria-hidden="true"></i> Share Results
                         </button>
 
                         <button wire:click="$set('showResultsModal', false)"
                             class="bg-themed-secondary hover:bg-themed-tertiary text-themed-primary border border-themed-primary px-6 py-3 rounded-lg transition-colors font-medium">
-                            <i class="fas fa-times mr-2"></i> Close
+                            <i class="fas fa-times mr-2" aria-hidden="true"></i> Close
                         </button>
                     </div>
                 </div>

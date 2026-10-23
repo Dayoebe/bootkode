@@ -9,7 +9,7 @@
                 <p class="text-3xl font-bold text-content mt-2">{{ number_format($reviewStats['total_reviews'] ?? 0) }}</p>
             </div>
             <div class="p-3 bg-surface-muted rounded-lg">
-                <i class="fas fa-comments text-content-muted text-xl"></i>
+                <i class="fas fa-comments text-content-muted text-xl" aria-hidden="true"></i>
             </div>
         </div>
         <div class="flex items-center mt-4 text-sm">
@@ -24,11 +24,11 @@
                 <p class="text-3xl font-bold text-green-700 mt-2">{{ number_format($reviewStats['approved_reviews'] ?? 0) }}</p>
             </div>
             <div class="p-3 bg-green-100 rounded-lg">
-                <i class="fas fa-check-circle text-green-600 text-xl"></i>
+                <i class="fas fa-check-circle text-green-600 text-xl" aria-hidden="true"></i>
             </div>
         </div>
         <div class="flex items-center mt-4 text-sm">
-            <i class="fas fa-arrow-up text-green-500 mr-1"></i>
+            <i class="fas fa-arrow-up text-green-500 mr-1" aria-hidden="true"></i>
             <span class="text-green-600">Live on platform</span>
         </div>
     </div>
@@ -40,7 +40,7 @@
                 <p class="text-3xl font-bold text-amber-700 mt-2">{{ number_format($reviewStats['pending_reviews'] ?? 0) }}</p>
             </div>
             <div class="p-3 bg-amber-100 rounded-lg">
-                <i class="fas fa-clock text-amber-600 text-xl"></i>
+                <i class="fas fa-clock text-amber-600 text-xl" aria-hidden="true"></i>
             </div>
         </div>
         <div class="flex items-center mt-4 text-sm">
@@ -56,13 +56,13 @@
                     <p class="text-3xl font-bold text-brand">{{ number_format($reviewStats['average_rating'] ?? 0, 1) }}</p>
                     <div class="flex ml-2">
                         @for($i = 1; $i <= 5; $i++)
-                            <i class="fas fa-star text-yellow-400 text-sm"></i>
+                            <i class="fas fa-star text-yellow-400 text-sm" aria-hidden="true"></i>
                         @endfor
                     </div>
                 </div>
             </div>
             <div class="p-3 bg-brand/10 rounded-lg">
-                <i class="fas fa-star text-brand text-xl"></i>
+                <i class="fas fa-star text-brand text-xl" aria-hidden="true"></i>
             </div>
         </div>
         <div class="flex items-center mt-4 text-sm">
@@ -74,14 +74,14 @@
 <!-- Rating Distribution Chart -->
 <div class="bg-surface border border-line rounded-lg p-6 mb-8 shadow-sm">
     <h3 class="text-lg font-semibold text-content mb-6 flex items-center">
-        <i class="fas fa-chart-bar mr-3 text-content-muted"></i>
+        <i class="fas fa-chart-bar mr-3 text-content-muted" aria-hidden="true"></i>
         Rating Distribution Analysis
     </h3>
     <div class="space-y-4">
         @for($i = 5; $i >= 1; $i--)
             <div class="flex items-center space-x-4">
                 <div class="flex items-center w-16 text-sm font-medium text-content">
-                    {{ $i }} <i class="fas fa-star text-yellow-400 ml-1"></i>
+                    {{ $i }} <i class="fas fa-star text-yellow-400 ml-1" aria-hidden="true"></i>
                 </div>
                 <div class="flex-1 bg-surface-muted rounded-full h-3 relative overflow-hidden">
                     @php
@@ -111,7 +111,7 @@
     <div class="flex flex-col lg:flex-row lg:items-center gap-4">
         <div class="relative flex-1">
             <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <i class="fas fa-search text-content-muted"></i>
+                <i class="fas fa-search text-content-muted" aria-hidden="true"></i>
             </div>
             <input aria-label="Search reviews, customers, or products" wire:model.live.debounce.300ms="reviewSearch"
                    type="text"
@@ -218,7 +218,7 @@
                             <div class="flex items-center space-x-4">
                                 <div class="flex items-center">
                                     @for($i = 1; $i <= 5; $i++)
-                                        <i class="fas fa-star {{ $i <= $review->rating ? 'text-yellow-400' : 'text-slate-300' }}"></i>
+                                        <i class="fas fa-star {{ $i <= $review->rating ? 'text-yellow-400' : 'text-slate-300' }}" aria-hidden="true"></i>
                                     @endfor
                                     <span class="ml-2 text-sm font-semibold text-content">{{ $review->rating }}/5</span>
                                 </div>
@@ -230,7 +230,7 @@
 
                                     @if($review->is_featured)
                                         <span class="px-3 py-1 bg-brand/10 text-brand text-xs font-semibold rounded-full">
-                                            <i class="fas fa-star mr-1"></i>Featured
+                                            <i class="fas fa-star mr-1" aria-hidden="true"></i>Featured
                                         </span>
                                     @endif
                                 </div>
@@ -262,17 +262,17 @@
 
                             <div class="flex items-center space-x-6 text-sm text-content-muted">
                                 <span class="flex items-center">
-                                    <i class="fas fa-calendar mr-2"></i>
+                                    <i class="fas fa-calendar mr-2" aria-hidden="true"></i>
                                     {{ $review->created_at->diffForHumans() }}
                                 </span>
                                 @if(($review->helpful_count ?? 0) > 0)
                                     <span class="flex items-center">
-                                        <i class="fas fa-thumbs-up mr-2"></i>
+                                        <i class="fas fa-thumbs-up mr-2" aria-hidden="true"></i>
                                         {{ $review->helpful_count }} found helpful
                                     </span>
                                 @endif
                                 <span class="flex items-center">
-                                    <i class="fas fa-user mr-2"></i>
+                                    <i class="fas fa-user mr-2" aria-hidden="true"></i>
                                     {{ $review->user->email ?? 'No email' }}
                                 </span>
                             </div>
@@ -282,7 +282,7 @@
                         @if(!$review->is_approved && $review->moderation_reason)
                             <div class="mt-4 p-4 bg-red-50 border border-red-200 rounded-lg">
                                 <div class="flex items-start">
-                                    <i class="fas fa-exclamation-triangle text-red-500 mr-2 mt-0.5"></i>
+                                    <i class="fas fa-exclamation-triangle text-red-500 mr-2 mt-0.5" aria-hidden="true"></i>
                                     <div>
                                         <p class="text-sm font-semibold text-red-900">Moderation Note</p>
                                         <p class="text-sm text-red-800 mt-1">{{ $review->moderation_reason }}</p>
@@ -297,29 +297,29 @@
                         @if(!$review->is_approved)
                             <button wire:click="approveReview({{ $review->id }})"
                                     class="px-4 py-2 bg-green-600 text-white text-sm rounded-lg hover:bg-green-700 transition-colors font-medium">
-                                <i class="fas fa-check mr-2"></i>Approve
+                                <i class="fas fa-check mr-2" aria-hidden="true"></i>Approve
                             </button>
 
                             <button wire:click="openModerationModal({{ $review->id }}, 'reject')"
                                     class="px-4 py-2 bg-red-600 text-white text-sm rounded-lg hover:bg-red-700 transition-colors font-medium">
-                                <i class="fas fa-times mr-2"></i>Reject
+                                <i class="fas fa-times mr-2" aria-hidden="true"></i>Reject
                             </button>
                         @endif
 
                         <button wire:click="toggleFeatured({{ $review->id }})"
                                 class="px-4 py-2 bg-{{ $review->is_featured ? 'amber' : 'slate' }}-600 text-white text-sm rounded-lg hover:bg-{{ $review->is_featured ? 'amber' : 'slate' }}-700 transition-colors font-medium">
-                            <i class="fas fa-star mr-2"></i>{{ $review->is_featured ? 'Unfeature' : 'Feature' }}
+                            <i class="fas fa-star mr-2" aria-hidden="true"></i>{{ $review->is_featured ? 'Unfeature' : 'Feature' }}
                         </button>
 
                         <button wire:click="openModerationModal({{ $review->id }}, 'delete')"
                                 class="px-4 py-2 border border-red-300 text-red-700 text-sm rounded-lg hover:bg-red-50 transition-colors font-medium">
-                            <i class="fas fa-trash mr-2"></i>Delete
+                            <i class="fas fa-trash mr-2" aria-hidden="true"></i>Delete
                         </button>
 
                         @if($review->user && $review->user->email)
                             <a href="mailto:{{ $review->user->email }}"
                                class="px-4 py-2 border border-line text-content text-sm rounded-lg hover:bg-surface-muted transition-colors font-medium text-center">
-                                <i class="fas fa-envelope mr-2"></i>Contact
+                                <i class="fas fa-envelope mr-2" aria-hidden="true"></i>Contact
                             </a>
                         @endif
                     </div>
@@ -336,7 +336,7 @@
     <!-- Enhanced Empty State -->
     <div class="text-center py-16 bg-surface border border-line rounded-lg shadow-sm">
         <div class="mx-auto w-24 h-24 bg-surface-muted rounded-full flex items-center justify-center mb-6">
-            <i class="fas fa-star text-content-muted text-3xl"></i>
+            <i class="fas fa-star text-content-muted text-3xl" aria-hidden="true"></i>
         </div>
         <h3 class="text-xl font-semibold text-content mb-3">
             @if($reviewSearch || $reviewStatus !== 'all' || $rating)
@@ -355,7 +355,7 @@
         @if($reviewSearch || $reviewStatus !== 'all' || $rating)
             <button wire:click="$set('reviewSearch', ''); $set('reviewStatus', 'all'); $set('rating', '')"
                     class="px-6 py-3 bg-action text-action-foreground rounded-lg hover:bg-action transition-colors font-medium">
-                <i class="fas fa-refresh mr-2"></i>Clear Filters
+                <i class="fas fa-refresh mr-2" aria-hidden="true"></i>Clear Filters
             </button>
         @endif
     </div>

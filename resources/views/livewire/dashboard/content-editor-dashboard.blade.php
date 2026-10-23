@@ -23,7 +23,7 @@
 
                     <!-- Quick Actions -->
                     <a href="{{ route('admin.blog.posts.create') }}" class="bg-action dark:bg-action hover:bg-action dark:hover:bg-action text-action-foreground px-4 py-2 rounded-lg font-medium transition-colors duration-200">
-                        <i class="fas fa-plus mr-2"></i>
+                        <i class="fas fa-plus mr-2" aria-hidden="true"></i>
                         New Post
                     </a>
         </x-slot:actions>
@@ -43,7 +43,7 @@
                     </div>
                 </div>
                 <div class="bg-brand/10 dark:bg-action/30 p-3 rounded-full transition-colors duration-300">
-                    <i class="fas fa-file-alt text-brand dark:text-brand text-xl"></i>
+                    <i class="fas fa-file-alt text-brand dark:text-brand text-xl" aria-hidden="true"></i>
                 </div>
             </div>
         </div>
@@ -59,7 +59,7 @@
                     </div>
                 </div>
                 <div class="bg-brand/10 dark:bg-action/30 p-3 rounded-full transition-colors duration-300">
-                    <i class="fas fa-eye text-brand dark:text-brand text-xl"></i>
+                    <i class="fas fa-eye text-brand dark:text-brand text-xl" aria-hidden="true"></i>
                 </div>
             </div>
         </div>
@@ -75,7 +75,7 @@
                     </div>
                 </div>
                 <div class="bg-pink-100 dark:bg-pink-900/30 p-3 rounded-full transition-colors duration-300">
-                    <i class="fas fa-heart text-pink-600 dark:text-pink-400 text-xl"></i>
+                    <i class="fas fa-heart text-pink-600 dark:text-pink-400 text-xl" aria-hidden="true"></i>
                 </div>
             </div>
         </div>
@@ -91,7 +91,7 @@
                     </div>
                 </div>
                 <div class="bg-green-100 dark:bg-green-900/30 p-3 rounded-full transition-colors duration-300">
-                    <i class="fas fa-clock text-green-600 dark:text-green-400 text-xl"></i>
+                    <i class="fas fa-clock text-green-600 dark:text-green-400 text-xl" aria-hidden="true"></i>
                 </div>
             </div>
         </div>
@@ -159,7 +159,7 @@
                 <div class="flex items-center justify-between mb-6">
                     <h2 class="text-xl font-bold text-themed-primary transition-colors duration-300">Recent Posts</h2>
                     <a href="{{ route('admin.blog.posts.index') }}" class="text-brand dark:text-brand hover:text-brand dark:hover:text-brand text-sm font-medium transition-colors duration-300">
-                        View All <i class="fas fa-arrow-right ml-1"></i>
+                        View All <i class="fas fa-arrow-right ml-1" aria-hidden="true"></i>
                     </a>
                 </div>
 
@@ -172,19 +172,19 @@
                                     <h4 class="font-semibold text-themed-primary transition-colors duration-300">{{ \Str::limit($post['title'], 50) }}</h4>
                                     <div class="flex items-center space-x-4 text-sm text-themed-secondary mt-1 transition-colors duration-300">
                                         <span class="flex items-center">
-                                            <i class="fas fa-folder mr-1"></i>
+                                            <i class="fas fa-folder mr-1" aria-hidden="true"></i>
                                             {{ $post['category'] }}
                                         </span>
                                         <span class="flex items-center">
-                                            <i class="fas fa-eye mr-1"></i>
+                                            <i class="fas fa-eye mr-1" aria-hidden="true"></i>
                                             {{ number_format($post['views']) }}
                                         </span>
                                         <span class="flex items-center">
-                                            <i class="fas fa-heart mr-1"></i>
+                                            <i class="fas fa-heart mr-1" aria-hidden="true"></i>
                                             {{ $post['likes'] }}
                                         </span>
                                         <span class="flex items-center">
-                                            <i class="fas fa-comment mr-1"></i>
+                                            <i class="fas fa-comment mr-1" aria-hidden="true"></i>
                                             {{ $post['comments'] }}
                                         </span>
                                         <span>{{ $post['read_time'] }}min read</span>
@@ -215,14 +215,14 @@
                             @if($post['status'] === 'draft')
                             <button wire:click="quickPublish({{ $post['id'] }})"
                                     class="text-green-600 dark:text-green-400 hover:text-green-700 dark:hover:text-green-300 text-sm transition-colors duration-300" aria-label="Quick publish">
-                                <i class="fas fa-rocket"></i>
+                                <i class="fas fa-rocket" aria-hidden="true"></i>
                             </button>
                             @endif
                         </div>
                     </div>
                     @empty
                     <div class="text-center py-8">
-                        <i class="fas fa-pen-alt text-themed-tertiary text-4xl mb-4 transition-colors duration-300"></i>
+                        <i class="fas fa-pen-alt text-themed-tertiary text-4xl mb-4 transition-colors duration-300" aria-hidden="true"></i>
                         <p class="text-themed-secondary mb-4 transition-colors duration-300">No posts created yet</p>
                         <a href="{{ route('admin.blog.posts.create') }}" class="bg-action dark:bg-action hover:bg-action dark:hover:bg-action text-action-foreground px-4 py-2 rounded-lg transition-colors">
                             Create Your First Post
@@ -245,7 +245,7 @@
                     <!-- Draft Posts -->
                     <div>
                         <h3 class="text-sm font-semibold text-themed-primary mb-3 flex items-center transition-colors duration-300">
-                            <i class="fas fa-edit text-yellow-600 dark:text-yellow-400 mr-2"></i>
+                            <i class="fas fa-edit text-yellow-600 dark:text-yellow-400 mr-2" aria-hidden="true"></i>
                             Draft Posts ({{ count($this->pendingContent['draft_posts']) }})
                         </h3>
                         <div class="space-y-2">
@@ -269,7 +269,7 @@
                     <!-- Pending Comments -->
                     <div>
                         <h3 class="text-sm font-semibold text-themed-primary mb-3 flex items-center transition-colors duration-300">
-                            <i class="fas fa-comments text-brand dark:text-brand mr-2"></i>
+                            <i class="fas fa-comments text-brand dark:text-brand mr-2" aria-hidden="true"></i>
                             Pending Comments ({{ count($this->pendingContent['pending_comments']) }})
                         </h3>
                         <div class="space-y-2">
@@ -283,10 +283,10 @@
                                     </div>
                                     <div class="flex space-x-1">
                                         <button class="text-green-600 dark:text-green-400 hover:text-green-700 dark:hover:text-green-300 text-xs transition-colors duration-300">
-                                            <i class="fas fa-check"></i>
+                                            <i class="fas fa-check" aria-hidden="true"></i>
                                         </button>
                                         <button class="text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 text-xs transition-colors duration-300" aria-label="Close">
-                                            <i class="fas fa-times"></i>
+                                            <i class="fas fa-times" aria-hidden="true"></i>
                                         </button>
                                     </div>
                                 </div>
@@ -300,7 +300,7 @@
                     <!-- Scheduled Posts -->
                     <div>
                         <h3 class="text-sm font-semibold text-themed-primary mb-3 flex items-center transition-colors duration-300">
-                            <i class="fas fa-calendar text-brand dark:text-brand mr-2"></i>
+                            <i class="fas fa-calendar text-brand dark:text-brand mr-2" aria-hidden="true"></i>
                             Scheduled Posts ({{ count($this->pendingContent['scheduled_posts']) }})
                         </h3>
                         <div class="space-y-2">
@@ -389,7 +389,7 @@
                         <div class="space-y-1">
                             @foreach($this->contentCalendar['optimal_posting_times'] as $time)
                             <div class="flex items-center text-sm">
-                                <i class="fas fa-clock text-themed-tertiary mr-2"></i>
+                                <i class="fas fa-clock text-themed-tertiary mr-2" aria-hidden="true"></i>
                                 <span class="text-themed-secondary transition-colors duration-300">{{ $time }}</span>
                             </div>
                             @endforeach
@@ -438,21 +438,21 @@
                         <div class="space-y-2">
                             <div class="flex items-center justify-between text-sm">
                                 <div class="flex items-center space-x-2">
-                                    <i class="fab fa-google text-brand dark:text-brand"></i>
+                                    <i class="fab fa-google text-brand dark:text-brand" aria-hidden="true"></i>
                                     <span class="text-themed-primary transition-colors duration-300">Google Search</span>
                                 </div>
                                 <span class="font-medium text-themed-secondary transition-colors duration-300">45.2%</span>
                             </div>
                             <div class="flex items-center justify-between text-sm">
                                 <div class="flex items-center space-x-2">
-                                    <i class="fas fa-share-alt text-green-600 dark:text-green-400"></i>
+                                    <i class="fas fa-share-alt text-green-600 dark:text-green-400" aria-hidden="true"></i>
                                     <span class="text-themed-primary transition-colors duration-300">Social Media</span>
                                 </div>
                                 <span class="font-medium text-themed-secondary transition-colors duration-300">28.7%</span>
                             </div>
                             <div class="flex items-center justify-between text-sm">
                                 <div class="flex items-center space-x-2">
-                                    <i class="fas fa-link text-brand dark:text-brand"></i>
+                                    <i class="fas fa-link text-brand dark:text-brand" aria-hidden="true"></i>
                                     <span class="text-themed-primary transition-colors duration-300">Direct Traffic</span>
                                 </div>
                                 <span class="font-medium text-themed-secondary transition-colors duration-300">26.1%</span>
@@ -482,11 +482,11 @@
     </div>
 
     <!-- Widget Toggle Panel -->
-    <div class="fixed bottom-6 right-6 z-40">
+    <div class="bk-widget-settings">
         <div x-data="{ open: false }" class="relative">
             <button @click="open = !open"
                     class="bg-themed-secondary shadow-sm border border-themed-primary rounded-full p-3  transition-all duration-200">
-                <i class="fas fa-sliders-h text-themed-secondary"></i>
+                <i class="fas fa-sliders-h text-themed-secondary" aria-hidden="true"></i>
             </button>
 
             <div x-show="open"

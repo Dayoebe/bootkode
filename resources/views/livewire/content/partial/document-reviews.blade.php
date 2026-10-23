@@ -21,7 +21,7 @@
         <div class="mt-6 grid grid-cols-1 md:grid-cols-5 gap-4">
             <div class="bg-orange-50 dark:bg-orange-900/20 rounded-lg p-4 transition-colors duration-300">
                 <div class="flex items-center">
-                    <i class="fas fa-clock text-orange-600 dark:text-orange-400 text-xl mr-3"></i>
+                    <i class="fas fa-clock text-orange-600 dark:text-orange-400 text-xl mr-3" aria-hidden="true"></i>
                     <div>
                         <p class="text-2xl font-bold text-orange-600 dark:text-orange-400">{{ $documents->where('status', 'pending_review')->count() }}</p>
                         <p class="text-sm text-orange-700 dark:text-orange-300">Pending Review</p>
@@ -30,7 +30,7 @@
             </div>
             <div class="bg-green-50 dark:bg-green-900/20 rounded-lg p-4 transition-colors duration-300">
                 <div class="flex items-center">
-                    <i class="fas fa-check-circle text-green-600 dark:text-green-400 text-xl mr-3"></i>
+                    <i class="fas fa-check-circle text-green-600 dark:text-green-400 text-xl mr-3" aria-hidden="true"></i>
                     <div>
                         <p class="text-2xl font-bold text-green-600 dark:text-green-400">{{ $documents->where('status', 'published')->count() }}</p>
                         <p class="text-sm text-green-700 dark:text-green-300">Published</p>
@@ -39,7 +39,7 @@
             </div>
             <div class="bg-surface-muted dark:bg-gray-700 rounded-lg p-4 transition-colors duration-300">
                 <div class="flex items-center">
-                    <i class="fas fa-edit text-content-muted dark:text-content-muted text-xl mr-3"></i>
+                    <i class="fas fa-edit text-content-muted dark:text-content-muted text-xl mr-3" aria-hidden="true"></i>
                     <div>
                         <p class="text-2xl font-bold text-content-muted dark:text-gray-300">{{ $documents->where('status', 'draft')->count() }}</p>
                         <p class="text-sm text-content dark:text-content-muted">Draft</p>
@@ -48,7 +48,7 @@
             </div>
             <div class="bg-brand/10 dark:bg-action/20 rounded-lg p-4 transition-colors duration-300">
                 <div class="flex items-center">
-                    <i class="fas fa-archive text-brand dark:text-brand text-xl mr-3"></i>
+                    <i class="fas fa-archive text-brand dark:text-brand text-xl mr-3" aria-hidden="true"></i>
                     <div>
                         <p class="text-2xl font-bold text-brand dark:text-brand">{{ $documents->where('status', 'archived')->count() }}</p>
                         <p class="text-sm text-brand dark:text-brand">Archived</p>
@@ -57,7 +57,7 @@
             </div>
             <div class="bg-red-50 dark:bg-red-900/20 rounded-lg p-4 transition-colors duration-300">
                 <div class="flex items-center">
-                    <i class="fas fa-times-circle text-red-600 dark:text-red-400 text-xl mr-3"></i>
+                    <i class="fas fa-times-circle text-red-600 dark:text-red-400 text-xl mr-3" aria-hidden="true"></i>
                     <div>
                         <p class="text-2xl font-bold text-red-600 dark:text-red-400">{{ $documents->where('status', 'deprecated')->count() }}</p>
                         <p class="text-sm text-red-700 dark:text-red-300">Deprecated</p>
@@ -104,7 +104,7 @@
                     wire:click="$refresh"
                     class="w-full bg-surface-muted dark:bg-gray-700 text-content dark:text-gray-300 px-4 py-2 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors flex items-center justify-center space-x-2"
                 >
-                    <i class="fas fa-sync-alt"></i>
+                    <i class="fas fa-sync-alt" aria-hidden="true"></i>
                     <span>Refresh</span>
                 </button>
             </div>
@@ -132,23 +132,23 @@
                                     ">
                                         @switch($document->status)
                                             @case('published')
-                                                <i class="fas fa-check-circle mr-1"></i>
+                                                <i class="fas fa-check-circle mr-1" aria-hidden="true"></i>
                                                 Published
                                                 @break
                                             @case('draft')
-                                                <i class="fas fa-edit mr-1"></i>
+                                                <i class="fas fa-edit mr-1" aria-hidden="true"></i>
                                                 Draft
                                                 @break
                                             @case('pending_review')
-                                                <i class="fas fa-clock mr-1"></i>
+                                                <i class="fas fa-clock mr-1" aria-hidden="true"></i>
                                                 Pending Review
                                                 @break
                                             @case('archived')
-                                                <i class="fas fa-archive mr-1"></i>
+                                                <i class="fas fa-archive mr-1" aria-hidden="true"></i>
                                                 Archived
                                                 @break
                                             @case('deprecated')
-                                                <i class="fas fa-times-circle mr-1"></i>
+                                                <i class="fas fa-times-circle mr-1" aria-hidden="true"></i>
                                                 Deprecated
                                                 @break
                                             @default
@@ -159,7 +159,7 @@
                                     <!-- Priority for pending review -->
                                     @if($document->status === 'pending_review' && $document->created_at->diffInDays() > 3)
                                         <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-300">
-                                            <i class="fas fa-exclamation-triangle mr-1"></i>
+                                            <i class="fas fa-exclamation-triangle mr-1" aria-hidden="true"></i>
                                             Overdue
                                         </span>
                                     @endif
@@ -173,22 +173,22 @@
 
                                 <div class="flex items-center space-x-4 text-xs text-content-muted dark:text-content-muted mb-3">
                                     <span>
-                                        <i class="fas fa-user mr-1"></i>
+                                        <i class="fas fa-user mr-1" aria-hidden="true"></i>
                                         {{ $document->creator->name ?? 'Unknown Author' }}
                                     </span>
                                     <span>
-                                        <i class="fas fa-calendar mr-1"></i>
+                                        <i class="fas fa-calendar mr-1" aria-hidden="true"></i>
                                         Created {{ $document->created_at->format('M j, Y') }}
                                     </span>
                                     @if($document->updated_at && $document->updated_at->ne($document->created_at))
                                         <span>
-                                            <i class="fas fa-edit mr-1"></i>
+                                            <i class="fas fa-edit mr-1" aria-hidden="true"></i>
                                             Updated {{ $document->updated_at->diffForHumans() }}
                                         </span>
                                     @endif
                                     @if($document->category)
                                         <span>
-                                            <i class="fas fa-tag mr-1"></i>
+                                            <i class="fas fa-tag mr-1" aria-hidden="true"></i>
                                             {{ $document->category->name }}
                                         </span>
                                     @endif
@@ -198,7 +198,7 @@
                                 @if($document->reviewer)
                                     <div class="bg-brand/10 dark:bg-action/20 rounded-lg p-3 text-sm transition-colors duration-300">
                                         <div class="flex items-center space-x-2">
-                                            <i class="fas fa-history text-brand dark:text-brand"></i>
+                                            <i class="fas fa-history text-brand dark:text-brand" aria-hidden="true"></i>
                                             <span class="font-medium text-brand dark:text-brand">Review History:</span>
                                         </div>
                                         <p class="text-brand dark:text-brand mt-1">
@@ -215,19 +215,19 @@
                                 <div class="flex items-center space-x-4 text-xs text-content-muted dark:text-content-muted mt-3">
                                     @if($document->word_count ?? false)
                                         <span>
-                                            <i class="fas fa-file-word mr-1"></i>
+                                            <i class="fas fa-file-word mr-1" aria-hidden="true"></i>
                                             {{ number_format($document->word_count) }} words
                                         </span>
                                     @endif
                                     @if($document->reading_time ?? false)
                                         <span>
-                                            <i class="fas fa-clock mr-1"></i>
+                                            <i class="fas fa-clock mr-1" aria-hidden="true"></i>
                                             {{ $document->reading_time }} min read
                                         </span>
                                     @endif
                                     @if($document->views_count ?? 0 > 0)
                                         <span>
-                                            <i class="fas fa-eye mr-1"></i>
+                                            <i class="fas fa-eye mr-1" aria-hidden="true"></i>
                                             {{ number_format($document->views_count) }} views
                                         </span>
                                     @endif
@@ -242,7 +242,7 @@
                                         class="text-green-600 dark:text-green-400 hover:text-green-800 dark:hover:text-green-300 bg-green-50 dark:bg-green-900/20 hover:bg-green-100 dark:hover:bg-green-900/30 px-3 py-1 rounded text-xs font-medium transition-colors"
                                         title="Quick Approve"
                                     >
-                                        <i class="fas fa-check mr-1"></i>
+                                        <i class="fas fa-check mr-1" aria-hidden="true"></i>
                                         Quick Approve
                                     </button>
                                 @endif
@@ -254,7 +254,7 @@
                                         class="text-green-600 dark:text-green-400 hover:text-green-800 dark:hover:text-green-300 bg-green-50 dark:bg-green-900/20 hover:bg-green-100 dark:hover:bg-green-900/30 p-2 rounded transition-colors"
                                         title="Approve Document"
                                     >
-                                        <i class="fas fa-thumbs-up"></i>
+                                        <i class="fas fa-thumbs-up" aria-hidden="true"></i>
                                     </button>
 
                                     <button
@@ -262,7 +262,7 @@
                                         class="text-red-600 dark:text-red-400 hover:text-red-800 dark:hover:text-red-300 bg-red-50 dark:bg-red-900/20 hover:bg-red-100 dark:hover:bg-red-900/30 p-2 rounded transition-colors"
                                         title="Reject Document"
                                     >
-                                        <i class="fas fa-thumbs-down"></i>
+                                        <i class="fas fa-thumbs-down" aria-hidden="true"></i>
                                     </button>
 
                                     <!-- More Actions Dropdown -->
@@ -272,20 +272,20 @@
                                             class="text-content-muted dark:text-content-muted hover:text-content-muted dark:hover:text-gray-300 p-2 rounded hover:bg-surface-muted dark:hover:bg-gray-700"
                                             onclick="toggleReviewDropdown({{ $document->id }})"
                                         >
-                                            <i class="fas fa-ellipsis-v"></i>
+                                            <i class="fas fa-ellipsis-v" aria-hidden="true"></i>
                                         </button>
                                         <div id="review-dropdown-{{ $document->id }}" class="hidden absolute right-0 z-10 mt-2 w-48 bg-surface dark:bg-gray-800 rounded-md shadow-sm ring-1 ring-black ring-opacity-5 dark:ring-gray-700">
                                             <div class="py-1">
                                                 <button class="w-full text-left px-4 py-2 text-sm text-content dark:text-gray-300 hover:bg-surface-muted dark:hover:bg-gray-700 flex items-center">
-                                                    <i class="fas fa-eye mr-2"></i>
+                                                    <i class="fas fa-eye mr-2" aria-hidden="true"></i>
                                                     Preview Document
                                                 </button>
                                                 <button class="w-full text-left px-4 py-2 text-sm text-brand dark:text-brand hover:bg-brand/10 dark:hover:bg-action/20 flex items-center">
-                                                    <i class="fas fa-edit mr-2"></i>
+                                                    <i class="fas fa-edit mr-2" aria-hidden="true"></i>
                                                     Edit Document
                                                 </button>
                                                 <button class="w-full text-left px-4 py-2 text-sm text-orange-700 dark:text-orange-400 hover:bg-orange-50 dark:hover:bg-orange-900/20 flex items-center">
-                                                    <i class="fas fa-history mr-2"></i>
+                                                    <i class="fas fa-history mr-2" aria-hidden="true"></i>
                                                     View History
                                                 </button>
                                             </div>
@@ -306,7 +306,7 @@
             @endif
         @else
             <div class="p-12 text-center">
-                <i class="fas fa-star text-6xl text-gray-300 dark:text-content-muted mb-4"></i>
+                <i class="fas fa-star text-6xl text-gray-300 dark:text-content-muted mb-4" aria-hidden="true"></i>
                 <h3 class="text-lg font-medium text-content dark:text-white mb-2">No documents found</h3>
                 <p class="text-content-muted dark:text-content-muted">
                     @if($search)
@@ -336,7 +336,7 @@
                             </p>
                         </div>
                         <button wire:click="closeReviewModal" class="text-content-muted dark:text-content-muted hover:text-content-muted dark:hover:text-gray-300" aria-label="Close">
-                            <i class="fas fa-times text-xl"></i>
+                            <i class="fas fa-times text-xl" aria-hidden="true"></i>
                         </button>
                     </div>
 
@@ -347,16 +347,16 @@
                                 <h4 class="font-medium text-content dark:text-white text-lg">{{ $selectedDocument->title ?? '' }}</h4>
                                 <div class="flex items-center space-x-4 text-sm text-content-muted dark:text-content-muted mt-2">
                                     <span>
-                                        <i class="fas fa-user mr-1"></i>
+                                        <i class="fas fa-user mr-1" aria-hidden="true"></i>
                                         {{ $selectedDocument->creator->name ?? 'Unknown' }}
                                     </span>
                                     <span>
-                                        <i class="fas fa-calendar mr-1"></i>
+                                        <i class="fas fa-calendar mr-1" aria-hidden="true"></i>
                                         {{ $selectedDocument->created_at->format('M j, Y g:i A') }}
                                     </span>
                                     @if($selectedDocument->category)
                                         <span>
-                                            <i class="fas fa-tag mr-1"></i>
+                                            <i class="fas fa-tag mr-1" aria-hidden="true"></i>
                                             {{ $selectedDocument->category->name }}
                                         </span>
                                     @endif
@@ -415,7 +415,7 @@
                                     text-white rounded-lg transition-colors flex items-center"
                             >
                                 <span wire:loading.remove wire:target="submitReview">
-                                    <i class="fas {{ $reviewAction === 'approve' ? 'fa-check' : 'fa-times' }} mr-2"></i>
+                                    <i class="fas {{ $reviewAction === 'approve' ? 'fa-check' : 'fa-times' }} mr-2" aria-hidden="true"></i>
                                     {{ ucfirst($reviewAction) }} Document
                                 </span>
                                 <span wire:loading wire:target="submitReview" class="flex items-center">

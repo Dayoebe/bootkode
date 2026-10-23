@@ -7,11 +7,11 @@
             <input aria-label="Search feedback" type="text" wire:model.live.debounce="search"
                    class="w-full pl-10 pr-4 py-2 bg-themed-secondary border border-themed-primary text-themed-primary rounded-lg placeholder-themed-secondary focus:ring-2 focus:ring-red-500 focus:border-transparent"
                    placeholder="Search feedback...">
-            <i class="fas fa-search absolute left-3 top-2.5 text-themed-secondary"></i>
+            <i class="fas fa-search absolute left-3 top-2.5 text-themed-secondary" aria-hidden="true"></i>
         </div>
         <button wire:click="openModal('feedback')"
                 class="bg-red-600 hover:bg-red-700 active:bg-red-800 text-white px-4 py-2 rounded-lg font-medium transition-colors flex items-center gap-2 whitespace-nowrap">
-            <i class="fas fa-plus"></i>
+            <i class="fas fa-plus" aria-hidden="true"></i>
             <span class="hidden sm:inline">Feedback</span>
         </button>
     </div>
@@ -47,17 +47,17 @@
 
                 <!-- Footer -->
                 <div class="text-xs text-themed-secondary">
-                    <i class="fas fa-clock mr-1"></i>{{ $item->created_at->diffForHumans() }}
+                    <i class="fas fa-clock mr-1" aria-hidden="true"></i>{{ $item->created_at->diffForHumans() }}
                 </div>
             </div>
         @empty
             <div class="text-center py-12 bg-themed-secondary border border-themed-primary rounded-lg">
-                <i class="fas fa-comments text-themed-secondary text-4xl mb-3 block"></i>
+                <i class="fas fa-comments text-themed-secondary text-4xl mb-3 block" aria-hidden="true"></i>
                 <h3 class="text-lg font-semibold text-themed-primary mb-1">No feedback yet</h3>
                 <p class="text-themed-secondary mb-4">Share your thoughts to help us improve!</p>
                 <button wire:click="openModal('feedback')"
                         class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg font-medium inline-flex items-center gap-2">
-                    <i class="fas fa-plus"></i>Submit Feedback
+                    <i class="fas fa-plus" aria-hidden="true"></i>Submit Feedback
                 </button>
             </div>
         @endforelse

@@ -8,7 +8,7 @@
             <div class="relative">
                 <input aria-label="Search subscribers" type="text" wire:model.live.debounce.300ms="search" placeholder="Search subscribers..."
                     class="pl-10 pr-4 py-2 w-full md:w-64 border border-line rounded-lg focus:ring-2 focus:ring-brand/30 focus:border-transparent">
-                <i class="fas fa-search absolute left-3 top-3 text-content-muted"></i>
+                <i class="fas fa-search absolute left-3 top-3 text-content-muted" aria-hidden="true"></i>
             </div>
 
             <!-- Status Filter -->
@@ -33,15 +33,15 @@
         <div class="flex space-x-2">
             <button wire:click="$set('showAddModal', true)"
                 class="bg-action hover:bg-action text-action-foreground px-4 py-2 rounded-lg font-medium transition-colors">
-                <i class="fas fa-plus mr-2"></i>Add Subscriber
+                <i class="fas fa-plus mr-2" aria-hidden="true"></i>Add Subscriber
             </button>
             <button wire:click="$set('showImportModal', true)"
                 class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg font-medium transition-colors">
-                <i class="fas fa-upload mr-2"></i>Import CSV
+                <i class="fas fa-upload mr-2" aria-hidden="true"></i>Import CSV
             </button>
             <button wire:click="exportCsv"
                 class="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg font-medium transition-colors">
-                <i class="fas fa-download mr-2"></i>Export
+                <i class="fas fa-download mr-2" aria-hidden="true"></i>Export
             </button>
         </div>
     </div>
@@ -75,7 +75,7 @@
     <!-- Subscribers Table -->
     <div class="bg-surface rounded-lg shadow overflow-hidden">
         <div class="overflow-x-auto">
-            <x-ui.table label="Subscriber Management.Blade records"><table class="min-w-full divide-y divide-line">
+            <x-ui.table label="Subscriber Management records"><table class="min-w-full divide-y divide-line">
                 <thead class="bg-surface-muted">
                     <tr>
                         <th scope="col" class="px-6 py-3 text-left">
@@ -136,12 +136,12 @@
                                 <div class="flex space-x-2">
                                     <button wire:click="editSubscriber({{ $subscriber->id }})"
                                         class="text-brand hover:text-brand text-sm" title="Edit">
-                                        <i class="fas fa-edit"></i>
+                                        <i class="fas fa-edit" aria-hidden="true"></i>
                                     </button>
                                     <button wire:click="deleteSubscriber({{ $subscriber->id }})"
                                         onclick="return confirm('Are you sure?')"
                                         class="text-red-600 hover:text-red-900 text-sm" title="Delete">
-                                        <i class="fas fa-trash"></i>
+                                        <i class="fas fa-trash" aria-hidden="true"></i>
                                     </button>
                                 </div>
                             </td>
@@ -149,7 +149,7 @@
                     @empty
                         <tr>
                             <td colspan="6" class="px-6 py-12 text-center text-content-muted">
-                                <i class="fas fa-users text-4xl mb-4 text-gray-300"></i>
+                                <i class="fas fa-users text-4xl mb-4 text-gray-300" aria-hidden="true"></i>
                                 <p>No subscribers found.</p>
                             </td>
                         </tr>

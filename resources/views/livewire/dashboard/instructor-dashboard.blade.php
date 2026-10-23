@@ -22,7 +22,7 @@
 
                     <!-- Quick Actions -->
                     <a href="{{ route('create.course') }}" class="bg-action dark:bg-action hover:bg-action dark:hover:bg-action text-action-foreground px-4 py-2 rounded-lg font-medium transition-colors duration-200">
-                        <i class="fas fa-plus mr-2"></i>
+                        <i class="fas fa-plus mr-2" aria-hidden="true"></i>
                         New Course
                     </a>
         </x-slot:actions>
@@ -42,7 +42,7 @@
                     </div>
                 </div>
                 <div class="bg-brand/10 dark:bg-action/30 p-3 rounded-full transition-colors duration-300">
-                    <i class="fas fa-book text-brand dark:text-brand text-xl"></i>
+                    <i class="fas fa-book text-brand dark:text-brand text-xl" aria-hidden="true"></i>
                 </div>
             </div>
         </div>
@@ -58,7 +58,7 @@
                     </div>
                 </div>
                 <div class="bg-green-100 dark:bg-green-900/30 p-3 rounded-full transition-colors duration-300">
-                    <i class="fas fa-users text-green-600 dark:text-green-400 text-xl"></i>
+                    <i class="fas fa-users text-green-600 dark:text-green-400 text-xl" aria-hidden="true"></i>
                 </div>
             </div>
         </div>
@@ -71,14 +71,14 @@
                     <div class="flex items-center mt-2 text-sm">
                         <div class="flex text-yellow-400 dark:text-yellow-300 mr-2">
                             @for($i = 1; $i <= 5; $i++)
-                                <i class="fas fa-star{{ $i <= $this->overviewStats['average_rating'] ? '' : '-o' }}"></i>
+                                <i class="fas fa-star{{ $i <= $this->overviewStats['average_rating'] ? '' : '-o' }}" aria-hidden="true"></i>
                             @endfor
                         </div>
                         <span class="text-themed-tertiary transition-colors duration-300">{{ $this->overviewStats['total_reviews'] }} reviews</span>
                     </div>
                 </div>
                 <div class="bg-yellow-100 dark:bg-yellow-900/30 p-3 rounded-full transition-colors duration-300">
-                    <i class="fas fa-star text-yellow-600 dark:text-yellow-400 text-xl"></i>
+                    <i class="fas fa-star text-yellow-600 dark:text-yellow-400 text-xl" aria-hidden="true"></i>
                 </div>
             </div>
         </div>
@@ -94,7 +94,7 @@
                     </div>
                 </div>
                 <div class="bg-brand/10 dark:bg-action/30 p-3 rounded-full transition-colors duration-300">
-                    <i class="fas fa-wallet text-brand dark:text-brand text-xl"></i>
+                    <i class="fas fa-wallet text-brand dark:text-brand text-xl" aria-hidden="true"></i>
                 </div>
             </div>
         </div>
@@ -111,7 +111,7 @@
                 <div class="flex items-center justify-between mb-6">
                     <h2 class="text-xl font-bold text-themed-primary transition-colors duration-300">Course Performance</h2>
                     <a href="{{ route('my-course') }}" class="text-brand dark:text-brand hover:text-brand dark:hover:text-brand text-sm font-medium transition-colors duration-300">
-                        View All <i class="fas fa-arrow-right ml-1"></i>
+                        View All <i class="fas fa-arrow-right ml-1" aria-hidden="true"></i>
                     </a>
                 </div>
 
@@ -123,7 +123,7 @@
                             <img src="{{ $course['thumbnail'] }}" alt="{{ $course['title'] }}" class="w-12 h-12 rounded-lg object-cover">
                             @else
                             <div class="w-12 h-12 bg-brand/10 dark:bg-action/30 rounded-lg flex items-center justify-center transition-colors duration-300">
-                                <i class="fas fa-book text-brand dark:text-brand"></i>
+                                <i class="fas fa-book text-brand dark:text-brand" aria-hidden="true"></i>
                             </div>
                             @endif
 
@@ -133,7 +133,7 @@
                                     <span>{{ $course['total_enrollments'] }} students</span>
                                     <span>{{ $course['completion_rate'] }}% completion</span>
                                     <span class="flex items-center">
-                                        <i class="fas fa-star text-yellow-400 dark:text-yellow-300 mr-1"></i>
+                                        <i class="fas fa-star text-yellow-400 dark:text-yellow-300 mr-1" aria-hidden="true"></i>
                                         {{ number_format($course['average_rating'], 1) }}
                                     </span>
                                 </div>
@@ -149,7 +149,7 @@
                     </div>
                     @empty
                     <div class="text-center py-8">
-                        <i class="fas fa-book-open text-themed-tertiary text-4xl mb-4"></i>
+                        <i class="fas fa-book-open text-themed-tertiary text-4xl mb-4" aria-hidden="true"></i>
                         <p class="text-themed-secondary mb-4 transition-colors duration-300">No courses created yet</p>
                         <a href="{{ route('create.course') }}" class="bg-action dark:bg-action hover:bg-action dark:hover:bg-action text-action-foreground px-4 py-2 rounded-lg transition-colors">
                             Create Your First Course
@@ -294,19 +294,19 @@
                         <div class="flex space-x-2 mt-3">
                             <button wire:click="approveCertificate({{ $request['id'] }})"
                                     class="flex-1 bg-green-600 dark:bg-green-500 hover:bg-green-700 dark:hover:bg-green-600 text-white text-xs py-2 rounded-lg transition-colors">
-                                <i class="fas fa-check mr-1"></i>
+                                <i class="fas fa-check mr-1" aria-hidden="true"></i>
                                 Approve
                             </button>
                             <button onclick="rejectCertificate({{ $request['id'] }})"
                                     class="flex-1 bg-red-600 dark:bg-red-500 hover:bg-red-700 dark:hover:bg-red-600 text-white text-xs py-2 rounded-lg transition-colors">
-                                <i class="fas fa-times mr-1"></i>
+                                <i class="fas fa-times mr-1" aria-hidden="true"></i>
                                 Reject
                             </button>
                         </div>
                     </div>
                     @empty
                     <div class="text-center py-6">
-                        <i class="fas fa-certificate text-themed-tertiary text-3xl mb-2"></i>
+                        <i class="fas fa-certificate text-themed-tertiary text-3xl mb-2" aria-hidden="true"></i>
                         <p class="text-themed-secondary transition-colors duration-300">No pending certificate requests</p>
                     </div>
                     @endforelse
@@ -323,7 +323,7 @@
                     @forelse($this->recentEnrollments as $enrollment)
                     <div class="flex items-center space-x-3 p-3 border border-themed-primary rounded-lg transition-colors duration-300">
                         <div class="flex-shrink-0 w-10 h-10 bg-brand/10 dark:bg-action/30 rounded-full flex items-center justify-center transition-colors duration-300">
-                            <i class="fas fa-user text-brand dark:text-brand"></i>
+                            <i class="fas fa-user text-brand dark:text-brand" aria-hidden="true"></i>
                         </div>
                         <div class="flex-1 min-w-0">
                             <h4 class="text-sm font-medium text-themed-primary truncate transition-colors duration-300">{{ $enrollment['student_name'] }}</h4>
@@ -339,7 +339,7 @@
                     </div>
                     @empty
                     <div class="text-center py-6">
-                        <i class="fas fa-user-plus text-themed-tertiary text-3xl mb-2"></i>
+                        <i class="fas fa-user-plus text-themed-tertiary text-3xl mb-2" aria-hidden="true"></i>
                         <p class="text-themed-secondary transition-colors duration-300">No recent enrollments</p>
                     </div>
                     @endforelse
@@ -363,7 +363,7 @@
                             <div class="flex items-center">
                                 <div class="flex text-yellow-400 dark:text-yellow-300 mr-2">
                                     @for($i = 1; $i <= 5; $i++)
-                                        <i class="fas fa-star{{ $i <= $review['rating'] ? '' : '-o' }} text-xs"></i>
+                                        <i class="fas fa-star{{ $i <= $review['rating'] ? '' : '-o' }} text-xs" aria-hidden="true"></i>
                                     @endfor
                                 </div>
                                 <span class="text-xs text-themed-tertiary transition-colors duration-300">{{ $review['created_at']->format('M j') }}</span>
@@ -375,7 +375,7 @@
                     </div>
                     @empty
                     <div class="text-center py-6">
-                        <i class="fas fa-star text-themed-tertiary text-3xl mb-2"></i>
+                        <i class="fas fa-star text-themed-tertiary text-3xl mb-2" aria-hidden="true"></i>
                         <p class="text-themed-secondary transition-colors duration-300">No recent reviews</p>
                     </div>
                     @endforelse
@@ -389,7 +389,7 @@
                 <div class="flex items-center justify-between mb-6">
                     <h2 class="text-xl font-bold text-themed-primary transition-colors duration-300">Marketplace Items</h2>
                     <a href="{{ route('marketplace.seller.listings') }}" class="text-brand dark:text-brand hover:text-brand dark:hover:text-brand text-sm font-medium transition-colors duration-300">
-                        View All <i class="fas fa-arrow-right ml-1"></i>
+                        View All <i class="fas fa-arrow-right ml-1" aria-hidden="true"></i>
                     </a>
                 </div>
 

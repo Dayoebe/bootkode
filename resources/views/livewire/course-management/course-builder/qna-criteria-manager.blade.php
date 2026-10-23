@@ -45,7 +45,7 @@
         </div>
         <button wire:click="toggleCreateForm"
             class="px-4 py-2 bg-action hover:bg-action text-action-foreground rounded-lg transition-colors">
-            <i class="fas fa-plus mr-2"></i>
+            <i class="fas fa-plus mr-2" aria-hidden="true"></i>
             {{ $showCreateForm ? 'Cancel' : 'Add Topic' }}
         </button>
     </div>
@@ -78,7 +78,7 @@
                                         {{ $topicType === $type
                                             ? 'bg-' . $config['color'] . '-600 border-' . $config['color'] . '-500 text-white'
                                             : 'bg-themed-secondary border-themed-primary text-themed-primary hover:bg-themed-tertiary hover:border-' . $config['color'] . '-400' }}">
-                                <i class="fas {{ $config['icon'] }} text-lg mb-1 block"></i>
+                                <i class="fas {{ $config['icon'] }} text-lg mb-1 block" aria-hidden="true"></i>
                                 <div class="font-medium">{{ $config['label'] }}</div>
                             </button>
                         @endforeach
@@ -189,7 +189,7 @@
                         <h5 class="text-themed-primary font-medium transition-colors duration-300">Discussion Prompts</h5>
                         <button type="button" wire:click="addDiscussionPrompt"
                             class="px-2 py-1 bg-green-600 hover:bg-green-700 text-white rounded text-sm transition-colors">
-                            <i class="fas fa-plus mr-1"></i>Add Prompt
+                            <i class="fas fa-plus mr-1" aria-hidden="true"></i>Add Prompt
                         </button>
                     </div>
 
@@ -201,7 +201,7 @@
                             @if (count($discussionPrompts) > 1)
                                 <button type="button" wire:click="removeDiscussionPrompt({{ $index }})"
                                     class="px-2 py-2 bg-red-600 hover:bg-red-700 text-white rounded transition-colors" aria-label="Remove discussion prompt">
-                                    <i class="fas fa-trash text-sm"></i>
+                                    <i class="fas fa-trash text-sm" aria-hidden="true"></i>
                                 </button>
                             @endif
                         </div>
@@ -214,7 +214,7 @@
                         <h5 class="text-themed-primary font-medium transition-colors duration-300">Evaluation Criteria</h5>
                         <button type="button" wire:click="addEvaluationCriteria"
                             class="px-2 py-1 bg-green-600 hover:bg-green-700 text-white rounded text-sm transition-colors">
-                            <i class="fas fa-plus mr-1"></i>Add Criteria
+                            <i class="fas fa-plus mr-1" aria-hidden="true"></i>Add Criteria
                         </button>
                     </div>
 
@@ -239,7 +239,7 @@
                                 @if (count($evaluationCriteria) > 1)
                                     <button type="button" wire:click="removeEvaluationCriteria({{ $index }})"
                                         class="px-2 py-2 bg-red-600 hover:bg-red-700 text-white rounded w-full transition-colors" aria-label="Remove evaluation criteria">
-                                        <i class="fas fa-trash text-sm"></i>
+                                        <i class="fas fa-trash text-sm" aria-hidden="true"></i>
                                     </button>
                                 @endif
                             </div>
@@ -258,11 +258,11 @@
                         class="px-6 py-2 bg-action hover:bg-action text-action-foreground rounded-lg transition-colors duration-300
                                disabled:opacity-50 flex items-center gap-2">
                         <span wire:loading.remove>
-                            <i class="fas fa-{{ $editingTopic ? 'save' : 'plus' }} mr-2"></i>
+                            <i class="fas fa-{{ $editingTopic ? 'save' : 'plus' }} mr-2" aria-hidden="true"></i>
                             {{ $editingTopic ? 'Update Topic' : 'Create Topic' }}
                         </span>
                         <span wire:loading class="flex items-center gap-2">
-                            <i class="fas fa-spinner fa-spin"></i>
+                            <i class="fas fa-spinner fa-spin" aria-hidden="true"></i>
                             {{ $editingTopic ? 'Updating...' : 'Creating...' }}
                         </span>
                     </button>
@@ -287,7 +287,7 @@
                         <div class="flex items-start gap-4">
                             <!-- Drag Handle -->
                             <div class="drag-handle cursor-move text-themed-secondary hover:text-themed-primary mt-1 transition-colors duration-300">
-                                <i class="fas fa-grip-vertical"></i>
+                                <i class="fas fa-grip-vertical" aria-hidden="true"></i>
                             </div>
 
                             <!-- Topic Number -->
@@ -348,19 +348,19 @@
                                     <div class="flex gap-2 ml-4">
                                         <button wire:click="editTopic({{ $topic['id'] }})"
                                             class="px-2 py-1 bg-action hover:bg-action text-action-foreground rounded text-sm transition-colors" aria-label="Edit topic">
-                                            <i class="fas fa-edit"></i>
+                                            <i class="fas fa-edit" aria-hidden="true"></i>
                                         </button>
 
                                         <button wire:click="duplicateTopic({{ $topic['id'] }})"
                                             class="px-2 py-1 bg-green-600 hover:bg-green-700 text-white rounded text-sm transition-colors"
                                             title="Duplicate Topic" aria-label="Duplicate Topic">
-                                            <i class="fas fa-copy"></i>
+                                            <i class="fas fa-copy" aria-hidden="true"></i>
                                         </button>
 
                                         <button wire:click="deleteTopic({{ $topic['id'] }})"
                                             onclick="return confirm('Are you sure you want to delete this topic?')"
                                             class="px-2 py-1 bg-red-600 hover:bg-red-700 text-white rounded text-sm transition-colors" aria-label="Delete topic">
-                                            <i class="fas fa-trash"></i>
+                                            <i class="fas fa-trash" aria-hidden="true"></i>
                                         </button>
                                     </div>
                                 </div>
@@ -406,13 +406,13 @@
             <!-- Empty State -->
             <div class="text-center py-8">
                 <div class="w-16 h-16 bg-themed-tertiary rounded-full flex items-center justify-center mx-auto mb-4 border border-themed-primary transition-colors duration-300">
-                    <i class="fas fa-comments text-2xl text-themed-secondary transition-colors duration-300"></i>
+                    <i class="fas fa-comments text-2xl text-themed-secondary transition-colors duration-300" aria-hidden="true"></i>
                 </div>
                 <h4 class="text-lg font-medium text-themed-primary mb-2 transition-colors duration-300">No Discussion Topics Yet</h4>
                 <p class="text-themed-secondary mb-4 transition-colors duration-300">Create discussion topics to enable Q&A based evaluation.</p>
                 <button wire:click="toggleCreateForm"
                     class="px-4 py-2 bg-action hover:bg-action text-action-foreground rounded-lg transition-colors">
-                    <i class="fas fa-plus mr-2"></i>
+                    <i class="fas fa-plus mr-2" aria-hidden="true"></i>
                     Add Your First Topic
                 </button>
             </div>

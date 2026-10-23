@@ -15,7 +15,7 @@
                     <!-- Quick Actions -->
                     <button wire:click="toggleQuickActionModal"
                             class="bg-action         text-action-foreground px-5 py-2 rounded-lg font-medium transition-all duration-200 flex items-center shadow-sm">
-                        <i class="fas fa-lightning-bolt mr-2"></i>
+                        <i class="fas fa-lightning-bolt mr-2" aria-hidden="true"></i>
                         Quick Actions
                     </button>
         </x-slot:actions>
@@ -37,7 +37,7 @@
                     </div>
                 </div>
                 <div class="bg-brand/10 dark:bg-surface bg-opacity-30 p-3 rounded-lg">
-                    <i class="fas fa-user-graduate text-2xl"></i>
+                    <i class="fas fa-user-graduate text-2xl" aria-hidden="true"></i>
                 </div>
             </div>
         </div>
@@ -46,16 +46,16 @@
         <div class="border border-line bg-surface     rounded-lg p-6 text-content shadow-sm  transition-shadow duration-200">
             <div class="flex items-center justify-between">
                 <div>
-                    <p class="text-green-100 dark:text-green-200 text-sm font-medium">Active Courses</p>
+                    <p class="text-content-muted dark:text-content-muted text-sm font-medium">Active Courses</p>
                     <h3 class="text-3xl font-bold mt-1">{{ number_format($this->overviewStats['published_courses']) }}</h3>
                     <div class="flex items-center mt-2 text-sm">
-                        <span class="bg-green-400 dark:bg-green-500 bg-opacity-30 px-2 py-1 rounded-full text-green-100 dark:text-green-200">
+                        <span class="bg-brand/10 dark:bg-brand/10 bg-opacity-30 px-2 py-1 rounded-full text-content-muted dark:text-content-muted">
                             {{ $this->overviewStats['pending_courses'] }} pending
                         </span>
                     </div>
                 </div>
-                <div class="bg-green-400 dark:bg-green-500 bg-opacity-30 p-3 rounded-lg">
-                    <i class="fas fa-book-open text-2xl"></i>
+                <div class="bg-brand/10 dark:bg-brand/10 bg-opacity-30 p-3 rounded-lg">
+                    <i class="fas fa-book-open text-2xl" aria-hidden="true"></i>
                 </div>
             </div>
         </div>
@@ -67,13 +67,13 @@
                     <p class="text-brand dark:text-brand text-sm font-medium">Total Enrollments</p>
                     <h3 class="text-3xl font-bold mt-1">{{ number_format($this->overviewStats['total_enrollments']) }}</h3>
                     <div class="flex items-center mt-2 text-sm">
-                        <span class="bg-purple-400 dark:bg-surface bg-opacity-30 px-2 py-1 rounded-full text-brand dark:text-brand">
+                        <span class="bg-brand/10 dark:bg-surface bg-opacity-30 px-2 py-1 rounded-full text-brand dark:text-brand">
                             {{ $this->overviewStats['completion_rate'] }}% completion rate
                         </span>
                     </div>
                 </div>
-                <div class="bg-purple-400 dark:bg-surface bg-opacity-30 p-3 rounded-lg">
-                    <i class="fas fa-chart-line text-2xl"></i>
+                <div class="bg-brand/10 dark:bg-surface bg-opacity-30 p-3 rounded-lg">
+                    <i class="fas fa-chart-line text-2xl" aria-hidden="true"></i>
                 </div>
             </div>
         </div>
@@ -82,16 +82,16 @@
         <div class="border border-line bg-surface     rounded-lg p-6 text-content shadow-sm  transition-shadow duration-200">
             <div class="flex items-center justify-between">
                 <div>
-                    <p class="text-orange-100 dark:text-orange-200 text-sm font-medium">Open Tickets</p>
+                    <p class="text-content-muted dark:text-content-muted text-sm font-medium">Open Tickets</p>
                     <h3 class="text-3xl font-bold mt-1">{{ $this->overviewStats['open_tickets'] }}</h3>
                     <div class="flex items-center mt-2 text-sm">
-                        <span class="bg-orange-400 dark:bg-orange-500 bg-opacity-30 px-2 py-1 rounded-full text-orange-100 dark:text-orange-200">
+                        <span class="bg-brand/10 dark:bg-brand/10 bg-opacity-30 px-2 py-1 rounded-full text-content-muted dark:text-content-muted">
                             {{ $this->overviewStats['pending_certificates'] }} cert. pending
                         </span>
                     </div>
                 </div>
-                <div class="bg-orange-400 dark:bg-orange-500 bg-opacity-30 p-3 rounded-lg">
-                    <i class="fas fa-headset text-2xl"></i>
+                <div class="bg-brand/10 dark:bg-brand/10 bg-opacity-30 p-3 rounded-lg">
+                    <i class="fas fa-headset text-2xl" aria-hidden="true"></i>
                 </div>
             </div>
         </div>
@@ -107,7 +107,7 @@
             <div class="bg-themed-secondary rounded-lg shadow-sm border border-themed-primary p-6 transition-colors duration-300">
                 <div class="flex items-center justify-between mb-6">
                     <h2 class="text-xl font-bold text-themed-primary flex items-center transition-colors duration-300">
-                        <i class="fas fa-chart-area text-brand dark:text-brand mr-2"></i>
+                        <i class="fas fa-chart-area text-brand dark:text-brand mr-2" aria-hidden="true"></i>
                         Student Growth & Engagement
                     </h2>
                     <div class="flex items-center space-x-2 text-sm text-themed-tertiary transition-colors duration-300">
@@ -127,16 +127,16 @@
             <div class="bg-themed-secondary rounded-lg shadow-sm border border-themed-primary p-6 transition-colors duration-300">
                 <div class="flex items-center justify-between mb-6">
                     <h2 class="text-xl font-bold text-themed-primary flex items-center transition-colors duration-300">
-                        <i class="fas fa-trophy text-yellow-500 dark:text-yellow-400 mr-2"></i>
+                        <i class="fas fa-trophy text-yellow-500 dark:text-yellow-400 mr-2" aria-hidden="true"></i>
                         Top Performing Courses
                     </h2>
                     <a href="{{ route('all-course') }}" class="text-brand dark:text-brand hover:text-brand dark:hover:text-brand text-sm font-medium flex items-center transition-colors duration-300">
-                        Manage All <i class="fas fa-arrow-right ml-1"></i>
+                        Manage All <i class="fas fa-arrow-right ml-1" aria-hidden="true"></i>
                     </a>
                 </div>
                 <div class="space-y-4">
                     @forelse($this->coursePerformance as $index => $course)
-                    <div class="flex items-center justify-between p-4 bg-themed-tertiary rounded-lg hover:bg-themed-secondary transition-all duration-200">
+                    <div class="flex flex-col items-start gap-4 p-4 sm:flex-row sm:items-center sm:justify-between bg-themed-tertiary rounded-lg hover:bg-themed-secondary transition-all duration-200">
                         <div class="flex items-center space-x-4">
                             <div class="w-10 h-10 bg-action     rounded-lg flex items-center justify-center text-action-foreground font-bold">
                                 {{ $index + 1 }}
@@ -146,7 +146,7 @@
                                 <p class="text-sm text-themed-secondary transition-colors duration-300">by {{ $course['instructor'] }}</p>
                             </div>
                         </div>
-                        <div class="flex items-center space-x-6 text-sm">
+                        <div class="flex flex-wrap items-center gap-4 text-sm">
                             <div class="text-center">
                                 <div class="font-bold text-brand dark:text-brand transition-colors duration-300">{{ $course['enrollments'] }}</div>
                                 <div class="text-themed-tertiary transition-colors duration-300">enrollments</div>
@@ -158,7 +158,7 @@
                             <div class="text-center">
                                 <div class="font-bold text-yellow-600 dark:text-yellow-400 flex items-center transition-colors duration-300">
                                     {{ number_format($course['rating'], 1) }}
-                                    <i class="fas fa-star ml-1 text-xs"></i>
+                                    <i class="fas fa-star ml-1 text-xs" aria-hidden="true"></i>
                                 </div>
                                 <div class="text-themed-tertiary transition-colors duration-300">rating</div>
                             </div>
@@ -166,7 +166,7 @@
                     </div>
                     @empty
                     <div class="text-center py-8 text-themed-tertiary transition-colors duration-300">
-                        <i class="fas fa-book-open text-4xl mb-4 text-themed-tertiary opacity-50"></i>
+                        <i class="fas fa-book-open text-4xl mb-4 text-themed-tertiary opacity-50" aria-hidden="true"></i>
                         <p>No course performance data available</p>
                     </div>
                     @endforelse
@@ -179,11 +179,11 @@
             <div class="bg-themed-secondary rounded-lg shadow-sm border border-themed-primary p-6 transition-colors duration-300">
                 <div class="flex items-center justify-between mb-6">
                     <h2 class="text-xl font-bold text-themed-primary flex items-center transition-colors duration-300">
-                        <i class="fas fa-graduation-cap text-green-600 dark:text-green-400 mr-2"></i>
+                        <i class="fas fa-graduation-cap text-green-600 dark:text-green-400 mr-2" aria-hidden="true"></i>
                         Learning Progress Analytics
                     </h2>
                     <a href="{{ route('learning.analytics') }}" class="text-brand dark:text-brand hover:text-brand dark:hover:text-brand text-sm font-medium flex items-center transition-colors duration-300">
-                        View Details <i class="fas fa-arrow-right ml-1"></i>
+                        View Details <i class="fas fa-arrow-right ml-1" aria-hidden="true"></i>
                     </a>
                 </div>
                 <div class="h-64">
@@ -197,16 +197,16 @@
             <div class="bg-themed-secondary rounded-lg shadow-sm border border-themed-primary p-6 transition-colors duration-300">
                 <div class="flex items-center justify-between mb-6">
                     <h2 class="text-xl font-bold text-themed-primary flex items-center transition-colors duration-300">
-                        <i class="fas fa-layer-group text-brand dark:text-brand mr-2"></i>
+                        <i class="fas fa-layer-group text-brand dark:text-brand mr-2" aria-hidden="true"></i>
                         Category Performance
                     </h2>
                     <a href="{{ route('course-categories') }}" class="text-brand dark:text-brand hover:text-brand dark:hover:text-brand text-sm font-medium flex items-center transition-colors duration-300">
-                        Manage <i class="fas fa-arrow-right ml-1"></i>
+                        Manage <i class="fas fa-arrow-right ml-1" aria-hidden="true"></i>
                     </a>
                 </div>
                 <div class="space-y-3">
                     @forelse($this->categoryStats as $category)
-                    <div class="flex items-center justify-between p-4 bg-themed-tertiary rounded-lg hover:bg-themed-secondary transition-colors duration-200">
+                    <div class="flex flex-col items-start gap-4 p-4 sm:flex-row sm:items-center sm:justify-between bg-themed-tertiary rounded-lg hover:bg-themed-secondary transition-colors duration-200">
                         <div class="flex-1">
                             <h4 class="font-semibold text-themed-primary transition-colors duration-300">{{ $category['name'] }}</h4>
                             <p class="text-sm text-themed-secondary transition-colors duration-300">{{ $category['courses_count'] }} courses</p>
@@ -224,7 +224,7 @@
                     </div>
                     @empty
                     <div class="text-center py-6 text-themed-tertiary transition-colors duration-300">
-                        <i class="fas fa-layer-group text-3xl mb-3 opacity-50"></i>
+                        <i class="fas fa-layer-group text-3xl mb-3 opacity-50" aria-hidden="true"></i>
                         <p>No category data available</p>
                     </div>
                     @endforelse
@@ -240,11 +240,11 @@
             <div class="bg-themed-secondary rounded-lg shadow-sm border border-themed-primary p-6 transition-colors duration-300">
                 <div class="flex items-center justify-between mb-6">
                     <h2 class="text-xl font-bold text-themed-primary flex items-center transition-colors duration-300">
-                        <i class="fas fa-chalkboard-teacher text-brand dark:text-brand mr-2"></i>
+                        <i class="fas fa-chalkboard-teacher text-brand dark:text-brand mr-2" aria-hidden="true"></i>
                         Top Instructors
                     </h2>
                     <a href="{{ route('user-management', ['role' => 'instructor']) }}" class="text-brand dark:text-brand hover:text-brand dark:hover:text-brand text-sm font-medium transition-colors duration-300">
-                        View All <i class="fas fa-arrow-right ml-1"></i>
+                        View All <i class="fas fa-arrow-right ml-1" aria-hidden="true"></i>
                     </a>
                 </div>
                 <div class="space-y-4">
@@ -268,17 +268,17 @@
                         <div class="text-right">
                             <div class="flex items-center text-sm font-semibold text-green-600 dark:text-green-400 transition-colors duration-300">
                                 {{ $instructor['total_enrollments'] }}
-                                <i class="fas fa-users ml-1"></i>
+                                <i class="fas fa-users ml-1" aria-hidden="true"></i>
                             </div>
                             <div class="flex items-center text-xs text-yellow-600 dark:text-yellow-400 transition-colors duration-300">
                                 {{ $instructor['average_rating'] }}
-                                <i class="fas fa-star ml-1"></i>
+                                <i class="fas fa-star ml-1" aria-hidden="true"></i>
                             </div>
                         </div>
                     </div>
                     @empty
                     <div class="text-center py-6 text-themed-tertiary transition-colors duration-300">
-                        <i class="fas fa-chalkboard-teacher text-3xl mb-3 opacity-50"></i>
+                        <i class="fas fa-chalkboard-teacher text-3xl mb-3 opacity-50" aria-hidden="true"></i>
                         <p>No instructor data available</p>
                     </div>
                     @endforelse
@@ -291,7 +291,7 @@
             <div class="bg-themed-secondary rounded-lg shadow-sm border border-themed-primary p-6 transition-colors duration-300">
                 <div class="flex items-center justify-between mb-6">
                     <h2 class="text-xl font-bold text-themed-primary flex items-center transition-colors duration-300">
-                        <i class="fas fa-clipboard-check text-orange-600 dark:text-orange-400 mr-2"></i>
+                        <i class="fas fa-clipboard-check text-orange-600 dark:text-orange-400 mr-2" aria-hidden="true"></i>
                         Pending Approvals
                     </h2>
                     <div class="flex items-center space-x-1">
@@ -304,7 +304,7 @@
                 <!-- Courses Pending Approval -->
                 <div class="mb-6">
                     <h3 class="text-sm font-semibold text-themed-primary mb-3 flex items-center transition-colors duration-300">
-                        <i class="fas fa-book text-brand dark:text-brand mr-2"></i>
+                        <i class="fas fa-book text-brand dark:text-brand mr-2" aria-hidden="true"></i>
                         Courses ({{ count($this->contentApprovalQueue['courses']) }})
                     </h3>
                     @forelse($this->contentApprovalQueue['courses'] as $course)
@@ -317,11 +317,11 @@
                             <button wire:click="approveCourse({{ $course['id'] }})"
                                     class="text-green-600 dark:text-green-400 hover:text-green-700 dark:hover:text-green-300 p-1 rounded transition-colors"
                                     title="Approve Course" aria-label="Approve Course">
-                                <i class="fas fa-check text-sm"></i>
+                                <i class="fas fa-check text-sm" aria-hidden="true"></i>
                             </button>
                             <button class="text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 p-1 rounded transition-colors"
                                     title="Reject Course" aria-label="Reject Course">
-                                <i class="fas fa-times text-sm"></i>
+                                <i class="fas fa-times text-sm" aria-hidden="true"></i>
                             </button>
                         </div>
                     </div>
@@ -333,7 +333,7 @@
                 <!-- Certificates Pending Approval -->
                 <div class="mb-6">
                     <h3 class="text-sm font-semibold text-themed-primary mb-3 flex items-center transition-colors duration-300">
-                        <i class="fas fa-award text-brand dark:text-brand mr-2"></i>
+                        <i class="fas fa-award text-brand dark:text-brand mr-2" aria-hidden="true"></i>
                         Certificates ({{ count($this->contentApprovalQueue['certificates']) }})
                     </h3>
                     @forelse($this->contentApprovalQueue['certificates'] as $certificate)
@@ -346,11 +346,11 @@
                             <button wire:click="approveCertificate({{ $certificate['id'] }})"
                                     class="text-green-600 dark:text-green-400 hover:text-green-700 dark:hover:text-green-300 p-1 rounded transition-colors"
                                     title="Approve Certificate" aria-label="Approve Certificate">
-                                <i class="fas fa-check text-sm"></i>
+                                <i class="fas fa-check text-sm" aria-hidden="true"></i>
                             </button>
                             <button class="text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 p-1 rounded transition-colors"
                                     title="Reject Certificate" aria-label="Reject Certificate">
-                                <i class="fas fa-times text-sm"></i>
+                                <i class="fas fa-times text-sm" aria-hidden="true"></i>
                             </button>
                         </div>
                     </div>
@@ -362,7 +362,7 @@
                 <!-- Blog Posts Pending Approval -->
                 <div>
                     <h3 class="text-sm font-semibold text-themed-primary mb-3 flex items-center transition-colors duration-300">
-                        <i class="fas fa-pen text-green-600 dark:text-green-400 mr-2"></i>
+                        <i class="fas fa-pen text-green-600 dark:text-green-400 mr-2" aria-hidden="true"></i>
                         Blog Posts ({{ count($this->contentApprovalQueue['blog_posts']) }})
                     </h3>
                     @forelse($this->contentApprovalQueue['blog_posts'] as $post)
@@ -374,11 +374,11 @@
                         <div class="flex space-x-2">
                             <button class="text-green-600 dark:text-green-400 hover:text-green-700 dark:hover:text-green-300 p-1 rounded transition-colors"
                                     title="Approve Post" aria-label="Approve Post">
-                                <i class="fas fa-check text-sm"></i>
+                                <i class="fas fa-check text-sm" aria-hidden="true"></i>
                             </button>
                             <button class="text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 p-1 rounded transition-colors"
                                     title="Reject Post" aria-label="Reject Post">
-                                <i class="fas fa-times text-sm"></i>
+                                <i class="fas fa-times text-sm" aria-hidden="true"></i>
                             </button>
                         </div>
                     </div>
@@ -394,7 +394,7 @@
             <div class="bg-themed-secondary rounded-lg shadow-sm border border-themed-primary p-6 transition-colors duration-300">
                 <div class="flex items-center justify-between mb-6">
                     <h2 class="text-xl font-bold text-themed-primary flex items-center transition-colors duration-300">
-                        <i class="fas fa-history text-brand dark:text-brand mr-2"></i>
+                        <i class="fas fa-history text-brand dark:text-brand mr-2" aria-hidden="true"></i>
                         Recent Activities
                     </h2>
                 </div>
@@ -411,7 +411,7 @@
                     </div>
                     @empty
                     <div class="text-center py-6 text-themed-tertiary transition-colors duration-300">
-                        <i class="fas fa-history text-3xl mb-3 opacity-50"></i>
+                        <i class="fas fa-history text-3xl mb-3 opacity-50" aria-hidden="true"></i>
                         <p>No recent activities</p>
                     </div>
                     @endforelse
@@ -424,11 +424,11 @@
             <div class="bg-themed-secondary rounded-lg shadow-sm border border-themed-primary p-6 transition-colors duration-300">
                 <div class="flex items-center justify-between mb-6">
                     <h2 class="text-xl font-bold text-themed-primary flex items-center transition-colors duration-300">
-                        <i class="fas fa-headset text-brand dark:text-brand mr-2"></i>
+                        <i class="fas fa-headset text-brand dark:text-brand mr-2" aria-hidden="true"></i>
                         Support Overview
                     </h2>
                     <a href="{{ route('support.tickets') }}" class="text-brand dark:text-brand hover:text-brand dark:hover:text-brand text-sm font-medium transition-colors duration-300">
-                        Manage <i class="fas fa-arrow-right ml-1"></i>
+                        Manage <i class="fas fa-arrow-right ml-1" aria-hidden="true"></i>
                     </a>
                 </div>
 
@@ -450,7 +450,7 @@
                     @forelse($this->supportOverview['recent_tickets'] as $ticket)
                     <div class="flex items-start space-x-3 p-3 rounded-lg hover:bg-themed-tertiary transition-colors duration-200">
                         <div class="flex-shrink-0 w-6 h-6 rounded-full flex items-center justify-center {{ $ticket['status'] === 'open' ? 'bg-red-100 dark:bg-red-900/30' : 'bg-green-100 dark:bg-green-900/30' }} transition-colors duration-300">
-                            <i class="fas {{ $ticket['status'] === 'open' ? 'fa-exclamation text-red-600 dark:text-red-400' : 'fa-check text-green-600 dark:text-green-400' }} text-xs"></i>
+                            <i class="fas {{ $ticket['status'] === 'open' ? 'fa-exclamation text-red-600 dark:text-red-400' : 'fa-check text-green-600 dark:text-green-400' }} text-xs" aria-hidden="true"></i>
                         </div>
                         <div class="flex-1 min-w-0">
                             <p class="text-sm font-medium text-themed-primary truncate transition-colors duration-300">{{ $ticket['subject'] }}</p>
@@ -471,11 +471,11 @@
 <div class="bg-themed-secondary rounded-lg p-8 w-full max-w-2xl transform transition-all duration-300 scale-100 max-h-[90vh] overflow-y-auto border border-themed-primary">
             <div class="flex items-center justify-between mb-8">
                 <h3 class="text-2xl font-bold text-themed-primary flex items-center transition-colors duration-300">
-                    <i class="fas fa-lightning-bolt text-brand dark:text-brand mr-3"></i>
+                    <i class="fas fa-lightning-bolt text-brand dark:text-brand mr-3" aria-hidden="true"></i>
                     Quick Actions
                 </h3>
                 <button type="button" aria-label="Close quick actions" wire:click="toggleQuickActionModal" class="text-themed-tertiary hover:text-themed-secondary transition-colors">
-                    <i class="fas fa-times text-xl"></i>
+                    <i class="fas fa-times text-xl" aria-hidden="true"></i>
                 </button>
             </div>
 
@@ -484,7 +484,7 @@
                 <button wire:click="quickAction('manage_courses')"
                         class="flex items-center p-4 text-left bg-brand/10 dark:bg-action/20 hover:bg-brand/10 dark:hover:bg-action/30 rounded-lg transition-all duration-200 group border border-transparent hover:border-brand dark:hover:border-brand">
                     <div class="bg-action dark:bg-action p-3 rounded-lg mr-4 group-hover:bg-action dark:group-hover:bg-action transition-colors">
-                        <i class="fas fa-book-open text-action-foreground"></i>
+                        <i class="fas fa-book-open text-action-foreground" aria-hidden="true"></i>
                     </div>
                     <div>
                         <div class="font-semibold text-themed-primary transition-colors duration-300">Manage Courses</div>
@@ -496,7 +496,7 @@
                 <button wire:click="quickAction('manage_students')"
                         class="flex items-center p-4 text-left bg-green-50 dark:bg-green-900/20 hover:bg-green-100 dark:hover:bg-green-900/30 rounded-lg transition-all duration-200 group border border-transparent hover:border-green-200 dark:hover:border-green-800">
                     <div class="bg-green-600 dark:bg-green-500 p-3 rounded-lg mr-4 group-hover:bg-green-700 dark:group-hover:bg-green-600 transition-colors">
-                        <i class="fas fa-user-graduate text-white"></i>
+                        <i class="fas fa-user-graduate text-white" aria-hidden="true"></i>
                     </div>
                     <div>
                         <div class="font-semibold text-themed-primary transition-colors duration-300">Manage Students</div>
@@ -508,7 +508,7 @@
                 <button wire:click="quickAction('manage_instructors')"
                         class="flex items-center p-4 text-left bg-brand/10 dark:bg-action/20 hover:bg-brand/10 dark:hover:bg-action/30 rounded-lg transition-all duration-200 group border border-transparent hover:border-brand dark:hover:border-brand">
                     <div class="bg-action dark:bg-action p-3 rounded-lg mr-4 group-hover:bg-action dark:group-hover:bg-action transition-colors">
-                        <i class="fas fa-chalkboard-teacher text-action-foreground"></i>
+                        <i class="fas fa-chalkboard-teacher text-action-foreground" aria-hidden="true"></i>
                     </div>
                     <div>
                         <div class="font-semibold text-themed-primary transition-colors duration-300">Manage Instructors</div>
@@ -520,7 +520,7 @@
                 <button wire:click="quickAction('approve_content')"
                         class="flex items-center p-4 text-left bg-orange-50 dark:bg-orange-900/20 hover:bg-orange-100 dark:hover:bg-orange-900/30 rounded-lg transition-all duration-200 group border border-transparent hover:border-orange-200 dark:hover:border-orange-800">
                     <div class="bg-orange-600 dark:bg-orange-500 p-3 rounded-lg mr-4 group-hover:bg-orange-700 dark:group-hover:bg-orange-600 transition-colors">
-                        <i class="fas fa-clipboard-check text-white"></i>
+                        <i class="fas fa-clipboard-check text-white" aria-hidden="true"></i>
                     </div>
                     <div>
                         <div class="font-semibold text-themed-primary transition-colors duration-300">Content Approval</div>
@@ -532,7 +532,7 @@
                 <button wire:click="quickAction('view_certificates')"
                         class="flex items-center p-4 text-left bg-yellow-50 dark:bg-yellow-900/20 hover:bg-yellow-100 dark:hover:bg-yellow-900/30 rounded-lg transition-all duration-200 group border border-transparent hover:border-yellow-200 dark:hover:border-yellow-800">
                     <div class="bg-yellow-600 dark:bg-yellow-500 p-3 rounded-lg mr-4 group-hover:bg-yellow-700 dark:group-hover:bg-yellow-600 transition-colors">
-                        <i class="fas fa-award text-white"></i>
+                        <i class="fas fa-award text-white" aria-hidden="true"></i>
                     </div>
                     <div>
                         <div class="font-semibold text-themed-primary transition-colors duration-300">Certificates</div>
@@ -544,7 +544,7 @@
                 <button wire:click="quickAction('view_tickets')"
                         class="flex items-center p-4 text-left bg-red-50 dark:bg-red-900/20 hover:bg-red-100 dark:hover:bg-red-900/30 rounded-lg transition-all duration-200 group border border-transparent hover:border-red-200 dark:hover:border-red-800">
                     <div class="bg-red-600 dark:bg-red-500 p-3 rounded-lg mr-4 group-hover:bg-red-700 dark:group-hover:bg-red-600 transition-colors">
-                        <i class="fas fa-headset text-white"></i>
+                        <i class="fas fa-headset text-white" aria-hidden="true"></i>
                     </div>
                     <div>
                         <div class="font-semibold text-themed-primary transition-colors duration-300">Support Tickets</div>
@@ -556,7 +556,7 @@
                 <button wire:click="quickAction('manage_categories')"
                         class="flex items-center p-4 text-left bg-brand/10 dark:bg-action/20 hover:bg-brand/10 dark:hover:bg-action/30 rounded-lg transition-all duration-200 group border border-transparent hover:border-brand dark:hover:border-brand">
                     <div class="bg-action dark:bg-action p-3 rounded-lg mr-4 group-hover:bg-action dark:group-hover:bg-action transition-colors">
-                        <i class="fas fa-tags text-action-foreground"></i>
+                        <i class="fas fa-tags text-action-foreground" aria-hidden="true"></i>
                     </div>
                     <div>
                         <div class="font-semibold text-themed-primary transition-colors duration-300">Categories</div>
@@ -568,7 +568,7 @@
                 <button wire:click="quickAction('learning_analytics')"
                         class="flex items-center p-4 text-left bg-brand/10 dark:bg-action/20 hover:bg-brand/10 dark:hover:bg-action/30 rounded-lg transition-all duration-200 group border border-transparent hover:border-brand dark:hover:border-brand">
                     <div class="bg-action dark:bg-action p-3 rounded-lg mr-4 group-hover:bg-action dark:group-hover:bg-action transition-colors">
-                        <i class="fas fa-chart-bar text-action-foreground"></i>
+                        <i class="fas fa-chart-bar text-action-foreground" aria-hidden="true"></i>
                     </div>
                     <div>
                         <div class="font-semibold text-themed-primary transition-colors duration-300">Learning Analytics</div>
@@ -580,11 +580,11 @@
     </x-modal>
 
     <!-- Widget Toggle Panel -->
-    <div class="fixed bottom-6 right-6 z-40">
+    <div class="bk-widget-settings">
         <div x-data="{ open: false }" class="relative">
             <button @click="open = !open"
                     class="bg-action     shadow-sm rounded-full p-4   transition-all duration-200 text-action-foreground">
-                <i class="fas fa-sliders-h"></i>
+                <i class="fas fa-sliders-h" aria-hidden="true"></i>
             </button>
 
             <div x-show="open"
@@ -592,7 +592,7 @@
                  @click.outside="open = false"
                  class="absolute bottom-full right-0 mb-3 bg-themed-secondary rounded-lg shadow-sm border border-themed-primary p-4 w-64 transition-colors duration-300">
                 <h3 class="font-semibold text-themed-primary mb-4 flex items-center transition-colors duration-300">
-                    <i class="fas fa-cog text-brand dark:text-brand mr-2"></i>
+                    <i class="fas fa-cog text-brand dark:text-brand mr-2" aria-hidden="true"></i>
                     Dashboard Widgets
                 </h3>
                 <div class="space-y-3">

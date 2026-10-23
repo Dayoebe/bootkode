@@ -11,7 +11,7 @@
             <div class="flex items-center space-x-4">
                 <button wire:click="refreshStats"
                     class="inline-flex items-center px-4 py-2 bg-white/20  text-content rounded-lg hover:bg-white/30 transition-colors">
-                    <i class="fas fa-sync-alt mr-2" wire:loading.class="animate-spin"></i>
+                    <i class="fas fa-sync-alt mr-2" wire:loading.class="animate-spin" aria-hidden="true"></i>
                     Refresh Stats
                 </button>
 
@@ -33,7 +33,7 @@
                         ₦{{ number_format($stats['total_revenue'] ?? 0, 0) }}</p>
                 </div>
                 <div class="bg-green-100 p-2 rounded-full">
-                    <i class="fas fa-chart-line text-green-600"></i>
+                    <i class="fas fa-chart-line text-green-600" aria-hidden="true"></i>
                 </div>
             </div>
         </div>
@@ -46,7 +46,7 @@
                         ₦{{ number_format($stats['this_month_revenue'] ?? 0, 0) }}</p>
                 </div>
                 <div class="bg-brand/10 p-2 rounded-full">
-                    <i class="fas fa-calendar text-brand"></i>
+                    <i class="fas fa-calendar text-brand" aria-hidden="true"></i>
                 </div>
             </div>
         </div>
@@ -58,7 +58,7 @@
                     <p class="text-lg font-semibold text-brand">{{ number_format($stats['total_orders'] ?? 0) }}</p>
                 </div>
                 <div class="bg-brand/10 p-2 rounded-full">
-                    <i class="fas fa-shopping-cart text-brand"></i>
+                    <i class="fas fa-shopping-cart text-brand" aria-hidden="true"></i>
                 </div>
             </div>
         </div>
@@ -70,7 +70,7 @@
                     <p class="text-lg font-semibold text-brand">{{ number_format($stats['total_vendors'] ?? 0) }}</p>
                 </div>
                 <div class="bg-brand/10 p-2 rounded-full">
-                    <i class="fas fa-store text-brand"></i>
+                    <i class="fas fa-store text-brand" aria-hidden="true"></i>
                 </div>
             </div>
         </div>
@@ -83,7 +83,7 @@
                         ₦{{ number_format($stats['pending_payouts'] ?? 0, 0) }}</p>
                 </div>
                 <div class="bg-yellow-100 p-2 rounded-full">
-                    <i class="fas fa-clock text-yellow-600"></i>
+                    <i class="fas fa-clock text-yellow-600" aria-hidden="true"></i>
                 </div>
             </div>
         </div>
@@ -96,7 +96,7 @@
                         ₦{{ number_format($stats['platform_earnings'] ?? 0, 0) }}</p>
                 </div>
                 <div class="bg-emerald-100 p-2 rounded-full">
-                    <i class="fas fa-piggy-bank text-emerald-600"></i>
+                    <i class="fas fa-piggy-bank text-emerald-600" aria-hidden="true"></i>
                 </div>
             </div>
         </div>
@@ -108,13 +108,13 @@
             <nav class="flex space-x-1 px-6 overflow-x-auto">
                 <button wire:click="setActiveTab('overview')"
                     class="py-4 px-3 border-b-2 font-medium text-sm whitespace-nowrap {{ $activeTab === 'overview' ? 'border-purple-500 text-purple-600' : 'border-transparent text-content-muted hover:text-gray-700' }}">
-                    <i class="fas fa-tachometer-alt mr-2"></i>
+                    <i class="fas fa-tachometer-alt mr-2" aria-hidden="true"></i>
                     Overview
                 </button>
 
                 <button wire:click="setActiveTab('vendors')"
                     class="py-4 px-3 border-b-2 font-medium text-sm whitespace-nowrap {{ $activeTab === 'vendors' ? 'border-purple-500 text-purple-600' : 'border-transparent text-content-muted hover:text-gray-700' }}">
-                    <i class="fas fa-user-tie mr-2"></i>
+                    <i class="fas fa-user-tie mr-2" aria-hidden="true"></i>
                     Vendor Applications
                     @if(($stats['pending_applications'] ?? 0) > 0)
                         <span class="ml-2 bg-yellow-500 text-white text-xs px-2 py-1 rounded-full">
@@ -125,7 +125,7 @@
 
                 <button wire:click="setActiveTab('items')"
                     class="py-4 px-3 border-b-2 font-medium text-sm whitespace-nowrap {{ $activeTab === 'items' ? 'border-purple-500 text-purple-600' : 'border-transparent text-content-muted hover:text-gray-700' }}">
-                    <i class="fas fa-box mr-2"></i>
+                    <i class="fas fa-box mr-2" aria-hidden="true"></i>
                     Item Management
                     @if(($stats['pending_approval'] ?? 0) > 0)
                         <span class="ml-2 bg-orange-500 text-white text-xs px-2 py-1 rounded-full">
@@ -136,7 +136,7 @@
 
                 <button wire:click="setActiveTab('orders')"
                     class="py-4 px-3 border-b-2 font-medium text-sm whitespace-nowrap {{ $activeTab === 'orders' ? 'border-purple-500 text-purple-600' : 'border-transparent text-content-muted hover:text-gray-700' }}">
-                    <i class="fas fa-clipboard-list mr-2"></i>
+                    <i class="fas fa-clipboard-list mr-2" aria-hidden="true"></i>
                     Order Management
                     @if(($stats['pending_orders'] ?? 0) > 0)
                         <span class="ml-2 bg-action text-action-foreground text-xs px-2 py-1 rounded-full">
@@ -147,7 +147,7 @@
 
                 <button wire:click="setActiveTab('payments')"
                     class="py-4 px-3 border-b-2 font-medium text-sm whitespace-nowrap {{ $activeTab === 'payments' ? 'border-purple-500 text-purple-600' : 'border-transparent text-content-muted hover:text-gray-700' }}">
-                    <i class="fas fa-credit-card mr-2"></i>
+                    <i class="fas fa-credit-card mr-2" aria-hidden="true"></i>
                     Payments & Payouts
                     @if(($stats['payout_requests'] ?? 0) > 0)
                         <span class="ml-2 bg-green-500 text-white text-xs px-2 py-1 rounded-full">
@@ -158,7 +158,7 @@
 
                 <button wire:click="setActiveTab('analytics')"
                     class="py-4 px-3 border-b-2 font-medium text-sm whitespace-nowrap {{ $activeTab === 'analytics' ? 'border-purple-500 text-purple-600' : 'border-transparent text-content-muted hover:text-gray-700' }}">
-                    <i class="fas fa-chart-bar mr-2"></i>
+                    <i class="fas fa-chart-bar mr-2" aria-hidden="true"></i>
                     Analytics
                 </button>
             </nav>

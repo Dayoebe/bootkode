@@ -5,7 +5,7 @@
             <h2 class="text-xl font-semibold text-themed-primary">Question Bank</h2>
             <button wire:click="$set('showCreateQuestionModal', true)"
                 class="bg-action text-action-foreground px-4 py-2 rounded-md hover:bg-action/90 transition-colors font-medium">
-                <i class="fas fa-plus mr-2"></i> Add Question
+                <i class="fas fa-plus mr-2" aria-hidden="true"></i> Add Question
             </button>
         </div>
 
@@ -47,7 +47,7 @@
 
         <!-- Questions Table -->
         <div class="shadow overflow-hidden sm:rounded-lg bg-themed-secondary border border-themed-primary">
-            <x-ui.table label="Admin Question Bank.Blade records"><table class="min-w-full divide-y divide-themed-primary">
+            <x-ui.table label="Admin Question Bank records"><table class="min-w-full divide-y divide-themed-primary">
                 <thead class="bg-themed-tertiary">
                     <tr>
                         <th scope="col"
@@ -115,12 +115,12 @@
                                 @if($question->is_approved)
                                     <span
                                         class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                                        <i class="fas fa-check mr-1"></i> Approved
+                                        <i class="fas fa-check mr-1" aria-hidden="true"></i> Approved
                                     </span>
                                 @else
                                     <span
                                         class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
-                                        <i class="fas fa-clock mr-1"></i> Pending
+                                        <i class="fas fa-clock mr-1" aria-hidden="true"></i> Pending
                                     </span>
                                 @endif
                                 @if(!$question->is_active)
@@ -140,30 +140,30 @@
                                 <div class="flex items-center space-x-2">
                                     <button wire:click="viewQuestion({{ $question->id }})"
                                         class="text-brand hover:text-accent-themed-secondary transition-colors">
-                                        <i class="fas fa-eye"></i>
+                                        <i class="fas fa-eye" aria-hidden="true"></i>
                                     </button>
 
                                     <button wire:click="editQuestion({{ $question->id }})"
                                         class="text-yellow-600 hover:text-yellow-800 transition-colors">
-                                        <i class="fas fa-edit"></i>
+                                        <i class="fas fa-edit" aria-hidden="true"></i>
                                     </button>
 
                                     @if(!$question->is_approved)
                                         <button wire:click="approveQuestion({{ $question->id }})"
                                             class="text-green-600 hover:text-green-800 transition-colors">
-                                            <i class="fas fa-check"></i>
+                                            <i class="fas fa-check" aria-hidden="true"></i>
                                         </button>
                                     @endif
 
                                     <button wire:click="toggleQuestionStatus({{ $question->id }})"
                                         class="text-themed-secondary hover:text-themed-primary transition-colors">
-                                        <i class="fas fa-{{ $question->is_active ? 'ban' : 'check-circle' }}"></i>
+                                        <i class="fas fa-{{ $question->is_active ? 'ban' : 'check-circle' }}" aria-hidden="true"></i>
                                     </button>
 
                                     <button wire:click="deleteQuestion({{ $question->id }})"
                                         wire:confirm="Are you sure you want to delete this question?"
                                         class="text-red-600 hover:text-red-800 transition-colors">
-                                        <i class="fas fa-trash"></i>
+                                        <i class="fas fa-trash" aria-hidden="true"></i>
                                     </button>
                                 </div>
                             </td>
@@ -172,11 +172,11 @@
                         <tr>
                             <td colspan="7" class="px-6 py-12 text-center text-themed-secondary">
                                 <i class="fas fa-question-circle text-4xl mb-4 text-themed-tertiary"
-                                    style="display: block;"></i>
+                                    style="display: block;" aria-hidden="true"></i>
                                 <p>No questions found. Create your first question to get started!</p>
                                 <button wire:click="$set('showCreateQuestionModal', true)"
                                     class="mt-4 bg-action text-action-foreground px-6 py-2 rounded-md hover:bg-action/90 transition-colors font-medium">
-                                    <i class="fas fa-plus mr-2"></i> Create Question
+                                    <i class="fas fa-plus mr-2" aria-hidden="true"></i> Create Question
                                 </button>
                             </td>
                         </tr>
@@ -198,7 +198,7 @@
                 <h3 class="text-lg font-semibold text-themed-primary">Question Sets</h3>
                 <button wire:click="$set('showCreateSetModal', true)"
                     class="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 transition-colors font-medium">
-                    <i class="fas fa-folder-plus mr-2"></i> Create Set
+                    <i class="fas fa-folder-plus mr-2" aria-hidden="true"></i> Create Set
                 </button>
             </div>
 
@@ -236,21 +236,21 @@
                         <div class="mt-4 flex items-center space-x-2">
                             <button wire:click="viewQuestionSet({{ $set->id }})"
                                 class="flex-1 bg-action text-action-foreground px-3 py-2 rounded-md hover:bg-action/90 transition-colors text-sm font-medium">
-                                <i class="fas fa-eye mr-1"></i> View
+                                <i class="fas fa-eye mr-1" aria-hidden="true"></i> View
                             </button>
                             <button wire:click="editQuestionSet({{ $set->id }})"
                                 class="px-3 py-2 bg-yellow-100 text-yellow-700 rounded-md hover:bg-yellow-200 transition-colors font-medium">
-                                <i class="fas fa-edit"></i>
+                                <i class="fas fa-edit" aria-hidden="true"></i>
                             </button>
                             <button wire:click="deleteQuestionSet({{ $set->id }})" wire:confirm="Are you sure?"
                                 class="px-3 py-2 bg-red-100 text-red-700 rounded-md hover:bg-red-200 transition-colors font-medium">
-                                <i class="fas fa-trash"></i>
+                                <i class="fas fa-trash" aria-hidden="true"></i>
                             </button>
                         </div>
                     </div>
                 @empty
                     <div class="col-span-full text-center py-8 text-themed-secondary">
-                        <i class="fas fa-folder-open text-4xl mb-4 text-themed-tertiary" style="display: block;"></i>
+                        <i class="fas fa-folder-open text-4xl mb-4 text-themed-tertiary" style="display: block;" aria-hidden="true"></i>
                         <p>No question sets yet. Create a set to group related questions!</p>
                     </div>
                 @endforelse

@@ -115,7 +115,7 @@
                                     </div>
                                     <button type="button" wire:click="editGoals({{ $mentorship->id }})"
                                         class="rounded-lg border border-themed-secondary px-3 py-2 text-xs font-semibold text-themed-primary hover:border-brand">
-                                        <i class="fas fa-bullseye mr-1"></i>Manage
+                                        <i class="fas fa-bullseye mr-1" aria-hidden="true"></i>Manage
                                     </button>
                                 </div>
 
@@ -125,7 +125,7 @@
                                             <button type="button" wire:click="toggleGoal({{ $mentorship->id }}, {{ $goal['index'] }})"
                                                 class="flex w-full items-start gap-3 rounded-lg border border-themed-primary bg-themed-secondary px-3 py-2 text-left hover:border-brand">
                                                 <span class="mt-0.5 grid h-5 w-5 shrink-0 place-items-center rounded-full {{ $goal['completed'] ? 'bg-green-600 text-white' : 'bg-themed-tertiary text-themed-secondary' }}">
-                                                    <i class="fas {{ $goal['completed'] ? 'fa-check' : 'fa-circle' }} text-[10px]"></i>
+                                                    <i class="fas {{ $goal['completed'] ? 'fa-check' : 'fa-circle' }} text-[10px]" aria-hidden="true"></i>
                                                 </span>
                                                 <span class="{{ $goal['completed'] ? 'line-through text-themed-tertiary' : 'text-themed-secondary' }} text-sm">{{ $goal['text'] }}</span>
                                             </button>
@@ -173,17 +173,17 @@
                             <div class="flex items-center justify-between text-sm text-themed-secondary mb-4 transition-colors duration-300">
                                 <div class="flex items-center space-x-4">
                                     @if($mentorship->duration_weeks)
-                                        <span><i class="fas fa-calendar mr-1"></i>{{ $mentorship->duration_formatted }}</span>
+                                        <span><i class="fas fa-calendar mr-1" aria-hidden="true"></i>{{ $mentorship->duration_formatted }}</span>
                                     @endif
                                     @if($mentorship->started_at)
-                                        <span><i class="fas fa-clock mr-1"></i>Started {{ $mentorship->started_at->diffForHumans() }}</span>
+                                        <span><i class="fas fa-clock mr-1" aria-hidden="true"></i>Started {{ $mentorship->started_at->diffForHumans() }}</span>
                                     @else
-                                        <span><i class="fas fa-clock mr-1"></i>{{ $mentorship->requested_at ? 'Requested '.$mentorship->requested_at->diffForHumans() : 'Request date not recorded' }}</span>
+                                        <span><i class="fas fa-clock mr-1" aria-hidden="true"></i>{{ $mentorship->requested_at ? 'Requested '.$mentorship->requested_at->diffForHumans() : 'Request date not recorded' }}</span>
                                     @endif
                                     @if($mentorship->is_paid)
-                                        <span><i class="fas fa-naira-sign mr-1"></i>₦{{ number_format($mentorship->hourly_rate, 0) }}/hr</span>
+                                        <span><i class="fas fa-naira-sign mr-1" aria-hidden="true"></i>₦{{ number_format($mentorship->hourly_rate, 0) }}/hr</span>
                                     @else
-                                        <span class="text-green-600 dark:text-green-400"><i class="fas fa-gift mr-1"></i>Free</span>
+                                        <span class="text-green-600 dark:text-green-400"><i class="fas fa-gift mr-1" aria-hidden="true"></i>Free</span>
                                     @endif
                                 </div>
                             </div>
@@ -193,31 +193,31 @@
                                 @if($mentorship->isPending() && auth()->id() === $mentorship->mentor_id)
                                     <button wire:click="acceptMentorship({{ $mentorship->id }})"
                                         class="flex-1 bg-green-600 hover:bg-green-700 dark:bg-green-500 dark:hover:bg-green-600 text-white px-4 py-2 rounded-lg text-sm transition-colors">
-                                        <i class="fas fa-check mr-1"></i>Accept
+                                        <i class="fas fa-check mr-1" aria-hidden="true"></i>Accept
                                     </button>
                                     <button wire:click="rejectMentorship({{ $mentorship->id }})"
                                         class="flex-1 bg-red-600 hover:bg-red-700 dark:bg-red-500 dark:hover:bg-red-600 text-white px-4 py-2 rounded-lg text-sm transition-colors">
-                                        <i class="fas fa-times mr-1"></i>Reject
+                                        <i class="fas fa-times mr-1" aria-hidden="true"></i>Reject
                                     </button>
                                 @elseif($mentorship->isActive())
                                     <a href="{{ route('mentorship.sessions') }}"
                                        class="flex-1 bk-button bk-button-primary   px-4 py-2 rounded-lg text-sm transition-colors text-center">
-                                        <i class="fas fa-calendar-plus mr-1"></i>Schedule Session
+                                        <i class="fas fa-calendar-plus mr-1" aria-hidden="true"></i>Schedule Session
                                     </a>
                                     <a href="{{ route('mentorship.code-reviews') }}"
                                        class="flex-1 bg-action hover:bg-action dark:bg-action dark:hover:bg-action text-action-foreground px-4 py-2 rounded-lg text-sm transition-colors text-center">
-                                        <i class="fas fa-code mr-1"></i>Request Review
+                                        <i class="fas fa-code mr-1" aria-hidden="true"></i>Request Review
                                     </a>
                                     @if(auth()->id() === $mentorship->mentor_id)
                                         <button wire:click="completeMentorship({{ $mentorship->id }})"
                                             class="bg-themed-tertiary hover:bg-themed-secondary text-themed-primary px-4 py-2 rounded-lg text-sm transition-colors border border-themed-primary">
-                                            <i class="fas fa-flag-checkered mr-1"></i>Complete
+                                            <i class="fas fa-flag-checkered mr-1" aria-hidden="true"></i>Complete
                                         </button>
                                     @endif
                                 @elseif($mentorship->isPending() && auth()->id() === $mentorship->mentee_id)
                                     <button wire:click="cancelMentorship({{ $mentorship->id }})"
                                         class="bg-red-600 hover:bg-red-700 dark:bg-red-500 dark:hover:bg-red-600 text-white px-4 py-2 rounded-lg text-sm transition-colors">
-                                        <i class="fas fa-times mr-1"></i>Cancel Request
+                                        <i class="fas fa-times mr-1" aria-hidden="true"></i>Cancel Request
                                     </button>
                                 @endif
                             </div>
@@ -233,7 +233,7 @@
         @else
             <div class="text-center py-16 bg-themed-secondary rounded-lg shadow-sm border border-themed-primary transition-colors duration-300">
                 <div class="text-6xl text-themed-tertiary mb-4 transition-colors duration-300">
-                    <i class="fas fa-handshake"></i>
+                    <i class="fas fa-handshake" aria-hidden="true"></i>
                 </div>
                 <h3 class="text-xl font-semibold text-themed-primary mb-2 transition-colors duration-300">No mentorships yet</h3>
                 <p class="text-themed-secondary mb-6 transition-colors duration-300">
@@ -246,7 +246,7 @@
                 @if(auth()->user()->isStudent())
                     <a href="{{ route('mentorship.find') }}"
                        class="inline-block bk-button bk-button-primary   px-6 py-3 rounded-lg transition-colors">
-                        <i class="fas fa-search mr-2"></i>Find a Mentor
+                        <i class="fas fa-search mr-2" aria-hidden="true"></i>Find a Mentor
                     </a>
                 @endif
             </div>
@@ -259,7 +259,7 @@
                 <div class="flex items-center justify-between border-b border-themed-primary p-5">
                     <h2 class="text-xl font-bold text-themed-primary">Manage learner goals</h2>
                     <button type="button" wire:click="closeGoalsModal" class="grid h-9 w-9 place-items-center rounded-lg bg-themed-tertiary text-themed-secondary" aria-label="Close">
-                        <i class="fas fa-times"></i>
+                        <i class="fas fa-times" aria-hidden="true"></i>
                     </button>
                 </div>
 
@@ -271,14 +271,14 @@
                                 placeholder="Learner goal">
                             <button type="button" wire:click="removeGoal({{ $index }})"
                                 class="grid h-10 w-10 place-items-center rounded-lg bg-red-600 text-white" aria-label="Remove goal">
-                                <i class="fas fa-minus"></i>
+                                <i class="fas fa-minus" aria-hidden="true"></i>
                             </button>
                         </div>
                     @endforeach
 
                     <button type="button" wire:click="addGoal"
                         class="inline-flex items-center gap-2 rounded-lg border border-themed-primary px-3 py-2 text-sm font-medium text-themed-primary">
-                        <i class="fas fa-plus"></i>
+                        <i class="fas fa-plus" aria-hidden="true"></i>
                         Add goal
                     </button>
 

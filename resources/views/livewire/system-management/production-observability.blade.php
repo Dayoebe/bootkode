@@ -34,7 +34,7 @@
 
             <button type="button" wire:click="$refresh"
                     class="inline-flex items-center justify-center px-4 py-2 rounded-lg bg-action hover:bg-action text-action-foreground text-sm font-semibold shadow-sm">
-                <i class="fas fa-rotate mr-2"></i> Refresh
+                <i class="fas fa-rotate mr-2" aria-hidden="true"></i> Refresh
             </button>
         </div>
     </div>
@@ -43,42 +43,42 @@
         <button type="button" wire:click="showTab('errors')" class="text-left bg-themed-secondary border border-themed-primary rounded-lg p-4 hover:border-red-300 transition">
             <div class="flex items-center justify-between">
                 <span class="text-sm text-themed-secondary">Open errors</span>
-                <i class="fas fa-bug text-red-500"></i>
+                <i class="fas fa-bug text-red-500" aria-hidden="true"></i>
             </div>
             <p class="text-3xl font-bold text-themed-primary mt-3">{{ number_format($summary['open_errors']) }}</p>
         </button>
         <button type="button" wire:click="showTab('jobs')" class="text-left bg-themed-secondary border border-themed-primary rounded-lg p-4 hover:border-orange-300 transition">
             <div class="flex items-center justify-between">
                 <span class="text-sm text-themed-secondary">Failed jobs</span>
-                <i class="fas fa-list-check text-orange-500"></i>
+                <i class="fas fa-list-check text-orange-500" aria-hidden="true"></i>
             </div>
             <p class="text-3xl font-bold text-themed-primary mt-3">{{ number_format($summary['failed_jobs']) }}</p>
         </button>
         <button type="button" wire:click="showTab('mail')" class="text-left bg-themed-secondary border border-themed-primary rounded-lg p-4 hover:border-brand transition">
             <div class="flex items-center justify-between">
                 <span class="text-sm text-themed-secondary">Mail failures</span>
-                <i class="fas fa-envelope-circle-check text-brand"></i>
+                <i class="fas fa-envelope-circle-check text-brand" aria-hidden="true"></i>
             </div>
             <p class="text-3xl font-bold text-themed-primary mt-3">{{ number_format($summary['mail_failures']) }}</p>
         </button>
         <button type="button" wire:click="showTab('webhooks')" class="text-left bg-themed-secondary border border-themed-primary rounded-lg p-4 hover:border-brand transition">
             <div class="flex items-center justify-between">
                 <span class="text-sm text-themed-secondary">Webhook failures</span>
-                <i class="fas fa-code-branch text-brand"></i>
+                <i class="fas fa-code-branch text-brand" aria-hidden="true"></i>
             </div>
             <p class="text-3xl font-bold text-themed-primary mt-3">{{ number_format($summary['webhook_failures']) }}</p>
         </button>
         <button type="button" wire:click="showTab('slow')" class="text-left bg-themed-secondary border border-themed-primary rounded-lg p-4 hover:border-amber-300 transition">
             <div class="flex items-center justify-between">
                 <span class="text-sm text-themed-secondary">Slow pages</span>
-                <i class="fas fa-stopwatch text-amber-500"></i>
+                <i class="fas fa-stopwatch text-amber-500" aria-hidden="true"></i>
             </div>
             <p class="text-3xl font-bold text-themed-primary mt-3">{{ number_format($summary['slow_pages']) }}</p>
         </button>
         <button type="button" wire:click="showTab('routes')" class="text-left bg-themed-secondary border border-themed-primary rounded-lg p-4 hover:border-rose-300 transition">
             <div class="flex items-center justify-between">
                 <span class="text-sm text-themed-secondary">Broken routes</span>
-                <i class="fas fa-link-slash text-rose-500"></i>
+                <i class="fas fa-link-slash text-rose-500" aria-hidden="true"></i>
             </div>
             <p class="text-3xl font-bold text-themed-primary mt-3">{{ number_format($summary['broken_routes']) }}</p>
         </button>
@@ -89,7 +89,7 @@
             @foreach($tabs as $key => $tab)
                 <button type="button" wire:click="showTab('{{ $key }}')"
                         class="min-w-max px-4 py-3 text-sm font-semibold border-b-2 transition {{ $activeTab === $key ? 'border-blue-600 text-brand bg-brand/10 dark:bg-action/20 dark:text-blue-300' : 'border-transparent text-themed-secondary hover:text-themed-primary' }}">
-                    <i class="fas {{ $tab['icon'] }} mr-2"></i>{{ $tab['label'] }}
+                    <i class="fas {{ $tab['icon'] }} mr-2" aria-hidden="true"></i>{{ $tab['label'] }}
                 </button>
             @endforeach
         </div>
@@ -126,7 +126,7 @@
                 <div>
                     <label class="block text-xs font-semibold text-themed-secondary mb-1">Search</label>
                     <div class="relative">
-                        <i class="fas fa-search absolute left-3 top-3 text-themed-secondary text-xs"></i>
+                        <i class="fas fa-search absolute left-3 top-3 text-themed-secondary text-xs" aria-hidden="true"></i>
                         <input aria-label="Summary, source, URL" type="search" wire:model.live.debounce.350ms="search"
                                class="w-full rounded-lg border border-themed-primary bg-themed-tertiary text-themed-primary pl-9 pr-3 py-2 text-sm"
                                placeholder="Summary, source, URL...">
@@ -279,7 +279,7 @@
         </div>
 
         <div class="overflow-x-auto">
-            <x-ui.table label="Production Observability.Blade records"><table class="min-w-full divide-y divide-themed-primary">
+            <x-ui.table label="Production Observability records"><table class="min-w-full divide-y divide-themed-primary">
                 <thead class="bg-themed-tertiary">
                     <tr>
                         <th scope="col" class="px-5 py-3 text-left text-xs font-bold uppercase text-themed-secondary">Issue</th>
@@ -329,14 +329,14 @@
                                 <div class="inline-flex items-center gap-2">
                                     @if($event->status === 'open')
                                         <button type="button" wire:click="resolveEvent({{ $event->id }})" class="px-3 py-1.5 rounded bg-green-600 hover:bg-green-700 text-white text-xs font-semibold">
-                                            <i class="fas fa-check mr-1"></i> Resolve
+                                            <i class="fas fa-check mr-1" aria-hidden="true"></i> Resolve
                                         </button>
                                         <button type="button" wire:click="ignoreEvent({{ $event->id }})" class="px-3 py-1.5 rounded bg-gray-600 hover:bg-gray-700 text-white text-xs font-semibold">
-                                            <i class="fas fa-eye-slash mr-1"></i> Ignore
+                                            <i class="fas fa-eye-slash mr-1" aria-hidden="true"></i> Ignore
                                         </button>
                                     @else
                                         <button type="button" wire:click="reopenEvent({{ $event->id }})" class="px-3 py-1.5 rounded bg-action hover:bg-action text-action-foreground text-xs font-semibold">
-                                            <i class="fas fa-arrow-rotate-left mr-1"></i> Reopen
+                                            <i class="fas fa-arrow-rotate-left mr-1" aria-hidden="true"></i> Reopen
                                         </button>
                                     @endif
                                 </div>
@@ -345,7 +345,7 @@
                     @empty
                         <tr>
                             <td colspan="5" class="px-5 py-12 text-center text-themed-secondary">
-                                <i class="fas fa-circle-check text-green-500 text-3xl mb-3"></i>
+                                <i class="fas fa-circle-check text-green-500 text-3xl mb-3" aria-hidden="true"></i>
                                 <p>No matching observability events.</p>
                             </td>
                         </tr>

@@ -22,10 +22,10 @@
             </div>
             <div class="flex flex-wrap gap-2">
                 <a href="{{ route('pricing') }}" target="_blank" class="rounded-lg border border-themed-primary px-4 py-2 text-sm font-semibold text-themed-primary hover:border-brand hover:text-brand">
-                    <i class="fas fa-tags mr-2"></i>Public Pricing
+                    <i class="fas fa-tags mr-2" aria-hidden="true"></i>Public Pricing
                 </a>
                 <button type="button" wire:click="generateMissingReceipts" class="rounded-lg bg-action px-4 py-2 text-sm font-semibold text-action-foreground hover:bg-action/90">
-                    <i class="fas fa-receipt mr-2"></i>Generate Receipts
+                    <i class="fas fa-receipt mr-2" aria-hidden="true"></i>Generate Receipts
                 </button>
             </div>
         </div>
@@ -67,7 +67,7 @@
             ] as $tab => [$label, $icon])
                 <button type="button" wire:click="setTab('{{ $tab }}')"
                     class="rounded-lg px-3 py-3 text-sm font-semibold transition {{ $activeTab === $tab ? 'bg-action text-action-foreground' : 'text-themed-secondary hover:bg-themed-tertiary hover:text-themed-primary' }}">
-                    <i class="fas {{ $icon }} mr-2"></i>{{ $label }}
+                    <i class="fas {{ $icon }} mr-2" aria-hidden="true"></i>{{ $label }}
                 </button>
             @endforeach
         </div>
@@ -91,7 +91,7 @@
                 </div>
 
                 <div class="mt-5 overflow-x-auto">
-                    <x-ui.table label="Commercial Readiness.Blade records"><table class="min-w-full divide-y divide-themed-primary text-sm">
+                    <x-ui.table label="Commercial Readiness records"><table class="min-w-full divide-y divide-themed-primary text-sm">
                         <tbody class="divide-y divide-themed-primary">
                             @foreach([
                                 'successful_payments' => 'Successful Paystack payments',
@@ -133,7 +133,7 @@
         <div class="rounded-lg border border-themed-primary bg-themed-secondary p-5 shadow-sm">
             <h2 class="text-lg font-semibold text-themed-primary">Recent receipts, invoices, and credit notes</h2>
             <div class="mt-5 overflow-x-auto">
-                <x-ui.table label="Commercial Readiness.Blade records"><table class="min-w-full divide-y divide-themed-primary text-sm">
+                <x-ui.table label="Commercial Readiness records"><table class="min-w-full divide-y divide-themed-primary text-sm">
                     <thead>
                         <tr class="text-left text-xs font-semibold uppercase text-themed-secondary">
                             <th scope="col" class="py-3">Document</th>
@@ -264,7 +264,7 @@
                         <p class="mt-2 text-sm text-themed-secondary">{{ $package['description'] }}</p>
                         <ul class="mt-4 space-y-2 text-sm text-themed-secondary">
                             @foreach($package['features'] as $feature)
-                                <li><i class="fas fa-check mr-2 text-emerald-500"></i>{{ $feature }}</li>
+                                <li><i class="fas fa-check mr-2 text-emerald-500" aria-hidden="true"></i>{{ $feature }}</li>
                             @endforeach
                         </ul>
                     </article>

@@ -5,7 +5,7 @@
     <div class="bg-surface border border-line rounded-lg p-4 shadow-sm  transition-all duration-200">
         <div class="flex items-center">
             <div class="p-2 bg-brand/10 rounded-lg">
-                <i class="fas fa-tags text-brand"></i>
+                <i class="fas fa-tags text-brand" aria-hidden="true"></i>
             </div>
             <div class="ml-3">
                 <p class="text-sm font-medium text-content-muted">Total Codes</p>
@@ -17,7 +17,7 @@
     <div class="bg-surface border border-green-200 rounded-lg p-4 shadow-sm  transition-all duration-200">
         <div class="flex items-center">
             <div class="p-2 bg-green-100 rounded-lg">
-                <i class="fas fa-check-circle text-green-600"></i>
+                <i class="fas fa-check-circle text-green-600" aria-hidden="true"></i>
             </div>
             <div class="ml-3">
                 <p class="text-sm font-medium text-green-600">Active</p>
@@ -29,7 +29,7 @@
     <div class="bg-surface border border-red-200 rounded-lg p-4 shadow-sm  transition-all duration-200">
         <div class="flex items-center">
             <div class="p-2 bg-red-100 rounded-lg">
-                <i class="fas fa-times-circle text-red-600"></i>
+                <i class="fas fa-times-circle text-red-600" aria-hidden="true"></i>
             </div>
             <div class="ml-3">
                 <p class="text-sm font-medium text-red-600">Expired</p>
@@ -41,7 +41,7 @@
     <div class="bg-surface border border-brand rounded-lg p-4 shadow-sm  transition-all duration-200">
         <div class="flex items-center">
             <div class="p-2 bg-brand/10 rounded-lg">
-                <i class="fas fa-chart-line text-brand"></i>
+                <i class="fas fa-chart-line text-brand" aria-hidden="true"></i>
             </div>
             <div class="ml-3">
                 <p class="text-sm font-medium text-brand">Uses</p>
@@ -53,7 +53,7 @@
     <div class="bg-surface border border-emerald-200 rounded-lg p-4 shadow-sm  transition-all duration-200">
         <div class="flex items-center">
             <div class="p-2 bg-emerald-100 rounded-lg">
-                <i class="fas fa-money-bill-wave text-emerald-600"></i>
+                <i class="fas fa-money-bill-wave text-emerald-600" aria-hidden="true"></i>
             </div>
             <div class="ml-3">
                 <p class="text-sm font-medium text-emerald-600">Savings</p>
@@ -65,7 +65,7 @@
     <div class="bg-surface border border-amber-200 rounded-lg p-4 shadow-sm  transition-all duration-200">
         <div class="flex items-center">
             <div class="p-2 bg-amber-100 rounded-lg">
-                <i class="fas fa-percentage text-amber-600"></i>
+                <i class="fas fa-percentage text-amber-600" aria-hidden="true"></i>
             </div>
             <div class="ml-3">
                 <p class="text-sm font-medium text-amber-600">Conv. Rate</p>
@@ -80,7 +80,7 @@
     <div class="flex flex-col lg:flex-row lg:items-center gap-4">
         <div class="relative flex-1">
             <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <i class="fas fa-search text-content-muted"></i>
+                <i class="fas fa-search text-content-muted" aria-hidden="true"></i>
             </div>
             <input aria-label="Search discount codes or descriptions" wire:model.live.debounce.300ms="promotionSearch"
                    type="text"
@@ -105,7 +105,7 @@
 
             <button wire:click="openCreateModal"
                     class="px-6 py-3 bg-action text-action-foreground rounded-lg hover:bg-action transition-all duration-200 font-medium shadow-sm ">
-                <i class="fas fa-plus mr-2"></i>
+                <i class="fas fa-plus mr-2" aria-hidden="true"></i>
                 New Code
             </button>
         </div>
@@ -144,11 +144,11 @@
                                            text-{{ $code->is_active && (!$code->valid_until || $code->valid_until >= now()) ? 'green' : 'red' }}-800
                                            text-sm font-semibold rounded-full">
                                     @if($code->is_active && (!$code->valid_until || $code->valid_until >= now()))
-                                        <i class="fas fa-check-circle mr-1"></i>Active
+                                        <i class="fas fa-check-circle mr-1" aria-hidden="true"></i>Active
                                     @elseif(!$code->is_active)
-                                        <i class="fas fa-pause-circle mr-1"></i>Paused
+                                        <i class="fas fa-pause-circle mr-1" aria-hidden="true"></i>Paused
                                     @else
-                                        <i class="fas fa-times-circle mr-1"></i>Expired
+                                        <i class="fas fa-times-circle mr-1" aria-hidden="true"></i>Expired
                                     @endif
                                 </span>
                             </div>
@@ -194,7 +194,7 @@
                             <!-- Validity Period -->
                             @if($code->valid_from || $code->valid_until)
                                 <div class="flex items-center space-x-4 text-sm p-3 bg-surface-muted rounded-lg">
-                                    <i class="fas fa-calendar text-content-muted"></i>
+                                    <i class="fas fa-calendar text-content-muted" aria-hidden="true"></i>
                                     <div>
                                         @if($code->valid_from)
                                             <span class="text-content-muted">From: <span class="font-semibold">{{ $code->valid_from->format('M d, Y g:i A') }}</span></span>
@@ -232,20 +232,20 @@
                         <button wire:click="toggleCodeStatus({{ $code->id }})"
                                 class="px-4 py-2 {{ $code->is_active ? 'bg-amber-600 hover:bg-amber-700' : 'bg-green-600 hover:bg-green-700' }}
                                        text-white text-sm rounded-lg transition-colors font-medium">
-                            <i class="fas fa-{{ $code->is_active ? 'pause' : 'play' }} mr-2"></i>
+                            <i class="fas fa-{{ $code->is_active ? 'pause' : 'play' }} mr-2" aria-hidden="true"></i>
                             {{ $code->is_active ? 'Pause' : 'Activate' }}
                         </button>
 
                         <button wire:click="editCode({{ $code->id }})"
                                 class="px-4 py-2 border border-line text-content text-sm rounded-lg hover:bg-surface-muted transition-colors font-medium">
-                            <i class="fas fa-edit mr-2"></i>
+                            <i class="fas fa-edit mr-2" aria-hidden="true"></i>
                             Edit
                         </button>
 
                         <button wire:click="deleteCode({{ $code->id }})"
                                 onclick="return confirm('Are you sure you want to delete this discount code?')"
                                 class="px-4 py-2 border border-red-300 text-red-700 text-sm rounded-lg hover:bg-red-50 transition-colors font-medium">
-                            <i class="fas fa-trash mr-2"></i>
+                            <i class="fas fa-trash mr-2" aria-hidden="true"></i>
                             Delete
                         </button>
 
@@ -254,7 +254,7 @@
                                        this.innerHTML = '<i class=\'fas fa-check mr-2\'></i>Copied!';
                                        setTimeout(() => this.innerHTML = '<i class=\'fas fa-copy mr-2\'></i>Copy Code', 2000)"
                                 class="px-4 py-2 bg-slate-600 text-white text-sm rounded-lg hover:bg-slate-700 transition-colors font-medium">
-                            <i class="fas fa-copy mr-2"></i>
+                            <i class="fas fa-copy mr-2" aria-hidden="true"></i>
                             Copy Code
                         </button>
                     </div>
@@ -266,7 +266,7 @@
     <!-- Enhanced Empty State -->
     <div class="text-center py-16 bg-surface border border-line rounded-lg shadow-sm">
         <div class="mx-auto w-24 h-24 bg-surface-muted rounded-full flex items-center justify-center mb-6">
-            <i class="fas fa-tags text-content-muted text-3xl"></i>
+            <i class="fas fa-tags text-content-muted text-3xl" aria-hidden="true"></i>
         </div>
         <h3 class="text-xl font-semibold text-content mb-3">
             @if($promotionSearch || $statusFilter !== 'all' || $typeFilter !== 'all')
@@ -286,12 +286,12 @@
             @if($promotionSearch || $statusFilter !== 'all' || $typeFilter !== 'all')
                 <button wire:click="$set('promotionSearch', ''); $set('statusFilter', 'all'); $set('typeFilter', 'all')"
                         class="px-6 py-3 border border-line text-content rounded-lg hover:bg-surface-muted transition-colors font-medium">
-                    <i class="fas fa-refresh mr-2"></i>Clear Filters
+                    <i class="fas fa-refresh mr-2" aria-hidden="true"></i>Clear Filters
                 </button>
             @endif
             <button wire:click="openCreateModal"
                     class="px-6 py-3 bg-action text-action-foreground rounded-lg hover:bg-action transition-colors font-medium shadow-sm ">
-                <i class="fas fa-plus mr-2"></i>Create Your First Code
+                <i class="fas fa-plus mr-2" aria-hidden="true"></i>Create Your First Code
             </button>
         </div>
     </div>

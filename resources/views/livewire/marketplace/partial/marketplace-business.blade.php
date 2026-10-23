@@ -7,13 +7,13 @@
             <nav aria-label="Business sections" class="flex min-w-0 max-w-full gap-2 overflow-x-auto">
                 <button wire:click="showDashboard"
                         class="{{ $currentView === 'dashboard' ? 'bg-blue-100 text-brand border-blue-200' : 'text-gray-600 hover:text-gray-900' }} min-h-11 shrink-0 px-4 py-2 rounded-lg border transition-colors flex items-center">
-                    <i class="fas fa-chart-line mr-2"></i>
+                    <i class="fas fa-chart-line mr-2" aria-hidden="true"></i>
                     Dashboard
                 </button>
 
                 <button wire:click="showOrders"
                         class="{{ $currentView === 'orders' ? 'bg-purple-100 text-brand border-purple-200' : 'text-gray-600 hover:text-gray-900' }} min-h-11 shrink-0 px-4 py-2 rounded-lg border transition-colors flex items-center">
-                    <i class="fas fa-box mr-2"></i>
+                    <i class="fas fa-box mr-2" aria-hidden="true"></i>
                     Orders
                     @isset($orderStats)
                         @if($orderStats['pending_orders'] > 0)
@@ -26,7 +26,7 @@
 
                 <button wire:click="showWithdrawals"
                         class="{{ $currentView === 'withdrawals' ? 'bg-green-100 text-green-700 border-green-200' : 'text-gray-600 hover:text-gray-900' }} min-h-11 shrink-0 px-4 py-2 rounded-lg border transition-colors flex items-center">
-                    <i class="fas fa-money-bill-wave mr-2"></i>
+                    <i class="fas fa-money-bill-wave mr-2" aria-hidden="true"></i>
                     Withdrawals
                 </button>
             </nav>
@@ -47,7 +47,7 @@
                 <div class="flex flex-wrap items-center gap-1">
                     <div class="flex-shrink-0">
                         <div class="w-10 h-10 bg-brand/10 rounded-lg flex items-center justify-center">
-                            <i class="fas fa-list-alt text-brand text-lg"></i>
+                            <i class="fas fa-list-alt text-brand text-lg" aria-hidden="true"></i>
                         </div>
                     </div>
                     <div class="ml-4">
@@ -62,7 +62,7 @@
                 <div class="flex flex-wrap items-center gap-1">
                     <div class="flex-shrink-0">
                         <div class="w-10 h-10 bg-brand/10 rounded-lg flex items-center justify-center">
-                            <i class="fas fa-shopping-cart text-brand text-lg"></i>
+                            <i class="fas fa-shopping-cart text-brand text-lg" aria-hidden="true"></i>
                         </div>
                     </div>
                     <div class="ml-4">
@@ -77,7 +77,7 @@
                 <div class="flex flex-wrap items-center gap-1">
                     <div class="flex-shrink-0">
                         <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
-                            <i class="fas fa-money-bill-wave text-green-600 text-lg"></i>
+                            <i class="fas fa-money-bill-wave text-green-600 text-lg" aria-hidden="true"></i>
                         </div>
                     </div>
                     <div class="ml-4">
@@ -92,7 +92,7 @@
                 <div class="flex flex-wrap items-center gap-1">
                     <div class="flex-shrink-0">
                         <div class="w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center">
-                            <i class="fas fa-calendar-month text-orange-600 text-lg"></i>
+                            <i class="fas fa-calendar-month text-orange-600 text-lg" aria-hidden="true"></i>
                         </div>
                     </div>
                     <div class="ml-4">
@@ -108,7 +108,7 @@
         <div class="bg-surface rounded-lg shadow-sm border border-line p-6">
             <div class="flex items-center justify-between mb-6">
                 <h3 class="text-lg font-medium text-content flex items-center">
-                    <i class="fas fa-chart-area mr-2 text-brand"></i>
+                    <i class="fas fa-chart-area mr-2 text-brand" aria-hidden="true"></i>
                     Revenue Trend
                 </h3>
                 <select aria-label="Date range" wire:model.live="dateRange" class="text-sm border border-line rounded-lg px-3 py-2 focus:ring-brand/30 focus:border-brand">
@@ -146,7 +146,7 @@
             <div class="bg-surface rounded-lg shadow-sm border border-line p-6">
                 <div class="flex items-center justify-between mb-4">
                     <h3 class="text-lg font-medium text-content flex items-center">
-                        <i class="fas fa-clock mr-2 text-brand"></i>
+                        <i class="fas fa-clock mr-2 text-brand" aria-hidden="true"></i>
                         Recent Orders
                     </h3>
                     <button wire:click="showOrders" class="text-brand hover:text-brand text-sm">
@@ -165,7 +165,7 @@
                                              class="w-10 h-10 object-cover rounded">
                                     @else
                                         <div class="w-10 h-10 bg-gray-200 rounded flex items-center justify-center">
-                                            <i class="fas fa-image text-content-muted text-sm"></i>
+                                            <i class="fas fa-image text-content-muted text-sm" aria-hidden="true"></i>
                                         </div>
                                     @endif
                                     <div>
@@ -185,7 +185,7 @@
                     </div>
                 @else
                     <div class="text-center py-8">
-                        <i class="fas fa-shopping-cart text-gray-300 text-3xl mb-2"></i>
+                        <i class="fas fa-shopping-cart text-gray-300 text-3xl mb-2" aria-hidden="true"></i>
                         <p class="text-content-muted text-sm">No recent orders</p>
                     </div>
                 @endif
@@ -195,7 +195,7 @@
             <div class="bg-surface rounded-lg shadow-sm border border-line p-6">
                 <div class="flex items-center justify-between mb-4">
                     <h3 class="text-lg font-medium text-content flex items-center">
-                        <i class="fas fa-trophy mr-2 text-yellow-500"></i>
+                        <i class="fas fa-trophy mr-2 text-yellow-500" aria-hidden="true"></i>
                         Top Performing Items
                     </h3>
                     <a href="{{ route('marketplace.seller.listings') }}" class="text-brand hover:text-brand text-sm">
@@ -216,7 +216,7 @@
                                          class="w-12 h-12 object-cover rounded-lg">
                                 @else
                                     <div class="w-12 h-12 bg-gray-200 rounded-lg flex items-center justify-center">
-                                        <i class="fas fa-image text-content-muted"></i>
+                                        <i class="fas fa-image text-content-muted" aria-hidden="true"></i>
                                     </div>
                                 @endif
 
@@ -225,7 +225,7 @@
                                     <p class="text-xs text-content-muted">{{ $item->sales_count }} sales</p>
                                     @if($item->average_rating > 0)
                                         <div class="flex items-center space-x-1 mt-1">
-                                            <i class="fas fa-star text-yellow-400 text-xs"></i>
+                                            <i class="fas fa-star text-yellow-400 text-xs" aria-hidden="true"></i>
                                             <span class="text-xs text-content-muted">{{ number_format($item->average_rating, 1) }}</span>
                                         </div>
                                     @endif
@@ -239,7 +239,7 @@
                     </div>
                 @else
                     <div class="text-center py-8">
-                        <i class="fas fa-chart-bar text-gray-300 text-3xl mb-2"></i>
+                        <i class="fas fa-chart-bar text-gray-300 text-3xl mb-2" aria-hidden="true"></i>
                         <p class="text-content-muted text-sm">No items to display</p>
                     </div>
                 @endif
@@ -253,7 +253,7 @@
             <div class="flex flex-col md:flex-row md:items-center justify-between space-y-4 md:space-y-0">
                 <div>
                     <h2 class="text-xl font-bold text-content flex items-center">
-                        <i class="fas fa-box mr-2 text-brand"></i>
+                        <i class="fas fa-box mr-2 text-brand" aria-hidden="true"></i>
                         Customer Orders
                     </h2>
                     <p class="text-content-muted">Manage orders for your marketplace items</p>
@@ -282,10 +282,10 @@
                     <div class="relative">
                         <input aria-label="Search orders" wire:model.live.debounce.300ms="orderSearch" type="text" placeholder="Search orders..."
                             class="w-64 pl-10 pr-4 py-2 border border-line rounded-lg focus:ring-brand/30 focus:border-brand">
-                        <i class="fas fa-search absolute left-3 top-3 text-content-muted"></i>
+                        <i class="fas fa-search absolute left-3 top-3 text-content-muted" aria-hidden="true"></i>
                         @if($orderSearch)
                             <button wire:click="$set('orderSearch', '')" class="absolute right-3 top-3 text-content-muted hover:text-content-muted" aria-label="Close">
-                                <i class="fas fa-times"></i>
+                                <i class="fas fa-times" aria-hidden="true"></i>
                             </button>
                         @endif
                     </div>
@@ -301,7 +301,7 @@
                     @if($orderSearch || $orderStatus)
                         <button wire:click="$set('orderSearch', ''); $set('orderStatus', '')"
                                 class="px-3 py-2 bg-surface-muted text-content rounded-lg hover:bg-gray-200 transition-colors">
-                            <i class="fas fa-times mr-1"></i>
+                            <i class="fas fa-times mr-1" aria-hidden="true"></i>
                             Clear
                         </button>
                     @endif
@@ -310,7 +310,7 @@
                 @if($orders->count() > 0)
                     <button wire:click="exportOrders"
                         class="inline-flex items-center px-3 py-2 bg-green-600 text-white text-sm rounded-lg hover:bg-green-700 transition-colors">
-                        <i class="fas fa-download mr-2"></i>
+                        <i class="fas fa-download mr-2" aria-hidden="true"></i>
                         Export CSV
                     </button>
                 @endif
@@ -331,7 +331,7 @@
                                             alt="{{ $order->item->title }}" class="w-16 h-16 object-cover rounded-lg">
                                     @else
                                         <div class="w-16 h-16 bg-surface-muted rounded-lg flex items-center justify-center">
-                                            <i class="fas fa-image text-content-muted"></i>
+                                            <i class="fas fa-image text-content-muted" aria-hidden="true"></i>
                                         </div>
                                     @endif
                                 </div>
@@ -344,30 +344,30 @@
                                                 {{ $order->item->title }}
                                             </h3>
                                             <p class="text-sm text-content-muted mt-1">
-                                                <i class="fas fa-hashtag mr-1"></i>
+                                                <i class="fas fa-hashtag mr-1" aria-hidden="true"></i>
                                                 Order #{{ $order->order_number }}
                                             </p>
                                             <div class="mt-2 space-y-1 text-sm text-content-muted">
                                                 <p class="flex flex-wrap items-center gap-1">
-                                                    <i class="fas fa-user mr-2 w-4"></i>
+                                                    <i class="fas fa-user mr-2 w-4" aria-hidden="true"></i>
                                                     <span class="font-medium">Customer:</span>
                                                     <span class="ml-1 break-words [overflow-wrap:anywhere]">{{ $order->customer->name }} ({{ $order->customer->email }})</span>
                                                 </p>
                                                 <p class="flex flex-wrap items-center gap-1">
-                                                    <i class="fas fa-calendar mr-2 w-4"></i>
+                                                    <i class="fas fa-calendar mr-2 w-4" aria-hidden="true"></i>
                                                     <span class="font-medium">Ordered:</span>
                                                     <span class="ml-1 break-words [overflow-wrap:anywhere]">{{ $order->created_at->format('M d, Y \a\t g:i A') }}</span>
                                                 </p>
                                                 @if($order->isPaid())
                                                     <p class="flex flex-wrap items-center gap-1">
-                                                        <i class="fas fa-check-circle mr-2 w-4 text-green-500"></i>
+                                                        <i class="fas fa-check-circle mr-2 w-4 text-green-500" aria-hidden="true"></i>
                                                         <span class="font-medium">Paid:</span>
                                                         <span class="ml-1 break-words [overflow-wrap:anywhere]">{{ $order->paid_at?->format('M d, Y \a\t g:i A') ?? 'Date not recorded' }}</span>
                                                     </p>
                                                 @endif
                                                 @if($order->isCompleted())
                                                     <p class="flex flex-wrap items-center gap-1">
-                                                        <i class="fas fa-flag-checkered mr-2 w-4 text-brand"></i>
+                                                        <i class="fas fa-flag-checkered mr-2 w-4 text-brand" aria-hidden="true"></i>
                                                         <span class="font-medium">Completed:</span>
                                                         <span class="ml-1 break-words [overflow-wrap:anywhere]">{{ $order->completed_at?->format('M d, Y \a\t g:i A') ?? 'Date not recorded' }}</span>
                                                     </p>
@@ -385,11 +385,11 @@
 
                                                 <div class="flex flex-col space-y-1">
                                                     <span class="inline-flex items-center px-2 py-1 bg-{{ $order->status_color }}-100 text-{{ $order->status_color }}-800 text-xs font-medium rounded-full text-center">
-                                                        <i class="fas fa-{{ $order->status === 'completed' ? 'check' : ($order->status === 'pending' ? 'clock' : 'times') }} mr-1"></i>
+                                                        <i class="fas fa-{{ $order->status === 'completed' ? 'check' : ($order->status === 'pending' ? 'clock' : 'times') }} mr-1" aria-hidden="true"></i>
                                                         {{ ucfirst($order->status) }}
                                                     </span>
                                                     <span class="inline-flex items-center px-2 py-1 bg-{{ $order->payment_status_color }}-100 text-{{ $order->payment_status_color }}-800 text-xs font-medium rounded-full text-center">
-                                                        <i class="fas fa-{{ $order->payment_status === 'paid' ? 'check-circle' : 'clock' }} mr-1"></i>
+                                                        <i class="fas fa-{{ $order->payment_status === 'paid' ? 'check-circle' : 'clock' }} mr-1" aria-hidden="true"></i>
                                                         {{ ucfirst(str_replace('_', ' ', $order->payment_status)) }}
                                                     </span>
                                                 </div>
@@ -401,7 +401,7 @@
                                     @if($order->customer_notes)
                                         <div class="mt-3 p-3 bg-brand/10 border border-brand rounded-lg">
                                             <p class="text-sm text-brand flex items-start">
-                                                <i class="fas fa-comment mr-2 mt-0.5 flex-shrink-0"></i>
+                                                <i class="fas fa-comment mr-2 mt-0.5 flex-shrink-0" aria-hidden="true"></i>
                                                 <span><span class="font-medium">Customer notes:</span> {{ $order->customer_notes }}</span>
                                             </p>
                                         </div>
@@ -411,7 +411,7 @@
                                     @if($order->vendor_notes)
                                         <div class="mt-3 p-3 bg-green-50 border border-green-200 rounded-lg">
                                             <p class="text-sm text-green-900 flex items-start">
-                                                <i class="fas fa-sticky-note mr-2 mt-0.5 flex-shrink-0"></i>
+                                                <i class="fas fa-sticky-note mr-2 mt-0.5 flex-shrink-0" aria-hidden="true"></i>
                                                 <span><span class="font-medium">Your notes:</span> {{ $order->vendor_notes }}</span>
                                             </p>
                                         </div>
@@ -423,7 +423,7 @@
                                             <button wire:click="fulfillOrder({{ $order->id }})"
                                                 onclick="confirm('Are you sure you want to mark this order as fulfilled?') || event.stopImmediatePropagation()"
                                                 class="inline-flex items-center px-3 py-1.5 bg-green-600 text-white text-sm rounded-lg hover:bg-green-700 transition-colors">
-                                                <i class="fas fa-check mr-1"></i>
+                                                <i class="fas fa-check mr-1" aria-hidden="true"></i>
                                                 Mark as Fulfilled
                                             </button>
                                         @endif
@@ -431,26 +431,26 @@
                                         @if($order->item->is_digital && $order->isPaid() && !$order->isCompleted())
                                             <button wire:click="provideDigitalAccess({{ $order->id }})"
                                                 class="inline-flex items-center px-3 py-1.5 bg-action text-action-foreground text-sm rounded-lg hover:bg-action transition-colors">
-                                                <i class="fas fa-download mr-1"></i>
+                                                <i class="fas fa-download mr-1" aria-hidden="true"></i>
                                                 Provide Access
                                             </button>
                                         @endif
 
                                         <button wire:click="openNoteModal({{ $order->id }})"
                                             class="inline-flex items-center px-3 py-1.5 bg-gray-600 text-white text-sm rounded-lg hover:bg-gray-700 transition-colors">
-                                            <i class="fas fa-sticky-note mr-1"></i>
+                                            <i class="fas fa-sticky-note mr-1" aria-hidden="true"></i>
                                             {{ $order->vendor_notes ? 'Edit Notes' : 'Add Notes' }}
                                         </button>
 
                                         <a href="mailto:{{ $order->customer->email }}?subject=Regarding Order {{ $order->order_number }}"
                                             class="inline-flex items-center px-3 py-1.5 border border-line text-content text-sm rounded-lg hover:bg-surface-muted transition-colors">
-                                            <i class="fas fa-envelope mr-1"></i>
+                                            <i class="fas fa-envelope mr-1" aria-hidden="true"></i>
                                             Contact Customer
                                         </a>
 
                                         <a href="{{ route('marketplace.item.public', $order->item->slug) }}" target="_blank"
                                             class="inline-flex items-center px-3 py-1.5 border border-line text-content text-sm rounded-lg hover:bg-surface-muted transition-colors">
-                                            <i class="fas fa-external-link-alt mr-1"></i>
+                                            <i class="fas fa-external-link-alt mr-1" aria-hidden="true"></i>
                                             View Item
                                         </a>
                                     </div>
@@ -467,7 +467,7 @@
             @else
                 <!-- Empty State -->
                 <div class="text-center py-16">
-                    <i class="fas fa-shopping-bag text-gray-300 text-6xl mb-4"></i>
+                    <i class="fas fa-shopping-bag text-gray-300 text-6xl mb-4" aria-hidden="true"></i>
                     <h3 class="text-xl font-medium text-content mb-2">
                         @if($orderStatus || $orderSearch)
                             No matching orders found
@@ -485,13 +485,13 @@
                     @if($orderStatus || $orderSearch)
                         <button wire:click="$set('orderStatus', ''); $set('orderSearch', '')"
                             class="inline-flex items-center px-6 py-3 bg-action text-action-foreground rounded-lg hover:bg-action transition-colors">
-                            <i class="fas fa-times mr-2"></i>
+                            <i class="fas fa-times mr-2" aria-hidden="true"></i>
                             Clear Filters
                         </button>
                     @else
                         <a href="{{ route('marketplace.browse') }}"
                             class="inline-flex items-center px-6 py-3 bg-action text-action-foreground rounded-lg hover:bg-action transition-colors">
-                            <i class="fas fa-store mr-2"></i>
+                            <i class="fas fa-store mr-2" aria-hidden="true"></i>
                             Browse Marketplace
                         </a>
                     @endif
@@ -506,7 +506,7 @@
             <div class="flex flex-col md:flex-row md:items-center justify-between space-y-4 md:space-y-0">
                 <div>
                     <h2 class="text-xl font-bold text-content flex items-center">
-                        <i class="fas fa-money-bill-wave mr-2 text-green-600"></i>
+                        <i class="fas fa-money-bill-wave mr-2 text-green-600" aria-hidden="true"></i>
                         Withdrawals
                     </h2>
                     <p class="text-content-muted">Manage your earnings withdrawals</p>
@@ -530,7 +530,7 @@
                     <button wire:click="openWithdrawalModal"
                         @if($availableBalance < 1000) disabled title="Minimum withdrawal amount is ₦1,000" @endif
                         class="inline-flex items-center px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed">
-                        <i class="fas fa-plus mr-2"></i>
+                        <i class="fas fa-plus mr-2" aria-hidden="true"></i>
                         Request Withdrawal
                     </button>
                 </div>
@@ -539,7 +539,7 @@
             @if($availableBalance < 1000)
                 <div class="mt-4 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
                     <p class="text-sm text-yellow-800 flex items-center">
-                        <i class="fas fa-info-circle mr-2"></i>
+                        <i class="fas fa-info-circle mr-2" aria-hidden="true"></i>
                         Minimum withdrawal amount is ₦1,000. Your current available balance is ₦{{ number_format($availableBalance, 2) }}.
                     </p>
                 </div>
@@ -557,7 +557,7 @@
                                     <div>
                                         <div class="flex items-center space-x-3">
                                             <div class="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
-                                                <i class="fas fa-money-bill-wave text-green-600"></i>
+                                                <i class="fas fa-money-bill-wave text-green-600" aria-hidden="true"></i>
                                             </div>
                                             <div>
                                                 <h3 class="font-medium text-content">₦{{ number_format($withdrawal->amount, 2) }}</h3>
@@ -585,13 +585,13 @@
                     </div>
                 @else
                     <div class="text-center py-16">
-                        <i class="fas fa-money-bill-wave text-gray-300 text-6xl mb-4"></i>
+                        <i class="fas fa-money-bill-wave text-gray-300 text-6xl mb-4" aria-hidden="true"></i>
                         <h3 class="text-xl font-medium text-content mb-2">No Withdrawals Yet</h3>
                         <p class="text-content-muted mb-8">Your withdrawal history will appear here</p>
                         @if($availableBalance >= 1000)
                             <button wire:click="openWithdrawalModal"
                                 class="inline-flex items-center px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors">
-                                <i class="fas fa-plus mr-2"></i>
+                                <i class="fas fa-plus mr-2" aria-hidden="true"></i>
                                 Request Your First Withdrawal
                             </button>
                         @endif

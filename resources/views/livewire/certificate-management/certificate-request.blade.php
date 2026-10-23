@@ -15,7 +15,7 @@
                             class="w-24 h-24 rounded-lg object-cover">
                     @else
                         <div class="w-24 h-24 bg-action rounded-lg flex items-center justify-center">
-                            <i class="fas fa-graduation-cap text-action-foreground text-2xl"></i>
+                            <i class="fas fa-graduation-cap text-action-foreground text-2xl" aria-hidden="true"></i>
                         </div>
                     @endif
 
@@ -25,16 +25,16 @@
 
                         <div class="flex flex-wrap gap-4 text-sm">
                             <span class="bg-action text-action-foreground px-3 py-1 rounded-full">
-                                <i class="fas fa-user mr-1"></i>
+                                <i class="fas fa-user mr-1" aria-hidden="true"></i>
                                 {{ $course->instructor->name }}
                             </span>
                             <span class="bg-themed-tertiary text-themed-secondary px-3 py-1 rounded-full">
-                                <i class="fas fa-clock mr-1"></i>
+                                <i class="fas fa-clock mr-1" aria-hidden="true"></i>
                                 {{ $course->formatted_duration }}
                             </span>
                             @if ($course->difficulty_level)
                                 <span class="bg-themed-tertiary text-themed-secondary px-3 py-1 rounded-full capitalize">
-                                    <i class="fas fa-signal mr-1"></i>
+                                    <i class="fas fa-signal mr-1" aria-hidden="true"></i>
                                     {{ $course->difficulty_level }}
                                 </span>
                             @endif
@@ -46,7 +46,7 @@
             <!-- Progress Card -->
             <div class="bg-themed-secondary rounded-lg p-8 mb-8 shadow-sm border border-themed-primary transition-colors duration-300">
                 <h3 class="text-xl font-bold text-themed-primary mb-6 flex items-center">
-                    <i class="fas fa-chart-line mr-3 text-brand"></i>
+                    <i class="fas fa-chart-line mr-3 text-brand" aria-hidden="true"></i>
                     Course Progress
                 </h3>
 
@@ -83,7 +83,7 @@
                     @if ($canRequestCertificate)
                         <div class="bg-green-900/30 border border-green-500 rounded-lg p-4">
                             <div class="flex items-center text-green-400">
-                                <i class="fas fa-check-circle mr-3 text-xl"></i>
+                                <i class="fas fa-check-circle mr-3 text-xl" aria-hidden="true"></i>
                                 <div>
                                     <div class="font-semibold">Congratulations!</div>
                                     <div class="text-sm">You have completed the course and are eligible for a certificate.</div>
@@ -93,7 +93,7 @@
                     @else
                         <div class="bg-yellow-900/30 border border-yellow-500 rounded-lg p-4">
                             <div class="flex items-center text-yellow-400">
-                                <i class="fas fa-clock mr-3 text-xl"></i>
+                                <i class="fas fa-clock mr-3 text-xl" aria-hidden="true"></i>
                                 <div>
                                     <div class="font-semibold">Keep Learning!</div>
                                     <div class="text-sm">Complete all lessons to become eligible for a certificate.</div>
@@ -107,7 +107,7 @@
             <!-- Certificate Status Card -->
             <div class="bg-themed-secondary rounded-lg p-8 shadow-sm border border-themed-primary transition-colors duration-300">
                 <h3 class="text-xl font-bold text-themed-primary mb-6 flex items-center">
-                    <i class="fas fa-certificate mr-3 text-brand"></i>
+                    <i class="fas fa-certificate mr-3 text-brand" aria-hidden="true"></i>
                     Certificate Status
                 </h3>
 
@@ -159,19 +159,19 @@
                             @if ($existingCertificate->isRequested())
                                 <button wire:click="cancelRequest"
                                     class="px-6 py-3 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors flex items-center">
-                                    <i class="fas fa-times mr-2"></i>
+                                    <i class="fas fa-times mr-2" aria-hidden="true"></i>
                                     Cancel Request
                                 </button>
                             @elseif($existingCertificate->isApproved() && $existingCertificate->pdf_path)
                                 <button wire:click="downloadCertificate"
                                     class="px-6 py-3 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors flex items-center">
-                                    <i class="fas fa-download mr-2"></i>
+                                    <i class="fas fa-download mr-2" aria-hidden="true"></i>
                                     Download Certificate
                                 </button>
                                 <a href="{{ route('certificate.view', $existingCertificate->verification_code) }}"
                                     target="_blank"
                                     class="px-6 py-3 bg-action hover:bg-action/90 text-action-foreground rounded-lg transition-colors flex items-center">
-                                    <i class="fas fa-eye mr-2"></i>
+                                    <i class="fas fa-eye mr-2" aria-hidden="true"></i>
                                     View Certificate
                                 </a>
                             @elseif($existingCertificate->isRejected())
@@ -186,7 +186,7 @@
                         @if ($existingCertificate->isApproved())
                             <div class="bg-surface-muted   rounded-lg p-6 text-center">
                                 <div class="text-white mb-4">
-                                    <i class="fas fa-certificate text-4xl mb-2"></i>
+                                    <i class="fas fa-certificate text-4xl mb-2" aria-hidden="true"></i>
                                     <div class="text-xl font-bold">Certificate Ready!</div>
                                     <div class="text-sm opacity-90">Your official certificate has been approved and is ready for download.</div>
                                 </div>
@@ -208,7 +208,7 @@
                         @if ($canRequestCertificate)
                             <div class="space-y-6">
                                 <div>
-                                    <i class="fas fa-award text-6xl text-brand mb-4"></i>
+                                    <i class="fas fa-award text-6xl text-brand mb-4" aria-hidden="true"></i>
                                     <h4 class="text-2xl font-bold text-themed-primary mb-2">Ready to Get Certified?</h4>
                                     <p class="text-themed-secondary">You've completed the course! Request your official certificate now.</p>
                                 </div>
@@ -218,27 +218,27 @@
                                     <h5 class="text-lg font-semibold text-themed-primary mb-4">Your Certificate Includes:</h5>
                                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                         <div class="flex items-center text-themed-secondary">
-                                            <i class="fas fa-check text-green-400 mr-3"></i>
+                                            <i class="fas fa-check text-green-400 mr-3" aria-hidden="true"></i>
                                             Official course completion verification
                                         </div>
                                         <div class="flex items-center text-themed-secondary">
-                                            <i class="fas fa-check text-green-400 mr-3"></i>
+                                            <i class="fas fa-check text-green-400 mr-3" aria-hidden="true"></i>
                                             Unique certificate number
                                         </div>
                                         <div class="flex items-center text-themed-secondary">
-                                            <i class="fas fa-check text-green-400 mr-3"></i>
+                                            <i class="fas fa-check text-green-400 mr-3" aria-hidden="true"></i>
                                             QR code for instant verification
                                         </div>
                                         <div class="flex items-center text-themed-secondary">
-                                            <i class="fas fa-check text-green-400 mr-3"></i>
+                                            <i class="fas fa-check text-green-400 mr-3" aria-hidden="true"></i>
                                             Professional PDF format
                                         </div>
                                         <div class="flex items-center text-themed-secondary">
-                                            <i class="fas fa-check text-green-400 mr-3"></i>
+                                            <i class="fas fa-check text-green-400 mr-3" aria-hidden="true"></i>
                                             Instructor and institution validation
                                         </div>
                                         <div class="flex items-center text-themed-secondary">
-                                            <i class="fas fa-check text-green-400 mr-3"></i>
+                                            <i class="fas fa-check text-green-400 mr-3" aria-hidden="true"></i>
                                             Permanent verification record
                                         </div>
                                     </div>
@@ -246,19 +246,19 @@
 
                                 <button wire:click="requestCertificate"
                                     class="px-8 py-4 bg-action   hover:opacity-90 text-action-foreground rounded-lg font-semibold text-lg transition-all duration-200 transform  shadow-sm flex items-center mx-auto">
-                                    <i class="fas fa-certificate mr-3"></i>
+                                    <i class="fas fa-certificate mr-3" aria-hidden="true"></i>
                                     Request My Certificate
                                 </button>
                             </div>
                         @else
                             <div>
-                                <i class="fas fa-graduation-cap text-6xl text-themed-tertiary mb-4"></i>
+                                <i class="fas fa-graduation-cap text-6xl text-themed-tertiary mb-4" aria-hidden="true"></i>
                                 <h4 class="text-xl font-bold text-themed-primary mb-2">Complete the Course First</h4>
                                 <p class="text-themed-secondary mb-6">Finish all lessons to unlock your certificate.</p>
 
                                 <a href="{{ route('course.view', $course->slug) }}"
                                     class="px-6 py-3 bg-action hover:bg-action/90 text-action-foreground rounded-lg transition-colors inline-flex items-center">
-                                    <i class="fas fa-play mr-2"></i>
+                                    <i class="fas fa-play mr-2" aria-hidden="true"></i>
                                     Continue Learning
                                 </a>
                             </div>
@@ -271,26 +271,26 @@
             <div class="text-center mt-8">
                 <a href="{{ route('course.view', $course->slug) }}"
                     class="inline-flex items-center text-brand hover:text-accent-themed-secondary transition-colors">
-                    <i class="fas fa-arrow-left mr-2"></i>
+                    <i class="fas fa-arrow-left mr-2" aria-hidden="true"></i>
                     Back to Course
                 </a>
             </div>
         @else
             <!-- No Course Selected -->
             <div class="items-center bg-themed-secondary rounded-lg p-12 text-center shadow-sm border border-themed-primary transition-colors duration-300">
-                <i class="fas fa-search text-6xl text-themed-tertiary mb-6"></i>
+                <i class="fas fa-search text-6xl text-themed-tertiary mb-6" aria-hidden="true"></i>
                 <h3 class="text-2xl font-bold text-themed-primary mb-4">Select a Course</h3>
                 <p class="text-themed-secondary mb-8">Choose a course to request a certificate for.</p>
 
                 <div class="flex justify-center gap-4">
                     <a href="{{ route('student.course-catalog') }}"
                         class="px-6 py-3 bg-themed-tertiary hover:bg-themed-primary text-themed-primary rounded-lg font-semibold transition-colors flex items-center">
-                        <i class="fas fa-book mr-2"></i>
+                        <i class="fas fa-book mr-2" aria-hidden="true"></i>
                         Browse Courses
                     </a>
                     <a href="{{ route('student.dashboard') }}"
                         class="px-6 py-3 bg-action hover:bg-action/90 text-action-foreground rounded-lg transition-colors flex items-center">
-                        <i class="fas fa-home mr-2"></i>
+                        <i class="fas fa-home mr-2" aria-hidden="true"></i>
                         Go to Dashboard
                     </a>
                 </div>
@@ -302,7 +302,7 @@
     <!-- Loading Overlay -->
     <div wire:loading class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
         <div class="bg-themed-secondary rounded-lg p-8 flex items-center">
-            <i class="fas fa-spinner fa-spin text-brand text-2xl mr-4"></i>
+            <i class="fas fa-spinner fa-spin text-brand text-2xl mr-4" aria-hidden="true"></i>
             <span class="text-themed-primary font-medium">Processing your request...</span>
         </div>
     </div>

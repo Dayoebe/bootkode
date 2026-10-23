@@ -11,7 +11,7 @@
                 wire:click="resetToDefaults"
                 class="text-content dark:text-gray-300 bg-gray-200 dark:bg-gray-700 px-4 py-2 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors flex items-center space-x-2"
             >
-                <i class="fas fa-undo"></i>
+                <i class="fas fa-undo" aria-hidden="true"></i>
                 <span>Reset to Defaults</span>
             </button>
         </div>
@@ -21,7 +21,7 @@
     <div class="bg-surface dark:bg-gray-800 rounded-lg shadow-sm overflow-hidden transition-colors duration-300">
         <div class="p-6 border-b border-line dark:border-gray-700">
             <h3 class="text-lg font-semibold text-content dark:text-white flex items-center">
-                <i class="fas fa-cog text-brand dark:text-brand mr-2"></i>
+                <i class="fas fa-cog text-brand dark:text-brand mr-2" aria-hidden="true"></i>
                 General Settings
             </h3>
         </div>
@@ -115,7 +115,7 @@
                     wire:click="saveGeneralSettings"
                     class="bg-action dark:bg-action text-action-foreground px-6 py-2 rounded-lg hover:bg-action dark:hover:bg-action transition-colors flex items-center space-x-2"
                 >
-                    <i class="fas fa-save"></i>
+                    <i class="fas fa-save" aria-hidden="true"></i>
                     <span wire:loading.remove wire:target="saveGeneralSettings">Save General Settings</span>
                     <span wire:loading wire:target="saveGeneralSettings" class="flex items-center">
                         <svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
@@ -133,7 +133,7 @@
     <div class="bg-surface dark:bg-gray-800 rounded-lg shadow-sm overflow-hidden transition-colors duration-300">
         <div class="p-6 border-b border-line dark:border-gray-700">
             <h3 class="text-lg font-semibold text-content dark:text-white flex items-center">
-                <i class="fas fa-shield-alt text-green-600 dark:text-green-400 mr-2"></i>
+                <i class="fas fa-shield-alt text-green-600 dark:text-green-400 mr-2" aria-hidden="true"></i>
                 Security Settings
             </h3>
         </div>
@@ -176,7 +176,7 @@
             <div class="bg-brand/10 dark:bg-action/20 border border-brand dark:border-brand rounded-lg p-4 transition-colors duration-300">
                 <div class="flex">
                     <div class="flex-shrink-0">
-                        <i class="fas fa-info-circle text-brand dark:text-brand"></i>
+                        <i class="fas fa-info-circle text-brand dark:text-brand" aria-hidden="true"></i>
                     </div>
                     <div class="ml-3">
                         <h4 class="text-sm font-medium text-brand dark:text-brand">Supported File Types</h4>
@@ -192,7 +192,7 @@
                     wire:click="saveSecuritySettings"
                     class="bg-green-600 dark:bg-green-500 text-white px-6 py-2 rounded-lg hover:bg-green-700 dark:hover:bg-green-600 transition-colors flex items-center space-x-2"
                 >
-                    <i class="fas fa-save"></i>
+                    <i class="fas fa-save" aria-hidden="true"></i>
                     <span wire:loading.remove wire:target="saveSecuritySettings">Save Security Settings</span>
                     <span wire:loading wire:target="saveSecuritySettings" class="flex items-center">
                         <svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
@@ -210,7 +210,7 @@
     <div class="bg-surface dark:bg-gray-800 rounded-lg shadow-sm overflow-hidden transition-colors duration-300">
         <div class="p-6 border-b border-line dark:border-gray-700">
             <h3 class="text-lg font-semibold text-content dark:text-white flex items-center">
-                <i class="fas fa-bell text-yellow-600 dark:text-yellow-400 mr-2"></i>
+                <i class="fas fa-bell text-yellow-600 dark:text-yellow-400 mr-2" aria-hidden="true"></i>
                 Notification Settings
             </h3>
         </div>
@@ -235,19 +235,19 @@
                 <p class="text-sm font-medium text-content dark:text-gray-300">You will receive notifications for:</p>
                 <ul class="text-sm text-content-muted dark:text-content-muted space-y-2">
                     <li class="flex items-center">
-                        <i class="fas fa-check text-green-500 dark:text-green-400 mr-2"></i>
+                        <i class="fas fa-check text-green-500 dark:text-green-400 mr-2" aria-hidden="true"></i>
                         New document submissions for review
                     </li>
                     <li class="flex items-center">
-                        <i class="fas fa-check text-green-500 dark:text-green-400 mr-2"></i>
+                        <i class="fas fa-check text-green-500 dark:text-green-400 mr-2" aria-hidden="true"></i>
                         Document approval/rejection status
                     </li>
                     <li class="flex items-center">
-                        <i class="fas fa-check text-green-500 dark:text-green-400 mr-2"></i>
+                        <i class="fas fa-check text-green-500 dark:text-green-400 mr-2" aria-hidden="true"></i>
                         Comments on your documents
                     </li>
                     <li class="flex items-center">
-                        <i class="fas fa-check text-green-500 dark:text-green-400 mr-2"></i>
+                        <i class="fas fa-check text-green-500 dark:text-green-400 mr-2" aria-hidden="true"></i>
                         Document version updates
                     </li>
                 </ul>
@@ -258,7 +258,7 @@
                     wire:click="saveNotificationSettings"
                     class="bg-yellow-600 dark:bg-yellow-500 text-white px-6 py-2 rounded-lg hover:bg-yellow-700 dark:hover:bg-yellow-600 transition-colors flex items-center space-x-2"
                 >
-                    <i class="fas fa-save"></i>
+                    <i class="fas fa-save" aria-hidden="true"></i>
                     <span wire:loading.remove wire:target="saveNotificationSettings">Save Notification Settings</span>
                     <span wire:loading wire:target="saveNotificationSettings" class="flex items-center">
                         <svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
@@ -276,7 +276,7 @@
     <div class="bg-surface dark:bg-gray-800 rounded-lg shadow-sm overflow-hidden transition-colors duration-300">
         <div class="p-6 border-b border-line dark:border-gray-700">
             <h3 class="text-lg font-semibold text-content dark:text-white flex items-center">
-                <i class="fas fa-database text-brand dark:text-brand mr-2"></i>
+                <i class="fas fa-database text-brand dark:text-brand mr-2" aria-hidden="true"></i>
                 Backup & Retention Settings
             </h3>
         </div>
@@ -321,7 +321,7 @@
             <div class="bg-brand/10 dark:bg-action/20 border border-brand dark:border-brand rounded-lg p-4 transition-colors duration-300">
                 <div class="flex">
                     <div class="flex-shrink-0">
-                        <i class="fas fa-info-circle text-brand dark:text-brand"></i>
+                        <i class="fas fa-info-circle text-brand dark:text-brand" aria-hidden="true"></i>
                     </div>
                     <div class="ml-3">
                         <h4 class="text-sm font-medium text-brand dark:text-brand">Backup Information</h4>
@@ -342,7 +342,7 @@
                     wire:click="triggerManualBackup"
                     class="bg-gray-600 dark:bg-gray-500 text-white px-6 py-2 rounded-lg hover:bg-gray-700 dark:hover:bg-gray-600 transition-colors flex items-center space-x-2"
                 >
-                    <i class="fas fa-download"></i>
+                    <i class="fas fa-download" aria-hidden="true"></i>
                     <span>Trigger Manual Backup</span>
                 </button>
 
@@ -350,7 +350,7 @@
                     wire:click="saveBackupSettings"
                     class="bg-action dark:bg-action text-action-foreground px-6 py-2 rounded-lg hover:bg-action dark:hover:bg-action transition-colors flex items-center space-x-2"
                 >
-                    <i class="fas fa-save"></i>
+                    <i class="fas fa-save" aria-hidden="true"></i>
                     <span wire:loading.remove wire:target="saveBackupSettings">Save Backup Settings</span>
                     <span wire:loading wire:target="saveBackupSettings" class="flex items-center">
                         <svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
@@ -368,7 +368,7 @@
     <div class="bg-surface dark:bg-gray-800 rounded-lg shadow-sm overflow-hidden transition-colors duration-300">
         <div class="p-6 border-b border-line dark:border-gray-700">
             <h3 class="text-lg font-semibold text-content dark:text-white flex items-center">
-                <i class="fas fa-info-circle text-brand dark:text-brand mr-2"></i>
+                <i class="fas fa-info-circle text-brand dark:text-brand mr-2" aria-hidden="true"></i>
                 System Information
             </h3>
         </div>

@@ -6,7 +6,7 @@
         </div>
         <button wire:click="openCreateModal"
                 class="inline-flex items-center rounded-md bg-action px-4 py-2 text-sm font-medium text-action-foreground transition-colors hover:bg-action">
-            <i class="fas fa-plus mr-2"></i>
+            <i class="fas fa-plus mr-2" aria-hidden="true"></i>
             New Cohort
         </button>
     </div>
@@ -50,7 +50,7 @@
 
     <div class="overflow-hidden rounded-lg border border-line bg-surface shadow-sm dark:border-gray-700 dark:bg-gray-800">
         <div class="overflow-x-auto">
-            <x-ui.table label="Cohort Management.Blade records"><table class="min-w-full divide-y divide-line dark:divide-gray-700">
+            <x-ui.table label="Cohort Management records"><table class="min-w-full divide-y divide-line dark:divide-gray-700">
                 <thead class="bg-surface-muted dark:bg-gray-700/50">
                     <tr>
                         <th scope="col" class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-content-muted dark:text-content-muted">Cohort</th>
@@ -95,24 +95,24 @@
                             <td class="px-6 py-4 text-right">
                                 <div class="flex items-center justify-end space-x-2">
                                     <button wire:click="openManageModal({{ $cohort->id }})" class="text-brand hover:text-brand dark:text-brand" title="Manage assignments">
-                                        <i class="fas fa-layer-group"></i>
+                                        <i class="fas fa-layer-group" aria-hidden="true"></i>
                                     </button>
                                     <button wire:click="openReportModal({{ $cohort->id }})" class="text-green-600 hover:text-green-900 dark:text-green-400" title="View report">
-                                        <i class="fas fa-chart-line"></i>
+                                        <i class="fas fa-chart-line" aria-hidden="true"></i>
                                     </button>
                                     <button wire:click="exportCohortReport({{ $cohort->id }})" class="text-emerald-600 hover:text-emerald-900 dark:text-emerald-400" title="Export report">
-                                        <i class="fas fa-download"></i>
+                                        <i class="fas fa-download" aria-hidden="true"></i>
                                     </button>
                                     <button wire:click="openEditModal({{ $cohort->id }})" class="text-brand hover:text-brand dark:text-brand" title="Edit cohort">
-                                        <i class="fas fa-edit"></i>
+                                        <i class="fas fa-edit" aria-hidden="true"></i>
                                     </button>
                                     @if($cohort->status === 'active')
                                         <button wire:click="archiveCohort({{ $cohort->id }})" class="text-yellow-600 hover:text-yellow-900 dark:text-yellow-400" title="Archive">
-                                            <i class="fas fa-archive"></i>
+                                            <i class="fas fa-archive" aria-hidden="true"></i>
                                         </button>
                                     @else
                                         <button wire:click="activateCohort({{ $cohort->id }})" class="text-brand hover:text-brand dark:text-brand" title="Activate">
-                                            <i class="fas fa-play"></i>
+                                            <i class="fas fa-play" aria-hidden="true"></i>
                                         </button>
                                     @endif
                                 </div>
@@ -121,7 +121,7 @@
                     @empty
                         <tr>
                             <td colspan="6" class="px-6 py-12 text-center">
-                                <i class="fas fa-layer-group mb-4 text-4xl text-gray-300 dark:text-content-muted"></i>
+                                <i class="fas fa-layer-group mb-4 text-4xl text-gray-300 dark:text-content-muted" aria-hidden="true"></i>
                                 <h3 class="text-lg font-medium text-content dark:text-white">No cohorts yet</h3>
                                 <p class="mt-1 text-sm text-content-muted dark:text-content-muted">Create a cohort to assign courses to a group of students.</p>
                             </td>
@@ -143,7 +143,7 @@
             <div class="relative top-16 mx-auto w-11/12 rounded-md border border-line bg-surface p-5 shadow-sm dark:border-gray-700 dark:bg-gray-800 md:w-2/3 lg:w-1/2" wire:click.stop>
                 <div class="flex items-center justify-between border-b border-line pb-4 dark:border-gray-700">
                     <h3 class="text-lg font-semibold text-content dark:text-white">{{ $editingCohortId ? 'Edit Cohort' : 'New Cohort' }}</h3>
-                    <button aria-label="Close dialog" wire:click="closeModals" class="text-content-muted hover:text-content-muted dark:hover:text-gray-300"><i class="fas fa-times text-xl"></i></button>
+                    <button aria-label="Close dialog" wire:click="closeModals" class="text-content-muted hover:text-content-muted dark:hover:text-gray-300"><i class="fas fa-times text-xl" aria-hidden="true"></i></button>
                 </div>
 
                 <form wire:submit.prevent="saveCohort" class="mt-6 space-y-4">
@@ -201,7 +201,7 @@
                         <h3 class="text-lg font-semibold text-content dark:text-white">Manage {{ $selectedCohort->name }}</h3>
                         <p class="text-sm text-content-muted dark:text-content-muted">{{ $selectedCohort->institution->name }}</p>
                     </div>
-                    <button aria-label="Close dialog" wire:click="closeModals" class="text-content-muted hover:text-content-muted dark:hover:text-gray-300"><i class="fas fa-times text-xl"></i></button>
+                    <button aria-label="Close dialog" wire:click="closeModals" class="text-content-muted hover:text-content-muted dark:hover:text-gray-300"><i class="fas fa-times text-xl" aria-hidden="true"></i></button>
                 </div>
 
                 <div class="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-2">
@@ -258,10 +258,10 @@
             <div class="relative top-10 mx-auto w-11/12 rounded-md border border-line bg-surface p-5 shadow-sm dark:border-gray-700 dark:bg-gray-800 lg:w-4/5" wire:click.stop>
                 <div class="flex items-center justify-between border-b border-line pb-4 dark:border-gray-700">
                     <h3 class="text-lg font-semibold text-content dark:text-white">{{ $selectedCohort->name }} Report</h3>
-                    <button aria-label="Close dialog" wire:click="closeModals" class="text-content-muted hover:text-content-muted dark:hover:text-gray-300"><i class="fas fa-times text-xl"></i></button>
+                    <button aria-label="Close dialog" wire:click="closeModals" class="text-content-muted hover:text-content-muted dark:hover:text-gray-300"><i class="fas fa-times text-xl" aria-hidden="true"></i></button>
                 </div>
                 <div class="mt-6 overflow-x-auto">
-                    <x-ui.table label="Cohort Management.Blade records"><table class="min-w-full divide-y divide-line text-sm dark:divide-gray-700">
+                    <x-ui.table label="Cohort Management records"><table class="min-w-full divide-y divide-line text-sm dark:divide-gray-700">
                         <thead class="bg-surface-muted dark:bg-gray-700/50">
                             <tr>
                                 <th scope="col" class="px-4 py-2 text-left text-xs font-medium uppercase text-content-muted">Student</th>
@@ -291,7 +291,7 @@
                 </div>
                 <div class="mt-6 flex justify-end space-x-3 border-t border-line pt-6 dark:border-gray-700">
                     <button wire:click="exportCohortReport({{ $selectedCohort->id }})" class="rounded-md bg-green-600 px-4 py-2 text-sm font-medium text-white hover:bg-green-700">
-                        <i class="fas fa-download mr-2"></i>Export CSV
+                        <i class="fas fa-download mr-2" aria-hidden="true"></i>Export CSV
                     </button>
                     <button wire:click="closeModals" class="rounded-md bg-gray-200 px-4 py-2 text-sm font-medium text-content hover:bg-gray-300 dark:bg-gray-600 dark:text-white">Close</button>
                 </div>

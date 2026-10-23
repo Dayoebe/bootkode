@@ -140,7 +140,7 @@
             </div>
             <div class="overflow-x-auto">
                 @if(isset($pendingWithdrawals) && $pendingWithdrawals->count() > 0)
-                    <x-ui.table label="Financial Dashboard.Blade records"><table class="min-w-full divide-y divide-themed-primary">
+                    <x-ui.table label="Financial Dashboard records"><table class="min-w-full divide-y divide-themed-primary">
                         <thead class="bg-themed-tertiary">
                             <tr>
                                 <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-themed-secondary uppercase tracking-wider">

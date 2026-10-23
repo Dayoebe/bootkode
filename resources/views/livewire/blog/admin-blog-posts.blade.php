@@ -3,20 +3,20 @@
     {{-- Success/Error Messages --}}
     @if (session()->has('message'))
         <div class="mb-4 bg-green-50 border border-green-200 text-green-800 px-4 py-3 rounded-lg flex items-start">
-            <i class="fas fa-check-circle mr-2 mt-0.5"></i>
+            <i class="fas fa-check-circle mr-2 mt-0.5" aria-hidden="true"></i>
             <span class="flex-1">{{ session('message') }}</span>
             <button onclick="this.parentElement.remove()" class="text-green-600 hover:text-green-800" aria-label="Close">
-                <i class="fas fa-times"></i>
+                <i class="fas fa-times" aria-hidden="true"></i>
             </button>
         </div>
     @endif
 
     @if (session()->has('error'))
         <div class="mb-4 bg-red-50 border border-red-200 text-red-800 px-4 py-3 rounded-lg flex items-start">
-            <i class="fas fa-exclamation-circle mr-2 mt-0.5"></i>
+            <i class="fas fa-exclamation-circle mr-2 mt-0.5" aria-hidden="true"></i>
             <span class="flex-1">{{ session('error') }}</span>
             <button onclick="this.parentElement.remove()" class="text-red-600 hover:text-red-800" aria-label="Close">
-                <i class="fas fa-times"></i>
+                <i class="fas fa-times" aria-hidden="true"></i>
             </button>
         </div>
     @endif
@@ -29,7 +29,7 @@
         </div>
         <a href="{{ route('admin.blog.posts.create') }}"
            class="inline-flex items-center justify-center px-4 py-2 bg-action text-action-foreground rounded-lg hover:bg-action transition-colors text-sm font-medium whitespace-nowrap">
-            <i class="fas fa-plus mr-2"></i>
+            <i class="fas fa-plus mr-2" aria-hidden="true"></i>
             Create Post
         </a>
     </div>
@@ -87,7 +87,7 @@
             <div class="mt-3">
                 <button wire:click="clearFilters"
                         class="px-3 py-1.5 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors text-sm">
-                    <i class="fas fa-times mr-1"></i>
+                    <i class="fas fa-times mr-1" aria-hidden="true"></i>
                     Clear Filters
                 </button>
             </div>
@@ -123,7 +123,7 @@
     {{-- Desktop Table View (hidden on mobile) --}}
     <div class="hidden lg:block bg-surface dark:bg-gray-800 rounded-lg shadow-sm overflow-hidden">
         <div class="overflow-x-auto">
-            <x-ui.table label="Admin Blog Posts.Blade records"><table class="w-full">
+            <x-ui.table label="Admin Blog Posts records"><table class="w-full">
                 <thead class="bg-surface-muted dark:bg-gray-700">
                     <tr>
                         <th scope="col" class="px-4 py-3 text-left w-10">
@@ -159,7 +159,7 @@
                                              class="w-12 h-12 rounded object-cover flex-shrink-0">
                                     @else
                                         <div class="w-12 h-12 bg-gray-200 rounded flex items-center justify-center flex-shrink-0">
-                                            <i class="fas fa-image text-content-muted"></i>
+                                            <i class="fas fa-image text-content-muted" aria-hidden="true"></i>
                                         </div>
                                     @endif
                                     <div class="flex-1 min-w-0">
@@ -233,9 +233,9 @@
                             </td>
                             <td class="px-4 py-3">
                                 <div class="flex items-center space-x-3 text-xs text-content-muted">
-                                    <span title="Views"><i class="fas fa-eye"></i> {{ number_format($post->views_count) }}</span>
-                                    <span title="Likes"><i class="fas fa-heart"></i> {{ number_format($post->likes_count) }}</span>
-                                    <span title="Comments"><i class="fas fa-comment"></i> {{ number_format($post->comments_count) }}</span>
+                                    <span title="Views"><i class="fas fa-eye" aria-hidden="true"></i> {{ number_format($post->views_count) }}</span>
+                                    <span title="Likes"><i class="fas fa-heart" aria-hidden="true"></i> {{ number_format($post->likes_count) }}</span>
+                                    <span title="Comments"><i class="fas fa-comment" aria-hidden="true"></i> {{ number_format($post->comments_count) }}</span>
                                 </div>
                             </td>
                             <td class="px-4 py-3">
@@ -256,22 +256,22 @@
                                        target="_blank"
                                        class="text-brand hover:text-brand p-1"
                                        title="View Post">
-                                        <i class="fas fa-external-link-alt text-sm"></i>
+                                        <i class="fas fa-external-link-alt text-sm" aria-hidden="true"></i>
                                     </a>
                                     <a href="{{ route('admin.blog.posts.edit', $post->slug) }}"
                                        class="text-green-600 hover:text-green-800 p-1"
                                        title="Edit Post">
-                                        <i class="fas fa-edit text-sm"></i>
+                                        <i class="fas fa-edit text-sm" aria-hidden="true"></i>
                                     </a>
                                     <button wire:click="toggleFeatured({{ $post->id }})"
                                             class="text-yellow-600 hover:text-yellow-800 p-1"
                                             title="Toggle Featured">
-                                        <i class="fas {{ $post->is_featured ? 'fa-star' : 'fa-star-o' }} text-sm"></i>
+                                        <i class="fas {{ $post->is_featured ? 'fa-star' : 'fa-star-o' }} text-sm" aria-hidden="true"></i>
                                     </button>
                                     <button wire:click="confirmDelete({{ $post->id }})"
                                             class="text-red-600 hover:text-red-800 p-1"
                                             title="Delete Post">
-                                        <i class="fas fa-trash text-sm"></i>
+                                        <i class="fas fa-trash text-sm" aria-hidden="true"></i>
                                     </button>
                                 </div>
                             </td>
@@ -279,7 +279,7 @@
                     @empty
                         <tr>
                             <td colspan="8" class="px-4 py-12 text-center text-content-muted">
-                                <i class="fas fa-newspaper text-4xl mb-4"></i>
+                                <i class="fas fa-newspaper text-4xl mb-4" aria-hidden="true"></i>
                                 <p>No posts found.</p>
                             </td>
                         </tr>
@@ -306,7 +306,7 @@
                              class="w-20 h-20 rounded object-cover flex-shrink-0">
                     @else
                         <div class="w-20 h-20 bg-gray-200 rounded flex items-center justify-center flex-shrink-0">
-                            <i class="fas fa-image text-content-muted"></i>
+                            <i class="fas fa-image text-content-muted" aria-hidden="true"></i>
                         </div>
                     @endif
 
@@ -374,9 +374,9 @@
                         @endswitch
                     </div>
                     <div class="flex items-center gap-3 text-xs text-content-muted">
-                        <span><i class="fas fa-eye"></i> {{ number_format($post->views_count) }}</span>
-                        <span><i class="fas fa-heart"></i> {{ number_format($post->likes_count) }}</span>
-                        <span><i class="fas fa-comment"></i> {{ number_format($post->comments_count) }}</span>
+                        <span><i class="fas fa-eye" aria-hidden="true"></i> {{ number_format($post->views_count) }}</span>
+                        <span><i class="fas fa-heart" aria-hidden="true"></i> {{ number_format($post->likes_count) }}</span>
+                        <span><i class="fas fa-comment" aria-hidden="true"></i> {{ number_format($post->comments_count) }}</span>
                     </div>
                 </div>
 
@@ -386,32 +386,32 @@
                         <a href="{{ route('blog.show', $post->slug) }}"
                            target="_blank"
                            class="px-3 py-1.5 text-xs bg-brand/10 text-brand rounded hover:bg-blue-200">
-                            <i class="fas fa-external-link-alt mr-1"></i> View
+                            <i class="fas fa-external-link-alt mr-1" aria-hidden="true"></i> View
                         </a>
                         <a href="{{ route('admin.blog.posts.edit', $post->slug) }}"
                            class="px-3 py-1.5 text-xs bg-green-100 text-green-700 rounded hover:bg-green-200">
-                            <i class="fas fa-edit mr-1"></i> Edit
+                            <i class="fas fa-edit mr-1" aria-hidden="true"></i> Edit
                         </a>
                     </div>
                     <div class="flex items-center gap-2">
                         <button wire:click="toggleFeatured({{ $post->id }})"
                                 class="p-1.5 text-yellow-600 hover:bg-yellow-50 rounded">
-                            <i class="fas {{ $post->is_featured ? 'fa-star' : 'fa-star-o' }}"></i>
+                            <i class="fas {{ $post->is_featured ? 'fa-star' : 'fa-star-o' }}" aria-hidden="true"></i>
                         </button>
                         <button wire:click="togglePostStatus({{ $post->id }})"
                                 class="p-1.5 text-brand hover:bg-brand/10 rounded">
-                            <i class="fas fa-sync"></i>
+                            <i class="fas fa-sync" aria-hidden="true"></i>
                         </button>
                         <button wire:click="confirmDelete({{ $post->id }})"
                                 class="p-1.5 text-red-600 hover:bg-red-50 rounded">
-                            <i class="fas fa-trash"></i>
+                            <i class="fas fa-trash" aria-hidden="true"></i>
                         </button>
                     </div>
                 </div>
             </div>
         @empty
             <div class="bg-surface dark:bg-gray-800 rounded-lg shadow-sm p-12 text-center text-content-muted">
-                <i class="fas fa-newspaper text-4xl mb-4"></i>
+                <i class="fas fa-newspaper text-4xl mb-4" aria-hidden="true"></i>
                 <p>No posts found.</p>
             </div>
         @endforelse

@@ -21,7 +21,7 @@
         <div class="mt-6 grid grid-cols-1 md:grid-cols-4 gap-4">
             <div class="bg-red-50 dark:bg-red-900/20 rounded-lg p-4 transition-colors duration-300">
                 <div class="flex items-center">
-                    <i class="fas fa-flag text-red-600 dark:text-red-400 text-xl mr-3"></i>
+                    <i class="fas fa-flag text-red-600 dark:text-red-400 text-xl mr-3" aria-hidden="true"></i>
                     <div>
                         <p class="text-2xl font-bold text-red-600 dark:text-red-400">{{ $content->where('status', 'flagged')->count() }}</p>
                         <p class="text-sm text-red-700 dark:text-red-300">Flagged Content</p>
@@ -30,7 +30,7 @@
             </div>
             <div class="bg-yellow-50 dark:bg-yellow-900/20 rounded-lg p-4 transition-colors duration-300">
                 <div class="flex items-center">
-                    <i class="fas fa-clock text-yellow-600 dark:text-yellow-400 text-xl mr-3"></i>
+                    <i class="fas fa-clock text-yellow-600 dark:text-yellow-400 text-xl mr-3" aria-hidden="true"></i>
                     <div>
                         <p class="text-2xl font-bold text-yellow-600 dark:text-yellow-400">{{ $content->where('status', 'pending_review')->count() }}</p>
                         <p class="text-sm text-yellow-700 dark:text-yellow-300">Pending Review</p>
@@ -39,7 +39,7 @@
             </div>
             <div class="bg-green-50 dark:bg-green-900/20 rounded-lg p-4 transition-colors duration-300">
                 <div class="flex items-center">
-                    <i class="fas fa-check-circle text-green-600 dark:text-green-400 text-xl mr-3"></i>
+                    <i class="fas fa-check-circle text-green-600 dark:text-green-400 text-xl mr-3" aria-hidden="true"></i>
                     <div>
                         <p class="text-2xl font-bold text-green-600 dark:text-green-400">{{ $content->where('status', 'published')->count() }}</p>
                         <p class="text-sm text-green-700 dark:text-green-300">Published</p>
@@ -48,7 +48,7 @@
             </div>
             <div class="bg-surface-muted dark:bg-gray-700 rounded-lg p-4 transition-colors duration-300">
                 <div class="flex items-center">
-                    <i class="fas fa-archive text-content-muted dark:text-content-muted text-xl mr-3"></i>
+                    <i class="fas fa-archive text-content-muted dark:text-content-muted text-xl mr-3" aria-hidden="true"></i>
                     <div>
                         <p class="text-2xl font-bold text-content-muted dark:text-gray-300">{{ $content->where('status', 'archived')->count() }}</p>
                         <p class="text-sm text-content dark:text-content-muted">Archived</p>
@@ -105,7 +105,7 @@
                     wire:click="$refresh"
                     class="w-full bg-surface-muted dark:bg-gray-700 text-content dark:text-gray-300 px-4 py-2 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors flex items-center justify-center space-x-2"
                 >
-                    <i class="fas fa-sync-alt"></i>
+                    <i class="fas fa-sync-alt" aria-hidden="true"></i>
                     <span>Refresh</span>
                 </button>
             </div>
@@ -129,7 +129,7 @@
                                         {{ $item->content_type === 'material' ? 'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300' : '' }}
                                         {{ $item->content_type === 'video' ? 'bg-purple-100 dark:bg-action/30 text-brand dark:text-purple-300' : '' }}
                                     ">
-                                        <i class="fas {{ $item->content_type === 'document' ? 'fa-file-alt' : ($item->content_type === 'material' ? 'fa-book' : 'fa-video') }} mr-1"></i>
+                                        <i class="fas {{ $item->content_type === 'document' ? 'fa-file-alt' : ($item->content_type === 'material' ? 'fa-book' : 'fa-video') }} mr-1" aria-hidden="true"></i>
                                         {{ ucfirst($item->content_type) }}
                                     </span>
 
@@ -143,23 +143,23 @@
                                     ">
                                         @switch($item->status)
                                             @case('published')
-                                                <i class="fas fa-check-circle mr-1"></i>
+                                                <i class="fas fa-check-circle mr-1" aria-hidden="true"></i>
                                                 Published
                                                 @break
                                             @case('draft')
-                                                <i class="fas fa-edit mr-1"></i>
+                                                <i class="fas fa-edit mr-1" aria-hidden="true"></i>
                                                 Draft
                                                 @break
                                             @case('pending_review')
-                                                <i class="fas fa-clock mr-1"></i>
+                                                <i class="fas fa-clock mr-1" aria-hidden="true"></i>
                                                 Pending Review
                                                 @break
                                             @case('flagged')
-                                                <i class="fas fa-flag mr-1"></i>
+                                                <i class="fas fa-flag mr-1" aria-hidden="true"></i>
                                                 Flagged
                                                 @break
                                             @case('archived')
-                                                <i class="fas fa-archive mr-1"></i>
+                                                <i class="fas fa-archive mr-1" aria-hidden="true"></i>
                                                 Archived
                                                 @break
                                             @default
@@ -176,20 +176,20 @@
 
                                 <div class="flex items-center space-x-4 text-xs text-content-muted dark:text-content-muted">
                                     <span>
-                                        <i class="fas fa-user mr-1"></i>
+                                        <i class="fas fa-user mr-1" aria-hidden="true"></i>
                                         {{ $item->creator->name ?? $item->uploader->name ?? 'Unknown' }}
                                     </span>
                                     <span>
-                                        <i class="fas fa-calendar mr-1"></i>
+                                        <i class="fas fa-calendar mr-1" aria-hidden="true"></i>
                                         {{ $item->created_at->format('M j, Y') }}
                                     </span>
                                     <span>
-                                        <i class="fas fa-clock mr-1"></i>
+                                        <i class="fas fa-clock mr-1" aria-hidden="true"></i>
                                         {{ $item->updated_at->diffForHumans() }}
                                     </span>
                                     @if($item->category ?? $item->type)
                                         <span>
-                                            <i class="fas fa-tag mr-1"></i>
+                                            <i class="fas fa-tag mr-1" aria-hidden="true"></i>
                                             {{ $item->category->name ?? $item->type ?? 'Uncategorized' }}
                                         </span>
                                     @endif
@@ -204,7 +204,7 @@
                                         class="text-green-600 dark:text-green-400 hover:text-green-800 dark:hover:text-green-300 bg-green-50 dark:bg-green-900/20 hover:bg-green-100 dark:hover:bg-green-900/30 px-3 py-1 rounded text-xs font-medium transition-colors"
                                         title="Quick Approve"
                                     >
-                                        <i class="fas fa-check mr-1"></i>
+                                        <i class="fas fa-check mr-1" aria-hidden="true"></i>
                                         Approve
                                     </button>
                                 @endif
@@ -216,7 +216,7 @@
                                         class="text-content-muted dark:text-content-muted hover:text-content-muted dark:hover:text-gray-300 p-1"
                                         onclick="toggleModerationDropdown({{ $item->id }})"
                                     >
-                                        <i class="fas fa-ellipsis-v"></i>
+                                        <i class="fas fa-ellipsis-v" aria-hidden="true"></i>
                                     </button>
                                     <div id="moderation-dropdown-{{ $item->id }}" class="hidden absolute right-0 z-10 mt-2 w-48 bg-surface dark:bg-gray-800 rounded-md shadow-sm ring-1 ring-black ring-opacity-5 dark:ring-gray-700">
                                         <div class="py-1">
@@ -224,28 +224,28 @@
                                                 wire:click="openModerationModal({{ $item->id }}, '{{ $item->content_type }}', 'approve')"
                                                 class="w-full text-left px-4 py-2 text-sm text-green-700 dark:text-green-400 hover:bg-green-50 dark:hover:bg-green-900/20 flex items-center"
                                             >
-                                                <i class="fas fa-check mr-2"></i>
+                                                <i class="fas fa-check mr-2" aria-hidden="true"></i>
                                                 Approve
                                             </button>
                                             <button
                                                 wire:click="openModerationModal({{ $item->id }}, '{{ $item->content_type }}', 'reject')"
                                                 class="w-full text-left px-4 py-2 text-sm text-red-700 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 flex items-center"
                                             >
-                                                <i class="fas fa-times mr-2"></i>
+                                                <i class="fas fa-times mr-2" aria-hidden="true"></i>
                                                 Reject
                                             </button>
                                             <button
                                                 wire:click="openModerationModal({{ $item->id }}, '{{ $item->content_type }}', 'flag')"
                                                 class="w-full text-left px-4 py-2 text-sm text-orange-700 dark:text-orange-400 hover:bg-orange-50 dark:hover:bg-orange-900/20 flex items-center"
                                             >
-                                                <i class="fas fa-flag mr-2"></i>
+                                                <i class="fas fa-flag mr-2" aria-hidden="true"></i>
                                                 Flag Content
                                             </button>
                                             <button
                                                 wire:click="openModerationModal({{ $item->id }}, '{{ $item->content_type }}', 'archive')"
                                                 class="w-full text-left px-4 py-2 text-sm text-content dark:text-content-muted hover:bg-surface-muted dark:hover:bg-gray-700 flex items-center"
                                             >
-                                                <i class="fas fa-archive mr-2"></i>
+                                                <i class="fas fa-archive mr-2" aria-hidden="true"></i>
                                                 Archive
                                             </button>
                                         </div>
@@ -258,7 +258,7 @@
             </div>
         @else
             <div class="p-12 text-center">
-                <i class="fas fa-shield-alt text-6xl text-gray-300 dark:text-content-muted mb-4"></i>
+                <i class="fas fa-shield-alt text-6xl text-gray-300 dark:text-content-muted mb-4" aria-hidden="true"></i>
                 <h3 class="text-lg font-medium text-content dark:text-white mb-2">No content found</h3>
                 <p class="text-content-muted dark:text-content-muted">
                     @if($search)
@@ -286,7 +286,7 @@
                             </p>
                         </div>
                         <button wire:click="closeModerationModal" class="text-content-muted dark:text-content-muted hover:text-content-muted dark:hover:text-gray-300" aria-label="Close">
-                            <i class="fas fa-times text-xl"></i>
+                            <i class="fas fa-times text-xl" aria-hidden="true"></i>
                         </button>
                     </div>
 
@@ -306,11 +306,11 @@
                             </div>
                             <div class="flex items-center space-x-4 text-sm text-content-muted dark:text-content-muted">
                                 <span>
-                                    <i class="fas fa-user mr-1"></i>
+                                    <i class="fas fa-user mr-1" aria-hidden="true"></i>
                                     {{ $selectedContent->creator->name ?? $selectedContent->uploader->name ?? 'Unknown' }}
                                 </span>
                                 <span>
-                                    <i class="fas fa-calendar mr-1"></i>
+                                    <i class="fas fa-calendar mr-1" aria-hidden="true"></i>
                                     {{ $selectedContent->created_at->format('M j, Y g:i A') }}
                                 </span>
                             </div>

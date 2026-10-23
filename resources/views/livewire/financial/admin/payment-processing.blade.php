@@ -6,7 +6,7 @@
             <h1 class=" font-bold text-themed-primary bk-page-title">Payment Processing Center</h1>
             <p class="text-themed-secondary">Manage payments, withdrawals, and financial operations</p>
             <a href="{{ route('admin.commercial.readiness') }}" class="mt-3 inline-flex rounded-lg border border-themed-secondary px-3 py-2 text-sm font-semibold text-themed-primary hover:border-brand hover:text-brand">
-                <i class="fas fa-file-invoice-dollar mr-2"></i>Commercial readiness
+                <i class="fas fa-file-invoice-dollar mr-2" aria-hidden="true"></i>Commercial readiness
             </a>
         </div>
 
@@ -56,7 +56,7 @@
 
         <!-- Tab Navigation -->
         <div class="border-b border-themed-primary mb-8">
-            <nav class="-mb-px flex space-x-8">
+            <nav aria-label="Payment views" class="-mb-px flex max-w-full gap-6 overflow-x-auto pb-1">
                 <button wire:click="setTab('overview')"
                     class="{{ $selectedTab === 'overview' ? 'border-blue-500 text-blue-600' : 'border-transparent text-themed-secondary hover:text-content hover:border-gray-300' }} whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm">
                     Payment Overview

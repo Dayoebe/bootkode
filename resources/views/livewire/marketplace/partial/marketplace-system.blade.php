@@ -12,15 +12,15 @@
             <div class="flex flex-wrap gap-2">
                 <button wire:click="$set('activeTab', 'overview')"
                         class="px-4 py-2 bg-action dark:bg-action text-action-foreground rounded-lg hover:bg-action dark:hover:bg-action transition-colors duration-300">
-                    <i class="fas fa-chart-bar mr-2"></i>Overview
+                    <i class="fas fa-chart-bar mr-2" aria-hidden="true"></i>Overview
                 </button>
                 <button wire:click="$set('activeTab', 'settings')"
                         class="px-4 py-2 bg-gray-600 dark:bg-gray-500 text-white rounded-lg hover:bg-gray-700 dark:hover:bg-gray-600 transition-colors duration-300">
-                    <i class="fas fa-cogs mr-2"></i>Settings
+                    <i class="fas fa-cogs mr-2" aria-hidden="true"></i>Settings
                 </button>
                 <button wire:click="$refresh"
                         class="px-4 py-2 bg-green-600 dark:bg-green-500 text-white rounded-lg hover:bg-green-700 dark:hover:bg-green-600 transition-colors duration-300">
-                    <i class="fas fa-sync-alt mr-2"></i>Refresh
+                    <i class="fas fa-sync-alt mr-2" aria-hidden="true"></i>Refresh
                 </button>
             </div>
         </div>
@@ -60,15 +60,15 @@
             <nav class="flex max-w-full gap-6 overflow-x-auto px-6" aria-label="Management sections">
                 <button wire:click="$set('activeTab', 'overview')"
                         class="min-h-11 shrink-0 py-4 px-1 border-b-2 font-medium text-sm transition-colors duration-300 {{ $activeTab === 'overview' ? 'border-blue-500 text-brand dark:text-blue-400' : 'border-transparent text-content-muted dark:text-content-muted hover:text-content dark:hover:text-gray-300 hover:border-line dark:hover:border-gray-600' }}">
-                    <i class="fas fa-chart-bar mr-2"></i>Overview
+                    <i class="fas fa-chart-bar mr-2" aria-hidden="true"></i>Overview
                 </button>
                 <button wire:click="$set('activeTab', 'analytics')"
                         class="min-h-11 shrink-0 py-4 px-1 border-b-2 font-medium text-sm transition-colors duration-300 {{ $activeTab === 'analytics' ? 'border-blue-500 text-brand dark:text-blue-400' : 'border-transparent text-content-muted dark:text-content-muted hover:text-content dark:hover:text-gray-300 hover:border-line dark:hover:border-gray-600' }}">
-                    <i class="fas fa-chart-line mr-2"></i>Analytics
+                    <i class="fas fa-chart-line mr-2" aria-hidden="true"></i>Analytics
                 </button>
                 <button wire:click="$set('activeTab', 'items')"
                         class="min-h-11 shrink-0 py-4 px-1 border-b-2 font-medium text-sm transition-colors duration-300 {{ $activeTab === 'items' ? 'border-blue-500 text-brand dark:text-blue-400' : 'border-transparent text-content-muted dark:text-content-muted hover:text-content dark:hover:text-gray-300 hover:border-line dark:hover:border-gray-600' }}">
-                    <i class="fas fa-box mr-2"></i>Items Management
+                    <i class="fas fa-box mr-2" aria-hidden="true"></i>Items Management
                     @if(($stats['pending_items'] ?? 0) > 0)
                         <span class="ml-2 inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-300">
                             {{ $stats['pending_items'] }}
@@ -77,7 +77,7 @@
                 </button>
                 <button wire:click="$set('activeTab', 'orders')"
                         class="min-h-11 shrink-0 py-4 px-1 border-b-2 font-medium text-sm transition-colors duration-300 {{ $activeTab === 'orders' ? 'border-blue-500 text-brand dark:text-blue-400' : 'border-transparent text-content-muted dark:text-content-muted hover:text-content dark:hover:text-gray-300 hover:border-line dark:hover:border-gray-600' }}">
-                    <i class="fas fa-shopping-cart mr-2"></i>Orders
+                    <i class="fas fa-shopping-cart mr-2" aria-hidden="true"></i>Orders
                     @if(($stats['pending_orders'] ?? 0) > 0)
                         <span class="ml-2 inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-300">
                             {{ $stats['pending_orders'] }}
@@ -86,11 +86,11 @@
                 </button>
                 <button wire:click="$set('activeTab', 'vendors')"
                         class="min-h-11 shrink-0 py-4 px-1 border-b-2 font-medium text-sm transition-colors duration-300 {{ $activeTab === 'vendors' ? 'border-blue-500 text-brand dark:text-blue-400' : 'border-transparent text-content-muted dark:text-content-muted hover:text-content dark:hover:text-gray-300 hover:border-line dark:hover:border-gray-600' }}">
-                    <i class="fas fa-users mr-2"></i>Vendors
+                    <i class="fas fa-users mr-2" aria-hidden="true"></i>Vendors
                 </button>
                 <button wire:click="$set('activeTab', 'settings')"
                         class="min-h-11 shrink-0 py-4 px-1 border-b-2 font-medium text-sm transition-colors duration-300 {{ $activeTab === 'settings' ? 'border-blue-500 text-brand dark:text-blue-400' : 'border-transparent text-content-muted dark:text-content-muted hover:text-content dark:hover:text-gray-300 hover:border-line dark:hover:border-gray-600' }}">
-                    <i class="fas fa-cogs mr-2"></i>Settings
+                    <i class="fas fa-cogs mr-2" aria-hidden="true"></i>Settings
                 </button>
             </nav>
         </div>
@@ -134,11 +134,11 @@
             <div class="bg-green-100 dark:bg-green-900 border border-green-400 dark:border-green-700 text-green-700 dark:text-green-300 px-4 py-3 rounded shadow-sm transition-colors duration-300">
                 <div class="flex items-center justify-between">
                     <div class="flex items-center">
-                        <i class="fas fa-check-circle mr-2"></i>
+                        <i class="fas fa-check-circle mr-2" aria-hidden="true"></i>
                         {{ session('message') }}
                     </div>
                     <button @click="show = false" class="text-green-500 dark:text-green-400 hover:text-green-700 dark:hover:text-green-200" aria-label="Close">
-                        <i class="fas fa-times"></i>
+                        <i class="fas fa-times" aria-hidden="true"></i>
                     </button>
                 </div>
             </div>
@@ -151,11 +151,11 @@
             <div class="bg-red-100 dark:bg-red-900 border border-red-400 dark:border-red-700 text-red-700 dark:text-red-300 px-4 py-3 rounded shadow-sm transition-colors duration-300">
                 <div class="flex items-center justify-between">
                     <div class="flex items-center">
-                        <i class="fas fa-exclamation-circle mr-2"></i>
+                        <i class="fas fa-exclamation-circle mr-2" aria-hidden="true"></i>
                         {{ session('error') }}
                     </div>
                     <button @click="show = false" class="text-red-500 dark:text-red-400 hover:text-red-700 dark:hover:text-red-200" aria-label="Close">
-                        <i class="fas fa-times"></i>
+                        <i class="fas fa-times" aria-hidden="true"></i>
                     </button>
                 </div>
             </div>

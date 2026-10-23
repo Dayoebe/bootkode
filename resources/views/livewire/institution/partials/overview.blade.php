@@ -11,7 +11,7 @@
                     <p class="text-xs text-content-muted dark:text-content-muted mt-1">{{ $selectedPeriod }} days</p>
                 </div>
                 <div class="bg-green-100 dark:bg-green-900/30 p-3 rounded-full">
-                    <i class="fas fa-dollar-sign text-green-600 dark:text-green-400 text-xl"></i>
+                    <i class="fas fa-dollar-sign text-green-600 dark:text-green-400 text-xl" aria-hidden="true"></i>
                 </div>
             </div>
         </div>
@@ -25,7 +25,7 @@
                     <p class="text-xs text-content-muted dark:text-content-muted mt-1">{{ $selectedPeriod }} days</p>
                 </div>
                 <div class="bg-brand/10 dark:bg-action/30 p-3 rounded-full">
-                    <i class="fas fa-user-graduate text-brand dark:text-brand text-xl"></i>
+                    <i class="fas fa-user-graduate text-brand dark:text-brand text-xl" aria-hidden="true"></i>
                 </div>
             </div>
         </div>
@@ -39,7 +39,7 @@
                     <p class="text-xs text-content-muted dark:text-content-muted mt-1">{{ $selectedPeriod }} days</p>
                 </div>
                 <div class="bg-brand/10 dark:bg-action/30 p-3 rounded-full">
-                    <i class="fas fa-certificate text-brand dark:text-brand text-xl"></i>
+                    <i class="fas fa-certificate text-brand dark:text-brand text-xl" aria-hidden="true"></i>
                 </div>
             </div>
         </div>
@@ -55,7 +55,7 @@
                     </p>
                 </div>
                 <div class="bg-brand/10 dark:bg-action/30 p-3 rounded-full">
-                    <i class="fas fa-university text-brand dark:text-brand text-xl"></i>
+                    <i class="fas fa-university text-brand dark:text-brand text-xl" aria-hidden="true"></i>
                 </div>
             </div>
         </div>
@@ -84,7 +84,7 @@
                 @else
                     <div class="flex items-center justify-center h-full text-content-muted dark:text-content-muted">
                         <div class="text-center">
-                            <i class="fas fa-chart-line text-4xl mb-2"></i>
+                            <i class="fas fa-chart-line text-4xl mb-2" aria-hidden="true"></i>
                             <p>No data available</p>
                         </div>
                     </div>
@@ -96,7 +96,7 @@
         <div class="bg-surface dark:bg-gray-800 rounded-lg shadow-sm border border-line dark:border-gray-700 p-6">
             <div class="flex items-center justify-between mb-6">
                 <h3 class="text-lg font-semibold text-content dark:text-white">Institution Types</h3>
-                <i class="fas fa-chart-pie text-content-muted dark:text-content-muted"></i>
+                <i class="fas fa-chart-pie text-content-muted dark:text-content-muted" aria-hidden="true"></i>
             </div>
             <div class="space-y-4">
                 @if($institutionTypeBreakdown->count() > 0)
@@ -128,7 +128,7 @@
                 @else
                     <div class="flex items-center justify-center py-8 text-content-muted dark:text-content-muted">
                         <div class="text-center">
-                            <i class="fas fa-chart-pie text-4xl mb-2"></i>
+                            <i class="fas fa-chart-pie text-4xl mb-2" aria-hidden="true"></i>
                             <p>No institutions yet</p>
                         </div>
                     </div>
@@ -143,7 +143,7 @@
         <div class="bg-surface dark:bg-gray-800 rounded-lg shadow-sm border border-line dark:border-gray-700 p-6">
             <div class="flex items-center justify-between mb-6">
                 <h3 class="text-lg font-semibold text-content dark:text-white">License Status</h3>
-                <i class="fas fa-key text-content-muted dark:text-content-muted"></i>
+                <i class="fas fa-key text-content-muted dark:text-content-muted" aria-hidden="true"></i>
             </div>
             <div class="grid grid-cols-2 gap-4">
                 @php
@@ -203,7 +203,7 @@
                 @else
                     <div class="flex items-center justify-center py-8 text-content-muted dark:text-content-muted">
                         <div class="text-center">
-                            <i class="fas fa-building text-4xl mb-2"></i>
+                            <i class="fas fa-building text-4xl mb-2" aria-hidden="true"></i>
                             <p>No institutions yet</p>
                         </div>
                     </div>
@@ -232,10 +232,10 @@
                             <p class="text-sm text-content-muted dark:text-content-muted">{{ $activity['description'] }}</p>
                             <div class="flex items-center space-x-4 mt-1">
                                 <span class="text-xs text-content-muted dark:text-content-muted">
-                                    <i class="fas fa-user mr-1"></i>{{ $activity['user'] }}
+                                    <i class="fas fa-user mr-1" aria-hidden="true"></i>{{ $activity['user'] }}
                                 </span>
                                 <span class="text-xs text-content-muted dark:text-content-muted">
-                                    <i class="fas fa-clock mr-1"></i>{{ $activity['time']->diffForHumans() }}
+                                    <i class="fas fa-clock mr-1" aria-hidden="true"></i>{{ $activity['time']->diffForHumans() }}
                                 </span>
                             </div>
                         </div>
@@ -244,7 +244,7 @@
             @else
                 <div class="flex items-center justify-center py-8 text-content-muted dark:text-content-muted">
                     <div class="text-center">
-                        <i class="fas fa-history text-4xl mb-2"></i>
+                        <i class="fas fa-history text-4xl mb-2" aria-hidden="true"></i>
                         <p>No recent activities</p>
                     </div>
                 </div>

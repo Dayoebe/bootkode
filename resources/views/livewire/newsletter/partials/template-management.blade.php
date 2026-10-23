@@ -9,14 +9,14 @@
                 placeholder="Search templates..."
                 class="pl-10 pr-4 py-2 w-full md:w-64 border border-line rounded-lg focus:ring-2 focus:ring-brand/30 focus:border-transparent"
             >
-            <i class="fas fa-search absolute left-3 top-3 text-content-muted"></i>
+            <i class="fas fa-search absolute left-3 top-3 text-content-muted" aria-hidden="true"></i>
         </div>
 
         <button
             wire:click="$set('showCreateModal', true)"
             class="bg-action hover:bg-action text-action-foreground px-4 py-2 rounded-lg font-medium transition-colors"
         >
-            <i class="fas fa-plus mr-2"></i>Create Template
+            <i class="fas fa-plus mr-2" aria-hidden="true"></i>Create Template
         </button>
     </div>
 
@@ -27,7 +27,7 @@
                 <!-- Template Preview -->
                 <div class="h-48 bg-surface-muted relative overflow-hidden">
                     <div class="w-full h-full flex items-center justify-center text-content-muted">
-                        <i class="fas fa-newspaper text-4xl"></i>
+                        <i class="fas fa-newspaper text-4xl" aria-hidden="true"></i>
                     </div>
 
                     @if($template->is_default)
@@ -43,13 +43,13 @@
                                 wire:click="editTemplate({{ $template->id }})"
                                 class="bg-surface text-content px-3 py-1 rounded text-sm hover:bg-surface-muted"
                             >
-                                <i class="fas fa-edit mr-1"></i>Edit
+                                <i class="fas fa-edit mr-1" aria-hidden="true"></i>Edit
                             </button>
                             <button
                                 wire:click="duplicateTemplate({{ $template->id }})"
                                 class="bg-surface text-content px-3 py-1 rounded text-sm hover:bg-surface-muted"
                             >
-                                <i class="fas fa-copy mr-1"></i>Copy
+                                <i class="fas fa-copy mr-1" aria-hidden="true"></i>Copy
                             </button>
                         </div>
                     </div>
@@ -72,7 +72,7 @@
                                     class="text-yellow-600 hover:text-yellow-800 text-sm"
                                     title="Set as Default"
                                 >
-                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star" aria-hidden="true"></i>
                                 </button>
                             @endif
                             <button
@@ -81,7 +81,7 @@
                                 class="text-red-600 hover:text-red-800 text-sm"
                                 title="Delete"
                             >
-                                <i class="fas fa-trash"></i>
+                                <i class="fas fa-trash" aria-hidden="true"></i>
                             </button>
                         </div>
 
@@ -93,7 +93,7 @@
             </div>
         @empty
             <div class="col-span-full text-center py-12">
-                <i class="fas fa-newspaper text-4xl text-gray-300 mb-4"></i>
+                <i class="fas fa-newspaper text-4xl text-gray-300 mb-4" aria-hidden="true"></i>
                 <p class="text-content-muted">No templates found.</p>
                 <button
                     wire:click="$set('showCreateModal', true)"
@@ -192,7 +192,7 @@
                                                 wire:click="removeVariable({{ $index }})"
                                                 class="px-3 py-2 text-red-600 hover:text-red-800"
                                              aria-label="Remove variable">
-                                                <i class="fas fa-trash"></i>
+                                                <i class="fas fa-trash" aria-hidden="true"></i>
                                             </button>
                                         </div>
                                     @endforeach
@@ -202,7 +202,7 @@
                                     wire:click="addVariable"
                                     class="mt-2 text-brand hover:text-brand text-sm"
                                 >
-                                    <i class="fas fa-plus mr-1"></i>Add Variable
+                                    <i class="fas fa-plus mr-1" aria-hidden="true"></i>Add Variable
                                 </button>
                             </div>
 

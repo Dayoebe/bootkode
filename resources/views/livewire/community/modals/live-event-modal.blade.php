@@ -5,7 +5,7 @@
             <div class="sticky top-0 bg-themed-secondary border-b border-themed-primary p-6 flex items-center justify-between">
                 <h2 class="text-xl font-bold text-themed-primary">Create Live Event</h2>
                 <button type="button" aria-label="Close dialog" wire:click="closeModal()" class="text-themed-secondary hover:text-themed-primary transition-colors">
-                    <i class="fas fa-times text-2xl"></i>
+                    <i class="fas fa-times text-2xl" aria-hidden="true"></i>
                 </button>
             </div>
 
@@ -70,7 +70,7 @@
                     </button>
                     <button type="submit"
                             class="px-4 py-2 bg-action hover:bg-action text-action-foreground rounded-lg font-medium transition-colors flex items-center gap-2">
-                        <i class="fas fa-calendar-plus"></i>Create Event
+                        <i class="fas fa-calendar-plus" aria-hidden="true"></i>Create Event
                     </button>
                 </div>
             </form>

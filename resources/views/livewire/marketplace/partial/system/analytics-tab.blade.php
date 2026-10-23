@@ -39,7 +39,7 @@
                     </p>
                 </div>
                 <div class="p-2 bg-brand/10 rounded-lg">
-                    <i class="fas fa-calculator text-brand"></i>
+                    <i class="fas fa-calculator text-brand" aria-hidden="true"></i>
                 </div>
             </div>
         </div>
@@ -53,7 +53,7 @@
                     </p>
                 </div>
                 <div class="p-2 bg-green-100 rounded-lg">
-                    <i class="fas fa-percentage text-green-600"></i>
+                    <i class="fas fa-percentage text-green-600" aria-hidden="true"></i>
                 </div>
             </div>
         </div>
@@ -67,7 +67,7 @@
                     </p>
                 </div>
                 <div class="p-2 bg-brand/10 rounded-lg">
-                    <i class="fas fa-coins text-brand"></i>
+                    <i class="fas fa-coins text-brand" aria-hidden="true"></i>
                 </div>
             </div>
         </div>
@@ -79,7 +79,7 @@
                     <p class="text-2xl font-bold text-content">{{ number_format($stats['total_vendors']) }}</p>
                 </div>
                 <div class="p-2 bg-brand/10 rounded-lg">
-                    <i class="fas fa-users text-brand"></i>
+                    <i class="fas fa-users text-brand" aria-hidden="true"></i>
                 </div>
             </div>
         </div>
@@ -222,7 +222,7 @@
     <div class="bg-surface rounded-lg border border-line p-6">
         <h3 class="text-lg font-semibold text-content mb-4">Detailed Performance Metrics</h3>
         <div class="overflow-x-auto">
-            <x-ui.table label="Analytics Tab.Blade records"><table class="min-w-full divide-y divide-line">
+            <x-ui.table label="Analytics Tab records"><table class="min-w-full divide-y divide-line">
                 <thead class="bg-surface-muted">
                     <tr>
                         <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-content-muted uppercase tracking-wider">Metric</th>
@@ -238,7 +238,7 @@
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-content-muted">₦{{ number_format($stats['total_revenue'] * 0.85, 2) }}</td>
                         <td class="px-6 py-4 whitespace-nowrap">
                             <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                                <i class="fas fa-arrow-up mr-1"></i>+15%
+                                <i class="fas fa-arrow-up mr-1" aria-hidden="true"></i>+15%
                             </span>
                         </td>
                     </tr>
@@ -248,7 +248,7 @@
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-content-muted">{{ number_format($stats['total_orders'] * 0.9) }}</td>
                         <td class="px-6 py-4 whitespace-nowrap">
                             <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                                <i class="fas fa-arrow-up mr-1"></i>+10%
+                                <i class="fas fa-arrow-up mr-1" aria-hidden="true"></i>+10%
                             </span>
                         </td>
                     </tr>
@@ -258,7 +258,7 @@
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-content-muted">{{ number_format($stats['total_vendors'] * 0.08) }}</td>
                         <td class="px-6 py-4 whitespace-nowrap">
                             <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                                <i class="fas fa-arrow-up mr-1"></i>+25%
+                                <i class="fas fa-arrow-up mr-1" aria-hidden="true"></i>+25%
                             </span>
                         </td>
                     </tr>
@@ -268,7 +268,7 @@
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-content-muted">{{ number_format($stats['published_items'] * 0.15) }}</td>
                         <td class="px-6 py-4 whitespace-nowrap">
                             <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                                <i class="fas fa-arrow-up mr-1"></i>+33%
+                                <i class="fas fa-arrow-up mr-1" aria-hidden="true"></i>+33%
                             </span>
                         </td>
                     </tr>
@@ -286,13 +286,13 @@
             </div>
             <div class="flex space-x-3">
                 <button class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors">
-                    <i class="fas fa-file-excel mr-2"></i>Export to Excel
+                    <i class="fas fa-file-excel mr-2" aria-hidden="true"></i>Export to Excel
                 </button>
                 <button class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors">
-                    <i class="fas fa-file-pdf mr-2"></i>Export to PDF
+                    <i class="fas fa-file-pdf mr-2" aria-hidden="true"></i>Export to PDF
                 </button>
                 <button class="px-4 py-2 bg-action text-action-foreground rounded-lg hover:bg-action transition-colors">
-                    <i class="fas fa-file-csv mr-2"></i>Export to CSV
+                    <i class="fas fa-file-csv mr-2" aria-hidden="true"></i>Export to CSV
                 </button>
             </div>
         </div>

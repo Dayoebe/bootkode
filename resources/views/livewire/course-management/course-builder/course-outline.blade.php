@@ -13,10 +13,10 @@
                 wire:target="createSection"
                 class="px-4 py-2 bg-action hover:bg-action disabled:bg-gray-400 text-action-foreground rounded-lg transition-colors duration-300 flex items-center justify-center min-w-[120px]">
                 <span wire:loading.remove wire:target="createSection">
-                    <i class="fas fa-plus mr-2"></i> Add Section
+                    <i class="fas fa-plus mr-2" aria-hidden="true"></i> Add Section
                 </span>
                 <span wire:loading wire:target="createSection">
-                    <i class="fas fa-spinner fa-spin mr-2"></i> Creating...
+                    <i class="fas fa-spinner fa-spin mr-2" aria-hidden="true"></i> Creating...
                 </span>
             </button>
         </form>
@@ -34,7 +34,7 @@
                 <div class="flex items-center justify-between p-3 cursor-pointer hover:bg-themed-secondary dark:hover:bg-gray-600 transition-colors duration-300 rounded-t-lg"
                     @click.stop="$wire.toggleSection({{ $section->id }})">
                     <div class="flex items-center flex-1 min-w-0">
-                        <i class="fas fa-folder text-brand dark:text-brand mr-2 transition-all duration-200"></i>
+                        <i class="fas fa-folder text-brand dark:text-brand mr-2 transition-all duration-200" aria-hidden="true"></i>
                         @if ($editingSectionId === $section->id)
                             <input aria-label="New section title edit" wire:model="newSectionTitleEdit"
                                    wire:keydown.enter="updateSection"
@@ -54,21 +54,21 @@
                         @if ($editingSectionId === $section->id)
                             <button wire:click="updateSection"
                                 class="text-green-600 dark:text-green-400 hover:text-green-700 dark:hover:text-green-300 transition-colors p-1" aria-label="Update section">
-                                <i class="fas fa-check"></i>
+                                <i class="fas fa-check" aria-hidden="true"></i>
                             </button>
                             <button wire:click="cancelEditSection"
                                 class="text-content-muted dark:text-content-muted hover:text-content dark:hover:text-white transition-colors p-1" aria-label="Close">
-                                <i class="fas fa-times"></i>
+                                <i class="fas fa-times" aria-hidden="true"></i>
                             </button>
                         @else
                             <button wire:click="startEditSection({{ $section->id }})"
                                 class="text-content-muted dark:text-content-muted hover:text-brand dark:hover:text-brand transition-colors p-1">
-                                <i class="fas fa-edit"></i>
+                                <i class="fas fa-edit" aria-hidden="true"></i>
                             </button>
                             <button wire:click="deleteSection({{ $section->id }})"
                                 onclick="return confirm('Are you sure you want to delete this section and all its lessons?')"
                                 class="text-content-muted dark:text-content-muted hover:text-red-600 dark:hover:text-red-400 transition-colors p-1">
-                                <i class="fas fa-trash"></i>
+                                <i class="fas fa-trash" aria-hidden="true"></i>
                             </button>
                         @endif
                     </div>
@@ -97,7 +97,7 @@
                                         <button wire:click="selectLesson({{ $lesson->id }})"
                                             class="flex items-center flex-1 min-w-0 text-left truncate">
                                             <i class="fas fa-play-circle mr-2 transition-all duration-200
-                                                {{ $activeLessonId == $lesson->id ? 'text-white text-lg' : 'text-blue-600 dark:text-blue-400' }}"></i>
+                                                {{ $activeLessonId == $lesson->id ? 'text-white text-lg' : 'text-blue-600 dark:text-blue-400' }}" aria-hidden="true"></i>
                                             <span class="truncate transition-all duration-200 {{ $activeLessonId == $lesson->id ? 'text-white font-medium' : '' }}">
                                                 {{ $lesson->title }}
                                             </span>
@@ -108,11 +108,11 @@
                                     @if ($editingLessonId === $lesson->id)
                                         <button wire:click="updateLesson"
                                             class="text-green-600 dark:text-green-400 hover:text-green-700 dark:hover:text-green-300 transition-colors p-1" aria-label="Update lesson">
-                                            <i class="fas fa-check"></i>
+                                            <i class="fas fa-check" aria-hidden="true"></i>
                                         </button>
                                         <button wire:click="cancelEditLesson"
                                             class="text-content-muted dark:text-content-muted hover:text-content dark:hover:text-white transition-colors p-1" aria-label="Close">
-                                            <i class="fas fa-times"></i>
+                                            <i class="fas fa-times" aria-hidden="true"></i>
                                         </button>
                                     @else
                                         <button wire:click="startEditLesson({{ $lesson->id }})"
@@ -120,7 +120,7 @@
                                                 {{ $activeLessonId == $lesson->id
                                                     ? 'text-white hover:text-blue-200'
                                                     : 'text-gray-600 dark:text-content-muted hover:text-brand dark:hover:text-blue-400' }}">
-                                            <i class="fas fa-edit text-xs"></i>
+                                            <i class="fas fa-edit text-xs" aria-hidden="true"></i>
                                         </button>
                                         <button wire:click="deleteLesson({{ $lesson->id }})"
                                             onclick="return confirm('Delete this lesson? This action cannot be undone.')"
@@ -128,7 +128,7 @@
                                                 {{ $activeLessonId == $lesson->id
                                                     ? 'text-white hover:text-red-200'
                                                     : 'text-gray-600 dark:text-content-muted hover:text-red-600 dark:hover:text-red-400' }}">
-                                            <i class="fas fa-trash text-xs"></i>
+                                            <i class="fas fa-trash text-xs" aria-hidden="true"></i>
                                         </button>
                                     @endif
                                 </div>
@@ -145,10 +145,10 @@
                                 wire:target="createLesson({{ $section->id }})"
                                 class="px-2 py-1 bg-green-600 hover:bg-green-700 disabled:bg-gray-400 text-white rounded text-sm transition-colors duration-300 min-w-[60px] flex items-center justify-center">
                                 <span wire:loading.remove wire:target="createLesson({{ $section->id }})">
-                                    <i class="fas fa-plus mr-1"></i>Add
+                                    <i class="fas fa-plus mr-1" aria-hidden="true"></i>Add
                                 </span>
                                 <span wire:loading wire:target="createLesson({{ $section->id }})">
-                                    <i class="fas fa-spinner fa-spin"></i>
+                                    <i class="fas fa-spinner fa-spin" aria-hidden="true"></i>
                                 </span>
                             </button>
                         </form>
@@ -160,7 +160,7 @@
             </div>
         @empty
             <div class="text-content-muted dark:text-content-muted text-center py-8 transition-colors duration-300">
-                <i class="fas fa-folder-plus text-4xl mb-3 opacity-50"></i>
+                <i class="fas fa-folder-plus text-4xl mb-3 opacity-50" aria-hidden="true"></i>
                 <p>No sections yet. Create one to start!</p>
             </div>
         @endforelse

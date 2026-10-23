@@ -37,11 +37,11 @@
         </div>
     </div>
 
-    <div class="grid gap-6 xl:grid-cols-[1fr_420px]">
-        <div class="rounded-lg border border-themed-primary bg-themed-secondary p-5 shadow-sm">
+    <div class="grid gap-6 xl:grid-cols-[minmax(0,1fr)_420px]">
+        <div class="min-w-0 rounded-lg border border-themed-primary bg-themed-secondary p-5 shadow-sm">
             <h2 class="text-lg font-semibold text-themed-primary">Daily movement</h2>
             <div class="mt-5 overflow-x-auto">
-                <x-ui.table label="Revenue Reports.Blade records"><table class="min-w-full divide-y divide-themed-primary text-sm">
+                <x-ui.table label="Revenue Reports records"><table class="min-w-full divide-y divide-themed-primary text-sm">
                     <thead>
                         <tr class="text-left text-xs font-semibold uppercase text-themed-secondary">
                             <th scope="col" class="py-3">Date</th>
@@ -68,7 +68,7 @@
             </div>
         </div>
 
-        <div class="rounded-lg border border-themed-primary bg-themed-secondary p-5 shadow-sm">
+        <div class="min-w-0 rounded-lg border border-themed-primary bg-themed-secondary p-5 shadow-sm">
             <h2 class="text-lg font-semibold text-themed-primary">Operating split</h2>
             <div class="mt-4 space-y-3">
                 @foreach([

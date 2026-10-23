@@ -8,25 +8,25 @@
                 wire:click="setActiveSection('deliverability')"
                 class="{{ $activeSection === 'deliverability' ? 'bg-white text-brand shadow-sm' : 'text-gray-600 hover:text-gray-900' }} px-4 py-2 text-sm font-medium rounded-md transition-all"
             >
-                <i class="fas fa-shield-check mr-2"></i>Deliverability
+                <i class="fas fa-shield-check mr-2" aria-hidden="true"></i>Deliverability
             </button>
             <button
                 wire:click="setActiveSection('send-time')"
                 class="{{ $activeSection === 'send-time' ? 'bg-white text-brand shadow-sm' : 'text-gray-600 hover:text-gray-900' }} px-4 py-2 text-sm font-medium rounded-md transition-all"
             >
-                <i class="fas fa-clock mr-2"></i>Send Time
+                <i class="fas fa-clock mr-2" aria-hidden="true"></i>Send Time
             </button>
             <button
                 wire:click="setActiveSection('list-health')"
                 class="{{ $activeSection === 'list-health' ? 'bg-white text-brand shadow-sm' : 'text-gray-600 hover:text-gray-900' }} px-4 py-2 text-sm font-medium rounded-md transition-all"
             >
-                <i class="fas fa-heartbeat mr-2"></i>List Health
+                <i class="fas fa-heartbeat mr-2" aria-hidden="true"></i>List Health
             </button>
             <button
                 wire:click="setActiveSection('ab-testing')"
                 class="{{ $activeSection === 'ab-testing' ? 'bg-white text-brand shadow-sm' : 'text-gray-600 hover:text-gray-900' }} px-4 py-2 text-sm font-medium rounded-md transition-all"
             >
-                <i class="fas fa-flask mr-2"></i>A/B Testing
+                <i class="fas fa-flask mr-2" aria-hidden="true"></i>A/B Testing
             </button>
         </div>
 
@@ -49,7 +49,7 @@
                     <div class="flex items-center">
                         <div class="flex-shrink-0">
                             <div class="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
-                                <i class="fas fa-check-circle text-green-600"></i>
+                                <i class="fas fa-check-circle text-green-600" aria-hidden="true"></i>
                             </div>
                         </div>
                         <div class="ml-4">
@@ -63,7 +63,7 @@
                     <div class="flex items-center">
                         <div class="flex-shrink-0">
                             <div class="w-8 h-8 bg-red-100 rounded-lg flex items-center justify-center">
-                                <i class="fas fa-exclamation-triangle text-red-600"></i>
+                                <i class="fas fa-exclamation-triangle text-red-600" aria-hidden="true"></i>
                             </div>
                         </div>
                         <div class="ml-4">
@@ -77,7 +77,7 @@
                     <div class="flex items-center">
                         <div class="flex-shrink-0">
                             <div class="w-8 h-8 bg-yellow-100 rounded-lg flex items-center justify-center">
-                                <i class="fas fa-user-times text-yellow-600"></i>
+                                <i class="fas fa-user-times text-yellow-600" aria-hidden="true"></i>
                             </div>
                         </div>
                         <div class="ml-4">
@@ -91,7 +91,7 @@
                     <div class="flex items-center">
                         <div class="flex-shrink-0">
                             <div class="w-8 h-8 bg-brand/10 rounded-lg flex items-center justify-center">
-                                <i class="fas fa-paper-plane text-brand"></i>
+                                <i class="fas fa-paper-plane text-brand" aria-hidden="true"></i>
                             </div>
                         </div>
                         <div class="ml-4">
@@ -115,7 +115,7 @@
                                         <p class="text-sm text-red-600">{{ $reason->count }} occurrences</p>
                                     </div>
                                     <div class="text-red-600">
-                                        <i class="fas fa-exclamation-circle"></i>
+                                        <i class="fas fa-exclamation-circle" aria-hidden="true"></i>
                                     </div>
                                 </div>
                             @endforeach
@@ -130,7 +130,7 @@
                     <div class="p-6">
                         <h3 class="text-lg font-medium text-content mb-4">Domain Performance</h3>
                         <div class="overflow-x-auto">
-                            <x-ui.table label="Performance Optimization.Blade records"><table class="min-w-full divide-y divide-line">
+                            <x-ui.table label="Performance Optimization records"><table class="min-w-full divide-y divide-line">
                                 <thead class="bg-surface-muted">
                                     <tr>
                                         <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-content-muted uppercase">Domain</th>
@@ -259,7 +259,7 @@
                     <div class="flex items-center">
                         <div class="flex-shrink-0">
                             <div class="w-8 h-8 bg-brand/10 rounded-lg flex items-center justify-center">
-                                <i class="fas fa-users text-brand"></i>
+                                <i class="fas fa-users text-brand" aria-hidden="true"></i>
                             </div>
                         </div>
                         <div class="ml-4">
@@ -273,7 +273,7 @@
                     <div class="flex items-center">
                         <div class="flex-shrink-0">
                             <div class="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
-                                <i class="fas fa-user-check text-green-600"></i>
+                                <i class="fas fa-user-check text-green-600" aria-hidden="true"></i>
                             </div>
                         </div>
                         <div class="ml-4">
@@ -287,7 +287,7 @@
                     <div class="flex items-center">
                         <div class="flex-shrink-0">
                             <div class="w-8 h-8 bg-brand/10 rounded-lg flex items-center justify-center">
-                                <i class="fas fa-heart text-brand"></i>
+                                <i class="fas fa-heart text-brand" aria-hidden="true"></i>
                             </div>
                         </div>
                         <div class="ml-4">
@@ -301,7 +301,7 @@
                     <div class="flex items-center">
                         <div class="flex-shrink-0">
                             <div class="w-8 h-8 bg-red-100 rounded-lg flex items-center justify-center">
-                                <i class="fas fa-exclamation-triangle text-red-600"></i>
+                                <i class="fas fa-exclamation-triangle text-red-600" aria-hidden="true"></i>
                             </div>
                         </div>
                         <div class="ml-4">
@@ -321,7 +321,7 @@
                             wire:click="exportInactiveSubscribers"
                             class="text-sm bg-red-600 hover:bg-red-700 text-white px-3 py-2 rounded-lg transition-colors"
                         >
-                            <i class="fas fa-download mr-2"></i>Export Inactive
+                            <i class="fas fa-download mr-2" aria-hidden="true"></i>Export Inactive
                         </button>
                     </div>
 
@@ -407,7 +407,7 @@
                     <div class="p-6">
                         <h3 class="text-lg font-medium text-content mb-4">Subject Line Performance</h3>
                         <div class="overflow-x-auto">
-                            <x-ui.table label="Performance Optimization.Blade records"><table class="min-w-full divide-y divide-line">
+                            <x-ui.table label="Performance Optimization records"><table class="min-w-full divide-y divide-line">
                                 <thead class="bg-surface-muted">
                                     <tr>
                                         <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-content-muted uppercase">Subject Line</th>
@@ -446,7 +446,7 @@
                     <div class="p-6">
                         <h3 class="text-lg font-medium text-content mb-4">Send Time Performance Comparison</h3>
                         <div class="overflow-x-auto">
-                            <x-ui.table label="Performance Optimization.Blade records"><table class="min-w-full divide-y divide-line">
+                            <x-ui.table label="Performance Optimization records"><table class="min-w-full divide-y divide-line">
                                 <thead class="bg-surface-muted">
                                     <tr>
                                         <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-content-muted uppercase">Hour</th>

@@ -8,7 +8,7 @@
                        type="text"
                        placeholder="Search your items..."
                        class="w-64 pl-10 pr-4 py-2 border border-line rounded-lg focus:ring-brand/30 focus:border-brand">
-                <i class="fas fa-search absolute left-3 top-3 text-content-muted"></i>
+                <i class="fas fa-search absolute left-3 top-3 text-content-muted" aria-hidden="true"></i>
             </div>
 
             <select aria-label="Status" wire:model.live="status"
@@ -35,7 +35,7 @@
             @if($search || $status)
                 <button wire:click="$set('search', ''); $set('status', '')"
                         class="px-3 py-2 bg-surface-muted text-content rounded-lg hover:bg-gray-200 transition-colors">
-                    <i class="fas fa-times mr-1"></i>
+                    <i class="fas fa-times mr-1" aria-hidden="true"></i>
                     Clear
                 </button>
             @endif
@@ -63,7 +63,7 @@
 
             <button wire:click="showCreate"
                     class="inline-flex items-center px-4 py-2 bg-action text-action-foreground rounded-lg hover:bg-action transition-colors">
-                <i class="fas fa-plus mr-2"></i>
+                <i class="fas fa-plus mr-2" aria-hidden="true"></i>
                 Create New Item
             </button>
         </div>
@@ -124,7 +124,7 @@
                                          class="w-full h-48 object-cover">
                                 @else
                                     <div class="w-full h-48 bg-surface-muted   flex items-center justify-center">
-                                        <i class="fas fa-image text-content-muted text-3xl"></i>
+                                        <i class="fas fa-image text-content-muted text-3xl" aria-hidden="true"></i>
                                     </div>
                                 @endif
 
@@ -148,7 +148,7 @@
                                         ];
                                     @endphp
                                     <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium {{ $statusColors[$item->status] ?? 'bg-gray-100 text-gray-800' }} ">
-                                        <i class="fas fa-{{ $item->status === 'approved' ? 'check' : ($item->status === 'pending' ? 'clock' : ($item->status === 'rejected' ? 'times' : 'edit')) }} mr-1"></i>
+                                        <i class="fas fa-{{ $item->status === 'approved' ? 'check' : ($item->status === 'pending' ? 'clock' : ($item->status === 'rejected' ? 'times' : 'edit')) }} mr-1" aria-hidden="true"></i>
                                         {{ ucfirst($item->status) }}
                                     </span>
                                 </div>
@@ -175,15 +175,15 @@
                                 <div class="flex items-center justify-between text-sm text-content-muted mb-4">
                                     <div class="flex items-center space-x-3">
                                         <span class="flex items-center">
-                                            <i class="fas fa-eye mr-1"></i>
+                                            <i class="fas fa-eye mr-1" aria-hidden="true"></i>
                                             {{ number_format($item->views_count ?? 0) }}
                                         </span>
                                         <span class="flex items-center">
-                                            <i class="fas fa-shopping-cart mr-1"></i>
+                                            <i class="fas fa-shopping-cart mr-1" aria-hidden="true"></i>
                                             {{ $item->orders->count() ?? 0 }}
                                         </span>
                                         <span class="flex items-center">
-                                            <i class="fas fa-star mr-1 text-yellow-400"></i>
+                                            <i class="fas fa-star mr-1 text-yellow-400" aria-hidden="true"></i>
                                             {{ number_format($item->average_rating ?? 0, 1) }}
                                         </span>
                                     </div>
@@ -196,7 +196,7 @@
                                     @if(in_array($item->status, ['draft', 'rejected']))
                                         <button wire:click="editItem({{ $item->id }})"
                                                 class="flex-1 min-w-0 px-3 py-1.5 bg-action text-action-foreground text-sm rounded-lg hover:bg-action transition-colors flex items-center justify-center">
-                                            <i class="fas fa-edit mr-1"></i>
+                                            <i class="fas fa-edit mr-1" aria-hidden="true"></i>
                                             Edit
                                         </button>
                                     @endif
@@ -205,7 +205,7 @@
                                     @if($item->status === 'draft')
                                         <button wire:click="submitForReviewFromList({{ $item->id }})"
                                                 class="flex-1 min-w-0 px-3 py-1.5 bg-green-600 text-white text-sm rounded-lg hover:bg-green-700 transition-colors flex items-center justify-center">
-                                            <i class="fas fa-paper-plane mr-1"></i>
+                                            <i class="fas fa-paper-plane mr-1" aria-hidden="true"></i>
                                             Submit
                                         </button>
                                     @endif
@@ -213,7 +213,7 @@
                                     <!-- Duplicate Button -->
                                     <button wire:click="duplicateItem({{ $item->id }})"
                                             class="px-3 py-1.5 bg-gray-600 text-white text-sm rounded-lg hover:bg-gray-700 transition-colors">
-                                        <i class="fas fa-copy"></i>
+                                        <i class="fas fa-copy" aria-hidden="true"></i>
                                     </button>
 
                                     <!-- Delete Button (only if no orders) -->
@@ -221,7 +221,7 @@
                                         <button wire:click="deleteItem({{ $item->id }})"
                                                 onclick="confirm('Are you sure you want to delete this item?') || event.stopImmediatePropagation()"
                                                 class="px-3 py-1.5 bg-red-600 text-white text-sm rounded-lg hover:bg-red-700 transition-colors">
-                                            <i class="fas fa-trash"></i>
+                                            <i class="fas fa-trash" aria-hidden="true"></i>
                                         </button>
                                     @endif
 
@@ -229,7 +229,7 @@
                                     @if($item->status === 'approved')
                                         <a href="#" target="_blank"
                                            class="px-3 py-1.5 border border-line text-content text-sm rounded-lg hover:bg-surface-muted transition-colors">
-                                            <i class="fas fa-external-link-alt"></i>
+                                            <i class="fas fa-external-link-alt" aria-hidden="true"></i>
                                         </a>
                                     @endif
                                 </div>
@@ -238,7 +238,7 @@
                                 @if($item->orders && $item->orders->count() > 0)
                                     <div class="mt-3 pt-3 border-t border-line">
                                         <h5 class="text-xs font-medium text-content mb-2 flex items-center">
-                                            <i class="fas fa-shopping-cart mr-1"></i>
+                                            <i class="fas fa-shopping-cart mr-1" aria-hidden="true"></i>
                                             Recent Orders:
                                         </h5>
                                         <div class="space-y-1">
@@ -258,7 +258,7 @@
                                 <div class="mt-3 pt-3 border-t border-line">
                                     <div class="flex items-center justify-between">
                                         <span class="inline-flex items-center px-2 py-1 bg-brand/10 text-brand text-xs font-medium rounded-full">
-                                            <i class="fas fa-{{ $item->type === 'course' ? 'graduation-cap' : ($item->type === 'service' ? 'handshake' : 'file-alt') }} mr-1"></i>
+                                            <i class="fas fa-{{ $item->type === 'course' ? 'graduation-cap' : ($item->type === 'service' ? 'handshake' : 'file-alt') }} mr-1" aria-hidden="true"></i>
                                             {{ ucfirst($item->type) }}
                                         </span>
                                         @if($item->duration_minutes)
@@ -282,7 +282,7 @@
         <div class="bg-surface rounded-lg shadow-sm border border-line">
             <div class="text-center py-16">
                 <div class="w-24 h-24 mx-auto mb-6 bg-surface-muted   rounded-full flex items-center justify-center">
-                    <i class="fas fa-store text-3xl text-brand"></i>
+                    <i class="fas fa-store text-3xl text-brand" aria-hidden="true"></i>
                 </div>
 
                 <h3 class="text-xl font-medium text-content mb-2">
@@ -304,7 +304,7 @@
                     @if($search || $status)
                         <button wire:click="$set('search', ''); $set('status', '')"
                                 class="inline-flex items-center px-6 py-3 bg-action text-action-foreground rounded-lg hover:bg-action transition-colors">
-                            <i class="fas fa-times mr-2"></i>
+                            <i class="fas fa-times mr-2" aria-hidden="true"></i>
                             Clear Filters
                         </button>
                         <br>
@@ -312,7 +312,7 @@
 
                     <button wire:click="showCreate"
                             class="inline-flex items-center px-6 py-3 bg-action text-action-foreground rounded-lg hover:bg-action transition-colors">
-                        <i class="fas fa-plus mr-2"></i>
+                        <i class="fas fa-plus mr-2" aria-hidden="true"></i>
                         Create Your First Item
                     </button>
                 </div>

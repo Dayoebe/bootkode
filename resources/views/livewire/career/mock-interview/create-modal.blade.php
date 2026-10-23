@@ -193,7 +193,7 @@
                                             <button type="button"
                                                 wire:click="removeCustomQuestion({{ $index }})"
                                                 class="text-red-600 hover:text-red-700 p-1 transition-colors" aria-label="Close">
-                                                <i class="fas fa-times"></i>
+                                                <i class="fas fa-times" aria-hidden="true"></i>
                                             </button>
                                         </div>
                                     @endforeach
@@ -215,7 +215,7 @@
                             {{ $editingInterviewId ? 'Update Interview' : 'Create Interview' }}
                         </span>
                         <span wire:loading wire:target="createInterview">
-                            <i class="fas fa-spinner fa-spin mr-2"></i> Saving...
+                            <i class="fas fa-spinner fa-spin mr-2" aria-hidden="true"></i> Saving...
                         </span>
                     </button>
                 </div>

@@ -100,7 +100,7 @@
 
         @if($failedTransactions->count() > 0)
             <div class="overflow-x-auto">
-                <x-ui.table label="Payment Failed.Blade records"><table class="min-w-full divide-y divide-themed-primary">
+                <x-ui.table label="Payment Failed records"><table class="min-w-full divide-y divide-themed-primary">
                     <thead class="bg-themed-tertiary">
                         <tr>
                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-themed-secondary uppercase tracking-wider">Customer</th>

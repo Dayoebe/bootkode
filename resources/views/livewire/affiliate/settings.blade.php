@@ -15,7 +15,7 @@
                     <p class="text-2xl font-bold text-content">{{ $systemStats['total_affiliates'] }}</p>
                 </div>
                 <div class="bg-brand/10 p-3 rounded-lg">
-                    <i class="fas fa-users text-brand text-xl"></i>
+                    <i class="fas fa-users text-brand text-xl" aria-hidden="true"></i>
                 </div>
             </div>
         </div>
@@ -27,7 +27,7 @@
                     <p class="text-2xl font-bold text-content">{{ $systemStats['active_affiliates'] }}</p>
                 </div>
                 <div class="bg-green-100 p-3 rounded-lg">
-                    <i class="fas fa-user-check text-green-600 text-xl"></i>
+                    <i class="fas fa-user-check text-green-600 text-xl" aria-hidden="true"></i>
                 </div>
             </div>
         </div>
@@ -39,7 +39,7 @@
                     <p class="text-2xl font-bold text-content">{{ $systemStats['pending_approval'] }}</p>
                 </div>
                 <div class="bg-yellow-100 p-3 rounded-lg">
-                    <i class="fas fa-clock text-yellow-600 text-xl"></i>
+                    <i class="fas fa-clock text-yellow-600 text-xl" aria-hidden="true"></i>
                 </div>
             </div>
         </div>
@@ -51,7 +51,7 @@
                     <p class="text-2xl font-bold text-content">₦{{ number_format($systemStats['total_commissions_paid'], 2) }}</p>
                 </div>
                 <div class="bg-brand/10 p-3 rounded-lg">
-                    <i class="fas fa-money-bill-wave text-brand text-xl"></i>
+                    <i class="fas fa-money-bill-wave text-brand text-xl" aria-hidden="true"></i>
                 </div>
             </div>
         </div>
@@ -88,7 +88,7 @@
 
         @if($affiliates->count() > 0)
             <div class="overflow-x-auto">
-                <x-ui.table label="Settings.Blade records"><table class="min-w-full divide-y divide-line">
+                <x-ui.table label="Settings records"><table class="min-w-full divide-y divide-line">
                     <thead class="bg-surface-muted">
                         <tr>
                             <th scope="col" class="px-6 py-3 text-left">
@@ -149,19 +149,19 @@
                                         @if($affiliate->status !== 'active')
                                             <button wire:click="updateAffiliateStatus({{ $affiliate->id }}, 'active')"
                                                     class="text-green-600 hover:text-green-900">
-                                                <i class="fas fa-check"></i>
+                                                <i class="fas fa-check" aria-hidden="true"></i>
                                             </button>
                                         @endif
 
                                         @if($affiliate->status !== 'suspended')
                                             <button wire:click="updateAffiliateStatus({{ $affiliate->id }}, 'suspended')"
                                                     class="text-red-600 hover:text-red-900">
-                                                <i class="fas fa-ban"></i>
+                                                <i class="fas fa-ban" aria-hidden="true"></i>
                                             </button>
                                         @endif
 
                                         <button class="text-brand hover:text-brand">
-                                            <i class="fas fa-eye"></i>
+                                            <i class="fas fa-eye" aria-hidden="true"></i>
                                         </button>
                                     </div>
                                 </td>
@@ -177,7 +177,7 @@
             </div>
         @else
             <div class="px-6 py-12 text-center">
-                <i class="fas fa-users text-6xl text-content-muted mb-4"></i>
+                <i class="fas fa-users text-6xl text-content-muted mb-4" aria-hidden="true"></i>
                 <h3 class="text-lg font-medium text-content mb-2">No affiliates found</h3>
                 <p class="text-content-muted">Affiliates will appear here once they join the program.</p>
             </div>

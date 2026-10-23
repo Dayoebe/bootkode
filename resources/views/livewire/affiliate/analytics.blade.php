@@ -31,7 +31,7 @@
                     <p class="text-2xl font-bold text-content">₦{{ number_format($analytics['period_stats']['total_commission'], 2) }}</p>
                 </div>
                 <div class="bg-brand/10 p-3 rounded-lg">
-                    <i class="fas fa-chart-line text-brand text-xl"></i>
+                    <i class="fas fa-chart-line text-brand text-xl" aria-hidden="true"></i>
                 </div>
             </div>
             <p class="text-xs text-content-muted mt-2">+{{ number_format($analytics['period_stats']['total_sales']) }} sales</p>
@@ -44,7 +44,7 @@
                     <p class="text-2xl font-bold text-content">₦{{ number_format($analytics['period_stats']['average_daily'], 2) }}</p>
                 </div>
                 <div class="bg-green-100 p-3 rounded-lg">
-                    <i class="fas fa-calendar-day text-green-600 text-xl"></i>
+                    <i class="fas fa-calendar-day text-green-600 text-xl" aria-hidden="true"></i>
                 </div>
             </div>
         </div>
@@ -56,7 +56,7 @@
                     <p class="text-2xl font-bold text-content">{{ $conversionData['overall_conversion_rate'] }}%</p>
                 </div>
                 <div class="bg-brand/10 p-3 rounded-lg">
-                    <i class="fas fa-percentage text-brand text-xl"></i>
+                    <i class="fas fa-percentage text-brand text-xl" aria-hidden="true"></i>
                 </div>
             </div>
         </div>
@@ -68,7 +68,7 @@
                     <p class="text-2xl font-bold text-content">₦{{ $analytics['period_stats']['best_day'] ? number_format($analytics['period_stats']['best_day']['total'], 2) : '0.00' }}</p>
                 </div>
                 <div class="bg-yellow-100 p-3 rounded-lg">
-                    <i class="fas fa-trophy text-yellow-600 text-xl"></i>
+                    <i class="fas fa-trophy text-yellow-600 text-xl" aria-hidden="true"></i>
                 </div>
             </div>
         </div>
@@ -87,7 +87,7 @@
                 @else
                     <div class="flex items-center justify-center h-full text-content-muted">
                         <div class="text-center">
-                            <i class="fas fa-chart-area text-4xl mb-4"></i>
+                            <i class="fas fa-chart-area text-4xl mb-4" aria-hidden="true"></i>
                             <p>No data available for this period</p>
                         </div>
                     </div>
@@ -154,7 +154,7 @@
             </div>
         @else
             <div class="text-center py-8 text-content-muted">
-                <i class="fas fa-traffic-light text-4xl mb-4"></i>
+                <i class="fas fa-traffic-light text-4xl mb-4" aria-hidden="true"></i>
                 <p>No traffic source data available</p>
             </div>
         @endif
@@ -166,7 +166,7 @@
     <div class="bg-surface rounded-lg shadow-sm p-6">
         <h3 class="text-lg font-semibold text-content mb-4">Top Performing Courses</h3>
         <div class="overflow-x-auto">
-            <x-ui.table label="Analytics.Blade records"><table class="min-w-full divide-y divide-line">
+            <x-ui.table label="Analytics records"><table class="min-w-full divide-y divide-line">
                 <thead class="bg-surface-muted">
                     <tr>
                         <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-content-muted uppercase tracking-wider">Course</th>

@@ -10,7 +10,7 @@
     <!-- Institutions List -->
     <div class="bg-surface dark:bg-gray-800 rounded-lg shadow-sm border border-line dark:border-gray-700 overflow-hidden transition-colors duration-300">
         <div class="overflow-x-auto">
-            <x-ui.table label="Whitelabel Settings.Blade records"><table class="min-w-full divide-y divide-line dark:divide-gray-700">
+            <x-ui.table label="Whitelabel Settings records"><table class="min-w-full divide-y divide-line dark:divide-gray-700">
                 <thead class="bg-surface-muted dark:bg-gray-700/50">
                     <tr>
                         <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-content-muted dark:text-content-muted uppercase tracking-wider">
@@ -62,7 +62,7 @@
                                 @if($whitelabelSettings['custom_domain'] ?? false)
                                     <div class="text-sm text-content dark:text-white">{{ $whitelabelSettings['custom_domain'] }}</div>
                                     <div class="text-xs text-green-600 dark:text-green-400">
-                                        <i class="fas fa-check mr-1"></i>Active
+                                        <i class="fas fa-check mr-1" aria-hidden="true"></i>Active
                                     </div>
                                 @else
                                     <span class="text-xs text-content-muted dark:text-content-muted">No custom domain</span>
@@ -76,12 +76,12 @@
                                     @endif
                                     @if($whitelabelSettings['logo_url'] ?? false)
                                         <span class="text-xs text-green-600 dark:text-green-400">
-                                            <i class="fas fa-image mr-1"></i>Logo
+                                            <i class="fas fa-image mr-1" aria-hidden="true"></i>Logo
                                         </span>
                                     @endif
                                     @if($whitelabelSettings['custom_css'] ?? false)
                                         <span class="text-xs text-brand dark:text-brand">
-                                            <i class="fas fa-code mr-1"></i>CSS
+                                            <i class="fas fa-code mr-1" aria-hidden="true"></i>CSS
                                         </span>
                                     @endif
                                     @if(!($whitelabelSettings['primary_color'] ?? false) && !($whitelabelSettings['logo_url'] ?? false))
@@ -93,7 +93,7 @@
                                 <button wire:click="openEditModal({{ $institution->id }})"
                                         class="text-brand dark:text-brand hover:text-brand dark:hover:text-brand transition-colors"
                                         title="Edit Settings">
-                                    <i class="fas fa-edit"></i>
+                                    <i class="fas fa-edit" aria-hidden="true"></i>
                                 </button>
                             </td>
                         </tr>
@@ -101,7 +101,7 @@
                         <tr>
                             <td colspan="5" class="px-6 py-12 text-center">
                                 <div class="flex flex-col items-center">
-                                    <i class="fas fa-paint-roller text-4xl text-gray-300 dark:text-content-muted mb-4"></i>
+                                    <i class="fas fa-paint-roller text-4xl text-gray-300 dark:text-content-muted mb-4" aria-hidden="true"></i>
                                     <h3 class="text-lg font-medium text-content dark:text-white mb-2">No institutions found</h3>
                                     <p class="text-sm text-content-muted dark:text-content-muted">No active institutions available for white-labeling.</p>
                                 </div>
@@ -127,7 +127,7 @@
                 <div class="flex items-center justify-between pb-4 border-b border-line dark:border-gray-700 sticky top-0 bg-surface dark:bg-gray-800 z-10">
                     <h3 class="text-lg font-semibold text-content dark:text-white">White-label Settings - {{ $selectedInstitution->name }}</h3>
                     <button aria-label="Close dialog" wire:click="closeModal" class="text-content-muted dark:text-content-muted hover:text-content-muted dark:hover:text-gray-300">
-                        <i class="fas fa-times text-xl"></i>
+                        <i class="fas fa-times text-xl" aria-hidden="true"></i>
                     </button>
                 </div>
 

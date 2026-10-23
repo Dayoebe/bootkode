@@ -18,7 +18,7 @@
                         <div class="absolute inset-0 bg-black bg-opacity-40"></div>
                     @else
                         <div class="absolute inset-0 flex items-center justify-center">
-                            <i class="fas fa-graduation-cap text-white text-6xl sm:text-8xl opacity-30"></i>
+                            <i class="fas fa-graduation-cap text-white text-6xl sm:text-8xl opacity-30" aria-hidden="true"></i>
                         </div>
                     @endif
 
@@ -29,13 +29,13 @@
                             <div class="mb-3 sm:mb-4">
                                 <span
                                     class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-white/20  text-white">
-                                    <i class="fas fa-tag mr-2"></i>
+                                    <i class="fas fa-tag mr-2" aria-hidden="true"></i>
                                     {{ $course->category->name ?? 'Uncategorized' }}
                                 </span>
                                 @if($course->quality_label_text)
                                     <span
                                         class="inline-flex items-center px-3 py-1 rounded-full text-sm font-semibold ml-2 {{ $course->quality_label_class }}">
-                                        <i class="fas fa-shield-check mr-2"></i>
+                                        <i class="fas fa-shield-check mr-2" aria-hidden="true"></i>
                                         {{ $course->quality_label_text }}
                                     </span>
                                 @endif
@@ -57,19 +57,19 @@
                             <!-- Quick Stats -->
                             <div class="flex flex-wrap gap-4 sm:gap-6 text-sm sm:text-base">
                                 <div class="flex items-center">
-                                    <i class="fas fa-user-tie mr-2"></i>
+                                    <i class="fas fa-user-tie mr-2" aria-hidden="true"></i>
                                     <span>{{ $course->instructor->name }}</span>
                                 </div>
                                 <div class="flex items-center">
-                                    <i class="fas fa-clock mr-2"></i>
+                                    <i class="fas fa-clock mr-2" aria-hidden="true"></i>
                                     <span>{{ $this->formattedDuration }}</span>
                                 </div>
                                 <div class="flex items-center">
-                                    <i class="fas fa-play-circle mr-2"></i>
+                                    <i class="fas fa-play-circle mr-2" aria-hidden="true"></i>
                                     <span>{{ $totalLessons }} lessons</span>
                                 </div>
                                 <div class="flex items-center">
-                                    <i class="fas fa-users mr-2"></i>
+                                    <i class="fas fa-users mr-2" aria-hidden="true"></i>
                                     <span>{{ number_format($totalEnrollments) }} students</span>
                                 </div>
                             </div>
@@ -91,25 +91,25 @@
                         <button @click="activeTab = 'overview'"
                             :class="activeTab === 'overview' ? 'bg-action text-action-foreground' : 'text-themed-secondary hover:text-themed-primary hover:bg-themed-tertiary'"
                             class="min-h-11 shrink-0 flex-1 py-2 sm:py-3 px-3 sm:px-4 rounded-lg font-semibold text-sm sm:text-base transition-all duration-200 flex items-center justify-center">
-                            <i class="fas fa-info-circle mr-2"></i>
+                            <i class="fas fa-info-circle mr-2" aria-hidden="true"></i>
                             Overview
                         </button>
                         <button @click="activeTab = 'curriculum'"
                             :class="activeTab === 'curriculum' ? 'bg-action text-action-foreground' : 'text-themed-secondary hover:text-themed-primary hover:bg-themed-tertiary'"
                             class="min-h-11 shrink-0 flex-1 py-2 sm:py-3 px-3 sm:px-4 rounded-lg font-semibold text-sm sm:text-base transition-all duration-200 flex items-center justify-center">
-                            <i class="fas fa-list mr-2"></i>
+                            <i class="fas fa-list mr-2" aria-hidden="true"></i>
                             Curriculum
                         </button>
                         <button @click="activeTab = 'reviews'"
                             :class="activeTab === 'reviews' ? 'bg-action text-action-foreground' : 'text-themed-secondary hover:text-themed-primary hover:bg-themed-tertiary'"
                             class="min-h-11 shrink-0 flex-1 py-2 sm:py-3 px-3 sm:px-4 rounded-lg font-semibold text-sm sm:text-base transition-all duration-200 flex items-center justify-center">
-                            <i class="fas fa-star mr-2"></i>
+                            <i class="fas fa-star mr-2" aria-hidden="true"></i>
                             Reviews ({{ $totalReviews }})
                         </button>
                         <button @click="activeTab = 'instructor'"
                             :class="activeTab === 'instructor' ? 'bg-action text-action-foreground' : 'text-themed-secondary hover:text-themed-primary hover:bg-themed-tertiary'"
                             class="min-h-11 shrink-0 flex-1 py-2 sm:py-3 px-3 sm:px-4 rounded-lg font-semibold text-sm sm:text-base transition-all duration-200 flex items-center justify-center">
-                            <i class="fas fa-user-graduate mr-2"></i>
+                            <i class="fas fa-user-graduate mr-2" aria-hidden="true"></i>
                             Instructor
                         </button>
                     </nav>
@@ -140,14 +140,14 @@
                             <div class="mb-6 sm:mb-8">
                                 <h3
                                     class="text-lg sm:text-xl font-bold text-themed-primary mb-4 flex items-center transition-colors duration-300">
-                                    <i class="fas fa-lightbulb text-yellow-500 mr-2"></i>
+                                    <i class="fas fa-lightbulb text-yellow-500 mr-2" aria-hidden="true"></i>
                                     What You'll Learn
                                 </h3>
                                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                                     @foreach($course->learning_outcomes as $outcome)
                                         <div
                                             class="flex items-start bg-themed-tertiary p-3 rounded-lg border border-themed-primary transition-colors duration-300">
-                                            <i class="fas fa-check-circle text-green-500 mr-3 mt-0.5 flex-shrink-0"></i>
+                                            <i class="fas fa-check-circle text-green-500 mr-3 mt-0.5 flex-shrink-0" aria-hidden="true"></i>
                                             <span
                                                 class="text-themed-secondary text-sm sm:text-base transition-colors duration-300">{{ $outcome }}</span>
                                         </div>
@@ -200,7 +200,7 @@
                                         <h3
                                             class="text-lg sm:text-xl font-bold text-orange-700 dark:text-orange-300 mb-4 flex items-center transition-colors duration-300">
                                             <i
-                                                class="fas fa-exclamation-circle text-orange-500 dark:text-orange-400 mr-2"></i>
+                                                class="fas fa-exclamation-circle text-orange-500 dark:text-orange-400 mr-2" aria-hidden="true"></i>
                                             Prerequisites
                                         </h3>
                                         <ul class="space-y-2">
@@ -209,7 +209,7 @@
                                                     <li
                                                         class="flex items-start text-themed-secondary text-sm sm:text-base transition-colors duration-300">
                                                         <i
-                                                            class="fas fa-check text-orange-500 dark:text-orange-400 mr-3 mt-1 flex-shrink-0"></i>
+                                                            class="fas fa-check text-orange-500 dark:text-orange-400 mr-3 mt-1 flex-shrink-0" aria-hidden="true"></i>
                                                         <span>{{ $prerequisite }}</span>
                                                     </li>
                                                 @endif
@@ -224,7 +224,7 @@
                                         class="bg-brand/10 dark:bg-surface/20 p-4 sm:p-6 rounded-lg border border-brand dark:border-brand transition-colors duration-300">
                                         <h3
                                             class="text-lg sm:text-xl font-bold text-brand dark:text-brand mb-4 flex items-center transition-colors duration-300">
-                                            <i class="fas fa-box-open text-brand dark:text-brand mr-2"></i>
+                                            <i class="fas fa-box-open text-brand dark:text-brand mr-2" aria-hidden="true"></i>
                                             Materials Included
                                         </h3>
                                         <ul class="space-y-2">
@@ -233,7 +233,7 @@
                                                     <li
                                                         class="flex items-start text-themed-secondary text-sm sm:text-base transition-colors duration-300">
                                                         <i
-                                                            class="fas fa-check-circle text-brand dark:text-brand mr-3 mt-1 flex-shrink-0"></i>
+                                                            class="fas fa-check-circle text-brand dark:text-brand mr-3 mt-1 flex-shrink-0" aria-hidden="true"></i>
                                                         <span>{{ $material }}</span>
                                                     </li>
                                                 @endif
@@ -251,7 +251,7 @@
                                         class="bg-brand/10 dark:bg-surface/20 p-4 sm:p-6 rounded-lg border border-brand dark:border-brand transition-colors duration-300">
                                         <h3
                                             class="text-lg sm:text-xl font-bold text-brand dark:text-brand mb-4 flex items-center transition-colors duration-300">
-                                            <i class="fas fa-users text-brand dark:text-brand mr-2"></i>
+                                            <i class="fas fa-users text-brand dark:text-brand mr-2" aria-hidden="true"></i>
                                             Target Audience
                                         </h3>
                                         <p
@@ -267,7 +267,7 @@
                                         class="bg-green-50 dark:bg-green-900/20 p-4 sm:p-6 rounded-lg border border-green-200 dark:border-green-800 transition-colors duration-300">
                                         <h3
                                             class="text-lg sm:text-xl font-bold text-green-700 dark:text-green-300 mb-4 flex items-center transition-colors duration-300">
-                                            <i class="fas fa-book-open text-green-500 dark:text-green-400 mr-2"></i>
+                                            <i class="fas fa-book-open text-green-500 dark:text-green-400 mr-2" aria-hidden="true"></i>
                                             Syllabus Overview
                                         </h3>
                                         <p
@@ -283,7 +283,7 @@
                                         class="bg-brand/10 dark:bg-surface/20 p-4 sm:p-6 rounded-lg border border-brand dark:border-brand transition-colors duration-300">
                                         <h3
                                             class="text-lg sm:text-xl font-bold text-brand dark:text-brand mb-4 flex items-center transition-colors duration-300">
-                                            <i class="fas fa-tags text-brand dark:text-brand mr-2"></i>
+                                            <i class="fas fa-tags text-brand dark:text-brand mr-2" aria-hidden="true"></i>
                                             Course Tags
                                         </h3>
                                         <div class="flex flex-wrap gap-2">
@@ -306,7 +306,7 @@
                             <div class="mt-6 sm:mt-8">
                                 <h3
                                     class="text-lg sm:text-xl font-bold text-themed-primary mb-6 flex items-center transition-colors duration-300">
-                                    <i class="fas fa-question-circle text-brand dark:text-brand mr-2"></i>
+                                    <i class="fas fa-question-circle text-brand dark:text-brand mr-2" aria-hidden="true"></i>
                                     Frequently Asked Questions
                                 </h3>
                                 <div class="space-y-4">
@@ -321,7 +321,7 @@
                                                         {{ $faq['question'] }}
                                                     </span>
                                                     <i class="fas fa-chevron-down text-themed-secondary transform transition-transform duration-200"
-                                                        :class="{ 'rotate-180': expanded }"></i>
+                                                        :class="{ 'rotate-180': expanded }" aria-hidden="true"></i>
                                                 </button>
                                                 <div x-show="expanded" x-transition
                                                     class="px-4 sm:px-6 pb-4 border-t border-themed-primary">
@@ -374,7 +374,7 @@
                                             </div>
                                         </div>
                                         <i class="fas fa-chevron-down text-themed-secondary transform transition-transform duration-200"
-                                            :class="{ 'rotate-180': expanded }"></i>
+                                            :class="{ 'rotate-180': expanded }" aria-hidden="true"></i>
                                     </div>
                                 </div>
 
@@ -383,7 +383,7 @@
                                         <div
                                             class="flex items-center justify-between p-4 sm:p-5 border-b border-themed-primary last:border-b-0 hover:bg-themed-tertiary transition-colors duration-200">
                                             <div class="flex items-center">
-                                                <i class="fas fa-play-circle text-brand mr-3"></i>
+                                                <i class="fas fa-play-circle text-brand mr-3" aria-hidden="true"></i>
                                                 <div>
                                                     <h4
                                                         class="font-medium text-themed-primary text-sm sm:text-base transition-colors duration-300">
@@ -393,7 +393,7 @@
                                             </div>
                                             <div class="flex items-center text-sm text-themed-secondary">
                                                 @if($lesson->duration_minutes)
-                                                    <i class="fas fa-clock mr-1"></i>
+                                                    <i class="fas fa-clock mr-1" aria-hidden="true"></i>
                                                     <span>{{ $lesson->duration_minutes }}min</span>
                                                 @endif
                                             </div>
@@ -407,7 +407,7 @@
                             </div>
                         @empty
                             <div class="text-center py-12">
-                                <i class="fas fa-book-open text-4xl text-themed-tertiary mb-4"></i>
+                                <i class="fas fa-book-open text-4xl text-themed-tertiary mb-4" aria-hidden="true"></i>
                                 <h3 class="text-lg font-medium text-themed-primary mb-2 transition-colors duration-300">No
                                     curriculum available</h3>
                                 <p class="text-themed-secondary transition-colors duration-300">The course content is still
@@ -428,7 +428,7 @@
                                         <div class="flex items-start space-x-4">
                                             <div
                                                 class="bg-themed-tertiary rounded-full w-12 h-12 flex items-center justify-center flex-shrink-0">
-                                                <i class="fas fa-user text-themed-secondary"></i>
+                                                <i class="fas fa-user text-themed-secondary" aria-hidden="true"></i>
                                             </div>
                                             <div class="flex-1 min-w-0">
                                                 <div class="flex items-center justify-between mb-2">
@@ -448,7 +448,7 @@
                             </div>
                         @else
                             <div class="text-center py-12">
-                                <i class="fas fa-star text-4xl text-themed-tertiary mb-4"></i>
+                                <i class="fas fa-star text-4xl text-themed-tertiary mb-4" aria-hidden="true"></i>
                                 <h3 class="text-lg font-medium text-themed-primary mb-2 transition-colors duration-300">No
                                     reviews yet</h3>
                                 <p class="text-themed-secondary transition-colors duration-300">Be the first to review this
@@ -472,7 +472,7 @@
                             <div class="flex-shrink-0">
                                 <div
                                     class="w-20 h-20 sm:w-24 sm:h-24 bg-surface-muted   rounded-full flex items-center justify-center">
-                                    <i class="fas fa-user-tie text-brand text-2xl sm:text-3xl"></i>
+                                    <i class="fas fa-user-tie text-brand text-2xl sm:text-3xl" aria-hidden="true"></i>
                                 </div>
                             </div>
 
@@ -534,11 +534,11 @@
                         <button wire:click="openEnrollmentModal" wire:loading.attr="disabled"
                             class="w-full bg-action hover:bg-action/90 text-action-foreground font-bold py-3 px-6 rounded-lg transition-all duration-300 transform  disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center shadow-sm mb-4">
                             <span wire:loading.remove wire:target="openEnrollmentModal" class="flex items-center gap-2">
-                                <i class="fas fa-rocket"></i>
+                                <i class="fas fa-rocket" aria-hidden="true"></i>
                                 Enroll Now
                             </span>
                             <span wire:loading wire:target="openEnrollmentModal" class="flex items-center gap-2">
-                                <i class="fas fa-spinner animate-spin"></i>
+                                <i class="fas fa-spinner animate-spin" aria-hidden="true"></i>
                                 Processing...
                             </span>
                         </button>
@@ -546,12 +546,12 @@
                         <div class="flex gap-2 mb-4">
                             <a href="{{ route('course.view', $course->slug) }}"
                                 class="flex-1 bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-6 rounded-lg transition-all duration-300 transform  flex items-center justify-center shadow-sm">
-                                <i class="fas fa-play mr-2"></i>
+                                <i class="fas fa-play mr-2" aria-hidden="true"></i>
                                 Continue Learning
                             </a>
                             <button wire:click="dropCourse({{ $course->id }})" wire:loading.attr="disabled"
                                 class="bg-themed-tertiary hover:bg-red-100 text-red-700 font-bold py-3 px-6 rounded-lg transition-all duration-300 transform  disabled:opacity-50 border border-themed-primary">
-                                <i class="fas fa-sign-out-alt"></i>
+                                <i class="fas fa-sign-out-alt" aria-hidden="true"></i>
                             </button>
                         </div>
                     @endif
@@ -569,7 +569,7 @@
                         <div class="space-y-3 text-sm">
                             <div class="flex items-center justify-between">
                                 <span class="text-themed-secondary flex items-center transition-colors duration-300">
-                                    <i class="fas fa-signal mr-2"></i>
+                                    <i class="fas fa-signal mr-2" aria-hidden="true"></i>
                                     Difficulty
                                 </span>
                                 <span
@@ -578,7 +578,7 @@
 
                             <div class="flex items-center justify-between">
                                 <span class="text-themed-secondary flex items-center transition-colors duration-300">
-                                    <i class="fas fa-clock mr-2"></i>
+                                    <i class="fas fa-clock mr-2" aria-hidden="true"></i>
                                     Duration
                                 </span>
                                 <span
@@ -587,7 +587,7 @@
 
                             <div class="flex items-center justify-between">
                                 <span class="text-themed-secondary flex items-center transition-colors duration-300">
-                                    <i class="fas fa-play-circle mr-2"></i>
+                                    <i class="fas fa-play-circle mr-2" aria-hidden="true"></i>
                                     Lessons
                                 </span>
                                 <span
@@ -622,7 +622,7 @@
                                     @if($this->getNextLesson())
                                         <a href="{{ route('course.view', ['course' => $course->slug]) }}"
                                             class="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-6 rounded-lg transition-all duration-300 transform  shadow-sm flex items-center justify-center">
-                                            <i class="fas fa-play-circle mr-2"></i>
+                                            <i class="fas fa-play-circle mr-2" aria-hidden="true"></i>
                                             Continue Learning
                                         </a>
                                     @endif
@@ -636,14 +636,14 @@
                                 <!-- Favorite Button -->
                                 <button wire:click="toggleFavorite"
                                     class="flex-1 bg-themed-tertiary hover:bg-themed-primary border border-themed-primary text-themed-secondary hover:text-red-500 font-semibold py-2 px-4 rounded-lg transition-all duration-300 flex items-center justify-center">
-                                    <i class="fas {{ $isFavorited ? 'fa-heart text-red-500' : 'fa-heart' }} mr-2"></i>
+                                    <i class="fas {{ $isFavorited ? 'fa-heart text-red-500' : 'fa-heart' }} mr-2" aria-hidden="true"></i>
                                     {{ $isFavorited ? 'Favorited' : 'Favorite' }}
                                 </button>
 
                                 <!-- Share Button -->
                                 <button @click="$dispatch('open-modal', 'course-share')"
                                     class="flex-1 bg-themed-tertiary hover:bg-themed-primary border border-themed-primary text-themed-secondary hover:text-brand font-semibold py-2 px-4 rounded-lg transition-all duration-300 flex items-center justify-center">
-                                    <i class="fas fa-share-alt mr-2"></i>
+                                    <i class="fas fa-share-alt mr-2" aria-hidden="true"></i>
                                     Share
                                 </button>
                             </div>
@@ -680,7 +680,7 @@
                     <div class="flex items-start">
                         <div class="flex-shrink-0">
                             <i :class="type === 'success' ? 'fas fa-check-circle' : (type === 'error' ? 'fas fa-exclamation-circle' : 'fas fa-info-circle')"
-                                class="text-white text-lg sm:text-xl"></i>
+                                class="text-white text-lg sm:text-xl" aria-hidden="true"></i>
                         </div>
                         <div class="ml-3 sm:ml-4 flex-1 min-w-0">
                             <p class="text-white font-bold text-sm sm:text-lg leading-tight break-words"
@@ -715,7 +715,7 @@
                 <h3 class="text-xl font-bold text-themed-primary transition-colors duration-300">Share This Course</h3>
                 <button aria-label="Close share dialog" @click="$dispatch('close-modal', 'course-share')"
                     class="text-themed-secondary hover:text-themed-primary transition-colors duration-300">
-                    <i class="fas fa-times text-xl"></i>
+                    <i class="fas fa-times text-xl" aria-hidden="true"></i>
                 </button>
             </div>
 
@@ -723,25 +723,25 @@
             <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6">
                 <button wire:click="shareCourse('twitter')"
                     class="bg-blue-400 hover:bg-action text-action-foreground p-4 rounded-lg transition-all duration-300 transform  flex flex-col items-center">
-                    <i class="fab fa-twitter text-xl mb-2"></i>
+                    <i class="fab fa-twitter text-xl mb-2" aria-hidden="true"></i>
                     <span class="text-xs font-semibold">Twitter</span>
                 </button>
 
                 <button wire:click="shareCourse('facebook')"
                     class="bg-action hover:bg-action text-action-foreground p-4 rounded-lg transition-all duration-300 transform  flex flex-col items-center">
-                    <i class="fab fa-facebook text-xl mb-2"></i>
+                    <i class="fab fa-facebook text-xl mb-2" aria-hidden="true"></i>
                     <span class="text-xs font-semibold">Facebook</span>
                 </button>
 
                 <button wire:click="shareCourse('linkedin')"
                     class="bg-action hover:bg-action text-action-foreground p-4 rounded-lg transition-all duration-300 transform  flex flex-col items-center">
-                    <i class="fab fa-linkedin text-xl mb-2"></i>
+                    <i class="fab fa-linkedin text-xl mb-2" aria-hidden="true"></i>
                     <span class="text-xs font-semibold">LinkedIn</span>
                 </button>
 
                 <button wire:click="shareCourse('whatsapp')"
                     class="bg-green-500 hover:bg-green-600 text-white p-4 rounded-lg transition-all duration-300 transform  flex flex-col items-center">
-                    <i class="fab fa-whatsapp text-xl mb-2"></i>
+                    <i class="fab fa-whatsapp text-xl mb-2" aria-hidden="true"></i>
                     <span class="text-xs font-semibold">WhatsApp</span>
                 </button>
             </div>
@@ -752,7 +752,7 @@
                     class="min-w-0 flex-1 bg-themed-tertiary border border-themed-primary rounded-lg px-4 py-3 text-themed-primary text-sm transition-colors duration-300">
                 <button onclick="navigator.clipboard.writeText('{{ $shareUrl }}')" @click="$dispatch('close-modal', 'course-share')"
                     aria-label="Copy course link" class="bk-button bk-button-primary">
-                    <i class="fas fa-copy"></i>
+                    <i class="fas fa-copy" aria-hidden="true"></i>
                 </button>
             </div>
         </div>
@@ -791,13 +791,13 @@
            <div class="flex items-center justify-between">
                <h3 class="text-2xl font-bold text-themed-primary flex items-center gap-3">
                    <div class="bg-brand/10 p-3 rounded-lg">
-                       <i class="fas fa-wallet text-brand"></i>
+                       <i class="fas fa-wallet text-brand" aria-hidden="true"></i>
                    </div>
                    Confirm Enrollment
                </h3>
                <button wire:click="closePaymentModal"
                        class="text-themed-secondary hover:text-themed-primary p-2 rounded-lg hover:bg-themed-tertiary transition-all duration-300" aria-label="Close">
-                   <i class="fas fa-times text-xl"></i>
+                   <i class="fas fa-times text-xl" aria-hidden="true"></i>
                </button>
            </div>
        </div>
@@ -813,7 +813,7 @@
                             class="w-20 h-20 rounded-lg object-cover flex-shrink-0">
                    @else
                        <div class="w-20 h-20 rounded-lg bg-surface-muted   flex items-center justify-center flex-shrink-0">
-                           <i class="fas fa-graduation-cap text-brand text-2xl"></i>
+                           <i class="fas fa-graduation-cap text-brand text-2xl" aria-hidden="true"></i>
                        </div>
                    @endif
 
@@ -836,7 +836,7 @@
                <div class="flex items-center justify-between p-4 bg-themed-tertiary rounded-lg border border-themed-primary">
                    <div class="flex items-center gap-3">
                        <div class="bg-action/10 p-2 rounded-lg">
-                           <i class="fas fa-wallet text-brand"></i>
+                           <i class="fas fa-wallet text-brand" aria-hidden="true"></i>
                        </div>
                        <span class="text-themed-secondary font-medium">Current Balance</span>
                    </div>
@@ -849,7 +849,7 @@
                <div class="flex items-center justify-between p-4 bg-themed-tertiary rounded-lg border border-themed-primary">
                    <div class="flex items-center gap-3">
                        <div class="bg-orange-500/10 p-2 rounded-lg">
-                           <i class="fas fa-tag text-orange-500"></i>
+                           <i class="fas fa-tag text-orange-500" aria-hidden="true"></i>
                        </div>
                        <span class="text-themed-secondary font-medium">Course Price</span>
                    </div>
@@ -863,7 +863,7 @@
                    {{ ($hasSufficientFunds ?? false) ? 'bg-green-50 border-green-300 dark:bg-green-900/20 dark:border-green-700' : 'bg-red-50 border-red-300 dark:bg-red-900/20 dark:border-red-700' }}">
                    <div class="flex items-center gap-3">
                        <div class="{{ ($hasSufficientFunds ?? false) ? 'bg-green-500/10' : 'bg-red-500/10' }} p-2 rounded-lg">
-                           <i class="fas {{ ($hasSufficientFunds ?? false) ? 'fa-check-circle text-green-500' : 'fa-exclamation-circle text-red-500' }}"></i>
+                           <i class="fas {{ ($hasSufficientFunds ?? false) ? 'fa-check-circle text-green-500' : 'fa-exclamation-circle text-red-500' }}" aria-hidden="true"></i>
                        </div>
                        <span class="{{ ($hasSufficientFunds ?? false) ? 'text-green-700 dark:text-green-300' : 'text-red-700 dark:text-red-300' }} font-medium">
                            Balance After Payment
@@ -878,7 +878,7 @@
                @if(!($hasSufficientFunds ?? true))
                    <div class="bg-red-50 dark:bg-red-900/20 border border-red-300 dark:border-red-700 rounded-lg p-4">
                        <div class="flex gap-3">
-                           <i class="fas fa-exclamation-triangle text-red-600 dark:text-red-400 text-xl flex-shrink-0"></i>
+                           <i class="fas fa-exclamation-triangle text-red-600 dark:text-red-400 text-xl flex-shrink-0" aria-hidden="true"></i>
                            <div>
                                <h5 class="font-bold text-red-700 dark:text-red-300 mb-1">Insufficient Funds</h5>
                                <p class="text-red-600 dark:text-red-400 text-sm">
@@ -903,11 +903,11 @@
                            wire:loading.attr="disabled"
                            class="flex-1 bg-action hover:bg-action/90 text-action-foreground font-bold py-3 px-6 rounded-lg transition-all duration-300 disabled:opacity-50 transform  shadow-sm">
                        <span wire:loading.remove wire:target="confirmEnrollment" class="flex items-center justify-center gap-2">
-                           <i class="fas fa-check-circle"></i>
+                           <i class="fas fa-check-circle" aria-hidden="true"></i>
                            Confirm & Enroll
                        </span>
                        <span wire:loading wire:target="confirmEnrollment" class="flex items-center justify-center gap-2">
-                           <i class="fas fa-spinner animate-spin"></i>
+                           <i class="fas fa-spinner animate-spin" aria-hidden="true"></i>
                            Processing...
                        </span>
                    </button>
@@ -918,7 +918,7 @@
                    </button>
                    <a href="{{ route('wallet.index') }}"
                       class="flex-1 bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-6 rounded-lg transition-all duration-300 transform  shadow-sm flex items-center justify-center gap-2">
-                       <i class="fas fa-plus-circle"></i>
+                       <i class="fas fa-plus-circle" aria-hidden="true"></i>
                        Fund Wallet
                    </a>
                @endif
