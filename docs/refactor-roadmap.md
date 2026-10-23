@@ -70,3 +70,15 @@ Remaining assessment work includes backed-up reconciliation of legacy attempts/d
 Implemented actual private project-deliverable and assignment attachments through existing attempts/answers, safe public instructions, frozen file/word requirements, owned draft persistence/removal, authorized immutable submitted downloads and manual instructor review. Project/assignment authoring now has scoped native forms and validated object metadata. Binary-response corruption from configuration output is fixed with a configuration-wide regression check. This supersedes the earlier private project-file backlog for supported configured lesson assessments.
 
 Remaining assessment work includes real Q&A/peer-review participation beyond configuration metadata, exhaustive acceptance of other criteria editors, external review notifications and backed-up reconciliation of legacy attempts/definitions without supported snapshots. Historical public-file migration, provider/OAuth/live-AI/mail, dependency/legal and broad accessibility/theme gates remain. This continuation requires no migration, historical regrade or working-database record change; the whole-product overhaul is not declared production-ready.
+
+## Authenticated redesign continuation — 23 October 2026
+
+- [x] Inventory authenticated routes, shared layouts, installed stack and real roles.
+- [x] Consolidate shell, desktop collapse, mobile drawer/shortcuts and navigation semantics.
+- [x] Migrate authenticated feature surfaces to existing semantic styling; remove forced legacy CSS remapping.
+- [x] Add bounded accessible tables, field/control names, and existing-dialog focus/Escape behavior.
+- [x] Protect the user directory on every request after a regression test exposed direct learner access.
+- [x] Record final full-suite, role/browser and dependency-audit results in verification.md.
+- [ ] Push feature commits when HTTPS Git credentials are available.
+
+Detailed exceptions and state coverage live in dashboard-redesign/page-checklist.md. External payment/AI delivery still requires configured providers; visual changes do not certify an external transaction or generated response.

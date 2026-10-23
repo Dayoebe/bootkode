@@ -1,6 +1,6 @@
 # Authenticated route inventory
 
-Generated 23 October 2026 from the actual router. GET routes include downloads, redirects and alias routes. PHP guards and policies remain the access boundary.
+Generated 23 October 2026 from the actual router: 223 authenticated routes, including 208 GET routes. Only the exact Authenticate middleware is counted; guest RedirectIfAuthenticated routes are excluded. GET endpoints include downloads, redirects and aliases. PHP component/service checks remain the access boundary.
 
 | Method | URI | Name | Handler | Middleware |
 |---|---|---|---|---|
@@ -49,12 +49,6 @@ Generated 23 October 2026 from the actual router. GET routes include downloads, 
 | GET / HEAD | ai-learning-coach | ai.learning.coach | App\Livewire\StudentManagement\AiLearningCoach | web, Illuminate\Auth\Middleware\Authenticate, Illuminate\Auth\Middleware\EnsureEmailIsVerified |
 | GET / HEAD | api/banks | api.banks | App\Http\Controllers\FinancialController@getBanks | web, Illuminate\Auth\Middleware\Authenticate |
 | POST | api/resolve-account | api.resolve-account | App\Http\Controllers\FinancialController@resolveAccount | web, Illuminate\Auth\Middleware\Authenticate |
-| GET / HEAD | auth/facebook | login.facebook | App\Http\Controllers\Auth\SocialAuthController@redirectToFacebook | web, Illuminate\Auth\Middleware\RedirectIfAuthenticated |
-| GET / HEAD | auth/facebook/callback | None | App\Http\Controllers\Auth\SocialAuthController@handleFacebookCallback | web, Illuminate\Auth\Middleware\RedirectIfAuthenticated |
-| GET / HEAD | auth/google | login.google | App\Http\Controllers\Auth\SocialAuthController@redirectToGoogle | web, Illuminate\Auth\Middleware\RedirectIfAuthenticated |
-| GET / HEAD | auth/google/callback | None | App\Http\Controllers\Auth\SocialAuthController@handleGoogleCallback | web, Illuminate\Auth\Middleware\RedirectIfAuthenticated |
-| GET / HEAD | auth/twitter | login.twitter | App\Http\Controllers\Auth\SocialAuthController@redirectToTwitter | web, Illuminate\Auth\Middleware\RedirectIfAuthenticated |
-| GET / HEAD | auth/twitter/callback | None | App\Http\Controllers\Auth\SocialAuthController@handleTwitterCallback | web, Illuminate\Auth\Middleware\RedirectIfAuthenticated |
 | GET / HEAD | billing/documents | billing.documents | App\Livewire\Financial\BillingDocuments | web, Illuminate\Auth\Middleware\Authenticate |
 | GET / HEAD | billing/documents/{commercialDocument} | commercial.documents.show | App\Http\Controllers\CommercialDocumentController@show | web, Illuminate\Auth\Middleware\Authenticate |
 | GET / HEAD | bootkode-ai/mentor | ai.coding-mentor | App\Livewire\Ai\CodingMentor | web, Illuminate\Auth\Middleware\Authenticate, Illuminate\Auth\Middleware\EnsureEmailIsVerified |
@@ -152,8 +146,6 @@ Generated 23 October 2026 from the actual router. GET routes include downloads, 
 | GET / HEAD | dashboard/user-activity | user.activity | App\Livewire\UserManagement\UserActivity | web, Illuminate\Auth\Middleware\Authenticate, Illuminate\Auth\Middleware\EnsureEmailIsVerified |
 | POST | email/verification-notification | verification.send | App\Http\Controllers\Auth\EmailVerificationController@sendVerificationEmail | web, Illuminate\Auth\Middleware\Authenticate, Illuminate\Routing\Middleware\ThrottleRequests:6,1 |
 | GET / HEAD | enrolled-courses | student.enrolled-courses | App\Livewire\StudentManagement\EnrolledCourses | web, Illuminate\Auth\Middleware\Authenticate, Illuminate\Auth\Middleware\EnsureEmailIsVerified |
-| GET / HEAD | forgot-password | password.request | App\Http\Controllers\Auth\PasswordController@showForgotPasswordForm | web, Illuminate\Auth\Middleware\RedirectIfAuthenticated |
-| POST | forgot-password | password.email | App\Http\Controllers\Auth\PasswordController@sendResetLink | web, Illuminate\Auth\Middleware\RedirectIfAuthenticated |
 | GET / HEAD | gamification/badges | gamification.badges | App\Livewire\Gamification\GamificationDashboard | web, Illuminate\Auth\Middleware\Authenticate, Illuminate\Auth\Middleware\EnsureEmailIsVerified |
 | GET / HEAD | gamification/dashboard | gamification.dashboard | App\Livewire\Gamification\GamificationDashboard | web, Illuminate\Auth\Middleware\Authenticate, Illuminate\Auth\Middleware\EnsureEmailIsVerified |
 | GET / HEAD | gamification/games | gamification.games | App\Livewire\Gamification\GamificationDashboard | web, Illuminate\Auth\Middleware\Authenticate, Illuminate\Auth\Middleware\EnsureEmailIsVerified |
@@ -182,8 +174,6 @@ Generated 23 October 2026 from the actual router. GET routes include downloads, 
 | GET / HEAD | learning-analytics | student.learning-analytics | App\Livewire\StudentManagement\LearningAnalytics | web, Illuminate\Auth\Middleware\Authenticate, Illuminate\Auth\Middleware\EnsureEmailIsVerified |
 | GET / HEAD | learning/attempts/{session}/files/{file} | assessment.submission-file | App\Http\Controllers\AssessmentSubmissionFileController | web, Illuminate\Auth\Middleware\Authenticate, Illuminate\Auth\Middleware\EnsureEmailIsVerified |
 | GET / HEAD | learning/lessons/{lesson}/assessments | lesson.assessments | App\Livewire\StudentManagement\CourseView\StudentAssessmentTaker | web, Illuminate\Auth\Middleware\Authenticate, Illuminate\Auth\Middleware\EnsureEmailIsVerified |
-| GET / HEAD | login | login | App\Http\Controllers\Auth\AuthController@showLoginForm | web, Illuminate\Auth\Middleware\RedirectIfAuthenticated |
-| POST | login | None | App\Http\Controllers\Auth\AuthController@login | web, Illuminate\Auth\Middleware\RedirectIfAuthenticated |
 | POST | logout | logout | App\Http\Controllers\Auth\AuthController@logout | web, Illuminate\Auth\Middleware\Authenticate |
 | GET / HEAD | marketplace/admin/analytics | marketplace.analytics | App\Livewire\Marketplace\MarketplaceCenter | web, Illuminate\Auth\Middleware\Authenticate, Illuminate\Auth\Middleware\EnsureEmailIsVerified, App\Http\Middleware\CheckRole:super_admin,academy_admin |
 | GET / HEAD | marketplace/admin/orders | marketplace.orders | App\Livewire\Marketplace\MarketplaceCenter | web, Illuminate\Auth\Middleware\Authenticate, Illuminate\Auth\Middleware\EnsureEmailIsVerified, App\Http\Middleware\CheckRole:super_admin,academy_admin |
@@ -224,10 +214,6 @@ Generated 23 October 2026 from the actual router. GET routes include downloads, 
 | GET / HEAD | paystack/callback | paystack.callback | App\Http\Controllers\FinancialController@paystackCallback | web, Illuminate\Auth\Middleware\Authenticate |
 | GET / HEAD | portfolio | portfolio.show | App\Livewire\Career\PortfolioBuilder | web, Illuminate\Auth\Middleware\Authenticate |
 | GET / HEAD | projects/{slug} | project.show | App\Http\Controllers\ProjectController@show | web, Illuminate\Auth\Middleware\Authenticate, Illuminate\Auth\Middleware\EnsureEmailIsVerified |
-| GET / HEAD | register | register | App\Http\Controllers\Auth\AuthController@showRegistrationForm | web, Illuminate\Auth\Middleware\RedirectIfAuthenticated |
-| POST | register | None | App\Http\Controllers\Auth\AuthController@register | web, Illuminate\Auth\Middleware\RedirectIfAuthenticated |
-| POST | reset-password | password.store | App\Http\Controllers\Auth\PasswordController@resetPassword | web, Illuminate\Auth\Middleware\RedirectIfAuthenticated |
-| GET / HEAD | reset-password/{token} | password.reset | App\Http\Controllers\Auth\PasswordController@showResetPasswordForm | web, Illuminate\Auth\Middleware\RedirectIfAuthenticated |
 | GET / HEAD | resume/builder | resume.builder | App\Livewire\Career\ResumeBuilder | web, Illuminate\Auth\Middleware\Authenticate |
 | GET / HEAD | review-reminders/unsubscribe-all | review-reminders.unsubscribe-all | Closure | web, Illuminate\Auth\Middleware\Authenticate |
 | GET / HEAD | saved-resources | student.saved-resources | App\Livewire\StudentManagement\SavedResources | web, Illuminate\Auth\Middleware\Authenticate, Illuminate\Auth\Middleware\EnsureEmailIsVerified |

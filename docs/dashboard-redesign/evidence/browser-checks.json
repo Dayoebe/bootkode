@@ -1,0 +1,1012 @@
+[
+  {
+    "route": "student.dashboard",
+    "role": "student",
+    "viewport": 390,
+    "status": 200,
+    "width": 390,
+    "body": 390,
+    "errors": []
+  },
+  {
+    "route": "student.dashboard",
+    "role": "student",
+    "viewport": 768,
+    "status": 200,
+    "width": 768,
+    "body": 768,
+    "errors": []
+  },
+  {
+    "route": "student.dashboard",
+    "role": "student",
+    "viewport": 1024,
+    "status": 200,
+    "width": 1024,
+    "body": 1024,
+    "errors": []
+  },
+  {
+    "route": "student.dashboard",
+    "role": "student",
+    "viewport": 1440,
+    "status": 200,
+    "width": 1440,
+    "body": 1440,
+    "errors": []
+  },
+  {
+    "role": "student",
+    "route": "student.enrolled-courses",
+    "status": 200,
+    "width": 390,
+    "body": 390,
+    "h1": 1,
+    "errors": []
+  },
+  {
+    "role": "student",
+    "route": "student.course-catalog",
+    "status": 200,
+    "width": 390,
+    "body": 390,
+    "h1": 1,
+    "errors": []
+  },
+  {
+    "role": "student",
+    "route": "learner.journey",
+    "status": 200,
+    "width": 390,
+    "body": 390,
+    "h1": 1,
+    "errors": []
+  },
+  {
+    "role": "student",
+    "route": "profile.view",
+    "status": 200,
+    "width": 390,
+    "body": 390,
+    "h1": 1,
+    "errors": [],
+    "tabs": 9,
+    "sidebarRows": 17
+  },
+  {
+    "role": "student",
+    "route": "settings",
+    "status": 200,
+    "width": 390,
+    "body": 390,
+    "h1": 1,
+    "errors": []
+  },
+  {
+    "role": "student",
+    "route": "wallet.index",
+    "status": 200,
+    "width": 390,
+    "body": 390,
+    "h1": 1,
+    "errors": []
+  },
+  {
+    "role": "student",
+    "route": "transactions.history",
+    "status": 200,
+    "width": 390,
+    "body": 390,
+    "h1": 1,
+    "errors": [],
+    "dialogFocus": true,
+    "dialogEscape": true
+  },
+  {
+    "role": "student",
+    "route": "billing.documents",
+    "status": 200,
+    "width": 390,
+    "body": 390,
+    "h1": 1,
+    "errors": []
+  },
+  {
+    "role": "student",
+    "route": "student.certificates.index",
+    "status": 200,
+    "width": 390,
+    "body": 390,
+    "h1": 1,
+    "errors": []
+  },
+  {
+    "role": "student",
+    "route": "gamification.dashboard",
+    "status": 200,
+    "width": 390,
+    "body": 390,
+    "h1": 1,
+    "errors": []
+  },
+  {
+    "role": "student",
+    "route": "gamification.leaderboard",
+    "status": 200,
+    "width": 390,
+    "body": 390,
+    "h1": 1,
+    "errors": []
+  },
+  {
+    "role": "student",
+    "route": "ai.coding-mentor",
+    "status": 200,
+    "width": 390,
+    "body": 390,
+    "h1": 1,
+    "errors": []
+  },
+  {
+    "role": "student",
+    "route": "help.support",
+    "status": 200,
+    "width": 390,
+    "body": 390,
+    "h1": 1,
+    "errors": []
+  },
+  {
+    "role": "student",
+    "route": "messages.index",
+    "status": 200,
+    "width": 390,
+    "body": 390,
+    "h1": 1,
+    "errors": []
+  },
+  {
+    "role": "student",
+    "route": "dashboard.search",
+    "status": 200,
+    "width": 390,
+    "body": 390,
+    "h1": 1,
+    "errors": []
+  },
+  {
+    "role": "student",
+    "route": "course.view",
+    "status": 200,
+    "width": 390,
+    "body": 390,
+    "h1": 1,
+    "errors": []
+  },
+  {
+    "role": "student",
+    "route": "all-users",
+    "status": 403,
+    "expected": 403
+  },
+  {
+    "role": "instructor",
+    "route": "instructor.dashboard",
+    "viewport": 390,
+    "status": 200,
+    "width": 390,
+    "body": 390,
+    "h1": 1,
+    "errors": [],
+    "filtered": 1,
+    "drawerClosed": true
+  },
+  {
+    "role": "instructor",
+    "route": "instructor.dashboard",
+    "viewport": 768,
+    "status": 200,
+    "width": 768,
+    "body": 768,
+    "h1": 1,
+    "errors": [],
+    "filtered": 1,
+    "drawerClosed": true
+  },
+  {
+    "role": "instructor",
+    "route": "instructor.dashboard",
+    "viewport": 1024,
+    "status": 200,
+    "width": 1024,
+    "body": 1024,
+    "h1": 1,
+    "errors": [],
+    "railWidth": 80
+  },
+  {
+    "role": "instructor",
+    "route": "instructor.dashboard",
+    "viewport": 1440,
+    "status": 200,
+    "width": 1440,
+    "body": 1440,
+    "h1": 1,
+    "errors": [],
+    "railWidth": 80
+  },
+  {
+    "role": "instructor",
+    "route": "my-course",
+    "status": 200,
+    "width": 390,
+    "body": 390,
+    "h1": 1,
+    "errors": []
+  },
+  {
+    "role": "instructor",
+    "route": "create.course",
+    "status": 200,
+    "width": 390,
+    "body": 390,
+    "h1": 1,
+    "errors": [],
+    "validationErrorAssociated": true
+  },
+  {
+    "role": "instructor",
+    "route": "assessment.reviews",
+    "status": 200,
+    "width": 390,
+    "body": 390,
+    "h1": 1,
+    "errors": []
+  },
+  {
+    "role": "instructor",
+    "route": "cbt.management",
+    "status": 200,
+    "width": 390,
+    "body": 390,
+    "h1": 1,
+    "errors": []
+  },
+  {
+    "role": "instructor",
+    "route": "mentorship.hub",
+    "status": 200,
+    "width": 390,
+    "body": 390,
+    "h1": 1,
+    "errors": []
+  },
+  {
+    "role": "instructor",
+    "route": "course-builder",
+    "status": 200,
+    "width": 390,
+    "body": 390,
+    "h1": 1,
+    "errors": []
+  },
+  {
+    "role": "instructor",
+    "route": "lesson.assessments.manage",
+    "status": 200,
+    "width": 390,
+    "body": 390,
+    "h1": 1,
+    "errors": []
+  },
+  {
+    "role": "mentor",
+    "route": "mentor.dashboard",
+    "viewport": 390,
+    "status": 200,
+    "width": 390,
+    "body": 390,
+    "h1": 1,
+    "errors": [],
+    "filtered": 1,
+    "drawerClosed": true
+  },
+  {
+    "role": "mentor",
+    "route": "mentor.dashboard",
+    "viewport": 768,
+    "status": 200,
+    "width": 768,
+    "body": 768,
+    "h1": 1,
+    "errors": [],
+    "filtered": 1,
+    "drawerClosed": true
+  },
+  {
+    "role": "mentor",
+    "route": "mentor.dashboard",
+    "viewport": 1024,
+    "status": 200,
+    "width": 1024,
+    "body": 1024,
+    "h1": 1,
+    "errors": [],
+    "railWidth": 80
+  },
+  {
+    "role": "mentor",
+    "route": "mentor.dashboard",
+    "viewport": 1440,
+    "status": 200,
+    "width": 1440,
+    "body": 1440,
+    "h1": 1,
+    "errors": [],
+    "railWidth": 80
+  },
+  {
+    "role": "mentor",
+    "route": "mentorship.dashboard",
+    "status": 200,
+    "width": 390,
+    "body": 390,
+    "h1": 1,
+    "errors": []
+  },
+  {
+    "role": "mentor",
+    "route": "mentorship.my-mentorships",
+    "status": 200,
+    "width": 390,
+    "body": 390,
+    "h1": 1,
+    "errors": []
+  },
+  {
+    "role": "mentor",
+    "route": "mentorship.sessions",
+    "status": 200,
+    "width": 390,
+    "body": 390,
+    "h1": 1,
+    "errors": []
+  },
+  {
+    "role": "mentor",
+    "route": "mentorship.code-reviews",
+    "status": 200,
+    "width": 390,
+    "body": 390,
+    "h1": 1,
+    "errors": []
+  },
+  {
+    "role": "mentor",
+    "route": "my-course",
+    "status": 200,
+    "width": 390,
+    "body": 390,
+    "h1": 1,
+    "errors": []
+  },
+  {
+    "role": "content_editor",
+    "route": "content_editor.dashboard",
+    "viewport": 390,
+    "status": 200,
+    "width": 390,
+    "body": 390,
+    "h1": 1,
+    "errors": [],
+    "filtered": 1,
+    "drawerClosed": true
+  },
+  {
+    "role": "content_editor",
+    "route": "content_editor.dashboard",
+    "viewport": 768,
+    "status": 200,
+    "width": 768,
+    "body": 768,
+    "h1": 1,
+    "errors": [],
+    "filtered": 1,
+    "drawerClosed": true
+  },
+  {
+    "role": "content_editor",
+    "route": "content_editor.dashboard",
+    "viewport": 1024,
+    "status": 200,
+    "width": 1024,
+    "body": 1024,
+    "h1": 1,
+    "errors": [],
+    "railWidth": 80
+  },
+  {
+    "role": "content_editor",
+    "route": "content_editor.dashboard",
+    "viewport": 1440,
+    "status": 200,
+    "width": 1440,
+    "body": 1440,
+    "h1": 1,
+    "errors": [],
+    "railWidth": 80
+  },
+  {
+    "role": "content_editor",
+    "route": "my-course",
+    "status": 200,
+    "width": 390,
+    "body": 390,
+    "h1": 1,
+    "errors": []
+  },
+  {
+    "role": "content_editor",
+    "route": "course-quality.control",
+    "status": 200,
+    "width": 390,
+    "body": 390,
+    "h1": 1,
+    "errors": []
+  },
+  {
+    "role": "content_editor",
+    "route": "admin.blog.posts.index",
+    "status": 200,
+    "width": 390,
+    "body": 390,
+    "h1": 1,
+    "errors": []
+  },
+  {
+    "role": "content_editor",
+    "route": "content.documentation",
+    "status": 200,
+    "width": 390,
+    "body": 390,
+    "h1": 1,
+    "errors": []
+  },
+  {
+    "role": "affiliate_ambassador",
+    "route": "affiliate_ambassador.dashboard",
+    "viewport": 390,
+    "status": 200,
+    "width": 390,
+    "body": 390,
+    "h1": 1,
+    "errors": [],
+    "filtered": 1,
+    "drawerClosed": true
+  },
+  {
+    "role": "affiliate_ambassador",
+    "route": "affiliate_ambassador.dashboard",
+    "viewport": 768,
+    "status": 200,
+    "width": 768,
+    "body": 768,
+    "h1": 1,
+    "errors": [],
+    "filtered": 1,
+    "drawerClosed": true
+  },
+  {
+    "role": "affiliate_ambassador",
+    "route": "affiliate_ambassador.dashboard",
+    "viewport": 1024,
+    "status": 200,
+    "width": 1024,
+    "body": 1024,
+    "h1": 1,
+    "errors": [],
+    "railWidth": 80
+  },
+  {
+    "role": "affiliate_ambassador",
+    "route": "affiliate_ambassador.dashboard",
+    "viewport": 1440,
+    "status": 200,
+    "width": 1440,
+    "body": 1440,
+    "h1": 1,
+    "errors": [],
+    "railWidth": 80
+  },
+  {
+    "role": "affiliate_ambassador",
+    "route": "affiliate.dashboard",
+    "status": 200,
+    "width": 390,
+    "body": 390,
+    "h1": 1,
+    "errors": []
+  },
+  {
+    "role": "affiliate_ambassador",
+    "route": "affiliate.tools",
+    "status": 200,
+    "width": 390,
+    "body": 390,
+    "h1": 1,
+    "errors": []
+  },
+  {
+    "role": "affiliate_ambassador",
+    "route": "affiliate.commissions",
+    "status": 200,
+    "width": 390,
+    "body": 390,
+    "h1": 1,
+    "errors": []
+  },
+  {
+    "role": "affiliate_ambassador",
+    "route": "affiliate.reports",
+    "status": 200,
+    "width": 390,
+    "body": 390,
+    "h1": 1,
+    "errors": []
+  },
+  {
+    "role": "affiliate_ambassador",
+    "route": "affiliate.analytics",
+    "status": 200,
+    "width": 390,
+    "body": 390,
+    "h1": 1,
+    "errors": []
+  },
+  {
+    "role": "affiliate_ambassador",
+    "route": "affiliate.settings",
+    "status": 403,
+    "width": 390,
+    "body": 390,
+    "h1": 1,
+    "errors": [],
+    "expected": 403
+  },
+  {
+    "role": "academy_admin",
+    "route": "academy_admin.dashboard",
+    "viewport": 390,
+    "status": 200,
+    "width": 390,
+    "body": 390,
+    "h1": 1,
+    "errors": [],
+    "filtered": 1,
+    "drawerClosed": true
+  },
+  {
+    "role": "academy_admin",
+    "route": "academy_admin.dashboard",
+    "viewport": 768,
+    "status": 200,
+    "width": 768,
+    "body": 768,
+    "h1": 1,
+    "errors": [],
+    "filtered": 1,
+    "drawerClosed": true
+  },
+  {
+    "role": "academy_admin",
+    "route": "academy_admin.dashboard",
+    "viewport": 1024,
+    "status": 200,
+    "width": 1024,
+    "body": 1024,
+    "h1": 1,
+    "errors": [],
+    "railWidth": 80
+  },
+  {
+    "role": "academy_admin",
+    "route": "academy_admin.dashboard",
+    "viewport": 1440,
+    "status": 200,
+    "width": 1440,
+    "body": 1440,
+    "h1": 1,
+    "errors": [],
+    "railWidth": 80
+  },
+  {
+    "role": "academy_admin",
+    "route": "all-users",
+    "status": 200,
+    "width": 390,
+    "body": 390,
+    "h1": 1,
+    "errors": []
+  },
+  {
+    "role": "academy_admin",
+    "route": "course-approvals",
+    "status": 200,
+    "width": 390,
+    "body": 390,
+    "h1": 1,
+    "errors": []
+  },
+  {
+    "role": "academy_admin",
+    "route": "admin.financial.dashboard",
+    "status": 200,
+    "width": 390,
+    "body": 390,
+    "h1": 1,
+    "errors": []
+  },
+  {
+    "role": "academy_admin",
+    "route": "admin.certificates.manage",
+    "status": 200,
+    "width": 390,
+    "body": 390,
+    "h1": 1,
+    "errors": []
+  },
+  {
+    "role": "academy_admin",
+    "route": "help.support",
+    "status": 200,
+    "width": 390,
+    "body": 390,
+    "h1": 1,
+    "errors": []
+  },
+  {
+    "role": "super_admin",
+    "route": "super_admin.dashboard",
+    "viewport": 390,
+    "status": 200,
+    "width": 390,
+    "body": 390,
+    "h1": 1,
+    "errors": [],
+    "filtered": 1,
+    "drawerClosed": true
+  },
+  {
+    "role": "super_admin",
+    "route": "super_admin.dashboard",
+    "viewport": 768,
+    "status": 200,
+    "width": 768,
+    "body": 768,
+    "h1": 1,
+    "errors": [],
+    "filtered": 1,
+    "drawerClosed": true
+  },
+  {
+    "role": "super_admin",
+    "route": "super_admin.dashboard",
+    "viewport": 1024,
+    "status": 200,
+    "width": 1024,
+    "body": 1024,
+    "h1": 1,
+    "errors": [],
+    "railWidth": 80
+  },
+  {
+    "role": "super_admin",
+    "route": "super_admin.dashboard",
+    "viewport": 1440,
+    "status": 200,
+    "width": 1440,
+    "body": 1440,
+    "h1": 1,
+    "errors": [],
+    "railWidth": 80
+  },
+  {
+    "role": "super_admin",
+    "route": "all-users",
+    "status": 200,
+    "width": 390,
+    "body": 390,
+    "h1": 1,
+    "errors": []
+  },
+  {
+    "role": "super_admin",
+    "route": "user-management",
+    "status": 200,
+    "width": 390,
+    "body": 390,
+    "h1": 1,
+    "errors": []
+  },
+  {
+    "role": "super_admin",
+    "route": "roles-permissions",
+    "status": 200,
+    "width": 390,
+    "body": 390,
+    "h1": 1,
+    "errors": []
+  },
+  {
+    "role": "super_admin",
+    "route": "pending-verifications",
+    "status": 200,
+    "width": 390,
+    "body": 390,
+    "h1": 1,
+    "errors": []
+  },
+  {
+    "role": "super_admin",
+    "route": "course-categories",
+    "status": 200,
+    "width": 390,
+    "body": 390,
+    "h1": 1,
+    "errors": []
+  },
+  {
+    "role": "super_admin",
+    "route": "course-approvals",
+    "status": 200,
+    "width": 390,
+    "body": 390,
+    "h1": 1,
+    "errors": []
+  },
+  {
+    "role": "super_admin",
+    "route": "admin.financial.dashboard",
+    "status": 200,
+    "width": 390,
+    "body": 390,
+    "h1": 1,
+    "errors": []
+  },
+  {
+    "role": "super_admin",
+    "route": "admin.payments",
+    "status": 200,
+    "width": 390,
+    "body": 390,
+    "h1": 1,
+    "errors": []
+  },
+  {
+    "role": "super_admin",
+    "route": "admin.revenue.reports",
+    "status": 200,
+    "width": 390,
+    "body": 390,
+    "h1": 1,
+    "errors": []
+  },
+  {
+    "role": "super_admin",
+    "route": "admin.financial.settings",
+    "status": 200,
+    "width": 390,
+    "body": 390,
+    "h1": 1,
+    "errors": []
+  },
+  {
+    "role": "super_admin",
+    "route": "admin.paystack.settings",
+    "status": 200,
+    "width": 390,
+    "body": 390,
+    "h1": 1,
+    "errors": []
+  },
+  {
+    "role": "super_admin",
+    "route": "admin.commercial.readiness",
+    "status": 200,
+    "width": 390,
+    "body": 390,
+    "h1": 1,
+    "errors": []
+  },
+  {
+    "role": "super_admin",
+    "route": "admin.certificates.manage",
+    "status": 200,
+    "width": 390,
+    "body": 390,
+    "h1": 1,
+    "errors": []
+  },
+  {
+    "role": "super_admin",
+    "route": "admin.certificates.analytics",
+    "status": 200,
+    "width": 390,
+    "body": 390,
+    "h1": 1,
+    "errors": []
+  },
+  {
+    "role": "super_admin",
+    "route": "admin.certificates.templates",
+    "status": 200,
+    "width": 390,
+    "body": 390,
+    "h1": 1,
+    "errors": []
+  },
+  {
+    "role": "super_admin",
+    "route": "assessment.reviews",
+    "status": 200,
+    "width": 390,
+    "body": 390,
+    "h1": 1,
+    "errors": []
+  },
+  {
+    "role": "super_admin",
+    "route": "review-analytics",
+    "status": 200,
+    "width": 390,
+    "body": 390,
+    "h1": 1,
+    "errors": []
+  },
+  {
+    "role": "super_admin",
+    "route": "course-quality.control",
+    "status": 200,
+    "width": 390,
+    "body": 390,
+    "h1": 1,
+    "errors": []
+  },
+  {
+    "role": "super_admin",
+    "route": "course-reviews",
+    "status": 200,
+    "width": 390,
+    "body": 390,
+    "h1": 1,
+    "errors": []
+  },
+  {
+    "role": "super_admin",
+    "route": "community.center",
+    "status": 200,
+    "width": 390,
+    "body": 390,
+    "h1": 1,
+    "errors": []
+  },
+  {
+    "role": "super_admin",
+    "route": "institution.portal",
+    "status": 200,
+    "width": 390,
+    "body": 390,
+    "h1": 1,
+    "errors": []
+  },
+  {
+    "role": "super_admin",
+    "route": "newsletter.index",
+    "status": 200,
+    "width": 390,
+    "body": 390,
+    "h1": 1,
+    "errors": []
+  },
+  {
+    "role": "super_admin",
+    "route": "pages.index",
+    "status": 200,
+    "width": 390,
+    "body": 390,
+    "h1": 1,
+    "errors": []
+  },
+  {
+    "role": "super_admin",
+    "route": "admin.blog.posts.index",
+    "status": 200,
+    "width": 390,
+    "body": 390,
+    "h1": 1,
+    "errors": []
+  },
+  {
+    "role": "super_admin",
+    "route": "settings",
+    "status": 200,
+    "width": 390,
+    "body": 390,
+    "h1": 1,
+    "errors": []
+  },
+  {
+    "role": "super_admin",
+    "route": "notifications",
+    "status": 200,
+    "width": 390,
+    "body": 390,
+    "h1": 1,
+    "errors": []
+  },
+  {
+    "role": "super_admin",
+    "route": "help.support",
+    "status": 200,
+    "width": 390,
+    "body": 390,
+    "h1": 1,
+    "errors": []
+  },
+  {
+    "role": "super_admin",
+    "route": "super_admin.dashboard",
+    "quickActionEscape": true
+  },
+  {
+    "route": "student.dashboard",
+    "role": "student",
+    "viewport": 360,
+    "status": 200,
+    "width": 360,
+    "body": 360,
+    "errors": []
+  },
+  {
+    "route": "student.dashboard",
+    "role": "student",
+    "viewport": 1366,
+    "status": 200,
+    "width": 1366,
+    "body": 1366,
+    "errors": []
+  },
+  {
+    "route": "profile.view",
+    "role": "student",
+    "editTabs": 5,
+    "errors": []
+  },
+  {
+    "route": "profile.view",
+    "role": "student",
+    "trapped": true,
+    "focusReturned": true
+  },
+  {
+    "route": "student.dashboard",
+    "role": "student",
+    "theme": "dark",
+    "applied": true,
+    "width": 390,
+    "body": 390,
+    "errors": []
+  },
+  {
+    "route": "/",
+    "status": 200
+  },
+  {
+    "route": "/courses",
+    "status": 200
+  },
+  {
+    "route": "/login",
+    "status": 200
+  }
+]

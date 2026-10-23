@@ -8,7 +8,7 @@ Laravel 11.46.1, PHP CLI 8.4.27, Livewire 3.6.4, Spatie Permission 6.22.0; Tailw
 
 `layouts.dashboard` owns the authenticated shell; `layouts.exam` is a focused assessment exception. Public `app`, `pages` and `blog` layouts remain separate. Route middleware and PHP ownership/role guards control access. `config/menu.php` is the existing navigation source. Seven role dashboards serve student, instructor, mentor, content editor, affiliate ambassador, academy admin and super admin. Several modules have root workspaces with nested partials, so route count is not page count.
 
-The route export contains 286 routes, 237 authenticated routes, including 218 GET routes. See `route-inventory.md` for each handler and access boundary; `page-checklist.md` records view-level coverage and exceptions. Downloads, APIs, redirects and printable documents require different acceptance from interactive pages.
+The route export contains 286 routes, 223 authenticated routes, including 208 GET routes. See `route-inventory.md` for each handler and access boundary; `page-checklist.md` records view-level coverage and exceptions. Downloads, APIs, redirects and printable documents require different acceptance from interactive pages.
 
 ## Findings
 
@@ -37,7 +37,15 @@ Commit validated, independently reviewable milestones with Conventional Commits,
 ## Progress
 
 - [x] Git/stack/route/layout/component audit and baseline test started.
-- [ ] Shared foundation and shell.
-- [ ] Role dashboards and feature migration.
-- [ ] Browser and regression acceptance.
-- [ ] Final documentation and pushes.
+- [x] Shared foundation and shell.
+- [x] Role dashboards and feature migration.
+- [x] Browser and regression acceptance, with explicit exceptions below.
+- [x] Final documentation and local commits. Push attempts are blocked by missing HTTPS Git credentials.
+
+## Acceptance and exceptions
+
+The inventory uses the exact Authenticate middleware: 223 authenticated routes, including 208 GET endpoints, across 116 directly resolved source views. Source implementation covers 223 Livewire templates including the shell and verification notice. 108 deduplicated browser checks cover 68 named routes/public URLs and all seven role shells at 390/768/1024/1440px; learner populated states also pass 360/1366px. The page checklist distinguishes source review from individual browser acceptance.
+
+Public marketing/marketplace/published-page templates, printable credentials/resumes and focused CBT exam layouts retain their established contracts. The in-progress Course Content Studio remains separate uncommitted authoring work. Unrouted historical game prototypes remain untouched. Profile sharing has no public account route, so its old inert control now states that it is unavailable.
+
+The full suite snapshot passes 264 tests with one existing import revision conflict failure in unrelated uncommitted source. Final affected tests and the new verification-notice test pass separately; see verification.md for exact counts. All 389 compiled views passed PHP syntax checks; two pre-existing incomplete Blade blocks were repaired alongside the migrated markup regressions. External gateway/provider and every possible conditional UI state are not certified by these browser checks.

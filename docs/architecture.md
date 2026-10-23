@@ -112,3 +112,13 @@ Attachment writes lock the learner/active attempt, recheck actual enrollment/les
 `assessment.submission-file` requires authentication and verification. Draft downloads are owner-only; submitted downloads allow the learner or the currently authorized course/platform reviewer. Downloads check recorded identity, path and SHA-256, force attachment delivery and prohibit caching. No public path, grading guidance, execution, archive extraction or automated file grading is exposed. Retained owner downloads remain available after enrollment ends. File limits take the minimum of the original instructor, Livewire and PHP limits, and tighten on resume when the server becomes stricter. Current local PHP limits uploads to 2 MiB.
 
 Project/assignment authoring reuses `AssessmentAuthoringService` for locked, scoped writes and atomic moves/copies. Array casts store JSON objects once; question settings remain separate from recorded attempt snapshots. The shared review service still owns marks, feedback, corrections and reward publication. Removing an accidental byte before the PHP opening tag in `config/affiliate.php` prevents output from corrupting streamed downloads; financial configuration values are unchanged.
+
+## Authenticated shell consolidation — 23 October 2026
+
+`layouts.dashboard` remains the shared Livewire/Blade shell for all seven roles. `DashboardSidebar` still filters the existing `config/menu.php`; mobile shortcuts are configured by `MobileBottomNav::items()` and Menu opens the same full drawer. These controls do not authorize requests. No routes, domain services, migrations, payment/enrolment boundaries or private offline-cache rules were replaced. Public layouts and the focused exam layout remain separate.
+
+The design foundation stays in tokens.css/app.css/Tailwind 3; dashboard.css is a scoped consumer. Existing components were extended and `ui.table` encapsulates bounded table access. Existing dialog wrappers retain PHP actions and conditional rendering while adding focus traps and keyboard dismissal. Shared admin quick-action dialogs use the existing modal API.
+
+The route audit exposed an unguarded AllUser directory. Its component now checks super-admin/academy-admin roles in boot on initial and subsequent Livewire requests, protecting listing, CSV exports and activity/stat methods together. Tests cover direct learner requests, direct component mounting and role revocation.
+
+See dashboard-redesign/route-inventory.md for route contracts, page-checklist.md for view coverage, and implementation-plan.md for delivery boundaries. Uncommitted course-content pipeline work is preserved separately.
