@@ -24,8 +24,8 @@
         ->implode('') ?: 'U';
 @endphp
 
-<header class="sticky top-0 z-30 border-b border-themed-primary bg-themed-secondary/90 backdrop-blur-xl transition-colors duration-200">
-    <div class="flex min-h-20 items-center justify-between gap-3 px-4 py-3 sm:px-6 lg:px-8">
+<header class="sticky top-0 z-30 border-b border-themed-primary bg-themed-secondary transition-colors duration-200">
+    <div class="flex min-h-16 items-center justify-between gap-3 px-4 py-2 sm:px-6 lg:px-8">
         <div class="flex min-w-0 items-center gap-3">
             <button
                 @click="toggleSidebar()"
@@ -36,16 +36,10 @@
                 <i class="fas fa-bars"></i>
             </button>
 
-            <div class="hidden h-11 w-11 shrink-0 place-items-center rounded-[8px] bg-slate-950 text-white shadow-sm sm:grid">
-                <i class="{{ $icon }} text-sm"></i>
-            </div>
-
             <div class="min-w-0">
                 <div class="flex min-w-0 items-center gap-2">
-                    <p class="bk-display truncate text-base font-black text-themed-primary sm:text-xl">{{ $pageTitle }}</p>
-                    <span class="hidden rounded-full bg-teal-50 px-2 py-0.5 text-[11px] font-black text-teal-700 dark:bg-teal-400/10 dark:text-teal-200 md:inline-flex">
-                        Live
-                    </span>
+                    <p class="bk-display truncate text-base font-semibold text-themed-primary sm:text-base">{{ $pageTitle }}</p>
+
                 </div>
                 <p class="hidden max-w-xl truncate text-xs font-semibold text-themed-secondary sm:block">{{ $pageDescription }}</p>
             </div>
@@ -86,16 +80,19 @@
                     style="display: none;"
                 >
                     <template x-if="loading">
-                        <div class="flex items-center gap-3 px-3 py-4 text-sm font-bold text-themed-secondary">
+                        <div role="status" class="flex items-center gap-3 px-3 py-4 text-sm font-bold text-themed-secondary">
                             <i class="fas fa-spinner animate-spin text-teal-600"></i>
                             Searching...
                         </div>
                     </template>
 
-                    <template x-if="!loading && searched && total === 0">
+                    <template x-if="!loading && error">
+                    <div class="px-3 py-4 text-sm text-content-muted" role="status">Search is unavailable. <button type="button" @click="search()" class="underline">Try again</button></div>
+                </template>
+                <template x-if="!loading && !error && searched && total === 0">
                         <div class="px-3 py-6 text-center">
                             <i class="fas fa-search text-2xl text-themed-tertiary"></i>
-                            <p class="mt-2 text-sm font-black text-themed-primary">No results found</p>
+                            <p class="mt-2 text-sm font-semibold text-themed-primary">No results found</p>
                             <p class="mt-1 text-xs font-semibold text-themed-secondary">Try a course, lesson, user, certificate, page, or post.</p>
                         </div>
                     </template>
@@ -104,7 +101,7 @@
                         <div class="space-y-2">
                             <template x-for="group in groups" :key="group.type">
                                 <div>
-                                    <div class="flex items-center gap-2 px-2 py-1.5 text-[11px] font-black uppercase tracking-wide text-themed-tertiary">
+                                    <div class="flex items-center gap-2 px-2 py-1.5 text-[11px] font-semibold uppercase tracking-wide text-themed-tertiary">
                                         <i :class="group.icon" class="text-teal-600"></i>
                                         <span x-text="group.label"></span>
                                     </div>
@@ -114,16 +111,16 @@
                                                 <i :class="item.icon"></i>
                                             </span>
                                             <span class="min-w-0">
-                                                <span class="block truncate text-sm font-black text-themed-primary" x-text="item.title"></span>
+                                                <span class="block truncate text-sm font-semibold text-themed-primary" x-text="item.title"></span>
                                                 <span class="mt-0.5 line-clamp-1 block text-xs font-semibold text-themed-secondary" x-text="item.description"></span>
-                                                <span class="mt-1 block truncate text-[11px] font-black uppercase tracking-wide text-themed-tertiary" x-text="item.meta"></span>
+                                                <span class="mt-1 block truncate text-[11px] font-semibold uppercase tracking-wide text-themed-tertiary" x-text="item.meta"></span>
                                             </span>
                                         </a>
                                     </template>
                                 </div>
                             </template>
 
-                            <button type="submit" class="flex w-full items-center justify-center gap-2 rounded-[8px] border border-themed-primary px-3 py-2.5 text-sm font-black text-teal-700 transition hover:bg-themed-tertiary dark:text-teal-200">
+                            <button type="submit" class="flex w-full items-center justify-center gap-2 rounded-[8px] border border-themed-primary px-3 py-2.5 text-sm font-semibold text-teal-700 transition hover:bg-themed-tertiary dark:text-teal-200">
                                 <i class="fas fa-search"></i>
                                 View all results
                             </button>
@@ -135,15 +132,15 @@
 
         <div class="flex shrink-0 items-center gap-2">
             <div class="hidden items-center gap-2 lg:flex">
-                <div class="relative" x-data="{ open: false }">
+                <div class="relative" x-data="{ open: false }" @keydown.escape.stop="open = false; $el.querySelector('button').focus()">
                     <button
-                        @click="open = !open"
+                        @click="open = !open" :aria-expanded="open.toString()"
                         class="relative grid h-11 w-11 place-items-center rounded-[8px] border border-themed-primary bg-themed-secondary text-themed-secondary transition hover:bg-themed-tertiary hover:text-themed-primary"
                         aria-label="Notifications"
                     >
                         <i class="fas fa-bell"></i>
                         @if ($unreadNotificationCount > 0)
-                            <span class="absolute -right-1 -top-1 grid h-5 min-w-5 place-items-center rounded-full bg-rose-600 px-1 text-[10px] font-black text-white">
+                            <span class="absolute -right-1 -top-1 grid h-5 min-w-5 place-items-center rounded-full bg-rose-600 px-1 text-[10px] font-semibold text-white">
                                 {{ $unreadNotificationCount > 9 ? '9+' : $unreadNotificationCount }}
                             </span>
                         @endif
@@ -153,11 +150,11 @@
                         x-show="open"
                         x-transition.origin.top.right
                         @click.away="open = false"
-                        class="absolute right-0 mt-3 w-80 overflow-hidden rounded-[8px] border border-themed-primary bg-themed-secondary shadow-2xl shadow-slate-950/10"
+                        class="absolute right-0 mt-3 w-80 max-w-[calc(100vw-2rem)] overflow-hidden rounded-[8px] border border-themed-primary bg-themed-secondary shadow-2xl shadow-slate-950/10"
                         style="display: none;"
                     >
                         <div class="border-b border-themed-primary px-4 py-3">
-                            <h3 class="text-sm font-black text-themed-primary">Notifications</h3>
+                            <h3 class="text-sm font-semibold text-themed-primary">Notifications</h3>
                         </div>
                         <div class="max-h-72 overflow-y-auto">
                             @if ($unreadNotificationCount > 0)
@@ -180,7 +177,7 @@
                             @endif
                         </div>
                         <div class="border-t border-themed-primary px-4 py-3">
-                            <a href="{{ route('notifications') }}" class="text-sm font-black text-teal-700 hover:underline dark:text-teal-300">
+                            <a href="{{ route('notifications') }}" class="text-sm font-semibold text-teal-700 hover:underline dark:text-teal-300">
                                 View notification center
                             </a>
                         </div>
@@ -192,15 +189,15 @@
                     aria-label="Chat" wire:navigate>
                     <i class="fas fa-comments"></i>
                     @if ($unreadChatCount > 0)
-                        <span class="absolute -right-1 -top-1 grid h-5 min-w-5 place-items-center rounded-full bg-rose-600 px-1 text-[10px] font-black text-white">
+                        <span class="absolute -right-1 -top-1 grid h-5 min-w-5 place-items-center rounded-full bg-rose-600 px-1 text-[10px] font-semibold text-white">
                             {{ $unreadChatCount > 9 ? '9+' : $unreadChatCount }}
                         </span>
                     @endif
                 </a>
 
-                <div class="relative" x-data="{ open: false }">
+                <div class="relative" x-data="{ open: false }" @keydown.escape.stop="open = false; $el.querySelector('button').focus()">
                     <button
-                        @click="open = !open"
+                        @click="open = !open" :aria-expanded="open.toString()"
                         class="grid h-11 w-11 place-items-center rounded-[8px] border border-themed-primary bg-themed-secondary text-themed-secondary transition hover:bg-themed-tertiary hover:text-themed-primary"
                         aria-label="Quick actions"
                     >
@@ -234,7 +231,7 @@
                 </div>
             </div>
 
-            <x-theme-selector />
+            <div class="hidden sm:block"><x-theme-selector /></div>
 
             <button
                 class="grid h-11 w-11 place-items-center rounded-[8px] border border-themed-primary bg-themed-secondary text-themed-secondary transition hover:bg-themed-tertiary hover:text-themed-primary md:hidden"
@@ -244,17 +241,17 @@
                 <i class="fas fa-search"></i>
             </button>
 
-            <div class="relative" x-data="{ open: false }">
+            <div class="relative" x-data="{ open: false }" @keydown.escape.stop="open = false; $el.querySelector('button').focus()">
                 <button
-                    @click="open = !open"
+                    @click="open = !open" :aria-expanded="open.toString()"
                     class="flex h-11 items-center gap-2 rounded-[8px] border border-themed-primary bg-themed-secondary px-2 text-themed-primary shadow-sm transition hover:bg-themed-tertiary"
                     aria-label="User menu"
                 >
-                    <span class="grid h-8 w-8 shrink-0 place-items-center rounded-[8px] border border-themed-primary bg-teal-600 text-xs font-black text-white">
+                    <span class="grid h-8 w-8 shrink-0 place-items-center rounded-[8px] border border-themed-primary bg-teal-600 text-xs font-semibold text-white">
                         {{ $userInitials }}
                     </span>
                     <div class="hidden min-w-0 text-left sm:block">
-                        <p class="max-w-32 truncate text-sm font-black">{{ $user?->name ?? 'Guest' }}</p>
+                        <p class="max-w-32 truncate text-sm font-semibold">{{ $user?->name ?? 'Guest' }}</p>
                         <p class="truncate text-[11px] font-semibold text-themed-tertiary">{{ ucfirst($user?->getRoleNames()->first() ?? 'User') }}</p>
                     </div>
                     <i class="fas fa-chevron-down hidden text-[10px] text-themed-tertiary sm:block" :class="{ 'rotate-180': open }"></i>
@@ -264,12 +261,12 @@
                     x-show="open"
                     x-transition.origin.top.right
                     @click.away="open = false"
-                    class="absolute right-0 mt-3 w-64 overflow-hidden rounded-[8px] border border-themed-primary bg-themed-secondary p-2 shadow-2xl shadow-slate-950/10"
+                    class="absolute right-0 mt-3 w-64 max-w-[calc(100vw-2rem)] overflow-hidden rounded-[8px] border border-themed-primary bg-themed-secondary p-2 shadow-2xl shadow-slate-950/10"
                     style="display: none;"
                 >
                     @if ($user)
                         <div class="px-3 py-3">
-                            <p class="truncate text-sm font-black text-themed-primary">{{ $user->name }}</p>
+                            <p class="truncate text-sm font-semibold text-themed-primary">{{ $user->name }}</p>
                             <p class="truncate text-xs font-semibold text-themed-tertiary">{{ $user->email }}</p>
                         </div>
 
@@ -285,7 +282,7 @@
 
                         <form method="POST" action="{{ route('logout') }}" class="mt-2 border-t border-themed-primary pt-2">
                             @csrf
-                            <button type="submit" class="flex w-full items-center gap-3 rounded-[8px] px-3 py-2.5 text-left text-sm font-black text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-500/10">
+                            <button type="submit" class="flex w-full items-center gap-3 rounded-[8px] px-3 py-2.5 text-left text-sm font-semibold text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-500/10">
                                 <i class="fas fa-sign-out-alt w-4"></i>
                                 Logout
                             </button>
@@ -346,16 +343,19 @@
                 style="display: none;"
             >
                 <template x-if="loading">
-                    <div class="flex items-center gap-3 px-3 py-4 text-sm font-bold text-themed-secondary">
+                    <div role="status" class="flex items-center gap-3 px-3 py-4 text-sm font-bold text-themed-secondary">
                         <i class="fas fa-spinner animate-spin text-teal-600"></i>
                         Searching...
                     </div>
                 </template>
 
-                <template x-if="!loading && searched && total === 0">
+                <template x-if="!loading && error">
+                    <div class="px-3 py-4 text-sm text-content-muted" role="status">Search is unavailable. <button type="button" @click="search()" class="underline">Try again</button></div>
+                </template>
+                <template x-if="!loading && !error && searched && total === 0">
                     <div class="px-3 py-6 text-center">
                         <i class="fas fa-search text-2xl text-themed-tertiary"></i>
-                        <p class="mt-2 text-sm font-black text-themed-primary">No results found</p>
+                        <p class="mt-2 text-sm font-semibold text-themed-primary">No results found</p>
                         <p class="mt-1 text-xs font-semibold text-themed-secondary">Try a course, lesson, user, certificate, page, or post.</p>
                     </div>
                 </template>
@@ -364,7 +364,7 @@
                     <div class="space-y-2">
                         <template x-for="group in groups" :key="group.type">
                             <div>
-                                <div class="flex items-center gap-2 px-2 py-1.5 text-[11px] font-black uppercase tracking-wide text-themed-tertiary">
+                                <div class="flex items-center gap-2 px-2 py-1.5 text-[11px] font-semibold uppercase tracking-wide text-themed-tertiary">
                                     <i :class="group.icon" class="text-teal-600"></i>
                                     <span x-text="group.label"></span>
                                 </div>
@@ -374,16 +374,16 @@
                                             <i :class="item.icon"></i>
                                         </span>
                                         <span class="min-w-0">
-                                            <span class="block truncate text-sm font-black text-themed-primary" x-text="item.title"></span>
+                                            <span class="block truncate text-sm font-semibold text-themed-primary" x-text="item.title"></span>
                                             <span class="mt-0.5 line-clamp-1 block text-xs font-semibold text-themed-secondary" x-text="item.description"></span>
-                                            <span class="mt-1 block truncate text-[11px] font-black uppercase tracking-wide text-themed-tertiary" x-text="item.meta"></span>
+                                            <span class="mt-1 block truncate text-[11px] font-semibold uppercase tracking-wide text-themed-tertiary" x-text="item.meta"></span>
                                         </span>
                                     </a>
                                 </template>
                             </div>
                         </template>
 
-                        <button type="submit" class="flex w-full items-center justify-center gap-2 rounded-[8px] border border-themed-primary px-3 py-2.5 text-sm font-black text-teal-700 transition hover:bg-themed-tertiary dark:text-teal-200">
+                        <button type="submit" class="flex w-full items-center justify-center gap-2 rounded-[8px] border border-themed-primary px-3 py-2.5 text-sm font-semibold text-teal-700 transition hover:bg-themed-tertiary dark:text-teal-200">
                             <i class="fas fa-search"></i>
                             View all results
                         </button>
@@ -403,6 +403,7 @@
                 total: 0,
                 loading: false,
                 searched: false,
+                error: false,
                 open: false,
                 abortController: null,
 
@@ -416,6 +417,7 @@
 
                     this.open = true;
                     this.searched = true;
+                    this.error = false;
 
                     if (this.abortController) {
                         this.abortController.abort();
@@ -440,6 +442,7 @@
                         })
                         .catch((error) => {
                             if (error.name !== 'AbortError') {
+                                this.error = true;
                                 this.groups = [];
                                 this.total = 0;
                                 this.open = true;
@@ -471,6 +474,8 @@
                     this.total = 0;
                     this.loading = false;
                     this.searched = false;
+                    this.error = false;
+                    this.abortController?.abort();
                     this.open = false;
                 },
             };

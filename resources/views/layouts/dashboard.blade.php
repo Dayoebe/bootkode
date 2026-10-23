@@ -45,7 +45,6 @@
         $pageDescription = $description ?? 'Manage learning, courses, mentorship, and platform tools from one focused workspace.';
         $pageIcon = $icon ?? 'fas fa-gauge-high';
         $roleLabel = ucfirst($user?->getRoleNames()->first() ?? 'User');
-        $showDashboardWelcome = str_contains($currentRouteName, 'dashboard');
     @endphp
 
     <title>{{ config('app.name', 'BootKode') }} - {{ $pageTitle }}</title>
@@ -68,9 +67,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Sora:wght@600;700;800&display=swap" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet"
-        integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A=="
-        crossorigin="anonymous" referrerpolicy="no-referrer">
+    <link href="{{ asset('vendor/fontawesome/css/all.min.css') }}" rel="stylesheet">
     <link rel="icon" href="{{ asset('img/logo.png') }}" type="image/x-icon">
     <link rel="apple-touch-icon" href="{{ asset('icons/icon-192.png') }}">
     <link rel="manifest" href="{{ asset('manifest.webmanifest') }}">
@@ -120,20 +117,20 @@
             x-show="sidebarOpen"
             x-transition.opacity
             @click="sidebarOpen = false"
-            class="fixed inset-0 z-40 bg-slate-950/50 backdrop-blur-sm lg:hidden"
+            class="fixed inset-0 z-40 bg-slate-950/50 lg:hidden"
             style="display: none;"
         ></div>
 
         <div
             class="flex min-h-screen min-w-0 flex-col transition-[padding] duration-300"
-            :class="sidebarCollapsed ? 'lg:pl-20' : 'lg:pl-72'"
+            :class="sidebarCollapsed ? 'lg:pl-20' : 'lg:pl-64'"
         >
             <x-navbar :title="$pageTitle" :description="$pageDescription" :icon="$pageIcon" />
 
-            <main id="main-content" tabindex="-1" class="flex-1 px-4 pb-24 pt-4 sm:px-6 lg:px-8 lg:pb-8 lg:pt-6">
+            <main id="main-content" tabindex="-1" class="bk-workspace flex-1 px-4 pt-6 sm:px-6 lg:px-8 lg:pt-8">
                 <x-ui.flash />
 
-                <div class="w-full min-w-0">
+                <div class="bk-page w-full min-w-0">
                     {{ $slot }}
                 </div>
             </main>

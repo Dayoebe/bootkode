@@ -17,6 +17,9 @@
         --bk-radius: 0.5rem;
         --bk-panel-shadow: 0 2px 8px rgb(15 23 42 / 0.04);
         --bk-content-width: 77.5rem;
+        --bk-workspace-width: 90rem;
+        --bk-info: 3 105 161;
+        --bk-overlay: 15 23 42;
         --bk-control-height: 2.75rem;
         --bk-space-unit: 0.25rem;
         --bk-duration: 150ms;

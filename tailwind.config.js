@@ -9,6 +9,7 @@ module.exports = {
   theme: {
     extend: {
       colors: {
+        action: { DEFAULT: 'rgb(var(--bk-action) / <alpha-value>)', foreground: 'rgb(var(--bk-action-text) / <alpha-value>)' },
         brand: { DEFAULT: 'rgb(var(--accent-primary) / <alpha-value>)', ink: '#0f172a', mint: '#8fe388' },
         surface: { DEFAULT: 'rgb(var(--bg-secondary) / <alpha-value>)', muted: 'rgb(var(--bg-primary) / <alpha-value>)' },
         content: { DEFAULT: 'rgb(var(--text-primary) / <alpha-value>)', muted: 'rgb(var(--text-secondary) / <alpha-value>)' },
