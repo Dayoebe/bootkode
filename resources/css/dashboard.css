@@ -36,6 +36,13 @@
     .bk-dashboard-app .bk-page-title { font-size: var(--bk-page-title); line-height: 1.25; letter-spacing: -.025em; }
     .bk-dashboard-app .bk-page :is(h2, h3) { line-height: 1.4; }
     .bk-dashboard-app .bk-page :is(pre, .trix-content) { max-width: 100%; overflow-x: auto; }
+    .bk-dashboard-app trix-editor { min-width: 0; border: 1px solid rgb(var(--border-primary)); border-radius: var(--bk-radius); padding: 1rem; background: rgb(var(--bg-secondary)); color: rgb(var(--text-primary)); line-height: 1.6; }
+    .bk-dashboard-app trix-editor:focus { border-color: rgb(var(--accent-primary)); outline: 2px solid rgb(var(--accent-primary)); outline-offset: 2px; }
+    .bk-dashboard-app trix-toolbar .trix-button-row { flex-wrap: wrap; gap: .25rem; }
+    .bk-dashboard-app trix-toolbar .trix-button-group { flex-wrap: wrap; margin: 0 0 .25rem; border-color: rgb(var(--border-primary)); }
+    .bk-dashboard-app trix-toolbar .trix-button { background: rgb(var(--bg-secondary)); border-color: rgb(var(--border-primary)); }
+    .bk-dashboard-app trix-toolbar .trix-button:hover { background: rgb(var(--bg-tertiary)); }
+    .bk-dashboard-app trix-toolbar .trix-button.trix-active { background: rgb(var(--accent-primary) / .15); }
     .bk-dashboard-app .bk-page-header-actions { min-width: 0; max-width: 100%; }
     @media (min-width: 1024px) {
         .bk-widget-settings { right: 1.5rem; bottom: 1.5rem; }

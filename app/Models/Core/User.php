@@ -447,7 +447,7 @@ class User extends Authenticatable implements MustVerifyEmail
     public function getResumeCompletionPercentage()
     {
         $resume = $this->resumeProfile;
-        return $resume ? $resume->getCompletionPercentage() : 0;
+        return $resume ? $resume->completion_percentage : 0;
     }
 
     public function getResumeQualityScore()

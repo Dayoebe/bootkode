@@ -1,4 +1,4 @@
-<div class=" px-4 sm:px-6 lg:px-8 py-8">
+<div x-data="{ activeTab: @entangle('activeTab') }" class="px-4 sm:px-6 lg:px-8 py-8">
     <!-- Header -->
     <div class="bg-brand-ink   p-6 rounded-lg shadow-sm text-white mb-8  ">
         <h1 class=" font-bold text-white bk-page-title">
@@ -8,9 +8,9 @@
     </div>
 
     <!-- Tabs -->
-    <div x-data="{ activeTab: @entangle('activeTab') }" class="mb-8">
+    <div class="mb-8">
         <div class="bg-themed-secondary rounded-lg shadow-sm border border-themed-primary overflow-hidden">
-            <nav class="flex border-b border-themed-primary" aria-label="Tabs">
+            <nav class="flex overflow-x-auto border-b border-themed-primary" aria-label="System status sections">
                 <button @click="activeTab = 'services'"
                         :class="{
                             'border-b-2 border-indigo-500 text-indigo-600 dark:text-indigo-400 bg-indigo-100/10 dark:bg-indigo-900/20': activeTab === 'services',

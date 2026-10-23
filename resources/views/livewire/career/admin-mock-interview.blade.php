@@ -50,25 +50,25 @@
     <div class="px-4 sm:px-6 lg:px-8 py-8">
         <!-- Tab Navigation -->
         <div class="border-b border-themed-primary mb-8">
-            <nav class="-mb-px flex space-x-8">
+            <nav class="-mb-px flex gap-6 overflow-x-auto" aria-label="Interview management sections">
                 <button wire:click="$set('activeTab', 'overview')"
-                    class="py-2 px-1 border-b-2 font-medium text-sm transition-colors {{ $activeTab === 'overview' ? 'border-brand text-brand' : 'border-transparent text-themed-secondary hover:text-themed-primary' }}">
+                    class="shrink-0 whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm transition-colors {{ $activeTab === 'overview' ? 'border-brand text-brand' : 'border-transparent text-themed-secondary hover:text-themed-primary' }}">
                     Overview
                 </button>
                 <button wire:click="$set('activeTab', 'questions')"
-                    class="py-2 px-1 border-b-2 font-medium text-sm transition-colors {{ $activeTab === 'questions' ? 'border-brand text-brand' : 'border-transparent text-themed-secondary hover:text-themed-primary' }}">
+                    class="shrink-0 whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm transition-colors {{ $activeTab === 'questions' ? 'border-brand text-brand' : 'border-transparent text-themed-secondary hover:text-themed-primary' }}">
                     Question Bank
                 </button>
                 <button wire:click="$set('activeTab', 'interviews')"
-                    class="py-2 px-1 border-b-2 font-medium text-sm transition-colors {{ $activeTab === 'interviews' ? 'border-brand text-brand' : 'border-transparent text-themed-secondary hover:text-themed-primary' }}">
+                    class="shrink-0 whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm transition-colors {{ $activeTab === 'interviews' ? 'border-brand text-brand' : 'border-transparent text-themed-secondary hover:text-themed-primary' }}">
                     All Interviews
                 </button>
                 <button wire:click="$set('activeTab', 'analytics')"
-                    class="py-2 px-1 border-b-2 font-medium text-sm transition-colors {{ $activeTab === 'analytics' ? 'border-brand text-brand' : 'border-transparent text-themed-secondary hover:text-themed-primary' }}">
+                    class="shrink-0 whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm transition-colors {{ $activeTab === 'analytics' ? 'border-brand text-brand' : 'border-transparent text-themed-secondary hover:text-themed-primary' }}">
                     Analytics
                 </button>
                 <button wire:click="$set('activeTab', 'users')"
-                    class="py-2 px-1 border-b-2 font-medium text-sm transition-colors {{ $activeTab === 'users' ? 'border-brand text-brand' : 'border-transparent text-themed-secondary hover:text-themed-primary' }}">
+                    class="shrink-0 whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm transition-colors {{ $activeTab === 'users' ? 'border-brand text-brand' : 'border-transparent text-themed-secondary hover:text-themed-primary' }}">
                     Users
                 </button>
             </nav>

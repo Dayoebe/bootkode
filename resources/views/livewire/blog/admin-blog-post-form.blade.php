@@ -15,7 +15,7 @@
         </div>
     @endif
 
-    <div class="flex items-center justify-between mb-8">
+    <div class="flex flex-wrap items-center justify-between gap-4 mb-8">
         <div>
             <h1 class=" font-bold text-content dark:text-white bk-page-title">
                 {{ $isEdit ? 'Edit Post' : 'Create Post' }}
@@ -34,7 +34,7 @@
     <form wire:submit.prevent="save">
         <div class="grid lg:grid-cols-3 gap-8">
             {{-- Main Content --}}
-            <div class="lg:col-span-2 space-y-6">
+            <div class="lg:col-span-2 min-w-0 space-y-6">
                 {{-- Title --}}
                 <div class="bg-surface dark:bg-gray-800 rounded-lg shadow-sm p-6">
                     <div class="space-y-4">
@@ -62,7 +62,7 @@
                             <input aria-label="post-slug-url" type="text" wire:model="slug"
                                 class="w-full px-4 py-2 border border-line rounded-lg focus:ring-2 focus:ring-brand/30 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                                 placeholder="post-slug-url" required>
-                            <p class="text-sm text-content-muted mt-1">
+                            <p class="text-sm text-content-muted mt-1 break-all">
                                 <i aria-hidden="true" class="fas fa-info-circle mr-1"></i>
                                 URL: {{ url('/blog') }}/{{ $slug ?: 'your-slug' }}
                             </p>
@@ -79,7 +79,7 @@
                     <div class="mb-4">
                         <div wire:ignore>
                             <input id="trix-content" type="hidden" name="content" value="{{ $content }}">
-                            <trix-editor input="trix-content" class="prose max-w-none trix-content"
+                            <trix-editor input="trix-content" aria-label="Post content" class="prose max-w-none trix-content"
                                 style="min-height: 400px;" placeholder="Start writing your blog post...">
                             </trix-editor>
                         </div>
@@ -155,7 +155,7 @@
                                 </div>
                                 <div class="flex">
                                     <input aria-label="Add keyword" type="text" wire:model="newKeyword" wire:keydown.enter.prevent="addKeyword"
-                                        class="flex-1 px-4 py-2 border border-line rounded-l-lg focus:ring-2 focus:ring-brand/30 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                                        class="min-w-0 w-full flex-1 px-4 py-2 border border-line rounded-l-lg focus:ring-2 focus:ring-brand/30 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                                         placeholder="Add keyword...">
                                     <button type="button" wire:click="addKeyword"
                                         class="px-4 py-2 bg-action text-action-foreground rounded-r-lg hover:bg-action" aria-label="Add keyword">
@@ -169,7 +169,7 @@
             </div>
 
             {{-- Sidebar --}}
-            <div class="space-y-6">
+            <div class="min-w-0 space-y-6">
                 {{-- Publish Settings --}}
                 <div class="bg-surface dark:bg-gray-800 rounded-lg shadow-sm p-6">
                     <h3 class="text-lg font-medium text-content dark:text-white mb-4">
@@ -275,7 +275,7 @@
             @endif
 
             {{-- Category Selection Dropdown --}}
-            <select class="w-full px-4 py-2 border border-line rounded-lg focus:ring-2 focus:ring-brand/30 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+            <select aria-label="Add a category" class="w-full px-4 py-2 border border-line rounded-lg focus:ring-2 focus:ring-brand/30 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                     onchange="if(this.value && !@js($category_ids).includes(parseInt(this.value))) { @this.category_ids.push(parseInt(this.value)); } this.value='';">
                 <option value="">Add a category...</option>
                 @foreach($categories as $category)
@@ -312,7 +312,7 @@
             </div>
             <div class="flex">
                 <input aria-label="Add tag" type="text" wire:model="newTag" wire:keydown.enter.prevent="addTag"
-                    class="flex-1 px-4 py-2 border border-line rounded-l-lg focus:ring-2 focus:ring-brand/30 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                    class="min-w-0 w-full flex-1 px-4 py-2 border border-line rounded-l-lg focus:ring-2 focus:ring-brand/30 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                     placeholder="Add tag...">
                 <button type="button" wire:click="addTag"
                     class="px-4 py-2 bg-gray-600 text-white rounded-r-lg hover:bg-gray-700" aria-label="Add tag">
@@ -475,48 +475,6 @@
             </div>
         </div>
     </form>
-
-    {{-- Trix Styling --}}
-    <style>
-        trix-editor {
-            border: 1px solid #d1d5db;
-            border-radius: 0.5rem;
-            padding: 1rem;
-            min-height: 400px;
-            line-height: 1.6;
-        }
-
-        .dark trix-editor {
-            border-color: #4b5563;
-            background-color: #374151;
-            color: white;
-        }
-
-        trix-editor:focus {
-            border-color: #3b82f6;
-            outline: none;
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-        }
-
-        trix-toolbar .trix-button-group {
-            margin-bottom: 5px;
-        }
-
-        trix-toolbar .trix-button {
-            background: white;
-            border: 1px solid #d1d5db;
-            margin-right: 2px;
-        }
-
-        trix-toolbar .trix-button:hover {
-            background: #f3f4f6;
-        }
-
-        trix-toolbar .trix-button.trix-active {
-            background: #3b82f6;
-            color: white;
-        }
-    </style>
 
     {{-- FIXED: Improved Trix Editor JavaScript --}}
     @script

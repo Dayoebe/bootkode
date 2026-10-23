@@ -13,7 +13,7 @@
             <div class="text-left space-y-3">
                 <div class="flex items-center space-x-3">
                     <i aria-hidden="true" class="fas fa-graduation-cap text-brand"></i>
-                    <span>Become an instructor by creating and publishing courses</span>
+                    <span>Instructor access requires the instructor role on your account.</span>
                 </div>
                 <div class="flex items-center space-x-3">
                     <i aria-hidden="true" class="fas fa-envelope text-brand"></i>
@@ -22,13 +22,9 @@
             </div>
         </div>
 
-        <div class="space-x-4">
-            <a href="{{ route('instructor.courses.create') }}"
+        <div class="flex flex-wrap justify-center gap-4">
+            <a href="{{ route('help.support') }}"
                class="bg-action text-action-foreground px-6 py-2 rounded-lg hover:bg-action transition-colors">
-                Become an Instructor
-            </a>
-            <a href="{{ route('support.contact') }}"
-               class="bg-gray-600 text-white px-6 py-2 rounded-lg hover:bg-gray-700 transition-colors">
                 Contact Support
             </a>
         </div>

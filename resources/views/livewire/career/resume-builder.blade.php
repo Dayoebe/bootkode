@@ -2,8 +2,8 @@
     <!-- Header -->
     <div class="bg-themed-secondary shadow-sm border-b border-themed-primary">
         <div class="px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between items-center py-6">
-                <div class="flex items-center space-x-4">
+            <div class="flex flex-col xl:flex-row justify-between xl:items-center gap-4 py-6">
+                <div class="flex min-w-0 items-center gap-4">
                     <div class="bg-action p-3 rounded-lg">
                         <i aria-hidden="true" class="fas fa-file-alt text-action-foreground text-xl"></i>
                     </div>
@@ -14,7 +14,7 @@
                 </div>
 
                 <!-- Action Buttons -->
-                <div class="flex items-center space-x-3">
+                <div class="flex flex-wrap items-center gap-3">
                     <div class="text-right mr-4">
                         <div class="text-sm text-themed-secondary">Completion</div>
                         <div class="text-2xl font-bold text-brand">{{ $completionPercentage }}%</div>
@@ -25,8 +25,8 @@
                         <i aria-hidden="true" class="fas fa-eye mr-2"></i>Preview
                     </button>
 
-                    <div class="relative" x-data="{ open: false }">
-                        <button @click="open = !open"
+                    <div class="relative" x-data="{ open: false }" @keydown.escape.stop="open = false; $refs.exportTrigger.focus()">
+                        <button type="button" x-ref="exportTrigger" @click="open = !open" :aria-expanded="open"
                             class="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg font-medium transition-colors duration-200 flex items-center">
                             <i aria-hidden="true" class="fas fa-download mr-2"></i>Export
                         </button>
@@ -50,8 +50,8 @@
     <!-- Progress Bar -->
     <div class="px-4 sm:px-6 lg:px-8 py-4">
         <div class="bg-themed-secondary rounded-lg p-6 shadow-sm border border-themed-primary">
-            <div class="flex items-center justify-between mb-4">
-                <div class="flex items-center space-x-4">
+            <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+                <div class="flex flex-wrap items-center gap-3">
                     <span class="text-sm font-semibold text-themed-primary">Resume Progress</span>
                     <span class="px-3 py-1 text-xs font-medium rounded-full {{ $qualityScore >= 80 ? 'bg-green-100 text-green-800' : ($qualityScore >= 60 ? 'bg-yellow-100 text-yellow-800' : 'bg-red-100 text-red-800') }}">
                         Quality Score: {{ $qualityScore }}/100
@@ -71,7 +71,7 @@
         @if($viewMode === 'edit')
             <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
                 <!-- Sidebar -->
-                <div class="lg:col-span-1">
+                <div class="min-w-0 lg:col-span-1">
                     <div class="bg-themed-secondary rounded-lg shadow-sm p-6 sticky top-6 border border-themed-primary">
                         <h3 class="text-lg font-semibold text-themed-primary mb-6">Resume Sections</h3>
                         <nav class="space-y-2">
@@ -115,9 +115,9 @@
                 </div>
 
                 <!-- Main Content -->
-                <div class="lg:col-span-3">
+                <div class="min-w-0 lg:col-span-3">
                     <!-- Section Content -->
-                    <div class="bg-themed-secondary rounded-lg shadow-sm p-8 mb-8 border border-themed-primary">
+                    <div class="bg-themed-secondary rounded-lg shadow-sm p-4 sm:p-8 mb-8 border border-themed-primary">
                         @include('livewire.career.resume.resume-section')
                     </div>
 
