@@ -2,6 +2,7 @@
 
 namespace App\Livewire\CourseManagement;
 
+use App\Jobs\ExpandImportedCourse;
 use App\Jobs\GenerateCourseWithAi;
 use App\Jobs\ImportCourseContent;
 use App\Livewire\Concerns\AuthorizesCourseAuthoring;
@@ -9,8 +10,10 @@ use App\Models\Learning\CourseCategory;
 use App\Models\Learning\CourseContentRun;
 use App\Services\Ai\AiManager;
 use App\Services\CourseAuthoringAccess;
+use App\Services\CourseGeneration\AiCourseExpansionService;
 use App\Services\CourseGeneration\AiCourseGenerationService;
 use App\Services\CourseImport\CourseImportService;
+use App\Services\CourseQualityService;
 use Illuminate\Support\Facades\RateLimiter;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Locked;
@@ -201,14 +204,50 @@ class CourseContentStudio extends Component
         $this->notice = 'AI course generation queued. Completed stages are retained for safe retry; the resulting course remains a draft.';
     }
 
-    public function retryRun(int $runId): void
+    public function reviewRun(int $runId): void
+    {
+        $run = $this->ownedRun($runId);
+        abort_unless($run->course_id, 422);
+        $course = app(CourseAuthoringAccess::class)->course($run->course_id);
+        app(CourseQualityService::class)->scanAndPersist($course, auth()->user(), false);
+        $this->notice = 'Quality checks updated. Review the recorded issues before requesting approval.';
+    }
+
+    public function startExpansion(int $courseId, AiCourseExpansionService $expansion): void
+    {
+        $course = app(CourseAuthoringAccess::class)->course($courseId);
+        if (! $this->allowRequest()) {
+            return;
+        }
+        try {
+            $run = $expansion->queue(auth()->user(), $course->id);
+            if ($run->status === 'completed') {
+                $this->notice = 'This draft has already been expanded. Open the editor to review it.';
+
+                return;
+            }
+            ExpandImportedCourse::dispatch($run->id)->afterCommit();
+            $this->notice = 'Draft expansion queued. Saved stages and original attribution will be retained.';
+        } catch (\Symfony\Component\HttpKernel\Exception\HttpExceptionInterface $exception) {
+            $this->addError('expansion', $exception->getMessage() ?: 'This draft cannot be expanded. Review its history and publication state.');
+        }
+    }
+
+    private function ownedRun(int $runId): CourseContentRun
     {
         $this->authorizeRole();
         $run = CourseContentRun::query()->findOrFail($runId);
-        abort_unless(
-            (int) $run->user_id === (int) auth()->id() || auth()->user()->hasAnyRole(['super_admin', 'academy_admin']),
-            403
-        );
+        abort_unless((int) $run->user_id === (int) auth()->id() || auth()->user()->hasAnyRole(['super_admin', 'academy_admin']), 403);
+        if ($run->course_id) {
+            app(CourseAuthoringAccess::class)->course($run->course_id);
+        }
+
+        return $run;
+    }
+
+    public function retryRun(int $runId): void
+    {
+        $run = $this->ownedRun($runId);
         abort_unless($run->status === 'failed', 422);
 
         if (! $this->allowRequest()) {
@@ -217,11 +256,13 @@ class CourseContentStudio extends Component
         if ($run->source_type === 'repository') {
             app(CourseImportService::class)->retry($run, auth()->user());
         } else {
-            abort_unless($run->source_type === 'ai', 422);
+            abort_unless(in_array($run->source_type, ['ai', 'ai_expansion'], true), 422);
             $run->forceFill(['status' => 'queued', 'failure_reason' => null])->save();
         }
         if ($run->source_type === 'ai') {
             GenerateCourseWithAi::dispatch($run->id)->afterCommit();
+        } elseif ($run->source_type === 'ai_expansion') {
+            ExpandImportedCourse::dispatch($run->id)->afterCommit();
         } else {
             ImportCourseContent::dispatch($run->id)->afterCommit();
         }
@@ -233,8 +274,8 @@ class CourseContentStudio extends Component
     {
         $user = auth()->user();
         $runs = CourseContentRun::query()
-            ->with(['course:id,title,slug,instructor_id'])
-            ->when(! $user->hasAnyRole(['super_admin', 'academy_admin']), fn ($query) => $query->where('user_id', $user->id))
+            ->with(['course.category'])
+            ->when(! $user->hasAnyRole(['super_admin', 'academy_admin']), fn ($query) => $query->where('user_id', $user->id)->where(fn ($scope) => $scope->whereNull('course_id')->orWhereHas('course', fn ($course) => $course->where('instructor_id', $user->id))))
             ->latest('id')
             ->limit(20)
             ->get();

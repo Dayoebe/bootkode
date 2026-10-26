@@ -32,6 +32,11 @@ class ImportCourseContent implements ShouldQueue
         return [(new WithoutOverlapping('course-import-run-'.$this->runId))->expireAfter(900)];
     }
 
+    public function backoff(): array
+    {
+        return [75, 180];
+    }
+
     public function handle(CourseImportService $imports): void
     {
         $run = CourseContentRun::query()->findOrFail($this->runId);

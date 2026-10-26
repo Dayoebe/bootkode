@@ -24,6 +24,18 @@ class FreeCodeCampSource implements CourseContentSource
 
     public function __construct(private readonly GitHubContentClient $client) {}
 
+    public static function licenseVerified(string $license): bool
+    {
+        return hash('sha256', trim(preg_replace('/\s+/', ' ', $license))) === self::LICENSE_SHA256;
+    }
+
+    public static function includesLicense(string $html, string $license): bool
+    {
+        $text = html_entity_decode(strip_tags($html), ENT_QUOTES | ENT_HTML5, 'UTF-8');
+
+        return str_contains(trim(preg_replace('/\s+/', ' ', $text)), trim(preg_replace('/\s+/', ' ', $license)));
+    }
+
     public function key(): string
     {
         return 'freecodecamp';
@@ -48,7 +60,7 @@ class FreeCodeCampSource implements CourseContentSource
         }
 
         $license = $this->getText(self::RAW.'/'.self::REPOSITORY.'/'.$revision.'/LICENSE.md', 8000);
-        if (hash('sha256', trim(preg_replace('/\s+/', ' ', $license))) !== self::LICENSE_SHA256) {
+        if (! self::licenseVerified($license)) {
             throw new CourseContentException('The source licence could not be verified; no course content was imported.');
         }
 

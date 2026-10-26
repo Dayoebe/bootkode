@@ -32,6 +32,11 @@ class GenerateCourseWithAi implements ShouldQueue
         return [(new WithoutOverlapping('course-ai-run-'.$this->runId))->expireAfter(1800)];
     }
 
+    public function backoff(): array
+    {
+        return [75, 180];
+    }
+
     public function handle(AiCourseGenerationService $generation): void
     {
         $run = CourseContentRun::query()->findOrFail($this->runId);

@@ -173,6 +173,7 @@
         </x-ui.panel>
     </section>
 
+    @error('expansion')<p class="bk-field-error" role="alert">{{ $message }}</p>@enderror
     <x-ui.panel title="Recent content runs">
         @if($runs->isEmpty())
             <x-ui.empty-state title="No content runs yet" description="Queued imports and generations will appear here with their review status." />
@@ -187,35 +188,61 @@
                             <tr>
                                 <td class="px-3 py-3">
                                     <span class="font-medium text-content">{{ $run->course?->title ?? ($run->metadata['topic'] ?? $run->metadata['original_title'] ?? 'Course request') }}</span>
+                                    <p class="mt-1 text-xs text-content-muted">Category: {{ $run->course?->category?->name ?? collect($categories)->firstWhere('id', $run->metadata['category_id'] ?? null)['name'] ?? 'Unavailable category' }}</p>
                                     @if($run->failure_reason)<p class="mt-1 max-w-md text-xs text-danger" role="status">{{ $run->failure_reason }}</p>@endif
                                     @if(isset($run->metadata['lesson_count']))
-                                        <p class="mt-1 text-xs text-content-muted">{{ $run->metadata['module_count'] ?? 0 }} modules · {{ $run->metadata['lesson_count'] }} lessons · {{ $run->metadata['assessment_count'] ?? 0 }} assessments</p>
+                                        <p class="mt-1 text-xs text-content-muted">{{ $run->metadata['module_count'] ?? $run->metadata['section_count'] ?? 0 }} modules · {{ $run->metadata['lesson_count'] }} lessons · {{ $run->metadata['assessment_count'] ?? 0 }} assessments</p>
                                     @endif
                                     @if($run->metadata['review_flags'] ?? false)
                                         <p class="mt-1 text-xs text-content-muted">Review: {{ implode(' ', $run->metadata['review_flags']) }}</p>
                                     @endif
+                                    @if($run->course || !empty($run->metadata['validation_issues']))
+                                        <details class="mt-2 max-w-lg text-xs">
+                                            <summary class="cursor-pointer font-semibold text-action">Validation and quality review</summary>
+                                            @if($run->course)
+                                                <p class="mt-2">Quality status: {{ \Illuminate\Support\Str::headline($run->course->quality_status ?? 'not_checked') }}</p>
+                                                @unless($run->course->quality_last_checked_at)<p class="mt-1 text-content-muted">Run quality checks to record the current draft's issues.</p>@endunless
+                                                <ul class="mt-1 list-inside list-disc">
+                                                    @foreach($run->course->quality_issues ?? [] as $issue)<li>{{ $issue['message'] }}</li>@endforeach
+                                                </ul>
+                                            @endif
+                                            @foreach($run->metadata['validation_issues'] ?? [] as $field => $issues)
+                                                <p class="mt-1">{{ $field }}: {{ implode(' ', $issues) }}</p>
+                                            @endforeach
+                                        </details>
+                                    @endif
                                 </td>
-                                <td class="px-3 py-3 text-content-muted">{{ $run->source_type === 'ai' ? 'BootKode AI' : ($run->metadata['source'] ?? 'Licensed repository') }}</td>
+                                <td class="px-3 py-3 text-content-muted">{{ match($run->source_type) { 'ai' => 'BootKode AI', 'ai_expansion' => 'AI draft expansion', default => $run->metadata['source'] ?? 'Licensed repository' } }}</td>
                                 <td class="px-3 py-3">
                                     <span role="status" class="inline-flex rounded-full border border-line px-2 py-1 text-xs">{{ ucfirst($run->status) }}</span>
                                     @if($run->status === 'processing' && $run->source_type === 'ai')
                                         <span class="block text-xs text-content-muted">{{ count($run->stage_data['modules'] ?? []) }} of {{ $run->metadata['requested_modules'] ?? 0 }} modules completed</span>
+                                    @endif
+                                    @if($run->status === 'processing' && $run->source_type === 'ai_expansion')
+                                        <span class="block text-xs text-content-muted">{{ count($run->stage_data['generated'] ?? []) }} of {{ count($run->stage_data['groups'] ?? []) }} sections completed</span>
                                     @endif
                                     @if($run->metadata['license_id'] ?? null)
                                         <span class="block text-xs text-content-muted">{{ $run->metadata['license_id'] }} · attribution retained</span>
                                     @endif
                                 </td>
                                 <td class="whitespace-nowrap px-3 py-3 text-content-muted">{{ $run->updated_at->diffForHumans() }}</td>
-                                <td class="whitespace-nowrap px-3 py-3">
-                                    @if($run->course)
-                                        <a class="text-action underline" href="{{ route('course-builder', ['course' => $run->course_id]) }}">Open draft editor</a>
-                                    @elseif($run->status === 'failed')
-                                        <x-secondary-button class="min-h-11" wire:click="retryRun({{ $run->id }})" wire:loading.attr="disabled">Retry</x-secondary-button>
-                                    @elseif($run->status === 'conflict')
-                                        <span class="text-xs text-content-muted">Use “Create a separate draft” and queue another import after review.</span>
-                                    @else
-                                        <span class="text-content-muted">Waiting for worker</span>
-                                    @endif
+                                <td class="px-3 py-3">
+                                    <div class="flex min-w-40 flex-col items-start gap-2">
+                                        @if($run->course)
+                                            <a class="text-action underline" href="{{ route('course-builder', ['course' => $run->course_id]) }}">Open draft editor</a>
+                                            <x-secondary-button wire:click="reviewRun({{ $run->id }})" wire:loading.attr="disabled">Run quality checks</x-secondary-button>
+                                            @if($run->source_type === 'repository' && in_array($run->status, ['completed', 'partial']) && !$run->course->is_published && !$run->course->is_approved)
+                                                <x-secondary-button wire:click="startExpansion({{ $run->course_id }})" wire:confirm="Expand this draft with AI explanations and quizzes? Original text and attribution are retained. Existing learner history prevents this action." wire:loading.attr="disabled">Expand imported draft</x-secondary-button>
+                                            @endif
+                                        @endif
+                                        @if($run->status === 'failed' && in_array($run->source_type, ['repository', 'ai', 'ai_expansion']))
+                                            <x-secondary-button wire:click="retryRun({{ $run->id }})" wire:loading.attr="disabled">Retry saved stages</x-secondary-button>
+                                        @elseif($run->status === 'conflict')
+                                            <span class="max-w-xs text-xs text-content-muted">Review the recorded conflict. Existing edits have been preserved.</span>
+                                        @elseif(!$run->course)
+                                            <span class="text-content-muted">Waiting for worker</span>
+                                        @endif
+                                    </div>
                                 </td>
                             </tr>
                         @endforeach
