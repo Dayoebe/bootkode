@@ -122,3 +122,7 @@ Completed: three original working course drafts owned by the authorised super-ad
 ## Inline assessment authoring — 26 October 2026
 
 Completed: remove the duplicate standalone authoring entry point, retain authorised legacy URL redirects into the selected lesson's Assessment tab, preserve tab/lesson location state, label mobile tab controls and fix stale list/form transitions. Authenticated checks cover all four tabs, create/cancel, assessment edit/cancel, quiz question edit/cancel, project criterion edit/cancel, returning to the list, switching lessons and four viewport widths. No working assessment or learner record was edited by verification.
+## Original course-content revision — 26 October 2026
+
+- Completed: directly revise existing courses 1 and 2 with explicit prerequisites, corrected contracts/examples, 24 ordered lessons, six quizzes (30 MCQs), two marked capstones and tested downloadable reference kits. Preserve original IDs/slugs/source attribution and unrelated records; validate the update in a dedicated test database before applying it to working drafts.
+- Publication gates: human pedagogical/editorial review, external source/reference availability checks and deliberate publication/approval. Mechanical code checks and a local quality scan do not establish those decisions. No additional software refactor is required merely to inspect these revised drafts.

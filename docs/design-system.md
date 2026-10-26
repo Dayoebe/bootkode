@@ -115,3 +115,6 @@ Long course titles now remain bounded in the existing toolbar at tablet widths, 
 ## In-context assessment controls — 26 October 2026
 
 The Assessment tab uses a labelled region and secondary “Lesson assessments” heading inside the existing lesson editor. There is no extra workspace link or nested page header. Create/edit forms and question/project controls reuse the same panels and buttons in place, with keyed view transitions. All four lesson tab buttons retain accessible names when their visual text hides on phones. The builder retains its single primary heading.
+## Revised original course materials — 26 October 2026
+
+The two revised imported courses reuse the existing builder and inline Assessment tab. New original SVG covers use the established navy/teal/mint identity. Teaching text uses headings, runnable code blocks, traces and practice/feedback; source excerpts and full notices have clearly labelled disclosures in the stored lesson HTML. Download links point to real course-specific ZIPs. No component system, stylesheet, script runtime or frontend dependency was added. Trix presents the text through its existing rich-text editing surface.
