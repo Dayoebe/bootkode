@@ -426,8 +426,9 @@ class CourseOutline extends Component
     {
         return view('livewire.course-management.course-builder.course-outline', [
             'sections' => $this->course->sections()
-                ->with(['lessons' => fn($q) => $q->orderBy('created_at', 'desc')])
-                ->orderBy('created_at', 'desc')
+                ->with(['lessons' => fn($q) => $q->reorder()->orderBy('order')->orderBy('id')])
+                ->orderBy('order')
+                ->orderBy('id')
                 ->get(),
         ]);
     }
