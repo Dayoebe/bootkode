@@ -196,3 +196,7 @@ Expanded browser acceptance repaired blog/résumé/interview overflow, invalid a
 ## Course-content continuation — 26 October 2026
 
 The licensed-source pipeline has live browser/queue/persistence evidence for the reviewed freeCodeCamp Algorithms text subset and duplicate-safe rerun. It remains draft-only, with per-lesson licence notices and owner/subset/revision identity. AI generation has mocked end-to-end structured lesson/quiz/project-criterion, quota, authorization and stage-recovery evidence; no paid/live provider success is claimed. The existing run migration was already applied locally and no working records were seeded or migrated by this continuation. Arbitrary repositories, unreviewed curriculum blocks, media/assets/packages and automatic publication remain unsupported. See course-content-system.md and verification.md.
+
+## Runtime log follow-up — 26 October 2026
+
+Later log inspection confirmed MySQL stopped and local database requests refused, including failed-job inspection. The application is currently blocked on starting the existing service with administrator privileges. The 500 fallback now renders without its database-backed footer; that improvement does not restore course/import/generation availability. See verification.md for current outage evidence and the separate earlier passing feature checks.

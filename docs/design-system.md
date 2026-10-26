@@ -94,3 +94,7 @@ Blog and résumé forms now bound narrow columns, wrap actions and share semanti
 ## Course Content Studio acceptance — 26 October 2026
 
 The Studio uses the actual `x-text-input`, `x-input-label`, `x-primary-button` and `x-secondary-button` primitives, plus `bk-input` for native selects/textareas and `bk-field-error` for associated errors. Workflow panels align at their tops. A component-owned locked notice announces queued actions without duplicating the dashboard's flash banner. History has a labelled keyboard-scrollable region, real content counts/status, review flags and the existing editor route. Responsive/browser evidence covers 390/768/1024/1440px; wider theme/assistive-technology acceptance remains separate.
+
+## Server-error fallback — 26 October 2026
+
+The standalone 500 page uses existing semantic surfaces/text, `ui.panel`, the shared button class, a skip link and one primary heading. It has no database-dependent shell, ambient animation, invented contact details or new palette. A recovery link uses the existing named home route.

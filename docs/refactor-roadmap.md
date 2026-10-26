@@ -95,3 +95,7 @@ Completed: compatible dependency security maintenance; 45 additional workspace r
 ## Course-content continuation — 26 October 2026
 
 Completed the existing Studio's idempotency, partial-run handling, fixed-host/DNS/download security, reviewed-revision queueing, server-owned AI fields and real project criteria. Verified a live licensed-source import and rerun through the existing editor in an isolated database. CLI/UI share validated-input generation identity and existing AI limits; queue reservation/timeout settings are explicit. Final automated/build/browser evidence is in verification.md. Remaining: configured live-AI/provider acceptance, additional separately reviewed source adapters, editorial/factual approval of resulting drafts, and the previously recorded dependency/release gates.
+
+## Dependency-outage follow-up — 26 October 2026
+
+Completed: database-independent 500 response and exception-renderer regression. Blocked: starting the stopped MySQL service requires administrator privileges. After service restoration, verify database connectivity, public pages, failed/pending jobs and course-content processing before claiming current runtime health. No recovery/reset/migration is authorized or implied by a refused connection.
