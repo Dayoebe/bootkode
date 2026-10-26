@@ -161,3 +161,8 @@ Studio history uses actual category and stored validation/quality findings. Qual
 Agent-authored curricula use the existing `CourseGenerationService` with explicit sections, lessons, questions, project rubrics, category resolution and server-selected instructor. All three new working courses remain unpublished/unapproved; no alternate learning model, migration, provider usage claim or enrollment mutation was introduced. Before/after fingerprints protect existing records.
 
 Media quality checks parse actual HTML attributes with DOMDocument and LIBXML_NONET, exclude code/pre descendants and do not interpret the search/plain-text copy as rendered media. Real missing files remain failures. CourseOutline renders sections and lessons by their stored `order` with ID tie-breakers, so the visible teaching sequence matches the curriculum.
+
+
+## Embedded lesson assessment authoring — 26 October 2026
+
+`AssessmentManager` is an embedded course-builder component. The retained `lesson.assessments.manage` route resolves current role/ownership through `CourseAuthoringAccess` and redirects to `course-builder?lesson={id}&tab=assessment`. The lesson editor validates allowed tab names in dashboard.js and synchronizes lesson/tab query state without page navigation. Keyed list/create/edit/questions containers preserve correct Livewire view replacement. Existing authoring boot guards and question/criteria components remain the persistence/authorization boundaries; learner assessment routing is unchanged.

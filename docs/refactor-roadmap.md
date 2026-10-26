@@ -117,3 +117,8 @@ The earlier MySQL and configured live-generation blockers are resolved for this 
 ## Direct course creation — 26 October 2026
 
 Completed: three original working course drafts owned by the authorised super-admin, totaling 27 substantial lessons, 36 explained multiple-choice questions and three marked capstones. Real covers/practice files are saved. Existing course and learning/financial/certificate records remain unchanged. Corrected code-example media false positives and displayed curriculum order discovered while reviewing the new content. Human editorial review and the normal publication workflow remain; these courses were not automatically published. See verification.md.
+
+
+## Inline assessment authoring — 26 October 2026
+
+Completed: remove the duplicate standalone authoring entry point, retain authorised legacy URL redirects into the selected lesson's Assessment tab, preserve tab/lesson location state, label mobile tab controls and fix stale list/form transitions. Authenticated checks cover all four tabs, create/cancel, assessment edit/cancel, quiz question edit/cancel, project criterion edit/cancel, returning to the list, switching lessons and four viewport widths. No working assessment or learner record was edited by verification.

@@ -110,3 +110,8 @@ History retains the shared bounded table and existing semantic buttons. Rows sho
 The three new working drafts use original vector covers in BootKode's existing navy/teal/mint identity and the existing builder/assessment interface. Downloadable reference code, the fictional order CSV and the plain-text campaign worksheet are real files linked from the lessons. No interface palette, component system, animation or frontend dependency was added. The outline respects stored curriculum order.
 
 Long course titles now remain bounded in the existing toolbar at tablet widths, with status controls allowed to wrap. Twelve authenticated builder/width checks for the three new drafts pass at 390/768/1024/1440px.
+
+
+## In-context assessment controls — 26 October 2026
+
+The Assessment tab uses a labelled region and secondary “Lesson assessments” heading inside the existing lesson editor. There is no extra workspace link or nested page header. Create/edit forms and question/project controls reuse the same panels and buttons in place, with keyed view transitions. All four lesson tab buttons retain accessible names when their visual text hides on phones. The builder retains its single primary heading.
