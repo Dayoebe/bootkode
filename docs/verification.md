@@ -602,3 +602,8 @@ A second private backup (`backups/completed-before-attribution.json`) preceded t
 `bootkode-course-content.service` is installed as an enabled, active systemd user service. `Linger=yes` allows operation beyond logout; MySQL/provider/network availability remains required. The repository contains the portable template at `deploy/systemd/bootkode-course-content.service`. The worker was restarted with final code, processed an already completed run without duplicate content/provider usage, and records RUNNING/DONE in its private log. Queue reservations, 600-second job timeout, 900-second overlap locks and retry backoff remain explicit.
 
 Course output still needs human factual/assessment review, missing assets and normal quality/approval checks. Additional source adapters, unreviewed content/assets/packages, automatic publication and broad accessibility/theme certification are outside this delivered slice. Dependency advisories and Git remote authentication remain separate release limits; no production deployment is claimed. The older expansion source/tests are now integrated into this feature rather than left as unrelated work.
+
+
+### Completion delivery status
+
+Local commits: `035fefbb` (strict AI output/shared quota), `b5b23d99` (expansion/review UI and safety regressions), `70797953` (managed worker, build and live evidence). The final ordinary `GIT_TERMINAL_PROMPT=0 git push --set-upstream origin feat/course-content-system` again exited 128: `fatal: could not read Username for 'https://github.com': terminal prompts disabled`. The feature is committed locally; remote delivery remains blocked by missing Git HTTPS authentication. No reset, force push, replacement remote history or deployment was attempted.
