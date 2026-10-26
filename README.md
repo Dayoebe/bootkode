@@ -54,6 +54,7 @@ The session-clock compatibility migration removes an implicit MariaDB timestamp 
 - [Route inventory](docs/route-inventory.md)
 - [Verification, known limits and release evidence](docs/verification.md)
 - [AI setup and privacy](docs/bootkode-ai.md)
+- [Course content import and generation](docs/course-content-system.md)
 - [Contributor and coding-agent standard](AGENTS.md)
 
 Public course discovery is `/courses`; public course summaries are `/courses/{slug}`. Authenticated lesson routes remain protected by enrollment. Shared controls live in `resources/views/components`; tokens live in `resources/css/tokens.css` with existing theme variables in `app.css`. Keep static UI in Blade, interaction in Livewire, and financial/enrollment rules in existing services.

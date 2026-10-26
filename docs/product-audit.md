@@ -38,6 +38,8 @@ Audit started 20 October 2026. This is a large existing product: 273 baseline ro
 
 See `route-inventory.md` for exact URLs, names, handlers, and middleware. Status here describes implementation evidence, not integration certification.
 
+| Course content acquisition | Role-guarded Course Content Studio, bounded freeCodeCamp Markdown import, staged AI generation and run history | Implemented as a draft workflow; source adapter/licence scope is deliberately narrow. Live Algorithms import/queue acceptance is recorded; broader legal/source review and live AI provider acceptance remain release gates; see `course-content-system.md` and `verification.md`. |
+
 | Journey/domain | Existing implementation | Access and status |
 |---|---|---|
 | Public discovery | Home, pricing, CMS PageController, blog, marketplace, certificate verification | Implemented; homepage course evaluation forced signup. Public content is database backed. |
@@ -190,3 +192,7 @@ The remaining integration limits, dependency advisories, import revision failure
 ## Release continuation — 23 October 2026
 
 Expanded browser acceptance repaired blog/résumé/interview overflow, invalid affiliate support links, system-status tab scope, interview model namespaces and the learner dashboard crash after résumé creation. Random/hardcoded interview metrics were replaced with recorded aggregates and explicit unavailable states. Final working-tree suite: 275 passed / 1,426 assertions; isolated branch: 262 passed / 1,347 assertions. Browser evidence now records 306 checks across 112 routes with no unresolved issues in those states. Composer advisories fell to 5 across 2 packages; 8 npm vulnerabilities remain. Integration/assistive-technology acceptance and authenticated Git delivery remain release work. Details: dashboard-redesign/continuation-report.md.
+
+## Course-content continuation — 26 October 2026
+
+The licensed-source pipeline has live browser/queue/persistence evidence for the reviewed freeCodeCamp Algorithms text subset and duplicate-safe rerun. It remains draft-only, with per-lesson licence notices and owner/subset/revision identity. AI generation has mocked end-to-end structured lesson/quiz/project-criterion, quota, authorization and stage-recovery evidence; no paid/live provider success is claimed. The existing run migration was already applied locally and no working records were seeded or migrated by this continuation. Arbitrary repositories, unreviewed curriculum blocks, media/assets/packages and automatic publication remain unsupported. See course-content-system.md and verification.md.

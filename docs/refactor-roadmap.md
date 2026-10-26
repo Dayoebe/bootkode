@@ -64,6 +64,10 @@ Implemented formal manual-mark corrections and learner-requested reconsideration
 
 Remaining assessment work includes backed-up reconciliation of legacy attempts/definitions without supported snapshots, richer private project-file and peer-review delivery, complete criteria-editor acceptance and external review-notification integration. Existing credential remediation stays a separate authorized process. Provider, dependency, legal, historical public-file migration and broad accessibility/theme release gates remain open. This phase adds no schema migration or automatic historical regrade.
 
+## Course content acquisition — 22 October 2026
+
+Implemented one licensed-source vertical slice and structured AI draft generation through the existing course/assessment model, with run metadata, revision protection, queue jobs, role checks, retry state, CLI commands and documentation. Current support is limited to selected freeCodeCamp curriculum Markdown challenge descriptions under the repository BSD-3-Clause notice and AI-generated lesson batches/quizzes/project rubric. See `course-content-system.md` and `verification.md`; do not infer support for arbitrary repositories, source assets, or publication readiness.
+
 
 ## Private project/assignment delivery — 22 October 2026
 
@@ -87,3 +91,7 @@ Detailed exceptions and state coverage live in dashboard-redesign/page-checklist
 ## Release continuation — 23 October 2026
 
 Completed: compatible dependency security maintenance; 45 additional workspace routes at 390/768/1024/1440px; authoring/résumé/interview/system-status/eligibility repairs; recorded interview analytics; isolated release suite/build/classmaps. The import revision fixture now resets its HTTP factory while retaining conflict/draft assertions; that correction remains with the user's untracked feature. Remaining: Laravel/JWT major-version security decisions, Tailwind 3 dependency advisories, configured provider acceptance, conditional/assistive-technology coverage and Git authentication for ordinary push. See dashboard-redesign/continuation-report.md; no forced upgrades or suppressed advisories.
+
+## Course-content continuation — 26 October 2026
+
+Completed the existing Studio's idempotency, partial-run handling, fixed-host/DNS/download security, reviewed-revision queueing, server-owned AI fields and real project criteria. Verified a live licensed-source import and rerun through the existing editor in an isolated database. CLI/UI share validated-input generation identity and existing AI limits; queue reservation/timeout settings are explicit. Final automated/build/browser evidence is in verification.md. Remaining: configured live-AI/provider acceptance, additional separately reviewed source adapters, editorial/factual approval of resulting drafts, and the previously recorded dependency/release gates.

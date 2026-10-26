@@ -513,3 +513,41 @@ Branch: `feat/bootkode-dashboard-redesign`. The exact route inventory is 223 aut
 This supersedes the initial redesign failure/dependency counts. It does not certify every parameterized/conditional page, provider/gateway delivery, upload/editor edge case or full assistive-technology/contrast behavior. Details and reproducible limits: dashboard-redesign/continuation-report.md and dependency-maintenance.md.
 
 Final delivery: local commits 1250b93d (compatible dependency security), 0cbd0869 (workspace repairs/recorded analytics), f0e6b3a6 (release assets/evidence). `GIT_TERMINAL_PROMPT=0 git push -u origin feat/bootkode-dashboard-redesign` exited 128: `fatal: could not read Username for 'https://github.com': terminal prompts disabled`. No push/PR/deployment success is claimed. The remote and authentication configuration remain unchanged.
+
+## Automated course-content acquisition — 26 October 2026
+
+Extended the existing uncommitted Course Content Studio implementation on `feat/course-content-system`. Reused the current course, section, lesson, assessment/question, authoring-access, AI-provider and usage models/services. Existing unrelated course-expansion source/tests were preserved. No enrollment, progress, payment or issued-certificate semantics were changed.
+
+### Automated and build evidence
+
+- Final `php artisan test --compact`: **321 tests passed, 1,547 assertions**, 177.45 seconds. This is the complete working tree, including the two preserved pre-existing course-expansion tests. Tests ran against the guarded `bootkode_test` database.
+- Focused source/provider/pipeline run before the final added repeated-submission case: **58 tests passed, 175 assertions**. Final full-suite results supersede that intermediate count. After the final compatibility guard, a focused run covering legacy skipped-run ownership, selected-subset identity and preserved manual edits passed **3 tests / 14 assertions** (32.48 seconds). The extra regression is additional to the full-suite count.
+- `npm run build`: passed, 10.81 seconds; no new frontend dependency or Alpine runtime.
+- `php artisan view:cache`, `php artisan route:cache`, `php artisan route:clear`, `composer validate --no-check-publish`, changed/new PHP syntax checks, targeted Pint formatting and `git diff --check`: passed. Route cache was cleared after its verification.
+- Fresh dependency review: **6 Composer advisories across `laravel/framework` and `firebase/php-jwt`; 4 moderate npm advisories**. Audit exit status remains nonzero. This feature does not suppress advisories or force incompatible upgrades.
+
+Focused cases cover source discovery/unknown sources; full-licence and per-file/ancestor notice checks; truncated trees; deterministic bounded selection; original identifiers/attribution; safe HTML/code; dry-run; actual draft relationships; owner/subset identity; partial and completed replay; changed-revision conflict/separate draft; retained manual edits; failed-job recovery; revoked/cross-owner access; processing locks; locked reviewed revision; provider disabled/missing configuration; malformed JSON/answer keys; separate daily quota; retained successful stages; server-owned quiz types/weights/ownership/price/publication; real project criteria; CLI generation/replay; and repeated Studio submissions sharing one run. Dedicated network tests reject hostile schemes/hosts/credentials/ports/private DNS answers, verify DNS pinning and redirect refusal, and enforce body byte limits without relying on Content-Length.
+
+### Live source, queue and browser evidence
+
+The official freeCodeCamp source at revision `d6d7c30c60750ad0118635ddfd0cec37810d2b92` was inspected live: complete BSD-3-Clause root notice, ancestor Git trees, Algorithms directory and selected challenge files. The current adapter only accepts this reviewed block. Other curriculum blocks/assets and the separate Odin Project licence are outside its support.
+
+An isolated server on port 8015 and `bootkode_content_browser_test` verified instructor browser preview → database queue dispatch → real `queue:work course-content` worker → persisted two-lesson draft → existing course builder → rerun skipped without a duplicate course. A subsequent live CLI import with a different three-lesson selection created a separate draft and confirmed that **all three lessons contain the complete licence notice**. The earlier two-lesson fixture predates the final per-lesson-notice repair; it was deliberately not overwritten by reruns. Both drafts remained unpublished, unapproved and absent from `Course::publiclyAvailable()`; the isolated database contained no enrollments or certificates.
+
+The final Studio was rendered at **390, 768, 1024 and 1440px**. Each width had one primary heading, no document overflow, real existing form-control styling and an explicit disabled AI action. Screenshots were inspected at mobile/desktop sizes. Browser interaction verified the required-preview error, real licence preview, queue feedback, retained run history, actual editor navigation and duplicate status. Student access returned **403**. There were no page JavaScript errors in the checked layout states. This is targeted browser evidence; other themes, screen-reader acceptance and live AI output are not certified.
+
+Evidence lives under ignored `storage/app/course-content-qa`: final test/build/audit outputs, browser script/results/screenshots, queue-worker output, live CLI output and database projections. These are verification artifacts, not product seed data.
+
+### Data, setup and remaining limits
+
+The additive run-tracking migration already existed and was **already applied to `bootkode_recovered` when audited**. This continuation added no migration and ran no working-database migration or fixture seeder. A final read confirmed **zero `content-qa.*@example.test` fixture users in the working database**. All browser/course fixtures and fresh migrations were restricted to `bootkode_content_browser_test`; tests used `bootkode_test`. Production `.env` credentials were neither printed nor changed.
+
+Deploy/review the existing forward run migration where pending, with normal backup safeguards. Run the dedicated connection's worker:
+
+```sh
+php artisan queue:work course-content --queue=course-content --timeout=600 --tries=2
+```
+
+It uses a 960-second database reservation; job timeouts are 600 seconds and processing locks expire after 900 seconds. Multiple-host workers require shared atomic cache storage. Public GitHub fetching requires cURL/DNS access and remains subject to source rate limits. AI needs `BOOTKODE_AI_ENABLED`, a supported configured provider, server-side key/model and the documented separate course-generation quota.
+
+No paid/live AI generation was performed. Blueprint, lesson, quiz/project generation and recovery were verified with deterministic HTTP/provider fixtures. Human factual, source-reference, pedagogical and assessment-key review remains required before the normal quality/approval workflow. Arbitrary repositories, unreviewed curriculum blocks, source media/assets/package uploads and automatic publication are unsupported. Existing dependency and broader provider/release gates remain open.

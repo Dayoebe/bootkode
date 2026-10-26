@@ -29,6 +29,14 @@ Provider credentials remain in environment/configuration, never Livewire public 
 
 See `product-audit.md`, `design-system.md`, `refactor-roadmap.md` and `verification.md` for decisions and evidence.
 
+## Course content acquisition
+
+`CourseContentStudio` is a role-guarded Livewire entry point for importing licensed curriculum and generating AI drafts. `CourseContentSource` adapters own source-specific fetching, format parsing and licence checks; `CourseImportService` owns source identity, duplicate/revision handling and draft persistence. The initial GitHub adapter accepts only the verified freeCodeCamp curriculum block path and fixed GitHub hosts. `AiCourseGenerationService` uses `AiManager`, persists blueprint/module stages, enforces a separate usage limit and delegates course/lesson/assessment writes to the existing `CourseGenerationService`.
+
+`course_content_runs` is processing/attribution metadata, not a second course or learning system. The additive migration links runs to the normal Course model and retains source revision, licence, status and review flags. The queue jobs are retry-safe and do not keep database transactions open during network calls. Course and run completion writes are atomic after external retrieval/generation. Every resulting course remains a draft; `Course::publiclyAvailable()` and existing course approval/enrollment boundaries remain authoritative.
+
+See [course-content-system.md](./course-content-system.md) for supported formats, license requirements, configuration, commands, queue setup, retries and limitations.
+
 ## Saved certificate designs and career applications
 
 `CertificateTemplate` stores validated design settings, not arbitrary HTML or Blade. `CertificateService` owns writes/default changes/deletion; only academy/super administrators manage designs and only super administrators assign a default. A nullable unique `default_slot` enforces one default in storage. The selected design is copied into existing certificate metadata at approval. Rendering uses that snapshot; editing or deleting the source design never restyles an issued record. Records predating snapshots retain the historical design and tokens/files. Preview HTML is isolated in a sandboxed iframe with explicit non-issued placeholders; fonts are restricted to those available to the PDF renderer.
@@ -127,3 +135,9 @@ See dashboard-redesign/route-inventory.md for route contracts, page-checklist.md
 ## Release continuation — 23 October 2026
 
 Interview workspaces resolve the existing Mentorship models; staff access is checked in component boot on every request. Reporting aggregates completed scores, completion counts, repeat participants and recorded planned duration. The existing résumé completion accessor supplies learner dashboard data. Chart lifecycle and theme handling stay in dashboard.js with the existing Chart.js dependency; Blade exposes a bounded data alternative. No reporting writes marks or changes eligibility. Compatible dependency maintenance retains Laravel 11 / Livewire 3 / Tailwind 3. See dashboard-redesign/continuation-report.md for acceptance and remaining integration limits.
+
+## Course content hardening — 26 October 2026
+
+Course Content Studio extends the existing authoring service and models; the source adapter contract validates its own path. Its first verified adapter accepts only freeCodeCamp's Algorithms Markdown subset, checks the full licence fingerprint and ancestor Git trees, and fetches through a fixed-host, DNS-pinned, byte-bounded client. Each imported lesson retains the full notice for individual offline exports. Source identity includes editor and selected limit, preserves prior run identities, and includes partial results in replay detection. Previewed revisions are locked into queued requests.
+
+AI stages retain validated blueprint/module state and reject client/provider ownership, publication, grading and media fields. Both CLI and Studio derive stable request identity from validated input; explicit CLI request IDs permit intentional separate drafts. Project criteria now use existing question/attempt/manual-review models. Database uniqueness and transaction locks guard persistence; cache locks prevent duplicate processing/provider spending. The `course-content` database queue connection has a 960-second reservation, 600-second jobs and 900-second processing locks. Multiple-host workers require shared atomic cache storage. No new migration was added in this continuation; the existing run migration was already applied locally.

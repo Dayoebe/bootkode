@@ -50,6 +50,10 @@ Help/support and staff response screens use the existing page header, panel, lab
 
 The rewards and analytics surfaces use shared headers, panels, form primitives, bounded navigation and factual definition-list metrics. The reward balance copy distinguishes virtual coins/gems from the NGN wallet. Analytics displays recorded data and missing-result states, with labelled filters, persistent goal feedback, accessible chart descriptions and a bounded data-table alternative. Charts use existing theme variables and disable animation. The CBT submission dialog reuses the shared modal; answer radios remain keyboard-accessible with visible peer focus rings, and hidden warning content no longer owns a primary heading. Exam layouts remain a deliberate focused-workflow exception to the standard dashboard surface.
 
+## Course Content Studio
+
+The authoring studio uses the dashboard layout, shared page heading/panels, labelled forms, associated inline errors, visible asynchronous status, bounded history table and the existing course editor link. Import preview explicitly shows the selected path, source revision, attribution/licence and content limitations before import. Generation/unavailable/progress states use text and do not imply review or publication. Queued work is presented as real status, not a simulated completion animation.
+
 
 ## Lesson assessment and review surfaces
 
@@ -86,3 +90,7 @@ The feature migration standardizes panel radius/shadow, headings, filter names, 
 ## Release continuation — 23 October 2026
 
 Blog and résumé forms now bound narrow columns, wrap actions and share semantic Trix surfaces/toolbar rules. Interview navigation scrolls within its labelled region; analytics controls wrap. System-status panels share their Alpine scope, and mentorship dialogs reference their visible headings. Résumé export closes on Escape and returns focus. Uncollected satisfaction and unscored results use explicit text; reporting never generates random outcomes. Chart animation is disabled and trend data has a keyboard-accessible table alternative. See dashboard-redesign/continuation-report.md for checked states and limits.
+
+## Course Content Studio acceptance — 26 October 2026
+
+The Studio uses the actual `x-text-input`, `x-input-label`, `x-primary-button` and `x-secondary-button` primitives, plus `bk-input` for native selects/textareas and `bk-field-error` for associated errors. Workflow panels align at their tops. A component-owned locked notice announces queued actions without duplicating the dashboard's flash banner. History has a labelled keyboard-scrollable region, real content counts/status, review flags and the existing editor route. Responsive/browser evidence covers 390/768/1024/1440px; wider theme/assistive-technology acceptance remains separate.
