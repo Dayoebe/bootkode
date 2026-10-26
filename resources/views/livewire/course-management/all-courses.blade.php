@@ -24,6 +24,13 @@
                 </div>
 
                 <div class="flex flex-col sm:flex-row gap-3">
+                    @if(auth()->user()->hasAnyRole(['super_admin', 'academy_admin', 'instructor']))
+                    <a href="{{ route('course-content.studio') }}"
+                       class="inline-flex min-h-11 items-center justify-center gap-2 rounded-lg border border-themed-primary bg-themed-secondary px-5 py-3 font-semibold text-themed-primary">
+                        <i class="fas fa-wand-magic-sparkles" aria-hidden="true"></i>
+                        <span>Course Content Studio</span>
+                    </a>
+                    @endif
                     <a href="{{ route('create.course') }}"
                        class="inline-flex items-center justify-center gap-2 bg-accent-themed-primary hover:bg-accent-themed-secondary text-action-foreground px-6 py-3 rounded-lg font-semibold transition-all duration-300 transform  shadow-sm">
                         <i class="fas fa-plus"></i>

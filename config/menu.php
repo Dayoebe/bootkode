@@ -64,6 +64,7 @@ return [
                 ['label' => 'My Courses', 'icon' => 'fas fa-edit', 'route_name' => 'my-course', 'roles' => [User::ROLE_SUPER_ADMIN, User::ROLE_ACADEMY_ADMIN, User::ROLE_INSTRUCTOR, User::ROLE_MENTOR, User::ROLE_CONTENT_EDITOR], 'link_id' => 'my-courses',],
                 ['label' => 'All Courses', 'icon' => 'fas fa-list', 'route_name' => ('all-course'), 'roles' => [User::ROLE_SUPER_ADMIN], 'link_id' => 'all-courses',],
                 ['label' => 'Available Courses', 'icon' => 'fas fa-book-open', 'route_name' => ('courses.available'), 'roles' => [User::ROLE_STUDENT], 'link_id' => 'courses.available',],
+                ['label' => 'Course Content Studio', 'icon' => 'fas fa-wand-magic-sparkles', 'route_name' => 'course-content.studio', 'roles' => [User::ROLE_SUPER_ADMIN, User::ROLE_ACADEMY_ADMIN, User::ROLE_INSTRUCTOR], 'link_id' => 'course-content-studio'],
                 ['label' => 'Create Course', 'icon' => 'fas fa-plus-circle', 'route_name' => ('create.course'), 'roles' => [User::ROLE_SUPER_ADMIN, User::ROLE_ACADEMY_ADMIN, User::ROLE_INSTRUCTOR], 'link_id' => 'create-course',],
                 ['label' => 'Course Builder', 'icon' => 'fas fa-puzzle-piece', 'route_name' => ('all-course'), 'roles' => [User::ROLE_INSTRUCTOR, User::ROLE_ACADEMY_ADMIN], 'link_id' => 'all-course'],
                 ['label' => 'Course Categories', 'icon' => 'fas fa-tags', 'route_name' => ('course-categories'), 'roles' => [User::ROLE_SUPER_ADMIN, User::ROLE_ACADEMY_ADMIN, User::ROLE_CONTENT_EDITOR], 'link_id' => 'course-categories',],

@@ -16,7 +16,10 @@
                     </p>
                 </div>
 
-                <div class="flex gap-3">
+                <div class="flex flex-wrap gap-3">
+                    @if(auth()->user()->hasAnyRole(['super_admin', 'academy_admin', 'instructor']))
+                        <a href="{{ route('course-content.studio') }}" class="bk-button bk-button-secondary">Course Content Studio</a>
+                    @endif
                     <a href="{{ route('create.course') }}"
                         class="inline-flex items-center justify-center gap-2 bg-action hover:bg-action/90 text-action-foreground px-6 py-3 rounded-lg font-semibold transition-all duration-300 transform  shadow-sm">
                         <i aria-hidden="true" class="fas fa-plus"></i>
