@@ -199,4 +199,11 @@ The licensed-source pipeline has live browser/queue/persistence evidence for the
 
 ## Runtime log follow-up — 26 October 2026
 
-Later log inspection confirmed MySQL stopped and local database requests refused, including failed-job inspection. The application is currently blocked on starting the existing service with administrator privileges. The 500 fallback now renders without its database-backed footer; that improvement does not restore course/import/generation availability. See verification.md for current outage evidence and the separate earlier passing feature checks.
+Later log inspection confirmed MySQL stopped and local database requests refused, including failed-job inspection. At that checkpoint, the application was blocked on starting the existing service. MySQL has since been restored; see Main course-content acceptance below. The 500 fallback now renders without its database-backed footer; that improvement does not restore course/import/generation availability. See verification.md for current outage evidence and the separate earlier passing feature checks.
+
+
+## Main course-content acceptance — 26 October 2026
+
+The earlier MySQL outage has cleared (current public HTTP 200). Live configured AI generation now passes both CLI and authenticated Studio → queue → worker → existing builder, using a dedicated acceptance database. Each new draft contains two modules, four lessons, two quizzes and a capstone project. History exposes actual category/validation/quality findings and safe expansion/retry controls.
+
+The older failed working expansion was backed up and recovered in place: three sections, ten preserved lesson IDs/original texts, three quizzes and twelve questions, still unpublished/unapproved. Every lesson retains the full verified source notice. The dedicated worker is enabled and active with user lingering. Current full suite: 332 tests / 1,602 assertions. Strict provider schemas, shared quota, ownership/history/edit preservation and exact verification limits are documented in course-content-system.md and verification.md. This supersedes the earlier live-AI and runtime blockers; human review, additional sources, dependency advisories and authenticated Git delivery remain separate gates.

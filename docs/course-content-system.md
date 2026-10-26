@@ -6,7 +6,7 @@ BootKode's Course Content Studio is an authoring aid, not a publishing workflow.
 
 Open **Course Management → Course Content Studio**, or the Studio link in **My Courses** / **All Courses**. The dashboard route is restricted to super administrators, academy administrators, and instructors. `CourseAuthoringAccess` is checked for Livewire requests; the services also verify the acting editor before creating a course. Instructors own their generated/imported courses. Platform administrators can inspect all content runs; instructors see their own runs.
 
-Long-running work is dispatched to the `course-content` queue. Run records in `course_content_runs` retain status, source identity, revision, course link, stage progress, attribution or review flags, and a safe failure message. AI stages persist after each completed module; retry skips saved stages. Import jobs re-fetch and validate the source, then use a database transaction for course records and source metadata. The source identity includes the editor and selected lesson limit; prior recorded identities are reused for compatibility only when they do not point to another editor's course. Completed and partial imports share duplicate detection. Processing uses cache locks and the database source/revision unique key. A conflict state prevent implicit replacement of a prior course or editor changes. An editor must explicitly request a separate draft for a changed source revision.
+Long-running work is dispatched to the `course-content` queue. Run records in `course_content_runs` retain status, source identity, revision, course link, stage progress, attribution or review flags, and a safe failure message. AI stages persist after each completed module; retry skips saved stages. Import jobs re-fetch and validate the source, then use a database transaction for course records and source metadata. The source identity includes the editor and selected lesson limit; prior recorded identities are reused for compatibility only when they do not point to another editor's course. Completed and partial imports share duplicate detection. Processing uses cache locks and the database source/revision unique key. A conflict state prevents implicit replacement of a prior course or editor changes. An editor must explicitly request a separate draft for a changed source revision.
 
 Run a worker for the queue:
 
@@ -43,7 +43,10 @@ GROQ_API_KEY=server-side-key
 GROQ_MODEL=current-supported-model
 GROQ_BASE_URL=https://api.groq.com/openai/v1
 BOOTKODE_AI_COURSE_GENERATION_DAILY_REQUESTS=12
+BOOTKODE_AI_COURSE_GENERATION_MAX_OUTPUT_TOKENS=6500
 ```
+
+Course stages request strict JSON-schema output from the configured model. Use an OpenAI-compatible model supporting `response_format: json_schema`; unsupported models fail safely instead of persisting malformed content. The module output budget defaults to 6,500 tokens, bounded to 2,400–8,192 by server configuration. Truncated structured responses are rejected with a safe output-limit message. Generation and imported-draft expansion reserve and record requests through the same locked per-editor daily budget, including failed attempts.
 
 The default is disabled. PHP cURL/DNS support is required for the source adapter; no GitHub token is required for the bounded public API requests, which remain subject to GitHub rate limits. Configure a real provider/model and server-side key, then clear configuration cache. Do not put credentials in Vite variables, Livewire properties, course content, or logs. Generation flags factual content, references and answer keys for human verification; no generated source citation is represented as verified.
 
@@ -96,23 +99,58 @@ php artisan bootkode:courses-generate \
 
 Both Studio and CLI generation are idempotent for the same editor and validated input, including across reloads. A run key cannot be reused with changed input. Supply an explicit new `--request-id` to intentionally create another draft with the same inputs. Optional CLI inputs include `--teaching-style`, `--practical-requirements`, `--assessment-requirements`, `--instructions`, and `--language`. Check `php artisan bootkode:courses-generate --help` for the complete command contract.
 
+Expand selected imported freeCodeCamp drafts in place with original explanations, exercises, outcomes, and one four-question quiz per section:
+
+```sh
+php artisan bootkode:courses-expand --course-ids=1,2 --editor-id=1
+```
+
+Expansion accepts only unpublished, unapproved freeCodeCamp imports with no enrollment, lesson-progress, or assessment history. It retains existing lesson IDs, challenge excerpts, source links, and the full licence notice, grouping lessons into sections of up to four. Responses are validated and saved as retryable stages before any course records are changed. A completed expansion is idempotent; quizzes include answer keys and explanations. Expansion uses the same per-editor daily course-generation request quota. Existing course content and generated answer keys still require instructor review; quality status is marked stale, not approved.
+
+Section requests are spaced by at least 65 seconds within an expansion job or CLI run to reduce provider token-rate throttling. If a provider still returns a rate-limit response, the run fails without changing course content and can be retried after the provider cooldown; successful section stages are retained.
+
 ## Review, retries, and limitations
 
-The Studio shows queued, processing, completed, partial, conflict, skipped, and failed runs. Successful runs link to the actual course builder. Failed AI retries retain complete blueprint/module stages; source retries re-fetch and reassess the current revision. A changed source does not overwrite an existing course. Each AI run is capped at 5 modules and 4 lessons per module, and provider calls share the explicit per-editor daily generation quota.
+The Studio shows queued, processing, completed, partial, conflict, skipped, and failed runs, with the actual category, stage progress, validation issues and recorded quality findings. **Run quality checks** invokes the existing local quality service without changing approval. Imported draft rows offer **Expand imported draft**; failed expansion rows offer **Retry saved stages** alongside the editor link. Every action rechecks the editor role and current course ownership; reassigned courses disappear from an instructor's history. Successful runs link to the actual course builder. Failed AI retries retain complete blueprint/module stages; source retries re-fetch and reassess the current revision. A changed source does not overwrite an existing course. Each AI run is capped at 5 modules and 4 lessons per module, and provider calls share the explicit per-editor daily generation quota.
 
-Generated and imported courses may still need outcomes, examples, practical exercises, contextual adaptation, assessment review, accessibility checks, references, thumbnails, and editorial/quality checks. Imported freeCodeCamp challenge text is only a subset, not a complete self-contained course. This initial release does not import packages, videos, images, downloadable assets, interactive challenge execution, arbitrary GitHub repositories, or upload packages. AI is synchronous inside each queued job; no live provider or repository success is claimed by mocked tests. The existing additive `course_content_runs` migration is necessary because course tables cannot store pre-course failures or resumable provider stages. It creates only run tracking and foreign keys with null-on-delete; core course, learning, wallet and credential schemas remain unchanged. It was already applied locally when this continuation began. Back up and review forward migrations for each deployment, and deploy the dedicated worker; this continuation made no working-database schema or fixture changes.
+Generated and imported courses may still need outcomes, examples, practical exercises, contextual adaptation, assessment review, accessibility checks, references, thumbnails, and editorial/quality checks. Imported freeCodeCamp challenge text is only a subset, not a complete self-contained course. This initial release does not import packages, videos, images, downloadable assets, interactive challenge execution, arbitrary GitHub repositories, or upload packages. AI is synchronous inside each queued job; no live provider or repository success is claimed by mocked tests. The existing additive `course_content_runs` migration is necessary because course tables cannot store pre-course failures or resumable provider stages. It creates only run tracking and foreign keys with null-on-delete; core course, learning, wallet and credential schemas remain unchanged. It was already applied locally when this continuation began. Back up and review forward migrations for each deployment, and deploy the dedicated worker; this continuation made no working-database schema or fixture changes. The later backed-up recovery of an existing failed expansion is documented separately in verification.md.
 
 ## Verification
 
 See [verification.md](verification.md) for exact final suite/build/browser results and current dependency gates. Tests exercise real persistence against a guarded `_test` database, mocked source/provider failure and retry paths, importer licence/attribution/sanitization, owner/subset/revision identity, concurrent processing locks, preserved edits, draft availability, AI quota/stage recovery, server-owned grading fields, CLI runs and Livewire queueing. Network tests cover hostile URLs, private DNS answers, DNS pinning, redirects and byte bounds.
 
-The live source path was exercised separately through browser preview → database queue → worker → actual existing draft editor → duplicate-safe rerun in `bootkode_content_browser_test`. Live AI generation was not called; AI assertions use deterministic HTTP/provider fixtures. Existing generated/imported drafts always require human subject review and the normal quality/approval flow.
+The live source path was exercised separately through browser preview → database queue → worker → actual existing draft editor → duplicate-safe rerun in `bootkode_content_browser_test`. Live configured-provider generation subsequently passed through both CLI and browser → queue → worker → existing builder in `bootkode_content_acceptance_test`. Each produced an unpublished, unapproved draft with two modules, four lessons, two quizzes and a capstone project. Ordinary tests still use deterministic provider fixtures. Existing generated/imported drafts always require human subject review and the normal quality/approval flow.
 
 ## Implementation map
 
 - Existing persistence: `CourseGenerationService`, `CourseGenerationPayload`, `CourseGenerationBlueprintBuilder`, `CourseValidationService`, `Course`, `Section`, `Lesson`, `Assessment` and `Question`. Normal approval continues through `CourseQualityService` and the current editor/approval screens.
 - Existing AI integration: `AiManager`, `OpenAiCompatibleProvider`, `AiUsageRecord`, `config/bootkode_ai.php`; optional response-format support preserves the provider's existing contract.
-- Acquisition: `CourseContentSource`, `CourseContentSourceRegistry`, `FreeCodeCampSource`, `GitHubContentClient`, `CourseImportService`, `AiCourseGenerationService`, and safe `CourseContentException`.
-- Processing/state: `CourseContentRun`, the existing additive `2026_10_22_180000_create_course_content_runs_table` migration, `ImportCourseContent`, `GenerateCourseWithAi`, and the isolated connection in `config/queue.php`.
-- Entry points: `CourseContentStudio` and its Blade view; `ImportCourseContentCommand` / `GenerateCourseWithAiCommand`; the named route, role-filtered menu and existing My Courses / All Courses links.
-- Verification: `CourseContentPipelineTest`, `CourseSourceNetworkTest`, extended `OpenAiCompatibleProviderTest`, and the public BSD licence fixture in `tests/Fixtures/course-content`. No new package dependency was introduced.
+- Acquisition: `CourseContentSource`, `CourseContentSourceRegistry`, `FreeCodeCampSource`, `GitHubContentClient`, `CourseImportService`, `AiCourseGenerationService`, `AiCourseExpansionService`, `CourseAiRequestService`, and safe `CourseContentException`.
+- Processing/state: `CourseContentRun`, the existing additive `2026_10_22_180000_create_course_content_runs_table` migration, `ImportCourseContent`, `GenerateCourseWithAi`, `ExpandImportedCourse`, and the isolated connection in `config/queue.php`.
+- Entry points: `CourseContentStudio` and its Blade view; `ImportCourseContentCommand` / `GenerateCourseWithAiCommand` / `ExpandImportedCourseCommand`; the named route, role-filtered menu and existing My Courses / All Courses links.
+- Verification: `CourseContentPipelineTest`, `CourseExpansionTest`, `CourseSourceNetworkTest`, extended `OpenAiCompatibleProviderTest`, and the public BSD licence fixture in `tests/Fixtures/course-content`. No new package dependency was introduced.
+
+
+## Expansion preservation and legacy notices
+
+Expansion accepts only the reviewed source and verified full licence. Before spending provider requests, it checks the saved original lesson snapshots and a course/outline fingerprint. It checks the fingerprint again while locking course, section and lesson records at persistence. Human edits or changed outline/ownership/publication/history produce a safe refusal or conflict; successful saved sections remain available for retry. Quality scans do not invalidate an otherwise unchanged draft. Completed expansion replays perform no provider requests or duplicate writes. Existing descriptions, outcomes and non-default section copy are preserved.
+
+Older draft imports that stored the full licence only in the final lesson can be repaired explicitly without AI:
+
+```sh
+php artisan bootkode:courses-expand --course-ids=1 --editor-id=1 --restore-attribution-only
+```
+
+Back up affected records before compatibility work. This additive, idempotent action appends only missing verified notices, preserves lesson IDs/content, rejects published/approved courses and learning/financial history, and marks changed quality status stale. It does not regenerate lessons or assessments.
+
+## Managed worker
+
+A systemd user-service template is supplied at `deploy/systemd/bootkode-course-content.service`. Substitute the checkout path and PHP executable, install it at `~/.config/systemd/user/bootkode-course-content.service`, then run:
+
+```sh
+systemctl --user daemon-reload
+systemctl --user enable --now bootkode-course-content.service
+systemctl --user restart bootkode-course-content.service
+```
+
+Restart after deployments so workers load the new code. The unit restarts on failure, allows the current job to finish during shutdown, uses a private umask, and writes `storage/logs/course-content-worker.log`. Keep that log private and rotate it with the host's normal log management. Enable user lingering through the host's authorized administration workflow if the worker must run without an interactive session. MySQL, the configured provider and network must also be available. On this checkout the unit is enabled and active, lingering is enabled, and an idempotent completed-job replay was processed successfully. This local service does not configure another deployment host.

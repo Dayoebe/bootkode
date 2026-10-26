@@ -1,0 +1,18 @@
+[Unit]
+Description=BootKode course content queue worker
+After=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=/path/to/bootkode
+ExecStart=/usr/bin/php artisan queue:work course-content --queue=course-content --sleep=3 --tries=2 --timeout=600
+Restart=always
+RestartSec=5
+KillSignal=SIGTERM
+TimeoutStopSec=660
+UMask=0077
+StandardOutput=append:/path/to/bootkode/storage/logs/course-content-worker.log
+StandardError=inherit
+
+[Install]
+WantedBy=default.target

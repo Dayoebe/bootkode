@@ -98,3 +98,8 @@ The Studio uses the actual `x-text-input`, `x-input-label`, `x-primary-button` a
 ## Server-error fallback — 26 October 2026
 
 The standalone 500 page uses existing semantic surfaces/text, `ui.panel`, the shared button class, a skip link and one primary heading. It has no database-dependent shell, ambient animation, invented contact details or new palette. A recovery link uses the existing named home route.
+
+
+## Course-content review controls — 26 October 2026
+
+History retains the shared bounded table and existing semantic buttons. Rows show the real category, draft counts, safe validation messages and quality issues in native keyboard-operable details. Editor, quality scan and failed-stage retry remain available together; imported-draft expansion uses a clear native confirmation before queueing. These controls reuse the existing Blade/Livewire shell with no new palette, Alpine runtime or dependency. Authenticated layout and workflow checks cover 390/768/1024/1440px; live quality findings and generated-editor navigation are recorded in verification.md.

@@ -1,5 +1,7 @@
 # BootKode overhaul verification
 
+Current course-content completion evidence is in **Main course-content completion — 26 October 2026** below; that section supersedes the earlier live-AI, expansion, worker and outage limits.
+
 Verification updated 21 October 2026. This report distinguishes implemented changes, current local checks and outstanding release gates. It does not declare the whole application production-ready.
 
 ## Original problems and resulting behavior
@@ -554,7 +556,7 @@ No paid/live AI generation was performed. Blueprint, lesson, quiz/project genera
 
 ### Git delivery
 
-Local feature commits: `e25fe574` (pipeline), `c5aa7da6` (Studio/CLI/tests), `02846526` (documentation/build). Ordinary `git push --set-upstream origin feat/course-content-system` was attempted with interactive prompts disabled and failed: GitHub HTTPS username/credentials were unavailable. No force push or reset was used. The existing expansion command/service/test and their documentation paragraph remain uncommitted in the working tree.
+Local feature commits: `e25fe574` (pipeline), `c5aa7da6` (Studio/CLI/tests), `02846526` (documentation/build). Ordinary `git push --set-upstream origin feat/course-content-system` was attempted with interactive prompts disabled and failed: GitHub HTTPS username/credentials were unavailable. No force push or reset was used. At that checkpoint, the existing expansion command/service/test and their documentation paragraph remained uncommitted; they are now integrated in the main course-content completion below.
 
 ## Runtime log follow-up — 26 October 2026
 
@@ -565,3 +567,38 @@ A later log review found a **current MySQL outage**, after the course-content ve
 The public 500 view also depended on the database-backed application footer, causing a second exception while rendering the original failure. Replaced only that error view with standalone Blade using existing semantic tokens/panel/button styling. It makes no database/authentication lookup and removes the invented support address and ambient animation. `ErrorPageResilienceTest` invokes Laravel's exception renderer with all Eloquent connections forbidden: **1 test / 6 assertions passed**. `npm run build` passed (6.48 seconds); view cache, PHP syntax and diff checks passed. A separate debug-disabled test server returned HTTP **500** with the intended safe message and no SQLSTATE disclosure while MySQL remained unavailable. This verifies error handling, not recovery of the application. The database-dependent suite and live workflows cannot be freshly verified until MySQL is restored.
 
 The outage response was also exercised in Chrome at **390/768/1024/1440px**: one primary heading, no document overflow, expected HTTP 500 and safe generic message. The mobile screenshot was inspected. The temporary port-8016 QA server was stopped afterward; the user's port-8000 server was preserved.
+
+
+## Main course-content completion — 26 October 2026
+
+This continuation supersedes the earlier live-AI, expansion, worker and MySQL blockers above. MySQL is available again; the current public home request returns HTTP 200. Recent `testing` log warnings/errors are expected negative-path coverage, not evidence of a new working-database outage.
+
+### Current implementation and regression evidence
+
+- Full guarded `bootkode_test` suite: **332 passed / 1,602 assertions**, 91.64 seconds. New expansion cases exercise saved-section recovery, completed replay, concurrent locks, edited legacy snapshots, edits during generation, role/ownership changes, Studio actions, cross-instructor denials and additive licence repair. Provider coverage rejects truncated structured responses.
+- `npm run build`: passed in **5.94 seconds**. Existing asset hashes were retained alongside the updated manifest/current CSS. No dependencies or migrations were added.
+- Final Blade cache, route cache/clear, Composer validation, targeted Pint (12 files), changed/new PHP syntax (13 files) and whitespace checks passed. After the notice-formatting adjustment, the focused attribution checks passed **2 tests / 26 assertions**; the full-suite count above is unchanged. Fresh audits retain **6 Composer advisories across Laravel/JWT and 4 moderate npm advisories**. No advisory was suppressed.
+- Course generation and expansion now share locked quota/usage accounting. Strict JSON schemas fixed malformed output found by the real configured provider; server-side validation still rejects invalid lesson/answer structures. Module output tokens are configurable and bounded; no vendor/model is hardcoded or replaced.
+- History shows real categories and validation/quality issues, runs the existing quality checks, and offers expansion/retry alongside the actual editor link. Fresh role and current course access are enforced for every action. No scan or job grants approval/publication.
+
+### Configured live provider and authenticated browser
+
+The actual environment-configured Groq provider/model successfully generated one course through the CLI/service and another through authenticated browser → database queue → real worker → actual course builder. Both were isolated to **`bootkode_content_acceptance_test`**, each with **2 modules, 4 lessons, 2 quizzes and 1 capstone project**, unpublished and unapproved. The generated marketing topics demonstrate use of the existing category system beyond programming. No acceptance fixture was inserted into the working database.
+
+The initial real attempts exposed timeouts, malformed structures and truncated/incorrect answer shapes that deterministic fixtures did not reveal. Failed attempts persisted no course, counted toward the unchanged quota, and retained successful validated stages. Final strict-schema calls completed successfully without weakening validation. This is delivery/integration proof, not certification of factual accuracy or educational quality.
+
+Authenticated browser evidence at **390 / 768 / 1024 / 1440px** records one primary heading, no document overflow and no JavaScript errors in the checked states. Mobile/desktop screenshots were inspected. Interaction also verified the actual category, a real quality finding (missing course thumbnail), queue feedback, completed counts and navigation to the newly generated draft's builder. Evidence: ignored `storage/app/course-content-acceptance/browser-results.json`, screenshots, `browser-worker.txt` and `live-generation-schema.txt`.
+
+### Recovery of the existing failed expansion
+
+The existing failed `ai_expansion` run **3**, linked to working draft course **1**, was inspected against its saved original lesson snapshots. Before changing it, a private mode-0600 backup of the run and course/sections/lessons was written to `storage/app/course-content-acceptance/backups/working-expansion-20261026-142547.json` (SHA-256 `1dbdf839cbd31db45c8835128b7ee9c8dd70536307283a82e327082e6ddb015c`). No learner/history record was removed or reset.
+
+The managed worker resumed the same run, retained two successful sections across a transient provider failure, and completed its remaining section. The result is **3 sections, 10 lessons, 3 quizzes, 12 questions**. A backup comparison verifies all original lesson IDs and original text, and the existing course description, are preserved. The course remains unpublished and unapproved.
+
+A second private backup (`backups/completed-before-attribution.json`) preceded the explicit additive legacy-notice command. It restored the missing full verified BSD notice in nine older lessons; all ten now carry the complete notice. Idempotent repair is regression-tested. Current projections and preservation booleans are in `working-after.json`; backup contents stay out of Git.
+
+### Persistent worker and remaining release limits
+
+`bootkode-course-content.service` is installed as an enabled, active systemd user service. `Linger=yes` allows operation beyond logout; MySQL/provider/network availability remains required. The repository contains the portable template at `deploy/systemd/bootkode-course-content.service`. The worker was restarted with final code, processed an already completed run without duplicate content/provider usage, and records RUNNING/DONE in its private log. Queue reservations, 600-second job timeout, 900-second overlap locks and retry backoff remain explicit.
+
+Course output still needs human factual/assessment review, missing assets and normal quality/approval checks. Additional source adapters, unreviewed content/assets/packages, automatic publication and broad accessibility/theme certification are outside this delivered slice. Dependency advisories and Git remote authentication remain separate release limits; no production deployment is claimed. The older expansion source/tests are now integrated into this feature rather than left as unrelated work.

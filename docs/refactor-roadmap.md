@@ -98,4 +98,17 @@ Completed the existing Studio's idempotency, partial-run handling, fixed-host/DN
 
 ## Dependency-outage follow-up — 26 October 2026
 
-Completed: database-independent 500 response and exception-renderer regression. Blocked: starting the stopped MySQL service requires administrator privileges. After service restoration, verify database connectivity, public pages, failed/pending jobs and course-content processing before claiming current runtime health. No recovery/reset/migration is authorized or implied by a refused connection.
+Completed: database-independent 500 response and exception-renderer regression. The earlier MySQL service blocker is now resolved. Database connectivity, public HTTP 200, an empty failed-job list and real course-content processing were verified in Main course-content completion below. No recovery/reset/migration is authorized or implied by a refused connection.
+
+
+## Main course-content completion — 26 October 2026
+
+- [x] Exercise the actual configured provider through CLI and authenticated UI/queue/editor in an isolated test database.
+- [x] Resolve real malformed/truncated output with strict schemas and bounded configurable generation tokens; share locked generation/expansion quota.
+- [x] Expose actual category, validation and quality findings with authorized quality/expansion/retry actions.
+- [x] Integrate/harden existing expansion and recover the backed-up failed working draft without replacing original lesson IDs/text or publishing it.
+- [x] Restore verified full notices to older draft lessons through an explicit additive, idempotent command.
+- [x] Install an enabled managed course-content worker with lingering; verify completed-job replay and current public/database availability.
+- [x] Record 332 passing tests / 1,602 assertions, build and targeted authenticated four-width browser evidence.
+
+The earlier MySQL and configured live-generation blockers are resolved for this checkout. Remaining release work: authenticated ordinary Git push, existing dependency advisories, human editorial/assessment approval and deployment-specific setup. Additional sources and broader theme/assistive-technology coverage remain separately scoped; see verification.md.

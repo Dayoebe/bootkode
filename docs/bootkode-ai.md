@@ -48,3 +48,8 @@ Code-review submissions, career coaching, and administrator usage summaries are 
 ## Course-generation verification — 26 October 2026
 
 Course generation accepts the documented audience, objectives, language, teaching style and optional project/assessment guidance through the same CLI/UI service. Validated-input request identity prevents repeated submissions/reloads from creating duplicate drafts. Completed stages survive later failures; processing locks and separate generation usage reservations limit duplicate spending. Generated projects include actual written-response criteria for the existing review flow. Markdown is sanitized, grading weights/types and ownership/publication remain server-owned, and generated references require human verification. Live AI generation was not exercised in this continuation; mocked provider/persistence verification and live licensed-source import are reported separately in verification.md.
+
+
+## Course-content provider acceptance — 26 October 2026
+
+Original course generation and imported-draft expansion share `CourseAiRequestService` for locked daily request reservation and usage records. Course stages request strict JSON-schema output; configure a model supporting that response format. Structured output ending at the token limit is rejected safely. `BOOTKODE_AI_COURSE_GENERATION_MAX_OUTPUT_TOKENS` defaults to 6500 (module range 2400–8192); no provider/model or credential is selected in the browser. The configured live provider passed both CLI and authenticated Studio/queue/editor acceptance in an isolated test database. Results remain drafts requiring factual and assessment review. See course-content-system.md for setup and verification.md for evidence and limits.

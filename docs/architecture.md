@@ -145,3 +145,12 @@ AI stages retain validated blueprint/module state and reject client/provider own
 ## Error handling during dependency outages — 26 October 2026
 
 The 500 view is standalone Blade. It must not mount the public application layout, navigation, authenticated state or database-backed footer: the database itself can be the failing dependency. Its exception-renderer regression forbids Eloquent connections. This fallback preserves HTTP 500 and generic copy; it does not turn a dependency outage into successful application behavior.
+
+
+## Course-content completion — 26 October 2026
+
+`CourseAiRequestService` shares atomic per-editor quota reservation and safe usage accounting across original generation and imported-draft expansion. The existing provider accepts strict JSON-schema response formats and rejects truncated structured output. Generation budgets stay server-configured; persistence continues through existing course/assessment services.
+
+`AiCourseExpansionService` and `ExpandImportedCourse` integrate the existing expansion workflow into the dedicated queue and Studio. Verified source licence/path, saved original snapshots, course/outline fingerprints, cache locks and final locked transactional checks protect human edits, ownership, publication and learning/financial history. Validated section stages survive retries; completed replay does not duplicate provider calls or content. Quality-only changes do not invalidate draft fingerprints. Explicit legacy-notice repair is additive and draft/history guarded.
+
+Studio history uses actual category and stored validation/quality findings. Quality scans reuse `CourseQualityService`; every review/retry/expansion action checks the acting role and current course access. `deploy/systemd/bootkode-course-content.service` provides the managed worker template. No new schema/dependency or alternate approval, enrollment, payment or credential boundary was introduced. Real provider/UI acceptance and backed-up working-draft recovery are recorded in verification.md.
