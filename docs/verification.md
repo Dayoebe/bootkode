@@ -551,3 +551,7 @@ php artisan queue:work course-content --queue=course-content --timeout=600 --tri
 It uses a 960-second database reservation; job timeouts are 600 seconds and processing locks expire after 900 seconds. Multiple-host workers require shared atomic cache storage. Public GitHub fetching requires cURL/DNS access and remains subject to source rate limits. AI needs `BOOTKODE_AI_ENABLED`, a supported configured provider, server-side key/model and the documented separate course-generation quota.
 
 No paid/live AI generation was performed. Blueprint, lesson, quiz/project generation and recovery were verified with deterministic HTTP/provider fixtures. Human factual, source-reference, pedagogical and assessment-key review remains required before the normal quality/approval workflow. Arbitrary repositories, unreviewed curriculum blocks, source media/assets/package uploads and automatic publication are unsupported. Existing dependency and broader provider/release gates remain open.
+
+### Git delivery
+
+Local feature commits: `e25fe574` (pipeline), `c5aa7da6` (Studio/CLI/tests), `02846526` (documentation/build). Ordinary `git push --set-upstream origin feat/course-content-system` was attempted with interactive prompts disabled and failed: GitHub HTTPS username/credentials were unavailable. No force push or reset was used. The existing expansion command/service/test and their documentation paragraph remain uncommitted in the working tree.
