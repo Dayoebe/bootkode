@@ -78,4 +78,17 @@ class OpenAiCompatibleProviderTest extends TestCase
             $this->assertStringNotContainsString('private', $exception->getMessage());
         }
     }
+
+    public function test_structured_output_truncation_is_reported_without_returning_partial_json(): void
+    {
+        Http::fake(fn () => Http::response(['choices' => [['finish_reason' => 'length', 'message' => ['content' => '{"partial":']]]]));
+        try {
+            (new OpenAiCompatibleProvider(['key' => 'test-key', 'model' => 'configured-model', 'base_url' => 'https://api.groq.test']))
+                ->chat([], ['response_format' => ['type' => 'json_object']]);
+            $this->fail('Truncated JSON was returned as a complete response.');
+        } catch (AiProviderException $exception) {
+            $this->assertSame('output_limit', $exception->reason);
+            $this->assertStringNotContainsString('partial', $exception->getMessage());
+        }
+    }
 }

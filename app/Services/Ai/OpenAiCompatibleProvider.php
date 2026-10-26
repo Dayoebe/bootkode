@@ -50,7 +50,11 @@ class OpenAiCompatibleProvider implements AiProvider
         }
 
         if (! $response->successful()) {
-            throw new AiProviderException('The AI provider could not complete this request.', 'provider_error');
+            throw new AiProviderException('The AI provider could not complete this request (HTTP '.$response->status().').', 'provider_error');
+        }
+
+        if (isset($options['response_format']) && data_get($response->json(), 'choices.0.finish_reason') === 'length') {
+            throw new AiProviderException('The AI response reached its output limit. Reduce the requested batch size or adjust the server generation token limit.', 'output_limit');
         }
 
         $content = trim((string) data_get($response->json(), 'choices.0.message.content'));

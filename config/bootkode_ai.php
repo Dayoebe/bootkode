@@ -9,6 +9,7 @@ return [
     'max_input_characters' => (int) env('BOOTKODE_AI_MAX_INPUT_CHARACTERS', 6000),
     'max_history_messages' => (int) env('BOOTKODE_AI_MAX_HISTORY_MESSAGES', 12),
     'max_context_characters' => (int) env('BOOTKODE_AI_MAX_CONTEXT_CHARACTERS', 12000),
+    'course_generation_max_output_tokens' => (int) env('BOOTKODE_AI_COURSE_GENERATION_MAX_OUTPUT_TOKENS', 6500),
     'course_generation_daily_requests' => (int) env('BOOTKODE_AI_COURSE_GENERATION_DAILY_REQUESTS', 12),
 
     'providers' => [
