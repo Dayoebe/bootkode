@@ -1,6 +1,6 @@
 # BootKode overhaul verification
 
-Current course-content completion evidence is in **Main course-content completion — 26 October 2026** below; that section supersedes the earlier live-AI, expansion, worker and outage limits.
+Current direct course creation is recorded in **Direct working-course creation — 26 October 2026** below. Earlier pipeline completion evidence is in **Main course-content completion — 26 October 2026**; that section supersedes the earlier live-AI, expansion, worker and outage limits.
 
 Verification updated 21 October 2026. This report distinguishes implemented changes, current local checks and outstanding release gates. It does not declare the whole application production-ready.
 
@@ -607,3 +607,31 @@ Course output still needs human factual/assessment review, missing assets and no
 ### Completion delivery status
 
 Local commits: `035fefbb` (strict AI output/shared quota), `b5b23d99` (expansion/review UI and safety regressions), `70797953` (managed worker, build and live evidence). The final ordinary `GIT_TERMINAL_PROMPT=0 git push --set-upstream origin feat/course-content-system` again exited 128: `fatal: could not read Username for 'https://github.com': terminal prompts disabled`. The feature is committed locally; remote delivery remains blocked by missing Git HTTPS authentication. No reset, force push, replacement remote history or deployment was attempted.
+
+
+## Direct working-course creation — 26 October 2026
+
+The supplied super-admin account was authenticated through the real application. Three original courses were then persisted through `CourseGenerationService` in **`bootkode_recovered`**, owned by editor ID 1:
+
+| ID | Course | Structure | Assessments |
+|---|---|---|---|
+| 4 | Build Your First Responsive Website | 3 modules / 9 lessons | 3 quizzes / 1 capstone |
+| 5 | Spreadsheet Skills for Better Business Decisions | 3 modules / 9 lessons | 3 quizzes / 1 capstone |
+| 6 | Digital Marketing: Plan, Create and Measure Your First Campaign | 3 modules / 9 lessons | 3 quizzes / 1 capstone |
+
+The courses contain approximately 9,000 words of original teaching text with worked examples, practice tasks, feedback and check cases. There are **36 multiple-choice questions with answer explanations** and **three 100-point manual-review project criteria**. New Web Development, Data Analysis and Digital Marketing categories use existing category resolution. Every course and lesson remains a draft; course approval/public availability is false, and mechanical public quality endorsements are disabled pending editorial review.
+
+Three original vector covers and actual downloadable materials were saved: the website reference ZIP, fictional 12-order CSV and campaign worksheet. The spreadsheet check figures were independently calculated: all line values 97000, completed value 85500, channel values 23500/36500/25500. The reference website was tested in Chrome: quote cases 15000/35000/65000, rejected blank/negative/fractional input, no JavaScript errors and no overflow at 390/768/1024/1440px. The curriculum links to verified official MDN/Microsoft/Google references as optional further reading; third-party course bodies were not copied.
+
+Before writes, existing course/section/lesson/assessment/question records and learning/wallet/certificate fingerprints were backed up privately. The first insert rejected an invalid quiz difficulty value and rolled back atomically; mapping question difficulty to the existing `easy` enum resolved it without changing the schema. Before/after checks confirm the two old courses and recorded history remain unchanged. No learner accounts, enrollments, payments, marks or issued certificates were fabricated. Private originals, backups and projections are under ignored `storage/app/course-authoring-20261026`; credentials are absent from the curricula and Git.
+
+Creation exposed a quality-scanner false positive on escaped HTML examples and the outline's creation-time sorting. The scanner now reads actual attributes with DOMDocument/LIBXML_NONET, ignores code/pre descendants and avoids treating search text as rendered HTML. Real missing files still fail. The outline follows stored curriculum order with deterministic ID tie-breakers. Regression checks cover both behaviours. Final full guarded test suite: **336 passed / 1,615 assertions**, **75.46 seconds**. Blade cache, changed PHP syntax and whitespace checks pass. No frontend dependency, schema or UI styling was changed.
+
+Authenticated desktop checks opened all three actual builders, first/final lesson content and each final lesson's quiz/capstone manager with HTTP 200. All six asset requests returned HTTP 200 with real bytes; the web HTML example remained escaped instructional content. Browser artifacts are in the same private directory. Automated checks do not establish human factual/pedagogical approval, full screen-reader acceptance or publication.
+
+
+Final responsive review: **12 actual builder/page-width combinations** (three saved courses × 390/768/1024/1440px) passed on fresh loads with one main heading, no document overflow, no JavaScript errors and correct visible module order. Long course titles exposed a toolbar flex-width defect; bounded title sizing/wrapping resolved it without concealing page content. Screenshots and `layout-results.json` retain the evidence. The initial resize-based probe also captured a shared-shell cross-breakpoint state difference; the recorded acceptance matrix uses fresh loads at each width.
+
+The final frontend build passed in **6.35 seconds** and Blade cache passed after the toolbar adjustment. The full-suite count above precedes that layout-only change; the rendered matrix verifies the final markup. Original asset hashes were preserved. Course records/materials are present in the working database/storage and an additional private export contains all three completed curricula. The temporary verification session file was removed after browser checks.
+
+Software fix commit: `12cf0992` (rendered-media detection and curriculum order). Ordinary push again failed because GitHub HTTPS credentials are unavailable; course creation itself succeeded locally and is independent of remote Git delivery. No publication, force push or working-database migration was performed.

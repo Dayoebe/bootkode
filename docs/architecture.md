@@ -154,3 +154,10 @@ The 500 view is standalone Blade. It must not mount the public application layou
 `AiCourseExpansionService` and `ExpandImportedCourse` integrate the existing expansion workflow into the dedicated queue and Studio. Verified source licence/path, saved original snapshots, course/outline fingerprints, cache locks and final locked transactional checks protect human edits, ownership, publication and learning/financial history. Validated section stages survive retries; completed replay does not duplicate provider calls or content. Quality-only changes do not invalidate draft fingerprints. Explicit legacy-notice repair is additive and draft/history guarded.
 
 Studio history uses actual category and stored validation/quality findings. Quality scans reuse `CourseQualityService`; every review/retry/expansion action checks the acting role and current course access. `deploy/systemd/bootkode-course-content.service` provides the managed worker template. No new schema/dependency or alternate approval, enrollment, payment or credential boundary was introduced. Real provider/UI acceptance and backed-up working-draft recovery are recorded in verification.md.
+
+
+## Direct authoring and quality checks — 26 October 2026
+
+Agent-authored curricula use the existing `CourseGenerationService` with explicit sections, lessons, questions, project rubrics, category resolution and server-selected instructor. All three new working courses remain unpublished/unapproved; no alternate learning model, migration, provider usage claim or enrollment mutation was introduced. Before/after fingerprints protect existing records.
+
+Media quality checks parse actual HTML attributes with DOMDocument and LIBXML_NONET, exclude code/pre descendants and do not interpret the search/plain-text copy as rendered media. Real missing files remain failures. CourseOutline renders sections and lessons by their stored `order` with ID tie-breakers, so the visible teaching sequence matches the curriculum.

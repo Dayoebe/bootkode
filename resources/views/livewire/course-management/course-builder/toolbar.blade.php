@@ -68,12 +68,12 @@
 
     <div class="flex min-w-0 flex-col xl:flex-row xl:items-center xl:justify-between gap-4">
         <!-- Course Title and Status -->
-        <div class="flex flex-col sm:flex-row sm:items-center gap-3">
-            <div class="flex items-center gap-3">
+        <div class="flex min-w-0 flex-col sm:flex-row sm:flex-wrap sm:items-center gap-3">
+            <div class="flex min-w-0 flex-1 items-center gap-3">
                 <div class="bg-action dark:bg-action p-2 rounded-lg">
                     <i aria-hidden="true" class="fas fa-book-open text-action-foreground"></i>
                 </div>
-                <h2 class="text-xl sm:text-2xl font-bold text-content dark:text-white truncate max-w-[180px] sm:max-w-[280px] transition-colors duration-300">
+                <h2 class="min-w-0 text-xl sm:text-2xl font-bold text-content dark:text-white truncate max-w-[180px] sm:max-w-[280px] transition-colors duration-300">
                     {{ $course->title ?? 'Untitled Course' }}
                 </h2>
             </div>

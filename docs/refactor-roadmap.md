@@ -112,3 +112,8 @@ Completed: database-independent 500 response and exception-renderer regression. 
 - [x] Record 332 passing tests / 1,602 assertions, build and targeted authenticated four-width browser evidence.
 
 The earlier MySQL and configured live-generation blockers are resolved for this checkout. Remaining release work: authenticated ordinary Git push, existing dependency advisories, human editorial/assessment approval and deployment-specific setup. Additional sources and broader theme/assistive-technology coverage remain separately scoped; see verification.md.
+
+
+## Direct course creation — 26 October 2026
+
+Completed: three original working course drafts owned by the authorised super-admin, totaling 27 substantial lessons, 36 explained multiple-choice questions and three marked capstones. Real covers/practice files are saved. Existing course and learning/financial/certificate records remain unchanged. Corrected code-example media false positives and displayed curriculum order discovered while reviewing the new content. Human editorial review and the normal publication workflow remain; these courses were not automatically published. See verification.md.

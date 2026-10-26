@@ -103,3 +103,10 @@ The standalone 500 page uses existing semantic surfaces/text, `ui.panel`, the sh
 ## Course-content review controls — 26 October 2026
 
 History retains the shared bounded table and existing semantic buttons. Rows show the real category, draft counts, safe validation messages and quality issues in native keyboard-operable details. Editor, quality scan and failed-stage retry remain available together; imported-draft expansion uses a clear native confirmation before queueing. These controls reuse the existing Blade/Livewire shell with no new palette, Alpine runtime or dependency. Authenticated layout and workflow checks cover 390/768/1024/1440px; live quality findings and generated-editor navigation are recorded in verification.md.
+
+
+## Original course materials — 26 October 2026
+
+The three new working drafts use original vector covers in BootKode's existing navy/teal/mint identity and the existing builder/assessment interface. Downloadable reference code, the fictional order CSV and the plain-text campaign worksheet are real files linked from the lessons. No interface palette, component system, animation or frontend dependency was added. The outline respects stored curriculum order.
+
+Long course titles now remain bounded in the existing toolbar at tablet widths, with status controls allowed to wrap. Twelve authenticated builder/width checks for the three new drafts pass at 390/768/1024/1440px.
