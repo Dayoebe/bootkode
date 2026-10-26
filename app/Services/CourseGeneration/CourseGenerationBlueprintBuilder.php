@@ -291,11 +291,13 @@ class CourseGenerationBlueprintBuilder
                 'title' => $payload->get('title') ?: $topic,
                 'subtitle' => $payload->get('subtitle') ?: $this->buildSubtitle($payload, $archetype),
                 'slug' => $payload->get('slug'),
-                'description' => $this->buildCourseDescription($payload, $goals),
+                'description' => $payload->get('description') ?: $this->buildCourseDescription($payload, $goals),
                 'difficulty_level' => $payload->get('skill_level'),
                 'estimated_duration_minutes' => $estimatedDuration,
                 'target_audience' => $payload->get('target_audience') ?: $this->buildTargetAudience($payload, $archetype),
-                'learning_outcomes' => $payload->get('learning_outcomes') ?: $this->buildLearningOutcomes($payload, $goals),
+                'learning_outcomes' => $payload->get('learning_outcomes_were_supplied')
+                    ? $payload->get('learning_outcomes', [])
+                    : $this->buildLearningOutcomes($payload, $goals),
                 'prerequisites' => $payload->get('prerequisites') ?: $this->buildPrerequisites($payload, $archetype),
                 'syllabus_overview' => $payload->get('syllabus_overview') ?: $this->buildSyllabusOverview($sections),
                 'faqs' => $payload->get('faqs') ?: ($payload->get('include_faqs') ? $this->buildFaqs($payload, $estimatedDuration) : []),
@@ -385,6 +387,7 @@ class CourseGenerationBlueprintBuilder
                 'description' => $section['description'] ?? 'This section moves the learner forward by focusing on ' . Str::lower($sectionGoal) . '.',
                 'lessons' => $lessons,
                 'assessment' => $section['assessment'] ?? [],
+                'project' => $section['project'] ?? [],
             ];
         }
 

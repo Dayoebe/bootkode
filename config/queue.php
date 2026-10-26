@@ -30,6 +30,16 @@ return [
 
     'connections' => [
 
+        // Isolated reservation window for bounded multi-stage course jobs.
+        'course-content' => [
+            'driver' => 'database',
+            'connection' => env('DB_QUEUE_CONNECTION'),
+            'table' => env('DB_QUEUE_TABLE', 'jobs'),
+            'queue' => 'course-content',
+            'retry_after' => 960,
+            'after_commit' => true,
+        ],
+
         'sync' => [
             'driver' => 'sync',
         ],

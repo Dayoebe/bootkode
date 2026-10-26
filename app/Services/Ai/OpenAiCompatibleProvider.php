@@ -26,16 +26,21 @@ class OpenAiCompatibleProvider implements AiProvider
         }
 
         try {
+            $payload = [
+                'model' => $this->configuration['model'],
+                'messages' => $messages,
+                'temperature' => $options['temperature'] ?? 0.3,
+                'max_tokens' => $options['max_tokens'] ?? 900,
+            ];
+            if (isset($options['response_format'])) {
+                $payload['response_format'] = $options['response_format'];
+            }
+
             $response = Http::withToken($this->configuration['key'])
                 ->acceptJson()
                 ->timeout(max(1, (int) config('bootkode_ai.timeout', 30)))
                 ->retry(max(0, (int) config('bootkode_ai.retries', 1)), 250, throw: false)
-                ->post(rtrim($this->configuration['base_url'], '/').'/chat/completions', [
-                    'model' => $this->configuration['model'],
-                    'messages' => $messages,
-                    'temperature' => $options['temperature'] ?? 0.3,
-                    'max_tokens' => $options['max_tokens'] ?? 900,
-                ]);
+                ->post(rtrim($this->configuration['base_url'], '/').'/chat/completions', $payload);
         } catch (ConnectionException) {
             throw new AiProviderException('The AI provider could not be reached. Please try again later.', 'unavailable');
         }

@@ -17,6 +17,7 @@ class CourseGenerationPayload
             'topic' => self::cleanString($attributes['topic'] ?? ''),
             'title' => self::nullableString($attributes['title'] ?? null),
             'subtitle' => self::nullableString($attributes['subtitle'] ?? null),
+            'description' => self::nullableString($attributes['description'] ?? null),
             'slug' => self::nullableString($attributes['slug'] ?? null),
             'category' => self::normalizeReference(
                 $attributes['category']
@@ -53,6 +54,7 @@ class CourseGenerationPayload
                 ? (int) $attributes['estimated_duration_minutes']
                 : null,
             'learning_outcomes' => self::normalizeStringList($attributes['learning_outcomes'] ?? []),
+            'learning_outcomes_were_supplied' => array_key_exists('learning_outcomes', $attributes),
             'prerequisites' => self::normalizeStringList($attributes['prerequisites'] ?? []),
             'materials_included' => self::normalizeStringList($attributes['materials_included'] ?? []),
             'tags' => self::normalizeStringList($attributes['tags'] ?? []),
@@ -262,24 +264,39 @@ class CourseGenerationPayload
 
             $assessment = [];
             if (is_array($section['assessment'] ?? null)) {
-                $assessment = array_filter([
-                    'title' => self::nullableString($section['assessment']['title'] ?? null),
-                    'description' => self::nullableString($section['assessment']['description'] ?? null),
-                    'type' => self::nullableString($section['assessment']['type'] ?? null),
-                    'pass_percentage' => isset($section['assessment']['pass_percentage']) ? (int) $section['assessment']['pass_percentage'] : null,
-                    'estimated_duration_minutes' => isset($section['assessment']['estimated_duration_minutes']) ? (int) $section['assessment']['estimated_duration_minutes'] : null,
-                    'questions' => is_array($section['assessment']['questions'] ?? null) ? $section['assessment']['questions'] : [],
-                ], fn (mixed $value) => !is_null($value));
+                $assessment = self::normalizeAssessment($section['assessment']);
             }
+
+            $project = is_array($section['project'] ?? null) ? self::normalizeAssessment($section['project']) : [];
 
             $normalized[] = array_filter([
                 'title' => self::nullableString($section['title'] ?? null),
                 'description' => self::nullableString($section['description'] ?? null),
                 'lessons' => $lessons,
                 'assessment' => $assessment,
+                'project' => $project,
             ], fn (mixed $value) => !is_null($value));
         }
 
         return $normalized;
+    }
+
+    protected static function normalizeAssessment(array $assessment): array
+    {
+        return array_filter([
+            'title' => self::nullableString($assessment['title'] ?? null),
+            'description' => self::nullableString($assessment['description'] ?? null),
+            'type' => self::nullableString($assessment['type'] ?? null),
+            'pass_percentage' => isset($assessment['pass_percentage']) ? (int) $assessment['pass_percentage'] : null,
+            'estimated_duration_minutes' => isset($assessment['estimated_duration_minutes']) ? (int) $assessment['estimated_duration_minutes'] : null,
+            'questions' => is_array($assessment['questions'] ?? null) ? $assessment['questions'] : null,
+            'instructions' => self::nullableString($assessment['instructions'] ?? null),
+            'evaluation_criteria' => self::nullableString($assessment['evaluation_criteria'] ?? null),
+            'project_type' => self::nullableString($assessment['project_type'] ?? null),
+            'deliverables' => self::normalizeStringList($assessment['deliverables'] ?? []),
+            'required_skills' => self::normalizeStringList($assessment['required_skills'] ?? []),
+            'resources' => self::normalizeStringList($assessment['resources'] ?? []),
+            'max_score' => isset($assessment['max_score']) ? (int) $assessment['max_score'] : null,
+        ], fn (mixed $value) => ! is_null($value) && $value !== [] && $value !== '');
     }
 }
