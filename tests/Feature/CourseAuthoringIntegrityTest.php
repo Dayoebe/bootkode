@@ -71,6 +71,42 @@ class CourseAuthoringIntegrityTest extends TestCase
         Livewire::test(\App\Livewire\CourseManagement\CoursePreview::class, ['course' => $course])->assertForbidden();
     }
 
+    public function test_assessment_links_open_the_correct_lesson_in_the_course_builder(): void
+    {
+        [$owner, $course, $lesson] = $this->fixture();
+        $this->actingAs($owner)
+            ->get(route('lesson.assessments.manage', ['lessonId' => $lesson->id]))
+            ->assertRedirect(route('course-builder', [
+                'course' => $course->id, 'lesson' => $lesson->id, 'tab' => 'assessment',
+            ]));
+
+        Livewire::test(\App\Livewire\CourseManagement\CourseBuilder\LessonEditor::class, ['lessonId' => $lesson->id])
+            ->assertSee('Lesson assessments')
+            ->assertDontSee('Open assessment authoring workspace')
+            ->assertDontSee('Lesson assessment authoring');
+    }
+
+    public function test_assessment_link_redirect_preserves_authorization(): void
+    {
+        [, , $lesson] = $this->fixture();
+        $url = route('lesson.assessments.manage', ['lessonId' => $lesson->id]);
+        $this->get($url)->assertRedirect(route('login'));
+        $this->actingAs(User::factory()->create())->get($url)->assertForbidden();
+        $this->actingAs(User::factory()->create(['role' => 'instructor']))->get($url)->assertForbidden();
+    }
+
+    public function test_embedded_assessment_manager_exposes_create_edit_and_question_views(): void
+    {
+        [$owner, , $lesson, $assessment] = $this->fixture();
+        Livewire::actingAs($owner)
+            ->test(\App\Livewire\CourseManagement\CourseBuilder\AssessmentManager::class, ['lessonId' => $lesson->id])
+            ->call('toggleCreateForm')->assertSee('Create assessment')
+            ->call('backToList')->assertSee('Quiz fixture')
+            ->call('editAssessment', $assessment->id)->assertSee('Edit assessment')
+            ->call('backToList')
+            ->call('manageQuestions', $assessment->id)->assertSee('Quiz questions');
+    }
+
     public function test_owner_access_and_cross_course_lesson_resolution_are_enforced(): void
     {
         [$owner, $course, $lesson] = $this->fixture();

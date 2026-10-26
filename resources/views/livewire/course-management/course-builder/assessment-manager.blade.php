@@ -1,6 +1,7 @@
-<div data-move-list="author-assessments-{{ $lessonId }}" class="space-y-6 {{ $standalone ? 'mx-auto max-w-6xl p-4 sm:p-6' : '' }}">
-    @if($standalone)<x-ui.page-header title="Lesson assessment authoring" :description="$lesson->title" />@else<h2 class="text-xl font-semibold text-content">Lesson assessment authoring</h2><a class="bk-button bk-button-secondary" href="{{ route('lesson.assessments.manage', ['lessonId' => $lessonId]) }}">Open assessment authoring workspace</a>@endif
+<div data-move-list="author-assessments-{{ $lessonId }}" class="space-y-6">
+    <h2 class="text-xl font-semibold text-content">Lesson assessments</h2>
     <x-ui.flash />
+    <div wire:key="assessment-view-{{ $lessonId }}-{{ $activeView }}">
     @if($activeView !== 'list')<x-secondary-button wire:click="backToList">Back to lesson assessments</x-secondary-button>@endif
     @if(in_array($activeView, ['create', 'edit']))
         <x-ui.panel :title="$activeView === 'edit' ? 'Edit assessment' : 'Create assessment'">
@@ -33,4 +34,5 @@
             <x-ui.panel :title="$assessment['title']"><p class="break-words text-content-muted">{{ strip_tags($assessment['description'] ?? '') }}</p><p class="my-3 text-sm text-content-muted">{{ ucfirst($assessment['type']) }} · {{ count($assessment['questions']) }} questions or criteria · {{ $assessment['max_attempts'] ?? 'Unlimited' }} attempts</p><div class="flex flex-wrap gap-2"><x-secondary-button wire:click="manageQuestions({{ $assessment['id'] }})">Manage questions</x-secondary-button><x-secondary-button wire:click="editAssessment({{ $assessment['id'] }})">Edit assessment</x-secondary-button><x-secondary-button wire:click="duplicateAssessment({{ $assessment['id'] }})">Duplicate assessment</x-secondary-button><x-secondary-button data-move-key="{{ $assessment['id'] }}" data-move-direction="up" wire:click="moveAssessment({{ $assessment['id'] }}, -1)" :disabled="$index === 0">Move assessment {{ $index + 1 }} up</x-secondary-button><x-secondary-button data-move-key="{{ $assessment['id'] }}" data-move-direction="down" wire:click="moveAssessment({{ $assessment['id'] }}, 1)" :disabled="$index === count($assessments) - 1">Move assessment {{ $index + 1 }} down</x-secondary-button><x-danger-button wire:click="deleteAssessment({{ $assessment['id'] }})" wire:confirm="Delete this assessment? Recorded learning history prevents deletion.">Delete assessment</x-danger-button></div></x-ui.panel>
         @empty<x-ui.empty-state title="No assessments yet" description="Create an assessment, then add complete questions or criteria." />@endforelse
     @endif
+    </div>
 </div>

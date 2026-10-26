@@ -74,6 +74,11 @@ window.lessonEditorManager = function () {
         beforeUnloadHandler: null,
 
         init() {
+            const requestedTab = new URLSearchParams(window.location.search).get('tab');
+            if (['content', 'media', 'settings', 'assessment'].includes(requestedTab)) {
+                this.activeTab = requestedTab;
+            }
+            this.syncTabLocation();
             this.setupEventListeners();
             this.$nextTick(() => {
                 this.initializeTrixEditor();
@@ -141,9 +146,21 @@ window.lessonEditorManager = function () {
         },
 
         switchTab(tab) {
-            if (!this.isSaving) {
+            if (!this.isSaving && ['content', 'media', 'settings', 'assessment'].includes(tab)) {
                 this.activeTab = tab;
+                this.syncTabLocation();
             }
+        },
+
+        syncTabLocation() {
+            const url = new URL(window.location.href);
+            url.searchParams.set('lesson', this.$wire.lessonId);
+            if (this.activeTab === 'content') {
+                url.searchParams.delete('tab');
+            } else {
+                url.searchParams.set('tab', this.activeTab);
+            }
+            window.history.replaceState(window.history.state, '', url);
         },
 
         markFieldChanged(field) {

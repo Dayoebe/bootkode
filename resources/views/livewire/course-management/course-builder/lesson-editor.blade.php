@@ -70,26 +70,26 @@
         <div class="bg-themed-secondary rounded-lg shadow-sm border border-themed-primary transition-colors duration-300">
             <div class="border-b border-themed-primary">
                 <nav class="-mb-px flex space-x-4 px-4 overflow-x-auto">
-                    <button @click="switchTab('content')" :disabled="isSaving"
+                    <button aria-label="Content" @click="switchTab('content')" :disabled="isSaving"
                         :class="{ 'border-blue-500 text-blue-600 dark:text-blue-400': activeTab === 'content', 'border-transparent text-themed-secondary hover:text-themed-primary': activeTab !== 'content' }"
                         class="whitespace-nowrap py-3 px-1 border-b-2 font-medium text-sm flex items-center gap-2 transition-colors duration-300 disabled:opacity-50 relative">
                         <i aria-hidden="true" class="fas fa-align-left"></i>
                         <span class="hidden sm:inline">Content</span>
                         <div x-show="hasUnsavedContent && (titleChanged || descriptionChanged || contentChanged)" class="w-2 h-2 bg-orange-500 rounded-full"></div>
                     </button>
-                    <button @click="switchTab('media')" :disabled="isSaving"
+                    <button aria-label="Media" @click="switchTab('media')" :disabled="isSaving"
                         :class="{ 'border-pink-500 text-pink-600 dark:text-pink-400': activeTab === 'media', 'border-transparent text-themed-secondary hover:text-themed-primary': activeTab !== 'media' }"
                         class="whitespace-nowrap py-3 px-1 border-b-2 font-medium text-sm flex items-center gap-2 transition-colors duration-300 disabled:opacity-50 relative">
                         <i aria-hidden="true" class="fas fa-photo-video"></i>
                         <span class="hidden sm:inline">Media</span>
                     </button>
-                    <button @click="switchTab('settings')" :disabled="isSaving"
+                    <button aria-label="Settings" @click="switchTab('settings')" :disabled="isSaving"
                         :class="{ 'border-green-500 text-green-600 dark:text-green-400': activeTab === 'settings', 'border-transparent text-themed-secondary hover:text-themed-primary': activeTab !== 'settings' }"
                         class="whitespace-nowrap py-3 px-1 border-b-2 font-medium text-sm flex items-center gap-2 transition-colors duration-300 disabled:opacity-50 relative">
                         <i aria-hidden="true" class="fas fa-cog"></i>
                         <span class="hidden sm:inline">Settings</span>
                     </button>
-                    <button @click="switchTab('assessment')" :disabled="isSaving"
+                    <button aria-label="Assessment" @click="switchTab('assessment')" :disabled="isSaving"
                         :class="{ 'border-purple-500 text-purple-600 dark:text-purple-400': activeTab === 'assessment', 'border-transparent text-themed-secondary hover:text-themed-primary': activeTab !== 'assessment' }"
                         class="whitespace-nowrap py-3 px-1 border-b-2 font-medium text-sm flex items-center gap-2 transition-colors duration-300 disabled:opacity-50 relative">
                         <i aria-hidden="true" class="fas fa-clipboard-check"></i>
@@ -472,7 +472,7 @@
             </div>
 
             <!-- Assessment Tab -->
-            <div x-show="activeTab === 'assessment'" class="p-4">
+            <div x-show="activeTab === 'assessment'" role="region" aria-label="Lesson assessments" class="p-4">
                 @livewire('course-management.course-builder.assessment-manager', ['lessonId' => $lessonId])
             </div>
         </div>

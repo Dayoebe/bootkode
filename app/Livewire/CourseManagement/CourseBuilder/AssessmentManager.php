@@ -7,7 +7,6 @@ use App\Models\Learning\Lesson;
 use Livewire\Component;
 use Illuminate\Support\Str;
 
-#[\Livewire\Attributes\Layout('layouts.dashboard', ['title' => 'Lesson assessment authoring'])]
 class AssessmentManager extends Component
 {
     use \App\Livewire\Concerns\AuthorizesCourseAuthoring;
@@ -20,8 +19,6 @@ class AssessmentManager extends Component
     public $assessments = [];
     #[\Livewire\Attributes\Locked]
     public $selectedAssessment = null;
-    #[\Livewire\Attributes\Locked]
-    public bool $standalone = false;
     public $activeView = 'list'; // list, create, edit, questions
     
     // Assessment creation form
@@ -58,10 +55,9 @@ class AssessmentManager extends Component
         'weight' => 'required|numeric|min:0.1|max:10',
     ];
 
-    public function mount($lessonId, bool $standalone = false)
+    public function mount($lessonId)
     {
         $this->lessonId = $lessonId;
-        $this->standalone = $standalone;
         $this->authorizeAuthoringContext();
         $this->lesson = Lesson::findOrFail($lessonId);
         $this->loadAssessments();
