@@ -34,6 +34,20 @@ class LearningNotificationDeliveryTest extends TestCase
 {
     use RefreshDatabase;
 
+    public function test_forged_request_host_cannot_authorize_an_external_notification_link(): void
+    {
+        $f = $this->fixture();
+        request()->headers->set('host', 'attacker.example.test');
+        try {
+            DB::transaction(fn () => app(\App\Services\PortalNotificationService::class)->record($f['learner'], 'forged-host',
+                ['title' => 'Untrusted destination', 'message' => 'An attacker-controlled host is not application authority.', 'action_url' => 'https://attacker.example.test/private'], 'assessment_review'));
+            $this->fail('A request host must not authorize a notification destination.');
+        } catch (\Symfony\Component\HttpKernel\Exception\HttpException $exception) {
+            $this->assertSame(422, $exception->getStatusCode());
+        }
+        $this->assertDatabaseCount('notifications', 0);
+    }
+
     protected function setUp(): void
     {
         parent::setUp();
@@ -202,6 +216,29 @@ class LearningNotificationDeliveryTest extends TestCase
         $f['course']->update(['is_published' => true]);
         $f['assessment']->update(['course_id' => null]);
         $this->assertFalse($service->eligible($f['learner'], $f['assessment']->fresh()));
+    }
+
+    public function test_cbt_reminders_require_takeable_questions_and_recheck_them_before_email(): void
+    {
+        $f = $this->fixture();
+        $service = app(CbtReminderService::class);
+        $f['question']->update(['correct_answers' => [0, 1]]);
+        $this->assertFalse($service->deliver($f['learner'], $f['assessment']));
+        $f['question']->update(['correct_answers' => [0], 'options' => []]);
+        $this->assertFalse($service->deliver($f['learner'], $f['assessment']));
+        $f['question']->update(['options' => ['First', 'Second']]);
+        $f['assessment']->update(['pass_percentage' => 0]);
+        $this->assertFalse($service->deliver($f['learner'], $f['assessment']));
+        $this->assertDatabaseCount('notifications', 0);
+        $f['assessment']->update(['pass_percentage' => 70]);
+        config(['mail.default' => 'smtp']);
+        $f['learner']->update(['notification_preferences' => ['email_assignment_reminders' => true]]);
+        $this->assertTrue($service->deliver($f['learner'], $f['assessment']));
+        $notice = $this->notice($f['learner'], 'cbt_reminder');
+        $f['question']->update(['correct_answers' => [0, 1]]);
+        (new SendPortalNotificationEmail($notice->id))->handle();
+        $this->assertSame('cancelled', $notice->fresh()->data['mail_state']);
+        Notification::assertNothingSent();
     }
 
     public function test_cbt_timing_preferences_deadline_changes_and_active_attempts_are_respected(): void

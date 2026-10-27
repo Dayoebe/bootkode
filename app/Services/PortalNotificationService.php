@@ -75,7 +75,12 @@ class PortalNotificationService
             throw new \LogicException('Record portal notifications inside their source transaction.');
         }
         $target = parse_url($payload['action_url'] ?? '');
-        $hosts = array_filter([request()->getHost(), parse_url((string) config('app.url'), PHP_URL_HOST)]);
+        $configuredHost = parse_url((string) config('app.url'), PHP_URL_HOST);
+        $hosts = array_filter([$configuredHost]);
+        $loopbackHosts = ['localhost', '127.0.0.1', '::1'];
+        if (app()->environment(['local', 'testing']) && in_array($configuredHost, $loopbackHosts, true)) {
+            $hosts = array_merge($hosts, $loopbackHosts);
+        }
         abort_unless(is_array($target) && in_array($target['scheme'] ?? '', ['http', 'https'], true) && in_array($target['host'] ?? '', $hosts, true), 422, 'Use an application notification link.');
         $payload['title'] = strip_tags((string) $payload['title']);
         $payload['message'] = strip_tags((string) $payload['message']);

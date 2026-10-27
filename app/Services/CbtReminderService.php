@@ -42,6 +42,14 @@ class CbtReminderService
         if (! $enrolled || ! $assessment->questions()->exists() || $assessment->questions()->whereNotIn('question_type', ['multiple_choice', 'true_false'])->exists()) {
             return false;
         }
+        if (! is_numeric($assessment->pass_percentage) || $assessment->pass_percentage < 1 || $assessment->pass_percentage > 100) {
+            return false;
+        }
+        foreach (app(CbtAttemptService::class)->questions($assessment) as $question) {
+            if ($question['allows_multiple'] || empty($question['display_to_original_map'])) {
+                return false;
+            }
+        }
         if (! $assessment->canUserTakeAssessment($user->id)[0]) {
             return false;
         }
