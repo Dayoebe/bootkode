@@ -67,7 +67,7 @@ jobs:
       - name: Install locked dependencies
         run: |
           cp .env.example .env.testing
-          composer install --prefer-dist --no-interaction --no-progress
+          composer install --no-interaction --no-progress
           npm ci --ignore-scripts
           php artisan key:generate --env=testing
       - name: Check dependency metadata and PHP syntax
