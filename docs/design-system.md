@@ -136,3 +136,10 @@ The participation page owns its h1, explains optional private-course sharing and
 Community reply and saved-job-alert forms reuse semantic tokens, existing labels/errors/buttons and the shared trapped dialog. Reply text has a visible border/focus ring, character bounds and associated errors. Saved alert cards wrap controls, distinguish active/paused status in text and retain focus after a frequency change. Search sort controls use explicit ascending/descending values and accessible names; view controls expose their pressed state. Private text is escaped and generic portal notices exclude its body.
 
 The existing preference page exposes the same two opt-ins and truthful unavailable email/test-delivery copy. Header action groups wrap on small screens, quiet-hour inputs have associated validation errors and the real native form retains current choices. This targeted extension retains older preference-page interior styles; it does not certify legacy push/SMS delivery or every theme. Actual responsive and keyboard evidence is in verification.md.
+
+
+## Learning notices and confirmed preferences — 27 October 2026
+
+Recorded milestones use the existing rewards panel/grid, bounded pagination, escaped names/descriptions and the owning account's data. New email/course-review preferences reuse native labelled controls, existing buttons/errors and the current semantic tokens. Written-review, correction and reconsideration textareas now have visible borders, padding and focus rings. The rewards page renders its local feedback block only when present, preventing a duplicate shell welcome message.
+
+Unsubscribe confirmation reuses the public app layout, page header, panel and native POST form, with no CDN Tailwind runtime or extra component system. The existing course-review accordion has a named expanded-state control and pauses polling while the form is open; submitted comments use the actual saved field. Browser evidence covers native forms, actual results/history and four required widths. Legacy public assets/interiors, other themes and screen readers retain their documented acceptance limits.

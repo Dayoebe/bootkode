@@ -4,7 +4,7 @@ Audit started 20 October 2026. This is a large existing product: 273 baseline ro
 
 ## Current status
 
-The current consolidated backlog is in [refactor-roadmap.md](refactor-roadmap.md). Course Content Studio and Groq connectivity have later recorded implementation/live acceptance, Q&A/peer participation is implemented for new versioned topics, and community replies/saved job alerts now have actual private portal delivery with optional queued email. Dated findings below retain audit history; they do not override those later deliveries. No whole-product or production certification is implied.
+The current consolidated backlog is in [refactor-roadmap.md](refactor-roadmap.md). Course Content Studio and Groq connectivity have later recorded implementation/live acceptance, Q&A/peer participation is implemented for new versioned topics, and community replies/saved job alerts now have actual private portal delivery with optional queued email. Learning result/review/reminder/achievement delivery and clean-checkout CI are implemented; the current npm audit is clear. Dated findings below retain audit history; they do not override those later deliveries. No whole-product or production certification is implied.
 
 ## Baseline and safety
 
@@ -257,3 +257,14 @@ The existing JobAlert model had no backing migration, while community moderation
 Email is opt-in and distinct from portal delivery. Current source/account/preferences are rechecked by the queued job; quiet hours/weekend settings defer transport. Array/log delivery is unavailable, provider failures are generic and a successful transport call is not called mailbox delivery. Central preference saving now merges locked current keys and the native frequency form validates correctly. Missing legacy test-notification classes have been replaced with an explicit unavailable response. See notification-delivery.md for operator and forward-migration details.
 
 The additive migration was tested in dedicated databases before backed-up local application; existing working-record fingerprints and all original migration rows were preserved. Exact automated/browser evidence is in verification.md. Scheduled job delivery remains disabled. Other review/reminder/achievement stubs, live mail/scheduler acceptance, historical-data/account-lifecycle work, dependency advisories and other release gates remain open.
+
+
+## Learning delivery and reproducible installation — 27 October 2026
+
+The active CBT workflow uses Assessment and recorded attempts, while the broken reminder stub referenced the separate legacy CbtExam model. Delivery now derives recipients from actual enrollments, published/approved course scope, supported questions, stored deadlines, attempt eligibility and current preferences. Manual result finalization, reconsideration and correction create transactional private notices. Original assessment/credential/reward history stays authoritative. Durable learning receipts make replay safe after notification deletion.
+
+Course review reminders now use the correct model namespace and real completed enrollment/review state. Unsubscribe GETs are read-only confirmations; signed, expiring, record-bound POST confirmation keeps CSRF protection. Native review forms had a nonexistent review_text field and mutable review context; actual comments and scoped locked writes now work. Recorded achievements use real aggregate percentages/completions and appear only in owned history. See verification.md for automated/native-browser evidence and its limits.
+
+Real CI exposed 5,908 tracked vendor files and committed generated bootstrap manifests. That partial installation hid missing framework classes locally and failed package discovery in clean environments. Generated dependency/manifests were untracked with local files preserved, and normal locked installation now passes the application CI job. A compatible 6.x parser backport resolves the npm advisories. Six Composer advisories remain an unsuppressed release blocker.
+
+The read-only local historical inventory found zero references/files in the known public résumé/feedback/support attachment locations, zero submitted assessment sessions requiring snapshot review, zero unmatched submitted written answers and zero duplicate keyed lesson/quiz point-reward groups. Two active working accounts were preserved. This is current-snapshot inventory, not universal historical reconciliation or account archival. Real mail/scheduler/worker/provider/backup acceptance, other legacy families/themes/editors/assistive technology, unsupported product promises and editorial/legal decisions remain.

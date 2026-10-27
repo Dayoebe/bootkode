@@ -16,6 +16,8 @@ PHP 8.2+, Laravel 11.46.1, Livewire 3.6.4, Blade, Livewire-owned Alpine, Tailwin
 4. Run `npm run build`, then `php artisan serve`. For active frontend development use `npm run dev` in another terminal. No `public/hot` file should remain when testing a production build.
 5. Configure the queue worker and scheduler for the actual mail/newsletter/job workflows: `php artisan queue:work` and the normal Laravel scheduler. Test external services independently before live use.
 
+Installed Composer dependencies and bootstrap package/service manifests are generated local files and are not tracked. CI verifies installation from the lockfile; see [continuous integration](docs/continuous-integration.md).
+
 The recovered local database contains existing data. Preserve it. The new certificate compatibility migration adds fields required by the existing workflow and retains historical tokens, file paths and statuses.
 
 ## Verification
@@ -51,6 +53,8 @@ The session-clock compatibility migration removes an implicit MariaDB timestamp 
 
 Super/academy administrators can save retained private replies; requesters read them under My Feedback. Members can save real job-search criteria, check new public matches, change frequency and pause/remove owned alerts. Native portal notifications are immediate. Optional email defaults off and follows current opt-ins, source availability and quiet hours; transport acceptance is distinct from delivery. The additive notification migration is backed up and applied locally. Scheduled alerts remain disabled until deployment-specific worker/mail/scheduler acceptance. See [delivery operations and limits](docs/notification-delivery.md).
 
+Written-result finalization, reconsideration requests/decisions and corrections now create private portal notices. Eligible enrolled CBT deadline reminders and completed-course review reminders have real delivery receipts. Recorded milestones appear in owned rewards history. Email uses current opt-ins and quiet hours; scheduled learning reminders remain off by default. Signed unsubscribe links require confirmation and CSRF-protected POST. See [learning delivery rules](docs/notification-delivery.md#learning-events--27-october-2026).
+
 ## Architecture and design
 
 - [Product audit and real feature inventory](docs/product-audit.md)
@@ -59,6 +63,7 @@ Super/academy administrators can save retained private replies; requesters read 
 - [Implementation roadmap](docs/refactor-roadmap.md)
 - [Route inventory](docs/route-inventory.md)
 - [Verification, known limits and release evidence](docs/verification.md)
+- [CI and dependency release gates](docs/continuous-integration.md)
 - [AI setup and privacy](docs/bootkode-ai.md)
 - [Course content import and generation](docs/course-content-system.md)
 - [Community replies, saved job alerts and email operations](docs/notification-delivery.md)

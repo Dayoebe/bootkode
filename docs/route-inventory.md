@@ -274,8 +274,10 @@ Generated from `php artisan route:list --json` on 27 October 2026 after the Q&A 
 | POST | reset-password | password.store | App\Http\Controllers\Auth\PasswordController@resetPassword | web, Illuminate\Auth\Middleware\RedirectIfAuthenticated |
 | GET / HEAD | reset-password/{token} | password.reset | App\Http\Controllers\Auth\PasswordController@showResetPasswordForm | web, Illuminate\Auth\Middleware\RedirectIfAuthenticated |
 | GET / HEAD | resume/builder | resume.builder | App\Livewire\Career\ResumeBuilder | web, Illuminate\Auth\Middleware\Authenticate |
-| GET / HEAD | review-reminder/unsubscribe/{reminder} | review-reminder.unsubscribe | Closure | web |
-| GET / HEAD | review-reminders/unsubscribe-all | review-reminders.unsubscribe-all | Closure | web, Illuminate\Auth\Middleware\Authenticate |
+| GET / HEAD | review-reminder/unsubscribe/{reminder} | review-reminder.unsubscribe | App\Http\Controllers\ReviewReminderSubscriptionController@show | web |
+| POST | review-reminder/unsubscribe/{reminder} | review-reminder.unsubscribe.confirm | App\Http\Controllers\ReviewReminderSubscriptionController@unsubscribe | web |
+| GET / HEAD | review-reminders/unsubscribe-all | review-reminders.unsubscribe-all | App\Http\Controllers\ReviewReminderSubscriptionController@showAll | web, Illuminate\Auth\Middleware\Authenticate |
+| POST | review-reminders/unsubscribe-all | review-reminders.unsubscribe-all.confirm | App\Http\Controllers\ReviewReminderSubscriptionController@unsubscribeAll | web, Illuminate\Auth\Middleware\Authenticate |
 | GET / HEAD | sanctum/csrf-cookie | sanctum.csrf-cookie | Laravel\Sanctum\Http\Controllers\CsrfCookieController@show | web |
 | GET / HEAD | saved-resources | student.saved-resources | App\Livewire\StudentManagement\SavedResources | web, Illuminate\Auth\Middleware\Authenticate, Illuminate\Auth\Middleware\EnsureEmailIsVerified |
 | GET / HEAD | search/job | search.job | App\Livewire\Career\JobSearch | web, Illuminate\Auth\Middleware\Authenticate |
@@ -292,4 +294,9 @@ Generated from `php artisan route:list --json` on 27 October 2026 after the Q&A 
 | GET / HEAD | withdrawals | withdrawals.index | App\Livewire\Financial\WithdrawalManager | web, Illuminate\Auth\Middleware\Authenticate |
 | GET / HEAD | {slug} | page.show | App\Http\Controllers\PageController@show | web |
 
-Total: **287 routes**. This includes explicit role/owner/enrollment/participant checks inside services and Livewire components; menu visibility is never sufficient authorization. Only the Paystack webhook is CSRF-exempt, and it requires configured-key HMAC verification.
+Total: **289 routes**. This includes explicit role/owner/enrollment/participant checks inside services and Livewire components; menu visibility is never sufficient authorization. Only the Paystack webhook is CSRF-exempt, and it requires configured-key HMAC verification.
+
+
+## Learning reminder confirmation — 27 October 2026
+
+Current runtime inventory contains 289 routes. Existing GET review-reminder.unsubscribe and review-reminders.unsubscribe-all URLs now show read-only confirmation. Additive POST routes review-reminder.unsubscribe.confirm and review-reminders.unsubscribe-all.confirm perform the confirmed update. Per-course links require an expiring valid signature plus a record/expiry-bound HMAC; all-account confirmation requires the actual authenticated owner. Both POSTs retain normal CSRF protection. Existing assessment.reviews, cbt.viewer, cbt.exam.take, gamification.badges and notification.preferences contracts are reused. No new public learning-data API is introduced.

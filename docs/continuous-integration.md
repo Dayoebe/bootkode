@@ -1,0 +1,17 @@
+# Continuous integration
+
+.github/workflows/verify.yml runs on pushes, pull requests and manual dispatch. Actions are pinned to verified commit SHAs, repository permission is read-only, checkout credentials are not persisted and no production secrets are required.
+
+The application job uses PHP 8.4, Node 22 and an isolated MariaDB 10.11 service. Its account can access only bootkode_test. It installs Composer/npm lockfiles, creates an ephemeral testing key, checks dependency metadata/platform requirements and PHP syntax, builds assets, runs the guarded tests, compiles Blade and checks route caching. Mail/cache/session use array drivers and queues are synchronous. Neither delivery schedule is enabled. PHPUnit JUnit output is retained for seven days; no working database, private diagnostics or environment file is uploaded.
+
+The separate dependency release gate runs composer audit --locked and npm audit. Both audits run even when one fails, and their JSON reports are retained for seven days. No continue-on-error, advisory suppression, ignore policy or forced major update is used. An application-job pass does not override a failed dependency release gate.
+
+Initial real runs exposed 5,908 committed vendor files and generated bootstrap package/service manifests. The committed vendor snapshot lacked framework files required by its own installed metadata. Consequently composer install could accept the incomplete installed package and fail during Artisan package discovery. A first git-archive reproduction included the same tracked dependencies and was not a clean installation. After confirming the exact locked upstream revision, dependency files and bootstrap manifests were removed from Git tracking while local copies were retained. The existing ignore rules now apply. Normal locked dist installation is retained; the temporary source preference was removed. No vendor patch or framework version change is part of the final implementation.
+
+Fresh checkout installation and the application CI job now pass. The latest exact feature-commit result and local test/browser evidence are recorded in verification.md. Developer machines must still install dependencies with composer install and npm ci; vendor/node_modules are generated local state.
+
+The npm fix scopes @tailwindcss/typography's parser dependency to compatible postcss-selector-parser 6.1.5 or later in major 6. The upstream [advisory](https://github.com/postcss/postcss-selector-parser/security/advisories/GHSA-rj75-hqrm-r3gf) provides that backport. The lockfile deduplicates the parser and current npm audit reports zero findings. No audit fix --force, major framework change or suppression was used.
+
+Composer still reports six advisories across laravel/framework and firebase/php-jwt. A policy-preserving dry run cannot find a safe solution within Laravel 11 and the locked Socialite JWT requirement. The critical [TokenGuard advisory](https://github.com/laravel/framework/security/advisories/GHSA-f9x3-7vq9-cph6) lists fixes in later Laravel majors; current application auth uses the session guard, which does not make the package advisory disappear. A separately reviewed supported-framework/dependency migration remains a release requirement. Keep the release gate failing until the dependencies are actually resolved.
+
+CI provides automated regression evidence. It does not prove real mail/payment/OAuth providers, deployment workers, backup restoration, browser accessibility or editorial/legal readiness.

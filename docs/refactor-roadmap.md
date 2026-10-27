@@ -9,12 +9,15 @@ This summary supersedes remaining-work statements in the dated history below.
 | Implemented | Course Content Studio import/generation, migration, managed queue worker, existing live-provider acceptance, Groq connection checks and logging consolidation; see their dated verification evidence |
 | Implemented | Recorded lesson/structured assessments, private project/assignment files, formal manual-mark corrections/reconsideration and versioned Q&A/peer participation |
 | Implemented | Private community replies, real saved job alerts/portal match receipts, optional queued email with current preferences, quiet hours and retry states; scheduled delivery stays off until deployment acceptance |
-| Next implementation | Review/reconsideration, CBT reminder and achievement notification delivery; deployment-specific live mail and scheduled-worker acceptance |
-| Inspect before changing records | Historical public attachments, legacy attempts without complete snapshots, possible duplicate reward records and account archival/anonymization; use backups and explicit forward operations |
+| Implemented | Private assessment-result/reconsideration/correction notices, eligible CBT and course-review reminders, recorded-achievement delivery/history and durable learning receipts |
+| Implemented | Clean-checkout CI tests/builds, unsuppressed dependency release gates and the compatible npm parser security fix |
+| Integration acceptance | Deployment-specific live mail, asynchronous default-queue worker and scheduled delivery; both delivery schedule flags remain off |
+| Inventory verified locally | Checked historical attachment references/directories, unsupported submitted attempts and duplicate keyed lesson/quiz point rewards: zero affected rows/files in this working snapshot; repeat for other environments |
+| Product/data decisions | Account archival/anonymization and any future historical reconciliation still need retention rules, backups and explicit forward operations |
 | Unsupported product promises | Institution billing/white-label delivery, verified games/unsupported reward fulfillment and reviewed path generation; keep unavailable states truthful until backed by real implementations |
 | Remaining acceptance/release | Other legacy editor/theme/assistive-technology flows, dependency findings, deployment-specific provider/payment/OAuth/mail/worker/backup checks, and human editorial/legal/publication decisions |
 
-Q&A requires no migration. The notification phase adds one backed-up forward migration, now applied locally; neither phase publishes courses. Current evidence is in verification.md; historical counts and earlier environment outages are not current-state claims.
+Q&A requires no migration. The two notification phases add backed-up forward migrations, now applied locally; neither phase publishes courses. Current evidence is in verification.md; historical counts and earlier environment outages are not current-state claims.
 
 Work in independently verified commits. Preserve unrelated sidebar/profile edits and all existing commercial/learning records.
 
@@ -160,3 +163,12 @@ The current-state summary near the top supersedes older dated backlog statements
 Implemented owned native saved-alert forms, daily/weekly criteria, bounded public-job matching, durable replay receipts, real private community replies and atomic native portal notifications. Optional email defaults off, checks current source/preferences/account, respects quiet hours/weekends and records transport acceptance separately from delivery. Notification Preferences shares the same opt-ins, preserves concurrent unrelated values and saves valid quiet hours. Missing test-notification classes no longer produce false sent claims. See notification-delivery.md and verification.md for migration, browser and recovery evidence.
 
 Remaining delivery scope is review/reconsideration, CBT reminders and achievement stubs, plus actual deployment mail/scheduler/worker acceptance. Push/SMS remain unconnected. The scheduler flag remains false; no external message was sent. This supersedes older job-alert/community-reply unavailable entries without closing the other historical-data, dependency, provider, editorial, legal or broad-accessibility gates.
+
+
+## Learning notifications, CI and inventory — 27 October 2026
+
+Completed: transactional finalized-result/reconsideration/correction notices, enrolled eligible CBT reminders, real course-review reminders and confirmed unsubscribe, recorded-achievement notices/history and current-preference queued email checks. Durable receipts survive notice deletion. Native course-review writes now resolve actual owner/course, retain the real comment and stop the actual reminder. The local receipt migration is applied with original records/migration rows preserved. No schedule or external mail was activated.
+
+CI now installs dependencies from a clean checkout, tests/builds the application and separately enforces unsuppressed dependency audits. Untracking generated vendor/bootstrap manifests fixes the incomplete committed installation; local copies are retained. The compatible parser backport resolves the two npm findings. Six Composer advisories remain a release gate and require a separately reviewed dependency/framework migration.
+
+A read-only inventory found no known historical public attachment references/files, unsupported submitted assessment snapshots, unmatched submitted written answers or duplicate keyed lesson/quiz point-reward groups in the current working database. This closes inspection for this snapshot, not migration tooling or other environments. Account archival, unsupported product promises, remaining legacy notification families/theme/editor/assistive-technology acceptance, real provider/worker/backup checks and human editorial/legal/publication decisions remain.
