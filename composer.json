@@ -85,16 +85,12 @@
     },
     "config": {
         "optimize-autoloader": true,
-        "preferred-install": {
-            "laravel/framework": "source",
-            "*": "dist"
-        },
+        "preferred-install": "dist",
         "sort-packages": true,
         "allow-plugins": {
             "pestphp/pest-plugin": true,
             "php-http/discovery": true
-        },
-        "process-timeout": 600
+        }
     },
     "minimum-stability": "stable",
     "prefer-stable": true
