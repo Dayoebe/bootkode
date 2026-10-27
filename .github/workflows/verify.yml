@@ -64,12 +64,26 @@ jobs:
         with:
           node-version: '22'
           cache: npm
-      - name: Install locked dependencies
+      - name: Prepare isolated environment
         run: |
           cp .env.example .env.testing
-          composer install --no-interaction --no-progress
-          npm ci --ignore-scripts
-          php artisan key:generate --env=testing
+          mkdir -p storage/app/ci
+      - name: Install locked PHP dependencies
+        run: |
+          python3 - <<'PYTHON'
+          import subprocess, sys
+          result = subprocess.run(['composer', 'install', '--no-interaction', '--no-progress'], stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
+          print(result.stdout)
+          if result.returncode:
+              tail = '\n'.join(result.stdout.splitlines()[-18:])
+              message = tail.replace('%', '%25').replace('\r', '%0D').replace('\n', '%0A')
+              print('::error title=Composer installation failed::' + message)
+          sys.exit(result.returncode)
+          PYTHON
+      - name: Install locked JavaScript dependencies
+        run: npm ci --ignore-scripts
+      - name: Generate isolated testing key
+        run: php artisan key:generate --env=testing
       - name: Check dependency metadata and PHP syntax
         run: |
           composer validate --strict --no-check-publish
