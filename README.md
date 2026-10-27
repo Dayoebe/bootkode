@@ -47,6 +47,10 @@ Configured Q&A topics support saved distinct original responses and optional sha
 
 The session-clock compatibility migration removes an implicit MariaDB timestamp update rule. Back up the affected table before applying forward changes to an existing database; see the verification report for the local application and preservation evidence.
 
+## Community replies and saved alerts
+
+Super/academy administrators can save retained private replies; requesters read them under My Feedback. Members can save real job-search criteria, check new public matches, change frequency and pause/remove owned alerts. Native portal notifications are immediate. Optional email defaults off and follows current opt-ins, source availability and quiet hours; transport acceptance is distinct from delivery. The additive notification migration is backed up and applied locally. Scheduled alerts remain disabled until deployment-specific worker/mail/scheduler acceptance. See [delivery operations and limits](docs/notification-delivery.md).
+
 ## Architecture and design
 
 - [Product audit and real feature inventory](docs/product-audit.md)
@@ -57,6 +61,7 @@ The session-clock compatibility migration removes an implicit MariaDB timestamp 
 - [Verification, known limits and release evidence](docs/verification.md)
 - [AI setup and privacy](docs/bootkode-ai.md)
 - [Course content import and generation](docs/course-content-system.md)
+- [Community replies, saved job alerts and email operations](docs/notification-delivery.md)
 - [Contributor and coding-agent standard](AGENTS.md)
 
 Public course discovery is `/courses`; public course summaries are `/courses/{slug}`. Authenticated lesson routes remain protected by enrollment. Shared controls live in `resources/views/components`; tokens live in `resources/css/tokens.css` with existing theme variables in `app.css`. Keep static UI in Blade, interaction in Livewire, and financial/enrollment rules in existing services.

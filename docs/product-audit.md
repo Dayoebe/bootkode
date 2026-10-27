@@ -4,7 +4,7 @@ Audit started 20 October 2026. This is a large existing product: 273 baseline ro
 
 ## Current status
 
-The current consolidated backlog is in [refactor-roadmap.md](refactor-roadmap.md). Course Content Studio and Groq connectivity have later recorded implementation/live acceptance, and Q&A/peer participation is now implemented for new versioned topics. Dated findings below retain audit history; they do not override those later deliveries. No whole-product or production certification is implied.
+The current consolidated backlog is in [refactor-roadmap.md](refactor-roadmap.md). Course Content Studio and Groq connectivity have later recorded implementation/live acceptance, Q&A/peer participation is implemented for new versioned topics, and community replies/saved job alerts now have actual private portal delivery with optional queued email. Dated findings below retain audit history; they do not override those later deliveries. No whole-product or production certification is implied.
 
 ## Baseline and safety
 
@@ -248,3 +248,12 @@ The 137 extra storage/logs files were historical verification captures and a wor
 | Navbar displayed an already escaped ampersand | Plain-text title normalization with escaped output and a markup-injection regression check |
 
 This supersedes earlier Q&A/peer-participation backlog entries for newly configured versioned lesson topics. Older text-only attempts retain their original private behavior. No schema migration, new dependency, public forum, automatic file/code grading, working-record mutation or external notification delivery is introduced.
+
+
+## Notification delivery continuation — 27 October 2026
+
+The existing JobAlert model had no backing migration, while community moderation only reported replies unavailable. Both now persist real owned records: original staff replies with author/time, deterministic native portal notices, saved alert criteria and unique job-match receipts. Reply/source/notice and alert/receipt/clock changes are transactional; replay, rollback, current ownership/role, public visibility, explicit salary currency, hidden salaries, closed deadlines and stale preference checks have regression coverage.
+
+Email is opt-in and distinct from portal delivery. Current source/account/preferences are rechecked by the queued job; quiet hours/weekend settings defer transport. Array/log delivery is unavailable, provider failures are generic and a successful transport call is not called mailbox delivery. Central preference saving now merges locked current keys and the native frequency form validates correctly. Missing legacy test-notification classes have been replaced with an explicit unavailable response. See notification-delivery.md for operator and forward-migration details.
+
+The additive migration was tested in dedicated databases before backed-up local application; existing working-record fingerprints and all original migration rows were preserved. Exact automated/browser evidence is in verification.md. Scheduled job delivery remains disabled. Other review/reminder/achievement stubs, live mail/scheduler acceptance, historical-data/account-lifecycle work, dependency advisories and other release gates remain open.
