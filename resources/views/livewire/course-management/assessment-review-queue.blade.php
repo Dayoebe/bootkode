@@ -35,7 +35,7 @@
                     @continue(in_array($question['question_type'], ['multiple_choice', 'true_false', ...\App\Services\StructuredQuestionService::TYPES]) || !$answer)
                     <section id="mark-section-{{ $answer->id }}" tabindex="-1" wire:key="mark-{{ $answer->id }}" class="space-y-3 rounded-lg border border-line p-4">
                         <h3 class="break-words font-semibold text-content">{{ strip_tags($question['question_text']) }}</h3>
-                        <p class="whitespace-pre-wrap break-words text-content">{{ $answer->answer ?? 'No written response.' }}</p>
+                        <p class="whitespace-pre-wrap break-words text-content">{{ ($question['question_type'] === 'qna_topic') ? app(\App\Services\QnaResponseService::class)->display($answer->answer, $answer->exam_data['qna_rules'] ?? null) : ($answer->answer ?? 'No written response.') }}</p>
                         @include('livewire.cbt.partials.submitted-files', ['files' => app(\App\Services\AssessmentSubmissionService::class)->projectedFiles($review, $answer->question_id)])
                         @php($originalRules = $review->metadata['grading'][$question['id']]['submission_rules'] ?? [])
                         @if($originalRules['enabled'] ?? false)
@@ -48,7 +48,7 @@
                         @foreach(['sample_answer' => 'Private sample answer', 'grading_notes' => 'Private grading notes'] as $field => $label)
                             @if(is_string($criteria[$field] ?? null) && trim($criteria[$field]) !== '')<details class="text-sm text-content-muted"><summary class="cursor-pointer py-3">{{ $label }}</summary><p class="whitespace-pre-wrap break-words">{{ strip_tags($criteria[$field]) }}</p></details>@endif
                         @endforeach
-                        @foreach(['rubric_criteria' => 'Private grading rubric', 'rubric_levels' => 'Private grading levels'] as $field => $label)
+                        @foreach(['rubric_criteria' => 'Private grading rubric', 'rubric_levels' => 'Private grading levels', 'evaluation_criteria' => 'Private Q&A evaluation criteria'] as $field => $label)
                             @php($rows = collect(is_array($criteria[$field] ?? null) ? $criteria[$field] : [])->filter(fn ($row) => is_array($row) && is_string($row['name'] ?? null)))
                             @if($rows->isNotEmpty())
                                 <details class="text-sm text-content-muted">

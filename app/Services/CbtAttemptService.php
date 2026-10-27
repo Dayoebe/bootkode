@@ -40,6 +40,9 @@ class CbtAttemptService
             if (!in_array($question['question_type'], ['multiple_choice', 'true_false', ...StructuredQuestionService::TYPES], true)) {
                 $safe['options'] = []; $safe['display_to_original_map'] = []; $safe['allows_multiple'] = false;
                 $grading = $session->metadata['grading'][$question['id']] ?? [];
+                if (isset($grading['qna_rules'])) {
+                    $safe['discussion'] = $grading['qna_rules']; $safe['instructions'] = $grading['explanation'] ?? '';
+                }
                 if (isset($grading['submission_rules'])) {
                     $safe['submission'] = $grading['submission_rules'];
                     if ($safe['submission']['enabled']) $safe['submission']['max_kb'] = min($safe['submission']['max_kb'], app(AssessmentSubmissionService::class)->serverLimitKb());
@@ -67,6 +70,9 @@ class CbtAttemptService
                 $public = array_merge($question->only(['id', 'question_text', 'question_type', 'points', 'time_limit']),
                     ['options' => [], 'display_to_original_map' => [], 'was_shuffled' => false, 'allows_multiple' => false]);
                 $grading[$question->id]['criteria'] = app(StructuredQuestionService::class)->array($question->options);
+                if ($question->question_type === 'qna_topic' && ($rules = app(QnaResponseService::class)->definition($question))) {
+                    $grading[$question->id]['qna_rules'] = $rules; $public['discussion'] = $rules; $public['instructions'] = $question->explanation ?? '';
+                }
                 if (in_array($question->question_type, AssessmentSubmissionService::TYPES, true)) {
                     $definition = app(AssessmentSubmissionService::class)->definition($question);
                     $grading[$question->id] = array_merge($grading[$question->id], $definition);
@@ -142,7 +148,10 @@ class CbtAttemptService
     private function validateAnswer(array $question, $value, bool $allowWritten): void
     {
         if ($value === null || $value === '') return;
-        if (in_array($question['question_type'], StructuredQuestionService::TYPES, true)) {
+        if ($question['question_type'] === 'qna_topic' && isset($question['discussion'])) {
+            abort_unless($allowWritten, 422);
+            app(QnaResponseService::class)->validate($question['discussion'], $value);
+        } elseif (in_array($question['question_type'], StructuredQuestionService::TYPES, true)) {
             abort_unless($allowWritten, 422);
             app(StructuredQuestionService::class)->validate($question, $value);
         } elseif (in_array($question['question_type'], ['multiple_choice', 'true_false'], true)) {
@@ -199,10 +208,15 @@ class CbtAttemptService
                 $grading = $session->metadata['grading'][$question->id] ?? $question->only(['correct_answers', 'points', 'question_type', 'explanation']);
                 $files = $session->metadata['submission_files'][$question->id] ?? [];
                 app(AssessmentSubmissionService::class)->validateResponse($grading, $value, $files, true, $expired);
+                if (isset($grading['qna_rules'])) {
+                    app(QnaResponseService::class)->validate($grading['qna_rules'], $value, true, $expired);
+                    $value = array_values(array_filter($value ?? [], fn ($text) => trim($text) !== '')) ?: null;
+                }
                 $structured = in_array($snapshot['question_type'], StructuredQuestionService::TYPES, true);
                 $manual = !in_array($snapshot['question_type'], ['multiple_choice', 'true_false', ...StructuredQuestionService::TYPES], true);
                 if ($value !== null && $value !== '' && $value !== []) {
-                    if ($structured) $value = json_encode(app(StructuredQuestionService::class)->mapAnswer($snapshot, $grading, $value));
+                    if (isset($grading['qna_rules'])) $value = json_encode($value, JSON_THROW_ON_ERROR | JSON_UNESCAPED_UNICODE);
+                    elseif ($structured) $value = json_encode(app(StructuredQuestionService::class)->mapAnswer($snapshot, $grading, $value));
                     elseif (!$manual) {
                         $mapped = collect(is_array($value) ? $value : [$value])->map(fn ($index) => (int) $snapshot['display_to_original_map'][(int) $index])->all();
                         $value = count($mapped) === 1 ? (string) $mapped[0] : json_encode($mapped);
@@ -214,7 +228,8 @@ class CbtAttemptService
                 }
                 $answer = StudentAnswer::create(['user_id' => $user->id, 'assessment_id' => $assessment->id, 'question_id' => $question->id,
                     'attempt_number' => $session->metadata['attempt'], 'answer' => $value, 'time_spent_seconds' => min($elapsed, $session->metadata['duration_seconds']), 'submitted_at' => now(),
-                    'question_order' => $ids, 'exam_data' => ['was_shuffled' => $snapshot['was_shuffled'], 'submission_file_ids' => array_column($files, 'id')]]);
+                    'question_order' => $ids, 'exam_data' => ['was_shuffled' => $snapshot['was_shuffled'], 'submission_file_ids' => array_column($files, 'id'),
+                        ...isset($grading['qna_rules']) ? ['qna_rules' => $grading['qna_rules'], 'qna_session_id' => $session->id] : []]]);
                 if (!$manual && $value !== null && !$answer->autoGrade($grading)) throw new \RuntimeException('Grading failed; no attempt was recorded.');
                 if (!$manual) $answer->forceFill(['graded_at' => now()])->save();
                 $pendingReview = $pendingReview || $manual;

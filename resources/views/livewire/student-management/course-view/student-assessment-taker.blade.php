@@ -28,6 +28,8 @@
                             @foreach($question['options'] as $optionIndex => $option)
                                 <label class="flex min-h-11 items-start gap-3 py-2 text-content"><input class="mt-1 focus:ring-2 focus:ring-brand" type="{{ $question['allows_multiple'] ? 'checkbox' : 'radio' }}" wire:model.live="answers.{{ $question['id'] }}" value="{{ $optionIndex }}" name="answer-{{ $question['id'] }}" /><span class="min-w-0 break-words">{{ strip_tags($option) }}</span></label>
                             @endforeach
+                        @elseif(isset($question['discussion']))
+                            @include('livewire.student-management.course-view.qna-response')
                         @elseif(in_array($question['question_type'], ['matching', 'ordering', 'drag_drop']))
                             @include('livewire.student-management.course-view.structured-question')
                         @else
@@ -58,6 +60,7 @@
                 <div class="flex flex-wrap gap-3">
                     @if(in_array($assessment->id, $activeIds))<x-primary-button wire:click="startAssessment({{ $assessment->id }})" wire:loading.attr="disabled">Resume attempt</x-primary-button>
                     @elseif($configured && !($status['pending_review'] ?? false) && $assessment->canUserTakeAssessment(auth()->id())[0])<x-primary-button wire:click="startAssessment({{ $assessment->id }})" wire:loading.attr="disabled">{{ $status ? 'Start another attempt' : 'Start assessment' }}</x-primary-button>@endif
+                    @if($assessment->type === 'qna')<a class="bk-button bk-button-secondary" href="{{ route('assessment.discussion', $assessment) }}">Q&amp;A participation</a>@endif
                     @if($status)<x-secondary-button wire:click="showAssessmentResults({{ $assessment->id }})">View result and feedback</x-secondary-button>@endif
                 </div>
             </x-ui.panel>

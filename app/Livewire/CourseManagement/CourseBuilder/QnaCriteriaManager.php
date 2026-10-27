@@ -3,364 +3,138 @@
 namespace App\Livewire\CourseManagement\CourseBuilder;
 
 use App\Models\Assessment\Question;
-use App\Models\Assessment\Assessment;
-use Illuminate\Contracts\Support\Arrayable;
-use Illuminate\Support\Collection;
+use App\Services\AssessmentAuthoringService;
+use App\Services\CourseAuthoringAccess;
+use App\Services\QnaResponseService;
+use App\Services\StructuredQuestionService;
+use Livewire\Attributes\Locked;
 use Livewire\Component;
 
 class QnaCriteriaManager extends Component
 {
     use \App\Livewire\Concerns\AuthorizesCourseAuthoring;
 
-    #[\Livewire\Attributes\Locked]
-    public $assessmentId;
-    public $assessment;
-    public $topics = [];
-    public $showCreateForm = false;
-    public $editingTopic = null;
-    
-    // Topic form fields
-    public $topicTitle = '';
-    public $topicDescription = '';
-    public $topicType = 'discussion';
+    #[Locked] public int $assessmentId;
+    #[Locked] public array $topics = [];
+    #[Locked] public ?int $editingTopic = null;
+    public bool $showCreateForm = false;
+    public string $topicTitle = '';
+    public string $topicDescription = '';
+    public string $topicType = 'discussion';
     public $points = 5;
-    public $isRequired = true;
+    public bool $isRequired = true;
     public $timeLimit = null;
-    
-    // Q&A specific fields
     public $minResponses = 1;
     public $minResponseLength = 50;
-    public $allowPeerReview = true;
-    public $moderatorApproval = false;
-    public $discussionPrompts = [];
-    public $evaluationCriteria = [];
-    
-    protected $listeners = [
-        'topicCreated' => 'loadTopics',
-        'topicUpdated' => 'loadTopics',
-        'topicDeleted' => 'loadTopics',
-    ];
+    public bool $allowPeerReview = false;
+    public bool $moderatorApproval = true;
+    public array $discussionPrompts = [''];
+    public array $evaluationCriteria = [['name' => 'Quality of response', 'weight' => 100, 'description' => 'Relevance, reasoning and supporting evidence']];
 
-    protected function rules()
+    protected function rules(): array
     {
         return [
-            'topicTitle' => 'required|string|max:255',
-            'topicDescription' => 'required|string|max:1000',
-            'topicType' => 'required|in:discussion,debate,peer_review,reflection,case_study',
-            'points' => 'required|numeric|min:1|max:100',
-            'isRequired' => 'boolean',
-            'timeLimit' => 'nullable|integer|min:1|max:10080', // up to 1 week in minutes
-            'minResponses' => 'required|integer|min:1|max:10',
-            'minResponseLength' => 'required|integer|min:10|max:1000',
-            'allowPeerReview' => 'boolean',
-            'moderatorApproval' => 'boolean',
+            'topicTitle' => 'required|string|max:255', 'topicDescription' => 'required|string|max:2000',
+            'topicType' => 'required|in:'.implode(',', QnaResponseService::TOPICS), 'points' => 'required|numeric|decimal:0,2|between:1,100',
+            'isRequired' => 'boolean', 'timeLimit' => 'nullable|integer|between:1,10080',
+            'minResponses' => 'required|integer|between:1,10', 'minResponseLength' => 'required|integer|between:10,1000',
+            'allowPeerReview' => 'boolean', 'moderatorApproval' => 'boolean',
+            'discussionPrompts' => 'array|max:10', 'discussionPrompts.*' => 'nullable|string|max:1000',
+            'evaluationCriteria' => 'required|array|min:1|max:20', 'evaluationCriteria.*' => 'array:name,weight,description',
+            'evaluationCriteria.*.name' => 'required|string|max:100', 'evaluationCriteria.*.weight' => 'required|integer|between:1,100',
+            'evaluationCriteria.*.description' => 'nullable|string|max:1000',
         ];
     }
 
-    public function mount($assessmentId)
+    public function mount(int $assessmentId): void
     {
         $this->assessmentId = $assessmentId;
-        $this->authorizeAuthoringContext();
-        $this->assessment = Assessment::findOrFail($assessmentId);
         $this->loadTopics();
-        
-        // Initialize default discussion prompts
-        $this->discussionPrompts = [
-            'What are your initial thoughts on this topic?',
-            'How does this relate to your experience?',
-            'What questions do you have?'
-        ];
-
-        // Initialize default evaluation criteria
-        $this->evaluationCriteria = [
-            ['name' => 'Participation Quality', 'weight' => 40, 'description' => 'Depth and relevance of contributions'],
-            ['name' => 'Critical Thinking', 'weight' => 30, 'description' => 'Analysis and evaluation of ideas'],
-            ['name' => 'Peer Engagement', 'weight' => 20, 'description' => 'Meaningful interaction with others'],
-            ['name' => 'Knowledge Application', 'weight' => 10, 'description' => 'Use of course concepts'],
-        ];
     }
 
-    public function loadTopics()
+    public function loadTopics(): void
     {
-        $this->topics = Question::where('assessment_id', $this->assessmentId)
-            ->orderBy('order')
-            ->get()
-            ->toArray();
+        $assessment = app(CourseAuthoringAccess::class)->assessment($this->assessmentId);
+        abort_unless($assessment->type === 'qna', 403);
+        $this->topics = $assessment->questions()->where('question_type', 'qna_topic')->orderBy('order')->orderBy('id')->get()->toArray();
     }
 
-    public function toggleCreateForm()
+    public function toggleCreateForm(): void
     {
-        $this->showCreateForm = !$this->showCreateForm;
-        if (!$this->showCreateForm) {
-            $this->resetForm();
-        }
-    }
-
-    public function selectTopicType($type)
-    {
-        $this->topicType = $type;
-        $this->adjustDefaultsForType();
-    }
-
-    protected function adjustDefaultsForType()
-    {
-        switch ($this->topicType) {
-            case 'discussion':
-                $this->minResponses = 2;
-                $this->minResponseLength = 100;
-                $this->allowPeerReview = true;
-                break;
-            case 'debate':
-                $this->minResponses = 3;
-                $this->minResponseLength = 150;
-                $this->allowPeerReview = true;
-                $this->discussionPrompts = [
-                    'Present your position on this topic',
-                    'Provide evidence to support your argument',
-                    'Address counterarguments'
-                ];
-                break;
-            case 'peer_review':
-                $this->minResponses = 1;
-                $this->minResponseLength = 200;
-                $this->allowPeerReview = false;
-                $this->discussionPrompts = [
-                    'What are the strengths of this work?',
-                    'What areas could be improved?',
-                    'What suggestions do you have?'
-                ];
-                break;
-            case 'reflection':
-                $this->minResponses = 1;
-                $this->minResponseLength = 150;
-                $this->allowPeerReview = false;
-                break;
-            case 'case_study':
-                $this->minResponses = 2;
-                $this->minResponseLength = 250;
-                $this->allowPeerReview = true;
-                $this->discussionPrompts = [
-                    'Analyze the key issues in this case',
-                    'What solutions would you propose?',
-                    'How would you implement your recommendations?'
-                ];
-                break;
-        }
-    }
-
-    public function addDiscussionPrompt()
-    {
-        $this->discussionPrompts[] = '';
-    }
-
-    public function removeDiscussionPrompt($index)
-    {
-        if (count($this->discussionPrompts) > 1) {
-            array_splice($this->discussionPrompts, $index, 1);
-        }
-    }
-
-    public function addEvaluationCriteria()
-    {
-        $this->evaluationCriteria[] = [
-            'name' => '',
-            'weight' => 10,
-            'description' => ''
-        ];
-    }
-
-    public function removeEvaluationCriteria($index)
-    {
-        if (count($this->evaluationCriteria) > 1) {
-            array_splice($this->evaluationCriteria, $index, 1);
-        }
-    }
-
-    public function createTopic()
-    {
-        $this->validate();
-
-        $topicData = [
-            'assessment_id' => $this->assessmentId,
-            'question_text' => $this->topicTitle,
-            'question_type' => 'qna_topic',
-            'points' => $this->points,
-            'explanation' => $this->topicDescription,
-            'is_required' => $this->isRequired,
-            'time_limit' => $this->timeLimit,
-            'order' => count($this->topics) + 1,
-        ];
-
-        // Store Q&A-specific data
-        $qnaData = [
-            'topic_type' => $this->topicType,
-            'min_responses' => $this->minResponses,
-            'min_response_length' => $this->minResponseLength,
-            'allow_peer_review' => $this->allowPeerReview,
-            'moderator_approval' => $this->moderatorApproval,
-            'discussion_prompts' => array_filter($this->discussionPrompts),
-            'evaluation_criteria' => $this->evaluationCriteria,
-        ];
-
-        $topicData['options'] = json_encode($qnaData);
-
-        Question::create($topicData);
-
-        $this->loadTopics();
+        $wasOpen = $this->showCreateForm;
         $this->resetForm();
-        $this->showCreateForm = false;
-        
-        session()->flash('success', 'Discussion topic created successfully!');
+        $this->showCreateForm = !$wasOpen;
     }
 
-    public function editTopic($topicId)
-    {
-        $topic = collect($this->topics)->firstWhere('id', $topicId);
-        if ($topic) {
-            $this->editingTopic = $topic;
-            $this->fillFormFromTopic($topic);
-            $this->showCreateForm = true;
-        }
-    }
+    public function addDiscussionPrompt(): void { if (count($this->discussionPrompts) < 10) $this->discussionPrompts[] = ''; }
+    public function removeDiscussionPrompt(int $index): void { unset($this->discussionPrompts[$index]); $this->discussionPrompts = array_values($this->discussionPrompts); }
+    public function addEvaluationCriteria(): void { if (count($this->evaluationCriteria) < 20) $this->evaluationCriteria[] = ['name' => '', 'weight' => 1, 'description' => '']; }
+    public function removeEvaluationCriteria(int $index): void { if (count($this->evaluationCriteria) > 1) unset($this->evaluationCriteria[$index]); $this->evaluationCriteria = array_values($this->evaluationCriteria); }
 
-    protected function fillFormFromTopic($topic)
-    {
-        $this->topicTitle = $topic['question_text'];
-        $this->topicDescription = $topic['explanation'] ?? '';
-        $this->points = $topic['points'];
-        $this->isRequired = $topic['is_required'] ?? true;
-        $this->timeLimit = $topic['time_limit'];
-
-        $qnaData = $this->normalizeToArray($topic['options']);
-        $this->topicType = $qnaData['topic_type'] ?? 'discussion';
-        $this->minResponses = $qnaData['min_responses'] ?? 1;
-        $this->minResponseLength = $qnaData['min_response_length'] ?? 50;
-        $this->allowPeerReview = $qnaData['allow_peer_review'] ?? true;
-        $this->moderatorApproval = $qnaData['moderator_approval'] ?? false;
-        $this->discussionPrompts = $qnaData['discussion_prompts'] ?? $this->discussionPrompts;
-        $this->evaluationCriteria = $qnaData['evaluation_criteria'] ?? $this->evaluationCriteria;
-    }
-
-    protected function normalizeToArray($value, array $default = []): array
-    {
-        if (is_array($value)) {
-            return $value;
-        }
-
-        if ($value instanceof Collection) {
-            return $value->values()->all();
-        }
-
-        if ($value instanceof Arrayable) {
-            $arrayValue = $value->toArray();
-
-            return is_array($arrayValue) ? $arrayValue : $default;
-        }
-
-        if ($value instanceof \JsonSerializable) {
-            $jsonValue = $value->jsonSerialize();
-
-            return is_array($jsonValue) ? $jsonValue : $default;
-        }
-
-        if (is_string($value)) {
-            $decoded = json_decode($value, true);
-
-            return is_array($decoded) ? $decoded : $default;
-        }
-
-        return $default;
-    }
-
-    public function updateTopic()
+    private function attributes(): array
     {
         $this->validate();
-
-        if ($this->editingTopic) {
-            $topic = Question::where('assessment_id', $this->assessmentId)->findOrFail($this->editingTopic['id']);
-            
-            $qnaData = [
-                'topic_type' => $this->topicType,
-                'min_responses' => $this->minResponses,
-                'min_response_length' => $this->minResponseLength,
-                'allow_peer_review' => $this->allowPeerReview,
-                'moderator_approval' => $this->moderatorApproval,
-                'discussion_prompts' => array_filter($this->discussionPrompts),
-                'evaluation_criteria' => $this->evaluationCriteria,
-            ];
-
-            $topic->update([
-                'question_text' => $this->topicTitle,
-                'explanation' => $this->topicDescription,
-                'points' => $this->points,
-                'is_required' => $this->isRequired,
-                'time_limit' => $this->timeLimit,
-                'options' => json_encode($qnaData),
-            ]);
-
-            $this->loadTopics();
-            $this->resetForm();
-            $this->showCreateForm = false;
-            
-            session()->flash('success', 'Discussion topic updated successfully!');
+        if (array_sum(array_column($this->evaluationCriteria, 'weight')) !== 100) {
+            throw \Illuminate\Validation\ValidationException::withMessages(['evaluationCriteria' => 'Evaluation weights must total 100%.']);
         }
+        return ['question_text' => $this->topicTitle, 'explanation' => $this->topicDescription, 'points' => $this->points,
+            'is_required' => $this->isRequired, 'time_limit' => $this->timeLimit,
+            'options' => ['version' => 1, 'topic_type' => $this->topicType, 'min_responses' => (int) $this->minResponses,
+                'min_response_length' => (int) $this->minResponseLength, 'allow_peer_review' => $this->allowPeerReview,
+                'moderator_approval' => $this->moderatorApproval,
+                'discussion_prompts' => array_values(array_filter(array_map('trim', $this->discussionPrompts), fn ($text) => $text !== '')),
+                'evaluation_criteria' => $this->evaluationCriteria]];
     }
 
-    public function deleteTopic($topicId)
+    public function createTopic(): void
     {
-        Question::where('assessment_id', $this->assessmentId)->findOrFail($topicId)->delete();
-        $this->loadTopics();
-        
-        session()->flash('success', 'Discussion topic deleted successfully!');
+        app(AssessmentAuthoringService::class)->saveCriteria($this->assessmentId, 'qna_topic', $this->attributes());
+        $this->saved('Q&A topic created.');
     }
 
-    public function duplicateTopic($topicId)
+    public function updateTopic(): void
     {
-        $originalTopic = Question::where('assessment_id', $this->assessmentId)->findOrFail($topicId);
-        $duplicatedTopic = $originalTopic->replicate();
-        $duplicatedTopic->question_text = $originalTopic->question_text . ' (Copy)';
-        $duplicatedTopic->order = count($this->topics) + 1;
-        $duplicatedTopic->save();
-
-        $this->loadTopics();
-        session()->flash('success', 'Discussion topic duplicated successfully!');
+        abort_unless($this->editingTopic, 422);
+        app(AssessmentAuthoringService::class)->saveCriteria($this->assessmentId, 'qna_topic', $this->attributes(), $this->editingTopic);
+        $this->saved('Q&A topic updated. Existing attempts retain their original requirements.');
     }
 
-    public function reorderTopics($orderedIds)
+    private function topic(int $id): Question
     {
-        app(\App\Services\AssessmentAuthoringService::class)->reorderQuestions((int) $this->assessmentId, $orderedIds);
-
-        $this->loadTopics();
+        return app(CourseAuthoringAccess::class)->assessment($this->assessmentId)->questions()->where('question_type', 'qna_topic')->findOrFail($id);
     }
 
-    protected function resetForm()
+    public function editTopic(int $id): void
     {
-        $this->topicTitle = '';
-        $this->topicDescription = '';
-        $this->topicType = 'discussion';
-        $this->points = 5;
-        $this->isRequired = true;
-        $this->timeLimit = null;
-        $this->minResponses = 1;
-        $this->minResponseLength = 50;
-        $this->allowPeerReview = true;
-        $this->moderatorApproval = false;
-        $this->discussionPrompts = [
-            'What are your initial thoughts on this topic?',
-            'How does this relate to your experience?',
-            'What questions do you have?'
-        ];
-        $this->evaluationCriteria = [
-            ['name' => 'Participation Quality', 'weight' => 40, 'description' => 'Depth and relevance of contributions'],
-            ['name' => 'Critical Thinking', 'weight' => 30, 'description' => 'Analysis and evaluation of ideas'],
-            ['name' => 'Peer Engagement', 'weight' => 20, 'description' => 'Meaningful interaction with others'],
-            ['name' => 'Knowledge Application', 'weight' => 10, 'description' => 'Use of course concepts'],
-        ];
-        $this->editingTopic = null;
+        $topic = $this->topic($id);
+        $data = app(StructuredQuestionService::class)->array($topic->options);
+        $this->resetForm();
+        $this->editingTopic = $topic->id;
+        $this->topicTitle = $topic->question_text;
+        $this->topicDescription = $topic->explanation ?? '';
+        $this->points = $topic->points;
+        $this->isRequired = (bool) $topic->is_required;
+        $this->timeLimit = $topic->time_limit;
+        foreach (['topicType' => 'topic_type', 'minResponses' => 'min_responses', 'minResponseLength' => 'min_response_length',
+            'allowPeerReview' => 'allow_peer_review', 'moderatorApproval' => 'moderator_approval', 'discussionPrompts' => 'discussion_prompts', 'evaluationCriteria' => 'evaluation_criteria'] as $property => $key) {
+            if (isset($data[$key])) $this->$property = $data[$key];
+        }
+        $this->showCreateForm = true;
     }
 
-    public function render()
+    public function deleteTopic(int $id): void { $this->topic($id)->delete(); $this->saved('Q&A topic deleted.'); }
+    public function duplicateTopic(int $id): void { $this->topic($id); app(AssessmentAuthoringService::class)->duplicateQuestion($this->assessmentId, $id); $this->saved('Q&A topic copied.'); }
+    public function reorderTopics(array $ids): void { app(AssessmentAuthoringService::class)->reorderQuestions($this->assessmentId, $ids); $this->loadTopics(); }
+    public function moveTopic(int $id, int $direction): void
     {
-        return view('livewire.course-management.course-builder.qna-criteria-manager');
+        $this->topic($id); app(AssessmentAuthoringService::class)->moveQuestion($this->assessmentId, $id, $direction); $this->loadTopics();
+        $this->dispatch('bootkode-list-moved', list: 'qna-topics-'.$this->assessmentId, item: $id, direction: $direction > 0 ? 'down' : 'up');
     }
+    private function saved(string $message): void { $this->loadTopics(); $this->resetForm(); session()->flash('success', $message); }
+    private function resetForm(): void
+    {
+        $this->resetValidation();
+        $this->reset('editingTopic', 'showCreateForm', 'topicTitle', 'topicDescription', 'topicType', 'points', 'isRequired', 'timeLimit', 'minResponses', 'minResponseLength', 'allowPeerReview', 'moderatorApproval', 'discussionPrompts', 'evaluationCriteria');
+    }
+    public function render() { return view('livewire.course-management.course-builder.qna-criteria-manager'); }
 }

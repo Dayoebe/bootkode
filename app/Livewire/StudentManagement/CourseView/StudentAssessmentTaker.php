@@ -15,6 +15,7 @@ class StudentAssessmentTaker extends Component
 {
     use \App\Livewire\Concerns\RequiresAuthenticatedAccount;
     use \App\Livewire\Concerns\RequestsAssessmentMarkReview;
+    use \App\Livewire\Concerns\WithdrawsQnaSharing;
     use \Livewire\WithFileUploads;
 
     #[Locked] public Lesson $lesson;
@@ -64,14 +65,17 @@ class StudentAssessmentTaker extends Component
         $this->resetValidation('submission');
         try {
             $session = app(CbtAttemptService::class)->start(auth()->user(), $assessment, true);
+        } catch (\Illuminate\Validation\ValidationException $exception) {
+            if ($assessment->type !== 'qna') throw $exception;
+            $this->addError('submission', 'Your instructor must review the Q&A requirements before this attempt can start.'); return;
         } catch (\Symfony\Component\HttpKernel\Exception\HttpException $exception) {
-            if ($exception->getStatusCode() !== 422 || !in_array($assessment->type, ['project', 'assignment'], true)) throw $exception;
+            if ($exception->getStatusCode() !== 422 || !in_array($assessment->type, ['project', 'assignment', 'qna'], true)) throw $exception;
             $this->addError('submission', $exception->getMessage()); return;
         }
         $this->assessmentId = $id;
         $this->examSessionId = $session->id;
         $this->questions = app(CbtAttemptService::class)->publicQuestions($session);
-        $this->answers = array_replace(collect($this->questions)->mapWithKeys(fn ($question) => [$question['id'] => (in_array($question['question_type'], ['matching', 'ordering', 'drag_drop']) || $question['allows_multiple'] ? [] : null)])->all(), $session->metadata['answers'] ?? []);
+        $this->answers = array_replace(collect($this->questions)->mapWithKeys(fn ($question) => [$question['id'] => (isset($question['discussion']) ? array_fill(0, $question['discussion']['min_responses'], '') : (in_array($question['question_type'], ['matching', 'ordering', 'drag_drop']) || $question['allows_multiple'] ? [] : null))])->all(), $session->metadata['answers'] ?? []);
         $this->deadline = $session->started_at->addSeconds($session->metadata['duration_seconds'])->toISOString();
         $this->results = null;
         $this->message = 'Attempt started. Saved answers survive a page reload; use Resume to continue.';

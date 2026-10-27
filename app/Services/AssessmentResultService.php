@@ -26,6 +26,7 @@ class AssessmentResultService
                 if (in_array($question['question_type'], StructuredQuestionService::TYPES, true) && $session) {
                     $value = app(StructuredQuestionService::class)->response($question, $session->metadata['grading'][$answer->question_id] ?? [], $value);
                 }
+                if ($question['question_type'] === 'qna_topic') $value = app(QnaResponseService::class)->display($value, $answer->exam_data['qna_rules'] ?? null);
                 $automatic = in_array($question['question_type'], ['multiple_choice', 'true_false', ...StructuredQuestionService::TYPES], true);
                 if (in_array($question['question_type'], ['multiple_choice', 'true_false'], true) && $value !== null && $value !== '') {
                     $decoded = json_decode($value, true);
@@ -43,6 +44,7 @@ class AssessmentResultService
                 return ['id' => $answer->id, 'question' => strip_tags($question['question_text']), 'response' => $value ?? ($files ? 'No written response.' : 'No answer submitted.'),
                     'points' => $answer->points_earned, 'max_points' => $question['points'], 'pending_review' => !$automatic && !$answer->graded_at,
                     'feedback' => $answer->feedback, 'files' => $files,
+                    'can_withdraw_sharing' => in_array($answer->exam_data['qna']['status'] ?? '', ['pending', 'published'], true),
                     'corrections' => collect($session?->metadata['mark_corrections'] ?? [])->where('answer_id', $answer->id)->map(fn ($event) => [
                         'before_points' => $event['before']['points'], 'after_points' => $event['after']['points'],
                         'reason' => $event['reason'], 'at' => $event['at'],

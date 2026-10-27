@@ -7,7 +7,8 @@
 @php
     $user = Auth::user();
     $routeName = request()->route()?->getName() ?? 'dashboard';
-    $pageTitle = $title ?: str($routeName)->replace(['.', '-', '_'], ' ')->title()->toString();
+    // Dynamic Blade component attributes arrive escaped; render the title as plain text once.
+    $pageTitle = html_entity_decode((string) ($title ?: str($routeName)->replace(['.', '-', '_'], ' ')->title()->toString()), ENT_QUOTES | ENT_HTML5, 'UTF-8');
     $pageDescription = $description ?: 'Focused workspace for your BootKode activity.';
     $unreadNotificationCount = $user?->unreadNotifications()?->count() ?? 0;
     $unreadChatCount = $user

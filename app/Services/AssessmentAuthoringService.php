@@ -82,14 +82,16 @@ class AssessmentAuthoringService
     public function saveCriteria(int $assessmentId, string $type, array $attributes, ?int $questionId = null): Question
     {
         $assessment = app(CourseAuthoringAccess::class)->assessment($assessmentId);
-        abort_unless(($type === 'project_criteria' && $assessment->type === 'project') || ($type === 'assignment_question' && $assessment->type === 'assignment'), 422);
+        abort_unless(($type === 'project_criteria' && $assessment->type === 'project') || ($type === 'assignment_question' && $assessment->type === 'assignment') || ($type === 'qna_topic' && $assessment->type === 'qna'), 422);
         return DB::transaction(function () use ($assessment, $type, $attributes, $questionId) {
             Assessment::whereKey($assessment->id)->lockForUpdate()->firstOrFail();
             $question = $questionId ? $assessment->questions()->where('question_type', $type)->findOrFail($questionId) : new Question;
             $question->fill(\Illuminate\Support\Arr::only($attributes, ['question_text', 'points', 'explanation', 'is_required', 'time_limit', 'options']));
             $question->assessment_id = $assessment->id; $question->question_type = $type;
             if (!$question->exists) $question->order = (int) $assessment->questions()->max('order') + 1;
-            app(AssessmentSubmissionService::class)->definition($question);
+            if ($type === 'qna_topic') {
+                abort_unless(app(QnaResponseService::class)->definition($question), 422, 'Configure a complete Q&A topic.');
+            } else app(AssessmentSubmissionService::class)->definition($question);
             $question->save();
             return $question;
         });

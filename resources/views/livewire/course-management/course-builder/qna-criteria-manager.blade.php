@@ -1,441 +1,52 @@
-@php
-    $normalizeBuilderArray = static function ($value, array $default = []) {
-        if (is_array($value)) {
-            return $value;
-        }
-
-        if ($value instanceof \Illuminate\Support\Collection) {
-            return $value->values()->all();
-        }
-
-        if ($value instanceof \Illuminate\Contracts\Support\Arrayable) {
-            $arrayValue = $value->toArray();
-
-            return is_array($arrayValue) ? $arrayValue : $default;
-        }
-
-        if ($value instanceof \JsonSerializable) {
-            $jsonValue = $value->jsonSerialize();
-
-            return is_array($jsonValue) ? $jsonValue : $default;
-        }
-
-        if (is_string($value)) {
-            $decoded = json_decode($value, true);
-
-            return is_array($decoded) ? $decoded : $default;
-        }
-
-        return $default;
-    };
-@endphp
-<div class="space-y-6">
-    <!-- Success Message -->
-    @if (session()->has('success'))
-        <div class="bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300 border border-green-200 dark:border-green-700 p-4 rounded-lg   transition-colors duration-300">
-            {{ session('success') }}
-        </div>
-    @endif
-
-    <!-- Header with Add Topic Button -->
-    <div class="flex items-center justify-between">
-        <div>
-            <h3 class="text-lg font-medium text-themed-primary transition-colors duration-300">Discussion Topics</h3>
-            <p class="text-themed-secondary text-sm transition-colors duration-300">Total Points: {{ array_sum(array_column($topics, 'points')) }}</p>
-        </div>
-        <button wire:click="toggleCreateForm"
-            class="px-4 py-2 bg-action hover:bg-action text-action-foreground rounded-lg transition-colors">
-            <i aria-hidden="true" class="fas fa-plus mr-2"></i>
-            {{ $showCreateForm ? 'Cancel' : 'Add Topic' }}
-        </button>
+<div class="space-y-6" data-move-list="qna-topics-{{ $assessmentId }}">
+    <x-ui.flash />
+    <div class="flex flex-wrap items-center justify-between gap-3">
+        <div><h3 class="text-lg font-semibold text-content">Q&A topics</h3><p class="text-sm text-content-muted">{{ count($topics) }} topics · {{ array_sum(array_column($topics, 'points')) }} points</p></div>
+        <div class="flex flex-wrap gap-3"><a class="bk-button bk-button-secondary" href="{{ route('assessment.discussion', $assessmentId) }}">Participation and moderation</a><x-secondary-button wire:click="toggleCreateForm">{{ $showCreateForm ? 'Cancel topic form' : 'Add Q&A topic' }}</x-secondary-button></div>
     </div>
-
-    <!-- Create/Edit Topic Form -->
-    @if ($showCreateForm)
-        <div class="bg-themed-tertiary rounded-lg p-6 border border-themed-primary transition-colors duration-300">
-            <h4 class="text-themed-primary font-medium mb-4 transition-colors duration-300">
-                {{ $editingTopic ? 'Edit Discussion Topic' : 'Create New Discussion Topic' }}
-            </h4>
-
-            <form wire:submit.prevent="{{ $editingTopic ? 'updateTopic' : 'createTopic' }}" class="space-y-6">
-                <!-- Topic Type Selection -->
-                <div>
-                    <label class="block text-sm font-medium text-themed-primary mb-3 transition-colors duration-300">Topic Type</label>
-                    <div class="grid grid-cols-2 md:grid-cols-5 gap-3">
-                        @php
-                            $topicTypes = [
-                                'discussion' => ['icon' => 'fa-comments', 'label' => 'Discussion', 'color' => 'blue'],
-                                'debate' => ['icon' => 'fa-balance-scale', 'label' => 'Debate', 'color' => 'red'],
-                                'peer_review' => ['icon' => 'fa-users', 'label' => 'Peer Review', 'color' => 'green'],
-                                'reflection' => ['icon' => 'fa-mirror', 'label' => 'Reflection', 'color' => 'yellow'],
-                                'case_study' => ['icon' => 'fa-search', 'label' => 'Case Study', 'color' => 'purple'],
-                            ];
-                        @endphp
-
-                        @foreach ($topicTypes as $type => $config)
-                            <button type="button" wire:click="selectTopicType('{{ $type }}')"
-                                class="p-3 rounded-lg text-center transition-colors border-2 text-sm duration-300
-                                        {{ $topicType === $type
-                                            ? 'bg-' . $config['color'] . '-600 border-' . $config['color'] . '-500 text-white'
-                                            : 'bg-themed-secondary border-themed-primary text-themed-primary hover:bg-themed-tertiary hover:border-' . $config['color'] . '-400' }}">
-                                <i aria-hidden="true" class="fas {{ $config['icon'] }} text-lg mb-1 block"></i>
-                                <div class="font-medium">{{ $config['label'] }}</div>
-                            </button>
-                        @endforeach
-                    </div>
-                </div>
-
-                <!-- Basic Information -->
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-sm font-medium text-themed-primary mb-2 transition-colors duration-300">
-                            Topic Title <span class="text-red-600 dark:text-red-400">*</span>
-                        </label>
-                        <input aria-label="Enter topic title" type="text" wire:model="topicTitle"
-                            class="w-full px-4 py-2 bg-themed-secondary border border-themed-primary rounded-lg text-themed-primary
-                                          focus:ring-2 focus:ring-brand/30 focus:border-transparent transition-colors duration-300"
-                            placeholder="Enter topic title...">
-                        @error('topicTitle')
-                            <span class="text-red-600 dark:text-red-400 text-sm mt-1">{{ $message }}</span>
-                        @enderror
-                    </div>
-
-                    <div>
-                        <label class="block text-sm font-medium text-themed-primary mb-2 transition-colors duration-300">Points</label>
-                        <input aria-label="Points" type="number" wire:model="points" step="1" min="1" max="100"
-                            class="w-full px-4 py-2 bg-themed-secondary border border-themed-primary rounded-lg text-themed-primary
-                                          focus:ring-2 focus:ring-brand/30 focus:border-transparent transition-colors duration-300">
-                        @error('points')
-                            <span class="text-red-600 dark:text-red-400 text-sm mt-1">{{ $message }}</span>
-                        @enderror
-                    </div>
-                </div>
-
-                <!-- Description -->
-                <div>
-                    <label class="block text-sm font-medium text-themed-primary mb-2 transition-colors duration-300">
-                        Description <span class="text-red-600 dark:text-red-400">*</span>
-                    </label>
-                    <textarea aria-label="Describe the discussion topic" wire:model="topicDescription" rows="3"
-                        class="w-full px-4 py-2 bg-themed-secondary border border-themed-primary rounded-lg text-themed-primary
-                                         focus:ring-2 focus:ring-brand/30 focus:border-transparent transition-colors duration-300"
-                        placeholder="Describe the discussion topic..."></textarea>
-                    @error('topicDescription')
-                        <span class="text-red-600 dark:text-red-400 text-sm mt-1">{{ $message }}</span>
-                    @enderror
-                </div>
-
-                <!-- Discussion Settings -->
-                <div class="bg-themed-secondary rounded-lg p-4 border border-themed-primary transition-colors duration-300">
-                    <h5 class="text-themed-primary font-medium mb-3 transition-colors duration-300">Discussion Requirements</h5>
-
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-                        <div>
-                            <label class="block text-sm font-medium text-themed-primary mb-2 transition-colors duration-300">Min Responses</label>
-                            <input aria-label="Min responses" type="number" wire:model="minResponses" min="1" max="10"
-                                class="w-full px-3 py-2 bg-themed-tertiary border border-themed-primary rounded-lg text-themed-primary transition-colors duration-300">
-                            @error('minResponses')
-                                <span class="text-red-600 dark:text-red-400 text-sm mt-1">{{ $message }}</span>
-                            @enderror
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-themed-primary mb-2 transition-colors duration-300">Min Response Length</label>
-                            <input aria-label="Min response length" type="number" wire:model="minResponseLength" min="10" max="1000"
-                                class="w-full px-3 py-2 bg-themed-tertiary border border-themed-primary rounded-lg text-themed-primary transition-colors duration-300">
-                            @error('minResponseLength')
-                                <span class="text-red-600 dark:text-red-400 text-sm mt-1">{{ $message }}</span>
-                            @enderror
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-themed-primary mb-2 transition-colors duration-300">Time Limit (minutes)</label>
-                            <input aria-label="Optional" type="number" wire:model="timeLimit" min="1" max="10080"
-                                class="w-full px-3 py-2 bg-themed-tertiary border border-themed-primary rounded-lg text-themed-primary transition-colors duration-300"
-                                placeholder="Optional">
-                            @error('timeLimit')
-                                <span class="text-red-600 dark:text-red-400 text-sm mt-1">{{ $message }}</span>
-                            @enderror
-                        </div>
-                    </div>
-
-                    <!-- Discussion Options -->
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div class="flex items-center">
-                            <input type="checkbox" wire:model="allowPeerReview" id="allowPeerReview"
-                                class="h-4 w-4 text-brand focus:ring-brand/30 border-themed-primary rounded bg-themed-tertiary">
-                            <label for="allowPeerReview" class="ml-2 block text-sm text-themed-primary transition-colors duration-300">
-                                Allow Peer Review
-                            </label>
-                        </div>
-                        <div class="flex items-center">
-                            <input type="checkbox" wire:model="moderatorApproval" id="moderatorApproval"
-                                class="h-4 w-4 text-brand focus:ring-brand/30 border-themed-primary rounded bg-themed-tertiary">
-                            <label for="moderatorApproval" class="ml-2 block text-sm text-themed-primary transition-colors duration-300">
-                                Require Moderator Approval
-                            </label>
-                        </div>
-                        <div class="flex items-center">
-                            <input type="checkbox" wire:model="isRequired" id="isRequired"
-                                class="h-4 w-4 text-brand focus:ring-brand/30 border-themed-primary rounded bg-themed-tertiary">
-                            <label for="isRequired" class="ml-2 block text-sm text-themed-primary transition-colors duration-300">
-                                Required for completion
-                            </label>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Discussion Prompts -->
-                <div class="bg-themed-secondary rounded-lg p-4 border border-themed-primary transition-colors duration-300">
-                    <div class="flex items-center justify-between mb-3">
-                        <h5 class="text-themed-primary font-medium transition-colors duration-300">Discussion Prompts</h5>
-                        <button type="button" wire:click="addDiscussionPrompt"
-                            class="px-2 py-1 bg-green-600 hover:bg-green-700 text-white rounded text-sm transition-colors">
-                            <i aria-hidden="true" class="fas fa-plus mr-1"></i>Add Prompt
-                        </button>
-                    </div>
-
-                    @foreach ($discussionPrompts as $index => $prompt)
-                        <div class="flex gap-2 mb-2">
-                            <input type="text" wire:model="discussionPrompts.{{ $index }}"
-                                class="flex-1 px-3 py-2 bg-themed-tertiary border border-themed-primary rounded-lg text-themed-primary transition-colors duration-300"
-                                placeholder="Discussion prompt {{ $index + 1 }}">
-                            @if (count($discussionPrompts) > 1)
-                                <button type="button" wire:click="removeDiscussionPrompt({{ $index }})"
-                                    class="px-2 py-2 bg-red-600 hover:bg-red-700 text-white rounded transition-colors" aria-label="Remove discussion prompt">
-                                    <i aria-hidden="true" class="fas fa-trash text-sm"></i>
-                                </button>
-                            @endif
-                        </div>
+    <p class="text-sm text-content-muted">Learners submit their own responses for instructor marking. Peer sharing is optional after submission and never changes official marks. Original requirements remain attached to existing attempts.</p>
+    @if($showCreateForm)
+        <x-ui.panel :title="$editingTopic ? 'Edit Q&A topic' : 'Create Q&A topic'">
+            <form wire:submit="{{ $editingTopic ? 'updateTopic' : 'createTopic' }}" class="space-y-5">
+                @if($errors->any())<div role="alert" class="rounded-lg border border-line p-4 text-content"><p class="font-semibold">Check the topic fields.</p><ul class="list-inside list-disc">@foreach($errors->all() as $error)<li>{{ $error }}</li>@endforeach</ul></div>@endif
+                <div><x-input-label for="qna-title" value="Topic title" /><x-text-input id="qna-title" wire:model="topicTitle" required maxlength="255" class="w-full" aria-describedby="qna-title-error" :aria-invalid="$errors->has('topicTitle') ? 'true' : 'false'" /><x-input-error id="qna-title-error" :messages="$errors->get('topicTitle')" /></div>
+                <div><x-input-label for="qna-description" value="Learner instructions" /><textarea id="qna-description" wire:model="topicDescription" required maxlength="2000" rows="4" class="w-full rounded-lg border-line bg-surface text-content focus:ring-action" aria-describedby="qna-description-error" aria-invalid="{{ $errors->has('topicDescription') ? 'true' : 'false' }}"></textarea><x-input-error id="qna-description-error" :messages="$errors->get('topicDescription')" /></div>
+                <div><x-input-label for="qna-type" value="Topic type" /><select id="qna-type" wire:model="topicType" class="min-h-11 w-full rounded-lg border-line bg-surface text-content focus:ring-action">@foreach(\App\Services\QnaResponseService::TOPICS as $type)<option value="{{ $type }}">{{ ucfirst(str_replace('_', ' ', $type)) }}</option>@endforeach</select></div>
+                <p class="text-sm text-content-muted">Topic type describes the exercise. The sharing controls below determine participant visibility.</p>
+                <div class="grid gap-4 sm:grid-cols-2">
+                    @foreach(['points' => ['Points', 1, 100, '0.01'], 'minResponses' => ['Required original responses', 1, 10, 1], 'minResponseLength' => ['Minimum characters per response', 10, 1000, 1], 'timeLimit' => ['Optional topic time estimate (minutes)', 1, 10080, 1]] as $field => $control)
+                        <div><x-input-label :for="'qna-'.$field" :value="$control[0]" /><x-text-input :id="'qna-'.$field" type="number" wire:model="{{ $field }}" :min="$control[1]" :max="$control[2]" :step="$control[3]" class="w-full" :aria-describedby="'qna-'.$field.'-error'" :aria-invalid="$errors->has($field) ? 'true' : 'false'" /><x-input-error :id="'qna-'.$field.'-error'" :messages="$errors->get($field)" /></div>
                     @endforeach
                 </div>
-
-                <!-- Evaluation Criteria -->
-                <div class="bg-themed-secondary rounded-lg p-4 border border-themed-primary transition-colors duration-300">
-                    <div class="flex items-center justify-between mb-3">
-                        <h5 class="text-themed-primary font-medium transition-colors duration-300">Evaluation Criteria</h5>
-                        <button type="button" wire:click="addEvaluationCriteria"
-                            class="px-2 py-1 bg-green-600 hover:bg-green-700 text-white rounded text-sm transition-colors">
-                            <i aria-hidden="true" class="fas fa-plus mr-1"></i>Add Criteria
-                        </button>
-                    </div>
-
-                    @foreach ($evaluationCriteria as $index => $criteria)
-                        <div class="grid grid-cols-1 md:grid-cols-4 gap-3 mb-3 p-3 bg-themed-tertiary rounded-lg border border-themed-primary transition-colors duration-300">
-                            <div>
-                                <input aria-label="Criteria name" type="text" wire:model="evaluationCriteria.{{ $index }}.name"
-                                    class="w-full px-3 py-2 bg-themed-secondary border border-themed-primary rounded-lg text-themed-primary transition-colors duration-300"
-                                    placeholder="Criteria name">
-                            </div>
-                            <div>
-                                <input aria-label="Weight %" type="number" wire:model="evaluationCriteria.{{ $index }}.weight" min="0" max="100"
-                                    class="w-full px-3 py-2 bg-themed-secondary border border-themed-primary rounded-lg text-themed-primary transition-colors duration-300"
-                                    placeholder="Weight %">
-                            </div>
-                            <div>
-                                <input aria-label="Description" type="text" wire:model="evaluationCriteria.{{ $index }}.description"
-                                    class="w-full px-3 py-2 bg-themed-secondary border border-themed-primary rounded-lg text-themed-primary transition-colors duration-300"
-                                    placeholder="Description">
-                            </div>
-                            <div class="flex items-center">
-                                @if (count($evaluationCriteria) > 1)
-                                    <button type="button" wire:click="removeEvaluationCriteria({{ $index }})"
-                                        class="px-2 py-2 bg-red-600 hover:bg-red-700 text-white rounded w-full transition-colors" aria-label="Remove evaluation criteria">
-                                        <i aria-hidden="true" class="fas fa-trash text-sm"></i>
-                                    </button>
-                                @endif
-                            </div>
+                <p class="text-sm text-content-muted">The assessment deadline governs submission. Each response allows up to 4,000 characters; all responses together allow 10,000. Optional peer feedback is separate from the required original responses.</p>
+                <label class="flex min-h-11 items-center gap-3 text-content"><input type="checkbox" wire:model="isRequired" class="rounded border-line text-action focus:ring-action" />Require this topic</label>
+                <label class="flex min-h-11 items-center gap-3 text-content"><input type="checkbox" wire:model="allowPeerReview" class="rounded border-line text-action focus:ring-action" />Allow learners to share submitted work and give peer feedback</label>
+                <label class="flex min-h-11 items-center gap-3 text-content"><input type="checkbox" wire:model="moderatorApproval" class="rounded border-line text-action focus:ring-action" />Require course reviewer approval before shared responses and peer feedback become visible</label>
+                <fieldset class="space-y-3"><legend class="font-semibold text-content">Learner prompts</legend>
+                    @foreach($discussionPrompts as $index => $prompt)
+                        <div wire:key="qna-prompt-{{ $index }}" class="flex flex-wrap items-end gap-3"><div class="min-w-0 flex-1"><x-input-label :for="'qna-prompt-'.$index" :value="'Prompt '.($index + 1)" /><x-text-input :id="'qna-prompt-'.$index" wire:model="discussionPrompts.{{ $index }}" maxlength="1000" class="w-full" /></div><x-secondary-button wire:click="removeDiscussionPrompt({{ $index }})">Remove prompt {{ $index + 1 }}</x-secondary-button></div>
+                    @endforeach
+                    <x-secondary-button wire:click="addDiscussionPrompt" :disabled="count($discussionPrompts) >= 10">Add prompt</x-secondary-button>
+                </fieldset>
+                <fieldset class="space-y-4"><legend class="font-semibold text-content">Private evaluation criteria</legend><p class="text-sm text-content-muted">Weights must total 100%. These grading notes are available to the instructor, not the peer board.</p>
+                    @foreach($evaluationCriteria as $index => $criterion)
+                        <div wire:key="qna-criterion-{{ $index }}" class="space-y-3 rounded-lg border border-line p-3">
+                            @foreach(['name' => 'Criterion name', 'weight' => 'Weight (%)', 'description' => 'Private guidance'] as $field => $label)
+                                <div><x-input-label :for="'qna-criterion-'.$index.'-'.$field" :value="$label" /><x-text-input :id="'qna-criterion-'.$index.'-'.$field" wire:model="evaluationCriteria.{{ $index }}.{{ $field }}" :type="$field === 'weight' ? 'number' : 'text'" class="w-full" :aria-describedby="'qna-criterion-'.$index.'-'.$field.'-error'" /><x-input-error :id="'qna-criterion-'.$index.'-'.$field.'-error'" :messages="$errors->get('evaluationCriteria.'.$index.'.'.$field)" /></div>
+                            @endforeach
+                            <x-secondary-button wire:click="removeEvaluationCriteria({{ $index }})" :disabled="count($evaluationCriteria) <= 1">Remove criterion {{ $index + 1 }}</x-secondary-button>
                         </div>
                     @endforeach
-                </div>
-
-                <!-- Form Actions -->
-                <div class="flex justify-between pt-4 border-t border-themed-primary transition-colors duration-300">
-                    <button type="button" wire:click="toggleCreateForm"
-                        class="px-4 py-2 bg-themed-tertiary hover:bg-themed-secondary text-themed-primary rounded-lg transition-colors duration-300 border border-themed-primary">
-                        Cancel
-                    </button>
-
-                    <button type="submit" wire:loading.attr="disabled"
-                        class="px-6 py-2 bg-action hover:bg-action text-action-foreground rounded-lg transition-colors duration-300
-                               disabled:opacity-50 flex items-center gap-2">
-                        <span wire:loading.remove>
-                            <i aria-hidden="true" class="fas fa-{{ $editingTopic ? 'save' : 'plus' }} mr-2"></i>
-                            {{ $editingTopic ? 'Update Topic' : 'Create Topic' }}
-                        </span>
-                        <span wire:loading class="flex items-center gap-2">
-                            <i aria-hidden="true" class="fas fa-spinner fa-spin"></i>
-                            {{ $editingTopic ? 'Updating...' : 'Creating...' }}
-                        </span>
-                    </button>
-                </div>
+                    <x-input-error :messages="$errors->get('evaluationCriteria')" /><x-secondary-button wire:click="addEvaluationCriteria" :disabled="count($evaluationCriteria) >= 20">Add evaluation criterion</x-secondary-button>
+                </fieldset>
+                <div class="flex flex-wrap gap-3"><x-primary-button wire:loading.attr="disabled" wire:target="createTopic,updateTopic">Save Q&A topic</x-primary-button><x-secondary-button wire:click="toggleCreateForm">Cancel topic form</x-secondary-button></div>
             </form>
-        </div>
+        </x-ui.panel>
     @endif
-
-    <!-- Topics List -->
-    <div class="space-y-4">
-        <h4 class="text-themed-primary font-medium transition-colors duration-300">Discussion Topics ({{ count($topics) }})</h4>
-
-        @if (count($topics) > 0)
-            <div class="space-y-3" id="topics-container">
-                @foreach ($topics as $index => $topic)
-                    @php
-                        $topicData = $normalizeBuilderArray($topic['options']);
-                        $topicType = $topicData['topic_type'] ?? 'discussion';
-                    @endphp
-                    <div class="bg-themed-tertiary rounded-lg border border-themed-primary p-4 sortable-item transition-colors duration-300"
-                         data-id="{{ $topic['id'] }}">
-                        <div class="flex items-start gap-4">
-                            <!-- Drag Handle -->
-                            <div class="drag-handle cursor-move text-themed-secondary hover:text-themed-primary mt-1 transition-colors duration-300">
-                                <i aria-hidden="true" class="fas fa-grip-vertical"></i>
-                            </div>
-
-                            <!-- Topic Number -->
-                            <div class="flex-shrink-0 w-8 h-8 bg-action rounded-full flex items-center justify-center text-action-foreground font-bold text-sm">
-                                {{ $topic['order'] }}
-                            </div>
-
-                            <!-- Topic Content -->
-                            <div class="flex-1">
-                                <div class="flex items-start justify-between mb-2">
-                                    <div class="flex-1">
-                                        <div class="flex items-center gap-2 mb-2">
-                                            <span class="px-2 py-1 text-xs rounded-full border transition-colors duration-300
-                                                {{ $topicType === 'discussion' ? 'bg-blue-100 dark:bg-action/30 text-brand dark:text-brand border-brand dark:border-blue-700' :
-                                                   ($topicType === 'debate' ? 'bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-300 border-red-200 dark:border-red-700' :
-                                                    ($topicType === 'peer_review' ? 'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300 border-green-200 dark:border-green-700' :
-                                                     ($topicType === 'reflection' ? 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-300 border-yellow-200 dark:border-yellow-700' :
-                                                      'bg-purple-100 dark:bg-action/30 text-brand dark:text-brand border-brand dark:border-purple-700'))) }}">
-                                                {{ ucfirst(str_replace('_', ' ', $topicType)) }}
-                                            </span>
-                                            <span class="text-sm text-green-600 dark:text-green-400 font-medium">{{ $topic['points'] }} pts</span>
-                                            @if ($topic['is_required'])
-                                                <span class="text-xs text-red-600 dark:text-red-400">Required</span>
-                                            @endif
-                                            @if ($topic['time_limit'])
-                                                <span class="text-sm text-brand dark:text-brand">{{ $topic['time_limit'] }}min</span>
-                                            @endif
-                                        </div>
-
-                                        <p class="text-themed-primary font-medium mb-2 transition-colors duration-300">{{ $topic['question_text'] }}</p>
-
-                                        @if ($topic['explanation'])
-                                            <p class="text-themed-secondary text-sm mb-2 transition-colors duration-300">{{ $topic['explanation'] }}</p>
-                                        @endif
-
-                                        <!-- Topic Requirements -->
-                                        @if (!empty($topicData['min_responses']) || !empty($topicData['min_response_length']))
-                                            <div class="text-sm text-brand dark:text-brand bg-brand/10 dark:bg-action/20 px-2 py-1 rounded mb-2 border border-brand dark:border-brand transition-colors duration-300">
-                                                <strong>Requirements:</strong>
-                                                @if (!empty($topicData['min_responses']))
-                                                    {{ $topicData['min_responses'] }} responses min
-                                                @endif
-                                                @if (!empty($topicData['min_response_length']))
-                                                    {{ !empty($topicData['min_responses']) ? ', ' : '' }}{{ $topicData['min_response_length'] }} chars min
-                                                @endif
-                                            </div>
-                                        @endif
-
-                                        <!-- Discussion Prompts Preview -->
-                                        @if (!empty($topicData['discussion_prompts']))
-                                            <div class="text-sm text-brand dark:text-brand bg-brand/10 dark:bg-action/20 px-2 py-1 rounded border border-brand dark:border-brand transition-colors duration-300">
-                                                <strong>Prompts:</strong> {{ count($topicData['discussion_prompts']) }} discussion prompts
-                                            </div>
-                                        @endif
-                                    </div>
-
-                                    <!-- Actions -->
-                                    <div class="flex gap-2 ml-4">
-                                        <button wire:click="editTopic({{ $topic['id'] }})"
-                                            class="px-2 py-1 bg-action hover:bg-action text-action-foreground rounded text-sm transition-colors" aria-label="Edit topic">
-                                            <i aria-hidden="true" class="fas fa-edit"></i>
-                                        </button>
-
-                                        <button wire:click="duplicateTopic({{ $topic['id'] }})"
-                                            class="px-2 py-1 bg-green-600 hover:bg-green-700 text-white rounded text-sm transition-colors"
-                                            title="Duplicate Topic" aria-label="Duplicate Topic">
-                                            <i aria-hidden="true" class="fas fa-copy"></i>
-                                        </button>
-
-                                        <button wire:click="deleteTopic({{ $topic['id'] }})"
-                                            onclick="return confirm('Are you sure you want to delete this topic?')"
-                                            class="px-2 py-1 bg-red-600 hover:bg-red-700 text-white rounded text-sm transition-colors" aria-label="Delete topic">
-                                            <i aria-hidden="true" class="fas fa-trash"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                @endforeach
-            </div>
-
-            <!-- Topic Statistics -->
-            <div class="mt-6 grid grid-cols-2 md:grid-cols-4 gap-4">
-                @php
-                    $typeStats = [];
-                    $totalPoints = array_sum(array_column($topics, 'points'));
-                    foreach ($topics as $topic) {
-                        $data = $normalizeBuilderArray($topic['options']);
-                        $type = $data['topic_type'] ?? 'discussion';
-                        $typeStats[$type] = ($typeStats[$type] ?? 0) + 1;
-                    }
-                @endphp
-
-                <div class="bg-themed-tertiary rounded-lg p-3 text-center border border-themed-primary transition-colors duration-300">
-                    <div class="text-xl font-bold text-brand dark:text-brand">{{ $typeStats['discussion'] ?? 0 }}</div>
-                    <div class="text-xs text-themed-secondary transition-colors duration-300">Discussions</div>
-                </div>
-
-                <div class="bg-themed-tertiary rounded-lg p-3 text-center border border-themed-primary transition-colors duration-300">
-                    <div class="text-xl font-bold text-red-600 dark:text-red-400">{{ $typeStats['debate'] ?? 0 }}</div>
-                    <div class="text-xs text-themed-secondary transition-colors duration-300">Debates</div>
-                </div>
-
-                <div class="bg-themed-tertiary rounded-lg p-3 text-center border border-themed-primary transition-colors duration-300">
-                    <div class="text-xl font-bold text-green-600 dark:text-green-400">{{ $typeStats['peer_review'] ?? 0 }}</div>
-                    <div class="text-xs text-themed-secondary transition-colors duration-300">Peer Reviews</div>
-                </div>
-
-                <div class="bg-themed-tertiary rounded-lg p-3 text-center border border-themed-primary transition-colors duration-300">
-                    <div class="text-xl font-bold text-brand dark:text-brand">{{ $totalPoints }}</div>
-                    <div class="text-xs text-themed-secondary transition-colors duration-300">Total Points</div>
-                </div>
-            </div>
-        @else
-            <!-- Empty State -->
-            <div class="text-center py-8">
-                <div class="w-16 h-16 bg-themed-tertiary rounded-full flex items-center justify-center mx-auto mb-4 border border-themed-primary transition-colors duration-300">
-                    <i aria-hidden="true" class="fas fa-comments text-2xl text-themed-secondary transition-colors duration-300"></i>
-                </div>
-                <h4 class="text-lg font-medium text-themed-primary mb-2 transition-colors duration-300">No Discussion Topics Yet</h4>
-                <p class="text-themed-secondary mb-4 transition-colors duration-300">Create discussion topics to enable Q&A based evaluation.</p>
-                <button wire:click="toggleCreateForm"
-                    class="px-4 py-2 bg-action hover:bg-action text-action-foreground rounded-lg transition-colors">
-                    <i aria-hidden="true" class="fas fa-plus mr-2"></i>
-                    Add Your First Topic
-                </button>
-            </div>
-        @endif
-    </div>
+    @forelse($topics as $index => $topic)
+        <section wire:key="qna-topic-{{ $topic['id'] }}" data-move-item="{{ $topic['id'] }}" tabindex="-1" class="space-y-3 rounded-lg border border-line bg-surface p-4">
+            <h4 class="break-words font-semibold text-content">{{ $index + 1 }}. {{ $topic['question_text'] }}</h4><p class="whitespace-pre-wrap break-words text-content-muted">{{ $topic['explanation'] }}</p><p class="text-sm text-content-muted">{{ $topic['points'] }} points · {{ $topic['is_required'] ? 'Required' : 'Optional' }}</p>
+            <div class="flex flex-wrap gap-3"><x-secondary-button wire:click="editTopic({{ $topic['id'] }})">Edit topic {{ $index + 1 }}</x-secondary-button><x-secondary-button wire:click="duplicateTopic({{ $topic['id'] }})">Copy topic {{ $index + 1 }}</x-secondary-button><x-secondary-button wire:click="moveTopic({{ $topic['id'] }}, -1)" data-move-key="{{ $topic['id'] }}" data-move-direction="up" :disabled="$index === 0">Move topic {{ $index + 1 }} up</x-secondary-button><x-secondary-button wire:click="moveTopic({{ $topic['id'] }}, 1)" data-move-key="{{ $topic['id'] }}" data-move-direction="down" :disabled="$index === count($topics) - 1">Move topic {{ $index + 1 }} down</x-secondary-button><x-danger-button wire:click="deleteTopic({{ $topic['id'] }})" wire:confirm="Delete this topic? Recorded learning history prevents deletion.">Delete topic {{ $index + 1 }}</x-danger-button></div>
+        </section>
+    @empty<x-ui.empty-state title="No Q&A topics" description="Add a topic with clear original-response requirements and private evaluation criteria." />@endforelse
 </div>
-
-@push('scripts')
-<script>
-    // Sortable functionality for topics
-    document.addEventListener('DOMContentLoaded', function() {
-        const container = document.getElementById('topics-container');
-        if (container && typeof Sortable !== 'undefined') {
-            new Sortable(container, {
-                handle: '.drag-handle',
-                animation: 150,
-                ghostClass: 'opacity-50',
-                onEnd: function(evt) {
-                    const orderedIds = Array.from(container.children).map(el => el.dataset.id);
-                    @this.reorderTopics(orderedIds);
-                }
-            });
-        }
-    });
-</script>
-@endpush

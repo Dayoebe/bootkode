@@ -19,6 +19,7 @@
             @foreach($response['mark_reviews'] as $request)
                 <div class="space-y-1 border-t border-line py-3 text-sm text-content-muted"><p class="font-semibold">Mark review: {{ ['open' => 'Awaiting a decision', 'upheld' => 'Recorded mark upheld', 'corrected' => 'Mark corrected'][$request['status']] }}</p><p class="whitespace-pre-wrap break-words">Your request: {{ $request['reason'] }}</p>@if(isset($request['decision']))<p class="whitespace-pre-wrap break-words">Reviewer decision: {{ $request['decision'] }}</p>@endif</div>
             @endforeach
+            @if($response['can_withdraw_sharing'] ?? false)<x-secondary-button wire:click="withdrawQnaSharing({{ $response['id'] }})" wire:confirm="Withdraw this response from peer sharing? Your assessment history will be retained." wire:loading.attr="disabled">Withdraw Q&amp;A sharing</x-secondary-button>@endif
             @if($response['can_request_review'])
                 <details><summary class="cursor-pointer py-3 text-sm font-semibold text-content">Request a review of this mark</summary>
                     <form wire:submit="requestMarkReview({{ $response['id'] }})" class="space-y-3">

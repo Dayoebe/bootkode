@@ -206,6 +206,7 @@ Route::get('/course-management/lessons/{lessonId}/assessments', function (int $l
     ]);
 })->whereNumber('lessonId')->name('lesson.assessments.manage')->middleware(['auth', 'verified', \App\Http\Middleware\CheckRole::class . ':super_admin,academy_admin,instructor']);
 Route::get('/learning/lessons/{lesson}/assessments', \App\Livewire\StudentManagement\CourseView\StudentAssessmentTaker::class)->defaults('standalone', true)->name('lesson.assessments')->middleware(['auth', 'verified']);
+Route::get('/learning/assessments/{assessment}/discussion', \App\Livewire\StudentManagement\CourseView\AssessmentDiscussion::class)->name('assessment.discussion')->middleware(['auth', 'verified']);
 Route::get('/learning/attempts/{session}/files/{file}', \App\Http\Controllers\AssessmentSubmissionFileController::class)->whereNumber('session')->whereUuid('file')->name('assessment.submission-file')->middleware(['auth', 'verified']);
 Route::get('/course-management/assessment-reviews', \App\Livewire\CourseManagement\AssessmentReviewQueue::class)->name('assessment.reviews')->middleware(['auth', 'verified', \App\Http\Middleware\CheckRole::class . ':super_admin,academy_admin,instructor']);
 

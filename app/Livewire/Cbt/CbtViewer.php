@@ -14,6 +14,7 @@ class CbtViewer extends Component
     use WithPagination;
     use \App\Livewire\Concerns\RequiresAuthenticatedAccount;
     use \App\Livewire\Concerns\RequestsAssessmentMarkReview;
+    use \App\Livewire\Concerns\WithdrawsQnaSharing;
 
     #[Locked] public ?int $selectedAssessment = null;
     #[Locked] public ?array $selectedAttempt = null;
