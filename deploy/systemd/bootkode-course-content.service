@@ -11,8 +11,8 @@ RestartSec=5
 KillSignal=SIGTERM
 TimeoutStopSec=660
 UMask=0077
-StandardOutput=append:/path/to/bootkode/storage/logs/course-content-worker.log
-StandardError=inherit
+StandardOutput=journal
+StandardError=journal
 
 [Install]
 WantedBy=default.target
