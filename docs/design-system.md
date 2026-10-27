@@ -122,3 +122,10 @@ The two revised imported courses reuse the existing builder and inline Assessmen
 ## Visible AI connection state — 27 October 2026
 
 Course Content Studio uses the shared ui.panel and secondary button for provider configuration, the mentor link and the administrator-only connection test. The button has an associated description and loading/disabled state; safe results use an atomic polite status announcement with the actual check timestamp. Configured and connection verified are separate statements. No credential field or new palette/runtime/component system is introduced. The mentor uses a configured label instead of claiming network readiness.
+
+
+## Q&A authoring and participation — 27 October 2026
+
+Q&A authoring uses native labelled forms, shared panels/buttons/feedback, bounded topic types, associated validation errors and explicit original-response/sharing guidance. Original response fields expose minimum counts/lengths and maximum per-response/total limits; saves and retained results use the established attempt interface. Private evaluation weights must total 100%. Topic type describes the exercise; explicit sharing controls govern visibility.
+
+The participation page owns its h1, explains optional private-course sharing and separates peer feedback from official marks. Original topic titles replace internal question identifiers. Explicit share/withdraw controls use confirmation; feedback and moderation reasons use labelled native controls, associated errors and live status. Existing dashboard focus handling restores moved topic controls or the updated discussion/retained-response section; no new runtime, dependency or palette is added. The shared navbar normalizes escaped component-title input to plain text and escapes output once, fixing visible ampersand entities without allowing markup execution. Browser evidence and exact limits are in verification.md.

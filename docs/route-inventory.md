@@ -1,6 +1,6 @@
 # Route inventory
 
-Generated from `php artisan route:list --json` on 22 October 2026 after the private project/assignment submission continuation. Middleware and request-time component/service checks determine access; route existence is not proof of functional completion.
+Generated from `php artisan route:list --json` on 27 October 2026 after the Q&A participation continuation. Middleware and request-time component/service checks determine access; route existence is not proof of functional completion.
 
 | Method | URI | Name | Handler | Middleware |
 |---|---|---|---|---|
@@ -62,11 +62,11 @@ Generated from `php artisan route:list --json` on 22 October 2026 after the priv
 | GET / HEAD | api/certificate/verify/{verificationCode} | api.certificate.verify | App\Http\Controllers\CertificateVerificationController@api | web |
 | POST | api/resolve-account | api.resolve-account | App\Http\Controllers\FinancialController@resolveAccount | web, Illuminate\Auth\Middleware\Authenticate |
 | GET / HEAD | auth/facebook | login.facebook | App\Http\Controllers\Auth\SocialAuthController@redirectToFacebook | web, Illuminate\Auth\Middleware\RedirectIfAuthenticated |
-| GET / HEAD | auth/facebook/callback | — | App\Http\Controllers\Auth\SocialAuthController@handleFacebookCallback | web, Illuminate\Auth\Middleware\RedirectIfAuthenticated |
+| GET / HEAD | auth/facebook/callback |  | App\Http\Controllers\Auth\SocialAuthController@handleFacebookCallback | web, Illuminate\Auth\Middleware\RedirectIfAuthenticated |
 | GET / HEAD | auth/google | login.google | App\Http\Controllers\Auth\SocialAuthController@redirectToGoogle | web, Illuminate\Auth\Middleware\RedirectIfAuthenticated |
-| GET / HEAD | auth/google/callback | — | App\Http\Controllers\Auth\SocialAuthController@handleGoogleCallback | web, Illuminate\Auth\Middleware\RedirectIfAuthenticated |
+| GET / HEAD | auth/google/callback |  | App\Http\Controllers\Auth\SocialAuthController@handleGoogleCallback | web, Illuminate\Auth\Middleware\RedirectIfAuthenticated |
 | GET / HEAD | auth/twitter | login.twitter | App\Http\Controllers\Auth\SocialAuthController@redirectToTwitter | web, Illuminate\Auth\Middleware\RedirectIfAuthenticated |
-| GET / HEAD | auth/twitter/callback | — | App\Http\Controllers\Auth\SocialAuthController@handleTwitterCallback | web, Illuminate\Auth\Middleware\RedirectIfAuthenticated |
+| GET / HEAD | auth/twitter/callback |  | App\Http\Controllers\Auth\SocialAuthController@handleTwitterCallback | web, Illuminate\Auth\Middleware\RedirectIfAuthenticated |
 | GET / HEAD | billing/documents | billing.documents | App\Livewire\Financial\BillingDocuments | web, Illuminate\Auth\Middleware\Authenticate |
 | GET / HEAD | billing/documents/{commercialDocument} | commercial.documents.show | App\Http\Controllers\CommercialDocumentController@show | web, Illuminate\Auth\Middleware\Authenticate |
 | GET / HEAD | blog | blog.index | App\Livewire\Blog\PublicBlogIndex | web |
@@ -96,7 +96,7 @@ Generated from `php artisan route:list --json` on 22 October 2026 after the priv
 | GET / HEAD | community/moderation | community.moderation | App\Livewire\Community\CommunityCenter | web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\CheckRole:super_admin,academy_admin |
 | GET / HEAD | community/study-groups | community.study-groups | App\Livewire\Community\CommunityCenter | web, Illuminate\Auth\Middleware\Authenticate |
 | GET / HEAD | confirm-password | password.confirm | App\Http\Controllers\Auth\AuthController@showConfirmPasswordForm | web, Illuminate\Auth\Middleware\Authenticate |
-| POST | confirm-password | — | App\Http\Controllers\Auth\AuthController@confirmPassword | web, Illuminate\Auth\Middleware\Authenticate |
+| POST | confirm-password |  | App\Http\Controllers\Auth\AuthController@confirmPassword | web, Illuminate\Auth\Middleware\Authenticate |
 | GET / HEAD | content | content.index | App\Livewire\Content\ContentDocumentationCenter | web, Illuminate\Auth\Middleware\Authenticate |
 | GET / HEAD | content-editor/dashboard | content_editor.dashboard | App\Livewire\Dashboard\ContentEditorDashboard | web, Illuminate\Auth\Middleware\Authenticate, Illuminate\Auth\Middleware\EnsureEmailIsVerified |
 | GET / HEAD | content/all-documents | content.all-documents | App\Livewire\Content\ContentDocumentationCenter | web, Illuminate\Auth\Middleware\Authenticate |
@@ -121,7 +121,7 @@ Generated from `php artisan route:list --json` on 22 October 2026 after the priv
 | GET / HEAD | course-categories | course-categories | App\Livewire\CourseManagement\CourseCategories | web, Illuminate\Auth\Middleware\Authenticate, Illuminate\Auth\Middleware\EnsureEmailIsVerified |
 | GET / HEAD | course-management/all-courses | all-course | App\Livewire\CourseManagement\AllCourses | web, Illuminate\Auth\Middleware\Authenticate, Illuminate\Auth\Middleware\EnsureEmailIsVerified |
 | GET / HEAD | course-management/assessment-reviews | assessment.reviews | App\Livewire\CourseManagement\AssessmentReviewQueue | web, Illuminate\Auth\Middleware\Authenticate, Illuminate\Auth\Middleware\EnsureEmailIsVerified, App\Http\Middleware\CheckRole:super_admin,academy_admin,instructor |
-| GET / HEAD | course-management/lessons/{lessonId}/assessments | lesson.assessments.manage | App\Livewire\CourseManagement\CourseBuilder\AssessmentManager | web, Illuminate\Auth\Middleware\Authenticate, Illuminate\Auth\Middleware\EnsureEmailIsVerified, App\Http\Middleware\CheckRole:super_admin,academy_admin,instructor |
+| GET / HEAD | course-management/lessons/{lessonId}/assessments | lesson.assessments.manage | Closure | web, Illuminate\Auth\Middleware\Authenticate, Illuminate\Auth\Middleware\EnsureEmailIsVerified, App\Http\Middleware\CheckRole:super_admin,academy_admin,instructor |
 | GET / HEAD | course-management/my-courses | my-course | App\Livewire\CourseManagement\UserCourses | web, Illuminate\Auth\Middleware\Authenticate, Illuminate\Auth\Middleware\EnsureEmailIsVerified |
 | GET / HEAD | course-reviews/analytics/{courseId?} | review-analytics | App\Livewire\CourseManagement\ReviewAnalytics | web, Illuminate\Auth\Middleware\Authenticate, Illuminate\Auth\Middleware\EnsureEmailIsVerified |
 | GET / HEAD | course/{course} | course.view | App\Livewire\StudentManagement\CourseView | web, Illuminate\Auth\Middleware\Authenticate, Illuminate\Auth\Middleware\EnsureEmailIsVerified |
@@ -135,6 +135,7 @@ Generated from `php artisan route:list --json` on 22 October 2026 after the priv
 | GET / HEAD | dashboard/announcements | announcements | App\Livewire\SystemManagement\Announcements | web, Illuminate\Auth\Middleware\Authenticate, Illuminate\Auth\Middleware\EnsureEmailIsVerified |
 | GET / HEAD | dashboard/courses/approvals | course-approvals | App\Livewire\CourseManagement\CourseApprovals | web, Illuminate\Auth\Middleware\Authenticate, Illuminate\Auth\Middleware\EnsureEmailIsVerified |
 | GET / HEAD | dashboard/courses/available | courses.available | App\Livewire\CourseManagement\AvailableCourses | web, Illuminate\Auth\Middleware\Authenticate, Illuminate\Auth\Middleware\EnsureEmailIsVerified |
+| GET / HEAD | dashboard/courses/content-studio | course-content.studio | App\Livewire\CourseManagement\CourseContentStudio | web, Illuminate\Auth\Middleware\Authenticate, Illuminate\Auth\Middleware\EnsureEmailIsVerified, App\Http\Middleware\CheckRole:super_admin,academy_admin,instructor |
 | GET / HEAD | dashboard/courses/create | create.course | App\Livewire\CourseManagement\CourseForm | web, Illuminate\Auth\Middleware\Authenticate, Illuminate\Auth\Middleware\EnsureEmailIsVerified |
 | GET / HEAD | dashboard/courses/quality-control | course-quality.control | App\Livewire\CourseManagement\CourseQualityControl | web, Illuminate\Auth\Middleware\Authenticate, Illuminate\Auth\Middleware\EnsureEmailIsVerified |
 | GET / HEAD | dashboard/courses/reviews | course-reviews | App\Livewire\CourseManagement\CourseReviews | web, Illuminate\Auth\Middleware\Authenticate, Illuminate\Auth\Middleware\EnsureEmailIsVerified |
@@ -205,15 +206,16 @@ Generated from `php artisan route:list --json` on 22 October 2026 after the priv
 | GET / HEAD | job-applications/{jobApplication}/resume | job-applications.resume | App\Http\Controllers\JobApplicationResumeController | web, Illuminate\Auth\Middleware\Authenticate |
 | GET / HEAD | learner-journey | learner.journey | App\Livewire\StudentManagement\LearnerJourney | web, Illuminate\Auth\Middleware\Authenticate, Illuminate\Auth\Middleware\EnsureEmailIsVerified |
 | GET / HEAD | learning-analytics | student.learning-analytics | App\Livewire\StudentManagement\LearningAnalytics | web, Illuminate\Auth\Middleware\Authenticate, Illuminate\Auth\Middleware\EnsureEmailIsVerified |
+| GET / HEAD | learning/assessments/{assessment}/discussion | assessment.discussion | App\Livewire\StudentManagement\CourseView\AssessmentDiscussion | web, Illuminate\Auth\Middleware\Authenticate, Illuminate\Auth\Middleware\EnsureEmailIsVerified |
 | GET / HEAD | learning/attempts/{session}/files/{file} | assessment.submission-file | App\Http\Controllers\AssessmentSubmissionFileController | web, Illuminate\Auth\Middleware\Authenticate, Illuminate\Auth\Middleware\EnsureEmailIsVerified |
 | GET / HEAD | learning/lessons/{lesson}/assessments | lesson.assessments | App\Livewire\StudentManagement\CourseView\StudentAssessmentTaker | web, Illuminate\Auth\Middleware\Authenticate, Illuminate\Auth\Middleware\EnsureEmailIsVerified |
-| GET / HEAD | livewire/livewire.js | — | Livewire\Mechanisms\FrontendAssets\FrontendAssets@returnJavaScriptAsFile |  |
-| GET / HEAD | livewire/livewire.min.js.map | — | Livewire\Mechanisms\FrontendAssets\FrontendAssets@maps |  |
+| GET / HEAD | livewire/livewire.js |  | Livewire\Mechanisms\FrontendAssets\FrontendAssets@returnJavaScriptAsFile |  |
+| GET / HEAD | livewire/livewire.min.js.map |  | Livewire\Mechanisms\FrontendAssets\FrontendAssets@maps |  |
 | GET / HEAD | livewire/preview-file/{filename} | livewire.preview-file | Livewire\Features\SupportFileUploads\FilePreviewController@handle | web |
-| POST | livewire/update | livewire.update | Livewire\Mechanisms\HandleRequests\HandleRequests@handleUpdate | web |
+| POST | livewire/update | default.livewire.update | Livewire\Mechanisms\HandleRequests\HandleRequests@handleUpdate | web |
 | POST | livewire/upload-file | livewire.upload-file | Livewire\Features\SupportFileUploads\FileUploadController@handle | web, Illuminate\Routing\Middleware\ThrottleRequests:60,1 |
 | GET / HEAD | login | login | App\Http\Controllers\Auth\AuthController@showLoginForm | web, Illuminate\Auth\Middleware\RedirectIfAuthenticated |
-| POST | login | — | App\Http\Controllers\Auth\AuthController@login | web, Illuminate\Auth\Middleware\RedirectIfAuthenticated |
+| POST | login |  | App\Http\Controllers\Auth\AuthController@login | web, Illuminate\Auth\Middleware\RedirectIfAuthenticated |
 | POST | logout | logout | App\Http\Controllers\Auth\AuthController@logout | web, Illuminate\Auth\Middleware\Authenticate |
 | GET / HEAD | marketplace | marketplace.browse | App\Livewire\Marketplace\PublicMarketplace | web |
 | GET / HEAD | marketplace/admin/analytics | marketplace.analytics | App\Livewire\Marketplace\MarketplaceCenter | web, Illuminate\Auth\Middleware\Authenticate, Illuminate\Auth\Middleware\EnsureEmailIsVerified, App\Http\Middleware\CheckRole:super_admin,academy_admin |
@@ -268,7 +270,7 @@ Generated from `php artisan route:list --json` on 22 October 2026 after the priv
 | GET / HEAD | pricing | pricing | App\Livewire\Pages\Pricing | web |
 | GET / HEAD | projects/{slug} | project.show | App\Http\Controllers\ProjectController@show | web, Illuminate\Auth\Middleware\Authenticate, Illuminate\Auth\Middleware\EnsureEmailIsVerified |
 | GET / HEAD | register | register | App\Http\Controllers\Auth\AuthController@showRegistrationForm | web, Illuminate\Auth\Middleware\RedirectIfAuthenticated |
-| POST | register | — | App\Http\Controllers\Auth\AuthController@register | web, Illuminate\Auth\Middleware\RedirectIfAuthenticated |
+| POST | register |  | App\Http\Controllers\Auth\AuthController@register | web, Illuminate\Auth\Middleware\RedirectIfAuthenticated |
 | POST | reset-password | password.store | App\Http\Controllers\Auth\PasswordController@resetPassword | web, Illuminate\Auth\Middleware\RedirectIfAuthenticated |
 | GET / HEAD | reset-password/{token} | password.reset | App\Http\Controllers\Auth\PasswordController@showResetPasswordForm | web, Illuminate\Auth\Middleware\RedirectIfAuthenticated |
 | GET / HEAD | resume/builder | resume.builder | App\Livewire\Career\ResumeBuilder | web, Illuminate\Auth\Middleware\Authenticate |
@@ -282,7 +284,7 @@ Generated from `php artisan route:list --json` on 22 October 2026 after the priv
 | GET / HEAD | student/dashboard | student.dashboard | App\Livewire\Dashboard\StudentDashboard | web, Illuminate\Auth\Middleware\Authenticate, Illuminate\Auth\Middleware\EnsureEmailIsVerified |
 | GET / HEAD | super-admin/dashboard | super_admin.dashboard | App\Livewire\Dashboard\SuperAdminDashboard | web, Illuminate\Auth\Middleware\Authenticate, Illuminate\Auth\Middleware\EnsureEmailIsVerified |
 | GET / HEAD | transactions/history | transactions.history | App\Livewire\Financial\TransactionHistory | web, Illuminate\Auth\Middleware\Authenticate |
-| GET / HEAD | up | — | Closure |  |
+| GET / HEAD | up |  | Closure |  |
 | GET / HEAD | verify-email | verification.notice | App\Http\Controllers\Auth\EmailVerificationController@showVerificationPrompt | web, Illuminate\Auth\Middleware\Authenticate |
 | GET / HEAD | verify-email/{id}/{hash} | verification.verify | App\Http\Controllers\Auth\EmailVerificationController@verifyEmail | web, Illuminate\Auth\Middleware\Authenticate, Illuminate\Routing\Middleware\ValidateSignature, Illuminate\Routing\Middleware\ThrottleRequests:6,1 |
 | GET / HEAD | wallet | wallet.index | App\Livewire\Financial\WalletDashboard | web, Illuminate\Auth\Middleware\Authenticate |
@@ -290,4 +292,4 @@ Generated from `php artisan route:list --json` on 22 October 2026 after the priv
 | GET / HEAD | withdrawals | withdrawals.index | App\Livewire\Financial\WithdrawalManager | web, Illuminate\Auth\Middleware\Authenticate |
 | GET / HEAD | {slug} | page.show | App\Http\Controllers\PageController@show | web |
 
-The 22 October recorded-mark continuation reuses the existing lesson workspace, personal result and assessment-review routes. The verified route count remains 284; no new public download or review endpoint is introduced in this phase.
+Total: **287 routes**. This includes explicit role/owner/enrollment/participant checks inside services and Livewire components; menu visibility is never sufficient authorization. Only the Paystack webhook is CSRF-exempt, and it requires configured-key HMAC verification.

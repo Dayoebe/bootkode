@@ -43,6 +43,8 @@ Finalized written marks support explicit corrections with retained before/after 
 
 Project deliverables and file-enabled assignments support private saved draft attachments and instructor marking. Files keep the original requirements and become immutable on submission; authorized learners/reviewers download through verified private routes. Upload limits follow the strictest original instructor, Livewire and PHP configuration (currently 2 MiB locally). Sample answers, rubrics and grading notes remain private, including resumed attempts. Legacy attempts without upload rules keep their original text-only contract.
 
+Configured Q&A topics support saved distinct original responses and optional sharing after submission. Learners must complete the same topic before reviewing a peer. Original approval settings govern shared text and feedback; official marks remain instructor-controlled. Owners can withdraw sharing through retained results even after enrollment ends. Existing text-only attempts retain their original private contract; editing a definition never grants old attempts new sharing permissions.
+
 The session-clock compatibility migration removes an implicit MariaDB timestamp update rule. Back up the affected table before applying forward changes to an existing database; see the verification report for the local application and preservation evidence.
 
 ## Architecture and design

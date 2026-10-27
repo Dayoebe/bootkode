@@ -1,5 +1,20 @@
 # Coherence implementation roadmap
 
+## Current implementation and release backlog — 27 October 2026
+
+This summary supersedes remaining-work statements in the dated history below.
+
+| Status | Work |
+|---|---|
+| Implemented | Course Content Studio import/generation, migration, managed queue worker, existing live-provider acceptance, Groq connection checks and logging consolidation; see their dated verification evidence |
+| Implemented | Recorded lesson/structured assessments, private project/assignment files, formal manual-mark corrections/reconsideration and versioned Q&A/peer participation |
+| Next implementation | Real job alerts, community feedback replies, review/reminder/achievement notification delivery; preserve preferences, authorization and safe retry behavior |
+| Inspect before changing records | Historical public attachments, legacy attempts without complete snapshots, possible duplicate reward records and account archival/anonymization; use backups and explicit forward operations |
+| Unsupported product promises | Institution billing/white-label delivery, verified games/unsupported reward fulfillment and reviewed path generation; keep unavailable states truthful until backed by real implementations |
+| Remaining acceptance/release | Other legacy editor/theme/assistive-technology flows, dependency findings, deployment-specific provider/payment/OAuth/mail/worker/backup checks, and human editorial/legal/publication decisions |
+
+New Q&A work does not require a working-database migration or any public course publication. Current evidence is in verification.md; historical counts and earlier environment outages are not current-state claims.
+
 Work in independently verified commits. Preserve unrelated sidebar/profile edits and all existing commercial/learning records.
 
 | Stage | Deliverable | Evidence required |
@@ -130,3 +145,10 @@ Completed: remove the duplicate standalone authoring entry point, retain authori
 ## Groq and logging follow-through — 27 October 2026
 
 Completed: real Groq connectivity checks in CLI/administrator Studio; safe configuration/verification distinction; clear authentication/model/format failures; current-role mentor guard; single-file application logging and journal-backed worker console output; archive historical verification captures. Existing AI authoring and learner workflows remain in place. Full suite and actual responsive/browser evidence are recorded in verification.md. Generated-content factual review/publication remains a separate deliberate action.
+
+
+## Q&A implementation — 27 October 2026
+
+Completed: scoped Q&A authoring with normalized objects and full criteria validation; bounded saved original responses and immutable requirements; explicit private-course sharing; same-topic peer participation; approval/rejection/hiding; stale/replay handling; and withdrawal from retained personal results. Peer feedback stays separate from official grading and rewards. Existing records and legacy text-only behavior are preserved; no migration is needed.
+
+The current-state summary near the top supersedes older dated backlog statements. Remaining implementation includes notification delivery, inspection-driven historical-data/account-lifecycle work and unsupported product promises. Broader theme/assistive-technology acceptance, existing dependency findings, deployment-specific provider/queue/backup acceptance and human editorial/legal/publication decisions remain release work. Do not automatically publish working course drafts or invent historical outcomes.

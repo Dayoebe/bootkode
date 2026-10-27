@@ -2,6 +2,10 @@
 
 Audit started 20 October 2026. This is a large existing product: 273 baseline routes, 86,450 lines of application PHP, seven dashboard roles, and multiple commercial and education domains. Static inspection establishes risks; only the verification report establishes tested behavior. Do not interpret this audit as production certification.
 
+## Current status
+
+The current consolidated backlog is in [refactor-roadmap.md](refactor-roadmap.md). Course Content Studio and Groq connectivity have later recorded implementation/live acceptance, and Q&A/peer participation is now implemented for new versioned topics. Dated findings below retain audit history; they do not override those later deliveries. No whole-product or production certification is implied.
+
 ## Baseline and safety
 
 - Branch started at `d034cad3` on `main`; work uses `refactor/bootkode-product-coherence`.
@@ -230,3 +234,17 @@ Existing course, section, lesson, assessment and question identities were retain
 The existing Groq provider is enabled and passes live plain/structured requests. Added an explicit administrator connection test and operator command, provider-specific safe failure guidance and a current-role guard for mentor Livewire requests. Existing mentor/course-generation/expansion services retain server-side keys, authorisation, quotas and draft review. No working course was generated or replaced by verification.
 
 The 137 extra storage/logs files were historical verification captures and a worker console capture, not daily Laravel rotation. They are SHA-256-verified in private storage/app/diagnostics/legacy-logs-20261027.tar.gz. Only laravel.log remains; active worker console output uses journald. Application logging explicitly selects single. The latest local application failures were queue-worker MySQL connection refusals during startup; a current SQL query, login HTTP response and running worker verify recovery. Earlier testing warnings exercise expected refusal paths. No log history was erased.
+
+
+## Q&A and peer participation — 27 October 2026
+
+| Confirmed gap | Implemented behavior |
+|---|---|
+| Q&A options were manually JSON-encoded despite an array cast; nested prompts/criteria and type scope were incomplete | Versioned object metadata, bounded validation and 100% evaluation weights, locked author context, typed owned topic actions and existing atomic authoring operations |
+| Topic configuration did not create real learner participation | Persisted distinct original responses, frozen instructions/limits, explicit post-submission sharing, same-topic participation eligibility and private-course peer feedback |
+| Approval settings had no connected visibility workflow | Scoped sharing/feedback approval, reasoned rejection/hiding, stale-decision refusal, retained history and exact replay handling |
+| New visibility must not expose grading/history or make peer marks official | Explicit learner sharing, safe board projections, private pending feedback and original grading guidance; existing instructor review remains the only mark/reward boundary |
+| Enrollment expiry could strand an owner's sharing control | Owner withdrawal through retained personal results without reopening lesson/peer access |
+| Navbar displayed an already escaped ampersand | Plain-text title normalization with escaped output and a markup-injection regression check |
+
+This supersedes earlier Q&A/peer-participation backlog entries for newly configured versioned lesson topics. Older text-only attempts retain their original private behavior. No schema migration, new dependency, public forum, automatic file/code grading, working-record mutation or external notification delivery is introduced.
