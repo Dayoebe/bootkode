@@ -152,13 +152,17 @@ class CareerIntegrityTest extends TestCase
         $this->assertDatabaseHas('job_saves', ['job_id' => 999999, 'user_id' => $user->id]);
     }
 
-    public function test_saved_jobs_reference_career_records_and_unavailable_alerts_never_report_success(): void
+    public function test_saved_jobs_reference_career_records_and_job_alerts_require_persisted_criteria(): void
     {
         $job = $this->job();
         $user = User::factory()->create();
         Livewire::actingAs($user)->test(JobPortalComponent::class)->call('toggleSaveJob', $job->id)->assertHasNoErrors();
         $this->assertDatabaseHas('job_saves', ['job_id' => $job->id, 'user_id' => $user->id]);
-        Livewire::test(JobPortalComponent::class)->call('createJobAlert')->assertSee('Job alerts are not available yet');
+        Livewire::test(JobPortalComponent::class)->call('createJobAlert')->assertHasErrors('alertTitle');
+        $this->assertDatabaseCount('job_alerts', 0);
+        Livewire::test(JobPortalComponent::class)->set('alertTitle', 'My developer openings')->set('alertKeywords', 'Laravel')
+            ->call('createJobAlert')->assertHasNoErrors();
+        $this->assertDatabaseHas('job_alerts', ['user_id' => $user->id, 'title' => 'My developer openings']);
         $this->assertSame('job_portal', collect(\Illuminate\Support\Facades\Schema::getForeignKeys('job_saves'))->firstWhere('columns', ['job_id'])['foreign_table']);
     }
 }

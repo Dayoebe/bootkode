@@ -63,6 +63,12 @@ class CommunityCenter extends Component
     public $feedbackSubject = '';
     public $feedbackMessage = '';
     public $feedbackPriority = 'medium';
+    #[\Livewire\Attributes\Locked] public ?int $feedbackReplyId = null;
+    #[\Livewire\Attributes\Locked] public array $feedbackReplyContext = [];
+    public string $feedbackReplyText = '';
+    public bool $showFeedbackReplyModal = false;
+    public bool $feedbackEmailEnabled = false;
+
     
     // ===== FORM DATA (Code Submission) =====
     public $code = '';
@@ -108,18 +114,20 @@ class CommunityCenter extends Component
 
         // Feedback rules
         'feedbackSubject' => 'required|min:5|max:255',
-        'feedbackMessage' => 'required|min:10',
+        'feedbackMessage' => 'required|string|min:10|max:10000',
         'feedbackPriority' => 'in:low,medium,high',
     ];
 
     public function boot(): void
     {
         abort_unless(auth()->check(), 403);
+        if ($this->feedbackReplyId !== null || $this->activeTab === 'moderation') $this->authorizeModeration();
     }
 
     protected function authorizeModeration(): void
     {
-        abort_unless(auth()->user()?->hasAnyRole(['super_admin', 'academy_admin']), 403);
+        $actor = auth()->user()?->refresh()->unsetRelation('roles');
+        abort_unless($actor?->is_active && $actor->email_verified_at && $actor->hasAnyRole(['super_admin', 'academy_admin']), 403);
     }
 
     public function mount()
@@ -136,6 +144,7 @@ class CommunityCenter extends Component
             $this->authorizeModeration();
         }
         $this->loadCommunityStats();
+        $this->feedbackEmailEnabled = auth()->user()->shouldReceiveEmailNotification('community_feedback_response');
     }
 
     /**
@@ -483,8 +492,8 @@ public function openCodeChallenge($challengeId)
     {
         $this->validate([
             'feedbackSubject' => 'required|min:5|max:255',
-            'feedbackMessage' => 'required|min:10',
-            'feedbackCategory' => 'required|string',
+            'feedbackMessage' => 'required|string|min:10|max:10000',
+            'feedbackCategory' => 'required|string|max:100',
             'feedbackPriority' => 'required|in:low,medium,high',
         ]);
 
@@ -501,7 +510,7 @@ public function openCodeChallenge($challengeId)
             $this->closeModal();
             session()->flash('message', 'Feedback submitted. Thank you!');
         } catch (\Exception $e) {
-            session()->flash('error', 'Error submitting feedback: ' . $e->getMessage());
+            session()->flash('error', 'Feedback could not be saved. Please try again.');
         }
     }
 
@@ -619,7 +628,6 @@ public function openCodeChallenge($challengeId)
             $feedback = \App\Models\Community\CommunityFeedback::findOrFail($feedbackId);
             $feedback->update([
                 'status' => 'resolved',
-                'responded_at' => now(),
             ]);
             session()->flash('message', 'Feedback resolved.');
         } catch (\Exception $e) {
@@ -630,7 +638,36 @@ public function openCodeChallenge($challengeId)
     public function respondToFeedback($feedbackId)
     {
         $this->authorizeModeration();
-        session()->flash('error', 'Feedback replies are not available yet. You can assign or resolve feedback here.');
+        $feedback = CommunityFeedback::findOrFail($feedbackId);
+        $this->feedbackReplyId = $feedback->id;
+        $this->feedbackReplyContext = $feedback->only(['subject', 'message', 'admin_response']);
+        $this->feedbackReplyText = '';
+        $this->resetValidation('feedbackReplyText');
+        $this->showFeedbackReplyModal = true;
+    }
+
+    public function saveFeedbackReply(): void
+    {
+        $this->authorizeModeration(); abort_unless($this->feedbackReplyId, 422);
+        $this->validate(['feedbackReplyText' => 'required|string|min:10|max:10000']);
+        try { app(\App\Services\CommunityFeedbackResponseService::class)->respond(auth()->user(), $this->feedbackReplyId, $this->feedbackReplyText); }
+        catch (\Symfony\Component\HttpKernel\Exception\HttpException $e) {
+            if (!in_array($e->getStatusCode(), [409, 422], true)) throw $e;
+            $this->addError('feedbackReplyText', $e->getMessage()); return;
+        }
+        $id = $this->feedbackReplyId; $this->closeFeedbackReply();
+        session()->flash('message', 'Reply saved. The requester can read it privately in the portal.');
+        $this->dispatch('bootkode-assessment-focus', id: 'staff-feedback-'.$id);
+    }
+    public function closeFeedbackReply(): void
+    {
+        $this->reset('feedbackReplyId', 'feedbackReplyContext', 'feedbackReplyText', 'showFeedbackReplyModal');
+        $this->resetValidation('feedbackReplyText');
+    }
+    public function saveFeedbackEmailPreference(): void
+    {
+        app(\App\Services\PortalNotificationService::class)->setEmailPreference(auth()->user(), 'community_feedback_response', $this->feedbackEmailEnabled);
+        session()->flash('message', 'Your community email preference was saved. Replies remain available in the portal.');
     }
 
     public function unflagThread($threadId)
@@ -729,6 +766,7 @@ public function openCodeChallenge($challengeId)
     public function render()
     {
         $user = auth()->user();
+        if ($this->feedbackReplyId !== null || $this->activeTab === 'moderation') $this->authorizeModeration();
 
         $data = [
             'stats' => $this->stats,

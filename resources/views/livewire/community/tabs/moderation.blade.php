@@ -124,58 +124,15 @@
             </div>
 
             @forelse($feedbackItems ?? [] as $feedback)
-                <div class="bg-themed-secondary border border-themed-primary rounded-lg p-4  transition-all">
-                    <div class="flex items-start justify-between mb-2">
-                        <h3 class="font-semibold text-themed-primary flex-1">{{ $feedback->subject }}</h3>
-                        <span
-                            class="bg-{{ $feedback->getStatusColorAttribute() }}-100/20 text-{{ $feedback->getStatusColorAttribute() }}-400 px-2 py-1 rounded text-xs font-medium border border-{{ $feedback->getStatusColorAttribute() }}-500/30 whitespace-nowrap">
-                            {{ ucfirst(str_replace('_', ' ', $feedback->status)) }}
-                        </span>
+                <section id="staff-feedback-{{ $feedback->id }}" tabindex="-1" wire:key="staff-feedback-{{ $feedback->id }}" class="space-y-3 rounded-lg border border-line bg-surface p-4">
+                    <h3 class="break-words font-semibold text-content">{{ $feedback->subject }}</h3><p class="text-sm text-content-muted">{{ $feedback->user->name }} · {{ ucfirst(str_replace('_', ' ', $feedback->status)) }} · {{ ucfirst($feedback->priority) }} priority</p><p class="whitespace-pre-wrap break-words text-content">{{ $feedback->message }}</p>
+                    @if($feedback->admin_response)<div class="space-y-2 border-t border-line pt-3"><h4 class="font-semibold text-content">Recorded community reply</h4><p class="whitespace-pre-wrap break-words text-content">{{ $feedback->admin_response }}</p><p class="text-sm text-content-muted">{{ $feedback->responded_at?->format('M j, Y H:i') }}</p></div>@endif
+                    <div class="flex flex-wrap gap-3">
+                        @if($feedback->status === 'open')<x-secondary-button wire:click="assignFeedback({{ $feedback->id }})">Assign feedback to me</x-secondary-button>@endif
+                        @if(!$feedback->admin_response && $feedback->status !== 'closed')<x-secondary-button wire:click="respondToFeedback({{ $feedback->id }})" wire:loading.class="opacity-60" wire:target="respondToFeedback">Reply to requester</x-secondary-button>@endif
+                        @if(!in_array($feedback->status, ['resolved', 'closed']))<x-secondary-button wire:click="resolveFeedback({{ $feedback->id }})">Resolve feedback</x-secondary-button>@endif
                     </div>
-
-                    <div class="flex items-center gap-2 text-xs text-themed-secondary mb-2 flex-wrap">
-                        <span class="bg-themed-tertiary px-2 py-1 rounded border border-themed-primary">
-                            {{ ucfirst(str_replace('_', ' ', $feedback->category)) }}
-                        </span>
-                        <span
-                            class="bg-{{ $feedback->priority === 'high' ? 'red' : ($feedback->priority === 'medium' ? 'yellow' : 'gray') }}-100/20 text-{{ $feedback->priority === 'high' ? 'red' : ($feedback->priority === 'medium' ? 'yellow' : 'gray') }}-400 px-2 py-1 rounded border border-{{ $feedback->priority === 'high' ? 'red' : ($feedback->priority === 'medium' ? 'yellow' : 'gray') }}-500/30">
-                            {{ ucfirst($feedback->priority) }} Priority
-                        </span>
-                    </div>
-
-                    <p class="text-sm text-themed-secondary mb-2 line-clamp-2">{{ $feedback->message }}</p>
-
-                    <div class="text-xs text-themed-secondary mb-3 pb-3 border-b border-themed-primary">
-                        <i aria-hidden="true" class="fas fa-user mr-1"></i>{{ $feedback->user->name }}
-                        <i aria-hidden="true" class="fas fa-clock ml-3 mr-1"></i>{{ $feedback->created_at->diffForHumans() }}
-                    </div>
-
-                    @if($feedback->status === 'open')
-                        <button wire:click="assignFeedback({{ $feedback->id }})"
-                            class="w-full bg-action hover:bg-action text-action-foreground px-3 py-2 rounded-lg text-sm font-medium transition-colors">
-                            <i aria-hidden="true" class="fas fa-hand-pointer mr-1"></i>Assign to Me
-                        </button>
-                    @elseif($feedback->status === 'in_progress')
-                        <div class="text-xs text-themed-secondary mb-2">
-                            <strong>Assigned to:</strong> {{ $feedback->assignedTo?->name ?? 'Unassigned' }}
-                        </div>
-                        <div class="grid grid-cols-2 gap-2">
-                            <button wire:click="respondToFeedback({{ $feedback->id }})"
-                                class="bg-green-600 hover:bg-green-700 text-white px-3 py-2 rounded-lg text-sm font-medium transition-colors">
-                                <i aria-hidden="true" class="fas fa-reply mr-1"></i>Respond
-                            </button>
-                            <button wire:click="resolveFeedback({{ $feedback->id }})"
-                                class="bg-action hover:bg-action text-action-foreground px-3 py-2 rounded-lg text-sm font-medium transition-colors">
-                                <i aria-hidden="true" class="fas fa-check mr-1"></i>Resolve
-                            </button>
-                        </div>
-                    @else
-                        <div class="text-xs text-themed-secondary">
-                            <p><strong>Response:</strong> {{ $feedback->admin_response ?? 'No response' }}</p>
-                            <p class="mt-1"><strong>Responded:</strong> {{ $feedback->responded_at?->diffForHumans() ?? 'N/A' }}</p>
-                        </div>
-                    @endif
-                </div>
+                </section>
             @empty
                 <div class="text-center py-12 bg-themed-secondary border border-themed-primary rounded-lg">
                     <i aria-hidden="true" class="fas fa-comments text-themed-secondary text-4xl mb-3 block"></i>

@@ -36,6 +36,7 @@ class JobPortal extends Component
     public $filterExperienceLevel = '';
     public $filterSalaryMin = '';
     public $filterSalaryMax = '';
+    public string $filterSalaryCurrency = 'NGN';
     public $sortBy = 'created_at';
     public $sortDirection = 'desc';
     public $showAdvancedFilters = false;
@@ -58,6 +59,10 @@ class JobPortal extends Component
     public $alertKeywords = '';
     public $alertLocation = '';
     public $alertCategory = '';
+    public string $alertTitle = '';
+    public string $alertFrequency = 'daily';
+    public bool $jobAlertEmailEnabled = false;
+    public string $alertMessage = '';
 
     // User's Data
     public $userApplications = [];
@@ -112,14 +117,17 @@ class JobPortal extends Component
         $this->loadUserData();
         $this->loadRecommendations();
         $this->loadJobStats();
+        $this->jobAlertEmailEnabled = auth()->user()?->shouldReceiveEmailNotification('job_alert') ?? false;
+        if (auth()->check() && request()->integer('alert')) $this->loadSavedAlert(request()->integer('alert'));
     }
 
     public function updated($propertyName)
     {
+        $this->resetValidation($propertyName);
         if (in_array($propertyName, [
             'searchTerm', 'filterCategory', 'filterLocation', 'filterEmploymentType',
             'filterWorkType', 'filterExperienceLevel', 'filterSalaryMin', 'filterSalaryMax',
-            'sortBy', 'sortDirection'
+            'filterSalaryCurrency', 'sortBy', 'sortDirection'
         ])) {
             $this->resetPage();
         }
@@ -321,19 +329,57 @@ class JobPortal extends Component
     {
         $this->reset([
             'searchTerm', 'filterCategory', 'filterLocation', 'filterEmploymentType',
-            'filterWorkType', 'filterExperienceLevel', 'filterSalaryMin', 'filterSalaryMax'
+            'filterWorkType', 'filterExperienceLevel', 'filterSalaryMin', 'filterSalaryMax', 'filterSalaryCurrency'
         ]);
         $this->resetPage();
     }
 
-    public function createJobAlert()
+    private function alertActor(): User { abort_unless(auth()->check(), 403); return auth()->user(); }
+    public function openJobAlert(): void
     {
-        if (!Auth::check()) {
-            session()->flash('error', 'Please login to create job alerts.');
-            return;
-        }
-
-        session()->flash('error', 'Job alerts are not available yet. Use the job search filters to find current openings.');
+        abort_unless(auth()->check(), 403);
+        $this->resetValidation();
+        $this->alertTitle = ''; $this->alertFrequency = 'daily';
+        $this->alertKeywords = $this->searchTerm; $this->alertLocation = $this->filterLocation; $this->alertCategory = $this->filterCategory;
+        $this->showJobAlertModal = true;
+    }
+    public function createJobAlert(): void
+    {
+        abort_unless(auth()->check(), 403);
+        $this->validate(['alertTitle'=>'required|string|max:100','alertKeywords'=>'nullable|string|max:1000','alertLocation'=>'nullable|string|max:255','alertCategory'=>'nullable|string|max:100','alertFrequency'=>'required|in:daily,weekly']);
+        $alert = \Illuminate\Support\Facades\DB::transaction(function () {
+            $alert = app(\App\Services\JobAlertService::class)->create($this->alertActor(),[
+                'title'=>$this->alertTitle,'keywords'=>array_values(array_filter(array_map('trim',explode(',', $this->alertKeywords)))),
+                'location'=>$this->alertLocation,'category'=>$this->alertCategory,'frequency'=>$this->alertFrequency,
+                'employment_type'=>$this->filterEmploymentType,'work_type'=>$this->filterWorkType,'experience_level'=>$this->filterExperienceLevel,
+                'salary_min'=>$this->filterSalaryMin,'salary_max'=>$this->filterSalaryMax,'salary_currency'=>$this->filterSalaryCurrency]);
+            app(\App\Services\PortalNotificationService::class)->setEmailPreference($this->alertActor(),'job_alert',$this->jobAlertEmailEnabled);
+            return $alert;
+        });
+        $this->showJobAlertModal=false;$this->alertMessage='Saved alert: '.$alert->title.'. Use Check now to record new matches. Email alerts follow your saved preference when email delivery is available.';
+    }
+    public function toggleJobAlert(int $id,bool $active): void { app(\App\Services\JobAlertService::class)->pause($this->alertActor(),$id,$active);$this->alertMessage=$active?'Job alert resumed.':'Job alert paused.'; }
+    public function setJobAlertFrequency(int $id,string $frequency): void
+    {
+        app(\App\Services\JobAlertService::class)->frequency($this->alertActor(),$id,$frequency);
+        $this->alertMessage='Saved alert frequency updated.';
+        $this->dispatch('bootkode-assessment-focus',id:'job-alert-'.$id);
+    }
+    public function removeJobAlert(int $id): void { app(\App\Services\JobAlertService::class)->remove($this->alertActor(),$id);$this->alertMessage='Saved job alert removed.'; }
+    public function checkJobAlert(int $id): void
+    {
+        $count=app(\App\Services\JobAlertService::class)->checkOwn($this->alertActor(),$id);
+        $this->alertMessage=$count ? $count.' new match(es) recorded in your portal notifications.' : 'No new available public jobs match this alert.';
+    }
+    public function loadSavedAlert(int $id): void
+    {
+        try { $alert=app(\App\Services\JobAlertService::class)->owned($this->alertActor(),$id); }
+        catch (\Illuminate\Database\Eloquent\ModelNotFoundException) { $this->alertMessage='That saved alert is no longer available. Current public jobs are below.';return; }
+        $this->searchTerm=implode(' ', $alert->keywords ?? []); $this->filterCategory=$alert->category ?? ''; $this->filterLocation=$alert->location ?? '';
+        $this->filterEmploymentType=$alert->employment_type ?? ''; $this->filterWorkType=$alert->work_type ?? ''; $this->filterExperienceLevel=$alert->experience_level ?? '';
+        $this->filterSalaryCurrency=$alert->salary_currency ?? 'NGN';
+        $this->filterSalaryMin=$alert->salary_min ?? ''; $this->filterSalaryMax=$alert->salary_max ?? '';
+        $this->resetPage();$this->alertMessage='Showing the saved filters for '.$alert->title.'.';
     }
 
     public function quickApply($jobId)
@@ -344,6 +390,15 @@ class JobPortal extends Component
 
     public function render()
     {
+        try { $this->validate([
+            'searchTerm'=>'nullable|string|max:250','filterCategory'=>'nullable|string|max:100','filterLocation'=>'nullable|string|max:255',
+            'filterEmploymentType'=>'nullable|in:full-time,part-time,contract,temporary,internship,freelance','filterWorkType'=>'nullable|in:on-site,remote,hybrid',
+            'filterExperienceLevel'=>'nullable|in:entry,junior,mid,senior,executive,director','filterSalaryMin'=>'nullable|numeric|min:0','filterSalaryMax'=>'nullable|numeric|min:0',
+            'sortBy'=>'required|in:created_at,salary,relevance,views_count,applications_count,title','sortDirection'=>'required|in:asc,desc',
+            'filterSalaryCurrency'=>['required',\Illuminate\Validation\Rule::in(\App\Services\JobAlertService::CURRENCIES)],
+        ]); } catch (\Illuminate\Validation\ValidationException $exception) {
+            foreach ($exception->errors() as $field => $messages) { $this->reset($field); $this->addError($field, $messages[0]); }
+        }
         $query = Job::active()->with(['postedBy:id,name']);
 
 
@@ -373,14 +428,17 @@ class JobPortal extends Component
             $query->byExperience($this->filterExperienceLevel);
         }
 
-        if ($this->filterSalaryMin || $this->filterSalaryMax) {
-            $query->bySalaryRange($this->filterSalaryMin, $this->filterSalaryMax);
+        if (($this->filterSalaryMin !== '' && $this->filterSalaryMin !== null) || ($this->filterSalaryMax !== '' && $this->filterSalaryMax !== null)) {
+            $this->validate(['filterSalaryMin'=>'nullable|numeric|min:0','filterSalaryMax'=>'nullable|numeric|min:0']);
+            $query->where('hide_salary',false)->where('salary_currency',$this->filterSalaryCurrency);
+            if ($this->filterSalaryMin !== '' && $this->filterSalaryMin !== null) $query->where('salary_min','>=',$this->filterSalaryMin);
+            if ($this->filterSalaryMax !== '' && $this->filterSalaryMax !== null) $query->where('salary_max','<=',$this->filterSalaryMax);
         }
 
         // Apply sorting
         if ($this->sortBy === 'salary') {
-            $query->orderByRaw('(salary_min + salary_max) / 2 ' . $this->sortDirection);
-        } elseif ($this->sortBy === 'relevance' && $this->searchTerm) {
+            $query->where('hide_salary',false)->where('salary_currency',$this->filterSalaryCurrency)->orderByRaw('(salary_min + salary_max) / 2 ' . $this->sortDirection);
+        } elseif ($this->sortBy === 'relevance') {
             // Relevance sorting would need full-text search scoring
             $query->orderBy('created_at', 'desc');
         } else {
@@ -389,8 +447,13 @@ class JobPortal extends Component
 
         $jobs = $query->paginate(12);
 
+        $alertOwner = auth()->check() ? User::find(auth()->id()) : null;
+        $alertsEligible = $alertOwner && $alertOwner->is_active && $alertOwner->email_verified_at;
         return view('livewire.career.job-portal', [
-            'jobs' => $jobs
+            'jobs' => $jobs,
+            'alertsEligible' => $alertsEligible,
+            'alertReady' => app(\App\Services\JobAlertService::class)->ready(),
+            'savedAlerts' => $alertsEligible && app(\App\Services\JobAlertService::class)->ready() ? \App\Models\Career\JobAlert::where('user_id',auth()->id())->latest()->get() : collect(),
         ]);
     }
 }

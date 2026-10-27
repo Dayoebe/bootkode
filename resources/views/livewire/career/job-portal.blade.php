@@ -4,13 +4,23 @@
         <div class="mx-auto max-w-7xl px-4 py-6 sm:px-6">
             <x-ui.page-header title="Career opportunities" description="Explore current openings, save relevant roles, and track your applications." />
 
+            <p role="status" aria-live="polite" class="mb-4 text-content-muted">{{ $alertMessage }}</p>
+            <x-input-error id="job-search-errors" :messages="$errors->all()" role="alert" />
+            @auth
+                <x-ui.panel title="Your saved job alerts">
+                    <p class="mb-3 text-sm text-content-muted">Up to ten saved alerts; up to 50 previously unreported public matches per check. Remaining matches stay available for a later check. {{ config('delivery.job_alerts_schedule_enabled') ? 'Automatic checks are enabled; frequency follows each saved alert.' : 'Automatic checks are not configured. Use Check now.' }}</p>
+                    @forelse($savedAlerts as $alert)<div id="job-alert-{{ $alert->id }}" tabindex="-1" wire:key="saved-alert-{{ $alert->id }}" class="space-y-2 border-t border-line py-3"><h3 class="break-words font-semibold text-content">{{ $alert->title }}</h3><p class="text-sm text-content-muted">{{ $alert->is_active ? 'Active' : 'Paused' }} · {{ ucfirst($alert->frequency) }} · {{ $alert->last_sent_at ? 'Last portal alert: '.$alert->last_sent_at->format('M j, Y H:i') : 'No matches recorded yet' }}</p><div class="flex flex-wrap gap-2"><x-secondary-button wire:click="loadSavedAlert({{ $alert->id }})">Use saved filters</x-secondary-button><x-secondary-button wire:click="checkJobAlert({{ $alert->id }})" :disabled="!$alert->is_active" wire:loading.attr="disabled">Check now</x-secondary-button><x-secondary-button wire:click="toggleJobAlert({{ $alert->id }}, {{ $alert->is_active ? 'false' : 'true' }})">{{ $alert->is_active ? 'Pause alert' : 'Resume alert' }}</x-secondary-button><x-secondary-button wire:click="setJobAlertFrequency({{ $alert->id }}, 'daily')" :aria-pressed="$alert->frequency === 'daily' ? 'true' : 'false'">Daily checks</x-secondary-button><x-secondary-button wire:click="setJobAlertFrequency({{ $alert->id }}, 'weekly')" :aria-pressed="$alert->frequency === 'weekly' ? 'true' : 'false'">Weekly checks</x-secondary-button><x-danger-button wire:click="removeJobAlert({{ $alert->id }})" wire:confirm="Remove this saved alert? Existing portal notifications are retained.">Remove alert</x-danger-button></div></div>
+                    @empty<p class="text-sm text-content-muted">Save a set of filters to create a private job alert.</p>@endforelse
+                </x-ui.panel>
+            @endauth
+
             <!-- Quick Search -->
             <div class="max-w-4xl mx-auto">
                 <div class="bk-panel p-4 sm:p-6">
                     <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
                         <div class="md:col-span-2">
                             <div class="relative">
-                                <input aria-label="Job title, keywords, or company" wire:model.live.debounce.500ms="searchTerm" type="text"
+                                <input aria-label="Job title, keywords, or company" wire:model.live.debounce.500ms="searchTerm" aria-describedby="job-search-errors" aria-invalid="{{ $errors->has('searchTerm') ? 'true' : 'false' }}" type="text"
                                     placeholder="Job title, keywords, or company"
                                     class="w-full px-4 py-3 pl-12 border border-themed-primary rounded-lg focus:ring-2 focus:ring-brand focus:border-transparent bg-themed-secondary text-themed-primary placeholder-themed-tertiary">
                                 <svg class="absolute left-4 top-3.5 h-5 w-5 text-themed-secondary" fill="none"
@@ -147,11 +157,11 @@
 
                             <!-- Salary Range Filter -->
                             <div>
-                                <label class="block text-sm font-medium text-themed-primary mb-2">Salary Range (NGN)</label>
+                                <label class="block text-sm font-medium text-themed-primary mb-2" for="job-filter-currency">Salary currency</label><select id="job-filter-currency" wire:model.live="filterSalaryCurrency" aria-describedby="job-search-errors" aria-invalid="{{ $errors->has('filterSalaryCurrency') ? 'true' : 'false' }}" class="mb-2 min-h-11 w-full rounded-lg border border-line bg-surface px-3 py-2 text-content focus:outline-none focus:ring-2 focus:ring-action">@foreach(\App\Services\JobAlertService::CURRENCIES as $currency)<option value="{{ $currency }}">{{ $currency }}</option>@endforeach</select><p class="mb-2 text-sm text-content-muted">Salary bounds and salary sorting use this currency and exclude hidden values.</p>
                                 <div class="grid grid-cols-2 gap-2">
-                                    <input aria-label="Min" wire:model.live.debounce.500ms="filterSalaryMin" type="number" placeholder="Min"
+                                    <input aria-label="Min" wire:model.live.debounce.500ms="filterSalaryMin" aria-describedby="job-search-errors" aria-invalid="{{ $errors->has('filterSalaryMin') ? 'true' : 'false' }}" type="number" placeholder="Min"
                                         class="px-3 py-2 border border-themed-primary rounded-lg focus:ring-2 focus:ring-brand text-sm bg-themed-secondary text-themed-primary placeholder-themed-tertiary">
-                                    <input aria-label="Max" wire:model.live.debounce.500ms="filterSalaryMax" type="number" placeholder="Max"
+                                    <input aria-label="Max" wire:model.live.debounce.500ms="filterSalaryMax" aria-describedby="job-search-errors" aria-invalid="{{ $errors->has('filterSalaryMax') ? 'true' : 'false' }}" type="number" placeholder="Max"
                                         class="px-3 py-2 border border-themed-primary rounded-lg focus:ring-2 focus:ring-brand text-sm bg-themed-secondary text-themed-primary placeholder-themed-tertiary">
                                 </div>
                             </div>
@@ -159,11 +169,8 @@
                             <!-- Job Alert -->
                             @auth
                                 <div class="pt-4 border-t border-themed-primary">
-                                    <button type="button" disabled aria-describedby="job-alert-availability"
-                                        class="w-full bg-green-600 text-white px-4 py-3 rounded-lg hover:bg-green-700 transition-all font-medium text-sm">
-                                        Job alerts unavailable
-                                    </button>
-                                    <p id="job-alert-availability" class="mt-2 text-sm text-themed-secondary">Use the filters to find current openings.</p>
+                                    <x-secondary-button wire:click="openJobAlert" :disabled="!$alertReady || !$alertsEligible" aria-describedby="job-alert-availability">Save job alert</x-secondary-button>
+                                    <p id="job-alert-availability" class="mt-2 text-sm text-content-muted">{{ !$alertsEligible ? 'An active verified account is required for saved alerts.' : ($alertReady ? 'Save these filters and record new matching jobs in your private portal.' : 'Saved alerts are being set up. Current job search remains available.') }}</p>
                                 </div>
                             @endauth
                         </div>
@@ -175,10 +182,10 @@
                     <!-- Sort and View Controls -->
                     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6">
                         <div class="flex items-center space-x-4 mb-4 sm:mb-0">
-                            <select aria-label="Sort by" wire:model.live="sortBy"
+                            <select aria-label="Sort by" wire:model.live="sortBy" aria-describedby="job-search-errors" aria-invalid="{{ $errors->has('sortBy') ? 'true' : 'false' }}"
                                 class="px-3 py-2 border border-themed-primary rounded-lg focus:ring-2 focus:ring-brand text-sm bg-themed-secondary text-themed-primary">
                                 <option value="created_at">Latest Jobs</option>
-                                <option value="salary">Salary</option>
+                                <option value="salary">Salary (selected currency)</option>
                                 <option value="views_count">Most Popular</option>
                                 <option value="applications_count">Most Applied</option>
                                 @if($searchTerm)
@@ -186,7 +193,7 @@
                                 @endif
                             </select>
 
-                            <button wire:click="$toggle('sortDirection')"
+                            <button wire:click="$set('sortDirection', '{{ $sortDirection === 'asc' ? 'desc' : 'asc' }}')" aria-label="{{ $sortDirection === 'asc' ? 'Sort descending' : 'Sort ascending' }}"
                                 class="p-2 border border-themed-primary rounded-lg hover:bg-themed-tertiary transition-colors">
                                 <svg class="w-4 h-4 text-themed-primary {{ $sortDirection === 'desc' ? 'transform rotate-180' : '' }}"
                                     fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -198,14 +205,14 @@
 
                         <div class="flex items-center space-x-2">
                             <span class="text-sm text-themed-secondary">View:</span>
-                            <button wire:click="$set('viewMode', 'list')"
+                            <button wire:click="$set('viewMode', 'list')" aria-label="List view" aria-pressed="{{ $viewMode === 'list' ? 'true' : 'false' }}"
                                 class="p-2 rounded-lg {{ $viewMode === 'list' ? 'bg-action text-action-foreground' : 'text-themed-secondary hover:text-themed-primary border border-themed-primary' }}">
                                 <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                                     <path fill-rule="evenodd"
                                         d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" />
                                 </svg>
                             </button>
-                            <button wire:click="$set('viewMode', 'grid')"
+                            <button wire:click="$set('viewMode', 'grid')" aria-label="Grid view" aria-pressed="{{ $viewMode === 'grid' ? 'true' : 'false' }}"
                                 class="p-2 rounded-lg {{ $viewMode === 'grid' ? 'bg-action text-action-foreground' : 'text-themed-secondary hover:text-themed-primary border border-themed-primary' }}">
                                 <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                                     <path
@@ -665,60 +672,19 @@
         </div>
     @endif
 
-    <!-- Job Alert Modal -->
-    @if($showJobAlertModal)
-        <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50" x-trap.inert.noscroll="true" role="dialog" aria-modal="true" aria-label="Create Job Alert" tabindex="-1" x-data="{}" @keydown.escape.stop="$wire.set(&#x27;showJobAlertModal&#x27;, false)">
-            <div class="bg-themed-secondary rounded-lg max-w-lg w-full">
-                <div class="flex justify-between items-center p-6 border-b border-themed-primary">
-                    <h2 class="text-2xl font-bold text-themed-primary">Create Job Alert</h2>
-                    <button wire:click="$set('showJobAlertModal', false)" class="text-themed-secondary hover:text-themed-primary">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M6 18L18 6M6 6l12 12" />
-                        </svg>
-                    </button>
-                </div>
-
-                <form wire:submit.prevent="createJobAlert" class="p-6">
-                    <div class="space-y-4">
-                        <div>
-                            <label class="block text-sm font-medium text-themed-primary mb-2">Keywords</label>
-                            <input aria-label="e.g. PHP, Laravel, Developer" wire:model="alertKeywords" type="text" placeholder="e.g. PHP, Laravel, Developer"
-                                class="w-full px-4 py-3 border border-themed-primary rounded-lg focus:ring-2 focus:ring-brand focus:border-transparent bg-themed-secondary text-themed-primary placeholder-themed-tertiary">
-                        </div>
-
-                        <div>
-                            <label class="block text-sm font-medium text-themed-primary mb-2">Location</label>
-                            <input aria-label="e.g. Lagos, Remote" wire:model="alertLocation" type="text" placeholder="e.g. Lagos, Remote"
-                                class="w-full px-4 py-3 border border-themed-primary rounded-lg focus:ring-2 focus:ring-brand focus:border-transparent bg-themed-secondary text-themed-primary placeholder-themed-tertiary">
-                        </div>
-
-                        <div>
-                            <label class="block text-sm font-medium text-themed-primary mb-2">Category</label>
-                            <select aria-label="Alert category" wire:model="alertCategory"
-                                class="w-full px-4 py-3 border border-themed-primary rounded-lg focus:ring-2 focus:ring-brand focus:border-transparent bg-themed-secondary text-themed-primary">
-                                <option value="">All Categories</option>
-                                @foreach($categories as $slug => $name)
-                                    <option value="{{ $slug }}">{{ $name }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="flex justify-end space-x-4 mt-6">
-                        <button type="button" wire:click="$set('showJobAlertModal', false)"
-                            class="px-6 py-3 border border-themed-primary text-themed-primary rounded-lg hover:bg-themed-tertiary transition-colors">
-                            Cancel
-                        </button>
-                        <button type="submit"
-                            class="bg-green-600 text-white px-8 py-3 rounded-lg hover:bg-green-700 transition-colors font-semibold">
-                            Create Alert
-                        </button>
-                    </div>
-                </form>
-            </div>
+    <x-modal name="saved-job-alert" model="showJobAlertModal" label="Save job alert">
+        <div class="space-y-4 p-4 sm:p-6"><div class="flex flex-wrap items-center justify-between gap-3"><h2 class="text-xl font-semibold text-content">Save job alert</h2><x-secondary-button wire:click="$set('showJobAlertModal', false)">Close alert form</x-secondary-button></div>
+            <form wire:submit="createJobAlert" class="space-y-4">
+                @if($errors->any())<div role="alert" class="text-sm text-danger">@foreach($errors->all() as $error)<p>{{ $error }}</p>@endforeach</div>@endif
+                @foreach(['alertTitle'=>'Alert name', 'alertKeywords'=>'Keywords (comma-separated)', 'alertLocation'=>'Location'] as $field=>$label)<div><x-input-label :for="'job-'.$field" :value="$label" /><x-text-input :id="'job-'.$field" wire:model="{{ $field }}" class="w-full" :aria-describedby="'job-'.$field.'-error'" /><x-input-error :id="'job-'.$field.'-error'" :messages="$errors->get($field)" /></div>@endforeach
+                <div><x-input-label for="job-alert-category" value="Category" /><select id="job-alert-category" wire:model="alertCategory" class="min-h-11 w-full rounded-lg border border-line bg-surface px-3 py-2 text-content focus:outline-none focus:ring-2 focus:ring-action"><option value="">All categories</option>@foreach($categories as $slug=>$name)<option value="{{ $slug }}">{{ $name }}</option>@endforeach</select></div>
+                <div><x-input-label for="job-alert-frequency" value="Check frequency" /><select id="job-alert-frequency" wire:model="alertFrequency" class="min-h-11 w-full rounded-lg border border-line bg-surface px-3 py-2 text-content focus:outline-none focus:ring-2 focus:ring-action"><option value="daily">Daily</option><option value="weekly">Weekly</option></select></div>
+                <p class="text-sm text-content-muted">Your current employment, work type, experience and salary filters are also saved. Salary bounds retain the selected currency and exclude hidden salary values. Duplicate filters reuse your existing saved alert.</p>
+                <label class="flex min-h-11 items-center gap-3 text-content"><input type="checkbox" wire:model="jobAlertEmailEnabled" class="rounded border-line text-action focus:ring-action" />Email me job alerts (applies to all my saved alerts)</label><p class="text-sm text-content-muted">Portal notifications work without email. Email alerts are optional.@unless(app(\App\Services\PortalNotificationService::class)->emailAvailable()) Email delivery is currently unavailable; you can still check matches here.@endunless</p>
+                <div class="flex flex-wrap gap-3"><x-primary-button wire:loading.attr="disabled" wire:target="createJobAlert">Save alert</x-primary-button><x-secondary-button wire:click="$set('showJobAlertModal', false)">Cancel alert</x-secondary-button></div>
+            </form>
         </div>
-    @endif
+    </x-modal>
 
     <style>
         .line-clamp-3 {

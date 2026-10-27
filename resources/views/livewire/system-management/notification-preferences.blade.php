@@ -11,15 +11,15 @@
     <div class="space-y-8">
         <!-- Email Notifications -->
         <div class="bg-themed-secondary rounded-lg shadow-sm border border-themed-primary overflow-hidden">
-            <div class="px-6 py-4 border-b border-themed-primary flex items-center justify-between">
+            <div class="px-6 py-4 border-b border-themed-primary flex flex-wrap items-center justify-between gap-3">
                 <div class="flex items-center">
                     <i aria-hidden="true" class="fas fa-envelope text-brand dark:text-brand mr-3 text-lg"></i>
                     <div>
                         <h3 class="text-lg font-semibold text-themed-primary">Email Notifications</h3>
-                        <p class="text-sm text-themed-secondary">Choose which emails you'd like to receive</p>
+                        <p class="text-sm text-themed-secondary">Choose which emails you'd like to receive. Test delivery is unavailable.</p>
                     </div>
                 </div>
-                <div class="flex space-x-2">
+                <div class="flex flex-wrap gap-2">
                     <button wire:click="enableAllEmail"
                         class="text-xs px-3 py-1 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 rounded-full hover:bg-green-200 dark:hover:bg-green-900/50 transition-colors">
                         Enable All
@@ -36,6 +36,17 @@
             </div>
 
             <form wire:submit.prevent="saveEmailNotifications" class="p-6">
+                <fieldset class="mb-6 space-y-3 rounded-lg border border-themed-primary p-4">
+                    <legend class="px-1 font-medium text-themed-primary">Saved alerts and private replies</legend>
+                    <p class="text-sm text-themed-secondary">These emails are optional. New job matches and community replies remain available in your portal. Email delivery follows your quiet hours and weekend settings.</p>
+                    @unless(app(\App\Services\PortalNotificationService::class)->emailAvailable())
+                        <p class="text-sm text-themed-secondary">Email delivery is currently unavailable. Your choices will be saved.</p>
+                    @endunless
+                    <label class="flex min-h-11 items-center gap-3 text-themed-primary"><input type="checkbox" wire:model="email_job_alerts" aria-describedby="job-email-error" aria-invalid="{{ $errors->has('email_job_alerts') ? 'true' : 'false' }}" class="rounded border-themed-primary text-brand focus:ring-brand/30">Email me saved job matches</label>
+                    <label class="flex min-h-11 items-center gap-3 text-themed-primary"><input type="checkbox" wire:model="email_community_feedback_replies" aria-describedby="community-email-error" aria-invalid="{{ $errors->has('email_community_feedback_replies') ? 'true' : 'false' }}" class="rounded border-themed-primary text-brand focus:ring-brand/30">Email me community feedback replies</label>
+                    <x-input-error id="job-email-error" :messages="$errors->get('email_job_alerts')" />
+                    <x-input-error id="community-email-error" :messages="$errors->get('email_community_feedback_replies')" />
+                </fieldset>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <!-- Learning & Courses -->
                     <div class="space-y-4">
@@ -165,15 +176,15 @@
 
         <!-- Push Notifications -->
         <div class="bg-themed-secondary rounded-lg shadow-sm border border-themed-primary overflow-hidden">
-            <div class="px-6 py-4 border-b border-themed-primary flex items-center justify-between">
+            <div class="px-6 py-4 border-b border-themed-primary flex flex-wrap items-center justify-between gap-3">
                 <div class="flex items-center">
                     <i aria-hidden="true" class="fas fa-mobile-alt text-green-600 dark:text-green-400 mr-3 text-lg"></i>
                     <div>
                         <h3 class="text-lg font-semibold text-themed-primary">Push Notifications</h3>
-                        <p class="text-sm text-themed-secondary">Browser and mobile push notifications</p>
+                        <p class="text-sm text-themed-secondary">Saved preferences only; browser and mobile push delivery is not connected.</p>
                     </div>
                 </div>
-                <div class="flex space-x-2">
+                <div class="flex flex-wrap gap-2">
                     <button wire:click="enableAllPush"
                         class="text-xs px-3 py-1 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 rounded-full hover:bg-green-200 dark:hover:bg-green-900/50 transition-colors">
                         Enable All
@@ -322,9 +333,10 @@
                         <label for="quiet_hours_start" class="block text-sm font-medium text-themed-primary mb-2">
                             Quiet hours start
                         </label>
-                        <input wire:model="quiet_hours_start" type="time" id="quiet_hours_start"
+                        <input wire:model="quiet_hours_start" type="time" id="quiet_hours_start" aria-describedby="quiet-start-error" aria-invalid="{{ $errors->has('quiet_hours_start') ? 'true' : 'false' }}"
                             class="block w-full border-themed-primary bg-themed-secondary rounded-lg focus:ring-orange-500 focus:border-orange-500 text-themed-primary">
-                        <p class="text-xs text-themed-secondary mt-1">No notifications during quiet hours</p>
+                        <p class="text-xs text-themed-secondary mt-1">Saved job-match and community-reply emails wait until quiet hours end.</p>
+                        <x-input-error id="quiet-start-error" :messages="$errors->get('quiet_hours_start')" />
                     </div>
 
                     <!-- Quiet Hours End -->
@@ -332,9 +344,11 @@
                         <label for="quiet_hours_end" class="block text-sm font-medium text-themed-primary mb-2">
                             Quiet hours end
                         </label>
-                        <input wire:model="quiet_hours_end" type="time" id="quiet_hours_end"
+                        <input wire:model="quiet_hours_end" type="time" id="quiet_hours_end" aria-describedby="quiet-end-error" aria-invalid="{{ $errors->has('quiet_hours_end') ? 'true' : 'false' }}"
                             class="block w-full border-themed-primary bg-themed-secondary rounded-lg focus:ring-orange-500 focus:border-orange-500 text-themed-primary">
                     </div>
+
+                    <x-input-error id="quiet-end-error" :messages="$errors->get('quiet_hours_end')" />
 
                     <!-- Weekend Notifications -->
                     <div class="md:col-span-2">

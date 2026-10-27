@@ -27,6 +27,8 @@ class NotificationPreferences extends Component
     public $email_achievement_notifications = true;
     public $email_forum_replies = true;
     public $email_direct_messages = true;
+    public bool $email_job_alerts = false;
+    public bool $email_community_feedback_replies = false;
     public $review_reminders_enabled = true;
 public $review_reminder_frequency = 'standard'; // standard, frequent, minimal
 
@@ -58,6 +60,12 @@ public $review_reminder_frequency = 'standard'; // standard, frequent, minimal
     public $notification_categories = [];
     public $blocked_senders = [];
 
+    public function boot(): void
+    {
+        $user = Auth::user()?->fresh();
+        abort_unless($user && $user->is_active && $user->email_verified_at, 403);
+    }
+
     public function mount()
     {
         $user = Auth::user();
@@ -83,6 +91,8 @@ public $review_reminder_frequency = 'standard'; // standard, frequent, minimal
         $this->email_achievement_notifications = $preferences['email_achievement_notifications'] ?? true;
         $this->email_forum_replies = $preferences['email_forum_replies'] ?? true;
         $this->email_direct_messages = $preferences['email_direct_messages'] ?? true;
+        $this->email_job_alerts = $user->shouldReceiveEmailNotification('job_alert');
+        $this->email_community_feedback_replies = $user->shouldReceiveEmailNotification('community_feedback_response');
 
         // Push notifications
         $this->push_course_updates = $preferences['push_course_updates'] ?? true;
@@ -117,7 +127,7 @@ public $review_reminder_frequency = 'standard'; // standard, frequent, minimal
 
     public function saveEmailNotifications()
     {
-        $this->savePreferences([
+        $preferences = [
             'email_course_updates' => $this->email_course_updates,
             'email_certificate_notifications' => $this->email_certificate_notifications,
             'email_assignment_reminders' => $this->email_assignment_reminders,
@@ -129,7 +139,11 @@ public $review_reminder_frequency = 'standard'; // standard, frequent, minimal
             'email_forum_replies' => $this->email_forum_replies,
             'email_direct_messages' => $this->email_direct_messages,
             'email_instructor_replies' => $this->email_instructor_replies,
-        ]);
+            'email_job_alerts' => $this->email_job_alerts,
+            'email_community_feedback_replies' => $this->email_community_feedback_replies,
+        ];
+        $this->validate(array_fill_keys(array_keys($preferences), 'required|boolean'));
+        $this->savePreferences($preferences);
 
         $this->dispatch('notify', 'Email notification preferences updated!', 'success');
     }
@@ -163,11 +177,12 @@ public $review_reminder_frequency = 'standard'; // standard, frequent, minimal
 
     public function saveFrequencySettings()
     {
-        $this->validateOnly([
+        $this->validate([
             'digest_frequency' => 'required|in:daily,weekly,monthly,never',
             'reminder_frequency' => 'required|in:1_hour,6_hours,24_hours,3_days,never',
             'quiet_hours_start' => 'required|date_format:H:i',
             'quiet_hours_end' => 'required|date_format:H:i',
+            'weekend_notifications' => 'required|boolean',
         ]);
 
         $this->savePreferences([
@@ -183,7 +198,7 @@ public $review_reminder_frequency = 'standard'; // standard, frequent, minimal
 
     public function saveContentPreferences()
     {
-        $this->validateOnly([
+        $this->validate([
             'preferred_language' => 'required|in:en,es,fr,de,it,pt,ar',
         ]);
 
@@ -198,18 +213,17 @@ public $review_reminder_frequency = 'standard'; // standard, frequent, minimal
 
     private function savePreferences($preferences)
     {
-        $user = Auth::user();
-        $currentPreferences = $user->notification_preferences ?? [];
-        $updatedPreferences = array_merge($currentPreferences, $preferences);
-
-        $user->update([
-            'notification_preferences' => $updatedPreferences,
-            // Update legacy fields for backwards compatibility
-            'receive_course_updates' => $preferences['email_course_updates'] ?? $this->email_course_updates,
-            'receive_certificate_notifications' => $preferences['email_certificate_notifications'] ?? $this->email_certificate_notifications,
-        ]);
-
-        $user->logCustomActivity('Updated notification preferences');
+        \Illuminate\Support\Facades\DB::transaction(function () use ($preferences) {
+            $user = User::whereKey(Auth::id())->lockForUpdate()->firstOrFail();
+            abort_unless($user->is_active && $user->email_verified_at, 403);
+            abort_unless($user->notification_preferences === null || is_array($user->notification_preferences), 422, 'Existing notification preferences need review.');
+            $updates = ['notification_preferences' => array_merge($user->notification_preferences ?? [], $preferences)];
+            foreach (['email_course_updates' => 'receive_course_updates', 'email_certificate_notifications' => 'receive_certificate_notifications'] as $key => $legacy) {
+                if (array_key_exists($key, $preferences)) $updates[$legacy] = $preferences[$key];
+            }
+            $user->update($updates);
+            $user->logCustomActivity('Updated notification preferences');
+        });
     }
 
     public function enableAllEmail()
@@ -224,6 +238,9 @@ public $review_reminder_frequency = 'standard'; // standard, frequent, minimal
         $this->email_achievement_notifications = true;
         $this->email_forum_replies = true;
         $this->email_direct_messages = true;
+        $this->email_instructor_replies = true;
+        $this->email_job_alerts = true;
+        $this->email_community_feedback_replies = true;
     }
 
     public function disableAllEmail()
@@ -238,6 +255,9 @@ public $review_reminder_frequency = 'standard'; // standard, frequent, minimal
         $this->email_achievement_notifications = false;
         $this->email_forum_replies = false;
         $this->email_direct_messages = false;
+        $this->email_instructor_replies = false;
+        $this->email_job_alerts = false;
+        $this->email_community_feedback_replies = false;
     }
 
     public function enableAllPush()
@@ -264,30 +284,7 @@ public $review_reminder_frequency = 'standard'; // standard, frequent, minimal
 
     public function testNotification($type)
     {
-        // Send a test notification
-        $user = Auth::user();
-        
-        switch ($type) {
-            case 'email':
-                // Send test email notification
-                $user->notify(new \App\Notifications\TestNotification('email'));
-                $this->dispatch('notify', 'Test email sent!', 'success');
-                break;
-            case 'push':
-                // Send test push notification
-                $user->notify(new \App\Notifications\TestNotification('push'));
-                $this->dispatch('notify', 'Test push notification sent!', 'success');
-                break;
-            case 'sms':
-                if ($user->phone_number) {
-                    // Send test SMS
-                    $user->notify(new \App\Notifications\TestNotification('sms'));
-                    $this->dispatch('notify', 'Test SMS sent!', 'success');
-                } else {
-                    $this->dispatch('notify', 'Please add a phone number to receive SMS notifications.', 'error');
-                }
-                break;
-        }
+        $this->dispatch('notify', 'Test delivery is unavailable. No notification was sent.', 'error');
     }
 
     public function getDigestFrequencyOptions()

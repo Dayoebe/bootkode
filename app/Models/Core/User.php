@@ -908,6 +908,8 @@ class User extends Authenticatable implements MustVerifyEmail
             'course_review' => true,
             'support_ticket' => true,
             'feedback_response' => true,
+            'community_feedback_response' => ($preferences['email_community_feedback_replies'] ?? false) === true,
+            'job_alert' => ($preferences['email_job_alerts'] ?? false) === true,
             'announcement' => true,
             'system_status' => true,
             default => true,
