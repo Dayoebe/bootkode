@@ -118,3 +118,7 @@ The Assessment tab uses a labelled region and secondary “Lesson assessments”
 ## Revised original course materials — 26 October 2026
 
 The two revised imported courses reuse the existing builder and inline Assessment tab. New original SVG covers use the established navy/teal/mint identity. Teaching text uses headings, runnable code blocks, traces and practice/feedback; source excerpts and full notices have clearly labelled disclosures in the stored lesson HTML. Download links point to real course-specific ZIPs. No component system, stylesheet, script runtime or frontend dependency was added. Trix presents the text through its existing rich-text editing surface.
+
+## Visible AI connection state — 27 October 2026
+
+Course Content Studio uses the shared ui.panel and secondary button for provider configuration, the mentor link and the administrator-only connection test. The button has an associated description and loading/disabled state; safe results use an atomic polite status announcement with the actual check timestamp. Configured and connection verified are separate statements. No credential field or new palette/runtime/component system is introduced. The mentor uses a configured label instead of claiming network readiness.

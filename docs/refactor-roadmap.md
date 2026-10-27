@@ -126,3 +126,7 @@ Completed: remove the duplicate standalone authoring entry point, retain authori
 
 - Completed: directly revise existing courses 1 and 2 with explicit prerequisites, corrected contracts/examples, 24 ordered lessons, six quizzes (30 MCQs), two marked capstones and tested downloadable reference kits. Preserve original IDs/slugs/source attribution and unrelated records; validate the update in a dedicated test database before applying it to working drafts.
 - Publication gates: human pedagogical/editorial review, external source/reference availability checks and deliberate publication/approval. Mechanical code checks and a local quality scan do not establish those decisions. No additional software refactor is required merely to inspect these revised drafts.
+
+## Groq and logging follow-through — 27 October 2026
+
+Completed: real Groq connectivity checks in CLI/administrator Studio; safe configuration/verification distinction; clear authentication/model/format failures; current-role mentor guard; single-file application logging and journal-backed worker console output; archive historical verification captures. Existing AI authoring and learner workflows remain in place. Full suite and actual responsive/browser evidence are recorded in verification.md. Generated-content factual review/publication remains a separate deliberate action.
