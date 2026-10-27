@@ -1,0 +1,127 @@
+name: Verify BootKode
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: verify-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  application:
+    name: Tests and build
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    services:
+      mariadb:
+        image: mariadb:10.11
+        env:
+          MARIADB_DATABASE: bootkode_test
+          MARIADB_USER: bootkode_ci
+          MARIADB_PASSWORD: bootkode-ci
+          MARIADB_ROOT_PASSWORD: bootkode-ci-root
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mariadb-admin ping --user=root --password=bootkode-ci-root"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=10
+    env:
+      APP_ENV: testing
+      APP_DEBUG: 'false'
+      APP_URL: http://localhost
+      DB_CONNECTION: mysql
+      DB_HOST: 127.0.0.1
+      DB_PORT: 3306
+      DB_DATABASE: bootkode_test
+      DB_USERNAME: bootkode_ci
+      DB_PASSWORD: bootkode-ci
+      CACHE_STORE: array
+      SESSION_DRIVER: array
+      MAIL_MAILER: array
+      QUEUE_CONNECTION: sync
+      COMPOSER_NO_AUDIT: '0'
+      JOB_ALERTS_SCHEDULE_ENABLED: 'false'
+      LEARNING_REMINDERS_SCHEDULE_ENABLED: 'false'
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
+      - uses: shivammathur/setup-php@eb7c497e18156a6bbabfef1d3a82760b9eda3962 # v2
+        with:
+          php-version: '8.4'
+          extensions: bcmath, curl, dom, exif, fileinfo, gd, intl, mbstring, pdo_mysql, xml, zip
+          coverage: none
+          tools: composer:v2
+          ini-values: memory_limit=1024M
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7
+        with:
+          node-version: '22'
+          cache: npm
+      - name: Install locked dependencies
+        run: |
+          cp .env.example .env.testing
+          composer install --prefer-dist --no-interaction --no-progress
+          npm ci --ignore-scripts
+          php artisan key:generate --env=testing
+      - name: Check dependency metadata and PHP syntax
+        run: |
+          composer validate --strict --no-check-publish
+          composer check-platform-reqs
+          find app config routes database/migrations tests -type f -name '*.php' -print0 | xargs -0 -n1 php -l
+          git diff --check
+      - name: Build assets and run guarded database tests
+        run: |
+          npm run build
+          mkdir -p storage/app/ci
+          php artisan test --log-junit storage/app/ci/junit.xml
+          php artisan view:cache
+          php artisan route:cache
+          php artisan route:clear
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
+        if: always()
+        with:
+          name: application-test-results
+          path: storage/app/ci/junit.xml
+          if-no-files-found: ignore
+          retention-days: 7
+
+  dependencies:
+    name: Dependency release gate
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    env:
+      COMPOSER_NO_AUDIT: '0'
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
+      - uses: shivammathur/setup-php@eb7c497e18156a6bbabfef1d3a82760b9eda3962 # v2
+        with:
+          php-version: '8.4'
+          coverage: none
+          tools: composer:v2
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7
+        with:
+          node-version: '22'
+          package-manager-cache: false
+      - name: Audit locked PHP packages
+        run: |
+          mkdir -p storage/app/ci
+          composer audit --locked --format=json > storage/app/ci/composer-audit.json
+      - name: Audit locked JavaScript packages
+        if: ${{ !cancelled() }}
+        run: npm audit --json > storage/app/ci/npm-audit.json
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
+        if: always()
+        with:
+          name: dependency-audits
+          path: storage/app/ci/*audit.json
+          if-no-files-found: error
+          retention-days: 7
