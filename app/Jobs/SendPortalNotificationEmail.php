@@ -57,7 +57,7 @@ class SendPortalNotificationEmail implements ShouldQueue
                 'community_feedback_response' => \App\Models\Community\CommunityFeedback::whereKey($record->data['feedback_id'] ?? 0)->where('user_id', $user->id)->whereNotNull('admin_response')->exists(),
                 'job_alert' => (bool) \App\Models\Career\JobAlert::whereKey($record->data['job_alert_id'] ?? 0)->where('user_id', $user->id)->where('is_active', true)->first()
                     ?->matchingJobs(false)->whereIn('id', $record->data['job_ids'] ?? [])->exists(),
-                default => false,
+                default => app(\App\Services\LearningNotificationService::class)->sourceAvailable($user, $record->data),
             };
             if (! $source) {
                 $record->update(['data' => array_merge($record->data, ['mail_state' => 'cancelled'])]);

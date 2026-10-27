@@ -37,8 +37,8 @@
 
             <form wire:submit.prevent="saveEmailNotifications" class="p-6">
                 <fieldset class="mb-6 space-y-3 rounded-lg border border-themed-primary p-4">
-                    <legend class="px-1 font-medium text-themed-primary">Saved alerts and private replies</legend>
-                    <p class="text-sm text-themed-secondary">These emails are optional. New job matches and community replies remain available in your portal. Email delivery follows your quiet hours and weekend settings.</p>
+                    <legend class="px-1 font-medium text-themed-primary">Saved alerts and private updates</legend>
+                    <p class="text-sm text-themed-secondary">These emails are optional. Job matches, community replies, assessment reviews and achievements remain private portal records. Email delivery follows your quiet hours and weekend settings.</p>
                     @unless(app(\App\Services\PortalNotificationService::class)->emailAvailable())
                         <p class="text-sm text-themed-secondary">Email delivery is currently unavailable. Your choices will be saved.</p>
                     @endunless
@@ -46,6 +46,8 @@
                     <label class="flex min-h-11 items-center gap-3 text-themed-primary"><input type="checkbox" wire:model="email_community_feedback_replies" aria-describedby="community-email-error" aria-invalid="{{ $errors->has('email_community_feedback_replies') ? 'true' : 'false' }}" class="rounded border-themed-primary text-brand focus:ring-brand/30">Email me community feedback replies</label>
                     <x-input-error id="job-email-error" :messages="$errors->get('email_job_alerts')" />
                     <x-input-error id="community-email-error" :messages="$errors->get('email_community_feedback_replies')" />
+                    <label class="flex min-h-11 items-center gap-3 text-themed-primary"><input type="checkbox" wire:model="email_assessment_reviews" aria-describedby="assessment-email-error" class="rounded border-themed-primary text-brand focus:ring-brand/30">Email me assessment results and mark review updates</label>
+                    <x-input-error id="assessment-email-error" :messages="$errors->get('email_assessment_reviews')" />
                 </fieldset>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <!-- Learning & Courses -->
@@ -66,8 +68,8 @@
                                 <input wire:model="email_assignment_reminders" type="checkbox"
                                     class="h-4 w-4 text-brand border-themed-primary rounded focus:ring-brand/30">
                                 <div class="ml-3 group-hover:translate-x-1 transition-transform">
-                                    <span class="text-sm font-medium text-themed-primary">Assignment reminders</span>
-                                    <p class="text-xs text-themed-secondary">Deadlines and upcoming tasks</p>
+                                    <span class="text-sm font-medium text-themed-primary">Course CBT deadline reminders</span>
+                                    <p class="text-xs text-themed-secondary">Eligible enrolled course quizzes with a scheduled deadline</p>
                                 </div>
                             </label>
 
@@ -175,6 +177,15 @@
         </div>
 
         <!-- Push Notifications -->
+        <x-ui.panel title="Course review reminders">
+            <form wire:submit="saveReviewReminderPreferences" class="space-y-4">
+                <p class="text-sm text-content-muted">Optional requests for honest feedback after a recorded course completion. Standard allows up to three portal reminders; minimal allows one. Email is optional and follows quiet hours. Courses you have already reviewed are excluded.</p>
+                <label class="flex min-h-11 items-center gap-3 text-content"><input type="checkbox" wire:model="review_reminders_enabled" class="rounded border-line text-action focus:ring-action">Email me course review reminders</label>
+                <div><x-input-label for="review-reminder-frequency" value="Course review reminder frequency" /><select id="review-reminder-frequency" wire:model="review_reminder_frequency" aria-describedby="review-reminder-frequency-error" class="min-h-11 w-full rounded-lg border border-line bg-surface px-3 text-content"><option value="standard">Standard</option><option value="frequent">Frequent</option><option value="minimal">Minimal</option></select><x-input-error id="review-reminder-frequency-error" :messages="$errors->get('review_reminder_frequency')" /></div>
+                <x-primary-button wire:loading.attr="disabled" wire:target="saveReviewReminderPreferences">Save course review preferences</x-primary-button>
+                <a href="{{ route('review-reminders.unsubscribe-all') }}" class="inline-flex min-h-11 items-center text-action underline">Stop all course review reminders</a>
+            </form>
+        </x-ui.panel>
         <div class="bg-themed-secondary rounded-lg shadow-sm border border-themed-primary overflow-hidden">
             <div class="px-6 py-4 border-b border-themed-primary flex flex-wrap items-center justify-between gap-3">
                 <div class="flex items-center">

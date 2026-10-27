@@ -11,3 +11,7 @@ Artisan::command('inspire', function () {
 if (config('delivery.job_alerts_schedule_enabled')) {
     \Illuminate\Support\Facades\Schedule::command('bootkode:job-alerts')->hourly()->withoutOverlapping();
 }
+if (config('delivery.learning_reminders_schedule_enabled')) {
+    \Illuminate\Support\Facades\Schedule::command('bootkode:cbt-reminders')->everyFifteenMinutes()->withoutOverlapping();
+    \Illuminate\Support\Facades\Schedule::command('reviews:send-reminders')->dailyAt('10:00')->withoutOverlapping();
+}

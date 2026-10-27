@@ -99,7 +99,7 @@ class CbtResult extends Model
     public function updateAchievements()
     {
         if ($this->status === 'completed' && $this->passed) {
-            UserAchievement::checkAndAwardAchievements($this->user_id);
+            \App\Models\Credentials\UserAchievement::checkAndAwardAchievements($this->user_id);
         }
     }
 

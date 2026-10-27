@@ -10,6 +10,7 @@ use Livewire\Component;
 #[Layout('layouts.dashboard', ['title' => 'Learning rewards', 'active' => 'gamification.dashboard'])]
 class GamificationDashboard extends Component
 {
+    use \Livewire\WithPagination;
     use \App\Livewire\Concerns\RequiresAuthenticatedAccount;
     use \App\Livewire\Concerns\HasActionFeedback;
 
@@ -73,6 +74,7 @@ class GamificationDashboard extends Component
             'userStats' => $this->gamificationService->getUserDashboardStats($user),
             'leaderboards' => $this->activeTab === 'leaderboard' ? $this->gamificationService->getLeaderboards() : [],
             'badges' => $user->badges()->latest()->get(),
+            'achievements' => \App\Models\Credentials\UserAchievement::where('user_id', $user->id)->latest('earned_at')->orderByDesc('id')->paginate(12, ['*'], 'achievementsPage'),
             'storeItems' => RewardStoreItem::where('is_available', true)->orderBy('cost_coins')->get(),
             'purchases' => $user->storePurchases()->with('item')->latest()->get(),
             'recentTransactions' => $user->gamificationTransactions()->latest('id')->limit(10)->get(),

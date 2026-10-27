@@ -2,53 +2,24 @@
 
 namespace App\Notifications;
 
-use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Notifications\Notification;
-use Illuminate\Notifications\Messages\MailMessage;
+use App\Models\Credentials\UserAchievement;
+use App\Models\Credentials\UserBadge;
+use App\Services\LearningNotificationService;
+use App\Services\PortalNotificationService;
 
-class CbtAchievementUnlocked extends Notification implements ShouldQueue
+class CbtAchievementUnlocked extends PortalEventNotification
 {
-    use Queueable;
-
-    protected $achievement;
-
-    public function __construct($achievement)
+    public function __construct(UserAchievement|UserBadge $achievement)
     {
-        $this->achievement = $achievement;
+        parent::__construct(['type' => 'achievement_unlocked', 'title' => 'Learning achievement recorded', 'message' => 'A learning achievement has been recorded in your private rewards history.',
+            'action_url' => route('gamification.badges'), 'achievement_kind' => $achievement instanceof UserBadge ? 'badge' : 'achievement', 'achievement_id' => $achievement->id]);
     }
 
-    public function via($notifiable)
+    public function via($notifiable): array
     {
-        return ['mail', 'database'];
-    }
+        $user = $notifiable->fresh();
 
-    public function toMail($notifiable)
-    {
-        return (new MailMessage)
-            ->subject("Achievement Unlocked: {$this->achievement->achievement_name}")
-            ->greeting("Congratulations {$notifiable->name}!")
-            ->line("You've unlocked a new achievement:")
-            ->line("**{$this->achievement->achievement_icon} {$this->achievement->achievement_name}**")
-            ->line($this->achievement->achievement_description)
-            ->line("Keep up the great work in your learning journey!")
-            ->action('View All Achievements', route('dashboard'))
-            ->salutation('Best regards, The CBT Team');
-    }
-
-    public function toDatabase($notifiable)
-    {
-        return [
-            'type' => 'achievement_unlocked',
-            'title' => 'Achievement Unlocked!',
-            'message' => "You've earned: {$this->achievement->achievement_name}",
-            'data' => [
-                'achievement_id' => $this->achievement->id,
-                'achievement_name' => $this->achievement->achievement_name,
-                'achievement_icon' => $this->achievement->achievement_icon,
-                'achievement_description' => $this->achievement->achievement_description,
-            ],
-            'action_url' => route('dashboard'),
-        ];
+        return $user && $user->is_active && $user->email_verified_at && $user->shouldReceiveEmailNotification('achievement') && app(PortalNotificationService::class)->emailAvailable()
+            && app(LearningNotificationService::class)->sourceAvailable($user, $this->payload) ? ['mail'] : [];
     }
 }

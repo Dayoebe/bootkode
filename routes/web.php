@@ -324,25 +324,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Route::post('/student/course/{course}/review', [\App\Livewire\StudentManagement\CourseView::class, 'submitReview'])->name('student.course.review');
 });
 // Review reminder unsubscribe routes
-Route::get('/review-reminder/unsubscribe/{reminder}', function (App\Models\ReviewReminder $reminder) {
-    if (!request()->hasValidSignature()) {
-        abort(403, 'Invalid or expired link');
-    }
-
-    app(\App\Services\ReviewReminderService::class)->unsubscribeFromCourse($reminder);
-
-    return view('review-reminders.unsubscribed', ['course' => $reminder->course]);
-})->name('review-reminder.unsubscribe');
-
-Route::get('/review-reminders/unsubscribe-all', function () {
-    if (!auth()->check()) {
-        return redirect()->route('login');
-    }
-
-    app(\App\Services\ReviewReminderService::class)->unsubscribeFromAll(auth()->user());
-
-    return view('review-reminders.unsubscribed-all');
-})->middleware('auth')->name('review-reminders.unsubscribe-all');
+Route::get('/review-reminder/unsubscribe/{reminder}', [\App\Http\Controllers\ReviewReminderSubscriptionController::class, 'show'])->name('review-reminder.unsubscribe');
+Route::post('/review-reminder/unsubscribe/{reminder}', [\App\Http\Controllers\ReviewReminderSubscriptionController::class, 'unsubscribe'])->name('review-reminder.unsubscribe.confirm');
+Route::get('/review-reminders/unsubscribe-all', [\App\Http\Controllers\ReviewReminderSubscriptionController::class, 'showAll'])->middleware('auth')->name('review-reminders.unsubscribe-all');
+Route::post('/review-reminders/unsubscribe-all', [\App\Http\Controllers\ReviewReminderSubscriptionController::class, 'unsubscribeAll'])->middleware('auth')->name('review-reminders.unsubscribe-all.confirm');
 
 
 // =============================================================================

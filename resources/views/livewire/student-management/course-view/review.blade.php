@@ -1,7 +1,7 @@
 <!-- REVIEW COMPONENT -->
 <div class="space-y-4"
      x-data="{ isCollapsed: @entangle('isCollapsed') }"
-     wire:poll.10s="{{ !$showReviewForm ? '' : 'keep-alive' }}">
+     @unless($showReviewForm) wire:poll.30s @endunless>
 
     <!-- Header with Collapse Toggle -->
     <div class="rounded-lg border border-themed-secondary bg-themed-secondary/70 p-4 transition-colors duration-300">
@@ -19,6 +19,7 @@
                 </div>
             </div>
             <button @click="$wire.toggleCollapse()"
+                    aria-label="Show or hide learner reviews" x-bind:aria-expanded="(!isCollapsed).toString()"
                     class="rounded-lg border border-themed-secondary bg-themed-tertiary px-3 py-2 text-themed-tertiary transition-colors duration-300 hover:text-themed-primary">
                 <i aria-hidden="true" class="fas fa-chevron-down text-lg transform transition-transform"
                    :class="{ 'rotate-180': !isCollapsed }"></i>
@@ -281,7 +282,7 @@
                     </div>
 
                     <!-- Review Content -->
-                    <p class="text-themed-primary mb-4">{{ $review->review_text }}</p>
+                    <p class="text-themed-primary mb-4">{{ $review->comment }}</p>
 
                     <!-- Instructor Reply -->
                     @if($review->instructor_reply)

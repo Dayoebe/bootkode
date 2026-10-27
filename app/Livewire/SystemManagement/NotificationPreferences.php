@@ -18,18 +18,19 @@ class NotificationPreferences extends Component
     // Email Notifications
     public $email_course_updates = true;
     public $email_certificate_notifications = true;
-    public $email_assignment_reminders = true;
+    public $email_assignment_reminders = false;
     public $email_announcement_notifications = true;
     public $email_instructor_replies = true;
     public $email_system_updates = false;
     public $email_marketing_updates = false;
     public $email_weekly_digest = true;
-    public $email_achievement_notifications = true;
+    public $email_achievement_notifications = false;
     public $email_forum_replies = true;
     public $email_direct_messages = true;
     public bool $email_job_alerts = false;
     public bool $email_community_feedback_replies = false;
-    public $review_reminders_enabled = true;
+    public bool $email_assessment_reviews = false;
+    public $review_reminders_enabled = false;
 public $review_reminder_frequency = 'standard'; // standard, frequent, minimal
 
 
@@ -77,22 +78,23 @@ public $review_reminder_frequency = 'standard'; // standard, frequent, minimal
         // Load from user preferences or database
         $preferences = $user->notification_preferences ?? [];
         $reviewPrefs = $user->review_reminder_preferences ?? [];
-        $this->review_reminders_enabled = $reviewPrefs['email_enabled'] ?? true;
+        $this->review_reminders_enabled = $reviewPrefs['email_enabled'] ?? false;
         $this->review_reminder_frequency = $reviewPrefs['frequency'] ?? 'standard';
 
         // Email notifications
         $this->email_course_updates = $preferences['email_course_updates'] ?? $user->receive_course_updates ?? true;
         $this->email_certificate_notifications = $preferences['email_certificate_notifications'] ?? $user->receive_certificate_notifications ?? true;
-        $this->email_assignment_reminders = $preferences['email_assignment_reminders'] ?? true;
+        $this->email_assignment_reminders = $user->shouldReceiveEmailNotification('cbt_reminder');
         $this->email_announcement_notifications = $preferences['email_announcement_notifications'] ?? true;
         $this->email_system_updates = $preferences['email_system_updates'] ?? false;
         $this->email_marketing_updates = $preferences['email_marketing_updates'] ?? false;
         $this->email_weekly_digest = $preferences['email_weekly_digest'] ?? true;
-        $this->email_achievement_notifications = $preferences['email_achievement_notifications'] ?? true;
+        $this->email_achievement_notifications = $user->shouldReceiveEmailNotification('achievement');
         $this->email_forum_replies = $preferences['email_forum_replies'] ?? true;
         $this->email_direct_messages = $preferences['email_direct_messages'] ?? true;
         $this->email_job_alerts = $user->shouldReceiveEmailNotification('job_alert');
         $this->email_community_feedback_replies = $user->shouldReceiveEmailNotification('community_feedback_response');
+        $this->email_assessment_reviews = $user->shouldReceiveEmailNotification('assessment_review');
 
         // Push notifications
         $this->push_course_updates = $preferences['push_course_updates'] ?? true;
@@ -141,6 +143,7 @@ public $review_reminder_frequency = 'standard'; // standard, frequent, minimal
             'email_instructor_replies' => $this->email_instructor_replies,
             'email_job_alerts' => $this->email_job_alerts,
             'email_community_feedback_replies' => $this->email_community_feedback_replies,
+            'email_assessment_reviews' => $this->email_assessment_reviews,
         ];
         $this->validate(array_fill_keys(array_keys($preferences), 'required|boolean'));
         $this->savePreferences($preferences);
@@ -241,6 +244,7 @@ public $review_reminder_frequency = 'standard'; // standard, frequent, minimal
         $this->email_instructor_replies = true;
         $this->email_job_alerts = true;
         $this->email_community_feedback_replies = true;
+        $this->email_assessment_reviews = true;
     }
 
     public function disableAllEmail()
@@ -258,6 +262,7 @@ public $review_reminder_frequency = 'standard'; // standard, frequent, minimal
         $this->email_instructor_replies = false;
         $this->email_job_alerts = false;
         $this->email_community_feedback_replies = false;
+        $this->email_assessment_reviews = false;
     }
 
     public function enableAllPush()
@@ -323,13 +328,14 @@ public $review_reminder_frequency = 'standard'; // standard, frequent, minimal
 
     public function saveReviewReminderPreferences()
     {
-        $user = Auth::user();
-    $user->update([
-        'review_reminder_preferences' => [
-            'email_enabled' => $this->review_reminders_enabled,
-            'frequency' => $this->review_reminder_frequency
-            ]
-        ]);
+        $this->validate(['review_reminders_enabled' => 'required|boolean', 'review_reminder_frequency' => 'required|in:standard,frequent,minimal']);
+        \Illuminate\Support\Facades\DB::transaction(function () {
+            $user = User::whereKey(Auth::id())->lockForUpdate()->firstOrFail();
+            abort_unless($user->review_reminder_preferences === null || is_array($user->review_reminder_preferences), 422);
+            $values = ['email_enabled' => $this->review_reminders_enabled, 'frequency' => $this->review_reminder_frequency];
+            if ($this->review_reminders_enabled) $values['unsubscribed_all'] = false;
+            $user->update(['review_reminder_preferences' => array_merge($user->review_reminder_preferences ?? [], $values)]);
+        });
         
         $this->dispatch('notify', 'Review reminder preferences updated!', 'success');
     }

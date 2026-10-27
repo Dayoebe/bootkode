@@ -123,6 +123,7 @@ class LearningSession extends Model
         $hasActivityToday = static::where('user_id', $userId)
             ->whereDate('started_at', $currentDate)
             ->whereNotNull('ended_at')
+            ->where('ended_at', '<=', now())
             ->exists();
             
         if ($hasActivityToday) {
@@ -135,6 +136,7 @@ class LearningSession extends Model
                 $hasActivity = static::where('user_id', $userId)
                     ->whereDate('started_at', $checkDate)
                     ->whereNotNull('ended_at')
+                    ->where('ended_at', '<=', now())
                     ->exists();
                     
                 if ($hasActivity) {

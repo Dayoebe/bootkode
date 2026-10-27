@@ -18,7 +18,7 @@ class Kernel extends ConsoleKernel
         $schedule->command('gamification:reset-daily-quests')->dailyAt('00:01');
         $schedule->command('withdrawals:process')->everyFifteenMinutes();
         $schedule->command('reviews:generate-analytics')->daily();
-        $schedule->command('reviews:send-reminders')->dailyAt('10:00');
+        if (config('delivery.learning_reminders_schedule_enabled')) $schedule->command('reviews:send-reminders')->dailyAt('10:00')->withoutOverlapping();
 
     }
 
@@ -36,7 +36,7 @@ class Kernel extends ConsoleKernel
 
     protected $commands = [
         \App\Console\Commands\ResetDailyQuests::class,
-    
+
     ];
 }
-    
+

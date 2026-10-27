@@ -25,7 +25,7 @@
                     <form wire:submit="requestMarkReview({{ $response['id'] }})" class="space-y-3">
                         <p id="review-help-{{ $response['id'] }}" class="text-sm text-content-muted">Explain what the reviewer should reconsider (10–2,000 characters). One request is available per recorded mark. Your result remains recorded while the request is open.</p>
                         <x-input-label for="review-reason-{{ $response['id'] }}" value="Reason for mark review" />
-                        <textarea id="review-reason-{{ $response['id'] }}" wire:model="reviewReasons.{{ $response['id'] }}" rows="3" minlength="10" maxlength="2000" required class="w-full rounded-lg border-line bg-surface text-content focus:ring-action" aria-describedby="review-help-{{ $response['id'] }} review-error-{{ $response['id'] }}" aria-invalid="{{ $errors->has('reviewReasons.'.$response['id']) ? 'true' : 'false' }}"></textarea>
+                        <textarea id="review-reason-{{ $response['id'] }}" wire:model="reviewReasons.{{ $response['id'] }}" rows="3" minlength="10" maxlength="2000" required class="w-full rounded-lg border border-line bg-surface px-3 py-2 text-content focus:outline-none focus:ring-2 focus:ring-action" aria-describedby="review-help-{{ $response['id'] }} review-error-{{ $response['id'] }}" aria-invalid="{{ $errors->has('reviewReasons.'.$response['id']) ? 'true' : 'false' }}"></textarea>
                         <x-input-error id="review-error-{{ $response['id'] }}" :messages="$errors->get('reviewReasons.'.$response['id'])" />
                         <x-secondary-button type="submit" wire:loading.attr="disabled" wire:target="requestMarkReview">Send mark review request</x-secondary-button>
                     </form>

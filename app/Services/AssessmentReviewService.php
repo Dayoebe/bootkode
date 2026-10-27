@@ -16,6 +16,8 @@ class AssessmentReviewService
 
     public function authorize(User $reviewer, Assessment $assessment): void
     {
+        $reviewer->refresh()->unsetRelation('roles');
+        abort_unless($reviewer->is_active && $reviewer->email_verified_at, 403);
         $assessment->refresh();
         $lessonCourse = $assessment->lesson?->section?->course_id ?? $assessment->section?->course_id;
         abort_if($lessonCourse && $assessment->course_id && (int) $lessonCourse !== (int) $assessment->course_id, 403);
@@ -68,7 +70,10 @@ class AssessmentReviewService
             }
             $metadata['results'] = $results;
             $session->update(['metadata' => $metadata]);
-            if (!$pending) app(GamificationService::class)->handleQuizCompletion($learner, $assessment);
+            if (!$pending) {
+                app(GamificationService::class)->handleQuizCompletion($learner, $assessment);
+                app(LearningNotificationService::class)->result($session, 'finalized');
+            }
             return $results;
         });
     }
@@ -112,6 +117,7 @@ class AssessmentReviewService
             $metadata['open_mark_reviews'] = collect($metadata['mark_reviews'])->where('status', 'open')->count();
             $session->update(['metadata' => $metadata]);
 
+            app(LearningNotificationService::class)->reviewRequested($session, $request);
             return $request;
         });
     }
@@ -166,6 +172,7 @@ class AssessmentReviewService
             $metadata['open_mark_reviews'] = collect($metadata['mark_reviews'] ?? [])->where('status', 'open')->count();
             $session->update(['metadata' => $metadata]);
 
+            app(LearningNotificationService::class)->result($session, 'correction:'.$operationId, 'assessment_review_decision');
             // Corrections change future eligibility. Existing rewards, completions and issued credentials stay recorded.
             return $result;
         });
@@ -193,6 +200,7 @@ class AssessmentReviewService
             $metadata['open_mark_reviews'] = collect($metadata['mark_reviews'])->where('status', 'open')->count();
             $session->update(['metadata' => $metadata]);
 
+            app(LearningNotificationService::class)->result($session, 'decision:'.$operationId, 'assessment_review_decision', $requestId);
             return $metadata['mark_reviews'][$index];
         });
     }
