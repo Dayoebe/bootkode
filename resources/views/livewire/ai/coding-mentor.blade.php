@@ -26,7 +26,7 @@
         <header class="border-b border-themed-primary p-5">
             <div class="flex flex-wrap items-start justify-between gap-3">
                 <div><h1 class="text-xl font-bold text-themed-primary bk-page-title">{{ $activeConversation?->title ?? 'AI Coding Mentor' }}</h1><p class="mt-1 text-sm text-themed-secondary">Teaching-first guidance grounded in course material you may access.</p></div>
-                <span class="rounded-full px-3 py-1 text-xs font-semibold {{ $providerStatus['ready'] ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800' }}">{{ $providerStatus['ready'] ? 'Provider ready' : ($providerStatus['reason'] === 'disabled' ? 'AI disabled' : 'Setup required') }}</span>
+                <span class="rounded-full px-3 py-1 text-xs font-semibold {{ $providerStatus['ready'] ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800' }}">{{ $providerStatus['ready'] ? ucfirst(config('bootkode_ai.provider')).' configured' : ($providerStatus['reason'] === 'disabled' ? 'AI disabled' : 'Setup required') }}</span>
             </div>
             @if($activeConversation)
                 <div class="mt-3 flex gap-2">

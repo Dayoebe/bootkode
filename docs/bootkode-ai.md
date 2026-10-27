@@ -53,3 +53,18 @@ Course generation accepts the documented audience, objectives, language, teachin
 ## Course-content provider acceptance — 26 October 2026
 
 Original course generation and imported-draft expansion share `CourseAiRequestService` for locked daily request reservation and usage records. Course stages request strict JSON-schema output; configure a model supporting that response format. Structured output ending at the token limit is rejected safely. `BOOTKODE_AI_COURSE_GENERATION_MAX_OUTPUT_TOKENS` defaults to 6500 (module range 2400–8192); no provider/model or credential is selected in the browser. The configured live provider passed both CLI and authenticated Studio/queue/editor acceptance in an isolated test database. Results remain drafts requiring factual and assessment review. See course-content-system.md for setup and verification.md for evidence and limits.
+
+## Live connection checks — 27 October 2026
+
+Groq uses the existing server-side provider for the Coding Mentor, original course generation and imported-draft expansion. Course Content Studio now shows configuration status and links directly to the mentor. Configuration status is distinguished from a verified connection; loading/polling never triggers a provider probe.
+
+Super/academy administrators can explicitly select **Check AI connection** in the Studio. The action permits two checks per administrator per minute, rechecks server-side roles, and stores only locked, safe result metadata in component state. It sends a small synthetic JSON-schema probe with no course/learner context, then verifies the exact expected object. It creates no conversation, content run or learner record. Each explicit check consumes a small provider request; the result certifies that moment and the small schema, not every future request or generated course.
+
+For an operator with server access:
+
+```sh
+php artisan config:clear
+php artisan bootkode:ai-check
+```
+
+The command returns exit 0 on verified structured output and exit 1 for configuration/provider/invalid-response failures. Authentication, access, endpoint/model and format errors have safe messages; provider response bodies and keys are excluded. Use a model with [Groq structured-output support](https://console.groq.com/docs/structured-outputs) for course generation. The current working configuration passed real CLI and authenticated-browser checks. Keys remain in the server environment. Coding Mentor now rechecks current roles on every Livewire request. See verification.md for the test/browser matrix.

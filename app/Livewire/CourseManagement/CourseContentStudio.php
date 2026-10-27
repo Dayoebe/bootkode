@@ -9,6 +9,8 @@ use App\Livewire\Concerns\AuthorizesCourseAuthoring;
 use App\Models\Learning\CourseCategory;
 use App\Models\Learning\CourseContentRun;
 use App\Services\Ai\AiManager;
+use App\Services\Ai\AiConnectionService;
+use App\Exceptions\AiProviderException;
 use App\Services\CourseAuthoringAccess;
 use App\Services\CourseGeneration\AiCourseExpansionService;
 use App\Services\CourseGeneration\AiCourseGenerationService;
@@ -30,6 +32,29 @@ class CourseContentStudio extends Component
 
     #[Locked]
     public string $notice = '';
+
+    #[Locked]
+    public array $connectionCheck = [];
+
+    public function checkAiConnection(AiConnectionService $connection): void
+    {
+        $this->authorizeRole();
+        abort_unless(auth()->user()->hasAnyRole(['super_admin', 'academy_admin']), 403);
+
+        $key = 'ai-connection-check:'.auth()->id();
+        if (RateLimiter::tooManyAttempts($key, 2)) {
+            $this->connectionCheck = ['success' => false, 'message' => 'Wait a minute before checking the AI connection again.'];
+
+            return;
+        }
+        RateLimiter::hit($key, 60);
+
+        try {
+            $this->connectionCheck = $connection->check();
+        } catch (AiProviderException $exception) {
+            $this->connectionCheck = ['success' => false, 'message' => $exception->getMessage()];
+        }
+    }
 
     public string $importPath = 'curriculum/challenges/english/blocks/algorithms';
 
@@ -283,6 +308,7 @@ class CourseContentStudio extends Component
         return view('livewire.course-management.course-content-studio', [
             'runs' => $runs,
             'aiStatus' => app(AiManager::class)->status(),
+            'aiProviderName' => ucfirst((string) config('bootkode_ai.provider')),
         ]);
     }
 

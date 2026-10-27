@@ -7,6 +7,30 @@
         <div class="bk-feedback" role="status" aria-live="polite">{{ $notice }}</div>
     @endif
     @error('request')<p class="bk-field-error" role="alert">{{ $message }}</p>@enderror
+    <x-ui.panel title="BootKode AI">
+        <div class="flex flex-wrap items-start justify-between gap-4">
+            <div class="min-w-0 space-y-2 text-sm text-content-muted">
+                <p class="font-semibold text-content">{{ $aiProviderName }} · {{ $aiStatus['ready'] ? 'Configured' : 'Setup required' }}</p>
+                <p>Generate course drafts, lesson explanations, quizzes and project briefs, or work through a coding problem with the mentor.</p>
+                <p><a href="{{ route('ai.coding-mentor') }}" class="text-action underline">Open AI Coding Mentor</a></p>
+                @if(auth()->user()->hasAnyRole(['super_admin', 'academy_admin']))
+                    <p id="ai-connection-help">Check the live connection with a small test request. Course and learner data are excluded.</p>
+                @endif
+            </div>
+            @if(auth()->user()->hasAnyRole(['super_admin', 'academy_admin']))
+                <x-secondary-button type="button" wire:click="checkAiConnection" wire:loading.attr="disabled" wire:target="checkAiConnection" aria-describedby="ai-connection-help">
+                    <span wire:loading.remove wire:target="checkAiConnection">Check AI connection</span>
+                    <span wire:loading wire:target="checkAiConnection">Checking connection…</span>
+                </x-secondary-button>
+            @endif
+        </div>
+        <div role="status" aria-live="polite" aria-atomic="true" class="mt-3 text-sm text-content">
+            @if($connectionCheck !== [])
+                <p>{{ $connectionCheck['message'] }}</p>
+                @if($connectionCheck['success'])<p class="mt-1 text-xs text-content-muted">Checked {{ $connectionCheck['checked_at'] }} · {{ $connectionCheck['duration_ms'] }} ms. This verifies the connection at that time; generated content still needs review.</p>@endif
+            @endif
+        </div>
+    </x-ui.panel>
     <div role="status" aria-live="polite" class="sr-only">
         @if(session()->has('message')){{ session('message') }}@endif
     </div>

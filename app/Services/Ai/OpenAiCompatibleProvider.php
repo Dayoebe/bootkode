@@ -49,6 +49,22 @@ class OpenAiCompatibleProvider implements AiProvider
             throw new AiProviderException('The AI provider is busy. Please try again shortly.', 'rate_limited');
         }
 
+        if ($response->status() === 401) {
+            throw new AiProviderException('AI authentication failed. Ask an administrator to check the server-side API key.', 'authentication_failed');
+        }
+
+        if ($response->status() === 403) {
+            throw new AiProviderException('The AI provider denied access. Ask an administrator to check the account and model permissions.', 'access_denied');
+        }
+
+        if ($response->status() === 404) {
+            throw new AiProviderException('The configured AI model or endpoint is unavailable. Ask an administrator to check the server configuration.', 'model_unavailable');
+        }
+
+        if ($response->status() === 400) {
+            throw new AiProviderException('The AI provider rejected the request. Check that the configured model supports the requested output format.', 'invalid_request');
+        }
+
         if (! $response->successful()) {
             throw new AiProviderException('The AI provider could not complete this request (HTTP '.$response->status().').', 'provider_error');
         }

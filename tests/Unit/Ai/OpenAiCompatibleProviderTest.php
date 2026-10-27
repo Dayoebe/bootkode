@@ -54,7 +54,7 @@ class OpenAiCompatibleProviderTest extends TestCase
 
     public function test_rate_limits_and_provider_errors_do_not_expose_response_bodies(): void
     {
-        foreach ([429 => 'rate_limited', 500 => 'provider_error'] as $status => $reason) {
+        foreach ([400 => 'invalid_request', 401 => 'authentication_failed', 403 => 'access_denied', 404 => 'model_unavailable', 429 => 'rate_limited', 500 => 'provider_error'] as $status => $reason) {
             Http::swap(new \Illuminate\Http\Client\Factory);
             Http::fake(fn () => Http::response(['error' => 'private-provider-response-secret'], $status));
             try {
