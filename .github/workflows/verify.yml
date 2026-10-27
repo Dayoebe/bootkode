@@ -75,7 +75,10 @@ jobs:
           result = subprocess.run(['composer', 'install', '--no-interaction', '--no-progress'], stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
           print(result.stdout)
           if result.returncode:
-              tail = '\n'.join(result.stdout.splitlines()[-18:])
+              lines = result.stdout.splitlines()
+              relevant = [line for line in lines if any(term in line.lower() for term in ['laravel/framework', 'from source', 'trying', 'syncing', 'failed', 'timeout'])]
+              config = subprocess.run(['composer', 'config', 'preferred-install'], stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True).stdout.strip()
+              tail = 'Preferred install: ' + config + '\n' + '\n'.join(relevant + lines[-14:])
               message = tail.replace('%', '%25').replace('\r', '%0D').replace('\n', '%0A')
               print('::error title=Composer installation failed::' + message)
           sys.exit(result.returncode)
