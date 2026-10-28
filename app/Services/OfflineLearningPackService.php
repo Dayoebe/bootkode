@@ -265,8 +265,9 @@ class OfflineLearningPackService
     {
         $resources = [];
 
-        if (in_array('documents', $types, true)) {
-            foreach ($lesson->getDocumentsArray() as $document) {
+        // Source notices travel with licensed text even when optional documents are excluded.
+        foreach ($lesson->getDocumentsArray() as $document) {
+            if (in_array('documents', $types, true) || ($document['required_attribution'] ?? false) === true) {
                 $resources[] = $this->fileResource($document, 'document');
             }
         }
