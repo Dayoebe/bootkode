@@ -827,3 +827,10 @@ No application source, schema, dependency or frontend asset changed for this dat
 Final authenticated Chrome evidence covers **all 30 saved lessons**, each with the intended goal/explanation/example/practice/feedback; **five inline final quiz/capstone panels**; and **15 material requests returning HTTP 200 with matching SHA-256 bytes**. Fresh builder loads at **390/768/1024/1440px** cover **20 course/width combinations**, each with one primary heading and no document overflow. The completed browser run reports no JavaScript errors, and representative desktop/mobile screenshots were inspected. The retained manifest has 71 check records. An interrupted run was resumed from recorded checks without recreating any courses. Existing narrow outline add-row controls retain their legacy panel-overlap limitation; this content-only batch does not certify every editor control/theme or learner submission path.
 
 The final read-only check after browser completion passes: new course rows unchanged by inspection; old courses/categories/history/source runs unchanged; 30 valid draft lessons, 60 gradeable MCQs and five valid project definitions; totals and discovery exclusion correct. Changed private PHP scripts pass syntax checks and the documentation diff passes whitespace checks. Only laravel.log remains in storage/logs.
+
+
+## Course editorial audit — 28 October 2026
+
+The [course audit](course-content-audit-20261028.md) records the reviewed 10 courses / 81 lessons, 15,820 passing algorithm checks, three verified PDF workbooks and 3 passing offline-notice tests. Initial full-suite result was 432 passed / 1 failed during a concurrent Vite build; repeat verification and live cleanup are pending MariaDB recovery. No saved-course or browser acceptance claim is made before successful application.
+
+Database follow-up: all 6,143 regular files were preserved in a separate physical copy. Recovery modes 1–6 on an isolated copy failed at system-space page 0. Course edits remain prepared and unapplied; see the linked audit for preservation paths and recovery limits.

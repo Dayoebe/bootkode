@@ -216,3 +216,10 @@ Delivery schedules remain guarded and off. CI uses an isolated test-only databas
 Five original soft-skills/customer-service curricula use the existing CourseGenerationService preview/persistence path, category resolution, CourseAuthoringAccess, course/lesson models, quiz grading and project-criterion definitions. A guarded one-time authoring script first exercised the identical payload in bootkode_soft_skills_20261028_test, then created working drafts under the authorised existing editor in a transaction. No working-database migration, new provider request or application dependency was required. Existing records were backed up before writing and preservation fingerprints are checked before commit and after browser inspection.
 
 Original course assets use public course-materials/soft-skills-20261027/{course-key}; private authoring payload, backup, applied export and verification evidence remain under ignored storage/app/soft-skills-20261027. Printable workbooks use the installed Dompdf library with remote resources and PHP execution disabled. They are worksheets rather than submission forms; submissions continue through the existing assessment flow.
+
+
+## Course editorial audit — 28 October 2026
+
+Lesson documents may mark `required_attribution: true`. `OfflineLearningPackService` retains these documents in explicitly requested packs even when optional documents are deselected. Existing enrollment authorization, resource types and explicit-download boundaries remain unchanged. The guarded editorial payload and private record snapshots are described in [the course audit](course-content-audit-20261028.md); working application remains pending database recovery.
+
+Database follow-up: all 6,143 regular files were preserved in a separate physical copy. Recovery modes 1–6 on an isolated copy failed at system-space page 0. Course edits remain prepared and unapplied; see the linked audit for preservation paths and recovery limits.

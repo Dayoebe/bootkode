@@ -274,3 +274,10 @@ The read-only local historical inventory found zero references/files in the know
 Created five actual working drafts, IDs 7–11: Workplace Communication; Time Management; Teamwork and Collaboration; Customer Service Essentials; Critical Thinking and Practical Problem Solving. The batch contains 15 modules, 30 original lessons (approximately 10,330 words), 15 four-question quizzes (60 MCQs with explanations), and five 100-point capstone criteria. Each course has an original cover, a four-page printable PDF workbook and an editable plain-text version. All lessons include a goal, explanation, worked scenario, practice and model feedback. Examples are explicitly fictional; no real customer contact, paid software, coding, fabricated learner achievement or promised employment is involved.
 
 Soft Skills and Customer Service categories were resolved through the existing service. Courses are free drafts, unpublished and unapproved, with public mechanical endorsements disabled pending human review. Existing courses, categories, source runs, learning history, wallets and certificates were preserved and compared against private backups. This changes actual course records/materials, not application software or the public availability rules.
+
+
+## Course editorial audit — 28 October 2026
+
+All 10 saved courses (81 lessons) have an editorial audit and prepared corrections. Repeated imported legal/challenge appendices are moved out of lesson reading; genuine source notices remain attached materials. Live application is blocked by MariaDB system-tablespace corruption. See [the course audit](course-content-audit-20261028.md) for exact scope, evidence and pending checks.
+
+Database follow-up: all 6,143 regular files were preserved in a separate physical copy. Recovery modes 1–6 on an isolated copy failed at system-space page 0. Course edits remain prepared and unapplied; see the linked audit for preservation paths and recovery limits.

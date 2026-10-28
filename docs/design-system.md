@@ -147,3 +147,10 @@ Unsubscribe confirmation reuses the public app layout, page header, panel and na
 ## Soft-skills course materials — 28 October 2026
 
 Five new original SVG covers retain BootKode navy/teal/mint and the existing card/authoring presentation. Lessons use descriptive headings and a consistent goal → concept → worked example → practice → feedback structure. Each course links to a printable PDF and an editable text workbook; the print document uses readable DejaVu Sans, clear headings and the established restrained colours. No stylesheet, frontend runtime, page layout or component framework was added. The existing inline assessment editor continues to contain quizzes and capstones.
+
+
+## Course editorial audit — 28 October 2026
+
+Teaching content belongs in the main reading flow; source/distribution notices belong in clearly named Course Materials. Practice workbooks are printable PDF plus editable text using existing material links. No dashboard palette, component framework or editor layout is changed. Current responsive acceptance is pending database recovery; see [the course audit](course-content-audit-20261028.md).
+
+Database follow-up: all 6,143 regular files were preserved in a separate physical copy. Recovery modes 1–6 on an isolated copy failed at system-space page 0. Course edits remain prepared and unapplied; see the linked audit for preservation paths and recovery limits.

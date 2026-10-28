@@ -176,3 +176,10 @@ A read-only inventory found no known historical public attachment references/fil
 ## Nontechnical curriculum expansion — 28 October 2026
 
 Completed in working records: five new courses across communication, time management, teamwork, customer service and critical thinking; 30 substantive lessons, 60 MCQs, five practical capstones and printable/editable workbooks. Existing authoring, grading and category services are reused. Publication and editorial approval remain deliberate review steps; no new software refactor is needed to inspect the drafts. Evidence and scope are recorded in verification.md.
+
+
+## Course editorial audit — 28 October 2026
+
+Course editorial audit: 10 courses / 81 lessons inspected, corrections and materials prepared. Remaining: recover database access while preserving original records, pass the guarded rehearsal, apply the payload, verify saved content/history and complete authenticated responsive checks. The offline required-notice behavior has focused test coverage. See [the course audit](course-content-audit-20261028.md); do not mark live cleanup complete yet.
+
+Database follow-up: all 6,143 regular files were preserved in a separate physical copy. Recovery modes 1–6 on an isolated copy failed at system-space page 0. Course edits remain prepared and unapplied; see the linked audit for preservation paths and recovery limits.
