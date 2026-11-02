@@ -47,3 +47,7 @@ Phase 1a is implemented and accepted on isolated data: 444 suite tests / 2,180 a
 - `27c96668` — repository audit and ordered implementation ledger.
 - `f4508c25` — guided learner profile, additive migration, account/dashboard integration, automated coverage, browser runner and built styles.
 - Branch: `feat/personalised-learning-onboarding`. Verification details and remaining scope are maintained in the documentation commit following the implementation. A concurrent pre-existing asset-cleanup commit on this branch was preserved without rewriting history.
+
+### Remote delivery result
+
+`2e422a15` records the accepted implementation's documentation and remaining scope. Ordinary `git push --set-upstream origin feat/personalised-learning-onboarding` failed: Git could not read a GitHub HTTPS username (`No such device or address`). No force push, history rewrite or alternative API commit was attempted. The implementation/documentation commits remain local and require a credentialed ordinary push. Local branch status after the attempt was two commits ahead of the existing tracking branch; this delivery-status note adds a documentation commit.
