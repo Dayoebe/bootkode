@@ -834,3 +834,24 @@ The final read-only check after browser completion passes: new course rows uncha
 The [course audit](course-content-audit-20261028.md) records the reviewed 10 courses / 81 lessons, 15,820 passing algorithm checks, three verified PDF workbooks and 3 passing offline-notice tests. Initial full-suite result was 432 passed / 1 failed during a concurrent Vite build; repeat verification and live cleanup are pending MariaDB recovery. No saved-course or browser acceptance claim is made before successful application.
 
 Database follow-up: all 6,143 regular files were preserved in a separate physical copy. Recovery modes 1–6 on an isolated copy failed at system-space page 0. Course edits remain prepared and unapplied; see the linked audit for preservation paths and recovery limits.
+
+## Personalised learning onboarding — 2 November 2026
+
+Implemented Phase 0 and Phase 1a from the [ecosystem ledger](learning-ecosystem/implementation.md): one private, optional, editable learning profile on the existing table, guided account-to-profile entry, dashboard/coach/menu links, strict PHP validation and self-report/evidence separation. The entire transformation is not complete.
+
+Evidence:
+
+- Baseline: **433 tests passed / 2,087 assertions**. Implementation suite: **444 passed / 2,180 assertions**, 115.38 seconds. Final focused check after readable validation labels: **16 passed / 107 assertions**. Existing tests were retained; the registration redirect expectation was deliberately changed to the verified profile route.
+- All runs used independent MariaDB at port 3312 and explicit `_test` schemas. The new migration passed forward/rollback/reapply preservation checks on a synthetic legacy profile. Every original value remained unchanged; the six new columns were null after the initial forward migration. No working-data migration, reset, seed or editorial updater was run.
+- `npm run build` passed (12.98 seconds; existing PostCSS missing-`from` warning). `php artisan view:cache`, named route inspection, syntax checks for all 11 changed/new PHP files, browser-script syntax, focused Pint and `git diff --check` passed.
+- Authenticated Chrome: **24 responsive states passed** at **390 / 768 / 1024 / 1440px**. Each width checked interests, starting point, validation, goal/preferences, save confirmation and student dashboard. Search retained category selections; Back retained inputs; saved values reloaded; step/save headings received focus; field errors were associated and visible; each state retained one visible h1 and no document horizontal overflow. No uncaught JavaScript or local HTTP 5xx errors were recorded.
+- Screenshots were captured for all states and representative mobile/desktop form screens were visually inspected. Runner: `tests/Browser/learning-profile.mjs`; local evidence: `/tmp/bootkode-ecosystem-browser/evidence/results.json` and sibling screenshots. External fonts/analytics/MathJax and service-worker behavior were excluded from this targeted run; the temporary router selected production assets independently of the developer Vite runtime. An earlier partial run lost its temporary server at the final dashboard check; the complete rerun above passed.
+
+Limits/release gates:
+
+- A fresh read-only PDO connection to the configured working database `bootkode_restored_20261028` on port 3308 failed. Real-data restoration/verification and an affected-profile/schema backup must precede a normal forward migration. The October 28 pending editorial payload remains outside this slice.
+- Current Composer audit reports **7 advisories across 3 packages**, including a critical Laravel report (two reports cover the email-rule issue). npm audit reports **4 vulnerable dependency entries: 1 high / 3 moderate**. No advisory was suppressed and no major dependency migration was introduced. Release is not cleared.
+- No live Groq completion or new provider integration was tested by this form-only slice. Existing server-only Groq configuration is retained; no AI tokens/costs, credentials, marks, competence, course content, payment success or certificate claims were manufactured.
+- Dedicated diagnostics, evidence-correct coach scoring, general catalogue matching/prerequisites/roadmaps, demand intelligence, learner-safe staged generation and the remaining design/QA phases are still open. Four-width targeted acceptance does not establish all-theme, screen-reader, production-data or full-product acceptance.
+
+See [validation.md](learning-ecosystem/validation.md) for commands, isolated database names, setup, migration boundary and dependency report locations.

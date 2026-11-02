@@ -6,7 +6,7 @@ The AI foundation provides a private AI Coding Mentor and a role-guarded course-
 
 The mentor stores user-owned conversations and messages, limits history and course context sent to the provider, records operational usage, and never executes submitted code. Learners can only use content from enrolled courses; instructors and academy administrators retain the broader course access already established by the application.
 
-The existing AI Learning Coach remains the evidence-based progress overview. Its tutor entry now leads to the persistent mentor rather than producing a simulated local AI answer.
+The existing AI Learning Coach summarizes platform activity with technology-specific heuristics. Its planning scores are not verified competencies; optional diagnostics and corrected evidence projections remain in the learning-ecosystem roadmap. Its tutor entry leads to the persistent mentor rather than producing a simulated local AI answer.
 
 The Course Content Studio creates validated blueprint and lesson stages, optional multiple-choice quizzes and a project rubric, then persists a reviewable draft through `CourseGenerationService`. It records module-level progress for retry and has a separate per-editor daily quota. Generated courses remain unpublished and unapproved; factual claims, references, outcomes and answer keys require human review. See [course-content-system.md](./course-content-system.md) for the source importer, complete configuration and commands.
 
@@ -68,3 +68,7 @@ php artisan bootkode:ai-check
 ```
 
 The command returns exit 0 on verified structured output and exit 1 for configuration/provider/invalid-response failures. Authentication, access, endpoint/model and format errors have safe messages; provider response bodies and keys are excluded. Use a model with [Groq structured-output support](https://console.groq.com/docs/structured-outputs) for course generation. The current working configuration passed real CLI and authenticated-browser checks. Keys remain in the server environment. Coding Mentor now rechecks current roles on every Livewire request. See verification.md for the test/browser matrix.
+
+## Structured learning profile
+
+`learning.profile` introduces optional guided setup and later editing on the existing private `AiLearningProfile`. It captures real category choices, custom interests, self-reported knowledge, one required goal and optional preferences without an AI request. Form writes preserve recorded diagnosis/evidence fields and invalidate their calculation timestamp. No new personal information is sent to the provider by this slice. Apply the additive onboarding migration only after the working-data restoration/backup checks in [validation.md](learning-ecosystem/validation.md); automated and browser verification use independent `_test` databases. See the [implementation ledger](learning-ecosystem/implementation.md) for unfinished matching, diagnostics, demand and generation work.

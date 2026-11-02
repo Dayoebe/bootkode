@@ -281,3 +281,11 @@ Soft Skills and Customer Service categories were resolved through the existing s
 All 10 saved courses (81 lessons) have an editorial audit and prepared corrections. Repeated imported legal/challenge appendices are moved out of lesson reading; genuine source notices remain attached materials. Live application is blocked by MariaDB system-tablespace corruption. See [the course audit](course-content-audit-20261028.md) for exact scope, evidence and pending checks.
 
 Database follow-up: all 6,143 regular files were preserved in a separate physical copy. Recovery modes 1–6 on an isolated copy failed at system-space page 0. Course edits remain prepared and unapplied; see the linked audit for preservation paths and recovery limits.
+
+## Personalised learning ecosystem — 2 November 2026
+
+The [implementation ledger](learning-ecosystem/implementation.md) maps the transformation brief to the existing architecture. Reuse the current AI provider, learning profiles, staged course-generation runs, assessment snapshots, certificate eligibility, wallets, notification receipts and institution systems. Technology-specific heuristic diagnoses and broad fallback recommendations are existing limitations, not verified competence or cross-discipline matching.
+
+The first implementation slice adds a private structured learning-profile journey at `learning.profile`. It extends `ai_learning_profiles` with optional category/custom interests, self-reported skills/courses/experience, a starting level and learning preferences, plus explicit completed/skipped timestamps. Registration leads to verified setup; existing learners can skip, return and edit from the dashboard, coach or Learning Hub. Only the goal is required. There is no provider call, competence award, enrollment, payment or certificate mutation in this journey.
+
+Still outstanding: real optional diagnostics, evidence-correct coach projections, catalogue-backed matching/prerequisites, persistent roadmaps, demand grouping/admin digests and learner-safe generation/enrollment orchestration. The overall ecosystem is not complete. Working-database connectivity/restoration and current dependency advisories remain release gates; see verification.md.

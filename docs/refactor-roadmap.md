@@ -183,3 +183,9 @@ Completed in working records: five new courses across communication, time manage
 Course editorial audit: 10 courses / 81 lessons inspected, corrections and materials prepared. Remaining: recover database access while preserving original records, pass the guarded rehearsal, apply the payload, verify saved content/history and complete authenticated responsive checks. The offline required-notice behavior has focused test coverage. See [the course audit](course-content-audit-20261028.md); do not mark live cleanup complete yet.
 
 Database follow-up: all 6,143 regular files were preserved in a separate physical copy. Recovery modes 1–6 on an isolated copy failed at system-space page 0. Course edits remain prepared and unapplied; see the linked audit for preservation paths and recovery limits.
+
+## Personalised learning programme — 2 November 2026
+
+The [implementation ledger](learning-ecosystem/implementation.md) is the ordered continuation plan for the new brief. Phase 0 audit and the Phase 1a guided-profile implementation are in this branch; completion acceptance is recorded in verification.md. The wider transformation remains open.
+
+Continue with optional diagnostics using the current assessment engine and finalized original result snapshots. Replace the existing heuristic competence/recommendation claims before adding catalogue-backed exact/related/no-match ranking, prerequisite validation and persistent roadmaps. Then introduce demand records/groups and grouped notices, wiring into the existing staged generation/authoring pipeline rather than duplicating it. Learner draft access must explicitly preserve review, payment and publication boundaries. Restore/verify the working database, back up affected records, and clear dependency release gates before a real-data release. No working-data migration is authorized by a test-only rehearsal result.

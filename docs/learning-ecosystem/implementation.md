@@ -27,7 +27,7 @@ Extend `ai_learning_profiles`; do not duplicate it with learner/profile/competen
 ## Ordered implementation checklist
 
 - [x] Phase 0: repository audit and implementation ledger.
-- [ ] Phase 1a: additive structured learning profile, guided optional onboarding, later editing, dashboard entry, ownership/validation tests and responsive acceptance.
+- [x] Phase 1a: additive structured learning profile, guided optional onboarding, later editing, dashboard entry, ownership/validation tests and responsive acceptance.
 - [ ] Phase 1b: optional short diagnostics using the existing assessment engine; evidence projections must honor saved finalized attempt snapshots, manual review and scope. Replace heuristic competence claims before treating the coach as a diagnostic system.
 - [ ] Phase 2: catalogue-backed exact/related/no-match ranking across disciplines; prerequisite metadata validation, explanations and accept/reject/save; persistent, adaptable roadmap using real course IDs.
 - [ ] Phase 3: missing-course demand/strict deduplication and topic groups, grouped admin notices, learner-safe generation orchestration, resumable staged learning and authorized preview/enrollment. Reuse CourseContentRun and existing generation jobs, preserving draft/approval boundaries.
@@ -40,4 +40,10 @@ No generated course may bypass catalogue/payment/approval checks merely to compl
 
 ## Resume point
 
-Start with Phase 1a. Update this ledger and docs/verification.md with actual evidence, commit IDs, migration application boundary and remaining work before handing off. Later sessions should inspect Git state and this ledger rather than creating parallel services.
+Phase 1a is implemented and accepted on isolated data: 444 suite tests / 2,180 assertions and 24 authenticated responsive states. The additive migration is not applied to the unavailable working database. See validation.md and ../verification.md for exact checks and release gates. Continue at Phase 1b: real optional diagnostics and corrected assessment-evidence projections, then Phase 2 catalogue matching. Inspect Git state and this ledger before proceeding; reuse the existing services.
+
+## Completed delivery units
+
+- `27c96668` — repository audit and ordered implementation ledger.
+- `f4508c25` — guided learner profile, additive migration, account/dashboard integration, automated coverage, browser runner and built styles.
+- Branch: `feat/personalised-learning-onboarding`. Verification details and remaining scope are maintained in the documentation commit following the implementation. A concurrent pre-existing asset-cleanup commit on this branch was preserved without rewriting history.
