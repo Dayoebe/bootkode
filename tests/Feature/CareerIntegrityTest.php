@@ -103,6 +103,7 @@ class CareerIntegrityTest extends TestCase
         $user = User::factory()->create();
         $job = $this->job();
         $file = UploadedFile::fake()->create('resume.pdf', 20, 'application/pdf');
+        $this->actingAs($user);
         $application = app(JobApplicationService::class)->submit($user, $job->id, 'Cover letter', [], $file);
         Storage::disk('local')->assertExists($application->resume_path);
         Storage::disk('public')->assertMissing($application->resume_path);
@@ -120,6 +121,7 @@ class CareerIntegrityTest extends TestCase
         $job = $this->job();
         $user = User::factory()->create();
         JobPortal::updating(function () { throw new \RuntimeException('Forced counter failure'); });
+        $this->actingAs($user);
         try {
             app(JobApplicationService::class)->submit($user, $job->id, 'Cover letter', [], UploadedFile::fake()->create('resume.pdf', 20));
             $this->fail('Expected the counter failure');

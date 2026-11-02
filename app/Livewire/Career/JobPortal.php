@@ -118,6 +118,7 @@ class JobPortal extends Component
         $this->loadRecommendations();
         $this->loadJobStats();
         $this->jobAlertEmailEnabled = auth()->user()?->shouldReceiveEmailNotification('job_alert') ?? false;
+        if (request()->integer('apply')) $this->openApplicationModal(request()->integer('apply'));
         if (auth()->check() && request()->integer('alert')) $this->loadSavedAlert(request()->integer('alert'));
     }
 
@@ -222,6 +223,12 @@ class JobPortal extends Component
         }
     
         $this->applicationJob = $this->availableApplicationJob($jobId);
+        $eligibility = app(\App\Services\Career\JobEligibilityService::class)->evaluate(Auth::user(), $this->applicationJob);
+        if (! $eligibility['can_apply']) {
+            $this->addError('careerEligibility', $eligibility['explanation']);
+            $this->applicationJob = null;
+            return;
+        }
         
         // Check if already applied
         $existingApplication = JobApplication::where('job_id', $jobId)
@@ -271,6 +278,8 @@ class JobPortal extends Component
             $this->loadUserData();
             $this->loadJobStats();
             session()->flash('message', 'Application received. You can track it in My Applications.');
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            throw $e;
         } catch (\Exception $e) {
             \Log::error('Job application persistence failed', ['exception' => get_class($e)]);
             session()->flash('error', 'The application could not be saved. Please try again.');

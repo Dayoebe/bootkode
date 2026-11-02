@@ -9,7 +9,7 @@
         @else
             <p class="text-content-secondary">Add your interests, what you already know and one learning goal. You can keep learning while you set this up.</p>
         @endif
-        <a href="{{ route('learning.profile') }}" class="bk-button bk-button-secondary mt-4">{{ $this->learningProfile?->onboarding_completed_at ? 'Update learning profile' : 'Set up learning profile' }}</a>
+        <div class="mt-4 flex flex-wrap gap-3"><a href="{{ route('learning.profile') }}" class="bk-button bk-button-secondary">{{ $this->learningProfile?->onboarding_completed_at ? 'Update learning profile' : 'Set up learning profile' }}</a><a href="{{ route('career.centre') }}" class="bk-button bk-button-secondary">Career opportunities & evidence</a></div>
     </x-ui.panel>
     <!-- Main Content Grid -->
     <div class="grid grid-cols-1 xl:grid-cols-3 gap-8">

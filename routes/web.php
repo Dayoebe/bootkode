@@ -250,6 +250,9 @@ Route::middleware(['auth', 'verified'])->prefix('mentorship')->name('mentorship.
 });
 
 Route::middleware('auth')->group(function () {
+    Route::get('/career-centre', \App\Livewire\Career\CareerCentre::class)->middleware('verified')->name('career.centre');
+    Route::get('/admin/career-review', \App\Livewire\Career\CareerReview::class)
+        ->middleware(['verified', \App\Http\Middleware\CheckRole::class.':super_admin,academy_admin'])->name('career.review');
     Route::get('/job-applications/{jobApplication}/resume', \App\Http\Controllers\JobApplicationResumeController::class)->name('job-applications.resume');
     Route::get('/search/job', \App\Livewire\Career\JobSearch::class)->name('search.job');
     Route::get('/portfolio', \App\Livewire\Career\PortfolioBuilder::class)->name('portfolio.show');
