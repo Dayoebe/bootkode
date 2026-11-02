@@ -51,3 +51,7 @@ Phase 1a is implemented and accepted on isolated data: 444 suite tests / 2,180 a
 ### Remote delivery result
 
 `2e422a15` records the accepted implementation's documentation and remaining scope. Ordinary `git push --set-upstream origin feat/personalised-learning-onboarding` failed: Git could not read a GitHub HTTPS username (`No such device or address`). No force push, history rewrite or alternative API commit was attempted. The implementation/documentation commits remain local and require a credentialed ordinary push. Local branch status after the attempt was two commits ahead of the existing tracking branch; this delivery-status note adds a documentation commit.
+
+## Career extension
+
+The additional career brief is tracked in [career-intelligence.md](career-intelligence.md). C1 connects existing opportunities/applications and learner profiles to reviewed requirements, private verified evidence, current eligibility, catalogue learning options and configured-provider guidance. It does not complete the original general diagnostics, persistent-roadmap or course-demand phases; career-specific C2 work depends on those shared boundaries. Validation and outstanding release gates are recorded in the career ledger and verification.md.
