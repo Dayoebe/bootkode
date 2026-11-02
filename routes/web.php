@@ -310,6 +310,9 @@ Route::middleware(['auth', 'verified'])->prefix('dashboard')->name('')->group(fu
 Route::middleware(['auth', 'verified'])->group(function () {
     // Student Dashboard Features
     Route::get('/learner-journey', \App\Livewire\StudentManagement\LearnerJourney::class)->name('learner.journey');
+    Route::get('/learning-profile', \App\Livewire\StudentManagement\LearningProfile::class)
+        ->middleware(\App\Http\Middleware\CheckRole::class.':student,instructor,academy_admin,super_admin')
+        ->name('learning.profile');
     Route::get('/ai-learning-coach', \App\Livewire\StudentManagement\AiLearningCoach::class)->name('ai.learning.coach');
     Route::get('/bootkode-ai/mentor', \App\Livewire\Ai\CodingMentor::class)->name('ai.coding-mentor');
     Route::get('/enrolled-courses', \App\Livewire\StudentManagement\EnrolledCourses::class)->name('student.enrolled-courses');

@@ -33,6 +33,6 @@ class RegistrationTest extends TestCase
         $this->assertSame('student', auth()->user()->role);
         $this->assertTrue(auth()->user()->hasRole('student'));
         $this->assertFalse(auth()->user()->hasVerifiedEmail());
-        $response->assertRedirect(route('student.dashboard', absolute: false));
+        $response->assertRedirect(route('learning.profile', absolute: false));
     }
 }

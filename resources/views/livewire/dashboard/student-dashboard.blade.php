@@ -2,6 +2,15 @@
     <x-ui.page-header title="Your learning workspace" description="Continue your courses, review your progress and find your next useful step.">
         <x-slot:actions><a href="{{ route('student.enrolled-courses') }}" class="bk-button bk-button-primary">My courses</a><a href="{{ route('student.course-catalog') }}" class="bk-button bk-button-secondary">Find a course</a></x-slot:actions>
     </x-ui.page-header>
+    <x-ui.panel title="Your learning direction">
+        @if($this->learningProfile?->onboarding_completed_at)
+            <p class="break-words text-content">{{ $this->learningProfile->goal }}</p>
+            <p class="mt-2 text-sm text-content-secondary">Your interests and self-reported starting point are saved. Update your profile as your goals change.</p>
+        @else
+            <p class="text-content-secondary">Add your interests, what you already know and one learning goal. You can keep learning while you set this up.</p>
+        @endif
+        <a href="{{ route('learning.profile') }}" class="bk-button bk-button-secondary mt-4">{{ $this->learningProfile?->onboarding_completed_at ? 'Update learning profile' : 'Set up learning profile' }}</a>
+    </x-ui.panel>
     <!-- Main Content Grid -->
     <div class="grid grid-cols-1 xl:grid-cols-3 gap-8">
         <!-- Left Column (2/3 width) -->

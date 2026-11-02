@@ -15,6 +15,7 @@
                 </p>
             </div>
             <div class="flex flex-wrap gap-2">
+                <a href="{{ route('learning.profile') }}" class="bk-button bk-button-secondary">Edit learning profile</a>
                 <span class="rounded-full border border-themed-primary px-3 py-2 text-xs font-semibold text-themed-secondary">
                     {{ $aiProviderReady ? 'BootKode AI enabled' : 'AI setup required' }}
                 </span>

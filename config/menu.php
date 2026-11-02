@@ -95,6 +95,7 @@ return [
             'link_id' => 'learning_hub',
             'children' => [
                 ['label' => 'Learner Journey', 'icon' => 'fas fa-route', 'route_name' => 'learner.journey', 'roles' => [User::ROLE_STUDENT, User::ROLE_INSTRUCTOR, User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN], 'link_id' => 'learner.journey'],
+                ['label' => 'Learning Profile', 'icon' => 'fas fa-sliders', 'route_name' => 'learning.profile', 'roles' => [User::ROLE_STUDENT, User::ROLE_INSTRUCTOR, User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN], 'link_id' => 'learning.profile'],
                 ['label' => 'AI Learning Coach', 'icon' => 'fas fa-robot', 'route_name' => 'ai.learning.coach', 'roles' => [User::ROLE_STUDENT, User::ROLE_INSTRUCTOR, User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN], 'link_id' => 'ai.learning.coach'],
                 ['label' => 'AI Coding Mentor', 'icon' => 'fas fa-code', 'route_name' => 'ai.coding-mentor', 'roles' => [User::ROLE_STUDENT, User::ROLE_INSTRUCTOR, User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN], 'link_id' => 'ai.coding-mentor'],
                 ['label' => 'My Courses', 'icon' => 'fas fa-book', 'route_name' => ('student.enrolled-courses'), 'roles' => [User::ROLE_STUDENT], 'component' => 'enrolled-courses', 'link_id' => 'student.enrolled-courses',],

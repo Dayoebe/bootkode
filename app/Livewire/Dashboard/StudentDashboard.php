@@ -62,6 +62,12 @@ class StudentDashboard extends Component
     }
 
     #[Computed]
+    public function learningProfile()
+    {
+        return \App\Models\Ai\AiLearningProfile::where('user_id', Auth::id())->first();
+    }
+
+    #[Computed]
     public function quickStats()
     {
         $user = Auth::user();
