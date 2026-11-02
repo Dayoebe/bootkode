@@ -909,3 +909,9 @@ Browser performance/query headers are local synthetic observations only; externa
 ### Release and continuation gates
 
 Current engineering assessment **63/100, blocked**. Resolve supported Laravel/JWT dependencies, provider cron/pcntl/runtime limits, encrypted off-host database/files/key restoration, HTTPS/SMTP/payment/AI/vacancy staging acceptance, and representative load/device/accessibility acceptance. Keep large video outside the application host and build outside the 2 GiB serving account. No Redis, persistent worker, production deployment or GitHub delivery is assumed. The next app milestone covers larger dashboard/course query graphs, safe conditional chart loading and remaining learning journeys under slow/interrupted connections. Earlier career C2–C4 work stays open.
+
+### Local delivery and service handoff
+
+Source commits: `eee04b8a` (compatible security patches), `8556793b` (production workloads/configuration/runbooks), `6dd7ad74` (queue uniqueness/reservations), `efeb8241` (service-URL credential redaction), and `b381df7a` (app/offline milestone). An ordinary push of `fix/production-deployment-readiness` failed because GitHub HTTPS authentication was unavailable (`could not read Username`; terminal prompts disabled). These commits remain local; no remote delivery or deployment is claimed.
+
+After verification, the temporary browser and MariaDB verifier services were stopped; their private evidence/data were retained. The working database service on 3308 and restored Vite development service on 5173 are active. The existing local application on 8000 returns HTTP 200 for `/`, `/login` and `/up`, and the Vite client returns 200. Working migration status records the two rehearsed forward migrations as ran. Root runtime directories are 770 and private `.env`/`.env.testing` are 600. Production assets are built and committed; `public/hot` remains an ignored local-development file and must not be shipped.
