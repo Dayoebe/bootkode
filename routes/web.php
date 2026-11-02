@@ -196,7 +196,18 @@ Route::middleware(['auth', 'verified'])->group(function () {
     });
 });
 
+Route::get('/course-management/lessons/{lessonId}/assessments', function (int $lessonId) {
+    $lesson = app(\App\Services\CourseAuthoringAccess::class)->lesson($lessonId);
+
+    return redirect()->route('course-builder', [
+        'course' => $lesson->section->course_id,
+        'lesson' => $lesson->id,
+        'tab' => 'assessment',
+    ]);
+})->whereNumber('lessonId')->name('lesson.assessments.manage')->middleware(['auth', 'verified', \App\Http\Middleware\CheckRole::class . ':super_admin,academy_admin,instructor']);
 Route::get('/learning/lessons/{lesson}/assessments', \App\Livewire\StudentManagement\CourseView\StudentAssessmentTaker::class)->defaults('standalone', true)->name('lesson.assessments')->middleware(['auth', 'verified']);
+Route::get('/learning/assessments/{assessment}/discussion', \App\Livewire\StudentManagement\CourseView\AssessmentDiscussion::class)->name('assessment.discussion')->middleware(['auth', 'verified']);
+Route::get('/learning/attempts/{session}/files/{file}', \App\Http\Controllers\AssessmentSubmissionFileController::class)->whereNumber('session')->whereUuid('file')->name('assessment.submission-file')->middleware(['auth', 'verified']);
 Route::get('/course-management/assessment-reviews', \App\Livewire\CourseManagement\AssessmentReviewQueue::class)->name('assessment.reviews')->middleware(['auth', 'verified', \App\Http\Middleware\CheckRole::class . ':super_admin,academy_admin,instructor']);
 
 // CBT routes
@@ -313,25 +324,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Route::post('/student/course/{course}/review', [\App\Livewire\StudentManagement\CourseView::class, 'submitReview'])->name('student.course.review');
 });
 // Review reminder unsubscribe routes
-Route::get('/review-reminder/unsubscribe/{reminder}', function (App\Models\ReviewReminder $reminder) {
-    if (!request()->hasValidSignature()) {
-        abort(403, 'Invalid or expired link');
-    }
-
-    app(\App\Services\ReviewReminderService::class)->unsubscribeFromCourse($reminder);
-
-    return view('review-reminders.unsubscribed', ['course' => $reminder->course]);
-})->name('review-reminder.unsubscribe');
-
-Route::get('/review-reminders/unsubscribe-all', function () {
-    if (!auth()->check()) {
-        return redirect()->route('login');
-    }
-
-    app(\App\Services\ReviewReminderService::class)->unsubscribeFromAll(auth()->user());
-
-    return view('review-reminders.unsubscribed-all');
-})->middleware('auth')->name('review-reminders.unsubscribe-all');
+Route::get('/review-reminder/unsubscribe/{reminder}', [\App\Http\Controllers\ReviewReminderSubscriptionController::class, 'show'])->name('review-reminder.unsubscribe');
+Route::post('/review-reminder/unsubscribe/{reminder}', [\App\Http\Controllers\ReviewReminderSubscriptionController::class, 'unsubscribe'])->name('review-reminder.unsubscribe.confirm');
+Route::get('/review-reminders/unsubscribe-all', [\App\Http\Controllers\ReviewReminderSubscriptionController::class, 'showAll'])->middleware('auth')->name('review-reminders.unsubscribe-all');
+Route::post('/review-reminders/unsubscribe-all', [\App\Http\Controllers\ReviewReminderSubscriptionController::class, 'unsubscribeAll'])->middleware('auth')->name('review-reminders.unsubscribe-all.confirm');
 
 
 // =============================================================================
@@ -347,6 +343,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
 // Course CRUD Routes
 Route::middleware(['auth', 'verified'])->prefix('dashboard/courses')->name('')->group(function () {
+    Route::get('/content-studio', \App\Livewire\CourseManagement\CourseContentStudio::class)
+        ->middleware(\App\Http\Middleware\CheckRole::class . ':super_admin,academy_admin,instructor')
+        ->name('course-content.studio');
     Route::get('/create', \App\Livewire\CourseManagement\CourseForm::class)->name('create.course');
     Route::get('/{course}/edit', \App\Livewire\CourseManagement\EditCourse::class)->name('edit_course');
     Route::get('/{course}/builder', \App\Livewire\CourseManagement\CourseBuilder::class)->name('course-builder');

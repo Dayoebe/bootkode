@@ -11,11 +11,11 @@
             <div class="text-sm text-themed-secondary">Pending Feedback</div>
         </div>
         <div class="bg-themed-secondary border border-themed-primary rounded-lg p-4">
-            <div class="text-3xl font-bold text-blue-400 mb-1">{{ $flaggedThreads ?? 0 }}</div>
+            <div class="text-3xl font-bold text-brand mb-1">{{ $flaggedThreads ?? 0 }}</div>
             <div class="text-sm text-themed-secondary">Flagged Threads</div>
         </div>
         <div class="bg-themed-secondary border border-themed-primary rounded-lg p-4">
-            <div class="text-3xl font-bold text-purple-400 mb-1">{{ $blockedUsers ?? 0 }}</div>
+            <div class="text-3xl font-bold text-brand mb-1">{{ $blockedUsers ?? 0 }}</div>
             <div class="text-sm text-themed-secondary">Blocked Users</div>
         </div>
     </div>
@@ -25,19 +25,19 @@
         <div class="flex gap-2 overflow-x-auto px-4">
             <button wire:click="setModerationTab('reports')"
                 class="px-4 py-3 font-medium text-sm transition-all whitespace-nowrap {{ $moderationTab === 'reports' ? 'border-b-2 border-red-500 text-red-500' : 'border-b-2 border-transparent text-themed-secondary hover:text-themed-primary' }}">
-                <i class="fas fa-flag mr-2"></i>Community Reports
+                <i aria-hidden="true" class="fas fa-flag mr-2"></i>Community Reports
             </button>
             <button wire:click="setModerationTab('feedback')"
                 class="px-4 py-3 font-medium text-sm transition-all whitespace-nowrap {{ $moderationTab === 'feedback' ? 'border-b-2 border-yellow-500 text-yellow-500' : 'border-b-2 border-transparent text-themed-secondary hover:text-themed-primary' }}">
-                <i class="fas fa-comment mr-2"></i>User Feedback
+                <i aria-hidden="true" class="fas fa-comment mr-2"></i>User Feedback
             </button>
             <button wire:click="setModerationTab('flagged')"
-                class="px-4 py-3 font-medium text-sm transition-all whitespace-nowrap {{ $moderationTab === 'flagged' ? 'border-b-2 border-blue-500 text-blue-500' : 'border-b-2 border-transparent text-themed-secondary hover:text-themed-primary' }}">
-                <i class="fas fa-exclamation-triangle mr-2"></i>Flagged Content
+                class="px-4 py-3 font-medium text-sm transition-all whitespace-nowrap {{ $moderationTab === 'flagged' ? 'border-b-2 border-brand text-blue-500' : 'border-b-2 border-transparent text-themed-secondary hover:text-themed-primary' }}">
+                <i aria-hidden="true" class="fas fa-exclamation-triangle mr-2"></i>Flagged Content
             </button>
             <button wire:click="setModerationTab('users')"
-                class="px-4 py-3 font-medium text-sm transition-all whitespace-nowrap {{ $moderationTab === 'users' ? 'border-b-2 border-purple-500 text-purple-500' : 'border-b-2 border-transparent text-themed-secondary hover:text-themed-primary' }}">
-                <i class="fas fa-users-slash mr-2"></i>Manage Users
+                class="px-4 py-3 font-medium text-sm transition-all whitespace-nowrap {{ $moderationTab === 'users' ? 'border-b-2 border-brand text-purple-500' : 'border-b-2 border-transparent text-themed-secondary hover:text-themed-primary' }}">
+                <i aria-hidden="true" class="fas fa-users-slash mr-2"></i>Manage Users
             </button>
         </div>
     </div>
@@ -46,7 +46,7 @@
     @if($moderationTab === 'reports')
         <div class="space-y-3">
             <div class="mb-4 flex gap-2">
-                <select wire:model.live="reportStatusFilter"
+                <select aria-label="Report status filter" wire:model.live="reportStatusFilter"
                     class="bg-themed-secondary border border-themed-primary text-themed-primary rounded-lg px-3 py-2 text-sm">
                     <option value="">All Statuses</option>
                     <option value="pending">Pending</option>
@@ -78,18 +78,18 @@
                     <p class="text-sm text-themed-secondary mb-3 line-clamp-3">{{ $report->description }}</p>
 
                     <div class="text-xs text-themed-secondary mb-3 pb-3 border-b border-themed-primary">
-                        <i class="fas fa-clock mr-1"></i>{{ $report->created_at->diffForHumans() }}
+                        <i aria-hidden="true" class="fas fa-clock mr-1"></i>{{ $report->created_at->diffForHumans() }}
                     </div>
 
                     @if($report->status === 'pending')
                         <div class="flex gap-2">
                             <button wire:click="reviewReport({{ $report->id }})"
-                                class="flex-1 bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-lg text-sm font-medium transition-colors">
-                                <i class="fas fa-eye mr-1"></i>Review
+                                class="flex-1 bg-action hover:bg-action text-action-foreground px-3 py-2 rounded-lg text-sm font-medium transition-colors">
+                                <i aria-hidden="true" class="fas fa-eye mr-1"></i>Review
                             </button>
                             <button wire:click="dismissReport({{ $report->id }})"
                                 class="flex-1 bg-gray-600 hover:bg-gray-700 text-white px-3 py-2 rounded-lg text-sm font-medium transition-colors">
-                                <i class="fas fa-times mr-1"></i>Dismiss
+                                <i aria-hidden="true" class="fas fa-times mr-1"></i>Dismiss
                             </button>
                         </div>
                     @else
@@ -101,7 +101,7 @@
                 </div>
             @empty
                 <div class="text-center py-12 bg-themed-secondary border border-themed-primary rounded-lg">
-                    <i class="fas fa-inbox text-themed-secondary text-4xl mb-3 block"></i>
+                    <i aria-hidden="true" class="fas fa-inbox text-themed-secondary text-4xl mb-3 block"></i>
                     <h3 class="text-lg font-semibold text-themed-primary mb-1">No reports</h3>
                     <p class="text-themed-secondary">All community reports have been addressed!</p>
                 </div>
@@ -113,7 +113,7 @@
     @if($moderationTab === 'feedback')
         <div class="space-y-3">
             <div class="mb-4 flex gap-2">
-                <select wire:model.live="feedbackStatusFilter"
+                <select aria-label="Feedback status filter" wire:model.live="feedbackStatusFilter"
                     class="bg-themed-secondary border border-themed-primary text-themed-primary rounded-lg px-3 py-2 text-sm">
                     <option value="">All Statuses</option>
                     <option value="open">Open</option>
@@ -124,61 +124,18 @@
             </div>
 
             @forelse($feedbackItems ?? [] as $feedback)
-                <div class="bg-themed-secondary border border-themed-primary rounded-lg p-4 hover:shadow-md transition-all">
-                    <div class="flex items-start justify-between mb-2">
-                        <h3 class="font-semibold text-themed-primary flex-1">{{ $feedback->subject }}</h3>
-                        <span
-                            class="bg-{{ $feedback->getStatusColorAttribute() }}-100/20 text-{{ $feedback->getStatusColorAttribute() }}-400 px-2 py-1 rounded text-xs font-medium border border-{{ $feedback->getStatusColorAttribute() }}-500/30 whitespace-nowrap">
-                            {{ ucfirst(str_replace('_', ' ', $feedback->status)) }}
-                        </span>
+                <section id="staff-feedback-{{ $feedback->id }}" tabindex="-1" wire:key="staff-feedback-{{ $feedback->id }}" class="space-y-3 rounded-lg border border-line bg-surface p-4">
+                    <h3 class="break-words font-semibold text-content">{{ $feedback->subject }}</h3><p class="text-sm text-content-muted">{{ $feedback->user->name }} · {{ ucfirst(str_replace('_', ' ', $feedback->status)) }} · {{ ucfirst($feedback->priority) }} priority</p><p class="whitespace-pre-wrap break-words text-content">{{ $feedback->message }}</p>
+                    @if($feedback->admin_response)<div class="space-y-2 border-t border-line pt-3"><h4 class="font-semibold text-content">Recorded community reply</h4><p class="whitespace-pre-wrap break-words text-content">{{ $feedback->admin_response }}</p><p class="text-sm text-content-muted">{{ $feedback->responded_at?->format('M j, Y H:i') }}</p></div>@endif
+                    <div class="flex flex-wrap gap-3">
+                        @if($feedback->status === 'open')<x-secondary-button wire:click="assignFeedback({{ $feedback->id }})">Assign feedback to me</x-secondary-button>@endif
+                        @if(!$feedback->admin_response && $feedback->status !== 'closed')<x-secondary-button wire:click="respondToFeedback({{ $feedback->id }})" wire:loading.class="opacity-60" wire:target="respondToFeedback">Reply to requester</x-secondary-button>@endif
+                        @if(!in_array($feedback->status, ['resolved', 'closed']))<x-secondary-button wire:click="resolveFeedback({{ $feedback->id }})">Resolve feedback</x-secondary-button>@endif
                     </div>
-
-                    <div class="flex items-center gap-2 text-xs text-themed-secondary mb-2 flex-wrap">
-                        <span class="bg-themed-tertiary px-2 py-1 rounded border border-themed-primary">
-                            {{ ucfirst(str_replace('_', ' ', $feedback->category)) }}
-                        </span>
-                        <span
-                            class="bg-{{ $feedback->priority === 'high' ? 'red' : ($feedback->priority === 'medium' ? 'yellow' : 'gray') }}-100/20 text-{{ $feedback->priority === 'high' ? 'red' : ($feedback->priority === 'medium' ? 'yellow' : 'gray') }}-400 px-2 py-1 rounded border border-{{ $feedback->priority === 'high' ? 'red' : ($feedback->priority === 'medium' ? 'yellow' : 'gray') }}-500/30">
-                            {{ ucfirst($feedback->priority) }} Priority
-                        </span>
-                    </div>
-
-                    <p class="text-sm text-themed-secondary mb-2 line-clamp-2">{{ $feedback->message }}</p>
-
-                    <div class="text-xs text-themed-secondary mb-3 pb-3 border-b border-themed-primary">
-                        <i class="fas fa-user mr-1"></i>{{ $feedback->user->name }}
-                        <i class="fas fa-clock ml-3 mr-1"></i>{{ $feedback->created_at->diffForHumans() }}
-                    </div>
-
-                    @if($feedback->status === 'open')
-                        <button wire:click="assignFeedback({{ $feedback->id }})"
-                            class="w-full bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-lg text-sm font-medium transition-colors">
-                            <i class="fas fa-hand-pointer mr-1"></i>Assign to Me
-                        </button>
-                    @elseif($feedback->status === 'in_progress')
-                        <div class="text-xs text-themed-secondary mb-2">
-                            <strong>Assigned to:</strong> {{ $feedback->assignedTo?->name ?? 'Unassigned' }}
-                        </div>
-                        <div class="grid grid-cols-2 gap-2">
-                            <button wire:click="respondToFeedback({{ $feedback->id }})"
-                                class="bg-green-600 hover:bg-green-700 text-white px-3 py-2 rounded-lg text-sm font-medium transition-colors">
-                                <i class="fas fa-reply mr-1"></i>Respond
-                            </button>
-                            <button wire:click="resolveFeedback({{ $feedback->id }})"
-                                class="bg-purple-600 hover:bg-purple-700 text-white px-3 py-2 rounded-lg text-sm font-medium transition-colors">
-                                <i class="fas fa-check mr-1"></i>Resolve
-                            </button>
-                        </div>
-                    @else
-                        <div class="text-xs text-themed-secondary">
-                            <p><strong>Response:</strong> {{ $feedback->admin_response ?? 'No response' }}</p>
-                            <p class="mt-1"><strong>Responded:</strong> {{ $feedback->responded_at?->diffForHumans() ?? 'N/A' }}</p>
-                        </div>
-                    @endif
-                </div>
+                </section>
             @empty
                 <div class="text-center py-12 bg-themed-secondary border border-themed-primary rounded-lg">
-                    <i class="fas fa-comments text-themed-secondary text-4xl mb-3 block"></i>
+                    <i aria-hidden="true" class="fas fa-comments text-themed-secondary text-4xl mb-3 block"></i>
                     <h3 class="text-lg font-semibold text-themed-primary mb-1">No feedback</h3>
                     <p class="text-themed-secondary">All user feedback has been addressed!</p>
                 </div>
@@ -194,7 +151,7 @@
                     <div class="flex items-start justify-between mb-2">
                         <h3 class="font-semibold text-themed-primary flex-1 line-clamp-2">{{ $thread->title }}</h3>
                         <span class="text-yellow-400 text-sm font-medium whitespace-nowrap ml-2">
-                            <i class="fas fa-flag mr-1"></i>Flagged
+                            <i aria-hidden="true" class="fas fa-flag mr-1"></i>Flagged
                         </span>
                     </div>
 
@@ -202,24 +159,24 @@
                         {{ Str::limit(strip_tags($thread->content), 150) }}</p>
 
                     <div class="text-xs text-themed-secondary mb-3 pb-3 border-b border-themed-primary">
-                        <i class="fas fa-user mr-1"></i>{{ $thread->user->name }}
-                        <i class="fas fa-clock ml-3 mr-1"></i>{{ $thread->created_at->diffForHumans() }}
+                        <i aria-hidden="true" class="fas fa-user mr-1"></i>{{ $thread->user->name }}
+                        <i aria-hidden="true" class="fas fa-clock ml-3 mr-1"></i>{{ $thread->created_at->diffForHumans() }}
                     </div>
 
                     <div class="flex gap-2">
                         <button wire:click="unflagThread({{ $thread->id }})"
                             class="flex-1 bg-green-600 hover:bg-green-700 text-white px-3 py-2 rounded-lg text-sm font-medium transition-colors">
-                            <i class="fas fa-check mr-1"></i>Approve
+                            <i aria-hidden="true" class="fas fa-check mr-1"></i>Approve
                         </button>
                         <button wire:confirm="Remove this discussion and its replies?" wire:click="removeThread({{ $thread->id }})"
                             class="flex-1 bg-red-600 hover:bg-red-700 text-white px-3 py-2 rounded-lg text-sm font-medium transition-colors">
-                            <i class="fas fa-trash mr-1"></i>Remove
+                            <i aria-hidden="true" class="fas fa-trash mr-1"></i>Remove
                         </button>
                     </div>
                 </div>
             @empty
                 <div class="text-center py-12 bg-themed-secondary border border-themed-primary rounded-lg">
-                    <i class="fas fa-check-circle text-themed-secondary text-4xl mb-3 block"></i>
+                    <i aria-hidden="true" class="fas fa-check-circle text-themed-secondary text-4xl mb-3 block"></i>
                     <h3 class="text-lg font-semibold text-themed-primary mb-1">No flagged content</h3>
                     <p class="text-themed-secondary">All content is in good standing!</p>
                 </div>
@@ -232,8 +189,8 @@
     @if($moderationTab === 'users')
         <div class="space-y-3">
             <div class="mb-4">
-                <input type="text" wire:model.live.debounce="userSearch"
-                    class="w-full pl-10 pr-4 py-2 bg-themed-secondary border border-themed-primary text-themed-primary rounded-lg placeholder-themed-secondary focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                <input aria-label="Search users" type="text" wire:model.live.debounce="userSearch"
+                    class="w-full pl-10 pr-4 py-2 bg-themed-secondary border border-themed-primary text-themed-primary rounded-lg placeholder-themed-secondary focus:ring-2 focus:ring-brand/30 focus:border-transparent"
                     placeholder="Search users...">
             </div>
 
@@ -262,19 +219,19 @@
                         @if($user->is_active)
                             <button wire:confirm="Block this account?" wire:click="blockUser({{ $user->id }})"
                                 class="flex-1 bg-red-600 hover:bg-red-700 text-white px-3 py-2 rounded-lg text-sm font-medium transition-colors">
-                                <i class="fas fa-ban mr-1"></i>Block User
+                                <i aria-hidden="true" class="fas fa-ban mr-1"></i>Block User
                             </button>
                         @else
                             <button wire:confirm="Restore this account?" wire:click="unblockUser({{ $user->id }})"
                                 class="flex-1 bg-green-600 hover:bg-green-700 text-white px-3 py-2 rounded-lg text-sm font-medium transition-colors">
-                                <i class="fas fa-check mr-1"></i>Unblock User
+                                <i aria-hidden="true" class="fas fa-check mr-1"></i>Unblock User
                             </button>
                         @endif
                     </div>
                 </div>
             @empty
                 <div class="text-center py-12 bg-themed-secondary border border-themed-primary rounded-lg">
-                    <i class="fas fa-users text-themed-secondary text-4xl mb-3 block"></i>
+                    <i aria-hidden="true" class="fas fa-users text-themed-secondary text-4xl mb-3 block"></i>
                     <h3 class="text-lg font-semibold text-themed-primary mb-1">No users found</h3>
                     <p class="text-themed-secondary">Try adjusting your search filters.</p>
                 </div>

@@ -1,11 +1,11 @@
 {{-- resources/views/livewire/community/modals/code-challenge-modal.blade.php --}}
 @if($activeModal === 'code-challenge')
     <div role="dialog" aria-modal="true" aria-label="{{ $selectedItem ? 'Submit a solution' : 'Create a challenge' }}" x-data x-trap.inert.noscroll="true" x-on:keydown.escape.window="$wire.closeModal()" class="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
-        <div class="bg-themed-secondary rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto animate-slide-in">
+        <div class="bg-themed-secondary rounded-lg shadow-sm max-w-2xl w-full max-h-[90vh] overflow-y-auto animate-slide-in">
             <div class="sticky top-0 bg-themed-secondary border-b border-themed-primary p-6 flex items-center justify-between">
                 <h2 class="text-xl font-bold text-themed-primary">{{ $selectedItem ? 'Submit a solution' : 'Create a challenge' }}</h2>
                 <button type="button" aria-label="Close dialog" wire:click="closeModal()" class="text-themed-secondary hover:text-themed-primary transition-colors">
-                    <i class="fas fa-times text-2xl"></i>
+                    <i aria-hidden="true" class="fas fa-times text-2xl"></i>
                 </button>
             </div>
 
@@ -21,7 +21,7 @@
                     </div>
                     <div>
                         <x-input-label for="challenge-code" value="Your solution" />
-                        <textarea id="challenge-code" wire:model="code" rows="8" class="mt-1 w-full rounded-lg border-line bg-surface text-content font-mono" required aria-describedby="challenge-code-error"></textarea>
+                        <textarea aria-label="Code" id="challenge-code" wire:model="code" rows="8" class="mt-1 w-full rounded-lg border-line bg-surface text-content font-mono" required aria-describedby="challenge-code-error"></textarea>
                         <x-input-error id="challenge-code-error" :messages="$errors->get('code')" />
                     </div>
                     <div class="flex flex-wrap justify-end gap-3">
@@ -71,7 +71,7 @@
                     </button>
                     <button type="submit"
                             class="px-4 py-2 bg-orange-600 hover:bg-orange-700 text-white rounded-lg font-medium transition-colors flex items-center gap-2">
-                        <i class="fas fa-code"></i>Create Challenge
+                        <i aria-hidden="true" class="fas fa-code"></i>Create Challenge
                     </button>
                 </div>
             </form>

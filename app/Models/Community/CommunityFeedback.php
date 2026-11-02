@@ -15,7 +15,7 @@ class CommunityFeedback extends Model
 
     protected $fillable = [
         'user_id', 'category', 'subject', 'message', 'priority', 
-        'status', 'assigned_to', 'admin_response', 'responded_at'
+        'status', 'assigned_to', 'admin_response', 'responded_at', 'responded_by'
     ];
 
     protected $casts = [

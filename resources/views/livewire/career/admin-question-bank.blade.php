@@ -4,19 +4,19 @@
         <div class="flex items-center justify-between">
             <h2 class="text-xl font-semibold text-themed-primary">Question Bank</h2>
             <button wire:click="$set('showCreateQuestionModal', true)"
-                class="bg-accent-themed-primary text-white px-4 py-2 rounded-md hover:bg-accent-themed-secondary transition-colors font-medium">
-                <i class="fas fa-plus mr-2"></i> Add Question
+                class="bg-action text-action-foreground px-4 py-2 rounded-md hover:bg-action/90 transition-colors font-medium">
+                <i aria-hidden="true" class="fas fa-plus mr-2"></i> Add Question
             </button>
         </div>
 
         <!-- Filters -->
         <div class="shadow rounded-lg p-6 bg-themed-secondary border border-themed-primary">
             <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-                <input wire:model.live.debounce.300ms="questionSearch" type="text" placeholder="Search questions..."
-                    class="px-3 py-2 border border-themed-primary rounded-md focus:ring-2 focus:ring-accent-themed-primary focus:border-transparent bg-themed-secondary text-themed-primary placeholder-themed-tertiary">
+                <input aria-label="Search questions" wire:model.live.debounce.300ms="questionSearch" type="text" placeholder="Search questions..."
+                    class="px-3 py-2 border border-themed-primary rounded-md focus:ring-2 focus:ring-brand focus:border-transparent bg-themed-secondary text-themed-primary placeholder-themed-tertiary">
 
-                <select wire:model.live="questionFilterType"
-                    class="px-3 py-2 border border-themed-primary rounded-md focus:ring-2 focus:ring-accent-themed-primary focus:border-transparent bg-themed-secondary text-themed-primary">
+                <select aria-label="Question filter type" wire:model.live="questionFilterType"
+                    class="px-3 py-2 border border-themed-primary rounded-md focus:ring-2 focus:ring-brand focus:border-transparent bg-themed-secondary text-themed-primary">
                     <option value="">All Types</option>
                     <option value="technical">Technical</option>
                     <option value="behavioral">Behavioral</option>
@@ -25,8 +25,8 @@
                     <option value="hr">HR</option>
                 </select>
 
-                <select wire:model.live="questionFilterDifficulty"
-                    class="px-3 py-2 border border-themed-primary rounded-md focus:ring-2 focus:ring-accent-themed-primary focus:border-transparent bg-themed-secondary text-themed-primary">
+                <select aria-label="Question filter difficulty" wire:model.live="questionFilterDifficulty"
+                    class="px-3 py-2 border border-themed-primary rounded-md focus:ring-2 focus:ring-brand focus:border-transparent bg-themed-secondary text-themed-primary">
                     <option value="">All Difficulty</option>
                     <option value="beginner">Beginner</option>
                     <option value="intermediate">Intermediate</option>
@@ -34,8 +34,8 @@
                     <option value="expert">Expert</option>
                 </select>
 
-                <select wire:model.live="questionFilterStatus"
-                    class="px-3 py-2 border border-themed-primary rounded-md focus:ring-2 focus:ring-accent-themed-primary focus:border-transparent bg-themed-secondary text-themed-primary">
+                <select aria-label="Question filter status" wire:model.live="questionFilterStatus"
+                    class="px-3 py-2 border border-themed-primary rounded-md focus:ring-2 focus:ring-brand focus:border-transparent bg-themed-secondary text-themed-primary">
                     <option value="">All Status</option>
                     <option value="active">Active</option>
                     <option value="inactive">Inactive</option>
@@ -47,34 +47,34 @@
 
         <!-- Questions Table -->
         <div class="shadow overflow-hidden sm:rounded-lg bg-themed-secondary border border-themed-primary">
-            <table class="min-w-full divide-y divide-themed-primary">
+            <x-ui.table label="Admin Question Bank records"><table class="min-w-full divide-y divide-themed-primary">
                 <thead class="bg-themed-tertiary">
                     <tr>
-                        <th
+                        <th scope="col"
                             class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-themed-secondary">
                             Question
                         </th>
-                        <th
+                        <th scope="col"
                             class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-themed-secondary">
                             Type
                         </th>
-                        <th
+                        <th scope="col"
                             class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-themed-secondary">
                             Difficulty
                         </th>
-                        <th
+                        <th scope="col"
                             class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-themed-secondary">
                             Points
                         </th>
-                        <th
+                        <th scope="col"
                             class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-themed-secondary">
                             Status
                         </th>
-                        <th
+                        <th scope="col"
                             class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-themed-secondary">
                             Usage
                         </th>
-                        <th
+                        <th scope="col"
                             class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-themed-secondary">
                             Actions
                         </th>
@@ -95,12 +95,12 @@
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
                                 <span
-                                    class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                                    class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-brand/10 text-brand">
                                     {{ $question->type_label }}
                                 </span>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
-                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium 
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
                                         {{ $question->difficulty_level === 'beginner' ? 'bg-green-100 text-green-800' : '' }}
                                         {{ $question->difficulty_level === 'intermediate' ? 'bg-yellow-100 text-yellow-800' : '' }}
                                         {{ $question->difficulty_level === 'advanced' ? 'bg-orange-100 text-orange-800' : '' }}
@@ -115,12 +115,12 @@
                                 @if($question->is_approved)
                                     <span
                                         class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                                        <i class="fas fa-check mr-1"></i> Approved
+                                        <i aria-hidden="true" class="fas fa-check mr-1"></i> Approved
                                     </span>
                                 @else
                                     <span
                                         class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
-                                        <i class="fas fa-clock mr-1"></i> Pending
+                                        <i aria-hidden="true" class="fas fa-clock mr-1"></i> Pending
                                     </span>
                                 @endif
                                 @if(!$question->is_active)
@@ -139,31 +139,31 @@
                             <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                 <div class="flex items-center space-x-2">
                                     <button wire:click="viewQuestion({{ $question->id }})"
-                                        class="text-accent-themed-primary hover:text-accent-themed-secondary transition-colors">
-                                        <i class="fas fa-eye"></i>
+                                        class="text-brand hover:text-accent-themed-secondary transition-colors">
+                                        <i aria-hidden="true" class="fas fa-eye"></i>
                                     </button>
 
                                     <button wire:click="editQuestion({{ $question->id }})"
                                         class="text-yellow-600 hover:text-yellow-800 transition-colors">
-                                        <i class="fas fa-edit"></i>
+                                        <i aria-hidden="true" class="fas fa-edit"></i>
                                     </button>
 
                                     @if(!$question->is_approved)
                                         <button wire:click="approveQuestion({{ $question->id }})"
                                             class="text-green-600 hover:text-green-800 transition-colors">
-                                            <i class="fas fa-check"></i>
+                                            <i aria-hidden="true" class="fas fa-check"></i>
                                         </button>
                                     @endif
 
                                     <button wire:click="toggleQuestionStatus({{ $question->id }})"
                                         class="text-themed-secondary hover:text-themed-primary transition-colors">
-                                        <i class="fas fa-{{ $question->is_active ? 'ban' : 'check-circle' }}"></i>
+                                        <i aria-hidden="true" class="fas fa-{{ $question->is_active ? 'ban' : 'check-circle' }}"></i>
                                     </button>
 
                                     <button wire:click="deleteQuestion({{ $question->id }})"
                                         wire:confirm="Are you sure you want to delete this question?"
                                         class="text-red-600 hover:text-red-800 transition-colors">
-                                        <i class="fas fa-trash"></i>
+                                        <i aria-hidden="true" class="fas fa-trash"></i>
                                     </button>
                                 </div>
                             </td>
@@ -171,18 +171,18 @@
                     @empty
                         <tr>
                             <td colspan="7" class="px-6 py-12 text-center text-themed-secondary">
-                                <i class="fas fa-question-circle text-4xl mb-4 text-themed-tertiary"
+                                <i aria-hidden="true" class="fas fa-question-circle text-4xl mb-4 text-themed-tertiary"
                                     style="display: block;"></i>
                                 <p>No questions found. Create your first question to get started!</p>
                                 <button wire:click="$set('showCreateQuestionModal', true)"
-                                    class="mt-4 bg-accent-themed-primary text-white px-6 py-2 rounded-md hover:bg-accent-themed-secondary transition-colors font-medium">
-                                    <i class="fas fa-plus mr-2"></i> Create Question
+                                    class="mt-4 bg-action text-action-foreground px-6 py-2 rounded-md hover:bg-action/90 transition-colors font-medium">
+                                    <i aria-hidden="true" class="fas fa-plus mr-2"></i> Create Question
                                 </button>
                             </td>
                         </tr>
                     @endforelse
                 </tbody>
-            </table>
+            </table></x-ui.table>
 
             <!-- Pagination -->
             @if($this->questions->hasPages())
@@ -198,7 +198,7 @@
                 <h3 class="text-lg font-semibold text-themed-primary">Question Sets</h3>
                 <button wire:click="$set('showCreateSetModal', true)"
                     class="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 transition-colors font-medium">
-                    <i class="fas fa-folder-plus mr-2"></i> Create Set
+                    <i aria-hidden="true" class="fas fa-folder-plus mr-2"></i> Create Set
                 </button>
             </div>
 
@@ -212,7 +212,7 @@
                             </div>
                             @if($set->is_template)
                                 <span
-                                    class="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-purple-100 text-purple-800">
+                                    class="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-brand/10 text-brand">
                                     Template
                                 </span>
                             @endif
@@ -235,22 +235,22 @@
 
                         <div class="mt-4 flex items-center space-x-2">
                             <button wire:click="viewQuestionSet({{ $set->id }})"
-                                class="flex-1 bg-accent-themed-primary text-white px-3 py-2 rounded-md hover:bg-accent-themed-secondary transition-colors text-sm font-medium">
-                                <i class="fas fa-eye mr-1"></i> View
+                                class="flex-1 bg-action text-action-foreground px-3 py-2 rounded-md hover:bg-action/90 transition-colors text-sm font-medium">
+                                <i aria-hidden="true" class="fas fa-eye mr-1"></i> View
                             </button>
                             <button wire:click="editQuestionSet({{ $set->id }})"
                                 class="px-3 py-2 bg-yellow-100 text-yellow-700 rounded-md hover:bg-yellow-200 transition-colors font-medium">
-                                <i class="fas fa-edit"></i>
+                                <i aria-hidden="true" class="fas fa-edit"></i>
                             </button>
                             <button wire:click="deleteQuestionSet({{ $set->id }})" wire:confirm="Are you sure?"
                                 class="px-3 py-2 bg-red-100 text-red-700 rounded-md hover:bg-red-200 transition-colors font-medium">
-                                <i class="fas fa-trash"></i>
+                                <i aria-hidden="true" class="fas fa-trash"></i>
                             </button>
                         </div>
                     </div>
                 @empty
                     <div class="col-span-full text-center py-8 text-themed-secondary">
-                        <i class="fas fa-folder-open text-4xl mb-4 text-themed-tertiary" style="display: block;"></i>
+                        <i aria-hidden="true" class="fas fa-folder-open text-4xl mb-4 text-themed-tertiary" style="display: block;"></i>
                         <p>No question sets yet. Create a set to group related questions!</p>
                     </div>
                 @endforelse

@@ -1,0 +1,56 @@
+# Authenticated application redesign
+
+23 October 2026. Branch: `feat/bootkode-dashboard-redesign`.
+
+## Audit and architecture
+
+Laravel 11.46.1, PHP CLI 8.4.27, Livewire 3.6.4, Spatie Permission 6.22.0; Tailwind 3.4.19, Vite 7.3.7, Chart.js 4.5.0, Trix 2.1.19. Livewire supplies Alpine and focus/collapse plugins. Blade layouts, PHP domain components and existing services remain authoritative. Manrope/Sora and Font Awesome 6.5.2 already serve the product. No framework, font or icon migration is needed.
+
+`layouts.dashboard` owns the authenticated shell; `layouts.exam` is a focused assessment exception. Public `app`, `pages` and `blog` layouts remain separate. Route middleware and PHP ownership/role guards control access. `config/menu.php` is the existing navigation source. Seven role dashboards serve student, instructor, mentor, content editor, affiliate ambassador, academy admin and super admin. Several modules have root workspaces with nested partials, so route count is not page count.
+
+The route export contains 286 routes, 223 authenticated routes, including 208 GET routes. See `route-inventory.md` for each handler and access boundary; `page-checklist.md` records view-level coverage and exceptions. Downloads, APIs, redirects and printable documents require different acceptance from interactive pages.
+
+## Findings
+
+- Existing primitives: page-header, panel, empty-state, flash, buttons, text-input, labels/errors, dropdown, modal, theme selectors, course card.
+- Inconsistent utility palettes, heavy shadows, oversized profile/dashboard headers, repeated page padding, decoration and hover movement persist inside modules.
+- Legacy CSS force-remaps hardcoded utility colors with `!important`; this competes with tokens and can corrupt meaning and contrast.
+- The sidebar is tall and decorative, has conflicting responsive label classes, lacks current-page semantics, and its mobile More panel duplicates navigation and has no focus trap.
+- Mobile navigation routes all non-students into course authoring and gives all roles learner journeys. It must follow actual roles.
+- Public marketing and printable certificates/resumes must not be restyled by authenticated CSS.
+- Existing uncommitted course content pipeline work, routes, documentation and build changes were recorded before edits and are excluded from redesign commits.
+
+## Implementation sequence
+
+1. Audit and baseline; record the inventory and test/environment limits.
+2. Extend existing semantic tokens and primitives; use a scoped authenticated foundation, eliminate conflicting overrides after migrating callers.
+3. Shared shell: compact white navigation, role-aware mobile destinations, one full drawer, persistent desktop collapse, keyboard/focus behavior, real search/notifications.
+4. Migrate role dashboards and authenticated module surfaces, controls, tables, headings, feedback and responsive patterns. Preserve domain actions and parameters.
+5. Exercise isolated fixture workflows in the dedicated test database, browser checks at 390/768/1024/1440, full suite/build/cache/PHP/diff checks; document exceptions precisely.
+
+## Validation and delivery
+
+Tests use `.env.testing` and `bootkode_test` only. Never migrate/reset the working database or insert browser fixtures there. Capture baseline failures before edits. Reuse the existing running local service where applicable; browser fixture server uses the isolated testing database. Security regressions include role guards, ownership, wallet/replay/rollback, enrolment, assessments and certificates. Check public pages separately. Dependency audits record findings without forced upgrades.
+
+Commit validated, independently reviewable milestones with Conventional Commits, stage explicit files/hunks only, and push normally to the verified `https://github.com/Dayoebe/bootkode.git` remote. Build artefacts are already tracked; isolate the redesign build from the pre-existing authoring changes before committing assets.
+
+## Progress
+
+- [x] Git/stack/route/layout/component audit and baseline test started.
+- [x] Shared foundation and shell.
+- [x] Role dashboards and feature migration.
+- [x] Browser and regression acceptance, with explicit exceptions below.
+- [x] Final documentation and local commits. Push attempts are blocked by missing HTTPS Git credentials.
+
+## Acceptance and exceptions
+
+The inventory uses the exact Authenticate middleware: 223 authenticated routes, including 208 GET endpoints, across 116 directly resolved source views. Source implementation covers 223 Livewire templates including the shell and verification notice. 108 deduplicated browser checks cover 68 named routes/public URLs and all seven role shells at 390/768/1024/1440px; learner populated states also pass 360/1366px. The page checklist distinguishes source review from individual browser acceptance.
+
+Public marketing/marketplace/published-page templates, printable credentials/resumes and focused CBT exam layouts retain their established contracts. The in-progress Course Content Studio remains separate uncommitted authoring work. Unrouted historical game prototypes remain untouched. Profile sharing has no public account route, so its old inert control now states that it is unavailable.
+
+The full suite snapshot passes 264 tests with one existing import revision conflict failure in unrelated uncommitted source. Final affected tests and the new verification-notice test pass separately; see verification.md for exact counts. All 389 compiled views passed PHP syntax checks; two pre-existing incomplete Blade blocks were repaired alongside the migrated markup regressions. External gateway/provider and every possible conditional UI state are not certified by these browser checks.
+
+
+## Release continuation
+
+The initial stack snapshot above is historical: compatible security maintenance now runs Livewire 3.8.11. Final acceptance passes 262 branch-only tests and 275 working-tree tests, with 306 browser checks across 112 routes. Authoring, résumé, interview analytics, eligibility and system-status repairs are delivered. Remaining security/integration/Git limits are documented in [continuation-report.md](continuation-report.md).

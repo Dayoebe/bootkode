@@ -1,11 +1,11 @@
 <div>
     <!-- Session Creation/Edit Modal -->
     @if($showSessionModal)
-        <div class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4 transition-colors duration-300">
-            <div class="bg-themed-secondary rounded-xl shadow-2xl max-w-3xl w-full max-h-[90vh] overflow-y-auto border border-themed-primary transition-colors duration-300">
+        <div class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4 transition-colors duration-300" x-trap.inert.noscroll="true" role="dialog" aria-modal="true" aria-labelledby="mentorship-session-title" tabindex="-1" x-data="{}" @keydown.escape.stop="$wire.set(&#x27;showSessionModal&#x27;, false)">
+            <div class="bg-themed-secondary rounded-lg shadow-sm max-w-3xl w-full max-h-[90vh] overflow-y-auto border border-themed-primary transition-colors duration-300">
                 <div class="p-6 border-b border-themed-primary transition-colors duration-300">
                     <div class="flex items-center justify-between">
-                        <h3 class="text-xl font-bold text-themed-primary transition-colors duration-300">
+                        <h3 id="mentorship-session-title" class="text-xl font-bold text-themed-primary transition-colors duration-300">
                             @if($modalType === 'create')
                                 Schedule New Session
                             @elseif($modalType === 'edit')
@@ -14,8 +14,8 @@
                                 Session Details
                             @endif
                         </h3>
-                        <button wire:click="closeModal" class="text-themed-secondary hover:text-themed-primary transition-colors">
-                            <i class="fas fa-times text-xl"></i>
+                        <button wire:click="closeModal" class="text-themed-secondary hover:text-themed-primary transition-colors" aria-label="Close">
+                            <i aria-hidden="true" class="fas fa-times text-xl"></i>
                         </button>
                     </div>
                 </div>
@@ -59,7 +59,7 @@
                         @if($currentSession->status === 'completed')
                             <div class="border-t border-themed-primary pt-6 transition-colors duration-300">
                                 <h4 class="font-semibold text-themed-primary mb-4 transition-colors duration-300">Session Completed</h4>
-                                
+
                                 @if($currentSession->session_notes)
                                     <div class="mb-4">
                                         <h5 class="font-medium text-themed-primary mb-2 transition-colors duration-300">Session Notes</h5>
@@ -85,7 +85,7 @@
                                                 <h5 class="font-medium text-themed-primary mb-1 transition-colors duration-300">Mentor Rating</h5>
                                                 <div class="text-yellow-400">
                                                     @for($i = 1; $i <= 5; $i++)
-                                                        <i class="fas fa-star {{ $i <= $currentSession->mentor_rating ? '' : 'text-themed-tertiary' }}"></i>
+                                                        <i aria-hidden="true" class="fas fa-star {{ $i <= $currentSession->mentor_rating ? '' : 'text-themed-tertiary' }}"></i>
                                                     @endfor
                                                 </div>
                                             </div>
@@ -96,7 +96,7 @@
                                                 <h5 class="font-medium text-themed-primary mb-1 transition-colors duration-300">Mentee Rating</h5>
                                                 <div class="text-yellow-400">
                                                     @for($i = 1; $i <= 5; $i++)
-                                                        <i class="fas fa-star {{ $i <= $currentSession->mentee_rating ? '' : 'text-themed-tertiary' }}"></i>
+                                                        <i aria-hidden="true" class="fas fa-star {{ $i <= $currentSession->mentee_rating ? '' : 'text-themed-tertiary' }}"></i>
                                                     @endfor
                                                 </div>
                                             </div>
@@ -107,7 +107,7 @@
                         @endif
 
                         <div class="flex justify-end space-x-4 pt-6 border-t border-themed-primary transition-colors duration-300">
-                            <button wire:click="closeModal" 
+                            <button wire:click="closeModal"
                                 class="px-6 py-3 border border-themed-primary rounded-lg text-themed-primary hover:bg-themed-tertiary transition-colors duration-300">
                                 Close
                             </button>
@@ -125,7 +125,7 @@
                         <div class="grid md:grid-cols-2 gap-6">
                             <div>
                                 <label class="block text-sm font-medium text-themed-primary mb-2 transition-colors duration-300">Session Title</label>
-                                <input wire:model="sessionTitle" type="text" 
+                                <input aria-label="e.g., React Fundamentals Discussion" wire:model="sessionTitle" type="text"
                                     class="w-full px-4 py-3 border border-themed-primary rounded-lg focus:ring-2 focus:ring-brand focus:border-transparent bg-themed-secondary text-themed-primary placeholder-themed-tertiary transition-colors duration-300"
                                     placeholder="e.g., React Fundamentals Discussion">
                                 @error('sessionTitle') <span class="text-red-500 dark:text-red-400 text-sm">{{ $message }}</span> @enderror
@@ -133,7 +133,7 @@
 
                             <div>
                                 <label class="block text-sm font-medium text-themed-primary mb-2 transition-colors duration-300">Session Type</label>
-                                <select wire:model="sessionType" 
+                                <select aria-label="Session type" wire:model="sessionType"
                                     class="w-full px-4 py-3 border border-themed-primary rounded-lg focus:ring-2 focus:ring-brand focus:border-transparent bg-themed-secondary text-themed-primary transition-colors duration-300">
                                     <option value="general">General Session</option>
                                     <option value="code_review">Code Review</option>
@@ -147,7 +147,7 @@
 
                         <div>
                             <label class="block text-sm font-medium text-themed-primary mb-2 transition-colors duration-300">Description</label>
-                            <textarea wire:model="sessionDescription" rows="4" 
+                            <textarea aria-label="Describe what will be covered in this session" wire:model="sessionDescription" rows="4"
                                 class="w-full px-4 py-3 border border-themed-primary rounded-lg focus:ring-2 focus:ring-brand focus:border-transparent bg-themed-secondary text-themed-primary placeholder-themed-tertiary transition-colors duration-300"
                                 placeholder="Describe what will be covered in this session..."></textarea>
                             @error('sessionDescription') <span class="text-red-500 dark:text-red-400 text-sm">{{ $message }}</span> @enderror
@@ -156,14 +156,14 @@
                         <div class="grid md:grid-cols-2 gap-6">
                             <div>
                                 <label class="block text-sm font-medium text-themed-primary mb-2 transition-colors duration-300">Scheduled Date & Time</label>
-                                <input wire:model="scheduledAt" type="datetime-local" 
+                                <input aria-label="Scheduled at" wire:model="scheduledAt" type="datetime-local"
                                     class="w-full px-4 py-3 border border-themed-primary rounded-lg focus:ring-2 focus:ring-brand focus:border-transparent bg-themed-secondary text-themed-primary transition-colors duration-300">
                                 @error('scheduledAt') <span class="text-red-500 dark:text-red-400 text-sm">{{ $message }}</span> @enderror
                             </div>
 
                             <div>
                                 <label class="block text-sm font-medium text-themed-primary mb-2 transition-colors duration-300">Duration (minutes)</label>
-                                <select wire:model="duration" 
+                                <select aria-label="Duration" wire:model="duration"
                                     class="w-full px-4 py-3 border border-themed-primary rounded-lg focus:ring-2 focus:ring-brand focus:border-transparent bg-themed-secondary text-themed-primary transition-colors duration-300">
                                     <option value="30">30 minutes</option>
                                     <option value="45">45 minutes</option>
@@ -177,24 +177,24 @@
 
                         <div>
                             <label class="block text-sm font-medium text-themed-primary mb-2 transition-colors duration-300">Agenda (Optional)</label>
-                            <textarea wire:model="agenda" rows="3" 
+                            <textarea aria-label="Session agenda or topics to discuss" wire:model="agenda" rows="3"
                                 class="w-full px-4 py-3 border border-themed-primary rounded-lg focus:ring-2 focus:ring-brand focus:border-transparent bg-themed-secondary text-themed-primary placeholder-themed-tertiary transition-colors duration-300"
                                 placeholder="Session agenda or topics to discuss..."></textarea>
                         </div>
 
                         <div>
                             <label class="block text-sm font-medium text-themed-primary mb-2 transition-colors duration-300">Meeting Link (Optional)</label>
-                            <input wire:model="meetingLink" type="url" 
+                            <input aria-label="https://zoom.us/j/" wire:model="meetingLink" type="url"
                                 class="w-full px-4 py-3 border border-themed-primary rounded-lg focus:ring-2 focus:ring-brand focus:border-transparent bg-themed-secondary text-themed-primary placeholder-themed-tertiary transition-colors duration-300"
                                 placeholder="https://zoom.us/j/...">
                         </div>
 
                         <div class="flex justify-end space-x-4 pt-6 border-t border-themed-primary transition-colors duration-300">
-                            <button type="button" wire:click="closeModal" 
+                            <button type="button" wire:click="closeModal"
                                 class="px-6 py-3 border border-themed-primary rounded-lg text-themed-primary hover:bg-themed-tertiary transition-colors duration-300">
                                 Cancel
                             </button>
-                            <button type="submit" 
+                            <button type="submit"
                                 class="px-6 py-3 bk-button bk-button-primary   rounded-lg transition-colors">
                                 {{ $modalType === 'create' ? 'Schedule Session' : 'Update Session' }}
                             </button>
@@ -207,13 +207,13 @@
 
     <!-- Session Completion Modal -->
     @if($showCompletionModal)
-        <div class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4 transition-colors duration-300">
-            <div class="bg-themed-secondary rounded-xl shadow-2xl max-w-3xl w-full max-h-[90vh] overflow-y-auto border border-themed-primary transition-colors duration-300">
+        <div class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4 transition-colors duration-300" x-trap.inert.noscroll="true" role="dialog" aria-modal="true" aria-label="Complete Session" tabindex="-1" x-data="{}" @keydown.escape.stop="$wire.set(&#x27;showCompletionModal&#x27;, false)">
+            <div class="bg-themed-secondary rounded-lg shadow-sm max-w-3xl w-full max-h-[90vh] overflow-y-auto border border-themed-primary transition-colors duration-300">
                 <div class="p-6 border-b border-themed-primary transition-colors duration-300">
                     <div class="flex items-center justify-between">
                         <h3 class="text-xl font-bold text-themed-primary transition-colors duration-300">Complete Session</h3>
-                        <button wire:click="closeModal" class="text-themed-secondary hover:text-themed-primary transition-colors">
-                            <i class="fas fa-times text-xl"></i>
+                        <button wire:click="closeModal" class="text-themed-secondary hover:text-themed-primary transition-colors" aria-label="Close">
+                            <i aria-hidden="true" class="fas fa-times text-xl"></i>
                         </button>
                     </div>
                 </div>
@@ -221,7 +221,7 @@
                 <form wire:submit="submitSessionCompletion" class="p-6 space-y-6">
                     <div>
                         <label class="block text-sm font-medium text-themed-primary mb-2 transition-colors duration-300">Session Notes *</label>
-                        <textarea wire:model="sessionNotes" rows="5" 
+                        <textarea aria-label="What was discussed? Key topics covered? Any insights shared?" wire:model="sessionNotes" rows="5"
                             class="w-full px-4 py-3 border border-themed-primary rounded-lg focus:ring-2 focus:ring-brand focus:border-transparent bg-themed-secondary text-themed-primary placeholder-themed-tertiary transition-colors duration-300"
                             placeholder="What was discussed? Key topics covered? Any insights shared?"></textarea>
                         @error('sessionNotes') <span class="text-red-500 dark:text-red-400 text-sm">{{ $message }}</span> @enderror
@@ -232,18 +232,18 @@
                         <label class="block text-sm font-medium text-themed-primary mb-2 transition-colors duration-300">Action Items</label>
                         @foreach($actionItems as $index => $item)
                             <div class="flex mb-2">
-                                <input wire:model="actionItems.{{ $index }}" type="text" 
+                                <input aria-label="Next steps or tasks for the mentee" wire:model="actionItems.{{ $index }}" type="text"
                                     class="flex-1 px-4 py-2 border border-themed-primary rounded-l-lg focus:ring-2 focus:ring-brand focus:border-transparent bg-themed-secondary text-themed-primary placeholder-themed-tertiary transition-colors duration-300"
                                     placeholder="Next steps or tasks for the mentee...">
-                                <button type="button" wire:click="removeActionItem({{ $index }})" 
-                                    class="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-r-lg transition-colors">
-                                    <i class="fas fa-minus"></i>
+                                <button type="button" wire:click="removeActionItem({{ $index }})"
+                                    class="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-r-lg transition-colors" aria-label="Remove action item">
+                                    <i aria-hidden="true" class="fas fa-minus"></i>
                                 </button>
                             </div>
                         @endforeach
-                        <button type="button" wire:click="addActionItem" 
+                        <button type="button" wire:click="addActionItem"
                             class="mt-2 px-4 py-2 bk-button bk-button-primary   rounded-lg transition-colors">
-                            <i class="fas fa-plus mr-2"></i>Add Action Item
+                            <i aria-hidden="true" class="fas fa-plus mr-2"></i>Add Action Item
                         </button>
                     </div>
 
@@ -251,14 +251,14 @@
                     <div class="grid md:grid-cols-2 gap-6">
                         <div>
                             <label class="block text-sm font-medium text-themed-primary mb-2 transition-colors duration-300">Mentor Feedback</label>
-                            <textarea wire:model="mentorFeedback" rows="3" 
+                            <textarea aria-label="Feedback for the mentee" wire:model="mentorFeedback" rows="3"
                                 class="w-full px-4 py-3 border border-themed-primary rounded-lg focus:ring-2 focus:ring-brand focus:border-transparent bg-themed-secondary text-themed-primary placeholder-themed-tertiary transition-colors duration-300"
                                 placeholder="Feedback for the mentee..."></textarea>
                         </div>
 
                         <div>
                             <label class="block text-sm font-medium text-themed-primary mb-2 transition-colors duration-300">Mentee Feedback</label>
-                            <textarea wire:model="menteeFeedback" rows="3" 
+                            <textarea aria-label="Feedback from the mentee" wire:model="menteeFeedback" rows="3"
                                 class="w-full px-4 py-3 border border-themed-primary rounded-lg focus:ring-2 focus:ring-brand focus:border-transparent bg-themed-secondary text-themed-primary placeholder-themed-tertiary transition-colors duration-300"
                                 placeholder="Feedback from the mentee..."></textarea>
                         </div>
@@ -268,7 +268,7 @@
                     <div class="grid md:grid-cols-2 gap-6">
                         <div>
                             <label class="block text-sm font-medium text-themed-primary mb-2 transition-colors duration-300">Rate the Mentor (1-5)</label>
-                            <select wire:model="mentorRating" 
+                            <select aria-label="Mentor rating" wire:model="mentorRating"
                                 class="w-full px-4 py-3 border border-themed-primary rounded-lg focus:ring-2 focus:ring-brand focus:border-transparent bg-themed-secondary text-themed-primary transition-colors duration-300">
                                 <option value="">No rating</option>
                                 <option value="1">1 - Poor</option>
@@ -281,7 +281,7 @@
 
                         <div>
                             <label class="block text-sm font-medium text-themed-primary mb-2 transition-colors duration-300">Rate the Mentee (1-5)</label>
-                            <select wire:model="menteeRating" 
+                            <select aria-label="Mentee rating" wire:model="menteeRating"
                                 class="w-full px-4 py-3 border border-themed-primary rounded-lg focus:ring-2 focus:ring-brand focus:border-transparent bg-themed-secondary text-themed-primary transition-colors duration-300">
                                 <option value="">No rating</option>
                                 <option value="1">1 - Poor</option>
@@ -296,17 +296,17 @@
                     <!-- File Attachments -->
                     <div>
                         <label class="block text-sm font-medium text-themed-primary mb-2 transition-colors duration-300">Session Attachments (Optional)</label>
-                        <input wire:model="attachments" type="file" multiple 
+                        <input aria-label="Attachments" wire:model="attachments" type="file" multiple
                             class="w-full px-4 py-3 border border-themed-primary rounded-lg focus:ring-2 focus:ring-brand focus:border-transparent bg-themed-secondary text-themed-primary transition-colors duration-300">
                         <p class="text-xs text-themed-secondary mt-1 transition-colors duration-300">Upload any relevant files, screenshots, or documents</p>
                     </div>
 
                     <div class="flex justify-end space-x-4 pt-6 border-t border-themed-primary transition-colors duration-300">
-                        <button type="button" wire:click="closeModal" 
+                        <button type="button" wire:click="closeModal"
                             class="px-6 py-3 border border-themed-primary rounded-lg text-themed-primary hover:bg-themed-tertiary transition-colors duration-300">
                             Cancel
                         </button>
-                        <button type="submit" 
+                        <button type="submit"
                             class="px-6 py-3 bg-green-600 hover:bg-green-700 dark:bg-green-500 dark:hover:bg-green-600 text-white rounded-lg transition-colors">
                             Complete Session
                         </button>
@@ -318,11 +318,11 @@
 
     <!-- Code Review Modal -->
     @if($showCodeReviewModal)
-        <div class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4 transition-colors duration-300">
-            <div class="bg-themed-secondary rounded-xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto border border-themed-primary transition-colors duration-300">
+        <div class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4 transition-colors duration-300" x-trap.inert.noscroll="true" role="dialog" aria-modal="true" aria-labelledby="mentorship-code-review-title" tabindex="-1" x-data="{}" @keydown.escape.stop="$wire.set(&#x27;showCodeReviewModal&#x27;, false)">
+            <div class="bg-themed-secondary rounded-lg shadow-sm max-w-4xl w-full max-h-[90vh] overflow-y-auto border border-themed-primary transition-colors duration-300">
                 <div class="p-6 border-b border-themed-primary transition-colors duration-300">
                     <div class="flex items-center justify-between">
-                        <h3 class="text-xl font-bold text-themed-primary transition-colors duration-300">
+                        <h3 id="mentorship-code-review-title" class="text-xl font-bold text-themed-primary transition-colors duration-300">
                             @if($modalType === 'create')
                                 Request Code Review
                             @elseif($modalType === 'edit')
@@ -331,8 +331,8 @@
                                 Code Review Details
                             @endif
                         </h3>
-                        <button wire:click="closeModal" class="text-themed-secondary hover:text-themed-primary transition-colors">
-                            <i class="fas fa-times text-xl"></i>
+                        <button wire:click="closeModal" class="text-themed-secondary hover:text-themed-primary transition-colors" aria-label="Close">
+                            <i aria-hidden="true" class="fas fa-times text-xl"></i>
                         </button>
                     </div>
                 </div>
@@ -383,10 +383,10 @@
                                 @if($currentCodeReview->repository_url)
                                     <div>
                                         <h4 class="font-semibold text-themed-primary mb-2 transition-colors duration-300">Repository</h4>
-                                        <a href="{{ $currentCodeReview->repository_url }}" target="_blank" 
+                                        <a href="{{ $currentCodeReview->repository_url }}" target="_blank"
                                            class="text-brand hover:text-brand break-all transition-colors">
                                             {{ $currentCodeReview->repository_url }}
-                                            <i class="fas fa-external-link-alt ml-1"></i>
+                                            <i aria-hidden="true" class="fas fa-external-link-alt ml-1"></i>
                                         </a>
                                     </div>
                                 @endif
@@ -394,10 +394,10 @@
                                 @if($currentCodeReview->pull_request_url)
                                     <div>
                                         <h4 class="font-semibold text-themed-primary mb-2 transition-colors duration-300">Pull Request</h4>
-                                        <a href="{{ $currentCodeReview->pull_request_url }}" target="_blank" 
+                                        <a href="{{ $currentCodeReview->pull_request_url }}" target="_blank"
                                            class="text-brand hover:text-brand break-all transition-colors">
                                             {{ $currentCodeReview->pull_request_url }}
-                                            <i class="fas fa-external-link-alt ml-1"></i>
+                                            <i aria-hidden="true" class="fas fa-external-link-alt ml-1"></i>
                                         </a>
                                     </div>
                                 @endif
@@ -416,7 +416,7 @@
                         @if($currentCodeReview->status === 'completed' && $currentCodeReview->review_feedback)
                             <div class="border-t border-themed-primary pt-6 transition-colors duration-300">
                                 <h4 class="font-semibold text-themed-primary mb-4 transition-colors duration-300">Review Feedback</h4>
-                                
+
                                 <div class="bg-green-100/50 dark:bg-green-900/30 border border-green-200/50 dark:border-green-800 rounded-lg p-6 mb-4 transition-colors duration-300">
                                     <p class="text-themed-secondary whitespace-pre-line transition-colors duration-300">{{ $currentCodeReview->review_feedback }}</p>
                                 </div>
@@ -458,7 +458,7 @@
                         @endif
 
                         <div class="flex justify-end space-x-4 pt-6 border-t border-themed-primary transition-colors duration-300">
-                            <button wire:click="closeModal" 
+                            <button wire:click="closeModal"
                                 class="px-6 py-3 border border-themed-primary rounded-lg text-themed-primary hover:bg-themed-tertiary transition-colors duration-300">
                                 Close
                             </button>
@@ -481,7 +481,7 @@
                                 <form wire:submit="submitCodeReviewFeedback" class="space-y-6">
                                     <div>
                                         <label class="block text-sm font-medium text-themed-primary mb-2 transition-colors duration-300">Review Feedback *</label>
-                                        <textarea wire:model="reviewFeedback" rows="6" 
+                                        <textarea aria-label="Provide detailed feedback on the code" wire:model="reviewFeedback" rows="6"
                                             class="w-full px-4 py-3 border border-themed-primary rounded-lg focus:ring-2 focus:ring-brand focus:border-transparent bg-themed-secondary text-themed-primary placeholder-themed-tertiary transition-colors duration-300"
                                             placeholder="Provide detailed feedback on the code..."></textarea>
                                         @error('reviewFeedback') <span class="text-red-500 dark:text-red-400 text-sm">{{ $message }}</span> @enderror
@@ -492,25 +492,25 @@
                                         <label class="block text-sm font-medium text-themed-primary mb-2 transition-colors duration-300">Suggestions</label>
                                         @foreach($suggestions as $index => $suggestion)
                                             <div class="flex mb-2">
-                                                <textarea wire:model="suggestions.{{ $index }}" rows="2"
+                                                <textarea aria-label="Suggestion for improvement" wire:model="suggestions.{{ $index }}" rows="2"
                                                     class="flex-1 px-4 py-2 border border-themed-primary rounded-l-lg focus:ring-2 focus:ring-brand focus:border-transparent bg-themed-secondary text-themed-primary placeholder-themed-tertiary transition-colors duration-300"
                                                     placeholder="Suggestion for improvement..."></textarea>
-                                                <button type="button" wire:click="removeSuggestion({{ $index }})" 
-                                                    class="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-r-lg transition-colors">
-                                                    <i class="fas fa-minus"></i>
+                                                <button type="button" wire:click="removeSuggestion({{ $index }})"
+                                                    class="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-r-lg transition-colors" aria-label="Remove suggestion">
+                                                    <i aria-hidden="true" class="fas fa-minus"></i>
                                                 </button>
                                             </div>
                                         @endforeach
-                                        <button type="button" wire:click="addSuggestion" 
+                                        <button type="button" wire:click="addSuggestion"
                                             class="mt-2 px-4 py-2 bk-button bk-button-primary   rounded-lg transition-colors">
-                                            <i class="fas fa-plus mr-2"></i>Add Suggestion
+                                            <i aria-hidden="true" class="fas fa-plus mr-2"></i>Add Suggestion
                                         </button>
                                     </div>
 
                                     <!-- Code Quality Score -->
                                     <div>
                                         <label class="block text-sm font-medium text-themed-primary mb-2 transition-colors duration-300">Code Quality Score (1-10)</label>
-                                        <select wire:model="codeQualityScore" 
+                                        <select aria-label="Code quality score" wire:model="codeQualityScore"
                                             class="w-full px-4 py-3 border border-themed-primary rounded-lg focus:ring-2 focus:ring-brand focus:border-transparent bg-themed-secondary text-themed-primary transition-colors duration-300">
                                             <option value="">No score</option>
                                             @for($i = 1; $i <= 10; $i++)
@@ -524,18 +524,18 @@
                                         <label class="block text-sm font-medium text-themed-primary mb-2 transition-colors duration-300">Areas for Improvement</label>
                                         @foreach($improvementAreas as $index => $area)
                                             <div class="flex mb-2">
-                                                <input wire:model="improvementAreas.{{ $index }}" type="text" 
+                                                <input aria-label="Area that needs improvement" wire:model="improvementAreas.{{ $index }}" type="text"
                                                     class="flex-1 px-4 py-2 border border-themed-primary rounded-l-lg focus:ring-2 focus:ring-brand focus:border-transparent bg-themed-secondary text-themed-primary placeholder-themed-tertiary transition-colors duration-300"
                                                     placeholder="Area that needs improvement...">
-                                                <button type="button" wire:click="removeImprovementArea({{ $index }})" 
-                                                    class="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-r-lg transition-colors">
-                                                    <i class="fas fa-minus"></i>
+                                                <button type="button" wire:click="removeImprovementArea({{ $index }})"
+                                                    class="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-r-lg transition-colors" aria-label="Remove improvement area">
+                                                    <i aria-hidden="true" class="fas fa-minus"></i>
                                                 </button>
                                             </div>
                                         @endforeach
-                                        <button type="button" wire:click="addImprovementArea" 
+                                        <button type="button" wire:click="addImprovementArea"
                                             class="mt-2 px-4 py-2 bk-button bk-button-primary   rounded-lg transition-colors">
-                                            <i class="fas fa-plus mr-2"></i>Add Area
+                                            <i aria-hidden="true" class="fas fa-plus mr-2"></i>Add Area
                                         </button>
                                     </div>
 
@@ -544,7 +544,7 @@
                                             class="px-6 py-3 border border-themed-primary rounded-lg text-themed-primary hover:bg-themed-tertiary transition-colors duration-300">
                                             Cancel
                                         </button>
-                                        <button type="submit" 
+                                        <button type="submit"
                                             class="px-6 py-3 bg-green-600 hover:bg-green-700 dark:bg-green-500 dark:hover:bg-green-600 text-white rounded-lg transition-colors">
                                             Submit Review
                                         </button>
@@ -559,7 +559,7 @@
                         <div class="grid md:grid-cols-2 gap-6">
                             <div>
                                 <label class="block text-sm font-medium text-themed-primary mb-2 transition-colors duration-300">Review Title</label>
-                                <input wire:model="reviewTitle" type="text" 
+                                <input aria-label="e.g., React Component Structure Review" wire:model="reviewTitle" type="text"
                                     class="w-full px-4 py-3 border border-themed-primary rounded-lg focus:ring-2 focus:ring-brand focus:border-transparent bg-themed-secondary text-themed-primary placeholder-themed-tertiary transition-colors duration-300"
                                     placeholder="e.g., React Component Structure Review">
                                 @error('reviewTitle') <span class="text-red-500 dark:text-red-400 text-sm">{{ $message }}</span> @enderror
@@ -567,7 +567,7 @@
 
                             <div>
                                 <label class="block text-sm font-medium text-themed-primary mb-2 transition-colors duration-300">Priority</label>
-                                <select wire:model="priority" 
+                                <select aria-label="Priority" wire:model="priority"
                                     class="w-full px-4 py-3 border border-themed-primary rounded-lg focus:ring-2 focus:ring-brand focus:border-transparent bg-themed-secondary text-themed-primary transition-colors duration-300">
                                     <option value="low">Low Priority</option>
                                     <option value="medium">Medium Priority</option>
@@ -580,7 +580,7 @@
 
                         <div>
                             <label class="block text-sm font-medium text-themed-primary mb-2 transition-colors duration-300">Description</label>
-                            <textarea wire:model="reviewDescription" rows="4" 
+                            <textarea aria-label="Describe what needs to be reviewed and any specific concerns" wire:model="reviewDescription" rows="4"
                                 class="w-full px-4 py-3 border border-themed-primary rounded-lg focus:ring-2 focus:ring-brand focus:border-transparent bg-themed-secondary text-themed-primary placeholder-themed-tertiary transition-colors duration-300"
                                 placeholder="Describe what needs to be reviewed and any specific concerns..."></textarea>
                             @error('reviewDescription') <span class="text-red-500 dark:text-red-400 text-sm">{{ $message }}</span> @enderror
@@ -591,18 +591,18 @@
                             <label class="block text-sm font-medium text-themed-primary mb-2 transition-colors duration-300">Technologies Used</label>
                             @foreach($technologies as $index => $technology)
                                 <div class="flex mb-2">
-                                    <input wire:model="technologies.{{ $index }}" type="text" 
+                                    <input aria-label="e.g., React, Node.js, Python" wire:model="technologies.{{ $index }}" type="text"
                                         class="flex-1 px-4 py-2 border border-themed-primary rounded-l-lg focus:ring-2 focus:ring-brand focus:border-transparent bg-themed-secondary text-themed-primary placeholder-themed-tertiary transition-colors duration-300"
                                         placeholder="e.g., React, Node.js, Python">
-                                    <button type="button" wire:click="removeTechnology({{ $index }})" 
-                                        class="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-r-lg transition-colors">
-                                        <i class="fas fa-minus"></i>
+                                    <button type="button" wire:click="removeTechnology({{ $index }})"
+                                        class="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-r-lg transition-colors" aria-label="Remove technology">
+                                        <i aria-hidden="true" class="fas fa-minus"></i>
                                     </button>
                                 </div>
                             @endforeach
-                            <button type="button" wire:click="addTechnology" 
+                            <button type="button" wire:click="addTechnology"
                                 class="mt-2 px-4 py-2 bk-button bk-button-primary   rounded-lg transition-colors">
-                                <i class="fas fa-plus mr-2"></i>Add Technology
+                                <i aria-hidden="true" class="fas fa-plus mr-2"></i>Add Technology
                             </button>
                             @error('technologies') <span class="text-red-500 dark:text-red-400 text-sm">{{ $message }}</span> @enderror
                         </div>
@@ -611,14 +611,14 @@
                         <div class="grid md:grid-cols-2 gap-6">
                             <div>
                                 <label class="block text-sm font-medium text-themed-primary mb-2 transition-colors duration-300">Repository URL</label>
-                                <input wire:model="repositoryUrl" type="url" 
+                                <input aria-label="https://github.com/username/repo" wire:model="repositoryUrl" type="url"
                                     class="w-full px-4 py-3 border border-themed-primary rounded-lg focus:ring-2 focus:ring-brand focus:border-transparent bg-themed-secondary text-themed-primary placeholder-themed-tertiary transition-colors duration-300"
                                     placeholder="https://github.com/username/repo">
                             </div>
 
                             <div>
                                 <label class="block text-sm font-medium text-themed-primary mb-2 transition-colors duration-300">Branch Name</label>
-                                <input wire:model="branchName" type="text" 
+                                <input aria-label="main" wire:model="branchName" type="text"
                                     class="w-full px-4 py-3 border border-themed-primary rounded-lg focus:ring-2 focus:ring-brand focus:border-transparent bg-themed-secondary text-themed-primary placeholder-themed-tertiary transition-colors duration-300"
                                     placeholder="main">
                             </div>
@@ -626,24 +626,24 @@
 
                         <div>
                             <label class="block text-sm font-medium text-themed-primary mb-2 transition-colors duration-300">Pull Request URL (Optional)</label>
-                            <input wire:model="pullRequestUrl" type="url" 
+                            <input aria-label="https://github.com/username/repo/pull/123" wire:model="pullRequestUrl" type="url"
                                 class="w-full px-4 py-3 border border-themed-primary rounded-lg focus:ring-2 focus:ring-brand focus:border-transparent bg-themed-secondary text-themed-primary placeholder-themed-tertiary transition-colors duration-300"
                                 placeholder="https://github.com/username/repo/pull/123">
                         </div>
 
                         <div>
                             <label class="block text-sm font-medium text-themed-primary mb-2 transition-colors duration-300">Specific Questions (Optional)</label>
-                            <textarea wire:model="specificQuestions" rows="3" 
+                            <textarea aria-label="Any specific questions or areas you'd like the reviewer to focus on" wire:model="specificQuestions" rows="3"
                                 class="w-full px-4 py-3 border border-themed-primary rounded-lg focus:ring-2 focus:ring-brand focus:border-transparent bg-themed-secondary text-themed-primary placeholder-themed-tertiary transition-colors duration-300"
                                 placeholder="Any specific questions or areas you'd like the reviewer to focus on..."></textarea>
                         </div>
 
                         <div class="flex justify-end space-x-4 pt-6 border-t border-themed-primary transition-colors duration-300">
-                            <button type="button" wire:click="closeModal" 
+                            <button type="button" wire:click="closeModal"
                                 class="px-6 py-3 border border-themed-primary rounded-lg text-themed-primary hover:bg-themed-tertiary transition-colors duration-300">
                                 Cancel
                             </button>
-                            <button type="submit" 
+                            <button type="submit"
                                 class="px-6 py-3 bk-button bk-button-primary   rounded-lg transition-colors">
                                 {{ $modalType === 'create' ? 'Submit Review Request' : 'Update Review Request' }}
                             </button>
@@ -656,13 +656,13 @@
 
     <!-- Review/Rating Modal -->
     @if($showReviewModal)
-        <div class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4 transition-colors duration-300">
-            <div class="bg-themed-secondary rounded-xl shadow-2xl max-w-3xl w-full max-h-[90vh] overflow-y-auto border border-themed-primary transition-colors duration-300">
+        <div class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4 transition-colors duration-300" x-trap.inert.noscroll="true" role="dialog" aria-modal="true" aria-label="Leave a Review" tabindex="-1" x-data="{}" @keydown.escape.stop="$wire.set(&#x27;showReviewModal&#x27;, false)">
+            <div class="bg-themed-secondary rounded-lg shadow-sm max-w-3xl w-full max-h-[90vh] overflow-y-auto border border-themed-primary transition-colors duration-300">
                 <div class="p-6 border-b border-themed-primary transition-colors duration-300">
                     <div class="flex items-center justify-between">
                         <h3 class="text-xl font-bold text-themed-primary transition-colors duration-300">Leave a Review</h3>
-                        <button wire:click="closeModal" class="text-themed-secondary hover:text-themed-primary transition-colors">
-                            <i class="fas fa-times text-xl"></i>
+                        <button wire:click="closeModal" class="text-themed-secondary hover:text-themed-primary transition-colors" aria-label="Close">
+                            <i aria-hidden="true" class="fas fa-times text-xl"></i>
                         </button>
                     </div>
                 </div>
@@ -671,7 +671,7 @@
                     <!-- Overall Rating -->
                     <div>
                         <label class="block text-sm font-medium text-themed-primary mb-2 transition-colors duration-300">Overall Rating *</label>
-                        <select wire:model="overallRating" 
+                        <select aria-label="Overall rating" wire:model="overallRating"
                             class="w-full px-4 py-3 border border-themed-primary rounded-lg focus:ring-2 focus:ring-brand focus:border-transparent bg-themed-secondary text-themed-primary transition-colors duration-300">
                             <option value="">Select rating</option>
                             <option value="1">1 - Poor</option>
@@ -687,7 +687,7 @@
                     <div class="grid md:grid-cols-2 gap-6">
                         <div>
                             <label class="block text-sm font-medium text-themed-primary mb-2 transition-colors duration-300">Communication</label>
-                            <select wire:model="communicationRating" 
+                            <select aria-label="Communication rating" wire:model="communicationRating"
                                 class="w-full px-4 py-3 border border-themed-primary rounded-lg focus:ring-2 focus:ring-brand focus:border-transparent bg-themed-secondary text-themed-primary transition-colors duration-300">
                                 <option value="">No rating</option>
                                 <option value="1">1 - Poor</option>
@@ -700,7 +700,7 @@
 
                         <div>
                             <label class="block text-sm font-medium text-themed-primary mb-2 transition-colors duration-300">Expertise</label>
-                            <select wire:model="expertiseRating" 
+                            <select aria-label="Expertise rating" wire:model="expertiseRating"
                                 class="w-full px-4 py-3 border border-themed-primary rounded-lg focus:ring-2 focus:ring-brand focus:border-transparent bg-themed-secondary text-themed-primary transition-colors duration-300">
                                 <option value="">No rating</option>
                                 <option value="1">1 - Poor</option>
@@ -713,7 +713,7 @@
 
                         <div>
                             <label class="block text-sm font-medium text-themed-primary mb-2 transition-colors duration-300">Helpfulness</label>
-                            <select wire:model="helpfulnessRating" 
+                            <select aria-label="Helpfulness rating" wire:model="helpfulnessRating"
                                 class="w-full px-4 py-3 border border-themed-primary rounded-lg focus:ring-2 focus:ring-brand focus:border-transparent bg-themed-secondary text-themed-primary transition-colors duration-300">
                                 <option value="">No rating</option>
                                 <option value="1">1 - Poor</option>
@@ -726,7 +726,7 @@
 
                         <div>
                             <label class="block text-sm font-medium text-themed-primary mb-2 transition-colors duration-300">Professionalism</label>
-                            <select wire:model="professionalismRating" 
+                            <select aria-label="Professionalism rating" wire:model="professionalismRating"
                                 class="w-full px-4 py-3 border border-themed-primary rounded-lg focus:ring-2 focus:ring-brand focus:border-transparent bg-themed-secondary text-themed-primary transition-colors duration-300">
                                 <option value="">No rating</option>
                                 <option value="1">1 - Poor</option>
@@ -741,7 +741,7 @@
                     <!-- Review Text -->
                     <div>
                         <label class="block text-sm font-medium text-themed-primary mb-2 transition-colors duration-300">Review Text *</label>
-                        <textarea wire:model="reviewText" rows="5" 
+                        <textarea aria-label="Share your experience and feedback" wire:model="reviewText" rows="5"
                             class="w-full px-4 py-3 border border-themed-primary rounded-lg focus:ring-2 focus:ring-brand focus:border-transparent bg-themed-secondary text-themed-primary placeholder-themed-tertiary transition-colors duration-300"
                             placeholder="Share your experience and feedback..."></textarea>
                         @error('reviewText') <span class="text-red-500 dark:text-red-400 text-sm">{{ $message }}</span> @enderror
@@ -753,18 +753,18 @@
                             <label class="block text-sm font-medium text-themed-primary mb-2 transition-colors duration-300">What went well?</label>
                             @foreach($pros as $index => $pro)
                                 <div class="flex mb-2">
-                                    <input wire:model="pros.{{ $index }}" type="text" 
+                                    <input aria-label="Something positive" wire:model="pros.{{ $index }}" type="text"
                                         class="flex-1 px-4 py-2 border border-themed-primary rounded-l-lg focus:ring-2 focus:ring-brand focus:border-transparent bg-themed-secondary text-themed-primary placeholder-themed-tertiary transition-colors duration-300"
                                         placeholder="Something positive...">
-                                    <button type="button" wire:click="removePro({{ $index }})" 
-                                        class="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-r-lg transition-colors">
-                                        <i class="fas fa-minus"></i>
+                                    <button type="button" wire:click="removePro({{ $index }})"
+                                        class="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-r-lg transition-colors" aria-label="Remove pro">
+                                        <i aria-hidden="true" class="fas fa-minus"></i>
                                     </button>
                                 </div>
                             @endforeach
-                            <button type="button" wire:click="addPro" 
+                            <button type="button" wire:click="addPro"
                                 class="mt-2 px-4 py-2 bg-green-600 hover:bg-green-700 dark:bg-green-500 dark:hover:bg-green-600 text-white rounded-lg transition-colors">
-                                <i class="fas fa-plus mr-2"></i>Add Pro
+                                <i aria-hidden="true" class="fas fa-plus mr-2"></i>Add Pro
                             </button>
                         </div>
 
@@ -772,18 +772,18 @@
                             <label class="block text-sm font-medium text-themed-primary mb-2 transition-colors duration-300">Areas for improvement</label>
                             @foreach($cons as $index => $con)
                                 <div class="flex mb-2">
-                                    <input wire:model="cons.{{ $index }}" type="text" 
+                                    <input aria-label="Something to improve" wire:model="cons.{{ $index }}" type="text"
                                         class="flex-1 px-4 py-2 border border-themed-primary rounded-l-lg focus:ring-2 focus:ring-brand focus:border-transparent bg-themed-secondary text-themed-primary placeholder-themed-tertiary transition-colors duration-300"
                                         placeholder="Something to improve...">
-                                    <button type="button" wire:click="removeCon({{ $index }})" 
-                                        class="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-r-lg transition-colors">
-                                        <i class="fas fa-minus"></i>
+                                    <button type="button" wire:click="removeCon({{ $index }})"
+                                        class="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-r-lg transition-colors" aria-label="Remove con">
+                                        <i aria-hidden="true" class="fas fa-minus"></i>
                                     </button>
                                 </div>
                             @endforeach
-                            <button type="button" wire:click="addCon" 
+                            <button type="button" wire:click="addCon"
                                 class="mt-2 px-4 py-2 bg-orange-500 hover:bg-orange-600 text-white rounded-lg transition-colors">
-                                <i class="fas fa-plus mr-2"></i>Add Con
+                                <i aria-hidden="true" class="fas fa-plus mr-2"></i>Add Con
                             </button>
                         </div>
                     </div>
@@ -797,11 +797,11 @@
                     </div>
 
                     <div class="flex justify-end space-x-4 pt-6 border-t border-themed-primary transition-colors duration-300">
-                        <button type="button" wire:click="closeModal" 
+                        <button type="button" wire:click="closeModal"
                             class="px-6 py-3 border border-themed-primary rounded-lg text-themed-primary hover:bg-themed-tertiary transition-colors duration-300">
                             Cancel
                         </button>
-                        <button type="submit" 
+                        <button type="submit"
                             class="px-6 py-3 bk-button bk-button-primary   rounded-lg transition-colors">
                             Submit Review
                         </button>
@@ -813,7 +813,7 @@
 
     <!-- Loading Indicator -->
     <div wire:loading class="fixed inset-0 bg-black bg-opacity-25 dark:bg-opacity-50 flex items-center justify-center z-50 transition-colors duration-300">
-        <div class="bg-themed-secondary rounded-lg p-6 shadow-xl border border-themed-primary transition-colors duration-300">
+        <div class="bg-themed-secondary rounded-lg p-6 shadow-sm border border-themed-primary transition-colors duration-300">
             <div class="flex items-center space-x-3">
                 <svg class="animate-spin h-6 w-6 text-brand" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                     <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>

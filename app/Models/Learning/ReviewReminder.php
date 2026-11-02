@@ -2,10 +2,9 @@
 
 namespace App\Models\Learning;
 
-use Illuminate\Database\Eloquent\Model;
+use App\Models\Core\User;
 use Carbon\Carbon;
-use App\Models\Core\User; // UPDATED
-use App\Models\Learning\Course;
+use Illuminate\Database\Eloquent\Model; // UPDATED
 
 class ReviewReminder extends Model
 {
@@ -16,14 +15,15 @@ class ReviewReminder extends Model
         'last_reminded_at',
         'completed_at',
         'unsubscribed',
-        'unsubscribed_at'
+        'unsubscribed_at',
     ];
 
     protected $casts = [
+        'reminder_count' => 'integer',
         'last_reminded_at' => 'datetime',
         'completed_at' => 'datetime',
         'unsubscribed_at' => 'datetime',
-        'unsubscribed' => 'boolean'
+        'unsubscribed' => 'boolean',
     ];
 
     public function user()
@@ -41,37 +41,9 @@ class ReviewReminder extends Model
      */
     public function shouldSendReminder(): bool
     {
-        // Don't send if unsubscribed
-        if ($this->unsubscribed) {
-            return false;
-        }
+        $due = $this->getNextReminderDate();
 
-        // Don't send if already completed (reviewed)
-        if ($this->completed_at) {
-            return false;
-        }
-
-        // Max 3 reminders
-        if ($this->reminder_count >= 3) {
-            return false;
-        }
-
-        // Check time since last reminder
-        if ($this->last_reminded_at) {
-            $daysSinceLastReminder = $this->last_reminded_at->diffInDays(now());
-            
-            // Reminder schedule: First reminder after 7 days, second after 14 days, third after 30 days
-            $requiredDays = match($this->reminder_count) {
-                0 => 7,
-                1 => 14,
-                2 => 30,
-                default => 999
-            };
-
-            return $daysSinceLastReminder >= $requiredDays;
-        }
-
-        return true;
+        return $due && $due->lte(now());
     }
 
     /**
@@ -98,7 +70,7 @@ class ReviewReminder extends Model
     {
         $this->update([
             'unsubscribed' => true,
-            'unsubscribed_at' => now()
+            'unsubscribed_at' => now(),
         ]);
     }
 
@@ -107,21 +79,9 @@ class ReviewReminder extends Model
      */
     public function getNextReminderDate(): ?Carbon
     {
-        if (!$this->shouldSendReminder()) {
-            return null;
-        }
+        $service = app(\App\Services\ReviewReminderService::class);
+        $enrollment = $service->eligibleEnrollments()->where('user_id', $this->user_id)->where('course_id', $this->course_id)->first();
 
-        if (!$this->last_reminded_at) {
-            return now();
-        }
-
-        $daysToAdd = match($this->reminder_count) {
-            0 => 7,
-            1 => 14,
-            2 => 30,
-            default => null
-        };
-
-        return $daysToAdd ? $this->last_reminded_at->addDays($daysToAdd) : null;
+        return $enrollment && $this->user ? $service->nextDue($this->user, $enrollment, $this) : null;
     }
 }

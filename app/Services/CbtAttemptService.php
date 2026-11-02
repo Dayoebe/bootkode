@@ -27,12 +27,63 @@ class CbtAttemptService
 
     public function questions(Assessment $assessment): array
     {
+        return $this->prepareQuestions($assessment)['questions'];
+    }
+
+    /** Sanitize retained active snapshots too; old manual options may contain marking notes. */
+    public function publicQuestions(LearningSession $session): array
+    {
+        abort_unless((int) $session->user_id === (int) auth()->id() && $session->activity_type === 'assessment', 403);
+        return array_map(function ($question) use ($session) {
+            $safe = \Illuminate\Support\Arr::only($question, ['id', 'question_text', 'question_type', 'points', 'time_limit', 'options',
+                'display_to_original_map', 'was_shuffled', 'allows_multiple', 'prompts', 'format_version']);
+            if (!in_array($question['question_type'], ['multiple_choice', 'true_false', ...StructuredQuestionService::TYPES], true)) {
+                $safe['options'] = []; $safe['display_to_original_map'] = []; $safe['allows_multiple'] = false;
+                $grading = $session->metadata['grading'][$question['id']] ?? [];
+                if (isset($grading['qna_rules'])) {
+                    $safe['discussion'] = $grading['qna_rules']; $safe['instructions'] = $grading['explanation'] ?? '';
+                }
+                if (isset($grading['submission_rules'])) {
+                    $safe['submission'] = $grading['submission_rules'];
+                    if ($safe['submission']['enabled']) $safe['submission']['max_kb'] = min($safe['submission']['max_kb'], app(AssessmentSubmissionService::class)->serverLimitKb());
+                    $safe['instructions'] = $grading['instructions'] ?? '';
+                }
+            }
+            return $safe;
+        }, $session->metadata['questions'] ?? []);
+    }
+
+    private function prepareQuestions(Assessment $assessment): array
+    {
         $questions = $assessment->relationLoaded('questions') ? $assessment->questions : $assessment->questions()->get();
         if ($assessment->shuffle_questions) $questions = $questions->shuffle();
-        return $questions->map(function ($question) use ($assessment) {
+        $grading = [];
+        $projected = $questions->map(function ($question) use ($assessment, &$grading) {
+            $grading[$question->id] = $question->only(['correct_answers', 'points', 'question_type', 'explanation']);
+            if (in_array($question->question_type, StructuredQuestionService::TYPES, true)) {
+                $projection = app(StructuredQuestionService::class)->project($question);
+                $grading[$question->id]['option_map'] = $projection['mapping'];
+                unset($projection['mapping']);
+                return array_merge($question->only(['id', 'question_text', 'question_type', 'points', 'time_limit']), $projection, ['was_shuffled' => true, 'allows_multiple' => false]);
+            }
+            if (!in_array($question->question_type, ['multiple_choice', 'true_false'], true)) {
+                $public = array_merge($question->only(['id', 'question_text', 'question_type', 'points', 'time_limit']),
+                    ['options' => [], 'display_to_original_map' => [], 'was_shuffled' => false, 'allows_multiple' => false]);
+                $grading[$question->id]['criteria'] = app(StructuredQuestionService::class)->array($question->options);
+                if ($question->question_type === 'qna_topic' && ($rules = app(QnaResponseService::class)->definition($question))) {
+                    $grading[$question->id]['qna_rules'] = $rules; $public['discussion'] = $rules; $public['instructions'] = $question->explanation ?? '';
+                }
+                if (in_array($question->question_type, AssessmentSubmissionService::TYPES, true)) {
+                    $definition = app(AssessmentSubmissionService::class)->definition($question);
+                    $grading[$question->id] = array_merge($grading[$question->id], $definition);
+                    $public['submission'] = $definition['submission_rules'];
+                    $public['instructions'] = $definition['instructions'];
+                }
+                return $public;
+            }
             $options = $question->options;
             if (is_string($options)) $options = json_decode($options, true);
-            if ($question->question_type === 'true_false') $options = ['True', 'False'];
+            if ($question->question_type === 'true_false' && (!is_array($options) || count($options) !== 2)) $options = ['True', 'False'];
             $indexed = collect($options ?? [])->map(fn ($text, $index) => ['index' => $index, 'text' => $text]);
             if ($assessment->shuffle_options && $question->question_type === 'multiple_choice') $indexed = $indexed->shuffle();
             $correct = $question->correct_answers;
@@ -44,6 +95,7 @@ class CbtAttemptService
                 'allows_multiple' => $question->question_type === 'multiple_choice' && count(is_array($correct) ? $correct : []) > 1,
             ]);
         })->values()->all();
+        return ['questions' => $projected, 'grading' => $grading];
     }
 
     public function start(User $user, Assessment $assessment, bool $allowWritten = false): LearningSession
@@ -63,13 +115,14 @@ class CbtAttemptService
             abort_unless($eligible, 403, $message);
             abort_unless(is_numeric($assessment->pass_percentage) && $assessment->pass_percentage >= 1 && $assessment->pass_percentage <= 100, 422, 'Your instructor must configure a pass mark before this assessment can start.');
             $assessment->load(['questions' => fn ($query) => $query->lockForUpdate()]);
-            $questions = $this->questions($assessment);
+            $prepared = $this->prepareQuestions($assessment);
+            $questions = $prepared['questions'];
             abort_unless(count($questions) > 0, 422, 'No assessment questions are available.');
-            $supported = $allowWritten ? ['multiple_choice', 'true_false', 'short_answer', 'essay', 'fill_blank', 'assignment_question', 'project_criteria', 'qna_topic'] : ['multiple_choice', 'true_false'];
+            $supported = $allowWritten ? ['multiple_choice', 'true_false', 'short_answer', 'essay', 'fill_blank', 'assignment_question', 'project_criteria', 'qna_topic', ...StructuredQuestionService::TYPES] : ['multiple_choice', 'true_false'];
             abort_if(collect($questions)->contains(fn ($question) => !in_array($question['question_type'], $supported, true) || (!$allowWritten && $question['allows_multiple'])), 422, 'This question format requires a different assessment workflow.');
             return LearningSession::create(['user_id' => $user->id, 'course_id' => $assessment->course_id, 'activity_type' => 'assessment', 'started_at' => now(),
                 'metadata' => ['assessment_id' => $assessment->id, 'attempt' => $assessment->getNextAttemptNumber($user->id), 'questions' => $questions, 'allow_written' => $allowWritten, 'pass_percentage' => (float) $assessment->pass_percentage,
-                    'grading' => $assessment->questions->mapWithKeys(fn ($question) => [$question->id => $question->only(['correct_answers', 'points', 'question_type', 'explanation'])])->all(),
+                    'grading' => $prepared['grading'],
                     'duration_seconds' => max(60, (int) $assessment->estimated_duration_minutes * 60)]]);
         });
     }
@@ -95,7 +148,13 @@ class CbtAttemptService
     private function validateAnswer(array $question, $value, bool $allowWritten): void
     {
         if ($value === null || $value === '') return;
-        if (in_array($question['question_type'], ['multiple_choice', 'true_false'], true)) {
+        if ($question['question_type'] === 'qna_topic' && isset($question['discussion'])) {
+            abort_unless($allowWritten, 422);
+            app(QnaResponseService::class)->validate($question['discussion'], $value);
+        } elseif (in_array($question['question_type'], StructuredQuestionService::TYPES, true)) {
+            abort_unless($allowWritten, 422);
+            app(StructuredQuestionService::class)->validate($question, $value);
+        } elseif (in_array($question['question_type'], ['multiple_choice', 'true_false'], true)) {
             $values = is_array($value) ? $value : [$value];
             foreach ($values as $index) abort_unless(is_int($index) || is_string($index), 422, 'Choose valid options.');
             abort_unless(count($values) > 0 && count($values) <= count($question['display_to_original_map']) && count(array_unique($values)) === count($values), 422, 'Choose valid options.');
@@ -118,6 +177,7 @@ class CbtAttemptService
             $question = collect($session->metadata['questions'])->firstWhere('id', $questionId);
             abort_unless($question, 422);
             $this->validateAnswer($question, $value, (bool) ($session->metadata['allow_written'] ?? false));
+            app(AssessmentSubmissionService::class)->validateResponse($session->metadata['grading'][$questionId] ?? [], $value, []);
             $answers = $session->metadata['answers'] ?? [];
             $answers[$questionId] = $value;
             $session->update(['metadata' => array_merge($session->metadata, ['answers' => $answers])]);
@@ -145,18 +205,31 @@ class CbtAttemptService
                 $question = $assessment->questions()->findOrFail($snapshot['id']);
                 $value = $answers[$question->id] ?? null;
                 $this->validateAnswer($snapshot, $value, (bool) ($session->metadata['allow_written'] ?? false));
-                $manual = !in_array($snapshot['question_type'], ['multiple_choice', 'true_false'], true);
-                if ($value !== null && $value !== '') {
-                    if (!$manual) {
+                $grading = $session->metadata['grading'][$question->id] ?? $question->only(['correct_answers', 'points', 'question_type', 'explanation']);
+                $files = $session->metadata['submission_files'][$question->id] ?? [];
+                app(AssessmentSubmissionService::class)->validateResponse($grading, $value, $files, true, $expired);
+                if (isset($grading['qna_rules'])) {
+                    app(QnaResponseService::class)->validate($grading['qna_rules'], $value, true, $expired);
+                    $value = array_values(array_filter($value ?? [], fn ($text) => trim($text) !== '')) ?: null;
+                }
+                $structured = in_array($snapshot['question_type'], StructuredQuestionService::TYPES, true);
+                $manual = !in_array($snapshot['question_type'], ['multiple_choice', 'true_false', ...StructuredQuestionService::TYPES], true);
+                if ($value !== null && $value !== '' && $value !== []) {
+                    if (isset($grading['qna_rules'])) $value = json_encode($value, JSON_THROW_ON_ERROR | JSON_UNESCAPED_UNICODE);
+                    elseif ($structured) $value = json_encode(app(StructuredQuestionService::class)->mapAnswer($snapshot, $grading, $value));
+                    elseif (!$manual) {
                         $mapped = collect(is_array($value) ? $value : [$value])->map(fn ($index) => (int) $snapshot['display_to_original_map'][(int) $index])->all();
                         $value = count($mapped) === 1 ? (string) $mapped[0] : json_encode($mapped);
                     }
                     $answered++;
-                } else $value = null;
+                } else {
+                    $value = null;
+                    if ($files) $answered++;
+                }
                 $answer = StudentAnswer::create(['user_id' => $user->id, 'assessment_id' => $assessment->id, 'question_id' => $question->id,
                     'attempt_number' => $session->metadata['attempt'], 'answer' => $value, 'time_spent_seconds' => min($elapsed, $session->metadata['duration_seconds']), 'submitted_at' => now(),
-                    'question_order' => $ids, 'exam_data' => ['was_shuffled' => $snapshot['was_shuffled']]]);
-                $grading = $session->metadata['grading'][$question->id] ?? $question->only(['correct_answers', 'points', 'question_type', 'explanation']);
+                    'question_order' => $ids, 'exam_data' => ['was_shuffled' => $snapshot['was_shuffled'], 'submission_file_ids' => array_column($files, 'id'),
+                        ...isset($grading['qna_rules']) ? ['qna_rules' => $grading['qna_rules'], 'qna_session_id' => $session->id] : []]]);
                 if (!$manual && $value !== null && !$answer->autoGrade($grading)) throw new \RuntimeException('Grading failed; no attempt was recorded.');
                 if (!$manual) $answer->forceFill(['graded_at' => now()])->save();
                 $pendingReview = $pendingReview || $manual;

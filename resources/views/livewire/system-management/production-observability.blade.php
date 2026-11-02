@@ -28,13 +28,13 @@
         <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
             <div>
                 <p class="text-sm font-semibold text-red-600 dark:text-red-400 uppercase tracking-wide">Production Observability</p>
-                <h1 class="text-2xl md:text-3xl font-bold text-themed-primary mt-1">Issues that need operator attention</h1>
+                <h1 class="  font-bold text-themed-primary mt-1 bk-page-title">Issues that need operator attention</h1>
                 <p class="text-themed-secondary mt-2 max-w-3xl">Errors, queue failures, mail failures, webhook failures, slow pages, and broken routes are now visible from one admin screen.</p>
             </div>
 
             <button type="button" wire:click="$refresh"
-                    class="inline-flex items-center justify-center px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold shadow-sm">
-                <i class="fas fa-rotate mr-2"></i> Refresh
+                    class="inline-flex items-center justify-center px-4 py-2 rounded-lg bg-action hover:bg-action text-action-foreground text-sm font-semibold shadow-sm">
+                <i aria-hidden="true" class="fas fa-rotate mr-2"></i> Refresh
             </button>
         </div>
     </div>
@@ -43,42 +43,42 @@
         <button type="button" wire:click="showTab('errors')" class="text-left bg-themed-secondary border border-themed-primary rounded-lg p-4 hover:border-red-300 transition">
             <div class="flex items-center justify-between">
                 <span class="text-sm text-themed-secondary">Open errors</span>
-                <i class="fas fa-bug text-red-500"></i>
+                <i aria-hidden="true" class="fas fa-bug text-red-500"></i>
             </div>
             <p class="text-3xl font-bold text-themed-primary mt-3">{{ number_format($summary['open_errors']) }}</p>
         </button>
         <button type="button" wire:click="showTab('jobs')" class="text-left bg-themed-secondary border border-themed-primary rounded-lg p-4 hover:border-orange-300 transition">
             <div class="flex items-center justify-between">
                 <span class="text-sm text-themed-secondary">Failed jobs</span>
-                <i class="fas fa-list-check text-orange-500"></i>
+                <i aria-hidden="true" class="fas fa-list-check text-orange-500"></i>
             </div>
             <p class="text-3xl font-bold text-themed-primary mt-3">{{ number_format($summary['failed_jobs']) }}</p>
         </button>
-        <button type="button" wire:click="showTab('mail')" class="text-left bg-themed-secondary border border-themed-primary rounded-lg p-4 hover:border-indigo-300 transition">
+        <button type="button" wire:click="showTab('mail')" class="text-left bg-themed-secondary border border-themed-primary rounded-lg p-4 hover:border-brand transition">
             <div class="flex items-center justify-between">
                 <span class="text-sm text-themed-secondary">Mail failures</span>
-                <i class="fas fa-envelope-circle-check text-indigo-500"></i>
+                <i aria-hidden="true" class="fas fa-envelope-circle-check text-brand"></i>
             </div>
             <p class="text-3xl font-bold text-themed-primary mt-3">{{ number_format($summary['mail_failures']) }}</p>
         </button>
-        <button type="button" wire:click="showTab('webhooks')" class="text-left bg-themed-secondary border border-themed-primary rounded-lg p-4 hover:border-purple-300 transition">
+        <button type="button" wire:click="showTab('webhooks')" class="text-left bg-themed-secondary border border-themed-primary rounded-lg p-4 hover:border-brand transition">
             <div class="flex items-center justify-between">
                 <span class="text-sm text-themed-secondary">Webhook failures</span>
-                <i class="fas fa-code-branch text-purple-500"></i>
+                <i aria-hidden="true" class="fas fa-code-branch text-brand"></i>
             </div>
             <p class="text-3xl font-bold text-themed-primary mt-3">{{ number_format($summary['webhook_failures']) }}</p>
         </button>
         <button type="button" wire:click="showTab('slow')" class="text-left bg-themed-secondary border border-themed-primary rounded-lg p-4 hover:border-amber-300 transition">
             <div class="flex items-center justify-between">
                 <span class="text-sm text-themed-secondary">Slow pages</span>
-                <i class="fas fa-stopwatch text-amber-500"></i>
+                <i aria-hidden="true" class="fas fa-stopwatch text-amber-500"></i>
             </div>
             <p class="text-3xl font-bold text-themed-primary mt-3">{{ number_format($summary['slow_pages']) }}</p>
         </button>
         <button type="button" wire:click="showTab('routes')" class="text-left bg-themed-secondary border border-themed-primary rounded-lg p-4 hover:border-rose-300 transition">
             <div class="flex items-center justify-between">
                 <span class="text-sm text-themed-secondary">Broken routes</span>
-                <i class="fas fa-link-slash text-rose-500"></i>
+                <i aria-hidden="true" class="fas fa-link-slash text-rose-500"></i>
             </div>
             <p class="text-3xl font-bold text-themed-primary mt-3">{{ number_format($summary['broken_routes']) }}</p>
         </button>
@@ -88,8 +88,8 @@
         <div class="flex overflow-x-auto border-b border-themed-primary">
             @foreach($tabs as $key => $tab)
                 <button type="button" wire:click="showTab('{{ $key }}')"
-                        class="min-w-max px-4 py-3 text-sm font-semibold border-b-2 transition {{ $activeTab === $key ? 'border-blue-600 text-blue-600 bg-blue-50 dark:bg-blue-900/20 dark:text-blue-300' : 'border-transparent text-themed-secondary hover:text-themed-primary' }}">
-                    <i class="fas {{ $tab['icon'] }} mr-2"></i>{{ $tab['label'] }}
+                        class="min-w-max px-4 py-3 text-sm font-semibold border-b-2 transition {{ $activeTab === $key ? 'border-blue-600 text-brand bg-brand/10 dark:bg-action/20 dark:text-blue-300' : 'border-transparent text-themed-secondary hover:text-themed-primary' }}">
+                    <i aria-hidden="true" class="fas {{ $tab['icon'] }} mr-2"></i>{{ $tab['label'] }}
                 </button>
             @endforeach
         </div>
@@ -98,7 +98,7 @@
             <div class="grid grid-cols-1 md:grid-cols-4 gap-3">
                 <div>
                     <label class="block text-xs font-semibold text-themed-secondary mb-1">Type</label>
-                    <select wire:model.live="typeFilter" class="w-full rounded-lg border border-themed-primary bg-themed-tertiary text-themed-primary px-3 py-2 text-sm">
+                    <select aria-label="Type filter" wire:model.live="typeFilter" class="w-full rounded-lg border border-themed-primary bg-themed-tertiary text-themed-primary px-3 py-2 text-sm">
                         <option value="all">All event types</option>
                         @foreach($types as $value => $label)
                             <option value="{{ $value }}">{{ $label }}</option>
@@ -107,7 +107,7 @@
                 </div>
                 <div>
                     <label class="block text-xs font-semibold text-themed-secondary mb-1">Status</label>
-                    <select wire:model.live="statusFilter" class="w-full rounded-lg border border-themed-primary bg-themed-tertiary text-themed-primary px-3 py-2 text-sm">
+                    <select aria-label="Status filter" wire:model.live="statusFilter" class="w-full rounded-lg border border-themed-primary bg-themed-tertiary text-themed-primary px-3 py-2 text-sm">
                         <option value="all">All statuses</option>
                         <option value="open">Open</option>
                         <option value="resolved">Resolved</option>
@@ -116,7 +116,7 @@
                 </div>
                 <div>
                     <label class="block text-xs font-semibold text-themed-secondary mb-1">Severity</label>
-                    <select wire:model.live="severityFilter" class="w-full rounded-lg border border-themed-primary bg-themed-tertiary text-themed-primary px-3 py-2 text-sm">
+                    <select aria-label="Severity filter" wire:model.live="severityFilter" class="w-full rounded-lg border border-themed-primary bg-themed-tertiary text-themed-primary px-3 py-2 text-sm">
                         <option value="all">All severities</option>
                         @foreach($severities as $value => $label)
                             <option value="{{ $value }}">{{ $label }}</option>
@@ -126,8 +126,8 @@
                 <div>
                     <label class="block text-xs font-semibold text-themed-secondary mb-1">Search</label>
                     <div class="relative">
-                        <i class="fas fa-search absolute left-3 top-3 text-themed-secondary text-xs"></i>
-                        <input type="search" wire:model.live.debounce.350ms="search"
+                        <i aria-hidden="true" class="fas fa-search absolute left-3 top-3 text-themed-secondary text-xs"></i>
+                        <input aria-label="Summary, source, URL" type="search" wire:model.live.debounce.350ms="search"
                                class="w-full rounded-lg border border-themed-primary bg-themed-tertiary text-themed-primary pl-9 pr-3 py-2 text-sm"
                                placeholder="Summary, source, URL...">
                     </div>
@@ -279,14 +279,14 @@
         </div>
 
         <div class="overflow-x-auto">
-            <table class="min-w-full divide-y divide-themed-primary">
+            <x-ui.table label="Production Observability records"><table class="min-w-full divide-y divide-themed-primary">
                 <thead class="bg-themed-tertiary">
                     <tr>
-                        <th class="px-5 py-3 text-left text-xs font-bold uppercase text-themed-secondary">Issue</th>
-                        <th class="px-5 py-3 text-left text-xs font-bold uppercase text-themed-secondary">Source</th>
-                        <th class="px-5 py-3 text-left text-xs font-bold uppercase text-themed-secondary">Impact</th>
-                        <th class="px-5 py-3 text-left text-xs font-bold uppercase text-themed-secondary">Last seen</th>
-                        <th class="px-5 py-3 text-right text-xs font-bold uppercase text-themed-secondary">Action</th>
+                        <th scope="col" class="px-5 py-3 text-left text-xs font-bold uppercase text-themed-secondary">Issue</th>
+                        <th scope="col" class="px-5 py-3 text-left text-xs font-bold uppercase text-themed-secondary">Source</th>
+                        <th scope="col" class="px-5 py-3 text-left text-xs font-bold uppercase text-themed-secondary">Impact</th>
+                        <th scope="col" class="px-5 py-3 text-left text-xs font-bold uppercase text-themed-secondary">Last seen</th>
+                        <th scope="col" class="px-5 py-3 text-right text-xs font-bold uppercase text-themed-secondary">Action</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-themed-primary">
@@ -329,14 +329,14 @@
                                 <div class="inline-flex items-center gap-2">
                                     @if($event->status === 'open')
                                         <button type="button" wire:click="resolveEvent({{ $event->id }})" class="px-3 py-1.5 rounded bg-green-600 hover:bg-green-700 text-white text-xs font-semibold">
-                                            <i class="fas fa-check mr-1"></i> Resolve
+                                            <i aria-hidden="true" class="fas fa-check mr-1"></i> Resolve
                                         </button>
                                         <button type="button" wire:click="ignoreEvent({{ $event->id }})" class="px-3 py-1.5 rounded bg-gray-600 hover:bg-gray-700 text-white text-xs font-semibold">
-                                            <i class="fas fa-eye-slash mr-1"></i> Ignore
+                                            <i aria-hidden="true" class="fas fa-eye-slash mr-1"></i> Ignore
                                         </button>
                                     @else
-                                        <button type="button" wire:click="reopenEvent({{ $event->id }})" class="px-3 py-1.5 rounded bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold">
-                                            <i class="fas fa-arrow-rotate-left mr-1"></i> Reopen
+                                        <button type="button" wire:click="reopenEvent({{ $event->id }})" class="px-3 py-1.5 rounded bg-action hover:bg-action text-action-foreground text-xs font-semibold">
+                                            <i aria-hidden="true" class="fas fa-arrow-rotate-left mr-1"></i> Reopen
                                         </button>
                                     @endif
                                 </div>
@@ -345,13 +345,13 @@
                     @empty
                         <tr>
                             <td colspan="5" class="px-5 py-12 text-center text-themed-secondary">
-                                <i class="fas fa-circle-check text-green-500 text-3xl mb-3"></i>
+                                <i aria-hidden="true" class="fas fa-circle-check text-green-500 text-3xl mb-3"></i>
                                 <p>No matching observability events.</p>
                             </td>
                         </tr>
                     @endforelse
                 </tbody>
-            </table>
+            </table></x-ui.table>
         </div>
 
         @if($events->hasPages())

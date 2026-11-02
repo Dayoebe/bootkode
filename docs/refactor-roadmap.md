@@ -1,5 +1,24 @@
 # Coherence implementation roadmap
 
+## Current implementation and release backlog — 27 October 2026
+
+This summary supersedes remaining-work statements in the dated history below.
+
+| Status | Work |
+|---|---|
+| Implemented | Course Content Studio import/generation, migration, managed queue worker, existing live-provider acceptance, Groq connection checks and logging consolidation; see their dated verification evidence |
+| Implemented | Recorded lesson/structured assessments, private project/assignment files, formal manual-mark corrections/reconsideration and versioned Q&A/peer participation |
+| Implemented | Private community replies, real saved job alerts/portal match receipts, optional queued email with current preferences, quiet hours and retry states; scheduled delivery stays off until deployment acceptance |
+| Implemented | Private assessment-result/reconsideration/correction notices, eligible CBT and course-review reminders, recorded-achievement delivery/history and durable learning receipts |
+| Implemented | Clean-checkout CI tests/builds, unsuppressed dependency release gates and the compatible npm parser security fix |
+| Integration acceptance | Deployment-specific live mail, asynchronous default-queue worker and scheduled delivery; both delivery schedule flags remain off |
+| Inventory verified locally | Checked historical attachment references/directories, unsupported submitted attempts and duplicate keyed lesson/quiz point rewards: zero affected rows/files in this working snapshot; repeat for other environments |
+| Product/data decisions | Account archival/anonymization and any future historical reconciliation still need retention rules, backups and explicit forward operations |
+| Unsupported product promises | Institution billing/white-label delivery, verified games/unsupported reward fulfillment and reviewed path generation; keep unavailable states truthful until backed by real implementations |
+| Remaining acceptance/release | Other legacy editor/theme/assistive-technology flows, dependency findings, deployment-specific provider/payment/OAuth/mail/worker/backup checks, and human editorial/legal/publication decisions |
+
+Q&A requires no migration. The two notification phases add backed-up forward migrations, now applied locally; neither phase publishes courses. Current evidence is in verification.md; historical counts and earlier environment outages are not current-state claims.
+
 Work in independently verified commits. Preserve unrelated sidebar/profile edits and all existing commercial/learning records.
 
 | Stage | Deliverable | Evidence required |
@@ -51,3 +70,116 @@ Remaining scope includes complete manual/question-type grading workflows, publis
 Implemented the secured lesson assessment/reviewer vertical slice using existing attempt and answer records, owner-scoped CBT management, private owned results, recorded-grade progress/certificate boundaries, exact-set multiple selection and a forward fix for MariaDB's mutable session start timestamp. This supersedes the earlier statement that all manual grading was unimplemented. The supported written formats now have a real review queue; the exact acceptance evidence and remaining limits are in verification.md.
 
 Remaining assessment work includes matching/ordering/drag-drop interaction, formal mark correction/appeal history, backed-up reconciliation of legacy written attempts without snapshots and broader instructor-editor accessibility/format acceptance. Historical clock values are preserved, not reconstructed. Provider/dependency/legal/historical-file gates and exhaustive product acceptance remain open; branch delivery is not a production release.
+
+## Structured assessment delivery — 22 October 2026
+
+Implemented matching, ordering and drag-and-drop authoring, accessible learner interaction, saved positions, immutable private grading maps and owned response history. Also fixed assessment-copy/reorder scope, atomic copy behavior, real attempt-setting persistence, option-index/JSON integrity, recursive statistics and inconsistent legacy grading helpers. This supersedes the earlier remaining-work entry for these three interaction formats. Physical pointer and keyboard flows, including focus after Livewire moves, have concrete verification evidence.
+
+Remaining assessment work includes formal correction/appeal history, backed-up reconciliation of legacy definitions/attempts without supported snapshots, richer project-file/peer-review delivery and exhaustive acceptance of the other criteria editors. Do not infer those integrations from their configuration metadata. Provider, dependency, legal, historical public-file migration and broad accessibility/theme gates remain; this continuation adds no migration or working-database record.
+
+## Recorded mark correction and reconsideration — 22 October 2026
+
+Implemented formal manual-mark corrections and learner-requested reconsideration through the existing review service and attempt records. Original marks/results, correction reasons and reviewer decisions remain recorded; current eligibility changes atomically with the corrected result. Scoped finalized/requested-review queues and owned history extend both learner result screens. This supersedes the earlier correction/appeal-history backlog for finalized written attempts with complete grading snapshots.
+
+Remaining assessment work includes backed-up reconciliation of legacy attempts/definitions without supported snapshots, richer private project-file and peer-review delivery, complete criteria-editor acceptance and external review-notification integration. Existing credential remediation stays a separate authorized process. Provider, dependency, legal, historical public-file migration and broad accessibility/theme release gates remain open. This phase adds no schema migration or automatic historical regrade.
+
+## Course content acquisition — 22 October 2026
+
+Implemented one licensed-source vertical slice and structured AI draft generation through the existing course/assessment model, with run metadata, revision protection, queue jobs, role checks, retry state, CLI commands and documentation. Current support is limited to selected freeCodeCamp curriculum Markdown challenge descriptions under the repository BSD-3-Clause notice and AI-generated lesson batches/quizzes/project rubric. See `course-content-system.md` and `verification.md`; do not infer support for arbitrary repositories, source assets, or publication readiness.
+
+
+## Private project/assignment delivery — 22 October 2026
+
+Implemented actual private project-deliverable and assignment attachments through existing attempts/answers, safe public instructions, frozen file/word requirements, owned draft persistence/removal, authorized immutable submitted downloads and manual instructor review. Project/assignment authoring now has scoped native forms and validated object metadata. Binary-response corruption from configuration output is fixed with a configuration-wide regression check. This supersedes the earlier private project-file backlog for supported configured lesson assessments.
+
+Remaining assessment work includes real Q&A/peer-review participation beyond configuration metadata, exhaustive acceptance of other criteria editors, external review notifications and backed-up reconciliation of legacy attempts/definitions without supported snapshots. Historical public-file migration, provider/OAuth/live-AI/mail, dependency/legal and broad accessibility/theme gates remain. This continuation requires no migration, historical regrade or working-database record change; the whole-product overhaul is not declared production-ready.
+
+## Authenticated redesign continuation — 23 October 2026
+
+- [x] Inventory authenticated routes, shared layouts, installed stack and real roles.
+- [x] Consolidate shell, desktop collapse, mobile drawer/shortcuts and navigation semantics.
+- [x] Migrate authenticated feature surfaces to existing semantic styling; remove forced legacy CSS remapping.
+- [x] Add bounded accessible tables, field/control names, and existing-dialog focus/Escape behavior.
+- [x] Protect the user directory on every request after a regression test exposed direct learner access.
+- [x] Record final full-suite, role/browser and dependency-audit results in verification.md.
+- [ ] Push feature commits when HTTPS Git credentials are available.
+
+Detailed exceptions and state coverage live in dashboard-redesign/page-checklist.md. External payment/AI delivery still requires configured providers; visual changes do not certify an external transaction or generated response.
+
+
+## Release continuation — 23 October 2026
+
+Completed: compatible dependency security maintenance; 45 additional workspace routes at 390/768/1024/1440px; authoring/résumé/interview/system-status/eligibility repairs; recorded interview analytics; isolated release suite/build/classmaps. The import revision fixture now resets its HTTP factory while retaining conflict/draft assertions; that correction remains with the user's untracked feature. Remaining: Laravel/JWT major-version security decisions, Tailwind 3 dependency advisories, configured provider acceptance, conditional/assistive-technology coverage and Git authentication for ordinary push. See dashboard-redesign/continuation-report.md; no forced upgrades or suppressed advisories.
+
+## Course-content continuation — 26 October 2026
+
+Completed the existing Studio's idempotency, partial-run handling, fixed-host/DNS/download security, reviewed-revision queueing, server-owned AI fields and real project criteria. Verified a live licensed-source import and rerun through the existing editor in an isolated database. CLI/UI share validated-input generation identity and existing AI limits; queue reservation/timeout settings are explicit. Final automated/build/browser evidence is in verification.md. Remaining: configured live-AI/provider acceptance, additional separately reviewed source adapters, editorial/factual approval of resulting drafts, and the previously recorded dependency/release gates.
+
+## Dependency-outage follow-up — 26 October 2026
+
+Completed: database-independent 500 response and exception-renderer regression. The earlier MySQL service blocker is now resolved. Database connectivity, public HTTP 200, an empty failed-job list and real course-content processing were verified in Main course-content completion below. No recovery/reset/migration is authorized or implied by a refused connection.
+
+
+## Main course-content completion — 26 October 2026
+
+- [x] Exercise the actual configured provider through CLI and authenticated UI/queue/editor in an isolated test database.
+- [x] Resolve real malformed/truncated output with strict schemas and bounded configurable generation tokens; share locked generation/expansion quota.
+- [x] Expose actual category, validation and quality findings with authorized quality/expansion/retry actions.
+- [x] Integrate/harden existing expansion and recover the backed-up failed working draft without replacing original lesson IDs/text or publishing it.
+- [x] Restore verified full notices to older draft lessons through an explicit additive, idempotent command.
+- [x] Install an enabled managed course-content worker with lingering; verify completed-job replay and current public/database availability.
+- [x] Record 332 passing tests / 1,602 assertions, build and targeted authenticated four-width browser evidence.
+
+The earlier MySQL and configured live-generation blockers are resolved for this checkout. Remaining release work: authenticated ordinary Git push, existing dependency advisories, human editorial/assessment approval and deployment-specific setup. Additional sources and broader theme/assistive-technology coverage remain separately scoped; see verification.md.
+
+
+## Direct course creation — 26 October 2026
+
+Completed: three original working course drafts owned by the authorised super-admin, totaling 27 substantial lessons, 36 explained multiple-choice questions and three marked capstones. Real covers/practice files are saved. Existing course and learning/financial/certificate records remain unchanged. Corrected code-example media false positives and displayed curriculum order discovered while reviewing the new content. Human editorial review and the normal publication workflow remain; these courses were not automatically published. See verification.md.
+
+
+## Inline assessment authoring — 26 October 2026
+
+Completed: remove the duplicate standalone authoring entry point, retain authorised legacy URL redirects into the selected lesson's Assessment tab, preserve tab/lesson location state, label mobile tab controls and fix stale list/form transitions. Authenticated checks cover all four tabs, create/cancel, assessment edit/cancel, quiz question edit/cancel, project criterion edit/cancel, returning to the list, switching lessons and four viewport widths. No working assessment or learner record was edited by verification.
+## Original course-content revision — 26 October 2026
+
+- Completed: directly revise existing courses 1 and 2 with explicit prerequisites, corrected contracts/examples, 24 ordered lessons, six quizzes (30 MCQs), two marked capstones and tested downloadable reference kits. Preserve original IDs/slugs/source attribution and unrelated records; validate the update in a dedicated test database before applying it to working drafts.
+- Publication gates: human pedagogical/editorial review, external source/reference availability checks and deliberate publication/approval. Mechanical code checks and a local quality scan do not establish those decisions. No additional software refactor is required merely to inspect these revised drafts.
+
+## Groq and logging follow-through — 27 October 2026
+
+Completed: real Groq connectivity checks in CLI/administrator Studio; safe configuration/verification distinction; clear authentication/model/format failures; current-role mentor guard; single-file application logging and journal-backed worker console output; archive historical verification captures. Existing AI authoring and learner workflows remain in place. Full suite and actual responsive/browser evidence are recorded in verification.md. Generated-content factual review/publication remains a separate deliberate action.
+
+
+## Q&A implementation — 27 October 2026
+
+Completed: scoped Q&A authoring with normalized objects and full criteria validation; bounded saved original responses and immutable requirements; explicit private-course sharing; same-topic peer participation; approval/rejection/hiding; stale/replay handling; and withdrawal from retained personal results. Peer feedback stays separate from official grading and rewards. Existing records and legacy text-only behavior are preserved; no migration is needed.
+
+The current-state summary near the top supersedes older dated backlog statements. Remaining implementation includes notification delivery, inspection-driven historical-data/account-lifecycle work and unsupported product promises. Broader theme/assistive-technology acceptance, existing dependency findings, deployment-specific provider/queue/backup acceptance and human editorial/legal/publication decisions remain release work. Do not automatically publish working course drafts or invent historical outcomes.
+
+
+## Community replies and saved job alerts — 27 October 2026
+
+Implemented owned native saved-alert forms, daily/weekly criteria, bounded public-job matching, durable replay receipts, real private community replies and atomic native portal notifications. Optional email defaults off, checks current source/preferences/account, respects quiet hours/weekends and records transport acceptance separately from delivery. Notification Preferences shares the same opt-ins, preserves concurrent unrelated values and saves valid quiet hours. Missing test-notification classes no longer produce false sent claims. See notification-delivery.md and verification.md for migration, browser and recovery evidence.
+
+Remaining delivery scope is review/reconsideration, CBT reminders and achievement stubs, plus actual deployment mail/scheduler/worker acceptance. Push/SMS remain unconnected. The scheduler flag remains false; no external message was sent. This supersedes older job-alert/community-reply unavailable entries without closing the other historical-data, dependency, provider, editorial, legal or broad-accessibility gates.
+
+
+## Learning notifications, CI and inventory — 27 October 2026
+
+Completed: transactional finalized-result/reconsideration/correction notices, enrolled eligible CBT reminders, real course-review reminders and confirmed unsubscribe, recorded-achievement notices/history and current-preference queued email checks. Durable receipts survive notice deletion. Native course-review writes now resolve actual owner/course, retain the real comment and stop the actual reminder. The local receipt migration is applied with original records/migration rows preserved. No schedule or external mail was activated.
+
+CI now installs dependencies from a clean checkout, tests/builds the application and separately enforces unsuppressed dependency audits. Untracking generated vendor/bootstrap manifests fixes the incomplete committed installation; local copies are retained. The compatible parser backport resolves the two npm findings. Six Composer advisories remain a release gate and require a separately reviewed dependency/framework migration.
+
+A read-only inventory found no known historical public attachment references/files, unsupported submitted assessment snapshots, unmatched submitted written answers or duplicate keyed lesson/quiz point-reward groups in the current working database. This closes inspection for this snapshot, not migration tooling or other environments. Account archival, unsupported product promises, remaining legacy notification families/theme/editor/assistive-technology acceptance, real provider/worker/backup checks and human editorial/legal/publication decisions remain.
+
+## Nontechnical curriculum expansion — 28 October 2026
+
+Completed in working records: five new courses across communication, time management, teamwork, customer service and critical thinking; 30 substantive lessons, 60 MCQs, five practical capstones and printable/editable workbooks. Existing authoring, grading and category services are reused. Publication and editorial approval remain deliberate review steps; no new software refactor is needed to inspect the drafts. Evidence and scope are recorded in verification.md.
+
+
+## Course editorial audit — 28 October 2026
+
+Course editorial audit: 10 courses / 81 lessons inspected, corrections and materials prepared. Remaining: recover database access while preserving original records, pass the guarded rehearsal, apply the payload, verify saved content/history and complete authenticated responsive checks. The offline required-notice behavior has focused test coverage. See [the course audit](course-content-audit-20261028.md); do not mark live cleanup complete yet.
+
+Database follow-up: all 6,143 regular files were preserved in a separate physical copy. Recovery modes 1–6 on an isolated copy failed at system-space page 0. Course edits remain prepared and unapplied; see the linked audit for preservation paths and recovery limits.

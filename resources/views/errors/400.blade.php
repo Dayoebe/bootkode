@@ -151,4 +151,5 @@
             animation-delay: 4s;
         }
 
-</x-app-layout
+</style>
+</x-app-layout>

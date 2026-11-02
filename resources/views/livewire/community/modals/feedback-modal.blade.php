@@ -2,12 +2,12 @@
 @if($activeModal === 'feedback')
     <div role="dialog" aria-modal="true" aria-label="Submit Feedback" x-data x-trap.inert.noscroll="true" x-on:keydown.escape.window="$wire.closeModal()" class="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
         <div
-            class="bg-themed-secondary rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto animate-slide-in">
+            class="bg-themed-secondary rounded-lg shadow-sm max-w-2xl w-full max-h-[90vh] overflow-y-auto animate-slide-in">
             <div
                 class="sticky top-0 bg-themed-secondary border-b border-themed-primary p-6 flex items-center justify-between">
                 <h2 class="text-xl font-bold text-themed-primary">Submit Feedback</h2>
                 <button type="button" aria-label="Close dialog" wire:click="closeModal()" class="text-themed-secondary hover:text-themed-primary transition-colors">
-                    <i class="fas fa-times text-2xl"></i>
+                    <i aria-hidden="true" class="fas fa-times text-2xl"></i>
                 </button>
             </div>
 
@@ -50,8 +50,8 @@
                     @error('feedbackMessage') <span id="community-feedbackMessage-error" class="text-red-500 text-xs mt-1">{{ $message }}</span> @enderror
                 </div>
 
-                <div class="bg-blue-100/20 border border-blue-500/30 rounded-lg p-3 text-sm text-blue-300">
-                    <i class="fas fa-lightbulb mr-2"></i>
+                <div class="bg-brand/10 border border-brand rounded-lg p-3 text-sm text-brand">
+                    <i aria-hidden="true" class="fas fa-lightbulb mr-2"></i>
                     Your feedback helps us improve the platform. Be specific and constructive!
                 </div>
 
@@ -62,7 +62,7 @@
                     </button>
                     <button type="submit"
                         class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg font-medium transition-colors flex items-center gap-2">
-                        <i class="fas fa-paper-plane"></i>Submit Feedback
+                        <i aria-hidden="true" class="fas fa-paper-plane"></i>Submit Feedback
                     </button>
                 </div>
             </form>

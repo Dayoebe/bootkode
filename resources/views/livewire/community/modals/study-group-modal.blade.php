@@ -1,11 +1,11 @@
 {{-- resources/views/livewire/community/modals/study-group-modal.blade.php --}}
 @if($activeModal === 'study-group')
     <div role="dialog" aria-modal="true" aria-label="Create Study Group" x-data x-trap.inert.noscroll="true" x-on:keydown.escape.window="$wire.closeModal()" class="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
-        <div class="bg-themed-secondary rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto animate-slide-in">
+        <div class="bg-themed-secondary rounded-lg shadow-sm max-w-2xl w-full max-h-[90vh] overflow-y-auto animate-slide-in">
             <div class="sticky top-0 bg-themed-secondary border-b border-themed-primary p-6 flex items-center justify-between">
                 <h2 class="text-xl font-bold text-themed-primary">Create Study Group</h2>
                 <button type="button" aria-label="Close dialog" wire:click="closeModal()" class="text-themed-secondary hover:text-themed-primary transition-colors">
-                    <i class="fas fa-times text-2xl"></i>
+                    <i aria-hidden="true" class="fas fa-times text-2xl"></i>
                 </button>
             </div>
 
@@ -61,7 +61,7 @@
                     </button>
                     <button type="submit"
                             class="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg font-medium transition-colors flex items-center gap-2">
-                        <i class="fas fa-users"></i>Create Group
+                        <i aria-hidden="true" class="fas fa-users"></i>Create Group
                     </button>
                 </div>
             </form>

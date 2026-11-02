@@ -16,20 +16,20 @@
     <div class="px-4 py-6 sm:px-6">
         <!-- Navigation Tabs -->
         <div class="flex gap-6 overflow-x-auto mb-6 border-b border-themed-primary">
-            <button wire:click="$set('activeTab', 'overview')" 
-                class="min-h-11 shrink-0 pb-3 {{ $activeTab === 'overview' ? 'border-b-2 border-accent-themed-primary text-accent-themed-primary font-semibold' : 'text-themed-secondary hover:text-themed-primary' }}">
+            <button wire:click="$set('activeTab', 'overview')"
+                class="min-h-11 shrink-0 pb-3 {{ $activeTab === 'overview' ? 'border-b-2 border-brand text-brand font-semibold' : 'text-themed-secondary hover:text-themed-primary' }}">
                 Overview
             </button>
-            <button wire:click="$set('activeTab', 'jobs')" 
-                class="min-h-11 shrink-0 pb-3 {{ $activeTab === 'jobs' ? 'border-b-2 border-accent-themed-primary text-accent-themed-primary font-semibold' : 'text-themed-secondary hover:text-themed-primary' }}">
+            <button wire:click="$set('activeTab', 'jobs')"
+                class="min-h-11 shrink-0 pb-3 {{ $activeTab === 'jobs' ? 'border-b-2 border-brand text-brand font-semibold' : 'text-themed-secondary hover:text-themed-primary' }}">
                 All Jobs
             </button>
-            <button wire:click="$set('activeTab', 'applications')" 
-                class="min-h-11 shrink-0 pb-3 {{ $activeTab === 'applications' ? 'border-b-2 border-accent-themed-primary text-accent-themed-primary font-semibold' : 'text-themed-secondary hover:text-themed-primary' }}">
+            <button wire:click="$set('activeTab', 'applications')"
+                class="min-h-11 shrink-0 pb-3 {{ $activeTab === 'applications' ? 'border-b-2 border-brand text-brand font-semibold' : 'text-themed-secondary hover:text-themed-primary' }}">
                 Applications
             </button>
-            <button wire:click="$set('activeTab', 'analytics')" 
-                class="min-h-11 shrink-0 pb-3 {{ $activeTab === 'analytics' ? 'border-b-2 border-accent-themed-primary text-accent-themed-primary font-semibold' : 'text-themed-secondary hover:text-themed-primary' }}">
+            <button wire:click="$set('activeTab', 'analytics')"
+                class="min-h-11 shrink-0 pb-3 {{ $activeTab === 'analytics' ? 'border-b-2 border-brand text-brand font-semibold' : 'text-themed-secondary hover:text-themed-primary' }}">
                 Analytics
             </button>
         </div>
@@ -40,7 +40,7 @@
                 <!-- Left Column - Quick Stats -->
                 <div class="lg:col-span-2 space-y-6">
                     <!-- Job Status Overview -->
-                    <div class="bg-themed-secondary rounded-xl shadow-lg p-6 border border-themed-primary">
+                    <div class="bg-themed-secondary rounded-lg shadow-sm p-6 border border-themed-primary">
                         <h3 class="text-xl font-bold text-themed-primary mb-4">Job Status Overview</h3>
                         <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
                             <div class="text-center p-4 bg-green-50 rounded-lg">
@@ -55,46 +55,46 @@
                                 <div class="text-2xl font-bold text-red-600">{{ $jobStats['expired'] ?? 0 }}</div>
                                 <div class="text-sm text-red-700">Expired</div>
                             </div>
-                            <div class="text-center p-4 bg-blue-50 rounded-lg">
-                                <div class="text-2xl font-bold text-blue-600">{{ $jobStats['filled'] ?? 0 }}</div>
-                                <div class="text-sm text-blue-700">Filled</div>
+                            <div class="text-center p-4 bg-brand/10 rounded-lg">
+                                <div class="text-2xl font-bold text-brand">{{ $jobStats['filled'] ?? 0 }}</div>
+                                <div class="text-sm text-brand">Filled</div>
                             </div>
-                            <div class="text-center p-4 bg-purple-50 rounded-lg">
-                                <div class="text-2xl font-bold text-purple-600">{{ $jobStats['featured'] ?? 0 }}</div>
-                                <div class="text-sm text-purple-700">Featured</div>
+                            <div class="text-center p-4 bg-brand/10 rounded-lg">
+                                <div class="text-2xl font-bold text-brand">{{ $jobStats['featured'] ?? 0 }}</div>
+                                <div class="text-sm text-brand">Featured</div>
                             </div>
-                            <div class="text-center p-4 bg-indigo-50 rounded-lg">
-                                <div class="text-2xl font-bold text-indigo-600">{{ $jobStats['this_month'] ?? 0 }}</div>
-                                <div class="text-sm text-indigo-700">This Month</div>
+                            <div class="text-center p-4 bg-brand/10 rounded-lg">
+                                <div class="text-2xl font-bold text-brand">{{ $jobStats['this_month'] ?? 0 }}</div>
+                                <div class="text-sm text-brand">This Month</div>
                             </div>
                         </div>
                     </div>
 
                     <!-- Application Status Overview -->
-                    <div class="bg-themed-secondary rounded-xl shadow-lg p-6 border border-themed-primary">
+                    <div class="bg-themed-secondary rounded-lg shadow-sm p-6 border border-themed-primary">
                         <h3 class="text-xl font-bold text-themed-primary mb-4">Application Status Overview</h3>
                         <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
                             <div class="text-center p-3 bg-orange-50 rounded-lg">
                                 <div class="text-xl font-bold text-orange-600">{{ $applicationStats['pending'] ?? 0 }}</div>
                                 <div class="text-xs text-orange-700">Pending</div>
                             </div>
-                            <div class="text-center p-3 bg-blue-50 rounded-lg">
-                                <div class="text-xl font-bold text-blue-600">{{ $applicationStats['reviewing'] ?? 0 }}</div>
-                                <div class="text-xs text-blue-700">Reviewing</div>
+                            <div class="text-center p-3 bg-brand/10 rounded-lg">
+                                <div class="text-xl font-bold text-brand">{{ $applicationStats['reviewing'] ?? 0 }}</div>
+                                <div class="text-xs text-brand">Reviewing</div>
                             </div>
                             <div class="text-center p-3 bg-green-50 rounded-lg">
                                 <div class="text-xl font-bold text-green-600">{{ $applicationStats['shortlisted'] ?? 0 }}</div>
                                 <div class="text-xs text-green-700">Shortlisted</div>
                             </div>
-                            <div class="text-center p-3 bg-purple-50 rounded-lg">
-                                <div class="text-xl font-bold text-purple-600">{{ $applicationStats['hired'] ?? 0 }}</div>
-                                <div class="text-xs text-purple-700">Hired</div>
+                            <div class="text-center p-3 bg-brand/10 rounded-lg">
+                                <div class="text-xl font-bold text-brand">{{ $applicationStats['hired'] ?? 0 }}</div>
+                                <div class="text-xs text-brand">Hired</div>
                             </div>
                         </div>
                     </div>
 
                     <!-- Recent Jobs -->
-                    <div class="bg-themed-secondary rounded-xl shadow-lg p-6 border border-themed-primary">
+                    <div class="bg-themed-secondary rounded-lg shadow-sm p-6 border border-themed-primary">
                         <h3 class="text-xl font-bold text-themed-primary mb-4">Recently Posted Jobs</h3>
                         <div class="space-y-4">
                             @forelse($recentActivity['recent_jobs'] ?? [] as $job)
@@ -123,26 +123,26 @@
                 <!-- Right Column - Quick Actions & Activity -->
                 <div class="space-y-6">
                     <!-- Quick Actions -->
-                    <div class="bg-themed-secondary rounded-xl shadow-lg p-6 border border-themed-primary">
+                    <div class="bg-themed-secondary rounded-lg shadow-sm p-6 border border-themed-primary">
                         <h3 class="text-xl font-bold text-themed-primary mb-4">Quick Actions</h3>
                         <div class="space-y-3">
-                            <button wire:click="$set('showForm', true)" 
-                                class="w-full bg-accent-themed-primary text-white px-4 py-3 rounded-lg hover:bg-accent-themed-secondary transition-all font-semibold">
+                            <button wire:click="$set('showForm', true)"
+                                class="w-full bg-action text-action-foreground px-4 py-3 rounded-lg hover:bg-action/90 transition-all font-semibold">
                                 Post New Job
                             </button>
-                            <button wire:click="$set('activeTab', 'applications')" 
+                            <button wire:click="$set('activeTab', 'applications')"
                                 class="w-full bg-green-100 text-green-700 px-4 py-3 rounded-lg hover:bg-green-200 transition-all font-semibold">
                                 Review Applications
                             </button>
-                            <button wire:click="$set('activeTab', 'analytics')" 
-                                class="w-full bg-purple-100 text-purple-700 px-4 py-3 rounded-lg hover:bg-purple-200 transition-all font-semibold">
+                            <button wire:click="$set('activeTab', 'analytics')"
+                                class="w-full bg-brand/10 text-brand px-4 py-3 rounded-lg hover:bg-purple-200 transition-all font-semibold">
                                 View Analytics
                             </button>
                         </div>
                     </div>
 
                     <!-- Jobs Expiring Soon -->
-                    <div class="bg-themed-secondary rounded-xl shadow-lg p-6 border border-themed-primary">
+                    <div class="bg-themed-secondary rounded-lg shadow-sm p-6 border border-themed-primary">
                         <h3 class="text-xl font-bold text-themed-primary mb-4">Expiring Soon</h3>
                         <div class="space-y-3">
                             @forelse($recentActivity['expiring_soon'] ?? [] as $job)
@@ -158,17 +158,17 @@
                     </div>
 
                     <!-- Top Viewed Jobs -->
-                    <div class="bg-themed-secondary rounded-xl shadow-lg p-6 border border-themed-primary">
+                    <div class="bg-themed-secondary rounded-lg shadow-sm p-6 border border-themed-primary">
                         <h3 class="text-xl font-bold text-themed-primary mb-4">Top Viewed Jobs</h3>
                         <div class="space-y-3">
                             @forelse($recentActivity['top_viewed_jobs'] ?? [] as $job)
-                                <div class="flex justify-between items-center p-3 bg-blue-50 rounded-lg">
+                                <div class="flex justify-between items-center p-3 bg-brand/10 rounded-lg">
                                     <div>
                                         <h4 class="font-medium text-themed-primary text-sm">{{ Str::limit($job->title, 25) }}</h4>
                                         <p class="text-xs text-themed-secondary">{{ $job->company_name }}</p>
                                     </div>
                                     <div class="text-right">
-                                        <p class="text-sm font-semibold text-blue-600">{{ $job->views_count }}</p>
+                                        <p class="text-sm font-semibold text-brand">{{ $job->views_count }}</p>
                                         <p class="text-xs text-themed-tertiary">views</p>
                                     </div>
                                 </div>
@@ -187,8 +187,8 @@
                 <!-- Action Bar -->
                 <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between space-y-4 lg:space-y-0">
                     <div class="flex flex-wrap items-center gap-4">
-                        <button wire:click="$set('showForm', true)" 
-                            class="bg-accent-themed-primary text-white px-6 py-3 rounded-xl hover:bg-accent-themed-secondary transition-all font-semibold shadow-lg hover:shadow-xl">
+                        <button wire:click="$set('showForm', true)"
+                            class="bg-action text-action-foreground px-6 py-3 rounded-lg hover:bg-action/90 transition-all font-semibold shadow-sm ">
                             <svg class="w-5 h-5 mr-2 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
                             </svg>
@@ -212,14 +212,14 @@
                     <!-- Search and Filters -->
                     <div class="flex flex-wrap items-center gap-4">
                         <div class="relative">
-                            <input wire:model.live.debounce.300ms="searchTerm" type="text" placeholder="Search jobs..."
-                                class="pl-10 pr-4 py-2 border border-themed-primary rounded-lg focus:ring-2 focus:ring-accent-themed-primary focus:border-transparent w-64 bg-themed-secondary text-themed-primary placeholder-themed-tertiary">
+                            <input aria-label="Search jobs" wire:model.live.debounce.300ms="searchTerm" type="text" placeholder="Search jobs..."
+                                class="pl-10 pr-4 py-2 border border-themed-primary rounded-lg focus:ring-2 focus:ring-brand focus:border-transparent w-64 bg-themed-secondary text-themed-primary placeholder-themed-tertiary">
                             <svg class="absolute left-3 top-2.5 h-5 w-5 text-themed-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
                             </svg>
                         </div>
 
-                        <select wire:model.live="filterStatus" class="px-4 py-2 border border-themed-primary rounded-lg focus:ring-2 focus:ring-accent-themed-primary bg-themed-secondary text-themed-primary">
+                        <select aria-label="Filter status" wire:model.live="filterStatus" class="px-4 py-2 border border-themed-primary rounded-lg focus:ring-2 focus:ring-brand bg-themed-secondary text-themed-primary">
                             <option value="">All Status</option>
                             <option value="draft">Draft</option>
                             <option value="active">Active</option>
@@ -228,7 +228,7 @@
                             <option value="filled">Filled</option>
                         </select>
 
-                        <select wire:model.live="filterCategory" class="px-4 py-2 border border-themed-primary rounded-lg focus:ring-2 focus:ring-accent-themed-primary bg-themed-secondary text-themed-primary">
+                        <select aria-label="Filter category" wire:model.live="filterCategory" class="px-4 py-2 border border-themed-primary rounded-lg focus:ring-2 focus:ring-brand bg-themed-secondary text-themed-primary">
                             <option value="">All Categories</option>
                             @foreach($categories as $slug => $name)
                                 <option value="{{ $slug }}">{{ $name }}</option>
@@ -241,7 +241,7 @@
                 @if($jobs->count() > 0)
                     <div class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
                         @foreach($jobs as $job)
-                            <div class="bg-themed-secondary rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden border border-themed-primary">
+                            <div class="bg-themed-secondary rounded-lg shadow-sm  transition-all duration-300 overflow-hidden border border-themed-primary">
                                 <!-- Job Header -->
                                 <div class="p-6 pb-4">
                                     <div class="flex items-center justify-between mb-4">
@@ -252,7 +252,7 @@
                                                 <p class="text-themed-secondary text-sm">{{ $job->company_name }}</p>
                                             </div>
                                         </div>
-                                        <input type="checkbox" wire:model="selectedJobs" value="{{ $job->id }}" class="w-5 h-5 text-accent-themed-primary">
+                                        <input aria-label="Selected jobs" type="checkbox" wire:model="selectedJobs" value="{{ $job->id }}" class="w-5 h-5 text-brand">
                                     </div>
 
                                     <!-- Job Details -->
@@ -276,14 +276,14 @@
                                         <span class="bg-{{ $job->getStatusColor() }}-100 text-{{ $job->getStatusColor() }}-800 text-xs px-2 py-1 rounded-full">
                                             {{ $job->status_label }}
                                         </span>
-                                        <span class="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full">
+                                        <span class="bg-brand/10 text-brand text-xs px-2 py-1 rounded-full">
                                             {{ $job->employment_type_label }}
                                         </span>
-                                        <span class="bg-purple-100 text-purple-800 text-xs px-2 py-1 rounded-full">
+                                        <span class="bg-brand/10 text-brand text-xs px-2 py-1 rounded-full">
                                             {{ $job->work_type_label }}
                                         </span>
                                         @if($job->is_premium)
-                                            <span class="bg-gradient-to-r from-yellow-400 to-orange-500 text-white text-xs px-2 py-1 rounded-full font-semibold">
+                                            <span class="bg-action   text-action-foreground text-xs px-2 py-1 rounded-full font-semibold">
                                                 PREMIUM
                                             </span>
                                         @endif
@@ -308,10 +308,10 @@
 
                                 <!-- Actions -->
                                 <div class="bg-themed-tertiary px-6 py-4 flex space-x-2">
-                                    <button wire:click="editJob({{ $job->id }})" class="flex-1 bg-blue-100 text-blue-700 px-3 py-2 rounded-lg hover:bg-blue-200 transition-colors text-sm font-medium">
+                                    <button wire:click="editJob({{ $job->id }})" class="flex-1 bg-brand/10 text-brand px-3 py-2 rounded-lg hover:bg-blue-200 transition-colors text-sm font-medium">
                                         Edit
                                     </button>
-                                    
+
                                     @if($job->status === 'active')
                                         <button wire:click="changeJobStatus({{ $job->id }}, 'paused')" class="flex-1 bg-yellow-100 text-yellow-700 px-3 py-2 rounded-lg hover:bg-yellow-200 transition-colors text-sm font-medium">
                                             Pause
@@ -328,15 +328,15 @@
                                                 <path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z"/>
                                             </svg>
                                         </button>
-                                        <div id="dropdown-{{ $job->id }}" class="hidden absolute right-0 mt-2 w-48 bg-themed-secondary rounded-lg shadow-lg z-10 border border-themed-primary">
+                                        <div id="dropdown-{{ $job->id }}" class="hidden absolute right-0 mt-2 w-48 bg-themed-secondary rounded-lg shadow-sm z-10 border border-themed-primary">
                                             <button wire:click="duplicateJob({{ $job->id }})" class="w-full text-left px-4 py-2 text-sm text-themed-primary hover:bg-themed-tertiary rounded-t-lg">
                                                 Duplicate Job
                                             </button>
                                             <button wire:click="changeJobStatus({{ $job->id }}, 'filled')" class="w-full text-left px-4 py-2 text-sm text-themed-primary hover:bg-themed-tertiary">
                                                 Mark as Filled
                                             </button>
-                                            <button wire:click="deleteJob({{ $job->id }})" 
-                                                wire:confirm="Are you sure you want to delete this job?" 
+                                            <button wire:click="deleteJob({{ $job->id }})"
+                                                wire:confirm="Are you sure you want to delete this job?"
                                                 class="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 rounded-b-lg">
                                                 Delete Job
                                             </button>
@@ -355,14 +355,14 @@
                     <!-- Empty State -->
                     <div class="text-center py-16">
                         <div class="mx-auto w-32 h-32 bg-themed-tertiary rounded-full flex items-center justify-center mb-6">
-                            <svg class="w-16 h-16 text-accent-themed-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg class="w-16 h-16 text-brand" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.755M6 18L18 6M6 6l12 12"/>
                             </svg>
                         </div>
                         <h3 class="text-2xl font-semibold text-themed-primary mb-2">No jobs found</h3>
                         <p class="text-themed-secondary mb-6">Start by posting your first job to attract talented candidates.</p>
-                        <button wire:click="$set('showForm', true)" 
-                            class="bg-accent-themed-primary text-white px-8 py-3 rounded-xl hover:bg-accent-themed-secondary transition-all font-semibold shadow-lg hover:shadow-xl">
+                        <button wire:click="$set('showForm', true)"
+                            class="bg-action text-action-foreground px-8 py-3 rounded-lg hover:bg-action/90 transition-all font-semibold shadow-sm ">
                             Post Your First Job
                         </button>
                     </div>
@@ -372,15 +372,15 @@
 
         @if($activeTab === 'applications')
             <!-- Applications Management -->
-            <div class="bg-themed-secondary rounded-xl shadow-lg p-6 border border-themed-primary">
+            <div class="bg-themed-secondary rounded-lg shadow-sm p-6 border border-themed-primary">
                 <h3 class="text-xl font-bold text-themed-primary mb-6">Recent Applications</h3>
-                
+
                 @if(isset($recentActivity['recent_applications']) && count($recentActivity['recent_applications']) > 0)
                     <div class="space-y-4">
                         @foreach($recentActivity['recent_applications'] as $application)
                             <div class="flex items-center justify-between p-4 bg-themed-tertiary rounded-lg hover:bg-themed-primary transition-colors">
                                 <div class="flex items-center space-x-4">
-                                    <img src="https://ui-avatars.com/api/?name={{ urlencode($application->user->name) }}&color=7F9CF5&background=EBF4FF&size=40" 
+                                    <img src="https://ui-avatars.com/api/?name={{ urlencode($application->user->name) }}&color=7F9CF5&background=EBF4FF&size=40"
                                          alt="{{ $application->user->name }}" class="w-10 h-10 rounded-full">
                                     <div>
                                         <h4 class="font-semibold text-themed-primary">{{ $application->user->name }}</h4>
@@ -392,8 +392,8 @@
                                     <span class="bg-{{ $application->status === 'pending' ? 'yellow' : ($application->status === 'hired' ? 'green' : 'blue') }}-100 text-{{ $application->status === 'pending' ? 'yellow' : ($application->status === 'hired' ? 'green' : 'blue') }}-800 text-xs px-2 py-1 rounded-full">
                                         {{ ucfirst($application->status) }}
                                     </span>
-                                    <button wire:click="viewApplication({{ $application->id }})" 
-                                        class="bg-blue-100 text-blue-700 px-3 py-2 rounded-lg hover:bg-blue-200 transition-colors text-sm">
+                                    <button wire:click="viewApplication({{ $application->id }})"
+                                        class="bg-brand/10 text-brand px-3 py-2 rounded-lg hover:bg-blue-200 transition-colors text-sm">
                                         Review
                                     </button>
                                 </div>
@@ -412,12 +412,12 @@
             <!-- Analytics Dashboard -->
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
                 <!-- Performance Metrics -->
-                <div class="bg-themed-secondary rounded-xl shadow-lg p-6 border border-themed-primary">
+                <div class="bg-themed-secondary rounded-lg shadow-sm p-6 border border-themed-primary">
                     <h3 class="text-xl font-bold text-themed-primary mb-6">Performance Metrics</h3>
                     <div class="space-y-4">
                         <div class="flex justify-between items-center">
                             <span class="text-themed-secondary">Total Views</span>
-                            <span class="font-semibold text-2xl text-blue-600">{{ number_format($jobStats['total_views'] ?? 0) }}</span>
+                            <span class="font-semibold text-2xl text-brand">{{ number_format($jobStats['total_views'] ?? 0) }}</span>
                         </div>
                         <div class="flex justify-between items-center">
                             <span class="text-themed-secondary">Average Applications per Job</span>
@@ -425,7 +425,7 @@
                         </div>
                         <div class="flex justify-between items-center">
                             <span class="text-themed-secondary">Application Conversion Rate</span>
-                            <span class="font-semibold text-2xl text-purple-600">{{ $applicationStats['conversion_rate'] ?? 0 }}%</span>
+                            <span class="font-semibold text-2xl text-brand">{{ $applicationStats['conversion_rate'] ?? 0 }}%</span>
                         </div>
                         <div class="flex justify-between items-center">
                             <span class="text-themed-secondary">Jobs This Month</span>
@@ -435,13 +435,13 @@
                 </div>
 
                 <!-- Application Funnel -->
-                <div class="bg-themed-secondary rounded-xl shadow-lg p-6 border border-themed-primary">
+                <div class="bg-themed-secondary rounded-lg shadow-sm p-6 border border-themed-primary">
                     <h3 class="text-xl font-bold text-themed-primary mb-6">Application Funnel</h3>
                     <div class="space-y-3">
                         @php
                             $total = $applicationStats['total'] ?? 1;
                         @endphp
-                        
+
                         <div class="flex items-center space-x-3">
                             <div class="w-full bg-themed-tertiary rounded-full h-4">
                                 <div class="bg-yellow-500 h-4 rounded-full" style="width: {{ $total > 0 ? (($applicationStats['pending'] ?? 0) / $total) * 100 : 0 }}%"></div>
@@ -452,7 +452,7 @@
 
                         <div class="flex items-center space-x-3">
                             <div class="w-full bg-themed-tertiary rounded-full h-4">
-                                <div class="bg-blue-500 h-4 rounded-full" style="width: {{ $total > 0 ? (($applicationStats['shortlisted'] ?? 0) / $total) * 100 : 0 }}%"></div>
+                                <div class="bg-action h-4 rounded-full" style="width: {{ $total > 0 ? (($applicationStats['shortlisted'] ?? 0) / $total) * 100 : 0 }}%"></div>
                             </div>
                             <span class="text-sm font-medium text-themed-primary w-20">Shortlisted</span>
                             <span class="text-sm text-themed-secondary">{{ $applicationStats['shortlisted'] ?? 0 }}</span>
@@ -460,7 +460,7 @@
 
                         <div class="flex items-center space-x-3">
                             <div class="w-full bg-themed-tertiary rounded-full h-4">
-                                <div class="bg-purple-500 h-4 rounded-full" style="width: {{ $total > 0 ? (($applicationStats['interviewed'] ?? 0) / $total) * 100 : 0 }}%"></div>
+                                <div class="bg-action h-4 rounded-full" style="width: {{ $total > 0 ? (($applicationStats['interviewed'] ?? 0) / $total) * 100 : 0 }}%"></div>
                             </div>
                             <span class="text-sm font-medium text-themed-primary w-20">Interviewed</span>
                             <span class="text-sm text-themed-secondary">{{ $applicationStats['interviewed'] ?? 0 }}</span>
@@ -482,7 +482,7 @@
     <!-- Job Form Modal -->
     @if($showForm)
         <div role="dialog" aria-modal="true" aria-label="Job editor" x-data x-trap.inert.noscroll="true" x-on:keydown.escape.window="$wire.resetForm()" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50 overflow-y-auto">
-            <div class="bg-themed-secondary rounded-2xl max-w-6xl w-full max-h-[90vh] overflow-hidden">
+            <div class="bg-themed-secondary rounded-lg max-w-6xl w-full max-h-[90vh] overflow-hidden">
                 <div class="flex justify-between items-center p-6 border-b border-themed-primary bg-themed-tertiary">
                     <h2 class="text-2xl font-bold text-themed-primary">
                         {{ $editingJobId ? 'Edit Job' : 'Post New Job' }}
@@ -501,25 +501,25 @@
                             <!-- Basic Information -->
                             <div class="space-y-4">
                                 <h3 class="text-lg font-semibold text-themed-primary border-b border-themed-primary pb-2">Basic Information</h3>
-                                
+
                                 <div>
                                     <label class="block text-sm font-semibold text-themed-primary mb-2">Job Title *</label>
-                                    <input wire:model="title" type="text" placeholder="e.g., Senior Full Stack Developer"
-                                        class="w-full px-4 py-3 border border-themed-primary rounded-xl focus:ring-2 focus:ring-accent-themed-primary focus:border-transparent bg-themed-secondary text-themed-primary placeholder-themed-tertiary">
+                                    <input aria-label="e.g., Senior Full Stack Developer" wire:model="title" type="text" placeholder="e.g., Senior Full Stack Developer"
+                                        class="w-full px-4 py-3 border border-themed-primary rounded-lg focus:ring-2 focus:ring-brand focus:border-transparent bg-themed-secondary text-themed-primary placeholder-themed-tertiary">
                                     @error('title') <p class="text-red-500 text-sm mt-1">{{ $message }}</p> @enderror
                                 </div>
 
                                 <div>
                                     <label class="block text-sm font-semibold text-themed-primary mb-2">Job Description *</label>
-                                    <textarea wire:model="description" rows="6" placeholder="Describe the role, what they'll be doing, and what makes this opportunity exciting..."
-                                        class="w-full px-4 py-3 border border-themed-primary rounded-xl focus:ring-2 focus:ring-accent-themed-primary focus:border-transparent bg-themed-secondary text-themed-primary placeholder-themed-tertiary"></textarea>
+                                    <textarea aria-label="Describe the role, what they'll be doing, and what makes this opportunity exciting" wire:model="description" rows="6" placeholder="Describe the role, what they'll be doing, and what makes this opportunity exciting..."
+                                        class="w-full px-4 py-3 border border-themed-primary rounded-lg focus:ring-2 focus:ring-brand focus:border-transparent bg-themed-secondary text-themed-primary placeholder-themed-tertiary"></textarea>
                                     @error('description') <p class="text-red-500 text-sm mt-1">{{ $message }}</p> @enderror
                                 </div>
 
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <div>
                                         <label class="block text-sm font-semibold text-themed-primary mb-2">Employment Type *</label>
-                                        <select wire:model="employment_type" class="w-full px-4 py-3 border border-themed-primary rounded-xl focus:ring-2 focus:ring-accent-themed-primary bg-themed-secondary text-themed-primary">
+                                        <select aria-label="Employment type" wire:model="employment_type" class="w-full px-4 py-3 border border-themed-primary rounded-lg focus:ring-2 focus:ring-brand bg-themed-secondary text-themed-primary">
                                             @foreach($employmentTypes as $key => $label)
                                                 <option value="{{ $key }}">{{ $label }}</option>
                                             @endforeach
@@ -528,7 +528,7 @@
 
                                     <div>
                                         <label class="block text-sm font-semibold text-themed-primary mb-2">Work Type *</label>
-                                        <select wire:model="work_type" class="w-full px-4 py-3 border border-themed-primary rounded-xl focus:ring-2 focus:ring-accent-themed-primary bg-themed-secondary text-themed-primary">
+                                        <select aria-label="Work type" wire:model="work_type" class="w-full px-4 py-3 border border-themed-primary rounded-lg focus:ring-2 focus:ring-brand bg-themed-secondary text-themed-primary">
                                             @foreach($workTypes as $key => $label)
                                                 <option value="{{ $key }}">{{ $label }}</option>
                                             @endforeach
@@ -539,7 +539,7 @@
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <div>
                                         <label class="block text-sm font-semibold text-themed-primary mb-2">Experience Level *</label>
-                                        <select wire:model="experience_level" class="w-full px-4 py-3 border border-themed-primary rounded-xl focus:ring-2 focus:ring-accent-themed-primary bg-themed-secondary text-themed-primary">
+                                        <select aria-label="Experience level" wire:model="experience_level" class="w-full px-4 py-3 border border-themed-primary rounded-lg focus:ring-2 focus:ring-brand bg-themed-secondary text-themed-primary">
                                             @foreach($experienceLevels as $key => $label)
                                                 <option value="{{ $key }}">{{ $label }}</option>
                                             @endforeach
@@ -548,7 +548,7 @@
 
                                     <div>
                                         <label class="block text-sm font-semibold text-themed-primary mb-2">Category *</label>
-                                        <select wire:model="category" class="w-full px-4 py-3 border border-themed-primary rounded-xl focus:ring-2 focus:ring-accent-themed-primary bg-themed-secondary text-themed-primary">
+                                        <select aria-label="Category" wire:model="category" class="w-full px-4 py-3 border border-themed-primary rounded-lg focus:ring-2 focus:ring-brand bg-themed-secondary text-themed-primary">
                                             <option value="">Select Category</option>
                                             @foreach($categories as $slug => $name)
                                                 <option value="{{ $slug }}">{{ $name }}</option>
@@ -562,25 +562,25 @@
                             <!-- Location -->
                             <div class="space-y-4">
                                 <h3 class="text-lg font-semibold text-themed-primary border-b border-themed-primary pb-2">Location</h3>
-                                
+
                                 <div>
                                     <label class="block text-sm font-semibold text-themed-primary mb-2">Location *</label>
-                                    <input wire:model="location" type="text" placeholder="e.g., Lagos, Nigeria"
-                                        class="w-full px-4 py-3 border border-themed-primary rounded-xl focus:ring-2 focus:ring-accent-themed-primary focus:border-transparent bg-themed-secondary text-themed-primary placeholder-themed-tertiary">
+                                    <input aria-label="e.g., Lagos, Nigeria" wire:model="location" type="text" placeholder="e.g., Lagos, Nigeria"
+                                        class="w-full px-4 py-3 border border-themed-primary rounded-lg focus:ring-2 focus:ring-brand focus:border-transparent bg-themed-secondary text-themed-primary placeholder-themed-tertiary">
                                     @error('location') <p class="text-red-500 text-sm mt-1">{{ $message }}</p> @enderror
                                 </div>
 
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <div>
                                         <label class="block text-sm font-semibold text-themed-primary mb-2">State</label>
-                                        <input wire:model="state" type="text" placeholder="e.g., Lagos"
-                                            class="w-full px-4 py-3 border border-themed-primary rounded-xl focus:ring-2 focus:ring-accent-themed-primary focus:border-transparent bg-themed-secondary text-themed-primary placeholder-themed-tertiary">
+                                        <input aria-label="e.g., Lagos" wire:model="state" type="text" placeholder="e.g., Lagos"
+                                            class="w-full px-4 py-3 border border-themed-primary rounded-lg focus:ring-2 focus:ring-brand focus:border-transparent bg-themed-secondary text-themed-primary placeholder-themed-tertiary">
                                     </div>
 
                                     <div>
                                         <label class="block text-sm font-semibold text-themed-primary mb-2">City</label>
-                                        <input wire:model="city" type="text" placeholder="e.g., Ikeja"
-                                            class="w-full px-4 py-3 border border-themed-primary rounded-xl focus:ring-2 focus:ring-accent-themed-primary focus:border-transparent bg-themed-secondary text-themed-primary placeholder-themed-tertiary">
+                                        <input aria-label="e.g., Ikeja" wire:model="city" type="text" placeholder="e.g., Ikeja"
+                                            class="w-full px-4 py-3 border border-themed-primary rounded-lg focus:ring-2 focus:ring-brand focus:border-transparent bg-themed-secondary text-themed-primary placeholder-themed-tertiary">
                                     </div>
                                 </div>
                             </div>
@@ -591,31 +591,31 @@
                             <!-- Company Information -->
                             <div class="space-y-4">
                                 <h3 class="text-lg font-semibold text-themed-primary border-b border-themed-primary pb-2">Company Information</h3>
-                                
+
                                 <div>
                                     <label class="block text-sm font-semibold text-themed-primary mb-2">Company Name *</label>
-                                    <input wire:model="company_name" type="text" placeholder="e.g., TechCorp Inc."
-                                        class="w-full px-4 py-3 border border-themed-primary rounded-xl focus:ring-2 focus:ring-accent-themed-primary focus:border-transparent bg-themed-secondary text-themed-primary placeholder-themed-tertiary">
+                                    <input aria-label="e.g., TechCorp Inc" wire:model="company_name" type="text" placeholder="e.g., TechCorp Inc."
+                                        class="w-full px-4 py-3 border border-themed-primary rounded-lg focus:ring-2 focus:ring-brand focus:border-transparent bg-themed-secondary text-themed-primary placeholder-themed-tertiary">
                                     @error('company_name') <p class="text-red-500 text-sm mt-1">{{ $message }}</p> @enderror
                                 </div>
 
                                 <div>
                                     <label class="block text-sm font-semibold text-themed-primary mb-2">Company Logo</label>
-                                    <input wire:model="company_logo" type="file" accept="image/*" 
-                                        class="w-full px-4 py-3 border border-themed-primary rounded-xl focus:ring-2 focus:ring-accent-themed-primary focus:border-transparent bg-themed-secondary text-themed-primary">
+                                    <input aria-label="Company logo" wire:model="company_logo" type="file" accept="image/*"
+                                        class="w-full px-4 py-3 border border-themed-primary rounded-lg focus:ring-2 focus:ring-brand focus:border-transparent bg-themed-secondary text-themed-primary">
                                     @error('company_logo') <p class="text-red-500 text-sm mt-1">{{ $message }}</p> @enderror
                                 </div>
 
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <div>
                                         <label class="block text-sm font-semibold text-themed-primary mb-2">Company Website</label>
-                                        <input wire:model="company_website" type="url" placeholder="https://company.com"
-                                            class="w-full px-4 py-3 border border-themed-primary rounded-xl focus:ring-2 focus:ring-accent-themed-primary focus:border-transparent bg-themed-secondary text-themed-primary placeholder-themed-tertiary">
+                                        <input aria-label="https://company.com" wire:model="company_website" type="url" placeholder="https://company.com"
+                                            class="w-full px-4 py-3 border border-themed-primary rounded-lg focus:ring-2 focus:ring-brand focus:border-transparent bg-themed-secondary text-themed-primary placeholder-themed-tertiary">
                                     </div>
 
                                     <div>
                                         <label class="block text-sm font-semibold text-themed-primary mb-2">Company Size</label>
-                                        <select wire:model="company_size" class="w-full px-4 py-3 border border-themed-primary rounded-xl focus:ring-2 focus:ring-accent-themed-primary bg-themed-secondary text-themed-primary">
+                                        <select aria-label="Company size" wire:model="company_size" class="w-full px-4 py-3 border border-themed-primary rounded-lg focus:ring-2 focus:ring-brand bg-themed-secondary text-themed-primary">
                                             <option value="">Select Size</option>
                                             @foreach($companySizes as $key => $label)
                                                 <option value="{{ $key }}">{{ $label }}</option>
@@ -628,25 +628,25 @@
                             <!-- Salary Information -->
                             <div class="space-y-4">
                                 <h3 class="text-lg font-semibold text-themed-primary border-b border-themed-primary pb-2">Salary Information</h3>
-                                
+
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <div>
                                         <label class="block text-sm font-semibold text-themed-primary mb-2">Minimum Salary</label>
-                                        <input wire:model="salary_min" type="number" step="0.01" placeholder="50000"
-                                            class="w-full px-4 py-3 border border-themed-primary rounded-xl focus:ring-2 focus:ring-accent-themed-primary focus:border-transparent bg-themed-secondary text-themed-primary placeholder-themed-tertiary">
+                                        <input aria-label="50000" wire:model="salary_min" type="number" step="0.01" placeholder="50000"
+                                            class="w-full px-4 py-3 border border-themed-primary rounded-lg focus:ring-2 focus:ring-brand focus:border-transparent bg-themed-secondary text-themed-primary placeholder-themed-tertiary">
                                     </div>
 
                                     <div>
                                         <label class="block text-sm font-semibold text-themed-primary mb-2">Maximum Salary</label>
-                                        <input wire:model="salary_max" type="number" step="0.01" placeholder="100000"
-                                            class="w-full px-4 py-3 border border-themed-primary rounded-xl focus:ring-2 focus:ring-accent-themed-primary focus:border-transparent bg-themed-secondary text-themed-primary placeholder-themed-tertiary">
+                                        <input aria-label="100000" wire:model="salary_max" type="number" step="0.01" placeholder="100000"
+                                            class="w-full px-4 py-3 border border-themed-primary rounded-lg focus:ring-2 focus:ring-brand focus:border-transparent bg-themed-secondary text-themed-primary placeholder-themed-tertiary">
                                     </div>
                                 </div>
 
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <div>
                                         <label class="block text-sm font-semibold text-themed-primary mb-2">Currency</label>
-                                        <select wire:model="salary_currency" class="w-full px-4 py-3 border border-themed-primary rounded-xl focus:ring-2 focus:ring-accent-themed-primary bg-themed-secondary text-themed-primary">
+                                        <select aria-label="Salary currency" wire:model="salary_currency" class="w-full px-4 py-3 border border-themed-primary rounded-lg focus:ring-2 focus:ring-brand bg-themed-secondary text-themed-primary">
                                             @foreach($currencies as $key => $label)
                                                 <option value="{{ $key }}">{{ $label }}</option>
                                             @endforeach
@@ -655,7 +655,7 @@
 
                                     <div>
                                         <label class="block text-sm font-semibold text-themed-primary mb-2">Period</label>
-                                        <select wire:model="salary_period" class="w-full px-4 py-3 border border-themed-primary rounded-xl focus:ring-2 focus:ring-accent-themed-primary bg-themed-secondary text-themed-primary">
+                                        <select aria-label="Salary period" wire:model="salary_period" class="w-full px-4 py-3 border border-themed-primary rounded-lg focus:ring-2 focus:ring-brand bg-themed-secondary text-themed-primary">
                                             @foreach($salaryPeriods as $key => $label)
                                                 <option value="{{ $key }}">{{ $label }}</option>
                                             @endforeach
@@ -665,12 +665,12 @@
 
                                 <div class="flex items-center space-x-4">
                                     <label class="flex items-center">
-                                        <input wire:model="salary_negotiable" type="checkbox" class="w-4 h-4 text-accent-themed-primary border-themed-primary rounded focus:ring-accent-themed-primary">
+                                        <input wire:model="salary_negotiable" type="checkbox" class="w-4 h-4 text-brand border-themed-primary rounded focus:ring-brand">
                                         <span class="ml-2 text-sm text-themed-primary">Salary is negotiable</span>
                                     </label>
 
                                     <label class="flex items-center">
-                                        <input wire:model="hide_salary" type="checkbox" class="w-4 h-4 text-accent-themed-primary border-themed-primary rounded focus:ring-accent-themed-primary">
+                                        <input wire:model="hide_salary" type="checkbox" class="w-4 h-4 text-brand border-themed-primary rounded focus:ring-brand">
                                         <span class="ml-2 text-sm text-themed-primary">Hide salary from listing</span>
                                     </label>
                                 </div>
@@ -679,10 +679,10 @@
                             <!-- Application Settings -->
                             <div class="space-y-4">
                                 <h3 class="text-lg font-semibold text-themed-primary border-b border-themed-primary pb-2">Application Settings</h3>
-                                
+
                                 <div>
                                     <label class="block text-sm font-semibold text-themed-primary mb-2">Application Method *</label>
-                                    <select wire:model="application_method" class="w-full px-4 py-3 border border-themed-primary rounded-xl focus:ring-2 focus:ring-accent-themed-primary bg-themed-secondary text-themed-primary">
+                                    <select aria-label="Application method" wire:model="application_method" class="w-full px-4 py-3 border border-themed-primary rounded-lg focus:ring-2 focus:ring-brand bg-themed-secondary text-themed-primary">
                                         <option value="internal">Internal Application System</option>
                                         <option value="email">Email Application</option>
                                         <option value="external_link">External Link</option>
@@ -693,14 +693,14 @@
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <div>
                                         <label class="block text-sm font-semibold text-themed-primary mb-2">Application Deadline</label>
-                                        <input wire:model="application_deadline" type="datetime-local"
-                                            class="w-full px-4 py-3 border border-themed-primary rounded-xl focus:ring-2 focus:ring-accent-themed-primary focus:border-transparent bg-themed-secondary text-themed-primary">
+                                        <input aria-label="Application deadline" wire:model="application_deadline" type="datetime-local"
+                                            class="w-full px-4 py-3 border border-themed-primary rounded-lg focus:ring-2 focus:ring-brand focus:border-transparent bg-themed-secondary text-themed-primary">
                                     </div>
 
                                     <div>
                                         <label class="block text-sm font-semibold text-themed-primary mb-2">Positions Available *</label>
-                                        <input wire:model="positions_available" type="number" min="1" placeholder="1"
-                                            class="w-full px-4 py-3 border border-themed-primary rounded-xl focus:ring-2 focus:ring-accent-themed-primary focus:border-transparent bg-themed-secondary text-themed-primary placeholder-themed-tertiary">
+                                        <input aria-label="1" wire:model="positions_available" type="number" min="1" placeholder="1"
+                                            class="w-full px-4 py-3 border border-themed-primary rounded-lg focus:ring-2 focus:ring-brand focus:border-transparent bg-themed-secondary text-themed-primary placeholder-themed-tertiary">
                                         @error('positions_available') <p class="text-red-500 text-sm mt-1">{{ $message }}</p> @enderror
                                     </div>
                                 </div>
@@ -711,11 +711,11 @@
                     <!-- Form Actions -->
                     <div class="flex justify-end space-x-4 mt-8 pt-6 border-t border-themed-primary">
                         <button type="button" wire:click="resetForm"
-                            class="px-6 py-3 border border-themed-primary text-themed-primary rounded-xl hover:bg-themed-tertiary transition-colors">
+                            class="px-6 py-3 border border-themed-primary text-themed-primary rounded-lg hover:bg-themed-tertiary transition-colors">
                             Cancel
                         </button>
                         <button type="submit"
-                            class="bg-accent-themed-primary text-white px-8 py-3 rounded-xl hover:bg-accent-themed-secondary transition-all font-semibold shadow-lg hover:shadow-xl">
+                            class="bg-action text-action-foreground px-8 py-3 rounded-lg hover:bg-action/90 transition-all font-semibold shadow-sm ">
                             <span wire:loading.remove wire:target="saveJob">
                                 {{ $editingJobId ? 'Update Job' : 'Post Job' }}
                             </span>

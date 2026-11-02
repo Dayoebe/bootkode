@@ -4,10 +4,10 @@ namespace App\Livewire\Career;
 
 use Livewire\Component;
 use Livewire\WithPagination;
-use App\Models\Mentorship\Mentorship\MockInterview;
+use App\Models\Mentorship\MockInterview;
 use App\Models\Core\User;
-use App\Models\Mentorship\Mentorship\InterviewQuestion;
-use App\Models\Mentorship\Mentorship\InterviewQuestionSet;
+use App\Models\Mentorship\InterviewQuestion;
+use App\Models\Mentorship\InterviewQuestionSet;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Cache;
@@ -29,13 +29,16 @@ class AdminMockInterview extends Component
     // AUTHORIZATION CHECK
     // ============================================
     
-    public function mount()
+    public function boot()
     {
         // Only allow instructors, academy admins, and super admins
         if (!$this->canManageInterviews()) {
             abort(403, 'Unauthorized. Only instructors and administrators can manage mock interviews.');
         }
-        
+    }
+
+    public function mount()
+    {
         $this->loadAvailableQuestions();
     }
     
@@ -190,7 +193,7 @@ class AdminMockInterview extends Component
     #[Computed]
     public function statistics()
     {
-        return Cache::remember('admin_mock_interview_stats', 300, function () {
+        return Cache::remember('admin_mock_interview_stats_v2', 300, function () {
             return [
                 'totalInterviews' => MockInterview::count(),
                 'totalUsers' => User::whereHas('mockInterviews')->count(),
@@ -202,6 +205,8 @@ class AdminMockInterview extends Component
                 'totalQuestions' => InterviewQuestion::count(),
                 'approvedQuestions' => InterviewQuestion::where('is_approved', true)->count(),
                 'totalQuestionSets' => InterviewQuestionSet::count(),
+                'repeatUsers' => User::has('mockInterviews', '>=', 2)->count(),
+                'plannedHours' => MockInterview::sum('estimated_duration_minutes') / 60,
             ];
         });
     }
@@ -209,8 +214,9 @@ class AdminMockInterview extends Component
     #[Computed]
     public function popularTypes()
     {
-        return Cache::remember('admin_mock_popular_types', 300, function () {
+        return Cache::remember('admin_mock_popular_types_v2', 300, function () {
             return MockInterview::select('type', DB::raw('count(*) as count'))
+                ->selectRaw('AVG(CASE WHEN status = ? THEN overall_score END) as average_score', ['completed'])
                 ->groupBy('type')
                 ->orderByDesc('count')
                 ->limit(5)
@@ -327,7 +333,11 @@ class AdminMockInterview extends Component
     #[Computed]
     public function topUsers()
     {
-        return User::withCount(['mockInterviews'])
+        return User::withCount([
+                'mockInterviews',
+                'mockInterviews as completed_interviews_count' => fn ($query) => $query->where('status', 'completed'),
+            ])
+            ->withAvg(['mockInterviews as recorded_interview_score' => fn ($query) => $query->where('status', 'completed')], 'overall_score')
             ->orderByDesc('mock_interviews_count')
             ->limit(20)
             ->get();
@@ -831,8 +841,8 @@ class AdminMockInterview extends Component
     
     private function clearCache()
     {
-        Cache::forget('admin_mock_interview_stats');
-        Cache::forget('admin_mock_popular_types');
+        Cache::forget('admin_mock_interview_stats_v2');
+        Cache::forget('admin_mock_popular_types_v2');
     }
 
     // ============================================

@@ -27,15 +27,18 @@ class CodingMentor extends Component
 
     public ?string $providerError = null;
 
-    public function mount(): void
+    public function boot(): void
     {
-        abort_unless(in_array(Auth::user()->role, [
+        abort_unless(Auth::user()?->hasAnyRole([
             \App\Models\Core\User::ROLE_STUDENT,
             \App\Models\Core\User::ROLE_INSTRUCTOR,
             \App\Models\Core\User::ROLE_ACADEMY_ADMIN,
             \App\Models\Core\User::ROLE_SUPER_ADMIN,
-        ], true), 403);
+        ]), 403);
+    }
 
+    public function mount(): void
+    {
         $this->activeConversationId = AiConversation::where('user_id', Auth::id())->latest('last_message_at')->latest('id')->value('id');
     }
 

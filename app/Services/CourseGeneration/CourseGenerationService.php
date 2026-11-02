@@ -132,6 +132,17 @@ class CourseGenerationService
                         $projectCount++;
                     }
                 }
+
+                if (!empty($sectionBlueprint['project']) && $lastLesson) {
+                    $this->createAssessmentFromBlueprint(
+                        course: $course,
+                        section: $section,
+                        lesson: $lastLesson,
+                        blueprint: array_merge($sectionBlueprint['project'], ['type' => 'project'])
+                    );
+                    $assessmentCount++;
+                    $projectCount++;
+                }
             }
 
             $this->refreshCourseMetrics($course, $blueprint['course'], $assessmentCount, $projectCount);
@@ -208,6 +219,13 @@ class CourseGenerationService
             'sections.*.lessons.*.duration_minutes' => ['nullable', 'integer', 'min:1', 'max:600'],
             'sections.*.lessons.*.completion_time_type' => ['nullable', 'in:reading,watching,practice,total'],
             'sections.*.lessons.*.difficulty_level' => ['nullable', 'in:beginner,intermediate,advanced,expert'],
+            'sections.*.project' => ['nullable', 'array'],
+            'sections.*.project.title' => ['required_with:sections.*.project', 'string', 'max:255'],
+            'sections.*.project.description' => ['required_with:sections.*.project', 'string', 'max:1000'],
+            'sections.*.project.instructions' => ['required_with:sections.*.project', 'string', 'min:30', 'max:5000'],
+            'sections.*.project.evaluation_criteria' => ['required_with:sections.*.project', 'string', 'min:30', 'max:5000'],
+            'sections.*.project.deliverables' => ['required_with:sections.*.project', 'array', 'min:1', 'max:8'],
+            'sections.*.project.deliverables.*' => ['required', 'string', 'max:500'],
         ]);
 
         $validator->after(function ($validator) use ($payload) {
@@ -459,11 +477,29 @@ class CourseGenerationService
             'estimated_duration_minutes' => $duration,
             'is_mandatory' => true,
             'weight' => 1,
-            'max_score' => 0,
+            'max_score' => (int) ($blueprint['max_score'] ?? ($type === 'project' ? 100 : 0)),
             'max_attempts' => null,
+            'project_type' => $blueprint['project_type'] ?? null,
+            'required_skills' => $blueprint['required_skills'] ?? null,
+            'deliverables' => $blueprint['deliverables'] ?? null,
+            'resources' => $blueprint['resources'] ?? null,
+            'instructions' => $blueprint['instructions'] ?? null,
+            'evaluation_criteria' => $blueprint['evaluation_criteria'] ?? null,
         ]);
 
         $totalPoints = 0;
+
+        if ($type === 'project' && empty($blueprint['questions'])) {
+            // A project needs a real written-response criterion for the existing attempt/review flow.
+            $blueprint['questions'] = [[
+                'question_text' => ($blueprint['instructions'] ?? $description)."\n\nDeliverables:\n".implode("\n", $blueprint['deliverables'] ?? []),
+                'question_type' => 'project_criteria',
+                'options' => ['criteria_type' => 'documentation'],
+                'correct_answers' => [],
+                'points' => 100,
+                'explanation' => $blueprint['evaluation_criteria'] ?? '',
+            ]];
+        }
 
         foreach (($blueprint['questions'] ?? []) as $index => $questionBlueprint) {
             $points = (float) ($questionBlueprint['points'] ?? 5);

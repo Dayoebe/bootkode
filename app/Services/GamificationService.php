@@ -50,6 +50,7 @@ class GamificationService
             $data->addExperience(50, 'lesson_completion');
             $this->resetQuests($data);
             $quests = $data->updateQuestProgress('complete_lesson');
+            \App\Models\Credentials\UserAchievement::checkAndAwardAchievements($user->id);
             return ['success' => true, 'points_earned' => self::POINTS_LESSON_COMPLETION, 'coins_earned' => self::COINS_LESSON_COMPLETION, 'quests_completed' => $quests];
         });
     }
@@ -89,6 +90,7 @@ class GamificationService
             $this->resetQuests($data);
             $data->updateQuestProgress('pass_quiz');
             if ($earned >= $possible) $data->updateQuestProgress('perfect_score');
+            \App\Models\Credentials\UserAchievement::checkAndAwardAchievements($user->id);
             return ['success' => true, 'points_earned' => self::POINTS_QUIZ_COMPLETION, 'coins_earned' => self::COINS_QUIZ_COMPLETION];
         });
     }
@@ -204,7 +206,8 @@ class GamificationService
 
     public function broadcastAchievement(User $user, $achievement)
     {
-        return false; // No achievement broadcast delivery integration is configured.
+        if (!$achievement instanceof \App\Models\Credentials\UserAchievement && !$achievement instanceof \App\Models\Credentials\UserBadge) return false;
+        return app(LearningNotificationService::class)->achievement($user, $achievement);
     }
 
     public function calculateDifficultyAdjustment(User $user)

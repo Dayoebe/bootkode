@@ -2,7 +2,7 @@
     <x-ui.page-header title="Learning rewards" description="Review your recorded progress, rewards and achievements.">
         <x-slot:actions><x-secondary-button wire:click="refreshData" wire:loading.attr="disabled">Refresh rewards</x-secondary-button></x-slot:actions>
     </x-ui.page-header>
-    <x-ui.flash :messages="$feedback" />
+    @if($feedback)<x-ui.flash :messages="$feedback" />@endif
     <nav aria-label="Learning rewards" class="flex max-w-full gap-2 overflow-x-auto pb-2">
         @foreach(['overview' => 'Overview', 'badges' => 'Badges', 'games' => 'Games', 'leaderboard' => 'Leaderboard', 'store' => 'Rewards store'] as $tab => $label)
             <button type="button" wire:click="setActiveTab('{{ $tab }}')" aria-current="{{ $activeTab === $tab ? 'page' : 'false' }}" @class(['bk-button shrink-0', 'bk-button-primary' => $activeTab === $tab, 'bk-button-secondary' => $activeTab !== $tab])>{{ $label }}</button>
@@ -20,6 +20,14 @@
             <ul class="divide-y divide-line">@forelse($recentTransactions as $transaction)<li class="flex flex-wrap justify-between gap-2 py-3"><span class="break-words text-content">{{ $transaction->description }}</span><span class="text-sm text-content-muted">{{ $transaction->created_at->format('M j, Y H:i') }}</span></li>@empty<li class="py-4 text-content-muted">No reward activity has been recorded yet.</li>@endforelse</ul>
         </x-ui.panel>
     @elseif($activeTab === 'badges')
+        <x-ui.panel title="Your recorded learning milestones">
+            <div class="grid gap-4 md:grid-cols-2">
+                @forelse($achievements as $achievement)
+                    <article id="learning-achievement-{{ $achievement->id }}" class="min-w-0 rounded-lg border border-line p-4"><h2 class="break-words font-semibold text-content">{{ $achievement->achievement_name }}</h2><p class="mt-2 break-words text-content-muted">{{ $achievement->achievement_description }}</p><p class="mt-2 text-sm text-content-muted">Recorded {{ $achievement->earned_at->format('M j, Y') }}</p></article>
+                @empty<x-ui.empty-state title="No milestones recorded yet" description="Verified learning milestones will appear here when recorded." />@endforelse
+            </div>
+            <div class="mt-4">{{ $achievements->links() }}</div>
+        </x-ui.panel>
         <x-ui.panel title="Your awarded badges"><div class="grid gap-4 md:grid-cols-2">@forelse($badges as $badge)<article class="rounded-lg border border-line p-4"><h2 class="font-semibold text-content">{{ $badge->badge_name }}</h2><p class="mt-2 text-content-muted">{{ $badge->badge_description }}</p><p class="mt-2 text-sm text-content-muted">Awarded {{ $badge->created_at->format('M j, Y') }}</p></article>@empty<x-ui.empty-state title="No badges awarded yet" description="Awarded badges will appear here when recorded by the platform." />@endforelse</div></x-ui.panel>
     @elseif($activeTab === 'games')
         <x-ui.empty-state title="No games are published" description="Game play and score rewards are unavailable until a server-verified game is released. Existing scores are retained." />

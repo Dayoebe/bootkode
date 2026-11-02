@@ -14,9 +14,13 @@ use Throwable;
 class CourseQualityService
 {
     public const STATUS_NOT_CHECKED = 'not_checked';
+
     public const STATUS_NEEDS_WORK = 'needs_work';
+
     public const STATUS_READY = 'ready';
+
     public const STATUS_VERIFIED = 'verified';
+
     public const STATUS_STALE = 'stale';
 
     public function scanAndPersist(Course $course, ?User $checker = null, bool $checkRemoteMedia = false): CourseQualityCheck
@@ -314,7 +318,7 @@ class CourseQualityService
                 $this->addMediaArray($items, $lesson->videos, 'video', $location);
                 $this->addMediaArray($items, $lesson->external_links, 'external_link', $location);
                 $this->addHtmlMedia($items, $lesson->content, $location);
-                $this->addHtmlMedia($items, $lesson->text_content, $location);
+                // Search/plain-text copies can contain literal example attributes, not rendered media.
             }
         }
 
@@ -324,7 +328,7 @@ class CourseQualityService
 
         return collect($items)
             ->filter(fn ($item) => $this->filled($item['value']))
-            ->unique(fn ($item) => $item['type'] . '|' . $item['location'] . '|' . $item['value'])
+            ->unique(fn ($item) => $item['type'].'|'.$item['location'].'|'.$item['value'])
             ->values()
             ->all();
     }
@@ -342,10 +346,25 @@ class CourseQualityService
             return;
         }
 
-        preg_match_all('/(?:src|href)=["\']([^"\']+)["\']/i', $html, $matches);
-
-        foreach ($matches[1] ?? [] as $url) {
-            $this->addMediaItem($items, html_entity_decode($url), 'embedded_media', $location);
+        $document = new \DOMDocument;
+        $previous = libxml_use_internal_errors(true);
+        try {
+            $loaded = $document->loadHTML('<?xml encoding="UTF-8"><div>'.$html.'</div>', LIBXML_NONET);
+            if (! $loaded) {
+                return;
+            }
+            $xpath = new \DOMXPath($document);
+            $elements = $xpath->query('//*[@src or @href][not(ancestor::pre) and not(ancestor::code)]');
+            foreach ($elements as $element) {
+                foreach (['src', 'href'] as $attribute) {
+                    if ($element->hasAttribute($attribute)) {
+                        $this->addMediaItem($items, $element->getAttribute($attribute), 'embedded_media', $location);
+                    }
+                }
+            }
+        } finally {
+            libxml_clear_errors();
+            libxml_use_internal_errors($previous);
         }
     }
 
@@ -393,11 +412,13 @@ class CourseQualityService
         foreach ($value as $key => $item) {
             if (is_string($key) && in_array($key, $mediaKeys, true) && is_scalar($item)) {
                 $results[] = (string) $item;
+
                 continue;
             }
 
             if (is_array($item)) {
                 $results = array_merge($results, $this->extractMediaValues($item));
+
                 continue;
             }
 
@@ -425,7 +446,7 @@ class CourseQualityService
         $exists = $path && (
             file_exists(public_path($path))
             || Storage::disk('public')->exists($path)
-            || file_exists(storage_path('app/public/' . $path))
+            || file_exists(storage_path('app/public/'.$path))
         );
 
         return [
@@ -447,7 +468,7 @@ class CourseQualityService
             return [
                 ...$item,
                 'status' => ($response->successful() || ($response->status() >= 300 && $response->status() < 400)) ? 'ok' : 'broken',
-                'detail' => 'HTTP ' . $response->status(),
+                'detail' => 'HTTP '.$response->status(),
             ];
         } catch (Throwable $exception) {
             return [

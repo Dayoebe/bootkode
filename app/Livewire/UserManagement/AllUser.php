@@ -14,6 +14,11 @@ class AllUser extends Component
 {
     use WithPagination;
 
+    public function boot(): void
+    {
+        abort_unless(auth()->user()?->hasAnyRole([User::ROLE_SUPER_ADMIN, User::ROLE_ACADEMY_ADMIN]), 403);
+    }
+
     public $search = '';
     public $sortField = 'name';
     public $sortDirection = 'asc';

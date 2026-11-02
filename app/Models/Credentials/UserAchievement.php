@@ -2,9 +2,11 @@
 
 namespace App\Models\Credentials;
 
+use App\Models\Assessment\LearningSession;
+use App\Models\Core\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\Core\User;
+use Illuminate\Support\Facades\DB;
 
 class UserAchievement extends Model
 {
@@ -34,32 +36,38 @@ class UserAchievement extends Model
      */
     public static function checkAndAwardAchievements($userId)
     {
-        $user = User::find($userId);
-        if (!$user) return;
+        return DB::transaction(function () use ($userId) {
+            $user = User::whereKey($userId)->lockForUpdate()->first();
+            if (! $user || ! $user->is_active || ! $user->email_verified_at) {
+                return [];
+            }
 
-        $achievements = [];
+            $achievements = [];
 
-        // Streak achievements
-        $streak = LearningSession::getStudyStreak($userId);
-        $achievements = array_merge($achievements, self::checkStreakAchievements($userId, $streak));
+            // Streak achievements
+            $streak = LearningSession::getStudyStreak($userId);
+            $achievements = array_merge($achievements, self::checkStreakAchievements($userId, $streak));
 
-        // Course completion achievements
-        $completedCourses = $user->courses()->wherePivot('progress', 100)->count();
-        $achievements = array_merge($achievements, self::checkCompletionAchievements($userId, $completedCourses));
+            // Course completion achievements
+            $completedCourses = DB::table('course_enrollments')->where('user_id', $userId)->where('is_completed', true)->whereNotNull('completed_at')->where('completed_at', '<=', now())->pluck('course_id')
+                ->merge(DB::table('course_user')->where('user_id', $userId)->whereNotNull('completed_at')->where('completed_at', '<=', now())->pluck('course_id'))->unique()->count();
+            $achievements = array_merge($achievements, self::checkCompletionAchievements($userId, $completedCourses));
 
-        // Lesson completion achievements
-        $completedLessons = $user->completedLessons()->count();
-        $achievements = array_merge($achievements, self::checkLessonAchievements($userId, $completedLessons));
+            // Lesson completion achievements
+            $completedLessons = DB::table('lesson_user')->where('user_id', $userId)->whereNotNull('completed_at')->where('completed_at', '<=', now())->pluck('lesson_id')
+                ->merge(DB::table('user_progress')->where('user_id', $userId)->where('is_completed', true)->whereNotNull('completed_at')->where('completed_at', '<=', now())->whereNotNull('lesson_id')->pluck('lesson_id'))->unique()->count();
+            $achievements = array_merge($achievements, self::checkLessonAchievements($userId, $completedLessons));
 
-        // Assessment achievements
-        $averageScore = self::getAverageAssessmentScore($user);
-        $achievements = array_merge($achievements, self::checkAssessmentAchievements($userId, $averageScore));
+            // Assessment achievements
+            $averageScore = self::getAverageAssessmentScore($user);
+            $achievements = array_merge($achievements, self::checkAssessmentAchievements($userId, $averageScore));
 
-        // Study time achievements
-        $totalStudyTime = LearningSession::where('user_id', $userId)->sum('duration_minutes');
-        $achievements = array_merge($achievements, self::checkStudyTimeAchievements($userId, $totalStudyTime));
+            // Study time achievements
+            $totalStudyTime = LearningSession::where('user_id', $userId)->whereNotNull('ended_at')->where('ended_at', '<=', now())->where('duration_minutes', '>', 0)->sum('duration_minutes');
+            $achievements = array_merge($achievements, self::checkStudyTimeAchievements($userId, $totalStudyTime));
 
-        return $achievements;
+            return $achievements;
+        });
     }
 
     private static function checkStreakAchievements($userId, $streak)
@@ -76,7 +84,7 @@ class UserAchievement extends Model
         ];
 
         foreach ($streakMilestones as $days => $achievement) {
-            if ($streak >= $days && !self::hasAchievement($userId, 'streak', $achievement['name'])) {
+            if ($streak >= $days && ! self::hasAchievement($userId, 'streak', $achievement['name'])) {
                 $achievements[] = self::awardAchievement($userId, 'streak', $achievement['name'], $achievement['description'], $achievement['icon'], $days);
             }
         }
@@ -97,7 +105,7 @@ class UserAchievement extends Model
         ];
 
         foreach ($completionMilestones as $count => $achievement) {
-            if ($completedCourses >= $count && !self::hasAchievement($userId, 'course_completion', $achievement['name'])) {
+            if ($completedCourses >= $count && ! self::hasAchievement($userId, 'course_completion', $achievement['name'])) {
                 $achievements[] = self::awardAchievement($userId, 'course_completion', $achievement['name'], $achievement['description'], $achievement['icon'], $count);
             }
         }
@@ -118,7 +126,7 @@ class UserAchievement extends Model
         ];
 
         foreach ($lessonMilestones as $count => $achievement) {
-            if ($completedLessons >= $count && !self::hasAchievement($userId, 'lesson_completion', $achievement['name'])) {
+            if ($completedLessons >= $count && ! self::hasAchievement($userId, 'lesson_completion', $achievement['name'])) {
                 $achievements[] = self::awardAchievement($userId, 'lesson_completion', $achievement['name'], $achievement['description'], $achievement['icon'], $count);
             }
         }
@@ -138,7 +146,7 @@ class UserAchievement extends Model
         ];
 
         foreach ($scoreMilestones as $score => $achievement) {
-            if ($averageScore >= $score && !self::hasAchievement($userId, 'assessment_score', $achievement['name'])) {
+            if ($averageScore >= $score && ! self::hasAchievement($userId, 'assessment_score', $achievement['name'])) {
                 $achievements[] = self::awardAchievement($userId, 'assessment_score', $achievement['name'], $achievement['description'], $achievement['icon'], $score);
             }
         }
@@ -160,7 +168,7 @@ class UserAchievement extends Model
         ];
 
         foreach ($timeMilestones as $hours => $achievement) {
-            if ($totalHours >= $hours && !self::hasAchievement($userId, 'study_time', $achievement['name'])) {
+            if ($totalHours >= $hours && ! self::hasAchievement($userId, 'study_time', $achievement['name'])) {
                 $achievements[] = self::awardAchievement($userId, 'study_time', $achievement['name'], $achievement['description'], $achievement['icon'], $hours);
             }
         }
@@ -178,7 +186,7 @@ class UserAchievement extends Model
 
     private static function awardAchievement($userId, $type, $name, $description, $icon, $value)
     {
-        return self::create([
+        $achievement = self::create([
             'user_id' => $userId,
             'achievement_type' => $type,
             'achievement_name' => $name,
@@ -187,15 +195,17 @@ class UserAchievement extends Model
             'achievement_value' => $value,
             'earned_at' => now(),
         ]);
+        app(\App\Services\LearningNotificationService::class)->achievement(User::findOrFail($userId), $achievement);
+
+        return $achievement;
     }
 
     private static function getAverageAssessmentScore($user)
     {
-        return \DB::table('student_answers')
-            ->join('assessments', 'student_answers.assessment_id', '=', 'assessments.id')
-            ->where('student_answers.user_id', $user->id)
-            ->whereNotNull('student_answers.submitted_at')
-            ->avg(\DB::raw('student_answers.points_earned / assessments.max_score * 100')) ?? 0;
+        $ids = $user->enrollments()->pluck('course_id')->merge($user->courses()->pluck('courses.id'))->unique()->all();
+        $scores = app(\App\Services\LearningAnalyticsService::class)->assessmentScores($user, $ids, \Carbon\Carbon::create(1970, 1, 1), now());
+
+        return $scores->isNotEmpty() ? $scores->avg('percentage') : 0;
     }
 
     /**

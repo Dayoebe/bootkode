@@ -1,8 +1,8 @@
 <div class="min-h-screen bg-themed-primary transition-colors duration-300">
     <!-- Header -->
-    <div class="bg-themed-secondary shadow-lg border-b border-themed-primary transition-colors duration-300">
+    <div class="bg-themed-secondary shadow-sm border-b border-themed-primary transition-colors duration-300">
         <div class="px-6 py-8">
-            <h1 class="text-4xl font-bold text-themed-primary mb-2 transition-colors duration-300">My Mentorships</h1>
+            <h1 class=" font-bold text-themed-primary mb-2 transition-colors duration-300 bk-page-title">My Mentorships</h1>
             <p class="text-xl text-themed-secondary transition-colors duration-300">Manage your mentorship connections</p>
         </div>
     </div>
@@ -26,11 +26,11 @@
 
     <div class="px-6 py-8">
         <!-- Filters -->
-        <div class="bg-themed-secondary rounded-2xl shadow-lg p-6 mb-8 border border-themed-primary transition-colors duration-300">
+        <div class="bg-themed-secondary rounded-lg shadow-sm p-6 mb-8 border border-themed-primary transition-colors duration-300">
             <div class="grid md:grid-cols-3 gap-4">
                 <div>
                     <label class="block text-sm font-medium text-themed-primary mb-2 transition-colors duration-300">View As</label>
-                    <select wire:model.live="roleView"
+                    <select aria-label="Role view" wire:model.live="roleView"
                         class="w-full px-4 py-2 border border-themed-primary rounded-lg focus:ring-2 focus:ring-brand focus:border-transparent bg-themed-secondary text-themed-primary transition-colors duration-300">
                         <option value="all">All Mentorships</option>
                         @if(auth()->user()->isMentor())
@@ -44,7 +44,7 @@
 
                 <div>
                     <label class="block text-sm font-medium text-themed-primary mb-2 transition-colors duration-300">Status</label>
-                    <select wire:model.live="statusFilter"
+                    <select aria-label="Status filter" wire:model.live="statusFilter"
                         class="w-full px-4 py-2 border border-themed-primary rounded-lg focus:ring-2 focus:ring-brand focus:border-transparent bg-themed-secondary text-themed-primary transition-colors duration-300">
                         <option value="">All Status</option>
                         <option value="pending">Pending</option>
@@ -68,7 +68,7 @@
         @if($mentorships->count() > 0)
             <div class="grid gap-6">
                 @foreach($mentorships as $mentorship)
-                    <div class="bg-themed-secondary rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden border border-themed-primary">
+                    <div class="bg-themed-secondary rounded-lg shadow-sm  transition-all duration-300 overflow-hidden border border-themed-primary">
                         <div class="p-6">
                             <!-- Header -->
                             <div class="flex items-center justify-between mb-4">
@@ -98,8 +98,8 @@
                                     </div>
                                 </div>
                                 <div class="text-right">
-                                    <span class="bg-{{ $mentorship->status_color }}-100 dark:bg-{{ $mentorship->status_color }}-900/30 
-                                               text-{{ $mentorship->status_color }}-800 dark:text-{{ $mentorship->status_color }}-300 
+                                    <span class="bg-{{ $mentorship->status_color }}-100 dark:bg-{{ $mentorship->status_color }}-900/30
+                                               text-{{ $mentorship->status_color }}-800 dark:text-{{ $mentorship->status_color }}-300
                                                px-3 py-1 rounded-full text-sm border border-{{ $mentorship->status_color }}-200 dark:border-{{ $mentorship->status_color }}-800 transition-colors duration-300">
                                         {{ $mentorship->status_label }}
                                     </span>
@@ -114,8 +114,8 @@
                                         <p class="text-xs text-themed-secondary">{{ $mentorship->goal_completion_percentage }}% complete</p>
                                     </div>
                                     <button type="button" wire:click="editGoals({{ $mentorship->id }})"
-                                        class="rounded-lg border border-themed-secondary px-3 py-2 text-xs font-semibold text-themed-primary hover:border-accent-themed-primary">
-                                        <i class="fas fa-bullseye mr-1"></i>Manage
+                                        class="rounded-lg border border-themed-secondary px-3 py-2 text-xs font-semibold text-themed-primary hover:border-brand">
+                                        <i aria-hidden="true" class="fas fa-bullseye mr-1"></i>Manage
                                     </button>
                                 </div>
 
@@ -123,9 +123,9 @@
                                     <div class="space-y-2">
                                         @foreach($mentorship->goals_with_progress as $goal)
                                             <button type="button" wire:click="toggleGoal({{ $mentorship->id }}, {{ $goal['index'] }})"
-                                                class="flex w-full items-start gap-3 rounded-lg border border-themed-primary bg-themed-secondary px-3 py-2 text-left hover:border-accent-themed-primary">
+                                                class="flex w-full items-start gap-3 rounded-lg border border-themed-primary bg-themed-secondary px-3 py-2 text-left hover:border-brand">
                                                 <span class="mt-0.5 grid h-5 w-5 shrink-0 place-items-center rounded-full {{ $goal['completed'] ? 'bg-green-600 text-white' : 'bg-themed-tertiary text-themed-secondary' }}">
-                                                    <i class="fas {{ $goal['completed'] ? 'fa-check' : 'fa-circle' }} text-[10px]"></i>
+                                                    <i aria-hidden="true" class="fas {{ $goal['completed'] ? 'fa-check' : 'fa-circle' }} text-[10px]"></i>
                                                 </span>
                                                 <span class="{{ $goal['completed'] ? 'line-through text-themed-tertiary' : 'text-themed-secondary' }} text-sm">{{ $goal['text'] }}</span>
                                             </button>
@@ -173,17 +173,17 @@
                             <div class="flex items-center justify-between text-sm text-themed-secondary mb-4 transition-colors duration-300">
                                 <div class="flex items-center space-x-4">
                                     @if($mentorship->duration_weeks)
-                                        <span><i class="fas fa-calendar mr-1"></i>{{ $mentorship->duration_formatted }}</span>
+                                        <span><i aria-hidden="true" class="fas fa-calendar mr-1"></i>{{ $mentorship->duration_formatted }}</span>
                                     @endif
                                     @if($mentorship->started_at)
-                                        <span><i class="fas fa-clock mr-1"></i>Started {{ $mentorship->started_at->diffForHumans() }}</span>
+                                        <span><i aria-hidden="true" class="fas fa-clock mr-1"></i>Started {{ $mentorship->started_at->diffForHumans() }}</span>
                                     @else
-                                        <span><i class="fas fa-clock mr-1"></i>{{ $mentorship->requested_at ? 'Requested '.$mentorship->requested_at->diffForHumans() : 'Request date not recorded' }}</span>
+                                        <span><i aria-hidden="true" class="fas fa-clock mr-1"></i>{{ $mentorship->requested_at ? 'Requested '.$mentorship->requested_at->diffForHumans() : 'Request date not recorded' }}</span>
                                     @endif
                                     @if($mentorship->is_paid)
-                                        <span><i class="fas fa-naira-sign mr-1"></i>₦{{ number_format($mentorship->hourly_rate, 0) }}/hr</span>
+                                        <span><i aria-hidden="true" class="fas fa-naira-sign mr-1"></i>₦{{ number_format($mentorship->hourly_rate, 0) }}/hr</span>
                                     @else
-                                        <span class="text-green-600 dark:text-green-400"><i class="fas fa-gift mr-1"></i>Free</span>
+                                        <span class="text-green-600 dark:text-green-400"><i aria-hidden="true" class="fas fa-gift mr-1"></i>Free</span>
                                     @endif
                                 </div>
                             </div>
@@ -193,31 +193,31 @@
                                 @if($mentorship->isPending() && auth()->id() === $mentorship->mentor_id)
                                     <button wire:click="acceptMentorship({{ $mentorship->id }})"
                                         class="flex-1 bg-green-600 hover:bg-green-700 dark:bg-green-500 dark:hover:bg-green-600 text-white px-4 py-2 rounded-lg text-sm transition-colors">
-                                        <i class="fas fa-check mr-1"></i>Accept
+                                        <i aria-hidden="true" class="fas fa-check mr-1"></i>Accept
                                     </button>
                                     <button wire:click="rejectMentorship({{ $mentorship->id }})"
                                         class="flex-1 bg-red-600 hover:bg-red-700 dark:bg-red-500 dark:hover:bg-red-600 text-white px-4 py-2 rounded-lg text-sm transition-colors">
-                                        <i class="fas fa-times mr-1"></i>Reject
+                                        <i aria-hidden="true" class="fas fa-times mr-1"></i>Reject
                                     </button>
                                 @elseif($mentorship->isActive())
                                     <a href="{{ route('mentorship.sessions') }}"
                                        class="flex-1 bk-button bk-button-primary   px-4 py-2 rounded-lg text-sm transition-colors text-center">
-                                        <i class="fas fa-calendar-plus mr-1"></i>Schedule Session
+                                        <i aria-hidden="true" class="fas fa-calendar-plus mr-1"></i>Schedule Session
                                     </a>
                                     <a href="{{ route('mentorship.code-reviews') }}"
-                                       class="flex-1 bg-purple-600 hover:bg-purple-700 dark:bg-purple-500 dark:hover:bg-purple-600 text-white px-4 py-2 rounded-lg text-sm transition-colors text-center">
-                                        <i class="fas fa-code mr-1"></i>Request Review
+                                       class="flex-1 bg-action hover:bg-action dark:bg-action dark:hover:bg-action text-action-foreground px-4 py-2 rounded-lg text-sm transition-colors text-center">
+                                        <i aria-hidden="true" class="fas fa-code mr-1"></i>Request Review
                                     </a>
                                     @if(auth()->id() === $mentorship->mentor_id)
                                         <button wire:click="completeMentorship({{ $mentorship->id }})"
                                             class="bg-themed-tertiary hover:bg-themed-secondary text-themed-primary px-4 py-2 rounded-lg text-sm transition-colors border border-themed-primary">
-                                            <i class="fas fa-flag-checkered mr-1"></i>Complete
+                                            <i aria-hidden="true" class="fas fa-flag-checkered mr-1"></i>Complete
                                         </button>
                                     @endif
                                 @elseif($mentorship->isPending() && auth()->id() === $mentorship->mentee_id)
                                     <button wire:click="cancelMentorship({{ $mentorship->id }})"
                                         class="bg-red-600 hover:bg-red-700 dark:bg-red-500 dark:hover:bg-red-600 text-white px-4 py-2 rounded-lg text-sm transition-colors">
-                                        <i class="fas fa-times mr-1"></i>Cancel Request
+                                        <i aria-hidden="true" class="fas fa-times mr-1"></i>Cancel Request
                                     </button>
                                 @endif
                             </div>
@@ -231,9 +231,9 @@
                 {{ $mentorships->links() }}
             </div>
         @else
-            <div class="text-center py-16 bg-themed-secondary rounded-2xl shadow-lg border border-themed-primary transition-colors duration-300">
+            <div class="text-center py-16 bg-themed-secondary rounded-lg shadow-sm border border-themed-primary transition-colors duration-300">
                 <div class="text-6xl text-themed-tertiary mb-4 transition-colors duration-300">
-                    <i class="fas fa-handshake"></i>
+                    <i aria-hidden="true" class="fas fa-handshake"></i>
                 </div>
                 <h3 class="text-xl font-semibold text-themed-primary mb-2 transition-colors duration-300">No mentorships yet</h3>
                 <p class="text-themed-secondary mb-6 transition-colors duration-300">
@@ -246,7 +246,7 @@
                 @if(auth()->user()->isStudent())
                     <a href="{{ route('mentorship.find') }}"
                        class="inline-block bk-button bk-button-primary   px-6 py-3 rounded-lg transition-colors">
-                        <i class="fas fa-search mr-2"></i>Find a Mentor
+                        <i aria-hidden="true" class="fas fa-search mr-2"></i>Find a Mentor
                     </a>
                 @endif
             </div>
@@ -254,31 +254,31 @@
     </div>
 
     @if($showGoalsModal)
-        <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4">
-            <div class="w-full max-w-2xl rounded-lg border border-themed-primary bg-themed-secondary shadow-xl">
+        <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4" x-trap.inert.noscroll="true" role="dialog" aria-modal="true" aria-label="Manage learner goals" tabindex="-1" x-data="{}" @keydown.escape.stop="$wire.set(&#x27;showGoalsModal&#x27;, false)">
+            <div class="w-full max-w-2xl rounded-lg border border-themed-primary bg-themed-secondary shadow-sm">
                 <div class="flex items-center justify-between border-b border-themed-primary p-5">
                     <h2 class="text-xl font-bold text-themed-primary">Manage learner goals</h2>
-                    <button type="button" wire:click="closeGoalsModal" class="grid h-9 w-9 place-items-center rounded-lg bg-themed-tertiary text-themed-secondary">
-                        <i class="fas fa-times"></i>
+                    <button type="button" wire:click="closeGoalsModal" class="grid h-9 w-9 place-items-center rounded-lg bg-themed-tertiary text-themed-secondary" aria-label="Close">
+                        <i aria-hidden="true" class="fas fa-times"></i>
                     </button>
                 </div>
 
                 <form wire:submit.prevent="saveGoals" class="space-y-4 p-5">
                     @foreach($goalInputs as $index => $goal)
                         <div class="flex gap-2">
-                            <input type="text" wire:model="goalInputs.{{ $index }}"
-                                class="flex-1 rounded-lg border border-themed-primary bg-themed-primary px-3 py-2 text-themed-primary focus:outline-none focus:ring-2 focus:ring-accent-themed-primary"
+                            <input aria-label="Learner goal" type="text" wire:model="goalInputs.{{ $index }}"
+                                class="flex-1 rounded-lg border border-themed-primary bg-themed-primary px-3 py-2 text-themed-primary focus:outline-none focus:ring-2 focus:ring-brand"
                                 placeholder="Learner goal">
                             <button type="button" wire:click="removeGoal({{ $index }})"
-                                class="grid h-10 w-10 place-items-center rounded-lg bg-red-600 text-white">
-                                <i class="fas fa-minus"></i>
+                                class="grid h-10 w-10 place-items-center rounded-lg bg-red-600 text-white" aria-label="Remove goal">
+                                <i aria-hidden="true" class="fas fa-minus"></i>
                             </button>
                         </div>
                     @endforeach
 
                     <button type="button" wire:click="addGoal"
                         class="inline-flex items-center gap-2 rounded-lg border border-themed-primary px-3 py-2 text-sm font-medium text-themed-primary">
-                        <i class="fas fa-plus"></i>
+                        <i aria-hidden="true" class="fas fa-plus"></i>
                         Add goal
                     </button>
 
@@ -299,7 +299,7 @@
 
     <!-- Loading Indicator -->
     <div wire:loading class="fixed inset-0 bg-black bg-opacity-25 dark:bg-opacity-50 flex items-center justify-center z-50">
-        <div class="bg-themed-secondary rounded-lg p-6 shadow-xl border border-themed-primary transition-colors duration-300">
+        <div class="bg-themed-secondary rounded-lg p-6 shadow-sm border border-themed-primary transition-colors duration-300">
             <div class="flex items-center space-x-3">
                 <svg class="animate-spin h-6 w-6 text-brand" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                     <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>

@@ -1,8 +1,9 @@
+<div>
 <!-- resources/views/livewire/components/email-verification-alert.blade.php -->
 
 @if($showAlert && auth()->check() && !auth()->user()->hasVerifiedEmail())
-<div class="fixed top-20 right-6 z-50 max-w-md" 
-     x-data="{ show: true }" 
+<div class="fixed left-4 right-4 top-20 z-50 sm:left-auto sm:w-96"
+     x-data="{ show: true }"
      x-show="show"
      x-transition:enter="transition ease-out duration-300"
      x-transition:enter-start="transform opacity-0 translate-y-2"
@@ -10,7 +11,7 @@
      x-transition:leave="transition ease-in duration-200"
      x-transition:leave-start="transform opacity-100 translate-y-0"
      x-transition:leave-end="transform opacity-0 translate-y-2">
-    
+
     <div class="bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-900/30 dark:to-orange-900/30 border-l-4 border-orange-500 dark:border-orange-400 shadow-lg rounded-r-lg overflow-hidden">
         <!-- Header -->
         <div class="p-4 pb-3">
@@ -22,7 +23,7 @@
                             <i class="fas fa-exclamation-triangle text-orange-600 dark:text-orange-400 text-sm"></i>
                         </div>
                     </div>
-                    
+
                     <!-- Content -->
                     <div class="flex-1">
                         <h3 class="text-sm font-semibold text-orange-900 dark:text-orange-100 mb-1">
@@ -33,7 +34,7 @@
                         </p>
                     </div>
                 </div>
-                
+
                 <!-- Close Button -->
                 <button @click="show = false; $wire.dismissAlert()"
                         class="flex-shrink-0 text-orange-500 dark:text-orange-400 hover:text-orange-700 dark:hover:text-orange-300 transition-colors"
@@ -81,16 +82,18 @@
     </div>
 </div>
 
+@endif
+
 <!-- Optional: Session-based flash message alerts -->
 @if(session('status') === 'verification-link-sent')
-<div class="fixed top-20 right-6 z-50 max-w-md"
+<div class="fixed left-4 right-4 top-20 z-50 sm:left-auto sm:w-96"
      x-data="{ show: true }"
      x-show="show"
      x-init="setTimeout(() => show = false, 5000)"
      x-transition:enter="transition ease-out duration-300"
      x-transition:enter-start="transform opacity-0 translate-y-2"
      x-transition:enter-end="transform opacity-100 translate-y-0">
-    
+
     <div class="bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/30 dark:to-emerald-900/30 border-l-4 border-green-500 dark:border-green-400 shadow-lg rounded-r-lg p-4">
         <div class="flex items-center gap-3">
             <div class="flex-shrink-0">
@@ -112,14 +115,14 @@
 @endif
 
 @if(session('error'))
-<div class="fixed top-20 right-6 z-50 max-w-md"
+<div class="fixed left-4 right-4 top-20 z-50 sm:left-auto sm:w-96"
      x-data="{ show: true }"
      x-show="show"
      x-init="setTimeout(() => show = false, 5000)"
      x-transition:enter="transition ease-out duration-300"
      x-transition:enter-start="transform opacity-0 translate-y-2"
      x-transition:enter-end="transform opacity-100 translate-y-0">
-    
+
     <div class="bg-gradient-to-r from-red-50 to-rose-50 dark:from-red-900/30 dark:to-rose-900/30 border-l-4 border-red-500 dark:border-red-400 shadow-lg rounded-r-lg p-4">
         <div class="flex items-center gap-3">
             <div class="flex-shrink-0">
@@ -139,3 +142,4 @@
     </div>
 </div>
 @endif
+</div>

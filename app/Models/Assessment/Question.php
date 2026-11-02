@@ -112,19 +112,15 @@ class Question extends Model
             'total_answers' => $totalAnswers,
             'correct_answers' => $correctAnswers,
             'accuracy_rate' => $totalAnswers > 0 ? round(($correctAnswers / $totalAnswers) * 100, 1) : 0,
-            'difficulty_actual' => $this->calculateActualDifficulty()
+            'difficulty_actual' => $this->calculateActualDifficulty($totalAnswers, $totalAnswers > 0 ? $correctAnswers / $totalAnswers * 100 : 0)
         ];
     }
 
-    protected function calculateActualDifficulty()
+    protected function calculateActualDifficulty(int $totalAnswers, float $accuracy)
     {
-        $stats = $this->stats;
-
-        if ($stats['total_answers'] < 5) {
+        if ($totalAnswers < 5) {
             return 'insufficient_data';
         }
-
-        $accuracy = $stats['accuracy_rate'];
 
         if ($accuracy >= 80) return 'easy';
         if ($accuracy >= 60) return 'medium';
@@ -155,132 +151,32 @@ class Question extends Model
         return is_array($correctAnswers) && count($correctAnswers) > 1;
     }
 
-    public function isCorrectAnswer($answer)
+    /** Grade original option positions only; written work requires review. */
+    public function isCorrectAnswer($answer): bool
     {
-        if ($answer === null || $answer === '' || $answer === 'null' || $answer === []) {
-            return false;
+        $codec = app(\App\Services\StructuredQuestionService::class);
+        if (in_array($this->question_type, \App\Services\StructuredQuestionService::TYPES, true)) {
+            if (($codec->array($this->options)['version'] ?? null) !== 1) return false;
+            return $codec->grade($answer, $codec->array($this->correct_answers));
         }
-
-        $correctAnswers = $this->correct_answers;
-        if (is_string($correctAnswers)) {
-            $correctAnswers = json_decode($correctAnswers, true);
+        if (!in_array($this->question_type, ['multiple_choice', 'true_false'], true) || $answer === null || $answer === '') return false;
+        $expected = $codec->array($this->correct_answers);
+        if (!$expected) return false;
+        if (is_string($answer)) {
+            $decoded = json_decode($answer, true);
+            if (json_last_error() === JSON_ERROR_NONE && $decoded !== null) $answer = $decoded;
         }
-        
-        if (!is_array($correctAnswers) || empty($correctAnswers)) {
-            return false;
-        }
-
-        $correctAnswers = array_map('intval', $correctAnswers);
-
-        switch ($this->question_type) {
-            case 'multiple_choice':
-                return $this->checkMultipleChoiceAnswer($answer, $correctAnswers);
-            
-            case 'true_false':
-                return $this->checkTrueFalseAnswer($answer, $correctAnswers);
-            
-            case 'short_answer':
-            case 'fill_blank':
-                return $this->checkTextAnswer($answer, $correctAnswers);
-            
-            default:
-                $userAnswer = is_array($answer) ? array_map('intval', $answer) : intval($answer);
-                
-                if (is_array($userAnswer)) {
-                    sort($userAnswer);
-                    sort($correctAnswers);
-                    return $userAnswer === $correctAnswers;
-                }
-                
-                return in_array($userAnswer, $correctAnswers);
-        }
-    }
-
-    protected function checkMultipleChoiceAnswer($answer, $correctAnswers)
-    {
-        if ($answer === null || $answer === '' || $answer === 'null') {
-            return false;
-        }
-
-        if (is_array($answer)) {
-            if (empty($answer)) {
-                return false;
-            }
-
-            $userAnswers = array_map('intval', $answer);
-            sort($userAnswers);
-            sort($correctAnswers);
-            
-            return $userAnswers === $correctAnswers;
-        }
-        
-        $userAnswer = intval($answer);
-        return in_array($userAnswer, $correctAnswers);
-    }
-
-    protected function checkTrueFalseAnswer($answer, $correctAnswers)
-    {
-        if ($answer === null || $answer === '' || $answer === 'null') {
-            return false;
-        }
-
-        $userAnswer = intval($answer);
-        return in_array($userAnswer, $correctAnswers);
-    }
-
-    protected function checkTextAnswer($answer, $correctAnswers)
-    {
-        if ($answer === null || $answer === '' || $answer === 'null') {
-            return false;
-        }
-
-        $userAnswer = is_array($answer) ? implode(' ', $answer) : $answer;
-        $userAnswer = strtolower(trim($userAnswer));
-        
-        foreach ($correctAnswers as $correctAnswer) {
-            $correctAnswer = strtolower(trim($correctAnswer));
-            if ($userAnswer === $correctAnswer) {
-                return true;
-            }
-        }
-        
-        return false;
+        $selected = is_array($answer) ? $answer : [$answer];
+        foreach (array_merge($selected, $expected) as $value) if ((!is_int($value) && !is_string($value)) || filter_var($value, FILTER_VALIDATE_INT) === false) return false;
+        $selected = array_map('intval', $selected); $expected = array_map('intval', $expected);
+        if (count(array_unique($selected)) !== count($selected)) return false;
+        sort($selected); sort($expected);
+        return $selected === $expected;
     }
 
     public function calculatePartialCredit($answer)
     {
-        if ($answer === null || $answer === '' || $answer === 'null' || $answer === []) {
-            return 0;
-        }
-
-        if ($this->isCorrectAnswer($answer) === true) {
-            return $this->points;
-        }
-
-        if ($this->question_type === 'multiple_choice' && $this->hasMultipleCorrectAnswers()) {
-            $correctAnswers = is_string($this->correct_answers)
-                ? json_decode($this->correct_answers, true)
-                : $this->correct_answers;
-
-            $correctAnswers = array_map('intval', $correctAnswers);
-            
-            if (!is_array($answer)) {
-                $answer = [$answer];
-            }
-            $answer = array_map('intval', $answer);
-
-            if (empty($answer)) {
-                return 0;
-            }
-
-            $correctCount = count(array_intersect($answer, $correctAnswers));
-            $totalCorrect = count($correctAnswers);
-            $incorrectCount = count(array_diff($answer, $correctAnswers));
-
-            $score = max(0, ($correctCount - $incorrectCount) / $totalCorrect);
-            return $this->points * $score;
-        }
-
-        return 0;
+        // These formats have an exact-key contract. No unconfigured partial mark.
+        return $this->isCorrectAnswer($answer) ? $this->points : 0;
     }
 }

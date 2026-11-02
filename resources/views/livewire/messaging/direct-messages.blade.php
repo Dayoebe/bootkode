@@ -86,7 +86,7 @@
         </div>
     @enderror
 
-    <div class="overflow-hidden rounded-xl border border-themed-primary bg-themed-secondary shadow-xl">
+    <div class="overflow-hidden rounded-lg border border-themed-primary bg-themed-secondary shadow-sm">
         <div class="flex h-[calc(100dvh-9rem)] min-h-[34rem] max-h-[54rem] min-w-0">
             <aside
                 x-show="desktopConversationsOpen"
@@ -111,7 +111,7 @@
                     x-transition:leave="transition ease-in duration-150"
                     x-transition:leave-start="translate-x-0"
                     x-transition:leave-end="-translate-x-full"
-                    class="absolute inset-y-0 left-0 flex w-[min(22rem,92vw)] flex-col border-r border-themed-primary bg-themed-secondary shadow-2xl">
+                    class="absolute inset-y-0 left-0 flex w-[min(22rem,92vw)] flex-col border-r border-themed-primary bg-themed-secondary shadow-sm">
                     @include('livewire.messaging.partials.conversation-list', [
                         'conversations' => $conversations,
                         'activeConversationId' => $activeConversationId,
@@ -130,16 +130,16 @@
                             @click="window.innerWidth >= 1024 ? desktopConversationsOpen = !desktopConversationsOpen : conversationsOpen = true"
                             class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-themed-primary bg-themed-tertiary text-themed-primary transition hover:bg-themed-secondary"
                             aria-label="Toggle conversations">
-                            <i class="fas fa-bars"></i>
+                            <i aria-hidden="true" class="fas fa-bars"></i>
                         </button>
 
                         @if ($activeConversation)
-                            <div class="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-blue-600 text-sm font-semibold text-white">
+                            <div class="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-action text-sm font-semibold text-action-foreground">
                                 {{ \Illuminate\Support\Str::upper(\Illuminate\Support\Str::substr($activeOtherParticipant?->name ?? 'U', 0, 1)) }}
                             </div>
 
                             <div class="min-w-0">
-                                <h1 class="truncate text-base font-semibold text-themed-primary sm:text-lg">
+                                <h1 class="truncate text-base font-semibold text-themed-primary sm:text-lg bk-page-title">
                                     {{ $activeOtherParticipant?->name ?? 'Unknown user' }}
                                 </h1>
                                 <p class="truncate text-xs text-themed-secondary sm:text-sm">
@@ -148,7 +148,7 @@
                             </div>
                         @else
                             <div class="min-w-0">
-                                <h1 class="truncate text-base font-semibold text-themed-primary sm:text-lg">Chat</h1>
+                                <h1 class="truncate text-base font-semibold text-themed-primary sm:text-lg bk-page-title">Chat</h1>
                                 <p class="truncate text-xs text-themed-secondary sm:text-sm">Course messages</p>
                             </div>
                         @endif
@@ -159,7 +159,7 @@
                             class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-themed-primary bg-themed-tertiary text-themed-primary transition hover:bg-themed-secondary sm:w-auto sm:px-3"
                             wire:navigate
                             aria-label="Open course">
-                            <i class="fas fa-book-open sm:mr-2"></i>
+                            <i aria-hidden="true" class="fas fa-book-open sm:mr-2"></i>
                             <span class="hidden text-sm font-semibold sm:inline">Course</span>
                         </a>
                     @endif
@@ -180,7 +180,7 @@
 
                                     <div class="flex {{ $isMine ? 'justify-end' : 'justify-start' }}">
                                         <div class="max-w-[88%] sm:max-w-[76%]">
-                                            <div class="{{ $isMine ? 'rounded-l-xl rounded-tr-xl bg-blue-600 text-white' : 'rounded-r-xl rounded-tl-xl border border-themed-primary bg-themed-secondary text-themed-primary' }} px-4 py-3 shadow-sm">
+                                            <div class="{{ $isMine ? 'rounded-l-xl rounded-tr-xl bg-action text-action-foreground' : 'rounded-r-xl rounded-tl-xl border border-themed-primary bg-themed-secondary text-themed-primary' }} px-4 py-3 shadow-sm">
                                                 <p class="break-words whitespace-pre-line text-sm leading-6">{{ $directMessage->body }}</p>
                                             </div>
 
@@ -197,7 +197,7 @@
                                     <div class="flex min-h-[22rem] items-center justify-center text-center">
                                         <div>
                                             <div class="mx-auto flex h-14 w-14 items-center justify-center rounded-lg bg-themed-tertiary">
-                                                <i class="fas fa-comment-dots text-xl text-themed-secondary"></i>
+                                                <i aria-hidden="true" class="fas fa-comment-dots text-xl text-themed-secondary"></i>
                                             </div>
                                             <p class="mt-4 text-sm font-semibold text-themed-primary">Start the conversation</p>
                                         </div>
@@ -208,14 +208,14 @@
                             <div class="flex h-full items-center justify-center p-6 text-center">
                                 <div class="max-w-sm">
                                     <div class="mx-auto flex h-16 w-16 items-center justify-center rounded-lg bg-themed-secondary shadow">
-                                        <i class="fas fa-comments text-2xl text-themed-secondary"></i>
+                                        <i aria-hidden="true" class="fas fa-comments text-2xl text-themed-secondary"></i>
                                     </div>
                                     <h2 class="mt-4 text-lg font-semibold text-themed-primary">Choose a conversation</h2>
                                     <button
                                         type="button"
                                         @click="conversationsOpen = true"
-                                        class="mt-5 inline-flex items-center justify-center gap-2 rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-blue-700 lg:hidden">
-                                        <i class="fas fa-comments"></i>
+                                        class="mt-5 inline-flex items-center justify-center gap-2 rounded-lg bg-action px-4 py-2.5 text-sm font-semibold text-action-foreground transition hover:bg-action lg:hidden">
+                                        <i aria-hidden="true" class="fas fa-comments"></i>
                                         Conversations
                                     </button>
                                 </div>
@@ -232,8 +232,8 @@
                             <button
                                 type="button"
                                 @click="viewLatestMessage()"
-                                class="pointer-events-auto inline-flex items-center gap-2 rounded-full bg-blue-600 px-4 py-2 text-xs font-semibold text-white shadow-lg ring-1 ring-white/20 transition hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400">
-                                <i class="fas fa-arrow-down text-[11px]"></i>
+                                class="pointer-events-auto inline-flex items-center gap-2 rounded-full bg-action px-4 py-2 text-xs font-semibold text-action-foreground shadow-sm ring-1 ring-white/20 transition hover:bg-action focus:outline-none focus:ring-2 focus:ring-brand/30">
+                                <i aria-hidden="true" class="fas fa-arrow-down text-[11px]"></i>
                                 <span x-text="newMessageCount === 1 ? '1 new message' : `${newMessageCount} new messages`"></span>
                                 <span class="underline underline-offset-2">View</span>
                             </button>
@@ -249,12 +249,12 @@
                                 x-on:input="resizeComposer()"
                                 x-on:keydown.enter.exact.prevent="sendDraft()"
                                 placeholder="Message"
-                                class="max-h-36 min-h-11 flex-1 resize-none overflow-y-auto rounded-lg border-themed-primary bg-themed-tertiary px-3 py-2.5 text-sm text-themed-primary placeholder-themed-tertiary focus:border-blue-500 focus:ring-blue-500"></textarea>
+                                class="max-h-36 min-h-11 flex-1 resize-none overflow-y-auto rounded-lg border-themed-primary bg-themed-tertiary px-3 py-2.5 text-sm text-themed-primary placeholder-themed-tertiary focus:border-brand focus:ring-brand/30"></textarea>
 
                             <button type="submit"
                                 x-bind:disabled="sending || draft.trim().length === 0"
-                                class="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-blue-600 text-sm font-semibold text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto sm:px-5">
-                                <i class="fas fa-paper-plane sm:mr-2"></i>
+                                class="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-action text-sm font-semibold text-action-foreground transition hover:bg-action disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto sm:px-5">
+                                <i aria-hidden="true" class="fas fa-paper-plane sm:mr-2"></i>
                                 <span class="hidden sm:inline">Send</span>
                             </button>
                         </div>

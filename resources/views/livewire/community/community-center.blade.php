@@ -32,7 +32,7 @@
                 @foreach($tabs as $tabKey => $tabConfig)
                     <button wire:click="setTab('{{ $tabKey }}')"
                             aria-pressed="{{ $activeTab === $tabKey ? 'true' : 'false' }}" class="group min-h-11 py-3 px-4 font-medium text-sm transition-all whitespace-nowrap {{ $activeTab === $tabKey ? 'border-b-2 border-brand text-brand' : 'text-themed-secondary hover:text-themed-primary border-b-2 border-transparent' }}">
-                        <i class="{{ $tabConfig['icon'] }} mr-2"></i>{{ $tabConfig['label'] }}
+                        <i aria-hidden="true" class="{{ $tabConfig['icon'] }} mr-2"></i>{{ $tabConfig['label'] }}
                     </button>
                 @endforeach
             </nav>
@@ -79,6 +79,7 @@
     @include('livewire.community.modals.code-challenge-modal')
     @include('livewire.community.modals.live-event-modal')
     @include('livewire.community.modals.feedback-modal')
+    @include('livewire.community.modals.feedback-reply')
 
     <p wire:loading.delay role="status" class="px-4 pb-4 text-sm text-content-muted">Updating community…</p>
 </div>

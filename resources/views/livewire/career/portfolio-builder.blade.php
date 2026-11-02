@@ -1,31 +1,31 @@
 <div class="min-h-screen bg-themed-primary">
     <!-- Header Section -->
-    <div class="bg-themed-secondary shadow-lg border-b border-themed-primary">
+    <div class="bg-themed-secondary shadow-sm border-b border-themed-primary">
         <div class="px-6 py-8">
             <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between">
                 <div class="mb-6 lg:mb-0">
-                    <h1 class="text-4xl font-bold text-themed-primary mb-2">Portfolio Builder</h1>
+                    <h1 class=" font-bold text-themed-primary mb-2 bk-page-title">Portfolio Builder</h1>
                     <p class="text-xl text-themed-secondary">Create and showcase your professional work</p>
                 </div>
 
                 <!-- Portfolio Statistics -->
                 <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
-                    <div class="bg-accent-themed-primary rounded-xl p-4 text-white text-center">
+                    <div class="bg-action rounded-lg p-4 text-action-foreground text-center">
                         <div class="text-2xl font-bold">{{ $totalProjects }}</div>
                         <div class="text-sm opacity-90">Total Projects</div>
                     </div>
-                
-                    <div class="bg-green-600 rounded-xl p-4 text-white text-center">
+
+                    <div class="bg-green-600 rounded-lg p-4 text-white text-center">
                         <div class="text-2xl font-bold">{{ $completedProjects }}</div>
                         <div class="text-sm opacity-90">Completed</div>
                     </div>
-                
-                    <div class="bg-orange-600 rounded-xl p-4 text-white text-center">
+
+                    <div class="bg-orange-600 rounded-lg p-4 text-white text-center">
                         <div class="text-2xl font-bold">{{ $inProgressProjects }}</div>
                         <div class="text-sm opacity-90">In Progress</div>
                     </div>
-                
-                    <div class="bg-red-600 rounded-xl p-4 text-white text-center">
+
+                    <div class="bg-red-600 rounded-lg p-4 text-white text-center">
                         <div class="text-2xl font-bold">{{ $inOnHoldProjects }}</div>
                         <div class="text-sm opacity-90">On Hold</div>
                     </div>
@@ -58,7 +58,7 @@
         <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between mb-8 space-y-4 lg:space-y-0">
             <div class="flex flex-wrap items-center gap-4">
                 <button wire:click="$toggle('showForm')"
-                    class="bg-accent-themed-primary text-white px-6 py-3 rounded-xl hover:bg-accent-themed-secondary focus:outline-none focus:ring-2 focus:ring-offset-2 transition-all duration-300 font-semibold shadow-lg hover:shadow-xl flex items-center">
+                    class="bg-action text-action-foreground px-6 py-3 rounded-lg hover:bg-action/90 focus:outline-none focus:ring-2 focus:ring-offset-2 transition-all duration-300 font-semibold shadow-sm  flex items-center">
                     <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
@@ -94,8 +94,8 @@
             <!-- Search and Filters -->
             <div class="flex flex-wrap items-center gap-4">
                 <div class="relative">
-                    <input wire:model.live.debounce.300ms="searchTerm" type="text" placeholder="Search projects..."
-                        class="pl-10 pr-4 py-2 border border-themed-primary rounded-lg focus:ring-2 focus:ring-accent-themed-primary focus:border-transparent bg-themed-secondary text-themed-primary placeholder-themed-tertiary w-64">
+                    <input aria-label="Search projects" wire:model.live.debounce.300ms="searchTerm" type="text" placeholder="Search projects..."
+                        class="pl-10 pr-4 py-2 border border-themed-primary rounded-lg focus:ring-2 focus:ring-brand focus:border-transparent bg-themed-secondary text-themed-primary placeholder-themed-tertiary w-64">
                     <svg class="absolute left-3 top-2.5 h-5 w-5 text-themed-secondary" fill="none" stroke="currentColor"
                         viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -103,16 +103,16 @@
                     </svg>
                 </div>
 
-                <select wire:model.live="filterCategory"
-                    class="px-4 py-2 border border-themed-primary rounded-lg focus:ring-2 focus:ring-accent-themed-primary focus:border-transparent bg-themed-secondary text-themed-primary">
+                <select aria-label="Filter category" wire:model.live="filterCategory"
+                    class="px-4 py-2 border border-themed-primary rounded-lg focus:ring-2 focus:ring-brand focus:border-transparent bg-themed-secondary text-themed-primary">
                     <option value="">All Categories</option>
                     @foreach($categories as $key => $label)
                         <option value="{{ $key }}">{{ $label }}</option>
                     @endforeach
                 </select>
 
-                <select wire:model.live="filterStatus"
-                    class="px-4 py-2 border border-themed-primary rounded-lg focus:ring-2 focus:ring-accent-themed-primary focus:border-transparent bg-themed-secondary text-themed-primary">
+                <select aria-label="Filter status" wire:model.live="filterStatus"
+                    class="px-4 py-2 border border-themed-primary rounded-lg focus:ring-2 focus:ring-brand focus:border-transparent bg-themed-secondary text-themed-primary">
                     <option value="">All Status</option>
                     <option value="completed">Completed</option>
                     <option value="in-progress">In Progress</option>
@@ -125,8 +125,8 @@
         <!-- View Controls -->
         <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-6">
             <div class="flex items-center space-x-4 mb-4 sm:mb-0">
-                <select wire:model.live="sortBy"
-                    class="px-3 py-2 border border-themed-primary rounded-lg focus:ring-2 focus:ring-accent-themed-primary focus:border-transparent bg-themed-secondary text-themed-primary text-sm">
+                <select aria-label="Sort by" wire:model.live="sortBy"
+                    class="px-3 py-2 border border-themed-primary rounded-lg focus:ring-2 focus:ring-brand focus:border-transparent bg-themed-secondary text-themed-primary text-sm">
                     <option value="created_at">Sort by Date Created</option>
                     <option value="title">Sort by Title</option>
                     <option value="views_count">Sort by Views</option>
@@ -143,7 +143,7 @@
 
                 @if(count($portfolios) > 0)
                     <button wire:click="selectAllVisible"
-                        class="text-sm text-accent-themed-primary hover:text-accent-themed-secondary transition-colors">
+                        class="text-sm text-brand hover:text-accent-themed-secondary transition-colors">
                         Select All ({{ count($portfolios) }})
                     </button>
                 @endif
@@ -152,14 +152,14 @@
             <div class="flex items-center space-x-2">
                 <span class="text-sm text-themed-secondary">View:</span>
                 <button wire:click="$set('viewMode', 'grid')"
-                    class="p-2 rounded-lg {{ $viewMode === 'grid' ? 'bg-accent-themed-primary text-white' : 'text-themed-secondary hover:text-themed-primary border border-themed-primary' }} transition-colors">
+                    class="p-2 rounded-lg {{ $viewMode === 'grid' ? 'bg-action text-action-foreground' : 'text-themed-secondary hover:text-themed-primary border border-themed-primary' }} transition-colors">
                     <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                         <path
                             d="M5 3a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2V5a2 2 0 00-2-2H5zM5 11a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2v-2a2 2 0 00-2-2H5zM11 5a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V5zM11 13a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
                     </svg>
                 </button>
                 <button wire:click="$set('viewMode', 'list')"
-                    class="p-2 rounded-lg {{ $viewMode === 'list' ? 'bg-accent-themed-primary text-white' : 'text-themed-secondary hover:text-themed-primary border border-themed-primary' }} transition-colors">
+                    class="p-2 rounded-lg {{ $viewMode === 'list' ? 'bg-action text-action-foreground' : 'text-themed-secondary hover:text-themed-primary border border-themed-primary' }} transition-colors">
                     <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                         <path fill-rule="evenodd"
                             d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"
@@ -167,7 +167,7 @@
                     </svg>
                 </button>
                 <button wire:click="$set('viewMode', 'masonry')"
-                    class="p-2 rounded-lg {{ $viewMode === 'masonry' ? 'bg-accent-themed-primary text-white' : 'text-themed-secondary hover:text-themed-primary border border-themed-primary' }} transition-colors">
+                    class="p-2 rounded-lg {{ $viewMode === 'masonry' ? 'bg-action text-action-foreground' : 'text-themed-secondary hover:text-themed-primary border border-themed-primary' }} transition-colors">
                     <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                         <path
                             d="M3 4a1 1 0 011-1h4a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h4a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM11 4a1 1 0 011-1h4a1 1 0 011 1v6a1 1 0 01-1 1h-4a1 1 0 01-1-1V4zM11 12a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1v-4z" />
@@ -178,8 +178,8 @@
 
         <!-- Project Form Modal -->
         @if($showForm)
-            <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50 overflow-y-auto">
-                <div class="bg-themed-secondary rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-hidden">
+            <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50 overflow-y-auto" x-trap.inert.noscroll="true" role="dialog" aria-modal="true" aria-label="Form" tabindex="-1" x-data="{}" @keydown.escape.stop="$wire.set(&#x27;showForm&#x27;, false)">
+                <div class="bg-themed-secondary rounded-lg max-w-4xl w-full max-h-[90vh] overflow-hidden">
                     <div class="flex justify-between items-center p-6 border-b border-themed-primary bg-themed-tertiary">
                         <h2 class="text-2xl font-bold text-themed-primary">
                             {{ $editingProjectId ? 'Edit Project' : 'Create New Project' }}
@@ -199,8 +199,8 @@
                                 <!-- Project Title -->
                                 <div>
                                     <label class="block text-sm font-semibold text-themed-primary mb-2">Project Title *</label>
-                                    <input wire:model="title" type="text" placeholder="e.g., E-commerce Website Redesign"
-                                        class="w-full px-4 py-3 border border-themed-primary rounded-xl focus:ring-2 focus:ring-accent-themed-primary focus:border-transparent bg-themed-secondary text-themed-primary placeholder-themed-tertiary transition-all">
+                                    <input aria-label="e.g., E-commerce Website Redesign" wire:model="title" type="text" placeholder="e.g., E-commerce Website Redesign"
+                                        class="w-full px-4 py-3 border border-themed-primary rounded-lg focus:ring-2 focus:ring-brand focus:border-transparent bg-themed-secondary text-themed-primary placeholder-themed-tertiary transition-all">
                                     @error('title') <p class="text-red-500 text-sm mt-1">{{ $message }}</p> @enderror
                                 </div>
 
@@ -208,8 +208,8 @@
                                 <div class="grid grid-cols-2 gap-4">
                                     <div>
                                         <label class="block text-sm font-semibold text-themed-primary mb-2">Category *</label>
-                                        <select wire:model="category"
-                                            class="w-full px-4 py-3 border border-themed-primary rounded-xl focus:ring-2 focus:ring-accent-themed-primary focus:border-transparent bg-themed-secondary text-themed-primary">
+                                        <select aria-label="Category" wire:model="category"
+                                            class="w-full px-4 py-3 border border-themed-primary rounded-lg focus:ring-2 focus:ring-brand focus:border-transparent bg-themed-secondary text-themed-primary">
                                             <option value="">Select Category</option>
                                             @foreach($categories as $key => $label)
                                                 <option value="{{ $key }}">{{ $label }}</option>
@@ -220,8 +220,8 @@
 
                                     <div>
                                         <label class="block text-sm font-semibold text-themed-primary mb-2">Status *</label>
-                                        <select wire:model="status"
-                                            class="w-full px-4 py-3 border border-themed-primary rounded-xl focus:ring-2 focus:ring-accent-themed-primary focus:border-transparent bg-themed-secondary text-themed-primary">
+                                        <select aria-label="Status" wire:model="status"
+                                            class="w-full px-4 py-3 border border-themed-primary rounded-lg focus:ring-2 focus:ring-brand focus:border-transparent bg-themed-secondary text-themed-primary">
                                             <option value="completed">Completed</option>
                                             <option value="in-progress">In Progress</option>
                                             <option value="planning">Planning</option>
@@ -235,15 +235,15 @@
                                 <div class="grid grid-cols-1 gap-4">
                                     <div>
                                         <label class="block text-sm font-semibold text-themed-primary mb-2">Project URL</label>
-                                        <input wire:model="project_url" type="url" placeholder="https://example.com"
-                                            class="w-full px-4 py-3 border border-themed-primary rounded-xl focus:ring-2 focus:ring-accent-themed-primary focus:border-transparent bg-themed-secondary text-themed-primary placeholder-themed-tertiary">
+                                        <input aria-label="https://example.com" wire:model="project_url" type="url" placeholder="https://example.com"
+                                            class="w-full px-4 py-3 border border-themed-primary rounded-lg focus:ring-2 focus:ring-brand focus:border-transparent bg-themed-secondary text-themed-primary placeholder-themed-tertiary">
                                         @error('project_url') <p class="text-red-500 text-sm mt-1">{{ $message }}</p> @enderror
                                     </div>
 
                                     <div>
                                         <label class="block text-sm font-semibold text-themed-primary mb-2">Client Name</label>
-                                        <input wire:model="client_name" type="text" placeholder="e.g., ABC Company"
-                                            class="w-full px-4 py-3 border border-themed-primary rounded-xl focus:ring-2 focus:ring-accent-themed-primary focus:border-transparent bg-themed-secondary text-themed-primary placeholder-themed-tertiary">
+                                        <input aria-label="e.g., ABC Company" wire:model="client_name" type="text" placeholder="e.g., ABC Company"
+                                            class="w-full px-4 py-3 border border-themed-primary rounded-lg focus:ring-2 focus:ring-brand focus:border-transparent bg-themed-secondary text-themed-primary placeholder-themed-tertiary">
                                         @error('client_name') <p class="text-red-500 text-sm mt-1">{{ $message }}</p> @enderror
                                     </div>
                                 </div>
@@ -252,15 +252,15 @@
                                 <div class="grid grid-cols-2 gap-4">
                                     <div>
                                         <label class="block text-sm font-semibold text-themed-primary mb-2">Start Date</label>
-                                        <input wire:model="start_date" type="date"
-                                            class="w-full px-4 py-3 border border-themed-primary rounded-xl focus:ring-2 focus:ring-accent-themed-primary focus:border-transparent bg-themed-secondary text-themed-primary">
+                                        <input aria-label="Start date" wire:model="start_date" type="date"
+                                            class="w-full px-4 py-3 border border-themed-primary rounded-lg focus:ring-2 focus:ring-brand focus:border-transparent bg-themed-secondary text-themed-primary">
                                         @error('start_date') <p class="text-red-500 text-sm mt-1">{{ $message }}</p> @enderror
                                     </div>
-                                
+
                                     <div>
                                         <label class="block text-sm font-semibold text-themed-primary mb-2">End Date</label>
-                                        <input wire:model="end_date" type="date"
-                                            class="w-full px-4 py-3 border border-themed-primary rounded-xl focus:ring-2 focus:ring-accent-themed-primary focus:border-transparent bg-themed-secondary text-themed-primary">
+                                        <input aria-label="End date" wire:model="end_date" type="date"
+                                            class="w-full px-4 py-3 border border-themed-primary rounded-lg focus:ring-2 focus:ring-brand focus:border-transparent bg-themed-secondary text-themed-primary">
                                         @error('end_date') <p class="text-red-500 text-sm mt-1">{{ $message }}</p> @enderror
                                     </div>
                                 </div>
@@ -271,9 +271,9 @@
                                 <!-- Technologies -->
                                 <div>
                                     <label class="block text-sm font-semibold text-themed-primary mb-2">Technologies Used *</label>
-                                    <textarea wire:model="technologies"
+                                    <textarea aria-label="e.g., React, Node.js, MongoDB, Tailwind CSS" wire:model="technologies"
                                         placeholder="e.g., React, Node.js, MongoDB, Tailwind CSS" rows="3"
-                                        class="w-full px-4 py-3 border border-themed-primary rounded-xl focus:ring-2 focus:ring-accent-themed-primary focus:border-transparent bg-themed-secondary text-themed-primary placeholder-themed-tertiary"></textarea>
+                                        class="w-full px-4 py-3 border border-themed-primary rounded-lg focus:ring-2 focus:ring-brand focus:border-transparent bg-themed-secondary text-themed-primary placeholder-themed-tertiary"></textarea>
                                     <p class="text-sm text-themed-secondary mt-1">Separate technologies with commas</p>
                                     @error('technologies') <p class="text-red-500 text-sm mt-1">{{ $message }}</p> @enderror
                                 </div>
@@ -282,7 +282,7 @@
                                 <div>
                                     <label class="block text-sm font-semibold text-themed-primary mb-2">Main Project Image</label>
                                     <div
-                                        class="border-2 border-dashed border-themed-primary rounded-xl p-6 text-center hover:border-accent-themed-primary transition-colors bg-themed-tertiary">
+                                        class="border-2 border-dashed border-themed-primary rounded-lg p-6 text-center hover:border-brand transition-colors bg-themed-tertiary">
                                         <input wire:model="image" type="file" accept="image/*" class="hidden"
                                             id="main-image">
                                         <label for="main-image" class="cursor-pointer">
@@ -301,7 +301,7 @@
                                     @if ($image)
                                         <div class="mt-4">
                                             <img src="{{ $image->temporaryUrl() }}"
-                                                class="w-full h-48 object-cover rounded-xl shadow-md">
+                                                class="w-full h-48 object-cover rounded-lg shadow-sm">
                                         </div>
                                     @endif
                                 </div>
@@ -311,21 +311,21 @@
                         <!-- Description -->
                         <div class="mt-6">
                             <label class="block text-sm font-semibold text-themed-primary mb-2">Project Description *</label>
-                            <textarea wire:model="description"
+                            <textarea aria-label="Describe your project in detail. What was the goal? What challenges did you face? What was the outcome?" wire:model="description"
                                 placeholder="Describe your project in detail. What was the goal? What challenges did you face? What was the outcome?"
                                 rows="6"
-                                class="w-full px-4 py-3 border border-themed-primary rounded-xl focus:ring-2 focus:ring-accent-themed-primary focus:border-transparent bg-themed-secondary text-themed-primary placeholder-themed-tertiary"></textarea>
+                                class="w-full px-4 py-3 border border-themed-primary rounded-lg focus:ring-2 focus:ring-brand focus:border-transparent bg-themed-secondary text-themed-primary placeholder-themed-tertiary"></textarea>
                             @error('description') <p class="text-red-500 text-sm mt-1">{{ $message }}</p> @enderror
                         </div>
 
                         <!-- Form Actions -->
                         <div class="flex justify-end space-x-4 mt-8 pt-6 border-t border-themed-primary">
                             <button type="button" wire:click="resetForm"
-                                class="px-6 py-3 border border-themed-primary text-themed-primary rounded-xl hover:bg-themed-tertiary transition-colors">
+                                class="px-6 py-3 border border-themed-primary text-themed-primary rounded-lg hover:bg-themed-tertiary transition-colors">
                                 Cancel
                             </button>
                             <button type="submit"
-                                class="bg-accent-themed-primary text-white px-8 py-3 rounded-xl hover:bg-accent-themed-secondary transition-all font-semibold shadow-lg hover:shadow-xl">
+                                class="bg-action text-action-foreground px-8 py-3 rounded-lg hover:bg-action/90 transition-all font-semibold shadow-sm ">
                                 <span wire:loading.remove wire:target="saveProject">
                                     {{ $editingProjectId ? 'Update Project' : 'Create Project' }}
                                 </span>
@@ -353,7 +353,7 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                     @foreach ($portfolios as $project)
                         <div wire:key="{{ $project->id }}"
-                            class="group bg-themed-secondary rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden border border-themed-primary hover:border-accent-themed-primary relative">
+                            class="group bg-themed-secondary rounded-lg shadow-sm  transition-all duration-300 overflow-hidden border border-themed-primary hover:border-brand relative">
                             <!-- Status Badge -->
                             <div class="absolute top-4 right-4 z-10">
                                 <span class="bg-green-100 text-green-800 text-xs font-semibold px-2 py-1 rounded-full">
@@ -365,7 +365,7 @@
                             <div class="relative h-48 overflow-hidden cursor-pointer"
                                 wire:click="previewProject({{ $project->id }})">
                                 <img src="{{ $project->image_url }}" alt="{{ $project->title }}"
-                                    class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+                                    class="w-full h-full object-cover  transition-transform duration-300">
                                 <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all duration-300 flex items-center justify-center">
                                     <div class="opacity-0 group-hover:opacity-100 transition-opacity">
                                         <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -380,7 +380,7 @@
 
                             <!-- Project Content -->
                             <div class="p-6">
-                                <h3 class="text-xl font-bold text-themed-primary group-hover:text-accent-themed-primary transition-colors cursor-pointer line-clamp-2 mb-3"
+                                <h3 class="text-xl font-bold text-themed-primary group-hover:text-brand transition-colors cursor-pointer line-clamp-2 mb-3"
                                     wire:click="previewProject({{ $project->id }})">
                                     {{ $project->title }}
                                 </h3>
@@ -391,7 +391,7 @@
 
                                 <div class="flex space-x-2">
                                     <button wire:click="previewProject({{ $project->id }})"
-                                        class="flex-1 bg-accent-themed-primary text-white px-4 py-2 rounded-lg hover:bg-accent-themed-secondary transition-colors text-sm font-medium">
+                                        class="flex-1 bg-action text-action-foreground px-4 py-2 rounded-lg hover:bg-action/90 transition-colors text-sm font-medium">
                                         View Details
                                     </button>
                                     <button wire:click="editProject({{ $project->id }})"
@@ -411,7 +411,7 @@
                 <div class="space-y-4">
                     @foreach ($portfolios as $project)
                         <div wire:key="{{ $project->id }}"
-                            class="bg-themed-secondary rounded-xl shadow-md hover:shadow-lg transition-all duration-300 p-6 border border-themed-primary hover:border-accent-themed-primary">
+                            class="bg-themed-secondary rounded-lg shadow-sm hover:shadow-sm transition-all duration-300 p-6 border border-themed-primary hover:border-brand">
                             <div class="flex flex-col lg:flex-row lg:items-center">
                                 <!-- Project Image -->
                                 <div class="lg:w-32 lg:h-20 mb-4 lg:mb-0 lg:mr-6">
@@ -422,7 +422,7 @@
 
                                 <!-- Project Info -->
                                 <div class="flex-1">
-                                    <h3 class="text-xl font-bold text-themed-primary hover:text-accent-themed-primary transition-colors cursor-pointer mb-2"
+                                    <h3 class="text-xl font-bold text-themed-primary hover:text-brand transition-colors cursor-pointer mb-2"
                                         wire:click="previewProject({{ $project->id }})">
                                         {{ $project->title }}
                                     </h3>
@@ -455,7 +455,7 @@
                                 <!-- Action Buttons -->
                                 <div class="flex flex-col lg:ml-6 space-y-2 mt-4 lg:mt-0">
                                     <button wire:click="previewProject({{ $project->id }})"
-                                        class="bg-accent-themed-primary text-white px-4 py-2 rounded-lg hover:bg-accent-themed-secondary transition-colors text-sm font-medium">
+                                        class="bg-action text-action-foreground px-4 py-2 rounded-lg hover:bg-action/90 transition-colors text-sm font-medium">
                                         View Details
                                     </button>
 
@@ -481,12 +481,12 @@
                 <div class="columns-1 md:columns-2 lg:columns-3 xl:columns-4 gap-6">
                     @foreach ($portfolios as $project)
                         <div wire:key="{{ $project->id }}" class="break-inside-avoid mb-6">
-                            <div class="bg-themed-secondary rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden border border-themed-primary hover:border-accent-themed-primary group">
+                            <div class="bg-themed-secondary rounded-lg shadow-sm  transition-all duration-300 overflow-hidden border border-themed-primary hover:border-brand group">
                                 <!-- Project Image -->
                                 <div class="relative overflow-hidden cursor-pointer"
                                     wire:click="previewProject({{ $project->id }})">
                                     <img src="{{ $project->image_url }}" alt="{{ $project->title }}"
-                                        class="w-full h-auto object-cover group-hover:scale-105 transition-transform duration-300">
+                                        class="w-full h-auto object-cover  transition-transform duration-300">
 
                                     <!-- Status -->
                                     <div class="absolute top-4 right-4">
@@ -498,7 +498,7 @@
 
                                 <!-- Project Content -->
                                 <div class="p-4">
-                                    <h3 class="text-lg font-bold text-themed-primary group-hover:text-accent-themed-primary transition-colors cursor-pointer mb-2 line-clamp-2"
+                                    <h3 class="text-lg font-bold text-themed-primary group-hover:text-brand transition-colors cursor-pointer mb-2 line-clamp-2"
                                         wire:click="previewProject({{ $project->id }})">
                                         {{ $project->title }}
                                     </h3>
@@ -510,7 +510,7 @@
                                     <!-- Quick Actions -->
                                     <div class="flex space-x-1">
                                         <button wire:click="previewProject({{ $project->id }})"
-                                            class="flex-1 bg-accent-themed-primary text-white px-3 py-2 rounded-lg hover:bg-accent-themed-secondary transition-colors text-xs font-medium">
+                                            class="flex-1 bg-action text-action-foreground px-3 py-2 rounded-lg hover:bg-action/90 transition-colors text-xs font-medium">
                                             View
                                         </button>
                                         <button wire:click="editProject({{ $project->id }})"
@@ -531,7 +531,7 @@
             <!-- Empty State -->
             <div class="text-center py-16">
                 <div class="mx-auto w-32 h-32 bg-themed-tertiary rounded-full flex items-center justify-center mb-6">
-                    <svg class="w-16 h-16 text-accent-themed-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg class="w-16 h-16 text-brand" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
                     </svg>
@@ -539,7 +539,7 @@
                 <h3 class="text-2xl font-semibold text-themed-primary mb-2">No projects yet</h3>
                 <p class="text-themed-secondary mb-6 max-w-md mx-auto">Start building your portfolio by creating your first project. Showcase your work and let your skills shine!</p>
                 <button wire:click="$set('showForm', true)"
-                    class="bg-accent-themed-primary text-white px-8 py-3 rounded-xl hover:bg-accent-themed-secondary transition-all font-semibold shadow-lg hover:shadow-xl">
+                    class="bg-action text-action-foreground px-8 py-3 rounded-lg hover:bg-action/90 transition-all font-semibold shadow-sm ">
                     Create Your First Project
                 </button>
             </div>
@@ -548,8 +548,8 @@
 
     <!-- Project Preview Modal -->
     @if($showPreview && $previewProject)
-        <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50 overflow-y-auto">
-            <div class="bg-themed-secondary rounded-2xl max-w-6xl w-full max-h-[90vh] overflow-hidden">
+        <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50 overflow-y-auto" x-trap.inert.noscroll="true" role="dialog" aria-modal="true" aria-label="Preview" tabindex="-1" x-data="{}" @keydown.escape.stop="$wire.set(&#x27;showPreview&#x27;, false)">
+            <div class="bg-themed-secondary rounded-lg max-w-6xl w-full max-h-[90vh] overflow-hidden">
                 <!-- Modal Header -->
                 <div class="flex justify-between items-center p-6 border-b border-themed-primary bg-themed-tertiary">
                     <div>
@@ -568,7 +568,7 @@
                         <!-- Main Image -->
                         <div class="mb-6">
                             <img src="{{ $previewProject->image_url }}" alt="{{ $previewProject->title }}"
-                                class="w-full h-80 object-cover rounded-xl shadow-lg">
+                                class="w-full h-80 object-cover rounded-lg shadow-sm">
                         </div>
 
                         <!-- Description -->
@@ -581,7 +581,7 @@
 
                         <!-- Project Details -->
                         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-                            <div class="bg-themed-tertiary rounded-xl p-4">
+                            <div class="bg-themed-tertiary rounded-lg p-4">
                                 <h4 class="text-sm font-semibold text-themed-primary mb-3">Project Details</h4>
                                 <div class="space-y-2 text-sm">
                                     @if($previewProject->client_name)
@@ -605,7 +605,7 @@
                             <div class="space-y-2">
                                 @if($previewProject->project_url)
                                     <a href="{{ $previewProject->project_url }}" target="_blank"
-                                        class="w-full block text-center bg-accent-themed-primary text-white px-4 py-3 rounded-lg hover:bg-accent-themed-secondary transition-colors font-medium">
+                                        class="w-full block text-center bg-action text-action-foreground px-4 py-3 rounded-lg hover:bg-action/90 transition-colors font-medium">
                                         🚀 View Live Project
                                     </a>
                                 @endif
@@ -620,7 +620,7 @@
             </div>
         </div>
     @endif
-    
+
     <style>
     .line-clamp-2 {
         display: -webkit-box;

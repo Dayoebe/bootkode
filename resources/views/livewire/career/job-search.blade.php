@@ -1,10 +1,10 @@
 <div class="min-h-screen bg-themed-primary">
     <!-- Header Section with Enhanced Search -->
-    <div class="bg-themed-secondary shadow-lg border-b border-themed-primary">
+    <div class="bg-themed-secondary shadow-sm border-b border-themed-primary">
         <div class="w-full py-8">
             <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between mb-6">
                 <div>
-                    <h1 class="text-4xl font-bold text-themed-primary mb-2">Find Your Dream Job</h1>
+                    <h1 class=" font-bold text-themed-primary mb-2 bk-page-title">Find Your Dream Job</h1>
                     <p class="text-xl text-themed-secondary">Discover opportunities that match your skills and
                         aspirations</p>
                 </div>
@@ -26,14 +26,14 @@
             </div>
 
             <!-- Main Search Bar -->
-            <div class="bg-themed-tertiary rounded-2xl p-6 mb-6">
+            <div class="bg-themed-tertiary rounded-lg p-6 mb-6">
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
                     <div class="relative">
                         <label class="block text-sm font-medium text-themed-primary mb-2">What job are you looking
                             for?</label>
-                        <input wire:model.live.debounce.300ms="sector" type="text"
+                        <input aria-label="e.g., Software Developer, Marketing Manager" wire:model.live.debounce.300ms="sector" type="text"
                             placeholder="e.g., Software Developer, Marketing Manager"
-                            class="w-full pl-10 pr-4 py-3 border border-themed-primary rounded-xl focus:ring-2 focus:ring-accent-themed-primary focus:border-transparent bg-themed-secondary text-themed-primary placeholder-themed-tertiary transition-all">
+                            class="w-full pl-10 pr-4 py-3 border border-themed-primary rounded-lg focus:ring-2 focus:ring-brand focus:border-transparent bg-themed-secondary text-themed-primary placeholder-themed-tertiary transition-all">
                         <svg class="absolute left-3 top-11 h-5 w-5 text-themed-secondary" fill="none"
                             stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -43,9 +43,9 @@
 
                     <div class="relative">
                         <label class="block text-sm font-medium text-themed-primary mb-2">Location</label>
-                        <input wire:model.live.debounce.300ms="location" type="text"
+                        <input aria-label="e.g., London, Manchester, Remote" wire:model.live.debounce.300ms="location" type="text"
                             placeholder="e.g., London, Manchester, Remote"
-                            class="w-full pl-10 pr-4 py-3 border border-themed-primary rounded-xl focus:ring-2 focus:ring-accent-themed-primary focus:border-transparent bg-themed-secondary text-themed-primary placeholder-themed-tertiary transition-all">
+                            class="w-full pl-10 pr-4 py-3 border border-themed-primary rounded-lg focus:ring-2 focus:ring-brand focus:border-transparent bg-themed-secondary text-themed-primary placeholder-themed-tertiary transition-all">
                         <svg class="absolute left-3 top-11 h-5 w-5 text-themed-secondary" fill="none"
                             stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -57,8 +57,8 @@
 
                     <div>
                         <label class="block text-sm font-medium text-themed-primary mb-2">Country</label>
-                        <select wire:model.live="country_code"
-                            class="w-full py-3 px-4 border border-themed-primary rounded-xl focus:ring-2 focus:ring-accent-themed-primary focus:border-transparent bg-themed-secondary text-themed-primary transition-all">
+                        <select aria-label="Country code" wire:model.live="country_code"
+                            class="w-full py-3 px-4 border border-themed-primary rounded-lg focus:ring-2 focus:ring-brand focus:border-transparent bg-themed-secondary text-themed-primary transition-all">
                             <option value="gb">🇬🇧 United Kingdom</option>
                             <option value="us">🇺🇸 United States</option>
                             <option value="za">🇿🇦 South Africa</option>
@@ -72,7 +72,7 @@
 
                     <div class="flex items-end">
                         <button wire:click="search"
-                            class="w-full bg-accent-themed-primary hover:bg-accent-themed-secondary text-white px-6 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-offset-2 transition-all duration-300 font-semibold shadow-lg hover:shadow-xl">
+                            class="w-full bg-action hover:bg-action/90 text-action-foreground px-6 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-offset-2 transition-all duration-300 font-semibold shadow-sm ">
                             <span wire:loading.remove wire:target="search">Search Jobs</span>
                             <span wire:loading wire:target="search">Searching...</span>
                         </button>
@@ -82,7 +82,7 @@
                 <!-- Advanced Filters Toggle -->
                 <div class="flex justify-between items-center">
                     <button wire:click="$toggle('show_filters')"
-                        class="text-accent-themed-primary hover:text-accent-themed-secondary font-medium transition-colors">
+                        class="text-brand hover:text-accent-themed-secondary font-medium transition-colors">
                         {{ $show_filters ? 'Hide Advanced Filters' : 'Show Advanced Filters' }}
                     </button>
 
@@ -101,21 +101,21 @@
                             <div>
                                 <label class="block text-sm font-medium text-themed-primary mb-2">Minimum Salary
                                     (£000s)</label>
-                                <input wire:model.live.debounce.500ms="salary_min" type="number" placeholder="e.g., 30"
-                                    class="w-full py-2 px-3 border border-themed-primary rounded-lg focus:ring-2 focus:ring-accent-themed-primary focus:border-transparent bg-themed-secondary text-themed-primary placeholder-themed-tertiary">
+                                <input aria-label="e.g., 30" wire:model.live.debounce.500ms="salary_min" type="number" placeholder="e.g., 30"
+                                    class="w-full py-2 px-3 border border-themed-primary rounded-lg focus:ring-2 focus:ring-brand focus:border-transparent bg-themed-secondary text-themed-primary placeholder-themed-tertiary">
                             </div>
 
                             <div>
                                 <label class="block text-sm font-medium text-themed-primary mb-2">Maximum Salary
                                     (£000s)</label>
-                                <input wire:model.live.debounce.500ms="salary_max" type="number" placeholder="e.g., 80"
-                                    class="w-full py-2 px-3 border border-themed-primary rounded-lg focus:ring-2 focus:ring-accent-themed-primary focus:border-transparent bg-themed-secondary text-themed-primary placeholder-themed-tertiary">
+                                <input aria-label="e.g., 80" wire:model.live.debounce.500ms="salary_max" type="number" placeholder="e.g., 80"
+                                    class="w-full py-2 px-3 border border-themed-primary rounded-lg focus:ring-2 focus:ring-brand focus:border-transparent bg-themed-secondary text-themed-primary placeholder-themed-tertiary">
                             </div>
 
                             <div>
                                 <label class="block text-sm font-medium text-themed-primary mb-2">Contract Type</label>
-                                <select wire:model.live="contract_type"
-                                    class="w-full py-2 px-3 border border-themed-primary rounded-lg focus:ring-2 focus:ring-accent-themed-primary focus:border-transparent bg-themed-secondary text-themed-primary">
+                                <select aria-label="Contract type" wire:model.live="contract_type"
+                                    class="w-full py-2 px-3 border border-themed-primary rounded-lg focus:ring-2 focus:ring-brand focus:border-transparent bg-themed-secondary text-themed-primary">
                                     <option value="">All Types</option>
                                     <option value="permanent">Permanent</option>
                                     <option value="contract">Contract</option>
@@ -126,9 +126,9 @@
 
                             <div>
                                 <label class="block text-sm font-medium text-themed-primary mb-2">Company</label>
-                                <input wire:model.live.debounce.300ms="company" type="text"
+                                <input aria-label="e.g., Google, Microsoft" wire:model.live.debounce.300ms="company" type="text"
                                     placeholder="e.g., Google, Microsoft"
-                                    class="w-full py-2 px-3 border border-themed-primary rounded-lg focus:ring-2 focus:ring-accent-themed-primary focus:border-transparent bg-themed-secondary text-themed-primary placeholder-themed-tertiary">
+                                    class="w-full py-2 px-3 border border-themed-primary rounded-lg focus:ring-2 focus:ring-brand focus:border-transparent bg-themed-secondary text-themed-primary placeholder-themed-tertiary">
                             </div>
                         </div>
                     </div>
@@ -142,7 +142,7 @@
                     <div class="flex flex-wrap gap-2">
                         @foreach($popular_searches as $search)
                             <button wire:click="usePopularSearch('{{ $search['term'] }}')"
-                                class="bg-themed-secondary border border-themed-primary text-themed-primary px-4 py-2 rounded-full hover:bg-themed-tertiary hover:border-accent-themed-primary transition-all text-sm">
+                                class="bg-themed-secondary border border-themed-primary text-themed-primary px-4 py-2 rounded-full hover:bg-themed-tertiary hover:border-brand transition-all text-sm">
                                 {{ $search['term'] }} <span class="text-themed-secondary ml-1">({{ $search['count'] }})</span>
                             </button>
                         @endforeach
@@ -174,8 +174,8 @@
         <!-- Controls Bar -->
         <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-6">
             <div class="flex items-center space-x-4 mb-4 sm:mb-0">
-                <select wire:model.live="sort_by"
-                    class="px-4 py-2 border border-themed-primary rounded-lg focus:ring-2 focus:ring-accent-themed-primary focus:border-transparent text-sm bg-themed-secondary text-themed-primary">
+                <select aria-label="Sort by" wire:model.live="sort_by"
+                    class="px-4 py-2 border border-themed-primary rounded-lg focus:ring-2 focus:ring-brand focus:border-transparent text-sm bg-themed-secondary text-themed-primary">
                     <option value="date">Latest Jobs</option>
                     <option value="salary">Highest Salary</option>
                     <option value="relevance">Most Relevant</option>
@@ -185,14 +185,14 @@
             <div class="flex items-center space-x-2">
                 <span class="text-sm text-themed-secondary">View:</span>
                 <button wire:click="$set('view_mode', 'grid')"
-                    class="p-2 rounded-lg {{ $view_mode === 'grid' ? 'bg-accent-themed-primary text-white' : 'text-themed-secondary hover:text-themed-primary border border-themed-primary' }} transition-colors">
+                    class="p-2 rounded-lg {{ $view_mode === 'grid' ? 'bg-action text-action-foreground' : 'text-themed-secondary hover:text-themed-primary border border-themed-primary' }} transition-colors">
                     <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                         <path
                             d="M5 3a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2V5a2 2 0 00-2-2H5zM5 11a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2v-2a2 2 0 00-2-2H5zM11 5a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V5zM11 13a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
                     </svg>
                 </button>
                 <button wire:click="$set('view_mode', 'list')"
-                    class="p-2 rounded-lg {{ $view_mode === 'list' ? 'bg-accent-themed-primary text-white' : 'text-themed-secondary hover:text-themed-primary border border-themed-primary' }} transition-colors">
+                    class="p-2 rounded-lg {{ $view_mode === 'list' ? 'bg-action text-action-foreground' : 'text-themed-secondary hover:text-themed-primary border border-themed-primary' }} transition-colors">
                     <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                         <path fill-rule="evenodd"
                             d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"
@@ -207,7 +207,7 @@
             <div class="flex justify-center items-center py-16">
                 <div class="text-center">
                     <div
-                        class="animate-spin rounded-full h-16 w-16 border-4 border-accent-themed-primary border-t-transparent mx-auto mb-4">
+                        class="animate-spin rounded-full h-16 w-16 border-4 border-brand border-t-transparent mx-auto mb-4">
                     </div>
                     <p class="text-themed-secondary">Finding the perfect jobs for you...</p>
                 </div>
@@ -219,7 +219,7 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                     @foreach ($jobs as $job)
                         <div wire:key="{{ $job['id'] }}"
-                            class="bg-themed-secondary rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 p-6 border border-themed-primary hover:border-accent-themed-primary relative group">
+                            class="bg-themed-secondary rounded-lg shadow-sm  transition-all duration-300 p-6 border border-themed-primary hover:border-brand relative group">
                             <!-- Job Match Score -->
                             @if($job['match_score'] >= 70)
                                 <div class="absolute top-4 right-4">
@@ -240,7 +240,7 @@
                             </button>
 
                             <div class="mt-8">
-                                <h3 class="text-xl font-bold text-themed-primary mb-2 group-hover:text-accent-themed-primary transition-colors cursor-pointer line-clamp-2"
+                                <h3 class="text-xl font-bold text-themed-primary mb-2 group-hover:text-brand transition-colors cursor-pointer line-clamp-2"
                                     wire:click="viewJobDetails({{ $job['id'] }})">
                                     {{ $job['title'] }}
                                 </h3>
@@ -297,7 +297,7 @@
                                 <!-- Action Buttons -->
                                 <div class="flex space-x-2">
                                     <button wire:click="viewJobDetails({{ $job['id'] }})"
-                                        class="flex-1 bg-accent-themed-primary text-white px-4 py-2 rounded-lg hover:bg-accent-themed-secondary transition-all text-sm font-medium">
+                                        class="flex-1 bg-action text-action-foreground px-4 py-2 rounded-lg hover:bg-action/90 transition-all text-sm font-medium">
                                         View Details
                                     </button>
 
@@ -322,12 +322,12 @@
                 <div class="space-y-4">
                     @foreach ($jobs as $job)
                         <div wire:key="{{ $job['id'] }}"
-                            class="bg-themed-secondary rounded-xl shadow-md hover:shadow-lg transition-all duration-300 p-6 border border-themed-primary hover:border-accent-themed-primary">
+                            class="bg-themed-secondary rounded-lg shadow-sm hover:shadow-sm transition-all duration-300 p-6 border border-themed-primary hover:border-brand">
                             <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between">
                                 <div class="flex-1">
                                     <div class="flex items-start justify-between mb-3">
                                         <div class="flex-1">
-                                            <h3 class="text-xl font-bold text-themed-primary hover:text-accent-themed-primary transition-colors cursor-pointer mb-1"
+                                            <h3 class="text-xl font-bold text-themed-primary hover:text-brand transition-colors cursor-pointer mb-1"
                                                 wire:click="viewJobDetails({{ $job['id'] }})">
                                                 {{ $job['title'] }}
                                             </h3>
@@ -368,7 +368,7 @@
 
                                 <div class="flex space-x-3 mt-4 lg:mt-0 lg:ml-6">
                                     <button wire:click="viewJobDetails({{ $job['id'] }})"
-                                        class="px-6 py-2 bg-accent-themed-primary text-white rounded-lg hover:bg-accent-themed-secondary transition-all font-medium">
+                                        class="px-6 py-2 bg-action text-action-foreground rounded-lg hover:bg-action/90 transition-all font-medium">
                                         View Details
                                     </button>
 
@@ -397,7 +397,7 @@
                         Previous
                     </button>
 
-                    <span class="px-4 py-3 bg-accent-themed-primary text-white rounded-lg font-medium">
+                    <span class="px-4 py-3 bg-action text-action-foreground rounded-lg font-medium">
                         Page {{ $currentPage }}
                     </span>
 
@@ -421,7 +421,7 @@
                 <p class="text-themed-secondary mb-6 max-w-md mx-auto">Try adjusting your search criteria or check back
                     later for new opportunities.</p>
                 <button wire:click="clearFilters"
-                    class="bg-accent-themed-primary text-white px-6 py-3 rounded-lg hover:bg-accent-themed-secondary transition-all font-medium">
+                    class="bg-action text-action-foreground px-6 py-3 rounded-lg hover:bg-action/90 transition-all font-medium">
                     Clear Filters & Search Again
                 </button>
             </div>
@@ -431,8 +431,8 @@
     <!-- Job Details Modal -->
     @if($show_job_modal && $selected_job)
         <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50"
-            wire:click="closeJobModal">
-            <div class="bg-themed-secondary rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-hidden border border-themed-primary"
+            wire:click="closeJobModal" x-trap.inert.noscroll="true" role="dialog" aria-modal="true" aria-label="Job Details" tabindex="-1" x-data="{}" @keydown.escape.stop="$wire.set(&#x27;show_job_modal&#x27;, false)">
+            <div class="bg-themed-secondary rounded-lg max-w-4xl w-full max-h-[90vh] overflow-hidden border border-themed-primary"
                 wire:click.stop>
                 <div class="flex justify-between items-center p-6 border-b border-themed-primary bg-themed-tertiary">
                     <h2 class="text-2xl font-bold text-themed-primary">Job Details</h2>
@@ -477,7 +477,7 @@
                         </div>
 
                         <div class="lg:col-span-1">
-                            <div class="bg-themed-tertiary rounded-xl p-6 sticky top-0">
+                            <div class="bg-themed-tertiary rounded-lg p-6 sticky top-0">
                                 <h4 class="text-lg font-semibold text-themed-primary mb-4">Quick Actions</h4>
 
                                 <div class="space-y-3 mb-6">
@@ -500,7 +500,7 @@
                                     @else
                                         <a href="{{ $selected_job['redirect_url'] }}" target="_blank"
                                             wire:click="applyToJob({{ $selected_job['id'] }})"
-                                            class="w-full block text-center px-4 py-3 bg-accent-themed-primary text-white rounded-lg hover:bg-accent-themed-secondary transition-all font-medium">
+                                            class="w-full block text-center px-4 py-3 bg-action text-action-foreground rounded-lg hover:bg-action/90 transition-all font-medium">
                                             Apply Now
                                         </a>
                                     @endif

@@ -29,6 +29,14 @@ Provider credentials remain in environment/configuration, never Livewire public 
 
 See `product-audit.md`, `design-system.md`, `refactor-roadmap.md` and `verification.md` for decisions and evidence.
 
+## Course content acquisition
+
+`CourseContentStudio` is a role-guarded Livewire entry point for importing licensed curriculum and generating AI drafts. `CourseContentSource` adapters own source-specific fetching, format parsing and licence checks; `CourseImportService` owns source identity, duplicate/revision handling and draft persistence. The initial GitHub adapter accepts only the verified freeCodeCamp curriculum block path and fixed GitHub hosts. `AiCourseGenerationService` uses `AiManager`, persists blueprint/module stages, enforces a separate usage limit and delegates course/lesson/assessment writes to the existing `CourseGenerationService`.
+
+`course_content_runs` is processing/attribution metadata, not a second course or learning system. The additive migration links runs to the normal Course model and retains source revision, licence, status and review flags. The queue jobs are retry-safe and do not keep database transactions open during network calls. Course and run completion writes are atomic after external retrieval/generation. Every resulting course remains a draft; `Course::publiclyAvailable()` and existing course approval/enrollment boundaries remain authoritative.
+
+See [course-content-system.md](./course-content-system.md) for supported formats, license requirements, configuration, commands, queue setup, retries and limitations.
+
 ## Saved certificate designs and career applications
 
 `CertificateTemplate` stores validated design settings, not arbitrary HTML or Blade. `CertificateService` owns writes/default changes/deletion; only academy/super administrators manage designs and only super administrators assign a default. A nullable unique `default_slot` enforces one default in storage. The selected design is copied into existing certificate metadata at approval. Rendering uses that snapshot; editing or deleting the source design never restyles an issued record. Records predating snapshots retain the historical design and tokens/files. Preview HTML is isolated in a sandboxed iframe with explicit non-issued placeholders; fonts are restricted to those available to the PDF renderer.
@@ -79,3 +87,139 @@ Written submission creates an answer row for every question, including unanswere
 `Assessment::getStudentResults` prefers recorded snapshots over current question definitions. Legacy unreviewed written work is conservatively pending. Result views strip answer/question model graphs from public properties. `AssessmentResultService` projects owned submitted responses using the original question/option snapshot, preserving answer review without publishing grading keys. New lesson completion, progress flags, lesson rewards and certificate requests read actual reviewed results; caller-provided pass/completion state cannot issue a credential. Existing issued credentials and historical records remain intact. CBT management scope is checked on both request hydration and each resource action; course reassignment/deletion cannot discard recorded attempts.
 
 The start-time compatibility migration removes MariaDB's implicit timestamp update behavior with an explicit column default. It performs no historical timestamp repair and its rollback intentionally does not reintroduce that rule. Before applying it, retain a private schema/record backup and verify it against a dedicated database. The verification report records the actual working-table state and preservation check.
+
+## Structured questions and scoped authoring
+
+`StructuredQuestionService` defines the supported structured format boundary. Matching/drag-drop options contain `version: 1`, parallel `prompts` and `choices` arrays; ordering contains `version: 1` and `items`. Authoring accepts 2–12 complete unique pairs/items. Correct original positions stay in `correct_answers`. Model casts serialize arrays once. Legacy double-encoded choice data can still be read; there is no bulk rewrite of historical definitions.
+
+`CbtAttemptService` prepares public question projections and private grading metadata together. Structured choices are shuffled, and their display-to-original permutation lives only in private `grading.option_map`, never in a public question map. Drafts use display positions. Submission validates position/shape, maps to original positions and grades the exact sequence/pairs atomically. Partial matching drafts are allowed but incomplete, repeated or incorrect matches receive zero credit. An ordering response must be a complete permutation. A displayed default sequence is unsubmitted until the learner moves/saves/submits an actual response; untouched controls record no answer. Original target/choice labels, keys, points and pass thresholds remain frozen for the attempt.
+
+`AssessmentResultService` projects only the learner's submitted structured responses using those original labels and private maps. New automatic structured marks have real grading timestamps; mixed written work remains pending until manual review is complete. The legacy model helpers preserve exact order/set semantics and refuse automatic marking of written responses. Existing rows are not automatically regraded.
+
+`AssessmentAuthoringService` reuses `CourseAuthoringAccess` for actual ownership and centralizes complete-list ordering and atomic copying. Lesson/assessment locks serialize those changes; copies include definitions only. The existing lesson assessment manager also serves the contextual `lesson.assessments.manage` route. Resource identifiers and loaded definitions are locked in Livewire, and action queries resolve actual server records. Maximum attempt settings persist through the existing `max_attempts` field. Unsupported immediate-result switches were removed from the interface rather than claiming they were saved.
+
+Keyboard alternatives use ordinary labelled controls. A small `bootkode-list-moved` handler in the existing dashboard bundle restores focus to the moved item's enabled control after Livewire changes the DOM. Dragging is a progressive enhancement over the same selection fields and server validation, not a separate submission mechanism. No dependency, frontend runtime or database migration is added.
+
+## Reviewed marks, corrections and owner review requests — 22 October 2026
+
+`AssessmentReviewService` remains the write boundary for initial marking and explicit corrections. New correction and review-request events append to the existing hidden `learning_sessions.metadata`; they do not require a schema migration or backfill. The service locks the learner, attempt and actual answer rows in that order, checks the current course owner/platform reviewer and refuses self-review. Only finalized written answers with a complete original grading snapshot can be corrected or appealed. Automatic questions, pending results, cross-attempt answers and unsupported historical records cannot use this workflow.
+
+A correction retains the previous points, feedback, grader/time and complete result snapshot, plus the replacement mark/result, reviewer, reason, operation UUID and time. The current answer and result publish in the same transaction as that history. Original question definitions, pass threshold, submitted text, initial review log and session clock remain authoritative. A server-issued revision hashes the actual marks and private review state; a stale decision is refused. Exact operation replays return the recorded outcome, while reuse with changed content is refused. Review context and operation identifiers are locked Livewire properties.
+
+The owner may request review of a finalized written mark from either existing result surface. Retained personal results remain available after enrollment ends; a new request still resolves only the authenticated owner's assessment, attempt and answer. One request is allowed per answer correction version; exact retries do not reopen a resolved request. The reason/status/decision remain in history. A correction closes that answer's open request, while an explicit reasoned decision may uphold its existing mark. `open_mark_reviews` is a server-maintained projection for the scoped staff queue. Staff can filter pending, requested-review and finalized submissions.
+
+Corrections recalculate future passing/progress/credential eligibility using the original snapshot. They neither mint nor claw back rewards, remove completion records, nor alter issued/revoked credential statuses, tokens or files. Any separate institutional remediation of an already issued credential requires its existing authorized process. Learners receive only submitted responses, mark changes and review reasons/decisions; private keys, rubric guidance, grader identifiers, full audit result snapshots and operation/revision data stay server-side. No email or notification delivery is claimed; decisions are visible in the existing personal results.
+
+
+## Private project and assignment submissions
+
+`AssessmentSubmissionService` extends the existing `learning_sessions` private metadata and `student_answers.exam_data`; it introduces no parallel submission table or migration. Project deliverable criteria and file-enabled assignments freeze explicit instructions, extensions, counts, size and word limits in the original grading snapshot. Learner projections, including resumed older attempts, exclude sample answers, rubrics and grading notes. Legacy attempts without submission rules keep their original text-only contract.
+
+Attachment writes lock the learner/active attempt, recheck actual enrollment/lesson/question ownership and the server deadline, validate real file bytes and limits, and persist private file metadata. Exact name/hash retries reuse the recorded file; failed metadata writes clean up new storage. Files are stored with private visibility on the local disk. Draft removal revokes the recorded URL; submitted attempts cannot be changed. Answer records reference file IDs; file-only work stays pending manual review. Expiry records existing work without inventing required files or marks.
+
+`assessment.submission-file` requires authentication and verification. Draft downloads are owner-only; submitted downloads allow the learner or the currently authorized course/platform reviewer. Downloads check recorded identity, path and SHA-256, force attachment delivery and prohibit caching. No public path, grading guidance, execution, archive extraction or automated file grading is exposed. Retained owner downloads remain available after enrollment ends. File limits take the minimum of the original instructor, Livewire and PHP limits, and tighten on resume when the server becomes stricter. Current local PHP limits uploads to 2 MiB.
+
+Project/assignment authoring reuses `AssessmentAuthoringService` for locked, scoped writes and atomic moves/copies. Array casts store JSON objects once; question settings remain separate from recorded attempt snapshots. The shared review service still owns marks, feedback, corrections and reward publication. Removing an accidental byte before the PHP opening tag in `config/affiliate.php` prevents output from corrupting streamed downloads; financial configuration values are unchanged.
+
+## Authenticated shell consolidation — 23 October 2026
+
+`layouts.dashboard` remains the shared Livewire/Blade shell for all seven roles. `DashboardSidebar` still filters the existing `config/menu.php`; mobile shortcuts are configured by `MobileBottomNav::items()` and Menu opens the same full drawer. These controls do not authorize requests. No routes, domain services, migrations, payment/enrolment boundaries or private offline-cache rules were replaced. Public layouts and the focused exam layout remain separate.
+
+The design foundation stays in tokens.css/app.css/Tailwind 3; dashboard.css is a scoped consumer. Existing components were extended and `ui.table` encapsulates bounded table access. Existing dialog wrappers retain PHP actions and conditional rendering while adding focus traps and keyboard dismissal. Shared admin quick-action dialogs use the existing modal API.
+
+The route audit exposed an unguarded AllUser directory. Its component now checks super-admin/academy-admin roles in boot on initial and subsequent Livewire requests, protecting listing, CSV exports and activity/stat methods together. Tests cover direct learner requests, direct component mounting and role revocation.
+
+See dashboard-redesign/route-inventory.md for route contracts, page-checklist.md for view coverage, and implementation-plan.md for delivery boundaries. Uncommitted course-content pipeline work is preserved separately.
+
+
+## Release continuation — 23 October 2026
+
+Interview workspaces resolve the existing Mentorship models; staff access is checked in component boot on every request. Reporting aggregates completed scores, completion counts, repeat participants and recorded planned duration. The existing résumé completion accessor supplies learner dashboard data. Chart lifecycle and theme handling stay in dashboard.js with the existing Chart.js dependency; Blade exposes a bounded data alternative. No reporting writes marks or changes eligibility. Compatible dependency maintenance retains Laravel 11 / Livewire 3 / Tailwind 3. See dashboard-redesign/continuation-report.md for acceptance and remaining integration limits.
+
+## Course content hardening — 26 October 2026
+
+Course Content Studio extends the existing authoring service and models; the source adapter contract validates its own path. Its first verified adapter accepts only freeCodeCamp's Algorithms Markdown subset, checks the full licence fingerprint and ancestor Git trees, and fetches through a fixed-host, DNS-pinned, byte-bounded client. Each imported lesson retains the full notice for individual offline exports. Source identity includes editor and selected limit, preserves prior run identities, and includes partial results in replay detection. Previewed revisions are locked into queued requests.
+
+AI stages retain validated blueprint/module state and reject client/provider ownership, publication, grading and media fields. Both CLI and Studio derive stable request identity from validated input; explicit CLI request IDs permit intentional separate drafts. Project criteria now use existing question/attempt/manual-review models. Database uniqueness and transaction locks guard persistence; cache locks prevent duplicate processing/provider spending. The `course-content` database queue connection has a 960-second reservation, 600-second jobs and 900-second processing locks. Multiple-host workers require shared atomic cache storage. No new migration was added in this continuation; the existing run migration was already applied locally.
+
+## Error handling during dependency outages — 26 October 2026
+
+The 500 view is standalone Blade. It must not mount the public application layout, navigation, authenticated state or database-backed footer: the database itself can be the failing dependency. Its exception-renderer regression forbids Eloquent connections. This fallback preserves HTTP 500 and generic copy; it does not turn a dependency outage into successful application behavior.
+
+
+## Course-content completion — 26 October 2026
+
+`CourseAiRequestService` shares atomic per-editor quota reservation and safe usage accounting across original generation and imported-draft expansion. The existing provider accepts strict JSON-schema response formats and rejects truncated structured output. Generation budgets stay server-configured; persistence continues through existing course/assessment services.
+
+`AiCourseExpansionService` and `ExpandImportedCourse` integrate the existing expansion workflow into the dedicated queue and Studio. Verified source licence/path, saved original snapshots, course/outline fingerprints, cache locks and final locked transactional checks protect human edits, ownership, publication and learning/financial history. Validated section stages survive retries; completed replay does not duplicate provider calls or content. Quality-only changes do not invalidate draft fingerprints. Explicit legacy-notice repair is additive and draft/history guarded.
+
+Studio history uses actual category and stored validation/quality findings. Quality scans reuse `CourseQualityService`; every review/retry/expansion action checks the acting role and current course access. `deploy/systemd/bootkode-course-content.service` provides the managed worker template. No new schema/dependency or alternate approval, enrollment, payment or credential boundary was introduced. Real provider/UI acceptance and backed-up working-draft recovery are recorded in verification.md.
+
+
+## Direct authoring and quality checks — 26 October 2026
+
+Agent-authored curricula use the existing `CourseGenerationService` with explicit sections, lessons, questions, project rubrics, category resolution and server-selected instructor. All three new working courses remain unpublished/unapproved; no alternate learning model, migration, provider usage claim or enrollment mutation was introduced. Before/after fingerprints protect existing records.
+
+Media quality checks parse actual HTML attributes with DOMDocument and LIBXML_NONET, exclude code/pre descendants and do not interpret the search/plain-text copy as rendered media. Real missing files remain failures. CourseOutline renders sections and lessons by their stored `order` with ID tie-breakers, so the visible teaching sequence matches the curriculum.
+
+
+## Embedded lesson assessment authoring — 26 October 2026
+
+`AssessmentManager` is an embedded course-builder component. The retained `lesson.assessments.manage` route resolves current role/ownership through `CourseAuthoringAccess` and redirects to `course-builder?lesson={id}&tab=assessment`. The lesson editor validates allowed tab names in dashboard.js and synchronizes lesson/tab query state without page navigation. Keyed list/create/edit/questions containers preserve correct Livewire view replacement. Existing authoring boot guards and question/criteria components remain the persistence/authorization boundaries; learner assessment routing is unchanged.
+## Existing-course editorial updates — 26 October 2026
+
+The revision of working courses 1 and 2 uses existing Course/Section/Lesson/Assessment/Question models, CourseAuthoringAccess, CourseValidationService, LearningHistoryGuard and AssessmentAuthoringService. It is a guarded one-time editorial operation, not a new importer or application feature. A locked transaction updates original rows in place and adds the missing learning/assessment structure. Quiet saves for original title changes preserve existing slugs and lesson publication timestamps; course statistics are explicitly refreshed. No source-run metadata, schema or dependency was changed, and the basic-data-structures import adapter was not broadened.
+
+Private baseline/raw backups, authored curricula, isolated-test proof, applied export and runnable original reference kits are retained under ignored storage/app/original-course-revision-20261026. Public covers/ZIPs live under course-materials/algorithms-revised and course-materials/data-structures-revised. Each lesson retains its source attribution and the full verified BSD notice; original challenge excerpts are distinguished from the revised teaching narrative. Existing financial/learning/certificate fingerprints and unrelated course graphs are compared before/after.
+
+## Groq connection verification and logging — 27 October 2026
+
+AiConnectionService reuses AiManager/OpenAiCompatibleProvider to make an explicit bounded strict-JSON probe without domain data or persistent domain writes. CheckAiConnection exposes it to server operators through bootkode:ai-check. CourseContentStudio restricts the browser probe to super/academy administrators, throttles it to two per minute and locks the returned state. Provider configuration labels do not promise a successful network call. CodingMentor enforces current role membership during boot on every request.
+
+Single-file Laravel logging defaults to storage/logs/laravel.log and the environment example selects single. The managed worker sends console output to the system journal; its application exceptions still use Laravel logging. One-time test/build/browser captures belong outside storage/logs. Old captures were archived privately without truncating laravel.log. No database schema, provider dependency or learning/financial boundary changed.
+
+
+## Q&A response and peer participation boundary — 27 October 2026
+
+Q&A extends existing assessment/attempt/answer records; it adds no table or migration. `QnaResponseService` validates versioned topic definitions and projects original instructions, prompts, limits and sharing rules without private evaluation criteria. New attempts retain those rules in private grading metadata; submitted answer metadata records the matching session and safe rule snapshot. Original responses are stored as a bounded JSON array in the existing answer text column, using unescaped Unicode to keep the maximum permitted content within its byte capacity. Retained legacy text-only attempts do not acquire new sharing permissions.
+
+`QnaDiscussionService` owns explicit sharing, one retained peer-feedback entry per reviewer/response, approval, rejection, hiding and owner withdrawal. All mutations lock the acting account and target answer, resolve the original submitted attempt and compare its original rules. Current active/verified account, lesson/enrollment and course reviewer scope are checked on requests. Learners must submit complete original responses to that same topic before reading/reviewing a peer; blank optional work and expired incomplete work do not unlock peers. Sharing is optional and defaults off in authoring. Topic approval settings apply to both shared responses and feedback. Stale moderation versions are refused; exact share/feedback/withdrawal retries do not duplicate events. History is retained inside private answer metadata.
+
+The private board projects participant labels, submitted Q&A text, permitted peer feedback and safe decisions. It excludes marking keys, private evaluation guidance, official marks/feedback, files, email addresses and audit actor identifiers. Pending/rejected peer feedback and its moderation explanation stay unavailable to the response author. Owner withdrawal also works from retained personal results after enrollment ends, without reopening course access. Closed sharing requests are not silently reopened. Feedback is capped at 100 entries per response; the board paginates ten responses at a time. It is an assessment discussion, not an arbitrary public forum.
+
+Official marks, reconsideration, corrections, learning eligibility and rewards remain exclusively with the existing review/attempt services. Peer participation never auto-grades, changes a recorded mark or awards a reward. Q&A authoring uses the same scoped, locked `AssessmentAuthoringService` writes/copies/moves as other criteria. Array casts now store objects once; original attempt snapshots and course history guards remain authoritative.
+
+
+## Recorded community/job delivery — 27 October 2026
+
+CommunityFeedbackResponseService locks the current verified active administrator and actual request, records the retained plain-text reply/author/time and creates its native portal notice in the same transaction. Exact retries retain the original response and conflicting replacements fail. The requester projection remains owner-scoped; moderation checks current roles during boot, actions and render. Resolving without a reply no longer creates a fake response time.
+
+JobAlertService owns criteria validation/normalization, actual-user scope, the ten-alert limit, frequency and paused state. JobAlert matching composes existing public/active search predicates with explicit salary currency, hidden-salary exclusion, application deadlines and optional unseen receipt exclusion. Delivery locks subscriber/alert and records up to 50 job receipts, a deterministic notice and actual last_sent_at atomically. Receipt identity replaces a lossy publication-time cursor; deleting a notice does not repeat matches. The additive migration supplies missing job_alerts storage, per-alert/job uniqueness and a nullable community responder reference without rewriting old rows. Automatic rollback refuses to erase delivery history.
+
+PortalNotificationService requires a source transaction, uses native notifications with deterministic UUIDs and dispatches optional email after commit. SendPortalNotificationEmail rechecks source, owner, current account/opt-in and current job eligibility; it defers quiet hours/weekends and uses a processing lease, safe errors and distinct transport states. Queue failure preserves portal delivery. SMTP acceptance is not mailbox delivery and a crash after provider acceptance can still duplicate an email. A dedicated read-only-by-default recovery command queues existing notices only when --send is explicit. The hourly saved-alert schedule is guarded by JOB_ALERTS_SCHEDULE_ENABLED=false by default. No existing course-content queue, financial, learning, credential, public-cache or enrollment boundary changes. Detailed operations and acceptance limits are in notification-delivery.md.
+
+
+## Learning-event receipts and source eligibility — 27 October 2026
+
+LearningNotificationService reuses PortalNotificationService and the native notification center. A locked recipient/event receipt in learning_notification_receipts is committed inside the source transaction. Final manual grading, review requests and decisions use existing AssessmentReviewService transitions; exact retries and deleted notices do not replay the event. Generic projections contain only source identity, text and authorized named links, never grading guidance, original responses or review reasons. Notification destination validation trusts the configured application host, excluding request-supplied Host authority; local/testing loopback aliases remain supported. Queued email rechecks actual session owner, current instructor/course/request state and current account/preferences.
+
+CbtReminderService targets the actual Assessment/learning-session workflow and existing course enrollment sources. It excludes unassigned global quizzes, lesson-linked work, unpublished/unapproved courses, unsupported or multiple-answer questions, empty choices, missing pass marks, past deadlines and existing attempts. Per-user reminder frequency bounds the deadline window; one receipt per original deadline prevents repeated checks from nagging. It does not invent publication/assignment records or change attempt-time enforcement.
+
+ReviewReminderService reuses completed CourseEnrollment, CourseReview and the original review_reminders rows. Locked notice/counter/time persistence, real completion/review checks, current frequency and retained unsubscribe suppress repeats and stale email. ReviewReminderSubscriptionController retains GET route names for confirmation and adds CSRF-protected POSTs; expiring signatures also bind the record and expiry through a separate HMAC. Native course-review writes resolve the current actor/course/review inside the transaction, expose locked context, use the real comment column and mark reminders complete only after a saved review.
+
+UserAchievement retains its milestone catalog and uses recorded completion timestamps, deduplicated lesson records, ended sessions and finalized attempt percentages. Existing award entry points serialize per account; new award/notice failure rolls back. UserBadge enforces its supplied owner regardless of data fields. No milestone changes grades, credits extra currency or modifies issued credentials. Private rewards history now projects original achievement rows alongside existing badges.
+
+Delivery schedules remain guarded and off. CI uses an isolated test-only database/mail environment and a separate dependency gate. Third-party vendor files and generated bootstrap manifests are ignored generated state, restored from lockfiles instead of committed partial installations. No framework migration, alternate Alpine runtime, financial/enrollment boundary or authenticated offline-cache change is introduced. Operations and limits are in notification-delivery.md and continuous-integration.md.
+
+## Nontechnical course batch — 28 October 2026
+
+Five original soft-skills/customer-service curricula use the existing CourseGenerationService preview/persistence path, category resolution, CourseAuthoringAccess, course/lesson models, quiz grading and project-criterion definitions. A guarded one-time authoring script first exercised the identical payload in bootkode_soft_skills_20261028_test, then created working drafts under the authorised existing editor in a transaction. No working-database migration, new provider request or application dependency was required. Existing records were backed up before writing and preservation fingerprints are checked before commit and after browser inspection.
+
+Original course assets use public course-materials/soft-skills-20261027/{course-key}; private authoring payload, backup, applied export and verification evidence remain under ignored storage/app/soft-skills-20261027. Printable workbooks use the installed Dompdf library with remote resources and PHP execution disabled. They are worksheets rather than submission forms; submissions continue through the existing assessment flow.
+
+
+## Course editorial audit — 28 October 2026
+
+Lesson documents may mark `required_attribution: true`. `OfflineLearningPackService` retains these documents in explicitly requested packs even when optional documents are deselected. Existing enrollment authorization, resource types and explicit-download boundaries remain unchanged. The guarded editorial payload and private record snapshots are described in [the course audit](course-content-audit-20261028.md); working application remains pending database recovery.
+
+Database follow-up: all 6,143 regular files were preserved in a separate physical copy. Recovery modes 1–6 on an isolated copy failed at system-space page 0. Course edits remain prepared and unapplied; see the linked audit for preservation paths and recovery limits.

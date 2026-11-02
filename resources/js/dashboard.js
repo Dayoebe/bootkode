@@ -5,6 +5,52 @@ import 'trix/dist/trix.css';
 // Dashboard charts and the existing course/blog editors share this entry point.
 window.Chart = Chart;
 
+window.bootkodeInterviewTrendChart = (points) => {
+    let chart = null;
+    let themeObserver = null;
+    return {
+        init() {
+            this.$nextTick(() => {
+                const styles = getComputedStyle(document.documentElement);
+                const color = name => `rgb(${styles.getPropertyValue(name).trim()})`;
+                chart = new Chart(this.$refs.canvas, {
+                    type: 'line',
+                    data: { labels: points.map(point => point.date), datasets: [{
+                        label: 'Interviews', data: points.map(point => point.count),
+                        borderColor: color('--accent-primary'), tension: 0.2,
+                    }] },
+                    options: {
+                        animation: false, responsive: true, maintainAspectRatio: false,
+                        plugins: { legend: { display: false } },
+                        scales: {
+                            x: { ticks: { color: color('--text-primary') }, grid: { color: color('--border-primary') } },
+                            y: { beginAtZero: true, ticks: { precision: 0, color: color('--text-primary') }, grid: { color: color('--border-primary') } },
+                        },
+                    },
+                });
+                themeObserver = new MutationObserver(() => {
+                    chart.data.datasets[0].borderColor = color('--accent-primary');
+                    for (const scale of Object.values(chart.options.scales)) {
+                        scale.ticks.color = color('--text-primary');
+                        scale.grid.color = color('--border-primary');
+                    }
+                    chart.update('none');
+                });
+                themeObserver.observe(document.documentElement, { attributes: true, attributeFilter: ['class', 'data-theme'] });
+            });
+        },
+        destroy() {
+            themeObserver?.disconnect();
+            chart?.destroy();
+        },
+    };
+};
+
+// Retain focus when a recorded-mark action replaces its own form or control.
+window.addEventListener('bootkode-assessment-focus', (event) => {
+    requestAnimationFrame(() => document.getElementById(event.detail?.id)?.focus());
+});
+
 // Available before Livewire mounts a newly selected lesson editor.
 window.lessonEditorManager = function () {
     return {
@@ -28,6 +74,11 @@ window.lessonEditorManager = function () {
         beforeUnloadHandler: null,
 
         init() {
+            const requestedTab = new URLSearchParams(window.location.search).get('tab');
+            if (['content', 'media', 'settings', 'assessment'].includes(requestedTab)) {
+                this.activeTab = requestedTab;
+            }
+            this.syncTabLocation();
             this.setupEventListeners();
             this.$nextTick(() => {
                 this.initializeTrixEditor();
@@ -95,9 +146,21 @@ window.lessonEditorManager = function () {
         },
 
         switchTab(tab) {
-            if (!this.isSaving) {
+            if (!this.isSaving && ['content', 'media', 'settings', 'assessment'].includes(tab)) {
                 this.activeTab = tab;
+                this.syncTabLocation();
             }
+        },
+
+        syncTabLocation() {
+            const url = new URL(window.location.href);
+            url.searchParams.set('lesson', this.$wire.lessonId);
+            if (this.activeTab === 'content') {
+                url.searchParams.delete('tab');
+            } else {
+                url.searchParams.set('tab', this.activeTab);
+            }
+            window.history.replaceState(window.history.state, '', url);
         },
 
         markFieldChanged(field) {
@@ -263,3 +326,16 @@ window.learningActivityChart = function (activity) {
         destroy() { chart?.destroy(); },
     };
 };
+
+// Livewire can replace a moved row; keep keyboard focus on that item's control.
+window.addEventListener('bootkode-list-moved', (event) => {
+    const { list, item, direction } = event.detail;
+    requestAnimationFrame(() => {
+        const root = [...document.querySelectorAll('[data-move-list]')]
+            .find(element => element.dataset.moveList === String(list));
+        if (!root) return;
+        const controls = [...root.querySelectorAll('button[data-move-key]')]
+            .filter(button => button.dataset.moveKey === String(item) && !button.disabled);
+        (controls.find(button => button.dataset.moveDirection === direction) ?? controls[0])?.focus();
+    });
+});

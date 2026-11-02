@@ -2,10 +2,10 @@
     <!-- Quick Actions -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <!-- Create Interview Card -->
-        <div class="bg-themed-secondary border border-themed-primary rounded-2xl shadow-lg p-6 hover:shadow-xl transition-shadow">
+        <div class="bg-themed-secondary border border-themed-primary rounded-lg shadow-sm p-6  transition-shadow">
             <div class="flex items-center mb-4">
-                <div class="bg-blue-100 dark:bg-blue-900/30 p-3 rounded-full">
-                    <svg class="w-8 h-8 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div class="bg-brand/10 dark:bg-action/30 p-3 rounded-full">
+                    <svg class="w-8 h-8 text-brand dark:text-brand" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
                     </svg>
                 </div>
@@ -15,13 +15,13 @@
                 </div>
             </div>
             <button wire:click="$set('showCreateForm', true)"
-                class="w-full bg-accent-themed-primary hover:bg-accent-themed-secondary text-white px-4 py-2 rounded-lg transition-colors font-medium">
+                class="w-full bg-action hover:bg-action/90 text-action-foreground px-4 py-2 rounded-lg transition-colors font-medium">
                 Create New
             </button>
         </div>
 
         <!-- Quick Practice Card -->
-        <div class="bg-themed-secondary border border-themed-primary rounded-2xl shadow-lg p-6 hover:shadow-xl transition-shadow">
+        <div class="bg-themed-secondary border border-themed-primary rounded-lg shadow-sm p-6  transition-shadow">
             <div class="flex items-center mb-4">
                 <div class="bg-green-100 dark:bg-green-900/30 p-3 rounded-full">
                     <svg class="w-8 h-8 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -40,10 +40,10 @@
         </div>
 
         <!-- View Analytics Card -->
-        <div class="bg-themed-secondary border border-themed-primary rounded-2xl shadow-lg p-6 hover:shadow-xl transition-shadow">
+        <div class="bg-themed-secondary border border-themed-primary rounded-lg shadow-sm p-6  transition-shadow">
             <div class="flex items-center mb-4">
-                <div class="bg-purple-100 dark:bg-purple-900/30 p-3 rounded-full">
-                    <svg class="w-8 h-8 text-purple-600 dark:text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div class="bg-brand/10 dark:bg-action/30 p-3 rounded-full">
+                    <svg class="w-8 h-8 text-brand dark:text-brand" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
                     </svg>
@@ -54,13 +54,13 @@
                 </div>
             </div>
             <button wire:click="$set('activeTab', 'analytics')"
-                class="w-full bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg transition-colors font-medium">
+                class="w-full bg-action hover:bg-action text-action-foreground px-4 py-2 rounded-lg transition-colors font-medium">
                 View Reports
             </button>
         </div>
 
         <!-- Premium Features Card -->
-        <div class="bg-themed-secondary border border-themed-primary rounded-2xl shadow-lg p-6 hover:shadow-xl transition-shadow">
+        <div class="bg-themed-secondary border border-themed-primary rounded-lg shadow-sm p-6  transition-shadow">
             <div class="flex items-center mb-4">
                 <div class="bg-orange-100 dark:bg-orange-900/30 p-3 rounded-full">
                     <svg class="w-8 h-8 text-orange-600 dark:text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -80,11 +80,11 @@
     </div>
 
     <!-- Recent Interviews -->
-    <div class="bg-themed-secondary border border-themed-primary rounded-2xl shadow-lg p-6">
+    <div class="bg-themed-secondary border border-themed-primary rounded-lg shadow-sm p-6">
         <div class="flex items-center justify-between mb-6">
             <h3 class="text-xl font-bold text-themed-primary">Recent Interviews</h3>
             <button wire:click="$set('activeTab', 'interviews')"
-                class="text-accent-themed-primary hover:text-accent-themed-secondary font-medium transition-colors">
+                class="text-brand hover:text-accent-themed-secondary font-medium transition-colors">
                 View All →
             </button>
         </div>
@@ -97,9 +97,9 @@
         @if($interviewCount > 0)
             <div class="space-y-4">
                 @foreach($interviews->take(5) as $interview)
-                    <div class="flex items-center justify-between p-4 bg-themed-tertiary rounded-lg hover:shadow-md transition-shadow">
+                    <div class="flex items-center justify-between p-4 bg-themed-tertiary rounded-lg  transition-shadow">
                         <div class="flex items-center flex-1">
-                            <div class="bg-accent-themed-primary/10 p-2 rounded-lg mr-4">
+                            <div class="bg-brand/10 p-2 rounded-lg mr-4">
                                 <span class="text-lg">{{ $interview->getTypeIcon() }}</span>
                             </div>
                             <div class="flex-1">
@@ -113,12 +113,12 @@
                             </div>
                         </div>
                         <div class="flex items-center space-x-2">
-                            <span class="px-3 py-1 text-sm rounded-full bg-accent-themed-primary/10 text-accent-themed-primary font-medium">
+                            <span class="px-3 py-1 text-sm rounded-full bg-brand/10 text-brand font-medium">
                                 {{ $interview->status_label }}
                             </span>
                             @if($interview->isScheduled())
                                 <button wire:click="startInterview({{ $interview->id }})"
-                                    class="bg-accent-themed-primary hover:bg-accent-themed-secondary text-white px-4 py-2 rounded-lg transition-colors text-sm">
+                                    class="bg-action hover:bg-action/90 text-action-foreground px-4 py-2 rounded-lg transition-colors text-sm">
                                     Start
                                 </button>
                             @elseif($interview->isCompleted())
@@ -141,7 +141,7 @@
                 </div>
                 <p class="text-themed-secondary mb-4">No interviews yet. Create your first mock interview to get started!</p>
                 <button wire:click="$set('showCreateForm', true)"
-                    class="bg-accent-themed-primary hover:bg-accent-themed-secondary text-white px-6 py-2 rounded-lg transition-colors">
+                    class="bg-action hover:bg-action/90 text-action-foreground px-6 py-2 rounded-lg transition-colors">
                     Create Interview
                 </button>
             </div>

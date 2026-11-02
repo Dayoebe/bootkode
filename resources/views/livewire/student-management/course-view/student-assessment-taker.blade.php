@@ -6,13 +6,14 @@
         <a class="bk-button bk-button-secondary" href="{{ route('lesson.assessments', $lesson) }}">Open assessment workspace</a>
     @endif
     <p role="status" aria-live="polite" class="text-sm text-content-muted">{{ $message }}</p>
+    <x-input-error :messages="$errors->get('submission')" role="alert" />
     @if($results)
         <x-ui.panel title="Recorded result">
             <p class="text-xl font-semibold text-content">{{ ($results['pending_review'] ?? false) ? 'Pending instructor review' : ($results['passed'] ? 'Passed' : 'Not passed') }}</p>
             @unless($results['pending_review'] ?? false)<p class="mt-2 text-content">{{ $results['percentage'] }}% · {{ $results['total_points'] }} / {{ $results['max_points'] }} points</p>@endunless
             <p class="my-3 text-sm text-content-muted">Attempt {{ $results['attempt_number'] }}. Submitted attempts are retained.</p>
             @include('livewire.cbt.partials.attempt-responses')
-            <x-secondary-button wire:click="backToAssessmentList">Back to assessments</x-secondary-button>
+            <x-secondary-button class="mt-4" wire:click="backToAssessmentList">Back to assessments</x-secondary-button>
         </x-ui.panel>
     @elseif($examSessionId)
         <x-ui.panel title="Your attempt">
@@ -25,12 +26,22 @@
                         @if(in_array($question['question_type'], ['multiple_choice', 'true_false']))
                             @if($question['allows_multiple'])<p class="mb-2 text-sm text-content-muted">Select all correct options. The complete set is required for credit.</p>@endif
                             @foreach($question['options'] as $optionIndex => $option)
-                                <label class="flex min-h-11 items-start gap-3 py-2 text-content"><input class="mt-1 focus:ring-2 focus:ring-action" type="{{ $question['allows_multiple'] ? 'checkbox' : 'radio' }}" wire:model.live="answers.{{ $question['id'] }}" value="{{ $optionIndex }}" name="answer-{{ $question['id'] }}" /><span class="min-w-0 break-words">{{ strip_tags($option) }}</span></label>
+                                <label class="flex min-h-11 items-start gap-3 py-2 text-content"><input class="mt-1 focus:ring-2 focus:ring-brand" type="{{ $question['allows_multiple'] ? 'checkbox' : 'radio' }}" wire:model.live="answers.{{ $question['id'] }}" value="{{ $optionIndex }}" name="answer-{{ $question['id'] }}" /><span class="min-w-0 break-words">{{ strip_tags($option) }}</span></label>
                             @endforeach
+                        @elseif(isset($question['discussion']))
+                            @include('livewire.student-management.course-view.qna-response')
+                        @elseif(in_array($question['question_type'], ['matching', 'ordering', 'drag_drop']))
+                            @include('livewire.student-management.course-view.structured-question')
                         @else
+                            @if(in_array($question['question_type'], ['project_criteria', 'assignment_question']) && !isset($question['submission']))<p class="mb-3 text-sm text-content-muted">This older attempt retains its original written-response format. File upload permissions are not inferred from later question changes.</p>@endif
+                            @if(!empty($question['instructions']))<p class="mb-3 whitespace-pre-wrap break-words text-content-muted">{{ $question['instructions'] }}</p>@endif
                             <label class="sr-only" for="response-{{ $question['id'] }}">Your answer to question {{ $index + 1 }}</label>
-                            <textarea id="response-{{ $question['id'] }}" wire:model.live.debounce.700ms="answers.{{ $question['id'] }}" maxlength="10000" rows="6" class="w-full rounded-lg border-line bg-surface text-content focus:ring-action" aria-describedby="response-help-{{ $question['id'] }}"></textarea>
-                            <p id="response-help-{{ $question['id'] }}" class="text-sm text-content-muted">Up to 10,000 characters. Your instructor will review this answer.</p>
+                            <textarea id="response-{{ $question['id'] }}" wire:model.live.debounce.700ms="answers.{{ $question['id'] }}" maxlength="10000" rows="6" class="w-full rounded-lg border-line bg-surface text-content focus:ring-brand" aria-describedby="response-help-{{ $question['id'] }} response-error-{{ $question['id'] }}" aria-invalid="{{ $errors->has('answers.'.$question['id']) ? 'true' : 'false' }}"></textarea>
+                            <p id="response-help-{{ $question['id'] }}" class="text-sm text-content-muted">Up to 10,000 characters.@if($question['submission']['word_limit'] ?? null) Recorded word limit: {{ $question['submission']['word_limit'] }}.@endif Your instructor will review this response.@if($question['submission']['required'] ?? false) A response is required.@endif</p>
+                            <x-input-error id="response-error-{{ $question['id'] }}" :messages="$errors->get('answers.'.$question['id'])" />
+                            @if($question['submission']['enabled'] ?? false)
+                                @include('livewire.student-management.course-view.submission-files')
+                            @endif
                         @endif
                     </fieldset>
                 @endforeach
@@ -49,6 +60,7 @@
                 <div class="flex flex-wrap gap-3">
                     @if(in_array($assessment->id, $activeIds))<x-primary-button wire:click="startAssessment({{ $assessment->id }})" wire:loading.attr="disabled">Resume attempt</x-primary-button>
                     @elseif($configured && !($status['pending_review'] ?? false) && $assessment->canUserTakeAssessment(auth()->id())[0])<x-primary-button wire:click="startAssessment({{ $assessment->id }})" wire:loading.attr="disabled">{{ $status ? 'Start another attempt' : 'Start assessment' }}</x-primary-button>@endif
+                    @if($assessment->type === 'qna')<a class="bk-button bk-button-secondary" href="{{ route('assessment.discussion', $assessment) }}">Q&amp;A participation</a>@endif
                     @if($status)<x-secondary-button wire:click="showAssessmentResults({{ $assessment->id }})">View result and feedback</x-secondary-button>@endif
                 </div>
             </x-ui.panel>

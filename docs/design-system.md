@@ -50,7 +50,107 @@ Help/support and staff response screens use the existing page header, panel, lab
 
 The rewards and analytics surfaces use shared headers, panels, form primitives, bounded navigation and factual definition-list metrics. The reward balance copy distinguishes virtual coins/gems from the NGN wallet. Analytics displays recorded data and missing-result states, with labelled filters, persistent goal feedback, accessible chart descriptions and a bounded data-table alternative. Charts use existing theme variables and disable animation. The CBT submission dialog reuses the shared modal; answer radios remain keyboard-accessible with visible peer focus rings, and hidden warning content no longer owns a primary heading. Exam layouts remain a deliberate focused-workflow exception to the standard dashboard surface.
 
+## Course Content Studio
+
+The authoring studio uses the dashboard layout, shared page heading/panels, labelled forms, associated inline errors, visible asynchronous status, bounded history table and the existing course editor link. Import preview explicitly shows the selected path, source revision, attribution/licence and content limitations before import. Generation/unavailable/progress states use text and do not imply review or publication. Queued work is presented as real status, not a simulated completion animation.
+
 
 ## Lesson assessment and review surfaces
 
 Lesson assessment workspaces and personal results use shared page headers, panels, buttons and status regions. The embedded component owns an h2; its full workspace owns the page h1. Choice labels are touch-accessible, multiple selection has explicit exact-set guidance, written responses have labelled limits and autosave feedback, and pending/final results use text status instead of an invented percentage. Only server-accepted results publish a pass. Instructor score fields expose original bounds and associated errors; feedback is plain text. Submission, instructor review and personal results reuse the shared trapped dialog with Escape/focus-return behavior. Legacy CBT authoring interiors retain their existing styling; these changes do not certify every editor/theme.
+
+## Structured question authoring and interaction
+
+The lesson assessment authoring workspace reuses the existing tokens, page header, panels, controls, feedback and labelled errors. Its embedded form owns a secondary heading; the full workspace owns the page heading. Format selection is a labelled native control; complete pairs and ordered items replace decorative unsupported-format cards. Author actions wrap at small widths and do not depend on a third-party sorting library.
+
+Matching uses labelled selection lists. Drag-and-drop adds bounded draggable choices to the same lists, with explicit keyboard alternatives. Ordering uses touch-sized Move up/Move down buttons plus explicit save. Learner, question and assessment moves preserve focus on the moved item; when a direction becomes unavailable, focus moves to its other enabled control. Existing navy/teal and Sora/Manrope conventions remain unchanged. This is targeted acceptance of these states, not certification of every legacy criteria editor/theme or assistive technology.
+
+## Recorded mark review and correction
+
+The review queue uses a labelled native status filter, existing page header/panel, wrapped controls and the shared trapped dialog. A correction is an explicit form with original score bounds, separate learner feedback and required reason; the publication control explains its immediate result/eligibility effect. Validation errors stay associated with the corresponding fields. Learner review requests and correction history use native disclosure elements inside the existing submitted-response surface. Plain-text reasons and decisions are escaped. A dashboard event restores focus to the updated response section after a request/decision, to the score input when opening a correction, and to its original control after cancellation/publication. No additional palette, component framework or Alpine runtime is introduced. Actual responsive/keyboard acceptance and limits belong in verification.md.
+
+Dialog-opening controls retain focus during their loading state. The review trigger uses loading opacity rather than temporary disabling, allowing the shared focus trap to capture its original control and return there on Escape. Mutation submits still disable while saving and explicitly restore focus after their forms are replaced.
+
+
+## Project and assignment file workflows
+
+Project/assignment criteria forms use native submit forms and existing page headers, panels, labels/errors and buttons. Original file/word limits are visible to learners and reviewers. File controls explain private draft/submitted access, actual extensions, counts and the effective server size cap. Temporary upload progress has a status announcement; choosing a file and attaching it to the saved draft are separate explicit actions. Saved-file links show the original filename, readable size and unavailable state; drafts expose a touch-sized remove control. Small files show exact bytes. No palette, component system, animation or Alpine runtime was added.
+
+Author copy/move actions retain the existing dashboard focus behavior. Completing an initial review returns focus to the queue filter when the pending row disappears. This extends the recorded-mark dialog contracts; targeted browser acceptance and its limits are recorded in verification.md.
+
+## Authenticated workspace consolidation — 23 October 2026
+
+The shared shell now uses a flat theme-aware surface, a 256px sidebar and an 80px persistent desktop rail from 1024px upward. Tablet/mobile use one trapped full-navigation drawer and five bottom destinations, including Menu; four destinations follow actual user roles. The page owns its primary heading. Existing navy/teal, Sora/Manrope, semantic tokens and public identity are retained.
+
+`resources/css/dashboard.css` contains scoped layout/component rules and extends the same tokens through the `app.css` entry. `--bk-workspace-width` caps content at 1440px. `ui.table` gives tables a labelled keyboard-scrollable region; semantic column headers retain all data. Legacy forced color-remapping rules were removed after migrating their callers. Action backgrounds pair with `action.foreground`; no new UI framework or Alpine runtime is installed. Existing Font Awesome 6.5.2 is locally hosted with its licence for authenticated layouts. The unused global Flatpickr request was removed.
+
+The feature migration standardizes panel radius/shadow, headings, filter names, icon-control names and focus/Escape behavior on existing dialogs. Admin quick actions reuse the shared modal. Public pages, printed credentials/resumes, focused CBT exams and unrouted game prototypes retain their deliberate layouts. Refer to `dashboard-redesign/page-checklist.md` and `verification.md` for state-specific acceptance and limits.
+
+
+## Release continuation — 23 October 2026
+
+Blog and résumé forms now bound narrow columns, wrap actions and share semantic Trix surfaces/toolbar rules. Interview navigation scrolls within its labelled region; analytics controls wrap. System-status panels share their Alpine scope, and mentorship dialogs reference their visible headings. Résumé export closes on Escape and returns focus. Uncollected satisfaction and unscored results use explicit text; reporting never generates random outcomes. Chart animation is disabled and trend data has a keyboard-accessible table alternative. See dashboard-redesign/continuation-report.md for checked states and limits.
+
+## Course Content Studio acceptance — 26 October 2026
+
+The Studio uses the actual `x-text-input`, `x-input-label`, `x-primary-button` and `x-secondary-button` primitives, plus `bk-input` for native selects/textareas and `bk-field-error` for associated errors. Workflow panels align at their tops. A component-owned locked notice announces queued actions without duplicating the dashboard's flash banner. History has a labelled keyboard-scrollable region, real content counts/status, review flags and the existing editor route. Responsive/browser evidence covers 390/768/1024/1440px; wider theme/assistive-technology acceptance remains separate.
+
+## Server-error fallback — 26 October 2026
+
+The standalone 500 page uses existing semantic surfaces/text, `ui.panel`, the shared button class, a skip link and one primary heading. It has no database-dependent shell, ambient animation, invented contact details or new palette. A recovery link uses the existing named home route.
+
+
+## Course-content review controls — 26 October 2026
+
+History retains the shared bounded table and existing semantic buttons. Rows show the real category, draft counts, safe validation messages and quality issues in native keyboard-operable details. Editor, quality scan and failed-stage retry remain available together; imported-draft expansion uses a clear native confirmation before queueing. These controls reuse the existing Blade/Livewire shell with no new palette, Alpine runtime or dependency. Authenticated layout and workflow checks cover 390/768/1024/1440px; live quality findings and generated-editor navigation are recorded in verification.md.
+
+
+## Original course materials — 26 October 2026
+
+The three new working drafts use original vector covers in BootKode's existing navy/teal/mint identity and the existing builder/assessment interface. Downloadable reference code, the fictional order CSV and the plain-text campaign worksheet are real files linked from the lessons. No interface palette, component system, animation or frontend dependency was added. The outline respects stored curriculum order.
+
+Long course titles now remain bounded in the existing toolbar at tablet widths, with status controls allowed to wrap. Twelve authenticated builder/width checks for the three new drafts pass at 390/768/1024/1440px.
+
+
+## In-context assessment controls — 26 October 2026
+
+The Assessment tab uses a labelled region and secondary “Lesson assessments” heading inside the existing lesson editor. There is no extra workspace link or nested page header. Create/edit forms and question/project controls reuse the same panels and buttons in place, with keyed view transitions. All four lesson tab buttons retain accessible names when their visual text hides on phones. The builder retains its single primary heading.
+## Revised original course materials — 26 October 2026
+
+The two revised imported courses reuse the existing builder and inline Assessment tab. New original SVG covers use the established navy/teal/mint identity. Teaching text uses headings, runnable code blocks, traces and practice/feedback; source excerpts and full notices have clearly labelled disclosures in the stored lesson HTML. Download links point to real course-specific ZIPs. No component system, stylesheet, script runtime or frontend dependency was added. Trix presents the text through its existing rich-text editing surface.
+
+## Visible AI connection state — 27 October 2026
+
+Course Content Studio uses the shared ui.panel and secondary button for provider configuration, the mentor link and the administrator-only connection test. The button has an associated description and loading/disabled state; safe results use an atomic polite status announcement with the actual check timestamp. Configured and connection verified are separate statements. No credential field or new palette/runtime/component system is introduced. The mentor uses a configured label instead of claiming network readiness.
+
+
+## Q&A authoring and participation — 27 October 2026
+
+Q&A authoring uses native labelled forms, shared panels/buttons/feedback, bounded topic types, associated validation errors and explicit original-response/sharing guidance. Original response fields expose minimum counts/lengths and maximum per-response/total limits; saves and retained results use the established attempt interface. Private evaluation weights must total 100%. Topic type describes the exercise; explicit sharing controls govern visibility.
+
+The participation page owns its h1, explains optional private-course sharing and separates peer feedback from official marks. Original topic titles replace internal question identifiers. Explicit share/withdraw controls use confirmation; feedback and moderation reasons use labelled native controls, associated errors and live status. Existing dashboard focus handling restores moved topic controls or the updated discussion/retained-response section; no new runtime, dependency or palette is added. The shared navbar normalizes escaped component-title input to plain text and escapes output once, fixing visible ampersand entities without allowing markup execution. Browser evidence and exact limits are in verification.md.
+
+
+## Private replies and saved alerts — 27 October 2026
+
+Community reply and saved-job-alert forms reuse semantic tokens, existing labels/errors/buttons and the shared trapped dialog. Reply text has a visible border/focus ring, character bounds and associated errors. Saved alert cards wrap controls, distinguish active/paused status in text and retain focus after a frequency change. Search sort controls use explicit ascending/descending values and accessible names; view controls expose their pressed state. Private text is escaped and generic portal notices exclude its body.
+
+The existing preference page exposes the same two opt-ins and truthful unavailable email/test-delivery copy. Header action groups wrap on small screens, quiet-hour inputs have associated validation errors and the real native form retains current choices. This targeted extension retains older preference-page interior styles; it does not certify legacy push/SMS delivery or every theme. Actual responsive and keyboard evidence is in verification.md.
+
+
+## Learning notices and confirmed preferences — 27 October 2026
+
+Recorded milestones use the existing rewards panel/grid, bounded pagination, escaped names/descriptions and the owning account's data. New email/course-review preferences reuse native labelled controls, existing buttons/errors and the current semantic tokens. Written-review, correction and reconsideration textareas now have visible borders, padding and focus rings. The rewards page renders its local feedback block only when present, preventing a duplicate shell welcome message.
+
+Unsubscribe confirmation reuses the public app layout, page header, panel and native POST form, with no CDN Tailwind runtime or extra component system. The existing course-review accordion has a named expanded-state control and pauses polling while the form is open; submitted comments use the actual saved field. Browser evidence covers native forms, actual results/history and four required widths. Legacy public assets/interiors, other themes and screen readers retain their documented acceptance limits.
+
+## Soft-skills course materials — 28 October 2026
+
+Five new original SVG covers retain BootKode navy/teal/mint and the existing card/authoring presentation. Lessons use descriptive headings and a consistent goal → concept → worked example → practice → feedback structure. Each course links to a printable PDF and an editable text workbook; the print document uses readable DejaVu Sans, clear headings and the established restrained colours. No stylesheet, frontend runtime, page layout or component framework was added. The existing inline assessment editor continues to contain quizzes and capstones.
+
+
+## Course editorial audit — 28 October 2026
+
+Teaching content belongs in the main reading flow; source/distribution notices belong in clearly named Course Materials. Practice workbooks are printable PDF plus editable text using existing material links. No dashboard palette, component framework or editor layout is changed. Current responsive acceptance is pending database recovery; see [the course audit](course-content-audit-20261028.md).
+
+Database follow-up: all 6,143 regular files were preserved in a separate physical copy. Recovery modes 1–6 on an isolated copy failed at system-space page 0. Course edits remain prepared and unapplied; see the linked audit for preservation paths and recovery limits.

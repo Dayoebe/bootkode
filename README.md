@@ -16,6 +16,8 @@ PHP 8.2+, Laravel 11.46.1, Livewire 3.6.4, Blade, Livewire-owned Alpine, Tailwin
 4. Run `npm run build`, then `php artisan serve`. For active frontend development use `npm run dev` in another terminal. No `public/hot` file should remain when testing a production build.
 5. Configure the queue worker and scheduler for the actual mail/newsletter/job workflows: `php artisan queue:work` and the normal Laravel scheduler. Test external services independently before live use.
 
+Installed Composer dependencies and bootstrap package/service manifests are generated local files and are not tracked. CI verifies installation from the lockfile; see [continuous integration](docs/continuous-integration.md).
+
 The recovered local database contains existing data. Preserve it. The new certificate compatibility migration adds fields required by the existing workflow and retains historical tokens, file paths and statuses.
 
 ## Verification
@@ -37,9 +39,21 @@ Browser QA needs a persistent session driver such as `file`; the test suite's `a
 
 ## Lesson assessments and review
 
-Learners can open the assessment workspace from a lesson. Written submissions remain pending until the course owner or platform reviewer marks every written answer in **Course Management → Assessment Reviews**. Personal **Assessment results** shows retained attempts, published grades and feedback. Draft answers and deadlines persist across reloads; grading keys stay server-side. Unsupported interaction formats are explicitly unavailable. Legacy written records without attempt snapshots require a separate records review.
+Learners can open the assessment workspace from a lesson. Written submissions remain pending until the course owner or platform reviewer marks every written answer in **Course Management → Assessment Reviews**. Personal **Assessment results** shows retained attempts, published grades and feedback. Draft answers and deadlines persist across reloads; grading keys stay server-side. Instructors can open the contextual assessment authoring workspace from a course lesson. Lesson quizzes support matching, ordering and drag-and-drop with labelled keyboard alternatives; malformed legacy definitions require instructor setup. Legacy written records without attempt snapshots require a separate records review.
+
+Finalized written marks support explicit corrections with retained before/after history. Learners can request reconsideration from either existing result screen; course owners/platform reviewers can correct or uphold the mark with a reason. **Assessment Reviews** filters pending, requested-review and finalized submissions. Stale decisions and changed replays are refused. Corrections update future eligibility while retaining existing rewards, completions and issued credentials. This workflow uses existing private attempt metadata and needs no new migration; unsupported historical attempts require a separate records review. Decisions are visible in results; no external notification delivery is claimed.
+
+Project deliverables and file-enabled assignments support private saved draft attachments and instructor marking. Files keep the original requirements and become immutable on submission; authorized learners/reviewers download through verified private routes. Upload limits follow the strictest original instructor, Livewire and PHP configuration (currently 2 MiB locally). Sample answers, rubrics and grading notes remain private, including resumed attempts. Legacy attempts without upload rules keep their original text-only contract.
+
+Configured Q&A topics support saved distinct original responses and optional sharing after submission. Learners must complete the same topic before reviewing a peer. Original approval settings govern shared text and feedback; official marks remain instructor-controlled. Owners can withdraw sharing through retained results even after enrollment ends. Existing text-only attempts retain their original private contract; editing a definition never grants old attempts new sharing permissions.
 
 The session-clock compatibility migration removes an implicit MariaDB timestamp update rule. Back up the affected table before applying forward changes to an existing database; see the verification report for the local application and preservation evidence.
+
+## Community replies and saved alerts
+
+Super/academy administrators can save retained private replies; requesters read them under My Feedback. Members can save real job-search criteria, check new public matches, change frequency and pause/remove owned alerts. Native portal notifications are immediate. Optional email defaults off and follows current opt-ins, source availability and quiet hours; transport acceptance is distinct from delivery. The additive notification migration is backed up and applied locally. Scheduled alerts remain disabled until deployment-specific worker/mail/scheduler acceptance. See [delivery operations and limits](docs/notification-delivery.md).
+
+Written-result finalization, reconsideration requests/decisions and corrections now create private portal notices. Eligible enrolled CBT deadline reminders and completed-course review reminders have real delivery receipts. Recorded milestones appear in owned rewards history. Email uses current opt-ins and quiet hours; scheduled learning reminders remain off by default. Signed unsubscribe links require confirmation and CSRF-protected POST. See [learning delivery rules](docs/notification-delivery.md#learning-events--27-october-2026).
 
 ## Architecture and design
 
@@ -49,7 +63,10 @@ The session-clock compatibility migration removes an implicit MariaDB timestamp 
 - [Implementation roadmap](docs/refactor-roadmap.md)
 - [Route inventory](docs/route-inventory.md)
 - [Verification, known limits and release evidence](docs/verification.md)
+- [CI and dependency release gates](docs/continuous-integration.md)
 - [AI setup and privacy](docs/bootkode-ai.md)
+- [Course content import and generation](docs/course-content-system.md)
+- [Community replies, saved job alerts and email operations](docs/notification-delivery.md)
 - [Contributor and coding-agent standard](AGENTS.md)
 
 Public course discovery is `/courses`; public course summaries are `/courses/{slug}`. Authenticated lesson routes remain protected by enrollment. Shared controls live in `resources/views/components`; tokens live in `resources/css/tokens.css` with existing theme variables in `app.css`. Keep static UI in Blade, interaction in Livewire, and financial/enrollment rules in existing services.

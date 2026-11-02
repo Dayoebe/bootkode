@@ -447,7 +447,7 @@ class User extends Authenticatable implements MustVerifyEmail
     public function getResumeCompletionPercentage()
     {
         $resume = $this->resumeProfile;
-        return $resume ? $resume->getCompletionPercentage() : 0;
+        return $resume ? $resume->completion_percentage : 0;
     }
 
     public function getResumeQualityScore()
@@ -908,6 +908,12 @@ class User extends Authenticatable implements MustVerifyEmail
             'course_review' => true,
             'support_ticket' => true,
             'feedback_response' => true,
+            'community_feedback_response' => ($preferences['email_community_feedback_replies'] ?? false) === true,
+            'job_alert' => ($preferences['email_job_alerts'] ?? false) === true,
+            'assessment_review' => ($preferences['email_assessment_reviews'] ?? false) === true,
+            'cbt_reminder' => ($preferences['email_assignment_reminders'] ?? false) === true,
+            'achievement' => ($preferences['email_achievement_notifications'] ?? false) === true,
+            'course_review_reminder' => ($this->review_reminder_preferences['email_enabled'] ?? false) === true,
             'announcement' => true,
             'system_status' => true,
             default => true,

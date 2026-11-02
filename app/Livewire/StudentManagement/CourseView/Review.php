@@ -12,6 +12,7 @@ class Review extends Component
 {
     use WithPagination;
 
+    #[\Livewire\Attributes\Locked]
     public Course $course;
     public $rating = 5;
     public $comment = '';
@@ -23,6 +24,7 @@ class Review extends Component
     public $sortBy = 'recent';
     public $searchQuery = '';
     
+    #[\Livewire\Attributes\Locked]
     public $editingReview = null;
 
     protected $rules = [
@@ -52,7 +54,7 @@ class Review extends Component
             if ($existing) {
                 $this->editingReview = $existing;
                 $this->rating = $existing->rating;
-                $this->comment = $existing->review_text;
+                $this->comment = $existing->comment;
                 $this->showReviewForm = false;
             }
         }
@@ -81,15 +83,14 @@ class Review extends Component
         
         if ($this->showReviewForm && $this->editingReview) {
             $this->rating = $this->editingReview->rating;
-            $this->comment = $this->editingReview->review_text;
+            $this->comment = $this->editingReview->comment;
         }
     }
 
     public function canReview()
     {
-        return Auth::check() && Auth::user()->enrollments()
-            ->where('course_id', $this->course->id)
-            ->exists();
+        $user = Auth::user()?->fresh();
+        return $user && $user->is_active && $user->email_verified_at && $user->enrollments()->where('course_id', $this->course->id)->exists();
     }
 
     public function submitReview()
@@ -105,11 +106,14 @@ class Review extends Component
         $this->validate();
 
         try {
-            if ($this->editingReview) {
-                $this->editingReview->update([
+            $message = \Illuminate\Support\Facades\DB::transaction(function () {
+                \App\Models\Core\User::whereKey(Auth::id())->lockForUpdate()->firstOrFail();
+                abort_unless($this->canReview(), 403);
+                $review = CourseReview::where('user_id', Auth::id())->where('course_id', $this->course->id)->lockForUpdate()->first();
+            if ($review) {
+                $review->update([
                     'rating' => $this->rating,
                     'comment' => $this->comment,
-                    'review_text' => $this->comment
                 ]);
                 $message = 'Your review has been updated successfully!';
             } else {
@@ -118,11 +122,13 @@ class Review extends Component
                     'user_id' => Auth::id(),
                     'rating' => $this->rating,
                     'comment' => $this->comment,
-                    'review_text' => $this->comment,
                     'is_approved' => true
                 ]);
                 $message = 'Thank you for your review!';
             }
+                app(\App\Services\ReviewReminderService::class)->markReminderCompleted(Auth::user(), $this->course);
+                return $message;
+            });
 
             $this->reset(['rating', 'comment', 'showReviewForm']);
             $this->rating = 5;
@@ -143,7 +149,9 @@ class Review extends Component
 
     public function deleteReview($reviewId)
     {
-        $review = CourseReview::find($reviewId);
+        $user = Auth::user()?->fresh();
+        abort_unless($user && $user->is_active && $user->email_verified_at, 403);
+        $review = CourseReview::where('user_id', Auth::id())->where('course_id', $this->course->id)->find($reviewId);
         
         if ($review && $review->user_id === Auth::id()) {
             $review->delete();

@@ -41,6 +41,26 @@ class CourseAuthoringIntegrityTest extends TestCase
         }
     }
 
+    public function test_course_outline_follows_curriculum_order_instead_of_creation_time(): void
+    {
+        [$owner, $course, $lesson] = $this->fixture();
+        $first = $lesson->section;
+        $first->update(['title' => 'First module', 'order' => 1, 'created_at' => now()->subDays(3)]);
+        $third = Section::create(['course_id' => $course->id, 'title' => 'Third module', 'order' => 3, 'created_at' => now()->subDay()]);
+        $second = Section::create(['course_id' => $course->id, 'title' => 'Second module', 'order' => 2, 'created_at' => now()]);
+        $lesson->update(['order' => 2, 'created_at' => now()->subDay()]);
+        $earlier = Lesson::withoutEvents(fn () => Lesson::create([
+            'section_id' => $first->id, 'title' => 'Earlier learning step',
+            'slug' => 'earlier-learning-step', 'content' => 'Earlier practice', 'order' => 1,
+        ]));
+
+        Livewire::actingAs($owner)
+            ->test(\App\Livewire\CourseManagement\CourseBuilder\CourseOutline::class, ['course' => $course])
+            ->assertSeeInOrder(['First module', 'Second module', 'Third module'])
+            ->assertViewHas('sections', fn ($sections) => $sections->pluck('id')->all() === [$first->id, $second->id, $third->id]
+                && $sections->first()->lessons->pluck('id')->all() === [$earlier->id, $lesson->id]);
+    }
+
     public function test_another_instructor_cannot_open_draft_editors(): void
     {
         [, $course, $lesson, $assessment] = $this->fixture();
@@ -49,6 +69,42 @@ class CourseAuthoringIntegrityTest extends TestCase
         Livewire::test(\App\Livewire\CourseManagement\CourseBuilder\LessonEditor::class, ['lessonId' => $lesson->id])->assertForbidden();
         Livewire::test(\App\Livewire\CourseManagement\CourseBuilder\QuestionManager::class, ['assessmentId' => $assessment->id])->assertForbidden();
         Livewire::test(\App\Livewire\CourseManagement\CoursePreview::class, ['course' => $course])->assertForbidden();
+    }
+
+    public function test_assessment_links_open_the_correct_lesson_in_the_course_builder(): void
+    {
+        [$owner, $course, $lesson] = $this->fixture();
+        $this->actingAs($owner)
+            ->get(route('lesson.assessments.manage', ['lessonId' => $lesson->id]))
+            ->assertRedirect(route('course-builder', [
+                'course' => $course->id, 'lesson' => $lesson->id, 'tab' => 'assessment',
+            ]));
+
+        Livewire::test(\App\Livewire\CourseManagement\CourseBuilder\LessonEditor::class, ['lessonId' => $lesson->id])
+            ->assertSee('Lesson assessments')
+            ->assertDontSee('Open assessment authoring workspace')
+            ->assertDontSee('Lesson assessment authoring');
+    }
+
+    public function test_assessment_link_redirect_preserves_authorization(): void
+    {
+        [, , $lesson] = $this->fixture();
+        $url = route('lesson.assessments.manage', ['lessonId' => $lesson->id]);
+        $this->get($url)->assertRedirect(route('login'));
+        $this->actingAs(User::factory()->create())->get($url)->assertForbidden();
+        $this->actingAs(User::factory()->create(['role' => 'instructor']))->get($url)->assertForbidden();
+    }
+
+    public function test_embedded_assessment_manager_exposes_create_edit_and_question_views(): void
+    {
+        [$owner, , $lesson, $assessment] = $this->fixture();
+        Livewire::actingAs($owner)
+            ->test(\App\Livewire\CourseManagement\CourseBuilder\AssessmentManager::class, ['lessonId' => $lesson->id])
+            ->call('toggleCreateForm')->assertSee('Create assessment')
+            ->call('backToList')->assertSee('Quiz fixture')
+            ->call('editAssessment', $assessment->id)->assertSee('Edit assessment')
+            ->call('backToList')
+            ->call('manageQuestions', $assessment->id)->assertSee('Quiz questions');
     }
 
     public function test_owner_access_and_cross_course_lesson_resolution_are_enforced(): void
