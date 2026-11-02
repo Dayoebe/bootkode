@@ -54,6 +54,7 @@ bootstrap/cache/*.php
 
 !public/build
 /public/hot
+/storage/framework/production-queue-burst.lock
 # /public/js/*.js
 # /public/js/*.map
 # /public/css/*.css

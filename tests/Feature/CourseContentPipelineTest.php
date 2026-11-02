@@ -759,6 +759,7 @@ class CourseContentPipelineTest extends TestCase
         $run = \App\Models\Learning\CourseContentRun::firstOrFail();
         $this->assertSame($run->id, app(AiCourseGenerationService::class)->queue($editor, $input)->id);
         \Illuminate\Support\Facades\Queue::assertPushed(\App\Jobs\GenerateCourseWithAi::class, fn ($job) => $job->runId === $run->id);
+        \Illuminate\Support\Facades\Queue::assertPushed(\App\Jobs\GenerateCourseWithAi::class, 1);
         $this->assertDatabaseCount('courses', 0);
     }
 

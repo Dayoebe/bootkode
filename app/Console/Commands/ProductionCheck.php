@@ -25,9 +25,11 @@ class ProductionCheck extends Command
         $check('application_key', filled(config('app.key')), 'Provision a stable private APP_KEY; retain it across releases and restores.');
         $check('session_cookie', config('session.secure') === true && config('session.http_only') === true, 'Require Secure and HttpOnly session cookies.');
         $check('queue', in_array(config('queue.default'), ['database', 'redis'], true), 'Background work requires an asynchronous database or Redis queue.');
+        $check('default_reservation', (int) config('queue.connections.'.config('queue.default').'.retry_after', 0) > 60, 'The default reservation must exceed the 60-second notification/mail timeout.');
         $check('course_queue', in_array(config('queue.connections.course-content.driver'), ['database', 'redis'], true), 'Course jobs must use the isolated asynchronous connection.');
         $check('bulk_queue', in_array(config('queue.connections.bulk-enrollment.driver'), ['database', 'redis'], true), 'Bulk jobs must use the isolated asynchronous connection.');
         $mode = config('production.queue_mode');
+        $check('supervised_backends', $mode !== 'supervisor' || (config('queue.connections.course-content.driver') === config('queue.default') && config('queue.connections.bulk-enrollment.driver') === config('queue.default')), 'The single supervised worker requires all queue aliases to share the same driver and backing connection.');
         $check('queue_runner', in_array($mode, ['cron', 'supervisor'], true), 'Declare a tested cron or supervised runner; no worker is installed by this command.');
         $check('cron_runtime', $mode !== 'cron' || config('production.cron_max_runtime') >= 660, 'Course jobs need at least 660 seconds of CLI runtime for the documented cron burst.');
         $check('pcntl', extension_loaded('pcntl'), 'CLI pcntl is needed to enforce queue timeouts.');
