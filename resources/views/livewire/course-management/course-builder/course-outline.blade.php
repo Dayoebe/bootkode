@@ -4,7 +4,7 @@
 
     <!-- Create Section Form -->
     <div class="mb-6">
-        <form wire:submit.prevent="createSection" class="flex flex-col sm:flex-row gap-2">
+        <form wire:submit.prevent="createSection" class="flex min-w-0 flex-col gap-2">
             <input type="text" wire:model="newSectionTitle"
                 class="w-full px-4 py-2 bg-themed-tertiary dark:bg-gray-700 border border-themed-primary dark:border-gray-600 rounded-lg text-content dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-brand/30 focus:border-transparent transition-colors duration-300"
                 placeholder="Enter section title..." aria-label="New section title">
@@ -83,7 +83,7 @@
                             <div wire:key="lesson-{{ $lesson->id }}"
                                 class="flex items-center justify-between group p-2 rounded transition-all duration-200
                                         {{ $activeLessonId == $lesson->id
-                                            ? 'bg-blue-500 text-action-foreground shadow-sm transform scale-[1.02]'
+                                            ? 'bg-action text-action-foreground shadow-sm'
                                             : 'bg-themed-secondary dark:bg-gray-600 hover:bg-gray-200 dark:hover:bg-gray-500 text-content dark:text-white' }}">
                                 <div class="flex items-center flex-1 min-w-0">
                                     @if ($editingLessonId === $lesson->id)
@@ -97,8 +97,8 @@
                                         <button wire:click="selectLesson({{ $lesson->id }})"
                                             class="flex items-center flex-1 min-w-0 text-left truncate">
                                             <i aria-hidden="true" class="fas fa-play-circle mr-2 transition-all duration-200
-                                                {{ $activeLessonId == $lesson->id ? 'text-white text-lg' : 'text-blue-600 dark:text-blue-400' }}"></i>
-                                            <span class="truncate transition-all duration-200 {{ $activeLessonId == $lesson->id ? 'text-white font-medium' : '' }}">
+                                                {{ $activeLessonId == $lesson->id ? 'text-action-foreground text-lg' : 'text-blue-600 dark:text-blue-400' }}"></i>
+                                            <span class="truncate transition-all duration-200 {{ $activeLessonId == $lesson->id ? 'text-action-foreground font-medium' : '' }}">
                                                 {{ $lesson->title }}
                                             </span>
                                         </button>
@@ -126,7 +126,7 @@
                                             onclick="return confirm('Delete this lesson? This action cannot be undone.')"
                                             class="opacity-0 group-hover:opacity-100 transition-all duration-200 p-1
                                                 {{ $activeLessonId == $lesson->id
-                                                    ? 'text-white hover:text-red-200'
+                                                    ? 'text-action-foreground hover:opacity-80'
                                                     : 'text-gray-600 dark:text-content-muted hover:text-red-600 dark:hover:text-red-400' }}">
                                             <i aria-hidden="true" class="fas fa-trash text-xs"></i>
                                         </button>
@@ -136,14 +136,16 @@
                         @endforeach
 
                         <!-- Add Lesson Form -->
-                        <form wire:submit.prevent="createLesson({{ $section->id }})" class="flex items-center gap-2 pt-2">
-                            <input type="text" wire:model="newLessonTitles.{{ $section->id }}"
-                                class="flex-1 px-3 py-1 bg-themed-secondary dark:bg-gray-600 border border-themed-primary dark:border-gray-500 rounded text-content dark:text-white placeholder-gray-500 dark:placeholder-gray-400 text-sm focus:ring-2 focus:ring-green-500 focus:border-transparent transition-colors duration-300"
+                        <form wire:submit.prevent="createLesson({{ $section->id }})" class="flex min-w-0 items-center gap-2 pt-2">
+                            <label class="sr-only" for="outline-new-lesson-{{ $section->id }}">New lesson title for {{ $section->title }}</label>
+                            <input id="outline-new-lesson-{{ $section->id }}" type="text" wire:model="newLessonTitles.{{ $section->id }}"
+                                @error('newLessonTitles.' . $section->id) aria-invalid="true" aria-describedby="outline-new-lesson-error-{{ $section->id }}" @enderror
+                                class="bk-input min-w-0 flex-1 text-sm"
                                 placeholder="New lesson title...">
                             <button type="submit"
                                 wire:loading.attr="disabled"
                                 wire:target="createLesson({{ $section->id }})"
-                                class="px-2 py-1 bg-green-600 hover:bg-green-700 disabled:bg-gray-400 text-white rounded text-sm transition-colors duration-300 min-w-[60px] flex items-center justify-center">
+                                class="bk-button bk-button-primary shrink-0 text-sm">
                                 <span wire:loading.remove wire:target="createLesson({{ $section->id }})">
                                     <i aria-hidden="true" class="fas fa-plus mr-1"></i>Add
                                 </span>
@@ -153,7 +155,7 @@
                             </button>
                         </form>
                         @error('newLessonTitles.' . $section->id)
-                            <span class="text-red-600 dark:text-red-400 text-xs">{{ $message }}</span>
+                            <span id="outline-new-lesson-error-{{ $section->id }}" role="alert" class="bk-field-error">{{ $message }}</span>
                         @enderror
                     </div>
                 @endif

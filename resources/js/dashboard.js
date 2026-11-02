@@ -1,8 +1,6 @@
 import Chart from 'chart.js/auto';
-import 'trix';
-import 'trix/dist/trix.css';
 
-// Dashboard charts and the existing course/blog editors share this entry point.
+// Charts and workspace behavior stay here; authoring views request editors separately.
 window.Chart = Chart;
 
 window.bootkodeInterviewTrendChart = (points) => {

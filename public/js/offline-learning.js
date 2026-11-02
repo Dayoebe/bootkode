@@ -1,87 +1,118 @@
 (function () {
-    const PACK_INDEX_KEY = 'bootkode:offline:packs';
-    const PACK_KEY_PREFIX = 'bootkode:offline:pack:';
-    const QUEUE_KEY_PREFIX = 'bootkode:offline:queue:';
+    if (window.bootkodeOffline) return;
+    const OWNER_KEY = 'bootkode:offline:owner';
     const PACK_CACHE = 'bootkode-offline-packs-v1';
-
+    let databasePromise;
+    let syncing;
+    let sessionRevoked = false;
+    function ownerId() {
+        if (sessionRevoked) return 0;
+        const meta = document.querySelector('meta[name="bootkode-user-id"]');
+        try {
+            const owner = meta ? Number(meta.content || 0) : Number(localStorage.getItem(OWNER_KEY) || 0);
+            if (meta) localStorage.setItem(OWNER_KEY, String(owner));
+            return owner;
+        } catch {
+            // The online course remains usable when this secondary device feature is blocked.
+            return meta ? Number(meta.content || 0) : 0;
+        }
+    }
     function readJson(key, fallback) {
-        try {
-            const value = localStorage.getItem(key);
-            return value ? JSON.parse(value) : fallback;
-        } catch (error) {
-            return fallback;
-        }
+        try { return JSON.parse(localStorage.getItem(key) || 'null') ?? fallback; }
+        catch { return fallback; }
     }
-
     function writeJson(key, value) {
-        localStorage.setItem(key, JSON.stringify(value));
+        try { localStorage.setItem(key, JSON.stringify(value)); }
+        catch { throw new Error('Offline metadata could not be saved. Allow device storage or continue learning online.'); }
     }
-
-    function packKey(slug) {
-        return PACK_KEY_PREFIX + slug;
+    function packKey(slug) { return `${ownerId()}:${slug}`; }
+    function metadataKey(slug) { return `bootkode:offline:metadata:${packKey(slug)}`; }
+    function indexKey() { return `bootkode:offline:index:${ownerId()}`; }
+    function packIndex() { return readJson(indexKey(), []); }
+    function storedMetadata(slug) { return readJson(metadataKey(slug), null); }
+    function changed() { window.dispatchEvent(new CustomEvent('bootkode-offline-packs-updated')); }
+    function database() {
+        if (!window.indexedDB) return Promise.reject(new Error('This browser does not support offline learning storage.'));
+        if (!databasePromise) databasePromise = new Promise((resolve, reject) => {
+            const request = indexedDB.open('bootkode-offline-learning', 1);
+            request.onupgradeneeded = () => {
+                request.result.createObjectStore('packs');
+                request.result.createObjectStore('queues');
+            };
+            request.onsuccess = () => { request.result.onversionchange = () => request.result.close(); resolve(request.result); };
+            request.onerror = () => { databasePromise = null; reject(new Error('Offline storage could not be opened. Check device storage permissions.')); };
+        });
+        return databasePromise;
     }
-
-    function queueKey(slug) {
-        return QUEUE_KEY_PREFIX + slug;
+    async function readStore(store, key) {
+        const db = await database();
+        return new Promise((resolve, reject) => {
+            const request = db.transaction(store).objectStore(store).get(key);
+            request.onsuccess = () => resolve(request.result ?? null);
+            request.onerror = () => reject(new Error('Offline data could not be read.'));
+        });
     }
-
-    function absoluteUrl(url) {
-        return new URL(url, window.location.origin).toString();
+    async function writeStore(store, key, value) {
+        const db = await database();
+        return new Promise((resolve, reject) => {
+            const tx = db.transaction(store, 'readwrite');
+            const table = tx.objectStore(store);
+            value === null ? table.delete(key) : table.put(value, key);
+            tx.oncomplete = () => resolve();
+            tx.onerror = tx.onabort = () => reject(new Error('Offline changes could not be saved. Check available device storage.'));
+        });
     }
-
-    function sameOrigin(url) {
-        try {
-            return new URL(url, window.location.origin).origin === window.location.origin;
-        } catch (error) {
-            return false;
-        }
+    async function storedPack(slug) {
+        const pack = await readStore('packs', packKey(slug));
+        return pack && Number(pack.user_id) === ownerId() ? pack : null;
     }
-
-    function csrfToken(pack) {
-        return pack?.csrf_token || document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
+    function metadata(pack) {
+        return {user_id: pack.user_id, course: pack.course, installed_at: pack.installed_at,
+            status: pack.status, pendingCount: pack.pendingCount || 0, estimated_size_mb: pack.estimated_size_mb,
+            cached_asset_count: pack.cached_asset_count, cache_failures: pack.cache_failures || []};
     }
-
-    function packIndex() {
-        return readJson(PACK_INDEX_KEY, []);
+    async function savePack(pack) {
+        if (!ownerId() || Number(pack.user_id) !== ownerId()) throw new Error('Sign in to the account that downloaded this pack.');
+        pack.installed_at ||= new Date().toISOString();
+        delete pack.csrf_token;
+        pack.pendingCount = (await queueFor(pack.course.slug)).length;
+        await writeStore('packs', packKey(pack.course.slug), pack);
+        writeJson(metadataKey(pack.course.slug), metadata(pack));
+        writeJson(indexKey(), [...new Set([...packIndex(), pack.course.slug])]);
+        changed();
     }
-
-    function savePackIndex(index) {
-        writeJson(PACK_INDEX_KEY, Array.from(new Set(index.filter(Boolean))));
-        window.dispatchEvent(new CustomEvent('bootkode-offline-packs-updated'));
+    async function queueFor(slug) { return await readStore('queues', packKey(slug)) || []; }
+    async function changeQueue(slug, update) {
+        const db = await database();
+        const key = packKey(slug);
+        const events = await new Promise((resolve, reject) => {
+            const tx = db.transaction('queues', 'readwrite');
+            const table = tx.objectStore('queues');
+            const read = table.get(key);
+            let next;
+            read.onsuccess = () => { next = update(read.result || []); table.put(next, key); };
+            tx.oncomplete = () => resolve(next);
+            tx.onerror = tx.onabort = () => reject(new Error('Offline progress could not be saved.'));
+        });
+        const info = storedMetadata(slug);
+        if (info) { info.pendingCount = events.length; writeJson(metadataKey(slug), info); }
+        changed();
+        return events;
     }
-
-    function storedPack(slug) {
-        return readJson(packKey(slug), null);
-    }
-
-    function savePack(pack) {
-        pack.installed_at = pack.installed_at || new Date().toISOString();
-        writeJson(packKey(pack.course.slug), pack);
-        savePackIndex([...packIndex(), pack.course.slug]);
-    }
-
-    function queueFor(slug) {
-        return readJson(queueKey(slug), []);
-    }
-
-    function saveQueue(slug, events) {
-        writeJson(queueKey(slug), events);
-        const pack = storedPack(slug);
-        if (pack) {
-            pack.pendingCount = events.length;
-            writeJson(packKey(slug), pack);
-        }
-        window.dispatchEvent(new CustomEvent('bootkode-offline-packs-updated'));
-    }
-
     function getPacks() {
-        return packIndex()
-            .map((slug) => storedPack(slug))
-            .filter(Boolean)
-            .map((pack) => ({
-                ...pack,
-                pendingCount: queueFor(pack.course.slug).length,
-            }));
+        if (!ownerId()) return [];
+        return packIndex().map(storedMetadata).filter(pack => pack && Number(pack.user_id) === ownerId());
+    }
+    function absoluteUrl(url) { return new URL(url, window.location.origin).toString(); }
+    function sameOrigin(url) {
+        try { return new URL(url, window.location.origin).origin === window.location.origin; }
+        catch { return false; }
+    }
+    function cacheableAsset(url) {
+        if (!sameOrigin(url)) return false;
+        const path = new URL(url, location.origin).pathname;
+        return ['/offline.html', '/offline-learning.html', '/manifest.webmanifest'].includes(path)
+            || ['/storage/', '/img/', '/images/', '/icons/', '/js/', '/build/'].some(prefix => path.startsWith(prefix));
     }
 
     async function cachePackUrls(urls, onProgress) {
@@ -90,19 +121,21 @@
         }
 
         const cache = await caches.open(PACK_CACHE);
-        const uniqueUrls = Array.from(new Set(urls.filter(Boolean).map(absoluteUrl))).filter(sameOrigin);
+        const requestedUrls = Array.from(new Set(urls.filter(Boolean).map(absoluteUrl)));
+        const uniqueUrls = requestedUrls.filter(cacheableAsset);
+        const failures = requestedUrls.filter(url => !cacheableAsset(url));
         let cached = 0;
 
         for (const url of uniqueUrls) {
             try {
                 const request = new Request(url, { credentials: 'include' });
                 const response = await fetch(request);
-                if (response.ok) {
+                if (response.ok && !response.redirected && !response.headers.get('cache-control')?.includes('no-store') && (!response.headers.get('content-type')?.includes('text/html') || ['/offline.html', '/offline-learning.html'].includes(new URL(url).pathname))) {
                     await cache.put(request, response.clone());
                     cached++;
-                }
+                } else { failures.push(url); }
             } catch (error) {
-                // Keep going. One missing PDF should not block the whole course pack.
+                failures.push(url); // Text remains available; report incomplete resources truthfully.
             }
 
             if (typeof onProgress === 'function') {
@@ -110,7 +143,7 @@
             }
         }
 
-        return cached;
+        return {cached, failures};
     }
 
     async function installPack(options) {
@@ -131,6 +164,7 @@
         }
 
         const manifest = await response.json();
+        if (!ownerId() || Number(manifest.user_id) !== ownerId()) throw new Error('Sign in to the account that is downloading this pack.');
 
         if (Number(manifest.estimated_size_mb || 0) > storageLimitMb) {
             throw new Error(`This pack is ${manifest.estimated_size_mb} MB, above your ${storageLimitMb} MB limit.`);
@@ -145,82 +179,87 @@
             }
         }
 
-        manifest.cached_asset_count = await cachePackUrls(manifest.cache_urls || [], options.onProgress);
-        manifest.status = 'cached';
+        const assets = await cachePackUrls(manifest.cache_urls || [], options.onProgress);
+        manifest.cached_asset_count = assets.cached;
+        manifest.cache_failures = assets.failures;
+        manifest.status = assets.failures.length ? 'partial' : 'cached';
         manifest.local_completed_ids = manifest.completed_lesson_ids || [];
-        savePack(manifest);
+        await savePack(manifest);
 
         return manifest;
     }
 
     async function removePack(slug) {
-        const pack = storedPack(slug);
+        const pack = await storedPack(slug);
 
         if (pack && 'caches' in window) {
             const cache = await caches.open(PACK_CACHE);
+            const others = await Promise.all(getPacks().filter(item => item.course.slug !== slug).map(item => storedPack(item.course.slug)));
+            const retained = new Set(others.filter(Boolean).flatMap(item => item.cache_urls || []).filter(sameOrigin).map(absoluteUrl));
             for (const url of pack.cache_urls || []) {
-                if (sameOrigin(url)) {
+                if (sameOrigin(url) && !retained.has(absoluteUrl(url))) {
                     await cache.delete(new Request(absoluteUrl(url), { credentials: 'include' }));
                 }
             }
         }
 
-        localStorage.removeItem(packKey(slug));
-        localStorage.removeItem(queueKey(slug));
-        savePackIndex(packIndex().filter((item) => item !== slug));
+        await writeStore('packs', packKey(slug), null);
+        await writeStore('queues', packKey(slug), null);
+        localStorage.removeItem(metadataKey(slug));
+        writeJson(indexKey(), packIndex().filter(item => item !== slug));
+        changed();
     }
 
     function openReader(slug) {
         window.location.href = `/offline-learning.html?course=${encodeURIComponent(slug)}`;
     }
 
-    function queueProgress(slug, event) {
-        const events = queueFor(slug);
-        const eventKey = `${event.type || 'lesson_completed'}:${event.lesson_id}`;
-        const filtered = events.filter((item) => `${item.type || 'lesson_completed'}:${item.lesson_id}` !== eventKey);
-        filtered.push({
-            ...event,
-            queued_at: new Date().toISOString(),
-        });
-        saveQueue(slug, filtered);
+    async function queueProgress(slug, event) {
+        if (!ownerId() || !(await storedPack(slug))) throw new Error('Download this pack for the signed-in account first.');
+        const identity = `${event.type || 'lesson_completed'}:${event.lesson_id}`;
+        const eventId = crypto.randomUUID();
+        await changeQueue(slug, events => [...events.filter(item => `${item.type || 'lesson_completed'}:${item.lesson_id}` !== identity),
+            {...event, event_id: eventId, queued_at: new Date().toISOString()}]);
     }
 
-    async function syncQueuedProgress() {
-        if (!navigator.onLine) {
-            return { synced: 0, offline: true };
-        }
-
-        let synced = 0;
-
-        for (const pack of getPacks()) {
-            const queue = queueFor(pack.course.slug);
-            if (!queue.length || !pack.sync_url) {
-                continue;
-            }
-
-            const response = await fetch(pack.sync_url, {
-                method: 'POST',
-                credentials: 'include',
-                headers: {
-                    Accept: 'application/json',
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': csrfToken(pack),
-                },
-                body: JSON.stringify({ events: queue }),
+    async function performSync() {
+        if (!navigator.onLine) return {synced: 0, offline: true};
+        if (!getPacks().some(pack => pack.pendingCount > 0)) return {synced: 0, pending: 0};
+        const response = await fetch('/offline-learning/session', {credentials: 'include', cache: 'no-store', headers: {Accept: 'application/json'}});
+        if (!response.ok) throw new Error('Sign in again to sync. Your offline progress remains on this device.');
+        const session = await response.json();
+        if (Number(session.user_id) !== ownerId()) throw new Error('Sign in to the account that downloaded these packs. Progress has been retained.');
+        let synced = 0, pending = 0;
+        for (const info of getPacks()) {
+            const pack = await storedPack(info.course.slug);
+            const queue = (await queueFor(info.course.slug)).slice(0, 50);
+            if (!pack || !queue.length || !sameOrigin(pack.sync_url)) continue;
+            const reply = await fetch(pack.sync_url, {
+                method: 'POST', credentials: 'include', cache: 'no-store',
+                headers: {Accept: 'application/json', 'Content-Type': 'application/json', 'X-CSRF-TOKEN': session.csrf_token},
+                body: JSON.stringify({owner_id: session.user_id, events: queue}),
             });
-
-            if (response.ok) {
-                const result = await response.json();
-                synced += Number(result.synced || queue.length);
-                saveQueue(pack.course.slug, []);
-                pack.status = 'synced';
-                pack.last_synced_at = new Date().toISOString();
-                writeJson(packKey(pack.course.slug), pack);
-            }
+            if (!reply.ok) throw new Error(reply.status === 401 || reply.status === 419
+                ? 'Your session expired. Sign in again; pending progress has been retained.'
+                : 'Progress could not be confirmed. Reconnect and retry; pending progress has been retained.');
+            const result = await reply.json();
+            if (!Array.isArray(result.accepted_event_ids)) throw new Error('Sync acknowledgement was incomplete. Pending progress has been retained.');
+            const accepted = new Set(result.accepted_event_ids);
+            const snapshot = new Set(queue.map(event => event.event_id));
+            const remaining = await changeQueue(info.course.slug, current => current.filter(event => !(snapshot.has(event.event_id) && accepted.has(event.event_id))));
+            synced += accepted.size;
+            pending += remaining.length;
+            pack.pendingCount = remaining.length;
+            pack.status = remaining.length ? 'pending' : 'synced';
+            pack.last_synced_at = new Date().toISOString();
+            await savePack(pack);
         }
-
-        window.dispatchEvent(new CustomEvent('bootkode-offline-packs-updated'));
-        return { synced };
+        return {synced, pending};
+    }
+    function syncQueuedProgress() {
+        if (!syncing) syncing = (navigator.locks
+            ? navigator.locks.request('bootkode-offline-sync', performSync) : performSync()).finally(() => { syncing = null; });
+        return syncing;
     }
 
     function panel(options) {
@@ -230,7 +269,7 @@
             status: '',
             progressText: '',
             downloading: false,
-            installed: Boolean(storedPack(options.slug)),
+            installed: Boolean(storedMetadata(options.slug)),
             toggleType(type) {
                 this.selectedTypes = this.selectedTypes.includes(type)
                     ? this.selectedTypes.filter((item) => item !== type)
@@ -251,7 +290,7 @@
                         },
                     });
                     this.installed = true;
-                    this.status = `${pack.course.title} is ready offline.`;
+                    this.status = pack.cache_failures?.length ? `Pack saved; ${pack.cache_failures.length} resource(s) need a retry or an online connection.` : `${pack.course.title}: selected materials saved for offline use.`;
                 } catch (error) {
                     this.status = error.message || 'Offline pack failed.';
                 } finally {
@@ -263,10 +302,11 @@
             },
             async sync() {
                 this.status = 'Syncing offline progress...';
-                const result = await syncQueuedProgress();
-                this.status = result.offline
-                    ? 'You are still offline. Progress will sync when you reconnect.'
-                    : (result.synced > 0 ? `${result.synced} item(s) synced.` : 'No pending progress to sync.');
+                try {
+                    const result = await syncQueuedProgress();
+                    this.status = result.offline ? 'You are still offline. Progress is retained for reconnection.'
+                        : (result.pending ? `${result.synced} confirmed; ${result.pending} pending. Complete required online assessments before retrying.` : `${result.synced} item(s) confirmed.`);
+                } catch (error) { this.status = error.message; }
             },
             async remove() {
                 await removePack(options.slug);
@@ -285,8 +325,8 @@
             .replace(/'/g, '&#039;');
     }
 
-    function readerState(slug) {
-        const pack = storedPack(slug);
+    async function readerState(slug) {
+        const pack = await storedPack(slug);
         if (!pack) {
             return null;
         }
@@ -295,28 +335,32 @@
         return pack;
     }
 
-    function renderReader() {
+    async function renderReader() {
         const root = document.getElementById('offline-reader-root');
         if (!root) {
             return;
         }
 
         const slug = new URLSearchParams(window.location.search).get('course');
-        const pack = readerState(slug);
+        if (!slug && getPacks().length) {
+            root.innerHTML = `<main id="offline-lesson-content" tabindex="-1" class="empty"><div><h1>Choose a downloaded course</h1><p>Downloads on this device belong to the last signed-in account. Sign out before sharing your device.</p>${getPacks().map(pack => `<p><a class="online-link" href="/offline-learning.html?course=${encodeURIComponent(pack.course.slug)}">${escapeHtml(pack.course.title)}</a></p>`).join('')}</div></main>`;
+            return;
+        }
+        const pack = await readerState(slug);
 
         if (!pack) {
             root.innerHTML = `
-                <main class="empty">
+                <main id="offline-lesson-content" tabindex="-1" class="empty">
                     <div class="mark">BK</div>
                     <h1>No offline pack found</h1>
-                    <p>Open the online course once, download its offline learning pack, then return here.</p>
+                    <p>Sign in and download this course for your account, then return here. Older unscoped packs must be downloaded again.</p>
                     <a href="/offline-learning">Back to Offline Learning</a>
                 </main>
             `;
             return;
         }
 
-        let activeLessonId = Number(localStorage.getItem(`bootkode:offline:active:${slug}`) || 0);
+        let activeLessonId = Number(localStorage.getItem(`bootkode:offline:active:${ownerId()}:${slug}`) || 0);
         const firstLesson = pack.sections.flatMap((section) => section.lessons)[0];
         if (!activeLessonId && firstLesson) {
             activeLessonId = Number(firstLesson.id);
@@ -336,7 +380,7 @@
                 <section class="reader-section">
                     <h2>${escapeHtml(section.title)}</h2>
                     ${section.lessons.map((lesson) => `
-                        <button class="lesson-link ${Number(lesson.id) === activeLessonId ? 'active' : ''}" data-lesson-id="${lesson.id}">
+                        <button class="lesson-link ${Number(lesson.id) === activeLessonId ? 'active' : ''}" aria-current="${Number(lesson.id) === activeLessonId ? 'true' : 'false'}" data-lesson-id="${lesson.id}">
                             <span>${escapeHtml(lesson.title)}</span>
                             ${completed.has(Number(lesson.id)) ? '<i>Done</i>' : ''}
                         </button>
@@ -380,7 +424,7 @@
             return `
                 <article class="lesson-panel">
                     <div class="lesson-meta">${escapeHtml(lesson.sectionTitle)} · ${escapeHtml(lesson.duration_minutes || 'Self-paced')} min</div>
-                    <h1>${escapeHtml(lesson.title)}</h1>
+                    <h1 tabindex="-1">${escapeHtml(lesson.title)}</h1>
                     ${lesson.description ? `<p class="description">${escapeHtml(lesson.description)}</p>` : ''}
                     <div class="lesson-body">${lesson.content || '<p>No offline text was included for this lesson.</p>'}</div>
                     ${resources ? `<h2>Resources</h2><div class="resources">${resources}</div>` : ''}
@@ -391,55 +435,60 @@
             `;
         }
 
-        function renderShell() {
+        async function renderShell() {
             const completed = completedSet().size;
             const total = allLessons().length || 1;
-            const pending = queueFor(slug).length;
+            const pending = (await queueFor(slug)).length;
 
             root.innerHTML = `
                 <div class="reader-app">
                     <aside class="reader-nav">
                         <div class="brand">BK</div>
-                        <h1>${escapeHtml(pack.course.title)}</h1>
+                        <h2>${escapeHtml(pack.course.title)}</h2>
                         <p>${completed}/${total} lessons complete · ${pending} pending sync</p>
                         <div class="progress"><span style="width: ${Math.round((completed / total) * 100)}%"></span></div>
                         <button class="sync-btn" data-sync>Sync Progress</button>
                         <a class="online-link" href="${escapeHtml(pack.course.online_url || '/offline-learning')}">Open online course</a>
-                        <nav>${renderLessonList()}</nav>
+                        <details class="reader-lessons" ${window.innerWidth >= 900 ? 'open' : ''}><summary>Lessons</summary><nav aria-label="Downloaded course lessons">${renderLessonList()}</nav></details>
                     </aside>
-                    <main class="reader-content">${renderActiveLesson()}</main>
+                    <main id="offline-lesson-content" tabindex="-1" class="reader-content">${renderActiveLesson()}<p id="offline-sync-status" role="status" aria-live="polite"></p></main>
                 </div>
             `;
 
             root.querySelectorAll('[data-lesson-id]').forEach((button) => {
-                button.addEventListener('click', () => {
+                button.addEventListener('click', async () => {
                     activeLessonId = Number(button.dataset.lessonId);
-                    localStorage.setItem(`bootkode:offline:active:${slug}`, activeLessonId);
-                    renderShell();
+                    localStorage.setItem(`bootkode:offline:active:${ownerId()}:${slug}`, activeLessonId);
+                    await renderShell();
+                    root.querySelector('main h1')?.focus();
                 });
             });
 
             root.querySelectorAll('[data-complete]').forEach((button) => {
-                button.addEventListener('click', () => {
+                button.addEventListener('click', async () => {
                     const lessonId = Number(button.dataset.complete);
-                    pack.local_completed_ids = Array.from(new Set([...(pack.local_completed_ids || []), lessonId]));
-                    writeJson(packKey(slug), pack);
-                    queueProgress(slug, {
-                        type: 'lesson_completed',
-                        lesson_id: lessonId,
-                        completed_at: new Date().toISOString(),
-                        time_spent_seconds: 0,
-                    });
-                    renderShell();
-                    if (navigator.onLine) {
-                        syncQueuedProgress().then(renderShell).catch(() => {});
-                    }
+                    try {
+                        await queueProgress(slug, {type: 'lesson_completed', lesson_id: lessonId, completed_at: new Date().toISOString(), time_spent_seconds: 0});
+                        pack.local_completed_ids = [...new Set([...(pack.local_completed_ids || []), lessonId])];
+                        await savePack(pack);
+                        await renderShell();
+                        if (navigator.onLine) {
+                            try {
+                                const result = await syncQueuedProgress();
+                                document.getElementById('offline-sync-status').textContent = result.pending ? 'Progress saved locally. Required online assessments or pending items still need attention.' : 'Progress confirmed by BootKode.';
+                            } catch (error) { document.getElementById('offline-sync-status').textContent = error.message; }
+                        } else document.getElementById('offline-sync-status').textContent = 'Saved on this device. Reconnect to confirm progress with BootKode.';
+                    } catch (error) { document.getElementById('offline-sync-status').textContent = error.message; }
+
                 });
             });
 
             root.querySelector('[data-sync]')?.addEventListener('click', async () => {
-                await syncQueuedProgress();
-                renderShell();
+                try {
+                    const result = await syncQueuedProgress();
+                    await renderShell();
+                    document.getElementById('offline-sync-status').textContent = result.offline ? 'Still offline. Progress is retained.' : `${result.synced} confirmed; ${result.pending || 0} pending.`;
+                } catch (error) { document.getElementById('offline-sync-status').textContent = error.message; }
             });
         }
 
@@ -457,8 +506,22 @@
     };
 
     window.addEventListener('online', () => {
-        syncQueuedProgress().catch(() => {});
+        syncQueuedProgress().catch(error => {
+            window.showNotification?.(error.message, 'error');
+            const status = document.getElementById('offline-sync-status');
+            if (status) status.textContent = error.message;
+        });
     });
 
-    document.addEventListener('DOMContentLoaded', renderReader);
+    const safeRender = () => renderReader().catch(error => { const root = document.getElementById('offline-reader-root'); if (root) root.textContent = error.message; });
+    document.addEventListener('DOMContentLoaded', safeRender);
+    document.addEventListener('livewire:navigated', () => { sessionRevoked = false; ownerId(); safeRender(); });
+    window.addEventListener('storage', event => {
+        if (event.key !== OWNER_KEY || Number(event.newValue)) return;
+        sessionRevoked = true;
+        databasePromise?.then(db => db.close());
+        databasePromise = null;
+        const root = document.getElementById('offline-reader-root');
+        if (root) root.textContent = 'This account signed out. Sign in and download the course again to continue offline.';
+    });
 })();

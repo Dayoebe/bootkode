@@ -3,6 +3,7 @@
     x-data="{
         theme: localStorage.getItem('theme') || 'light',
         sidebarOpen: false,
+        online: navigator.onLine,
         sidebarCollapsed: localStorage.getItem('sidebar-collapsed') === 'true',
         themes: ['light', 'dark', 'sepia', 'ocean', 'forest'],
         applyTheme(value) {
@@ -23,6 +24,8 @@
         }
     }"
     @keydown.escape.window="sidebarOpen = false"
+    @online.window="online = true"
+    @offline.window="online = false"
     @resize.window="if (window.innerWidth >= 1024) sidebarOpen = false"
     x-init="applyTheme(theme)"
     x-bind:class="theme"
@@ -31,6 +34,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    <meta name="bootkode-user-id" content="{{ auth()->id() ?? '' }}">
     <meta name="theme-color" content="#0f172a">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -127,6 +131,9 @@
             <x-navbar :title="$pageTitle" :description="$pageDescription" :icon="$pageIcon" />
 
             <main id="main-content" tabindex="-1" class="bk-workspace flex-1 px-4 pt-6 sm:px-6 lg:px-8 lg:pt-8">
+                <div x-cloak x-show="!online" role="status" aria-live="polite" class="bk-feedback mb-4">
+                    <p>You are offline. Server actions need a connection. <a href="{{ asset('offline-learning.html') }}" class="underline focus-visible:outline">Open downloaded lessons</a> to continue reading and save progress on this device.</p>
+                </div>
                 <x-ui.flash />
 
                 <div class="bk-page w-full min-w-0">

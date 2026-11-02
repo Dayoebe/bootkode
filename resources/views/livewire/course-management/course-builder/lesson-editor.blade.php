@@ -1,4 +1,7 @@
 <div x-data="lessonEditorManager()">
+    @assets
+        @vite('resources/js/editors.js')
+    @endassets
     <!-- Auto-save Status Indicator -->
     <div x-show="showAutoSaveStatus" x-transition.opacity class="fixed top-4 right-4 z-40">
         <div class="px-3 py-2 rounded-lg shadow-sm text-sm font-medium transition-colors duration-300"
@@ -23,12 +26,12 @@
     <div class="space-y-4">
 
         <!-- Success Message -->
-        @if (session()->has('success'))
+        @if (session()->has('lesson-editor-success'))
             <div x-data="{ show: true }" x-show="show" x-transition.opacity
                  class="bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300 border border-green-200 dark:border-green-700 p-4 rounded-lg flex items-center justify-between transition-colors duration-300">
                 <div class="flex items-center gap-2">
                     <i aria-hidden="true" class="fas fa-check-circle"></i>
-                    {{ session('success') }}
+                    {{ session('lesson-editor-success') }}
                 </div>
                 <button @click="show = false" class="text-green-600 dark:text-green-400 hover:text-green-800 dark:hover:text-green-200 transition-colors duration-300" aria-label="Close">
                     <i aria-hidden="true" class="fas fa-times"></i>

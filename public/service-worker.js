@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'bootkode-pwa-2026-10-20-private-navigation';
+const CACHE_VERSION = 'bootkode-pwa-2026-11-02-account-offline';
 const STATIC_CACHE = `${CACHE_VERSION}-static`;
 const OFFLINE_PACK_CACHE = 'bootkode-offline-packs-v1';
 const OFFLINE_URL = '/offline.html';
@@ -15,7 +15,7 @@ const CORE_ASSETS = [
 self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(STATIC_CACHE)
-      .then((cache) => cache.addAll(CORE_ASSETS))
+      .then((cache) => cache.addAll(CORE_ASSETS.map(url => new Request(url, {cache: 'reload'}))))
       .then(() => self.skipWaiting())
   );
 });
@@ -32,7 +32,7 @@ self.addEventListener('activate', (event) => {
         const packCache = await caches.open(OFFLINE_PACK_CACHE);
         for (const request of await packCache.keys()) {
           const response = await packCache.match(request);
-          if (new URL(request.url).pathname.startsWith('/course/') && response?.headers.get('content-type')?.includes('text/html')) {
+          if (!['/offline.html', '/offline-learning.html'].includes(new URL(request.url).pathname) && response?.headers.get('content-type')?.includes('text/html')) {
             await packCache.delete(request);
           }
         }
@@ -51,24 +51,19 @@ self.addEventListener('fetch', (event) => {
   const requestUrl = new URL(request.url);
 
   if (request.mode === 'navigate') {
-    event.respondWith(
-      fetch(request)
-        .then((response) => {
-          if (response.ok && requestUrl.pathname === '/offline-learning.html') {
-            const copy = response.clone();
-            caches.open(OFFLINE_PACK_CACHE).then((cache) => cache.put(request, copy));
-          }
-
-          return response;
-        })
-        .catch(() => requestUrl.pathname.startsWith('/course/')
-          ? caches.match(OFFLINE_URL)
-          : caches.match(request).then((cached) => cached || caches.match(OFFLINE_URL)))
-    );
+    event.respondWith(fetch(request).catch(() => caches.match(
+      requestUrl.pathname === '/offline-learning.html' ? '/offline-learning.html' : OFFLINE_URL
+    )));
     return;
   }
 
   if (requestUrl.origin !== self.location.origin) {
+    return;
+  }
+
+  // Only explicit downloads populate this cache. Never implicitly cache storage responses.
+  if (requestUrl.pathname.startsWith('/storage/')) {
+    event.respondWith(caches.open(OFFLINE_PACK_CACHE).then(cache => cache.match(request)).then(cached => cached || fetch(request)));
     return;
   }
 
@@ -84,14 +79,16 @@ self.addEventListener('fetch', (event) => {
     event.respondWith(
       caches.open(STATIC_CACHE).then((cache) => (
         cache.match(request).then((cached) => {
-          const fresh = fetch(request).then((response) => {
-            if (response.ok) {
-              cache.put(request, response.clone());
+          if (cached && requestUrl.pathname.startsWith('/build/')) return cached;
+          const fresh = fetch(request).then(async (response) => {
+            if (response.ok && !response.headers.get('cache-control')?.includes('no-store') && (!response.headers.get('content-type')?.includes('text/html') || ['/offline.html', '/offline-learning.html'].includes(requestUrl.pathname))) {
+              await cache.put(request, response.clone());
             }
 
             return response;
           }).catch(() => cached);
 
+          event.waitUntil(fresh.then(() => undefined));
           return cached || fresh;
         })
       ))

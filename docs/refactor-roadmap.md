@@ -195,3 +195,19 @@ Continue with optional diagnostics using the current assessment engine and final
 The [career ledger](learning-ecosystem/career-intelligence.md) extends the original learning transformation. The first slice connects reviewed requirements, private evidence claims/review, current eligibility, actual internal application enforcement, provider search repairs, catalogue learning options and bounded configured-provider advice/extraction. It reuses existing resume, portfolio, interview and mentorship workflows.
 
 Next, finish the learning architecture's general matching/prerequisite and persistent-roadmap boundaries, then connect career gaps to shared course-demand/generation records with retries and notifications. Keep semantic/fuzzy matches out of mandatory evidence decisions unless explicitly reviewed. Add designated counselling credentials/access and private records before presenting counsellors as available. Employer discovery needs verification, explicit learner sharing consent and access audit records; it must not reuse private candidate queries from the Career Centre. Preserve real applications and credentials while adding verified outcomes and partnership analytics. Restore/verify the existing database service and back up affected records before applying the career migration to working data.
+
+## Production and app experience milestone — 2 November 2026
+
+- [x] Restore current local database records non-destructively, independently verify SQL restores, rehearse the two existing additive migrations and retain business-table hashes.
+- [x] Apply compatible dependency security fixes without suppressing remaining advisories or forcing major upgrades.
+- [x] Provide production example, read-only preflight, public-root/PHP examples, cron/supervised queue alternatives, safe migration and backup/GitHub guidance.
+- [x] Bound heavy/background IO, retain generation/row checkpoints, prevent duplicate course dispatch, and protect logs/credentials and uncertain mail acknowledgements.
+- [x] Split editor assets, bound the outline controls and paginate offline library summaries.
+- [x] Deliver account-bound IndexedDB packs/queues, explicit event acknowledgements, replay-safe dates/time/rewards, authoritative lesson/assessment rules and safe navigation/resource caching.
+- [x] Test targeted auth, ownership, payments, upload/privacy, queue/recovery, browser offline/history/editor/error flows and current build/cache commands.
+- [ ] Resolve supported Laravel/JWT dependency set; obtain green security CI before first production release.
+- [ ] Confirm provider PHP/cron/pcntl/runtime limits and perform encrypted off-host database/files/key recovery plus live provider staging acceptance.
+- [ ] Profile larger dashboard/course graphs and conditional chart loading; complete broader enrollment/assessment/notes/bookmarks/certificate journeys under throttled networks.
+- [ ] Complete real Android/iOS/PWA installation/lifecycle, eviction/media variants, all-theme keyboard/screen-reader and representative field performance acceptance. No global LCP/INP/CLS target is certified.
+
+This is a completed coherent milestone within the wider premium-app brief, not completion of all nine phases. Earlier learning-ecosystem and career phases retain their existing unfinished status. See [milestone detail](app-experience-milestone.md).

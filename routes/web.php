@@ -322,6 +322,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/course-catalog', \App\Livewire\StudentManagement\CourseCatalog::class)->name('student.course-catalog');
     Route::get('/learning-analytics', \App\Livewire\StudentManagement\LearningAnalytics::class)->name('student.learning-analytics');
     Route::get('/offline-learning', \App\Livewire\StudentManagement\OfflineLearningLibrary::class)->name('student.offline-learning');
+    Route::get('/offline-learning/session', [\App\Http\Controllers\OfflineLearningController::class, 'session'])->middleware('throttle:30,1')->name('offline-learning.session');
     Route::get('/offline-learning/packs/{course:slug}/manifest', [\App\Http\Controllers\OfflineLearningController::class, 'manifest'])->name('offline-learning.manifest');
     Route::post('/offline-learning/packs/{course:slug}/sync', [\App\Http\Controllers\OfflineLearningController::class, 'sync'])->name('offline-learning.sync');
     Route::get('/saved-resources', \App\Livewire\StudentManagement\SavedResources::class)->name('student.saved-resources');
