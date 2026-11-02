@@ -36,12 +36,12 @@ class ProductionReadinessTest extends TestCase
         $this->app['env'] = 'production';
         config(['services.adzuna.app_key' => 'private-adzuna-marker']);
         $record = new LogRecord(new \DateTimeImmutable, 'test', Level::Error,
-            'Failure private-adzuna-marker https://example.test/callback?token=private-url-marker learner@example.test',
+            'Failure private-adzuna-marker https://example.test/callback?token=private-url-marker learner@example.test cloudinary://api-user:private-cloudinary-marker@asset-cloud',
             ['nested' => ['api_key' => 'hidden-key', 'email' => 'hidden@example.test', 'payload' => ['private' => 'hidden-prompt']],
                 'exception' => new \RuntimeException('hidden-exception-marker'), 'record_id' => 42]);
         $safe = (new ProductionLogProcessor)($record);
         $serialized = json_encode([$safe->message, $safe->context]);
-        foreach (['private-adzuna-marker', 'private-url-marker', 'learner@example.test', 'hidden-key', 'hidden@example.test', 'hidden-prompt', 'hidden-exception-marker'] as $marker) {
+        foreach (['private-adzuna-marker', 'private-url-marker', 'learner@example.test', 'hidden-key', 'hidden@example.test', 'hidden-prompt', 'hidden-exception-marker', 'private-cloudinary-marker'] as $marker) {
             $this->assertStringNotContainsString($marker, $serialized);
         }
         $this->assertSame(42, $safe->context['record_id']);

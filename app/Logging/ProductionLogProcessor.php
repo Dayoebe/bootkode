@@ -47,14 +47,14 @@ class ProductionLogProcessor
 
     public function text(string $value): string
     {
-        foreach (['app.key', 'database.connections.mysql.password', 'services.paystack.secret_key', 'services.adzuna.app_key', 'services.adzuna.app_id', 'services.openai.key', 'bootkode_ai.providers.groq.key', 'mail.mailers.smtp.password', 'services.google.client_secret', 'filesystems.disks.cloudinary.secret'] as $key) {
+        foreach (['app.key', 'database.connections.mysql.password', 'services.paystack.secret_key', 'services.adzuna.app_key', 'services.adzuna.app_id', 'services.openai.key', 'bootkode_ai.providers.groq.key', 'mail.mailers.smtp.password', 'services.google.client_secret', 'services.facebook.client_secret', 'services.twitter.client_secret', 'filesystems.disks.cloudinary.secret', 'filesystems.disks.cloudinary.url', 'filesystems.disks.s3.secret'] as $key) {
             $secret = config($key);
             if (is_string($secret) && strlen($secret) >= 4) {
                 $value = str_replace([$secret, rawurlencode($secret)], '[redacted]', $value);
             }
         }
         $value = preg_replace('/\bBearer\s+[^\s,;]+/i', 'Bearer [redacted]', $value);
-        $value = preg_replace('~(https?://)[^\s/]+:[^\s/@]+@~i', '$1[redacted]@', $value);
+        $value = preg_replace('~([a-z][a-z0-9+.-]*://)[^\s/]+:[^\s/@]+@~i', '$1[redacted]@', $value);
         $value = preg_replace('~(https?://[^\s?]+)\?[^\s]+~i', '$1?[redacted]', $value);
         $value = preg_replace('/[A-Z0-9._%+\-]+@[A-Z0-9.\-]+\.[A-Z]{2,}/i', '[email]', $value);
         $value = preg_replace('/\b(password|api_key|app_key|secret|token|signature)\s*[=:]\s*[^\s,;]+/i', '$1=[redacted]', $value);
