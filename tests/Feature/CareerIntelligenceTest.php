@@ -392,17 +392,25 @@ class CareerIntelligenceTest extends TestCase
         });
     }
 
-    public function test_approved_certificate_supports_only_its_named_credential_and_revocation_is_live(): void
+    public static function certificateStatuses(): array
+    {
+        return [['approved'], ['issued']];
+    }
+
+    #[\PHPUnit\Framework\Attributes\DataProvider('certificateStatuses')]
+    public function test_named_certificate_supports_only_its_credential_and_revocation_is_live(string $status): void
     {
         $f = $this->fixture();
         $course = Course::withoutEvents(fn () => Course::create(['instructor_id' => $f['admin']->id, 'slug' => Str::uuid(), 'title' => 'SQL']));
-        $certificate = Certificate::create(['course_id' => $course->id, 'user_id' => $f['learner']->id, 'status' => Certificate::STATUS_APPROVED]);
+        $certificate = Certificate::create(['course_id' => $course->id, 'user_id' => $f['learner']->id, 'status' => $status]);
         $this->assertFalse($this->eligibility($f)['can_apply']);
         $f['job']->update(['requirements' => 'SQL certificate required.']);
         $this->actingAs($f['admin']);
         $this->publish($f['job'], [['kind' => 'certification', 'label' => 'SQL', 'mandatory' => true, 'minimum_years' => null, 'excerpt' => 'SQL certificate required.']]);
         $this->evidence($f, 'SQL', ['kind' => 'certification', 'source_type' => 'certificate', 'source_id' => $certificate->id]);
         $this->assertTrue($this->eligibility($f)['can_apply']);
+        $certificate->update(['revoked_at' => now()]);
+        $this->assertFalse($this->eligibility($f)['can_apply']);
         $certificate->update(['status' => Certificate::STATUS_REVOKED]);
         $this->assertFalse($this->eligibility($f)['can_apply']);
         $this->assertNotNull($certificate->fresh()->verification_code);

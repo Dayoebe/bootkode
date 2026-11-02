@@ -160,7 +160,7 @@ class CareerCentre extends Component
             'applications' => JobApplication::where('user_id', $user->id)->with('job:id,title')->latest('id')->limit(10)->get(),
             'kinds' => JobRequirementService::KINDS, 'aiConfigured' => app(AiManager::class)->status()['ready'],
             'assessmentSources' => LearningSession::where('user_id', $user->id)->where('activity_type', 'assessment')->whereNotNull('ended_at')->latest('id')->limit(50)->get(['id', 'ended_at', 'metadata']),
-            'certificateSources' => Certificate::where('user_id', $user->id)->where('status', Certificate::STATUS_APPROVED)->with('course:id,title')->limit(50)->get(),
+            'certificateSources' => Certificate::where('user_id', $user->id)->approved()->whereNull('revoked_at')->with('course:id,title')->limit(50)->get(),
             'portfolioSources' => Portfolio::where('user_id', $user->id)->where('status', 'completed')->limit(50)->get(['id', 'title']),
         ]);
     }

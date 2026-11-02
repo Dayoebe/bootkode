@@ -104,7 +104,7 @@ class CompetencyEvidenceService
                 && (float) $results['percentage'] >= (float) $threshold;
         }
         if ($evidence->source_type === 'certificate' && $evidence->kind === 'certification') {
-            $certificate = Certificate::with('course')->where('user_id', $evidence->user_id)->where('status', Certificate::STATUS_APPROVED)->find($evidence->source_id);
+            $certificate = Certificate::with('course')->where('user_id', $evidence->user_id)->approved()->whereNull('revoked_at')->find($evidence->source_id);
 
             return $certificate && filled($certificate->verification_code) && $certificate->course
                 && app(JobRequirementService::class)->normalize($evidence->label) === app(JobRequirementService::class)->normalize($certificate->course->title);

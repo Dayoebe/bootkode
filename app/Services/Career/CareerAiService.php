@@ -57,7 +57,7 @@ class CareerAiService
             'learning_goal' => $profile?->goal, 'self_reported_starting_level' => $profile?->starting_level,
             'self_reported_skills' => $profile?->existing_knowledge['skills'] ?? [],
             'reviewed_evidence' => $evidence,
-            'approved_bootkode_courses' => Certificate::where('user_id', $user->id)->where('status', Certificate::STATUS_APPROVED)->with('course:id,title')->limit(15)->get()->pluck('course.title')->filter()->values()->all(),
+            'approved_bootkode_courses' => Certificate::where('user_id', $user->id)->approved()->whereNull('revoked_at')->with('course:id,title')->limit(15)->get()->pluck('course.title')->filter()->values()->all(),
             'self_reported_portfolio_titles' => Portfolio::where('user_id', $user->id)->orderByDesc('id')->limit(10)->pluck('title')->all(),
             'recorded_internal_application_count' => JobApplication::where('user_id', $user->id)->count(),
         ];
