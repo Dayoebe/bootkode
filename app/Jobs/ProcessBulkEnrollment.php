@@ -2,27 +2,32 @@
 
 namespace App\Jobs;
 
+use App\Models\Admin\BulkEnrollmentBatch;
+use App\Models\Admin\InstitutionUser;
+use App\Models\Core\User;
+use App\Models\Learning\Course;
+use App\Models\Learning\CourseEnrollment;
+use App\Notifications\BulkEnrollmentCompleted;
+use App\Services\InstitutionService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Queue\Middleware\WithoutOverlapping;
 use Illuminate\Queue\SerializesModels;
-use App\Models\Admin\BulkEnrollmentBatch;
-use App\Models\Core\User;
-use App\Models\Learning\Course;
-use App\Models\Learning\CourseEnrollment;
-use App\Models\Admin\InstitutionUser;
-use App\Services\InstitutionService;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Notification;
-use App\Notifications\BulkEnrollmentCompleted;
+use Illuminate\Support\Facades\Storage;
 
 class ProcessBulkEnrollment implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    public $timeout = 3600; // 1 hour timeout
+    public $timeout = 600;
+
+    public bool $failOnTimeout = true;
+
     public $tries = 3;
 
     protected BulkEnrollmentBatch $batch;
@@ -30,43 +35,69 @@ class ProcessBulkEnrollment implements ShouldQueue
     public function __construct(BulkEnrollmentBatch $batch)
     {
         $this->batch = $batch;
+        $this->onConnection('bulk-enrollment')->onQueue('bulk-enrollment')->afterCommit();
+    }
+
+    public function middleware(): array
+    {
+        return [(new WithoutOverlapping('bulk-enrollment-'.$this->batch->id))->releaseAfter(30)->expireAfter(900)];
+    }
+
+    public function backoff(): array
+    {
+        return [60, 180];
     }
 
     public function handle(): void
     {
+        $this->batch->refresh();
+        if (in_array($this->batch->status, ['completed', 'cancelled'], true)) {
+            return;
+        }
+        $editor = $this->batch->creator;
+        if (! $editor || ! $editor->is_active || ! $editor->hasVerifiedEmail() || ! $editor->hasAnyRole(['super_admin', 'academy_admin'])) {
+            throw new \RuntimeException('The original bulk enrollment administrator is no longer authorised.');
+        }
         Log::info('Starting bulk enrollment processing', ['batch_id' => $this->batch->id]);
 
         try {
             $this->batch->start();
-            
+
             $results = $this->processCsvFile();
-            
+
+            if (! $results['complete']) {
+                self::dispatch($this->batch->fresh());
+
+                return;
+            }
+
             $this->batch->updateProgress(
                 $results['processed'],
                 $results['successful'],
                 $results['failed']
             );
-            
+
             $this->batch->complete();
-            
+
             // Send completion notification
             $this->sendCompletionNotification($results);
-            
+
             Log::info('Bulk enrollment completed successfully', [
                 'batch_id' => $this->batch->id,
                 'processed' => $results['processed'],
                 'successful' => $results['successful'],
-                'failed' => $results['failed']
+                'failed' => $results['failed'],
             ]);
-            
+
         } catch (\Exception $e) {
             Log::error('Bulk enrollment failed', [
                 'batch_id' => $this->batch->id,
-                'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString()
+                'exception_type' => $e::class,
             ]);
-            
-            $this->batch->fail($e->getMessage());
+
+            if ($this->batch->fresh()->status !== 'cancelled') {
+                $this->batch->fail('Bulk enrollment stopped. Saved rows are retained; retry to resume.');
+            }
             throw $e;
         }
     }
@@ -75,27 +106,35 @@ class ProcessBulkEnrollment implements ShouldQueue
     {
         $filePath = str_starts_with($this->batch->file_path, DIRECTORY_SEPARATOR)
             ? $this->batch->file_path
-            : storage_path('app/' . $this->batch->file_path);
-        
-        if (!file_exists($filePath)) {
+            : Storage::disk('local')->path($this->batch->file_path);
+
+        if (! file_exists($filePath)) {
             throw new \Exception('CSV file not found');
         }
 
+        $fileHash = hash_file('sha256', $filePath);
+        $savedHash = $this->batch->settings['resume_file_sha256'] ?? null;
+        if ($savedHash && ! hash_equals($savedHash, $fileHash)) {
+            throw new \RuntimeException('The CSV changed after processing started. Upload it as a new batch.');
+        }
+        $this->batch->update(['settings' => array_merge($this->batch->settings ?? [], ['resume_file_sha256' => $fileHash])]);
+
         $handle = fopen($filePath, 'r');
-        if (!$handle) {
+        if (! $handle) {
             throw new \Exception('Could not open CSV file');
         }
 
         $results = [
-            'processed' => 0,
-            'successful' => 0,
-            'failed' => 0
+            'processed' => (int) ($this->batch->settings['resume_row'] ?? 0),
+            'successful' => (int) ($this->batch->settings['resume_successful'] ?? 0),
+            'failed' => (int) ($this->batch->settings['resume_failed'] ?? 0),
+            'complete' => true,
         ];
 
         try {
             // Read header row
             $header = fgetcsv($handle);
-            if (!$header) {
+            if (! $header) {
                 throw new \Exception('CSV file appears to be empty');
             }
 
@@ -109,37 +148,46 @@ class ProcessBulkEnrollment implements ShouldQueue
                 throw new \DomainException('Selected courses are no longer available for enrollment.');
             }
 
-            // Process each row
+            $rowNumber = 0;
+            $sliceStarted = microtime(true);
+            $sliceRows = 0;
             while (($row = fgetcsv($handle)) !== false) {
-                $results['processed']++;
-                
-                try {
-                    $userData = array_combine($header, array_map('trim', $row));
-                    $this->processUserEnrollment($userData, $courses);
-                    $results['successful']++;
-                    
-                } catch (\Exception $e) {
-                    $results['failed']++;
-                    $this->batch->addError(
-                        $e->getMessage(),
-                        $results['processed']
-                    );
-                    
-                    Log::warning('Failed to process enrollment row', [
-                        'batch_id' => $this->batch->id,
-                        'row' => $results['processed'],
-                        'error' => $e->getMessage(),
-                        'data' => $userData ?? 'N/A'
-                    ]);
+                $rowNumber++;
+                if ($rowNumber <= $results['processed']) {
+                    continue;
                 }
-
-                // Update progress every 100 records
-                if ($results['processed'] % 100 === 0) {
-                    $this->batch->updateProgress(
-                        $results['processed'],
-                        $results['successful'],
-                        $results['failed']
-                    );
+                DB::transaction(function () use ($row, $header, $courses, $rowNumber, &$results) {
+                    $this->batch = BulkEnrollmentBatch::query()->lockForUpdate()->findOrFail($this->batch->id);
+                    if ($this->batch->status === 'cancelled') {
+                        throw new \RuntimeException('Bulk enrollment was cancelled.');
+                    }
+                    try {
+                        if (count($header) !== count($row)) {
+                            throw new \RuntimeException('CSV column count is invalid.');
+                        }
+                        $this->processUserEnrollment(array_combine($header, array_map('trim', $row)), $courses);
+                        $results['successful']++;
+                    } catch (\Exception $exception) {
+                        $results['failed']++;
+                        $this->batch->addError('Row could not be enrolled. Check the CSV values and institution capacity.', $rowNumber);
+                        Log::warning('Bulk enrollment row failed', ['batch_id' => $this->batch->id, 'row' => $rowNumber, 'exception_type' => $exception::class]);
+                    }
+                    $results['processed'] = $rowNumber;
+                    $this->batch->update([
+                        'settings' => array_merge($this->batch->settings ?? [], [
+                            'resume_row' => $rowNumber,
+                            'resume_successful' => $results['successful'],
+                            'resume_failed' => $results['failed'],
+                        ]),
+                        'processed_records' => $rowNumber,
+                        'successful_enrollments' => $results['successful'],
+                        'failed_enrollments' => $results['failed'],
+                    ]);
+                });
+                $sliceRows++;
+                if ($sliceRows >= 100 || microtime(true) - $sliceStarted >= 40) {
+                    $results['complete'] = false;
+                    break;
                 }
             }
 
@@ -154,23 +202,23 @@ class ProcessBulkEnrollment implements ShouldQueue
     {
         $requiredHeaders = ['name', 'email'];
         $missingHeaders = array_diff($requiredHeaders, $header);
-        
-        if (!empty($missingHeaders)) {
-            throw new \Exception('Missing required CSV headers: ' . implode(', ', $missingHeaders));
+
+        if (! empty($missingHeaders)) {
+            throw new \Exception('Missing required CSV headers: '.implode(', ', $missingHeaders));
         }
     }
 
     protected function processUserEnrollment(array $userData, $courses): void
     {
-        if (empty($userData['email']) || !filter_var($userData['email'], FILTER_VALIDATE_EMAIL)) {
+        if (empty($userData['email']) || ! filter_var($userData['email'], FILTER_VALIDATE_EMAIL)) {
             throw new \Exception('Invalid or missing email address');
         }
 
         DB::transaction(function () use ($userData, $courses) {
             // Find or create user
             $user = User::where('email', $userData['email'])->first();
-            
-            if (!$user) {
+
+            if (! $user) {
                 $user = User::create([
                     'name' => $userData['name'] ?? explode('@', $userData['email'])[0],
                     'email' => $userData['email'],
@@ -205,7 +253,7 @@ class ProcessBulkEnrollment implements ShouldQueue
                     'department' => $userData['department'] ?? null,
                     'employee_id' => $userData['employee_id'] ?? null,
                     'status' => 'active',
-                    'added_by' => $this->batch->created_by
+                    'added_by' => $this->batch->created_by,
                 ]
             );
 
@@ -221,7 +269,7 @@ class ProcessBulkEnrollment implements ShouldQueue
                         'enrolled_at' => now(),
                         'progress_percentage' => 0,
                         'bulk_batch_id' => $this->batch->id,
-                        'enrollment_type' => 'institution'
+                        'enrollment_type' => 'institution',
                     ]
                 );
 
@@ -247,32 +295,35 @@ class ProcessBulkEnrollment implements ShouldQueue
 
             // Also notify institution admin
             $institutionAdmin = $this->batch->institution->adminUser;
-            if ($institutionAdmin && $institutionAdmin->id !== $creator->id) {
+            if ($institutionAdmin && $institutionAdmin->id !== $creator?->id) {
                 Notification::send($institutionAdmin, new BulkEnrollmentCompleted($this->batch, $results));
             }
 
         } catch (\Exception $e) {
             Log::warning('Failed to send bulk enrollment completion notification', [
                 'batch_id' => $this->batch->id,
-                'error' => $e->getMessage()
+                'exception_type' => $e::class,
             ]);
         }
     }
 
     public function failed(\Throwable $exception): void
     {
+        $this->batch->refresh();
+        if (in_array($this->batch->status, ['completed', 'cancelled'], true)) {
+            return;
+        }
         Log::error('Bulk enrollment job failed', [
             'batch_id' => $this->batch->id,
-            'error' => $exception->getMessage(),
-            'trace' => $exception->getTraceAsString()
+            'exception_type' => $exception::class,
         ]);
 
         try {
-            $this->batch->fail('Job failed: ' . $exception->getMessage());
+            $this->batch->fail('Job failed after retry. Saved rows are retained for recovery.');
         } catch (\Exception $e) {
             Log::error('Failed to update batch status after job failure', [
                 'batch_id' => $this->batch->id,
-                'error' => $e->getMessage()
+                'exception_type' => $e::class,
             ]);
         }
     }

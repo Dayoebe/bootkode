@@ -29,6 +29,13 @@ class ObservabilityService
             $type = $payload['type'] ?? ObservabilityEvent::TYPE_ERROR;
             $summary = $this->limitText((string) ($payload['summary'] ?? 'Production event'), 255);
             $message = $this->limitText((string) ($payload['message'] ?? ''), 12000);
+            if (app()->environment('production')) {
+                $safe = app(\App\Logging\ProductionLogProcessor::class);
+                $summary = $safe->text($summary);
+                $message = $safe->text($message);
+                $payload['context'] = $safe->sanitize($payload['context'] ?? []);
+                $payload['url'] = isset($payload['url']) ? strtok($safe->text($payload['url']), '?') : null;
+            }
             $routeName = $payload['route_name'] ?? null;
             $url = $this->limitText((string) ($payload['url'] ?? ''), 2048) ?: null;
             $fingerprint = $payload['fingerprint'] ?? $this->fingerprint($type, $summary, $routeName, $url, $payload['source'] ?? null, $payload['context'] ?? []);
@@ -89,7 +96,7 @@ class ObservabilityService
             'severity' => $statusCode >= 500 ? ObservabilityEvent::SEVERITY_CRITICAL : ObservabilityEvent::SEVERITY_WARNING,
             'source' => $exception::class,
             'summary' => $this->exceptionSummary($exception),
-            'message' => $exception->getMessage(),
+            'message' => app()->environment('production') ? 'Exception details withheld. Inspect the exception type and code location.' : $exception->getMessage(),
             'url' => $this->requestUrl($request),
             'method' => $request?->method(),
             'route_name' => $request?->route()?->getName(),
@@ -178,7 +185,7 @@ class ObservabilityService
             'severity' => ObservabilityEvent::SEVERITY_ERROR,
             'source' => $payload['displayName'] ?? $event->job->resolveName(),
             'summary' => 'Failed job: ' . ($payload['displayName'] ?? $event->job->resolveName()),
-            'message' => $event->exception->getMessage(),
+            'message' => app()->environment('production') ? 'Queued job failed. Inspect its type, ID and attempt count.' : $event->exception->getMessage(),
             'context' => [
                 'connection' => $event->connectionName,
                 'queue' => $event->job->getQueue(),
@@ -197,7 +204,7 @@ class ObservabilityService
             'severity' => ObservabilityEvent::SEVERITY_ERROR,
             'source' => 'mail',
             'summary' => $summary,
-            'message' => $message,
+            'message' => app()->environment('production') ? 'Mail delivery failed; inspect the event type and related record IDs.' : $message,
             'context' => $context,
         ]);
     }
@@ -209,7 +216,7 @@ class ObservabilityService
             'severity' => $severity,
             'source' => $provider,
             'summary' => $summary,
-            'message' => $message,
+            'message' => app()->environment('production') ? 'Webhook verification failed; inspect the event type and related record IDs.' : $message,
             'url' => request()?->fullUrl(),
             'method' => request()?->method(),
             'route_name' => request()?->route()?->getName(),
@@ -329,7 +336,7 @@ class ObservabilityService
 
     private function exceptionSummary(Throwable $exception): string
     {
-        $message = trim($exception->getMessage());
+        $message = app()->environment('production') ? '' : trim($exception->getMessage());
 
         return $this->limitText(class_basename($exception) . ($message ? ': ' . $message : ''), 255);
     }

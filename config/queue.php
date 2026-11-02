@@ -30,12 +30,23 @@ return [
 
     'connections' => [
 
-        // Isolated reservation window for bounded multi-stage course jobs.
+        // Isolated reservation windows; these aliases never inherit a sync driver.
         'course-content' => [
-            'driver' => 'database',
-            'connection' => env('DB_QUEUE_CONNECTION'),
+            'driver' => env('COURSE_QUEUE_DRIVER', 'database'),
+            'connection' => env('COURSE_QUEUE_DRIVER', 'database') === 'redis'
+                ? env('REDIS_QUEUE_CONNECTION', 'default') : env('DB_QUEUE_CONNECTION'),
             'table' => env('DB_QUEUE_TABLE', 'jobs'),
             'queue' => 'course-content',
+            'retry_after' => 960,
+            'after_commit' => true,
+        ],
+
+        'bulk-enrollment' => [
+            'driver' => env('BULK_QUEUE_DRIVER', 'database'),
+            'connection' => env('BULK_QUEUE_DRIVER', 'database') === 'redis'
+                ? env('REDIS_QUEUE_CONNECTION', 'default') : env('DB_QUEUE_CONNECTION'),
+            'table' => env('DB_QUEUE_TABLE', 'jobs'),
+            'queue' => 'bulk-enrollment',
             'retry_after' => 960,
             'after_commit' => true,
         ],

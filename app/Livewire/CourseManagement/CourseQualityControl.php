@@ -49,6 +49,12 @@ class CourseQualityControl extends Component
     public function runQualityCheck(int $courseId, bool $checkRemoteMedia = false): void
     {
         $course = Course::findOrFail($courseId);
+        if ($checkRemoteMedia) {
+            \App\Jobs\CheckCourseMedia::dispatch($courseId, (int) Auth::id());
+            $this->dispatch('notify', 'Media check queued. Refresh after the course worker finishes to see the saved result.', 'success');
+
+            return;
+        }
         app(CourseQualityService::class)->scanAndPersist($course, Auth::user(), $checkRemoteMedia);
 
         Auth::user()?->logCustomActivity('Ran course quality check', [

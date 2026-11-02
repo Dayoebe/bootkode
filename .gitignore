@@ -5,6 +5,7 @@
 /storage/*.key
 .env
 .env.*
+!.env.production.example
 .png
 .jpg
 

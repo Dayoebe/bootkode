@@ -1,0 +1,18 @@
+; Optional alternative to cron. Do not run this AND the cron queue bursts.
+[program:bootkode-queue]
+command=/usr/bin/php -d memory_limit=256M /srv/bootkode/current/artisan queue:work course-content --queue=default,webhooks,course-content,bulk-enrollment --sleep=3 --tries=3 --backoff=60 --timeout=60 --memory=192 --max-time=3600
+; One worker reads all queues through the 960-second reservation connection.
+; All queue drivers and backing database/Redis connections MUST match in this mode.
+; Per-job 600-second overrides remain below its reservation. Do not use the short
+; default database connection to pop course or bulk jobs.
+numprocs=1
+autostart=true
+autorestart=true
+stopasgroup=true
+killasgroup=true
+stopwaitsecs=660
+user=bootkode
+redirect_stderr=true
+stdout_logfile=/srv/bootkode/shared/storage/logs/queue-worker.log
+stdout_logfile_maxbytes=5MB
+stdout_logfile_backups=2

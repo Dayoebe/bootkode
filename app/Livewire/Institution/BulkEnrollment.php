@@ -113,10 +113,9 @@ class BulkEnrollment extends Component
                     'status' => 'pending',
                     'started_at' => null,
                     'completed_at' => null,
-                    'processed_records' => 0,
-                    'successful_enrollments' => 0,
-                    'failed_enrollments' => 0,
-                    'errors' => []
+                    'processed_records' => (int) ($batch->settings['resume_row'] ?? 0),
+                    'successful_enrollments' => (int) ($batch->settings['resume_successful'] ?? 0),
+                    'failed_enrollments' => (int) ($batch->settings['resume_failed'] ?? 0),
                 ]);
 
                 \App\Jobs\ProcessBulkEnrollment::dispatch($batch);

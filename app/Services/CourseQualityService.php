@@ -6,10 +6,8 @@ use App\Models\Core\User;
 use App\Models\Learning\Course;
 use App\Models\Learning\CourseQualityCheck;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
-use Throwable;
 
 class CourseQualityService
 {
@@ -209,9 +207,12 @@ class CourseQualityService
         $results = [];
         $broken = 0;
         $uncheckedExternal = 0;
+        $remoteDeadline = microtime(true) + 45;
 
         foreach ($items as $item) {
-            $result = $this->checkMediaItem($item, $checkRemoteMedia);
+            $result = $checkRemoteMedia && $this->isExternalUrl($item['value']) && microtime(true) >= $remoteDeadline
+                ? [...$item, 'status' => 'unchecked', 'detail' => 'Remote check time budget reached. Retry to reuse cached results or review manually.']
+                : $this->checkMediaItem($item, $checkRemoteMedia);
             $results[] = $result;
 
             if ($result['status'] === 'broken') {
@@ -458,25 +459,7 @@ class CourseQualityService
 
     private function checkExternalMedia(array $item): array
     {
-        try {
-            $response = Http::timeout(5)->withoutVerifying()->head($item['value']);
-
-            if ($response->status() === 405 || $response->status() === 403) {
-                $response = Http::timeout(5)->withoutVerifying()->get($item['value']);
-            }
-
-            return [
-                ...$item,
-                'status' => ($response->successful() || ($response->status() >= 300 && $response->status() < 400)) ? 'ok' : 'broken',
-                'detail' => 'HTTP '.$response->status(),
-            ];
-        } catch (Throwable $exception) {
-            return [
-                ...$item,
-                'status' => 'broken',
-                'detail' => Str::limit($exception->getMessage(), 180),
-            ];
-        }
+        return [...$item, ...app(PublicMediaProbe::class)->check($item['value'])];
     }
 
     private function normalizeLocalPath(string $value): ?string

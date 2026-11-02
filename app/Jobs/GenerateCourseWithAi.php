@@ -29,7 +29,7 @@ class GenerateCourseWithAi implements ShouldQueue
 
     public function middleware(): array
     {
-        return [(new WithoutOverlapping('course-ai-run-'.$this->runId))->expireAfter(1800)];
+        return [(new WithoutOverlapping('course-ai-run-'.$this->runId))->releaseAfter(30)->expireAfter(900)];
     }
 
     public function backoff(): array

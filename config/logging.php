@@ -63,6 +63,7 @@ return [
             'path' => storage_path('logs/laravel.log'),
             'level' => env('LOG_LEVEL', 'warning'),
             'replace_placeholders' => true,
+            'tap' => [\App\Logging\SanitizeProductionLogs::class],
         ],
 
         'daily' => [
@@ -71,6 +72,7 @@ return [
             'level' => env('LOG_LEVEL', 'warning'),
             'days' => env('LOG_DAILY_DAYS', 14),
             'replace_placeholders' => true,
+            'tap' => [\App\Logging\SanitizeProductionLogs::class],
         ],
 
         'slack' => [
@@ -80,6 +82,7 @@ return [
             'emoji' => env('LOG_SLACK_EMOJI', ':boom:'),
             'level' => env('LOG_LEVEL', 'critical'),
             'replace_placeholders' => true,
+            'tap' => [\App\Logging\SanitizeProductionLogs::class],
         ],
 
         'papertrail' => [
@@ -102,6 +105,7 @@ return [
                 'stream' => 'php://stderr',
             ],
             'formatter' => env('LOG_STDERR_FORMATTER'),
+            'tap' => [\App\Logging\SanitizeProductionLogs::class],
             'processors' => [PsrLogMessageProcessor::class],
         ],
 
@@ -110,12 +114,14 @@ return [
             'level' => env('LOG_LEVEL', 'warning'),
             'facility' => env('LOG_SYSLOG_FACILITY', LOG_USER),
             'replace_placeholders' => true,
+            'tap' => [\App\Logging\SanitizeProductionLogs::class],
         ],
 
         'errorlog' => [
             'driver' => 'errorlog',
             'level' => env('LOG_LEVEL', 'warning'),
             'replace_placeholders' => true,
+            'tap' => [\App\Logging\SanitizeProductionLogs::class],
         ],
 
         'null' => [

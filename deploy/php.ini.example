@@ -1,0 +1,15 @@
+; Provider-managed PHP 8.4 FPM settings; measured staging traffic determines concurrency.
+expose_php = Off
+display_errors = Off
+log_errors = On
+zend.exception_ignore_args = On
+memory_limit = 256M
+max_execution_time = 60
+upload_max_filesize = 12M
+post_max_size = 14M
+opcache.enable = 1
+opcache.memory_consumption = 128
+opcache.max_accelerated_files = 20000
+opcache.validate_timestamps = 1
+; Keep timestamp checks until every release reliably reloads PHP-FPM/OPcache.
+; CLI queue workers require pcntl and a host process budget of at least 660 seconds.

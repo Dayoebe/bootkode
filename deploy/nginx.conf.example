@@ -1,0 +1,23 @@
+# Example only: set real paths, domain, TLS and the correct PHP-FPM socket in the host panel.
+server {
+    listen 443 ssl;
+    server_name bootkode.example;
+    root /srv/bootkode/current/public;
+    index index.php;
+    # Configure valid ssl_certificate and ssl_certificate_key via the provider.
+    client_max_body_size 14m;
+    add_header X-Content-Type-Options nosniff always;
+    add_header X-Frame-Options SAMEORIGIN always;
+    add_header Referrer-Policy strict-origin-when-cross-origin always;
+    location / { try_files $uri $uri/ /index.php?$query_string; }
+    location = /index.php {
+        include fastcgi_params;
+        fastcgi_param SCRIPT_FILENAME $realpath_root$fastcgi_script_name;
+        fastcgi_param DOCUMENT_ROOT $realpath_root;
+        fastcgi_pass unix:/run/php/php8.4-fpm.sock;
+        fastcgi_read_timeout 65s;
+    }
+    location ~ \.php$ { return 404; }
+    location ~ /\.(?!well-known).* { deny all; }
+    # Never add aliases to storage/app or a backup directory.
+}

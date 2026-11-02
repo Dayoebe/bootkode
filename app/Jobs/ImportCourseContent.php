@@ -29,7 +29,7 @@ class ImportCourseContent implements ShouldQueue
 
     public function middleware(): array
     {
-        return [(new WithoutOverlapping('course-import-run-'.$this->runId))->expireAfter(900)];
+        return [(new WithoutOverlapping('course-import-run-'.$this->runId))->releaseAfter(30)->expireAfter(900)];
     }
 
     public function backoff(): array
