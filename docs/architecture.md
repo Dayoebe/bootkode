@@ -1,10 +1,10 @@
 # BootKode architecture
 
-BootKode is a Laravel 11 / Livewire 3 modular monolith. Blade and Alpine support server-rendered journeys; no new frontend framework is required.
+BootKode is a Laravel 12 / Livewire 3 modular monolith. Blade and Alpine support server-rendered journeys; no new frontend framework is required.
 
 ## Responsibilities
 
-- `routes/web.php` and `routes/auth.php`: stable named URL contracts, authentication, verification and role middleware. Laravel 11 middleware registration belongs in `bootstrap/app.php`; the old `app/Http/Kernel.php` is not the active registration mechanism.
+- `routes/web.php` and `routes/auth.php`: stable named URL contracts, authentication, verification and role middleware. Laravel 12 middleware registration belongs in `bootstrap/app.php`; the old `app/Http/Kernel.php` is not the active registration mechanism.
 - `app/Livewire/<domain>`: interactive form state, validation, authorization, pagination and orchestration. Check sensitive authorization on every request, including Livewire hydration.
 - `app/Http/Controllers`: HTTP-only callbacks, auth, downloads and public verification. Gateway callbacks delegate verified financial mutations to services.
 - `app/Services`: multi-record operations and reusable business rules. Transactions must not escape through early returns; financial operations lock current records before checking balances or statuses.
@@ -246,7 +246,7 @@ The extension keeps `JobPortal`, `JobApplication`, private resume downloads, res
 
 ## Production and app reliability milestone — 2 November 2026
 
-The installed framework remains Laravel 11.46.1; a supported-version/security dependency resolution is a release gate. No framework/frontend rewrite or application dependency was added. See [production readiness](deployment/production-readiness.md) and the [staged runbook](deployment/first-release-checklist.md) for the single-node 2 GiB profile, database/Redis aliases, cron bursts, private persistence and restore boundaries.
+The installed framework is Laravel 12.70.2 with the compatible Socialite/JWT set; locked Composer and npm audits are clear. The upgrade required no frontend rewrite or new application subsystem. See [production readiness](deployment/production-readiness.md) and the [staged runbook](deployment/first-release-checklist.md) for the single-node 2 GiB profile, database/Redis aliases, cron bursts, private persistence and restore boundaries.
 
 Long course jobs now reserve one dispatch per run as well as retaining their staged processing locks/checkpoints. The lock expires after the 600-second job deadline and before the 960-second reservation retry. Bulk enrollments checkpoint each committed row and use bounded continuations. Newsletter delivery claims are locked and uncertain SMTP acknowledgement requires reconciliation. Media QA is queued with reviewer reauthorization and DNS-pinned public metadata checks. Production debug/log/exception safeguards and read-only preflight are explicit; a clean `--no-dev` runtime install and cached configuration/routes/views were verified in an isolated test copy.
 
@@ -259,3 +259,9 @@ Chart.js and chart-only Alpine factories now live in `resources/js/charts.js`. C
 `StudentDashboard::learningProgress()` owns a bounded six-query projection for the six visible enrollments: completed IDs, enrollments, course/instructor, sections and published lessons. It calculates visible totals/next steps in memory and supplies upcoming lesson tasks from the same computed result. It does not cache authenticated HTML or move enrollment/access decisions into JavaScript. Secondary dashboard projections report exceptions and return typed fallbacks; the Blade layer replaces only the failed panel with a retryable status. Primary learning data, writes and domain services remain authoritative.
 
 Dashboard reads no longer initialize gamification rows. `LearningSession::getStudyStreak()` selects distinct completed activity dates once and computes at most 365 consecutive days in PHP. These are read-path changes with no migration or working-record rewrite. See [milestone 2](app-experience-milestone-2.md) for measurements, test boundaries and remaining acceptance.
+
+## Premium app completion — 3 November 2026
+
+Theme and collapsed-sidebar state are applied in the document head before the dashboard shell paints. Optional MathJax is requested only by the CBT surface, authenticated marketing analytics requires saved consent, and conditional editor panes use the existing `x-cloak` contract. The shared app entry owns one service-worker install/update controller and exposes a factual install/update prompt; authenticated course HTML is never implicitly cached.
+
+`AssessmentResultService` projects a lesson's assessment summaries from one question graph, one owned-answer query and one completed-session query. Lesson notes and bookmarks are separate owned `SavedResource` types so removing one cannot delete the other. Course completion locks the owned enrollment, rechecks the certificate inside one transaction, persists completion/certificate state together, and isolates post-commit asset/notification delivery. Soft-deleted certificate numbers remain in the uniqueness sequence. See [premium app completion](app-experience-completion.md) for tests, browser evidence and external limits.

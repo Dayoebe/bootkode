@@ -4,30 +4,30 @@
 
 ## Current assessment
 
-**63/100, release blocked.** This is an engineering checklist assessment, not a security certification, load benchmark or guarantee of user capacity. Critical gates override the score.
+**71/100, release blocked.** This is an engineering checklist assessment, not a security certification, load benchmark or guarantee of user capacity. Critical gates override the score.
 
 | Area | Earned / available | Current evidence and limit |
 | --- | --- | --- |
-| Runtime and dependencies | 7 / 15 | PHP requirements checked; reproducible locks; unsupported Laravel 11 and unresolved Composer advisories |
+| Runtime and dependencies | 15 / 15 | Supported Laravel 12.70.2; reproducible locks; Composer and npm audits clear |
 | Security and access | 12 / 20 | Existing authentication, ownership, wallet and admin coverage; new production logging/debug safeguards; live hosting security unverified |
 | Data and recovery | 16 / 20 | Current records recovered and independently restored; off-host encrypted retention and recovery SLA not yet established |
 | Background operations | 12 / 15 | Queued generation, checkpoints, bounded workers and retry windows; actual provider CLI allowance unverified |
 | Hosting and resource fit | 5 / 10 | Conservative 2 GiB single-node configuration; no target host or representative load measurements |
-| Release reproducibility | 7 / 10 | Locked installs, CI, build, preflight and runbooks; repository push credentials and green dependency gate remain required |
+| Release reproducibility | 7 / 10 | Locked installs, CI, build, preflight and runbooks; repository push credentials and a current remote CI run remain required |
 | External integrations | 4 / 10 | Controlled API failure/replay tests; real mail, payment, AI, vacancy licence and provider-account acceptance remain open |
 
 ### Critical blockers
 
-1. The repository actually requires `laravel/framework:^11.46` and runs **11.46.1**, not Laravel 12. Laravel 11 security support ended 12 March 2026. The current audit reports **six advisories across two PHP packages**, including a critical Laravel advisory and a low-severity `firebase/php-jwt` advisory. A separately reviewed supported-framework upgrade and compatible upstream JWT resolution are required before launch. Do not disable audit policy or force unrelated major upgrades. The compatible Symfony Mime patch was applied; NPM now reports zero advisories.
-2. Confirm a host supports the documented cron CLI runtime (at least 660 seconds), `pcntl`, MySQL/MariaDB, writable persistent storage and minute-level cron. A provider that kills every process after 30–60 seconds cannot run the existing 600-second generation/import jobs through this profile. Arrange a permitted external runner or a separate smaller-stage implementation before enabling those workflows.
-3. Establish private encrypted off-host backups, test a host-level restore including uploads and APP_KEY, and monitor backup age. Local restore evidence alone does not establish disaster recovery.
-4. Complete HTTPS/domain/proxy, transactional email, Paystack sandbox/webhook, AI account limits, Adzuna licence/quota and media-provider acceptance in staging. Controlled fixtures are not live-provider proof.
+1. Confirm a host supports the documented cron CLI runtime (at least 660 seconds), `pcntl`, MySQL/MariaDB, writable persistent storage and minute-level cron. A provider that kills every process after 30–60 seconds cannot run the existing 600-second generation/import jobs through this profile. Arrange a permitted external runner or a separate smaller-stage implementation before enabling those workflows.
+2. Establish private encrypted off-host backups, test a host-level restore including uploads and APP_KEY, and monitor backup age. Local restore evidence alone does not establish disaster recovery.
+3. Complete HTTPS/domain/proxy, transactional email, Paystack sandbox/webhook, AI account limits, Adzuna licence/quota and media-provider acceptance in staging. Controlled fixtures are not live-provider proof.
+4. Run the locked clean-install workflow and dependency gate on the delivered remote commit. Local Composer/npm audits are clear, but unavailable GitHub credentials prevent current remote CI evidence.
 
-Official references: [Laravel support policy](https://laravel.com/docs/12.x/releases), [security advisories](https://github.com/laravel/framework/security/advisories), [deployment](https://laravel.com/docs/11.x/deployment), [queue timeout/reservation rules](https://laravel.com/docs/11.x/queues). Recheck these at release time.
+Official references: [Laravel support policy](https://laravel.com/docs/12.x/releases), [security advisories](https://github.com/laravel/framework/security/advisories), [deployment](https://laravel.com/docs/12.x/deployment), [queue timeout/reservation rules](https://laravel.com/docs/12.x/queues). Recheck these at release time.
 
 ## Inspected architecture and preserved contracts
 
-The application uses Laravel 11.46.1 / PHP `^8.2`, Livewire 3.6.4 with its own Alpine runtime, Tailwind 3.4.19, Vite 7.3.7, MySQL-specific migrations, Spatie roles, private assessments and uploads, wallet/course enrollment, historical certificates, mentorship, careers, institutions and explicit offline packs. PHP 8.4 is the tested CLI baseline. Node 20.20.2 builds locally; CI uses Node 22. Keep the lockfiles; do not run updates during deployment.
+The application uses Laravel 12.70.2 / PHP `^8.2`, Livewire 3.8.11 with its own Alpine runtime, Tailwind 3.4.19, Vite 7.3.7, MySQL-specific migrations, Spatie roles, private assessments and uploads, wallet/course enrollment, historical certificates, mentorship, careers, institutions and explicit offline packs. PHP 8.4 is the tested CLI baseline. Node 20.20.2 builds locally; CI uses Node 22. Keep the lockfiles; do not run updates during deployment.
 
 Direct dependency review found existing PDF engines (Dompdf/mPDF), QR libraries, image processing, Cloudinary, Socialite/Google OAuth, Scout/Algolia, purification and permissions/activity packages. No dependency was added. Removing apparently overlapping libraries without verifying their callers would risk existing résumé/certificate/export workflows. `laravel/pail` is currently a production dependency but is a CLI tool: do not run it as a production background process. `composer install --no-dev --prefer-dist --optimize-autoloader` excludes development-only tooling; further package cleanup requires a separate caller audit.
 
@@ -75,4 +75,4 @@ Public catalog statistics already use an appropriate cache; Adzuna caches provid
 
 See [verification](../verification.md) for current test/build/browser counts and limits. Current recovery evidence is private under `/home/olamilekan/.local/share/bootkode/recovery-20261102/`: all 138 source tables / 605 rows matched an independent MariaDB restore, 237 foreign keys passed, and 133 business-table hashes/old fields survived the two rehearsed additive migrations. Working service is `bootkode-database.service` on loopback 3308. Original corrupted directories were retained. The old XAMPP MySQL at 3306 is still corrupt; do not repoint BootKode to it or delete its system tablespace.
 
-Next gates: supported dependency set, host capability confirmation, encrypted off-host recovery rehearsal, sandbox/live-provider acceptance, representative load and responsive/PWA journey acceptance. GitHub push/deployment requires actual credentials and green release gates; no deployment success is claimed.
+Next gates: host capability confirmation, encrypted off-host recovery rehearsal, sandbox/live-provider acceptance, representative load, physical-device PWA acceptance and remote CI. The supported dependency set, complete synthetic learner journey and responsive/browser gate are verified locally. GitHub push/deployment requires actual credentials and green release gates; no deployment success is claimed.

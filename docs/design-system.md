@@ -176,3 +176,9 @@ The dashboard's network status uses existing feedback styles and distinguishes d
 Secondary dashboard panels use `ui.widget-unavailable` when their loader fails. The component is a normal semantic panel with a secondary heading, polite status semantics, factual preservation copy and a touch-sized retry control. It neither substitutes zero values as successful data nor exposes exception details. The primary learning workspace stays present. This extends the existing panel/button/focus system; it adds no palette, animation, dialog pattern or frontend runtime.
 
 Chart views request the chart entry through Livewire assets. Non-chart routes do not render an empty chart shell or download Chart.js. Existing empty-chart states remain text-labelled, keyboard-neutral content and now construct their label without interpolated HTML.
+
+## Premium shell stability and install prompts — 3 November 2026
+
+Theme and desktop-sidebar state are applied from saved preference in the document head before the dashboard shell paints. Conditional Alpine content that starts hidden uses the shared `[x-cloak]` rule; it must not flash conflict, save-state, submenu or editor panes before hydration. New colors continue to use semantic RGB variables. Ocean and forest accent values are chosen so the tested text/accent pairs remain above 4.5:1 in light, dark, sepia, ocean and forest themes.
+
+The shared PWA prompt is a factual install/update status surface, not a promotional modal. It uses existing panel/button tokens, a polite live region and explicit dismiss/install/update actions. The browser-native install event remains authoritative; unsupported browsers receive no false install claim. Service-worker updates wait for the user's update action rather than forcibly interrupting active learning. See [premium app completion](app-experience-completion.md) for controlled responsive/contrast evidence and the physical-device limit.

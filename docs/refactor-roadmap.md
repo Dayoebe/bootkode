@@ -226,3 +226,18 @@ This is a completed coherent milestone within the wider premium-app brief, not c
 - [ ] Resolve the supported Laravel/JWT dependency set and obtain a green unsuppressed security gate.
 
 This milestone does not complete the nine-phase brief or change the existing deployment score. Detail and exact limits: [app-experience-milestone-2.md](app-experience-milestone-2.md).
+
+## Premium app completion — 3 November 2026
+
+- [x] Upgrade to Laravel 12.70.2 with compatible Socialite/JWT releases and clear Composer/npm audits without suppressions.
+- [x] Apply theme/sidebar state before first paint, cloak conditional editor/sidebar content and enforce CLS <= 0.1 across the authenticated browser matrix.
+- [x] Scope MathJax to CBT and authenticated marketing analytics to explicit saved consent.
+- [x] Bound dense assessment summaries independently of assessment/question count and retain authored/passing semantics.
+- [x] Add owned independent lesson notes/bookmarks and prove assessment resume, lesson progression and certificate visibility in a complete `_test` browser journey.
+- [x] Lock and atomically persist enrollment completion plus replay-safe certificate issuance; keep soft-deleted certificate numbers unique.
+- [x] Add one shared PWA install/update lifecycle while preserving explicit private-pack caching and never implicitly caching authenticated course HTML.
+- [x] Verify five themes, focus/skip-link behavior, labels, duplicate IDs and touch targets at 390px and 1440px; verify the wider responsive/offline/editor matrix from 360px to 1920px.
+- [ ] Complete physical Android/iOS install/update/eviction acceptance, field LCP/INP/CLS monitoring and representative production-load profiling.
+- [ ] Complete host/cron/pcntl, encrypted off-host restore, HTTPS/SMTP/Paystack/OAuth/AI/media-provider staging and current remote CI acceptance.
+
+The application-controlled premium experience work is complete. The open items require deployment infrastructure, real devices, field traffic or provider accounts and therefore remain explicit release gates rather than fabricated local success. Earlier learning-ecosystem/career roadmap items are not implicitly completed. Detail: [app-experience-completion.md](app-experience-completion.md).
