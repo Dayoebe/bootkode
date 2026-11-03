@@ -73,3 +73,5 @@ Open acceptance remains substantial: representative production-data timing, phys
 ## Next milestone
 
 Exercise the complete discover/enroll/continue/assessment/notes/bookmarks/certificate journey in a dedicated browser database under throttled, offline and reconnect conditions. Profile the course workspace’s large assessment graph and split optional MathJax/analytics assets only where evidence supports it. Keep payment/provider and real-device acceptance separate, and resolve the supported Laravel/JWT dependency set before any release claim.
+
+Local delivery commits are `28c2b7fe` (implementation, tests and built assets) and `9fab76a6` (documentation and evidence) on `feat/premium-app-experience-milestone-2`. The ordinary GitHub push failed because HTTPS credentials are unavailable (`could not read Username`); no remote delivery or deployment is claimed.
