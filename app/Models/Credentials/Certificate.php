@@ -2,44 +2,48 @@
 
 namespace App\Models\Credentials;
 
+use App\Models\Core\User;
+use App\Models\Learning\Course;
+use App\Services\CertificateService;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Str;
-use App\Services\CertificateService;
-use App\Models\Core\User;
-use App\Models\Learning\Course;
 
 class Certificate extends Model
 {
     use HasFactory, SoftDeletes;
 
     const STATUS_REQUESTED = 'requested';
+
     const STATUS_PENDING = 'pending';
+
     const STATUS_APPROVED = 'approved';
+
     const STATUS_REJECTED = 'rejected';
+
     const STATUS_REVOKED = 'revoked';
 
-// In your Certificate.php model
-protected $fillable = [
-    'user_id', 'course_id', 'certificate_number', 'verification_code',
-    'status', 'approved_at', 'issued_by', 'requested_at', // Use existing columns
-    'rejected_at', 'rejected_by', 'rejection_reason',
-    'revoked_at', 'revoked_by', 'revocation_reason',
-    'issued_date', 'completed_at', 'grade', 'credits', // Use completed_at instead of completion_date
-    'certificate_template', 'metadata', 'verification_url',
-    'qr_code_path', 'pdf_path',
-];
+    // In your Certificate.php model
+    protected $fillable = [
+        'user_id', 'course_id', 'certificate_number', 'verification_code',
+        'status', 'approved_at', 'issued_by', 'requested_at', // Use existing columns
+        'rejected_at', 'rejected_by', 'rejection_reason',
+        'revoked_at', 'revoked_by', 'revocation_reason',
+        'issued_date', 'completed_at', 'grade', 'credits', // Use completed_at instead of completion_date
+        'certificate_template', 'metadata', 'verification_url',
+        'qr_code_path', 'pdf_path',
+    ];
 
-protected $casts = [
-    'requested_at' => 'datetime',
-    'rejected_at' => 'datetime',
-    'approved_at' => 'datetime',
-    'completed_at' => 'datetime', // Use completed_at
-    'issued_date' => 'datetime',
-    'revoked_at' => 'datetime',
-    'metadata' => 'array',
-];
+    protected $casts = [
+        'requested_at' => 'datetime',
+        'rejected_at' => 'datetime',
+        'approved_at' => 'datetime',
+        'completed_at' => 'datetime', // Use completed_at
+        'issued_date' => 'datetime',
+        'revoked_at' => 'datetime',
+        'metadata' => 'array',
+    ];
 
     // ========== RELATIONSHIPS ==========
     public function user()
@@ -99,7 +103,7 @@ protected $casts = [
         $year = now()->year;
         $courseCode = strtoupper(substr(preg_replace('/[^A-Za-z0-9]/', '', $this->course->title ?? 'CERT'), 0, 3));
         $sequence = str_pad($this->getNextSequenceNumber(), 4, '0', STR_PAD_LEFT);
-        
+
         return "CERT-{$year}-{$courseCode}-{$sequence}";
     }
 
@@ -111,57 +115,78 @@ protected $casts = [
     private function getNextSequenceNumber(): int
     {
         $currentYear = now()->year;
-        $lastNumber = static::whereYear('created_at', $currentYear)
-            ->orderBy('created_at', 'desc')
-            ->first()
-            ?->id ?? 0;
-        
+        $lastNumber = (int) static::withTrashed()
+            ->whereYear('created_at', $currentYear)
+            ->max('id');
+
         return $lastNumber + 1;
     }
 
     // ========== STATUS CHECKS ==========
-    public function isRequested(): bool { return $this->status === self::STATUS_REQUESTED; }
-    public function isPending(): bool { return $this->status === self::STATUS_PENDING; }
-    public function isApproved(): bool { return in_array($this->status, [self::STATUS_APPROVED, 'issued'], true); }
-    public function isRejected(): bool { return $this->status === self::STATUS_REJECTED; }
-    public function isRevoked(): bool { return $this->status === self::STATUS_REVOKED; }
-    public function isActive(): bool { return $this->isApproved() && !$this->revoked_at; }
+    public function isRequested(): bool
+    {
+        return $this->status === self::STATUS_REQUESTED;
+    }
+
+    public function isPending(): bool
+    {
+        return $this->status === self::STATUS_PENDING;
+    }
+
+    public function isApproved(): bool
+    {
+        return in_array($this->status, [self::STATUS_APPROVED, 'issued'], true);
+    }
+
+    public function isRejected(): bool
+    {
+        return $this->status === self::STATUS_REJECTED;
+    }
+
+    public function isRevoked(): bool
+    {
+        return $this->status === self::STATUS_REVOKED;
+    }
+
+    public function isActive(): bool
+    {
+        return $this->isApproved() && ! $this->revoked_at;
+    }
 
     // ========== STATE TRANSITIONS ==========
 
-
-// Update the approve method to use existing columns
-public function approve(int $approverId = null): self
-{
-    if (!$this->canBeApproved()) {
-        throw new \Exception("Certificate cannot be approved (status: {$this->status})");
-    }
-
-    $this->update([
-        'status' => self::STATUS_APPROVED,
-        'approved_at' => now(),
-        'issued_by' => $approverId ?? auth()->id(), // Use issued_by instead of approved_by
-        'issued_date' => now(),
-        // Capture only at issuance. Later edits/deletion must not restyle this record.
-        'metadata' => array_merge($this->metadata ?? [], [
-            'template_snapshot' => app(CertificateService::class)->defaultTemplateSnapshot(),
-        ]),
-    ]);
-
-    // Generate assets
-    app(CertificateService::class)->generateCertificateAssets($this);
-    
-    // Notify student
-    if (config('certificate.notifications.enabled', true)) {
-        $this->user->notify(new \App\Notifications\CertificateApproved($this));
-    }
-    
-    return $this->refresh();
-}
-
-    public function reject(string $reason, int $rejecterId = null): self
+    // Update the approve method to use existing columns
+    public function approve(?int $approverId = null): self
     {
-        if (!$this->canBeRejected()) {
+        if (! $this->canBeApproved()) {
+            throw new \Exception("Certificate cannot be approved (status: {$this->status})");
+        }
+
+        $this->update([
+            'status' => self::STATUS_APPROVED,
+            'approved_at' => now(),
+            'issued_by' => $approverId ?? auth()->id(), // Use issued_by instead of approved_by
+            'issued_date' => now(),
+            // Capture only at issuance. Later edits/deletion must not restyle this record.
+            'metadata' => array_merge($this->metadata ?? [], [
+                'template_snapshot' => app(CertificateService::class)->defaultTemplateSnapshot(),
+            ]),
+        ]);
+
+        // Generate assets
+        app(CertificateService::class)->generateCertificateAssets($this);
+
+        // Notify student
+        if (config('certificate.notifications.enabled', true)) {
+            $this->user->notify(new \App\Notifications\CertificateApproved($this));
+        }
+
+        return $this->refresh();
+    }
+
+    public function reject(string $reason, ?int $rejecterId = null): self
+    {
+        if (! $this->canBeRejected()) {
             throw new \Exception("Certificate cannot be rejected (status: {$this->status})");
         }
 
@@ -175,13 +200,13 @@ public function approve(int $approverId = null): self
         if (config('certificate.notifications.enabled', true)) {
             $this->user->notify(new \App\Notifications\CertificateRejected($this));
         }
-        
+
         return $this->refresh();
     }
 
-    public function revoke(string $reason, int $revokerId = null): self
+    public function revoke(string $reason, ?int $revokerId = null): self
     {
-        if (!$this->canBeRevoked()) {
+        if (! $this->canBeRevoked()) {
             throw new \Exception("Certificate cannot be revoked (status: {$this->status})");
         }
 
@@ -195,7 +220,7 @@ public function approve(int $approverId = null): self
         if (config('certificate.notifications.enabled', true)) {
             $this->user->notify(new \App\Notifications\CertificateRevoked($this));
         }
-        
+
         return $this->refresh();
     }
 
@@ -211,13 +236,13 @@ public function approve(int $approverId = null): self
 
     public function getVerificationData(): array
     {
-        if (!$this->isActive()) {
+        if (! $this->isActive()) {
             return [
                 'valid' => false,
-                'message' => $this->isRevoked() 
+                'message' => $this->isRevoked()
                     ? 'This certificate has been revoked.'
                     : 'This certificate is not valid.',
-                'certificate' => null
+                'certificate' => null,
             ];
         }
 
@@ -236,7 +261,7 @@ public function approve(int $approverId = null): self
                 'credits' => $this->credits,
                 'verification_code' => $this->verification_code,
                 'verification_url' => $this->verification_url,
-            ]
+            ],
         ];
     }
 
@@ -253,7 +278,7 @@ public function approve(int $approverId = null): self
 
     public function canBeRevoked(): bool
     {
-        return $this->isApproved() && !$this->revoked_at;
+        return $this->isApproved() && ! $this->revoked_at;
     }
 
     // ========== ACCESSORS ==========
@@ -316,7 +341,7 @@ public function approve(int $approverId = null): self
 
     public function scopeByInstructor($query, int $instructorId)
     {
-        return $query->whereHas('course', fn($q) => $q->where('instructor_id', $instructorId));
+        return $query->whereHas('course', fn ($q) => $q->where('instructor_id', $instructorId));
     }
 
     public function scopeRecentlyCreated($query, int $days = 30)

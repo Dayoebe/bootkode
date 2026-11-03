@@ -45,6 +45,8 @@
     .bk-dashboard-app trix-toolbar .trix-button.trix-active { background: rgb(var(--accent-primary) / .15); }
     .bk-dashboard-app .bk-page-header-actions { min-width: 0; max-width: 100%; }
     @media (min-width: 1024px) {
+        .bk-dashboard-shell { padding-left: 16rem; transition: padding-left var(--bk-duration); }
+        html[data-sidebar-collapsed="true"] .bk-dashboard-shell { padding-left: 5rem; }
         .bk-widget-settings { right: 1.5rem; bottom: 1.5rem; }
         .bk-workspace { padding-bottom: 2rem; }
         .bk-sidebar { transform: none; }

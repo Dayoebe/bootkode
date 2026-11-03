@@ -69,7 +69,7 @@
                         @keydown.escape.stop="close()"
                         autocomplete="off"
                     >
-                    <button type="submit" class="absolute right-2 top-1/2 grid h-7 w-7 -translate-y-1/2 place-items-center rounded-[8px] text-themed-tertiary transition hover:bg-themed-secondary hover:text-themed-primary" aria-label="Search">
+                    <button type="submit" class="absolute right-0 top-1/2 grid h-11 w-11 -translate-y-1/2 place-items-center rounded-[8px] text-themed-tertiary transition hover:bg-themed-secondary hover:text-themed-primary" aria-label="Search">
                         <i class="fas fa-arrow-right text-xs"></i>
                     </button>
                 </label>

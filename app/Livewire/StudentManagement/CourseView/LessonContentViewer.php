@@ -2,14 +2,14 @@
 
 namespace App\Livewire\StudentManagement\CourseView;
 
-use Livewire\Component;
-use App\Models\Learning\Lesson;
 use App\Models\Assessment\Assessment;
-use App\Models\Assessment\StudentAnswer;
+use App\Models\Learning\Lesson;
 use App\Models\Learning\LessonProgress;
+use App\Models\Learning\SavedResource;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Livewire\Attributes\On;
+use Livewire\Component;
 
 class LessonContentViewer extends Component
 {
@@ -17,26 +17,36 @@ class LessonContentViewer extends Component
 
     public function boot(): void
     {
-        if ($this->lesson) app(\App\Services\CbtAttemptService::class)->authorizeLesson(Auth::user(), $this->lesson);
+        if ($this->lesson) {
+            app(\App\Services\CbtAttemptService::class)->authorizeLesson(Auth::user(), $this->lesson);
+        }
     }
 
     #[\Livewire\Attributes\Locked]
     public $lesson;
+
     #[\Livewire\Attributes\Locked]
     public $allLessons;
+
     public $currentIndex;
+
     public $isCompleted = false;
+
     #[\Livewire\Attributes\Locked]
     public $completedLessons;
+
     #[\Livewire\Attributes\Locked]
     public $unlockedSections;
+
     #[\Livewire\Attributes\Locked]
     public $hasAssessments = false;
+
     #[\Livewire\Attributes\Locked]
     public $allAssessmentsPassed = false;
 
     // Polling management
     public $lastAssessmentCheck;
+
     public $shouldPoll = false;
 
     // NEW: Transition indicator
@@ -45,10 +55,19 @@ class LessonContentViewer extends Component
     // NEW: Time tracking
     #[\Livewire\Attributes\Locked]
     public $timeSpentSeconds = 0;
+
     #[\Livewire\Attributes\Locked]
     public $lessonStartTime;
+
     public $estimatedTime;
+
     public $showTimeComparison = false;
+
+    public string $lessonNotes = '';
+
+    public bool $isBookmarked = false;
+
+    public string $noteStatus = '';
 
     public function mount($lesson, $allLessons, $completedLessons = [], $unlockedSections = [])
     {
@@ -60,6 +79,7 @@ class LessonContentViewer extends Component
                 if (is_object($lessonData)) {
                     return $lessonData;
                 }
+
                 return (object) $lessonData;
             });
         } else {
@@ -68,6 +88,7 @@ class LessonContentViewer extends Component
 
         $this->currentIndex = $this->allLessons->search(function ($l) {
             $lessonId = is_object($l) ? $l->id : $l['id'];
+
             return $lessonId == $this->lesson->id;
         });
 
@@ -81,9 +102,79 @@ class LessonContentViewer extends Component
 
         // NEW: Initialize time tracking
         $this->initializeTimeTracking();
+        $this->loadLearningTools();
 
         // NEW: Store last viewed lesson for "Continue Learning"
         $this->storeLastViewedLesson();
+    }
+
+    protected function loadLearningTools(): void
+    {
+        $resources = SavedResource::query()
+            ->where('user_id', Auth::id())
+            ->where('resourceable_type', Lesson::class)
+            ->where('resourceable_id', $this->lesson->id)
+            ->whereIn('type', ['lesson', 'note'])
+            ->get()
+            ->keyBy('type');
+
+        $this->isBookmarked = $resources->has('lesson');
+        $this->lessonNotes = (string) ($resources->get('note')?->notes ?? '');
+    }
+
+    public function toggleBookmark(): void
+    {
+        $query = SavedResource::query()
+            ->where('user_id', Auth::id())
+            ->where('resourceable_type', Lesson::class)
+            ->where('resourceable_id', $this->lesson->id)
+            ->where('type', 'lesson');
+
+        if ($query->exists()) {
+            $query->delete();
+            $this->isBookmarked = false;
+            $this->noteStatus = 'Bookmark removed. Your lesson note is still saved.';
+        } else {
+            SavedResource::create([
+                'user_id' => Auth::id(),
+                'course_id' => $this->lesson->section->course_id,
+                'resourceable_type' => Lesson::class,
+                'resourceable_id' => $this->lesson->id,
+                'type' => 'lesson',
+            ]);
+            $this->isBookmarked = true;
+            $this->noteStatus = 'Lesson bookmarked.';
+        }
+    }
+
+    public function saveLessonNotes(): void
+    {
+        $this->validate([
+            'lessonNotes' => ['nullable', 'string', 'max:5000'],
+        ]);
+
+        $notes = trim($this->lessonNotes);
+        $keys = [
+            'user_id' => Auth::id(),
+            'resourceable_type' => Lesson::class,
+            'resourceable_id' => $this->lesson->id,
+            'type' => 'note',
+        ];
+
+        if ($notes === '') {
+            SavedResource::query()->where($keys)->delete();
+            $this->lessonNotes = '';
+            $this->noteStatus = 'Lesson note removed.';
+
+            return;
+        }
+
+        SavedResource::updateOrCreate($keys, [
+            'course_id' => $this->lesson->section->course_id,
+            'notes' => $notes,
+        ]);
+        $this->lessonNotes = $notes;
+        $this->noteStatus = 'Lesson note saved.';
     }
 
     // NEW: Time tracking initialization
@@ -108,11 +199,11 @@ class LessonContentViewer extends Component
     protected function storeLastViewedLesson()
     {
         Cache::put(
-            'user_' . Auth::id() . '_last_lesson_' . $this->lesson->section->course_id,
+            'user_'.Auth::id().'_last_lesson_'.$this->lesson->section->course_id,
             [
                 'lesson_id' => $this->lesson->id,
                 'section_id' => $this->lesson->section_id,
-                'timestamp' => now()
+                'timestamp' => now(),
             ],
             now()->addDays(30)
         );
@@ -145,20 +236,21 @@ class LessonContentViewer extends Component
     {
         $minutes = floor($this->timeSpentSeconds / 60);
         $seconds = $this->timeSpentSeconds % 60;
-        
+
         if ($minutes > 60) {
             $hours = floor($minutes / 60);
             $minutes = $minutes % 60;
+
             return "{$hours}h {$minutes}m";
         }
-        
+
         return "{$minutes}m {$seconds}s";
     }
 
     // NEW: Get time comparison
     public function getTimeComparison()
     {
-        if (!$this->showTimeComparison) {
+        if (! $this->showTimeComparison) {
             return null;
         }
 
@@ -176,12 +268,12 @@ class LessonContentViewer extends Component
     // NEW: Get assessment preview
     public function getAssessmentPreview()
     {
-        if (!$this->hasAssessments) {
+        if (! $this->hasAssessments) {
             return null;
         }
 
         $assessments = $this->getLessonAssessments();
-        
+
         $preview = [];
         foreach ($assessments as $assessment) {
             $questions = $assessment->questions;
@@ -220,7 +312,7 @@ class LessonContentViewer extends Component
 
         if ($this->hasAssessments) {
             $this->allAssessmentsPassed = $this->checkAllAssessmentsPassed($assessments);
-            $this->shouldPoll = !$this->allAssessmentsPassed;
+            $this->shouldPoll = ! $this->allAssessmentsPassed;
         } else {
             $this->allAssessmentsPassed = true;
             $this->shouldPoll = false;
@@ -229,7 +321,10 @@ class LessonContentViewer extends Component
 
     protected function checkAllAssessmentsPassed($assessments)
     {
-        return $assessments->every(fn ($assessment) => $assessment->isPassedByStudent(Auth::id()));
+        $statuses = app(\App\Services\AssessmentResultService::class)
+            ->summaries($assessments, Auth::id());
+
+        return $assessments->every(fn ($assessment) => (bool) ($statuses->get($assessment->id)['passed'] ?? false));
     }
 
     protected function getLessonAssessments()
@@ -263,7 +358,7 @@ class LessonContentViewer extends Component
         if ($this->allAssessmentsPassed) {
             $this->shouldPoll = false;
 
-            if (!$this->isCompleted) {
+            if (! $this->isCompleted) {
                 $this->dispatch('lesson-completed', lessonId: $this->lesson->id)
                     ->to('student-management.course-view');
 
@@ -274,7 +369,7 @@ class LessonContentViewer extends Component
 
     public function pollAssessmentStatus()
     {
-        if (!$this->shouldPoll) {
+        if (! $this->shouldPoll) {
             return;
         }
 
@@ -289,12 +384,12 @@ class LessonContentViewer extends Component
         if ($previousState !== $this->allAssessmentsPassed && $this->allAssessmentsPassed) {
             $this->dispatch('notify', [
                 'message' => 'All assessments completed! You can now proceed.',
-                'type' => 'success'
+                'type' => 'success',
             ]);
 
             $this->dispatch('assessment-status-changed', [
                 'lessonId' => $this->lesson->id,
-                'allPassed' => true
+                'allPassed' => true,
             ])->to('student-management.course-view');
         }
     }
@@ -302,15 +397,16 @@ class LessonContentViewer extends Component
     public function markAsCompleted()
     {
         $this->checkAssessments();
-        if ($this->hasAssessments && !$this->allAssessmentsPassed) {
+        if ($this->hasAssessments && ! $this->allAssessmentsPassed) {
             $this->dispatch('notify', [
                 'message' => 'You must pass all assessments in this lesson before marking it as complete.',
-                'type' => 'warning'
+                'type' => 'warning',
             ]);
+
             return;
         }
 
-        if (!$this->isCompleted) {
+        if (! $this->isCompleted) {
             // Save final time spent before completing
             $this->updateTimeSpent();
 
@@ -321,7 +417,7 @@ class LessonContentViewer extends Component
 
             $this->dispatch('notify', [
                 'message' => 'Lesson marked as completed!',
-                'type' => 'success'
+                'type' => 'success',
             ]);
         }
     }
@@ -336,7 +432,7 @@ class LessonContentViewer extends Component
 
             $this->dispatch('notify', [
                 'message' => 'Lesson marked as incomplete.',
-                'type' => 'info'
+                'type' => 'info',
             ]);
         }
     }
@@ -350,7 +446,7 @@ class LessonContentViewer extends Component
         if ($prevLesson) {
             $this->isTransitioning = true;
             $lessonId = is_object($prevLesson) ? $prevLesson->id : $prevLesson['id'];
-            
+
             $this->dispatch('lesson-selected', lessonId: $lessonId)
                 ->to('student-management.course-view');
         }
@@ -362,11 +458,12 @@ class LessonContentViewer extends Component
         $this->updateTimeSpent();
 
         // Check if current lesson requirements are met
-        if ($this->hasAssessments && !$this->allAssessmentsPassed) {
+        if ($this->hasAssessments && ! $this->allAssessmentsPassed) {
             $this->dispatch('notify', [
                 'message' => 'You must pass all assessments in this lesson before proceeding to the next lesson.',
-                'type' => 'warning'
+                'type' => 'warning',
             ]);
+
             return;
         }
 
@@ -389,16 +486,17 @@ class LessonContentViewer extends Component
 
     public function canProceedToNext()
     {
-        return !$this->hasAssessments || $this->allAssessmentsPassed;
+        return ! $this->hasAssessments || $this->allAssessmentsPassed;
     }
 
     public function completeCourse()
     {
-        if ($this->hasAssessments && !$this->allAssessmentsPassed) {
+        if ($this->hasAssessments && ! $this->allAssessmentsPassed) {
             $this->dispatch('notify', [
                 'message' => 'You must pass all assessments in this lesson before completing the course.',
-                'type' => 'warning'
+                'type' => 'warning',
             ]);
+
             return;
         }
 

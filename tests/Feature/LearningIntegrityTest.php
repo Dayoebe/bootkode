@@ -6,6 +6,7 @@ use App\Models\Assessment\UserProgress;
 use App\Models\Core\User;
 use App\Models\Learning\Course;
 use App\Models\Learning\Lesson;
+use App\Models\Learning\SavedResource;
 use App\Models\Learning\Section;
 use App\Services\CertificateService;
 use App\Services\ProgressService;
@@ -141,5 +142,101 @@ class LearningIntegrityTest extends TestCase
         $this->assertStringStartsWith('%PDF-', $disk->get($certificate->pdf_path));
         $this->assertSame("\x89PNG\r\n\x1a\n", substr($disk->get($certificate->qr_code_path), 0, 8));
         $this->assertGreaterThan(1000, $disk->size($certificate->pdf_path));
+    }
+
+    public function test_lesson_notes_and_bookmarks_are_private_and_persist_independently(): void
+    {
+        [$user, $course, , $lesson] = $this->fixture();
+
+        $component = \Livewire\Livewire::actingAs($user)
+            ->test(\App\Livewire\StudentManagement\CourseView\LessonContentViewer::class, [
+                'lesson' => $lesson,
+                'allLessons' => [$lesson],
+            ])
+            ->set('lessonNotes', 'Review the authorization boundary.')
+            ->call('saveLessonNotes')
+            ->call('toggleBookmark')
+            ->assertSet('isBookmarked', true)
+            ->assertSet('noteStatus', 'Lesson bookmarked.');
+
+        $this->assertDatabaseHas('saved_resources', [
+            'user_id' => $user->id,
+            'resourceable_id' => $lesson->id,
+            'resourceable_type' => Lesson::class,
+            'type' => 'note',
+            'notes' => 'Review the authorization boundary.',
+        ]);
+        $this->assertDatabaseHas('saved_resources', [
+            'user_id' => $user->id,
+            'resourceable_id' => $lesson->id,
+            'resourceable_type' => Lesson::class,
+            'type' => 'lesson',
+        ]);
+
+        $component->call('toggleBookmark')->assertSet('isBookmarked', false);
+        $this->assertDatabaseHas('saved_resources', [
+            'user_id' => $user->id,
+            'resourceable_id' => $lesson->id,
+            'type' => 'note',
+        ]);
+
+        $other = User::factory()->create();
+        $other->courses()->attach($course->id);
+        \Livewire\Livewire::actingAs($other)
+            ->test(\App\Livewire\StudentManagement\CourseView\LessonContentViewer::class, [
+                'lesson' => $lesson,
+                'allLessons' => [$lesson],
+            ])
+            ->assertSet('lessonNotes', '')
+            ->assertSet('isBookmarked', false);
+
+        $this->assertSame(1, SavedResource::where('user_id', $user->id)->count());
+        $this->assertSame(0, SavedResource::where('user_id', $other->id)->count());
+    }
+
+    public function test_course_completion_atomically_records_enrollment_and_certificate_dates(): void
+    {
+        [$user, $course, , $lesson] = $this->fixture();
+        $course->update(['is_published' => true, 'is_approved' => true]);
+        $lesson->update(['published_at' => now()]);
+        \Illuminate\Support\Facades\Notification::fake();
+        \Illuminate\Support\Facades\Storage::fake('public');
+
+        \Livewire\Livewire::actingAs($user)
+            ->test(\App\Livewire\StudentManagement\CourseView::class, ['course' => $course->slug])
+            ->call('handleLessonCompleted', $lesson->id);
+
+        $certificate = \App\Models\Credentials\Certificate::where('user_id', $user->id)
+            ->where('course_id', $course->id)
+            ->firstOrFail();
+        $enrollment = $user->enrollments()->where('course_id', $course->id)->firstOrFail();
+
+        $this->assertSame(\App\Models\Credentials\Certificate::STATUS_APPROVED, $certificate->status);
+        $this->assertNotNull($certificate->completed_at);
+        $this->assertSame($course->instructor_id, $certificate->issued_by);
+        $this->assertTrue((bool) $enrollment->is_completed);
+        $this->assertSame(100, (int) $enrollment->progress_percentage);
+        $this->assertNotNull($enrollment->completed_at);
+    }
+
+    public function test_reissuing_after_a_soft_deleted_certificate_keeps_numbers_unique(): void
+    {
+        [$user, $course] = $this->fixture();
+        $first = \App\Models\Credentials\Certificate::create([
+            'user_id' => $user->id,
+            'course_id' => $course->id,
+            'status' => \App\Models\Credentials\Certificate::STATUS_APPROVED,
+        ]);
+        $firstNumber = $first->certificate_number;
+        $first->delete();
+
+        $replacement = \App\Models\Credentials\Certificate::create([
+            'user_id' => $user->id,
+            'course_id' => $course->id,
+            'status' => \App\Models\Credentials\Certificate::STATUS_APPROVED,
+        ]);
+
+        $this->assertNotSame($firstNumber, $replacement->certificate_number);
+        $this->assertDatabaseCount('certificates', 2);
     }
 }

@@ -90,6 +90,12 @@
     .bk-skip-link:focus { transform: translateY(0); }
     .bk-feedback { border: 1px solid rgb(var(--border-primary)); border-left: 4px solid rgb(var(--accent-primary)); border-radius: var(--bk-radius); padding: 1rem; background: rgb(var(--bg-secondary)); color: rgb(var(--text-primary)); }
     .bk-feedback-error { border-left-color: rgb(var(--bk-danger)); }
+    .bk-pwa-prompt { position: fixed; right: 1rem; bottom: calc(1rem + env(safe-area-inset-bottom, 0px)); z-index: var(--bk-layer-status); display: flex; max-width: min(28rem, calc(100vw - 2rem)); align-items: center; gap: 1rem; border: 1px solid rgb(var(--border-primary)); border-radius: var(--bk-radius); background: rgb(var(--bg-secondary)); color: rgb(var(--text-primary)); padding: .875rem; box-shadow: 0 12px 32px rgb(15 23 42 / .18); }
+    .bk-dashboard-app .bk-pwa-prompt { bottom: calc(5rem + env(safe-area-inset-bottom, 0px)); }
+}
+
+@media (min-width: 1024px) {
+    .bk-dashboard-app .bk-pwa-prompt { bottom: 1rem; }
 }
 
 @media (prefers-reduced-motion: reduce) {

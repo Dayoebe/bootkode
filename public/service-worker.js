@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'bootkode-pwa-2026-11-02-account-offline';
+const CACHE_VERSION = 'bootkode-pwa-2026-11-03-premium-completion';
 const STATIC_CACHE = `${CACHE_VERSION}-static`;
 const OFFLINE_PACK_CACHE = 'bootkode-offline-packs-v1';
 const OFFLINE_URL = '/offline.html';
@@ -16,8 +16,11 @@ self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(STATIC_CACHE)
       .then((cache) => cache.addAll(CORE_ASSETS.map(url => new Request(url, {cache: 'reload'}))))
-      .then(() => self.skipWaiting())
   );
+});
+
+self.addEventListener('message', (event) => {
+  if (event.data?.type === 'SKIP_WAITING') self.skipWaiting();
 });
 
 self.addEventListener('activate', (event) => {

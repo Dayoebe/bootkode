@@ -101,16 +101,39 @@ class StudentDashboardPerformanceTest extends TestCase
     {
         $student = $this->student();
         $manifest = json_decode(file_get_contents(public_path('build/manifest.json')), true, flags: JSON_THROW_ON_ERROR);
-        $chartAsset = $manifest['resources/js/charts.js']['file'];
+        $chartAsset = is_file(public_path('hot'))
+            ? 'resources/js/charts.js'
+            : $manifest['resources/js/charts.js']['file'];
 
         $this->assertDatabaseCount('gamification_data', 0);
         $this->actingAs($student)->get(route('profile.view'))
             ->assertOk()
             ->assertDontSee($chartAsset, false);
+        Livewire::flushState();
         $this->get(route('student.dashboard'))
             ->assertOk()
             ->assertSee($chartAsset, false);
         $this->assertDatabaseCount('gamification_data', 0);
+    }
+
+    public function test_authenticated_marketing_analytics_respects_saved_privacy_consent(): void
+    {
+        $student = $this->student();
+
+        $this->actingAs($student)->get(route('student.dashboard'))
+            ->assertOk()
+            ->assertDontSee('googletagmanager.com', false);
+
+        $student->update(['privacy_settings' => [
+            'data_collection_consent' => true,
+            'analytics_tracking' => true,
+            'marketing_analytics' => true,
+            'third_party_integrations' => true,
+        ]]);
+
+        $this->get(route('student.dashboard'))
+            ->assertOk()
+            ->assertSee('googletagmanager.com', false);
     }
 
     public function test_secondary_widget_failure_keeps_the_learning_workspace_available(): void

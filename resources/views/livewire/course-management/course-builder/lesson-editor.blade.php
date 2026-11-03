@@ -3,7 +3,7 @@
         @vite('resources/js/editors.js')
     @endassets
     <!-- Auto-save Status Indicator -->
-    <div x-show="showAutoSaveStatus" x-transition.opacity class="fixed top-4 right-4 z-40">
+    <div x-cloak x-show="showAutoSaveStatus" x-transition.opacity class="fixed top-4 right-4 z-40">
         <div class="px-3 py-2 rounded-lg shadow-sm text-sm font-medium transition-colors duration-300"
              :class="autoSaveStatus === 'saving' ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300' :
                     autoSaveStatus === 'saved' ? 'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300' :
@@ -103,7 +103,7 @@
 
 
             <!-- Content Tab -->
-            <div x-show="activeTab === 'content'" class="p-4 space-y-4">
+            <div x-cloak x-show="activeTab === 'content'" class="p-4 space-y-4">
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
                     <div>
                         <label class="block text-sm font-medium text-themed-primary mb-2 transition-colors duration-300">
@@ -181,7 +181,7 @@
 
 
             <!-- Media Tab -->
-            <div x-show="activeTab === 'media'" class="p-4 space-y-4">
+            <div x-cloak x-show="activeTab === 'media'" class="p-4 space-y-4">
                 <!-- YouTube Video -->
                 <div class="bg-themed-tertiary rounded-lg p-4 border border-themed-primary transition-colors duration-300">
                     <h3 class="text-base font-medium text-themed-primary mb-3 flex items-center gap-2 transition-colors duration-300">
@@ -375,7 +375,7 @@
             </div>
 
             <!-- Settings Tab -->
-            <div x-show="activeTab === 'settings'" class="p-4 space-y-6">
+            <div x-cloak x-show="activeTab === 'settings'" class="p-4 space-y-6">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <!-- Duration -->
                     <div>
@@ -475,7 +475,7 @@
             </div>
 
             <!-- Assessment Tab -->
-            <div x-show="activeTab === 'assessment'" role="region" aria-label="Lesson assessments" class="p-4">
+            <div x-cloak x-show="activeTab === 'assessment'" role="region" aria-label="Lesson assessments" class="p-4">
                 @livewire('course-management.course-builder.assessment-manager', ['lessonId' => $lessonId])
             </div>
         </div>

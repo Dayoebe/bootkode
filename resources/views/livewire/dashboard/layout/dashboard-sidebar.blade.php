@@ -41,7 +41,7 @@
                             <span class="sidebar-expanded-content min-w-0 flex-1 text-left">{{ $item['label'] }}</span>
                             <i class="sidebar-expanded-content fas fa-chevron-down text-[10px]" :class="{ 'rotate-180': expanded }" aria-hidden="true"></i>
                         </button>
-                        <ul id="{{ $sectionId }}" x-show="(expanded || menuSearch.trim()) && (!sidebarCollapsed || window.innerWidth < 1024)" x-collapse class="ml-5 mt-1 space-y-1 border-l border-line pl-3">
+                        <ul id="{{ $sectionId }}" x-cloak x-show="(expanded || menuSearch.trim()) && (!sidebarCollapsed || window.innerWidth < 1024)" x-collapse class="ml-5 mt-1 space-y-1 border-l border-line pl-3">
                             @foreach ($item['children'] as $child)
                                 @php
                                     $childLinkId = $child['link_id'] ?? str($child['label'])->slug()->toString();

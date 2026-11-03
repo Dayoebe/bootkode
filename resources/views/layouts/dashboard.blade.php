@@ -21,16 +21,30 @@
         toggleSidebarCollapse() {
             this.sidebarCollapsed = !this.sidebarCollapsed;
             localStorage.setItem('sidebar-collapsed', this.sidebarCollapsed.toString());
+            document.documentElement.dataset.sidebarCollapsed = this.sidebarCollapsed.toString();
         }
     }"
     @keydown.escape.window="sidebarOpen = false"
     @online.window="online = true"
     @offline.window="online = false"
     @resize.window="if (window.innerWidth >= 1024) sidebarOpen = false"
-    x-init="applyTheme(theme)"
+    x-init="applyTheme(theme); document.documentElement.dataset.sidebarCollapsed = sidebarCollapsed.toString()"
     x-bind:class="theme"
 >
 <head>
+    <script>
+        (() => {
+            try {
+                const theme = localStorage.getItem('theme') || 'light';
+                const allowedThemes = ['light', 'dark', 'sepia', 'ocean', 'forest'];
+                document.documentElement.classList.add(allowedThemes.includes(theme) ? theme : 'light');
+                document.documentElement.dataset.sidebarCollapsed = (localStorage.getItem('sidebar-collapsed') === 'true').toString();
+            } catch {
+                document.documentElement.classList.add('light');
+                document.documentElement.dataset.sidebarCollapsed = 'false';
+            }
+        })();
+    </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <meta name="csrf-token" content="{{ csrf_token() }}">
@@ -49,24 +63,31 @@
         $pageDescription = $description ?? 'Manage learning, courses, mentorship, and platform tools from one focused workspace.';
         $pageIcon = $icon ?? 'fas fa-gauge-high';
         $roleLabel = ucfirst($user?->getRoleNames()->first() ?? 'User');
+        $privacySettings = $user?->privacy_settings ?? [];
+        $marketingAnalyticsEnabled = ($privacySettings['data_collection_consent'] ?? true)
+            && ($privacySettings['analytics_tracking'] ?? true)
+            && ($privacySettings['marketing_analytics'] ?? false)
+            && ($privacySettings['third_party_integrations'] ?? true);
     @endphp
 
     <title>{{ config('app.name', 'BootKode') }} - {{ $pageTitle }}</title>
 
-    <script async src="https://www.googletagmanager.com/gtag/js?id=AW-10833921436"></script>
-    <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-        gtag('config', 'AW-10833921436');
-    </script>
-    <script>
-        (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-        new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-        j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-        'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-        })(window,document,'script','dataLayer','GTM-TJ23X96Z');
-    </script>
+    @if($marketingAnalyticsEnabled)
+        <script async src="https://www.googletagmanager.com/gtag/js?id=AW-10833921436"></script>
+        <script>
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'AW-10833921436');
+        </script>
+        <script>
+            (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+            new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+            j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+            'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+            })(window,document,'script','dataLayer','GTM-TJ23X96Z');
+        </script>
+    @endif
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -80,32 +101,15 @@
     @vite(['resources/css/app.css', 'resources/js/app.js', 'resources/js/dashboard.js', 'resources/js/notifications.js'])
     @livewireStyles
     @stack('styles')
-
-
-    <script>
-        window.MathJax = {
-            tex: {
-                inlineMath: [['$', '$'], ['\\(', '\\)']],
-                displayMath: [['$$', '$$'], ['\\[', '\\]']]
-            },
-            svg: { fontCache: 'global' },
-            startup: {
-                pageReady: function() {
-                    return MathJax.startup.defaultPageReady().then(function() {
-                        document.dispatchEvent(new Event('mathjax-loaded'));
-                    });
-                }
-            }
-        };
-    </script>
-    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" async></script>
 </head>
 
 <body class="bk-dashboard-app min-h-screen antialiased bg-themed-primary text-themed-primary transition-colors duration-200">
     <a class="bk-skip-link" href="#main-content">Skip to content</a>
 
-    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TJ23X96Z"
-        height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+    @if($marketingAnalyticsEnabled)
+        <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TJ23X96Z"
+            height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+    @endif
 
     @if(auth()->check() && !auth()->user()->hasVerifiedEmail())
         <livewire:component.email-verification-alert />
@@ -125,8 +129,7 @@
         ></div>
 
         <div
-            class="flex min-h-screen min-w-0 flex-col transition-[padding] duration-300"
-            :class="sidebarCollapsed ? 'lg:pl-20' : 'lg:pl-64'"
+            class="bk-dashboard-shell flex min-h-screen min-w-0 flex-col"
         >
             <x-navbar :title="$pageTitle" :description="$pageDescription" :icon="$pageIcon" />
 
@@ -146,13 +149,7 @@
     </div>
 
     @livewireScripts
+    <x-pwa-install-prompt />
     @stack('scripts')
-    <script>
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('/service-worker.js').catch(() => {});
-            });
-        }
-    </script>
 </body>
 </html>

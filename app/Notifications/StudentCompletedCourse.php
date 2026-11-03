@@ -3,8 +3,8 @@
 namespace App\Notifications;
 
 use App\Models\Core\User;
-use App\Models\Learning\Course;
 use App\Models\Credentials\Certificate;
+use App\Models\Learning\Course;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
@@ -14,7 +14,9 @@ class StudentCompletedCourse extends Notification
     use Queueable;
 
     public $student;
+
     public $course;
+
     public $certificate;
 
     public function __construct(User $student, Course $course, Certificate $certificate)
@@ -34,11 +36,11 @@ class StudentCompletedCourse extends Notification
         return (new MailMessage)
             ->subject('Student Completed Your Course')
             ->greeting('Great News!')
-            ->line($this->student->name . ' has successfully completed your course: **' . $this->course->title . '**')
+            ->line($this->student->name.' has successfully completed your course: **'.$this->course->title.'**')
             ->line('**Student Performance:**')
-            ->line('- Final Grade: ' . ($this->certificate->grade ?? 'Pass'))
-            ->line('- Completion Date: ' . $this->certificate->completion_date->format('F j, Y'))
-            ->line('- Certificate #: ' . $this->certificate->certificate_number)
+            ->line('- Final Grade: '.($this->certificate->grade ?? 'Pass'))
+            ->line('- Completion Date: '.($this->certificate->completion_date?->format('F j, Y') ?? 'Recorded on certificate issue'))
+            ->line('- Certificate #: '.$this->certificate->certificate_number)
             ->action('View Student Progress', route('course-builder', $this->course->id))
             ->line('The certificate has been automatically generated and sent to the student.');
     }
@@ -53,7 +55,7 @@ class StudentCompletedCourse extends Notification
             'course_title' => $this->course->title,
             'certificate_id' => $this->certificate->id,
             'grade' => $this->certificate->grade,
-            'message' => $this->student->name . ' completed ' . $this->course->title
+            'message' => $this->student->name.' completed '.$this->course->title,
         ];
     }
 }

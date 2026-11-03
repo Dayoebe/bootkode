@@ -269,6 +269,42 @@
             </div>
         </div>
 
+        <section class="mb-6 grid gap-4 lg:grid-cols-[minmax(0,1fr)_auto]" aria-labelledby="lesson-tools-heading">
+            <div class="rounded-lg border border-themed-secondary bg-themed-tertiary p-5">
+                <div class="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                    <div>
+                        <p class="text-xs font-semibold uppercase tracking-[0.18em] text-themed-tertiary">Learning tools</p>
+                        <h3 id="lesson-tools-heading" class="mt-1 text-lg font-semibold text-themed-primary">Private lesson note</h3>
+                        <p class="mt-1 text-sm text-themed-secondary">Saved only to your account. Clearing the field removes the note.</p>
+                    </div>
+                    <button type="button" wire:click="toggleBookmark" wire:loading.attr="disabled" wire:target="toggleBookmark"
+                        class="bk-button {{ $isBookmarked ? 'bk-button-primary' : 'bk-button-secondary' }} shrink-0"
+                        aria-pressed="{{ $isBookmarked ? 'true' : 'false' }}">
+                        <i aria-hidden="true" class="{{ $isBookmarked ? 'fas' : 'far' }} fa-bookmark"></i>
+                        {{ $isBookmarked ? 'Bookmarked' : 'Bookmark lesson' }}
+                    </button>
+                </div>
+
+                <form wire:submit="saveLessonNotes" class="mt-4">
+                    <label for="lesson-notes-{{ $lesson->id }}" class="sr-only">Private notes for {{ $lesson->title }}</label>
+                    <textarea id="lesson-notes-{{ $lesson->id }}" wire:model="lessonNotes" rows="4" maxlength="5000"
+                        class="bk-input min-h-28 resize-y" placeholder="Capture a key idea, question, or next action…"
+                        aria-describedby="lesson-notes-help-{{ $lesson->id }} @error('lessonNotes') lesson-notes-error-{{ $lesson->id }} @enderror"></textarea>
+                    <div class="mt-3 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                        <p id="lesson-notes-help-{{ $lesson->id }}" class="text-xs text-themed-secondary">Up to 5,000 characters.</p>
+                        <button type="submit" class="bk-button bk-button-primary" wire:loading.attr="disabled" wire:target="saveLessonNotes">
+                            <span wire:loading.remove wire:target="saveLessonNotes">Save note</span>
+                            <span wire:loading wire:target="saveLessonNotes">Saving…</span>
+                        </button>
+                    </div>
+                    @error('lessonNotes')
+                        <p id="lesson-notes-error-{{ $lesson->id }}" class="bk-field-error mt-2" role="alert">{{ $message }}</p>
+                    @enderror
+                    <p class="mt-2 min-h-5 text-sm text-themed-secondary" role="status" aria-live="polite">{{ $noteStatus }}</p>
+                </form>
+            </div>
+        </section>
+
         <!-- Assessment Preview (if not started) -->
         @if ($hasAssessments && !$allAssessmentsPassed)
             @php $assessmentPreview = $this->getAssessmentPreview(); @endphp

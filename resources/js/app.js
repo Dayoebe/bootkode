@@ -27,6 +27,69 @@ function clearSignedOutDownloads() {
 clearSignedOutDownloads();
 document.addEventListener('livewire:navigated', clearSignedOutDownloads);
 
+const pwaState = {
+    installPrompt: null,
+    registration: null,
+    updateRequested: false,
+};
+
+window.bootkodePwa = {
+    canInstall: () => Boolean(pwaState.installPrompt),
+    hasUpdate: () => Boolean(pwaState.registration?.waiting),
+    async install() {
+        if (!pwaState.installPrompt) return false;
+        await pwaState.installPrompt.prompt();
+        const choice = await pwaState.installPrompt.userChoice;
+        pwaState.installPrompt = null;
+        window.dispatchEvent(new CustomEvent('bootkode:pwa-install-state', {detail: {available: false}}));
+        return choice.outcome === 'accepted';
+    },
+    activateUpdate() {
+        if (!pwaState.registration?.waiting) return false;
+        pwaState.updateRequested = true;
+        pwaState.registration.waiting.postMessage({type: 'SKIP_WAITING'});
+        return true;
+    },
+};
+
+window.addEventListener('beforeinstallprompt', event => {
+    event.preventDefault();
+    pwaState.installPrompt = event;
+    window.dispatchEvent(new CustomEvent('bootkode:pwa-install-state', {detail: {available: true}}));
+});
+
+window.addEventListener('appinstalled', () => {
+    pwaState.installPrompt = null;
+    window.dispatchEvent(new CustomEvent('bootkode:pwa-install-state', {detail: {available: false, installed: true}}));
+});
+
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', async () => {
+        try {
+            const registration = await navigator.serviceWorker.register('/service-worker.js');
+            pwaState.registration = registration;
+
+            const announceUpdate = () => window.dispatchEvent(new CustomEvent('bootkode:pwa-update-state', {
+                detail: {available: Boolean(registration.waiting)},
+            }));
+
+            announceUpdate();
+            registration.addEventListener('updatefound', () => {
+                const worker = registration.installing;
+                worker?.addEventListener('statechange', () => {
+                    if (worker.state === 'installed' && navigator.serviceWorker.controller) announceUpdate();
+                });
+            });
+        } catch {
+            window.dispatchEvent(new CustomEvent('bootkode:pwa-error'));
+        }
+    });
+
+    navigator.serviceWorker.addEventListener('controllerchange', () => {
+        if (pwaState.updateRequested) window.location.reload();
+    });
+}
+
 // Check online status
 function updateOnlineStatus() {
     const statusElement = document.getElementById('connection-status');

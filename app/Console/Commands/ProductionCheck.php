@@ -40,7 +40,7 @@ class ProductionCheck extends Command
         }
         $check('cache', in_array(config('cache.default'), ['database', 'redis', 'file'], true), 'Use a persistent cache with atomic locks; arrays cannot coordinate workers.');
         $check('log_rotation', in_array(config('logging.default'), ['daily', 'stderr'], true), 'Use daily rotation or host-managed stderr retention.');
-        $check('framework_support', version_compare(app()->version(), '12.0.0', '>='), 'Laravel 11 security support ended 12 March 2026. A reviewed supported-version upgrade remains required.');
+        $check('framework_support', version_compare(app()->version(), '12.0.0', '>='), 'Use a currently supported Laravel release and keep the locked dependency audit clear.');
 
         if ($this->option('skip-database')) {
             $check('database', false, 'Database checks were skipped; readiness is incomplete.');
