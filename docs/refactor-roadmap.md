@@ -211,3 +211,18 @@ Next, finish the learning architecture's general matching/prerequisite and persi
 - [ ] Complete real Android/iOS/PWA installation/lifecycle, eviction/media variants, all-theme keyboard/screen-reader and representative field performance acceptance. No global LCP/INP/CLS target is certified.
 
 This is a completed coherent milestone within the wider premium-app brief, not completion of all nine phases. Earlier learning-ecosystem and career phases retain their existing unfinished status. See [milestone detail](app-experience-milestone.md).
+
+## Premium app milestone 2 — 3 November 2026
+
+- [x] Move Chart.js/helpers out of the shared authenticated entry and request them only from the 19 existing chart views.
+- [x] Bound the six visible learner course/progress cards to a fixed six-query graph and reuse it for upcoming lesson tasks.
+- [x] Remove GET-time gamification initialization and collapse consecutive-day streak reads to one bounded query.
+- [x] Isolate secondary learner-dashboard failures with reported exceptions, typed fallback data, visible preservation copy and retry.
+- [x] Add regression coverage for query count, route asset presence, read-only dashboard behavior, failure isolation and streak query count.
+- [ ] Run the complete discover/enroll/lesson/assessment/notes/bookmarks/certificate journey under throttled/offline/reconnect browser conditions.
+- [ ] Profile and reduce the enrolled course workspace's full assessment/question graph with representative isolated data.
+- [ ] Evaluate route-specific MathJax and third-party analytics loading using measured pages; do not remove required learning content or consent controls speculatively.
+- [ ] Complete field Core Web Vitals, physical Android/iOS PWA lifecycle, all-theme screen-reader/keyboard/contrast and live provider/payment acceptance.
+- [ ] Resolve the supported Laravel/JWT dependency set and obtain a green unsuppressed security gate.
+
+This milestone does not complete the nine-phase brief or change the existing deployment score. Detail and exact limits: [app-experience-milestone-2.md](app-experience-milestone-2.md).

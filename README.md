@@ -6,7 +6,7 @@ BootKode is an existing Laravel / Livewire application with public courses, lear
 
 ## Stack
 
-PHP 8.2+, Laravel 11.46.1, Livewire 3.6.4, Blade, Livewire-owned Alpine, Tailwind 3.4.19 and Vite 7.3.7. The full migration suite uses MySQL/MariaDB features. No frontend framework migration is required.
+PHP 8.2+, Laravel 11.46.1, Livewire 3.8.11, Blade, Livewire-owned Alpine, Tailwind 3.4.19 and Vite 7.3.7. The full migration suite uses MySQL/MariaDB features. No frontend framework migration is required.
 
 ## Local setup
 
@@ -96,3 +96,5 @@ The further learning continuation consolidates both personal analytics routes ar
 Start with the [production readiness assessment](docs/deployment/production-readiness.md), [staged deployment runbook](docs/deployment/first-release-checklist.md), [backup/restore procedure](docs/deployment/backup-and-restoration.md) and private `.env.production.example` template. The suggested 2 GiB single-node profile uses database cache/sessions/queues and a bounded cron runner; Redis and supervised workers are optional. `php artisan bootkode:production-check` is read-only and returns a failing exit code for incomplete setup. The unsupported framework and remaining Composer advisories currently block launch. No deployment is implied.
 
 The [app experience milestone](docs/app-experience-milestone.md) records conditional editor assets, owned offline summary pagination, account-bound IndexedDB downloads and acknowledged offline progress. Previously unscoped device packs need a fresh explicit download. Expired sessions retain pending work; confirmed logout clears device downloads without deleting server progress. Existing service-worker/privacy boundaries remain explicit; external video and unverified resources are not promised offline. Broader premium-app and real-device/performance acceptance remains open.
+
+The [second app experience milestone](docs/app-experience-milestone-2.md) moves Chart.js out of the shared authenticated bundle, bounds visible learner-progress queries, prevents dashboard reads from creating gamification state and isolates secondary-widget failures. It does not certify field Core Web Vitals, physical-device PWA behavior, live providers or production release readiness.
