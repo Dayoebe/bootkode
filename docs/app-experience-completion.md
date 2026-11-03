@@ -31,3 +31,5 @@ Focused tests cover dependency-compatible certificate behavior, atomic completio
 ## Release boundaries
 
 Physical Android/iOS install, update, storage eviction and assistive-technology sessions remain external acceptance. So do representative production data/load, field LCP/INP/CLS, target-host cron/pcntl/TLS/proxy/storage configuration, encrypted off-host database/files/APP_KEY restoration, and real SMTP, Paystack, OAuth, AI, vacancy and external-media accounts. Remote CI and ordinary push require repository credentials. None of those is inferred from loopback fixtures, and the application is not labelled production-ready until the operational gates pass.
+
+Local delivery is `b8db8d59` (supported dependency stack), `b776235e` (experience/reliability implementation, tests and assets) and `6de12be1` (completion evidence) on `feat/premium-app-completion`. The ordinary GitHub HTTPS push failed because credentials are unavailable (`could not read Username`); no remote delivery or deployment is claimed.
