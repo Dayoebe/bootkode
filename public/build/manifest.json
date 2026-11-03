@@ -1,6 +1,6 @@
 {
   "resources/css/app.css": {
-    "file": "assets/app-CgeB_m52.css",
+    "file": "assets/app-DxOcoamH.css",
     "src": "resources/css/app.css",
     "isEntry": true,
     "name": "app",
@@ -14,8 +14,14 @@
     "src": "resources/js/app.js",
     "isEntry": true
   },
+  "resources/js/charts.js": {
+    "file": "assets/charts-vbxENxrn.js",
+    "name": "charts",
+    "src": "resources/js/charts.js",
+    "isEntry": true
+  },
   "resources/js/dashboard.js": {
-    "file": "assets/dashboard-kKt2pddt.js",
+    "file": "assets/dashboard-DRritjl2.js",
     "name": "dashboard",
     "src": "resources/js/dashboard.js",
     "isEntry": true

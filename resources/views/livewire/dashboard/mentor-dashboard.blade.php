@@ -1,3 +1,7 @@
+@assets
+    @vite('resources/js/charts.js')
+@endassets
+
 <div class="space-y-6">
     <x-ui.page-header title="Mentoring workspace" description="Review your mentees, sessions and pending feedback.">
         <x-slot:actions>

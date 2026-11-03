@@ -1,3 +1,7 @@
+@assets
+    @vite('resources/js/charts.js')
+@endassets
+
 <div class="space-y-6">
     <!-- Date Range Selector -->
     <div class="shadow rounded-lg p-6 bg-themed-secondary border border-themed-primary">

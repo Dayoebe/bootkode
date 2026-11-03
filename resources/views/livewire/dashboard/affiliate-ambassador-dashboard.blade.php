@@ -1,3 +1,7 @@
+@assets
+    @vite('resources/js/charts.js')
+@endassets
+
 <div class="space-y-6">
     <x-ui.page-header title="Referral workspace" description="Track your recorded referrals, commissions and payouts.">
         <x-slot:actions>

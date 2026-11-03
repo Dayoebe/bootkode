@@ -1,49 +1,3 @@
-import Chart from 'chart.js/auto';
-
-// Charts and workspace behavior stay here; authoring views request editors separately.
-window.Chart = Chart;
-
-window.bootkodeInterviewTrendChart = (points) => {
-    let chart = null;
-    let themeObserver = null;
-    return {
-        init() {
-            this.$nextTick(() => {
-                const styles = getComputedStyle(document.documentElement);
-                const color = name => `rgb(${styles.getPropertyValue(name).trim()})`;
-                chart = new Chart(this.$refs.canvas, {
-                    type: 'line',
-                    data: { labels: points.map(point => point.date), datasets: [{
-                        label: 'Interviews', data: points.map(point => point.count),
-                        borderColor: color('--accent-primary'), tension: 0.2,
-                    }] },
-                    options: {
-                        animation: false, responsive: true, maintainAspectRatio: false,
-                        plugins: { legend: { display: false } },
-                        scales: {
-                            x: { ticks: { color: color('--text-primary') }, grid: { color: color('--border-primary') } },
-                            y: { beginAtZero: true, ticks: { precision: 0, color: color('--text-primary') }, grid: { color: color('--border-primary') } },
-                        },
-                    },
-                });
-                themeObserver = new MutationObserver(() => {
-                    chart.data.datasets[0].borderColor = color('--accent-primary');
-                    for (const scale of Object.values(chart.options.scales)) {
-                        scale.ticks.color = color('--text-primary');
-                        scale.grid.color = color('--border-primary');
-                    }
-                    chart.update('none');
-                });
-                themeObserver.observe(document.documentElement, { attributes: true, attributeFilter: ['class', 'data-theme'] });
-            });
-        },
-        destroy() {
-            themeObserver?.disconnect();
-            chart?.destroy();
-        },
-    };
-};
-
 // Retain focus when a recorded-mark action replaces its own form or control.
 window.addEventListener('bootkode-assessment-focus', (event) => {
     requestAnimationFrame(() => document.getElementById(event.detail?.id)?.focus());
@@ -297,31 +251,6 @@ window.lessonEditorManager = function () {
                 this.markFieldChanged('content');
             }
         }
-    };
-};
-
-window.learningActivityChart = function (activity) {
-    let chart;
-    return {
-        init() {
-            this.$nextTick(() => {
-                const style = getComputedStyle(document.documentElement);
-                const accent = `rgb(${style.getPropertyValue('--accent-primary').trim()})`;
-                const ink = `rgb(${style.getPropertyValue('--text-secondary').trim()})`;
-                chart = new Chart(this.$refs.canvas, {
-                    type: 'line',
-                    data: { labels: activity.map(day => day.date), datasets: [
-                        { label: 'Completed lessons', data: activity.map(day => day.lessons), borderColor: accent, yAxisID: 'lessons' },
-                        { label: 'Recorded session minutes', data: activity.map(day => day.minutes), borderColor: ink, yAxisID: 'minutes' },
-                    ] },
-                    options: { responsive: true, maintainAspectRatio: false, animation: false,
-                        plugins: { legend: { labels: { color: ink } } },
-                        scales: { x: { ticks: { color: ink, maxTicksLimit: 7 } }, lessons: { min: 0, ticks: { precision: 0, color: ink } }, minutes: { min: 0, position: 'right', ticks: { color: ink }, grid: { drawOnChartArea: false } } },
-                    },
-                });
-            });
-        },
-        destroy() { chart?.destroy(); },
     };
 };
 

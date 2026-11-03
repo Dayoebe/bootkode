@@ -1,3 +1,7 @@
+@assets
+    @vite('resources/js/charts.js')
+@endassets
+
 <div class="bg-themed-primary min-h-screen transition-colors duration-300">
     <div class="space-y-6">
 

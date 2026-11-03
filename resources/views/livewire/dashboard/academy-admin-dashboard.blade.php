@@ -1,3 +1,7 @@
+@assets
+    @vite('resources/js/charts.js')
+@endassets
+
 <div class="space-y-6">
     <x-ui.page-header title="Academy overview" description="Review learning, teaching and academy operations.">
         <x-slot:actions>

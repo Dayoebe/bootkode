@@ -1,3 +1,7 @@
+@assets
+    @vite('resources/js/charts.js')
+@endassets
+
 <div class="space-y-6">
     <x-ui.page-header title="Your learning workspace" description="Continue your courses, review your progress and find your next useful step.">
         <x-slot:actions><a href="{{ route('student.enrolled-courses') }}" class="bk-button bk-button-primary">My courses</a><a href="{{ route('student.course-catalog') }}" class="bk-button bk-button-secondary">Find a course</a></x-slot:actions>
@@ -209,6 +213,10 @@
 
             <!-- Performance Analytics -->
             @if($showWidgets['performance_analytics'])
+                @php($performanceAnalytics = $this->performanceAnalytics)
+                @if(isset($this->widgetFailures['performance_analytics']))
+                    <x-ui.widget-unavailable title="Learning analytics" />
+                @else
                 <div class="bg-themed-secondary rounded-lg shadow-sm border border-themed-primary p-6 transition-colors duration-300">
                     <h2 class="text-xl font-bold text-themed-primary mb-6 transition-colors duration-300">Study Activity</h2>
 
@@ -312,10 +320,15 @@
                         </div>
                     @endif
                 </div>
+                @endif
             @endif
 
             <!-- Recent Reviews -->
-            @if($showWidgets['recent_reviews'] && $this->recentReviews->isNotEmpty())
+            @if($showWidgets['recent_reviews'])
+                @php($recentReviews = $this->recentReviews)
+                @if(isset($this->widgetFailures['recent_reviews']))
+                    <x-ui.widget-unavailable title="Course reviews" />
+                @elseif($recentReviews->isNotEmpty())
                 <div class="bg-themed-secondary rounded-lg shadow-sm border border-themed-primary p-6 transition-colors duration-300">
                     <div class="flex items-center justify-between mb-6">
                         <h2 class="text-xl font-bold text-themed-primary transition-colors duration-300">Your Recent Reviews</h2>
@@ -352,6 +365,7 @@
                         @endforeach
                     </div>
                 </div>
+                @endif
             @endif
         </div>
 
@@ -359,6 +373,10 @@
         <div class="space-y-8">
             <!-- Upcoming Tasks -->
             @if($showWidgets['upcoming_tasks'])
+                @php($upcomingTasks = $this->upcomingTasks)
+                @if(isset($this->widgetFailures['upcoming_tasks']))
+                    <x-ui.widget-unavailable title="Upcoming tasks" />
+                @else
                 <div class="bg-themed-secondary rounded-lg shadow-sm border border-themed-primary p-6 transition-colors duration-300">
                     <h2 class="text-xl font-bold text-themed-primary mb-6 transition-colors duration-300">Upcoming Tasks</h2>
 
@@ -406,10 +424,15 @@
                         @endforelse
                     </div>
                 </div>
+                @endif
             @endif
 
             <!-- Recent Achievements -->
             @if($showWidgets['achievements'])
+                @php($recentAchievements = $this->recentAchievements)
+                @if(isset($this->widgetFailures['achievements']))
+                    <x-ui.widget-unavailable title="Achievements" />
+                @else
                 <div class="bg-themed-secondary rounded-lg shadow-sm border border-themed-primary p-6 transition-colors duration-300">
                     <div class="flex items-center justify-between mb-6">
                         <h2 class="text-xl font-bold text-themed-primary transition-colors duration-300">Recent Achievements</h2>
@@ -445,10 +468,15 @@
                         @endforelse
                     </div>
                 </div>
+                @endif
             @endif
 
             <!-- Announcements -->
             @if($showWidgets['announcements'])
+                @php($recentAnnouncements = $this->recentAnnouncements)
+                @if(isset($this->widgetFailures['announcements']))
+                    <x-ui.widget-unavailable title="Announcements" />
+                @else
                 <div class="bg-themed-secondary rounded-lg shadow-sm border border-themed-primary p-6 transition-colors duration-300">
                     <div class="flex items-center justify-between mb-6">
                         <h2 class="text-xl font-bold text-themed-primary transition-colors duration-300">Announcements</h2>
@@ -478,10 +506,15 @@
                         @endforelse
                     </div>
                 </div>
+                @endif
             @endif
 
             <!-- Career Tools -->
             @if($showWidgets['career_tools'])
+                @php($careerTools = $this->careerTools)
+                @if(isset($this->widgetFailures['career_tools']))
+                    <x-ui.widget-unavailable title="Career tools" />
+                @else
                 <div class="bg-themed-secondary rounded-lg shadow-sm border border-themed-primary p-6 transition-colors duration-300">
                     <h2 class="text-xl font-bold text-themed-primary mb-6 transition-colors duration-300">Career Tools</h2>
 
@@ -564,10 +597,15 @@
                         </div>
                     </div>
                 </div>
+                @endif
             @endif
 
             <!-- Mentorship Status -->
-            @if($showWidgets['mentorship_status'] && ($this->mentorshipStatus['active_mentorships']->isNotEmpty() || $this->mentorshipStatus['pending_requests'] > 0))
+            @if($showWidgets['mentorship_status'])
+                @php($mentorshipStatus = $this->mentorshipStatus)
+                @if(isset($this->widgetFailures['mentorship_status']))
+                    <x-ui.widget-unavailable title="Mentorship" />
+                @elseif($mentorshipStatus['active_mentorships']->isNotEmpty() || $mentorshipStatus['pending_requests'] > 0)
                 <div class="bg-themed-secondary rounded-lg shadow-sm border border-themed-primary p-6 transition-colors duration-300">
                     <div class="flex items-center justify-between mb-6">
                         <h2 class="text-xl font-bold text-themed-primary transition-colors duration-300">Mentorship</h2>
@@ -613,10 +651,15 @@
                         </div>
                     @endif
                 </div>
+                @endif
             @endif
 
             <!-- Wishlist Preview -->
-            @if($showWidgets['wishlist_preview'] && $this->wishlistPreview->isNotEmpty())
+            @if($showWidgets['wishlist_preview'])
+                @php($wishlistPreview = $this->wishlistPreview)
+                @if(isset($this->widgetFailures['wishlist_preview']))
+                    <x-ui.widget-unavailable title="Wishlist" />
+                @elseif($wishlistPreview->isNotEmpty())
                 <div class="bg-themed-secondary rounded-lg shadow-sm border border-themed-primary p-6 transition-colors duration-300">
                     <div class="flex items-center justify-between mb-6">
                         <h2 class="text-xl font-bold text-themed-primary transition-colors duration-300">Wishlist</h2>
@@ -652,9 +695,14 @@
                         @endforeach
                     </div>
                 </div>
+                @endif
             @endif
 
             <!-- System Status -->
+            @php($systemHealth = $this->systemHealth)
+            @if(isset($this->widgetFailures['system_health']))
+                <x-ui.widget-unavailable title="System status" />
+            @else
             <div class="bg-themed-secondary rounded-lg shadow-sm border border-themed-primary p-6 transition-colors duration-300">
                 <h2 class="text-lg font-bold text-themed-primary mb-4 transition-colors duration-300">System Status</h2>
 
@@ -674,6 +722,7 @@
                     </div>
                 </div>
             </div>
+            @endif
         </div>
     </div>
 </div>

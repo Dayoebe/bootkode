@@ -1,3 +1,7 @@
+@assets
+    @vite('resources/js/charts.js')
+@endassets
+
 <div class="space-y-6">
     <x-ui.page-header title="Teaching workspace" description="Manage your courses, assessments and learner progress.">
         <x-slot:actions>

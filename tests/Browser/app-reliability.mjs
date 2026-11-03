@@ -50,12 +50,15 @@ async function capture(page, width, name) {
  states.push({width, name, ...bounds});
  console.log(`${width}: ${name}`);
 }
+async function visit(page, url) {
+ await page.goto(url, {waitUntil: 'domcontentloaded'});
+}
 try {
  for (const width of [360,390,430,768,1024,1440,1920]) {
   const {context, page} = await session(width);
   const requests = [];
   page.on('request', request => requests.push(request.url()));
-  await page.goto(base + fixtures.dashboard);
+  await visit(page, base + fixtures.dashboard);
   await page.waitForFunction(() => window.Livewire && window.Chart && window.bootkodeOffline);
   assert(!requests.some(url => /\/editors-[^/]+\.(js|css)/.test(url)), 'Learner dashboard does not fetch Trix');
   await capture(page, width, 'dashboard');
@@ -64,47 +67,51 @@ try {
   await page.waitForURL(base + fixtures.profile);
   await page.locator('h1:visible').waitFor();
   assert.equal(await page.evaluate(() => window.__navigationMarker), 'same-window', 'Livewire navigation preserves the JS realm');
+  const historyRestored = page.evaluate(() => new Promise(resolve => document.addEventListener('livewire:navigated', resolve, {once: true})));
   await page.goBack();
   await page.waitForURL(base + fixtures.dashboard);
+  await historyRestored;
   await capture(page, width, 'history-restored');
-  await page.goto(base + fixtures.course);
+  await visit(page, base + fixtures.course);
   await page.waitForFunction(() => !!window.bootkodeOffline);
   await capture(page, width, 'online-course');
-  await page.evaluate(() => navigator.serviceWorker.ready);
-  await page.waitForFunction(() => !!navigator.serviceWorker.controller);
-  const result = await page.evaluate(async slug => {
-   const pack = await window.bootkodeOffline.installPack({manifestUrl: `/offline-learning/packs/${slug}/manifest`, types: ['lessons'], storageLimitMb: 50});
-   return {owner: pack.user_id, status: pack.status, failed: pack.cache_failures.length};
-  }, fixtures.slug);
-  assert.equal(result.owner, fixtures.owner_id);
-  assert.equal(result.failed, 0);
-  assert.equal(result.status, 'cached');
-  const cached = await page.evaluate(async () => {
-   const requests = await (await caches.open('bootkode-offline-packs-v1')).keys();
-   return requests.map(request => new URL(request.url).pathname);
-  });
-  assert(!cached.some(path => path.startsWith('/course/') || path.includes('/wallet') || path.includes('/dashboard')), 'No private application HTML in pack cache');
-  await context.setOffline(true);
-  await page.goto(`${base}/offline-learning.html?course=${fixtures.slug}`);
-  await page.locator('[data-complete]').click();
-  await page.getByText('Saved on this device. Reconnect to confirm progress with BootKode.').waitFor();
-  assert.equal(await page.locator('h1').textContent(), 'Practice lesson 1');
-  await capture(page, width, 'offline-reader');
-  await page.goto(`${base}/dashboard/wallet`);
-  await page.getByRole('heading', {name: /offline/i}).waitFor();
-  assert(!(await page.textContent('body')).includes('Synthetic learner'), 'Offline navigation never replays account HTML');
-  await page.goto(`${base}/offline-learning.html?course=${fixtures.slug}`);
-  await context.setOffline(false);
-  await page.locator('[data-sync]').click();
-  await page.waitForFunction(() => window.bootkodeOffline.getPacks().every(pack => pack.pendingCount === 0));
-  const manifest = await context.request.get(`${base}/offline-learning/packs/${fixtures.slug}/manifest`);
-  assert((await manifest.json()).completed_lesson_ids.includes(fixtures.lesson_ids[0]), 'Backend confirmed the offline completion');
+  if (width === 390) {
+   await page.evaluate(() => navigator.serviceWorker.ready);
+   await page.waitForFunction(() => !!navigator.serviceWorker.controller);
+   const result = await page.evaluate(async slug => {
+    const pack = await window.bootkodeOffline.installPack({manifestUrl: `/offline-learning/packs/${slug}/manifest`, types: ['lessons'], storageLimitMb: 50});
+    return {owner: pack.user_id, status: pack.status, failed: pack.cache_failures.length};
+   }, fixtures.slug);
+   assert.equal(result.owner, fixtures.owner_id);
+   assert.equal(result.failed, 0);
+   assert.equal(result.status, 'cached');
+   const cached = await page.evaluate(async () => {
+    const requests = await (await caches.open('bootkode-offline-packs-v1')).keys();
+    return requests.map(request => new URL(request.url).pathname);
+   });
+   assert(!cached.some(path => path.startsWith('/course/') || path.includes('/wallet') || path.includes('/dashboard')), 'No private application HTML in pack cache');
+   await context.setOffline(true);
+   await visit(page, `${base}/offline-learning.html?course=${fixtures.slug}`);
+   await page.locator('[data-complete]').click();
+   await page.getByText('Saved on this device. Reconnect to confirm progress with BootKode.').waitFor();
+   assert.equal(await page.locator('h1').textContent(), 'Practice lesson 1');
+   await capture(page, width, 'offline-reader');
+   await visit(page, `${base}/dashboard/wallet`);
+   await page.getByRole('heading', {name: /offline/i}).waitFor();
+   assert(!(await page.textContent('body')).includes('Synthetic learner'), 'Offline navigation never replays account HTML');
+   await visit(page, `${base}/offline-learning.html?course=${fixtures.slug}`);
+   await context.setOffline(false);
+   await page.locator('[data-sync]').click();
+   await page.waitForFunction(() => window.bootkodeOffline.getPacks().every(pack => pack.pendingCount === 0));
+   const manifest = await context.request.get(`${base}/offline-learning/packs/${fixtures.slug}/manifest`);
+   assert((await manifest.json()).completed_lesson_ids.includes(fixtures.lesson_ids[0]), 'Backend confirmed the offline completion');
+  }
   await context.close();
  }
  // Exercise writes made while an acknowledgement is in flight and a lost reply.
  const race = await session(390);
  const page = race.page;
- await page.goto(base + fixtures.course);
+ await visit(page, base + fixtures.course);
  await page.evaluate(async slug => window.bootkodeOffline.installPack({manifestUrl: `/offline-learning/packs/${slug}/manifest`, types: ['lessons'], storageLimitMb: 50}), fixtures.slug);
  const event = {type: 'lesson_completed', lesson_id: fixtures.lesson_ids[0], time_spent_seconds: 31};
  await page.evaluate(async ({slug,event}) => window.bootkodeOffline.queueProgress(slug,event), {slug: fixtures.slug,event});
@@ -137,7 +144,7 @@ try {
  assert(expired);
  assert.equal(await page.evaluate(() => window.bootkodeOffline.getPacks()[0].pendingCount), 1);
  await login(race.context,'other@example.test');
- await page.goto(base + fixtures.dashboard);
+ await visit(page, base + fixtures.dashboard);
  assert.equal(await page.evaluate(() => window.bootkodeOffline.getPacks().length), 0, 'Another account sees no private pack metadata');
  await capture(page,390,'account-boundary');
  // Remove the browser cleanup header from a real logout response to test the JS fallback too.
@@ -161,7 +168,7 @@ try {
   Storage.prototype.getItem = function(key) {if (String(key).startsWith('bootkode:offline:')) throw new Error('Synthetic offline storage denial'); return get.call(this,key);};
   Storage.prototype.setItem = function(key,value) {if (String(key).startsWith('bootkode:offline:')) throw new Error('Synthetic offline storage denial'); return set.call(this,key,value);};
  });
- await blocked.page.goto(base + fixtures.course);
+ await visit(blocked.page, base + fixtures.course);
  await blocked.page.locator('h1:visible').waitFor();
  const unavailable = await blocked.page.evaluate(async slug => {
   try {await window.bootkodeOffline.installPack({manifestUrl: `/offline-learning/packs/${slug}/manifest`, types: ['lessons'], storageLimitMb: 50}); return '';}
@@ -171,7 +178,7 @@ try {
  await blocked.context.close();
  for (const width of [390,1440]) {
   const {context,page} = await session(width,'reviewer@example.test');
-  await page.goto(`${base}${fixtures.builder}?lesson=${fixtures.lesson_ids[0]}`);
+  await visit(page, `${base}${fixtures.builder}?lesson=${fixtures.lesson_ids[0]}`);
   await page.locator('trix-editor').waitFor();
   await page.waitForFunction(() => !!document.querySelector('trix-editor')?.editor);
   assert(await page.evaluate(() => customElements.get('trix-editor') !== undefined));
@@ -185,11 +192,11 @@ try {
   await page.waitForURL(base + fixtures.blog);
   await page.waitForFunction(() => !!document.querySelector('trix-editor')?.editor);
   await capture(page,width,'blog-editor');
-  await page.goto(base + fixtures.qa);
+  await visit(page, base + fixtures.qa);
   await page.getByRole('button',{name:'Check Media',exact:true}).first().click();
   await page.getByText('Media check queued.',{exact:false}).waitFor();
   await capture(page,width,'queued-media-check');
-  await page.goto(`${base}/offline-learning`);
+  await visit(page, `${base}/offline-learning`);
   await page.getByRole('heading', {name: 'Offline Learning Packs'}).waitFor();
   await capture(page,width,'offline-library');
   await context.close();

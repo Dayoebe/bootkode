@@ -1,3 +1,7 @@
+@assets
+    @vite('resources/js/charts.js')
+@endassets
+
 <div class="space-y-6">
     <x-ui.page-header title="Platform overview" description="Review platform activity, operations and the work that needs attention.">
         <x-slot:actions>

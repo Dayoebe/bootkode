@@ -2,12 +2,11 @@
 
 namespace App\Models\Assessment;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\Core\User;
+use App\Models\Learning\Course;
+use App\Models\Learning\Lesson; // UPDATED
+use Illuminate\Database\Eloquent\Factories\HasFactory; // UPDATED
 use Illuminate\Database\Eloquent\Model;
-use Carbon\Carbon;
-use App\Models\Core\User; // UPDATED
-use App\Models\Learning\Course; // UPDATED
-use App\Models\Learning\Lesson;
 
 class LearningSession extends Model
 {
@@ -91,7 +90,7 @@ class LearningSession extends Model
     public static function getDailyStudyTime($userId, $date = null)
     {
         $date = $date ?? now();
-        
+
         return static::where('user_id', $userId)
             ->whereDate('started_at', $date)
             ->whereNotNull('ended_at')
@@ -104,7 +103,7 @@ class LearningSession extends Model
     public static function getWeeklyStudyTime($userId, $startOfWeek = null)
     {
         $startOfWeek = $startOfWeek ?? now()->startOfWeek();
-        
+
         return static::where('user_id', $userId)
             ->whereBetween('started_at', [$startOfWeek, $startOfWeek->copy()->endOfWeek()])
             ->whereNotNull('ended_at')
@@ -116,37 +115,25 @@ class LearningSession extends Model
      */
     public static function getStudyStreak($userId)
     {
-        $streak = 0;
         $currentDate = now()->startOfDay();
-        
-        // Check if user studied today
-        $hasActivityToday = static::where('user_id', $userId)
-            ->whereDate('started_at', $currentDate)
+        $activeDates = static::where('user_id', $userId)
+            ->where('started_at', '>=', $currentDate->copy()->subDays(364))
             ->whereNotNull('ended_at')
             ->where('ended_at', '<=', now())
-            ->exists();
-            
-        if ($hasActivityToday) {
-            $streak = 1;
-            
-            // Check previous days
-            for ($i = 1; $i < 365; $i++) {
-                $checkDate = $currentDate->copy()->subDays($i);
-                
-                $hasActivity = static::where('user_id', $userId)
-                    ->whereDate('started_at', $checkDate)
-                    ->whereNotNull('ended_at')
-                    ->where('ended_at', '<=', now())
-                    ->exists();
-                    
-                if ($hasActivity) {
-                    $streak++;
-                } else {
-                    break;
-                }
+            ->selectRaw('DATE(started_at) as activity_date')
+            ->distinct()
+            ->pluck('activity_date')
+            ->mapWithKeys(fn ($date) => [(string) $date => true]);
+
+        $streak = 0;
+        for ($offset = 0; $offset < 365; $offset++) {
+            if (! isset($activeDates[$currentDate->copy()->subDays($offset)->toDateString()])) {
+                break;
             }
+
+            $streak++;
         }
-        
+
         return $streak;
     }
 
@@ -171,7 +158,7 @@ class LearningSession extends Model
      */
     public function getFormattedDurationAttribute()
     {
-        if (!$this->duration_minutes) {
+        if (! $this->duration_minutes) {
             return 'Active';
         }
 
@@ -179,9 +166,9 @@ class LearningSession extends Model
         $minutes = $this->duration_minutes % 60;
 
         if ($hours > 0) {
-            return $hours . 'h ' . $minutes . 'm';
+            return $hours.'h '.$minutes.'m';
         }
 
-        return $minutes . 'm';
+        return $minutes.'m';
     }
 }

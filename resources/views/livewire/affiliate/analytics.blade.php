@@ -1,3 +1,7 @@
+@assets
+    @vite('resources/js/charts.js')
+@endassets
+
    {{-- resources/views/livewire/affiliate/analytics.blade.php --}}
    <div class=" px-4 sm:px-6 lg:px-8 py-8">
     <!-- Header -->
