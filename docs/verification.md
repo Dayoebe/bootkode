@@ -953,3 +953,17 @@ The focused dashboard test initially expected the production chart filename whil
 External acceptance remains: physical Android/iOS install/update/eviction, field LCP/INP/CLS and representative load; target-host cron/pcntl/TLS/proxy/storage; encrypted off-host database/files/APP_KEY restore; live SMTP, Paystack, OAuth, AI, vacancy and media providers; and a remote CI run. These prevent a production-ready claim even though the repository-controlled premium-app work and local dependency gate are complete. See [premium app completion](app-experience-completion.md) and [production readiness](deployment/production-readiness.md).
 
 Local delivery commits are `b8db8d59`, `b776235e` and `6de12be1` on `feat/premium-app-completion`. The ordinary `git push -u origin feat/premium-app-completion` failed because GitHub HTTPS credentials are unavailable (`could not read Username`). The branch remains local; no remote CI or deployment is claimed.
+
+## Learner project portfolio and showcase — 4 November 2026
+
+Database safety: `.env.testing` targets `bootkode_deployment_test` on the isolated test connection, and `Tests\TestCase` refuses non-SQLite database names that do not end in `_test` or `_testing`. `RefreshDatabase` exercised the additive portfolio migration only on that test schema. No migration, fixture or record change was run against the recovered working database.
+
+Verification evidence:
+
+- Final focused suite: `php artisan test tests/Feature/PortfolioShowcaseTest.php --colors=never` — **7 passed / 38 assertions**, 32.50 seconds. Coverage includes private-default create, owned update/delete/reorder, all project-ID action boundaries, forged bulk selection, HTTP(S)-only link validation, escaped learner/project text, public/private project filtering, account profile privacy and verified-student access.
+- Portfolio plus dashboard navigation regression: **12 passed / 107 assertions**, 39.12 seconds. This retained role-aware dashboard shortcuts, primary-role precedence, learner navigation boundaries and verification redirects.
+- `npm run build` passed with Vite 7.3.7 in 6.45 seconds. The portfolio Blade utilities produced the new tracked app CSS hash; the existing PostCSS missing-`from` warning remains.
+- All eight changed PHP entry points passed `php -l`; `php artisan view:cache`, focused route inventory for `portfolio.show`/`portfolio.public`, and `git diff --check` passed.
+- Isolated headless Chrome acceptance passed the authenticated manager and public showcase at **390/768/1024/1440px**. All eight states retained one visible primary heading, no horizontal overflow, no unnamed or sub-44px feature controls, no browser exceptions and no local HTTP 5xx. The manager opened its create form and rendered both owned fixtures; the public showcase rendered only the explicitly published fixture. The 390px and 1440px screenshots for both surfaces were visually inspected. Evidence is retained privately at `/home/olamilekan/.local/share/bootkode/verification-20261104-portfolio/`; the test-only user/projects/session were removed afterward.
+
+Limits: the complete application test suite was not rerun, and the browser pass did not perform a keyboard-only or screen-reader session. The forward migration still requires the normal backed-up deployment rehearsal/application, and no commit, push or deployment was performed.

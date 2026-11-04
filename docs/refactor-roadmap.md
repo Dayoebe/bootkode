@@ -241,3 +241,13 @@ This milestone does not complete the nine-phase brief or change the existing dep
 - [ ] Complete host/cron/pcntl, encrypted off-host restore, HTTPS/SMTP/Paystack/OAuth/AI/media-provider staging and current remote CI acceptance.
 
 The application-controlled premium experience work is complete. The open items require deployment infrastructure, real devices, field traffic or provider accounts and therefore remain explicit release gates rather than fabricated local success. Earlier learning-ecosystem/career roadmap items are not implicitly completed. Detail: [app-experience-completion.md](app-experience-completion.md).
+
+## Learner project portfolio and showcase — 4 November 2026
+
+- [x] Retain the existing portfolio domain and add private-by-default visibility plus optional source-code links through an additive migration.
+- [x] Restrict the manager to verified learners and enforce active-account ownership through a registered policy on each Livewire mutation.
+- [x] Support create, update, reorder and deletion with explicit publish/private controls and HTTP(S)-only links.
+- [x] Add the smallest slug-based showcase because no reusable public profile route exists; require Public account visibility and include only explicitly published projects.
+- [x] Keep public output escaped, omit private details, and add no portfolio directory or public download path.
+- [x] Cover CRUD, ordering, cross-owner IDs, URL schemes, escaped output and public/private account boundaries on an explicit `_test` database.
+- [x] Complete isolated authenticated/public browser interaction and responsive inspection at 390/768/1024/1440px; retain keyboard-only and screen-reader acceptance as explicit broader release work.
