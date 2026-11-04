@@ -25,28 +25,27 @@
         ->implode('') ?: 'U';
 @endphp
 
-<header class="sticky top-0 z-30 border-b border-themed-primary bg-themed-secondary transition-colors duration-200">
-    <div class="flex min-h-16 items-center justify-between gap-3 px-4 py-2 sm:px-6 lg:px-8">
-        <div class="flex min-w-0 items-center gap-3">
+<header class="bk-topbar">
+    <div class="bk-topbar-inner">
+        <div class="bk-topbar-context">
             <button
-                @click="toggleSidebar()"
+                @click="toggleSidebar($event)"
                 :aria-expanded="sidebarOpen.toString()" aria-controls="dashboard-navigation"
-                class="grid h-11 w-11 shrink-0 place-items-center rounded-[8px] border border-themed-primary bg-themed-secondary text-themed-primary shadow-sm transition hover:bg-themed-tertiary lg:hidden"
-                aria-label="Toggle sidebar"
+                class="bk-topbar-icon-button lg:hidden"
+                aria-label="Open navigation"
             >
-                <i class="fas fa-bars"></i>
+                <i class="fas fa-bars" aria-hidden="true"></i>
             </button>
 
+            <span class="bk-topbar-context-icon" aria-hidden="true"><i class="{{ $icon }}"></i></span>
             <div class="min-w-0">
-                <div class="flex min-w-0 items-center gap-2">
-                    <p class="bk-display truncate text-base font-semibold text-themed-primary sm:text-base">{{ $pageTitle }}</p>
-
-                </div>
-                <p class="hidden max-w-xl truncate text-xs font-semibold text-themed-secondary sm:block">{{ $pageDescription }}</p>
+                <p class="bk-topbar-kicker hidden sm:block">Current workspace</p>
+                <p class="bk-topbar-title truncate">{{ $pageTitle }}</p>
+                <p class="bk-topbar-description hidden max-w-md truncate xl:block">{{ $pageDescription }}</p>
             </div>
         </div>
 
-        <div class="hidden min-w-0 flex-1 justify-center px-4 md:flex">
+        <div class="hidden min-w-0 flex-1 justify-center px-4 xl:flex">
             <form
                 class="relative w-full max-w-lg"
                 x-data="dashboardSearch({
@@ -62,7 +61,7 @@
                     <input
                         type="search"
                         placeholder="Search courses, lessons, users, certificates..."
-                        class="h-11 w-full rounded-[8px] border border-themed-primary bg-themed-tertiary/70 pl-9 pr-10 text-sm font-semibold text-themed-primary placeholder:text-themed-tertiary outline-none transition focus:border-teal-500 focus:bg-themed-secondary focus:ring-4 focus:ring-teal-500/10"
+                        class="bk-topbar-search"
                         x-model="query"
                         @input.debounce.250ms="search()"
                         @focus="search()"
@@ -77,7 +76,7 @@
                 <div
                     x-show="open"
                     x-transition.origin.top
-                    class="absolute left-0 right-0 top-full z-50 mt-3 max-h-[28rem] overflow-y-auto rounded-[8px] border border-themed-primary bg-themed-secondary p-2 shadow-2xl shadow-slate-950/15"
+                    class="bk-topbar-popover left-0 right-0 z-50 max-h-[28rem] overflow-y-auto p-2"
                     style="display: none;"
                 >
                     <template x-if="loading">
@@ -132,11 +131,11 @@
         </div>
 
         <div class="flex shrink-0 items-center gap-2">
-            <div class="hidden items-center gap-2 lg:flex">
+            <div class="hidden items-center gap-2 xl:flex">
                 <div class="relative" x-data="{ open: false }" @keydown.escape.stop="open = false; $el.querySelector('button').focus()">
                     <button
                         @click="open = !open" :aria-expanded="open.toString()"
-                        class="relative grid h-11 w-11 place-items-center rounded-[8px] border border-themed-primary bg-themed-secondary text-themed-secondary transition hover:bg-themed-tertiary hover:text-themed-primary"
+                        class="bk-topbar-icon-button relative"
                         aria-label="Notifications"
                     >
                         <i class="fas fa-bell"></i>
@@ -151,7 +150,7 @@
                         x-show="open"
                         x-transition.origin.top.right
                         @click.away="open = false"
-                        class="absolute right-0 mt-3 w-80 max-w-[calc(100vw-2rem)] overflow-hidden rounded-[8px] border border-themed-primary bg-themed-secondary shadow-2xl shadow-slate-950/10"
+                        class="bk-topbar-popover w-80 max-w-[calc(100vw-2rem)]"
                         style="display: none;"
                     >
                         <div class="border-b border-themed-primary px-4 py-3">
@@ -186,7 +185,7 @@
                 </div>
 
                 <a href="{{ route('messages.index') }}"
-                    class="relative grid h-11 w-11 place-items-center rounded-[8px] border border-themed-primary bg-themed-secondary text-themed-secondary transition hover:bg-themed-tertiary hover:text-themed-primary"
+                    class="bk-topbar-icon-button relative"
                     aria-label="Chat" wire:navigate>
                     <i class="fas fa-comments"></i>
                     @if ($unreadChatCount > 0)
@@ -199,7 +198,7 @@
                 <div class="relative" x-data="{ open: false }" @keydown.escape.stop="open = false; $el.querySelector('button').focus()">
                     <button
                         @click="open = !open" :aria-expanded="open.toString()"
-                        class="grid h-11 w-11 place-items-center rounded-[8px] border border-themed-primary bg-themed-secondary text-themed-secondary transition hover:bg-themed-tertiary hover:text-themed-primary"
+                        class="bk-topbar-icon-button"
                         aria-label="Quick actions"
                     >
                         <i class="fas fa-plus"></i>
@@ -209,7 +208,7 @@
                         x-show="open"
                         x-transition.origin.top.right
                         @click.away="open = false"
-                        class="absolute right-0 mt-3 w-56 overflow-hidden rounded-[8px] border border-themed-primary bg-themed-secondary p-2 shadow-2xl shadow-slate-950/10"
+                        class="bk-topbar-popover w-56 p-2"
                         style="display: none;"
                     >
                         @if($user && ($user->hasRole('instructor') || $user->hasRole('academy_admin') || $user->hasRole('super_admin')))
@@ -235,7 +234,7 @@
             <div class="hidden sm:block"><x-theme-selector /></div>
 
             <button
-                class="grid h-11 w-11 place-items-center rounded-[8px] border border-themed-primary bg-themed-secondary text-themed-secondary transition hover:bg-themed-tertiary hover:text-themed-primary md:hidden"
+                class="bk-topbar-icon-button xl:hidden"
                 @click="$dispatch('toggle-mobile-search')"
                 aria-label="Toggle search"
             >
@@ -245,15 +244,15 @@
             <div class="relative" x-data="{ open: false }" @keydown.escape.stop="open = false; $el.querySelector('button').focus()">
                 <button
                     @click="open = !open" :aria-expanded="open.toString()"
-                    class="flex h-11 items-center gap-2 rounded-[8px] border border-themed-primary bg-themed-secondary px-2 text-themed-primary shadow-sm transition hover:bg-themed-tertiary"
+                    class="bk-user-trigger"
                     aria-label="User menu"
                 >
-                    <span class="grid h-8 w-8 shrink-0 place-items-center rounded-[8px] border border-themed-primary bg-teal-600 text-xs font-semibold text-white">
+                    <span class="bk-user-avatar">
                         {{ $userInitials }}
                     </span>
                     <div class="hidden min-w-0 text-left sm:block">
                         <p class="max-w-32 truncate text-sm font-semibold">{{ $user?->name ?? 'Guest' }}</p>
-                        <p class="truncate text-[11px] font-semibold text-themed-tertiary">{{ ucfirst($user?->getRoleNames()->first() ?? 'User') }}</p>
+                        <p class="truncate text-[11px] font-semibold text-themed-tertiary">{{ str($user?->getRoleNames()->first() ?? 'User')->replace('_', ' ')->title() }}</p>
                     </div>
                     <i class="fas fa-chevron-down hidden text-[10px] text-themed-tertiary sm:block" :class="{ 'rotate-180': open }"></i>
                 </button>
@@ -262,7 +261,7 @@
                     x-show="open"
                     x-transition.origin.top.right
                     @click.away="open = false"
-                    class="absolute right-0 mt-3 w-64 max-w-[calc(100vw-2rem)] overflow-hidden rounded-[8px] border border-themed-primary bg-themed-secondary p-2 shadow-2xl shadow-slate-950/10"
+                    class="bk-topbar-popover w-64 max-w-[calc(100vw-2rem)] p-2"
                     style="display: none;"
                 >
                     @if ($user)
@@ -326,13 +325,13 @@
                     @input.debounce.250ms="search()"
                     @focus="search()"
                     @keydown.escape.stop="close()"
-                    class="h-11 w-full rounded-[8px] border border-themed-primary bg-themed-tertiary pl-9 pr-20 text-sm font-semibold text-themed-primary placeholder:text-themed-tertiary outline-none focus:border-teal-500 focus:ring-4 focus:ring-teal-500/10"
+                    class="bk-topbar-search pr-24"
                     autocomplete="off"
                 >
-                <button type="submit" class="absolute right-11 top-1/2 grid h-8 w-8 -translate-y-1/2 place-items-center rounded-[8px] text-themed-tertiary hover:bg-themed-secondary hover:text-themed-primary" aria-label="Search">
+                <button type="submit" class="absolute right-11 top-1/2 grid h-11 w-11 -translate-y-1/2 place-items-center rounded-[8px] text-themed-tertiary hover:bg-themed-secondary hover:text-themed-primary" aria-label="Search">
                     <i class="fas fa-arrow-right text-xs"></i>
                 </button>
-                <button type="button" @click="mobileSearchOpen = false; close()" class="absolute right-2 top-1/2 grid h-8 w-8 -translate-y-1/2 place-items-center rounded-[8px] text-themed-tertiary hover:bg-themed-secondary" aria-label="Close search">
+                <button type="button" @click="mobileSearchOpen = false; close()" class="absolute right-0 top-1/2 grid h-11 w-11 -translate-y-1/2 place-items-center rounded-[8px] text-themed-tertiary hover:bg-themed-secondary" aria-label="Close search">
                     <i class="fas fa-times"></i>
                 </button>
             </label>
@@ -340,7 +339,7 @@
             <div
                 x-show="open"
                 x-transition.origin.top
-                class="absolute left-0 right-0 top-full z-50 mt-3 max-h-[70vh] overflow-y-auto rounded-[8px] border border-themed-primary bg-themed-secondary p-2 shadow-2xl shadow-slate-950/15"
+                class="bk-topbar-popover left-0 right-0 z-50 max-h-[70vh] overflow-y-auto p-2"
                 style="display: none;"
             >
                 <template x-if="loading">

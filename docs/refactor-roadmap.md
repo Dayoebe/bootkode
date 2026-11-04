@@ -251,3 +251,11 @@ The application-controlled premium experience work is complete. The open items r
 - [x] Keep public output escaped, omit private details, and add no portfolio directory or public download path.
 - [x] Cover CRUD, ordering, cross-owner IDs, URL schemes, escaped output and public/private account boundaries on an explicit `_test` database.
 - [x] Complete isolated authenticated/public browser interaction and responsive inspection at 390/768/1024/1440px; retain keyboard-only and screen-reader acceptance as explicit broader release work.
+
+## Dashboard interface refresh — 4 November 2026
+
+- [x] Refresh the shared sidebar, header and mobile navigation as one consistent professional shell.
+- [x] Preserve role-filtered menu generation, named routes, persistent collapse and all authorization boundaries.
+- [x] Add mobile drawer focus entry, Escape/backdrop dismissal and focus return.
+- [ ] Redesign dashboard page interiors incrementally, beginning only after this shared-shell phase is accepted.
+- [ ] Complete broader theme, screen-reader and authenticated workflow acceptance as each page family is redesigned.

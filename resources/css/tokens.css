@@ -27,6 +27,16 @@
         --bk-layer-overlay: 40;
         --bk-layer-dialog: 50;
         --bk-layer-status: 60;
+        --bk-sidebar-width: 17.5rem;
+        --bk-sidebar-rail-width: 5.25rem;
+        --bk-sidebar-bg: 11 20 36;
+        --bk-sidebar-surface: 22 34 53;
+        --bk-sidebar-border: 51 65 85;
+        --bk-sidebar-text: 226 232 240;
+        --bk-sidebar-muted: 148 163 184;
+        --bk-sidebar-accent: 45 212 191;
+        --bk-sidebar-accent-text: 240 253 250;
+        --bk-header-shadow: 0 1px 0 rgb(15 23 42 / 0.04), 0 8px 24px rgb(15 23 42 / 0.035);
     }
 
     .dark {

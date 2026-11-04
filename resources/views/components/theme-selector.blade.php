@@ -21,7 +21,7 @@
     <button
         type="button"
         @click="showThemeMenu = !showThemeMenu"
-        class="grid h-11 w-11 place-items-center rounded-[8px] border border-themed-primary bg-themed-secondary text-themed-secondary transition hover:bg-themed-tertiary hover:text-themed-primary"
+        class="bk-topbar-icon-button"
         title="Change Theme"
         aria-label="Change theme"
     >
@@ -36,7 +36,7 @@
         x-show="showThemeMenu"
         @click.away="showThemeMenu = false"
         x-transition.origin.top.right
-        class="absolute right-0 mt-3 w-56 overflow-hidden rounded-[8px] border border-themed-primary bg-themed-secondary p-2 shadow-2xl shadow-slate-950/10"
+        class="bk-topbar-popover w-56 p-2"
         style="display: none;"
     >
         <div class="px-3 py-2">

@@ -3,6 +3,7 @@
     x-data="{
         theme: localStorage.getItem('theme') || 'light',
         sidebarOpen: false,
+        lastSidebarTrigger: null,
         online: navigator.onLine,
         sidebarCollapsed: localStorage.getItem('sidebar-collapsed') === 'true',
         themes: ['light', 'dark', 'sepia', 'ocean', 'forest'],
@@ -15,8 +16,20 @@
             localStorage.setItem('theme', value);
             this.applyTheme(value);
         },
-        toggleSidebar() {
-            this.sidebarOpen = !this.sidebarOpen;
+        openSidebar(event) {
+            this.lastSidebarTrigger = event?.currentTarget || document.activeElement;
+            this.sidebarOpen = true;
+            this.$nextTick(() => document.getElementById('workspace-sidebar-close')?.focus());
+        },
+        closeSidebar(restoreFocus = true) {
+            const trigger = this.lastSidebarTrigger;
+            this.sidebarOpen = false;
+            if (restoreFocus) {
+                window.setTimeout(() => trigger?.focus(), 200);
+            }
+        },
+        toggleSidebar(event) {
+            this.sidebarOpen ? this.closeSidebar() : this.openSidebar(event);
         },
         toggleSidebarCollapse() {
             this.sidebarCollapsed = !this.sidebarCollapsed;
@@ -24,10 +37,10 @@
             document.documentElement.dataset.sidebarCollapsed = this.sidebarCollapsed.toString();
         }
     }"
-    @keydown.escape.window="sidebarOpen = false"
+    @keydown.escape.window="if (sidebarOpen) closeSidebar()"
     @online.window="online = true"
     @offline.window="online = false"
-    @resize.window="if (window.innerWidth >= 1024) sidebarOpen = false"
+    @resize.window="if (window.innerWidth >= 1024 && sidebarOpen) closeSidebar(false)"
     x-init="applyTheme(theme); document.documentElement.dataset.sidebarCollapsed = sidebarCollapsed.toString()"
     x-bind:class="theme"
 >
@@ -116,14 +129,14 @@
     @endif
 
     <div class="min-h-screen bg-themed-primary">
-        <div id="dashboard-navigation" x-trap.inert.noscroll="sidebarOpen">
+        <div id="dashboard-navigation" x-trap.inert.noscroll.noreturn="sidebarOpen">
             @livewire('dashboard-sidebar')
         </div>
 
         <div
             x-show="sidebarOpen"
             x-transition.opacity
-            @click="sidebarOpen = false"
+            @click="closeSidebar()"
             class="fixed inset-0 z-40 bg-slate-950/50 lg:hidden"
             style="display: none;"
         ></div>

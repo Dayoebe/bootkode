@@ -186,3 +186,9 @@ The shared PWA prompt is a factual install/update status surface, not a promotio
 ## Project portfolio and showcase — 4 November 2026
 
 The learner manager and public showcase reuse `ui.page-header`, `ui.panel`, `ui.empty-state`, `bk-button`, `bk-input` and semantic content/surface/line tokens. No project-specific palette, JavaScript runtime or component library is introduced. Form fields have persistent labels, associated validation messages, explicit private/publish choices, polite status feedback and touch-sized keyboard-operable controls. Project order uses named buttons instead of pointer-only drag interaction. Public cards render descriptions with preserved whitespace as escaped text and label external demo/source actions directly.
+
+## Dashboard shell refresh — 4 November 2026
+
+The authenticated shell uses a fixed deep-navy navigation rail with restrained teal active states, role context, local navigation search and the existing Sora/Manrope typography. The shared header is a quieter theme-aware surface that groups page context, workspace search, notifications, chat, quick actions, theme selection and the account menu. Page views continue to own the single primary heading; the header title is supporting context.
+
+Desktop navigation remains collapsible from 1024px, while smaller screens use the existing five-destination bottom bar and a trapped drawer. Drawer open moves focus to its close control; Escape, the backdrop and the close control dismiss it and return focus to the opener. All shell controls retain the 44px minimum target, visible focus and semantic token system. Menu routes, role filtering and authorization rules are unchanged, and no new palette, dependency, component library or Alpine runtime was introduced.

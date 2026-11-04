@@ -53,7 +53,15 @@ class DashboardNavigationTest extends TestCase
         $user = User::factory()->create(['role' => 'student']);
         $user->assignRole('student');
         $response = $this->actingAs($user)->get(route('profile.view'))->assertOk();
-        $response->assertSee('Workspace navigation')->assertSee('Mobile dashboard navigation');
+        $response
+            ->assertSee('Workspace navigation')
+            ->assertSee('Mobile dashboard navigation')
+            ->assertSee('Student workspace')
+            ->assertSee('Current workspace')
+            ->assertSee('id="workspace-sidebar-close"', false)
+            ->assertSee('class="bk-topbar"', false)
+            ->assertSee('openSidebar(event)', false)
+            ->assertSee('trigger?.focus()', false);
         $this->assertSame(1, substr_count($response->getContent(), '<h1'));
         $this->get(route('all-users'))->assertForbidden();
         \Livewire\Livewire::actingAs($user)->test(\App\Livewire\UserManagement\AllUser::class)->assertForbidden();
