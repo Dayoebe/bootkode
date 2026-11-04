@@ -53,6 +53,29 @@ class RoleDashboardHomepageTest extends TestCase
         }
     }
 
+    public function test_dashboard_sidebar_and_hero_share_the_brand_and_saved_theme_palette(): void
+    {
+        $tokens = file_get_contents(resource_path('css/tokens.css'));
+        $themes = file_get_contents(resource_path('css/app.css'));
+        $dashboard = file_get_contents(resource_path('css/dashboard.css'));
+
+        $this->assertStringContainsString('--bk-brand-navy: 7 21 45;', $tokens);
+        $this->assertStringContainsString('--bk-brand-mint: 143 227 136;', $tokens);
+        $this->assertStringContainsString('--bk-sidebar-bg: var(--bk-brand-navy);', $tokens);
+        $this->assertStringContainsString('--bk-sidebar-accent: var(--bk-brand-mint);', $tokens);
+
+        foreach (['.dark', '.sepia', '.ocean', '.forest'] as $theme) {
+            $this->assertMatchesRegularExpression(
+                '/'.preg_quote($theme, '/').'\s*\{[^}]*--bk-sidebar-bg:[^;]+;[^}]*--bk-sidebar-accent:[^;]+;/s',
+                $themes,
+                $theme.' must define coordinated dashboard chrome colours.'
+            );
+        }
+
+        $this->assertGreaterThanOrEqual(2, substr_count($dashboard, 'background: rgb(var(--bk-sidebar-bg));'));
+        $this->assertStringContainsString('.bk-dashboard-hero-primary { background: rgb(var(--bk-sidebar-accent));', $dashboard);
+    }
+
     public function test_mentor_dashboard_only_uses_the_authenticated_mentors_relationships(): void
     {
         $mentor = $this->roleUser('mentor', 'Assigned Mentor');
