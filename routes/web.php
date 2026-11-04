@@ -44,6 +44,10 @@ Route::prefix('newsletter')->name('newsletter.')->group(function () {
 // Affiliate Routes
 Route::get('/affiliate-banners/{size}/{code}', \App\Http\Controllers\AffiliateBannerController::class)->name('affiliate.banner');
 
+// A showcase is discoverable only through an explicitly published project slug.
+Route::get('/showcase/{slug}', \App\Http\Controllers\PortfolioShowcaseController::class)
+    ->name('portfolio.public');
+
 Route::middleware(['auth'])->prefix('affiliate')->name('affiliate.')->group(function () {
     Route::get('/dashboard', \App\Livewire\Affiliate\Dashboard::class)->name('dashboard');
     Route::get('/tools', \App\Livewire\Affiliate\Tools::class)->name('tools');
@@ -247,7 +251,9 @@ Route::middleware('auth')->group(function () {
         ->middleware(['verified', \App\Http\Middleware\CheckRole::class.':super_admin,academy_admin'])->name('career.review');
     Route::get('/job-applications/{jobApplication}/resume', \App\Http\Controllers\JobApplicationResumeController::class)->name('job-applications.resume');
     Route::get('/search/job', \App\Livewire\Career\JobSearch::class)->name('search.job');
-    Route::get('/portfolio', \App\Livewire\Career\PortfolioBuilder::class)->name('portfolio.show');
+    Route::get('/portfolio', \App\Livewire\Career\PortfolioBuilder::class)
+        ->middleware(['verified', \App\Http\Middleware\CheckRole::class.':student'])
+        ->name('portfolio.show');
     Route::get('/resume/builder', \App\Livewire\Career\ResumeBuilder::class)->name('resume.builder');
     Route::get('/job', \App\Livewire\Career\JobPortal::class)->name('user.job');
     Route::get('/admin/job', \App\Livewire\Career\JobManagement::class)->name('admin.job')->middleware(\App\Http\Middleware\CheckRole::class.':super_admin,academy_admin');
