@@ -2,36 +2,48 @@
     @vite('resources/js/charts.js')
 @endassets
 
-<div class="space-y-6">
-    <x-ui.page-header title="Content workspace" description="Organise, review and maintain your learning content.">
+@php
+    $dashboardFirstName = str(auth()->user()->name)->before(' ')->toString();
+    $dashboardStats = $this->overviewStats;
+    $dashboardDraftCount = $this->pendingContent['draft_posts']->count();
+    $dashboardCommentCount = $this->pendingContent['pending_comments']->count();
+@endphp
+
+<div class="bk-dashboard-home space-y-6">
+    <x-dashboard.home-hero
+        role="Content workspace"
+        :title="'Make every page useful, '.$dashboardFirstName.'.'"
+        description="Plan, publish, and improve factual learning content while keeping drafts, comments, and scheduled work visible."
+        icon="fas fa-pen-ruler"
+        :focus-title="$dashboardCommentCount > 0 ? $dashboardCommentCount.' comment'.($dashboardCommentCount === 1 ? '' : 's').' awaiting review' : ($dashboardDraftCount > 0 ? $dashboardDraftCount.' draft'.($dashboardDraftCount === 1 ? '' : 's').' ready for attention' : 'Your editorial queue is clear')"
+        :focus-description="$dashboardCommentCount > 0 ? 'Review learner feedback before moving to new publishing work.' : 'Use recorded readership and engagement to decide what to improve next.'"
+    >
         <x-slot:actions>
-<!-- Content Type Filter -->
-                    <select aria-label="Filter content" wire:model.live="selectedContentType" class="bg-themed-secondary border border-themed-secondary text-themed-primary px-3 py-2 text-sm rounded-lg focus:ring-2 focus:ring-brand/30 dark:focus:ring-brand/30 focus:border-brand dark:focus:border-brand transition-colors duration-300">
-                        <option value="all">All Content</option>
-                        <option value="blog_posts">Blog Posts</option>
-                        <option value="pages">Pages</option>
-                        <option value="faqs">FAQs</option>
-                        <option value="announcements">Announcements</option>
-                    </select>
-
-                    <!-- Timeframe Selector -->
-                    <div role="group" aria-label="Reporting period" class="flex bg-themed-tertiary rounded-lg p-1 transition-colors duration-300">
-                        @foreach(['7days' => '7d', '30days' => '30d', '90days' => '90d', '12months' => '12m'] as $value => $label)
-                            <button
-                                wire:click="updateTimeframe('{{ $value }}')" aria-label="Report for {{ $label }}" aria-pressed="{{ $selectedTimeframe === $value ? 'true' : 'false' }}"
-                                class="px-3 py-1 rounded-md text-sm font-medium transition-all duration-200 {{ $selectedTimeframe === $value ? 'bg-themed-secondary text-brand dark:text-brand shadow-sm' : 'text-themed-secondary hover:text-themed-primary' }}">
-                                {{ $label }}
-                            </button>
-                        @endforeach
-                    </div>
-
-                    <!-- Quick Actions -->
-                    <a href="{{ route('admin.blog.posts.create') }}" class="bg-action dark:bg-action hover:bg-action dark:hover:bg-action text-action-foreground px-4 py-2 rounded-lg font-medium transition-colors duration-200">
-                        <i aria-hidden="true" class="fas fa-plus mr-2"></i>
-                        New Post
-                    </a>
+            <a href="{{ route('admin.blog.posts.create') }}" class="bk-dashboard-hero-primary" wire:navigate><i class="fas fa-plus text-xs" aria-hidden="true"></i> Create a post</a>
+            <a href="{{ route('admin.blog.posts.index') }}" class="bk-dashboard-hero-secondary" wire:navigate>Manage content</a>
         </x-slot:actions>
-    </x-ui.page-header>
+        <x-slot:focusAction><a href="{{ route('admin.blog.posts.index') }}" class="bk-dashboard-hero-secondary" wire:navigate>Open editorial queue</a></x-slot:focusAction>
+        <x-slot:highlights>
+            <x-dashboard.hero-stat label="Published" :value="$dashboardStats['published_posts']" :context="$dashboardStats['draft_posts'].' drafts'" icon="fas fa-file-circle-check" />
+            <x-dashboard.hero-stat label="Recorded views" :value="number_format($dashboardStats['total_views'])" :context="$dashboardStats['total_comments'].' comments'" icon="fas fa-eye" />
+            <x-dashboard.hero-stat label="This month" :value="$dashboardStats['posts_this_month']" context="posts created" icon="fas fa-calendar" />
+        </x-slot:highlights>
+        <x-slot:tools>
+            <span class="bk-dashboard-toolbar-label">View</span>
+            <select aria-label="Filter content" wire:model.live="selectedContentType" class="bk-input w-full sm:w-auto">
+                <option value="all">All content</option>
+                <option value="blog_posts">Blog posts</option>
+                <option value="pages">Pages</option>
+                <option value="faqs">FAQs</option>
+                <option value="announcements">Announcements</option>
+            </select>
+            <div role="group" aria-label="Reporting period" class="bk-dashboard-filter-group">
+                @foreach(['7days' => '7d', '30days' => '30d', '90days' => '90d', '12months' => '12m'] as $value => $label)
+                    <button type="button" wire:click="updateTimeframe('{{ $value }}')" aria-label="Report for {{ $label }}" aria-pressed="{{ $selectedTimeframe === $value ? 'true' : 'false' }}" class="bk-dashboard-filter-button {{ $selectedTimeframe === $value ? 'is-active' : '' }}">{{ $label }}</button>
+                @endforeach
+            </div>
+        </x-slot:tools>
+    </x-dashboard.home-hero>
 
     <!-- Overview Stats Grid -->
     @if($showWidgets['overview_stats'])
@@ -285,14 +297,7 @@
                                         <p class="text-xs text-themed-secondary mt-1 transition-colors duration-300">{{ \Str::limit($comment->content, 60) }}</p>
                                         <p class="text-xs text-themed-tertiary mt-1 transition-colors duration-300">On: {{ \Str::limit($comment->post->title, 30) }}</p>
                                     </div>
-                                    <div class="flex space-x-1">
-                                        <button class="text-green-600 dark:text-green-400 hover:text-green-700 dark:hover:text-green-300 text-xs transition-colors duration-300">
-                                            <i aria-hidden="true" class="fas fa-check"></i>
-                                        </button>
-                                        <button class="text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 text-xs transition-colors duration-300" aria-label="Close">
-                                            <i aria-hidden="true" class="fas fa-times"></i>
-                                        </button>
-                                    </div>
+                                    <a href="{{ route('admin.blog.comments.index') }}" class="bk-button bk-button-secondary" wire:navigate>Review</a>
                                 </div>
                             </div>
                             @empty
@@ -359,9 +364,11 @@
                     <div class="pt-4 border-t border-themed-primary transition-colors duration-300">
                         <h4 class="text-sm font-semibold text-themed-primary mb-3 transition-colors duration-300">Trending Topics</h4>
                         <div class="flex flex-wrap gap-2">
-                            @foreach($this->contentInsights['trending_topics'] as $topic)
+                            @forelse($this->contentInsights['trending_topics'] as $topic)
                             <span class="px-2 py-1 bg-brand/10 dark:bg-action/30 text-brand dark:text-brand text-xs rounded-full transition-colors duration-300">{{ $topic }}</span>
-                            @endforeach
+                            @empty
+                            <span class="text-sm text-themed-secondary">No recorded category trend yet.</span>
+                            @endforelse
                         </div>
                     </div>
                 </div>
@@ -389,14 +396,16 @@
                     </div>
 
                     <div>
-                        <h4 class="text-sm font-semibold text-themed-primary mb-3 transition-colors duration-300">Optimal Posting Times</h4>
+                        <h4 class="text-sm font-semibold text-themed-primary mb-3 transition-colors duration-300">Posting Times</h4>
                         <div class="space-y-1">
-                            @foreach($this->contentCalendar['optimal_posting_times'] as $time)
+                            @forelse($this->contentCalendar['optimal_posting_times'] as $time)
                             <div class="flex items-center text-sm">
                                 <i aria-hidden="true" class="fas fa-clock text-themed-tertiary mr-2"></i>
                                 <span class="text-themed-secondary transition-colors duration-300">{{ $time }}</span>
                             </div>
-                            @endforeach
+                            @empty
+                            <p class="text-sm text-themed-secondary">Audience timing is not recorded yet.</p>
+                            @endforelse
                         </div>
                     </div>
 
@@ -418,66 +427,20 @@
             <!-- Content Insights -->
             @if($showWidgets['content_insights'])
             <div class="bg-themed-secondary rounded-lg shadow-sm border border-themed-primary p-6 transition-colors duration-300">
-                <h2 class="text-xl font-bold text-themed-primary mb-6 transition-colors duration-300">Content Insights</h2>
+                <h2 class="text-xl font-bold text-themed-primary mb-2 transition-colors duration-300">Editorial Checklist</h2>
+                <p class="text-sm text-themed-secondary mb-5">Prioritise improvements supported by your recorded content.</p>
 
-                <div class="space-y-6">
-                    <!-- Reading Patterns -->
-                    <div>
-                        <h4 class="text-sm font-semibold text-themed-primary mb-3 transition-colors duration-300">Reading Patterns</h4>
-                        <div class="grid grid-cols-2 gap-4 text-sm">
-                            <div class="p-3 bg-themed-tertiary rounded-lg transition-colors duration-300">
-                                <div class="font-bold text-brand dark:text-brand text-lg transition-colors duration-300">65%</div>
-                                <div class="text-themed-secondary transition-colors duration-300">Mobile Readers</div>
-                            </div>
-                            <div class="p-3 bg-themed-tertiary rounded-lg transition-colors duration-300">
-                                <div class="font-bold text-brand dark:text-brand text-lg transition-colors duration-300">4.2m</div>
-                                <div class="text-themed-secondary transition-colors duration-300">Avg Session</div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Top Referral Sources -->
-                    <div>
-                        <h4 class="text-sm font-semibold text-themed-primary mb-3 transition-colors duration-300">Top Traffic Sources</h4>
-                        <div class="space-y-2">
-                            <div class="flex items-center justify-between text-sm">
-                                <div class="flex items-center space-x-2">
-                                    <i aria-hidden="true" class="fab fa-google text-brand dark:text-brand"></i>
-                                    <span class="text-themed-primary transition-colors duration-300">Google Search</span>
-                                </div>
-                                <span class="font-medium text-themed-secondary transition-colors duration-300">45.2%</span>
-                            </div>
-                            <div class="flex items-center justify-between text-sm">
-                                <div class="flex items-center space-x-2">
-                                    <i aria-hidden="true" class="fas fa-share-alt text-green-600 dark:text-green-400"></i>
-                                    <span class="text-themed-primary transition-colors duration-300">Social Media</span>
-                                </div>
-                                <span class="font-medium text-themed-secondary transition-colors duration-300">28.7%</span>
-                            </div>
-                            <div class="flex items-center justify-between text-sm">
-                                <div class="flex items-center space-x-2">
-                                    <i aria-hidden="true" class="fas fa-link text-brand dark:text-brand"></i>
-                                    <span class="text-themed-primary transition-colors duration-300">Direct Traffic</span>
-                                </div>
-                                <span class="font-medium text-themed-secondary transition-colors duration-300">26.1%</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Content Suggestions -->
-                    <div>
-                        <h4 class="text-sm font-semibold text-themed-primary mb-3 transition-colors duration-300">Content Suggestions</h4>
-                        <div class="space-y-2">
-                            <div class="p-2 bg-yellow-50 dark:bg-yellow-900/20 rounded text-xs text-yellow-800 dark:text-yellow-300 transition-colors duration-300">
-                                💡 Consider writing about "Web Development Trends" - high search volume
-                            </div>
-                            <div class="p-2 bg-brand/10 dark:bg-action/20 rounded text-xs text-brand dark:text-brand transition-colors duration-300">
-                                📈 Your tutorials get 3x more engagement than news posts
-                            </div>
-                            <div class="p-2 bg-green-50 dark:bg-green-900/20 rounded text-xs text-green-800 dark:text-green-300 transition-colors duration-300">
-                                🕐 Best posting time: Tuesday 10 AM (based on your audience)
-                            </div>
-                        </div>
+                <div class="space-y-3">
+                    <a href="{{ route('admin.blog.posts.index') }}" class="flex min-h-11 items-center justify-between rounded-lg bg-themed-tertiary p-3 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-action" wire:navigate>
+                        <span class="text-sm font-medium text-themed-primary">Complete post metadata</span>
+                        <span class="text-sm text-themed-secondary">{{ $this->seoPerformance['meta_completion_rate'] }}%</span>
+                    </a>
+                    <a href="{{ route('admin.blog.posts.index') }}" class="flex min-h-11 items-center justify-between rounded-lg bg-themed-tertiary p-3 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-action" wire:navigate>
+                        <span class="text-sm font-medium text-themed-primary">Review draft queue</span>
+                        <span class="text-sm text-themed-secondary">{{ $this->overviewStats['draft_posts'] }} drafts</span>
+                    </a>
+                    <div class="rounded-lg border border-themed-primary p-3 text-sm text-themed-secondary">
+                        Audience device, referral, and timing analytics will appear only when those signals are recorded.
                     </div>
                 </div>
             </div>
@@ -488,7 +451,7 @@
     <!-- Widget Toggle Panel -->
     <div class="bk-widget-settings">
         <div x-data="{ open: false }" class="relative">
-            <button @click="open = !open"
+            <button @click="open = !open" type="button" aria-label="Choose dashboard widgets"
                     class="bg-themed-secondary shadow-sm border border-themed-primary rounded-full p-3  transition-all duration-200">
                 <i aria-hidden="true" class="fas fa-sliders-h text-themed-secondary"></i>
             </button>

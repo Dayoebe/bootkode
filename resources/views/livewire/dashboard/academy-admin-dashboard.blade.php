@@ -2,28 +2,41 @@
     @vite('resources/js/charts.js')
 @endassets
 
-<div class="space-y-6">
-    <x-ui.page-header title="Academy overview" description="Review learning, teaching and academy operations.">
-        <x-slot:actions>
-<!-- Timeframe Selector -->
-                    <div role="group" aria-label="Reporting period" class="flex bg-themed-tertiary rounded-lg p-1 border border-themed-primary transition-colors duration-300">
-                        @foreach(['7days' => '7d', '30days' => '30d', '90days' => '90d'] as $value => $label)
-                            <button
-                                wire:click="updateTimeframe('{{ $value }}')" aria-label="Report for {{ $label }}" aria-pressed="{{ $selectedTimeframe === $value ? 'true' : 'false' }}"
-                                class="px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 {{ $selectedTimeframe === $value ? 'bg-themed-secondary text-brand dark:text-brand shadow-sm' : 'text-themed-secondary hover:text-themed-primary' }}">
-                                {{ $label }}
-                            </button>
-                        @endforeach
-                    </div>
+@php
+    $dashboardFirstName = str(auth()->user()->name)->before(' ')->toString();
+    $dashboardStats = $this->overviewStats;
+    $dashboardPriorityCount = $dashboardStats['pending_courses'] + $dashboardStats['open_tickets'] + $dashboardStats['pending_certificates'];
+@endphp
 
-                    <!-- Quick Actions -->
-                    <button wire:click="toggleQuickActionModal"
-                            class="bg-action         text-action-foreground px-5 py-2 rounded-lg font-medium transition-all duration-200 flex items-center shadow-sm">
-                        <i aria-hidden="true" class="fas fa-lightning-bolt mr-2"></i>
-                        Quick Actions
-                    </button>
+<div class="bk-dashboard-home space-y-6">
+    <x-dashboard.home-hero
+        role="Academy operations"
+        :title="'Run the academy from one clear view, '.$dashboardFirstName.'.'"
+        description="Balance learner support, instructor performance, course quality, and academy growth without losing sight of pending work."
+        icon="fas fa-building-columns"
+        :focus-title="$dashboardPriorityCount > 0 ? $dashboardPriorityCount.' item'.($dashboardPriorityCount === 1 ? '' : 's').' need operational attention' : 'No recorded academy backlog'"
+        :focus-description="$dashboardStats['pending_courses'].' course approvals · '.$dashboardStats['open_tickets'].' open tickets · '.$dashboardStats['pending_certificates'].' certificate requests'"
+    >
+        <x-slot:actions>
+            <button type="button" wire:click="toggleQuickActionModal" class="bk-dashboard-hero-primary"><i class="fas fa-bolt text-xs" aria-hidden="true"></i> Quick actions</button>
+            <a href="{{ route('all-users') }}" class="bk-dashboard-hero-secondary" wire:navigate>Manage people</a>
         </x-slot:actions>
-    </x-ui.page-header>
+        <x-slot:focusAction><a href="{{ route('course-approvals') }}" class="bk-dashboard-hero-secondary" wire:navigate>Open approval queue</a></x-slot:focusAction>
+        <x-slot:highlights>
+            <x-dashboard.hero-stat label="Active learners" :value="number_format($dashboardStats['active_students'])" :context="number_format($dashboardStats['total_students']).' total learners'" icon="fas fa-user-graduate" />
+            <x-dashboard.hero-stat label="Published courses" :value="$dashboardStats['published_courses']" :context="$dashboardStats['total_enrollments'].' total enrollments'" icon="fas fa-book-open" />
+            <x-dashboard.hero-stat label="Completion" :value="$dashboardStats['completion_rate'].'%'" :context="$dashboardStats['completed_courses'].' completed enrollments'" icon="fas fa-chart-line" />
+        </x-slot:highlights>
+        <x-slot:tools>
+            <span class="bk-dashboard-toolbar-label">Reporting period</span>
+            <div role="group" aria-label="Reporting period" class="bk-dashboard-filter-group">
+                @foreach(['7days' => '7d', '30days' => '30d', '90days' => '90d'] as $value => $label)
+                    <button type="button" wire:click="updateTimeframe('{{ $value }}')" aria-label="Report for {{ $label }}" aria-pressed="{{ $selectedTimeframe === $value ? 'true' : 'false' }}" class="bk-dashboard-filter-button {{ $selectedTimeframe === $value ? 'is-active' : '' }}">{{ $label }}</button>
+                @endforeach
+            </div>
+            <a href="{{ route('support.tickets') }}" class="bk-button bk-button-secondary sm:ml-auto" wire:navigate>Support queue</a>
+        </x-slot:tools>
+    </x-dashboard.home-hero>
 
     <!-- Key Metrics Grid -->
     @if($showWidgets['overview_stats'])
@@ -317,17 +330,7 @@
                             <h4 class="text-sm font-medium text-themed-primary truncate transition-colors duration-300">{{ $course['title'] }}</h4>
                             <p class="text-xs text-themed-secondary transition-colors duration-300">{{ $course['instructor'] }} • {{ $course['created_at'] }}</p>
                         </div>
-                        <div class="flex space-x-2">
-                            <button wire:click="approveCourse({{ $course['id'] }})"
-                                    class="text-green-600 dark:text-green-400 hover:text-green-700 dark:hover:text-green-300 p-1 rounded transition-colors"
-                                    title="Approve Course" aria-label="Approve Course">
-                                <i aria-hidden="true" class="fas fa-check text-sm"></i>
-                            </button>
-                            <button class="text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 p-1 rounded transition-colors"
-                                    title="Reject Course" aria-label="Reject Course">
-                                <i aria-hidden="true" class="fas fa-times text-sm"></i>
-                            </button>
-                        </div>
+                        <a href="{{ route('course-approvals') }}" class="bk-button bk-button-secondary" wire:navigate>Review</a>
                     </div>
                     @empty
                     <p class="text-themed-tertiary text-sm transition-colors duration-300">No pending courses</p>
@@ -346,17 +349,7 @@
                             <h4 class="text-sm font-medium text-themed-primary transition-colors duration-300">{{ $certificate['user'] }}</h4>
                             <p class="text-xs text-themed-secondary transition-colors duration-300">{{ Str::limit($certificate['course'], 30) }} • {{ $certificate['created_at'] }}</p>
                         </div>
-                        <div class="flex space-x-2">
-                            <button wire:click="approveCertificate({{ $certificate['id'] }})"
-                                    class="text-green-600 dark:text-green-400 hover:text-green-700 dark:hover:text-green-300 p-1 rounded transition-colors"
-                                    title="Approve Certificate" aria-label="Approve Certificate">
-                                <i aria-hidden="true" class="fas fa-check text-sm"></i>
-                            </button>
-                            <button class="text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 p-1 rounded transition-colors"
-                                    title="Reject Certificate" aria-label="Reject Certificate">
-                                <i aria-hidden="true" class="fas fa-times text-sm"></i>
-                            </button>
-                        </div>
+                        <a href="{{ route('admin.certificates.manage') }}" class="bk-button bk-button-secondary" wire:navigate>Review</a>
                     </div>
                     @empty
                     <p class="text-themed-tertiary text-sm transition-colors duration-300">No pending certificates</p>
@@ -375,16 +368,7 @@
                             <h4 class="text-sm font-medium text-themed-primary truncate transition-colors duration-300">{{ $post['title'] }}</h4>
                             <p class="text-xs text-themed-secondary transition-colors duration-300">{{ $post['author'] }} • {{ $post['created_at'] }}</p>
                         </div>
-                        <div class="flex space-x-2">
-                            <button class="text-green-600 dark:text-green-400 hover:text-green-700 dark:hover:text-green-300 p-1 rounded transition-colors"
-                                    title="Approve Post" aria-label="Approve Post">
-                                <i aria-hidden="true" class="fas fa-check text-sm"></i>
-                            </button>
-                            <button class="text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 p-1 rounded transition-colors"
-                                    title="Reject Post" aria-label="Reject Post">
-                                <i aria-hidden="true" class="fas fa-times text-sm"></i>
-                            </button>
-                        </div>
+                        <a href="{{ route('admin.blog.posts.index') }}" class="bk-button bk-button-secondary" wire:navigate>Review</a>
                     </div>
                     @empty
                     <p class="text-themed-tertiary text-sm transition-colors duration-300">No pending blog posts</p>
@@ -586,7 +570,7 @@
     <!-- Widget Toggle Panel -->
     <div class="bk-widget-settings">
         <div x-data="{ open: false }" class="relative">
-            <button @click="open = !open"
+            <button @click="open = !open" type="button" aria-label="Choose dashboard widgets"
                     class="bg-action     shadow-sm rounded-full p-4   transition-all duration-200 text-action-foreground">
                 <i aria-hidden="true" class="fas fa-sliders-h"></i>
             </button>

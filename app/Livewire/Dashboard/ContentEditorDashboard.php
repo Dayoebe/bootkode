@@ -16,6 +16,7 @@ use Livewire\Attributes\Layout;
 use Livewire\Attributes\Computed;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\Rule;
 use Carbon\Carbon;
 
 #[Layout('layouts.dashboard', ['title' => 'Content Editor Dashboard'])]
@@ -49,14 +50,32 @@ class ContentEditorDashboard extends Component
         }
     }
 
+    public function hydrate(): void
+    {
+        abort_unless(Auth::user()?->canAccessDashboardRole(User::ROLE_CONTENT_EDITOR), 403);
+    }
+
     public function updateTimeframe($timeframe)
     {
+        validator(['timeframe' => $timeframe], [
+            'timeframe' => ['required', Rule::in(['7days', '30days', '90days', '12months'])],
+        ])->validate();
+
         $this->selectedTimeframe = $timeframe;
     }
 
     public function updateContentType($type)
     {
+        validator(['content_type' => $type], [
+            'content_type' => ['required', Rule::in(['all', 'blog_posts', 'pages', 'faqs', 'announcements'])],
+        ])->validate();
+
         $this->selectedContentType = $type;
+    }
+
+    public function updatedSelectedContentType($type)
+    {
+        $this->updateContentType($type);
     }
 
     #[Computed]
@@ -261,7 +280,7 @@ class ContentEditorDashboard extends Component
             'reading_patterns' => $this->getReadingPatterns($editor),
             'audience_demographics' => $this->getAudienceDemographics($editor),
             'content_preferences' => $this->getContentPreferences($editor),
-            'trending_topics' => $this->getTrendingTopics(),
+            'trending_topics' => $this->getTrendingTopics($editor),
             'competitor_analysis' => $this->getCompetitorInsights(),
         ];
     }
@@ -462,20 +481,59 @@ class ContentEditorDashboard extends Component
     }
 
     private function getEngagementByCategory(User $editor) { return []; }
-    private function getCommentSentiment(User $editor) { return ['positive' => 70, 'neutral' => 20, 'negative' => 10]; }
-    private function getSocialShares(User $editor) { return rand(50, 500); }
+    private function getCommentSentiment(User $editor) { return []; }
+    private function getSocialShares(User $editor) { return null; }
     private function getContentSuggestions(User $editor) { return []; }
-    private function getPublishingFrequency(User $editor) { return '3 posts per week'; }
-    private function getOptimalPostingTimes(User $editor) { return ['Tuesday 10 AM', 'Thursday 2 PM']; }
-    private function getSeoOptimizedPostsCount(User $editor) { return BlogPost::where('author_id', $editor->id)->whereNotNull('meta_title')->count(); }
-    private function getAverageSeoScore(User $editor) { return 75; }
-    private function getMetaCompletionRate(User $editor) { return 85; }
+    private function getPublishingFrequency(User $editor)
+    {
+        $published = BlogPost::where('author_id', $editor->id)
+            ->where('status', 'published')
+            ->where('published_at', '>=', now()->subWeeks(12))
+            ->count();
+
+        return number_format($published / 12, 1).' posts per week';
+    }
+    private function getOptimalPostingTimes(User $editor) { return []; }
+    private function getSeoOptimizedPostsCount(User $editor)
+    {
+        return BlogPost::where('author_id', $editor->id)
+            ->whereNotNull('meta_title')
+            ->whereNotNull('meta_description')
+            ->count();
+    }
+    private function getAverageSeoScore(User $editor)
+    {
+        $posts = BlogPost::where('author_id', $editor->id)->get();
+
+        return $posts->isEmpty() ? 0 : round((float) $posts->avg(fn ($post) => $this->calculateSeoScore($post)), 1);
+    }
+    private function getMetaCompletionRate(User $editor)
+    {
+        $posts = BlogPost::where('author_id', $editor->id);
+        $total = (clone $posts)->count();
+
+        return $total === 0 ? 0 : round(((clone $posts)
+            ->whereNotNull('meta_title')
+            ->whereNotNull('meta_description')
+            ->count() / $total) * 100, 1);
+    }
     private function getKeywordPerformance(User $editor) { return []; }
     private function getTopOrganicPosts(User $editor) { return []; }
     private function getReadingPatterns(User $editor) { return []; }
     private function getAudienceDemographics(User $editor) { return []; }
     private function getContentPreferences(User $editor) { return []; }
-    private function getTrendingTopics() { return ['AI', 'Web Development', 'Career Tips']; }
+    private function getTrendingTopics(User $editor)
+    {
+        return BlogPost::where('author_id', $editor->id)
+            ->with('category')
+            ->get()
+            ->groupBy(fn ($post) => $post->category?->name)
+            ->filter(fn ($posts, $category) => filled($category))
+            ->sortByDesc->count()
+            ->keys()
+            ->take(5)
+            ->values();
+    }
     private function getCompetitorInsights() { return []; }
 
     public function quickPublish($postId)

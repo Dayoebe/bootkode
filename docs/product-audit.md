@@ -327,3 +327,9 @@ There was no existing public account-profile route: the current profile surface 
 ## Dashboard shell refresh — 4 November 2026
 
 Phase one of the requested dashboard redesign updates only the shared authenticated sidebar, header and mobile navigation treatment. It adds clearer role/workspace context, stronger active navigation, consistent action controls, repaired navigation-search empty-state logic and mobile drawer focus return. Existing destinations, role visibility, page interiors, records, enrollment, wallet and payment behavior are unchanged. Interior dashboard pages remain a later step and are not represented as redesigned by this phase.
+
+## Role dashboard homepage redesign — 4 November 2026
+
+Phase two applies one professional information hierarchy to the learner, instructor, mentor, content editor, affiliate ambassador, academy admin and super-admin homepages. Each role receives a clear priority, useful primary/secondary CTA, three recorded highlights, reporting controls, detailed operational sections and at least one role-relevant chart or graph. Existing named destinations and domain records are reused; no sample learner, result, traffic or revenue data is added.
+
+The factual audit removed random mentor sessions/ratings/goals and unrelated-learner exposure, hardcoded editor traffic/sentiment/timing suggestions, estimated affiliate clicks/conversions, and default claims of healthy status/storage/queue/backups. Missing signals now say unknown, unavailable or not connected. Mentor names and outcomes are restricted to real mentorship relationships. The broader dashboard interior system, theme/screen-reader acceptance and live production analytics remain iterative work rather than a completed whole-application redesign.

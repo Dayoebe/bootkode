@@ -58,6 +58,11 @@ class StudentDashboard extends Component
         }
     }
 
+    public function hydrate(): void
+    {
+        abort_unless(Auth::user()?->canAccessDashboardRole(User::ROLE_STUDENT), 403);
+    }
+
     public function updateTimeframe($timeframe)
     {
         abort_unless(in_array($timeframe, ['7days', '30days'], true), 422);
@@ -513,9 +518,9 @@ class StudentDashboard extends Component
             $status = SystemStatus::latest()->first();
 
             return [
-                'status' => $status->status ?? 'operational',
-                'message' => $status->message ?? 'All systems operational',
-                'updated_at' => $status ? $status->updated_at->diffForHumans() : 'Just now',
+                'status' => $status->status ?? 'unknown',
+                'message' => $status->message ?? 'No platform status update has been published.',
+                'updated_at' => $status ? $status->updated_at->diffForHumans() : 'not recorded',
                 'incidents_count' => SystemStatus::where('status', '!=', 'operational')
                     ->where('created_at', '>', now()->subDays(7))
                     ->count(),

@@ -257,5 +257,7 @@ The application-controlled premium experience work is complete. The open items r
 - [x] Refresh the shared sidebar, header and mobile navigation as one consistent professional shell.
 - [x] Preserve role-filtered menu generation, named routes, persistent collapse and all authorization boundaries.
 - [x] Add mobile drawer focus entry, Escape/backdrop dismissal and focus return.
-- [ ] Redesign dashboard page interiors incrementally, beginning only after this shared-shell phase is accepted.
+- [x] Redesign the seven primary role dashboard homepages with a shared hierarchy, role-relevant CTA content and recorded-data charts.
+- [x] Remove fabricated homepage insights and constrain mentor, instructor, content and affiliate dashboard filters/data projections.
+- [ ] Continue the shared design through secondary dashboard page families without changing their domain or authorization boundaries.
 - [ ] Complete broader theme, screen-reader and authenticated workflow acceptance as each page family is redesigned.

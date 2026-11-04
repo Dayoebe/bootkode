@@ -275,3 +275,9 @@ The additive portfolio migration introduces a private-by-default `visibility` en
 ## Authenticated dashboard shell — 4 November 2026
 
 `resources/views/layouts/dashboard.blade.php` remains the single authenticated shell and owns theme, mobile-drawer and persisted desktop-collapse state. `DashboardSidebar` continues to derive navigation exclusively from `config/menu.php` and server-side role filtering; its Blade view changes presentation only. The shared navbar continues to resolve named routes and real notification/message counts. New shell styles live in `resources/css/dashboard.css`, use tokens from `resources/css/tokens.css`, and load through the existing Vite application entry. Mobile drawer focus restoration is implemented in the layout's existing Alpine scope, so no second runtime or client-side authorization path exists.
+
+## Role dashboard homepage projections — 4 November 2026
+
+The seven role routes remain separate Livewire components under the shared authenticated layout. Their Blade views now compose the same homepage hero/stat primitives while retaining role-specific named routes, records and charts. Chart.js remains isolated in `resources/js/charts.js`; zero-value series use its existing explicit empty-state contract.
+
+Mentor projections are now rooted in `mentorships.mentor_id` and traverse only those relationships to sessions, reviews, support records, certificates and job applications. Client-provided timeframe and mentee filters are allow-listed. Instructor course filters re-resolve a course through the authenticated instructor relationship. Content and affiliate filters are bounded enums. Affiliate transactions traverse the affiliate's referral relationship instead of comparing an affiliate ID with a referral ID. Unrecorded click, audience, backup and publication-status signals remain nullable/unknown rather than acquiring estimates.

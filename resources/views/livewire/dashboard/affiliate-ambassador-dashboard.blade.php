@@ -2,34 +2,44 @@
     @vite('resources/js/charts.js')
 @endassets
 
-<div class="space-y-6">
-    <x-ui.page-header title="Referral workspace" description="Track your recorded referrals, commissions and payouts.">
+@php
+    $dashboardFirstName = str(auth()->user()->name)->before(' ')->toString();
+    $dashboardStats = $this->overviewStats;
+@endphp
+
+<div class="bk-dashboard-home space-y-6">
+    <x-dashboard.home-hero
+        role="Ambassador workspace"
+        :title="'Grow access with every referral, '.$dashboardFirstName.'.'"
+        description="Share approved BootKode opportunities, follow real conversions, and keep commissions and referral activity easy to understand."
+        icon="fas fa-bullhorn"
+        :focus-title="$dashboardStats['pending_referrals'] > 0 ? $dashboardStats['pending_referrals'].' referral'.($dashboardStats['pending_referrals'] === 1 ? '' : 's').' still pending' : 'Keep your referral link working for you'"
+        :focus-description="$dashboardStats['pending_earnings'] > 0 ? '₦'.number_format($dashboardStats['pending_earnings'], 0).' in recorded earnings is pending.' : 'Use approved campaign tools and review which activity is converting.'"
+    >
         <x-slot:actions>
-<!-- Metric Selector -->
-                    <select aria-label="Reporting metric" wire:model.live="selectedMetric" class="bg-themed-secondary border border-themed-secondary text-themed-primary px-3 py-2 text-sm rounded-lg focus:ring-2 focus:ring-green-500 dark:focus:ring-green-400 focus:border-green-500 dark:focus:border-green-400 transition-colors duration-300">
-                        <option value="earnings">Earnings</option>
-                        <option value="referrals">Referrals</option>
-                        <option value="conversions">Conversions</option>
-                    </select>
-
-                    <!-- Timeframe Selector -->
-                    <div role="group" aria-label="Reporting period" class="flex bg-themed-tertiary rounded-lg p-1 transition-colors duration-300">
-                        @foreach(['7days' => '7d', '30days' => '30d', '90days' => '90d', '12months' => '12m'] as $value => $label)
-                            <button
-                                wire:click="updateTimeframe('{{ $value }}')" aria-label="Report for {{ $label }}" aria-pressed="{{ $selectedTimeframe === $value ? 'true' : 'false' }}"
-                                class="px-3 py-1 rounded-md text-sm font-medium transition-all duration-200 {{ $selectedTimeframe === $value ? 'bg-themed-secondary text-green-600 dark:text-green-400 shadow-sm' : 'text-themed-secondary hover:text-themed-primary' }}">
-                                {{ $label }}
-                            </button>
-                        @endforeach
-                    </div>
-
-                    <!-- Quick Actions -->
-                    <a href="{{ route('affiliate.tools') }}" class="bg-green-600 dark:bg-green-500 hover:bg-green-700 dark:hover:bg-green-600 text-white px-4 py-2 rounded-lg font-medium transition-colors duration-200">
-                        <i aria-hidden="true" class="fas fa-tools mr-2"></i>
-                        Marketing Tools
-                    </a>
+            <a href="{{ route('affiliate.tools') }}" class="bk-dashboard-hero-primary" wire:navigate><i class="fas fa-share-nodes text-xs" aria-hidden="true"></i> Open marketing tools</a>
+            <a href="{{ route('affiliate.reports') }}" class="bk-dashboard-hero-secondary" wire:navigate>View reports</a>
         </x-slot:actions>
-    </x-ui.page-header>
+        <x-slot:focusAction><a href="{{ route('affiliate.commissions') }}" class="bk-dashboard-hero-secondary" wire:navigate>Review commissions</a></x-slot:focusAction>
+        <x-slot:highlights>
+            <x-dashboard.hero-stat label="Recorded earnings" :value="'₦'.number_format($dashboardStats['total_earnings'], 0)" :context="'₦'.number_format($dashboardStats['monthly_earnings'], 0).' this month'" icon="fas fa-wallet" />
+            <x-dashboard.hero-stat label="Active referrals" :value="$dashboardStats['active_referrals']" :context="$dashboardStats['total_referrals'].' total referrals'" icon="fas fa-user-plus" />
+            <x-dashboard.hero-stat label="Click analytics" value="Not connected" context="earnings and referrals remain recorded" icon="fas fa-chart-line" />
+        </x-slot:highlights>
+        <x-slot:tools>
+            <span class="bk-dashboard-toolbar-label">View</span>
+            <select aria-label="Reporting metric" wire:model.live="selectedMetric" class="bk-input w-full sm:w-auto">
+                <option value="earnings">Earnings</option>
+                <option value="referrals">Referrals</option>
+                <option value="conversions">Conversions</option>
+            </select>
+            <div role="group" aria-label="Reporting period" class="bk-dashboard-filter-group">
+                @foreach(['7days' => '7d', '30days' => '30d', '90days' => '90d', '12months' => '12m'] as $value => $label)
+                    <button type="button" wire:click="updateTimeframe('{{ $value }}')" aria-label="Report for {{ $label }}" aria-pressed="{{ $selectedTimeframe === $value ? 'true' : 'false' }}" class="bk-dashboard-filter-button {{ $selectedTimeframe === $value ? 'is-active' : '' }}">{{ $label }}</button>
+                @endforeach
+            </div>
+        </x-slot:tools>
+    </x-dashboard.home-hero>
 
     <!-- Overview Stats Grid -->
     @if($showWidgets['overview_stats'])
@@ -69,11 +79,10 @@
         <div class="bg-themed-secondary rounded-lg shadow-sm border border-themed-primary p-6   transition-all duration-200">
             <div class="flex items-center justify-between">
                 <div>
-                    <p class="text-sm text-themed-secondary font-medium transition-colors duration-300">Conversion Rate</p>
-                    <h3 class="text-3xl font-bold text-themed-primary mt-1 transition-colors duration-300">{{ $this->overviewStats['conversion_rate'] }}%</h3>
+                    <p class="text-sm text-themed-secondary font-medium transition-colors duration-300">Click Analytics</p>
+                    <h3 class="text-xl font-bold text-themed-primary mt-1 transition-colors duration-300">Not connected</h3>
                     <div class="flex items-center mt-2 text-sm">
-                        <span class="text-brand dark:text-brand font-medium transition-colors duration-300">{{ $this->overviewStats['clicks_this_period'] }}</span>
-                        <span class="text-themed-tertiary ml-1 transition-colors duration-300">clicks</span>
+                        <span class="text-themed-tertiary transition-colors duration-300">No click or conversion estimate shown</span>
                     </div>
                 </div>
                 <div class="bg-brand/10 dark:bg-action/30 p-3 rounded-full transition-colors duration-300">
@@ -135,20 +144,13 @@
                             @endforelse
                         </div>
 
-                        <!-- Tier Progress -->
-                        @if($this->overviewStats['next_tier_requirement'] > 0)
                         <div class="mt-6 pt-4 border-t border-themed-primary transition-colors duration-300">
-                            <h4 class="text-sm font-semibold text-themed-primary mb-2 transition-colors duration-300">Next Tier Progress</h4>
-                            <div class="flex items-center justify-between text-sm mb-2">
-                                <span class="text-themed-secondary transition-colors duration-300">{{ $this->overviewStats['tier_status'] }} → Next Level</span>
-                                <span class="text-themed-secondary transition-colors duration-300">₦{{ number_format($this->overviewStats['next_tier_requirement'], 0) }} to go</span>
-                            </div>
-                            <div class="w-full bg-themed-tertiary rounded-full h-2 transition-colors duration-300">
-                                <div class="bg-surface-muted   h-2 rounded-full"
-                                     style="width: {{ 100 - (($this->overviewStats['next_tier_requirement'] / 10000) * 100) }}%"></div>
+                            <h4 class="text-sm font-semibold text-themed-primary mb-2 transition-colors duration-300">Commission programme</h4>
+                            <div class="flex items-center justify-between text-sm">
+                                <span class="text-themed-secondary transition-colors duration-300">Recorded commission rate</span>
+                                <span class="font-semibold text-themed-primary transition-colors duration-300">{{ number_format($this->overviewStats['commission_rate'], 1) }}%</span>
                             </div>
                         </div>
-                        @endif
                     </div>
                 </div>
             </div>
@@ -176,10 +178,7 @@
                                 <div class="flex items-center space-x-3 text-sm text-themed-secondary mt-1 transition-colors duration-300">
                                     <span>{{ $referral['courses_purchased'] }} courses</span>
                                     <span>₦{{ number_format($referral['total_spent'], 0) }} spent</span>
-                                    <span class="flex items-center">
-                                        <i aria-hidden="true" class="fas fa-chart-line mr-1"></i>
-                                        {{ $referral['activity_score'] }}% active
-                                    </span>
+                                    <span>{{ $referral['last_purchase'] ? 'Last purchase '.$referral['last_purchase']->diffForHumans() : 'No recorded purchase' }}</span>
                                 </div>
                             </div>
                         </div>
@@ -196,6 +195,7 @@
                         <i aria-hidden="true" class="fas fa-user-plus text-themed-tertiary text-4xl mb-4 transition-colors duration-300"></i>
                         <p class="text-themed-secondary mb-4 transition-colors duration-300">No referrals yet</p>
                         <button wire:click="copyToClipboard('{{ auth()->user()->affiliate?->referral_link ?? '' }}')"
+                                type="button" aria-label="Copy your referral link" @disabled(!auth()->user()->affiliate)
                                 class="bg-green-600 dark:bg-green-500 hover:bg-green-700 dark:hover:bg-green-600 text-white px-4 py-2 rounded-lg transition-colors">
                             Share Your Link
                         </button>
@@ -223,6 +223,7 @@
                                    readonly
                                    class="flex-1 bg-themed-tertiary border border-themed-secondary rounded-lg px-3 py-2 text-sm text-themed-primary transition-colors duration-300">
                             <button wire:click="copyToClipboard('{{ $this->marketingTools['referral_link'] ?? '' }}')"
+                                    type="button" aria-label="Copy referral link" @disabled(empty($this->marketingTools['referral_link']))
                                     class="bg-green-600 dark:bg-green-500 hover:bg-green-700 dark:hover:bg-green-600 text-white px-3 py-2 rounded-lg text-sm transition-colors">
                                 <i aria-hidden="true" class="fas fa-copy"></i>
                             </button>
@@ -238,19 +239,11 @@
                                    readonly
                                    class="flex-1 bg-themed-tertiary border border-themed-secondary rounded-lg px-3 py-2 text-sm font-mono text-themed-primary transition-colors duration-300">
                             <button wire:click="copyToClipboard('{{ $this->marketingTools['referral_code'] ?? '' }}')"
+                                    type="button" aria-label="Copy referral code" @disabled(empty($this->marketingTools['referral_code']))
                                     class="bg-green-600 dark:bg-green-500 hover:bg-green-700 dark:hover:bg-green-600 text-white px-3 py-2 rounded-lg text-sm transition-colors">
                                 <i aria-hidden="true" class="fas fa-copy"></i>
                             </button>
                         </div>
-                    </div>
-
-                    <!-- QR Code -->
-                    <div class="text-center">
-                        <label class="block text-sm font-medium text-themed-primary mb-2 transition-colors duration-300">QR Code</label>
-                        @if(isset($this->marketingTools['qr_code_url']))
-                        <img src="{{ $this->marketingTools['qr_code_url'] }}" alt="QR Code" class="mx-auto mb-2 border border-themed-primary dark:border-themed-secondary rounded-lg transition-colors duration-300">
-                        @endif
-                        <button class="text-xs text-green-600 dark:text-green-400 hover:text-green-700 dark:hover:text-green-300 transition-colors duration-300">Download QR Code</button>
                     </div>
 
                     <!-- Social Media Templates -->
@@ -260,7 +253,7 @@
                             @foreach($this->marketingTools['social_media_posts'] ?? [] as $platform => $template)
                             <div class="flex items-center justify-between p-2 border border-themed-primary rounded transition-colors duration-300">
                                 <span class="text-sm text-themed-secondary capitalize transition-colors duration-300">{{ $platform }}</span>
-                                <button wire:click="copyToClipboard('{{ $template }}')"
+                                <button type="button" x-on:click="$wire.copyToClipboard(@js($template))" aria-label="Copy {{ ucfirst($platform) }} template"
                                         class="text-green-600 dark:text-green-400 hover:text-green-700 dark:hover:text-green-300 text-sm transition-colors duration-300">
                                     Copy
                                 </button>

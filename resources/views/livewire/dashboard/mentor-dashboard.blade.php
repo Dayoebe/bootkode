@@ -2,36 +2,45 @@
     @vite('resources/js/charts.js')
 @endassets
 
-<div class="space-y-6">
-    <x-ui.page-header title="Mentoring workspace" description="Review your mentees, sessions and pending feedback.">
+@php
+    $dashboardFirstName = str(auth()->user()->name)->before(' ')->toString();
+    $dashboardStats = $this->overviewStats;
+@endphp
+
+<div class="bk-dashboard-home space-y-6">
+    <x-dashboard.home-hero
+        role="Mentor workspace"
+        :title="'Guide progress that matters, '.$dashboardFirstName.'.'"
+        description="Keep mentees moving with timely sessions, thoughtful feedback, and a clear view of every active mentorship."
+        icon="fas fa-people-arrows"
+        :focus-title="$dashboardStats['pending_requests'] > 0 ? $dashboardStats['pending_requests'].' mentorship request'.($dashboardStats['pending_requests'] === 1 ? '' : 's').' waiting' : ($dashboardStats['upcoming_sessions'] > 0 ? $dashboardStats['upcoming_sessions'].' upcoming session'.($dashboardStats['upcoming_sessions'] === 1 ? '' : 's') : 'No urgent mentoring action')"
+        :focus-description="$dashboardStats['pending_requests'] > 0 ? 'Review the request and decide whether the mentorship is a good fit.' : 'Open the mentoring workspace to plan sessions and review learner work.'"
+    >
         <x-slot:actions>
-<!-- Mentee Filter -->
-                    <select aria-label="Filter mentees" wire:model.live="selectedMenteeFilter"
-                        class="bg-themed-secondary border border-themed-secondary text-themed-primary px-3 py-2 text-sm rounded-lg focus:ring-2 focus:ring-brand/30 dark:focus:ring-brand/30 focus:border-brand dark:focus:border-brand transition-colors duration-300">
-                        <option value="all">All Mentees</option>
-                        <option value="active">Active Mentees</option>
-                        <option value="new">New Mentees</option>
-                        <option value="struggling">Need Attention</option>
-                    </select>
-
-                    <!-- Timeframe Selector -->
-                    <div role="group" aria-label="Reporting period" class="flex bg-themed-tertiary rounded-lg p-1 transition-colors duration-300">
-                        @foreach(['7days' => '7d', '30days' => '30d', '90days' => '90d'] as $value => $label)
-                            <button wire:click="updateTimeframe('{{ $value }}')" aria-label="Report for {{ $label }}" aria-pressed="{{ $selectedTimeframe === $value ? 'true' : 'false' }}"
-                                class="px-3 py-1 rounded-md text-sm font-medium transition-all duration-200 {{ $selectedTimeframe === $value ? 'bg-themed-secondary text-brand dark:text-brand shadow-sm' : 'text-themed-secondary hover:text-themed-primary' }}">
-                                {{ $label }}
-                            </button>
-                        @endforeach
-                    </div>
-
-                    <!-- Quick Actions -->
-                    <a href="{{ route('mentorship.hub') }}"
-                        class="bg-action dark:bg-action hover:bg-action dark:hover:bg-action text-action-foreground px-4 py-2 rounded-lg font-medium transition-colors duration-200">
-                        <i aria-hidden="true" class="fas fa-calendar-plus mr-2"></i>
-                        Schedule Session
-                    </a>
+            <a href="{{ route('mentorship.dashboard') }}" class="bk-dashboard-hero-primary" wire:navigate>Open mentoring hub <i class="fas fa-arrow-right text-xs" aria-hidden="true"></i></a>
+            <a href="{{ route('mentorship.sessions') }}" class="bk-dashboard-hero-secondary" wire:navigate>Manage sessions</a>
         </x-slot:actions>
-    </x-ui.page-header>
+        <x-slot:focusAction><a href="{{ route('mentorship.dashboard') }}" class="bk-dashboard-hero-secondary" wire:navigate>Review mentoring activity</a></x-slot:focusAction>
+        <x-slot:highlights>
+            <x-dashboard.hero-stat label="Active mentees" :value="$dashboardStats['active_mentees']" :context="$dashboardStats['total_mentees'].' total relationships'" icon="fas fa-user-group" />
+            <x-dashboard.hero-stat label="Upcoming" :value="$dashboardStats['upcoming_sessions']" context="scheduled sessions" icon="fas fa-calendar-check" />
+            <x-dashboard.hero-stat label="Recorded hours" :value="$dashboardStats['mentorship_hours'].'h'" :context="$dashboardStats['completed_sessions'].' completed sessions'" icon="fas fa-clock" />
+        </x-slot:highlights>
+        <x-slot:tools>
+            <span class="bk-dashboard-toolbar-label">View</span>
+            <select aria-label="Filter mentees" wire:model.live="selectedMenteeFilter" class="bk-input w-full sm:w-auto">
+                <option value="all">All mentees</option>
+                <option value="active">Active mentees</option>
+                <option value="new">New mentees</option>
+                <option value="struggling">Needs attention</option>
+            </select>
+            <div role="group" aria-label="Reporting period" class="bk-dashboard-filter-group">
+                @foreach(['7days' => '7d', '30days' => '30d', '90days' => '90d'] as $value => $label)
+                    <button type="button" wire:click="updateTimeframe('{{ $value }}')" aria-label="Report for {{ $label }}" aria-pressed="{{ $selectedTimeframe === $value ? 'true' : 'false' }}" class="bk-dashboard-filter-button {{ $selectedTimeframe === $value ? 'is-active' : '' }}">{{ $label }}</button>
+                @endforeach
+            </div>
+        </x-slot:tools>
+    </x-dashboard.home-hero>
 
     <!-- Overview Stats Grid -->
     @if($showWidgets['overview_stats'])
@@ -80,19 +89,16 @@
                 class="bg-themed-secondary rounded-lg shadow-sm border border-themed-primary p-6   transition-all duration-200">
                 <div class="flex items-center justify-between">
                     <div>
-                        <p class="text-sm text-themed-secondary font-medium transition-colors duration-300">Success Rate</p>
+                        <p class="text-sm text-themed-secondary font-medium transition-colors duration-300">Recorded Outcomes</p>
                         <h3 class="text-3xl font-bold text-themed-primary mt-1 transition-colors duration-300">
                             {{ $this->overviewStats['success_rate'] }}%</h3>
                         <div class="flex items-center mt-2 text-sm">
-                            <div class="flex text-yellow-400 dark:text-yellow-300 mr-2">
-                                @for($i = 1; $i <= 5; $i++)
-                                    <i aria-hidden="true"
-                                        class="fas fa-star{{ $i <= $this->overviewStats['avg_session_rating'] ? '' : '-o' }}"></i>
-                                @endfor
-                            </div>
-                            <span
-                                class="text-themed-tertiary transition-colors duration-300">{{ number_format($this->overviewStats['avg_session_rating'], 1) }}
-                                rating</span>
+                            @if($this->overviewStats['avg_session_rating'] > 0)
+                                <i aria-hidden="true" class="fas fa-star text-yellow-400 dark:text-yellow-300 mr-2"></i>
+                                <span class="text-themed-tertiary transition-colors duration-300">{{ number_format($this->overviewStats['avg_session_rating'], 1) }} mentor rating</span>
+                            @else
+                                <span class="text-themed-tertiary transition-colors duration-300">No mentor reviews yet</span>
+                            @endif
                         </div>
                     </div>
                     <div class="bg-yellow-100 dark:bg-yellow-900/30 p-3 rounded-full transition-colors duration-300">
@@ -216,7 +222,7 @@
                             <h3 class="text-sm font-semibold text-themed-primary mb-3 transition-colors duration-300">
                                 Session Types</h3>
                             <div class="space-y-3">
-                                @foreach($this->sessionAnalytics['session_types'] as $type => $percentage)
+                                @forelse($this->sessionAnalytics['session_types'] as $type => $percentage)
                                     <div class="flex items-center justify-between">
                                         <span
                                             class="text-sm text-themed-secondary capitalize transition-colors duration-300">{{ str_replace('_', ' ', $type) }}</span>
@@ -230,13 +236,15 @@
                                                 class="text-sm font-medium text-themed-primary transition-colors duration-300">{{ $percentage }}%</span>
                                         </div>
                                     </div>
-                                @endforeach
+                                @empty
+                                    <p class="text-sm text-themed-secondary">No completed sessions in this period.</p>
+                                @endforelse
                             </div>
 
                             <!-- Success Metrics -->
                             <div class="mt-6 pt-4 border-t border-themed-primary transition-colors duration-300">
                                 <h4 class="text-sm font-semibold text-themed-primary mb-3 transition-colors duration-300">
-                                    Success Metrics</h4>
+                                    Recorded progress</h4>
                                 <div class="grid grid-cols-2 gap-4">
                                     <div class="text-center">
                                         <div
@@ -249,8 +257,8 @@
                                         <div
                                             class="text-lg font-bold text-brand dark:text-brand transition-colors duration-300">
                                             {{ $this->sessionAnalytics['success_metrics']['mentee_retention_rate'] }}%</div>
-                                        <div class="text-xs text-themed-secondary transition-colors duration-300">Retention
-                                            Rate</div>
+                                        <div class="text-xs text-themed-secondary transition-colors duration-300">Completed
+                                            Relationships</div>
                                     </div>
                                 </div>
                             </div>
@@ -305,60 +313,23 @@
             @if($showWidgets['mentorship_goals'])
                 <div
                     class="bg-themed-secondary rounded-lg shadow-sm border border-themed-primary p-6 transition-colors duration-300">
-                    <h2 class="text-xl font-bold text-themed-primary mb-6 transition-colors duration-300">Monthly Goals</h2>
+                    <h2 class="text-xl font-bold text-themed-primary mb-2 transition-colors duration-300">Recorded This Month</h2>
+                    <p class="text-sm text-themed-secondary mb-5">Actual activity linked to your mentorship relationships.</p>
 
-                    <div class="space-y-4">
-                        <!-- Sessions Goal -->
-                        <div>
-                            <div class="flex items-center justify-between mb-2">
-                                <span
-                                    class="text-sm font-medium text-themed-primary transition-colors duration-300">Sessions</span>
-                                <span class="text-sm text-themed-secondary transition-colors duration-300">
-                                    {{ $this->mentorshipGoals['monthly_targets']['sessions_completed'] }} /
-                                    {{ $this->mentorshipGoals['monthly_targets']['sessions_target'] }}
-                                </span>
-                            </div>
-                            <div class="w-full bg-themed-tertiary rounded-full h-3 transition-colors duration-300">
-                                <div class="bg-surface-muted     h-3 rounded-full transition-all duration-300"
-                                    style="width: {{ min(($this->mentorshipGoals['monthly_targets']['sessions_completed'] / $this->mentorshipGoals['monthly_targets']['sessions_target']) * 100, 100) }}%">
-                                </div>
-                            </div>
+                    <dl class="grid grid-cols-3 gap-3">
+                        <div class="rounded-lg bg-themed-tertiary p-3 text-center">
+                            <dt class="text-xs text-themed-secondary">Sessions</dt>
+                            <dd class="mt-1 text-2xl font-bold text-themed-primary">{{ $this->mentorshipGoals['recorded_this_month']['sessions_completed'] }}</dd>
                         </div>
-
-                        <!-- Certifications Goal -->
-                        <div>
-                            <div class="flex items-center justify-between mb-2">
-                                <span
-                                    class="text-sm font-medium text-themed-primary transition-colors duration-300">Certifications</span>
-                                <span class="text-sm text-themed-secondary transition-colors duration-300">
-                                    {{ $this->mentorshipGoals['monthly_targets']['mentee_certifications_achieved'] }} /
-                                    {{ $this->mentorshipGoals['monthly_targets']['mentee_certifications_target'] }}
-                                </span>
-                            </div>
-                            <div class="w-full bg-themed-tertiary rounded-full h-3 transition-colors duration-300">
-                                <div class="bg-surface-muted     h-3 rounded-full transition-all duration-300"
-                                    style="width: {{ min(($this->mentorshipGoals['monthly_targets']['mentee_certifications_achieved'] / $this->mentorshipGoals['monthly_targets']['mentee_certifications_target']) * 100, 100) }}%">
-                                </div>
-                            </div>
+                        <div class="rounded-lg bg-themed-tertiary p-3 text-center">
+                            <dt class="text-xs text-themed-secondary">Certificates</dt>
+                            <dd class="mt-1 text-2xl font-bold text-themed-primary">{{ $this->mentorshipGoals['recorded_this_month']['mentee_certifications'] }}</dd>
                         </div>
-
-                        <!-- Job Placements Goal -->
-                        <div>
-                            <div class="flex items-center justify-between mb-2">
-                                <span class="text-sm font-medium text-themed-primary transition-colors duration-300">Job
-                                    Placements</span>
-                                <span class="text-sm text-themed-secondary transition-colors duration-300">
-                                    {{ $this->mentorshipGoals['monthly_targets']['job_placements_achieved'] }} /
-                                    {{ $this->mentorshipGoals['monthly_targets']['job_placements_target'] }}
-                                </span>
-                            </div>
-                            <div class="w-full bg-themed-tertiary rounded-full h-3 transition-colors duration-300">
-                                <div class="bg-surface-muted     h-3 rounded-full transition-all duration-300"
-                                    style="width: {{ min(($this->mentorshipGoals['monthly_targets']['job_placements_achieved'] / $this->mentorshipGoals['monthly_targets']['job_placements_target']) * 100, 100) }}%">
-                                </div>
-                            </div>
+                        <div class="rounded-lg bg-themed-tertiary p-3 text-center">
+                            <dt class="text-xs text-themed-secondary">Hired</dt>
+                            <dd class="mt-1 text-2xl font-bold text-themed-primary">{{ $this->mentorshipGoals['recorded_this_month']['job_placements'] }}</dd>
                         </div>
-                    </div>
+                    </dl>
                 </div>
             @endif
 
@@ -415,7 +386,7 @@
                         <h2 class="text-xl font-bold text-themed-primary transition-colors duration-300">Mentee Support</h2>
                         <span
                             class="bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-300 text-xs font-medium px-2 py-1 rounded-full transition-colors duration-300">
-                            {{ $this->overviewStats['pending_requests'] }} pending
+                            {{ $this->overviewStats['open_support_tickets'] }} open
                         </span>
                     </div>
 

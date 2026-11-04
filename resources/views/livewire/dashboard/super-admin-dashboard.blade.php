@@ -2,31 +2,41 @@
     @vite('resources/js/charts.js')
 @endassets
 
-<div class="space-y-6">
-    <x-ui.page-header title="Platform overview" description="Review platform activity, operations and the work that needs attention.">
+@php
+    $dashboardFirstName = str(auth()->user()->name)->before(' ')->toString();
+    $dashboardStats = $this->overviewStats;
+    $dashboardPriorityCount = $dashboardStats['pending_courses'] + $dashboardStats['open_tickets'] + $dashboardStats['pending_certificates'];
+@endphp
+
+<div class="bk-dashboard-home space-y-6">
+    <x-dashboard.home-hero
+        role="Platform command centre"
+        :title="'See the platform. Prioritise what matters, '.$dashboardFirstName.'.'"
+        description="Monitor people, learning, revenue, support, and platform operations from one factual decision surface."
+        icon="fas fa-shield-halved"
+        :focus-title="$dashboardPriorityCount > 0 ? $dashboardPriorityCount.' recorded item'.($dashboardPriorityCount === 1 ? '' : 's').' need attention' : 'No recorded approval or support backlog'"
+        :focus-description="$dashboardStats['pending_courses'].' course approvals · '.$dashboardStats['open_tickets'].' open tickets · '.$dashboardStats['pending_certificates'].' certificate requests'"
+    >
         <x-slot:actions>
-<!-- Timeframe Selector -->
-                    <div role="group" aria-label="Reporting period" class="flex bg-themed-tertiary rounded-lg p-1 transition-colors duration-300">
-                        @foreach(['24hours' => '24h', '7days' => '7d', '30days' => '30d', '90days' => '90d'] as $value => $label)
-                            <button
-                                wire:click="updateTimeframe('{{ $value }}')" aria-label="Report for {{ $label }}" aria-pressed="{{ $selectedTimeframe === $value ? 'true' : 'false' }}"
-                                class="px-3 py-1 rounded-md text-sm font-medium transition-all duration-200 {{ $selectedTimeframe === $value ? 'bg-themed-secondary accent-themed-primary shadow-sm' : 'text-themed-secondary hover:text-themed-primary' }}">
-                                {{ $label }}
-                            </button>
-                        @endforeach
-                    </div>
-
-                    <!-- Quick Actions -->
-                    <button wire:click="toggleQuickActionModal"
-                            class="bg-action hover:bg-action/90 text-action-foreground px-4 py-2 rounded-lg font-medium transition-colors duration-200 flex items-center">
-                        <i aria-hidden="true" class="fas fa-bolt mr-2"></i>
-                        Quick Actions
-                    </button>
-
-                    <!-- Settings -->
-                    <a href="{{ route('settings') }}" class="bk-icon-button" aria-label="Settings"><i aria-hidden="true" class="fas fa-cog text-lg"></i></a>
+            <button type="button" wire:click="toggleQuickActionModal" class="bk-dashboard-hero-primary"><i class="fas fa-bolt text-xs" aria-hidden="true"></i> Quick actions</button>
+            <a href="{{ route('user-management') }}" class="bk-dashboard-hero-secondary" wire:navigate>Manage platform users</a>
         </x-slot:actions>
-    </x-ui.page-header>
+        <x-slot:focusAction><a href="{{ route('course-approvals') }}" class="bk-dashboard-hero-secondary" wire:navigate>Review pending work</a></x-slot:focusAction>
+        <x-slot:highlights>
+            <x-dashboard.hero-stat label="Active accounts" :value="number_format($dashboardStats['active_users'])" :context="number_format($dashboardStats['total_users']).' total accounts'" icon="fas fa-users" />
+            <x-dashboard.hero-stat label="Published courses" :value="$dashboardStats['published_courses']" :context="$dashboardStats['pending_courses'].' pending approval'" icon="fas fa-book-open" />
+            <x-dashboard.hero-stat label="Recorded revenue" :value="'₦'.number_format($dashboardStats['total_revenue'], 0)" :context="'₦'.number_format($dashboardStats['monthly_revenue'], 0).' this month'" icon="fas fa-chart-line" />
+        </x-slot:highlights>
+        <x-slot:tools>
+            <span class="bk-dashboard-toolbar-label">Reporting period</span>
+            <div role="group" aria-label="Reporting period" class="bk-dashboard-filter-group">
+                @foreach(['24hours' => '24h', '7days' => '7d', '30days' => '30d', '90days' => '90d'] as $value => $label)
+                    <button type="button" wire:click="updateTimeframe('{{ $value }}')" aria-label="Report for {{ $label }}" aria-pressed="{{ $selectedTimeframe === $value ? 'true' : 'false' }}" class="bk-dashboard-filter-button {{ $selectedTimeframe === $value ? 'is-active' : '' }}">{{ $label }}</button>
+                @endforeach
+            </div>
+            <a href="{{ route('settings') }}" class="bk-button bk-button-secondary sm:ml-auto" wire:navigate><i class="fas fa-gear" aria-hidden="true"></i> Platform settings</a>
+        </x-slot:tools>
+    </x-dashboard.home-hero>
 
     <!-- Overview Stats Grid -->
     @if($showWidgets['overview_stats'])
@@ -176,12 +186,13 @@
         <div class="space-y-8">
             <!-- System Health -->
             @if($showWidgets['system_health'])
+            @php($publishedSystemStatus = $this->systemHealth['status']['status'])
             <div class="bg-themed-secondary rounded-lg shadow-sm border border-themed-primary p-6 transition-colors duration-300">
                 <div class="flex items-center justify-between mb-6">
                     <h2 class="text-xl font-bold text-themed-primary transition-colors duration-300">System Health</h2>
                     <div class="flex items-center">
-                        <div class="w-2 h-2 bg-green-500 dark:bg-green-400 rounded-full mr-2"></div>
-                        <span class="text-sm text-green-600 dark:text-green-400 font-medium transition-colors duration-300">Operational</span>
+                        <div class="w-2 h-2 rounded-full mr-2 {{ $publishedSystemStatus === 'operational' ? 'bg-green-500 dark:bg-green-400' : ($publishedSystemStatus === 'unknown' ? 'bg-themed-tertiary' : 'bg-red-500 dark:bg-red-400') }}"></div>
+                        <span class="text-sm font-medium text-themed-secondary transition-colors duration-300">{{ $publishedSystemStatus === 'operational' ? 'Operational' : ($publishedSystemStatus === 'unknown' ? 'No published status' : 'Service issue') }}</span>
                     </div>
                 </div>
                 <div class="space-y-4">
@@ -204,7 +215,7 @@
                             <i aria-hidden="true" class="fas fa-hdd text-themed-secondary mr-3"></i>
                             <span class="font-medium text-themed-primary transition-colors duration-300">Storage</span>
                         </div>
-                        <span class="text-themed-secondary font-medium transition-colors duration-300">{{ $this->systemHealth['storage_usage']['percentage'] }}%</span>
+                        <span class="text-themed-secondary font-medium transition-colors duration-300">{{ $this->systemHealth['storage_usage']['percentage'] !== null ? $this->systemHealth['storage_usage']['percentage'].'%' : 'Unavailable' }}</span>
                     </div>
                 </div>
             </div>
@@ -215,9 +226,9 @@
             <div class="bg-themed-secondary rounded-lg shadow-sm border border-themed-primary p-6 transition-colors duration-300">
                 <div class="flex items-center justify-between mb-6">
                     <h2 class="text-xl font-bold text-themed-primary transition-colors duration-300">Recent Activities</h2>
-                    <button class="accent-themed-primary hover:text-accent-themed-secondary text-sm font-medium transition-colors duration-300">
+                    <a href="{{ route('user.activity') }}" class="accent-themed-primary hover:text-accent-themed-secondary text-sm font-medium transition-colors duration-300">
                         View All <i aria-hidden="true" class="fas fa-arrow-right ml-1"></i>
-                    </button>
+                    </a>
                 </div>
                 <div class="space-y-3">
                     @forelse($this->recentActivities as $activity)
@@ -261,17 +272,7 @@
                                 <h4 class="text-sm font-medium text-themed-primary truncate transition-colors duration-300">{{ $course['title'] }}</h4>
                                 <p class="text-xs text-themed-secondary transition-colors duration-300">{{ $course['instructor'] }} • {{ $course['created_at'] }}</p>
                             </div>
-                            <div class="flex space-x-2">
-                                <button wire:click="approveCourse({{ $course['id'] }})"
-                                        class="text-green-600 dark:text-green-400 hover:text-green-700 dark:hover:text-green-300 p-1 rounded transition-colors"
-                                        title="Approve Course" aria-label="Approve Course">
-                                    <i aria-hidden="true" class="fas fa-check text-sm"></i>
-                                </button>
-                                <button class="text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 p-1 rounded transition-colors"
-                                        title="Reject Course" aria-label="Reject Course">
-                                    <i aria-hidden="true" class="fas fa-times text-sm"></i>
-                                </button>
-                            </div>
+                            <a href="{{ route('course-approvals') }}" class="bk-button bk-button-secondary" wire:navigate>Review</a>
                         </div>
                         @empty
                         <p class="text-themed-tertiary text-sm">No pending courses</p>
@@ -289,17 +290,7 @@
                                 <h4 class="text-sm font-medium text-themed-primary transition-colors duration-300">{{ $certificate['user'] }}</h4>
                                 <p class="text-xs text-themed-secondary transition-colors duration-300">{{ Str::limit($certificate['course'], 30) }} • {{ $certificate['created_at'] }}</p>
                             </div>
-                            <div class="flex space-x-2">
-                                <button wire:click="approveCertificate({{ $certificate['id'] }})"
-                                        class="text-green-600 dark:text-green-400 hover:text-green-700 dark:hover:text-green-300 p-1 rounded transition-colors"
-                                        title="Approve Certificate" aria-label="Approve Certificate">
-                                    <i aria-hidden="true" class="fas fa-check text-sm"></i>
-                                </button>
-                                <button class="text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 p-1 rounded transition-colors"
-                                        title="Reject Certificate" aria-label="Reject Certificate">
-                                    <i aria-hidden="true" class="fas fa-times text-sm"></i>
-                                </button>
-                            </div>
+                            <a href="{{ route('admin.certificates.manage') }}" class="bk-button bk-button-secondary" wire:navigate>Review</a>
                         </div>
                         @empty
                         <p class="text-themed-tertiary text-sm">No pending certificates</p>
@@ -345,7 +336,7 @@
     <!-- Widget Toggle Panel -->
     <div class="bk-widget-settings">
         <div x-data="{ open: false }" class="relative">
-            <button @click="open = !open"
+            <button @click="open = !open" type="button" aria-label="Choose dashboard widgets"
                     class="bg-themed-secondary shadow-sm border border-themed-primary rounded-full p-3  transition-all duration-200">
                 <i aria-hidden="true" class="fas fa-sliders-h text-themed-secondary"></i>
             </button>

@@ -2,35 +2,45 @@
     @vite('resources/js/charts.js')
 @endassets
 
-<div class="space-y-6">
-    <x-ui.page-header title="Teaching workspace" description="Manage your courses, assessments and learner progress.">
+@php
+    $dashboardFirstName = str(auth()->user()->name)->before(' ')->toString();
+    $dashboardStats = $this->overviewStats;
+@endphp
+
+<div class="bk-dashboard-home space-y-6">
+    <x-dashboard.home-hero
+        role="Instructor workspace"
+        :title="'Teach with clarity, '.$dashboardFirstName.'.'"
+        description="Create strong learning experiences, watch learner progress, and respond to the work that needs your expertise."
+        icon="fas fa-person-chalkboard"
+        :focus-title="$dashboardStats['pending_courses'] > 0 ? $dashboardStats['pending_courses'].' course'.($dashboardStats['pending_courses'] === 1 ? '' : 's').' awaiting approval' : 'Your course workspace is up to date'"
+        :focus-description="$dashboardStats['pending_courses'] > 0 ? 'Review course readiness and address any outstanding approval feedback.' : 'Use learner progress and reviews to decide what to improve next.'"
+    >
         <x-slot:actions>
-<!-- Course Filter -->
-                    <select aria-label="Filter courses" wire:model.live="selectedCourseFilter" class="bg-themed-secondary border border-themed-secondary text-themed-primary px-3 py-2 text-sm rounded-lg focus:ring-2 focus:ring-brand/30 dark:focus:ring-brand/30 focus:border-brand dark:focus:border-brand transition-colors duration-300">
-                        <option value="all">All Courses</option>
-                        @foreach(auth()->user()->courses as $course)
-                            <option value="{{ $course->id }}">{{ \Str::limit($course->title, 30) }}</option>
-                        @endforeach
-                    </select>
-
-                    <!-- Timeframe Selector -->
-                    <div role="group" aria-label="Reporting period" class="flex bg-themed-tertiary rounded-lg p-1 transition-colors duration-300">
-                        @foreach(['7days' => '7d', '30days' => '30d', '90days' => '90d'] as $value => $label)
-                            <button
-                                wire:click="updateTimeframe('{{ $value }}')" aria-label="Report for {{ $label }}" aria-pressed="{{ $selectedTimeframe === $value ? 'true' : 'false' }}"
-                                class="px-3 py-1 rounded-md text-sm font-medium transition-all duration-200 {{ $selectedTimeframe === $value ? 'bg-themed-secondary text-brand dark:text-brand shadow-sm' : 'text-themed-secondary hover:text-themed-primary' }}">
-                                {{ $label }}
-                            </button>
-                        @endforeach
-                    </div>
-
-                    <!-- Quick Actions -->
-                    <a href="{{ route('create.course') }}" class="bg-action dark:bg-action hover:bg-action dark:hover:bg-action text-action-foreground px-4 py-2 rounded-lg font-medium transition-colors duration-200">
-                        <i aria-hidden="true" class="fas fa-plus mr-2"></i>
-                        New Course
-                    </a>
+            <a href="{{ route('create.course') }}" class="bk-dashboard-hero-primary" wire:navigate><i class="fas fa-plus text-xs" aria-hidden="true"></i> Create a course</a>
+            <a href="{{ route('my-course') }}" class="bk-dashboard-hero-secondary" wire:navigate>Manage courses</a>
         </x-slot:actions>
-    </x-ui.page-header>
+        <x-slot:focusAction><a href="{{ route('my-course') }}" class="bk-dashboard-hero-secondary" wire:navigate>Open course workspace</a></x-slot:focusAction>
+        <x-slot:highlights>
+            <x-dashboard.hero-stat label="Published courses" :value="$dashboardStats['published_courses']" :context="$dashboardStats['total_courses'].' total courses'" icon="fas fa-book" />
+            <x-dashboard.hero-stat label="Learners reached" :value="number_format($dashboardStats['total_students'])" :context="$dashboardStats['new_enrollments'].' new this period'" icon="fas fa-users" />
+            <x-dashboard.hero-stat label="Course feedback" :value="number_format($dashboardStats['average_rating'], 1)" :context="$dashboardStats['total_reviews'].' recorded reviews'" icon="fas fa-star" />
+        </x-slot:highlights>
+        <x-slot:tools>
+            <span class="bk-dashboard-toolbar-label">View</span>
+            <select aria-label="Filter courses" wire:model.live="selectedCourseFilter" class="bk-input w-full sm:w-auto">
+                <option value="all">All courses</option>
+                @foreach(auth()->user()->courses as $course)
+                    <option value="{{ $course->id }}">{{ \Str::limit($course->title, 30) }}</option>
+                @endforeach
+            </select>
+            <div role="group" aria-label="Reporting period" class="bk-dashboard-filter-group">
+                @foreach(['7days' => '7d', '30days' => '30d', '90days' => '90d'] as $value => $label)
+                    <button type="button" wire:click="updateTimeframe('{{ $value }}')" aria-label="Report for {{ $label }}" aria-pressed="{{ $selectedTimeframe === $value ? 'true' : 'false' }}" class="bk-dashboard-filter-button {{ $selectedTimeframe === $value ? 'is-active' : '' }}">{{ $label }}</button>
+                @endforeach
+            </div>
+        </x-slot:tools>
+    </x-dashboard.home-hero>
 
     <!-- Overview Stats Grid -->
     @if($showWidgets['overview_stats'])

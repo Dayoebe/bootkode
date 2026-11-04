@@ -2,10 +2,36 @@
     @vite('resources/js/charts.js')
 @endassets
 
-<div class="space-y-6">
-    <x-ui.page-header title="Your learning workspace" description="Continue your courses, review your progress and find your next useful step.">
-        <x-slot:actions><a href="{{ route('student.enrolled-courses') }}" class="bk-button bk-button-primary">My courses</a><a href="{{ route('student.course-catalog') }}" class="bk-button bk-button-secondary">Find a course</a></x-slot:actions>
-    </x-ui.page-header>
+@php
+    $dashboardFirstName = str(auth()->user()->name)->before(' ')->toString();
+    $dashboardStats = $this->quickStats;
+    $nextCourse = $this->learningProgress->first();
+@endphp
+
+<div class="bk-dashboard-home space-y-6">
+    <x-dashboard.home-hero
+        role="Learner workspace"
+        :title="'Keep building momentum, '.$dashboardFirstName.'.'"
+        description="Your learning workspace helps you pick up where you stopped, turn lessons into practical work, and keep your evidence moving forward."
+        icon="fas fa-graduation-cap"
+        :focus-title="$nextCourse ? 'Continue '.$nextCourse['title'] : 'Choose your next practical course'"
+        :focus-description="$nextCourse ? $nextCourse['progress'].'% complete · '.$nextCourse['completed_lessons'].' of '.$nextCourse['total_lessons'].' lessons finished' : 'Your course catalogue is ready when you are.'"
+    >
+        <x-slot:actions>
+            <a href="{{ route('student.enrolled-courses') }}" class="bk-dashboard-hero-primary" wire:navigate>My learning <i class="fas fa-arrow-right text-xs" aria-hidden="true"></i></a>
+            <a href="{{ route('student.course-catalog') }}" class="bk-dashboard-hero-secondary" wire:navigate>Explore courses</a>
+        </x-slot:actions>
+        <x-slot:focusAction>
+            <a href="{{ $nextCourse ? route('course.view', ['course' => $nextCourse['slug']]) : route('student.course-catalog') }}" class="bk-dashboard-hero-secondary" wire:navigate>
+                {{ $nextCourse ? 'Resume course' : 'Browse catalogue' }}
+            </a>
+        </x-slot:focusAction>
+        <x-slot:highlights>
+            <x-dashboard.hero-stat label="Active courses" :value="max(0, $dashboardStats['enrolled_courses'] - $dashboardStats['completed_courses'])" :context="$dashboardStats['completed_courses'].' completed'" icon="fas fa-book-open" />
+            <x-dashboard.hero-stat label="Lessons completed" :value="$dashboardStats['lessons_completed']" :context="$dashboardStats['total_study_hours'].' recorded study hours'" icon="fas fa-circle-check" />
+            <x-dashboard.hero-stat label="Needs attention" :value="$dashboardStats['pending_assessments']" context="pending assessments" icon="fas fa-list-check" />
+        </x-slot:highlights>
+    </x-dashboard.home-hero>
     <x-ui.panel title="Your learning direction">
         @if($this->learningProfile?->onboarding_completed_at)
             <p class="break-words text-content">{{ $this->learningProfile->goal }}</p>
@@ -707,10 +733,10 @@
                 <h2 class="text-lg font-bold text-themed-primary mb-4 transition-colors duration-300">System Status</h2>
 
                 <div class="flex items-center space-x-3">
-                    <div class="w-3 h-3 rounded-full {{ $this->systemHealth['status'] === 'operational' ? 'bg-green-500 dark:bg-green-400' : 'bg-red-500 dark:bg-red-400' }} "></div>
+                    <div class="w-3 h-3 rounded-full {{ $this->systemHealth['status'] === 'operational' ? 'bg-green-500 dark:bg-green-400' : ($this->systemHealth['status'] === 'unknown' ? 'bg-themed-tertiary' : 'bg-red-500 dark:bg-red-400') }} "></div>
                     <div>
                         <p class="text-sm font-medium text-themed-primary transition-colors duration-300">
-                            {{ $this->systemHealth['status'] === 'operational' ? 'All Systems Operational' : 'Service Issues' }}
+                            {{ $this->systemHealth['status'] === 'operational' ? 'All Systems Operational' : ($this->systemHealth['status'] === 'unknown' ? 'No Published Status' : 'Service Issues') }}
                         </p>
                         <p class="text-xs text-themed-secondary transition-colors duration-300">{{ $this->systemHealth['message'] }}</p>
                         <p class="text-xs text-themed-tertiary mt-1 transition-colors duration-300">Updated {{ $this->systemHealth['updated_at'] }}</p>

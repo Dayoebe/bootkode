@@ -2,29 +2,28 @@
 
 namespace App\Livewire\Dashboard;
 
-use App\Models\Core\User;
-use App\Models\Learning\Course;
-use App\Models\Credentials\Certificate;
 use App\Models\Career\JobApplication;
-use App\Models\Mentorship\MockInterview;
 use App\Models\Community\SupportTicket;
+use App\Models\Core\User;
+use App\Models\Credentials\Certificate;
 use App\Models\Learning\CourseEnrollment;
-use App\Models\Assessment\StudentAnswer;
-use App\Models\Assessment\Assessment;
-use Livewire\Component;
-use Livewire\Attributes\Layout;
-use Livewire\Attributes\Computed;
+use App\Models\Mentorship\Mentorship;
+use App\Models\Mentorship\MentorshipReview;
+use App\Models\Mentorship\MentorshipSession;
+use App\Models\Mentorship\MockInterview;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
-use Carbon\Carbon;
+use Illuminate\Validation\Rule;
+use Livewire\Attributes\Computed;
+use Livewire\Attributes\Layout;
+use Livewire\Component;
 
 #[Layout('layouts.dashboard', ['title' => 'Mentor Dashboard'])]
 class MentorDashboard extends Component
 {
-    public $selectedTimeframe = '30days';
-    public $selectedMenteeFilter = 'active';
-    
-    public $showWidgets = [
+    public string $selectedTimeframe = '30days';
+    public string $selectedMenteeFilter = 'active';
+    public array $showWidgets = [
         'overview_stats' => true,
         'mentee_progress' => true,
         'session_analytics' => true,
@@ -41,636 +40,454 @@ class MentorDashboard extends Component
         'menteeFilterChanged' => 'updateMenteeFilter',
     ];
 
-    public function mount()
+    public function mount(): void
     {
         $user = Auth::user();
-        if (!$user->canAccessDashboardRole(User::ROLE_MENTOR)) {
-            return $this->redirectRoute($user->getDashboardRouteName(), navigate: true);
+
+        if (! $user->canAccessDashboardRole(User::ROLE_MENTOR)) {
+            $this->redirectRoute($user->getDashboardRouteName(), navigate: true);
         }
     }
 
-    public function updateTimeframe($timeframe)
+    public function hydrate(): void
     {
+        abort_unless(Auth::user()?->canAccessDashboardRole(User::ROLE_MENTOR), 403);
+    }
+
+    public function updateTimeframe(string $timeframe): void
+    {
+        validator(['timeframe' => $timeframe], [
+            'timeframe' => ['required', Rule::in(['7days', '30days', '90days'])],
+        ])->validate();
+
         $this->selectedTimeframe = $timeframe;
     }
 
-    public function updateMenteeFilter($filter)
+    public function updateMenteeFilter(string $filter): void
     {
+        validator(['filter' => $filter], [
+            'filter' => ['required', Rule::in(['all', 'active', 'new', 'struggling'])],
+        ])->validate();
+
         $this->selectedMenteeFilter = $filter;
     }
 
+    public function updatedSelectedMenteeFilter(string $filter): void
+    {
+        $this->updateMenteeFilter($filter);
+    }
+
     #[Computed]
-    public function overviewStats()
+    public function overviewStats(): array
     {
         $mentor = Auth::user();
-        $timeframe = $this->getTimeframeQuery();
-        
+        $since = $this->timeframeStart();
+        $menteeIds = $this->menteeIds($mentor);
+
         return [
-            'total_mentees' => $this->getTotalMenteesCount($mentor),
-            'active_mentees' => $this->getActiveMenteesCount($mentor),
-            'completed_sessions' => $this->getCompletedSessionsCount($mentor, $timeframe),
-            'success_rate' => $this->getMenteeSuccessRate($mentor),
-            'avg_session_rating' => $this->getAverageSessionRating($mentor),
-            'career_placements' => $this->getCareerPlacementsCount($mentor, $timeframe),
-            'certificates_guided' => $this->getCertificatesGuidedCount($mentor, $timeframe),
-            'mentorship_hours' => $this->getTotalMentorshipHours($mentor),
-            'upcoming_sessions' => $this->getUpcomingSessionsCount($mentor),
-            'pending_requests' => $this->getPendingRequestsCount($mentor),
+            'total_mentees' => $menteeIds->count(),
+            'active_mentees' => Mentorship::query()
+                ->where('mentor_id', $mentor->id)
+                ->where('status', Mentorship::STATUS_ACTIVE)
+                ->distinct('mentee_id')
+                ->count('mentee_id'),
+            'completed_sessions' => $this->sessionsFor($mentor)
+                ->where('status', MentorshipSession::STATUS_COMPLETED)
+                ->where('scheduled_at', '>=', $since)
+                ->count(),
+            'success_rate' => $this->recordedOutcomeRate($menteeIds),
+            'avg_session_rating' => $this->mentorRating($mentor),
+            'career_placements' => JobApplication::query()
+                ->whereIn('user_id', $menteeIds)
+                ->where('status', JobApplication::APPLICATION_HIRED)
+                ->where('updated_at', '>=', $since)
+                ->count(),
+            'certificates_guided' => Certificate::query()
+                ->whereIn('user_id', $menteeIds)
+                ->where('status', Certificate::STATUS_APPROVED)
+                ->where('approved_at', '>=', $since)
+                ->count(),
+            'mentorship_hours' => round(((int) $this->sessionsFor($mentor)
+                ->where('status', MentorshipSession::STATUS_COMPLETED)
+                ->sum('duration_minutes')) / 60, 1),
+            'upcoming_sessions' => $this->sessionsFor($mentor)
+                ->where('status', MentorshipSession::STATUS_SCHEDULED)
+                ->where('scheduled_at', '>=', now())
+                ->count(),
+            'pending_requests' => Mentorship::query()
+                ->where('mentor_id', $mentor->id)
+                ->where('status', Mentorship::STATUS_PENDING)
+                ->count(),
+            'open_support_tickets' => SupportTicket::query()
+                ->whereIn('user_id', $menteeIds)
+                ->whereIn('status', ['open', 'pending'])
+                ->count(),
         ];
     }
 
     #[Computed]
-    public function menteeProgress()
+    public function menteeProgress(): Collection
     {
         $mentor = Auth::user();
-        $query = $this->getMenteesBaseQuery($mentor);
-        
-        if ($this->selectedMenteeFilter === 'active') {
-            $query->where('last_login_at', '>=', now()->subDays(30));
-        } elseif ($this->selectedMenteeFilter === 'new') {
-            $query->where('created_at', '>=', now()->subDays(30));
-        }
-        
-        return $query->get()->map(function($mentee) {
-            return [
-                'id' => $mentee->id,
-                'name' => $mentee->name,
-                'email' => $mentee->email,
-                'profile_picture' => $mentee->profile_picture,
-                'enrollment_date' => $this->getMenteeEnrollmentDate($mentee),
-                'learning_progress' => $this->getMenteeLearningProgress($mentee),
-                'career_progress' => $this->getMenteeCareerProgress($mentee),
-                'last_interaction' => $this->getLastInteraction($mentee),
-                'next_session' => $this->getNextScheduledSession($mentee),
-                'goals_completed' => $this->getMenteeGoalsCompleted($mentee),
-                'overall_score' => $this->calculateMenteeScore($mentee),
-                'status' => $this->getMenteeStatus($mentee),
-            ];
-        })->sortByDesc('overall_score');
+        $relationships = Mentorship::query()
+            ->where('mentor_id', $mentor->id)
+            ->whereIn('status', [Mentorship::STATUS_ACTIVE, Mentorship::STATUS_COMPLETED])
+            ->with('mentee')
+            ->latest('accepted_at')
+            ->get()
+            ->unique('mentee_id');
+
+        $relationships = match ($this->selectedMenteeFilter) {
+            'active' => $relationships->where('status', Mentorship::STATUS_ACTIVE),
+            'new' => $relationships->filter(fn (Mentorship $mentorship) =>
+                ($mentorship->accepted_at ?? $mentorship->created_at)->gte(now()->subDays(30))),
+            'struggling' => $relationships->filter(fn (Mentorship $mentorship) =>
+                ! $mentorship->mentee?->last_login_at || $mentorship->mentee->last_login_at->lt(now()->subDays(30))),
+            default => $relationships,
+        };
+
+        return $relationships
+            ->filter(fn (Mentorship $mentorship) => $mentorship->mentee)
+            ->map(function (Mentorship $mentorship) use ($mentor): array {
+                $mentee = $mentorship->mentee;
+                $learningProgress = $this->learningProgress($mentee);
+                $careerProgress = $this->careerProgress($mentee);
+                $certificates = Certificate::query()
+                    ->where('user_id', $mentee->id)
+                    ->where('status', Certificate::STATUS_APPROVED)
+                    ->count();
+
+                return [
+                    'id' => $mentee->id,
+                    'name' => $mentee->name,
+                    'email' => $mentee->email,
+                    'profile_picture' => $mentee->profile_picture,
+                    'enrollment_date' => $mentorship->accepted_at ?? $mentorship->created_at,
+                    'learning_progress' => $learningProgress,
+                    'career_progress' => $careerProgress,
+                    'last_interaction' => $this->sessionsFor($mentor)
+                        ->where('mentorship_id', $mentorship->id)
+                        ->whereNotNull('ended_at')
+                        ->latest('ended_at')
+                        ->value('ended_at'),
+                    'next_session' => $this->sessionsFor($mentor)
+                        ->where('mentorship_id', $mentorship->id)
+                        ->where('status', MentorshipSession::STATUS_SCHEDULED)
+                        ->where('scheduled_at', '>=', now())
+                        ->oldest('scheduled_at')
+                        ->value('scheduled_at'),
+                    'goals_completed' => collect($mentorship->goals_with_progress)->where('completed', true)->count(),
+                    'overall_score' => round(($learningProgress * 0.5) + ($careerProgress['success_rate'] * 0.4) + min($certificates * 2, 10), 1),
+                    'status' => $mentorship->status,
+                ];
+            })
+            ->sortByDesc('overall_score')
+            ->values();
     }
 
     #[Computed]
-    public function sessionAnalytics()
+    public function sessionAnalytics(): array
     {
         $mentor = Auth::user();
-        $days = $this->getTimeframeDays();
-        
-        // Session trends over time
         $sessionTrends = [];
-        for ($i = $days - 1; $i >= 0; $i--) {
-            $date = now()->subDays($i);
-            $sessions = $this->getSessionsForDate($mentor, $date);
-            
+
+        for ($offset = $this->timeframeDays() - 1; $offset >= 0; $offset--) {
+            $date = now()->subDays($offset);
+            $dailySessions = $this->sessionsFor($mentor)
+                ->whereDate('scheduled_at', $date)
+                ->where('status', MentorshipSession::STATUS_COMPLETED);
             $sessionTrends[] = [
                 'date' => $date->format('M j'),
-                'sessions' => $sessions,
-                'avg_rating' => $this->getAverageRatingForDate($mentor, $date),
+                'sessions' => (clone $dailySessions)->count(),
+                'avg_rating' => round((float) ((clone $dailySessions)->avg('mentee_rating') ?? 0), 1),
             ];
         }
 
-        // Session type distribution
-        $sessionTypes = $this->getSessionTypeDistribution($mentor);
-        
-        // Success metrics
-        $successMetrics = $this->getSuccessMetrics($mentor);
-        
+        $typeCounts = $this->sessionsFor($mentor)
+            ->where('scheduled_at', '>=', $this->timeframeStart())
+            ->where('status', MentorshipSession::STATUS_COMPLETED)
+            ->selectRaw('type, COUNT(*) as aggregate')
+            ->groupBy('type')
+            ->pluck('aggregate', 'type');
+        $totalSessions = max(1, (int) $typeCounts->sum());
+        $relationships = Mentorship::query()
+            ->where('mentor_id', $mentor->id)
+            ->whereIn('status', [Mentorship::STATUS_ACTIVE, Mentorship::STATUS_COMPLETED])
+            ->get();
+
         return [
             'session_trends' => $sessionTrends,
-            'session_types' => $sessionTypes,
-            'success_metrics' => $successMetrics,
-            'avg_session_duration' => $this->getAverageSessionDuration($mentor),
-            'mentor_rating_trend' => $this->getMentorRatingTrend($mentor),
+            'session_types' => $typeCounts
+                ->map(fn ($count) => round(((int) $count / $totalSessions) * 100, 1))
+                ->all(),
+            'success_metrics' => [
+                'goal_completion_rate' => round((float) ($relationships->avg('goal_completion_percentage') ?? 0), 1),
+                'mentee_retention_rate' => $this->relationshipCompletionRate($mentor),
+            ],
         ];
     }
 
     #[Computed]
-    public function careerGuidance()
+    public function careerGuidance(): array
     {
-        $mentor = Auth::user();
-        
-        // Get mentees' job applications and outcomes
-        $mentees = $this->getMenteesBaseQuery($mentor)->get();
-        $careerData = [];
-        
-        foreach ($mentees as $mentee) {
-            $applications = JobApplication::where('user_id', $mentee->id)->get();
-            $careerData[] = [
-                'mentee_name' => $mentee->name,
-                'total_applications' => $applications->count(),
-                'interview_invites' => $applications->where('status', JobApplication::APPLICATION_INTERVIEWED)->count(),
-                'job_offers' => $applications->where('status', JobApplication::APPLICATION_OFFERED)->count(),
-                'hired' => $applications->where('status', JobApplication::APPLICATION_HIRED)->count(),
-                'success_rate' => $this->calculateCareerSuccessRate($applications),
-                'recent_activity' => $applications->max('created_at'),
-            ];
-        }
-        
-        return [
-            'career_outcomes' => collect($careerData)->sortByDesc('success_rate'),
-            'industry_placements' => $this->getIndustryPlacements($mentor),
-            'salary_improvements' => $this->getSalaryImprovements($mentor),
-            'career_transitions' => $this->getCareerTransitions($mentor),
-        ];
+        $outcomes = User::query()
+            ->whereIn('id', $this->menteeIds(Auth::user()))
+            ->get()
+            ->map(function (User $mentee): array {
+                $applications = JobApplication::query()->where('user_id', $mentee->id)->get();
+
+                return [
+                    'mentee_name' => $mentee->name,
+                    'total_applications' => $applications->count(),
+                    'interview_invites' => $applications->where('status', JobApplication::APPLICATION_INTERVIEWED)->count(),
+                    'job_offers' => $applications->where('status', JobApplication::APPLICATION_OFFERED)->count(),
+                    'hired' => $applications->where('status', JobApplication::APPLICATION_HIRED)->count(),
+                    'success_rate' => $this->careerSuccessRate($applications),
+                    'recent_activity' => $applications->max('created_at'),
+                ];
+            });
+
+        return ['career_outcomes' => $outcomes->sortByDesc('success_rate')];
     }
 
     #[Computed]
-    public function mockInterviews()
+    public function mockInterviews(): Collection
     {
-        $mentor = Auth::user();
-        
-        return MockInterview::whereHas('user', function($query) use ($mentor) {
-                // Assuming there's a mentorship relationship table
-                $query->whereIn('id', $this->getMenteeIds($mentor));
-            })
-            ->with(['user'])
+        return MockInterview::query()
+            ->whereIn('user_id', $this->menteeIds(Auth::user()))
+            ->with('user')
             ->latest()
             ->take(10)
             ->get()
-            ->map(function($interview) {
-                return [
-                    'id' => $interview->id,
-                    'mentee_name' => $interview->user->name,
-                    'interview_type' => $interview->interview_type ?? 'General',
-                    'score' => $interview->overall_score ?? 0,
-                    'feedback_given' => !empty($interview->feedback),
-                    'conducted_at' => $interview->created_at,
-                    'duration' => $interview->duration_minutes ?? 30,
-                    'areas_for_improvement' => $interview->areas_for_improvement ?? [],
-                ];
-            });
+            ->filter(fn (MockInterview $interview) => $interview->user)
+            ->map(fn (MockInterview $interview): array => [
+                'id' => $interview->id,
+                'mentee_name' => $interview->user->name,
+                'interview_type' => $interview->interview_type ?? 'General',
+                'score' => $interview->overall_score ?? 0,
+                'feedback_given' => filled($interview->feedback),
+                'conducted_at' => $interview->created_at,
+                'duration' => $interview->duration_minutes ?? 0,
+            ]);
     }
 
     #[Computed]
-    public function supportTickets()
+    public function supportTickets(): Collection
     {
-        $mentor = Auth::user();
-        
-        return SupportTicket::whereIn('user_id', $this->getMenteeIds($mentor))
+        return SupportTicket::query()
+            ->whereIn('user_id', $this->menteeIds(Auth::user()))
             ->with('user')
             ->latest()
             ->take(8)
             ->get()
-            ->map(function($ticket) {
-                return [
-                    'id' => $ticket->id,
-                    'mentee_name' => $ticket->user->name,
-                    'subject' => $ticket->subject,
-                    'priority' => $ticket->priority ?? 'medium',
-                    'status' => $ticket->status,
-                    'created_at' => $ticket->created_at,
-                    'requires_attention' => $this->requiresMentorAttention($ticket),
-                ];
-            });
+            ->filter(fn (SupportTicket $ticket) => $ticket->user)
+            ->map(fn (SupportTicket $ticket): array => [
+                'id' => $ticket->id,
+                'mentee_name' => $ticket->user->name,
+                'subject' => $ticket->subject,
+                'priority' => $ticket->priority ?? 'medium',
+                'status' => $ticket->status,
+                'created_at' => $ticket->created_at,
+            ]);
     }
 
     #[Computed]
-    public function mentorshipGoals()
+    public function mentorshipGoals(): array
     {
         $mentor = Auth::user();
-        $timeframe = $this->getTimeframeQuery();
-        
-        // This would typically come from a mentorship_goals table
-        return [
-            'monthly_targets' => [
-                'sessions_target' => 20,
-                'sessions_completed' => $this->getCompletedSessionsCount($mentor, now()->startOfMonth()),
-                'mentee_certifications_target' => 5,
-                'mentee_certifications_achieved' => $this->getCertificatesGuidedCount($mentor, now()->startOfMonth()),
-                'job_placements_target' => 2,
-                'job_placements_achieved' => $this->getCareerPlacementsCount($mentor, now()->startOfMonth()),
-            ],
-            'skill_development_areas' => $this->getSkillDevelopmentAreas($mentor),
-            'mentee_satisfaction' => $this->getMenteeSatisfactionScore($mentor),
-            'professional_growth' => $this->getProfessionalGrowthMetrics($mentor),
-        ];
+        $menteeIds = $this->menteeIds($mentor);
+
+        return ['recorded_this_month' => [
+            'sessions_completed' => $this->sessionsFor($mentor)
+                ->where('status', MentorshipSession::STATUS_COMPLETED)
+                ->where('scheduled_at', '>=', now()->startOfMonth())
+                ->count(),
+            'mentee_certifications' => Certificate::query()
+                ->whereIn('user_id', $menteeIds)
+                ->where('status', Certificate::STATUS_APPROVED)
+                ->where('approved_at', '>=', now()->startOfMonth())
+                ->count(),
+            'job_placements' => JobApplication::query()
+                ->whereIn('user_id', $menteeIds)
+                ->where('status', JobApplication::APPLICATION_HIRED)
+                ->where('updated_at', '>=', now()->startOfMonth())
+                ->count(),
+        ]];
     }
 
     #[Computed]
-    public function recentActivities()
+    public function recentActivities(): Collection
     {
         $mentor = Auth::user();
-        
+        $menteeIds = $this->menteeIds($mentor);
         $activities = collect();
-        
-        // Recent sessions
-        $recentSessions = $this->getRecentSessions($mentor, 5);
-        foreach ($recentSessions as $session) {
-            $activities->push([
-                'type' => 'session',
-                'title' => 'Mentorship session with ' . $session['mentee_name'],
-                'description' => $session['session_type'] ?? 'General mentoring',
-                'timestamp' => $session['conducted_at'],
-                'icon' => 'fas fa-comments',
-                'color' => 'blue',
-            ]);
-        }
-        
-        // Recent certificates guided
-        $recentCerts = $this->getRecentCertificatesGuided($mentor, 3);
-        foreach ($recentCerts as $cert) {
-            $activities->push([
-                'type' => 'certificate',
-                'title' => $cert['mentee_name'] . ' earned a certificate',
-                'description' => $cert['course_title'],
-                'timestamp' => $cert['approved_at'],
-                'icon' => 'fas fa-certificate',
-                'color' => 'green',
-            ]);
-        }
-        
-        // Recent job placements
-        $recentPlacements = $this->getRecentJobPlacements($mentor, 3);
-        foreach ($recentPlacements as $placement) {
-            $activities->push([
-                'type' => 'placement',
-                'title' => $placement['mentee_name'] . ' got hired!',
-                'description' => $placement['job_title'] . ' at ' . $placement['company'],
-                'timestamp' => $placement['hired_at'],
-                'icon' => 'fas fa-briefcase',
-                'color' => 'purple',
-            ]);
-        }
-        
-        return $activities->sortByDesc('timestamp')->take(10);
+
+        $this->sessionsFor($mentor)
+            ->with('mentorship.mentee')
+            ->where('status', MentorshipSession::STATUS_COMPLETED)
+            ->latest('ended_at')
+            ->take(5)
+            ->get()
+            ->each(function (MentorshipSession $session) use ($activities): void {
+                $activities->push([
+                    'title' => 'Session completed with '.$session->mentorship->mentee->name,
+                    'description' => $session->title,
+                    'timestamp' => $session->ended_at ?? $session->updated_at,
+                    'icon' => 'fas fa-comments',
+                    'color' => 'text-brand',
+                ]);
+            });
+
+        Certificate::query()
+            ->whereIn('user_id', $menteeIds)
+            ->where('status', Certificate::STATUS_APPROVED)
+            ->with(['user', 'course'])
+            ->latest('approved_at')
+            ->take(3)
+            ->get()
+            ->each(function (Certificate $certificate) use ($activities): void {
+                $activities->push([
+                    'title' => $certificate->user->name.' earned a certificate',
+                    'description' => $certificate->course?->title ?? 'Course certificate',
+                    'timestamp' => $certificate->approved_at,
+                    'icon' => 'fas fa-certificate',
+                    'color' => 'text-green-600',
+                ]);
+            });
+
+        JobApplication::query()
+            ->whereIn('user_id', $menteeIds)
+            ->where('status', JobApplication::APPLICATION_HIRED)
+            ->with(['user', 'job'])
+            ->latest('updated_at')
+            ->take(3)
+            ->get()
+            ->each(function (JobApplication $application) use ($activities): void {
+                $activities->push([
+                    'title' => $application->user->name.' recorded a hired outcome',
+                    'description' => collect([$application->job?->title, $application->job?->company_name])->filter()->join(' at '),
+                    'timestamp' => $application->updated_at,
+                    'icon' => 'fas fa-briefcase',
+                    'color' => 'text-brand',
+                ]);
+            });
+
+        return $activities->filter(fn (array $activity) => $activity['timestamp'])
+            ->sortByDesc('timestamp')
+            ->take(10)
+            ->values();
     }
 
-    // Helper Methods
-    private function getTimeframeQuery()
+    public function loadAllData(): void
+    {
+        $this->dispatch('$refresh');
+    }
+
+    public function render()
+    {
+        return view('livewire.dashboard.mentor-dashboard');
+    }
+
+    private function timeframeStart()
     {
         return match ($this->selectedTimeframe) {
             '7days' => now()->subDays(7),
-            '30days' => now()->subDays(30),
             '90days' => now()->subDays(90),
             default => now()->subDays(30),
         };
     }
 
-    private function getTimeframeDays()
+    private function timeframeDays(): int
     {
         return match ($this->selectedTimeframe) {
             '7days' => 7,
-            '30days' => 30,
             '90days' => 90,
             default => 30,
         };
     }
 
-    private function getMenteesBaseQuery(User $mentor)
+    private function menteeIds(User $mentor): Collection
     {
-        // This assumes a mentorship relationship exists
-        // You might need to adjust based on your actual mentorship model
-        return User::where('role', User::ROLE_STUDENT)
-            ->where('created_at', '>=', now()->subYear()) // Active mentees in last year
-            ->orderBy('last_login_at', 'desc');
+        return Mentorship::query()
+            ->where('mentor_id', $mentor->id)
+            ->whereIn('status', [Mentorship::STATUS_ACTIVE, Mentorship::STATUS_COMPLETED])
+            ->distinct()
+            ->pluck('mentee_id');
     }
 
-    private function getMenteeIds(User $mentor)
+    private function sessionsFor(User $mentor)
     {
-        return $this->getMenteesBaseQuery($mentor)->pluck('id');
+        return MentorshipSession::query()
+            ->whereHas('mentorship', fn ($query) => $query->where('mentor_id', $mentor->id));
     }
 
-    private function getTotalMenteesCount(User $mentor)
+    private function recordedOutcomeRate(Collection $menteeIds): float
     {
-        return $this->getMenteesBaseQuery($mentor)->count();
-    }
+        if ($menteeIds->isEmpty()) {
+            return 0;
+        }
 
-    private function getActiveMenteesCount(User $mentor)
-    {
-        return $this->getMenteesBaseQuery($mentor)
-            ->where('last_login_at', '>=', now()->subDays(30))
-            ->count();
-    }
-
-    private function getCompletedSessionsCount(User $mentor, $timeframe)
-    {
-        // This would come from a mentorship_sessions table
-        // For now, estimate based on support ticket resolutions and mock interviews
-        return MockInterview::whereIn('user_id', $this->getMenteeIds($mentor))
-            ->where('created_at', '>=', $timeframe)
-            ->count();
-    }
-
-    private function getMenteeSuccessRate(User $mentor)
-    {
-        $menteeIds = $this->getMenteeIds($mentor);
-        $totalMentees = count($menteeIds);
-        
-        if ($totalMentees === 0) return 0;
-        
-        // Success defined as having certificates or job placements
-        $successfulMentees = User::whereIn('id', $menteeIds)
-            ->where(function($query) {
-                $query->has('certificates')
-                      ->orWhereHas('jobApplications', function($q) {
-                          $q->where('status', JobApplication::APPLICATION_HIRED);
-                      });
+        $outcomes = User::query()
+            ->whereIn('id', $menteeIds)
+            ->where(function ($query): void {
+                $query->whereHas('certificates', fn ($certificates) =>
+                    $certificates->where('status', Certificate::STATUS_APPROVED))
+                    ->orWhereHas('jobApplications', fn ($applications) =>
+                        $applications->where('status', JobApplication::APPLICATION_HIRED));
             })
             ->count();
-            
-        return round(($successfulMentees / $totalMentees) * 100, 1);
+
+        return round(($outcomes / $menteeIds->count()) * 100, 1);
     }
 
-    private function getAverageSessionRating(User $mentor)
+    private function mentorRating(User $mentor): float
     {
-        // This would come from session feedback
-        // For now, use mock interview ratings as proxy
-        return MockInterview::whereIn('user_id', $this->getMenteeIds($mentor))
-            ->avg('overall_score') ?? 4.2; // Default good rating
+        return round((float) (MentorshipReview::query()
+            ->where('reviewee_id', $mentor->id)
+            ->avg('overall_rating') ?? 0), 1);
     }
 
-    private function getCareerPlacementsCount(User $mentor, $timeframe)
+    private function learningProgress(User $mentee): float
     {
-        return JobApplication::whereIn('user_id', $this->getMenteeIds($mentor))
-            ->where('status', JobApplication::APPLICATION_HIRED)
-            ->where('updated_at', '>=', $timeframe)
-            ->count();
+        return round((float) (CourseEnrollment::query()
+            ->where('user_id', $mentee->id)
+            ->avg('progress_percentage') ?? 0), 1);
     }
 
-    private function getCertificatesGuidedCount(User $mentor, $timeframe)
+    private function careerProgress(User $mentee): array
     {
-        return Certificate::whereIn('user_id', $this->getMenteeIds($mentor))
-            ->where('status', 'approved')
-            ->where('approved_at', '>=', $timeframe)
-            ->count();
+        $applications = JobApplication::query()->where('user_id', $mentee->id)->get();
+
+        return [
+            'applications' => $applications->count(),
+            'hired' => $applications->where('status', JobApplication::APPLICATION_HIRED)->count(),
+            'success_rate' => $this->careerSuccessRate($applications),
+        ];
     }
-    private function getAverageRatingForDate(User $mentor, $date)
+
+    private function careerSuccessRate(Collection $applications): float
     {
-        // This would typically query your database for session ratings
-        // For now, we'll return a mock value
-        return rand(35, 50) / 10; // Returns a random value between 3.5 and 5.0
-    }
-    // Add this method to your MentorDashboard component
-private function getAverageSessionDuration(User $mentor)
-{
-    // This would typically calculate average session duration from your database
-    // For now, we'll return a mock value
-    return rand(45, 90); // Returns a random value between 45 and 90 minutes
-}
-// Add this method to your MentorDashboard component
-private function getMentorRatingTrend(User $mentor)
-{
-    // This would typically calculate rating trends from your database
-    // For now, we'll return mock data
-    return [
-        'current_rating' => 4.6,
-        'trend_direction' => 'up', // 'up', 'down', or 'stable'
-        'trend_percentage' => 5.2, // 5.2% improvement
-        'historical_data' => [
-            'last_week' => 4.4,
-            'last_month' => 4.3,
-            'last_quarter' => 4.1
-        ]
-    ];
-}
-// Add these methods to your MentorDashboard component
-
-private function getIndustryPlacements(User $mentor)
-{
-    // This would typically query industry placement data from your database
-    // For now, we'll return mock data
-    return [
-        'Technology' => 12,
-        'Healthcare' => 8,
-        'Finance' => 5,
-        'Education' => 3,
-        'Other' => 2
-    ];
-}
-
-private function getSalaryImprovements(User $mentor)
-{
-    // This would typically calculate salary improvement data
-    // For now, we'll return mock data
-    return [
-        'average_increase' => 25, // 25% average salary increase
-        'highest_increase' => 60, // 60% highest increase
-        'mentees_with_increase' => 75 // 75% of mentees got a raise
-    ];
-}
-
-private function getCareerTransitions(User $mentor)
-{
-    // This would typically track career transition data
-    // For now, we'll return mock data
-    return [
-        'promotions' => 15,
-        'role_changes' => 10,
-        'industry_changes' => 5,
-        'entrepreneurs' => 2
-    ];
-}
-
-private function getSkillDevelopmentAreas(User $mentor)
-{
-    // This would identify skill development areas from your data
-    // For now, we'll return mock data
-    return [
-        'Technical Skills' => 40,
-        'Soft Skills' => 30,
-        'Leadership' => 20,
-        'Certifications' => 10
-    ];
-}
-
-private function getMenteeSatisfactionScore(User $mentor)
-{
-    // This would calculate mentee satisfaction from reviews/feedback
-    // For now, we'll return a mock value
-    return 4.7; // Out of 5
-}
-
-private function getProfessionalGrowthMetrics(User $mentor)
-{
-    // This would calculate professional growth metrics
-    // For now, we'll return mock data
-    return [
-        'skill_improvement' => 78, // 78% of mentees showed skill improvement
-        'confidence_growth' => 85, // 85% reported increased confidence
-        'network_expansion' => 60  // 60% expanded their professional network
-    ];
-}
-
-private function getRecentSessions(User $mentor, $limit = 5)
-{
-    // This would query recent mentorship sessions
-    // For now, we'll return mock data
-    return [
-        [
-            'mentee_name' => 'John Doe',
-            'session_type' => 'Career Guidance',
-            'conducted_at' => now()->subDays(1)
-        ],
-        [
-            'mentee_name' => 'Jane Smith',
-            'session_type' => 'Technical Interview Prep',
-            'conducted_at' => now()->subDays(3)
-        ]
-    ];
-}
-
-private function getRecentCertificatesGuided(User $mentor, $limit = 3)
-{
-    // This would query recent certificates guided by the mentor
-    // For now, we'll return mock data
-    return [
-        [
-            'mentee_name' => 'John Doe',
-            'course_title' => 'Advanced Web Development',
-            'approved_at' => now()->subDays(5)
-        ],
-        [
-            'mentee_name' => 'Jane Smith',
-            'course_title' => 'Data Science Fundamentals',
-            'approved_at' => now()->subDays(10)
-        ]
-    ];
-}
-
-private function getRecentJobPlacements(User $mentor, $limit = 3)
-{
-    // This would query recent job placements for mentees
-    // For now, we'll return mock data
-    return [
-        [
-            'mentee_name' => 'John Doe',
-            'job_title' => 'Senior Developer',
-            'company' => 'Tech Corp',
-            'hired_at' => now()->subDays(7)
-        ],
-        [
-            'mentee_name' => 'Jane Smith',
-            'job_title' => 'Data Analyst',
-            'company' => 'Data Inc',
-            'hired_at' => now()->subDays(14)
-        ]
-    ];
-}
-    private function getTotalMentorshipHours(User $mentor)
-    {
-        // Calculate based on time difference between started_at and completed_at
-        $interviews = MockInterview::whereIn('user_id', $this->getMenteeIds($mentor))
-            ->whereNotNull('started_at')
-            ->whereNotNull('completed_at')
-            ->get();
-    
-        $totalMinutes = 0;
-        
-        foreach ($interviews as $interview) {
-            $totalMinutes += $interview->started_at->diffInMinutes($interview->completed_at);
+        if ($applications->isEmpty()) {
+            return 0;
         }
-        
-        return round($totalMinutes / 60, 1); // Convert to hours
+
+        $successful = $applications->whereIn('status', [
+            JobApplication::APPLICATION_OFFERED,
+            JobApplication::APPLICATION_HIRED,
+        ])->count();
+
+        return round(($successful / $applications->count()) * 100, 1);
     }
 
-    private function getUpcomingSessionsCount(User $mentor)
+    private function relationshipCompletionRate(User $mentor): float
     {
-        // This would come from a scheduled sessions table
-        return rand(3, 8); // Mock data
-    }
+        $relationships = Mentorship::query()
+            ->where('mentor_id', $mentor->id)
+            ->whereIn('status', [Mentorship::STATUS_ACTIVE, Mentorship::STATUS_COMPLETED]);
+        $total = (clone $relationships)->count();
 
-    private function getPendingRequestsCount(User $mentor)
-    {
-        return SupportTicket::whereIn('user_id', $this->getMenteeIds($mentor))
-            ->where('status', 'open')
-            ->count();
-    }
-
-    // Additional helper methods would continue here...
-    // Due to length constraints, I'll implement the key ones
-
-    private function getMenteeLearningProgress(User $mentee)
-    {
-        $enrollments = CourseEnrollment::where('user_id', $mentee->id)->get();
-        $totalProgress = $enrollments->sum('progress_percentage');
-        $courseCount = $enrollments->count();
-        
-        return $courseCount > 0 ? round($totalProgress / $courseCount, 1) : 0;
-    }
-
-    private function getMenteeCareerProgress(User $mentee)
-    {
-        $applications = JobApplication::where('user_id', $mentee->id)->count();
-        $hired = JobApplication::where('user_id', $mentee->id)
-            ->where('status', JobApplication::APPLICATION_HIRED)
-            ->count();
-            
-        return [
-            'applications' => $applications,
-            'hired' => $hired,
-            'success_rate' => $applications > 0 ? round(($hired / $applications) * 100, 1) : 0,
-        ];
-    }
-
-    private function calculateMenteeScore(User $mentee)
-    {
-        $learningScore = $this->getMenteeLearningProgress($mentee);
-        $careerProgress = $this->getMenteeCareerProgress($mentee);
-        $certificates = Certificate::where('user_id', $mentee->id)->where('status', 'approved')->count();
-        
-        return round(($learningScore * 0.4) + ($careerProgress['success_rate'] * 0.4) + ($certificates * 5), 1);
-    }
-
-    private function getSessionsForDate(User $mentor, $date)
-    {
-        // Mock implementation - would come from sessions table
-        return rand(0, 3);
-    }
-
-    private function getSessionTypeDistribution(User $mentor)
-    {
-        return [
-            'career_guidance' => 45,
-            'technical_skills' => 30,
-            'interview_prep' => 15,
-            'general_mentoring' => 10,
-        ];
-    }
-
-    private function getSuccessMetrics(User $mentor)
-    {
-        return [
-            'goal_completion_rate' => 78,
-            'mentee_retention_rate' => 85,
-            'satisfaction_score' => 4.6,
-            'referral_rate' => 23,
-        ];
-    }
-    private function calculateCareerSuccessRate($applications)
-{
-    if ($applications->isEmpty()) {
-        return 0;
-    }
-    
-    $successfulApplications = $applications->whereIn('status', [
-        JobApplication::APPLICATION_OFFERED,
-        JobApplication::APPLICATION_HIRED
-    ])->count();
-    
-    return round(($successfulApplications / $applications->count()) * 100, 1);
-}
-
-private function requiresMentorAttention($ticket)
-{
-    // Check if ticket requires immediate mentor attention
-    return $ticket->priority === 'high' || 
-           ($ticket->status === 'open' && $ticket->created_at->diffInDays(now()) > 3);
-}
-
-public function loadAllData()
-{
-    // Refresh all computed properties
-    $this->dispatch('$refresh');
-}
-
-    // Mock implementations for remaining methods
-    private function getMenteeEnrollmentDate(User $mentee) { return $mentee->created_at; }
-    private function getLastInteraction(User $mentee) { return now()->subDays(rand(1, 7)); }
-    private function getNextScheduledSession(User $mentee) { return now()->addDays(rand(1, 5)); }
-    private function getMenteeGoalsCompleted(User $mentee) { return rand(2, 8); }
-    private function getMenteeStatus(User $mentee) { return $mentee->last_login_at > now()->subDays(7) ? 'active' : 'inactive'; }
-    
-    public function render()
-    {
-        return view('livewire.dashboard.mentor-dashboard');
+        return $total === 0
+            ? 0
+            : round(((clone $relationships)->where('status', Mentorship::STATUS_COMPLETED)->count() / $total) * 100, 1);
     }
 }

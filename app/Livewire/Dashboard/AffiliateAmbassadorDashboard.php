@@ -4,15 +4,12 @@ namespace App\Livewire\Dashboard;
 
 use App\Models\Core\User;
 use App\Models\Marketplace\Affiliate;
-use App\Models\Marketplace\Referral;
 use App\Models\Marketplace\ReferralTransaction;
 use App\Models\Learning\Course;
-use App\Models\Learning\CourseEnrollment;
 use Livewire\Component;
 use Livewire\Attributes\Computed;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
-use Carbon\Carbon;
+use Illuminate\Validation\Rule;
 use Livewire\Attributes\Layout;
 
 #[Layout('layouts.dashboard', ['title' => 'Affiliate Dashboard'])]
@@ -45,20 +42,34 @@ class AffiliateAmbassadorDashboard extends Component
             return $this->redirectRoute($user->getDashboardRouteName(), navigate: true);
         }
 
-        // Ensure real affiliate ambassadors have an affiliate record.
-        if ($user->hasRole(User::ROLE_AFFILIATE_AMBASSADOR) && !$user->affiliate) {
-            $user->applyForAffiliate();
-        }
+    }
+
+    public function hydrate(): void
+    {
+        abort_unless(Auth::user()?->canAccessDashboardRole(User::ROLE_AFFILIATE_AMBASSADOR), 403);
     }
 
     public function updateTimeframe($timeframe)
     {
+        validator(['timeframe' => $timeframe], [
+            'timeframe' => ['required', Rule::in(['7days', '30days', '90days', '12months'])],
+        ])->validate();
+
         $this->selectedTimeframe = $timeframe;
     }
 
     public function updateMetric($metric)
     {
+        validator(['metric' => $metric], [
+            'metric' => ['required', Rule::in(['earnings', 'referrals', 'conversions'])],
+        ])->validate();
+
         $this->selectedMetric = $metric;
+    }
+
+    public function updatedSelectedMetric($metric)
+    {
+        $this->updateMetric($metric);
     }
 
     #[Computed]
@@ -80,11 +91,9 @@ class AffiliateAmbassadorDashboard extends Component
             'pending_earnings' => $this->getPendingEarnings($affiliate),
             'monthly_earnings' => $this->getMonthlyEarnings($affiliate),
             'commission_rate' => $affiliate->commission_rate,
-            'conversion_rate' => $this->getConversionRate($affiliate),
+            'conversion_rate' => null,
             'avg_referral_value' => $this->getAverageReferralValue($affiliate),
             'clicks_this_period' => $this->getClicksThisPeriod($affiliate, $timeframe),
-            'tier_status' => $this->getTierStatus($affiliate),
-            'next_tier_requirement' => $this->getNextTierRequirement($affiliate),
         ];
     }
 
@@ -142,8 +151,6 @@ class AffiliateAmbassadorDashboard extends Component
                     'commission_earned' => $referral->total_commission_earned,
                     'courses_purchased' => $referral->courses_purchased,
                     'last_purchase' => $referral->last_purchase_at,
-                    'lifetime_value' => $this->calculateLifetimeValue($referral),
-                    'activity_score' => $this->calculateActivityScore($referral),
                 ];
             });
     }
@@ -177,7 +184,7 @@ class AffiliateAmbassadorDashboard extends Component
         $affiliate = Auth::user()->affiliate;
         if (!$affiliate) return [];
         
-        $transactions = ReferralTransaction::where('referral_id', $affiliate->id)
+        $transactions = $affiliate->transactions()
             ->where('status', 'paid')
             ->with(['referral.referredUser'])
             ->get();
@@ -212,11 +219,7 @@ class AffiliateAmbassadorDashboard extends Component
         return [
             'referral_link' => $affiliate->referral_link,
             'referral_code' => $affiliate->referral_code,
-            'qr_code_url' => $this->generateQRCode($affiliate->referral_link),
-            'banner_links' => $this->getBannerLinks($affiliate),
-            'email_templates' => $this->getEmailTemplates($affiliate),
             'social_media_posts' => $this->getSocialMediaTemplates($affiliate),
-            'tracking_pixels' => $this->getTrackingPixels($affiliate),
         ];
     }
 
@@ -226,7 +229,7 @@ class AffiliateAmbassadorDashboard extends Component
         $affiliate = Auth::user()->affiliate;
         if (!$affiliate) return collect();
         
-        return ReferralTransaction::where('referral_id', $affiliate->id)
+        return $affiliate->transactions()
             ->with(['referral.referredUser'])
             ->latest()
             ->take(15)
@@ -235,7 +238,7 @@ class AffiliateAmbassadorDashboard extends Component
                 return [
                     'id' => $transaction->id,
                     'user_name' => $transaction->referral->referredUser->name ?? 'Unknown',
-                    'amount' => $transaction->purchase_amount,
+                    'amount' => $transaction->course_price,
                     'commission' => $transaction->commission_amount,
                     'status' => $transaction->status,
                     'course_title' => $transaction->course_id ? 
@@ -289,35 +292,32 @@ class AffiliateAmbassadorDashboard extends Component
 
     private function getEmptyStats()
     {
-        return array_fill_keys([
+        $stats = array_fill_keys([
             'total_referrals', 'active_referrals', 'pending_referrals',
             'total_earnings', 'pending_earnings', 'monthly_earnings',
             'commission_rate', 'conversion_rate', 'avg_referral_value',
-            'clicks_this_period', 'tier_status', 'next_tier_requirement'
+            'clicks_this_period'
         ], 0);
+
+        $stats['conversion_rate'] = null;
+        $stats['clicks_this_period'] = null;
+
+        return $stats;
     }
 
     private function getPendingEarnings(Affiliate $affiliate)
     {
-        return ReferralTransaction::where('referral_id', $affiliate->id)
+        return $affiliate->transactions()
             ->where('status', 'pending')
             ->sum('commission_amount');
     }
 
     private function getMonthlyEarnings(Affiliate $affiliate)
     {
-        return ReferralTransaction::where('referral_id', $affiliate->id)
+        return $affiliate->transactions()
             ->where('status', 'paid')
             ->whereMonth('paid_at', now()->month)
             ->sum('commission_amount');
-    }
-
-    private function getConversionRate(Affiliate $affiliate)
-    {
-        $clicks = $this->getTotalClicks($affiliate);
-        $conversions = $affiliate->total_referrals;
-        
-        return $clicks > 0 ? round(($conversions / $clicks) * 100, 2) : 0;
     }
 
     private function getAverageReferralValue(Affiliate $affiliate)
@@ -330,36 +330,12 @@ class AffiliateAmbassadorDashboard extends Component
 
     private function getClicksThisPeriod(Affiliate $affiliate, $timeframe)
     {
-        // This would come from a clicks tracking table
-        // For now, estimate based on referrals
-        return $affiliate->referrals()->where('created_at', '>=', $timeframe)->count() * 10;
-    }
-
-    private function getTierStatus(Affiliate $affiliate)
-    {
-        $earnings = $affiliate->total_earned;
-        
-        if ($earnings >= 100000) return 'Diamond';
-        if ($earnings >= 50000) return 'Platinum';
-        if ($earnings >= 25000) return 'Gold';
-        if ($earnings >= 10000) return 'Silver';
-        return 'Bronze';
-    }
-
-    private function getNextTierRequirement(Affiliate $affiliate)
-    {
-        $earnings = $affiliate->total_earned;
-        
-        if ($earnings >= 100000) return 0; // Already at top tier
-        if ($earnings >= 50000) return 100000 - $earnings;
-        if ($earnings >= 25000) return 50000 - $earnings;
-        if ($earnings >= 10000) return 25000 - $earnings;
-        return 10000 - $earnings;
+        return null;
     }
 
     private function getDailyEarnings(Affiliate $affiliate, $date)
     {
-        return ReferralTransaction::where('referral_id', $affiliate->id)
+        return $affiliate->transactions()
             ->where('status', 'paid')
             ->whereDate('paid_at', $date)
             ->sum('commission_amount');
@@ -374,7 +350,7 @@ class AffiliateAmbassadorDashboard extends Component
 
     private function getMonthlyBreakdown(Affiliate $affiliate)
     {
-        return ReferralTransaction::where('referral_id', $affiliate->id)
+        return $affiliate->transactions()
             ->where('status', 'paid')
             ->where('paid_at', '>=', now()->subMonths(12))
             ->selectRaw('YEAR(paid_at) as year, MONTH(paid_at) as month, SUM(commission_amount) as total')
@@ -392,7 +368,7 @@ class AffiliateAmbassadorDashboard extends Component
 
     private function getTopEarningCourses(Affiliate $affiliate)
     {
-        return ReferralTransaction::where('referral_id', $affiliate->id)
+        return $affiliate->transactions()
             ->where('status', 'paid')
             ->whereNotNull('course_id')
             ->selectRaw('course_id, SUM(commission_amount) as total_commission, COUNT(*) as sales')
@@ -410,83 +386,12 @@ class AffiliateAmbassadorDashboard extends Component
             });
     }
 
-    private function calculateLifetimeValue(Referral $referral)
-    {
-        // Calculate projected lifetime value based on current spending patterns
-        $monthsSinceJoined = $referral->created_at->diffInMonths(now());
-        if ($monthsSinceJoined == 0) return $referral->total_spent;
-        
-        $monthlySpending = $referral->total_spent / $monthsSinceJoined;
-        return $monthlySpending * 24; // 2-year projection
-    }
-
-    private function calculateActivityScore(Referral $referral)
-    {
-        $score = 0;
-        
-        // Recent activity (last 30 days)
-        if ($referral->last_purchase_at && $referral->last_purchase_at->gt(now()->subDays(30))) {
-            $score += 40;
-        }
-        
-        // Purchase frequency
-        if ($referral->courses_purchased >= 5) $score += 30;
-        elseif ($referral->courses_purchased >= 2) $score += 20;
-        elseif ($referral->courses_purchased >= 1) $score += 10;
-        
-        // Spending amount
-        if ($referral->total_spent >= 50000) $score += 30;
-        elseif ($referral->total_spent >= 20000) $score += 20;
-        elseif ($referral->total_spent >= 5000) $score += 10;
-        
-        return min($score, 100);
-    }
-
-    // Additional helper methods for marketing tools
-    private function generateQRCode($url)
-    {
-        // This would integrate with a QR code service
-        return "https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=" . urlencode($url);
-    }
-
-    private function getBannerLinks(Affiliate $affiliate)
-    {
-        return [
-            '728x90' => asset('images/banners/leaderboard.jpg') . '?ref=' . $affiliate->referral_code,
-            '300x250' => asset('images/banners/medium-rectangle.jpg') . '?ref=' . $affiliate->referral_code,
-            '160x600' => asset('images/banners/skyscraper.jpg') . '?ref=' . $affiliate->referral_code,
-        ];
-    }
-
-    private function getEmailTemplates(Affiliate $affiliate)
-    {
-        return [
-            'welcome' => "Join BootKode Academy and start your coding journey today! Use my referral link: {$affiliate->referral_link}",
-            'course_recommendation' => "I've been learning amazing skills at BootKode Academy. Check it out: {$affiliate->referral_link}",
-            'success_story' => "BootKode Academy transformed my career! Join me: {$affiliate->referral_link}",
-        ];
-    }
-
     private function getSocialMediaTemplates(Affiliate $affiliate)
     {
         return [
             'twitter' => "🚀 Level up your coding skills with @BootKodeAcademy! Join me: {$affiliate->referral_link} #CodingJourney #TechEducation",
-            'facebook' => "I've been learning so much at BootKode Academy! If you're interested in coding, check it out: {$affiliate->referral_link}",
-            'linkedin' => "Expanding my technical skills with BootKode Academy. Excellent courses for career growth: {$affiliate->referral_link}",
-        ];
-    }
-
-    private function getTotalClicks(Affiliate $affiliate)
-    {
-        // This would come from analytics tracking
-        return $affiliate->total_referrals * 15; // Estimated
-    }
-
-    private function getTrackingPixels(Affiliate $affiliate)
-    {
-        return [
-            'facebook' => "<script>/* Facebook Pixel Code for {$affiliate->referral_code} */</script>",
-            'google' => "<script>/* Google Analytics Code for {$affiliate->referral_code} */</script>",
+            'facebook' => "Explore practical technology learning with BootKode Academy: {$affiliate->referral_link}",
+            'linkedin' => "Explore BootKode Academy's practical technology courses: {$affiliate->referral_link}",
         ];
     }
 
@@ -497,6 +402,16 @@ class AffiliateAmbassadorDashboard extends Component
 
     public function copyToClipboard($text)
     {
+        $affiliate = Auth::user()->affiliate;
+        abort_unless($affiliate, 404);
+
+        $allowedText = collect([
+            $affiliate->referral_link,
+            $affiliate->referral_code,
+            ...array_values($this->getSocialMediaTemplates($affiliate)),
+        ]);
+        abort_unless($allowedText->contains(fn ($allowed) => hash_equals((string) $allowed, (string) $text)), 422);
+
         $this->dispatch('copy-to-clipboard', text: $text);
         $this->dispatch('notify', type: 'success', message: 'Copied to clipboard!');
     }
