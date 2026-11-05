@@ -32,6 +32,8 @@
             <x-dashboard.hero-stat label="Needs attention" :value="$dashboardStats['pending_assessments']" context="pending assessments" icon="fas fa-list-check" />
         </x-slot:highlights>
     </x-dashboard.home-hero>
+
+    <x-dashboard.workspace-guide role="student" />
     <x-ui.panel title="Your learning direction">
         @if($this->learningProfile?->onboarding_completed_at)
             <p class="break-words text-content">{{ $this->learningProfile->goal }}</p>

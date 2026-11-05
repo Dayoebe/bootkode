@@ -32,23 +32,27 @@ class RoleDashboardHomepageTest extends TestCase
     public function test_each_role_homepage_uses_the_shared_home_hero_and_recorded_chart_surface(): void
     {
         $dashboards = [
-            'student' => ['student.dashboard', 'Keep building momentum'],
-            'instructor' => ['instructor.dashboard', 'Teach with clarity'],
-            'mentor' => ['mentor.dashboard', 'Guide progress that matters'],
-            'content_editor' => ['content_editor.dashboard', 'Make every page useful'],
-            'affiliate_ambassador' => ['affiliate_ambassador.dashboard', 'Grow access with every referral'],
-            'academy_admin' => ['academy_admin.dashboard', 'Run the academy from one clear view'],
-            'super_admin' => ['super_admin.dashboard', 'See the platform. Prioritise what matters'],
+            'student' => ['student.dashboard', 'Keep building momentum', 'portfolio.show'],
+            'instructor' => ['instructor.dashboard', 'Teach with clarity', 'instructor.earnings'],
+            'mentor' => ['mentor.dashboard', 'Guide progress that matters', 'mentorship.sessions'],
+            'content_editor' => ['content_editor.dashboard', 'Make every page useful', 'admin.blog.comments.index'],
+            'affiliate_ambassador' => ['affiliate_ambassador.dashboard', 'Grow access with every referral', 'affiliate.commissions'],
+            'academy_admin' => ['academy_admin.dashboard', 'Run the academy from one clear view', 'support.tickets'],
+            'super_admin' => ['super_admin.dashboard', 'See the platform. Prioritise what matters', 'user.activity'],
         ];
 
-        foreach ($dashboards as $role => [$route, $headline]) {
+        foreach ($dashboards as $role => [$route, $headline, $guideRoute]) {
             $user = User::factory()->create(['role' => $role]);
             $user->assignRole($role);
 
             $response = $this->actingAs($user)->get(route($route))->assertOk();
             $response->assertSee('class="bk-dashboard-hero"', false)
                 ->assertSee($headline)
+                ->assertSee('data-dashboard-workspace="'.$role.'"', false)
+                ->assertSee(route($guideRoute), false)
+                ->assertSee('Suggested workflow')
                 ->assertSee('<canvas', false);
+            $this->assertGreaterThanOrEqual(4, substr_count($response->getContent(), 'class="bk-workspace-guide-card"'), $role.' dashboard must expose its core work areas.');
             $this->assertSame(1, substr_count($response->getContent(), '<h1'), $role.' dashboard must own one primary heading.');
         }
     }

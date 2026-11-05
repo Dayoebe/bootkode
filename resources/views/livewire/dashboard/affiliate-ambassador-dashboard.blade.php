@@ -41,6 +41,8 @@
         </x-slot:tools>
     </x-dashboard.home-hero>
 
+    <x-dashboard.workspace-guide role="affiliate_ambassador" />
+
     <!-- Overview Stats Grid -->
     @if($showWidgets['overview_stats'])
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
