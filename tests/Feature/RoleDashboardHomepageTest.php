@@ -32,16 +32,16 @@ class RoleDashboardHomepageTest extends TestCase
     public function test_each_role_homepage_uses_the_shared_home_hero_and_recorded_chart_surface(): void
     {
         $dashboards = [
-            'student' => ['student.dashboard', 'Keep building momentum', 'portfolio.show'],
-            'instructor' => ['instructor.dashboard', 'Teach with clarity', 'instructor.earnings'],
-            'mentor' => ['mentor.dashboard', 'Guide progress that matters', 'mentorship.sessions'],
-            'content_editor' => ['content_editor.dashboard', 'Make every page useful', 'admin.blog.comments.index'],
-            'affiliate_ambassador' => ['affiliate_ambassador.dashboard', 'Grow access with every referral', 'affiliate.commissions'],
-            'academy_admin' => ['academy_admin.dashboard', 'Run the academy from one clear view', 'support.tickets'],
-            'super_admin' => ['super_admin.dashboard', 'See the platform. Prioritise what matters', 'user.activity'],
+            'student' => ['student.dashboard', 'Keep building momentum', 'portfolio.show', 'community.center'],
+            'instructor' => ['instructor.dashboard', 'Teach with clarity', 'instructor.earnings', 'course-content.studio'],
+            'mentor' => ['mentor.dashboard', 'Guide progress that matters', 'mentorship.sessions', 'mentorship.resources'],
+            'content_editor' => ['content_editor.dashboard', 'Make every page useful', 'admin.blog.comments.index', 'admin.blog.seo'],
+            'affiliate_ambassador' => ['affiliate_ambassador.dashboard', 'Grow access with every referral', 'affiliate.commissions', 'affiliate.settings'],
+            'academy_admin' => ['academy_admin.dashboard', 'Run the academy from one clear view', 'support.tickets', 'course-quality.control'],
+            'super_admin' => ['super_admin.dashboard', 'See the platform. Prioritise what matters', 'user.activity', 'admin.financial.settings'],
         ];
 
-        foreach ($dashboards as $role => [$route, $headline, $guideRoute]) {
+        foreach ($dashboards as $role => [$route, $headline, $guideRoute, $resourceRoute]) {
             $user = User::factory()->create(['role' => $role]);
             $user->assignRole($role);
 
@@ -49,10 +49,16 @@ class RoleDashboardHomepageTest extends TestCase
             $response->assertSee('class="bk-dashboard-hero"', false)
                 ->assertSee($headline)
                 ->assertSee('data-dashboard-workspace="'.$role.'"', false)
+                ->assertSee('data-dashboard-briefing="'.$role.'"', false)
                 ->assertSee(route($guideRoute), false)
+                ->assertSee(route($resourceRoute), false)
                 ->assertSee('Suggested workflow')
+                ->assertSee('Know what your information means')
                 ->assertSee('<canvas', false);
             $this->assertGreaterThanOrEqual(4, substr_count($response->getContent(), 'class="bk-workspace-guide-card"'), $role.' dashboard must expose its core work areas.');
+            $this->assertSame(4, substr_count($response->getContent(), 'class="bk-workspace-guide-insight"'), $role.' dashboard must explain four recorded information sources.');
+            $this->assertSame(4, substr_count($response->getContent(), 'class="bk-workspace-guide-checklist-item"'), $role.' dashboard must provide a four-step practical checklist.');
+            $this->assertSame(3, substr_count($response->getContent(), 'class="bk-workspace-guide-resource"'), $role.' dashboard must provide three useful resources.');
             $this->assertSame(1, substr_count($response->getContent(), '<h1'), $role.' dashboard must own one primary heading.');
         }
     }

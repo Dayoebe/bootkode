@@ -101,6 +101,24 @@
     .bk-workspace-guide-step-number { display: inline-grid; width: 1.75rem; height: 1.75rem; flex: none; place-items: center; border-radius: 999px; background: rgb(var(--accent-primary)); color: rgb(var(--bg-secondary)); font-size: .6875rem; font-weight: 800; }
     .bk-workspace-guide-step strong, .bk-workspace-guide-step span span { display: block; }
     .bk-workspace-guide-step strong { color: rgb(var(--text-primary)); font-size: .8125rem; }
+    .bk-workspace-guide-briefing { border-top: 1px solid rgb(var(--border-primary)); padding: 1.5rem; }
+    .bk-workspace-guide-briefing-header { display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: .75rem 1.5rem; }
+    .bk-workspace-guide-briefing-header > p { max-width: 38rem; color: rgb(var(--text-secondary)); font-size: .75rem; line-height: 1.6; }
+    .bk-workspace-guide-insights { display: grid; gap: .75rem; margin-top: 1rem; }
+    .bk-workspace-guide-insight { display: flex; min-width: 0; gap: .75rem; border: 1px solid rgb(var(--border-primary)); border-radius: .75rem; background: rgb(var(--bg-tertiary)); padding: 1rem; }
+    .bk-workspace-guide-insight-icon { display: inline-grid; width: 2rem; height: 2rem; flex: none; place-items: center; border-radius: .5rem; background: rgb(var(--accent-primary) / .11); color: rgb(var(--accent-primary)); font-size: .75rem; }
+    .bk-workspace-guide-insight h4 { color: rgb(var(--text-primary)); font-size: .8125rem; font-weight: 800; line-height: 1.4; }
+    .bk-workspace-guide-insight p { margin-top: .25rem; color: rgb(var(--text-secondary)); font-size: .75rem; line-height: 1.55; }
+    .bk-workspace-guide-insight div > span { display: inline-flex; align-items: center; margin-top: .625rem; gap: .375rem; color: rgb(var(--accent-primary)); font-size: .625rem; font-weight: 750; letter-spacing: .025em; }
+    .bk-workspace-guide-support { display: grid; gap: 1.5rem; border-top: 1px solid rgb(var(--border-primary)); background: rgb(var(--bg-primary)); padding: 1.5rem; }
+    .bk-workspace-guide-checklist { display: grid; gap: .625rem; margin-top: 1rem; }
+    .bk-workspace-guide-checklist li { display: flex; align-items: flex-start; gap: .625rem; color: rgb(var(--text-secondary)); font-size: .75rem; line-height: 1.55; }
+    .bk-workspace-guide-checklist i { margin-top: .2rem; color: rgb(var(--accent-primary)); }
+    .bk-workspace-guide-resources { display: grid; gap: .5rem; margin-top: 1rem; }
+    .bk-workspace-guide-resources a { display: grid; min-height: var(--bk-control-height); grid-template-columns: 1.75rem minmax(0, 1fr) auto; align-items: center; gap: .625rem; border: 1px solid rgb(var(--border-primary)); border-radius: .625rem; background: rgb(var(--bg-secondary)); padding: .5rem .75rem; color: rgb(var(--text-primary)); font-size: .75rem; }
+    .bk-workspace-guide-resources a:hover { border-color: rgb(var(--accent-primary) / .42); background: rgb(var(--bg-tertiary)); color: rgb(var(--accent-primary)); }
+    .bk-workspace-guide-resources a > span { display: inline-grid; width: 1.75rem; height: 1.75rem; place-items: center; border-radius: .375rem; background: rgb(var(--accent-primary) / .1); color: rgb(var(--accent-primary)); }
+    .bk-workspace-guide-resources a > i { color: rgb(var(--accent-primary)); font-size: .625rem; }
     .bk-icon-button { display: inline-grid; width: var(--bk-control-height); height: var(--bk-control-height); place-items: center; border-radius: var(--bk-radius); color: rgb(var(--text-secondary)); }
     .bk-icon-button:hover { background: rgb(var(--bg-tertiary)); }
     .bk-widget-settings { position: fixed; right: 1rem; bottom: calc(5.25rem + env(safe-area-inset-bottom, 0px)); z-index: var(--bk-layer-nav); }
@@ -157,6 +175,8 @@
         .bk-dashboard-hero-highlights { grid-template-columns: repeat(3, minmax(0, 1fr)); }
         .bk-dashboard-hero-stat + .bk-dashboard-hero-stat { border-top: 0; border-left: 1px solid rgb(var(--bk-sidebar-text) / .08); }
         .bk-workspace-guide-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); padding: 1.25rem; }
+        .bk-workspace-guide-insights { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        .bk-workspace-guide-support { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     }
     @media (min-width: 1280px) {
         .bk-topbar-inner { padding-inline: 2rem; }

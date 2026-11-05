@@ -19,6 +19,23 @@
                 ['title' => 'Build', 'description' => 'Turn completed work into a project or another piece of verifiable evidence.'],
                 ['title' => 'Grow', 'description' => 'Use feedback, mentorship and career tools to decide your next practical step.'],
             ],
+            'insights' => [
+                ['title' => 'Course progress', 'description' => 'Progress reflects lessons completed against your own enrollments, not time spent browsing.', 'basis' => 'Enrollment and lesson records', 'icon' => 'fas fa-chart-simple'],
+                ['title' => 'Assessment readiness', 'description' => 'Pending work is drawn from assessments attached to courses you are actively taking.', 'basis' => 'Assigned assessments and submissions', 'icon' => 'fas fa-list-check'],
+                ['title' => 'Portfolio visibility', 'description' => 'Projects remain private until you deliberately publish them to your showcase.', 'basis' => 'Your saved visibility choices', 'icon' => 'fas fa-eye'],
+                ['title' => 'Career and support', 'description' => 'Applications, mentorship and guidance shown here belong to your authenticated account.', 'basis' => 'Owned account records only', 'icon' => 'fas fa-compass'],
+            ],
+            'checklist' => [
+                'Resume the next lesson in an active course.',
+                'Review assessments or tasks that need attention.',
+                'Add practical work to your private portfolio.',
+                'Use mentorship or career guidance when you need direction.',
+            ],
+            'resources' => [
+                ['title' => 'Join the learner community', 'route' => 'community.center', 'icon' => 'fas fa-people-group'],
+                ['title' => 'Choose notification preferences', 'route' => 'notification.preferences', 'icon' => 'fas fa-bell'],
+                ['title' => 'Get help and support', 'route' => 'help.support', 'icon' => 'fas fa-life-ring'],
+            ],
         ],
         'instructor' => [
             'eyebrow' => 'Instructor workspace',
@@ -34,6 +51,23 @@
                 ['title' => 'Prepare', 'description' => 'Keep curriculum, materials and assessments complete before requesting publication.'],
                 ['title' => 'Teach', 'description' => 'Use recorded enrollments, progress and reviews to understand learner activity.'],
                 ['title' => 'Improve', 'description' => 'Return to course content and supporting resources when the evidence shows a gap.'],
+            ],
+            'insights' => [
+                ['title' => 'Course lifecycle', 'description' => 'Draft, approval and publication states come directly from each course record.', 'basis' => 'Owned course status', 'icon' => 'fas fa-diagram-project'],
+                ['title' => 'Learner activity', 'description' => 'Enrollments and progress include only learners connected to your courses.', 'basis' => 'Course enrollment records', 'icon' => 'fas fa-user-graduate'],
+                ['title' => 'Course feedback', 'description' => 'Ratings and comments appear only when a learner review has been recorded.', 'basis' => 'Submitted course reviews', 'icon' => 'fas fa-star'],
+                ['title' => 'Earnings', 'description' => 'Financial figures use stored transactions and do not project future income.', 'basis' => 'Recorded instructor earnings', 'icon' => 'fas fa-naira-sign'],
+            ],
+            'checklist' => [
+                'Review curriculum completeness before requesting approval.',
+                'Check learner progress and recent enrollment activity.',
+                'Respond to recorded reviews with a course improvement.',
+                'Keep supporting resources and marketplace listings current.',
+            ],
+            'resources' => [
+                ['title' => 'Open the content studio', 'route' => 'course-content.studio', 'icon' => 'fas fa-wand-magic-sparkles'],
+                ['title' => 'Review course feedback', 'route' => 'course-reviews', 'icon' => 'fas fa-comments'],
+                ['title' => 'Get help and support', 'route' => 'help.support', 'icon' => 'fas fa-life-ring'],
             ],
         ],
         'mentor' => [
@@ -51,6 +85,23 @@
                 ['title' => 'Meet', 'description' => 'Use scheduled sessions to focus the conversation and keep follow-up connected.'],
                 ['title' => 'Follow through', 'description' => 'Return to recorded outcomes, support needs and the next agreed action.'],
             ],
+            'insights' => [
+                ['title' => 'Relationship scope', 'description' => 'Mentee information is limited to relationships assigned to your mentor account.', 'basis' => 'Authorised mentorship records', 'icon' => 'fas fa-link'],
+                ['title' => 'Session activity', 'description' => 'Upcoming, completed and recorded hours come from saved mentorship sessions.', 'basis' => 'Scheduled session records', 'icon' => 'fas fa-calendar-days'],
+                ['title' => 'Progress context', 'description' => 'Learner progress is shown as recorded context, never as an invented outcome or promise.', 'basis' => 'Available learner activity', 'icon' => 'fas fa-route'],
+                ['title' => 'Support needs', 'description' => 'Support information appears only where it is connected to an assigned mentee.', 'basis' => 'Scoped support records', 'icon' => 'fas fa-hand-holding-heart'],
+            ],
+            'checklist' => [
+                'Review new requests and active relationship context.',
+                'Prepare for the next scheduled mentoring session.',
+                'Record clear follow-up after a completed session.',
+                'Escalate support needs through the appropriate workflow.',
+            ],
+            'resources' => [
+                ['title' => 'Use mentorship resources', 'route' => 'mentorship.resources', 'icon' => 'fas fa-book-open-reader'],
+                ['title' => 'Open code reviews', 'route' => 'mentorship.code-reviews', 'icon' => 'fas fa-code'],
+                ['title' => 'Get help and support', 'route' => 'help.support', 'icon' => 'fas fa-life-ring'],
+            ],
         ],
         'content_editor' => [
             'eyebrow' => 'Editorial workspace',
@@ -67,6 +118,23 @@
                 ['title' => 'Review', 'description' => 'Check status, metadata, links and the editorial queue before publishing.'],
                 ['title' => 'Maintain', 'description' => 'Use recorded views, engagement and moderation needs to guide follow-up work.'],
             ],
+            'insights' => [
+                ['title' => 'Publishing states', 'description' => 'Draft, scheduled and published counts come directly from saved content records.', 'basis' => 'Blog post status', 'icon' => 'fas fa-file-signature'],
+                ['title' => 'Recorded engagement', 'description' => 'Views, likes and comments are displayed only when the application has stored them.', 'basis' => 'Content interaction records', 'icon' => 'fas fa-chart-area'],
+                ['title' => 'Moderation queue', 'description' => 'Pending comments remain visible until they move through the established review flow.', 'basis' => 'Saved comment status', 'icon' => 'fas fa-shield-halved'],
+                ['title' => 'Editorial timing', 'description' => 'Scheduled items use their saved publication date; no best-time claim is inferred.', 'basis' => 'Stored publishing schedule', 'icon' => 'fas fa-calendar'],
+            ],
+            'checklist' => [
+                'Start from a clear learner question or content need.',
+                'Review metadata, links and readability before publishing.',
+                'Moderate recorded comments and respond through the queue.',
+                'Use actual readership signals to plan maintenance.',
+            ],
+            'resources' => [
+                ['title' => 'Review SEO controls', 'route' => 'admin.blog.seo', 'icon' => 'fas fa-magnifying-glass-chart'],
+                ['title' => 'Open publishing settings', 'route' => 'admin.blog.settings', 'icon' => 'fas fa-sliders'],
+                ['title' => 'Get help and support', 'route' => 'help.support', 'icon' => 'fas fa-life-ring'],
+            ],
         ],
         'affiliate_ambassador' => [
             'eyebrow' => 'Ambassador workspace',
@@ -82,6 +150,23 @@
                 ['title' => 'Choose', 'description' => 'Use the authenticated link or code shown in your own marketing tools.'],
                 ['title' => 'Share', 'description' => 'Keep claims factual and direct people to the relevant BootKode learning surface.'],
                 ['title' => 'Review', 'description' => 'Use recorded referrals and commissions; click analytics remains unavailable until connected.'],
+            ],
+            'insights' => [
+                ['title' => 'Referral ownership', 'description' => 'Referral totals are limited to records connected to your authenticated ambassador account.', 'basis' => 'Owned referral records', 'icon' => 'fas fa-user-tag'],
+                ['title' => 'Commission status', 'description' => 'Pending, approved and paid values follow each saved commission transaction.', 'basis' => 'Recorded commission ledger', 'icon' => 'fas fa-money-check-dollar'],
+                ['title' => 'Click analytics', 'description' => 'Clicks and conversion estimates remain unavailable until a supported source is connected.', 'basis' => 'Explicitly not connected', 'icon' => 'fas fa-link-slash'],
+                ['title' => 'Responsible sharing', 'description' => 'Use your assigned code and approved materials without making outcome or income promises.', 'basis' => 'Authenticated marketing tools', 'icon' => 'fas fa-bullhorn'],
+            ],
+            'checklist' => [
+                'Confirm your referral link and code before sharing.',
+                'Use approved copy and factual course information.',
+                'Review referral status rather than estimating conversions.',
+                'Check commission records and account settings regularly.',
+            ],
+            'resources' => [
+                ['title' => 'Manage affiliate settings', 'route' => 'affiliate.settings', 'icon' => 'fas fa-gear'],
+                ['title' => 'Choose notification preferences', 'route' => 'notification.preferences', 'icon' => 'fas fa-bell'],
+                ['title' => 'Get help and support', 'route' => 'help.support', 'icon' => 'fas fa-life-ring'],
             ],
         ],
         'academy_admin' => [
@@ -101,6 +186,23 @@
                 ['title' => 'Review', 'description' => 'Use the established course, certificate and user workflows for each decision.'],
                 ['title' => 'Support', 'description' => 'Resolve recorded blockers and return to analytics to confirm the current state.'],
             ],
+            'insights' => [
+                ['title' => 'Learner activity', 'description' => 'Learner and enrollment totals come from academy account and course records.', 'basis' => 'Stored users and enrollments', 'icon' => 'fas fa-users-viewfinder'],
+                ['title' => 'Course governance', 'description' => 'Pending and published totals follow the existing approval and publication states.', 'basis' => 'Course workflow status', 'icon' => 'fas fa-stamp'],
+                ['title' => 'Credential queue', 'description' => 'Certificate requests retain their recorded pending, issued or revoked states.', 'basis' => 'Certificate records', 'icon' => 'fas fa-certificate'],
+                ['title' => 'Support demand', 'description' => 'Open-ticket figures reflect stored support requests, not estimated service demand.', 'basis' => 'Support ticket status', 'icon' => 'fas fa-headset'],
+            ],
+            'checklist' => [
+                'Review outstanding approvals and support requests.',
+                'Check learning and completion records for emerging gaps.',
+                'Use the correct workflow for course and credential decisions.',
+                'Return to operational analytics after resolving a queue.',
+            ],
+            'resources' => [
+                ['title' => 'Open course quality control', 'route' => 'course-quality.control', 'icon' => 'fas fa-shield-halved'],
+                ['title' => 'Manage help content', 'route' => 'faq.management', 'icon' => 'fas fa-circle-question'],
+                ['title' => 'Get help and support', 'route' => 'help.support', 'icon' => 'fas fa-life-ring'],
+            ],
         ],
         'super_admin' => [
             'eyebrow' => 'Platform control',
@@ -118,6 +220,23 @@
                 ['title' => 'Verify', 'description' => 'Confirm that a summary signal is recorded and current before acting on it.'],
                 ['title' => 'Route', 'description' => 'Open the dedicated authorised workflow for the affected record or service.'],
                 ['title' => 'Resolve', 'description' => 'Complete the action there, then return to the dashboard for the updated state.'],
+            ],
+            'insights' => [
+                ['title' => 'Account activity', 'description' => 'Account totals and activity use current user records and the stored audit trail.', 'basis' => 'Users and activity log', 'icon' => 'fas fa-users-rectangle'],
+                ['title' => 'Learning operations', 'description' => 'Course, enrollment and completion views follow the platform learning records.', 'basis' => 'Course and enrollment data', 'icon' => 'fas fa-book-open'],
+                ['title' => 'Financial reporting', 'description' => 'Revenue shown on the dashboard comes from persisted financial records, not a forecast.', 'basis' => 'Recorded transactions', 'icon' => 'fas fa-chart-line'],
+                ['title' => 'Platform status', 'description' => 'Published system notices remain distinct from local service checks and unavailable signals.', 'basis' => 'Explicit status records', 'icon' => 'fas fa-server'],
+            ],
+            'checklist' => [
+                'Verify the source and scope of an operational signal.',
+                'Open the authorised workflow for the affected record.',
+                'Resolve queued work without bypassing domain rules.',
+                'Review activity and reporting after the change is stored.',
+            ],
+            'resources' => [
+                ['title' => 'Review the activity log', 'route' => 'user.activity', 'icon' => 'fas fa-clock-rotate-left'],
+                ['title' => 'Open financial settings', 'route' => 'admin.financial.settings', 'icon' => 'fas fa-coins'],
+                ['title' => 'Get help and support', 'route' => 'help.support', 'icon' => 'fas fa-life-ring'],
             ],
         ],
     ];
@@ -166,6 +285,53 @@
                     </li>
                 @endforeach
             </ol>
+        </div>
+
+        <div class="bk-workspace-guide-briefing" data-dashboard-briefing="{{ $role }}">
+            <div class="bk-workspace-guide-briefing-header">
+                <div>
+                    <p class="bk-workspace-guide-label">Dashboard briefing</p>
+                    <h3 class="bk-workspace-guide-workflow-title">Know what your information means</h3>
+                </div>
+                <p>These notes explain the recorded sources behind this workspace so you can act with the right context.</p>
+            </div>
+            <div class="bk-workspace-guide-insights">
+                @foreach($workspace['insights'] as $insight)
+                    <article class="bk-workspace-guide-insight">
+                        <span class="bk-workspace-guide-insight-icon" aria-hidden="true"><i class="{{ $insight['icon'] }}"></i></span>
+                        <div>
+                            <h4>{{ $insight['title'] }}</h4>
+                            <p>{{ $insight['description'] }}</p>
+                            <span><i class="fas fa-database" aria-hidden="true"></i> {{ $insight['basis'] }}</span>
+                        </div>
+                    </article>
+                @endforeach
+            </div>
+        </div>
+
+        <div class="bk-workspace-guide-support">
+            <section aria-labelledby="{{ $sectionId }}-checklist">
+                <p class="bk-workspace-guide-label">Practical checklist</p>
+                <h3 id="{{ $sectionId }}-checklist" class="bk-workspace-guide-workflow-title">Keep the important work moving</h3>
+                <ul class="bk-workspace-guide-checklist">
+                    @foreach($workspace['checklist'] as $item)
+                        <li class="bk-workspace-guide-checklist-item"><i class="fas fa-circle-check" aria-hidden="true"></i><span>{{ $item }}</span></li>
+                    @endforeach
+                </ul>
+            </section>
+            <section aria-labelledby="{{ $sectionId }}-resources">
+                <p class="bk-workspace-guide-label">Useful resources</p>
+                <h3 id="{{ $sectionId }}-resources" class="bk-workspace-guide-workflow-title">Help, preferences and deeper tools</h3>
+                <div class="bk-workspace-guide-resources">
+                    @foreach($workspace['resources'] as $resource)
+                        <a href="{{ route($resource['route']) }}" class="bk-workspace-guide-resource" wire:navigate>
+                            <span aria-hidden="true"><i class="{{ $resource['icon'] }}"></i></span>
+                            <strong>{{ $resource['title'] }}</strong>
+                            <i class="fas fa-arrow-right" aria-hidden="true"></i>
+                        </a>
+                    @endforeach
+                </div>
+            </section>
         </div>
     </section>
 @endif
