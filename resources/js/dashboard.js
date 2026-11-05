@@ -3,6 +3,39 @@ window.addEventListener('bootkode-assessment-focus', (event) => {
     requestAnimationFrame(() => document.getElementById(event.detail?.id)?.focus());
 });
 
+const updateDashboardLiveStatus = () => {
+    const time = new Intl.DateTimeFormat('en-NG', {
+        timeZone: 'Africa/Lagos',
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: true,
+    }).format(new Date());
+
+    document.querySelectorAll('[data-dashboard-live-time]').forEach((element) => {
+        element.textContent = time;
+    });
+
+    document.querySelectorAll('[data-dashboard-live-status]').forEach((status) => {
+        const network = status.querySelector('[data-dashboard-network-status]');
+        if (network) {
+            network.innerHTML = navigator.onLine
+                ? '<i class="fas fa-wifi" aria-hidden="true"></i> Browser online'
+                : '<i class="fas fa-triangle-exclamation" aria-hidden="true"></i> Browser offline';
+        }
+        status.classList.toggle('is-offline', !navigator.onLine);
+        status.dataset.liveReady = 'true';
+    });
+};
+
+if (!window.bootkodeDashboardLiveStatusStarted) {
+    window.bootkodeDashboardLiveStatusStarted = true;
+    updateDashboardLiveStatus();
+    window.setInterval(updateDashboardLiveStatus, 30000);
+    window.addEventListener('online', updateDashboardLiveStatus);
+    window.addEventListener('offline', updateDashboardLiveStatus);
+    document.addEventListener('livewire:navigated', updateDashboardLiveStatus);
+}
+
 // Available before Livewire mounts a newly selected lesson editor.
 window.lessonEditorManager = function () {
     return {

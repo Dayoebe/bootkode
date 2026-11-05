@@ -47,6 +47,11 @@ class RoleDashboardHomepageTest extends TestCase
 
             $response = $this->actingAs($user)->get(route($route))->assertOk();
             $response->assertSee('class="bk-dashboard-hero"', false)
+                ->assertSee('data-dashboard-visual="modern"', false)
+                ->assertSee('data-dashboard-live-status', false)
+                ->assertSee('Live workspace')
+                ->assertSee('Private account view')
+                ->assertSee('class="bk-dashboard-metric-grid', false)
                 ->assertSee($headline)
                 ->assertSee('data-dashboard-workspace="'.$role.'"', false)
                 ->assertSee('data-dashboard-briefing="'.$role.'"', false)
@@ -82,8 +87,26 @@ class RoleDashboardHomepageTest extends TestCase
         }
 
         $this->assertStringNotContainsString('--bk-sidebar-bg:', $themes);
-        $this->assertGreaterThanOrEqual(2, substr_count($dashboard, 'background: rgb(var(--bk-sidebar-bg));'));
-        $this->assertStringContainsString('.bk-dashboard-hero-primary { background: rgb(var(--bk-sidebar-accent));', $dashboard);
+        $this->assertStringContainsString('background: rgb(var(--bk-sidebar-bg));', $dashboard);
+        $this->assertStringContainsString('.bk-dashboard-hero { position: relative;', $dashboard);
+        $this->assertStringContainsString('background: rgb(var(--bg-secondary));', $dashboard);
+        $this->assertStringContainsString('.bk-dashboard-live {', $dashboard);
+        $this->assertStringContainsString('.bk-dashboard-metric-grid > * {', $dashboard);
+        $this->assertStringContainsString('var(--accent-secondary)', $dashboard);
+        $this->assertStringContainsString('var(--accent-warm)', $dashboard);
+        $this->assertStringContainsString('transition: transform var(--bk-duration)', $dashboard);
+    }
+
+    public function test_dashboard_live_status_uses_local_browser_state_and_lagos_time_without_an_ambient_animation(): void
+    {
+        $dashboardScript = file_get_contents(resource_path('js/dashboard.js'));
+        $dashboardStyles = file_get_contents(resource_path('css/dashboard.css'));
+
+        $this->assertStringContainsString("timeZone: 'Africa/Lagos'", $dashboardScript);
+        $this->assertStringContainsString('navigator.onLine', $dashboardScript);
+        $this->assertStringContainsString("document.addEventListener('livewire:navigated', updateDashboardLiveStatus)", $dashboardScript);
+        $this->assertStringContainsString("window.addEventListener('offline', updateDashboardLiveStatus)", $dashboardScript);
+        $this->assertStringNotContainsString('@keyframes', $dashboardStyles);
     }
 
     public function test_mentor_dashboard_only_uses_the_authenticated_mentors_relationships(): void

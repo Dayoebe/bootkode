@@ -260,6 +260,7 @@ The application-controlled premium experience work is complete. The open items r
 - [x] Redesign the seven primary role dashboard homepages with a shared hierarchy, role-relevant CTA content and recorded-data charts.
 - [x] Keep low-activity homepages informative with route-backed role work areas and factual suggested workflows.
 - [x] Explain dashboard data sources and add role-specific operating checklists and support resources without fabricated signals.
+- [x] Add semantic colour depth, a truthful live client-status strip and reduced-motion-safe micro-interactions across all seven role homepages.
 - [x] Remove fabricated homepage insights and constrain mentor, instructor, content and affiliate dashboard filters/data projections.
 - [ ] Continue the shared design through secondary dashboard page families without changing their domain or authorization boundaries.
 - [ ] Complete broader theme, screen-reader and authenticated workflow acceptance as each page family is redesigned.

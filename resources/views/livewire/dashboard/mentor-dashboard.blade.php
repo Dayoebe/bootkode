@@ -46,7 +46,7 @@
 
     <!-- Overview Stats Grid -->
     @if($showWidgets['overview_stats'])
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <div class="bk-dashboard-metric-grid grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
             <div
                 class="bg-themed-secondary rounded-lg shadow-sm border border-themed-primary p-6   transition-all duration-200">
                 <div class="flex items-center justify-between">

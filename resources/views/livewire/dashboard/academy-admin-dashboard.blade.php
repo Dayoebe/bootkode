@@ -42,7 +42,7 @@
 
     <!-- Key Metrics Grid -->
     @if($showWidgets['overview_stats'])
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+    <div class="bk-dashboard-metric-grid grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         <!-- Students Card -->
         <div class="border border-line bg-surface     rounded-lg p-6 text-content shadow-sm  transition-shadow duration-200">
             <div class="flex items-center justify-between">

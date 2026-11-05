@@ -123,7 +123,7 @@
 
     <!-- Quick Stats Grid -->
     @if($showWidgets['quick_stats'])
-        <div class="grid grid-cols-2 xl:grid-cols-4 gap-4 lg:gap-6 mb-8">
+        <div class="bk-dashboard-metric-grid grid grid-cols-2 xl:grid-cols-4 gap-4 lg:gap-6 mb-8">
             <!-- Enrolled Courses -->
             <div class="bg-themed-secondary rounded-lg shadow-sm border border-themed-primary p-4 lg:p-6   transition-all duration-200">
                 <div class="flex items-center justify-between">
