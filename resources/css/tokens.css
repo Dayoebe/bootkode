@@ -2,8 +2,6 @@
     :root {
         --bk-font-body: "Manrope", ui-sans-serif, system-ui, sans-serif;
         --bk-font-display: "Sora", "Manrope", ui-sans-serif, system-ui, sans-serif;
-        --bk-brand-navy: 7 21 45;
-        --bk-brand-mint: 143 227 136;
         --bk-text-body: 1rem;
         --bk-leading-body: 1.6;
         --bk-text-small: 0.875rem;
@@ -31,13 +29,13 @@
         --bk-layer-status: 60;
         --bk-sidebar-width: 17.5rem;
         --bk-sidebar-rail-width: 5.25rem;
-        --bk-sidebar-bg: var(--bk-brand-navy);
-        --bk-sidebar-surface: 15 35 62;
-        --bk-sidebar-border: 48 71 99;
-        --bk-sidebar-text: 248 250 252;
-        --bk-sidebar-muted: 184 200 216;
-        --bk-sidebar-accent: var(--bk-brand-mint);
-        --bk-sidebar-accent-text: 240 253 250;
+        --bk-sidebar-bg: var(--bg-secondary);
+        --bk-sidebar-surface: var(--bg-tertiary);
+        --bk-sidebar-border: var(--border-primary);
+        --bk-sidebar-text: var(--text-primary);
+        --bk-sidebar-muted: var(--text-secondary);
+        --bk-sidebar-accent: var(--accent-primary);
+        --bk-sidebar-accent-text: var(--text-primary);
         --bk-header-shadow: 0 1px 0 rgb(15 23 42 / 0.04), 0 8px 24px rgb(15 23 42 / 0.035);
     }
 

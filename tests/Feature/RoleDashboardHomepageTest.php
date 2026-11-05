@@ -53,25 +53,25 @@ class RoleDashboardHomepageTest extends TestCase
         }
     }
 
-    public function test_dashboard_sidebar_and_hero_share_the_brand_and_saved_theme_palette(): void
+    public function test_dashboard_sidebar_and_hero_inherit_the_complete_saved_theme_palette(): void
     {
         $tokens = file_get_contents(resource_path('css/tokens.css'));
         $themes = file_get_contents(resource_path('css/app.css'));
         $dashboard = file_get_contents(resource_path('css/dashboard.css'));
 
-        $this->assertStringContainsString('--bk-brand-navy: 7 21 45;', $tokens);
-        $this->assertStringContainsString('--bk-brand-mint: 143 227 136;', $tokens);
-        $this->assertStringContainsString('--bk-sidebar-bg: var(--bk-brand-navy);', $tokens);
-        $this->assertStringContainsString('--bk-sidebar-accent: var(--bk-brand-mint);', $tokens);
-
-        foreach (['.dark', '.sepia', '.ocean', '.forest'] as $theme) {
-            $this->assertMatchesRegularExpression(
-                '/'.preg_quote($theme, '/').'\s*\{[^}]*--bk-sidebar-bg:[^;]+;[^}]*--bk-sidebar-accent:[^;]+;/s',
-                $themes,
-                $theme.' must define coordinated dashboard chrome colours.'
-            );
+        foreach ([
+            '--bk-sidebar-bg' => '--bg-secondary',
+            '--bk-sidebar-surface' => '--bg-tertiary',
+            '--bk-sidebar-border' => '--border-primary',
+            '--bk-sidebar-text' => '--text-primary',
+            '--bk-sidebar-muted' => '--text-secondary',
+            '--bk-sidebar-accent' => '--accent-primary',
+            '--bk-sidebar-accent-text' => '--text-primary',
+        ] as $chromeToken => $themeToken) {
+            $this->assertStringContainsString($chromeToken.': var('.$themeToken.');', $tokens);
         }
 
+        $this->assertStringNotContainsString('--bk-sidebar-bg:', $themes);
         $this->assertGreaterThanOrEqual(2, substr_count($dashboard, 'background: rgb(var(--bk-sidebar-bg));'));
         $this->assertStringContainsString('.bk-dashboard-hero-primary { background: rgb(var(--bk-sidebar-accent));', $dashboard);
     }

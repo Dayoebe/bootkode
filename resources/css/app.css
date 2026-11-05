@@ -49,13 +49,6 @@
         --btn-disabled-text: 100 116 139;
         --input-border: 71 85 105;
         --input-focus-border: 45 212 191;
-        --bk-sidebar-bg: 7 15 28;
-        --bk-sidebar-surface: 17 29 47;
-        --bk-sidebar-border: 51 65 85;
-        --bk-sidebar-text: 248 250 252;
-        --bk-sidebar-muted: 184 200 216;
-        --bk-sidebar-accent: 94 234 212;
-        --bk-sidebar-accent-text: 240 253 250;
     }
 
     .sepia {
@@ -78,13 +71,6 @@
         --btn-disabled-text: 139 110 75;
         --input-border: 205 185 158;
         --input-focus-border: 146 84 25;
-        --bk-sidebar-bg: 68 54 39;
-        --bk-sidebar-surface: 86 66 44;
-        --bk-sidebar-border: 128 103 73;
-        --bk-sidebar-text: 255 251 244;
-        --bk-sidebar-muted: 224 209 187;
-        --bk-sidebar-accent: 253 230 138;
-        --bk-sidebar-accent-text: 255 251 244;
     }
 
     .ocean {
@@ -107,13 +93,6 @@
         --btn-disabled-text: 14 116 144;
         --input-border: 125 211 252;
         --input-focus-border: 3 105 161;
-        --bk-sidebar-bg: 12 74 110;
-        --bk-sidebar-surface: 7 89 133;
-        --bk-sidebar-border: 14 116 144;
-        --bk-sidebar-text: 240 249 255;
-        --bk-sidebar-muted: 186 230 253;
-        --bk-sidebar-accent: 125 211 252;
-        --bk-sidebar-accent-text: 240 249 255;
     }
 
     .forest {
@@ -136,13 +115,6 @@
         --btn-disabled-text: 21 128 61;
         --input-border: 134 239 172;
         --input-focus-border: 21 128 61;
-        --bk-sidebar-bg: 20 83 45;
-        --bk-sidebar-surface: 22 101 52;
-        --bk-sidebar-border: 74 130 92;
-        --bk-sidebar-text: 240 253 244;
-        --bk-sidebar-muted: 187 247 208;
-        --bk-sidebar-accent: 134 239 172;
-        --bk-sidebar-accent-text: 240 253 244;
     }
 
     .bk-public-app {
