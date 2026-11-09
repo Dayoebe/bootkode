@@ -7,13 +7,9 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
 use Livewire\WithFileUploads;
 use Livewire\Attributes\Layout;
-use App\Models\Learning\Course;
-use App\Models\Learning\Lesson;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Artisan;
-use Illuminate\Support\Str;
+use Illuminate\Validation\Rules\Password;
 use App\Traits\HasCloudinaryUpload;
 
 #[Layout('layouts.dashboard')]
@@ -22,8 +18,7 @@ class Profile extends Component
     use WithFileUploads, HasCloudinaryUpload;
 
     public $user;
-    public $activeTab = 'personal';
-    public $activeSessions = 0;
+    public $activeTab = 'overview';
     public $isEditing = false;
 
     // Settings Properties
@@ -44,6 +39,7 @@ class Profile extends Component
     // Deletion fields
     public $delete_password = '';
     public $delete_confirmation = '';
+    public $deactivate_password = '';
 
     // Personal Info
     public $name;
@@ -83,10 +79,18 @@ class Profile extends Component
         'closeModals' => 'resetModalStates'
     ];
 
-    public function mount($mode = 'view')
+    public function boot(): void
+    {
+        abort_unless(Auth::check(), 403);
+        $this->user = Auth::user();
+    }
+
+    public function mount($mode = null)
     {
         $this->user = Auth::user();
-        $this->isEditing = $mode === 'edit';
+        $requestedMode = $mode ?? request()->query('mode', 'view');
+        $this->isEditing = $requestedMode === 'edit';
+        $this->activeTab = $this->isEditing ? 'identity' : 'overview';
         $this->loadSettingsData();
         $this->resetValidation();
         
@@ -97,21 +101,17 @@ class Profile extends Component
 
     public function loadSettingsData()
     {
+        $this->user = Auth::user();
         $this->emailNotifications = $this->user->receive_course_updates ?? true;
         $this->certificateNotifications = $this->user->receive_certificate_notifications ?? true;
         $this->profileVisibility = $this->user->profile_visibility ?? 'public';
         $this->showEmail = $this->user->show_email_publicly ?? false;
-        $this->activeSessions = $this->getActiveSessionsCount();
-    }
-
-    protected function getActiveSessionsCount()
-    {
-        return 1;
     }
 
     public function updateEmailNotifications()
     {
-        $this->user->update([
+        $this->validateOnly('emailNotifications', ['emailNotifications' => ['boolean']]);
+        Auth::user()->update([
             'receive_course_updates' => $this->emailNotifications
         ]);
         
@@ -120,7 +120,8 @@ class Profile extends Component
 
     public function updateCertificateNotifications()
     {
-        $this->user->update([
+        $this->validateOnly('certificateNotifications', ['certificateNotifications' => ['boolean']]);
+        Auth::user()->update([
             'receive_certificate_notifications' => $this->certificateNotifications
         ]);
         
@@ -129,7 +130,10 @@ class Profile extends Component
 
     public function updateProfileVisibility()
     {
-        $this->user->update([
+        $this->validateOnly('profileVisibility', [
+            'profileVisibility' => ['required', Rule::in(['public', 'private', 'students'])],
+        ]);
+        Auth::user()->update([
             'profile_visibility' => $this->profileVisibility
         ]);
         
@@ -138,7 +142,8 @@ class Profile extends Component
 
     public function updateShowEmail()
     {
-        $this->user->update([
+        $this->validateOnly('showEmail', ['showEmail' => ['boolean']]);
+        Auth::user()->update([
             'show_email_publicly' => $this->showEmail
         ]);
         
@@ -149,10 +154,10 @@ class Profile extends Component
     {
         $this->validate([
             'current_password' => ['required', 'current_password'],
-            'new_password' => ['required', 'min:8', 'confirmed'],
+            'new_password' => ['required', Password::defaults(), 'confirmed'],
         ]);
 
-        $this->user->update([
+        Auth::user()->update([
             'password' => Hash::make($this->new_password)
         ]);
 
@@ -162,54 +167,49 @@ class Profile extends Component
 
     public function logoutOtherSessions()
     {
+        $this->validate([
+            'current_password' => ['required', 'current_password'],
+        ]);
+
         Auth::logoutOtherDevices($this->current_password);
         
-        $this->reset(['showSessionsModal']);
-        $this->activeSessions = 1;
+        $this->reset(['current_password', 'showSessionsModal']);
         $this->dispatch('notify', 'Other sessions logged out successfully!');
-    }
-
-    public function toggle2FA()
-    {
-        $message = $this->user->two_factor_secret 
-            ? 'Two-factor authentication disabled!' 
-            : 'Two-factor authentication enabled!';
-        
-        $this->dispatch('notify', $message);
     }
 
     public function exportData()
     {
         try {
+            $user = Auth::user();
             $userData = [
                 'personal_info' => [
-                    'name' => $this->user->name,
-                    'email' => $this->user->email,
-                    'phone_number' => $this->user->phone_number,
-                    'date_of_birth' => $this->user->date_of_birth,
-                    'bio' => $this->user->bio,
+                    'name' => $user->name,
+                    'email' => $user->email,
+                    'phone_number' => $user->phone_number,
+                    'date_of_birth' => $user->date_of_birth,
+                    'bio' => $user->bio,
                 ],
                 'address' => [
-                    'street' => $this->user->address_street,
-                    'city' => $this->user->address_city,
-                    'state' => $this->user->address_state,
-                    'country' => $this->user->address_country,
-                    'postal_code' => $this->user->address_postal_code,
+                    'street' => $user->address_street,
+                    'city' => $user->address_city,
+                    'state' => $user->address_state,
+                    'country' => $user->address_country,
+                    'postal_code' => $user->address_postal_code,
                 ],
                 'education_career' => [
-                    'occupation' => $this->user->occupation,
-                    'education_level' => $this->user->education_level,
-                    'skills' => $this->user->skills,
+                    'occupation' => $user->occupation,
+                    'education_level' => $user->education_level,
+                    'skills' => $user->skills,
                 ],
                 'learning_data' => [
-                    'courses_enrolled' => $this->user->courses()->count(),
-                    'completed_lessons' => $this->user->completedLessons()->count(),
-                    'certificates' => $this->user->certificates()->count(),
+                    'courses_enrolled' => $user->courses()->count(),
+                    'completed_lessons' => $user->completedLessons()->count(),
+                    'certificates' => $user->certificates()->count(),
                 ],
                 'exported_at' => now()->toISOString(),
             ];
 
-            $filename = "user_data_{$this->user->id}_" . now()->format('Y-m-d_H-i-s') . '.json';
+            $filename = "user_data_{$user->id}_" . now()->format('Y-m-d_H-i-s') . '.json';
             
             return response()->streamDownload(function () use ($userData) {
                 echo json_encode($userData, JSON_PRETTY_PRINT);
@@ -218,32 +218,26 @@ class Profile extends Component
             ]);
 
         } catch (\Exception $e) {
-            $this->dispatch('notify', 'Error exporting data: ' . $e->getMessage(), 'error');
-        }
-    }
-
-    public function clearCache()
-    {
-        try {
-            Cache::tags(["user_{$this->user->id}"])->flush();
-            Artisan::call('cache:clear');
-            
-            $this->dispatch('notify', 'Cache cleared successfully!');
-        } catch (\Exception $e) {
-            $this->dispatch('notify', 'Error clearing cache: ' . $e->getMessage(), 'error');
+            report($e);
+            $this->dispatch('notify', 'Your data export could not be prepared. Please try again.', 'error');
         }
     }
 
     public function deactivateAccount()
     {
-        if ($this->user->isSuperAdmin() && $this->user->id === auth()->id()) {
+        $this->validate([
+            'deactivate_password' => ['required', 'current_password'],
+        ]);
+
+        $user = Auth::user();
+        if ($user->isSuperAdmin()) {
             $this->dispatch('notify', 'Super admin accounts cannot be deactivated for security reasons!', 'error');
-            $this->reset(['showDeactivateModal']);
+            $this->reset(['deactivate_password', 'showDeactivateModal']);
             return;
         }
         
         try {
-            $this->user->update([
+            $user->update([
                 'is_active' => false,
                 'deactivated_at' => now(),
             ]);
@@ -254,7 +248,8 @@ class Profile extends Component
             return redirect('/');
 
         } catch (\Exception $e) {
-            $this->dispatch('notify', 'Error deactivating account: ' . $e->getMessage(), 'error');
+            report($e);
+            $this->dispatch('notify', 'Your account could not be deactivated. Please try again.', 'error');
         }
     }
 
@@ -288,7 +283,8 @@ class Profile extends Component
         } catch (\DomainException $e) {
             $this->addError('delete_confirmation', $e->getMessage());
         } catch (\Exception $e) {
-            $this->dispatch('notify', 'Error deleting account: ' . $e->getMessage(), 'error');
+            report($e);
+            $this->dispatch('notify', 'Your account could not be deleted. Please try again.', 'error');
         }
     }
 
@@ -303,7 +299,8 @@ class Profile extends Component
             'new_password',
             'new_password_confirmation',
             'delete_password',
-            'delete_confirmation'
+            'delete_confirmation',
+            'deactivate_password'
         ]);
     }
 
@@ -321,6 +318,7 @@ class Profile extends Component
 
     public function loadUserData()
     {
+        $this->user = Auth::user();
         $this->fill($this->user->only([
             'name',
             'email',
@@ -376,7 +374,7 @@ class Profile extends Component
             'social_links.linkedin' => 'nullable|url|starts_with:https://linkedin.com',
             'social_links.github' => 'nullable|url|starts_with:https://github.com',
             'social_links.instagram' => 'nullable|url|starts_with:https://instagram.com',
-            'social_links.website' => 'nullable|url',
+            'social_links.website' => 'nullable|url:http,https',
         ];
     }
 
@@ -390,6 +388,11 @@ class Profile extends Component
 
     public function switchTab($tab)
     {
+        $allowed = $this->isEditing
+            ? ['identity', 'details', 'links']
+            : ['overview', 'learning', 'saved', 'account'];
+
+        abort_unless(in_array($tab, $allowed, true), 422);
         $this->activeTab = $tab;
     }
 
@@ -399,8 +402,9 @@ class Profile extends Component
 
         if ($this->isEditing) {
             $this->loadUserData();
-            $this->activeTab = 'basic';
+            $this->activeTab = 'identity';
         } else {
+            $this->activeTab = 'overview';
             $this->reset(['profile_picture', 'temp_profile_picture']);
         }
     }
@@ -435,11 +439,13 @@ class Profile extends Component
             }
         }
 
-        $emailChanged = $this->user->email !== $this->email;
+        $user = Auth::user();
+        $emailChanged = $user->email !== $this->email;
         if ($emailChanged) {
             $updateData['email_verified_at'] = null;
         }
-        $this->user->update($updateData);
+        $user->update($updateData);
+        $this->user = $user->fresh();
 
         // Handle email verification if email changed
         if ($emailChanged) {
@@ -448,7 +454,7 @@ class Profile extends Component
 
         $this->dispatch('notify', 'Profile updated successfully!');
         $this->isEditing = false;
-        $this->activeTab = 'personal';
+        $this->activeTab = 'overview';
         $this->reset(['profile_picture', 'temp_profile_picture']);
     }
 
@@ -474,14 +480,16 @@ class Profile extends Component
 
     public function deleteProfilePicture()
     {
-        if ($this->user->profile_picture) {
+        $user = Auth::user();
+        if ($user->profile_picture) {
             // Delete from Cloudinary
-            $publicId = $this->extractPublicId($this->user->profile_picture);
+            $publicId = $this->extractPublicId($user->profile_picture);
             if ($publicId) {
                 $this->deleteFromCloudinary($publicId);
             }
             
-            $this->user->update(['profile_picture' => null]);
+            $user->update(['profile_picture' => null]);
+            $this->user = $user->fresh();
         }
 
         $this->reset('temp_profile_picture', 'profile_picture');
@@ -490,35 +498,56 @@ class Profile extends Component
 
     public function getLearningProgressProperty()
     {
+        $user = Auth::user();
         return [
-            'total_courses' => $this->user->courses()->count(),
-            'completed_lessons' => $this->user->completedLessons()->count(),
-            'wishlist_items' => $this->user->wishlists()->count(),
-            'saved_resources' => $this->user->savedResources()->count(),
+            'total_courses' => $user->courses()->count(),
+            'completed_lessons' => $user->completedLessons()->count(),
+            'wishlist_items' => $user->wishlists()->count(),
+            'saved_resources' => $user->savedResources()->count(),
             'average_weekly_progress' => $this->calculateWeeklyAverage(),
-            'downloaded_content' => $this->user->downloadedContent()->count(),
-            'recent_activities' => $this->getRecentActivitiesProperty(),
-            'wishlist' => $this->getWishlistProperty(),
-            'activity_stats' => $this->getActivityStatsProperty(),
-            'completed_assignments' => $this->user->completedLessons()->count(),
+            'downloaded_content' => $user->downloadedContent()->count(),
+            'certificates' => $user->certificates()->count(),
         ];
+    }
+
+    public function getProfileCompletenessProperty(): int
+    {
+        $user = Auth::user();
+        $fields = [
+            $user->name,
+            $user->email,
+            $user->phone_number,
+            $user->bio,
+            $user->occupation,
+            $user->education_level,
+            $user->address_city,
+            $user->address_country,
+            $user->skills,
+            $user->profile_picture,
+            collect($user->social_links ?? [])->filter()->isNotEmpty(),
+        ];
+
+        $completed = collect($fields)->filter(fn ($value) => filled($value))->count();
+
+        return (int) round(($completed / count($fields)) * 100);
     }
 
     public function getActivityStatsProperty()
     {
+        $user = Auth::user();
         $now = Carbon::now();
         $startOfMonth = $now->copy()->startOfMonth();
 
         return [
             'courses_enrolled' => [
-                'total' => $this->user->courses()->count(),
-                'this_month' => $this->user->courses()
+                'total' => $user->courses()->count(),
+                'this_month' => $user->courses()
                     ->where('course_user.created_at', '>=', $startOfMonth)
                     ->count(),
             ],
             'lessons_completed' => [
-                'total' => $this->user->completedLessons()->count(),
-                'this_month' => $this->user->completedLessons()
+                'total' => $user->completedLessons()->count(),
+                'this_month' => $user->completedLessons()
                     ->where('lesson_user.completed_at', '>=', $startOfMonth)
                     ->count(),
             ],
@@ -527,7 +556,7 @@ class Profile extends Component
 
     public function getRecentActivitiesProperty()
     {
-        return $this->user->completedLessons()
+        return Auth::user()->completedLessons()
             ->with(['section.course'])
             ->orderByDesc('lesson_user.completed_at')
             ->take(5)
@@ -535,7 +564,7 @@ class Profile extends Component
             ->map(function ($lesson) {
                 return [
                     'title' => 'Completed lesson: ' . $lesson->title,
-                    'course' => $lesson->section->course->title ?? 'Unknown Course',
+                    'course' => $lesson->section?->course?->title ?? 'Course unavailable',
                     'date' => $lesson->pivot->completed_at,
                     'icon' => 'check-circle',
                     'color' => 'green-400',
@@ -545,7 +574,7 @@ class Profile extends Component
 
     protected function calculateWeeklyAverage()
     {
-        $completedLessons = $this->user->completedLessons()
+        $completedLessons = Auth::user()->completedLessons()
             ->withPivot('completed_at')
             ->get();
 
@@ -561,7 +590,7 @@ class Profile extends Component
 
     public function getSavedResourcesProperty()
     {
-        return $this->user->savedResources()
+        return Auth::user()->savedResources()
             ->with(['resourceable', 'course'])
             ->latest()
             ->take(5)
@@ -570,7 +599,7 @@ class Profile extends Component
 
     public function getWishlistProperty()
     {
-        return $this->user->wishlists()
+        return Auth::user()->wishlists()
             ->with([
                 'course' => function ($query) {
                     $query->where('is_published', true)
@@ -589,7 +618,8 @@ class Profile extends Component
 
     public function removeFromWishlist($courseId)
     {
-        $this->user->wishlists()->where('course_id', $courseId)->delete();
+        abort_unless(is_numeric($courseId), 422);
+        Auth::user()->wishlists()->where('course_id', (int) $courseId)->delete();
         $this->dispatch('notify', 'Course removed from wishlist!');
     }
 
@@ -598,11 +628,11 @@ class Profile extends Component
         $title = $this->isEditing ? 'Edit Profile' : 'View Profile';
 
         return view('livewire.user-management.profile', [
-            'activityStats' => $this->activityStats,
             'recentActivities' => $this->recentActivities,
             'learningProgress' => $this->learningProgress,
             'savedResources' => $this->savedResources,
             'wishlist' => $this->wishlist,
+            'profileCompleteness' => $this->profileCompleteness,
         ])->layout('layouts.dashboard', [
             'title' => $title,
             'description' => $this->isEditing ? 'Update your personal information and settings' : 'View your profile information and learning progress',

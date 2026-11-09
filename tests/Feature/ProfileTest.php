@@ -15,7 +15,24 @@ class ProfileTest extends TestCase
 
     public function test_profile_page_is_displayed(): void
     {
-        $this->actingAs(User::factory()->create())->get(route('profile.view'))->assertOk();
+        $this->actingAs(User::factory()->create())->get(route('profile.view'))
+            ->assertOk()
+            ->assertSee('data-profile-surface="modern"', false)
+            ->assertSee('Account centre')
+            ->assertSee('Profile readiness')
+            ->assertSee('id="profile-panel-overview"', false)
+            ->assertSee('id="profile-panel-account"', false);
+    }
+
+    public function test_edit_profile_route_opens_the_rebuilt_editing_workspace(): void
+    {
+        $this->actingAs(User::factory()->create())->followingRedirects()->get(route('profile.edit'))
+            ->assertOk()
+            ->assertSee('Edit profile')
+            ->assertSee('id="profile-panel-identity"', false)
+            ->assertSee('id="profile-panel-details"', false)
+            ->assertSee('id="profile-panel-links"', false)
+            ->assertDontSee('id="profile-panel-overview"', false);
     }
 
     public function test_profile_information_can_be_updated_and_changed_email_requires_verification(): void
@@ -79,5 +96,42 @@ class ProfileTest extends TestCase
         Livewire::actingAs($user)->test(Profile::class)->call('toggleEditMode')
             ->set('email', $other->email)->call('updateProfile')->assertHasErrors('email');
         $this->assertNotSame($other->email, $user->fresh()->email);
+    }
+
+    public function test_profile_visibility_rejects_unrecognised_values(): void
+    {
+        $user = User::factory()->create(['profile_visibility' => 'private']);
+
+        Livewire::actingAs($user)->test(Profile::class)
+            ->set('profileVisibility', 'everyone')
+            ->call('updateProfileVisibility')
+            ->assertHasErrors('profileVisibility');
+
+        $this->assertSame('private', $user->fresh()->profile_visibility);
+    }
+
+    public function test_signing_out_other_sessions_requires_the_current_password(): void
+    {
+        $user = User::factory()->create();
+
+        Livewire::actingAs($user)->test(Profile::class)
+            ->set('current_password', 'incorrect-password')
+            ->call('logoutOtherSessions')
+            ->assertHasErrors('current_password');
+    }
+
+    public function test_profile_mutations_rebind_to_the_authenticated_user(): void
+    {
+        $user = User::factory()->create(['receive_course_updates' => true]);
+        $other = User::factory()->create(['receive_course_updates' => true]);
+
+        Livewire::actingAs($user)->test(Profile::class)
+            ->set('user', $other)
+            ->set('emailNotifications', false)
+            ->call('updateEmailNotifications')
+            ->assertHasNoErrors();
+
+        $this->assertFalse($user->fresh()->receive_course_updates);
+        $this->assertTrue($other->fresh()->receive_course_updates);
     }
 }

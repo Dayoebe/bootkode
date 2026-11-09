@@ -262,5 +262,6 @@ The application-controlled premium experience work is complete. The open items r
 - [x] Explain dashboard data sources and add role-specific operating checklists and support resources without fabricated signals.
 - [x] Add semantic colour depth, a truthful live client-status strip and reduced-motion-safe micro-interactions across all seven role homepages.
 - [x] Remove fabricated homepage insights and constrain mentor, instructor, content and affiliate dashboard filters/data projections.
+- [x] Rebuild the dashboard profile as a theme-consistent account centre; reduce competing local navigation, restore the edit-route contract, remove nonfunctional/security-misleading controls and rebind every mutation to the authenticated account.
 - [ ] Continue the shared design through secondary dashboard page families without changing their domain or authorization boundaries.
 - [ ] Complete broader theme, screen-reader and authenticated workflow acceptance as each page family is redesigned.
