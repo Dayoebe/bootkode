@@ -334,11 +334,9 @@ class Page extends Model
         ];
     }
 
-    private function getRecentViewsCount(int $days): int
+    private function getRecentViewsCount(int $days): ?int
     {
-        // This would typically query an analytics table
-        // For now, we'll return a placeholder
-        return rand(10, 100);
+        return null;
     }
 
     private function calculatePerformanceScore(): int

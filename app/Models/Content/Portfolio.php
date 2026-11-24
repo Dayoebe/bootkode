@@ -80,13 +80,13 @@ class Portfolio extends Model
         return Attribute::make(
             get: function () {
                 if (!$this->image_path) {
-                    return 'https://via.placeholder.com/800x600/f3f4f6/9ca3af?text=No+Image';
+                    return null;
                 }
                 
                 // Check if the file actually exists
                 $fullPath = storage_path('app/public/' . $this->image_path);
                 if (!file_exists($fullPath)) {
-                    return 'https://via.placeholder.com/800x600/f3f4f6/9ca3af?text=Image+Not+Found';
+                    return null;
                 }
                 
                 return Storage::url($this->image_path);
@@ -99,7 +99,7 @@ class Portfolio extends Model
         return Attribute::make(
             get: function () {
                 if (!$this->image_path) {
-                    return 'https://via.placeholder.com/300x300/f3f4f6/9ca3af?text=No+Image';
+                    return null;
                 }
                 
                 // Check if thumbnail exists, otherwise use main image
@@ -289,9 +289,4 @@ class Portfolio extends Model
         $this->increment('views_count');
     }
 
-    public function toggleLike()
-    {
-        // This would typically check if user has already liked
-        $this->increment('likes_count');
-    }
 }

@@ -353,7 +353,7 @@ class CbtExamInterface extends Component
                 $this->results
             );
             
-            session()->flash('message', 'Results will be sent to your email shortly!');
+            session()->flash('message', 'Your submission was recorded. Results appear after the required review is complete.');
             
         } catch (\Exception $e) {
             // Silent fail - email not critical

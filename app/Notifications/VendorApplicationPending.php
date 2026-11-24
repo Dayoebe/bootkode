@@ -23,7 +23,7 @@ class VendorApplicationPending extends Notification implements ShouldQueue
             ->subject('Vendor Application Received')
             ->greeting('Thank you for your application!')
             ->line('We have received your application to become a vendor on the Bootkode Marketplace.')
-            ->line('Our team will review your application and get back to you within 2-3 business days.')
+            ->line('Our team will review the saved application. You will receive a decision by email when the review is complete.')
             ->line('What happens next:')
             ->line('• We\'ll review your profile and experience')
             ->line('• Check your previous activity on the platform')

@@ -187,13 +187,8 @@ class BulkEnrollment extends Component
     public function downloadSampleCsv()
     {
         return response()->streamDownload(function () {
-            $csv = "name,email,department,employee_id,institution_role\n";
-            $csv .= "John Doe,john.doe@example.com,IT,EMP001,student\n";
-            $csv .= "Jane Smith,jane.smith@example.com,HR,EMP002,instructor\n";
-            $csv .= "Bob Wilson,bob.wilson@example.com,Finance,EMP003,student\n";
-            
-            echo $csv;
-        }, 'bulk-enrollment-sample.csv');
+            echo "name,email,department,employee_id,institution_role\n";
+        }, 'bulk-enrollment-template.csv');
     }
 
     public function sortBy($field)

@@ -77,29 +77,22 @@ class BlogCommentItem extends Component
             return;
         }
 
-        $reply = BlogComment::create([
+        BlogComment::create([
             'post_id' => $this->comment->post_id,
             'user_id' => auth()->id(),
             'parent_id' => $this->comment->id,
             'author_name' => auth()->check() ? null : $this->guestName,
             'author_email' => auth()->check() ? null : $this->guestEmail,
             'content' => $this->replyContent,
-            'status' => 'approved',
+            'status' => 'pending',
             'ip_address' => request()->ip(),
             'user_agent' => request()->userAgent(),
         ]);
 
-        // Update comment count on post
-        $this->comment->post->increment('comments_count');
-
         // Reset form
         $this->reset(['replyContent', 'guestName', 'guestEmail', 'showReplyForm']);
 
-        // Refresh the comment to show new reply
-        $this->comment->refresh();
-        $this->comment->load('replies.user');
-
-        session()->flash('message', 'Reply posted successfully!');
+        session()->flash('message', 'Reply submitted for moderation.');
     }
 
     public function render()
