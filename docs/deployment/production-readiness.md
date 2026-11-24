@@ -8,7 +8,7 @@
 
 | Area | Earned / available | Current evidence and limit |
 | --- | --- | --- |
-| Runtime and dependencies | 15 / 15 | Supported Laravel 12.70.2; reproducible locks; Composer and npm audits clear |
+| Runtime and dependencies | 15 / 15 | Supported Laravel 12.73.0; PHP 8.2-compatible reproducible locks; Composer and npm audits clear |
 | Security and access | 12 / 20 | Existing authentication, ownership, wallet and admin coverage; new production logging/debug safeguards; live hosting security unverified |
 | Data and recovery | 16 / 20 | Current records recovered and independently restored; off-host encrypted retention and recovery SLA not yet established |
 | Background operations | 12 / 15 | Queued generation, checkpoints, bounded workers and retry windows; actual provider CLI allowance unverified |
@@ -27,7 +27,7 @@ Official references: [Laravel support policy](https://laravel.com/docs/12.x/rele
 
 ## Inspected architecture and preserved contracts
 
-The application uses Laravel 12.70.2 / PHP `^8.2`, Livewire 3.8.11 with its own Alpine runtime, Tailwind 3.4.19, Vite 7.3.7, MySQL-specific migrations, Spatie roles, private assessments and uploads, wallet/course enrollment, historical certificates, mentorship, careers, institutions and explicit offline packs. PHP 8.4 is the tested CLI baseline. Node 20.20.2 builds locally; CI uses Node 22. Keep the lockfiles; do not run updates during deployment.
+The application uses Laravel 12.73.0 / PHP `^8.2`, with Composer resolving against the deployed PHP 8.2.12 floor, plus Livewire 3.8.11, Tailwind 3.4.19, Vite 7.3.7, MySQL-specific migrations, Spatie roles, private assessments and uploads, wallet/course enrollment, historical certificates, mentorship, careers, institutions and explicit offline packs. The complete local suite and platform check pass on PHP 8.2.12; CI also exercises PHP 8.4. Node 20.20.2 builds locally; CI uses Node 22. Keep the lockfiles; do not run updates during deployment.
 
 Direct dependency review found existing PDF engines (Dompdf/mPDF), QR libraries, image processing, Cloudinary, Socialite/Google OAuth, Scout/Algolia, purification and permissions/activity packages. No dependency was added. Removing apparently overlapping libraries without verifying their callers would risk existing résumé/certificate/export workflows. `laravel/pail` is currently a production dependency but is a CLI tool: do not run it as a production background process. `composer install --no-dev --prefer-dist --optimize-autoloader` excludes development-only tooling; further package cleanup requires a separate caller audit.
 
@@ -45,7 +45,7 @@ Start with one application node, one worker at a time, database queue/cache/sess
 | --- | --- |
 | CPU | 1–2 vCPU; measured staging workload determines adequacy |
 | RAM | 2 GiB total; use at most two FPM children and one 256 MiB CLI worker initially |
-| PHP | Supported patched PHP 8.4 for this tested branch, OPcache 128 MiB, `memory_limit=256M`, `max_execution_time=60` for web |
+| PHP | PHP 8.2.12 or newer compatible runtime (CI also tests 8.4), OPcache 128 MiB, `memory_limit=256M`, `max_execution_time=60` for web |
 | Database | MySQL 8 or supported MariaDB 10.11+; InnoDB buffer pool initially 128–256 MiB when DB shares the 2 GiB host |
 | Rough RAM reservation | Web/FPM 384–512 MiB, one worker 192–256 MiB, database 256–384 MiB, OPcache 128 MiB, OS/web overhead 240–320 MiB; retain the remaining headroom |
 | Disk | Allow 15–20 GiB initially for releases, uploads, database and logs; backups/media stay off-host; set alerts and revise from measurements |

@@ -5,7 +5,7 @@ Reference `.env.production.example`, `deploy/php.ini.example`, `deploy/nginx.con
 ## 1. Select a compatible host and release
 
 - Resolve the supported-framework/security dependency gates first. Require green application **and** dependency CI jobs for the exact reviewed Git SHA. A build artifact from a failed security workflow is not a deployable release.
-- Confirm PHP 8.4/extensions/CLI pcntl, MySQL or supported MariaDB, persistent private uploads, public-only document root, minute cron, a compatible dump client, outbound HTTPS/SMTP, TLS, storage links and >=660-second CLI execution. Confirm actual provider limits; do not infer persistent workers from the words “Laravel hosting”.
+- Confirm PHP 8.2.12 or newer with the locked package requirements and required extensions/CLI pcntl, MySQL or supported MariaDB, persistent private uploads, public-only document root, minute cron, a compatible dump client, outbound HTTPS/SMTP, TLS, storage links and >=660-second CLI execution. CI also exercises PHP 8.4. Confirm actual provider limits; do not infer persistent workers from the words “Laravel hosting”.
 - Prepare a restricted staging environment with separate database, APP_KEY and provider sandbox keys. Never copy production credentials into GitHub Actions or tests. All destructive test databases must end `_test` or `_testing`.
 - Use SSH/deploy keys with least repository access or the host's GitHub integration. Pin host keys. Pull the exact reviewed commit using an ordinary fast-forward/checkout release process; never force-push, reset shared work, or deploy an unreviewed moving branch. This local work does not claim a successful GitHub push.
 
@@ -57,7 +57,7 @@ Scheduler cron (actual provider PHP path and application path):
 * * * * * cd /srv/bootkode/current && /usr/bin/php artisan schedule:run >> /srv/bootkode/shared/storage/logs/scheduler.log 2>&1
 ```
 
-Rotate that log through the host. `schedule:list` currently contains the newsletter dispatcher; job alerts and learning reminders are opt-in configuration. Test reminders with their `--dry-run` commands before enabling them. Reset quests, review analytics and withdrawal commands are **not** automatically scheduled by this work. Do not add automatic payouts without their own approval/reconciliation procedure.
+Rotate that log through the host. `schedule:list` must show the newsletter dispatcher, daily quest reset, review analytics, withdrawal processing, job alerts, CBT reminders and review reminders from `routes/console.php`. Registration does not prove that host cron executes them. Newsletter, job alerts and learning reminders are configuration-gated and should remain disabled until their queues, transports and dry-run/operator checks pass. Withdrawal processing is separately opt-in and must remain disabled until sandbox replay, reconciliation and explicit operator approval pass. Quest reset and review analytics are non-financial scheduled maintenance tasks; monitor their first staging executions and logs.
 
 ### No persistent worker: bounded cron bursts
 
