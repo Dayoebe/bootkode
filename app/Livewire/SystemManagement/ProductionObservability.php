@@ -28,7 +28,7 @@ class ProductionObservability extends Component
     public string $severityFilter = 'all';
     public string $search = '';
 
-    public function mount(): void
+    public function boot(): void
     {
         abort_unless(Auth::user()?->hasAnyRole(['super_admin', 'academy_admin']), 403);
     }

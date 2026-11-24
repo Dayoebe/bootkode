@@ -34,6 +34,7 @@ class ProductionCheck extends Command
         $check('cron_runtime', $mode !== 'cron' || config('production.cron_max_runtime') >= 660, 'Course jobs need at least 660 seconds of CLI runtime for the documented cron burst.');
         $check('pcntl', extension_loaded('pcntl'), 'CLI pcntl is needed to enforce queue timeouts.');
         $check('mail', ! in_array(config('mail.default'), ['log', 'array', 'null'], true), 'Configure and validate transactional email; log mail exposes verification/reset links.');
+        $check('mail_sender', filled(config('mail.from.address')), 'Configure a verified sender address for transactional email.');
         $check('assets', is_file(public_path('build/manifest.json')) && ! is_file(public_path('hot')), 'Build locked assets and exclude the Vite hot file from a release.');
         foreach ([storage_path(), base_path('bootstrap/cache')] as $index => $path) {
             $check('writable_directory_'.$index, is_writable($path) && (fileperms($path) & 0002) === 0, 'Runtime directories must be writable by the application identity without world-write permissions.');
@@ -49,6 +50,13 @@ class ProductionCheck extends Command
                 DB::select('SELECT 1');
                 foreach (['migrations', 'jobs', 'failed_jobs', 'cache', 'cache_locks', 'sessions'] as $table) {
                     $check('table_'.$table, Schema::hasTable($table), 'Required runtime table must exist after reviewed forward migrations.');
+                }
+                if (Schema::hasTable('users')) {
+                    $unsafeAccounts = DB::table('users')
+                        ->where('email', 'super@admin.com')
+                        ->orWhere('email', 'like', '%@bootkode.local')
+                        ->count();
+                    $check('provisional_accounts', $unsafeAccounts === 0, 'Replace or remove provisional administrator identities after a real administrator is provisioned and ownership is reviewed.');
                 }
                 $ran = Schema::hasTable('migrations') ? DB::table('migrations')->pluck('migration')->all() : [];
                 $files = array_map(fn ($file) => basename($file, '.php'), glob(database_path('migrations/*.php')) ?: []);

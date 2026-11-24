@@ -36,6 +36,11 @@ class SystemStatusManagement extends Component
         'started_at' => ['required', 'date'],
     ];
 
+    public function boot(): void
+    {
+        abort_unless(Auth::user()?->hasAnyRole(['super_admin', 'academy_admin']), 403);
+    }
+
     public function mount()
     {
         $this->started_at = now()->toDateTimeString();
@@ -47,22 +52,18 @@ class SystemStatusManagement extends Component
             'website' => [
                 'name' => 'Website',
                 'status' => $this->getServiceStatus('website'),
-                'uptime' => 99.9,
             ],
             'database' => [
                 'name' => 'Database',
                 'status' => $this->getServiceStatus('database'),
-                'uptime' => 99.8,
             ],
             'api' => [
                 'name' => 'API',
                 'status' => $this->getServiceStatus('api'),
-                'uptime' => 99.7,
             ],
             'cdn' => [
                 'name' => 'CDN',
                 'status' => $this->getServiceStatus('cdn'),
-                'uptime' => 99.9,
             ],
         ];
     }
@@ -74,7 +75,7 @@ class SystemStatusManagement extends Component
             ->latest('started_at')
             ->first();
 
-        return $latestIncident ? $latestIncident->status : 'operational';
+        return $latestIncident ? $latestIncident->status : 'unknown';
     }
 
     public function saveIncident()

@@ -77,10 +77,10 @@
         $pageIcon = $icon ?? 'fas fa-gauge-high';
         $roleLabel = ucfirst($user?->getRoleNames()->first() ?? 'User');
         $privacySettings = $user?->privacy_settings ?? [];
-        $marketingAnalyticsEnabled = ($privacySettings['data_collection_consent'] ?? true)
-            && ($privacySettings['analytics_tracking'] ?? true)
+        $marketingAnalyticsEnabled = ($privacySettings['data_collection_consent'] ?? false)
+            && ($privacySettings['analytics_tracking'] ?? false)
             && ($privacySettings['marketing_analytics'] ?? false)
-            && ($privacySettings['third_party_integrations'] ?? true);
+            && ($privacySettings['third_party_integrations'] ?? false);
     @endphp
 
     <title>{{ config('app.name', 'BootKode') }} - {{ $pageTitle }}</title>
