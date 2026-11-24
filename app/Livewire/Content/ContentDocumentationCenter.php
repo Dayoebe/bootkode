@@ -2,6 +2,8 @@
 
 namespace App\Livewire\Content;
 
+use App\Livewire\Concerns\AuthorizesPublishingAdministration;
+use App\Services\Authorization\PublishingAccess;
 use Livewire\Component;
 use App\Models\Core\User;
 use App\Models\Learning\Document;
@@ -15,6 +17,13 @@ use Livewire\Attributes\Layout;
 
 class ContentDocumentationCenter extends Component
 {
+    use AuthorizesPublishingAdministration;
+
+    protected function publishingAbility(): string
+    {
+        return PublishingAccess::CONTENT_EDITOR;
+    }
+
     public $activeTab = 'learning-materials';
     public $user;
 

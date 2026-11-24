@@ -2,10 +2,16 @@
 
 namespace App\Livewire\Content\Partial;
 
+use App\Livewire\Concerns\AuthorizesPublishingAdministration;
+use App\Services\Authorization\PublishingAccess;
 use Livewire\Component;
 
 class DocumentSettings extends Component
 {
+    use AuthorizesPublishingAdministration;
+
+    protected function publishingAbility(): string { return PublishingAccess::CONTENT_ADMINISTRATION; }
+
     public $settings = [
         'auto_publish' => false,
         'require_review' => true,

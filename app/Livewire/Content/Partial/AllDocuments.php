@@ -2,6 +2,8 @@
 
 namespace App\Livewire\Content\Partial;
 
+use App\Livewire\Concerns\AuthorizesPublishingAdministration;
+use App\Services\Authorization\PublishingAccess;
 use Livewire\Component;
 use Livewire\WithPagination;
 use App\Models\Learning\Document;
@@ -9,7 +11,9 @@ use App\Models\Learning\DocumentCategory;
 
 class AllDocuments extends Component
 {
-    use WithPagination;
+    use AuthorizesPublishingAdministration, WithPagination;
+
+    protected function publishingAbility(): string { return PublishingAccess::CONTENT_EDITOR; }
 
     public $search = '';
     public $selectedType = '';

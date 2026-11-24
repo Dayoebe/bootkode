@@ -2,12 +2,21 @@
 
 namespace App\Livewire\Pages\Partials;
 
+use App\Livewire\Concerns\AuthorizesPublishingAdministration;
+use App\Services\Authorization\PublishingAccess;
 use Livewire\Component;
 use App\Models\Content\Page;
 use Illuminate\Support\Facades\File;
 
 class SeoManager extends Component
 {
+    use AuthorizesPublishingAdministration;
+
+    protected function publishingAbility(): string
+    {
+        return PublishingAccess::PAGE_SEO;
+    }
+
     public $seoIssues = [];
     public $seoSuggestions = [];
     public $crawlErrors = [];

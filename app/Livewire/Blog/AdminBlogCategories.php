@@ -2,14 +2,21 @@
 
 namespace App\Livewire\Blog;
 
+use App\Livewire\Concerns\AuthorizesPublishingAdministration;
 use App\Models\Content\BlogCategory;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Illuminate\Support\Str;
+use App\Services\Authorization\PublishingAccess;
 
 class AdminBlogCategories extends Component
 {
-    use WithPagination;
+    use AuthorizesPublishingAdministration, WithPagination;
+
+    protected function publishingAbility(): string
+    {
+        return PublishingAccess::BLOG_CATEGORIES;
+    }
 
     public $search = '';
     public $showModal = false;

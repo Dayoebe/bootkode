@@ -23,39 +23,37 @@
 
             <div class="overflow-y-auto max-h-[calc(90vh-120px)]">
                 <div class="p-6">
-                    <!-- Overall Score -->
+                    <!-- Assessment status -->
                     <div class="text-center mb-8">
-                        <div
-                            class="inline-flex items-center justify-center w-32 h-32 bg-action   rounded-full text-action-foreground mb-4">
-                            <span
-                                class="text-3xl font-bold">{{ number_format($currentInterview->overall_score ?? 0, 1) }}%</span>
-                        </div>
-                        <h3 class="text-2xl font-bold text-themed-primary mb-2">{{ $currentInterview->overall_rating }}</h3>
-                        <p class="text-themed-secondary">Overall Performance</p>
+                        @if($currentInterview->overall_score !== null)
+                            <div class="inline-flex items-center justify-center w-32 h-32 bg-action rounded-full text-action-foreground mb-4">
+                                <span class="text-3xl font-bold">{{ number_format($currentInterview->overall_score, 1) }}%</span>
+                            </div>
+                            <h3 class="text-2xl font-bold text-themed-primary mb-2">{{ $currentInterview->overall_rating }}</h3>
+                            <p class="text-themed-secondary">Evidence-based assessment</p>
+                        @else
+                            <div class="rounded-lg border border-amber-300 bg-amber-50 p-5 text-left text-amber-950">
+                                <h3 class="font-semibold">Responses submitted — assessment unavailable</h3>
+                                <p class="mt-1 text-sm">BootKode has not applied a reviewed rubric to these responses, so no performance, communication or confidence score is shown.</p>
+                            </div>
+                        @endif
                     </div>
 
                     <!-- Score Breakdown -->
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                        @foreach([
+                            'technical_score' => 'Technical skills',
+                            'communication_score' => 'Communication',
+                            'confidence_score' => 'Confidence',
+                            'problem_solving_score' => 'Problem solving',
+                        ] as $scoreField => $scoreLabel)
                         <div class="bg-themed-tertiary border border-themed-primary rounded-lg p-4 text-center">
-                            <div class="text-2xl font-bold text-brand dark:text-brand">
-                                {{ number_format($currentInterview->technical_score ?? 0, 1) }}%</div>
-                            <div class="text-sm text-themed-secondary">Technical Skills</div>
+                            <div class="text-2xl font-bold text-brand">
+                                {{ $currentInterview->{$scoreField} !== null ? number_format($currentInterview->{$scoreField}, 1).'%' : 'Not assessed' }}
+                            </div>
+                            <div class="text-sm text-themed-secondary">{{ $scoreLabel }}</div>
                         </div>
-                        <div class="bg-themed-tertiary border border-themed-primary rounded-lg p-4 text-center">
-                            <div class="text-2xl font-bold text-green-600 dark:text-green-400">
-                                {{ number_format($currentInterview->communication_score ?? 0, 1) }}%</div>
-                            <div class="text-sm text-themed-secondary">Communication</div>
-                        </div>
-                        <div class="bg-themed-tertiary border border-themed-primary rounded-lg p-4 text-center">
-                            <div class="text-2xl font-bold text-brand dark:text-brand">
-                                {{ number_format($currentInterview->confidence_score ?? 0, 1) }}%</div>
-                            <div class="text-sm text-themed-secondary">Confidence</div>
-                        </div>
-                        <div class="bg-themed-tertiary border border-themed-primary rounded-lg p-4 text-center">
-                            <div class="text-2xl font-bold text-orange-600 dark:text-orange-400">
-                                {{ number_format($currentInterview->problem_solving_score ?? 0, 1) }}%</div>
-                            <div class="text-sm text-themed-secondary">Problem Solving</div>
-                        </div>
+                        @endforeach
                     </div>
 
                     <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">

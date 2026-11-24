@@ -2,6 +2,8 @@
 // Partial Component 1: SubscriberManagement.php
 namespace App\Livewire\Newsletter\Partials;
 
+use App\Livewire\Concerns\AuthorizesPublishingAdministration;
+use App\Services\Authorization\PublishingAccess;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Livewire\WithFileUploads;
@@ -12,7 +14,9 @@ use League\Csv\Writer;
 
 class SubscriberManagement extends Component
 {
-    use WithPagination, WithFileUploads;
+    use AuthorizesPublishingAdministration, WithPagination, WithFileUploads;
+
+    protected function publishingAbility(): string { return PublishingAccess::NEWSLETTER_EDITOR; }
 
     public $search = '';
     public $statusFilter = '';

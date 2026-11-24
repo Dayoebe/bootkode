@@ -2,12 +2,18 @@
 
 namespace App\Livewire\Content\Partial;
 
+use App\Livewire\Concerns\AuthorizesPublishingAdministration;
+use App\Services\Authorization\PublishingAccess;
 use Livewire\Component;
 use App\Models\Learning\Document;
 use App\Models\Learning\DocumentCategory;
 
 class CreateDocument extends Component
 {
+    use AuthorizesPublishingAdministration;
+
+    protected function publishingAbility(): string { return PublishingAccess::CONTENT_EDITOR; }
+
     public $title = '';
     public $content = '';
     public $excerpt = '';

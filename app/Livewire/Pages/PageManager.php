@@ -2,6 +2,8 @@
 
 namespace App\Livewire\Pages;
 
+use App\Livewire\Concerns\AuthorizesPublishingAdministration;
+use App\Services\Authorization\PublishingAccess;
 use Livewire\Component;
 use App\Models\Content\Page;
 use Livewire\Attributes\Layout;
@@ -14,6 +16,13 @@ use Livewire\Attributes\Layout;
 ])]
 class PageManager extends Component
 {
+    use AuthorizesPublishingAdministration;
+
+    protected function publishingAbility(): string
+    {
+        return PublishingAccess::PAGE_CONTENT;
+    }
+
     public $activeTab = 'all-pages';
     
     // Statistics for header display

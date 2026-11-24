@@ -4,9 +4,14 @@ namespace App\Livewire\Blog;
 
 use App\Models\Content\BlogSetting;
 use Livewire\Component;
+use App\Services\Authorization\PublishingAccess;
 
 class AdminBlogSettings extends Component
 {
+    public function boot(PublishingAccess $access): void
+    {
+        $access->authorize(auth()->user(), PublishingAccess::BLOG_POSTS);
+    }
     public $activeTab = 'general';
     public $isSeoMode = false;
     
@@ -47,9 +52,13 @@ class AdminBlogSettings extends Component
     // UI state
     public $newKeyword = '';
 
-    public function mount()
+    public function mount(PublishingAccess $access)
     {
         $this->isSeoMode = request()->routeIs('admin.blog.seo');
+        $access->authorize(
+            auth()->user(),
+            $this->isSeoMode ? PublishingAccess::BLOG_SEO : PublishingAccess::BLOG_SETTINGS
+        );
         $this->activeTab = $this->isSeoMode ? 'seo' : 'general';
         $this->loadSettings();
     }
@@ -110,14 +119,26 @@ class AdminBlogSettings extends Component
         $this->default_meta_keywords = array_values($this->default_meta_keywords);
     }
 
-    public function save()
+    public function save(PublishingAccess $access)
     {
-        $this->validate([
+        $canManageAllSettings = $access->allows(auth()->user(), PublishingAccess::BLOG_SETTINGS);
+
+        if (! $canManageAllSettings) {
+            $access->authorize(auth()->user(), PublishingAccess::BLOG_SEO);
+        }
+
+        $this->validate($canManageAllSettings ? [
             'blog_title' => 'required|max:100',
             'blog_description' => 'required|max:500',
             'posts_per_page' => 'required|integer|min:6|max:50',
             'admin_email' => 'nullable|email',
             'from_email' => 'nullable|email',
+        ] : [
+            'default_meta_title' => 'nullable|string|max:255',
+            'default_meta_description' => 'nullable|string|max:500',
+            'default_meta_keywords' => 'array',
+            'default_meta_keywords.*' => 'string|max:100',
+            'robots_txt_additions' => 'nullable|string|max:5000',
         ]);
 
         // Save all settings
@@ -156,6 +177,18 @@ class AdminBlogSettings extends Component
             'from_email' => $this->from_email,
             'from_name' => $this->from_name,
         ];
+
+        if (! $canManageAllSettings) {
+            $settings = array_intersect_key($settings, array_flip([
+                'default_meta_title',
+                'default_meta_description',
+                'default_meta_keywords',
+                'og_image',
+                'enable_sitemap',
+                'enable_rss',
+                'robots_txt_additions',
+            ]));
+        }
 
         foreach ($settings as $key => $value) {
             BlogSetting::set($key, $value);

@@ -17,7 +17,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware(['auth', 'verified'])->prefix('dashboard')->name('newsletter.')->group(function () {
+Route::middleware(['auth', 'verified', \App\Http\Middleware\CheckRole::class.':super_admin,academy_admin,content_editor'])->prefix('dashboard')->name('newsletter.')->group(function () {
     // Newsletter management routes (requires proper role)
     Route::get('/newsletter', App\Livewire\Newsletter\NewsletterCenter::class)->name('index');
     Route::get('/newsletter/subscribers', App\Livewire\Newsletter\NewsletterCenter::class)->name('subscribers');
@@ -26,7 +26,7 @@ Route::middleware(['auth', 'verified'])->prefix('dashboard')->name('newsletter.'
     Route::get('/newsletter/performance', App\Livewire\Newsletter\NewsletterCenter::class)->name('performance'); // NEW
     Route::get('/newsletter/templates', App\Livewire\Newsletter\NewsletterCenter::class)->name('templates');
     Route::get('/newsletter/analytics', App\Livewire\Newsletter\NewsletterCenter::class)->name('analytics');
-    Route::get('/newsletter/settings', App\Livewire\Newsletter\NewsletterCenter::class)->name('settings');
+    Route::get('/newsletter/settings', App\Livewire\Newsletter\NewsletterCenter::class)->middleware(\App\Http\Middleware\CheckRole::class.':super_admin')->name('settings');
 });
 
 // Public newsletter routes (no auth required)
@@ -120,14 +120,14 @@ Route::prefix('blog')->name('blog.')->group(function () {
 });
 
 // Admin Blog Routes (requires authentication and proper roles)
-Route::middleware(['auth', 'verified'])->prefix('admin/blog')->name('admin.blog.')->group(function () {
+Route::middleware(['auth', 'verified', \App\Http\Middleware\CheckRole::class.':super_admin,academy_admin,content_editor'])->prefix('admin/blog')->name('admin.blog.')->group(function () {
     Route::get('/posts', \App\Livewire\Blog\AdminBlogPosts::class)->name('posts.index');
     Route::get('/posts/create', \App\Livewire\Blog\AdminBlogPostForm::class)->name('posts.create');
     Route::get('/posts/{post:slug}/edit', \App\Livewire\Blog\AdminBlogPostForm::class)->name('posts.edit');
-    Route::get('/categories', \App\Livewire\Blog\AdminBlogCategories::class)->name('categories.index');
+    Route::get('/categories', \App\Livewire\Blog\AdminBlogCategories::class)->middleware(\App\Http\Middleware\CheckRole::class.':super_admin,academy_admin')->name('categories.index');
     Route::get('/comments', \App\Livewire\Blog\AdminBlogComments::class)->name('comments.index');
-    Route::get('/settings', \App\Livewire\Blog\AdminBlogSettings::class)->name('settings');
-    Route::get('/seo', \App\Livewire\Blog\AdminBlogSettings::class)->name('seo');
+    Route::get('/settings', \App\Livewire\Blog\AdminBlogSettings::class)->middleware(\App\Http\Middleware\CheckRole::class.':super_admin')->name('settings');
+    Route::get('/seo', \App\Livewire\Blog\AdminBlogSettings::class)->middleware(\App\Http\Middleware\CheckRole::class.':super_admin,content_editor')->name('seo');
 });
 
 // API Routes for AJAX operations
@@ -135,7 +135,9 @@ Route::middleware('api')->prefix('api/blog')->name('api.blog.')->group(function 
     Route::post('/posts/{post}/react', [\App\Http\Controllers\BlogController::class, 'toggleReaction'])->name('react');
     Route::post('/posts/{post}/view', [\App\Http\Controllers\BlogController::class, 'incrementView'])->name('view');
     Route::post('/comments/{comment}/react', [\App\Http\Controllers\BlogController::class, 'toggleCommentReaction'])->name('comment.react');
-    Route::post('/upload-image', [\App\Http\Controllers\BlogController::class, 'uploadImage'])->name('upload.image');
+    Route::post('/upload-image', [\App\Http\Controllers\BlogController::class, 'uploadImage'])
+        ->middleware(['auth', 'verified', \App\Http\Middleware\CheckRole::class.':super_admin,academy_admin,content_editor', 'throttle:30,1'])
+        ->name('upload.image');
 });
 
 // =============================================================================
@@ -146,7 +148,7 @@ Route::get('/Contact', \App\Livewire\ManualPages\ContactUs::class)->name('contac
 Route::get('/Statistics', \App\Livewire\ManualPages\Statistics::class)->name('statistics');
 Route::get('/Guideline', \App\Livewire\ManualPages\Guideline::class)->name('guideline');
 
-Route::middleware(['auth'])->group(function () {
+Route::middleware(['auth', 'verified', \App\Http\Middleware\CheckRole::class.':super_admin,academy_admin,content_editor'])->group(function () {
     Route::get('/content', ContentDocumentationCenter::class)->name('content.index');
     Route::get('/content/learning-materials', ContentDocumentationCenter::class)->name('content.learning-materials');
     Route::get('/content/video-library', ContentDocumentationCenter::class)->name('content.video-library');
@@ -155,9 +157,9 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/content/moderation', ContentDocumentationCenter::class)->name('content.moderation');
     Route::get('/content/create-document', ContentDocumentationCenter::class)->name('content.create-document');
     Route::get('/content/reviews', ContentDocumentationCenter::class)->name('content.reviews');
-    Route::get('/content/localization', ContentDocumentationCenter::class)->name('content.localization');
-    Route::get('/content/categories', ContentDocumentationCenter::class)->name('content.categories');
-    Route::get('/content/settings', ContentDocumentationCenter::class)->name('content.settings');
+    Route::get('/content/localization', ContentDocumentationCenter::class)->middleware(\App\Http\Middleware\CheckRole::class.':super_admin,academy_admin')->name('content.localization');
+    Route::get('/content/categories', ContentDocumentationCenter::class)->middleware(\App\Http\Middleware\CheckRole::class.':super_admin,academy_admin')->name('content.categories');
+    Route::get('/content/settings', ContentDocumentationCenter::class)->middleware(\App\Http\Middleware\CheckRole::class.':super_admin,academy_admin')->name('content.settings');
     Route::get('/content/reports', ContentDocumentationCenter::class)->name('content.reports');
     Route::get('/content/analytics', ContentDocumentationCenter::class)->name('content.analytics');
     Route::get('/content/overview', ContentDocumentationCenter::class)->name('content.overview');
@@ -574,15 +576,15 @@ Route::middleware(['auth', 'verified'])->prefix('student')->name('student.')->gr
 require __DIR__.'/auth.php';
 
 // Page management routes (protected)
-Route::prefix('admin/pages')->middleware(['auth', 'verified'])->group(function () {
+Route::prefix('admin/pages')->middleware(['auth', 'verified', \App\Http\Middleware\CheckRole::class.':super_admin,academy_admin,content_editor'])->group(function () {
     // Main page manager with tab support
     Route::get('/', \App\Livewire\Pages\PageManager::class)->name('pages.index');
     Route::get('/create', \App\Livewire\Pages\PageManager::class)->defaults('activeTab', 'create-page')->name('pages.create');
-    Route::get('/analytics', \App\Livewire\Pages\PageManager::class)->defaults('activeTab', 'analytics')->name('pages.analytics');
+    Route::get('/analytics', \App\Livewire\Pages\PageManager::class)->middleware(\App\Http\Middleware\CheckRole::class.':super_admin,academy_admin')->defaults('activeTab', 'analytics')->name('pages.analytics');
     Route::get('/templates', \App\Livewire\Pages\PageManager::class)->defaults('activeTab', 'templates')->name('pages.templates');
     Route::get('/media', \App\Livewire\Pages\PageManager::class)->defaults('activeTab', 'media')->name('pages.media');
-    Route::get('/seo', \App\Livewire\Pages\PageManager::class)->defaults('activeTab', 'seo')->name('pages.seo');
-    Route::get('/settings', \App\Livewire\Pages\PageManager::class)->defaults('activeTab', 'settings')->name('pages.settings');
+    Route::get('/seo', \App\Livewire\Pages\PageManager::class)->middleware(\App\Http\Middleware\CheckRole::class.':super_admin,academy_admin')->defaults('activeTab', 'seo')->name('pages.seo');
+    Route::get('/settings', \App\Livewire\Pages\PageManager::class)->middleware(\App\Http\Middleware\CheckRole::class.':super_admin')->defaults('activeTab', 'settings')->name('pages.settings');
 
     // // API endpoints
     // Route::post('/upload-media', [\App\Http\Controllers\MediaController::class, 'upload'])->name('pages.upload-media');

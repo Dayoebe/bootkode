@@ -2,6 +2,8 @@
 
 namespace App\Livewire\Pages\Partials;
 
+use App\Livewire\Concerns\AuthorizesPublishingAdministration;
+use App\Services\Authorization\PublishingAccess;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 use Livewire\WithPagination;
@@ -11,7 +13,12 @@ use Intervention\Image\Facades\Image;
 
 class MediaManager extends Component
 {
-    use WithFileUploads, WithPagination;
+    use AuthorizesPublishingAdministration, WithFileUploads, WithPagination;
+
+    protected function publishingAbility(): string
+    {
+        return PublishingAccess::PAGE_CONTENT;
+    }
 
     // Media management properties
     // public $mediaFiles = [];

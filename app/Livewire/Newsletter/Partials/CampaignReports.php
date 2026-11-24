@@ -2,6 +2,8 @@
 
 namespace App\Livewire\Newsletter\Partials;
 
+use App\Livewire\Concerns\AuthorizesPublishingAdministration;
+use App\Services\Authorization\PublishingAccess;
 use Livewire\Component;
 use Livewire\WithPagination;
 use App\Models\Admin\NewsletterCampaign;
@@ -9,7 +11,9 @@ use App\Models\Admin\NewsletterInteraction;
 
 class CampaignReports extends Component
 {
-    use WithPagination;
+    use AuthorizesPublishingAdministration, WithPagination;
+
+    protected function publishingAbility(): string { return PublishingAccess::NEWSLETTER_EDITOR; }
 
     public $search = '';
     public $perPage = 10;

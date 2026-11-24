@@ -2,6 +2,8 @@
 
 namespace App\Livewire\Pages\Partials;
 
+use App\Livewire\Concerns\AuthorizesPublishingAdministration;
+use App\Services\Authorization\PublishingAccess;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 use App\Models\Content\Page;
@@ -11,7 +13,12 @@ use Carbon\Carbon;
 
 class CreatePage extends Component
 {
-    use WithFileUploads;
+    use AuthorizesPublishingAdministration, WithFileUploads;
+
+    protected function publishingAbility(): string
+    {
+        return PublishingAccess::PAGE_CONTENT;
+    }
 
     // Form Management
     public $editingPageId = null;

@@ -2,6 +2,8 @@
 // UPDATED: NewsletterCenter.php - Add Performance tab
 namespace App\Livewire\Newsletter;
 
+use App\Livewire\Concerns\AuthorizesPublishingAdministration;
+use App\Services\Authorization\PublishingAccess;
 use Livewire\Component;
 use App\Models\Core\User;
 use App\Models\Admin\NewsletterSubscriber;
@@ -13,6 +15,13 @@ use Livewire\Attributes\Layout;
 
 class NewsletterCenter extends Component
 {
+    use AuthorizesPublishingAdministration;
+
+    protected function publishingAbility(): string
+    {
+        return PublishingAccess::NEWSLETTER_EDITOR;
+    }
+
     public $activeTab = 'subscribers';
     public $user;
     public $stats = [];

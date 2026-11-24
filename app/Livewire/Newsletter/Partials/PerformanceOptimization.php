@@ -2,6 +2,8 @@
 // NEW COMPONENT: PerformanceOptimization.php
 namespace App\Livewire\Newsletter\Partials;
 
+use App\Livewire\Concerns\AuthorizesPublishingAdministration;
+use App\Services\Authorization\PublishingAccess;
 use Livewire\Component;
 use App\Models\Admin\NewsletterSubscriber;
 use App\Models\Admin\NewsletterCampaign;
@@ -11,6 +13,10 @@ use Carbon\Carbon;
 
 class PerformanceOptimization extends Component
 {
+    use AuthorizesPublishingAdministration;
+
+    protected function publishingAbility(): string { return PublishingAccess::NEWSLETTER_EDITOR; }
+
     public $activeSection = 'deliverability';
     public $dateRange = '30';
     public $selectedMetric = 'open_rate';

@@ -2,14 +2,21 @@
 
 namespace App\Livewire\Blog;
 
+use App\Livewire\Concerns\AuthorizesPublishingAdministration;
 use App\Models\Content\BlogComment;
 use App\Models\Content\BlogPost;
 use Livewire\Component;
 use Livewire\WithPagination;
+use App\Services\Authorization\PublishingAccess;
 
 class AdminBlogComments extends Component
 {
-    use WithPagination;
+    use AuthorizesPublishingAdministration, WithPagination;
+
+    protected function publishingAbility(): string
+    {
+        return PublishingAccess::BLOG_COMMENTS;
+    }
 
     public $search = '';
     public $statusFilter = 'all';

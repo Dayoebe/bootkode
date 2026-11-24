@@ -2,6 +2,8 @@
 
 namespace App\Livewire\Pages\Partials;
 
+use App\Livewire\Concerns\AuthorizesPublishingAdministration;
+use App\Services\Authorization\PublishingAccess;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 use App\Models\Content\Page;
@@ -9,7 +11,12 @@ use Illuminate\Support\Facades\Storage;
 
 class Templates extends Component
 {
-    use WithFileUploads;
+    use AuthorizesPublishingAdministration, WithFileUploads;
+
+    protected function publishingAbility(): string
+    {
+        return PublishingAccess::PAGE_CONTENT;
+    }
 
     public $availableTemplates = [];
     public $customTemplates = [];
