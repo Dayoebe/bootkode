@@ -14,7 +14,7 @@
         "endroid/qr-code": "^5.0",
         "ezyang/htmlpurifier": "^4.18",
         "intervention/image": "^3.11",
-        "laravel/framework": "^12.69",
+        "laravel/framework": "^12.71",
         "laravel/pail": "^1.2",
         "laravel/sanctum": "^4.2",
         "laravel/scout": "^10.19",
@@ -85,6 +85,9 @@
     },
     "config": {
         "optimize-autoloader": true,
+        "platform": {
+            "php": "8.2.12"
+        },
         "preferred-install": "dist",
         "sort-packages": true,
         "allow-plugins": {
