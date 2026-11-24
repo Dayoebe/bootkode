@@ -22,10 +22,7 @@ The recovered local database contains existing data. Preserve it. The new certif
 
 ## Verification
 
-Create a dedicated test database and configure `.env.testing` with `APP_ENV=testing`, a test application key, test MySQL credentials and `DB_DATABASE=bootkode_test` (or another name ending `_test`/`_testing`). Use array mail/cache/session and the synchronous queue for automated tests. `Tests\TestCase` rejects other MySQL database names before database refresh. Do not point testing at the recovered database.
-
 ```sh
-php artisan test
 npm run build
 php artisan view:cache
 php artisan route:cache
