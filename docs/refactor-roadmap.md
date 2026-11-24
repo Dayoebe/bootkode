@@ -265,3 +265,12 @@ The application-controlled premium experience work is complete. The open items r
 - [x] Rebuild the dashboard profile as a theme-consistent account centre; reduce competing local navigation, restore the edit-route contract, remove nonfunctional/security-misleading controls and rebind every mutation to the authenticated account.
 - [ ] Continue the shared design through secondary dashboard page families without changing their domain or authorization boundaries.
 - [ ] Complete broader theme, screen-reader and authenticated workflow acceptance as each page family is redesigned.
+
+## Enterprise hardening slice — 17 November 2026
+
+- [x] Centralize the publishing role matrix, route guards, persistent Livewire guards, protected blog upload and field-level Blog SEO/settings separation.
+- [x] Extract `PageAnalyticsProjection` and `MockInterviewCompletionService`; remove random CMS/interview results and add honest unavailable states.
+- [x] Consolidate Laravel 12 scheduler declarations and make automated withdrawal processing opt-in.
+- [x] Upgrade Laravel/Symfony through patched compatible lines without suppressing Composer advisories.
+- [ ] Continue extracting page authoring/media/template commands and newsletter campaign/subscriber commands from the remaining large Livewire classes. Each extraction must retain the access ability at its service boundary and add a role/ownership test.
+- [ ] Split the largest Blade workspaces into existing `ui.*` primitives by interaction boundary without changing public route contracts.
