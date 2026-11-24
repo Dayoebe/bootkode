@@ -45,7 +45,6 @@ class ContentDocumentationCenter extends Component
             'content.learning-materials' => 'learning-materials',
             'content.video-library' => 'video-library',
             'content.documentation' => 'documentation',
-            'content.localization' => 'localization',
             'content.moderation' => 'moderation',
             'content.all-documents' => 'all-documents',
             'content.create-document' => 'create-document',

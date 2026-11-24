@@ -157,7 +157,6 @@ Route::middleware(['auth', 'verified', \App\Http\Middleware\CheckRole::class.':s
     Route::get('/content/moderation', ContentDocumentationCenter::class)->name('content.moderation');
     Route::get('/content/create-document', ContentDocumentationCenter::class)->name('content.create-document');
     Route::get('/content/reviews', ContentDocumentationCenter::class)->name('content.reviews');
-    Route::get('/content/localization', ContentDocumentationCenter::class)->middleware(\App\Http\Middleware\CheckRole::class.':super_admin,academy_admin')->name('content.localization');
     Route::get('/content/categories', ContentDocumentationCenter::class)->middleware(\App\Http\Middleware\CheckRole::class.':super_admin,academy_admin')->name('content.categories');
     Route::get('/content/settings', ContentDocumentationCenter::class)->middleware(\App\Http\Middleware\CheckRole::class.':super_admin,academy_admin')->name('content.settings');
     Route::get('/content/reports', ContentDocumentationCenter::class)->name('content.reports');
@@ -377,8 +376,12 @@ Route::middleware(['auth', 'verified'])->prefix('dashboard')->name('')->group(fu
     Route::get('/notifications', \App\Livewire\SystemManagement\Notifications::class)->name('notifications');
     Route::post('/notifications/{notification}/open', \App\Http\Controllers\NotificationOpenController::class)->name('notifications.open');
     Route::get('/system-status', \App\Livewire\SystemManagement\SystemStatus::class)->name('system-status');
-    Route::get('/system-status-management', \App\Livewire\SystemManagement\SystemStatusManagement::class)->name('system-status.management');
-    Route::get('/production-observability', \App\Livewire\SystemManagement\ProductionObservability::class)->name('production.observability');
+    Route::get('/system-status-management', \App\Livewire\SystemManagement\SystemStatusManagement::class)
+        ->middleware(\App\Http\Middleware\CheckRole::class.':super_admin,academy_admin')
+        ->name('system-status.management');
+    Route::get('/production-observability', \App\Livewire\SystemManagement\ProductionObservability::class)
+        ->middleware(\App\Http\Middleware\CheckRole::class.':super_admin,academy_admin')
+        ->name('production.observability');
 
     // Support System
     Route::get('/help-support', \App\Livewire\SystemManagement\HelpSupport::class)->name('help.support');
@@ -397,7 +400,6 @@ Route::middleware(['auth', 'verified'])->prefix('dashboard')->name('')->group(fu
 
     Route::get('/notification-preferences', \App\Livewire\SystemManagement\NotificationPreferences::class)->name('notification.preferences');
     Route::get('/privacy-settings', \App\Livewire\SystemManagement\PrivacySettings::class)->name('privacy.settings');
-    Route::get('/language-localization', \App\Livewire\SystemManagement\LanguageLocalization::class)->name('language.localization');
 });
 
 // =============================================================================
@@ -581,7 +583,6 @@ Route::prefix('admin/pages')->middleware(['auth', 'verified', \App\Http\Middlewa
     Route::get('/', \App\Livewire\Pages\PageManager::class)->name('pages.index');
     Route::get('/create', \App\Livewire\Pages\PageManager::class)->defaults('activeTab', 'create-page')->name('pages.create');
     Route::get('/analytics', \App\Livewire\Pages\PageManager::class)->middleware(\App\Http\Middleware\CheckRole::class.':super_admin,academy_admin')->defaults('activeTab', 'analytics')->name('pages.analytics');
-    Route::get('/templates', \App\Livewire\Pages\PageManager::class)->defaults('activeTab', 'templates')->name('pages.templates');
     Route::get('/media', \App\Livewire\Pages\PageManager::class)->defaults('activeTab', 'media')->name('pages.media');
     Route::get('/seo', \App\Livewire\Pages\PageManager::class)->middleware(\App\Http\Middleware\CheckRole::class.':super_admin,academy_admin')->defaults('activeTab', 'seo')->name('pages.seo');
     Route::get('/settings', \App\Livewire\Pages\PageManager::class)->middleware(\App\Http\Middleware\CheckRole::class.':super_admin')->defaults('activeTab', 'settings')->name('pages.settings');

@@ -558,7 +558,7 @@ class CreatePage extends Component
         $this->shortcodes = [
             'company_name' => config('app.name'),
             'current_year' => date('Y'),
-            'contact_email' => 'contact@example.com',
+            'contact_email' => config('mail.from.address') ?: '',
         ];
 
         $this->settings = [
