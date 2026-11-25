@@ -61,8 +61,8 @@ class LessonEditor extends Component
         return [
             'title' => ['label' => 'Lesson title', 'purpose' => 'A clear title aligned to the course and section', 'max' => 255, 'actions' => ['generate', 'suggest', 'improve'], 'form' => true],
             'slug' => ['label' => 'Lesson URL slug', 'purpose' => 'A concise URL-safe phrase', 'max' => 255, 'actions' => ['generate'], 'format' => 'slug'],
-            'description' => ['label' => 'Lesson description', 'purpose' => 'A concise learner-facing lesson overview', 'max' => 1000, 'actions' => ['generate', 'improve', 'rewrite', 'shorten', 'grammar'], 'form' => true],
-            'content' => ['label' => 'Lesson content', 'purpose' => 'Structured instructional content with explanations and practical exercises where supported by the brief', 'max' => 30000, 'actions' => ['generate', 'improve', 'rewrite', 'expand', 'shorten', 'grammar', 'professional'], 'form' => true, 'rich_text' => true],
+            'description' => ['label' => 'Lesson description', 'purpose' => 'A concise learner-facing lesson overview', 'max' => 1000, 'actions' => ['add', 'generate', 'improve', 'rewrite', 'shorten', 'grammar'], 'form' => true, 'appendable' => true],
+            'content' => ['label' => 'Lesson content', 'purpose' => 'Structured instructional content with explanations and practical exercises where supported by the brief', 'editorial_requirements' => 'Use descriptive headings, short explanatory paragraphs, practical examples or exercises supported by the brief, and a clear progression without generic filler.', 'max' => 30000, 'actions' => ['continue', 'add', 'generate', 'improve', 'rewrite', 'expand', 'shorten', 'grammar', 'professional'], 'form' => true, 'rich_text' => true, 'appendable' => true],
         ];
     }
 

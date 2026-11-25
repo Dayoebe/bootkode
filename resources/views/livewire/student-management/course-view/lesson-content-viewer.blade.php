@@ -495,7 +495,9 @@
                                     </div>
                                     <div class="grid grid-cols-2 gap-2 sm:flex sm:w-auto">
                                         <button type="button"
-                                            x-on:click='openDocument(@js($documentUrl), @js($document["name"]))'
+                                            data-document-url="{{ $documentUrl }}"
+                                            data-document-title="{{ $document['name'] }}"
+                                            x-on:click="openDocument($el.dataset.documentUrl, $el.dataset.documentTitle)"
                                             class="rounded-lg bg-action px-3 py-2 text-sm text-action-foreground shadow-sm transition-colors hover:bg-action hover:shadow-sm">
                                             <i aria-hidden="true" class="fas fa-eye mr-1"></i> View
                                         </button>
