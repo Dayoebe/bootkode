@@ -28,6 +28,7 @@ class CourseForm extends Component
     public $title = '';
     public $subtitle = '';
     public $slug = '';
+    public bool $slug_manual_edit = false;
     public $description = '';
     public $category_id = '';
     public $difficulty_level = 'beginner';
@@ -243,9 +244,19 @@ class CourseForm extends Component
 
     public function updatedTitle($value)
     {
-        if (!empty($value)) {
-            $this->slug = 'course-' . \Illuminate\Support\Str::slug($value);
+        if (! $this->slug_manual_edit) {
+            $this->slug = $this->generatedSlug($value);
         }
+    }
+
+    public function updatedSlug()
+    {
+        $this->slug_manual_edit = filled($this->slug) && $this->slug !== $this->generatedSlug($this->title);
+    }
+
+    private function generatedSlug(string $title): string
+    {
+        return filled($title) ? 'course-' . \Illuminate\Support\Str::slug($title) : '';
     }
 
     public function updatedIsFree($value)

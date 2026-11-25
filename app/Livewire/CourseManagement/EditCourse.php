@@ -237,14 +237,14 @@ class EditCourse extends Component
 
     public function updatedTitle($value)
     {
-        if (!$this->slug_manual_edit && !empty($value)) {
+        if (! $this->slug_manual_edit) {
             $this->slug = Str::slug($value);
         }
     }
 
     public function updatedSlug()
     {
-        $this->slug_manual_edit = true;
+        $this->slug_manual_edit = filled($this->slug) && $this->slug !== Str::slug($this->title);
     }
 
     public function updatedIsFree($value)
