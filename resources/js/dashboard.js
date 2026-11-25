@@ -3,13 +3,12 @@ window.addEventListener('bootkode-assessment-focus', (event) => {
     requestAnimationFrame(() => document.getElementById(event.detail?.id)?.focus());
 });
 
-// Insert generated plain text into a matching Trix editor without trusting it as HTML.
-window.applyBootKodeAiText = (field, value) => {
+// Load server-sanitized AI content into the matching Trix editor and trigger its normal sync path.
+window.applyBootKodeAiContent = (field, value) => {
     const editor = document.querySelector(`trix-editor[data-ai-field="${CSS.escape(field)}"]`);
     if (!editor?.editor || typeof value !== 'string') return;
 
-    editor.editor.setSelectedRange([0, editor.editor.getDocument().getLength()]);
-    editor.editor.insertString(value);
+    editor.editor.loadHTML(value);
     editor.dispatchEvent(new Event('trix-change', { bubbles: true }));
     editor.focus();
 };
