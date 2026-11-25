@@ -11,13 +11,16 @@ use Illuminate\Support\Str;
 class CourseOutline extends Component
 {
     use \App\Livewire\Concerns\AuthorizesCourseAuthoring;
+    use \App\Livewire\Concerns\InteractsWithAiContentAssistant;
 
     public Course $course;
     public $activeLessonId = null;
     public $activeSectionId = null;
     public $newSectionTitle = '';
+    public $newSectionDescription = '';
     public $editingSectionId = null;
     public $newSectionTitleEdit = '';
+    public $newSectionDescriptionEdit = '';
     public $editingLessonId = null;
     public $newLessonTitleEdit = '';
     public $expandedSections = [];
@@ -30,9 +33,38 @@ class CourseOutline extends Component
     protected $rules = [
         'newSectionTitle' => 'required|string|max:255',
         'newSectionTitleEdit' => 'required|string|max:255',
+        'newSectionDescription' => 'nullable|string|max:1000',
+        'newSectionDescriptionEdit' => 'nullable|string|max:1000',
         'newLessonTitles.*' => 'required|string|max:255',
         'newLessonTitleEdit' => 'required|string|max:255',
     ];
+
+    protected function aiAssistFormName(): string
+    {
+        return 'course section authoring';
+    }
+
+    protected function aiAssistFields(): array
+    {
+        return [
+            'newSectionTitle' => ['label' => 'New section title', 'purpose' => 'A clear module or section title within the current course', 'max' => 255, 'actions' => ['generate', 'suggest', 'improve']],
+            'newSectionDescription' => ['label' => 'New section description', 'purpose' => 'A concise overview of the section scope', 'max' => 1000, 'actions' => ['generate', 'improve', 'rewrite', 'shorten']],
+            'newSectionTitleEdit' => ['label' => 'Section title', 'purpose' => 'A clear module or section title within the current course', 'max' => 255, 'actions' => ['suggest', 'improve', 'rewrite']],
+            'newSectionDescriptionEdit' => ['label' => 'Section description', 'purpose' => 'A concise overview of the section scope', 'max' => 1000, 'actions' => ['generate', 'improve', 'rewrite', 'shorten']],
+        ];
+    }
+
+    protected function aiAssistContext(): array
+    {
+        return [
+            'course title' => $this->course->title,
+            'course description' => $this->course->description,
+            'course difficulty' => $this->course->difficulty_level,
+            'existing section titles' => $this->course->sections->pluck('title')->all(),
+            'current section title' => $this->newSectionTitleEdit ?: $this->newSectionTitle,
+            'current section description' => $this->newSectionDescriptionEdit ?: $this->newSectionDescription,
+        ];
+    }
 
     // Listen for lesson selection from parent
     protected $listeners = [
@@ -43,6 +75,7 @@ class CourseOutline extends Component
     public function mount(Course $course, $activeLessonId = null, $activeSectionId = null)
     {
         $this->course = $course->load('sections.lessons');
+        $this->authorizeAuthoringContext();
         $this->activeLessonId = $activeLessonId;
         $this->activeSectionId = $activeSectionId;
         $this->expandedSections = $this->course->sections->pluck('id')->toArray();
@@ -80,15 +113,20 @@ class CourseOutline extends Component
 
     public function createSection()
     {
-        $this->validateOnly('newSectionTitle');
+        $this->validate([
+            'newSectionTitle' => $this->rules['newSectionTitle'],
+            'newSectionDescription' => $this->rules['newSectionDescription'],
+        ]);
     
         try {
             $section = Section::create([
                 'course_id' => $this->course->id,
                 'title' => $this->newSectionTitle,
+                'description' => $this->newSectionDescription ?: null,
             ]);
     
             $this->newSectionTitle = '';
+            $this->newSectionDescription = '';
             $this->expandedSections[] = $section->id;
             $this->refreshCourse();
             $this->dispatchOutlineUpdated();
@@ -107,15 +145,20 @@ class CourseOutline extends Component
         $section = Section::where('course_id', $this->course->id)->findOrFail($sectionId);
         $this->editingSectionId = $sectionId;
         $this->newSectionTitleEdit = $section->title;
+        $this->newSectionDescriptionEdit = $section->description ?? '';
     }
 
     public function updateSection()
     {
-        $this->validateOnly('newSectionTitleEdit');
+        $this->validate([
+            'newSectionTitleEdit' => $this->rules['newSectionTitleEdit'],
+            'newSectionDescriptionEdit' => $this->rules['newSectionDescriptionEdit'],
+        ]);
 
         try {
             Section::where('course_id', $this->course->id)->findOrFail($this->editingSectionId)->update([
-                'title' => $this->newSectionTitleEdit
+                'title' => $this->newSectionTitleEdit,
+                'description' => $this->newSectionDescriptionEdit ?: null,
             ]);
 
             $this->cancelEditSection();
@@ -133,6 +176,7 @@ class CourseOutline extends Component
         $this->markAsEditing(false);
         $this->editingSectionId = null;
         $this->newSectionTitleEdit = '';
+        $this->newSectionDescriptionEdit = '';
     }
 
     public function deleteSection($sectionId)

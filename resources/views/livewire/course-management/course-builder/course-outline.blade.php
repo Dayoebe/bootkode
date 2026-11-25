@@ -5,9 +5,20 @@
     <!-- Create Section Form -->
     <div class="mb-6">
         <form wire:submit.prevent="createSection" class="flex min-w-0 flex-col gap-2">
-            <input type="text" wire:model="newSectionTitle"
+            <div class="flex items-center justify-between gap-2">
+                <label for="new-section-title" class="text-sm font-semibold text-content dark:text-white">New section title</label>
+                <x-ai-assist.button field="newSectionTitle" />
+            </div>
+            <input id="new-section-title" type="text" wire:model="newSectionTitle"
                 class="w-full px-4 py-2 bg-themed-tertiary dark:bg-gray-700 border border-themed-primary dark:border-gray-600 rounded-lg text-content dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-brand/30 focus:border-transparent transition-colors duration-300"
-                placeholder="Enter section title..." aria-label="New section title">
+                placeholder="Enter section title...">
+            <div class="flex items-center justify-between gap-2">
+                <label for="new-section-description" class="text-sm font-semibold text-content dark:text-white">Section description</label>
+                <x-ai-assist.button field="newSectionDescription" />
+            </div>
+            <textarea id="new-section-description" wire:model="newSectionDescription" rows="2" maxlength="1000"
+                class="w-full rounded-lg border border-themed-primary bg-themed-tertiary px-4 py-2 text-content focus:ring-2 focus:ring-brand/30 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
+                placeholder="Optional overview of this section..."></textarea>
             <button type="submit"
                 wire:loading.attr="disabled"
                 wire:target="createSection"
@@ -23,6 +34,9 @@
         @error('newSectionTitle')
             <span class="text-red-600 dark:text-red-400 text-sm mt-1">{{ $message }}</span>
         @enderror
+        @error('newSectionDescription')
+            <span class="text-red-600 dark:text-red-400 text-sm mt-1">{{ $message }}</span>
+        @enderror
     </div>
 
     <!-- Sections List -->
@@ -36,14 +50,29 @@
                     <div class="flex items-center flex-1 min-w-0">
                         <i aria-hidden="true" class="fas fa-folder text-brand dark:text-brand mr-2 transition-all duration-200"></i>
                         @if ($editingSectionId === $section->id)
+                            <div class="min-w-0 flex-1 space-y-2" @click.stop>
+                            <div class="flex items-center gap-2">
                             <input aria-label="New section title edit" wire:model="newSectionTitleEdit"
                                    wire:keydown.enter="updateSection"
                                    wire:keydown.escape="cancelEditSection"
                                    @click.stop
                                    class="bg-themed-secondary dark:bg-gray-600 text-content dark:text-white px-2 py-1 rounded flex-1 border border-themed-primary dark:border-gray-500 transition-colors duration-300"
                                    autofocus>
+                            <x-ai-assist.button field="newSectionTitleEdit" label="AI" />
+                            </div>
+                            <div class="flex items-start gap-2">
+                                <textarea aria-label="Section description edit" wire:model="newSectionDescriptionEdit" rows="2" maxlength="1000"
+                                    class="min-w-0 flex-1 rounded border border-themed-primary bg-themed-secondary px-2 py-1 text-sm text-content dark:border-gray-500 dark:bg-gray-600 dark:text-white"></textarea>
+                                <x-ai-assist.button field="newSectionDescriptionEdit" label="AI" />
+                            </div>
+                            @error('newSectionTitleEdit')<span class="text-xs text-red-600 dark:text-red-400">{{ $message }}</span>@enderror
+                            @error('newSectionDescriptionEdit')<span class="text-xs text-red-600 dark:text-red-400">{{ $message }}</span>@enderror
+                            </div>
                         @else
-                            <span class="text-content dark:text-white truncate transition-colors duration-300">{{ $section->title }}</span>
+                            <div class="min-w-0">
+                                <span class="block text-content dark:text-white truncate transition-colors duration-300">{{ $section->title }}</span>
+                                @if ($section->description)<span class="block truncate text-xs text-content-muted">{{ $section->description }}</span>@endif
+                            </div>
                         @endif
                         <span class="ml-2 text-xs text-content-muted dark:text-content-muted bg-gray-200 dark:bg-gray-600 px-2 py-1 rounded-full transition-colors duration-300">
                             {{ $section->lessons->count() }}
@@ -167,4 +196,5 @@
             </div>
         @endforelse
     </div>
+    @include('components.ai-assist.modal')
 </div>

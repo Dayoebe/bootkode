@@ -18,6 +18,8 @@ use Livewire\Attributes\Layout;
 class CourseForm extends Component
 {
     use \App\Livewire\Concerns\AuthorizesCourseAuthoring;
+    use \App\Livewire\Concerns\InteractsWithAiContentAssistant;
+    use \App\Livewire\Concerns\ProvidesCourseAiAssist;
 
     use WithFileUploads;
 

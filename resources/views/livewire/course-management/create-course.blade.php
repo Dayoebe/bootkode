@@ -19,10 +19,17 @@
                         {{ ($isEditMode ?? false) ? 'Update your course content and settings' : 'Share your knowledge and inspire learners worldwide' }}
                     </p>
                 </div>
-                <div class="text-right">
+                <div class="flex flex-wrap items-center justify-end gap-3 text-right">
+                    <button type="button" wire:click="openAiAssistForm"
+                        class="inline-flex min-h-11 items-center gap-2 rounded-lg border border-brand px-4 py-2 text-sm font-semibold text-brand hover:bg-brand/10 focus-visible:ring-2 focus-visible:ring-brand/40">
+                        <i class="fas fa-wand-magic-sparkles" aria-hidden="true"></i>
+                        Draft course fields
+                    </button>
+                    <div>
                     <div class="text-sm text-themed-secondary transition-colors duration-300">Step</div>
                     <div class="text-xl sm:text-2xl font-bold text-{{ $isEditMode ?? false ? 'orange' : 'purple' }}-500"
                          x-text="`${currentStep}/${totalSteps}`"></div>
+                    </div>
                 </div>
             </div>
 
@@ -80,4 +87,6 @@
 
     <!-- Loading Overlay -->
     @include('livewire.course-management.create_steps.loading-overlay')
+
+    @include('components.ai-assist.modal')
 </div>

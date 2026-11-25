@@ -12,6 +12,7 @@ use Mews\Purifier\Facades\Purifier;
 class LessonEditor extends Component
 {
     use \App\Livewire\Concerns\AuthorizesCourseAuthoring;
+    use \App\Livewire\Concerns\InteractsWithAiContentAssistant;
 
     use WithFileUploads;
 
@@ -49,6 +50,34 @@ class LessonEditor extends Component
     // External links form data
     public $newLinkTitle = '';
     public $newLinkUrl = '';
+
+    protected function aiAssistFormName(): string
+    {
+        return 'lesson authoring';
+    }
+
+    protected function aiAssistFields(): array
+    {
+        return [
+            'title' => ['label' => 'Lesson title', 'purpose' => 'A clear title aligned to the course and section', 'max' => 255, 'actions' => ['generate', 'suggest', 'improve'], 'form' => true],
+            'slug' => ['label' => 'Lesson URL slug', 'purpose' => 'A concise URL-safe phrase', 'max' => 255, 'actions' => ['generate'], 'format' => 'slug'],
+            'description' => ['label' => 'Lesson description', 'purpose' => 'A concise learner-facing lesson overview', 'max' => 1000, 'actions' => ['generate', 'improve', 'rewrite', 'shorten', 'grammar'], 'form' => true],
+            'content' => ['label' => 'Lesson content', 'purpose' => 'Structured instructional content with explanations and practical exercises where supported by the brief', 'max' => 30000, 'actions' => ['generate', 'improve', 'rewrite', 'expand', 'shorten', 'grammar', 'professional'], 'form' => true, 'rich_text' => true],
+        ];
+    }
+
+    protected function aiAssistContext(): array
+    {
+        return [
+            'course title' => data_get($this->lesson, 'section.course.title'),
+            'section title' => data_get($this->lesson, 'section.title'),
+            'lesson title' => $this->title,
+            'lesson description' => $this->description,
+            'difficulty level' => $this->difficulty_level,
+            'completion activity' => $this->completion_time_type,
+            'existing lesson content' => $this->content,
+        ];
+    }
 
     protected function rules()
     {

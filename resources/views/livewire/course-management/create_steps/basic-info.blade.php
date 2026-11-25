@@ -14,10 +14,13 @@
         <div class="space-y-4 sm:space-y-6">
             <!-- Course Title -->
             <div class="group">
-                <label class="block text-sm font-medium text-themed-primary mb-2 flex items-center gap-2 transition-colors duration-300" for="course-title">
-                    <i aria-hidden="true" class="fas fa-heading text-brand dark:text-brand"></i>
-                    Course Title <span class="text-red-500">*</span>
-                </label>
+                <div class="mb-2 flex items-center gap-2">
+                    <label class="text-sm font-medium text-themed-primary transition-colors duration-300" for="course-title">
+                        <i aria-hidden="true" class="fas fa-heading text-brand dark:text-brand"></i>
+                        Course Title <span class="text-red-500">*</span>
+                    </label>
+                    <x-ai-assist.button field="title" />
+                </div>
                 <input type="text"
                        wire:model.live="title"
                        class="w-full px-3 sm:px-4 py-3 bg-themed-tertiary border border-themed-primary rounded-lg focus:ring-2 focus:ring-brand/30 focus:border-transparent text-themed-primary placeholder-themed-secondary transition-all duration-200 group-hover:border-brand"
@@ -29,10 +32,13 @@
 
             <!-- Course Slug -->
             <div class="group">
-                <label class="block text-sm font-medium text-themed-primary mb-2 flex items-center gap-2 transition-colors duration-300" for="course-slug">
-                    <i aria-hidden="true" class="fas fa-link text-brand dark:text-brand"></i>
-                    Course URL Slug <span class="text-red-500">*</span>
-                </label>
+                <div class="mb-2 flex items-center gap-2">
+                    <label class="text-sm font-medium text-themed-primary transition-colors duration-300" for="course-slug">
+                        <i aria-hidden="true" class="fas fa-link text-brand dark:text-brand"></i>
+                        Course URL Slug <span class="text-red-500">*</span>
+                    </label>
+                    <x-ai-assist.button field="slug" />
+                </div>
                 <div class="relative">
                     <span class="absolute left-3 top-1/2 transform -translate-y-1/2 text-themed-secondary text-sm hidden sm:inline transition-colors duration-300">bootkode.com/</span>
                     <input type="text"
@@ -50,10 +56,13 @@
 
             <!-- Course Subtitle -->
             <div class="group">
-                <label class="block text-sm font-medium text-themed-primary mb-2 flex items-center gap-2 transition-colors duration-300" for="course-subtitle">
-                    <i aria-hidden="true" class="fas fa-subtitle text-brand dark:text-brand"></i>
-                    Course Subtitle
-                </label>
+                <div class="mb-2 flex items-center gap-2">
+                    <label class="text-sm font-medium text-themed-primary transition-colors duration-300" for="course-subtitle">
+                        <i aria-hidden="true" class="fas fa-subtitle text-brand dark:text-brand"></i>
+                        Course Subtitle
+                    </label>
+                    <x-ai-assist.button field="subtitle" />
+                </div>
                 <input type="text"
                        wire:model="subtitle"
                        class="w-full px-3 sm:px-4 py-3 bg-themed-tertiary border border-themed-primary rounded-lg focus:ring-2 focus:ring-brand/30 focus:border-transparent text-themed-primary placeholder-themed-secondary transition-all duration-200 group-hover:border-brand"

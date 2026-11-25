@@ -15,6 +15,9 @@ use App\Services\Authorization\PublishingAccess;
 class AdminBlogPostForm extends Component
 {
     use AuthorizesPublishingAdministration, WithFileUploads, HasCloudinaryUpload;
+    use \App\Livewire\Concerns\InteractsWithAiContentAssistant {
+        transformAiAssistValue as protected baseTransformAiAssistValue;
+    }
 
     protected function publishingAbility(): string
     {
@@ -46,6 +49,61 @@ class AdminBlogPostForm extends Component
     public $newTag = '';
     public $newKeyword = '';
     public $removeExistingImage = false;
+
+    protected function aiAssistFormName(): string
+    {
+        return 'complete blog article';
+    }
+
+    protected function aiAssistFields(): array
+    {
+        return [
+            'title' => ['label' => 'Blog title', 'purpose' => 'An engaging accurate article title', 'max' => 255, 'actions' => ['generate', 'suggest', 'improve', 'seo'], 'form' => true],
+            'slug' => ['label' => 'Blog URL slug', 'purpose' => 'A concise URL-safe phrase', 'max' => 255, 'actions' => ['generate', 'seo'], 'format' => 'slug'],
+            'excerpt' => ['label' => 'Article excerpt', 'purpose' => 'A useful summary under 500 characters', 'max' => 500, 'actions' => ['generate', 'improve', 'rewrite', 'shorten'], 'form' => true],
+            'content' => ['label' => 'Article body', 'purpose' => 'A structured article with introduction, useful headings, practical examples where supported, and a conclusion', 'max' => 30000, 'actions' => ['generate', 'improve', 'rewrite', 'expand', 'shorten', 'grammar', 'professional'], 'form' => true, 'rich_text' => true],
+            'category_ids' => ['label' => 'Suggested existing categories', 'purpose' => 'One or more exact names from the available category options', 'type' => 'list', 'max_items' => 3, 'item_max' => 100, 'actions' => ['generate'], 'form' => true],
+            'tags' => ['label' => 'Article tags', 'purpose' => 'Short relevant reader-facing tags', 'type' => 'list', 'max_items' => 10, 'item_max' => 100, 'actions' => ['generate', 'seo'], 'form' => true],
+            'meta_title' => ['label' => 'SEO title', 'purpose' => 'A concise search title', 'max' => 255, 'actions' => ['generate', 'improve', 'seo', 'shorten'], 'form' => true],
+            'meta_description' => ['label' => 'Meta description', 'purpose' => 'A clear search summary without unsupported claims', 'max' => 1000, 'actions' => ['generate', 'improve', 'seo', 'shorten'], 'form' => true],
+            'meta_keywords' => ['label' => 'SEO keywords', 'purpose' => 'Relevant phrases, without keyword stuffing', 'type' => 'list', 'max_items' => 10, 'item_max' => 100, 'actions' => ['generate', 'seo'], 'form' => true],
+        ];
+    }
+
+    protected function aiAssistContext(): array
+    {
+        $categories = BlogCategory::active()->ordered()->get(['id', 'name']);
+
+        return [
+            'title' => $this->title,
+            'excerpt' => $this->excerpt,
+            'article content' => $this->content,
+            'selected categories' => $categories->whereIn('id', array_map('intval', $this->category_ids))->pluck('name')->all(),
+            'available category names' => $categories->pluck('name')->all(),
+            'tags' => $this->tags,
+            'SEO title' => $this->meta_title,
+            'meta description' => $this->meta_description,
+        ];
+    }
+
+    protected function transformAiAssistValue(string $field, mixed $value, array $definition): mixed
+    {
+        if ($field === 'category_ids') {
+            $requested = collect((array) $value)->map(fn ($name) => mb_strtolower(trim((string) $name)));
+            $ids = BlogCategory::active()->get(['id', 'name'])
+                ->filter(fn (BlogCategory $category) => $requested->contains(mb_strtolower($category->name)))
+                ->pluck('id')->all();
+            if ($ids === []) {
+                throw \Illuminate\Validation\ValidationException::withMessages([
+                    'aiAssist' => 'The suggested categories did not match an existing active category. Choose a category manually or regenerate.',
+                ]);
+            }
+
+            return $ids;
+        }
+
+        return $this->baseTransformAiAssistValue($field, $value, $definition);
+    }
 
     protected function rules()
     {

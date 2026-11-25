@@ -27,11 +27,12 @@ x-transition:leave-end="opacity-0 transform -translate-x-8">
             <!-- Learning Outcomes -->
             <div
                 class="bg-brand/10 dark:bg-surface/30 p-4 sm:p-6 rounded-lg border border-brand dark:border-brand transition-colors duration-300">
-                <label
+                <div
                     class="block text-sm font-medium text-brand dark:text-brand mb-4 flex items-center gap-2 transition-colors duration-300">
                     <i aria-hidden="true" class="fas fa-lightbulb text-brand dark:text-brand"></i>
                     Learning Outcomes
-                </label>
+                    <x-ai-assist.button field="learning_outcomes" />
+                </div>
                 <div class="space-y-3">
                     @foreach ($learning_outcomes as $index => $outcome)
                         <div class="flex items-center gap-3" wire:key="outcome-{{ $index }}">
@@ -58,11 +59,12 @@ x-transition:leave-end="opacity-0 transform -translate-x-8">
             <!-- Prerequisites -->
             <div
                 class="bg-orange-50 dark:bg-orange-900/30 p-4 sm:p-6 rounded-lg border border-orange-200 dark:border-orange-800 transition-colors duration-300">
-                <label
+                <div
                     class="block text-sm font-medium text-orange-700 dark:text-orange-300 mb-4 flex items-center gap-2 transition-colors duration-300">
                     <i aria-hidden="true" class="fas fa-exclamation-circle text-orange-500 dark:text-orange-400"></i>
                     Prerequisites
-                </label>
+                    <x-ai-assist.button field="prerequisites" />
+                </div>
                 <div class="space-y-3">
                     @foreach ($prerequisites as $index => $prerequisite)
                         <div class="flex items-center gap-3" wire:key="prereq-{{ $index }}">
@@ -115,11 +117,11 @@ x-transition:leave-end="opacity-0 transform -translate-x-8">
             <!-- Frequently Asked Questions -->
             <div
                 class="bg-brand/10 dark:bg-surface/30 p-4 sm:p-6 rounded-lg border border-brand dark:border-brand transition-colors duration-300">
-                <label
+                <div
                     class="block text-sm font-medium text-brand dark:text-brand mb-4 flex items-center gap-2 transition-colors duration-300">
                     <i aria-hidden="true" class="fas fa-question-circle text-brand dark:text-brand"></i>
                     Frequently Asked Questions
-                </label>
+                </div>
                 <div class="space-y-4">
                     @foreach ($faqs as $index => $faq)
                         <div class="bg-themed-secondary p-3 sm:p-4 rounded-lg border border-themed-primary transition-colors duration-300"
@@ -150,11 +152,12 @@ x-transition:leave-end="opacity-0 transform -translate-x-8">
             <!-- Materials Included -->
             <div
                 class="bg-brand/10 dark:bg-surface/30 p-4 sm:p-6 rounded-lg border border-brand dark:border-brand transition-colors duration-300">
-                <label
+                <div
                     class="block text-sm font-medium text-brand dark:text-brand mb-4 flex items-center gap-2 transition-colors duration-300">
                     <i aria-hidden="true" class="fas fa-box-open text-brand dark:text-brand"></i>
                     Materials Included
-                </label>
+                    <x-ai-assist.button field="materials_included" />
+                </div>
                 <div class="space-y-3">
                     @foreach ($materials_included as $index => $material)
                         <div class="flex items-center gap-3" wire:key="material-{{ $index }}">
@@ -181,11 +184,12 @@ x-transition:leave-end="opacity-0 transform -translate-x-8">
             <!-- Syllabus Overview -->
             <div
                 class="bg-brand/10 dark:bg-surface/30 p-4 sm:p-6 rounded-lg border border-brand dark:border-brand transition-colors duration-300">
-                <label
+                <div
                     class="block text-sm font-medium text-brand dark:text-brand mb-4 flex items-center gap-2 transition-colors duration-300">
                     <i aria-hidden="true" class="fas fa-book-open text-brand dark:text-brand"></i>
                     Syllabus Overview
-                </label>
+                    <x-ai-assist.button field="syllabus_overview" />
+                </div>
                 <textarea aria-label="Provide a high-level overview of your course modules and structure" wire:model="syllabus_overview" rows="4"
                     class="w-full px-3 sm:px-4 py-3 bg-themed-secondary border border-themed-primary rounded-lg text-themed-primary placeholder-themed-secondary focus:ring-2 focus:ring-brand/30 resize-none text-sm sm:text-base transition-colors duration-300"
                     placeholder="Provide a high-level overview of your course modules and structure..."></textarea>

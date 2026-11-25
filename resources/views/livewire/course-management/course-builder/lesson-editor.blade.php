@@ -106,10 +106,11 @@
             <div x-cloak x-show="activeTab === 'content'" class="p-4 space-y-4">
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-sm font-medium text-themed-primary mb-2 transition-colors duration-300">
-                            Lesson Title *
+                        <div class="mb-2 flex items-center gap-2">
+                            <label class="text-sm font-medium text-themed-primary transition-colors duration-300">Lesson Title *</label>
                             <span x-show="titleChanged" class="text-orange-500 text-xs">(unsaved)</span>
-                        </label>
+                            <x-ai-assist.button field="title" />
+                        </div>
                         <input aria-label="Title" type="text"
                             wire:model.live.debounce.500ms="title"
                             @input="markFieldChanged('title'); scheduleSlugGeneration()"
@@ -120,10 +121,11 @@
                         @enderror
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-themed-primary mb-2 transition-colors duration-300">
-                            URL Slug *
+                        <div class="mb-2 flex items-center gap-2">
+                            <label class="text-sm font-medium text-themed-primary transition-colors duration-300">URL Slug *</label>
                             <span x-show="slugChanged" class="text-orange-500 text-xs">(unsaved)</span>
-                        </label>
+                            <x-ai-assist.button field="slug" />
+                        </div>
                         <div class="flex gap-2">
                             <input aria-label="Slug" type="text"
                                 wire:model.live.debounce.500ms="slug"
@@ -141,10 +143,11 @@
                 </div>
 
                 <div>
-                    <label class="block text-sm font-medium text-themed-primary mb-2 transition-colors duration-300">
-                        Description
+                    <div class="mb-2 flex items-center gap-2">
+                        <label class="text-sm font-medium text-themed-primary transition-colors duration-300">Description</label>
                         <span x-show="descriptionChanged" class="text-orange-500 text-xs">(unsaved)</span>
-                    </label>
+                        <x-ai-assist.button field="description" />
+                    </div>
                     <textarea aria-label="Brief description of this lesson" wire:model.live.debounce.500ms="description" @input="markFieldChanged('description')" rows="3"
                         class="w-full px-3 py-2 bg-themed-tertiary border border-themed-primary rounded-lg text-themed-primary focus:ring-2 focus:ring-brand/30 focus:border-transparent transition-colors duration-300 text-sm"
                         placeholder="Brief description of this lesson..."></textarea>
@@ -157,6 +160,7 @@
                             Lesson Content
                             <span x-show="contentChanged" class="text-orange-500 text-xs">(unsaved)</span>
                         </label>
+                        <x-ai-assist.button field="content" />
                         <div class="flex gap-1 text-xs">
                             <button @click="insertTemplate('intro')" class="px-2 py-1 bg-themed-tertiary text-themed-primary rounded hover:bg-themed-secondary transition-colors duration-300 border border-themed-primary">
                                 <i aria-hidden="true" class="fas fa-play mr-1"></i>Intro
@@ -171,6 +175,7 @@
                         <input id="trix-content-{{ $lessonId }}" type="hidden" value="{{ $content }}">
                         <trix-editor
                             x-ref="trixEditor"
+                            data-ai-field="content"
                             input="trix-content-{{ $lessonId }}"
                             placeholder="Start writing your lesson content..."
                             class="trix-content bg-themed-tertiary text-themed-primary min-h-[400px] transition-colors duration-300">
@@ -482,4 +487,5 @@
     </div>
 
 
+    @include('components.ai-assist.modal')
 </div>

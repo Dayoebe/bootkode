@@ -17,9 +17,12 @@
             <div class="space-y-6">
                 <!-- Title -->
                 <div>
-                    <label for="title" class="block text-sm font-semibold text-themed-primary mb-2">
+                    <div class="mb-2 flex items-center justify-between gap-2">
+                    <label for="title" class="block text-sm font-semibold text-themed-primary">
                         <i aria-hidden="true" class="fas fa-heading mr-2 text-emerald-600 dark:text-emerald-400"></i>Title <span class="text-red-600 dark:text-red-400">*</span>
                     </label>
+                    <x-ai-assist.button field="title" />
+                    </div>
                     <input wire:model="title" type="text" id="title"
                            class="w-full px-4 py-3 border border-themed-primary bg-themed-tertiary rounded-lg shadow-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 text-themed-primary transition-all duration-200"
                            placeholder="Announcement title">
@@ -28,9 +31,12 @@
 
                 <!-- Content -->
                 <div>
-                    <label for="content" class="block text-sm font-semibold text-themed-primary mb-2">
+                    <div class="mb-2 flex items-center justify-between gap-2">
+                    <label for="content" class="block text-sm font-semibold text-themed-primary">
                         <i aria-hidden="true" class="fas fa-align-left mr-2 text-emerald-600 dark:text-emerald-400"></i>Content <span class="text-red-600 dark:text-red-400">*</span>
                     </label>
+                    <x-ai-assist.button field="content" />
+                    </div>
                     <textarea wire:model="content" id="content" rows="6"
                               class="w-full px-4 py-3 border border-themed-primary bg-themed-tertiary rounded-lg shadow-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 text-themed-primary transition-all duration-200"
                               placeholder="Enter announcement content..."></textarea>
@@ -168,4 +174,5 @@
             </div>
         @endif
     </div>
+    @include('components.ai-assist.modal')
 </div>

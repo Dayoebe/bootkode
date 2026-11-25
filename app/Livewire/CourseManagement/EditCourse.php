@@ -21,6 +21,8 @@ use Illuminate\Support\Facades\Storage;
 class EditCourse extends Component
 {
     use \App\Livewire\Concerns\AuthorizesCourseAuthoring;
+    use \App\Livewire\Concerns\InteractsWithAiContentAssistant;
+    use \App\Livewire\Concerns\ProvidesCourseAiAssist;
 
     use WithFileUploads;
 

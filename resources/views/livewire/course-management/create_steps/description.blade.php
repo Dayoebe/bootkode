@@ -18,9 +18,10 @@
         <!-- Description Column -->
         <div class="space-y-4 sm:space-y-6">
             <div>
-                <label class="block text-sm font-medium text-themed-primary mb-2 transition-colors duration-300">
-                    Course Description
-                </label>
+                <div class="mb-2 flex items-center gap-2">
+                    <label class="text-sm font-medium text-themed-primary transition-colors duration-300">Course Description</label>
+                    <x-ai-assist.button field="description" />
+                </div>
                 <textarea aria-label="Describe what students will learn, what skills they'll gain, and why they should take your course" wire:model="description"
                           rows="8"
                           class="w-full px-3 sm:px-4 py-3 bg-themed-tertiary border border-themed-primary rounded-lg focus:ring-2 focus:ring-brand/30 focus:border-transparent text-themed-primary placeholder-themed-secondary resize-none transition-colors duration-300"
@@ -36,10 +37,13 @@
 
             <!-- Target Audience -->
             <div>
-                <label class="block text-sm font-medium text-themed-primary mb-2 flex items-center gap-2 transition-colors duration-300">
-                    <i aria-hidden="true" class="fas fa-users text-brand dark:text-brand"></i>
-                    Target Audience
-                </label>
+                <div class="mb-2 flex items-center gap-2">
+                    <label class="text-sm font-medium text-themed-primary transition-colors duration-300">
+                        <i aria-hidden="true" class="fas fa-users text-brand dark:text-brand"></i>
+                        Target Audience
+                    </label>
+                    <x-ai-assist.button field="target_audience" />
+                </div>
                 <input aria-label="e.g., Beginners, Professionals, Students" type="text"
                        wire:model="target_audience"
                        class="w-full px-3 sm:px-4 py-3 bg-themed-tertiary border border-themed-primary rounded-lg focus:ring-2 focus:ring-brand/30 focus:border-transparent text-themed-primary placeholder-themed-secondary transition-colors duration-300"
