@@ -8,6 +8,7 @@ const updateDashboardLiveStatus = () => {
         timeZone: 'Africa/Lagos',
         hour: '2-digit',
         minute: '2-digit',
+        second: '2-digit',
         hour12: true,
     }).format(new Date());
 
@@ -30,7 +31,7 @@ const updateDashboardLiveStatus = () => {
 if (!window.bootkodeDashboardLiveStatusStarted) {
     window.bootkodeDashboardLiveStatusStarted = true;
     updateDashboardLiveStatus();
-    window.setInterval(updateDashboardLiveStatus, 30000);
+    window.setInterval(updateDashboardLiveStatus, 1000);
     window.addEventListener('online', updateDashboardLiveStatus);
     window.addEventListener('offline', updateDashboardLiveStatus);
     document.addEventListener('livewire:navigated', updateDashboardLiveStatus);

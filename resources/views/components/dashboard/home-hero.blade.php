@@ -18,7 +18,7 @@
         <span class="bk-dashboard-live-presence" aria-hidden="true"></span>
         <strong>Live workspace</strong>
         <span class="bk-dashboard-live-divider" aria-hidden="true"></span>
-        <span><i class="fas fa-clock" aria-hidden="true"></i> <span data-dashboard-live-time>{{ now('Africa/Lagos')->format('h:i A') }}</span> WAT</span>
+        <span><i class="fas fa-clock" aria-hidden="true"></i> <span data-dashboard-live-time>{{ now('Africa/Lagos')->format('h:i:s A') }}</span> WAT</span>
         <span class="bk-dashboard-live-divider" aria-hidden="true"></span>
         <span data-dashboard-network-status role="status" aria-live="polite"><i class="fas fa-wifi" aria-hidden="true"></i> Checking connection</span>
         <span class="bk-dashboard-live-private"><i class="fas fa-lock" aria-hidden="true"></i> Private account view</span>
