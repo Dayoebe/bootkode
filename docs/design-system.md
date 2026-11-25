@@ -22,6 +22,10 @@ Use 4px-based spacing, 44px standard control height, 8px control/panel radius, r
 
 Prefer props for variants and slots for content. Keep static UI in Blade and server interactions in Livewire. Never infer authorization from disabled/hidden controls. Add `wire:loading` and `wire:target` to expensive actions; destructive actions require explicit confirmation. Named routes are mandatory for internal destinations.
 
+### AI Assist
+
+Use the shared `ai-assist.button` beside, never inside, a field label. The shared AI Assist review dialog owns the generated preview, loading/unavailable/error states, selection controls and replacement confirmation. It uses the existing semantic action/surface tokens, Livewire-owned Alpine focus trap, Escape dismissal, focus return and live status announcements. On small screens the dialog is a bounded bottom sheet; from `sm` it is a centered modal. Generated content must stay visibly provisional until the editor selects Apply, and applying must never imply that the form was saved or published.
+
 ## Accessibility and responsive behavior
 
 Provide skip links, visible focus, semantic landmarks, labelled icon controls and text alongside statuses. Respect reduced motion globally; remove ambient decorative animation. Mobile drawers must close on Escape and return focus. Tables scroll within an explicitly bounded container rather than causing page overflow. Grids collapse at Tailwind's established 640/768/1024/1280 breakpoints; verify 390/768/1024/1440 widths. Do not hide overflow merely to conceal a broken layout.

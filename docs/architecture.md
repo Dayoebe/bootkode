@@ -29,6 +29,12 @@ Provider credentials remain in environment/configuration, never Livewire public 
 
 See `product-audit.md`, `design-system.md`, `refactor-roadmap.md` and `verification.md` for decisions and evidence.
 
+## AI form-assistance boundary
+
+`AiContentAssistantService` is the reusable server-side generation boundary for editorial forms. It accepts an authenticated editor, a whitelisted field definition, bounded current form context and optional instructions; requests strict JSON-schema output through the existing `AiManager`; and normalizes all returned values to plain text or bounded string lists. The service reserves and completes `AiUsageRecord` rows under the separate `content_assist` feature while per-minute throttling limits rapid retries. Prompts and generated content are not persisted in those records.
+
+`InteractsWithAiContentAssistant` owns Livewire preview/apply state. Domain components supply their own field whitelist, context and existing boot-time authorization. The trait never invokes a component save action and cannot address fields outside that whitelist. Existing non-empty values require explicit replacement confirmation. Rich-text fields dispatch a browser event to the existing dashboard/Trix entry, which inserts text through the editor API and emits the normal change event. Course availability, publishing access, ownership, approval, pricing and payment boundaries remain unchanged.
+
 ## Course content acquisition
 
 `CourseContentStudio` is a role-guarded Livewire entry point for importing licensed curriculum and generating AI drafts. `CourseContentSource` adapters own source-specific fetching, format parsing and licence checks; `CourseImportService` owns source identity, duplicate/revision handling and draft persistence. The initial GitHub adapter accepts only the verified freeCodeCamp curriculum block path and fixed GitHub hosts. `AiCourseGenerationService` uses `AiManager`, persists blueprint/module stages, enforces a separate usage limit and delegates course/lesson/assessment writes to the existing `CourseGenerationService`.
