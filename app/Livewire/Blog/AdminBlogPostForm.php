@@ -172,7 +172,7 @@ class AdminBlogPostForm extends Component
         }
     }
 
-    public function updatedTitle()
+    public function updatedTitle($value = null)
     {
         if (!$this->isEdit || empty($this->slug)) {
             $this->slug = Str::slug($this->title);

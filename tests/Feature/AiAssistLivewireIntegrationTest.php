@@ -50,6 +50,19 @@ class AiAssistLivewireIntegrationTest extends TestCase
             ->assertDispatched('ai-assist-applied');
     }
 
+    public function test_applying_an_ai_course_title_generates_a_matching_slug(): void
+    {
+        $editor = User::factory()->create(['role' => User::ROLE_INSTRUCTOR]);
+        $this->fakeManager([new AiResponse('{"content":"Practical Laravel APIs"}')]);
+
+        Livewire::actingAs($editor)->test(CourseForm::class)
+            ->call('openAiAssist', 'title')
+            ->call('generateAiAssist')
+            ->call('applyAiAssistField', 'title')
+            ->assertSet('title', 'Practical Laravel APIs')
+            ->assertSet('slug', 'course-practical-laravel-apis');
+    }
+
     public function test_blog_assistance_maps_only_an_existing_category_and_never_changes_publish_state(): void
     {
         $editor = User::factory()->create(['role' => User::ROLE_CONTENT_EDITOR]);

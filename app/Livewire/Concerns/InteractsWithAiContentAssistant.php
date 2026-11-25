@@ -117,6 +117,11 @@ trait InteractsWithAiContentAssistant
 
         $value = $this->transformAiAssistValue($field, $this->aiAssistDraft[$field], $definition);
         $this->{$field} = $value;
+        if ($field === 'title'
+            && method_exists($this, 'updatedTitle')
+            && ! ($this->aiAssistMode === 'form' && ($this->aiAssistSelected['slug'] ?? false))) {
+            $this->updatedTitle($value);
+        }
         unset($this->aiAssistDraft[$field], $this->aiAssistSelected[$field]);
         $this->dispatch('ai-assist-applied', field: $field, value: $value, richText: (bool) ($definition['rich_text'] ?? false));
         $this->dispatch('notify', message: $definition['label'].' draft applied. Review it before saving.', type: 'success');
